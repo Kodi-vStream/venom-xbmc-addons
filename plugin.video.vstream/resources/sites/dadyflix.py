@@ -13,14 +13,14 @@ SITE_IDENTIFIER = 'dadyflix'
 SITE_NAME = 'DadyFlix'
 SITE_DESC = 'Films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
-URL_MAIN = 'https://hd.dadyflix.com/'
+URL_MAIN = 'https://www.dadyflix.net/'
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'filmstreaming/', 'showMovies')
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_VIEWS = (URL_MAIN + 'tendance/','showMovies')
 MOVIE_COMMENTS = (URL_MAIN + 'les-plus-populaires/', 'showMovies')
@@ -120,10 +120,10 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
     if sSearch:
         sPattern = '<a href="([^"]+)"><img src="([^"]+)" alt=.+?href=.+?>([^<]+)<(?:.+?<p>([^<]+)<|)'
-    elif 'les-plus-populaires/' in sUrl or 'tendance/' in sUrl:
+    elif '/les-plus-populaires/' in sUrl or '/tendance/' in sUrl:
         sPattern = '<img src="([^"]+)" alt="(?:film|serie) ([^"]+)streaming".+?(?:|quality">([^<]+)<.+?)href="([^"]+)"'
     else:
-        sPattern = '<img src="([^"]+)" alt="(?:film|serie) ([^"]+)streaming".+?(?:|quality">([^<]+)<.+?)href="([^"]+)".+?div class="texto">*([^<]+)</div>'
+        sPattern = '<img src="([^"]+)" alt="(?:film|serie) ([^"]+)streaming".+?(?:|quality">([^<]+)<.+?)href="([^"]+)".+?div class="texto">([^<]+)</div>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -142,24 +142,21 @@ def showMovies(sSearch = ''):
 
             if sSearch:
                 sUrl2 = aEntry[0]
-                sThumb = aEntry[1].replace('w92', 'w342')
+                sThumb = aEntry[1].replace('w185', 'w342')
                 sTitle = aEntry[2]
-                sDesc = aEntry[3].replace('&#8217;', '\'').replace('&#8230;', '...')
-                setDisplayName = ('%s') % (sTitle)
-            elif 'les-plus-populaires/' in sUrl or 'tendance/' in sUrl:
-                sThumb = aEntry[0].replace('w185', 'w342')
-                sTitle = aEntry[1]
-                sQual = aEntry[2].replace('Haute-qualité', 'HD')
-                sUrl2 = aEntry[3]
-                sDesc = ''
+                sQual = ''
                 setDisplayName = ('%s [%s]') % (sTitle , sQual)
             else:
                 sThumb = aEntry[0].replace('w185', 'w342')
                 sTitle = aEntry[1]
                 sQual = aEntry[2].replace('Haute-qualité', 'HD')
                 sUrl2 = aEntry[3]
-                sDesc = aEntry[4].replace('&#8217;', '\'').replace('&#8230;', '...').replace('>', '')
                 setDisplayName = ('%s [%s]') % (sTitle , sQual)
+
+            try:
+                sDesc = aEntry[4].replace('&#8217;', '\'').replace('&#8230;', '...').replace('>', '')
+            except IndexError:
+                sDesc = ""
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -184,7 +181,7 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<a href="([^"]+)"><span class="icon-chevron-right">'
+    sPattern = "<span class=\"current\">.+?</span><a href='([^\"]+)'"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):

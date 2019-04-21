@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, addon
+from resources.lib.comaddon import progress, addon, VSlog
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
 sColor = addon().getSetting("deco_color")
@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'streamingdivx'
 SITE_NAME = 'Streamingdivx'
 SITE_DESC = 'Films VF en streaming.'
 
-URL_MAIN = 'https://www.streamingdivx.co/'
+URL_MAIN = 'https://ww1.streamingdivx.co/'
 
 MOVIE_NEWS = (URL_MAIN + 'films.html', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenres')
@@ -308,6 +308,8 @@ def showHosters():
     import urllib2
 
     sUrl = ('%s%s%s%s%s' % (URL_MAIN, 'streamer.php?p=', datanum, '&c=', datacode))
+    
+    #VSlog(sUrl)
 
     class NoRedirection(urllib2.HTTPErrorProcessor):
             def http_response(self, request, response):

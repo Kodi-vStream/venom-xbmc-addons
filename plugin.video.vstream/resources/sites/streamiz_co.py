@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 
 SITE_IDENTIFIER = 'streamiz_co'
 SITE_NAME = 'Streamiz'
@@ -186,6 +186,8 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    VSlog(sUrl)
 
     sPattern = '<div class=movie_player data-id=([0-9]+)'
     Fresult = oParser.parse(sHtmlContent, sPattern)
@@ -194,6 +196,7 @@ def showHosters():
         sID = Fresult[1][0]
         oRequestHandler = cRequestHandler(URL_API + sID + '/embeds')
         sHtmlContent = oRequestHandler.request()
+        
         if sHtmlContent:
             sHtmlContent = sHtmlContent.replace('\\', '')
             sHtmlContent = sHtmlContent.strip('[""]')
@@ -202,6 +205,10 @@ def showHosters():
 
             for aEntry in sHtmlContent:
                 sHosterUrl = aEntry
+                
+                if 'playvid' in sHosterUrl:
+                    sHosterUrl = GetPlayvid(sHosterUrl)
+                
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     oHoster.setDisplayName(sMovieTitle)
@@ -209,3 +216,17 @@ def showHosters():
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
+def GetPlayvid(url):
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.7')
+    sHtmlContent = oRequestHandler.request()
+    
+    oParser = cParser()
+    sPattern = 'id="iframe" src="([^"]+)"'
+    result = oParser.parse(sHtmlContent, sPattern)
+    
+    if result:
+        return result[1][0]
+        
+    return url

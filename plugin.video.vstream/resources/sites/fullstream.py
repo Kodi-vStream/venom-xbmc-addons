@@ -15,7 +15,8 @@ SITE_IDENTIFIER = 'fullstream'
 SITE_NAME = 'FullStream'
 SITE_DESC = 'Films, Séries et Mangas Gratuit en streaming sur Full stream'
 
-URL_MAIN = 'https://vf.full-stream.cc/'
+#URL_MAIN = 'https://vf.full-stream.cc/'
+URL_MAIN = 'https://w1.full-stream.cc/'
 
 URL_SEARCH = (URL_MAIN + 'wp-json/dooplay/search/?keyword=', 'AlphaDisplay')
 URL_SEARCH_MOVIES = (URL_MAIN + 'wp-json/dooplay/search/?keyword=', 'AlphaDisplay')
@@ -322,6 +323,10 @@ def showLink():
 
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
+    
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
 
     cookie = oRequest.GetCookies().split(';')
     cooka = ''
@@ -329,8 +334,13 @@ def showLink():
         if not 'wordpress' in i:
             cooka = cooka + i + '; '
 
-    sPattern = '<a id="player-.+?" class="server.+?" data-post="([^"]+)" data-nume="([^"]+)">([^<]+)<.+?<img src=\'http.+?img/flags/(.+?).png\'>'
+    if '/film/' in sUrl:
+        sPattern = '<a id="player-.+?" class="server.+?" data-post="([^"]+)" data-nume="([^"]+)">([^<]+)<.+?<img src=\'http.+?img/flags/(.+?).png\'>'
+    else:
+        sPattern = 'id="player-[^<>]+data-post="([^"]+)" data-nume="([^"]+)".*?"title">([^<]+)<\/*span.+?<img src=\'http.+?img\/flags\/(.+?).png\'>'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    VSlog(aResult)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -410,7 +420,17 @@ def showHosters():
         except urllib2.URLError, e:
             return ''
 
-        sHosterUrl = response.geturl()
+        sHosterUrl = ''
+        if not response.geturl() == sUrl:
+            sHosterUrl = response.geturl()
+        else:
+            c = str(response.read())
+            sPattern = 'src="([^"]+)"'
+            aResult = oParser.parse(c, sPattern)
+            if aResult[0]:
+                sHosterUrl = aResult[1][0]
+
+        VSlog(sHosterUrl)
 
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):

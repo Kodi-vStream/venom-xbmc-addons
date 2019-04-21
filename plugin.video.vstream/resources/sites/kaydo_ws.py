@@ -176,18 +176,18 @@ def showMovies(sSearch=''):
                 break
 
             if 'letters' in sUrl:
-                sThumb = 'https://' + str(aEntry[0])
-                siteUrl = str(aEntry[1])
+                sThumb = 'https://' + aEntry[0]
+                siteUrl = aEntry[1]
                 sDesc = ""
                 sTitle = aEntry[2]
-                sQual = str(aEntry[3])
+                sQual = aEntry[3]
                 setDisplayName = ('%s [%s]') % (sTitle , sQual)
             else:
-                sThumb = 'https://' + str(aEntry[1])
-                siteUrl = str(aEntry[0])
-                sDesc = str(aEntry[4])
+                sThumb = 'https://' + aEntry[1]
+                siteUrl = aEntry[0]
+                sDesc = aEntry[4]
                 sTitle = aEntry[2]
-                sQual = str(aEntry[3])
+                sQual = aEntry[3]
                 setDisplayName = ('%s [%s]') % (sTitle , sQual)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -206,11 +206,9 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
-
     if not sSearch:
         oGui.setEndOfDirectory()
 
-#Pour les series, il y a generalement une etape en plus pour la selection des episodes ou saisons.
 def ShowSerieSaisonEpisodes():
     oGui = cGui()
 
@@ -238,9 +236,9 @@ def ShowSerieSaisonEpisodes():
                 break
 
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red] Saison : ' + aEntry[0] + '[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red] Saison: ' + aEntry[0] + '[/COLOR]')
             else:
-                sTitle = sMovieTitle + ' '+ aEntry[3]
+                sTitle = sMovieTitle + ' ' + aEntry[3]
                 sUrl2 = aEntry[2]
                 sThumb = aEntry[1]
 
@@ -290,11 +288,11 @@ def showLinks():
         progress_ = progress().VScreate(SITE_NAME)
 
     for aEntry in aResult[1]:
-        progress_.VSupdate(progress_, total) #dialog update
+        progress_.VSupdate(progress_, total)
         if progress_.iscanceled():
             break
 
-        site = URL_MAIN +"?trembed="+aEntry
+        site = URL_MAIN + "?trembed=" + aEntry
         oRequestHandler = cRequestHandler(site)
         sHtmlContent = oRequestHandler.request()
 
@@ -311,7 +309,7 @@ def showLinks():
         sPost = ''.join(aResult[1])[::-1]
         VSlog(''.join(aResult[1])[::-1])
 
-        oRequestHandler = cRequestHandler('https://hdss.to/?trhide=1&trhex='+sPost)
+        oRequestHandler = cRequestHandler(URL_MAIN + '?trhide=1&trhex=' + sPost)
         sHtmlContent = oRequestHandler.request()
         sHosterUrl = oRequestHandler.getRealUrl()
 
@@ -322,4 +320,3 @@ def showLinks():
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
 
     oGui.setEndOfDirectory()
-

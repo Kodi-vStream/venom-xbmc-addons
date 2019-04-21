@@ -114,7 +114,7 @@ def showDailyList(): #On recupere les dernier playlist ajouter au site
     if 'iptvsource.com' in sUrl:
         sPattern = '<h3 class="entry-title td-module-title"><a href="(.+?)" rel="bookmark" title="(.+?)"'
     elif 'iptvgratuit.com' in sUrl:
-        sPattern = '</strong></p>\s*<h4><a class="more-link" title="([^"]+)" href="([^"]+)"'
+        sPattern = '<div class="td-module-thumb"><a href="([^"]+)" rel="bookmark" class="td-image-wrap" title="([^"]+)">'
     elif 'dailyiptvlist.com' in sUrl:
         sPattern = '</a><h2 class="post-title"><a href="(.+?)">(.+?)</a></h2><div class="excerpt"><p>.+?</p>'
 
@@ -156,6 +156,8 @@ def __checkForNextPage(sHtmlContent): #Affiche les page suivant si il y en a
 
     if 'https://www.iptvsource.com/' in sUrl:
         sPattern = ' class="last" title=".+?">.+?</a><a href="(.+?)"><i class="td-icon-menu-right"></i>'
+    elif 'iptvgratuit.com' in sUrl:
+        sPattern = '<span class="current">.+?</span><a href="([^"]+)"'
     else:
         sPattern = '<a class="next page-numbers" href="(.+?)">'
 

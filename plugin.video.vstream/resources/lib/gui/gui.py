@@ -643,27 +643,8 @@ class cGui():
         xbmc.executebuiltin('XBMC.Container.Update(%s, replace)' % sTest )
 
     def setWatched(self):
-
-        oInputParameterHandler = cInputParameterHandler()
-
-        aParams = oInputParameterHandler.getAllParameter()
-        # import xbmc
-        # xbmc.log(str(aParams))
-
-        sSite = oInputParameterHandler.getValue('siteUrl')
-        sTitle = xbmc.getInfoLabel('ListItem.label')
-
-        meta = {}
-        meta['title'] = sTitle
-        meta['site'] = sSite
-
-        row = cDb().get_watched(meta)
-        if row:
-            cDb().del_watched(meta)
-            cDb().del_resume(meta)
-        else:
-            cDb().insert_watched(meta)
-
+        # Use kodi buildin feature
+        xbmc.executebuiltin( 'Action(ToggleWatched)' )
         xbmc.executebuiltin( 'Container.Refresh' )
 
 

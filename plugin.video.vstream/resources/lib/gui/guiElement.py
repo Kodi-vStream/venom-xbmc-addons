@@ -398,7 +398,7 @@ class cGuiElement:
     def getInfoLabel(self):
         meta = {
         'title': xbmc.getInfoLabel('ListItem.title'),
-        'label': xbmc.getInfoLabel('ListItem.title'),
+        #'label': xbmc.getInfoLabel('ListItem.title'),
         'originaltitle': xbmc.getInfoLabel('ListItem.originaltitle'),
         'year': xbmc.getInfoLabel('ListItem.year'),
         'genre': xbmc.getInfoLabel('ListItem.genre'),
@@ -546,7 +546,8 @@ class cGuiElement:
     def getItemValues(self):
         self.__aItemValues['Title'] = self.getTitle()
         self.__aItemValues['Plot'] = self.getDescription()
-        self.__aItemValues['Playcount'] = self.getWatched()
+        # Disabled, use the kodi feature
+        #self.__aItemValues['Playcount'] = self.getWatched()
         #tmdbid
         if self.getTmdbId():
             self.addItemProperties('TmdbId', str(self.getTmdbId()))
