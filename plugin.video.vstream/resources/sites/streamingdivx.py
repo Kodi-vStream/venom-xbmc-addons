@@ -318,7 +318,7 @@ def showHosters():
             https_response = http_response
 
     opener = urllib2.build_opener(NoRedirection)
-    opener.addheaders = [('User-agent', UA)]
+    opener.addheaders = [('User-Agent', UA)]
     opener.addheaders = [('Referer', URL_MAIN)]
     response = opener.open(sUrl)
     response.close()
