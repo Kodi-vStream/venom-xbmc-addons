@@ -118,7 +118,7 @@ class cPremiumHandler:
         
             opener = urllib2.build_opener(NoRedirection)  
         
-            opener.addheaders = [('User-agent', UA)]
+            opener.addheaders = [('User-Agent', UA)]
             opener.addheaders.append (('Content-Type', 'application/x-www-form-urlencoded'))
             opener.addheaders.append (('Referer', str(url) ))
             opener.addheaders.append (('Content-Length', str(len(data))))
