@@ -81,8 +81,13 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 #http://www.jsfuck.com/
 
 PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
-UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
+UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0'
 
+def checklowerkey(key,dict):
+    for i in dict:
+        if i.lower == key.lower():
+            return true
+    return False
 
 def solvecharcode(chain,t):
 
@@ -190,22 +195,31 @@ class CloudflareBypass(object):
         if  (self.Memorised_Headers):
             for i in self.Memorised_Headers:
                 head[i] =  self.Memorised_Headers[i]
-
-        if 'User-Agent' not in head:
+                
+        if not checklowerkey('User-Agent',head):
             head['User-Agent'] =  UA        
-        if 'Accept-Encoding' not in head:
-            head['Accept-Encoding'] =  'identity'
-        if 'Accept-Language' not in head:
+        if not checklowerkey('Accept-Encoding',head):
+            head['Accept-Encoding'] =  'gzip, deflate, br'#'identity'
+        if not checklowerkey('Accept-Language',head):
             head['Accept-Language'] = 'en-US,en;q=0.5'
-        if 'Cache-Control' not in head:
+        if not checklowerkey('Cache-Control',head):
             head['Cache-Control'] = 'no-cache'
-        if 'Dnt' not in head:
+        if not checklowerkey('Dnt',head):
             head['Dnt'] = '1'
-        if 'Pragma' not in head:
+        if not checklowerkey('Pragma',head):
             head['Pragma'] = 'no-cache'
-        if 'Accept' not in head:
+        if not checklowerkey('Accept',head):
             head['Accept'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-
+            
+        #Normalisation because they are not cas sensitive:
+        Headers = ['User-Agent','Accept-Encoding','Accept-Language','Cache-Control','Dnt','Accept','Pragma','Connexion']
+        Headers_l = [x.lower() for x in Headers]
+        head2 = dict(head)
+        for key in head2:
+            if not key in Headers and key.lower() in Headers_l:
+                p  = Headers_l.index(key.lower())
+                head[Headers[p]] = head[key]
+                del head[key]
 
         return head
 
@@ -322,7 +336,13 @@ class CloudflareBypass(object):
         s = CloudflareScraper()
         
         r = s.request(method,url,headers = self.SetHeader() , cookies = self.ParseCookies(cookies) , data = data )
-        sContent = r.text
+        if r:
+            sContent = r.text
+        else:
+            xbmc.log("Erreur, delete cookie" , xbmc.LOGNOTICE)
+            sContent = ''
+            s.MemCookie = ''
+            GestionCookie().DeleteCookie(self.host.replace('.', '_'))
         
         xbmc.log('Page decodee' , xbmc.LOGNOTICE)
         
@@ -364,6 +384,12 @@ class CloudflareScraper(Session):
         if 'cookies' in kwargs:
             self.MemCookie.update( kwargs['cookies'] )
             
+        if Mode_Debug:
+            xbmc.log("Headers send : " + str(kwargs['headers']) , xbmc.LOGNOTICE)
+            xbmc.log("url : " + url , xbmc.LOGNOTICE)
+            xbmc.log("data send : " + str(kwargs.get('params','')) , xbmc.LOGNOTICE)
+            xbmc.log("param send : " + str(kwargs.get('data','')) , xbmc.LOGNOTICE)
+            
         resp = super(CloudflareScraper, self).request(method, url, *args, **kwargs)
 
         #xbmc.log( 'cookie recu ' + str(resp.cookies.get_dict())  , xbmc.LOGNOTICE)
@@ -391,11 +417,14 @@ class CloudflareScraper(Session):
     def ifCloudflare(self, resp):
         if resp.headers.get('Server', '').startswith('cloudflare'):
             if self.cf_tries >= 3:
-                raise Exception('Failed to solve Cloudflare challenge!')
+                xbmc.log('Failed to solve Cloudflare challenge!' , xbmc.LOGNOTICE)
             elif b'/cdn-cgi/l/chk_captcha' in resp.content:
-                raise Exception('Protect by Captcha')
+                xbmc.log('Protect by Captcha' , xbmc.LOGNOTICE)
             elif resp.status_code == 503:
                 return True
+                
+            resp = False
+            return False
         else:
             return False
 
@@ -477,8 +506,14 @@ class CloudflareScraper(Session):
         #xbmc.log('With :' + str(cloudflare_kwargs['cookies']), xbmc.LOGNOTICE)
         #xbmc.log('With :' + str(cloudflare_kwargs['headers']), xbmc.LOGNOTICE)
 
-        # One of these '.request()' calls below might trigger another challenge.
+        #submit_url = 'http://httpbin.org/headers'
+        
         redirect = self.request(method, submit_url, **cloudflare_kwargs)
+        
+        #xbmc.log( str( redirect.text)   , xbmc.LOGNOTICE)
+        
+        if not redirect:
+            return False
 
         #self.MemCookie.update( redirect.cookies.get_dict() )
         
