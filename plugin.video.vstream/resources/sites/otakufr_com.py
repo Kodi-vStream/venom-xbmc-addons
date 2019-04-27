@@ -170,7 +170,7 @@ def showAZ():
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<li><a href="([^<]+)">Suivant<\/a><\/li>'
+    sPattern = '<li><a href="([^<]+)">Next<\/a><\/li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         return aResult[1][0]
