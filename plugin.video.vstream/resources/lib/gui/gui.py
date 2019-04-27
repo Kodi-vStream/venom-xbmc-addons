@@ -344,6 +344,8 @@ class cGui():
             sSiteUrl = oOutputParameterHandler.getValue('siteUrl')
             oGuiElement.setSiteUrl(sSiteUrl)
 
+        oGuiElement.setMeta(0)
+        
         oListItem = self.createListItem(oGuiElement)
         oListItem.setProperty("IsPlayable", "true")
         oListItem.setProperty("Video", "true")
