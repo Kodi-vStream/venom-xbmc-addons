@@ -286,14 +286,15 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sPattern = '<div class="video-container"><iframe.+?src="([^<>"]+?)"'
-    sPattern1 = '<div class="video-container"><iframe.+?src="[^<>]+(?:wakanim|crunchyroll)[^<>]*"'
-    aResult1 = oParser.parse(sHtmlContent, sPattern1)
+    aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult1[0] == True):
-        oGui.addText(SITE_IDENTIFIER, "[COLOR red]Animés dispo gratuitement et legalement sur crunchyroll ou wakanim[/COLOR]")
+    if 'animedigitalnetwork.fr' in str(aResult[1]):
+        oGui.addText(SITE_IDENTIFIER, "[COLOR red]Animés dispo gratuitement et legalement sur :[/COLOR][COLOR coral] anime digital network[/COLOR]")
+    elif 'crunchyroll.com' in str(aResult[1]):
+        oGui.addText(SITE_IDENTIFIER, "[COLOR red]Animés dispo gratuitement et legalement sur :[/COLOR][COLOR coral] crunchyroll[/COLOR]")
+    elif 'wakanim.tv' in str(aResult[1]):
+        oGui.addText(SITE_IDENTIFIER, "[COLOR red]Animés dispo gratuitement et legalement sur :[/COLOR][COLOR coral] wakanim[/COLOR]")
     else:
-        aResult = oParser.parse(sHtmlContent, sPattern)
-
         if (aResult[0] == True):
             for aEntry in aResult[1]:
                 sHosterUrl = aEntry
