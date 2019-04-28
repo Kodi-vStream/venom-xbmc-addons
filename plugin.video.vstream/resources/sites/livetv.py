@@ -87,6 +87,7 @@ def showGenres(): #affiche les clubs de foot
     oGui.setEndOfDirectory()
 
 def showMovies(sSearch = ''):#affiche les catégories qui ont des lives'
+
     oGui = cGui()
     if sSearch:
       sUrl = sSearch
