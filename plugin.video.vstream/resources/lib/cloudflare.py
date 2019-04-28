@@ -176,7 +176,7 @@ class CloudflareBypass(object):
     def ParseCookies(self,data):
         list = {}
 
-        sPattern = '(?:^|,) *([^;,]+?)=([^;,\/]+?)(?:$|;)'
+        sPattern = '(?:^|[,;]) *([^;,]+?)=([^;,\/]+)'
         aResult = re.findall(sPattern,data)
         ##print(str(aResult))
         if (aResult):
