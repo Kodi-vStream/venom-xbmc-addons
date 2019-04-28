@@ -36,10 +36,10 @@ class cHoster(iHoster):
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
 
-        sPattern =  '(?:https*:\/\/|\/\/)(?:www.|embed.|)mystream.(?:la|com|to)\/(?:video\/|external\/|embed-|)([0-9a-zA-Z]+)'
-        oParser = cParser()
-        aResult = oParser.parse(sUrl, sPattern)
-        self.__sUrl = 'https://mysembed.net/' + str(aResult[1][0])
+        # sPattern =  '(?:https*:\/\/|\/\/)(?:www.|embed.|)mystream.(?:la|com|to)\/(?:video\/|external\/|embed-|)([0-9a-zA-Z]+)'
+        # oParser = cParser()
+        # aResult = oParser.parse(sUrl, sPattern)
+        # self.__sUrl = 'https://mysembed.net/' + str(aResult[1][0])
 
     def checkUrl(self, sUrl):
         return True
@@ -56,7 +56,7 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
+        #VSlog(sHtmlContent)
         oParser = cParser()
         
         api_call = False
