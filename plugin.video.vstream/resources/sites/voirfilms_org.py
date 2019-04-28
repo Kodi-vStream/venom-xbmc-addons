@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #refonctionne au 06/11
-#return False
+return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
