@@ -185,7 +185,7 @@ def showMovies(sSearch=''):
             else:
                 sThumb = 'https://' + aEntry[1]
                 siteUrl = aEntry[0]
-                sDesc = aEntry[4]
+                sDesc = aEntry[4].replace(' streaming','').replace(' STREAMING', '')
                 sTitle = aEntry[2]
                 sQual = aEntry[3]
                 setDisplayName = ('%s [%s]') % (sTitle , sQual)
@@ -209,6 +209,7 @@ def showMovies(sSearch=''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
+#Pour les series, il y a generalement une etape en plus pour la selection des episodes ou saisons.
 def ShowSerieSaisonEpisodes():
     oGui = cGui()
 
@@ -236,7 +237,7 @@ def ShowSerieSaisonEpisodes():
                 break
 
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red] Saison: ' + aEntry[0] + '[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red] Saison : ' + aEntry[0] + '[/COLOR]')
             else:
                 sTitle = sMovieTitle + ' ' + aEntry[3]
                 sUrl2 = aEntry[2]
@@ -255,7 +256,7 @@ def ShowSerieSaisonEpisodes():
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<link rel="next" href="([^"]+?)"'
+    sPattern = '<a class="next page-numbers" href="(.+?)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -276,9 +277,9 @@ def showLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
+    #Recuperer variable pour url de base
     sPattern = 'id=.+?trembed=([^"]+).+?frameborder'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    VSlog(aResult)
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
@@ -288,7 +289,7 @@ def showLinks():
         progress_ = progress().VScreate(SITE_NAME)
 
     for aEntry in aResult[1]:
-        progress_.VSupdate(progress_, total)
+        progress_.VSupdate(progress_, total) #dialog update
         if progress_.iscanceled():
             break
 
@@ -296,20 +297,21 @@ def showLinks():
         oRequestHandler = cRequestHandler(site)
         sHtmlContent = oRequestHandler.request()
 
-        sPattern1 = '<div class="Video"><iframe width=".+?" height=".+?" src="([^"]+)" frameborder'
+        #Recuperation de l'url suivante
+        sPattern1 = '<div class="Video"><iframe width=".+?" height=".+?" src="([^"]+)&" frameborder'
         aResult = oParser.parse(sHtmlContent, sPattern1)
 
         Url = ''.join(aResult[1])
         oRequestHandler = cRequestHandler(Url)
         sHtmlContent = oRequestHandler.request()
-        #VSlog(sHtmlContent)
 
+        #Recuperation de l'id
         sPattern1 = "var id.+?'(.+?)'"
         aResult = oParser.parse(sHtmlContent, sPattern1)
         sPost = ''.join(aResult[1])[::-1]
-        VSlog(''.join(aResult[1])[::-1])
 
-        oRequestHandler = cRequestHandler(URL_MAIN + '?trhide=1&trhex=' + sPost)
+        oRequestHandler = cRequestHandler('https://hdss.to/?trhidee=1&trfex='+sPost)
+        oRequestHandler.addHeaderEntry('Referer', Url)
         sHtmlContent = oRequestHandler.request()
         sHosterUrl = oRequestHandler.getRealUrl()
 
