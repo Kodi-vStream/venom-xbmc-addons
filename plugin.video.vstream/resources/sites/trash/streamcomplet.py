@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -10,13 +9,13 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.packer import cPacker
 import re
-from resources.lib.comaddon import progress,VSlog
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'streamcomplet'
 SITE_NAME = 'StreamComplet'
 SITE_DESC = 'Streaming Gratuit de 6420 Films Complets en VF.'
 
-URL_MAIN = 'https://streamcomplet.me/'
+URL_MAIN = 'https://streamcomplet.xyz/'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
@@ -150,14 +149,11 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    list_url = []
+
 
     sPattern = '<iframe.+?src="(http(?:|s):\/\/media\.vimple\.me.+?f=([^"]+))"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-    
-        sUrl3 = 'https://ok.ru/videoembed/' + aResult[1][0][1]
-        list_url.append(sUrl3)
 
         sUrl2 = aResult[1][0][0]
 
@@ -166,24 +162,34 @@ def showHosters():
         oRequestHandler.addHeaderEntry('Referer', sUrl)
         sHtmlContent = oRequestHandler.request()
 
-        sHtmlContent = oParser.abParse(sHtmlContent, "<script>", "</script><script>")
-
-        sPattern = 'eval\s*\(\s*function(?:.|\s)+?{}\)\)'
+        sPattern = '<iframe src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
+
         if (aResult[0] == True):
-            sHtmlContent = cPacker().unpack(aResult[1][0])
-            sHtmlContent = sHtmlContent.replace('\\', '')
-            code = re.search('(https://openload.+?embed\/.+?\/)', sHtmlContent)
-            if code:
-                sUrl4 = code.group(1)
-                list_url.append(sUrl4)
+            sHosterUrl = 'https:' + aResult[1][0]
+            #VSlog(sHosterUrl)
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+        else:
+            sHtmlContent = oParser.abParse(sHtmlContent, "<script>", "</script><script>")
 
-
-    for aEntry in list_url:
-        oHoster = cHosterGui().checkHoster(aEntry)
-        if (oHoster != False):
-            oHoster.setDisplayName(sMovieTitle)
-            oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, aEntry, '')
+            sPattern = 'eval\s*\(\s*function(?:.|\s)+?{}\)\)'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                sHtmlContent = cPacker().unpack(aResult[1][0])
+                sHtmlContent = sHtmlContent.replace('\\', '')
+                #VSlog(sHtmlContent)
+                code = re.search('(https://openload.+?embed\/.+?\/)', sHtmlContent)
+                if code:
+                    sHosterUrl = code.group(1)
+                    #VSlog(sHosterUrl)
+                    oHoster = cHosterGui().checkHoster(sHosterUrl)
+                    if (oHoster != False):
+                        oHoster.setDisplayName(sMovieTitle)
+                        oHoster.setFileName(sMovieTitle)
+                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
