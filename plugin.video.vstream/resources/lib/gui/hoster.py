@@ -328,6 +328,8 @@ class cHosterGui:
             return self.getHoster('hd_stream')
         if ('rapidstream' in sHostName):
             return self.getHoster('rapidstream')
+        if ('beeload' in sHostName):
+            return self.getHoster('beeload')
         if ('archive.' in sHostName):
             return self.getHoster('archive')
 
