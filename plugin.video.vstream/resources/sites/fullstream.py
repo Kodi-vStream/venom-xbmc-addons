@@ -114,7 +114,7 @@ def AlphaSearch():
 
     nonce = get_nonce()
     if not nonce == False:
-       sPattern = '<a class="lglossary" data-type=".+?" data-glossary="(.+?)">(.+?)<\/a>'
+       sPattern = '<a class="lglossary" data-type=".+?" data-glossary="([^"]+)">([^<]+)<\/a>'
        aResult = oParser.parse(sHtmlContent, sPattern)
        if (aResult[0] == True):
             for aEntry in aResult[1]:
@@ -300,7 +300,7 @@ def showEpisodes():
 
             else:
                 sUrl2 = aEntry[1]
-                SxE = re.sub('(\d+) - (\d+)','S\g<1>E\g<2>', aEntry[2])
+                SxE = re.sub('(\d+) - (\d+)', 'S\g<1>E\g<2>', aEntry[2])
                 sTitle = sMovieTitle + SxE
 
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -360,7 +360,6 @@ def showLink():
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sdata', data)
@@ -412,7 +411,7 @@ def showHosters():
         sUrl = URL_MAIN[:-1] + aResult[1][0]
 
         UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
-        headers = {'User-Agent' : UA ,'Referer': sRef, 'Cookie': cooka}
+        headers = {'User-Agent': UA, 'Referer': sRef, 'Cookie': cooka}
         req = urllib2.Request(sUrl, None, headers)
 
         try:
