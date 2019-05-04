@@ -82,7 +82,6 @@ class cGui():
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
     def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
-        #To test 28/04
         #cGui.CONTENT = "movies"
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
@@ -345,8 +344,6 @@ class cGui():
             sSiteUrl = oOutputParameterHandler.getValue('siteUrl')
             oGuiElement.setSiteUrl(sSiteUrl)
 
-        oGuiElement.setMeta(0)
-        
         oListItem = self.createListItem(oGuiElement)
         oListItem.setProperty("IsPlayable", "true")
         oListItem.setProperty("Video", "true")
@@ -646,8 +643,30 @@ class cGui():
         xbmc.executebuiltin('XBMC.Container.Update(%s, replace)' % sTest )
 
     def setWatched(self):
-        # Use kodi buildin feature
-        xbmc.executebuiltin( 'Action(ToggleWatched)' )
+        if (True):
+            #Use database
+            oInputParameterHandler = cInputParameterHandler()
+            xbmc.executebuiltin( 'Action(ToggleWatched)' )
+
+            aParams = oInputParameterHandler.getAllParameter()
+
+            sSite = oInputParameterHandler.getValue('siteUrl')
+            sTitle = xbmc.getInfoLabel('ListItem.label')
+
+            meta = {}
+            meta['title'] = sTitle
+            meta['site'] = sSite
+
+            row = cDb().get_watched(meta)
+            if row:
+                cDb().del_watched(meta)
+                cDb().del_resume(meta)
+            else:
+                cDb().insert_watched(meta)
+        else:
+            # Use kodi buildin feature
+            xbmc.executebuiltin( 'Action(ToggleWatched)' )
+            
         xbmc.executebuiltin( 'Container.Refresh' )
 
 
