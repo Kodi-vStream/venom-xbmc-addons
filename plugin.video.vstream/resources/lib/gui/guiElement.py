@@ -557,8 +557,12 @@ class cGuiElement:
     def getItemValues(self):
         self.__aItemValues['Title'] = self.getTitle()
         self.__aItemValues['Plot'] = self.getDescription()
-        # Disabled, use the kodi feature
-        #self.__aItemValues['Playcount'] = self.getWatched()
+        
+        # Used only if there is data in db
+        w = self.getWatched()
+        if w == 1:
+            self.__aItemValues['Playcount'] = w
+            
         #tmdbid
         if self.getTmdbId():
             self.addItemProperties('TmdbId', str(self.getTmdbId()))
