@@ -13,7 +13,7 @@ from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'streamcomplet'
 SITE_NAME = 'StreamComplet'
-SITE_DESC = 'Streaming Gratuit de 6420 Films Complets en VF.'
+SITE_DESC = 'Streaming Gratuit de 7210 Films Complets en VF.'
 
 URL_MAIN = 'https://streamcomplet.xyz/'
 
@@ -102,9 +102,9 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sThumb = str(aEntry[0])
-            sUrl = str(aEntry[1])
-            sTitle = str(aEntry[2])
+            sThumb = aEntry[0]
+            sUrl = aEntry[1]
+            sTitle = aEntry[2]
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
