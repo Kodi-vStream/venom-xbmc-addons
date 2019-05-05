@@ -646,7 +646,6 @@ class cGui():
         if (True):
             #Use database
             oInputParameterHandler = cInputParameterHandler()
-            xbmc.executebuiltin( 'Action(ToggleWatched)' )
 
             aParams = oInputParameterHandler.getAllParameter()
 
@@ -663,11 +662,15 @@ class cGui():
                 cDb().del_resume(meta)
             else:
                 cDb().insert_watched(meta)
+                
+            xbmc.executebuiltin( 'Action(ToggleWatched)' )
+            
         else:
             # Use kodi buildin feature
             xbmc.executebuiltin( 'Action(ToggleWatched)' )
-            
-        xbmc.executebuiltin( 'Container.Refresh' )
+
+        #Not usefull ?
+        #xbmc.executebuiltin( 'Container.Refresh' )
 
 
     def viewBA(self):
