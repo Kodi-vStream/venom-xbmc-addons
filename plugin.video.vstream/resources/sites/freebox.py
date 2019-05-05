@@ -17,6 +17,7 @@ from resources.lib.comaddon import progress, addon, xbmc, xbmcgui, VSlog, dialog
 
 import re, urllib2, urllib, sys, random, string
 import xbmcplugin, xbmcvfs
+import json, requests
 
 SITE_IDENTIFIER = 'freebox'
 SITE_NAME = '[COLOR orange]Télévision Direct/Stream[/COLOR]'
@@ -114,7 +115,7 @@ def showDailyList(): #On recupere les dernier playlist ajouter au site
     if 'iptvsource.com' in sUrl:
         sPattern = '<h3 class="entry-title td-module-title"><a href="(.+?)" rel="bookmark" title="(.+?)"'
     elif 'iptvgratuit.com' in sUrl:
-        sPattern = '<div class="td-module-thumb"><a href="([^"]+)" rel="bookmark" class="td-image-wrap" title="([^"]+)">'
+        sPattern = '<a href="([^"]+)" rel="bookmark".+?title="([^"]+)".+?</a></h3>'
     elif 'dailyiptvlist.com' in sUrl:
         sPattern = '</a><h2 class="post-title"><a href="(.+?)">(.+?)</a></h2><div class="excerpt"><p>.+?</p>'
 
@@ -181,11 +182,11 @@ def showAllPlaylist():#On recupere les differentes playlist si il y en a
     sHtmlContent = getHtml(sUrl)
 
     if 'iptvgratuit.com' in sUrl:
-        sPattern = '<h4><a class="more-link" title="([^"]+)" href="([^"]+)"'
+        sPattern = 'Cliquez sur le lien.+?</strong></p>.+?<h4><a class="more-link" title="([^"]+)" href="([^"]+)".+?<button>'
     elif 'dailyiptvlist.com' in sUrl:
-        sPattern = '<p></br><br /><strong>2. Click on link to download .+? iptv channels list</strong></p>\s*.+?<a href="(.+?)">Download (.+?)</a>'
+        sPattern = '<p></br><br /><strong>2. Click on link to download .+? iptv channels list</strong></p>.+?<a href="(.+?)">Download (.+?)</a>'
     elif 'iptvsource.com':
-        sPattern = '<a href="([^"]+)">Download as([^"]+)</a>'
+        sPattern = '<a href="([^"]+)">Download ([^"]+)</a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -362,7 +363,7 @@ def showWeb():#Code qui s'occupe de liens TV du Web
 
             #les + ne peuvent pas passer
             url2 = track.path.replace('+', 'P_L_U_S')
-            if not '[' in url2 and not ']' in url2 and not '.m3u8' in url2:
+            if not '[' in url2 and not ']' in url2 and not '.m3u8' in url2 and not 'dailymotion' in url2:
                 url2 = 'plugin://plugin.video.f4mTester/?url=' + urllib.quote_plus(url2) + '&amp;streamtype=TSDOWNLOADER&name=' + urllib.quote(track.title)
 
             thumb = "/".join([sRootArt, sThumb])
@@ -392,6 +393,7 @@ def showWeb():#Code qui s'occupe de liens TV du Web
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
+
     oGui.setEndOfDirectory()
 
 def direct_epg():#Code qui gerent l'epg
@@ -528,7 +530,6 @@ def showTV():
     oGui.setEndOfDirectory()
 
 def play__():#Lancer les liens
-    oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl').replace('P_L_U_S', '+')
@@ -538,6 +539,30 @@ def play__():#Lancer les liens
     #Special url with tag
     if '[' in sUrl and ']' in sUrl:
         sUrl = GetRealUrl(sUrl)
+
+    if 'dailymotion' in sUrl:
+        oGui = cGui()
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request()
+
+        metadata = json.loads(sHtmlContent)
+        if metadata['qualities']:
+            sUrl = str(metadata['qualities']['auto'][0]['url'])
+        headers={'User-Agent':'Android'}
+        mb = requests.get(sUrl,headers=headers).text
+        mb = re.findall('NAME="([^"]+)"\n(.+)',mb)
+        mb = sorted(mb,reverse=True)
+        for quality, url1 in mb:
+
+            sHosterUrl = url1
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sTitle + ' ' +quality)
+                oHoster.setFileName(sTitle + ' ' +quality)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+
+        oGui.setEndOfDirectory()
+        return
 
     playmode = ''
 
