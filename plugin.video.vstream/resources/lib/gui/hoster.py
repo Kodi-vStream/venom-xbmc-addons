@@ -197,7 +197,10 @@ class cHosterGui:
         if ('uptostream' in sHostName):
             return self.getHoster('uptostream')
         if (('dailymotion' in sHostName) or ('dai.ly' in sHostName)):
-            return self.getHoster('dailymotion')
+            if 'stream' in sHosterUrl:
+                return self.getHoster('lien_direct')
+            else:
+                return self.getHoster('dailymotion')
         if ('filez.' in sHostName):
             return self.getHoster('flashx')
         if ('mystream' in sHostName):
