@@ -42,6 +42,18 @@ icon = 'tv.png'
 sRootArt = "special://home/addons/plugin.video.vstream/resources/art/tv"
 ADDON = addon()
 
+def decodeEmail(e):
+    head , e = e.split('a href=')
+    e , rest = e.split('</a>')
+    e = re.search('data-cfemail="(.+?)"',e).group(1)
+    de = ""
+    k = int(e[:2], 16)
+
+    for i in range(2, len(e)-1, 2):
+        de += chr(int(e[i:i+2], 16)^k)
+
+    return head + str(de) + rest
+
 class track():
     def __init__(self, length, title, path, icon,data=''):
         self.length = length
@@ -94,6 +106,7 @@ def showIptvSite():
     liste.append( ['IptvSource', 'https://www.iptvsource.com/'] )
     liste.append( ['Iptv Gratuit', 'http://iptvgratuit.com/'] )
     liste.append( ['Daily Iptv List', 'https://www.dailyiptvlist.com/'])
+    liste.append( ['Extinf','https://extinf.tk/'])
 
     for sTitle, sUrl in liste:
 
@@ -118,6 +131,8 @@ def showDailyList(): #On recupere les dernier playlist ajouter au site
         sPattern = '<a href="([^"]+)" rel="bookmark".+?title="([^"]+)".+?</a></h3>'
     elif 'dailyiptvlist.com' in sUrl:
         sPattern = '</a><h2 class="post-title"><a href="(.+?)">(.+?)</a></h2><div class="excerpt"><p>.+?</p>'
+    elif 'extinf' in sUrl:
+        sPattern = '<div class="news-thumb col-md-6">\s*<a href=([^"]+) title="([^"]+)"'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -139,7 +154,13 @@ def showDailyList(): #On recupere les dernier playlist ajouter au site
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
-            oGui.addDir(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, 'tv.png', oOutputParameterHandler)
+            if not 'extinf' in sUrl:
+                oGui.addDir(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, 'tv.png', oOutputParameterHandler)
+            else:
+                if 'extinf' and 'daily-premium-m3u' in sUrl2:
+                    oGui.addDir(SITE_IDENTIFIER, 'showDailyIptvList', sTitle, '', oOutputParameterHandler)
+                else:
+                    oGui.addDir(SITE_IDENTIFIER, 'showWeb', sTitle, 'tv.png', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -155,7 +176,9 @@ def __checkForNextPage(sHtmlContent): #Affiche les page suivant si il y en a
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    if 'https://www.iptvsource.com/' in sUrl:
+    if 'extinf' in sUrl:
+        sPattern = '<a class="next page-numbers" href=([^"]+)>Next</a>'
+    elif 'https://www.iptvsource.com/' in sUrl:
         sPattern = ' class="last" title=".+?">.+?</a><a href="(.+?)"><i class="td-icon-menu-right"></i>'
     elif 'iptvgratuit.com' in sUrl:
         sPattern = '<span class="current">.+?</span><a href="([^"]+)"'
@@ -215,28 +238,29 @@ def showAllPlaylist():#On recupere les differentes playlist si il y en a
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
-            if 'iptvgratuit' and 'world-iptv-links' in sUrl:
-                oGui.addDir(SITE_IDENTIFIER, 'showWorldIptvGratuit', sTitle, '', oOutputParameterHandler)
-            else:
-                oGui.addDir(SITE_IDENTIFIER, 'showWeb', sTitle, '', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showWeb', sTitle, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
-def showWorldIptvGratuit():#On recupere les liens qui sont dans les playlist "World" de IptvGratuit
+def showDailyIptvList():#On recupere les liens qui sont dans les playlist "World" de IptvGratuit
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sHtmlContent = getHtml(sUrl)
-    line = re.compile('http(.+?)\n').findall(sHtmlContent)
+    clearHtml = re.search('null>([\s*\S*]+)</pre><p>',sHtmlContent).group(1)
+    line = re.compile('http(.+?)\n').findall(clearHtml)
 
     for sUrl2 in line:
-        sUrl2 = 'http' + sUrl2
+        if '/cdn-cgi/l/email-protection' in str(sUrl2):
+            sUrl2 = 'http' + decodeEmail(sUrl2).replace('<','')
+        else:
+            sUrl2 = 'http' + sUrl2
+
         sTitle = 'Lien: ' + sUrl2
-        #cConfig().log(str(sHtmlContent))
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -252,7 +276,6 @@ def getHtml(sUrl, data=None):#S'occupe des requetes
 
     if not data is None and 'watch' in sUrl:
         data = r.text
-        VSlog(data)
     else:
         data = oRequestHandler.request()
     #VSlog(data)
@@ -279,8 +302,6 @@ def parseM3U(infile):#Traite les m3u local
         site= infile
         user_agent = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
         headers = {'User-Agent': user_agent}
-        #req = urllib2.Request(site,headers=headers)
-        #inf = urllib2.urlopen(req)
 
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('User-Agent',user_agent)
@@ -294,10 +315,6 @@ def parseM3U(infile):#Traite les m3u local
         line = inf.readline()
     except:
         pass
-
-    #cConfig().log(str(line))
-    #if not line.startswith('#EXTM3U'):
-        #return
 
     playlist=[]
     song=track(None,None,None,None)
@@ -314,8 +331,8 @@ def parseM3U(infile):#Traite les m3u local
             except:
                 icon = "tv.png"
             ValidEntry = True
-
             song=track(length,title,None,icon)
+
         elif (len(line) != 0):
             if (ValidEntry) and (not (line.startswith('!') or line.startswith('#'))):
                 ValidEntry = False
