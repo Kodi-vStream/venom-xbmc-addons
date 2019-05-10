@@ -253,14 +253,14 @@ def showLinkGenres():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sThumb = ''
-    try:
-        sPattern = '<p style="text-align: center;"><img src="([^"]+)".+?/>'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0]:
-            sThumb = aResult[1][0]
-    except:
-        pass
+    # sThumb = ''
+    # try:
+        # sPattern = '<p style="text-align: center;"><img src="([^"]+)".+?/>'
+        # aResult = oParser.parse(sHtmlContent, sPattern)
+        # if aResult[0]:
+            # sThumb = aResult[1][0]
+    # except:
+        # pass
 
     sPattern = '<span style="font-family: Arial, Helvetica,.+?font-size: 16pt;">(.+?)</span>|(<h3 class="entry-title mh-loop-title"|<li )><a href="([^"]+)".+?>(.+?)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -284,7 +284,7 @@ def showLinkGenres():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
-                oGui.addTV(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'showLink', sTitle, 'sport.png',oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -317,7 +317,7 @@ def showLink():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'sport.png',oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

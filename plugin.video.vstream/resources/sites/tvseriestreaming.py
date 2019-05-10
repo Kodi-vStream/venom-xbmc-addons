@@ -6,8 +6,10 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, addon
+from resources.lib.comaddon import progress, addon, VSlog
 import re
+
+return False
 
 sColor = addon().getSetting("deco_color")
 
@@ -17,10 +19,10 @@ SITE_IDENTIFIER = 'tvseriestreaming'
 SITE_NAME = 'Tv_seriestreaming'
 SITE_DESC = 'Séries & Animés en Streaming'
 
-URL_MAIN = 'https://w1.seriestreaming.site/'
+URL_MAIN = 'https://les.seriestreaming.site/'
 
 SERIE_SERIES = ('http://', 'load')
-SERIE_NEWS = (URL_MAIN + 'nouveaux-episodes', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'nouv-episodes', 'showMovies')
 SERIE_VIEWS = (URL_MAIN + 'la-top-des-meilleures-series', 'showMovies')
 SERIE_COMMENT = (URL_MAIN + 'les-serie-populaire-streaming', 'showMovies')
 SERIE_LIST = (URL_MAIN, 'showAZ')
@@ -205,7 +207,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     #news
-    if 'nouveaux' in sUrl:
+    if 'nouv-episodes' in sUrl:
         sPattern = '<a href="([^"]+)" class="list-group-item.+?>(.+?)<b>(.+?)</b>'
         sHtmlContent = oParser.abParse(sHtmlContent, "<h4>Les derniers episodes", "les plus vues")
     #reste
@@ -224,7 +226,7 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            if 'nouveaux' in sUrl:
+            if 'nouv-episodes' in sUrl:
                 sUrl2 = aEntry[0]
                 sTitle = aEntry[1].replace(' -', ' ') + aEntry[2].replace(' ', '')
                 sThumb = 'news.png'
@@ -239,7 +241,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if 'nouveaux' in sUrl:
+            if 'nouv-episodes' in sUrl:
                 oGui.addDir(SITE_IDENTIFIER, 'showLink', sTitle, sThumb, oOutputParameterHandler)
             else:
                 oGui.addMisc(SITE_IDENTIFIER, 'showS_E', sTitle, '', sThumb, '', oOutputParameterHandler)
@@ -384,6 +386,8 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
+    VSlog(sUrl)
+    
     oRequest = cRequestHandler(sUrl)
     oRequest.addHeaderEntry('User-Agent', UA)
     oRequest.addHeaderEntry('Referer', sUrl)

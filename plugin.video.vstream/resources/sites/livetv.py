@@ -86,7 +86,8 @@ def showGenres(): #affiche les clubs de foot
 
     oGui.setEndOfDirectory()
 
-def showMovies(sSearch = ''):#affiche les catégories qui on des lives'
+def showMovies(sSearch = ''):#affiche les catégories qui ont des lives'
+
     oGui = cGui()
     if sSearch:
       sUrl = sSearch
@@ -115,28 +116,19 @@ def showMovies(sSearch = ''):#affiche les catégories qui on des lives'
             if progress_.iscanceled():
                 break
 
+            sUrl2 = aEntry[0]
+            sUrl2 = URL_MAIN + sUrl2
+
             sTitle = aEntry[1]
             sTitle = sTitle.decode("iso-8859-1", 'ignore')
             sTitle = cUtil().unescape(sTitle)
             sTitle = sTitle.encode("utf-8", 'ignore')
-            sUrl2 = aEntry[0]
-            sThumb = ''
-            #sLang = aEntry[3]
-            #sQual = aEntry[4]
-            sHoster = aEntry[2]
-            sDesc = ''
-
-            sTitle = sTitle.decode("iso-8859-1", 'ignore')
-            sTitle = sTitle.encode("utf-8", 'ignore')
-            sTitle = ('%s (%s)') % (sTitle, sHoster)
-            sUrl2 = URL_MAIN + sUrl2
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl2', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showMovies2', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies2', sTitle, 'sport.png', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -203,7 +195,7 @@ def showMovies2(sSearch = ''): #affiche les matchs en direct depuis la section s
             oOutputParameterHandler.addParameter('sMovieTitle2', sTitle2)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showMovies3', sTitle2, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies3', sTitle2, 'sport.png', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -256,7 +248,7 @@ def showMovies3(sSearch = ''): #affiche les videos disponible du live
             oOutputParameterHandler.addParameter('sMovieTitle2', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showHosters', sTitle, 'sport.png', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 

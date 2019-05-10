@@ -446,8 +446,15 @@ class cGuiElement:
         #sTitle=sTitle.replace('VF', '').replace('VOSTFR', '').replace('FR', '')
 
         #get_meta(self, media_type, name, imdb_id='', tmdb_id='', year='', overlay=6, update=False):
+        meta = self.getMeta()
+
+        # non media -> pas de fanart
+        if meta == 0 :
+            self.addItemProperties('fanart_image', '')
+            return
+			
         sType = '1'
-        sType = str(self.getMeta()).replace('1', 'movie').replace('2', 'tvshow')
+        sType = str(meta).replace('1', 'movie').replace('2', 'tvshow')
 
         if sType:
             from resources.lib.tmdb import cTMDb
@@ -532,9 +539,13 @@ class cGuiElement:
                 self.__TmdbId = meta['tvdb_id']
         except: pass
 
+        # Si fanart trouvé dans les meta alors on l'utilise, sinon on n'en met pas
         if meta['backdrop_url']:
             self.addItemProperties('fanart_image', meta['backdrop_url'])
             self.__sFanart = meta['backdrop_url']
+        else:
+            self.addItemProperties('fanart_image', '')
+
         # if meta['trailer_url']:
             # meta['trailer'] = meta['trailer'].replace(u'\u200e', '').replace(u'\u200f', '')
             # self.__sTrailerUrl = meta['trailer']
@@ -546,8 +557,12 @@ class cGuiElement:
     def getItemValues(self):
         self.__aItemValues['Title'] = self.getTitle()
         self.__aItemValues['Plot'] = self.getDescription()
-        # Disabled, use the kodi feature
-        #self.__aItemValues['Playcount'] = self.getWatched()
+        
+        # Used only if there is data in db
+        w = self.getWatched()
+        if w == 1:
+            self.__aItemValues['Playcount'] = w
+            
         #tmdbid
         if self.getTmdbId():
             self.addItemProperties('TmdbId', str(self.getTmdbId()))
@@ -592,7 +607,7 @@ class cGuiElement:
         # - dateadded : string (Y-m-d h:m:s = 2009-04-05 23:16:04)
 
 
-        if self.getMeta() > 0 and self.getMetaAddon() == 'true':
+        if self.getMetaAddon() == 'true':
             self.getMetadonne()
         return self.__aItemValues
 

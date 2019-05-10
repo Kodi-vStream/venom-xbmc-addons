@@ -40,6 +40,18 @@ class main:
             VSlog('call load methode')
             sFunction = "load"
 
+        if (sFunction=='setSetting'):
+            if (oInputParameterHandler.exist('id')):
+                id = oInputParameterHandler.getValue('id')
+            else: return
+
+            if (oInputParameterHandler.exist('value')):
+                value = oInputParameterHandler.getValue('value')
+            else: return
+
+            setSetting(id, value)
+            return
+
         if (sFunction=='DoNothing'):
             return
 
@@ -142,6 +154,16 @@ class main:
                 import traceback
                 traceback.print_exc()
                 return
+
+def setSetting(id, value):
+    addons = addon()
+    setting = addons.getSetting(id)
+
+    # Si le parametre existe, on autorise la modification
+    if (setting != '') :
+        addons.setSetting(id, value)
+        return True
+    return False
 
 def isHosterGui(sSiteName, sFunction):
     if (sSiteName == 'cHosterGui'):

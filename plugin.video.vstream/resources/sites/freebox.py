@@ -17,6 +17,7 @@ from resources.lib.comaddon import progress, addon, xbmc, xbmcgui, VSlog, dialog
 
 import re, urllib2, urllib, sys, random, string
 import xbmcplugin, xbmcvfs
+import json, requests
 
 SITE_IDENTIFIER = 'freebox'
 SITE_NAME = '[COLOR orange]Télévision Direct/Stream[/COLOR]'
@@ -40,6 +41,18 @@ icon = 'tv.png'
 #sRootArt = cConfig().getRootArt()
 sRootArt = "special://home/addons/plugin.video.vstream/resources/art/tv"
 ADDON = addon()
+
+def decodeEmail(e):
+    head , e = e.split('a href=')
+    e , rest = e.split('</a>')
+    e = re.search('data-cfemail="(.+?)"',e).group(1)
+    de = ""
+    k = int(e[:2], 16)
+
+    for i in range(2, len(e)-1, 2):
+        de += chr(int(e[i:i+2], 16)^k)
+
+    return head + str(de) + rest
 
 class track():
     def __init__(self, length, title, path, icon,data=''):
@@ -93,6 +106,7 @@ def showIptvSite():
     liste.append( ['IptvSource', 'https://www.iptvsource.com/'] )
     liste.append( ['Iptv Gratuit', 'http://iptvgratuit.com/'] )
     liste.append( ['Daily Iptv List', 'https://www.dailyiptvlist.com/'])
+    liste.append( ['Extinf','https://extinf.tk/'])
 
     for sTitle, sUrl in liste:
 
@@ -114,9 +128,11 @@ def showDailyList(): #On recupere les dernier playlist ajouter au site
     if 'iptvsource.com' in sUrl:
         sPattern = '<h3 class="entry-title td-module-title"><a href="(.+?)" rel="bookmark" title="(.+?)"'
     elif 'iptvgratuit.com' in sUrl:
-        sPattern = '<div class="td-module-thumb"><a href="([^"]+)" rel="bookmark" class="td-image-wrap" title="([^"]+)">'
+        sPattern = '<a href="([^"]+)" rel="bookmark".+?title="([^"]+)".+?</a></h3>'
     elif 'dailyiptvlist.com' in sUrl:
         sPattern = '</a><h2 class="post-title"><a href="(.+?)">(.+?)</a></h2><div class="excerpt"><p>.+?</p>'
+    elif 'extinf' in sUrl:
+        sPattern = '<div class="news-thumb col-md-6">\s*<a href=([^"]+) title="([^"]+)"'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -138,7 +154,13 @@ def showDailyList(): #On recupere les dernier playlist ajouter au site
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
-            oGui.addDir(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, 'tv.png', oOutputParameterHandler)
+            if not 'extinf' in sUrl:
+                oGui.addDir(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, 'tv.png', oOutputParameterHandler)
+            else:
+                if 'extinf' and 'daily-premium-m3u' in sUrl2:
+                    oGui.addDir(SITE_IDENTIFIER, 'showDailyIptvList', sTitle, '', oOutputParameterHandler)
+                else:
+                    oGui.addDir(SITE_IDENTIFIER, 'showWeb', sTitle, 'tv.png', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -154,7 +176,9 @@ def __checkForNextPage(sHtmlContent): #Affiche les page suivant si il y en a
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    if 'https://www.iptvsource.com/' in sUrl:
+    if 'extinf' in sUrl:
+        sPattern = '<a class="next page-numbers" href=([^"]+)>Next</a>'
+    elif 'https://www.iptvsource.com/' in sUrl:
         sPattern = ' class="last" title=".+?">.+?</a><a href="(.+?)"><i class="td-icon-menu-right"></i>'
     elif 'iptvgratuit.com' in sUrl:
         sPattern = '<span class="current">.+?</span><a href="([^"]+)"'
@@ -181,11 +205,11 @@ def showAllPlaylist():#On recupere les differentes playlist si il y en a
     sHtmlContent = getHtml(sUrl)
 
     if 'iptvgratuit.com' in sUrl:
-        sPattern = '<h4><a class="more-link" title="([^"]+)" href="([^"]+)"'
+        sPattern = 'Cliquez sur le lien.+?</strong></p>.+?<h4><a class="more-link" title="([^"]+)" href="([^"]+)".+?<button>'
     elif 'dailyiptvlist.com' in sUrl:
-        sPattern = '<p></br><br /><strong>2. Click on link to download .+? iptv channels list</strong></p>\s*.+?<a href="(.+?)">Download (.+?)</a>'
+        sPattern = '<p></br><br /><strong>2. Click on link to download .+? iptv channels list</strong></p>.+?<a href="(.+?)">Download (.+?)</a>'
     elif 'iptvsource.com':
-        sPattern = '<a href="([^"]+)">Download as([^"]+)</a>'
+        sPattern = '<a href="([^"]+)">Download ([^"]+)</a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -214,28 +238,29 @@ def showAllPlaylist():#On recupere les differentes playlist si il y en a
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
-            if 'iptvgratuit' and 'world-iptv-links' in sUrl:
-                oGui.addDir(SITE_IDENTIFIER, 'showWorldIptvGratuit', sTitle, '', oOutputParameterHandler)
-            else:
-                oGui.addDir(SITE_IDENTIFIER, 'showWeb', sTitle, '', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showWeb', sTitle, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
-def showWorldIptvGratuit():#On recupere les liens qui sont dans les playlist "World" de IptvGratuit
+def showDailyIptvList():#On recupere les liens qui sont dans les playlist "World" de IptvGratuit
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sHtmlContent = getHtml(sUrl)
-    line = re.compile('http(.+?)\n').findall(sHtmlContent)
+    clearHtml = re.search('null>([\s*\S*]+)</pre><p>',sHtmlContent).group(1)
+    line = re.compile('http(.+?)\n').findall(clearHtml)
 
     for sUrl2 in line:
-        sUrl2 = 'http' + sUrl2
+        if '/cdn-cgi/l/email-protection' in str(sUrl2):
+            sUrl2 = 'http' + decodeEmail(sUrl2).replace('<','')
+        else:
+            sUrl2 = 'http' + sUrl2
+
         sTitle = 'Lien: ' + sUrl2
-        #cConfig().log(str(sHtmlContent))
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -251,7 +276,6 @@ def getHtml(sUrl, data=None):#S'occupe des requetes
 
     if not data is None and 'watch' in sUrl:
         data = r.text
-        VSlog(data)
     else:
         data = oRequestHandler.request()
     #VSlog(data)
@@ -278,8 +302,6 @@ def parseM3U(infile):#Traite les m3u local
         site= infile
         user_agent = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
         headers = {'User-Agent': user_agent}
-        #req = urllib2.Request(site,headers=headers)
-        #inf = urllib2.urlopen(req)
 
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('User-Agent',user_agent)
@@ -293,10 +315,6 @@ def parseM3U(infile):#Traite les m3u local
         line = inf.readline()
     except:
         pass
-
-    #cConfig().log(str(line))
-    #if not line.startswith('#EXTM3U'):
-        #return
 
     playlist=[]
     song=track(None,None,None,None)
@@ -313,8 +331,8 @@ def parseM3U(infile):#Traite les m3u local
             except:
                 icon = "tv.png"
             ValidEntry = True
-
             song=track(length,title,None,icon)
+
         elif (len(line) != 0):
             if (ValidEntry) and (not (line.startswith('!') or line.startswith('#'))):
                 ValidEntry = False
@@ -362,7 +380,7 @@ def showWeb():#Code qui s'occupe de liens TV du Web
 
             #les + ne peuvent pas passer
             url2 = track.path.replace('+', 'P_L_U_S')
-            if not '[' in url2 and not ']' in url2 and not '.m3u8' in url2:
+            if not '[' in url2 and not ']' in url2 and not '.m3u8' in url2 and not 'dailymotion' in url2:
                 url2 = 'plugin://plugin.video.f4mTester/?url=' + urllib.quote_plus(url2) + '&amp;streamtype=TSDOWNLOADER&name=' + urllib.quote(track.title)
 
             thumb = "/".join([sRootArt, sThumb])
@@ -392,6 +410,7 @@ def showWeb():#Code qui s'occupe de liens TV du Web
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
+
     oGui.setEndOfDirectory()
 
 def direct_epg():#Code qui gerent l'epg
@@ -528,7 +547,6 @@ def showTV():
     oGui.setEndOfDirectory()
 
 def play__():#Lancer les liens
-    oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl').replace('P_L_U_S', '+')
@@ -538,6 +556,30 @@ def play__():#Lancer les liens
     #Special url with tag
     if '[' in sUrl and ']' in sUrl:
         sUrl = GetRealUrl(sUrl)
+
+    if 'dailymotion' in sUrl:
+        oGui = cGui()
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request()
+
+        metadata = json.loads(sHtmlContent)
+        if metadata['qualities']:
+            sUrl = str(metadata['qualities']['auto'][0]['url'])
+        headers={'User-Agent':'Android'}
+        mb = requests.get(sUrl,headers=headers).text
+        mb = re.findall('NAME="([^"]+)"\n(.+)',mb)
+        mb = sorted(mb,reverse=True)
+        for quality, url1 in mb:
+
+            sHosterUrl = url1
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sTitle + ' ' +quality)
+                oHoster.setFileName(sTitle + ' ' +quality)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+
+        oGui.setEndOfDirectory()
+        return
 
     playmode = ''
 
