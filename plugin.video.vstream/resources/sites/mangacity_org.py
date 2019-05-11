@@ -21,7 +21,7 @@ SITE_IDENTIFIER = 'mangacity_org'
 SITE_NAME = 'I anime'
 SITE_DESC = 'Animés en streaming'
 
-URL_MAIN = 'https://www.ianimes.co/'
+URL_MAIN = 'https://www.ianimes.top/'
 
 MOVIE_MOVIE = (URL_MAIN + 'films.php?liste=' + RandomKey, 'ShowAlpha')
 MOVIE_GENRES = (URL_MAIN + 'films.php?liste=' + RandomKey, 'showGenres')

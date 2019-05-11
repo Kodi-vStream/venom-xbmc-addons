@@ -82,7 +82,7 @@ class cGui():
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
     def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
-        cGui.CONTENT = "movies"
+        #cGui.CONTENT = "movies"
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
@@ -643,9 +643,34 @@ class cGui():
         xbmc.executebuiltin('XBMC.Container.Update(%s, replace)' % sTest )
 
     def setWatched(self):
-        # Use kodi buildin feature
-        xbmc.executebuiltin( 'Action(ToggleWatched)' )
-        xbmc.executebuiltin( 'Container.Refresh' )
+        if (True):
+            #Use database
+            oInputParameterHandler = cInputParameterHandler()
+
+            aParams = oInputParameterHandler.getAllParameter()
+
+            sSite = oInputParameterHandler.getValue('siteUrl')
+            sTitle = xbmc.getInfoLabel('ListItem.label')
+
+            meta = {}
+            meta['title'] = sTitle
+            meta['site'] = sSite
+
+            row = cDb().get_watched(meta)
+            if row:
+                cDb().del_watched(meta)
+                cDb().del_resume(meta)
+            else:
+                cDb().insert_watched(meta)
+                
+            xbmc.executebuiltin( 'Action(ToggleWatched)' )
+            
+        else:
+            # Use kodi buildin feature
+            xbmc.executebuiltin( 'Action(ToggleWatched)' )
+
+        #Not usefull ?
+        #xbmc.executebuiltin( 'Container.Refresh' )
 
 
     def viewBA(self):

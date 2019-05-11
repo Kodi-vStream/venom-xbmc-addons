@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'disneyhd_tk'
 SITE_NAME = 'Disney HD'
@@ -14,9 +14,6 @@ SITE_DESC = 'Disney HD: Tous les films Disney en streaming'
 
 URL_MAIN = 'https://disneyhd.tk/'
 URL_LISTE = URL_MAIN + '?page=liste.php'
-
-MOVIE_HD = ('https://disneyhd.tk/liste_mosaique.php', 'showMovies')
-
 ANIM_ENFANTS = ('http://', 'load')
 
 #URL_SEARCH = ('', 'sHowResultSearch')

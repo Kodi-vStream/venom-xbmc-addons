@@ -12,7 +12,7 @@ SITE_IDENTIFIER = 'k_streaming'
 SITE_NAME = 'K-Streaming'
 SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
-URL_MAIN = 'http://www.k-streaming.cc/'
+URL_MAIN = 'http://www.k-streaming.ch/'
 
 #definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle sera affichee.
 #LA RECHERCHE GLOBAL N'UTILE PAS showSearch MAIS DIRECTEMENT LA FONCTION INSCRITE DANS LA VARIABLE URL_SEARCH_*
@@ -27,14 +27,14 @@ URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
-MOVIE_MOVIE = (URL_MAIN, 'showMovies')
+MOVIE_MOVIE = ('http://', 'load')
 MOVIE_VIEWS = (URL_MAIN + 'film-les-plus-vues/', 'showMovies')
 MOVIE_COMMENTS = (URL_MAIN + 'films-plus-commenter-streaming/', 'showMovies')
 MOVIE_NOTES = (URL_MAIN + 'film-streaming-populaires/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
-SERIE_SERIES = (URL_MAIN + 'film/serie-gratuit/', 'showMovies')
-SERIE_NEWS = (URL_MAIN + 'film/serie-gratuit/', 'showMovies')
+SERIE_SERIES = ('http://', 'load')
+SERIE_NEWS = (URL_MAIN + 'film/serie-gratuit-1/', 'showMovies')
 SERIE_VIEWS =  (URL_MAIN + 'film-les-plus-vues/', 'showMovies')
 SERIE_COMMENTS = (URL_MAIN + 'films-plus-commenter-streaming/', 'showMovies')
 SERIE_NOTES = (URL_MAIN + 'film-streaming-populaires/', 'showMovies')
@@ -219,7 +219,7 @@ def showEpisodes():
 
     #recuperation du hoster de base
     ListeUrl = []
-    sPattern = '<div class="keremiya_part"> *<span>([^<]+)</span>'
+    sPattern = '<div class="keremiya_part">.+?<span>([^<]+)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -229,7 +229,7 @@ def showEpisodes():
         ListeUrl = [(sUrl, aResult[1][0])]
 
     #recuperation des suivants
-    sPattern = '<a href="([^<]+)"><span>(.+?)</span>'
+    sPattern = '<a href="([^"]+)" class=.+?<span>(.+?)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     ListeUrl = ListeUrl + aResult[1]
 

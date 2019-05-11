@@ -77,7 +77,7 @@ class cHoster(iHoster):
                 https_response = http_response
             
             opener = urllib2.build_opener(NoRedirection)
-            opener.addheaders = [('User-agent', UA)]
+            opener.addheaders = [('User-Agent', UA)]
             opener.addheaders = [('Referer', self.__sUrl)]
             response = opener.open(sUrl)
             if response.code == 301 or response.code == 302:

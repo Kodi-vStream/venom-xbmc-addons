@@ -28,8 +28,8 @@ def service():
             heure = path + '/' + heure
             heure = xbmc.translatePath(heure)
             EnregistrementEnCours = True
-            VSlog('python '+heure)
-            command ='python '+heure
+            VSlog('python ' + heure)
+            command ='python ' + heure
             proc = subprocess.Popen(command, stdout=subprocess.PIPE)
             p_status = proc.wait()
 

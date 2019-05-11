@@ -452,7 +452,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
 
-            if 'saries' in sUrl2:
+            if 'series' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
@@ -658,8 +658,10 @@ def showHosters():
             sUrl = aEntry[1]
             sTitle = aEntry[2].replace('.mkv', '')
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, sHost)
-
-            #test si le host et supporter par vstream.
+            if sTitle.startswith('Telecharger ') :
+                sTitle = sTitle.replace('Telecharger ', '')
+			
+            #test si le host est supporte par vstream.
             oHoster = cHosterGui().checkHoster(sHost.lower())
             if  sHost == 'Revivelink':
                 oHoster = True

@@ -161,11 +161,23 @@ class cRequestHandler:
                 if cloudflare.CheckIfActive(e.read()):
  
                     cookies = self.GetCookies()
-
-                    print 'Page protegee par cloudflare'
+                    VSlog( 'Page protegee par cloudflare')
                     CF = cloudflare.CloudflareBypass()
                     sContent = CF.GetHtml(self.__sUrl,e.read(),cookies,sParameters,oRequest.headers)
                     self.__sRealUrl,self.__sResponseHeader = CF.GetReponseInfo()
+                else:
+                    sContent = e.read()
+                    self.__sRealUrl = e.geturl()
+                    self.__sResponseHeader = e.headers()
+                    
+            else:
+                try:
+                    VSlog("%s (%d),%s" % (self.ADDON.VSlang(30205), e.code , self.__sUrl))
+                    self.__sRealUrl = e.geturl()
+                    self.__sResponseHeader = e.headers
+                    sContent = e.read()           
+                except:
+                    sContent = ''
 
             if not sContent:
                 self.DIALOG.VSerror("%s (%d),%s" % (self.ADDON.VSlang(30205), e.code , self.__sUrl))
