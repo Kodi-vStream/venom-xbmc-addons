@@ -59,7 +59,7 @@
         <setting type="sep"/>
 
 	    <!--parametre qui enregistre l'url actuel de zt -->
-        <setting id="ZT" type="text" label="" default="" visible="false"/>
+        <setting id="URL_zone_telechargement_ws" type="text" label="" default="" visible="false"/>
 
         <!--parametre qui enregistre le token alldebrid pour extreme download -->
         <setting id="token_alldebrid" type="text" label="Token Alldebrid" default="" visible="false"/>
