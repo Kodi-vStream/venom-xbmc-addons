@@ -18,9 +18,11 @@ MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN + 'films-streaming/', 'showMovies')
 MOVIE_GENRES = ('http://film', 'showGenres')
 
+SERIE_SERIES = (URL_MAIN + 'series-streaming/', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'series-streaming/', 'showMovies')
 SERIE_GENRES = ('http://serie', 'showSerieGenres')
 
+ANIM_ANIMS = (URL_MAIN + 'anime-streaming/', 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'anime-streaming/', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
@@ -42,7 +44,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
@@ -54,7 +56,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animes (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-    
+
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -72,12 +74,12 @@ def showGenres():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    
+
     if 'serie' in sUrl:
         sType = '?tr_post_type=2'
     else:
         sType = '?tr_post_type=1'
-        
+
     liste = []
     liste.append( ['Action', URL_MAIN + 'category/action/' + sType] )
     liste.append( ['Action & Adventure', URL_MAIN + 'category/action-adventure/' + sType] )
@@ -151,11 +153,11 @@ def showMovies(sSearch = ''):
 
             sUrl2 = aEntry[0]
             sTitle = aEntry[2]
-            sThumb = aEntry[1]
+            sThumb = aEntry[1].replace('w185', 'w342')
             sYear = aEntry[3]
 
             sDisplayTitle = ('%s (%s)') % (sTitle, sYear)
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -165,7 +167,7 @@ def showMovies(sSearch = ''):
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
- 
+
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
@@ -185,7 +187,7 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
-    
+
 def showEpisode():
     oGui = cGui()
 
@@ -196,22 +198,22 @@ def showEpisode():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     oParser = cParser()
-    
+
     sDesc = ''
     try:
         sPattern = '<div class="Description"><p>([^<]+)<\/p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
+            sDesc = sDesc.replace('&#8217;', '\'').replace('&#8230;', '...')
     except:
         pass
-    
+
     sPattern = '<div class="Title AA-Season.+?tab=".+?">([^<]+)<span>(\d+)</span>|<li class="[0-9a-zA-Z]+"> *<a href="([^"]+)">([^<]+)<\/a><\/li>'
-
-
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
@@ -226,7 +228,7 @@ def showEpisode():
             else:
                 sUrl = aEntry[2]
                 sTitle = sMovieTitle + ' ' + aEntry[3]
-                
+
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -236,7 +238,7 @@ def showEpisode():
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
-    
+
 def showLinks():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -247,7 +249,7 @@ def showLinks():
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     #resume
     sDesc = ''
     try:
@@ -256,14 +258,15 @@ def showLinks():
         if aResult[0]:
 
             sDesc = aResult[1][0]
+            sDesc = sDesc.replace('&#8217;', '\'').replace('&#8230;', '...')
     except:
         pass
 
     sHtmlContent = oParser.abParse(sHtmlContent, 'TPost Sing', '<span class="btnsplyr">') #film serie
 
-    sHtmlContent = sHtmlContent.replace('&quot;','"').replace('#038;','').replace('&amp;','&')
-    
-    sHtmlContent = re.sub('<img class="imgfav" *src="https://www.google.com/s2/favicons\?domain=.+?">','',sHtmlContent)#film
+    sHtmlContent = sHtmlContent.replace('&quot;', '"').replace('#038;', '').replace('&amp;', '&')
+
+    sHtmlContent = re.sub('<img class="imgfav" *src="https://www.google.com/s2/favicons\?domain=.+?">', '', sHtmlContent)#film
 
     #1
     sPattern = 'data-tplayernv=".+?"><span>([^<]+)<\/span><span>([^<]+)<\/span>'
@@ -277,12 +280,11 @@ def showLinks():
     aResult = zip(aResult2, [x[1] + ' ' + x[0] for x in aResult1])
     if (aResult):
         for aEntry in aResult:
+
             sUrl = aEntry[0]
-            
             sHost = aEntry[1]
-  
             sTitle = '%s (%s)' % (sMovieTitle, sHost)
- 
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -290,7 +292,7 @@ def showLinks():
             oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-    
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -300,7 +302,7 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     oParser = cParser()
 
     sPattern = '<iframe.+?src="([^"]+)"'
@@ -314,7 +316,7 @@ def showHosters():
         if (aResult[0] == True):
             oRequestHandler = cRequestHandler(aResult[1][0])
             sHtmlContent = oRequestHandler.request()
-            
+
             sPattern = "id=trde\('([^']+)'\)"
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
@@ -333,7 +335,7 @@ def showHosters():
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
-    
+
 def decoded(trde):
     #a = '13839373636353939373735313f2465626d656f656469667f25727e2b6f6f2f2a33707474786'
     b = int(len(trde) - 1)
@@ -341,5 +343,5 @@ def decoded(trde):
     while (b >= 0):
         start += trde[b]
         b -= 1
-        
+
     return start
