@@ -441,25 +441,36 @@ class cGuiElement:
 
     def getMetadonne(self):
 
+        sTitle = self.__sFileName
+
         #sTitle = self.__sTitle.decode('latin-1').encode("utf-8")
         #sTitle=re.sub(r'\[.*\]|\(.*\)', r'', str(self.__sFileName))
         #sTitle=sTitle.replace('VF', '').replace('VOSTFR', '').replace('FR', '')
 
         #get_meta(self, media_type, name, imdb_id='', tmdb_id='', year='', overlay=6, update=False):
-        meta = self.getMeta()
+        metaType = self.getMeta()
 
         # non media -> pas de fanart
-        if meta == 0 :
+        if metaType == 0 :
             self.addItemProperties('fanart_image', '')
             return
 			
+        # Integrale de films, on nettoie le titre pour la recherche
+        if metaType == 3 :
+            sTitle=self.__sFileName.replace('integrale', '')
+            sTitle=sTitle.replace('Les 2 films', '')
+            sTitle=sTitle.replace('trilogie', '')
+            sTitle=sTitle.replace('trilogy', '')
+            sTitle=sTitle.replace('quadrilogie', '')
+            sTitle=sTitle.replace('pentalogie', '')
+
         sType = '1'
-        sType = str(meta).replace('1', 'movie').replace('2', 'tvshow')
+        sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'movie')
 
         if sType:
             from resources.lib.tmdb import cTMDb
             grab = cTMDb()
-            args = (sType, self.__sFileName)
+            args = (sType, sTitle)
             kwargs = {}
             if (self.__ImdbId):
                 kwargs['imdb_id'] = self.__ImdbId
@@ -549,9 +560,12 @@ class cGuiElement:
         # if meta['trailer_url']:
             # meta['trailer'] = meta['trailer'].replace(u'\u200e', '').replace(u'\u200f', '')
             # self.__sTrailerUrl = meta['trailer']
-        if meta['cover_url']:
-            self.__sThumbnail = meta['cover_url']
-            self.__sPoster = meta['cover_url']
+
+        # Pas de changement de cover pour les coffrets de films
+        if metaType != 3 :
+            if meta['cover_url']:
+                self.__sThumbnail = meta['cover_url']
+                self.__sPoster = meta['cover_url']
         return
 
     def getItemValues(self):
