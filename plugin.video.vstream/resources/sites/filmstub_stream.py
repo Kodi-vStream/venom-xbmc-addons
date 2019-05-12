@@ -17,6 +17,7 @@ URL_MAIN = 'https://www.filmstub.stream/'
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN + 'films-streaming/', 'showMovies')
 MOVIE_GENRES = ('http://film', 'showGenres')
+MOVIE_LIST = (True, 'showAlpha')
 
 SERIE_SERIES = (URL_MAIN + 'series-streaming/', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'series-streaming/', 'showMovies')
@@ -44,6 +45,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films & Séries (Liste)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
@@ -126,6 +131,46 @@ def showGenres():
     oGui.setEndOfDirectory()
 
 
+def showAlpha():
+    oGui = cGui()
+
+    liste = []
+    liste.append( ['#', URL_MAIN + 'letters/0-9/'] )
+    liste.append( ['A', URL_MAIN + 'letters/a/'] )
+    liste.append( ['B', URL_MAIN + 'letters/b/'] )
+    liste.append( ['C', URL_MAIN + 'letters/c/'] )
+    liste.append( ['D', URL_MAIN + 'letters/d/'] )
+    liste.append( ['E', URL_MAIN + 'letters/e/'] )
+    liste.append( ['F', URL_MAIN + 'letters/f/'] )
+    liste.append( ['G', URL_MAIN + 'letters/g/'] )
+    liste.append( ['H', URL_MAIN + 'letters/h/'] )
+    liste.append( ['I', URL_MAIN + 'letters/i/'] )
+    liste.append( ['J', URL_MAIN + 'letters/j/'] )
+    liste.append( ['K', URL_MAIN + 'letters/k/'] )
+    liste.append( ['L', URL_MAIN + 'letters/l/'] )
+    liste.append( ['M', URL_MAIN + 'letters/m/'] )
+    liste.append( ['N', URL_MAIN + 'letters/n/'] )
+    liste.append( ['O', URL_MAIN + 'letters/o/'] )
+    liste.append( ['P', URL_MAIN + 'letters/p/'] )
+    liste.append( ['Q', URL_MAIN + 'letters/q/'] )
+    liste.append( ['R', URL_MAIN + 'letters/r/'] )
+    liste.append( ['S', URL_MAIN + 'letters/s/'] )
+    liste.append( ['T', URL_MAIN + 'letters/t/'] )
+    liste.append( ['U', URL_MAIN + 'letters/u/'] )
+    liste.append( ['V', URL_MAIN + 'letters/v/'] )
+    liste.append( ['W', URL_MAIN + 'letters/w/'] )
+    liste.append( ['X', URL_MAIN + 'letters/x/'] )
+    liste.append( ['Y', URL_MAIN + 'letters/y/'] )
+    liste.append( ['Z', URL_MAIN + 'letters/z/'] )
+
+    for sTitle, sUrl in liste:
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'listes.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
@@ -140,7 +185,10 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
 
 
-    sPattern = 'class="TPost C"> *<a href="([^"]+)">.+?<img src="([^"]+)".+?class="Title">(.+?)<.+?<span class="Year">(.+?)<\/span>'
+    if 'letters' in sUrl:
+        sPattern = '<a href="([^"]+)" class="MvTbImg"> <img src="([^"]+)" alt=.+?(?:|class="TpTv BgA">([^<]+)<.+?)strong>([^<]+)<.+?</td><td>([^<]+)<'
+    else:
+        sPattern = 'class="TPost C"> *<a href="([^"]+)">.+?<img src="([^"]+)".+?class="Title">(.+?)<.+?<span class="Year">(.+?)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -151,12 +199,20 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrl2 = aEntry[0]
-            sTitle = aEntry[2]
-            sThumb = aEntry[1].replace('w185', 'w342')
-            sYear = aEntry[3]
+            if 'letters' in sUrl:
+                sUrl2 = aEntry[0]
+                sThumb = aEntry[1].replace('w92', 'w342')
+                sTitle = aEntry[3]
+                sYear = aEntry[4]
 
-            sDisplayTitle = ('%s (%s)') % (sTitle, sYear)
+                sDisplayTitle = ('%s (%s)') % (sTitle, sYear)
+            else:
+                sUrl2 = aEntry[0]
+                sThumb = aEntry[1].replace('w185', 'w342')
+                sTitle = aEntry[2]
+                sYear = aEntry[3]
+
+                sDisplayTitle = ('%s (%s)') % (sTitle, sYear)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -164,6 +220,8 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if 'serie' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+            elif 'letters' in sUrl and 'Serie' in aEntry[2]:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
@@ -262,11 +320,10 @@ def showLinks():
     except:
         pass
 
-    sHtmlContent = oParser.abParse(sHtmlContent, 'TPost Sing', '<span class="btnsplyr">') #film serie
-
-    sHtmlContent = sHtmlContent.replace('&quot;', '"').replace('#038;', '').replace('&amp;', '&')
-
+    sHtmlContent = oParser.abParse(sHtmlContent, 'TPost Sing', '<span class="btnsplyr">')#film serie
+    sHtmlContent = re.sub(' SERVEUR <strong>[0-9]</strong>', ' SERVEUR', sHtmlContent)#Liste
     sHtmlContent = re.sub('<img class="imgfav" *src="https://www.google.com/s2/favicons\?domain=.+?">', '', sHtmlContent)#film
+    sHtmlContent = sHtmlContent.replace('&quot;', '"').replace('#038;', '').replace('&amp;', '&')
 
     #1
     sPattern = 'data-tplayernv=".+?"><span>([^<]+)<\/span><span>([^<]+)<\/span>'
@@ -283,6 +340,8 @@ def showLinks():
 
             sUrl = aEntry[0]
             sHost = aEntry[1]
+            if 'FileBebo' in sHost:
+                continue
             sTitle = '%s (%s)' % (sMovieTitle, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -320,7 +379,7 @@ def showHosters():
             sPattern = "id=trde\('([^']+)'\)"
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
-                sUrl = 'https://www.filmstub.stream/?trhide=1&trhex=' + decoded(aResult[1][0])
+                sUrl = URL_MAIN + '?trhide=1&trhex=' + decoded(aResult[1][0])
 
 
                 oRequest = cRequestHandler(sUrl)
