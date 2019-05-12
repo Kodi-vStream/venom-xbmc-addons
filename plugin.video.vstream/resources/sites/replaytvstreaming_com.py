@@ -7,8 +7,9 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
+from resources.lib.util import cUtil
 
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress,VSlog
 
 SITE_IDENTIFIER = 'replaytvstreaming_com'
 SITE_NAME = 'Replay Tv Streaming'
@@ -179,9 +180,10 @@ def showHosters():
             sPage = aEntry[1]
             sVideoID = aEntry[0]
             sHosterUrl = showLinks(sPage, sVideoID)
+            sHosterUrl = cUtil().unescape(sHosterUrl)
 
             sTitle = aEntry[2]
-
+            
             if not 'Lecteur' in sTitle and sTest != sTitle:
                 oGui.addText(SITE_IDENTIFIER,'[COLOR olive]' + sTitle + '[/COLOR]')
                 sTest = sTitle
@@ -197,6 +199,7 @@ def showHosters():
 
         if (aResult[0] == True):
             sHosterUrl = aResult[1][0]
+            sHosterUrl = cUtil().unescape(sHosterUrl)
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):

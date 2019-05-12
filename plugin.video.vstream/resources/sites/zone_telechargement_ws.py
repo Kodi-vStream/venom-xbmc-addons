@@ -42,9 +42,11 @@ def GetURL_MAIN():
         oRequestHandler = cRequestHandler(URL_HOST)
         sHtmlContent = oRequestHandler.request()
         MemorisedHost = oRequestHandler.getRealUrl()
-        ADDON.setSetting('ZT', MemorisedHost)
-
-        VSlog("ZT url  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('ZT'))
+        if MemorisedHost is not None and MemorisedHost != '':
+            ADDON.setSetting('ZT', MemorisedHost)
+            VSlog("ZT url  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('ZT'))
+        else:
+            VSlog("Url non changer car egal a None le site peux etre surchager utilisation de >> ADDON.getSetting('ZT')")
 
         return ADDON.getSetting('ZT')
     else:
@@ -53,9 +55,11 @@ def GetURL_MAIN():
             oRequestHandler = cRequestHandler(URL_HOST)
             sHtmlContent = oRequestHandler.request()
             MemorisedHost = oRequestHandler.getRealUrl()
-            ADDON.setSetting('ZT', MemorisedHost)
-
-            VSlog("ZT url vide  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('ZT'))
+            if MemorisedHost is not None and MemorisedHost != '':
+                ADDON.setSetting('ZT', MemorisedHost)
+                VSlog("ZT url vide  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('ZT'))
+            else:
+                VSlog("Url non changer car egal a None le site peux etre surchager utilisation de >> ADDON.getSetting('ZT')")
 
             return ADDON.getSetting('ZT')
         else:

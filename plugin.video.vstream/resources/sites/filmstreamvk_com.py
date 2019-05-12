@@ -13,11 +13,12 @@ SITE_IDENTIFIER = 'filmstreamvk_com'
 SITE_NAME = 'Filmstreamvk'
 SITE_DESC = 'Films, Séries & Mangas en Streaming'
 
-URL_MAIN = 'http://filmstreamvf.com/'
+URL_MAIN = 'https://www.filmstreamvf.com/'
 
-MOVIE_MOVIE = ('http', 'load')
-MOVIE_NEWS = (URL_MAIN + 'film-streaming-vf', 'showMovies')
-MOVIE_VIEWS = (URL_MAIN + 'les-plus-vues-films', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'film-streaming-vf', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'film-streaming-vf?sort=date', 'showMovies')
+MOVIE_VIEWS = (URL_MAIN + 'film-streaming-vf?sort=views', 'showMovies')
+MOVIE_COMMENTS = (URL_MAIN + 'film-streaming-vf?sort=comments', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
 SERIE_SERIES = (URL_MAIN + 'serie', 'showMovies')
@@ -46,6 +47,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'views.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_COMMENTS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_COMMENTS[1], 'Films (Les plus commentés)', 'comments.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -82,13 +87,12 @@ def showGenres():
     liste.append( ['Bande annonce', URL_MAIN + 'category/bande-annonce'] )
     liste.append( ['Biographie', URL_MAIN + 'category/biography'] )
     liste.append( ['Biopic', URL_MAIN + 'category/biopic'] )
-    liste.append( ['Capes et épées', URL_MAIN + 'category/capes-et-epees'] )
     liste.append( ['Comédie', URL_MAIN + 'category/comedie'] )
     liste.append( ['Comédie dramatique', URL_MAIN + 'category/comedie-dramatique'] )
     liste.append( ['Comédie musicale', URL_MAIN + 'category/comedie-musicale'] )
     liste.append( ['Concert', URL_MAIN + 'category/concert'] )
+    liste.append( ['Courts métrages', URL_MAIN + 'category/courts-metrages'] )
     liste.append( ['Crime', URL_MAIN + 'category/crime'] )
-    liste.append( ['Days (TV)', URL_MAIN + 'category/days-tv'] )
     liste.append( ['Divers', URL_MAIN + 'category/divers'] )
     liste.append( ['Documentaire', URL_MAIN + 'category/documentaire'] )
     liste.append( ['Drame', URL_MAIN + 'category/drame'] )
@@ -100,33 +104,27 @@ def showGenres():
     liste.append( ['Fantastique', URL_MAIN + 'category/fantastique'] )
     liste.append( ['Fantasy', URL_MAIN + 'category/fantasy'] )
     liste.append( ['Film récompensé', URL_MAIN + 'category/film-recompense'] )
-    liste.append( ['Golden Time', URL_MAIN + 'category/golden-time'] )
     liste.append( ['Guerre', URL_MAIN + 'category/guerre'] )
-    liste.append( ['Gugure! Kokkuri-san', URL_MAIN + 'category/gugure-kokkuri-san'] )
     liste.append( ['Histoire vraie', URL_MAIN + 'category/histoire-vraie'] )
     liste.append( ['Historique', URL_MAIN + 'category/historique'] )
     liste.append( ['Horreur', URL_MAIN + 'category/horreur'] )
     liste.append( ['Judiciaire', URL_MAIN + 'category/judiciaire'] )
-    liste.append( ['Love Live!', URL_MAIN + 'category/love-live'] )
     liste.append( ['Musical', URL_MAIN + 'category/musical'] )
     liste.append( ['Mystery', URL_MAIN + 'category/mystery'] )
-    liste.append( ['Naruto Shippuden Kai', URL_MAIN + 'category/naruto-shippuden-kai'] )
     liste.append( ['Non classé', URL_MAIN + 'category/non-classe'] )
     liste.append( ['Péplum', URL_MAIN + 'category/peplum'] )
-    liste.append( ['Pixar', URL_MAIN + 'category/pixar'] )
     liste.append( ['Policier', URL_MAIN + 'category/policier'] )
     liste.append( ['Romance', URL_MAIN + 'category/romance'] )
     liste.append( ['Science-Fiction', URL_MAIN + 'category/science-fiction'] )
     liste.append( ['Série', URL_MAIN + 'category/serie'] )
-    liste.append( ['Souryo to Majiwaru Shikiyoku no Yoru ni', URL_MAIN + 'category/souryo-to-majiwaru-shikiyoku-no-yoru-ni'] )
     liste.append( ['Spectacle', URL_MAIN + 'category/spectacle'] )
     liste.append( ['Sport', URL_MAIN + 'category/sport'] )
     liste.append( ['Sport event', URL_MAIN + 'category/sport-event'] )
     liste.append( ['Survival', URL_MAIN + 'category/survival'] )
     liste.append( ['Thriller', URL_MAIN + 'category/thriller'] )
-    liste.append( ['Tokyo Ravens', URL_MAIN + 'category/tokyo-ravens'] )
     liste.append( ['Top films', URL_MAIN + 'category/exclues/top-films'] )
     liste.append( ['Walt Disney', URL_MAIN + 'category/walt-disney'] )
+    liste.append( ['War', URL_MAIN + 'category/war'] )
     liste.append( ['Western', URL_MAIN + 'category/western'] )
 
     for sTitle, sUrl in liste:

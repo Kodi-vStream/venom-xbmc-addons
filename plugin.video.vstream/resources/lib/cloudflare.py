@@ -17,6 +17,37 @@ try:
 except ImportError:
     from urllib.parse import urlparse
 
+    
+##########################################################################################################################################################
+#
+# Ok so a big thx to VeNoMouS for this code
+# From this url https://github.com/VeNoMouS/cloudscraper
+# Franchement si vous etes content de voir revenir vos sites allez mettre une etoile sur son github.
+#
+
+import ssl
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.ssl_ import create_urllib3_context
+
+class CipherSuiteAdapter(HTTPAdapter):
+
+    def __init__(self, cipherSuite=None, **kwargs):
+        self.cipherSuite = cipherSuite
+        super(CipherSuiteAdapter, self).__init__(**kwargs)
+
+    def init_poolmanager(self, *args, **kwargs):
+        kwargs['ssl_context'] = create_urllib3_context(ciphers=self.cipherSuite)
+        return super(CipherSuiteAdapter, self).init_poolmanager(*args, **kwargs)
+
+    def proxy_manager_for(self, *args, **kwargs):
+        kwargs['ssl_context'] = create_urllib3_context(ciphers=self.cipherSuite)
+        return super(CipherSuiteAdapter, self).proxy_manager_for(*args, **kwargs)
+
+##########################################################################################################################################################
+
+
+
+
 if (False):
     import logging
     # These two lines enable debugging at httplib level (requests->urllib3->http.client)
@@ -40,9 +71,7 @@ from requests.sessions import Session
 
 from jsunfuck import JSUnfuck
 
-
 Mode_Debug = False
-
 
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
@@ -372,6 +401,8 @@ class CloudflareScraper(Session):
         self.cf_tries = 0
         self.GetCaptha = False
         
+        self.firsturl = ''
+        
         self.headers= {
                 'User-Agent': UA,
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -383,8 +414,47 @@ class CloudflareScraper(Session):
             }
             
         self.MemCookie = {}
+        
+        self.cipherSuite = None
+        self.mount('https://', CipherSuiteAdapter(self.loadCipherSuite()))
+        
+        
+    ##########################################################################################################################################################
+    # Thx again to VeNoMouS
+    #
+    
+    def loadCipherSuite(self):
+        if self.cipherSuite:
+            return self.cipherSuite
+
+        ciphers = [
+            'GREASE_3A', 'GREASE_6A', 'AES128-GCM-SHA256', 'AES256-GCM-SHA256', 'AES256-GCM-SHA384', 'CHACHA20-POLY1305-SHA256',
+            'ECDHE-ECDSA-AES128-GCM-SHA256', 'ECDHE-RSA-AES128-GCM-SHA256', 'ECDHE-ECDSA-AES256-GCM-SHA384',
+            'ECDHE-RSA-AES256-GCM-SHA384', 'ECDHE-ECDSA-CHACHA20-POLY1305-SHA256', 'ECDHE-RSA-CHACHA20-POLY1305-SHA256',
+            'ECDHE-RSA-AES128-CBC-SHA', 'ECDHE-RSA-AES256-CBC-SHA', 'RSA-AES128-GCM-SHA256', 'RSA-AES256-GCM-SHA384',
+            'ECDHE-RSA-AES128-GCM-SHA256', 'RSA-AES256-SHA', '3DES-EDE-CBC'
+        ]
+
+        self.cipherSuite = ''
+
+        ctx = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+
+        for cipher in ciphers:
+            try:
+                ctx.set_ciphers(cipher)
+                self.cipherSuite = '{}:{}'.format(self.cipherSuite, cipher).rstrip(':')
+            except ssl.SSLError:
+                pass
+
+        return self.cipherSuite
+
+    ##########################################################################################################################################################
+
 
     def request(self, method, url, *args, **kwargs):
+        
+        if self.firsturl == '':
+            self.firsturl = url
         
         if 'cookies' in kwargs:
             self.MemCookie.update( kwargs['cookies'] )
@@ -411,9 +481,6 @@ class CloudflareScraper(Session):
             
             xbmc.log('Page still protected' , xbmc.LOGNOTICE)
             
-            if self.GetCaptha == True:
-                resp.url = resp.url.replace('https','http')
-            
             resp2 = self.solve_cf_challenge(resp, **kwargs)
             
             #self.MemCookie.update( resp.cookies.get_dict() )
@@ -423,7 +490,9 @@ class CloudflareScraper(Session):
             
 
         # Otherwise, no Cloudflare anti-bot detected
-        xbmc.log('Page decodee' , xbmc.LOGNOTICE)
+        if resp:
+            xbmc.log('Page decodee' , xbmc.LOGNOTICE)
+            
         return resp
 
     def ifCloudflare(self, resp):
@@ -436,7 +505,7 @@ class CloudflareScraper(Session):
                 if not self.GetCaptha:
                     self.GetCaptha = True
                     self.cf_tries = 0
-                    return True
+                    #return 'captcha'
                     
             elif resp.status_code == 503:
                 return True
@@ -463,8 +532,12 @@ class CloudflareScraper(Session):
         #fh.close()
         
         if Mode_Debug:
-            xbmc.log('Trying deconding, pass ' + str(self.cf_tries) , xbmc.LOGNOTICE)
-
+            xbmc.log('Trying decoding, pass ' + str(self.cf_tries) , xbmc.LOGNOTICE)
+            
+            #fh = open('c:\\test.txt', "w")
+            #fh.write(body)
+            #fh.close()
+        
         try:
             cf_delay = float(re.search('submit.*?(\d+)', body, re.DOTALL).group(1)) / 1000.0
 
