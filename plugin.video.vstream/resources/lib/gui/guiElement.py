@@ -456,13 +456,18 @@ class cGuiElement:
             return
 
         # Integrale de films, on nettoie le titre pour la recherche
-        if metaType == 3:
-            sTitle = self.__sFileName.replace('integrale', '')
-            sTitle = sTitle.replace('Les 2 films', '')
-            sTitle = sTitle.replace('trilogie', '')
-            sTitle = sTitle.replace('trilogy', '')
-            sTitle = sTitle.replace('quadrilogie', '')
-            sTitle = sTitle.replace('pentalogie', '')
+        if metaType == 3 :
+            sTitle=self.__sFileName.replace('integrale', '')
+            sTitle=sTitle.replace('2 films', '')
+            sTitle=sTitle.replace('6 films', '')
+            sTitle=sTitle.replace('7 films', '')
+            sTitle=sTitle.replace('trilogie', '')
+            sTitle=sTitle.replace('trilogy', '')
+            sTitle=sTitle.replace('quadrilogie', '')
+            sTitle=sTitle.replace('pentalogie', '')
+            sTitle=sTitle.replace('octalogie', '')
+            sTitle=sTitle.replace('hexalogie', '')
+            sTitle=sTitle.replace('tetralogie', '')
 
         sType = '1'
         sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'movie')
