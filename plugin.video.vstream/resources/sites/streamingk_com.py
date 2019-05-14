@@ -291,7 +291,7 @@ def showSeries(sLoop = False):
     except:
         pass
 
-    sPattern = '<span style="color: #33cccc;[^<>"]*">(?:<(?:strong|b)>)*((?:Stream|Telec)[^<>]+)|"center">(.pisode[^<]{2,12})<(?!\/a>)(.+?a href="http.+?)(?:<.p>|<br|<.div)'
+    sPattern = '<span style="color: #33cccc;[^<>"]*">(?:<(?:strong|b)>)*((?:Stream|Telec)[^<>]+)|"center">(.pisode[^<]{2,12})<(?!\/a>)(.*?a href="http.+?)(?:<.p>|<br|<.div)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     #astuce en cas d'episode unique
