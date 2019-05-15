@@ -203,7 +203,7 @@ class cHosterGui:
                 return self.getHoster('dailymotion')
         if ('filez.' in sHostName):
             return self.getHoster('flashx')
-        if ('mystream' in sHostName):
+        if ('mystream' in sHostName) or ('mstream' in sHostName):
             return self.getHoster('mystream')
         if ('streamingentiercom/videophp?type=speed' in sHosterUrl):
             return self.getHoster('speedvideo')
