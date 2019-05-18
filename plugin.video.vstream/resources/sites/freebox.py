@@ -132,7 +132,7 @@ def showDailyList(): #On recupere les dernier playlist ajouter au site
     elif 'dailyiptvlist.com' in sUrl:
         sPattern = '</a><h2 class="post-title"><a href="(.+?)">(.+?)</a></h2><div class="excerpt"><p>.+?</p>'
     elif 'extinf' in sUrl:
-        sPattern = '<div class="news-thumb col-md-6">\s*<a href=([^"]+) title="([^"]+)"'
+        sPattern = '<div class="news-thumb col-md-6">\s*<a href=([^"]+) title="([^"]+)".+?\s*<img src=.+?uploads/.+?/.+?/([^"]+)\..+?'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -149,6 +149,8 @@ def showDailyList(): #On recupere les dernier playlist ajouter au site
 
             sTitle = aEntry[1]
             sUrl2 = aEntry[0]
+            if 'extinf' in sUrl:
+                flag = aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -157,7 +159,7 @@ def showDailyList(): #On recupere les dernier playlist ajouter au site
             if not 'extinf' in sUrl:
                 oGui.addDir(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, 'tv.png', oOutputParameterHandler)
             else:
-                if 'extinf' and 'daily-premium-m3u' in sUrl2:
+                if str(flag) == 'm3u-playlist-720x405':
                     oGui.addDir(SITE_IDENTIFIER, 'showDailyIptvList', sTitle, '', oOutputParameterHandler)
                 else:
                     oGui.addDir(SITE_IDENTIFIER, 'showWeb', sTitle, 'tv.png', oOutputParameterHandler)
@@ -256,11 +258,11 @@ def showDailyIptvList():#On recupere les liens qui sont dans les playlist "World
 
     for sUrl2 in line:
         if '/cdn-cgi/l/email-protection' in str(sUrl2):
-            sUrl2 = 'http' + decodeEmail(sUrl2).replace('<','')
+            sUrl2 = 'http' + decodeEmail(sUrl2).replace('<','').replace('&amp;','&')
         else:
-            sUrl2 = 'http' + sUrl2
+            sUrl2 = 'http' + sUrl2.replace('&amp;','&')
 
-        sTitle = 'Lien: ' + sUrl2
+        sTitle = 'Lien: ' + sUrl2.replace('&amp;','&')
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -280,6 +282,12 @@ def getHtml(sUrl, data=None):#S'occupe des requetes
         data = oRequestHandler.request()
     #VSlog(data)
     return data
+
+def unGoogleDrive (infile):
+    ids = re.findall('<a href="https://drive.google.com/file/d/([^"]+)/view',infile)[0]
+    url = 'https://drive.google.com/uc?id='+ids+'&export=download'
+    inf = getHtml(url)
+    return inf
 
 def parseM3U(infile):#Traite les m3u local
     oGui = cGui()
@@ -306,6 +314,9 @@ def parseM3U(infile):#Traite les m3u local
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('User-Agent',user_agent)
         inf = oRequestHandler.request()
+
+        if 'drive.google' in inf:
+            inf = unGoogleDrive(inf)
 
         inf = inf.split('\n')
     else:
