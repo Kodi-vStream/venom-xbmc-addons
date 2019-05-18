@@ -10,6 +10,9 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 #import urllib2
 
+# Pas trouve de clones
+return False
+
 SITE_IDENTIFIER = 'papstream'
 SITE_NAME = 'PapStream'
 SITE_DESC = 'Films, Séries & Mangas'
