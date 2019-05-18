@@ -94,7 +94,6 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
-
 def showGenres():
     oGui = cGui()
 
@@ -126,7 +125,6 @@ def showGenres():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -183,7 +181,6 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
-
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<a class="nextpostslink" rel="next" href="(.+?)"'
@@ -192,7 +189,6 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
-
 
 def showEpisodes():
     oGui = cGui()
@@ -277,7 +273,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<iframe.+?src="(.+?)"'
+    sPattern = '<iframe.+?SRC="(.+?)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
