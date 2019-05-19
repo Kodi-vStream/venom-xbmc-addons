@@ -29,9 +29,15 @@ from requests.packages.urllib3.util.ssl_ import create_urllib3_context
 from collections import OrderedDict
 
 class CipherSuiteAdapter(HTTPAdapter):
-    def __init__(self, **kwargs):
+
+    def __init__(self, cipherSuite=None, **kwargs):
+        self.cipherSuite = cipherSuite
+
         if hasattr(ssl, 'PROTOCOL_TLS'):
-            self.ssl_context = create_urllib3_context(ssl_version=getattr(ssl, 'PROTOCOL_TLSv1_3', ssl.PROTOCOL_TLSv1_2))
+            self.ssl_context = create_urllib3_context(
+                ssl_version=getattr(ssl, 'PROTOCOL_TLSv1_3', ssl.PROTOCOL_TLSv1_2),
+                ciphers=self.cipherSuite
+            )
         else:
             self.ssl_context = create_urllib3_context(ssl_version=ssl.PROTOCOL_TLSv1)
 
@@ -45,10 +51,9 @@ class CipherSuiteAdapter(HTTPAdapter):
         kwargs['ssl_context'] = self.ssl_context
         return super(CipherSuiteAdapter, self).proxy_manager_for(*args, **kwargs)
 
+
+
 ##########################################################################################################################################################
-
-
-
 
 
 if (False):
@@ -410,11 +415,40 @@ class CloudflareScraper(Session):
         self.MemCookie = {}
         
         self.cipherSuite = None
-        self.mount('https://', CipherSuiteAdapter())
+        self.mount('https://', CipherSuiteAdapter(self.loadCipherSuite()))
         
         
     ##########################################################################################################################################################
+    #
+    #Thx again to to VeNoMouS for this code
+    
+    def loadCipherSuite(self):
+        if self.cipherSuite:
+            return self.cipherSuite
 
+        self.cipherSuite = ''
+
+        if hasattr(ssl, 'PROTOCOL_TLS'):
+            ciphers = [
+                'ECDHE-ECDSA-AES128-GCM-SHA256', 'ECDHE-RSA-AES128-GCM-SHA256', 'ECDHE-ECDSA-AES256-GCM-SHA384',
+                'ECDHE-RSA-AES256-GCM-SHA384', 'ECDHE-ECDSA-CHACHA20-POLY1305-SHA256', 'ECDHE-RSA-CHACHA20-POLY1305-SHA256',
+                'ECDHE-RSA-AES128-CBC-SHA', 'ECDHE-RSA-AES256-CBC-SHA', 'RSA-AES128-GCM-SHA256', 'RSA-AES256-GCM-SHA384',
+                'ECDHE-RSA-AES128-GCM-SHA256', 'RSA-AES256-SHA', '3DES-EDE-CBC'
+            ]
+
+            if hasattr(ssl, 'PROTOCOL_TLSv1_3'):
+                ciphers.insert(0, ['GREASE_3A', 'GREASE_6A', 'AES128-GCM-SHA256', 'AES256-GCM-SHA256', 'AES256-GCM-SHA384', 'CHACHA20-POLY1305-SHA256'])
+
+            ctx = ssl.SSLContext(getattr(ssl, 'PROTOCOL_TLSv1_3', ssl.PROTOCOL_TLSv1_2))
+
+            for cipher in ciphers:
+                try:
+                    ctx.set_ciphers(cipher)
+                    self.cipherSuite = '{}:{}'.format(self.cipherSuite, cipher).rstrip(':')
+                except ssl.SSLError:
+                    pass
+
+        return self.cipherSuite
 
     def request(self, method, url, *args, **kwargs):
         
@@ -647,4 +681,3 @@ class CloudflareScraper(Session):
                 return _get_jsfuck_number(dividend) / float(_get_jsfuck_number(divisor))
         else:
             return _get_jsfuck_number(expression[2:-1])
- 
