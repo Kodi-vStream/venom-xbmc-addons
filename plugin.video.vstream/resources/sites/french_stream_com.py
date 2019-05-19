@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress#, VSlog
 
 import re, base64, urllib
 
@@ -120,10 +120,10 @@ def ResolveUrl(url):
 
         if id == '1':
             url2 = 'http://cloudvid.co/embed-'
-        if id == '2':
+        elif id == '2':
             url2 = 'https://oload.stream/embed/'
         elif id == '3':
-            url2 = 'https://vidlox.tv/embed-'
+            url2 = 'http://vidlox.me/embed-'
         elif id == '4':
             url2 = 'https://hqq.watch/player/embed_player.php?vid='
 
@@ -511,7 +511,7 @@ def showEpisode():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    sType = oInputParameterHandler.getValue('sType')
+    #sType = oInputParameterHandler.getValue('sType')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
