@@ -79,7 +79,7 @@ from requests.sessions import Session
 
 from jsunfuck import JSUnfuck
 
-Mode_Debug = True
+Mode_Debug = False
 
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
