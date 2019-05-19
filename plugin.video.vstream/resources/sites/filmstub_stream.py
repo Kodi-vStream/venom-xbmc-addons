@@ -12,7 +12,7 @@ import re
 SITE_IDENTIFIER = 'filmstub_stream'
 SITE_NAME = 'Filmstub'
 SITE_DESC = 'Films, Séries & Mangas en streaming'
-URL_MAIN = 'https://www.filmstub.stream/'
+URL_MAIN = 'https://www.filmstub.cc/'
 
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN + 'films-streaming/', 'showMovies')
@@ -186,9 +186,9 @@ def showMovies(sSearch = ''):
 
 
     if 'letters' in sUrl:
-        sPattern = '<a href="([^"]+)" class="MvTbImg"> <img src="([^"]+)" alt=.+?(?:|class="TpTv BgA">([^<]+)<.+?)strong>([^<]+)<.+?</td><td>([^<]+)<'
+        sPattern = '<a href="([^"]+)" class="MvTbImg".+?<noscript><img src="([^"]+)" alt=.+?(?:|class="TpTv BgA">([^<]+)<.+?)strong>([^<]+)<.+?</td><td>([^<]+)<'
     else:
-        sPattern = 'class="TPost C"> *<a href="([^"]+)">.+?<img src="([^"]+)".+?class="Title">(.+?)<.+?<span class="Year">(.+?)<\/span>'
+        sPattern = 'class="TPost C"> *<a href="([^"]+)".+?data-lazy-src="([^"]+)".+?class="Title">([^<]+)<.+?<span class="Year">([^<]+)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -322,11 +322,15 @@ def showLinks():
 
     sHtmlContent = oParser.abParse(sHtmlContent, 'TPost Sing', '<span class="btnsplyr">')#film serie
     sHtmlContent = re.sub(' SERVEUR <strong>[0-9]</strong>', ' SERVEUR', sHtmlContent)#Liste
-    sHtmlContent = re.sub('<img class="imgfav" *src="https://www.google.com/s2/favicons\?domain=.+?">', '', sHtmlContent)#film
+    #sHtmlContent = re.sub('<img class="imgfav" *src="https://www.google.com/s2/favicons\?domain=.+?">', '', sHtmlContent)#film
     sHtmlContent = sHtmlContent.replace('&quot;', '"').replace('#038;', '').replace('&amp;', '&')
 
     #1
-    sPattern = 'data-tplayernv=".+?"><span>([^<]+)<\/span><span>([^<]+)<\/span>'
+    if 'episode' in sUrl:
+        sPattern = 'data-tplayernv=".+?"><span>([^<]+)<\/span><span>([^<]+)<\/span>'
+    else:
+        sPattern = 'data-tplayernv=".+?</noscript>([^<]+)<\/span><span>([^<]+)<\/span>'
+
     aResult1 = re.findall(sPattern, sHtmlContent)
 
     #2
