@@ -6,18 +6,16 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
 from resources.lib.player import cPlayer
-from resources.lib.config import GestionCookie
 from resources.lib.gui.hoster import cHosterGui
 
 from resources.lib.enregistrement import cEnregistremement
 from resources.lib.epg import cePg
-from resources.lib.comaddon import progress, addon, xbmc, xbmcgui, VSlog, dialog
+from resources.lib.comaddon import progress, addon, xbmc, VSlog, dialog
 
-import re, urllib2, urllib, sys, random, string
+from zipfile import ZipFile
+import re, urllib2, urllib, sys, string, json, io
 import xbmcplugin, xbmcvfs
-import json, requests
 
 SITE_IDENTIFIER = 'freebox'
 SITE_NAME = '[COLOR orange]Télévision Direct/Stream[/COLOR]'
@@ -31,8 +29,7 @@ MOVIE_IPTVSITE = (True, 'showIptvSite')
 
 UA = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
 
-USER_AGENT = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
-headers = {'User-Agent': USER_AGENT,
+headers = {'User-Agent': UA,
            'Accept': '*/*',
            'Connection': 'keep-alive'}
 
@@ -41,18 +38,6 @@ icon = 'tv.png'
 #sRootArt = cConfig().getRootArt()
 sRootArt = "special://home/addons/plugin.video.vstream/resources/art/tv"
 ADDON = addon()
-
-def decodeEmail(e):
-    head , e = e.split('a href=')
-    e , rest = e.split('</a>')
-    e = re.search('data-cfemail="(.+?)"',e).group(1)
-    de = ""
-    k = int(e[:2], 16)
-
-    for i in range(2, len(e)-1, 2):
-        de += chr(int(e[i:i+2], 16)^k)
-
-    return head + str(de) + rest
 
 class track():
     def __init__(self, length, title, path, icon,data=''):
@@ -283,42 +268,42 @@ def getHtml(sUrl, data=None):#S'occupe des requetes
     #VSlog(data)
     return data
 
-def unGoogleDrive (infile):
-    ids = re.findall('<a href="https://drive.google.com/file/d/([^"]+)/view',infile)[0]
-    url = 'https://drive.google.com/uc?id='+ids+'&export=download'
-    inf = getHtml(url)
-    return inf
-
-def parseM3U(infile):#Traite les m3u local
+def parseM3U(sUrl=None, infile=None):#Traite les m3u local
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    if 'iptv4sat' in sUrl or '.zip' in sUrl:
-        sHtmlContent = getHtml(sUrl)
-        from zipfile import ZipFile
-        import io
-        zip_file = ZipFile(io.BytesIO(sHtmlContent))
-        files = zip_file.namelist()
-        with zip_file.open(files[0]) as f:
-            sHtmlContent = []
-            for line in f:
-                sHtmlContent.append(line)
-            inf = sHtmlContent
+    if infile == None:
+        if 'iptv4sat' in sUrl or '.zip' in sUrl:
+            sHtmlContent = getHtml(sUrl)
+            zip_files = ZipFile(io.BytesIO(sHtmlContent))
+            files = zip_files.namelist()
 
-    elif not '#EXTM3U' in sUrl:
-        site= infile
-        user_agent = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
-        headers = {'User-Agent': user_agent}
+            for Title in files:
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('sMovieTitle', Title)
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
 
-        oRequestHandler = cRequestHandler(sUrl)
-        oRequestHandler.addHeaderEntry('User-Agent',user_agent)
-        inf = oRequestHandler.request()
+                oGui.addDir(SITE_IDENTIFIER, 'unZip', Title, 'tv.png', oOutputParameterHandler)
 
-        if 'drive.google' in inf:
-            inf = unGoogleDrive(inf)
+            oGui.setEndOfDirectory()
+            return
 
-        inf = inf.split('\n')
+        elif not '#EXTM3U' in sUrl:
+            site= infile
+            headers = {'User-Agent': UA}
+
+            oRequestHandler = cRequestHandler(sUrl)
+            oRequestHandler.addHeaderEntry('User-Agent',UA)
+            inf = oRequestHandler.request()
+
+            if 'drive.google' in inf:
+                inf = unGoogleDrive(inf)
+
+            inf = inf.split('\n')
+        else:
+            inf = infile
+
     else:
         inf = infile
 
@@ -332,7 +317,6 @@ def parseM3U(infile):#Traite les m3u local
     ValidEntry = False
 
     for line in inf:
-
         line=line.strip()
         if line.startswith('#EXTINF:'):
             length,title=line.split('#EXTINF:')[1].split(',',1)
@@ -359,12 +343,15 @@ def parseM3U(infile):#Traite les m3u local
 
     return playlist
 
-def showWeb():#Code qui s'occupe de liens TV du Web
+def showWeb(infile=None):#Code qui s'occupe de liens TV du Web
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    playlist = parseM3U(sUrl)
+    if infile == None:
+        sUrl = oInputParameterHandler.getValue('siteUrl')
+        playlist = parseM3U(sUrl=sUrl)
+    else:
+        playlist = parseM3U(infile=infile)
 
     if (oInputParameterHandler.exist('AZ')):
         sAZ = oInputParameterHandler.getValue('AZ')
@@ -393,6 +380,8 @@ def showWeb():#Code qui s'occupe de liens TV du Web
             url2 = track.path.replace('+', 'P_L_U_S')
             if not '[' in url2 and not ']' in url2 and not '.m3u8' in url2 and not 'dailymotion' in url2:
                 url2 = 'plugin://plugin.video.f4mTester/?url=' + urllib.quote_plus(url2) + '&amp;streamtype=TSDOWNLOADER&name=' + urllib.quote(track.title)
+            else:
+                url2 = url2 + '|User-Agent=' + UA
 
             thumb = "/".join([sRootArt, sThumb])
 
@@ -459,7 +448,6 @@ def enregistrement():#Code qui gerent l'epg
 
 def showAZ():
 
-    import string
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     oInputParameterHandler = cInputParameterHandler()
@@ -481,7 +469,6 @@ def showAZ():
 
 def showAZRadio():
 
-    import string
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     oInputParameterHandler = cInputParameterHandler()
@@ -576,8 +563,9 @@ def play__():#Lancer les liens
         metadata = json.loads(sHtmlContent)
         if metadata['qualities']:
             sUrl = str(metadata['qualities']['auto'][0]['url'])
-        headers={'User-Agent':'Android'}
-        mb = requests.get(sUrl,headers=headers).text
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.addHeaderEntry('User-Agent', 'Android')
+        mb = oRequestHandler.request()
         mb = re.findall('NAME="([^"]+)"\n(.+)',mb)
         mb = sorted(mb,reverse=True)
         for quality, url1 in mb:
@@ -627,7 +615,15 @@ def play__():#Lancer les liens
         oPlayer.startPlayer()
         return
 
-def GetRealUrl(chain):#Recupere les liens des regex
+#############################################################################
+#Fonction diverse :
+#   - GetRealUrl = Regex pour Iptv(Officiel)
+#   - DecodeEmail = Decode les email coder par Cloudflare pour extinf
+#   - unZip = Extrait les un fichier specific dans une archive zip
+#   - unGoogleDrive = Recupere le fichier video quand il est heberger sur GoogleDrive
+#############################################################################
+
+def GetRealUrl(chain):
 
     oParser = cParser()
 
@@ -678,3 +674,37 @@ def GetRealUrl(chain):#Recupere les liens des regex
 def openwindows():
     xbmc.executebuiltin( "ActivateWindow(%d, return)" % ( 10601, ) )
     return
+
+def decodeEmail(e):
+    head , e = e.split('a href=')
+    e , rest = e.split('</a>')
+    e = re.search('data-cfemail="(.+?)"',e).group(1)
+    de = ""
+    k = int(e[:2], 16)
+
+    for i in range(2, len(e)-1, 2):
+        de += chr(int(e[i:i+2], 16)^k)
+
+    return head + str(de) + rest
+
+def unZip():
+    oInputParameterHandler = cInputParameterHandler()
+    Title = oInputParameterHandler.getValue('sMovieTitle')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    sHtmlContent = getHtml(sUrl)
+    zip_files = ZipFile(io.BytesIO(sHtmlContent))
+    files = zip_files.namelist()
+    pos = files.index(Title)
+    with zip_files.open(files[pos]) as f:
+        sHtmlContent = []
+        for line in f:
+            sHtmlContent.append(line)
+        inf = sHtmlContent
+    showWeb(inf)
+
+def unGoogleDrive (infile):
+    ids = re.findall('<a href="https://drive.google.com/file/d/([^"]+)/view',infile)[0]
+    url = 'https://drive.google.com/uc?id='+ids+'&export=download'
+    inf = getHtml(url)
+    return inf
