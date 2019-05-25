@@ -339,6 +339,8 @@ class cHosterGui:
             return self.getHoster('archive')
         if ('freshstream' in sHostName):
             return self.getHoster('freshstream')
+        if ('jetload' in sHostName):
+            return self.getHoster('jetload')
 
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
