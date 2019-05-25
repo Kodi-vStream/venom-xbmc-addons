@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress#, VSlog
 
 SITE_IDENTIFIER = 'streamiz_co'
 SITE_NAME = 'Streamiz'
@@ -208,7 +208,7 @@ def showHosters():
                     sHosterUrl = GetPlayvid(sHosterUrl)
 
                 if 'duckload' in sHosterUrl:
-                    sHosterUrl = 'https://' + sHosterUrl.split('/')[2] + '/hls/'+sHosterUrl.split('id=')[1]+'/'+sHosterUrl.split('id=')[1]+'.playlist.m3u8'
+                    sHosterUrl = 'https://' + sHosterUrl.split('/')[2] + '/hls/'+sHosterUrl.split('id=')[1] + '/' + sHosterUrl.split('id=')[1] + '.playlist.m3u8'
 
                 if 'make_mp4' in sHosterUrl:
                     sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, "GoogleVideo")
@@ -228,7 +228,7 @@ def showHosters():
 
 def GetPlayvid(url):
     oRequestHandler = cRequestHandler(url)
-    oRequestHandler.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.7')
+    oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.7')
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
@@ -247,8 +247,8 @@ def showGoogleLink():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    oRequestHandler = cRequestHandler('https://playvid.org'+sUrl)
-    oRequestHandler.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.7')
+    oRequestHandler = cRequestHandler('https://playvid.org' + sUrl)
+    oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.7')
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
@@ -260,7 +260,7 @@ def showGoogleLink():
             sHosterUrl = aEntry[0]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle + ' ' +aEntry[1])
-                oHoster.setFileName(sMovieTitle + ' ' +aEntry[1])
+                oHoster.setDisplayName(sMovieTitle + ' ' + aEntry[1])
+                oHoster.setFileName(sMovieTitle + ' ' + aEntry[1])
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
     oGui.setEndOfDirectory()
