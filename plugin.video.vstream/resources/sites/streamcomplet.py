@@ -9,19 +9,19 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.packer import cPacker
 import re
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 
 SITE_IDENTIFIER = 'streamcomplet'
 SITE_NAME = 'StreamComplet'
 SITE_DESC = 'Streaming Gratuit de 7210 Films Complets en VF.'
 
-URL_MAIN = 'https://streamcomplet.xyz/'
+URL_MAIN = 'https://stream-complet.me/'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
-URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'search/', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + 'search/', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -55,19 +55,19 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action', URL_MAIN + 'film/action/'] )
-    liste.append( ['Animation', URL_MAIN + 'film/animation/'] )
-    liste.append( ['Aventure', URL_MAIN + 'film/aventure/'] )
-    liste.append( ['Comédie', URL_MAIN + 'film/comedie/'] )
-    liste.append( ['Drame', URL_MAIN + 'film/drame/'] )
-    liste.append( ['Fiction', URL_MAIN + 'film/fiction/'] )
-    liste.append( ['Guerre', URL_MAIN + 'film/guerre/'] )
-    liste.append( ['Historique', URL_MAIN + 'film/historique/'] )
-    liste.append( ['Horreur', URL_MAIN + 'film/horreur/'] )
-    liste.append( ['Musique', URL_MAIN + 'film/musique/'] )
-    liste.append( ['Policier', URL_MAIN + 'film/policier/'] )
-    liste.append( ['Romance', URL_MAIN + 'film/romance/'] )
-    liste.append( ['Thriller', URL_MAIN + 'film/thriller/'] )
+    liste.append( ['Action', URL_MAIN + 'films/action/'] )
+    liste.append( ['Animation', URL_MAIN + 'films/animation/'] )
+    liste.append( ['Aventure', URL_MAIN + 'films/aventure/'] )
+    liste.append( ['Comédie', URL_MAIN + 'films/comedie/'] )
+    liste.append( ['Drame', URL_MAIN + 'films/drame/'] )
+    liste.append( ['Fiction', URL_MAIN + 'films/fiction/'] )
+    liste.append( ['Guerre', URL_MAIN + 'films/guerre/'] )
+    liste.append( ['Historique', URL_MAIN + 'films/historique/'] )
+    liste.append( ['Horreur', URL_MAIN + 'films/horreur/'] )
+    liste.append( ['Musique', URL_MAIN + 'films/musique/'] )
+    liste.append( ['Policier', URL_MAIN + 'films/policier/'] )
+    liste.append( ['Romance', URL_MAIN + 'films/romance/'] )
+    liste.append( ['Thriller', URL_MAIN + 'films/thriller/'] )
 
     for sTitle, sUrl in liste:
 
@@ -88,7 +88,8 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<div class="moviefilm"><a href=".+?"><img src="([^<]+)" alt=".+?" height=".+?" width=".+?" />.+?<a href="([^<]+)">([^<]+)</a>'
+
+    sPattern = '<img src="([^"]+)" alt="([^"]+)" height=.+?</a>.+?<div class="movief">.+?href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -102,9 +103,9 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sThumb = aEntry[0]
-            sUrl = aEntry[1]
-            sTitle = aEntry[2]
+            sThumb = URL_MAIN + aEntry[0]
+            sUrl = URL_MAIN + aEntry[2]
+            sTitle = aEntry[1]
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
@@ -115,7 +116,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -129,14 +130,53 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<span class=\'current\'>.+?</span><a class="page larger" href="(.+?)">'
+    sPattern = '<span class="current">.+?<a class="page larger" href="([^"]+)">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        return aResult[1][0]
+        return URL_MAIN+aResult[1][0]
 
     return False
+
+def showLinks():
+    oGui = cGui()
+    oParser = cParser()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = '<li class="player link" data-player="([^"]+)">.+?<span class="p-name">([^"]+)</span>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
+
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        progress_ = progress().VScreate(SITE_NAME)
+        for aEntry in aResult[1]:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
+
+            sUrl = URL_MAIN + aEntry[0]
+            sDisplayName = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, aEntry[1])
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayName, '', sThumb, '', oOutputParameterHandler)
+
+        progress_.VSclose(progress_)
+
+    oGui.setEndOfDirectory()
 
 def showHosters():
     oGui = cGui()
@@ -150,46 +190,63 @@ def showHosters():
 
     oParser = cParser()
 
-
-    sPattern = '<iframe.+?src="(http(?:|s):\/\/media\.vimple\.me.+?f=([^"]+))"'
+    sPattern = 'url=([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
+#
     if (aResult[0] == True):
-
-        sUrl2 = aResult[1][0][0]
-
-        oRequestHandler = cRequestHandler(sUrl2)
-        oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0')
-        oRequestHandler.addHeaderEntry('Referer', sUrl)
-        sHtmlContent = oRequestHandler.request()
-
-        sPattern = '<iframe src="([^"]+)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-
-        if (aResult[0] == True):
-            sHosterUrl = 'https:' + aResult[1][0]
-            #VSlog(sHosterUrl)
+        for aEntry in aResult[1]:
+            sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-        else:
-            sHtmlContent = oParser.abParse(sHtmlContent, "<script>", "</script><script>")
 
-            sPattern = 'eval\s*\(\s*function(?:.|\s)+?{}\)\)'
-            aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
-                sHtmlContent = cPacker().unpack(aResult[1][0])
-                sHtmlContent = sHtmlContent.replace('\\', '')
-                #VSlog(sHtmlContent)
-                code = re.search('(https://openload.+?embed\/.+?\/)', sHtmlContent)
-                if code:
-                    sHosterUrl = code.group(1)
-                    #VSlog(sHosterUrl)
-                    oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    if (oHoster != False):
-                        oHoster.setDisplayName(sMovieTitle)
-                        oHoster.setFileName(sMovieTitle)
-                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+####################################
+#
+# Ancient code du site .xyz
+# si retour en arriere
+#
+####################################
 
+#    sPattern = '<iframe.+?src="(http(?:|s):\/\/media\.vimple\.me.+?f=([^"]+))"'
+#    aResult = oParser.parse(sHtmlContent, sPattern)
+#    if (aResult[0] == True):
+
+#        sUrl2 = aResult[1][0][0]
+#
+#        oRequestHandler = cRequestHandler(sUrl2)
+#        oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0')
+#        oRequestHandler.addHeaderEntry('Referer', sUrl)
+#        sHtmlContent = oRequestHandler.request()
+#
+#        sPattern = '<iframe src="([^"]+)"'
+#        aResult = oParser.parse(sHtmlContent, sPattern)
+#
+#        if (aResult[0] == True):
+#            sHosterUrl = 'https:' + aResult[1][0]
+#            #VSlog(sHosterUrl)
+#            oHoster = cHosterGui().checkHoster(sHosterUrl)
+#            if (oHoster != False):
+#                oHoster.setDisplayName(sMovieTitle)
+#                oHoster.setFileName(sMovieTitle)
+#                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+#        else:
+#            sHtmlContent = oParser.abParse(sHtmlContent, "<script>", "</script><script>")
+#
+#            sPattern = 'eval\s*\(\s*function(?:.|\s)+?{}\)\)'
+#            aResult = oParser.parse(sHtmlContent, sPattern)
+#            if (aResult[0] == True):
+#                sHtmlContent = cPacker().unpack(aResult[1][0])
+#                sHtmlContent = sHtmlContent.replace('\\', '')
+#                #VSlog(sHtmlContent)
+#                code = re.search('(https://openload.+?embed\/.+?\/)', sHtmlContent)
+#                if code:
+#                    sHosterUrl = code.group(1)
+#                   #VSlog(sHosterUrl)
+#                   oHoster = cHosterGui().checkHoster(sHosterUrl)
+#                   if (oHoster != False):
+#                       oHoster.setDisplayName(sMovieTitle)
+#                       oHoster.setFileName(sMovieTitle)
+#                       cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
     oGui.setEndOfDirectory()
