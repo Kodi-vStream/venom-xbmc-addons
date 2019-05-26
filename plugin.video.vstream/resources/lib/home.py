@@ -99,12 +99,7 @@ class cHome:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('cDownload', 'getDownload', self.ADDON.VSlang(30202), 'download.png', oOutputParameterHandler)
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('cLibrary', 'getLibrary', self.ADDON.VSlang(30300), 'library.png', oOutputParameterHandler)
-
+        oGui.addDir(SITE_IDENTIFIER, 'ShowTools', self.ADDON.VSlang(30500), 'download.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -114,7 +109,6 @@ class cHome:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
             oGui.addDir('cHome', 'showHistory', self.ADDON.VSlang(30308), 'annees.png', oOutputParameterHandler)
-
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -139,6 +133,19 @@ class cHome:
         except:
             pass
         return
+        
+    def ShowTools(self):
+        oGui = cGui()
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir('cLibrary', 'getLibrary', self.ADDON.VSlang(30300), 'library.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir('cDownload', 'getDownload', self.ADDON.VSlang(30202), 'download.png', oOutputParameterHandler)
+
+        oGui.setEndOfDirectory()   
 
     def showUsers(self):
         oGui = cGui()
