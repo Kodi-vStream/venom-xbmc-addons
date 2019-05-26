@@ -237,10 +237,14 @@ class CloudflareBypass(object):
                 head[i[1]] = self.Memorised_Headers[k]
             else:
                 head[i[1]] = v[i[0]]
+                
+        #optional headers
+        if 'Referer' in self.Memorised_Headers:
+            head['Referer'] = self.Memorised_Headers['Referer']
         
         if (False):
-            #Normalisation because they are not cas sensitive:
-            Headers = ['User-Agent','Accept-Encoding','Accept-Language','Cache-Control','Dnt','Accept','Pragma','Connexion']
+            #Normalisation because they are not case sensitive:
+            Headers = ['User-Agent','Accept','Accept-Language','Accept-Encoding','Cache-Control','Dnt','Pragma','Connexion']
             Headers_l = [x.lower() for x in Headers]
             head2 = dict(head)
             for key in head2:
