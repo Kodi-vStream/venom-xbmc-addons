@@ -1,10 +1,10 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #Arias800
-from resources.lib.handler.requestHandler import cRequestHandler #requete url
-from resources.lib.parser import cParser #recherche de code
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, VSlog
+from resources.lib.comaddon import dialog#, VSlog
 
 import re
 
@@ -47,7 +47,7 @@ class cHoster(iHoster):
         return ''
 
     def __getIdFromUrl(self, sUrl):
-        sPattern = "id=([^<]+)"
+        sPattern = 'id=([^"]+)'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
@@ -81,7 +81,7 @@ class cHoster(iHoster):
             oRequest = cRequestHandler(aResult[1][0])
             sHtmlContent1 = oRequest.request()
 
-            sPattern1 =  '"(.+?)":"(.+?)"'
+            sPattern1 =  '"([^"]+)":"([^"]+)"'
             aResult1 = oParser.parse(sHtmlContent1, sPattern1)
 
         if (aResult1[0]):
