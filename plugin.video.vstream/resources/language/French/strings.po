@@ -857,3 +857,6 @@ msgctxt "#30468"
 msgid "Place"
 msgstr "Lieu"
 
+msgctxt "#30500"
+msgid "Outils"
+msgstr ""
