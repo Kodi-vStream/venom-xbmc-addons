@@ -7,7 +7,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress#, VSlog
 
 import json
 
@@ -17,7 +17,7 @@ SITE_DESC = 'anime en streaming'
 
 URL_MAIN = 'https://www.neko-sama.fr/'
 
-URL_SEARCH = (URL_MAIN+'animes-search.json', 'showSearchResult')
+URL_SEARCH = (URL_MAIN + 'animes-search.json', 'showSearchResult')
 URL_SEARCH_SERIES = (URL_MAIN + 'animes-search.json', 'showSearchResult')
 FUNCTION_SEARCH = 'showSearchResult'
 
@@ -96,7 +96,7 @@ def parseJson(json_object, sSearch):
             Url.append(dicts['url'])
             Thumb.append(dicts['url_image'])
 
-    return Title,Url,Thumb
+    return Title, Url, Thumb
 
 def showSearchResult(sSearch):
     oGui = cGui()
@@ -104,10 +104,10 @@ def showSearchResult(sSearch):
 
     sSearch = sSearch.lower()
     data = json.loads(oRequestHandler.request())
-    Title,Url,Thumb = parseJson(data,sSearch)
-    total = len(zip(Title,Url,Thumb))
+    Title, Url, Thumb = parseJson(data, sSearch)
+    total = len(zip(Title, Url, Thumb))
     progress_ = progress().VScreate(SITE_NAME)
-    for title,url,thumb in zip(Title,Url,Thumb):
+    for title, url, thumb in zip(Title, Url, Thumb):
         progress_.VSupdate(progress_, total)
         if progress_.iscanceled():
             break
@@ -208,7 +208,7 @@ def ShowSerieSaisonEpisodes():
     except:
         pass
 
-    sPattern = '"episode":"(.+?)".+?"url":"(.+?)","url_image":"(.+?)"'
+    sPattern = '"episode":"([^"]+)".+?"url":"([^"]+)","url_image":"([^"]+)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -222,8 +222,8 @@ def ShowSerieSaisonEpisodes():
             if progress_.iscanceled():
                 break
 
-            sTitle = sMovieTitle +' '+ aEntry[0]
-            sUrl2 = URL_MAIN + aEntry[1].replace('\\/','/')
+            sTitle = sMovieTitle + ' ' + aEntry[0]
+            sUrl2 = URL_MAIN + aEntry[1].replace('\\/', '/')
             sThumb = aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -247,22 +247,22 @@ def seriesHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = "video.+? = \'(.+?)\'"
+    sPattern = "video.+? = \'([^']+)\'"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
+            sHosterUrl = aEntry
             #Enleve les faux liens
             if 'openload' in aEntry and not '.mp4' in aEntry:
-                pass
-            else:
-                sHosterUrl = aEntry
-                oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
-                    oHoster.setDisplayName(sMovieTitle)
-                    oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                continue
+
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
