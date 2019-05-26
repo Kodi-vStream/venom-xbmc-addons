@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 #Venom.
+from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 #from resources.lib.handler.pluginHandler import cPluginHandler
@@ -11,7 +12,6 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.db import cDb
 
 from resources.lib.comaddon import addon, window
-
 
 SITE_IDENTIFIER = 'cHome'
 SITE_NAME = 'Home'
@@ -30,7 +30,6 @@ SITE_NAME = 'Home'
 class cHome:
 
     ADDON = addon()
-
 
     def load(self):
 
@@ -118,13 +117,11 @@ class cHome:
         # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         # oGui.addDir('globalParametre', 'showSources', '[COLOR teal]' + self.ADDON.VSlang(30023) + '[/COLOR]', 'param.png', oOutputParameterHandler)
 
-
         view = False
         if (self.ADDON.getSetting("active-view") == 'true'):
             view = self.ADDON.getSetting('accueil-view')
 
         oGui.setEndOfDirectory(view)
-
 
     def showUpdate(self):
         try:
@@ -133,7 +130,7 @@ class cHome:
         except:
             pass
         return
-        
+
     def ShowTools(self):
         oGui = cGui()
 
@@ -145,7 +142,11 @@ class cHome:
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir('cDownload', 'getDownload', self.ADDON.VSlang(30202), 'download.png', oOutputParameterHandler)
 
-        oGui.setEndOfDirectory()   
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir(SITE_IDENTIFIER, 'showHostDirect', self.ADDON.VSlang(30469), 'search.png', oOutputParameterHandler)
+
+        oGui.setEndOfDirectory()
 
     def showUsers(self):
         oGui = cGui()
@@ -437,7 +438,6 @@ class cHome:
 
         oGui.setEndOfDirectory()
 
-
     def showHistory(self):
 
         oGui = cGui()
@@ -462,7 +462,6 @@ class cHome:
             #oOutputParameterHandler.addParameter('disp', match[2])
             #oOutputParameterHandler.addParameter('readdb', 'False')
 
-
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName('globalSearch')
             oGuiElement.setFunction('globalSearch')
@@ -479,13 +478,11 @@ class cHome:
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
             oGui.addDir(SITE_IDENTIFIER, 'delSearch', self.ADDON.VSlang(30413), 'search.png', oOutputParameterHandler)
 
-
         oGui.setEndOfDirectory()
 
     def delSearch(self):
         cDb().del_history()
         return True
-
 
     def callpluging(self):
         oGui = cGui()
@@ -505,6 +502,19 @@ class cHome:
                 oGui.addDir(aPlugin[2], aPlugin[3], aPlugin[1], icon, oOutputParameterHandler)
             except:
                 pass
+
+        oGui.setEndOfDirectory()
+
+    def showHostDirect(self): #fonction de recherche
+        oGui = cGui()
+        sUrl = oGui.showKeyBoard(heading='Tapez le liens que vous souhaitez rechercher')
+        if (sUrl != False):
+
+            oHoster = cHosterGui().checkHoster(sUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName("Voici votre lien : ")
+                oHoster.setFileName("Voici votre lien : ")
+                cHosterGui().showHoster(oGui, oHoster, sUrl, '')
 
         oGui.setEndOfDirectory()
 
