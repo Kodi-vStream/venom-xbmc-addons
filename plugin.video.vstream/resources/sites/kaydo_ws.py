@@ -353,8 +353,10 @@ def showHosters():
                 sHosterUrl = oRequestHandler.getRealUrl()
 
             else:
-                 sHosterUrl = 'https://' + Url.split('/')[2] + '/hls/'+Url.split('id=')[1]+'/'+Url.split('id=')[1]+'.playlist.m3u8'
-                 VSlog(sHosterUrl)
+                oRequestHandler = cRequestHandler(Url)
+                sHtmlContent = oRequestHandler.request()
+                Url = oRequestHandler.getRealUrl()
+                sHosterUrl = 'https://' + Url.split('/')[2] + '/hls/'+Url.split('id=')[1]+'/'+Url.split('id=')[1]+'.playlist.m3u8'
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
