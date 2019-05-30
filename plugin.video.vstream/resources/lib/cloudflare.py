@@ -8,7 +8,6 @@ import re,os
 import time, json, random
 
 import xbmc
-import xbmcaddon
 
 from resources.lib.config import GestionCookie
 
@@ -17,7 +16,6 @@ try:
 except ImportError:
     from urllib.parse import urlparse
 
-    
 ##########################################################################################################################################################
 #
 # Ok so a big thx to VeNoMouS for this code
@@ -28,24 +26,34 @@ except ImportError:
 import ssl
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.ssl_ import create_urllib3_context
+from collections import OrderedDict
 
 class CipherSuiteAdapter(HTTPAdapter):
 
     def __init__(self, cipherSuite=None, **kwargs):
         self.cipherSuite = cipherSuite
+
+        if hasattr(ssl, 'PROTOCOL_TLS'):
+            self.ssl_context = create_urllib3_context(
+                ssl_version=getattr(ssl, 'PROTOCOL_TLSv1_3', ssl.PROTOCOL_TLSv1_2),
+                ciphers=self.cipherSuite
+            )
+        else:
+            self.ssl_context = create_urllib3_context(ssl_version=ssl.PROTOCOL_TLSv1)
+
         super(CipherSuiteAdapter, self).__init__(**kwargs)
 
     def init_poolmanager(self, *args, **kwargs):
-        kwargs['ssl_context'] = create_urllib3_context(ciphers=self.cipherSuite)
+        kwargs['ssl_context'] = self.ssl_context
         return super(CipherSuiteAdapter, self).init_poolmanager(*args, **kwargs)
 
     def proxy_manager_for(self, *args, **kwargs):
-        kwargs['ssl_context'] = create_urllib3_context(ciphers=self.cipherSuite)
+        kwargs['ssl_context'] = self.ssl_context
         return super(CipherSuiteAdapter, self).proxy_manager_for(*args, **kwargs)
 
+
+
 ##########################################################################################################################################################
-
-
 
 
 if (False):
@@ -109,13 +117,12 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 #For memory
 #http://www.jsfuck.com/
 
-PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0'
 
 def checklowerkey(key,dict):
     for i in dict:
-        if i.lower == key.lower():
-            return true
+        if str(i.lower()) == str(key.lower()):
+            return i
     return False
 
 def solvecharcode(chain,t):
@@ -220,35 +227,31 @@ class CloudflareBypass(object):
         return list
 
     def SetHeader(self):
-        head={}
-        if  (self.Memorised_Headers):
-            for i in self.Memorised_Headers:
-                head[i] =  self.Memorised_Headers[i]
+        head = OrderedDict()
+        #Need to use correct order
+        h = ['User-Agent','Accept','Accept-Language','Accept-Encoding','Connection','Upgrade-Insecure-Requests']
+        v = [UA,'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8','en-US,en;q=0.5','gzip, deflate','close','1']
+        for i in enumerate(h):
+            k = checklowerkey(i[1],self.Memorised_Headers)
+            if k:
+                head[i[1]] = self.Memorised_Headers[k]
+            else:
+                head[i[1]] = v[i[0]]
                 
-        if not checklowerkey('User-Agent',head):
-            head['User-Agent'] =  UA        
-        if not checklowerkey('Accept-Encoding',head):
-            head['Accept-Encoding'] =  'gzip, deflate'#'identity'
-        if not checklowerkey('Accept-Language',head):
-            head['Accept-Language'] = 'en-US,en;q=0.5'
-        if not checklowerkey('Cache-Control',head):
-            head['Cache-Control'] = 'no-cache'
-        if not checklowerkey('Dnt',head):
-            head['Dnt'] = '1'
-        if not checklowerkey('Pragma',head):
-            head['Pragma'] = 'no-cache'
-        if not checklowerkey('Accept',head):
-            head['Accept'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-            
-        #Normalisation because they are not cas sensitive:
-        Headers = ['User-Agent','Accept-Encoding','Accept-Language','Cache-Control','Dnt','Accept','Pragma','Connexion']
-        Headers_l = [x.lower() for x in Headers]
-        head2 = dict(head)
-        for key in head2:
-            if not key in Headers and key.lower() in Headers_l:
-                p  = Headers_l.index(key.lower())
-                head[Headers[p]] = head[key]
-                del head[key]
+        #optional headers
+        if 'Referer' in self.Memorised_Headers:
+            head['Referer'] = self.Memorised_Headers['Referer']
+        
+        if (False):
+            #Normalisation because they are not case sensitive:
+            Headers = ['User-Agent','Accept','Accept-Language','Accept-Encoding','Cache-Control','Dnt','Pragma','Connexion']
+            Headers_l = [x.lower() for x in Headers]
+            head2 = dict(head)
+            for key in head2:
+                if not key in Headers and key.lower() in Headers_l:
+                    p  = Headers_l.index(key.lower())
+                    head[Headers[p]] = head[key]
+                    del head[key]
 
         return head
 
@@ -403,7 +406,7 @@ class CloudflareScraper(Session):
         
         self.firsturl = ''
         
-        self.headers= {
+        self.headers = {
                 'User-Agent': UA,
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                 'Accept-Language': 'en-US,en;q=0.5',
@@ -420,36 +423,36 @@ class CloudflareScraper(Session):
         
         
     ##########################################################################################################################################################
-    # Thx again to VeNoMouS
     #
+    #Thx again to to VeNoMouS for this code
     
     def loadCipherSuite(self):
         if self.cipherSuite:
             return self.cipherSuite
 
-        ciphers = [
-            'GREASE_3A', 'GREASE_6A', 'AES128-GCM-SHA256', 'AES256-GCM-SHA256', 'AES256-GCM-SHA384', 'CHACHA20-POLY1305-SHA256',
-            'ECDHE-ECDSA-AES128-GCM-SHA256', 'ECDHE-RSA-AES128-GCM-SHA256', 'ECDHE-ECDSA-AES256-GCM-SHA384',
-            'ECDHE-RSA-AES256-GCM-SHA384', 'ECDHE-ECDSA-CHACHA20-POLY1305-SHA256', 'ECDHE-RSA-CHACHA20-POLY1305-SHA256',
-            'ECDHE-RSA-AES128-CBC-SHA', 'ECDHE-RSA-AES256-CBC-SHA', 'RSA-AES128-GCM-SHA256', 'RSA-AES256-GCM-SHA384',
-            'ECDHE-RSA-AES128-GCM-SHA256', 'RSA-AES256-SHA', '3DES-EDE-CBC'
-        ]
-
         self.cipherSuite = ''
 
-        ctx = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+        if hasattr(ssl, 'PROTOCOL_TLS'):
+            ciphers = [
+                'ECDHE-ECDSA-AES128-GCM-SHA256', 'ECDHE-RSA-AES128-GCM-SHA256', 'ECDHE-ECDSA-AES256-GCM-SHA384',
+                'ECDHE-RSA-AES256-GCM-SHA384', 'ECDHE-ECDSA-CHACHA20-POLY1305-SHA256', 'ECDHE-RSA-CHACHA20-POLY1305-SHA256',
+                'ECDHE-RSA-AES128-CBC-SHA', 'ECDHE-RSA-AES256-CBC-SHA', 'RSA-AES128-GCM-SHA256', 'RSA-AES256-GCM-SHA384',
+                'ECDHE-RSA-AES128-GCM-SHA256', 'RSA-AES256-SHA', '3DES-EDE-CBC'
+            ]
 
-        for cipher in ciphers:
-            try:
-                ctx.set_ciphers(cipher)
-                self.cipherSuite = '{}:{}'.format(self.cipherSuite, cipher).rstrip(':')
-            except ssl.SSLError:
-                pass
+            if hasattr(ssl, 'PROTOCOL_TLSv1_3'):
+                ciphers.insert(0, ['GREASE_3A', 'GREASE_6A', 'AES128-GCM-SHA256', 'AES256-GCM-SHA256', 'AES256-GCM-SHA384', 'CHACHA20-POLY1305-SHA256'])
+
+            ctx = ssl.SSLContext(getattr(ssl, 'PROTOCOL_TLSv1_3', ssl.PROTOCOL_TLSv1_2))
+
+            for cipher in ciphers:
+                try:
+                    ctx.set_ciphers(cipher)
+                    self.cipherSuite = '{}:{}'.format(self.cipherSuite, cipher).rstrip(':')
+                except ssl.SSLError:
+                    pass
 
         return self.cipherSuite
-
-    ##########################################################################################################################################################
-
 
     def request(self, method, url, *args, **kwargs):
         
@@ -523,9 +526,9 @@ class CloudflareScraper(Session):
         submit_url = "%s://%s/cdn-cgi/l/chk_jschl" % (parsed_url.scheme, domain)
 
         cloudflare_kwargs = original_kwargs.copy( )
-        params = cloudflare_kwargs.setdefault("params", {})
+        params = cloudflare_kwargs.setdefault("params", OrderedDict())
         headers = cloudflare_kwargs.setdefault("headers", {})
-        headers["Referer"] = resp.url
+        headers["Referer"] = str(resp.url)
         
         #fh = open('html.txt', "r")
         #body = fh.read()
@@ -549,8 +552,8 @@ class CloudflareScraper(Session):
             s_match = re.search('name="s" value="(.+?)"', sub_body)
             if s_match:
                 params["s"] = s_match.group(1) # On older variants this parameter is absent.
-            params["jschl_vc"] = re.search(r'name="jschl_vc" value="(\w+)"', sub_body).group(1)
-            params["pass"] = re.search(r'name="pass" value="(.+?)"', sub_body).group(1)
+            params["jschl_vc"] = str(re.search(r'name="jschl_vc" value="(\w+)"', sub_body).group(1))
+            params["pass"] = str(re.search(r'name="pass" value="(.+?)"', sub_body).group(1))
 
             if body.find('id="cf-dn-', form_index) != -1:
                 extra_div_expression = re.search('id="cf-dn-.*?>(.+?)<', sub_body).group(1)
@@ -682,4 +685,3 @@ class CloudflareScraper(Session):
                 return _get_jsfuck_number(dividend) / float(_get_jsfuck_number(divisor))
         else:
             return _get_jsfuck_number(expression[2:-1])
-

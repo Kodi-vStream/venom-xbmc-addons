@@ -203,7 +203,7 @@ class cHosterGui:
                 return self.getHoster('dailymotion')
         if ('filez.' in sHostName):
             return self.getHoster('flashx')
-        if ('mystream' in sHostName):
+        if ('mystream' in sHostName) or ('mstream' in sHostName):
             return self.getHoster('mystream')
         if ('streamingentiercom/videophp?type=speed' in sHosterUrl):
             return self.getHoster('speedvideo')
@@ -337,6 +337,10 @@ class cHosterGui:
             return self.getHoster('verystream')
         if ('archive.' in sHostName):
             return self.getHoster('archive')
+        if ('freshstream' in sHostName):
+            return self.getHoster('freshstream')
+        if ('jetload' in sHostName):
+            return self.getHoster('jetload')
 
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):

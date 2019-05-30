@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 import re, base64
 
 from resources.lib.packer import cPacker
@@ -334,22 +334,27 @@ def showHosters():
             sHtmlContent = oRequestHandler.request()
 
             #Recuperation de l'url suivante
-            sPattern1 = '<div class="Video"><iframe width=".+?" height=".+?" src="([^"]+)&" frameborder'
+            sPattern1 = '<div class="Video"><iframe.+?src="([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern1)
 
             Url = ''.join(aResult[1])
-            oRequestHandler = cRequestHandler(Url)
-            sHtmlContent = oRequestHandler.request()
+            if not 'hdsto' in Url:
+                oRequestHandler = cRequestHandler(Url)
+                sHtmlContent = oRequestHandler.request()
 
-            #Recuperation de l'id
-            sPattern1 = "var id.+?'(.+?)'"
-            aResult = oParser.parse(sHtmlContent, sPattern1)
-            sPost = ''.join(aResult[1])[::-1]
+                #Recuperation de l'id
+                sPattern1 = "var id.+?'(.+?)'"
+                aResult = oParser.parse(sHtmlContent, sPattern1)
+                sPost = ''.join(aResult[1])[::-1]
 
-            oRequestHandler = cRequestHandler(URL_MAIN + '?trhidee=1&trfex=' + sPost)
-            oRequestHandler.addHeaderEntry('Referer', Url)
-            sHtmlContent = oRequestHandler.request()
-            sHosterUrl = oRequestHandler.getRealUrl()
+                oRequestHandler = cRequestHandler(URL_MAIN + '?trhidee=1&trfex=' + sPost)
+                oRequestHandler.addHeaderEntry('Referer', Url)
+                sHtmlContent = oRequestHandler.request()
+                sHosterUrl = oRequestHandler.getRealUrl()
+
+            else:
+                 sHosterUrl = 'https://' + Url.split('/')[2] + '/hls/'+Url.split('id=')[1]+'/'+Url.split('id=')[1]+'.playlist.m3u8'
+                 VSlog(sHosterUrl)
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):

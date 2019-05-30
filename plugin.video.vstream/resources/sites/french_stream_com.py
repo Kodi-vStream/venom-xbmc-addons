@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress#, VSlog
 
 import re, base64, urllib
 
@@ -15,7 +15,7 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/5
 
 SITE_IDENTIFIER = 'french_stream_com'
 SITE_NAME = 'French-stream'
-SITE_DESC = 'films en streaming'
+SITE_DESC = 'Films, Séries & Mangas en streaming'
 
 URL_MAIN = 'https://www1.french-streaming.com/'
 
@@ -120,10 +120,10 @@ def ResolveUrl(url):
 
         if id == '1':
             url2 = 'http://cloudvid.co/embed-'
-        if id == '2':
+        elif id == '2':
             url2 = 'https://oload.stream/embed/'
         elif id == '3':
-            url2 = 'https://vidlox.tv/embed-'
+            url2 = 'https://vidlox.me/embed-'
         elif id == '4':
             url2 = 'https://hqq.watch/player/embed_player.php?vid='
 
@@ -489,7 +489,7 @@ def showHosters():
             except:
                 pass
 
-            if '/embed' in url or 'opsktp' in url or 'iframe' in url:
+            if '/embed' in url or 'opsktp' in url or 'iframe' in url or 'jetload' in url:
                 sHosterUrl = url
             else:
                 url = decode_url(url, aEntry[1], tmp)
@@ -511,7 +511,7 @@ def showEpisode():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    sType = oInputParameterHandler.getValue('sType')
+    #sType = oInputParameterHandler.getValue('sType')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -588,7 +588,7 @@ def serieHosters():
                 except:
                     pass
 
-                if '/embed' in url or 'opsktp' in url or 'iframe' in url:
+                if '/embed' in url or 'opsktp' in url or 'iframe' in url or 'jetload' in url:
                     sHosterUrl = url
                 else:
                     url2 = decode_url_Serie(url, aEntry[0], tmp)

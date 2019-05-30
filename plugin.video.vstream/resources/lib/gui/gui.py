@@ -51,6 +51,27 @@ class cGui():
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
+	# Coffret et integrale de films
+    def addMoviePack(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
+        cGui.CONTENT = "movies"
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName(sId)
+        oGuiElement.setFunction(sFunction)
+        oGuiElement.setTitle(sLabel)
+        oGuiElement.setIcon(sIcon)
+        oGuiElement.setThumbnail(sThumbnail)
+        oGuiElement.setPoster(sThumbnail)
+        oGuiElement.setMeta(3)
+        oGuiElement.setDescription(sDesc)
+        #oGuiElement.setMovieFanart()
+        oGuiElement.setCat(1)
+
+        if oOutputParameterHandler.getValue('sMovieTitle'):
+            sTitle = oOutputParameterHandler.getValue('sMovieTitle')
+            oGuiElement.setFileName(sTitle)
+
+        self.addFolder(oGuiElement, oOutputParameterHandler)
+
 
     def addTV(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
         cGui.CONTENT = "tvshows"

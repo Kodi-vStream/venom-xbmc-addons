@@ -8,7 +8,6 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.cloudflare import CloudflareBypass
-from resources.lib.cloudflare import NoRedirection
 from resources.lib.config import GestionCookie
 from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui
 
@@ -48,6 +47,7 @@ MOVIE_3D = (URL_MAIN + '1/categorie-Films+BluRay+3D/1.html', 'showMovies')
 MOVIE_HD_VIEWS = (URL_MAIN + '1/films-bluray/affichage', 'showMovies')
 MOVIE_GENRES_HD = (True, 'showGenreMoviesHD')
 MOVIE_ANNEES = (True, 'showMovieYears')
+MOVIE_SAGA = (URL_MAIN + '1/categorie-Sagas+Films/1.html', 'showMovies')
 
 ANIM_ANIMS = (URL_MAIN + '1/animations/1', 'showMovies')
 ANIM_VFS = (URL_MAIN + '1/categorie-Mangas+VF/1.html', 'showMovies')
@@ -146,6 +146,10 @@ def showMenuFilms():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES_HD[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES_HD[1], 'Films HD (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_SAGA[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_SAGA[1], 'Films (Sagas)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
@@ -371,11 +375,11 @@ def showSearchResult(sSearch = ''):
 
             sNextPage = __checkForNextPage(sHtmlContent)
             if (sNextPage != False):
-                n = '[COLOR teal]Next >>>[/COLOR]'
+                n = '[COLOR teal]Suite >>>[/COLOR]'
                 if sSearch:
-                    n = '[COLOR teal]Next SD >>>[/COLOR]'
+                    n = '[COLOR teal]Suite SD >>>[/COLOR]'
                 if loop == 2:
-                    n ='[COLOR teal]Next HD >>>[/COLOR]'
+                    n ='[COLOR teal]Suite HD >>>[/COLOR]'
                 NextPage.append((n, sNextPage))
 
         loop = loop - 1
@@ -479,6 +483,8 @@ def showMovies():
 
             if 'series-' in sUrl or '-Saison' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            elif '-Sagas' in sUrl:
+                oGui.addMoviePack(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -488,7 +494,7 @@ def showMovies():
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suite >>>[/COLOR]', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

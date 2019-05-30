@@ -857,3 +857,10 @@ msgctxt "#30468"
 msgid "Place"
 msgstr "Lieu"
 
+msgctxt "#30469"
+msgid "Hoster Direct"
+msgstr ""
+
+msgctxt "#30500"
+msgid "Outils"
+msgstr ""

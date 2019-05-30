@@ -11,6 +11,7 @@ from resources.lib.comaddon import progress, VSlog
 import urllib2, urllib, re
 import unicodedata, random
 
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0'
 
 #Make random url
 s = "azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN";
@@ -189,6 +190,7 @@ def showGenres():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
     sHtmlContent = oRequestHandler.request()
 
     if 'HTML/JavaScript Encoder' in sHtmlContent:
@@ -227,6 +229,7 @@ def ShowAlpha2():
     #VSlog(sUrl2)
 
     oRequestHandler = cRequestHandler(sUrl2)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
     sHtmlContent = oRequestHandler.request()
 
     if 'HTML/JavaScript Encoder' in sHtmlContent:
@@ -252,6 +255,7 @@ def ShowAlpha(url = None):
         sUrl = url
 
     oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
     sHtmlContent = oRequestHandler.request()
 
     if 'HTML/JavaScript Encoder' in sHtmlContent:
@@ -306,20 +310,18 @@ def showMovies(sSearch = ''):
         sSearch = urllib.quote_plus(sSearch).upper() #passe en majuscule et remplace espace par +
 
         url = URL_MAIN + 'resultat+' + sSearch + '.html'
-
-        headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0', 'Referer' : URL_MAIN}
-        request = urllib2.Request(url, None, headers)
-        reponse = urllib2.urlopen(request)
-
-        sHtmlContent = reponse.read()
-
-        reponse.close()
+        
+        oRequestHandler = cRequestHandler(url)
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
+        sHtmlContent = oRequestHandler.request()
 
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
         oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
         sHtmlContent = oRequestHandler.request()
         #sHtmlContent = DecryptMangacity(sHtmlContent)
 
@@ -427,6 +429,7 @@ def showEpisode():
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
     sHtmlContent = oRequestHandler.request()
 
     if 'HTML/JavaScript Encoder' in sHtmlContent:
@@ -475,29 +478,36 @@ def showEpisode():
     oGui.setEndOfDirectory()
 
 def ExtractLink(html):
+    #Fake link
+    fake = 'https://www.youtube.com'
+    
     final = ''
 
     oParser = cParser()
 
     sPattern = '(?i)src=(?:\'|")(.+?)(?:\'|")'
     aResult = re.findall(sPattern, html, re.DOTALL)
+
     loop = 0
     if aResult:
         for a in aResult:
             if ('adnetworkperformance' in a) or ('jquery' in a):
                 continue
-            final = a
-            break
+            if fake not in a:
+                final = a
+                break
 
     sPattern = 'encodeURI\("(.+?)"\)'
     aResult = re.findall(sPattern, html)
     if aResult:
-        final = aResult[0]
+        if fake not in aResult[0]:
+            final = aResult[0]
 
     sPattern = "'file': '(.+?)',"
     aResult = oParser.parse(html, sPattern)
     if aResult[0] == True:
-        final = aResult[1][0]
+        if fake not in aResult[1][0]:
+            final = aResult[1][0]
 
     #nouveau codage
     if ';&#' in final:
@@ -517,6 +527,7 @@ def showHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
     sHtmlContent = oRequestHandler.request()
 
     #VSlog(sUrl)
@@ -593,7 +604,7 @@ def showHosters():
                 #on telecharge la page
 
                 oRequestHandler = cRequestHandler(sHosterUrl )
-                oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0')
+                oRequestHandler.addHeaderEntry('User-Agent', UA)
                 sHtmlContent = oRequestHandler.request()
                 #Et on remplace le code
                 sHtmlContent = ICDecode(sHtmlContent)
@@ -606,6 +617,7 @@ def showHosters():
                 #on telecharge la page
                 oRequestHandler = cRequestHandler(sHosterUrl )
                 oRequestHandler.addHeaderEntry('Referer', sUrl)
+                oRequestHandler.addHeaderEntry('User-Agent', UA)
                 sHtmlContent = oRequestHandler.request()
 
                 #Si c'est une redirection, on passe juste le vrai lien
@@ -641,6 +653,7 @@ def showHosters():
             if '/visio.php?' in sHosterUrl:
                 oRequestHandler = cRequestHandler(sHosterUrl )
                 oRequestHandler.addHeaderEntry('Referer', sUrl)
+                oRequestHandler.addHeaderEntry('User-Agent', UA)
                 sHtmlContent = oRequestHandler.request()
 
                 sHtmlContent = ICDecode(sHtmlContent)
@@ -656,10 +669,12 @@ def showHosters():
             #VSlog('1>>' + str(sHosterUrl))
             if aResult[0]:
                 
-                #VSlog('>>' + sHosterUrl)
+                VSlog('>>' + sHosterUrl)
                 
                 oRequestHandler = cRequestHandler(sHosterUrl)
                 oRequestHandler.addHeaderEntry('Referer', sUrl)
+                oRequestHandler.addHeaderEntry('User-Agent', UA)
+                
                 sHtmlContent = oRequestHandler.request()
 
                 #fh = open('c:\\test.txt', "w")
@@ -670,10 +685,10 @@ def showHosters():
 
                 sHosterUrl2 = ExtractLink(sHtmlContent)
                 
-                #VSlog(sHosterUrl2)
+                VSlog(sHosterUrl2)
                 
                 if 'intern_player2.png' in sHosterUrl2:
-                    #VSlog('fausse image')
+                    #VSlog('Fausse image : ' + sHosterUrl)
                     #VSlog(sHtmlContent)
                     
                     xx = str(random.randint(300, 350))#347
@@ -681,9 +696,19 @@ def showHosters():
                     
                     oRequestHandler = cRequestHandler(sHosterUrl)
                     oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+                    #Add params
                     oRequestHandler.addParameters('submit.x', xx)
                     oRequestHandler.addParameters('submit.y', yy)
+                    
+                    #look for hidden params
+                    p1 = re.search(r'name="valeur" value="([^"]+)"', sHtmlContent)
+                    if p1:
+                        #VSlog('Hidden param')
+                        oRequestHandler.addParameters('valeur', p1.group(1))
+                    
+                    #Set headers
                     oRequestHandler.addHeaderEntry('Referer', sUrl)
+                    oRequestHandler.addHeaderEntry('User-Agent', UA)
                     sHtmlContent = oRequestHandler.request()
                     
                     #VSlog("Img decode " + sHtmlContent)
