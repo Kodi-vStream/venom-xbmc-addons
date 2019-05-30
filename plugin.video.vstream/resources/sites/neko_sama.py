@@ -102,8 +102,9 @@ def showSearchResult(sSearch):
     oGui = cGui()
     oRequestHandler = cRequestHandler(URL_SEARCH[0])
 
-    sSearch = sSearch.lower()
+    sSearch = sSearch.lower().split('.json')[1]
     data = json.loads(oRequestHandler.request())
+
     Title, Url, Thumb = parseJson(data, sSearch)
     total = len(zip(Title, Url, Thumb))
     progress_ = progress().VScreate(SITE_NAME)
@@ -222,7 +223,7 @@ def ShowSerieSaisonEpisodes():
             if progress_.iscanceled():
                 break
 
-            sTitle = sMovieTitle + ' ' + aEntry[0]
+            sTitle = sMovieTitle + ' ' + aEntry[0].replace('Ep. ','E')
             sUrl2 = URL_MAIN + aEntry[1].replace('\\/', '/')
             sThumb = aEntry[2]
 
