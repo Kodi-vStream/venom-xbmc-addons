@@ -380,8 +380,8 @@ def showWeb(infile=None):#Code qui s'occupe de liens TV du Web
             url2 = track.path.replace('+', 'P_L_U_S')
             if not '[' in url2 and not ']' in url2 and not '.m3u8' in url2 and not 'dailymotion' in url2:
                 url2 = 'plugin://plugin.video.f4mTester/?url=' + urllib.quote_plus(url2) + '&amp;streamtype=TSDOWNLOADER&name=' + urllib.quote(track.title)
-            else:
-                url2 = url2 + '|User-Agent=' + UA
+            elif not '[' in url2 and not ']' in url2 and not 'dailymotion' in url2:
+                url2 = 'plugin://plugin.video.f4mTester/?url='+urllib.quote_plus(url2)+'&amp;streamtype=HLS&name=' + urllib.quote(track.title)
 
             thumb = "/".join([sRootArt, sThumb])
 
@@ -554,6 +554,18 @@ def play__():#Lancer les liens
     #Special url with tag
     if '[' in sUrl and ']' in sUrl:
         sUrl = GetRealUrl(sUrl)
+    else:
+        stype = ''
+        if '.ts' in sUrl:
+            stype = 'TSDOWNLOADER'
+        elif '.m3u' in sUrl:
+            stype = 'HLS'
+        if stype:
+            from F4mProxy import f4mProxyHelper
+            f4mp=f4mProxyHelper()
+            xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=True)
+            f4mp.playF4mLink(sUrl, sTitle, proxy=None, use_proxy_for_chunks=False, maxbitrate=0, simpleDownloader=True, auth=None, streamtype=stype, setResolved=True, swf=None, callbackpath="", callbackparam="", iconImage=sThumbnail)
+            return
 
     if 'dailymotion' in sUrl:
         oGui = cGui()
@@ -579,21 +591,6 @@ def play__():#Lancer les liens
 
         oGui.setEndOfDirectory()
         return
-
-    playmode = ''
-
-    if playmode == 0:
-        stype = ''
-        if '.ts' in sUrl:
-            stype = 'TSDOWNLOADER'
-        elif '.m3u' in sUrl:
-            stype = 'HLS'
-        if stype:
-            from F4mProxy import f4mProxyHelper
-            f4mp=f4mProxyHelper()
-            xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=False)
-            f4mp.playF4mLink(sUrl, sTitle, proxy=None, use_proxy_for_chunks=False, maxbitrate=0, simpleDownloader=False, auth=None, streamtype=stype, setResolved=False, swf=None, callbackpath="", callbackparam="", iconImage=sThumbnail)
-            return
 
     if 'f4mTester' in sUrl:
         xbmc.executebuiltin('XBMC.RunPlugin(' + sUrl + ')')
