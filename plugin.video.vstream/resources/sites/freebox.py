@@ -91,7 +91,7 @@ def showIptvSite():
     liste.append( ['IptvSource', 'https://www.iptvsource.com/'] )
     liste.append( ['Iptv Gratuit', 'http://iptvgratuit.com/'] )
     liste.append( ['Daily Iptv List', 'https://www.dailyiptvlist.com/'])
-    liste.append( ['Extinf','https://extinf.tk/'])
+    liste.append( ['Extinf','https://extinf.tk/home-passion-for-iptv-free-m3u-links-working-and-updated/'])
 
     for sTitle, sUrl in liste:
 
