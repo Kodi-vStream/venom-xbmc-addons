@@ -9,7 +9,7 @@
 [REGEX]"url":"([^"]+)"[URL]https://delivery.tf1.fr/mytf1-wrd/L_HD1?format=hls
 
 #EXTINF:-1 tvg-logo="lci.png",LCI
-https://delivery.tf1.fr/mytf1-wrd/L_LCI?format=hls
+[REGEX]"url":"([^"]+)"[URL]https://delivery.tf1.fr/mytf1-wrd/L_LCI?format=hls
 
 #EXTINF:-1 tvg-logo="france2.png",France 2
 [REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_2%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
