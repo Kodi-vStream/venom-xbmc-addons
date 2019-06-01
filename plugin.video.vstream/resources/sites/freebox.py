@@ -568,28 +568,7 @@ def play__():#Lancer les liens
             return
 
     if 'dailymotion' in sUrl:
-        oGui = cGui()
-        oRequestHandler = cRequestHandler(sUrl)
-        sHtmlContent = oRequestHandler.request()
-
-        metadata = json.loads(sHtmlContent)
-        if metadata['qualities']:
-            sUrl = str(metadata['qualities']['auto'][0]['url'])
-        oRequestHandler = cRequestHandler(sUrl)
-        oRequestHandler.addHeaderEntry('User-Agent', 'Android')
-        mb = oRequestHandler.request()
-        mb = re.findall('NAME="([^"]+)"\n(.+)',mb)
-        mb = sorted(mb,reverse=True)
-        for quality, url1 in mb:
-
-            sHosterUrl = url1
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sTitle + ' ' +quality)
-                oHoster.setFileName(sTitle + ' ' +quality)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-
-        oGui.setEndOfDirectory()
+        showDailymotionStream(sUrl,sTitle,sThumbnail)
         return
 
     if 'f4mTester' in sUrl:
@@ -618,6 +597,8 @@ def play__():#Lancer les liens
 #   - DecodeEmail = Decode les email coder par Cloudflare pour extinf
 #   - unZip = Extrait les un fichier specific dans une archive zip
 #   - unGoogleDrive = Recupere le fichier video quand il est heberger sur GoogleDrive
+#   - showDailymotionStream = Lis les liens de streaming de Daylimotion qui sont speciaux
+#   - getBrightcoveKey = Recupere le token pour les liens proteger par Brightcove (RMC Decouvert par exemple)
 #############################################################################
 
 def GetRealUrl(chain):
@@ -628,6 +609,10 @@ def GetRealUrl(chain):
     url = chain
     regex = ''
     sHtmlContent = ''
+
+    r = re.search('\[[BRIGHTCOVEKEY]+\](.+?)(?:(?:\[[A-Z]+\])|$)',chain)
+    if (r):
+        access_token = getBrightcoveKey(r.group(1))
 
     r = re.search('\[[REGEX]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
     if (r):
@@ -651,7 +636,12 @@ def GetRealUrl(chain):
         oRequestHandler.addParametersLine(param)
         sHtmlContent = oRequestHandler.request()
     else:
-        if (url):
+        if (access_token):
+            oRequestHandler = cRequestHandler(url)
+            oRequestHandler.addHeaderEntry('Accept','application/json;pk='+access_token)
+            sHtmlContent = oRequestHandler.request()
+
+        elif (url):
             oRequestHandler = cRequestHandler(url)
             sHtmlContent = oRequestHandler.request()
 
@@ -705,3 +695,52 @@ def unGoogleDrive (infile):
     url = 'https://drive.google.com/uc?id='+ids+'&export=download'
     inf = getHtml(url)
     return inf
+
+def showDailymotionStream(sUrl,sTitle,sThumbnail):
+    oGui = cGui()
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    metadata = json.loads(sHtmlContent)
+    if metadata['qualities']:
+        sUrl = str(metadata['qualities']['auto'][0]['url'])
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addHeaderEntry('User-Agent', 'Android')
+    mb = oRequestHandler.request()
+    mb = re.findall('NAME="([^"]+)"\n(.+)',mb)
+    mb = sorted(mb,reverse=True)
+    for entry in mb:
+        if not entry[1].startswith('http'):
+            sHosterUrl = sUrl
+            oHoster = cHosterGui().checkHoster('m3u8')
+            if (oHoster != False):
+                oHoster.setDisplayName(sTitle)
+                oHoster.setFileName(sTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                break
+        else:
+            sHosterUrl = entry[1]
+            sDisplayName = ('%s [%s]') % (sTitle, entry[0])
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sDisplayName)
+                oHoster.setFileName(sDisplayName)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+
+    oGui.setEndOfDirectory()
+    return
+
+def getBrightcoveKey(sUrl):
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    result = re.search('data-account="(.+?)" data-player="(.+?)"',sHtmlContent)
+    account = result.group(1)
+    player = result.group(2)
+
+    url = 'http://players.brightcove.net/%s/%s_default/index.min.js'%(account,player)
+
+    oRequestHandler = cRequestHandler(url)
+    sHtmlContent = oRequestHandler.request()
+    token = re.search('policyKey:"(.+?)"',sHtmlContent).group(1)
+    return(token)
