@@ -380,8 +380,6 @@ def showWeb(infile=None):#Code qui s'occupe de liens TV du Web
             url2 = track.path.replace('+', 'P_L_U_S')
             if not '[' in url2 and not ']' in url2 and not '.m3u8' in url2 and not 'dailymotion' in url2:
                 url2 = 'plugin://plugin.video.f4mTester/?url=' + urllib.quote_plus(url2) + '&amp;streamtype=TSDOWNLOADER&name=' + urllib.quote(track.title)
-            elif not '[' in url2 and not ']' in url2 and not 'dailymotion' in url2:
-                url2 = 'plugin://plugin.video.f4mTester/?url='+urllib.quote_plus(url2)+'&amp;streamtype=HLS&name=' + urllib.quote(track.title)
 
             thumb = "/".join([sRootArt, sThumb])
 
@@ -559,7 +557,7 @@ def play__():#Lancer les liens
         if '.ts' in sUrl:
             stype = 'TSDOWNLOADER'
         elif '.m3u' in sUrl:
-            stype = 'HLS'
+            pass
         if stype:
             from F4mProxy import f4mProxyHelper
             f4mp=f4mProxyHelper()
@@ -613,6 +611,8 @@ def GetRealUrl(chain):
     r = re.search('\[[BRIGHTCOVEKEY]+\](.+?)(?:(?:\[[A-Z]+\])|$)',chain)
     if (r):
         access_token = getBrightcoveKey(r.group(1))
+    else:
+        access_token = ''
 
     r = re.search('\[[REGEX]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
     if (r):
@@ -636,7 +636,7 @@ def GetRealUrl(chain):
         oRequestHandler.addParametersLine(param)
         sHtmlContent = oRequestHandler.request()
     else:
-        if (access_token):
+        if access_token != '':
             oRequestHandler = cRequestHandler(url)
             oRequestHandler.addHeaderEntry('Accept','application/json;pk='+access_token)
             sHtmlContent = oRequestHandler.request()
