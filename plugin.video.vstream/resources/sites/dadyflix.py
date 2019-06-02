@@ -7,7 +7,8 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.util import cUtil
+from resources.lib.comaddon import progress#, VSlog
 
 SITE_IDENTIFIER = 'dadyflix'
 SITE_NAME = 'DadyFlix'
@@ -74,7 +75,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText
+        sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -110,20 +111,19 @@ def showGenres():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
-    if sSearch:
-      sUrl = sSearch
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
     if sSearch:
-        sPattern = '<a href="([^"]+)"><img src="([^"]+)" alt=.+?href=.+?>([^<]+)<(?:.+?<p>([^<]+)<|)'
+        sUrl = sSearch
+        sPattern = '<a href="([^"]+)"><img src="([^"]+)" alt=.+?href=.+?>([^<]+)<'
     elif '/les-plus-populaires/' in sUrl or '/tendance/' in sUrl:
         sPattern = '<img src="([^"]+)" alt="(?:film|serie) ([^"]+)streaming".+?(?:|quality">([^<]+)<.+?)href="([^"]+)"'
     else:
         sPattern = '<img src="([^"]+)" alt="(?:film|serie) ([^"]+)streaming".+?(?:|quality">([^<]+)<.+?)href="([^"]+)".+?div class="texto">([^<]+)</div>'
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -142,21 +142,25 @@ def showMovies(sSearch = ''):
 
             if sSearch:
                 sUrl2 = aEntry[0]
-                sThumb = aEntry[1].replace('w185', 'w342')
+                sThumb = aEntry[1].replace('w92', 'w342').replace('w185', 'w342')
                 sTitle = aEntry[2]
                 sQual = ''
-                setDisplayName = ('%s [%s]') % (sTitle , sQual)
+                setDisplayName = ('%s [%s]') % (sTitle, sQual)
             else:
                 sThumb = aEntry[0].replace('w185', 'w342')
                 sTitle = aEntry[1]
                 sQual = aEntry[2].replace('Haute-qualité', 'HD')
                 sUrl2 = aEntry[3]
-                setDisplayName = ('%s [%s]') % (sTitle , sQual)
+                setDisplayName = ('%s [%s]') % (sTitle, sQual)
 
-            try:
+            sDesc = ''
+            if len(aEntry) > 4:
                 sDesc = aEntry[4].replace('&#8217;', '\'').replace('&#8230;', '...').replace('>', '')
-            except IndexError:
-                sDesc = ""
+
+            #Si recherche et trop de resultat, on nettoye
+            if sSearch and total > 3:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
+                    continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -181,7 +185,7 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = "<span class=\"current\">.+?</span><a href='([^\"]+)'"
+    sPattern = "<span class=\"current\">.+?</span><a href='([^']+)'"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -227,7 +231,7 @@ def ShowSerieSaisonEpisodes():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<a href="([^<]+)"><img src="([^<]+)"></a></div><div class="numerando">(.+?) - (.+?)</div><div class="episodiotitle"><a href=".+?>([^<]+)</a>'
+    sPattern = '<a href="([^"]+)"><img src="([^"]+)"></a></div><div class="numerando">(.+?) - (.+?)</div><div class="episodiotitle"><a href=".+?>([^<]+)<'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -268,7 +272,7 @@ def seriesHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<a id="playerlink.+?" data-src-player="([^<]+)" vid-link=".+?">.+?<img src=".+?/flags/(.+?).png"'
+    sPattern = '<a id="playerlink.+?" data-src-player="([^"]+)" vid-link=".+?">.+?<img src=".+?/flags/(.+?).png"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -278,7 +282,7 @@ def seriesHosters():
             sHosterUrl = aEntry[0]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle + ' [' + aEntry[1] + ']')
+                oHoster.setDisplayName(sMovieTitle + ' (' + aEntry[1].upper() + ')')
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
