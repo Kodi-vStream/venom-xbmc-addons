@@ -7,7 +7,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog #import du dialog progress
+from resources.lib.comaddon import progress#, VSlog
 
 import re
 
@@ -58,7 +58,7 @@ def showMovies():
             sTitle = aEntry[2]
             sUrl2 = aEntry[3]
             sThumb = aEntry[0]
-            sDesc = re.sub('&#.+?;','',aEntry[1].replace('&#39;',"'").replace('&#8217;',"'"))
+            sDesc = re.sub('&#.+?;', '', aEntry[1].replace('&#39;', "'").replace('&#8217;', "'"))
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -82,7 +82,7 @@ def ShowSerieSaisonEpisodes():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<td><a href="([^"]+)".+?>([^"]+)</a>'
+    sPattern = '<td><a href="([^"]+)".+?>([^<]+)</a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -97,7 +97,7 @@ def ShowSerieSaisonEpisodes():
             if progress_.iscanceled():
                 break
 
-            sTitle = ('%s [%s]') % (sMovieTitle, aEntry[1].replace('<br />',' : ').replace('&#9830;',''))
+            sTitle = ('%s [%s]') % (sMovieTitle, aEntry[1].replace('<br />', ' : ').replace('&#9830;', ''))
             sUrl2 = aEntry[0]
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -122,7 +122,7 @@ def seriesHosters():
     sHtmlContent = oRequestHandler.request()
 
     #Utilisation de re car avec le parser de Vstream il ne veux pas prendre correctement le 'vostfr'
-    aResult = re.findall('<img.+?src=".+?/_(?:0001|0002)_(.+?).png|<iframe.+?src="([^"]+)"',str(sHtmlContent))
+    aResult = re.findall('<img.+?src=".+?/_(?:0001|0002)_(.+?).png|<iframe.+?src="([^"]+)"', str(sHtmlContent))
 
     if (aResult):
         for aEntry in aResult:
@@ -132,7 +132,7 @@ def seriesHosters():
             else:
                 sHosterUrl = aEntry[1]
                 if sHosterUrl.startswith('//'):
-                    sHosterUrl = "https:"+sHosterUrl
+                    sHosterUrl = 'https:' + sHosterUrl
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     oHoster.setDisplayName(sTitle)
