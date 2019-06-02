@@ -78,7 +78,6 @@ def load():
     oGui.setEndOfDirectory()
 
 def showIptvSite():
-
     oGui = cGui()
 
     #test f4mTester
@@ -88,172 +87,16 @@ def showIptvSite():
         oGui.addText(SITE_IDENTIFIER, "[COLOR red]plugin.video.f4mTester: L'addon n'est pas présent[/COLOR]")
 
     liste = []
-    liste.append( ['IptvSource', 'https://www.iptvsource.com/'] )
-    liste.append( ['Iptv Gratuit', 'http://iptvgratuit.com/'] )
-    liste.append( ['Daily Iptv List', 'https://www.dailyiptvlist.com/'])
-    liste.append( ['Extinf','https://extinf.tk/home-passion-for-iptv-free-m3u-links-working-and-updated/'])
+    liste.append( ['IptvSource','iptv_source'] )
+    liste.append( ['Iptv4Sat', 'iptv_four_sat'] )
+    liste.append( ['Daily Iptv List', 'daily_iptv_list'])
+    liste.append( ['Extinf', 'extinf'])
 
-    for sTitle, sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showDailyList', sTitle, 'genres.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
-def showDailyList(): #On recupere les dernier playlist ajouter au site
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    sHtmlContent = getHtml(sUrl)#On recupere le contenue de la page
-    #VSlog(sHtmlContent)
-    #VSlog(sUrl)
-
-    if 'iptvsource.com' in sUrl:
-        sPattern = '<h3 class="entry-title td-module-title"><a href="(.+?)" rel="bookmark" title="(.+?)"'
-    elif 'iptvgratuit.com' in sUrl:
-        sPattern = '<a href="([^"]+)" rel="bookmark".+?title="([^"]+)".+?</a></h3>'
-    elif 'dailyiptvlist.com' in sUrl:
-        sPattern = '</a><h2 class="post-title"><a href="(.+?)">(.+?)</a></h2><div class="excerpt"><p>.+?</p>'
-    elif 'extinf' in sUrl:
-        sPattern = '<div class="news-thumb col-md-6">\s*<a href=([^"]+) title="([^"]+)".+?\s*<img src=.+?uploads/.+?/.+?/([^"]+)\..+?'
-
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
-        total = len(aResult[1])
-
-        progress_ = progress().VScreate(SITE_NAME)
-
-        for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
-            sTitle = aEntry[1]
-            sUrl2 = aEntry[0]
-            if 'extinf' in sUrl:
-                flag = aEntry[2]
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-
-            if not 'extinf' in sUrl:
-                oGui.addDir(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, 'tv.png', oOutputParameterHandler)
-            else:
-                if str(flag) == 'm3u-playlist-720x405':
-                    oGui.addDir(SITE_IDENTIFIER, 'showDailyIptvList', sTitle, '', oOutputParameterHandler)
-                else:
-                    oGui.addDir(SITE_IDENTIFIER, 'showWeb', sTitle, 'tv.png', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
-
-        sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showDailyList', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
-def __checkForNextPage(sHtmlContent): #Affiche les page suivant si il y en a
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    if 'extinf' in sUrl:
-        sPattern = '<a class="next page-numbers" href=([^"]+)>Next</a>'
-    elif 'https://www.iptvsource.com/' in sUrl:
-        sPattern = ' class="last" title=".+?">.+?</a><a href="(.+?)"><i class="td-icon-menu-right"></i>'
-    elif 'iptvgratuit.com' in sUrl:
-        sPattern = '<span class="current">.+?</span><a href="([^"]+)"'
-    else:
-        sPattern = '<a class="next page-numbers" href="(.+?)">'
-
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
-        return  aResult[1][0]
-
-    return False
-
-def showAllPlaylist():#On recupere les differentes playlist si il y en a
-    oGui = cGui()
-
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumb = oInputParameterHandler.getValue('sThumbnail')
-    sDesc = oInputParameterHandler.getValue('sDescription')
-
-    sHtmlContent = getHtml(sUrl)
-
-    if 'iptvgratuit.com' in sUrl:
-        sPattern = 'Cliquez sur le lien.+?</strong></p>.+?<h4><a class="more-link" title="([^"]+)" href="([^"]+)".+?<button>'
-    elif 'dailyiptvlist.com' in sUrl:
-        sPattern = '<p></br><br /><strong>2. Click on link to download .+? iptv channels list</strong></p>.+?<a href="(.+?)">Download (.+?)</a>'
-    elif 'iptvsource.com':
-        sPattern = '<a href="([^"]+)">Download ([^"]+)</a>'
-
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
-        for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
-            if 'iptvgratuit.com' in sUrl:
-                sTitle = aEntry[0]
-                sUrl2 = aEntry[1]
-                sThumb = ''
-                sDesc = ''
-            else:
-                sTitle = aEntry[1]
-                sUrl2 = aEntry[0]
-                sThumb = ''
-                sDesc = ''
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-
-            oGui.addDir(SITE_IDENTIFIER, 'showWeb', sTitle, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
-
-    oGui.setEndOfDirectory()
-
-def showDailyIptvList():#On recupere les liens qui sont dans les playlist "World" de IptvGratuit
-    oGui = cGui()
-
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    sHtmlContent = getHtml(sUrl)
-    clearHtml = re.search('null>([\s*\S*]+)</pre><p>',sHtmlContent).group(1)
-    line = re.compile('http(.+?)\n').findall(clearHtml)
-
-    for sUrl2 in line:
-        if '/cdn-cgi/l/email-protection' in str(sUrl2):
-            sUrl2 = 'http' + decodeEmail(sUrl2).replace('<','').replace('&amp;','&')
-        else:
-            sUrl2 = 'http' + sUrl2.replace('&amp;','&')
-
-        sTitle = 'Lien: ' + sUrl2.replace('&amp;','&')
+    for sTitle, Fname in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-
-        oGui.addDir(SITE_IDENTIFIER, 'showWeb', sTitle, 'tv.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir(Fname, 'load', sTitle, 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
