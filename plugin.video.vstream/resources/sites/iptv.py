@@ -7,12 +7,12 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.parser import cParser
 
 from resources.sites.freebox import getHtml, showWeb, play__, decodeEmail
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress#, VSlog
 
 import re
 
-SITE_IDENTIFIER = 'extinf'
-SITE_NAME = 'Extinf'
+SITE_IDENTIFIER = 'iptv'
+SITE_NAME = 'Iptv'
 SITE_DESC = 'Regarder la télévision'
 
 URL_MAIN = 'https://extinf.tk/'
@@ -27,7 +27,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN)
-    oGui.addDir(SITE_IDENTIFIER, 'showPays', 'Choix du pays', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showPays', 'Choix du pays', 'lang.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -36,16 +36,13 @@ def showPays():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    sHtmlContent = getHtml(sUrl)
-
-    sPattern = '<li class="cat-item cat-item-.+?"><a href=([^"]+)>([^<]+)</a>'
-
     oParser = cParser()
+    sHtmlContent = getHtml(sUrl)
+    sPattern = '<li class="cat-item cat-item-.+?"><a href=([^"]+)>([^<]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         total = len(aResult[1])
-
         progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
@@ -71,16 +68,13 @@ def showDailyList():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    sHtmlContent = getHtml(sUrl)
-
-    sPattern = '<div class="news-thumb col-md-6">\s*<a href=([^"]+) title="([^"]+)".+?\s*<img src=.+?uploads/.+?/.+?/([^"]+)\..+?'
-
     oParser = cParser()
+    sHtmlContent = getHtml(sUrl)
+    sPattern = '<div class="news-thumb col-md-6">\s*<a href=([^"]+) title="([^"]+)".+?\s*<img src=.+?uploads/.+?/.+?/([^"]+)\..+?'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         total = len(aResult[1])
-
         progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
@@ -98,7 +92,7 @@ def showDailyList():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
             if str(flag) == 'm3u-playlist-720x405':
-                oGui.addDir(SITE_IDENTIFIER, 'showDailyIptvList', sTitle, '', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'showDailyIptvList', sTitle, 'listes.png', oOutputParameterHandler)
             else:
                 oGui.addDir(SITE_IDENTIFIER, 'showWeb', sTitle, 'tv.png', oOutputParameterHandler)
 
@@ -112,13 +106,12 @@ def showDailyList():
 
     oGui.setEndOfDirectory()
 
-def __checkForNextPage(sHtmlContent): #Affiche les page suivant si il y en a
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    sPattern = '<a class="next page-numbers" href=([^"]+)>Next</a>'
+def __checkForNextPage(sHtmlContent):
+    # oInputParameterHandler = cInputParameterHandler()
+    # sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oParser = cParser()
+    sPattern = '<a class="next page-numbers" href=([^"]+)>Next</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -133,16 +126,16 @@ def showDailyIptvList():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sHtmlContent = getHtml(sUrl)
-    clearHtml = re.search('null>([\s*\S*]+)</pre><p>',sHtmlContent).group(1)
+    clearHtml = re.search('null>([\s*\S*]+)</pre><p>', sHtmlContent).group(1)
     line = re.compile('http(.+?)\n').findall(clearHtml)
 
     for sUrl2 in line:
         if '/cdn-cgi/l/email-protection' in str(sUrl2):
-            sUrl2 = 'http' + decodeEmail(sUrl2).replace('<','').replace('&amp;','&')
+            sUrl2 = 'http' + decodeEmail(sUrl2).replace('<', '').replace('&amp;', '&')
         else:
-            sUrl2 = 'http' + sUrl2.replace('&amp;','&')
+            sUrl2 = 'http' + sUrl2.replace('&amp;', '&')
 
-        sTitle = 'Lien: ' + sUrl2.replace('&amp;','&')
+        sTitle = 'Lien: ' + sUrl2.replace('&amp;', '&')
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
