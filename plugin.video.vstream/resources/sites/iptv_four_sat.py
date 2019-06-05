@@ -51,16 +51,13 @@ def showDailyList():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    sHtmlContent = getHtml(sUrl)
-
-    sPattern = '<div class="td-module-thumb"><a href="([^"]+)" rel="bookmark".+?title="([^"]+)"><img.+?data-img-url="([^"]+)"'
-
     oParser = cParser()
+    sHtmlContent = getHtml(sUrl)
+    sPattern = '<div class="td-module-thumb"><a href="([^"]+)" rel="bookmark".+?title="([^"]+)"><img.+?data-img-url="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         total = len(aResult[1])
-
         progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
@@ -75,7 +72,7 @@ def showDailyList():
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
-            oGui.addDir(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, '', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, 'listes.png', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -87,13 +84,12 @@ def showDailyList():
 
     oGui.setEndOfDirectory()
 
-def __checkForNextPage(sHtmlContent): #Affiche les page suivant si il y en a
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    sPattern = ' class="last" title=".+?">.+?</a><a href="(.+?)"><i class="td-icon-menu-right"></i>'
+def __checkForNextPage(sHtmlContent):
+    # oInputParameterHandler = cInputParameterHandler()
+    # sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oParser = cParser()
+    sPattern = ' class="last" title=".+?">.+?</a><a href="([^"]+)"><i class="td-icon-menu-right"></i>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -127,17 +123,17 @@ def showAllPlaylist():#On recupere les differentes playlist si il y en a
 
 def getRealLink(sUrl):
     sHtmlContent = getHtml(sUrl)
-    return re.search('<a href="([^"]+)" class="attachment-link"',sHtmlContent).group(1)
+    return re.search('<a href="([^"]+)" class="attachment-link"', sHtmlContent).group(1)
 
 def getDownloadLink(sHtmlContent):
     sUrl2 = []
-    urlDirect = re.search('<a href=".+?download(.+?)"',sHtmlContent)
+    urlDirect = re.search('<a href=".+?download(.+?)"', sHtmlContent)
     if urlDirect:
-        urlDirect = URL_MAIN +'download' + urlDirect.group(1)
+        urlDirect = URL_MAIN + 'download' + urlDirect.group(1)
         sUrl2.append(urlDirect)
 
-    urlRedirect = re.search('<a href=".+?dl(.+?)"',sHtmlContent)
+    urlRedirect = re.search('<a href=".+?dl([^"]+)"', sHtmlContent)
     if urlRedirect:
-        urlRedirect = URL_MAIN +'dl'+ urlRedirect.group(1)
+        urlRedirect = URL_MAIN + 'dl' + urlRedirect.group(1)
         sUrl2.append(urlRedirect)
     return sUrl2
