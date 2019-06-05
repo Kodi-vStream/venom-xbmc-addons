@@ -3,7 +3,7 @@
 [REGEX]"url":"([^"]+)"[URL]https://delivery.tf1.fr/mytf1-wrd/L_TF1?format=hls
 
 #EXTINF:-1 tvg-logo="tmc.png",TMC
-[REGEX]"url":"([^"]+)"[URL]https://delivery.tf1.fr/mytf1-wrd/L_NT1?format=hls
+[REGEX]"url":"([^"]+)"[URL]https://delivery.tf1.fr/mytf1-wrd/L_TMC?format=hls
 
 #EXTINF:-1 tvg-logo="tfx.png",TFX
 [REGEX]"url":"([^"]+)"[URL]https://delivery.tf1.fr/mytf1-wrd/L_NT1?format=hls
