@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.parser import cParser
 
 from resources.sites.freebox import getHtml, showWeb, play__
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress#, VSlog
 
 SITE_IDENTIFIER = 'iptv_source'
 SITE_NAME = 'IptvSource'
@@ -20,11 +20,11 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN)
-    oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Derniere liste', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Derniere liste', 'listes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN)
-    oGui.addDir(SITE_IDENTIFIER, 'showPays', 'Choix du pays', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showPays', 'Choix du pays', 'lang.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -33,16 +33,13 @@ def showPays():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    sHtmlContent = getHtml(sUrl)
-
-    sPattern = '<li class="cat-item cat-item-.+?"><a href="([^"]+)">([^<]+)</a>'
-
     oParser = cParser()
+    sHtmlContent = getHtml(sUrl)
+    sPattern = '<li class="cat-item cat-item-.+?"><a href="([^"]+)">([^<]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         total = len(aResult[1])
-
         progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
@@ -68,16 +65,13 @@ def showDailyList():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    sHtmlContent = getHtml(sUrl)
-
-    sPattern = '<h3 class="entry-title td-module-title"><a href="([^"]+)" rel="bookmark" title="([^"]+)"'
-
     oParser = cParser()
+    sHtmlContent = getHtml(sUrl)
+    sPattern = '<h3 class="entry-title td-module-title"><a href="([^"]+)" rel="bookmark" title="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         total = len(aResult[1])
-
         progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
@@ -105,12 +99,11 @@ def showDailyList():
     oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    sPattern = ' class="last" title=".+?">.+?</a><a href="(.+?)"><i class="td-icon-menu-right"></i>'
+    # oInputParameterHandler = cInputParameterHandler()
+    # sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oParser = cParser()
+    sPattern = ' class="last" title=".+?">.+?</a><a href="([^"]+)"><i class="td-icon-menu-right"></i>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -120,15 +113,12 @@ def __checkForNextPage(sHtmlContent):
 
 def showAllPlaylist():
     oGui = cGui()
-
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    sHtmlContent = getHtml(sUrl)
-
-    sPattern = '<a href="([^"]+)">Download ([^"]+)</a>'
-
     oParser = cParser()
+    sHtmlContent = getHtml(sUrl)
+    sPattern = '<a href="([^"]+)">Download ([^<]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -142,8 +132,6 @@ def showAllPlaylist():
 
             sTitle = aEntry[1]
             sUrl2 = aEntry[0]
-            sThumb = ''
-            sDesc = ''
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
