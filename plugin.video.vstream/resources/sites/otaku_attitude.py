@@ -7,7 +7,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress#, VSlog
 
 import re
 
@@ -33,12 +33,12 @@ OST_ANIME =(OST_MAIN + 'playlists/', 'showGenres')
 def load():
     oGui = cGui()
 
-    oOutputParameterHandler = cOutputParameterHandler() #appelle la fonction pour sortir un parametre
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0]) # sortie du parametres siteUrl n'oubliez pas la Majuscule
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche [Animés]', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler() #appelle la fonction pour sortir un parametre
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_DRAMAS[0]) # sortie du parametres siteUrl n'oubliez pas la Majuscule
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_DRAMAS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche [Dramas]', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -80,7 +80,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = sUrl + sSearchText.replace(' ','+')
+        sUrl = sUrl + sSearchText.replace(' ', '+')
         showSeries(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -125,7 +125,7 @@ def showSeries(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sTitle = aEntry[2].replace('...','').replace('-...','').replace('!',' !')
+            sTitle = aEntry[2].replace('...', '').replace('-...', '').replace('!', ' !')
             sUrl2 = URL_MAIN + aEntry[0]
             sThumb = aEntry[1]
             sDesc = aEntry[3]
@@ -143,17 +143,16 @@ def showSeries(sSearch = ''):
     if not sSearch:
         Page = int(Page) + 1
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', MemorisedUrl+'?&scroll='+str(Page))
+        oOutputParameterHandler.addParameter('siteUrl', MemorisedUrl + '?&scroll=' + str(Page))
         #On renvoi l'url memoriser et le numero de page pour l'incrementer a chaque fois
         oOutputParameterHandler.addParameter('MemorisedUrl', MemorisedUrl)
-        oOutputParameterHandler.addParameter('Page',Page)
+        oOutputParameterHandler.addParameter('Page', Page)
         oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 def showOst():
     oGui = cGui()
-
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -169,7 +168,6 @@ def showOst():
 
     oParser = cParser()
     sPattern = "<div class='plWrapper'>.+?href='([^']+)' title='([^']+)'.+?src='([^']+)'.+?</a"
-
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -199,10 +197,10 @@ def showOst():
 
         Page = int(Page) + 1
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', MemorisedUrl+'?page='+str(Page))
+        oOutputParameterHandler.addParameter('siteUrl', MemorisedUrl + '?page=' + str(Page))
         #On renvoi l'url memoriser et le numero de page pour l'incrementer a chaque fois
         oOutputParameterHandler.addParameter('MemorisedUrl', MemorisedUrl)
-        oOutputParameterHandler.addParameter('Page',Page)
+        oOutputParameterHandler.addParameter('Page', Page)
         oGui.addNext(SITE_IDENTIFIER, 'showOst', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
@@ -220,8 +218,8 @@ def showEpisodes():
     sHtmlContent = oRequestHandler.request()
 
     #On recupere l'id de l'anime dans l'url
-    serieID = re.search('fiche-.+?-(\d+)-.+?.html',sUrl).group(1)
-    sPattern = 'class="(?:download cell_impaire|download)" id="([^<]+)".+?(\d+).+?class="cell".+?>([^"]+)</td'
+    serieID = re.search('fiche-.+?-(\d+)-.+?.html', sUrl).group(1)
+    sPattern = 'class="(?:download cell_impaire|download)" id="([^"]+)".+?(\d+).+?class="cell".+?>([^<]+)</td'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -240,18 +238,18 @@ def showEpisodes():
             sQual = aEntry[2]
             #Changemement de formats ...x... -> ....P
             if '1920×' in sQual or '1440×' in sQual or '1904×' in sQual:
-                sQual = re.sub('(\d+×\d+)px','[1080P]',sQual)
+                sQual = re.sub('(\d+×\d+)px', '[1080P]', sQual)
             elif '1728×' in sQual:
-                sQual = re.sub('(\d+×\d+)px','[800P]',sQual)
+                sQual = re.sub('(\d+×\d+)px', '[800P]', sQual)
             elif '1280×' in sQual:
-                VSlog(sQual)
-                sQual = re.sub('(\d+×\d+)px','[720P]',sQual)
+                # VSlog(sQual)
+                sQual = re.sub('(\d+×\d+)px', '[720P]', sQual)
             elif '1024×' in sQual:
-                sQual = re.sub('(\d+×\d+)px','[600P]',sQual)
+                sQual = re.sub('(\d+×\d+)px', '[600P]', sQual)
             elif '480×' in sQual:
-                sQual = re.sub('(\d+×\d+)px','[360P]',sQual)
+                sQual = re.sub('(\d+×\d+)px', '[360P]', sQual)
             else:
-                sQual = re.sub('(\d+×\d+)px','[480P]',sQual)
+                sQual = re.sub('(\d+×\d+)px', '[480P]', sQual)
 
             sTitle = 'E' + aEntry[1] + ' ' + sMovieTitle + ' ' + sQual
             idEpisode = aEntry[0]
@@ -261,7 +259,7 @@ def showEpisodes():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('serieID',serieID)
-            oOutputParameterHandler.addParameter('idEpisode',idEpisode)
+            oOutputParameterHandler.addParameter('idEpisode', idEpisode)
             oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -270,17 +268,15 @@ def showEpisodes():
 
 def showMusic():
     oGui = cGui()
-    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
+    oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    sPattern = '<div data-track-file="([^"]+)".+?data-track-name="([^"]+)".+?"><span.+?>(.+?)</span>'
-
+    sPattern = '<div data-track-file="([^"]+)".+?data-track-name="([^"]+)".+?"><span.+?>([^<]+)</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -336,9 +332,9 @@ def showHosters():
     idEpisode = oInputParameterHandler.getValue('idEpisode')
 
     if 'fiche-anime' in sUrl:
-        sHosterUrl = URL_MAIN+'launch-download-1-'+serieID+'-ddl-'+idEpisode+'.html'
+        sHosterUrl = URL_MAIN + 'launch-download-1-' + serieID + '-ddl-' + idEpisode + '.html'
     elif 'fiche-drama' in sUrl:
-        sHosterUrl = URL_MAIN+'launch-download-2-'+serieID+'-ddl-'+idEpisode+'.html'
+        sHosterUrl = URL_MAIN + 'launch-download-2-' + serieID + '-ddl-' + idEpisode + '.html'
 
     oHoster = cHosterGui().checkHoster('m3u8')
     if (oHoster != False):
