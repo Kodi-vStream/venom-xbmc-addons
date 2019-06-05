@@ -1,9 +1,9 @@
 #coding: utf-8
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+#2 hoster giga & 2gigalink
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
-
 
 class cHoster(iHoster):
 
@@ -64,8 +64,13 @@ class cHoster(iHoster):
         oParser = cParser()
         sPattern = "var mp4v = '(.+?)'"
         aResult = oParser.parse(sHtmlContent, sPattern)
-
         if (aResult[0] == True):
             return True, aResult[1][0]
+        else:
+            #streamgk
+            sPattern = '<a id="downloadb" class="btn btn-default.+?href="([^"]+)"'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                return True, aResult[1][0]
 
         return False, False
