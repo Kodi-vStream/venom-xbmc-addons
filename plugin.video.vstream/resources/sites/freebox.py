@@ -90,7 +90,7 @@ def showIptvSite():
     liste.append( ['IptvSource','iptv_source'] )
     liste.append( ['Iptv4Sat', 'iptv_four_sat'] )
     liste.append( ['Daily Iptv List', 'daily_iptv_list'])
-    liste.append( ['Extinf', 'extinf'])
+    liste.append( ['Extinf', 'iptv'])
 
     for sTitle, Fname in liste:
 
