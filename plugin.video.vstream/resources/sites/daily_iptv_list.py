@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.parser import cParser
 
 from resources.sites.freebox import getHtml, showWeb, play__
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress#, VSlog
 
 SITE_IDENTIFIER = 'daily_iptv_list'
 SITE_NAME = 'Daily Iptv List'
@@ -58,16 +58,13 @@ def showPays():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    sHtmlContent = getHtml(sUrl)
-
-    sPattern = '<li class="cat-item cat-item-.+?"><a href="([^"]+)">([^<]+)</a>'
-
     oParser = cParser()
+    sHtmlContent = getHtml(sUrl)
+    sPattern = '<li class="cat-item cat-item-.+?"><a href="([^"]+)">([^<]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         total = len(aResult[1])
-
         progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
@@ -75,8 +72,8 @@ def showPays():
             if progress_.iscanceled():
                 break
 
-            sTitle = aEntry[1]
             sUrl2 = aEntry[0]
+            sTitle = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -93,16 +90,13 @@ def showDailyList():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    sHtmlContent = getHtml(sUrl)
-
-    sPattern = '</a><h2 class="post-title"><a href="(.+?)">(.+?)</a></h2><div class="excerpt"><p>.+?</p>'
-
     oParser = cParser()
+    sHtmlContent = getHtml(sUrl)
+    sPattern = '</a><h2 class="post-title"><a href="([^"]+)">([^<]+)</a></h2><div class="excerpt"><p>.+?</p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         total = len(aResult[1])
-
         progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
@@ -110,8 +104,8 @@ def showDailyList():
             if progress_.iscanceled():
                 break
 
-            sTitle = aEntry[1]
             sUrl2 = aEntry[0]
+            sTitle = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -130,11 +124,11 @@ def showDailyList():
     oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    # oInputParameterHandler = cInputParameterHandler()
+    # sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    sPattern = '<a class="next page-numbers" href="(.+?)">'
     oParser = cParser()
+    sPattern = '<a class="next page-numbers" href="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -144,15 +138,12 @@ def __checkForNextPage(sHtmlContent):
 
 def showAllPlaylist():
     oGui = cGui()
-
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    sHtmlContent = getHtml(sUrl)
-
-    sPattern = '<p></br><br /><strong>2. Click on link to download .+? iptv channels list</strong></p>.+?<a href="(.+?)">Download (.+?)</a>'
-
     oParser = cParser()
+    sHtmlContent = getHtml(sUrl)
+    sPattern = '<p></br><br /><strong>2. Click on link to download .+? iptv channels list</strong></p>.+?<a href="([^"]+)">Download ([^<]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -164,10 +155,8 @@ def showAllPlaylist():
             if progress_.iscanceled():
                 break
 
-            sTitle = aEntry[1]
             sUrl2 = aEntry[0]
-            sThumb = ''
-            sDesc = ''
+            sTitle = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
