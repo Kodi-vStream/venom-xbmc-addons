@@ -38,7 +38,7 @@ def showPays():
 
     oParser = cParser()
     sHtmlContent = getHtml(sUrl)
-    sPattern = '<li class="cat-item cat-item-.+?"><a href=([^"]+)>([^<]+)</a>'
+    sPattern = '<li class="cat-item cat-item-.+?"><a href=([^"]+)(?:>([^<]+)</a>|([^<]+)includes)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -50,8 +50,11 @@ def showPays():
             if progress_.iscanceled():
                 break
 
-            sTitle = aEntry[1]
-            sUrl2 = aEntry[0]
+            if str(aEntry[1]) != "":
+                sTitle = aEntry[1]
+            else:
+                sTitle = aEntry[2].replace('"','')
+            sUrl2 = aEntry[0].replace(' title=','')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -126,7 +129,7 @@ def showDailyIptvList():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sHtmlContent = getHtml(sUrl)
-    clearHtml = re.search('null>([\s*\S*]+)</pre><p>', sHtmlContent).group(1)
+    clearHtml = re.search('null>([\s*\S*]+)</pre>', sHtmlContent).group(1)
     line = re.compile('http(.+?)\n').findall(clearHtml)
 
     for sUrl2 in line:
