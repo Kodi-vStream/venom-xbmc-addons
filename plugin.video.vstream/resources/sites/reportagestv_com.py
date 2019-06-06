@@ -43,7 +43,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            sUrl = URL_SEARCH[0] + sSearchText
+            sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
             showMovies(sUrl)
             oGui.setEndOfDirectory()
             return
@@ -79,16 +79,16 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
-      sUrl = sSearch.replace(' ','+')
+      sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#8217;', '\'')
+    sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#8217;', '\'').replace('&laquo;', '<<').replace('&raquo;', '>>').replace('&nbsp;', '')
 
-    sPattern = 'class="mh-loop-thumb".+?src="([^<]+)" class="attachment.+?href="([^"]+)" rel="bookmark">([^<]+)</a>.+?<div class="mh-excerpt"><p>(.+?)<'
+    sPattern = 'class="mh-loop-thumb".+?src="([^"]+)" class="attachment.+?href="([^"]+)" rel="bookmark">([^<]+)</a>.+?<div class="mh-excerpt"><p>(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -99,8 +99,8 @@ def showMovies(sSearch = ''):
 
             sThumb = aEntry[0]
             sUrl = aEntry[1]
-            sTitle = aEntry[2].replace('&laquo;', '<<').replace('&raquo;', '>>').replace('&nbsp;', '')
-            sDesc = aEntry[3].replace('&laquo;', '<<').replace('&raquo;', '>>')
+            sTitle = aEntry[2]
+            sDesc = aEntry[3]#.replace('&laquo;', '<<').replace('&raquo;', '>>')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -118,7 +118,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a class="next page-numbers" href="(.+?)">'
+    sPattern = '<a class="next page-numbers" href="([^"]+)">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -151,7 +151,7 @@ def showHosters():
         oRequestHandler = cRequestHandler(sRealUrl)
         sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<iframe.+?src="(.+?)"'
+    sPattern = '<iframe.+?src="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
