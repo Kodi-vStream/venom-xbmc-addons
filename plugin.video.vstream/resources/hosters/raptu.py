@@ -85,6 +85,25 @@ class cHoster(iHoster):
                         aResult = oParser.parse(sHtmlContent, sPattern)
                         if (aResult[0] == True):
                             api_call = aResult[1][0]
+
+            else:
+                oRequest = cRequestHandler(sUrl)
+                sHtmlContent = oRequest.request()
+                sPattern = '<source src="([^"]+)" type="video/.+?" label="([^"]+)"'
+                aResult = oParser.parse(sHtmlContent, sPattern)
+                from resources.lib.comaddon import dialog
+
+                url=[]
+                qua=[]
+                api_call = False
+
+                for aEntry in aResult[1]:
+                    url.append(aEntry[0])
+                    qua.append(aEntry[1])
+
+                #Affichage du tableau
+                api_call = dialog().VSselectqual(qua, url)
+
         else:
             sPattern = '{"file":"([^"]+)","label":"([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
