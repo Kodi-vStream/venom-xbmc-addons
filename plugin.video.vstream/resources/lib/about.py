@@ -24,7 +24,7 @@ SITE_NAME = 'About'
 class cAbout:
 
     #retourne True si les 2 fichiers sont present mais pas avec les memes tailles
-    def checksize(self, filepath,size):
+    def checksize(self, filepath, size):
         try:
             #f=open(xbmc.translatePath(filepath))
             #Content = file.read()
@@ -96,7 +96,7 @@ class cAbout:
                 else:
                     addons.setSetting('service_time', str(datetime.datetime.now()))
                     addons.setSetting('home_update', str('false'))
-                    VSlog('Prochaine verification de MAJ le : ' + str(time_sleep + time_service) )
+                    VSlog('Prochaine vérification de MAJ le: ' + str(time_sleep + time_service) )
         return
 
     def getUpdate_old(self):
@@ -133,7 +133,7 @@ class cAbout:
                                 break #Si on en trouve un, pas besoin de tester les autres.
 
                         except:
-                            VSlog('erreur : verification MAJ' )
+                            VSlog('Erreur: vérification MAJ' )
                             return
 
                     if (sDown != 0):
@@ -141,12 +141,12 @@ class cAbout:
                         addons.setSetting('service_time', str(datetime.datetime.now()))
                         dialog().VSinfo("Mise à jour disponible")
                     else:
-                        #cConfig().showInfo('vStream', 'Fichier a jour')
+                        #cConfig().showInfo('vStream', 'Fichiers à jour')
                         addons.setSetting('service_time', str(datetime.datetime.now()))
                         addons.setSetting('home_update', str('false'))
 
             else:
-                VSlog('Prochaine verification de MAJ le : ' + str(time_sleep + time_service) )
+                VSlog('Prochaine verification de MAJ le: ' + str(time_sleep + time_service) )
                 #Pas besoin de memoriser la date, a cause du cache kodi > pas fiable.
         return
 
@@ -176,8 +176,10 @@ class cAbout:
 
 
     def resultGit(self):
-        try:    import json
-        except: import simplejson as json
+        try:
+            import json
+        except:
+            import simplejson as json
 
         try:
             sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/sites.json'
@@ -200,7 +202,7 @@ class cAbout:
 
         addons = addon()
         dialogs = dialog()
-        if dialogs.VSyesno("Êtes-vous sûr ?"):
+        if dialogs.VSyesno("Êtes-vous sûr?"):
 
             service_futur = addons.getSetting('service_futur')
             service_version = addons.getSetting('service_version')
@@ -246,20 +248,20 @@ class cAbout:
                             #site += "Add: [B]%s[/B] | Del: [B]%s[/B] | [COLOR green]%s[/COLOR][CR]" % (i['additions'], i['deletions'], i['filename'].encode("utf-8"))
                             add += i['additions']
                             dell += i['deletions']
-                            sdown = sdown+1
+                            sdown = sdown + 1
                             schange += i['changes']
                         except:
                             #site += "[COLOR red]"+i['filename'].encode("utf-8")+"[/COLOR][CR]"
-                            sdown = sdown+1
+                            sdown = sdown + 1
                             pass
 
                 progress_.VSclose(progress_)
 
                 #donner fichier
-                sContent = "Ajouter (%s) | Supprimer (%s) | Changement (%s) [CR]Fichier mise à jour %s / %s" %  (add, dell, schange, sdown, total)
+                sContent = "Ajouter (%s) | Supprimer (%s) | Changement (%s) [CR]Fichiers mise à jour %s / %s" %  (add, dell, schange, sdown, total)
                 listitem = xbmcgui.ListItem(label = "vStream", label2 = sContent)
                 icon = "special://home/addons/plugin.video.vstream/resources/art/update.png"
-                listitem.setArt({'icon' : icon, 'thumb' : icon})
+                listitem.setArt({'icon': icon, 'thumb': icon})
                 listitems.append(listitem)
 
                 #boucle commit
@@ -277,7 +279,7 @@ class cAbout:
                         pass
                     listitems.append(listitem)
 
-                #sContent = "Changement (%s) | Fichier mise à jour %s / %s [CR]" %  (schange, sdown, total)
+                #sContent = "Changement (%s) | Fichiers mise à jour %s / %s [CR]" %  (schange, sdown, total)
                 #sContent += "%s" %  (text.encode("utf-8"))
                 #sContent += "%s" %  (site)
 
