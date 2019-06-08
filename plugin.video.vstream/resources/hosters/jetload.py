@@ -91,7 +91,7 @@ class cHoster(iHoster):
                 Host = aResult[1][0]
 
 
-                api_call = Host + '/v2/schema/' + FN + '/master.m3u8'
+                api_call = Host + '/v2/schema/archive/' + FN + '/master.m3u8'
             
 
         if (api_call):
