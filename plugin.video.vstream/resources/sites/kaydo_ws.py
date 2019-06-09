@@ -338,25 +338,21 @@ def showHosters():
             aResult = oParser.parse(sHtmlContent, sPattern1)
 
             Url = ''.join(aResult[1])
-            if not 'hdsto' in Url:
-                oRequestHandler = cRequestHandler(Url)
-                sHtmlContent = oRequestHandler.request()
+            oRequestHandler = cRequestHandler(Url)
+            sHtmlContent = oRequestHandler.request()
 
-                #Recuperation de l'id
-                sPattern1 = "var id.+?'(.+?)'"
-                aResult = oParser.parse(sHtmlContent, sPattern1)
-                sPost = ''.join(aResult[1])[::-1]
+            #Recuperation de l'id
+            sPattern1 = "var id.+?'(.+?)'"
+            aResult = oParser.parse(sHtmlContent, sPattern1)
+            sPost = ''.join(aResult[1])[::-1]
+            sUrl1 = URL_MAIN + '?trhidee=1&trfex=' + sPost
 
-                oRequestHandler = cRequestHandler(URL_MAIN + '?trhidee=1&trfex=' + sPost)
-                oRequestHandler.addHeaderEntry('Referer', Url)
-                sHtmlContent = oRequestHandler.request()
-                sHosterUrl = oRequestHandler.getRealUrl()
-
-            else:
-                oRequestHandler = cRequestHandler(Url)
-                sHtmlContent = oRequestHandler.request()
-                Url = oRequestHandler.getRealUrl()
-                sHosterUrl = 'https://' + Url.split('/')[2] + '/hls/'+Url.split('id=')[1]+'/'+Url.split('id=')[1]+'.playlist.m3u8'
+            oRequestHandler = cRequestHandler(sUrl1)
+            oRequestHandler.addHeaderEntry('Referer', Url)
+            sHtmlContent = oRequestHandler.request()
+            sHosterUrl = oRequestHandler.getRealUrl()
+            if 'public/dist' in sHosterUrl:
+                sHosterUrl = 'https://' + sHosterUrl.split('/')[2] + '/hls/'+sHosterUrl.split('id=')[1]+'/'+sHosterUrl.split('id=')[1]+'.playlist.m3u8'
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
