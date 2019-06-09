@@ -9,7 +9,7 @@
 from resources.lib.comaddon import addon, dialog, VSlog, xbmc, xbmcgui, window
 import xbmcvfs
 import sys
-import urllib,urllib2
+import urllib, urllib2
 #from util import VStranslatePath
 #from resources.lib.util import VStranslatePath
 
@@ -22,7 +22,7 @@ except:
 
 try:
     import json
-except: 
+except:
     import simplejson as json
 
 
@@ -60,11 +60,11 @@ class cClear:
             return
 
         elif (env == 'changelog'):
-                
+
             class XMLDialog(xbmcgui.WindowXMLDialog):
 
                 def __init__(self, *args, **kwargs):
-                    xbmcgui.WindowXMLDialog.__init__( self )
+                    xbmcgui.WindowXMLDialog.__init__(self)
                     pass
 
                 def onInit(self):
@@ -91,9 +91,9 @@ class cClear:
                             desc = item['commit']['message'].encode("utf-8")
                         except:
                             desc = 'None'
-       
+
                         listitem = xbmcgui.ListItem(label = login, label2 = desc)
-                        listitem.setArt({'icon' : icon, 'thumb' : icon})
+                        listitem.setArt({'icon': icon, 'thumb': icon})
 
                         listitems.append(listitem)
                     self.container.addItems(listitems)
@@ -110,7 +110,7 @@ class cClear:
 
                 def _close_dialog( self ):
                     self.close()
-            
+
             #path = cConfig().getAddonPath()
             path = "special://home/addons/plugin.video.vstream"
             wd = XMLDialog('DialogSelect.xml', path, "Default")
@@ -130,11 +130,11 @@ class cClear:
             return
 
         elif (env == 'addon'):
-            if self.DIALOG.VSyesno("Êtes-vous sûr ?"):
+            if self.DIALOG.VSyesno("Êtes-vous sûr?"):
                 #cached_Cache = cConfig().getFileCache()
                 #cached_Cache = xbmc.translatePath(cached_Cache).decode("utf-8")
                 cached_Cache = "special://home/userdata/addon_data/plugin.video.vstream/video_cache.db"
-                #self.ClearDir2(cached_Cache,True)
+                #self.ClearDir2(cached_Cache, True)
                 try:
                     xbmcvfs.delete(cached_Cache)
                     self.DIALOG.VSinfo('Clear Addon Cache, Successful[CR](Important relancer vStream)')
@@ -175,12 +175,12 @@ class cClear:
                     db.close()
                     self.DIALOG.VSok("Suppression BDD, Successful[CR](Important relancer vStream)")
                 except:
-                    self.DIALOG.VSerror("Suppresion BDD, Error")
+                    self.DIALOG.VSerror("Suppression BDD, Error")
 
             return
 
         elif (env == 'xbmc'):
-            if self.DIALOG.VSyesno('Êtes-vous sûr ?'):
+            if self.DIALOG.VSyesno('Êtes-vous sûr?'):
                 #temp = xbmc.translatePath('special://temp/').decode("utf-8")
                 path = "special://temp/"
                 #self.ClearDir(temp,True)
@@ -192,7 +192,7 @@ class cClear:
             return
 
         elif (env == 'fi'):
-            if self.DIALOG.VSyesno('Êtes-vous sûr ?'):
+            if self.DIALOG.VSyesno('Êtes-vous sûr?'):
                 #path = xbmc.translatePath('special://temp/').decode("utf-8")
                 path = "special://temp/archive_cache/"
                 try:
@@ -207,17 +207,17 @@ class cClear:
             return
 
         elif (env == 'uplog'):
-            if self.DIALOG.VSyesno('Êtes-vous sûr ?'):
+            if self.DIALOG.VSyesno('Êtes-vous sûr?'):
                 #path = xbmc.translatePath('special://logpath/').decode("utf-8")
                 path = "special://logpath/kodi.log"
                 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
-                headers = { 'User-Agent' : UA }
+                headers = {'User-Agent': UA}
                 #filenames = next(os.walk(path))[2]
                 #for i in filenames:
                 if xbmcvfs.exists(path):
                     post_data = {}
                     cUrl = 'http://slexy.org/index.php/submit'
-                    #logop = open(path + i,'rb')
+                    #logop = open(path + i, 'rb')
                     logop = xbmcvfs.File(path, 'rb')
                     result = logop.read()
                     logop.close()
@@ -227,9 +227,9 @@ class cClear:
                     post_data['permissions'] = 1 #private
                     post_data['expire'] = 259200 #3j
                     post_data['submit'] = 'Submit+Paste'
-                    request = urllib2.Request(cUrl,urllib.urlencode(post_data),headers)
+                    request = urllib2.Request(cUrl, urllib.urlencode(post_data), headers)
                     reponse = urllib2.urlopen(request)
-                    code = reponse.geturl().replace('http://slexy.org/view/','')
+                    code = reponse.geturl().replace('http://slexy.org/view/', '')
                     reponse.close()
                     self.ADDON.setSetting('service_log', code)
                     self.DIALOG.VSok('Ce code doit être transmis lorsque vous ouvrez une issue veuillez le noter:' + '  ' + code)
@@ -261,16 +261,16 @@ class cClear:
 
                     for aPlugin in aPlugins:
                         #teste si deja dans le dsip
-                        sPluginSettingsName = 'plugin_' +aPlugin[1]
+                        sPluginSettingsName = 'plugin_' + aPlugin[1]
                         bPlugin = self.ADDON.getSetting(sPluginSettingsName)
 
-                        #icon = os.path.join(unicode(cConfig().getRootArt(), 'utf-8'), 'sites', aPlugin[1]+'.png')
+                        #icon = os.path.join(unicode(cConfig().getRootArt(), 'utf-8'), 'sites', aPlugin[1] + '.png')
                         icon = "special://home/addons/plugin.video.vstream/resources/art/sites/%s.png" % aPlugin[1]
-                        stitle = aPlugin[0].replace('[COLOR violet]','').replace('[COLOR orange]','').replace('[/COLOR]','').replace('[COLOR dodgerblue]','').replace('[COLOR coral]','')
+                        stitle = aPlugin[0].replace('[COLOR violet]', '').replace('[COLOR orange]', '').replace('[/COLOR]', '').replace('[COLOR dodgerblue]', '').replace('[COLOR coral]', '')
                         if (bPlugin == 'true'):
                             stitle = ('%s %s') % (stitle, valid)
                         listitem = xbmcgui.ListItem(label = stitle, label2 = aPlugin[2])
-                        listitem.setArt({'icon' : icon, 'thumb' : icon})
+                        listitem.setArt({'icon': icon, 'thumb': icon})
                         listitem.setProperty('Addon.Summary', aPlugin[2])
                         listitem.setProperty('sitename', aPlugin[1])
                         if (bPlugin == 'true'):
@@ -299,7 +299,7 @@ class cClear:
                     elif controlId == 6:
                         item = self.container.getSelectedItem()
                         if item.isSelected() == True:
-                            label = item.getLabel().replace(valid,'')
+                            label = item.getLabel().replace(valid, '')
                             item.setLabel(label)
                             item.select(False)
                             sPluginSettingsName = ('plugin_%s') % (item.getProperty('sitename'))
@@ -320,8 +320,8 @@ class cClear:
 
                 # def onAction( self, action ):
                     # if action.getId() in ( 9, 10, 92, 216, 247, 257, 275, 61467, 61448, ):
-                        # self.close() 
-            
+                        # self.close()
+
             #path = cConfig().getAddonPath()
             path = "special://home/addons/plugin.video.vstream"
             wd = XMLDialog('DialogSelect.xml', path, "Default")
@@ -330,8 +330,8 @@ class cClear:
             return
 
         elif (env == 'thumb'):
- 
-            if self.DIALOG.VSyesno('Êtes-vous sûr ? Ceci effacera toutes les thumbnails '):
+
+            if self.DIALOG.VSyesno('Êtes-vous sûr? Ceci effacera toutes les thumbnails'):
 
                 text = False
                 #path = xbmc.translatePath('special://userdata/Thumbnails/').decode("utf-8")
@@ -359,7 +359,7 @@ class cClear:
                                 xbmcvfs.delete(cached_Cache)
                                 text += 'Clear Thumbnail DB, Successful[CR]'
                             except:
-                                text += 'Clear Thumbnail DB, Error[CR]'  
+                                text += 'Clear Thumbnail DB, Error[CR]'
 
                 if text:
                     text = "%s (Important relancer Kodi)" % text
@@ -376,7 +376,7 @@ class cClear:
 
         elif (env == 'sauv'):
             #dialog.select('Choose a playlist', ['Playlist #1', 'Playlist #2, 'Playlist #3'])
-            select = self.DIALOG.VSselect(['Import','Export'])
+            select = self.DIALOG.VSselect(['Import', 'Export'])
             DB = "special://home/userdata/addon_data/plugin.video.vstream/vstream.db"
             if select >= 0:
                 #new = self.DIALOG.browse(3, 'vStream', 'files')
@@ -427,7 +427,7 @@ class cClear:
 
     def TextBoxes(self, heading, anounce):
         # activate the text viewer window
-        xbmc.executebuiltin( "ActivateWindow(%d)" % ( 10147, ) )
+        xbmc.executebuiltin("ActivateWindow(%d)" % (10147, ))
         # get window
         win = window(10147)
         #win.show()
