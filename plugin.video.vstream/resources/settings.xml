@@ -102,6 +102,8 @@
 
         <setting visible="false" id="plugin_filmstreamvk_com" type="bool" label="Film stream vk" default="true"/>
 
+        <setting visible="false" id="plugin_filmstub_stream" type="bool" label="Filmstub" default="true"/>
+
         <setting visible="false" id="plugin_filmzenstream_com" type="bool" label="Filmzenstream)" default="true"/>
 
         <setting visible="false" id="plugin_free_telechargement_org" type="bool" label="Free Telechargement" default="true"/>
@@ -172,6 +174,8 @@
 
         <setting visible="false" id="plugin_streamay_bz" type="bool" label="Streamay" default="true"/>
 
+        <setting visible="false" id="plugin_streamcomplet" type="bool" label="StreamComplet" default="true"/>
+
         <setting visible="false" id="plugin_streamelite" type="bool" label="StreamElite" default="true"/>
 
         <setting visible="false" id="plugin_streaming_series" type="bool" label="Streaming-Series" default="true"/>
@@ -197,6 +201,8 @@
         <setting visible="false" id="plugin_videobuzzy_com" type="bool" label="Videobuzzy" default="true"/>
 
         <setting visible="false" id="plugin_voirfilms_org" type="bool" label="VoirFilms" default="true"/>
+
+        <setting visible="false" id="plugin_wawacity" type="bool" label="Wawacity" default="true"/>
 
         <setting visible="false" id="plugin_youtitou_com" type="bool" label="YouTitou (Animés)" default="true"/>
 
