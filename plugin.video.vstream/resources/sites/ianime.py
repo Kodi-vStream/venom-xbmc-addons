@@ -18,7 +18,7 @@ s = "azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN";
 RandomKey = ''.join(random.choice(s) for i in range(32))
 
 
-SITE_IDENTIFIER = 'mangacity_org'
+SITE_IDENTIFIER = 'ianime'
 SITE_NAME = 'I anime'
 SITE_DESC = 'Animés en streaming'
 
