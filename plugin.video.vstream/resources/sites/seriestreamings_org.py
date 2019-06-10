@@ -10,9 +10,9 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.comaddon import progress
 
-SITE_IDENTIFIER = 'seriesstreaming_org'
-SITE_NAME = 'Séries Streaming'
-SITE_DESC = 'Séries en streaming vf gratuitement sur Série Streaming'
+SITE_IDENTIFIER = 'seriestreamings_org'
+SITE_NAME = 'Série Streamings'
+SITE_DESC = 'Séries en streaming vf gratuitement sur Série Streamings'
 
 URL_MAIN = 'https://ww1.seriestreamings.org/'
 
