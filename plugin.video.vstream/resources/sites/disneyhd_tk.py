@@ -169,8 +169,13 @@ def showHosters():
     #film
     if '<ol id="playlist">' in sHtmlContent:
         sPattern = '<li data-trackurl="([^"]+)">(.+?)<\/li>'
+        
+    elif 'data-ws=' in sHtmlContent:
+        sPattern = 'data-ws="([^"]+)">(.+?)</span>'
     else:
         sPattern = '<span class="qualiteversion" data-qualurl="([^"]+)">([^"]+)</span>'
+
+        
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):

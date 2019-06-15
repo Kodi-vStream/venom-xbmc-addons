@@ -1,12 +1,14 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
+#site down le 09/06/2019
+return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress#, VSlog
 from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'sokrostream_biz'
@@ -123,7 +125,7 @@ def showMovies(sSearch = ''):
     oInputParameterHandler = cInputParameterHandler()
 
     if sSearch:
-        sUrl = sSearch.replace(' ','+')
+        sUrl = sSearch.replace(' ', '+')
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
 

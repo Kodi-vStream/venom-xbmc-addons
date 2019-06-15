@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.video.vstream" name="vStream" version="0.7.2" provider-name="Venom,TmpName,Johngf,Arias800,Razorex">
+<addon id="plugin.video.vstream" name="vStream" version="0.7.3" provider-name="Venom,TmpName,Johngf,Arias800,Razorex">
     <requires>
         <import addon="xbmc.python" version="2.24.0"/>
         <import addon="script.module.simplejson" version="3.3.0"/>

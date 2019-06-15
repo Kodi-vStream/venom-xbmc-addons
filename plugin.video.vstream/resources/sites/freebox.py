@@ -78,7 +78,6 @@ def load():
     oGui.setEndOfDirectory()
 
 def showIptvSite():
-
     oGui = cGui()
 
     #test f4mTester
@@ -88,172 +87,16 @@ def showIptvSite():
         oGui.addText(SITE_IDENTIFIER, "[COLOR red]plugin.video.f4mTester: L'addon n'est pas présent[/COLOR]")
 
     liste = []
-    liste.append( ['IptvSource', 'https://www.iptvsource.com/'] )
-    liste.append( ['Iptv Gratuit', 'http://iptvgratuit.com/'] )
-    liste.append( ['Daily Iptv List', 'https://www.dailyiptvlist.com/'])
-    liste.append( ['Extinf','https://extinf.tk/'])
+    liste.append( ['IptvSource','iptv_source'] )
+    liste.append( ['Iptv4Sat', 'iptv_four_sat'] )
+    liste.append( ['Daily Iptv List', 'daily_iptv_list'])
+    liste.append( ['Extinf', 'iptv'])
 
-    for sTitle, sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showDailyList', sTitle, 'genres.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
-def showDailyList(): #On recupere les dernier playlist ajouter au site
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    sHtmlContent = getHtml(sUrl)#On recupere le contenue de la page
-    #VSlog(sHtmlContent)
-    #VSlog(sUrl)
-
-    if 'iptvsource.com' in sUrl:
-        sPattern = '<h3 class="entry-title td-module-title"><a href="(.+?)" rel="bookmark" title="(.+?)"'
-    elif 'iptvgratuit.com' in sUrl:
-        sPattern = '<a href="([^"]+)" rel="bookmark".+?title="([^"]+)".+?</a></h3>'
-    elif 'dailyiptvlist.com' in sUrl:
-        sPattern = '</a><h2 class="post-title"><a href="(.+?)">(.+?)</a></h2><div class="excerpt"><p>.+?</p>'
-    elif 'extinf' in sUrl:
-        sPattern = '<div class="news-thumb col-md-6">\s*<a href=([^"]+) title="([^"]+)".+?\s*<img src=.+?uploads/.+?/.+?/([^"]+)\..+?'
-
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
-        total = len(aResult[1])
-
-        progress_ = progress().VScreate(SITE_NAME)
-
-        for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
-            sTitle = aEntry[1]
-            sUrl2 = aEntry[0]
-            if 'extinf' in sUrl:
-                flag = aEntry[2]
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-
-            if not 'extinf' in sUrl:
-                oGui.addDir(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, 'tv.png', oOutputParameterHandler)
-            else:
-                if str(flag) == 'm3u-playlist-720x405':
-                    oGui.addDir(SITE_IDENTIFIER, 'showDailyIptvList', sTitle, '', oOutputParameterHandler)
-                else:
-                    oGui.addDir(SITE_IDENTIFIER, 'showWeb', sTitle, 'tv.png', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
-
-        sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showDailyList', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
-def __checkForNextPage(sHtmlContent): #Affiche les page suivant si il y en a
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    if 'extinf' in sUrl:
-        sPattern = '<a class="next page-numbers" href=([^"]+)>Next</a>'
-    elif 'https://www.iptvsource.com/' in sUrl:
-        sPattern = ' class="last" title=".+?">.+?</a><a href="(.+?)"><i class="td-icon-menu-right"></i>'
-    elif 'iptvgratuit.com' in sUrl:
-        sPattern = '<span class="current">.+?</span><a href="([^"]+)"'
-    else:
-        sPattern = '<a class="next page-numbers" href="(.+?)">'
-
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
-        return  aResult[1][0]
-
-    return False
-
-def showAllPlaylist():#On recupere les differentes playlist si il y en a
-    oGui = cGui()
-
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumb = oInputParameterHandler.getValue('sThumbnail')
-    sDesc = oInputParameterHandler.getValue('sDescription')
-
-    sHtmlContent = getHtml(sUrl)
-
-    if 'iptvgratuit.com' in sUrl:
-        sPattern = 'Cliquez sur le lien.+?</strong></p>.+?<h4><a class="more-link" title="([^"]+)" href="([^"]+)".+?<button>'
-    elif 'dailyiptvlist.com' in sUrl:
-        sPattern = '<p></br><br /><strong>2. Click on link to download .+? iptv channels list</strong></p>.+?<a href="(.+?)">Download (.+?)</a>'
-    elif 'iptvsource.com':
-        sPattern = '<a href="([^"]+)">Download ([^"]+)</a>'
-
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
-        for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
-            if 'iptvgratuit.com' in sUrl:
-                sTitle = aEntry[0]
-                sUrl2 = aEntry[1]
-                sThumb = ''
-                sDesc = ''
-            else:
-                sTitle = aEntry[1]
-                sUrl2 = aEntry[0]
-                sThumb = ''
-                sDesc = ''
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-
-            oGui.addDir(SITE_IDENTIFIER, 'showWeb', sTitle, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
-
-    oGui.setEndOfDirectory()
-
-def showDailyIptvList():#On recupere les liens qui sont dans les playlist "World" de IptvGratuit
-    oGui = cGui()
-
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    sHtmlContent = getHtml(sUrl)
-    clearHtml = re.search('null>([\s*\S*]+)</pre><p>',sHtmlContent).group(1)
-    line = re.compile('http(.+?)\n').findall(clearHtml)
-
-    for sUrl2 in line:
-        if '/cdn-cgi/l/email-protection' in str(sUrl2):
-            sUrl2 = 'http' + decodeEmail(sUrl2).replace('<','').replace('&amp;','&')
-        else:
-            sUrl2 = 'http' + sUrl2.replace('&amp;','&')
-
-        sTitle = 'Lien: ' + sUrl2.replace('&amp;','&')
+    for sTitle, Fname in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-
-        oGui.addDir(SITE_IDENTIFIER, 'showWeb', sTitle, 'tv.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir(Fname, 'load', sTitle, 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -380,8 +223,6 @@ def showWeb(infile=None):#Code qui s'occupe de liens TV du Web
             url2 = track.path.replace('+', 'P_L_U_S')
             if not '[' in url2 and not ']' in url2 and not '.m3u8' in url2 and not 'dailymotion' in url2:
                 url2 = 'plugin://plugin.video.f4mTester/?url=' + urllib.quote_plus(url2) + '&amp;streamtype=TSDOWNLOADER&name=' + urllib.quote(track.title)
-            else:
-                url2 = url2 + '|User-Agent=' + UA
 
             thumb = "/".join([sRootArt, sThumb])
 
@@ -554,46 +395,22 @@ def play__():#Lancer les liens
     #Special url with tag
     if '[' in sUrl and ']' in sUrl:
         sUrl = GetRealUrl(sUrl)
-
-    if 'dailymotion' in sUrl:
-        oGui = cGui()
-        oRequestHandler = cRequestHandler(sUrl)
-        sHtmlContent = oRequestHandler.request()
-
-        metadata = json.loads(sHtmlContent)
-        if metadata['qualities']:
-            sUrl = str(metadata['qualities']['auto'][0]['url'])
-        oRequestHandler = cRequestHandler(sUrl)
-        oRequestHandler.addHeaderEntry('User-Agent', 'Android')
-        mb = oRequestHandler.request()
-        mb = re.findall('NAME="([^"]+)"\n(.+)',mb)
-        mb = sorted(mb,reverse=True)
-        for quality, url1 in mb:
-
-            sHosterUrl = url1
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sTitle + ' ' +quality)
-                oHoster.setFileName(sTitle + ' ' +quality)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-
-        oGui.setEndOfDirectory()
-        return
-
-    playmode = ''
-
-    if playmode == 0:
+    else:
         stype = ''
         if '.ts' in sUrl:
             stype = 'TSDOWNLOADER'
         elif '.m3u' in sUrl:
-            stype = 'HLS'
+            pass
         if stype:
             from F4mProxy import f4mProxyHelper
             f4mp=f4mProxyHelper()
-            xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=False)
-            f4mp.playF4mLink(sUrl, sTitle, proxy=None, use_proxy_for_chunks=False, maxbitrate=0, simpleDownloader=False, auth=None, streamtype=stype, setResolved=False, swf=None, callbackpath="", callbackparam="", iconImage=sThumbnail)
+            xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=True)
+            f4mp.playF4mLink(sUrl, sTitle, proxy=None, use_proxy_for_chunks=False, maxbitrate=0, simpleDownloader=True, auth=None, streamtype=stype, setResolved=True, swf=None, callbackpath="", callbackparam="", iconImage=sThumbnail)
             return
+
+    if 'dailymotion' in sUrl:
+        showDailymotionStream(sUrl,sTitle,sThumbnail)
+        return
 
     if 'f4mTester' in sUrl:
         xbmc.executebuiltin('XBMC.RunPlugin(' + sUrl + ')')
@@ -621,6 +438,8 @@ def play__():#Lancer les liens
 #   - DecodeEmail = Decode les email coder par Cloudflare pour extinf
 #   - unZip = Extrait les un fichier specific dans une archive zip
 #   - unGoogleDrive = Recupere le fichier video quand il est heberger sur GoogleDrive
+#   - showDailymotionStream = Lis les liens de streaming de Daylimotion qui sont speciaux
+#   - getBrightcoveKey = Recupere le token pour les liens proteger par Brightcove (RMC Decouvert par exemple)
 #############################################################################
 
 def GetRealUrl(chain):
@@ -631,6 +450,12 @@ def GetRealUrl(chain):
     url = chain
     regex = ''
     sHtmlContent = ''
+
+    r = re.search('\[[BRIGHTCOVEKEY]+\](.+?)(?:(?:\[[A-Z]+\])|$)',chain)
+    if (r):
+        access_token = getBrightcoveKey(r.group(1))
+    else:
+        access_token = ''
 
     r = re.search('\[[REGEX]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
     if (r):
@@ -654,7 +479,12 @@ def GetRealUrl(chain):
         oRequestHandler.addParametersLine(param)
         sHtmlContent = oRequestHandler.request()
     else:
-        if (url):
+        if access_token != '':
+            oRequestHandler = cRequestHandler(url)
+            oRequestHandler.addHeaderEntry('Accept','application/json;pk='+access_token)
+            sHtmlContent = oRequestHandler.request()
+
+        elif (url):
             oRequestHandler = cRequestHandler(url)
             sHtmlContent = oRequestHandler.request()
 
@@ -708,3 +538,52 @@ def unGoogleDrive (infile):
     url = 'https://drive.google.com/uc?id='+ids+'&export=download'
     inf = getHtml(url)
     return inf
+
+def showDailymotionStream(sUrl,sTitle,sThumbnail):
+    oGui = cGui()
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    metadata = json.loads(sHtmlContent)
+    if metadata['qualities']:
+        sUrl = str(metadata['qualities']['auto'][0]['url'])
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addHeaderEntry('User-Agent', 'Android')
+    mb = oRequestHandler.request()
+    mb = re.findall('NAME="([^"]+)"\n(.+)',mb)
+    mb = sorted(mb,reverse=True)
+    for entry in mb:
+        if not entry[1].startswith('http'):
+            sHosterUrl = sUrl
+            oHoster = cHosterGui().checkHoster('m3u8')
+            if (oHoster != False):
+                oHoster.setDisplayName(sTitle)
+                oHoster.setFileName(sTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                break
+        else:
+            sHosterUrl = entry[1]
+            sDisplayName = ('%s [%s]') % (sTitle, entry[0])
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sDisplayName)
+                oHoster.setFileName(sDisplayName)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+
+    oGui.setEndOfDirectory()
+    return
+
+def getBrightcoveKey(sUrl):
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    result = re.search('data-account="(.+?)" data-player="(.+?)"',sHtmlContent)
+    account = result.group(1)
+    player = result.group(2)
+
+    url = 'http://players.brightcove.net/%s/%s_default/index.min.js'%(account,player)
+
+    oRequestHandler = cRequestHandler(url)
+    sHtmlContent = oRequestHandler.request()
+    token = re.search('policyKey:"(.+?)"',sHtmlContent).group(1)
+    return(token)

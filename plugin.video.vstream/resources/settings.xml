@@ -68,7 +68,7 @@
         <setting label="30420" type="action"  action="XBMC.RunScript(plugin.video.vstream, search, ?site=globalRun&amp;function=search)" />
 
         <setting type="sep"/>
-        <setting subsetting="true" label="Choisissez vos sources cliquez OK [CR]- Pour Valider les modifications cliquez encore sur OK" type="lsep"/>
+        <setting subsetting="true" label="Choisissez vos sources cliquez OK [CR]- Pour valider les modifications cliquez encore sur OK" type="lsep"/>
 
 
         <!--activation invisible des sources -->
@@ -80,7 +80,7 @@
 
         <setting visible="false" id="plugin_cinemegatoil_org" type="bool" label="Cinemegatoil" default="true"/>
 
-        <setting visible="false" id="plugin_dadyflix" type="bool" label="dadyflix" default="true"/>
+        <setting visible="false" id="plugin_dadyflix" type="bool" label="Dadyflix" default="true"/>
 
         <setting visible="false" id="plugin_ddl_island_su" type="bool" label="DDL Island" default="true"/>
 
@@ -97,10 +97,12 @@
         <setting visible="false" id="plugin_film_vf_gratuit" type="bool" label="Filmvf Gratuit" default="true"/>
 
         <setting visible="false" id="plugin_filmcomplet" type="bool" label="FilmComplet" default="true"/>
-        
+
         <setting visible="false" id="plugin_films_cafe" type="bool" label="Film cafe" default="true"/>
 
         <setting visible="false" id="plugin_filmstreamvk_com" type="bool" label="Film stream vk" default="true"/>
+
+        <setting visible="false" id="plugin_filmstub_stream" type="bool" label="Filmstub" default="true"/>
 
         <setting visible="false" id="plugin_filmzenstream_com" type="bool" label="Filmzenstream)" default="true"/>
 
@@ -112,11 +114,13 @@
 
         <setting visible="false" id="plugin_full_stream_org" type="bool" label="Full Stream" default="true"/>
 
-        <setting visible="false" id="plugin_fullstream" type="bool" label="Full Stream" default="true"/>
+        <setting visible="false" id="plugin_fullstream" type="bool" label="FullStream" default="true"/>
 
         <setting visible="false" id="plugin_gum_gum_streaming_com" type="bool" label="Gum-Gum-Streaming" default="true"/>
 
-        <setting visible="false" id="plugin_k_streaming" type="bool" label="k_Streaming" default="true"/>
+        <setting visible="false" id="plugin_ianime" type="bool" label="Ianime" default="true"/>
+
+        <setting visible="false" id="plugin_k_streaming" type="bool" label="K_Streaming" default="true"/>
 
         <setting visible="false" id="plugin_kaydo_ws" type="bool" label="kaydo" default="true"/>
 
@@ -130,19 +134,25 @@
 
         <setting visible="false" id="plugin_libre_stream_org" type="bool" label="Libre-stream" default="true"/>
 
+        <setting visible="false" id="plugin_livetv" type="bool" label="Live TV" default="false"/>       
+
+        <setting visible="false" id="plugin_lsbd" type="bool" label="Liveset Database" default="true"/>
+
         <setting visible="false" id="plugin_mamcin" type="bool" label="Mamcin" default="true"/>
 
-        <setting visible="false" id="plugin_mangacity_org" type="bool" label="Ianime" default="true"/>
+        <setting visible="false" id="plugin_neko_sama" type="bool" label="Neko Sama" default="true"/>
 
         <setting visible="false" id="plugin_neuf_docu" type="bool" label="9Docu" default="true"/>
 
+        <setting visible="false" id="plugin_otaku_attitude" type="bool" label="Otaku-Attitude" default="true"/>
+
         <setting visible="false" id="plugin_otakufr_com" type="bool" label="OtakuFR" default="true"/>
 
-        <setting visible="false" id="plugin_papstream" type="bool" label="papstream" default="true"/>
+        <setting visible="false" id="plugin_papstream" type="bool" label="PapStream" default="true"/>
 
-        <setting visible="false" id="plugin_planet_streaming" type="bool" label="planet streaming" default="true"/>
+        <setting visible="false" id="plugin_planet_streaming" type="bool" label="Planet Streaming" default="true"/>
 
-        <setting visible="false" id="plugin_planet_regarderfilm" type="bool" label="RegarderFilm" default="true"/>
+        <setting visible="false" id="plugin_regarderfilm" type="bool" label="RegarderFilm" default="true"/>
 
         <setting visible="false" id="plugin_replaytvstreaming_com" type="bool" label="ReplayTVstreaming" default="true"/>
 
@@ -154,6 +164,8 @@
 
         <setting visible="false" id="plugin_serie_streaminghd" type="bool" label="Série-StreamingHD" default="true"/>
 
+        <setting visible="false" id="plugin_seriestreamings_org" type="bool" label="Série Streaming" default="true"/>
+
         <setting visible="false" id="plugin_skstream_co" type="bool" label="Skstream" default="true"/>
 
         <setting visible="false" id="plugin_sokrostream_biz" type="bool" label="Sokrostream" default="true"/>
@@ -161,6 +173,8 @@
         <setting visible="false" id="plugin_spion_com" type="bool" label="Spion" default="true"/>
 
         <setting visible="false" id="plugin_streamay_bz" type="bool" label="Streamay" default="true"/>
+
+        <setting visible="false" id="plugin_streamcomplet" type="bool" label="StreamComplet" default="true"/>
 
         <setting visible="false" id="plugin_streamelite" type="bool" label="StreamElite" default="true"/>
 
@@ -172,7 +186,7 @@
 
         <setting visible="false" id="plugin_streamingk_com" type="bool" label="StreamingK" default="true"/>
 
-        <setting visible="false" id="plugin_streamiz_co" type="bool" label="Streamiz.co" default="true"/>
+        <setting visible="false" id="plugin_streamiz_co" type="bool" label="Streamiz" default="true"/>
 
         <setting visible="false" id="plugin_streamzzz_com" type="bool" label="Streamzzz" default="true"/>
 
@@ -187,6 +201,8 @@
         <setting visible="false" id="plugin_videobuzzy_com" type="bool" label="Videobuzzy" default="true"/>
 
         <setting visible="false" id="plugin_voirfilms_org" type="bool" label="VoirFilms" default="true"/>
+
+        <setting visible="false" id="plugin_wawacity" type="bool" label="Wawacity" default="true"/>
 
         <setting visible="false" id="plugin_youtitou_com" type="bool" label="YouTitou (Animés)" default="true"/>
 
@@ -310,7 +326,7 @@
         <setting id="hoster_uploaded_username" type="text" label="30401" default=""/>
         <setting id="hoster_uploaded_password" type="text" label="30402" default="" option="hidden"/>
 
-        <setting label="Utiliser UrlResolver vous permettra d'utiliser Les debrideurs" type="lsep"/>
+        <setting label="Utiliser UrlResolver vous permettra d'utiliser les débrideurs" type="lsep"/>
         <setting type="sep"/>
         <setting subsetting="true" label="ATTENTION: vStream ne gère pas cette partie, [CR] pensez à le désactiver si les vidéos ne marchent plus." type="lsep"/>
         <setting subsetting="true" label="A moins d'avoir un débrideur, [CR] cocher cette case vous apportera plus de problèmes que d'avantages." type="lsep"/>

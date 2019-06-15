@@ -15,7 +15,7 @@ import urllib
 import xbmcgui, xbmcvfs
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0'
-headers = { 'User-Agent' : UA }
+headers = { 'User-Agent': UA }
 
 SITE_IDENTIFIER = 'extreme_down'
 SITE_NAME = 'Extreme-Download (beta)'
@@ -81,7 +81,7 @@ def load():
     if ADDON.getSetting('token_alldebrid') == "":
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-        oGui.addDir(SITE_IDENTIFIER, 'getToken', '[COLOR red]Les utilisateurs d\'Alldebrid cliquez ici.\nPour les autres ceci n\'est pas necessaire car l\'ancienne methode est toujours fonctionnel.[/COLOR]', 'films.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'getToken', '[COLOR red]Les utilisateurs d\'Alldebrid cliquez ici. Pour les autres ceci n\'est pas nécéssaire \ncar l\'ancienne méthode est toujours fonctionnelle.[/COLOR]', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -261,12 +261,12 @@ def getToken():
     ADDON = addon()
     oGui = cGui()
 
-    username = oGui.showKeyBoard(heading="Rentrer votre nom d'utilisateurs")
-    password = oGui.showKeyBoard(heading="Rentrer votre mots de passe")
-    oRequestHandler = cRequestHandler('https://api.alldebrid.com/user/login?agent=mySoft&username='+username+'&password='+password)
+    username = oGui.showKeyBoard(heading = "Entrez votre nom d'utilisateur")
+    password = oGui.showKeyBoard(heading = "Entrez votre mot de passe")
+    oRequestHandler = cRequestHandler('https://api.alldebrid.com/user/login?agent=mySoft&username=' + username + '&password=' + password)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '"token":"(.+?)"'
+    sPattern = '"token":"([^"]+)"'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -365,7 +365,7 @@ def showMovies(sSearch = ''):
             sSearch=sSearch.replace(URL_SEARCH[0], '')
 
         if Nextpagesearch:
-            query_args = (('do', 'search'), ('subaction', 'search'), ('search_start', Nextpagesearch), ('story', sSearch), ('titleonly', '3') )
+            query_args = (('do', 'search'), ('subaction', 'search'), ('search_start', Nextpagesearch), ('story', sSearch), ('titleonly', '3'))
         else:
             query_args = (('do', 'search'), ('subaction', 'search'), ('story', sSearch), ('titleonly', '3'))
 
@@ -381,7 +381,7 @@ def showMovies(sSearch = ''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<a class="top-last thumbnails" href="(.+?)"><img class="img-post" src="(.+?)" style="" alt="(.+?) - (.+?)"'
+    sPattern = '<a class="top-last thumbnails" href="([^"]+)"><img class="img-post" src="([^"]+)" style="" alt="(.+?) - ([^"]+)"'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -470,7 +470,7 @@ def showLinks():
     if (aResult[1]):
         sMovieTitle = aResult[1][0][1]
 
-    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Autres qualités disponibles:[/COLOR]')
+    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Qualités disponibles:[/COLOR]')
 
     sPattern = '<meta property="og:title" content=".+? - (.+?)(VOSTFR|VF)*/>'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -489,7 +489,7 @@ def showLinks():
     oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
     sHtmlContent1 = CutQual(sHtmlContent)
-    sPattern1 = '<a class="btn-other" href="([^"]+)">([^"]+)</a>'
+    sPattern1 = '<a class="btn-other" href="([^"]+)">([^<]+)</a>'
 
     aResult1 = oParser.parse(sHtmlContent1, sPattern1)
     #print aResult1
@@ -515,7 +515,7 @@ def showLinks():
         progress_.VSclose(progress_)
 
     sHtmlContent2 = CutSais(sHtmlContent)
-    sPattern2 = '<a class="btn-other" href="([^"]+)">([^"]+)</a>'
+    sPattern2 = '<a class="btn-other" href="([^"]+)">([^<]+)<'
 
     aResult2 = oParser.parse(sHtmlContent2, sPattern2)
     #print aResult2
@@ -549,7 +549,7 @@ def showHosters():
 
     #Detection de la taille des fichier pour separer les fichier premuim des parties en .rar
     if not 'saison' in sUrl:
-        fileSize = re.findall('<strong>Taille</strong><span style="float: right;">(.+?)</span></td>',sHtmlContent)
+        fileSize = re.findall('<strong>Taille</strong><span style="float: right;">([^<]+)</span></td>', sHtmlContent)
         if 'et' in str(fileSize[0]):
             taille = str(fileSize[:-7])
         else:
@@ -560,22 +560,22 @@ def showHosters():
             if float(size) > 4.85:
                 if "1 Lien" in sHtmlContent:
                     VSlog('1 Lien premuim')
-                    sPattern = '<h2 style="text-align: center;"><span style=.+?>(.+?)<span style=".+?</h2>|<div class="prez_2">1 Lien Uptobox</div>\s*.+?>\s*.+?<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>.+?\s*<div class="showNFO"'
+                    sPattern = '<h2 style="text-align: center;"><span style=.+?>([^<]+)<span style=".+?</h2>|<div class="prez_2">1 Lien Uptobox</div>\s*.+?>\s*.+?<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>.+?\s*<div class="showNFO"'
                 else:
                     VSlog('Pas lien premuim')
-                    sPattern = '<h2 style="text-align: center;"><span style=.+?>(.+?)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)* Premium</strong>'
+                    sPattern = '<h2 style="text-align: center;"><span style=.+?>([^<]+)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)* Premium</strong>'
             else:
-                sPattern = '<h2 style="text-align: center;"><span style=.+?>(.+?)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
+                sPattern = '<h2 style="text-align: center;"><span style=.+?>([^<]+)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
         else:
-            sPattern = '<h2 style="text-align: center;"><span style=.+?>(.+?)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
+            sPattern = '<h2 style="text-align: center;"><span style=.+?>([^<]+)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
     else:
-        sPattern = '<div class="prez_7">([^"]+)</div>|<a title=".+?" href="([^"]+)" target="_blank"><strong class="hebergeur">([^<>]+)</strong>'
+        sPattern = '<div class="prez_7">([^<]+)</div>|<a title=".+?" href="([^"]+)" target="_blank"><strong class="hebergeur">([^<>]+)</strong>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == False) and float(size) > 4.85:
         oGui.addText(SITE_IDENTIFIER)
-        dialog().VSinfo('Il n\'y existe que des fichier en parties non fonctionnel sur Kodi', "Extreme-Download", 15)
+        dialog().VSinfo('Il n\'existe que des fichiers en parties non fonctionnel sur Kodi', "Extreme-Download", 15)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -620,7 +620,7 @@ def RecapchaBypass():#Ouverture de Chrome Launcher s'il est intallez
     if Token_Alldebrid == "":
         RecapchaBypassOld(sUrl)
     else:
-        sUrl_Bypass = "https://api.alldebrid.com/link/redirector?agent=mySoft&token="+Token_Alldebrid+"&link="+sUrl
+        sUrl_Bypass = "https://api.alldebrid.com/link/redirector?agent=mySoft&token=" + Token_Alldebrid + "&link=" + sUrl
 
     oRequestHandler = cRequestHandler(sUrl_Bypass)
     sHtmlContent = oRequestHandler.request()
@@ -631,7 +631,7 @@ def RecapchaBypass():#Ouverture de Chrome Launcher s'il est intallez
     if (aResult3[0] == True):
         for aEntry in aResult3[1]:
 
-            sHosterUrl = 'https'+str(aEntry)
+            sHosterUrl = 'https' + str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
@@ -663,7 +663,7 @@ def getHoster():#Ouvrir le clavier + requete
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     sThumb = ''
-    sSearchText = oGui.showKeyBoard(heading="Mettre ici le liens du hoster apres avoir passer les Recaptcha manuellement") #appelle le clavier xbmc
+    sSearchText = oGui.showKeyBoard(heading = "Mettre ici le lien du hoster après avoir passer les Recaptcha manuellement") #appelle le clavier xbmc
     if (sSearchText != False):
         sUrl = sSearchText
 
@@ -678,7 +678,7 @@ def getHoster():#Ouvrir le clavier + requete
 
 def CutQual(sHtmlContent):
     oParser = cParser()
-    sPattern = '<span class="other-qualities">&Eacute;galement disponible en :</span>(.+?)<span class="other-qualities">Autres saisons :</span>'
+    sPattern = '<span class="other-qualities">&Eacute;galement disponible en :</span>([^<]+)<span class="other-qualities">Autres saisons :</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
     if (aResult[0]):
@@ -690,7 +690,7 @@ def CutQual(sHtmlContent):
 
 def CutSais(sHtmlContent):
     oParser = cParser()
-    sPattern = '<span class="other-qualities">Autres saisons :</span>(.+?)</div>'
+    sPattern = '<span class="other-qualities">Autres saisons :</span>([^<]+)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
     if (aResult[0]):

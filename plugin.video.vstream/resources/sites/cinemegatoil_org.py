@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 #17/12/18
-return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -9,10 +8,11 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import GestionCookie
-from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui
-import re
+from resources.lib.recaptcha import ResolveCaptcha
+from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui, VSlog
+import re, urllib, requests
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0'
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
 
 SITE_IDENTIFIER = 'cinemegatoil_org'
 SITE_NAME = 'CineMegaToil'
@@ -177,7 +177,7 @@ def showHosters():
 
     #sHtmlContent = oParser.abParse(sHtmlContent, '<div class="tcontainer video-box">', '<div class="tcontainer video-box" id=')
 
-    sPattern = '<a class="" rel="noreferrer" href="([^"]+)".+?<img src="/templates/Flymix/images/streaming/(.+?).png" /> *</a>'
+    sPattern = '<b>([^"]+)</b><tr> <br>|(?:<a class="" rel="noreferrer" href="([^"]+)".+?<img src="/templates/Flymix/images/(.+?).png" /> *</a>|<a href="([^"]+)" >([^"]+)</a>)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -190,29 +190,54 @@ def showHosters():
             if progress_.iscanceled():
                 break
 
-            oOutputParameterHandler = cOutputParameterHandler()
-            sHost = '[COLOR coral]' + aEntry[1].capitalize() + '[/COLOR]'
-            sHost = re.sub('\.\w+', '', sHost)
-            sUrl = aEntry[0]
+            if aEntry[0]:
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
+            else:
+                if aEntry[3]:
+                    try:
+                        sHost, sTitle = aEntry[4].split('-',1)
+                        sHost = '[COLOR coral]' + sHost + '[/COLOR]'
+                        sUrl = aEntry[3]
+                    except ValueError:
+                        sHost = '[COLOR coral]' + aEntry[4].capitalize() + '[/COLOR]'
+                        sHost = re.sub('\.\w+', '', sHost)
+                        sUrl = aEntry[3]
+                else:
+                    sHost = '[COLOR coral]' + aEntry[2].capitalize() + '[/COLOR]'
+                    sHost = re.sub('\.\w+', '', sHost)
+                    sUrl = aEntry[1]
 
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sHost, sThumb, sDesc, oOutputParameterHandler)
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('sDesc', sDesc)
+                oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sHost, sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
 def Display_protected_link():
-    #print 'entering Display_protected_link'
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
+
+    if 'ouo' in sUrl:
+        sHosterUrl = DecryptOuo(sUrl)
+        if (sHosterUrl):
+            sTitle = sMovieTitle
+
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sTitle)
+                oHoster.setFileName(sTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+        oGui.setEndOfDirectory()
 
     #Est ce un lien dl-protect ?
     if '/l.k.s/' in sUrl:
@@ -253,7 +278,7 @@ def Display_protected_link():
     oGui.setEndOfDirectory()
 
 def DecryptddlProtect(url):
-    #print 'entering DecryptddlProtect'
+    #VSlog 'entering DecryptddlProtect'
     if not (url): return ''
 
     #Get host
@@ -437,3 +462,35 @@ def get_response(img,cookie):
             wdlg.close()
 
     return solution, NewCookie
+
+def DecryptOuo(sUrl):
+    urlOuo = sUrl
+    if not '/fbc/' in urlOuo:
+        urlOuo = urlOuo.replace('io/','io/fbc/').replace('press/','press/fbc/')
+
+    oRequestHandler = cRequestHandler(urlOuo)
+    sHtmlContent = oRequestHandler.request()
+    Cookie = oRequestHandler.GetCookies()
+
+    key = re.search('sitekey: "(.+?)"',str(sHtmlContent)).group(1)
+    OuoToken = re.search('<input name="_token" type="hidden" value="(.+?)">',str(sHtmlContent)).group(1)
+
+    gToken = ResolveCaptcha(key, urlOuo)
+
+    url = urlOuo.replace('/fbc/','/go/')
+    params = '_token='+OuoToken+'&g-recaptcha-response='+gToken
+    headers = {'User-Agent': UA,
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate',
+        'Referer': urlOuo,
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length':str(len(params)),
+        'Cookie':Cookie
+        }
+
+    r = requests.post(url,data=params, headers=headers)
+
+    final = re.search('<form method="POST" action="(.+?)" accept-charset="UTF-8"><input name="_token" type="hidden" value="(.+?)">',str(r.text))
+    r = requests.post(final.group(1),data='_token='+final.group(2), headers=headers)
+    return r.url

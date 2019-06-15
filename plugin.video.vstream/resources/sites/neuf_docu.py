@@ -9,9 +9,8 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, VSlog
 from resources.lib.config import GestionCookie
-
-import random,re
 #from resources.lib.util import cUtil
+import random, re
 
 SITE_IDENTIFIER = 'neuf_docu'
 SITE_NAME = '9Docu'
@@ -125,14 +124,14 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
-      sUrl = sSearch.replace(" ", "+")
+      sUrl = sSearch.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'class="attachment-medium aligncenter" src="([^<]+)".+?<a href="([^"<]+)"[^<>]+>([^<>]+)'
+    sPattern = 'class="attachment-medium aligncenter" src="([^"]+)".+?<a href="([^"<]+)"[^<>]+>([^<>]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -171,7 +170,7 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<link rel="next" href="(.+?)" />'
+    sPattern = '<link rel="next" href="([^"]+)" />'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         return aResult[1][0]
@@ -189,7 +188,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<span class="(?:14|15)"><a href="(.+?)"'
+    sPattern = '<span class="(?:14|15)"><a href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -227,20 +226,20 @@ def showHosters():
                     return
 
                 cookies = GestionCookie().Readcookie('revivelink.com')
-                oRequestHandler = cRequestHandler('http://revivelink.com/slinks.php?R='+idUrl+'&'+RandomKey)
+                oRequestHandler = cRequestHandler('http://revivelink.com/slinks.php?R=' + idUrl + '&' + RandomKey)
                 oRequestHandler.addHeaderEntry('Host', 'revivelink.com')
                 oRequestHandler.addHeaderEntry('Referer', aEntry)
                 oRequestHandler.addHeaderEntry('Accept', 'application/json, text/javascript, */*; q=0.01')
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
                 oRequestHandler.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4')
                 oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
-                oRequestHandler.addHeaderEntry('X-Requested-With','XMLHttpRequest')
-                oRequestHandler.addHeaderEntry('Cookie',cookies)
+                oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
+                oRequestHandler.addHeaderEntry('Cookie', cookies)
 
                 sHtmlContent = oRequestHandler.request()
 
-                result = re.findall('<td><a href="([^<]+)" title=\'([^<]+)\'>',sHtmlContent)
-                for url,title in result:
+                result = re.findall('<td><a href="([^"]+)" title=\'([^<]+)\'>', sHtmlContent)
+                for url, title in result:
                     sHosterUrl = url
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
                     if (oHoster != False):

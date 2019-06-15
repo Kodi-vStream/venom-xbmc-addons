@@ -38,8 +38,10 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        if not 'embed-' in self.__sUrl:
-            self.__sUrl = self.__sUrl.rsplit('/', 1)[0] + '/embed-' + self.__sUrl.rsplit('/', 1)[1]
+        if 'embed-' in self.__sUrl:
+            self.__sUrl = self.__sUrl.replace('embed-','')
+#        if not 'embed-' in self.__sUrl:
+#            self.__sUrl = self.__sUrl.rsplit('/', 1)[0] + '/embed-' + self.__sUrl.rsplit('/', 1)[1]
 
         if not self.__sUrl.startswith('https'):
             self.__sUrl = self.__sUrl.replace('http', 'https')

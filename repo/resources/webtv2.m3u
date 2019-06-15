@@ -1,54 +1,84 @@
 #EXTM3U
-#EXTINF:-1 tvg-id="FRA1.kazer.org" tvg-name="France 1" tvg-logo="tf1.png" group-title="Generaliste",TF1
-[REGEX]"(http[^"]+)"[POSTFORM]udid=B85E0FCB-A255-48BD-9A71-3C1AB782A7BB&mediaId=L_TF1&appName=sdk%2FIphone%2F1.0&authKey=d7a5407b73696fc9b1e983c7be9009db%2F1409816606000&method=getLiveUrl[URL]http://api.wat.tv/services/Delivery
+#EXTINF:-1 tvg-logo="tf1.png",TF1
+[REGEX]"url":"([^"]+)"[URL]https://delivery.tf1.fr/mytf1-wrd/L_TF1?format=hls
 
-#EXTINF:-1 tvg-id="FRA2.kazer.org" tvg-name="France 2" tvg-logo="france2.png" group-title="Generaliste",France 2
+#EXTINF:-1 tvg-logo="tmc.png",TMC
+[REGEX]"url":"([^"]+)"[URL]https://delivery.tf1.fr/mytf1-wrd/L_TMC?format=hls
+
+#EXTINF:-1 tvg-logo="tfx.png",TFX
+[REGEX]"url":"([^"]+)"[URL]https://delivery.tf1.fr/mytf1-wrd/L_NT1?format=hls
+
+#EXTINF:-1 tvg-logo="tf1seriesfilms.png",TF1 Serie et films
+[REGEX]"url":"([^"]+)"[URL]https://delivery.tf1.fr/mytf1-wrd/L_HD1?format=hls
+
+#EXTINF:-1 tvg-logo="lci.png",LCI
+[REGEX]"url":"([^"]+)"[URL]https://delivery.tf1.fr/mytf1-wrd/L_LCI?format=hls
+
+#EXTINF:-1 tvg-logo="france2.png",France 2
 [REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_2%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
 
-#EXTINF:-1 tvg-id="FRA3.kazer.org" tvg-name="France 3" tvg-logo="france3.png" group-title="Generaliste",France 3
+#EXTINF:-1 tvg-logo="france3.png",France 3
 [REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_3%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
 
-#EXTINF:-1 tvg-id="FRA4.kazer.org" tvg-name="France 4" tvg-logo="france4.png" group-title="Generaliste",France 4
+#EXTINF:-1 tvg-logo="france4.png" ,France 4
 [REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_4%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
 
-#EXTINF:-1 tvg-id="FRA5.kazer.org" tvg-name="France 5" tvg-logo="france5.png" group-title="Generaliste",France 5
+#EXTINF:-1 tvg-logo="france5.png" ,France 5
 [REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_5%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
 
-#EXTINF:-1 tvg-id="FRA1.kazer.org" tvg-name="France O" tvg-logo="franceo.png" group-title="Generaliste",France O
+#EXTINF:-1 tvg-logo="franceo.png" ,France O
 [REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_O%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
 
-#EXTINF:-1 tvg-id="ART1.kazer.org" tvg-name="Arte" tvg-logo="arte.png" group-title="Documentaire",Arte
+#EXTINF:-1 tvg-logo="franceinfo.png" ,France Info
+[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFranceinfo%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
+
+#EXTINF:-1 tvg-logo="arte.png" ,Arte
 http://artelive-lh.akamaihd.net/i/artelive_fr@344805/master.m3u8
 
-#EXTINF:-1 tvg-id="GUL1.kazer.org" tvg-name="Gulli" tvg-logo="gulli.png" group-title="Jeunesse",Gulli
+#EXTINF:-1 tvg-logo="gulli.png" ,Gulli
 [REGEX]url = "(.+?)"[URL]http://replay.gulli.fr/jwplayer/embedstreamtv
 
-#EXTINF:-1 tvg-id="NRJ1.kazer.org" tvg-name="NRJ12" tvg-logo="nrj12.png" group-title="Generaliste",NRJ 12
+#EXTINF:-1 tvg-logo="nrj12.png" ,NRJ 12
 http://nrj-apple-live.adaptive.level3.net/apple/nrj/nrj/nrj12hi.m3u8
 
-#EXTINF:-1 tvg-id="CSTAR.kazer.org" tvg-name="CStar" tvg-logo="cstar.png" group-title="Musique",CStar
+#EXTINF:-1 tvg-logo="cstar.png" ,CStar
 https://www.dailymotion.com/player/metadata/video/x5gv5v0
 
-#EXTINF:-1 tvg-id="C8.kazer.org" tvg-name="C8" tvg-logo="c8.png" group-title="Generaliste",C8
+#EXTINF:-1 tvg-logo="c8.png" ,C8
 https://www.dailymotion.com/player/metadata/video/x5gv5rr
 
-#EXTINF:-1 tvg-id="CNEWS.kazer.org" tvg-name="CNEWS" tvg-logo="c8.png" group-title="Information",CNEWS
+#EXTINF:-1 tvg-logo="cnews.png",CNEWS
 https://www.dailymotion.com/player/metadata/video/x3b68jn
 
-#EXTINF:-1 tvg-id="CANALPLUS.kazer.org" tvg-name="Canalplus" tvg-logo="canalplus.png" group-title="Generaliste",Canal + (en clair)
+#EXTINF:-1 tvg-logo="canalplus.png" ,Canal + (en clair)
 https://www.dailymotion.com/player/metadata/video/x5gv6be
 
-#EXTINF:-1 tvg-id="LCP.kazer.org" tvg-name="LCP" tvg-logo="lcp.png" group-title="Politque",LCP Assemblee nationale
-https://www.dailymotion.com/player/metadata/video/xgepjr
-
-#EXTINF:-1 tvg-id="LCP100%.kazer.org" tvg-name="LCP100" tvg-logo="LCP100%.png" group-title="Politque",LCP 100
+#EXTINF:-1 tvg-logo="lcp.png" ,LCP Assemblee nationale
 https://www.dailymotion.com/player/metadata/video/xji3qy
 
-#EXTINF:-1 tvg-id="BFMTV.kazer.org" tvg-name="BFMTV" tvg-logo="bfm.png" group-title="Information",BFM TV
+#EXTINF:-1 tvg-logo="LCP100.png" ,LCP 100
+https://www.dailymotion.com/player/metadata/video/xgepjr
+
+#EXTINF:-1 tvg-logo="bfm.png" ,BFM TV
 https://bfmtvalive1-a.akamaihd.net/9824d8182ef7475abb5cb41f0d2b71d0/eu-central-1/876450610001/dd257bd6bff64eccb0a29b54cc705a07/playlist_ssaiM.m3u8
 
-#EXTINF:-1 tvg-id="BFMBuisness.kazer.org" tvg-name="BFM buisness" tvg-logo="bfmbus.png" group-title="Econimie",BFM Buisness
+#EXTINF:-1 tvg-logo="bfmbus.png" ,BFM Buisness
 https://bfmbusisecure-i.akamaihd.net/hls/live/265375/876450612001/BFMBusinessS/playlist.m3u8
 
-#EXTINF:-1 tvg-id="LEQUIPE21.kazer.org" tvg-name="L'equipe 21" tvg-logo="equipe21.png" group-title="Sport",L'equipe 21
+#EXTINF:-1 tvg-logo="rmcstory.png" ,RMC Story
+https://www.dailymotion.com/player/metadata/video/x13p3qi
+
+#EXTINF:-1 tvg-logo="rmcdecouverte.png" ,RMC Decouverte
+[REGEX]"src":"(.+?)"[URL]https://edge.api.brightcove.com/playback/v1/accounts/1969646226001/videos/5500352445001[BRIGHTCOVEKEY]https://rmcdecouverte.bfmtv.com/mediaplayer-direct/
+
+#EXTINF:-1 tvg-logo="equipe21.png" ,L'equipe 21
 https://www.dailymotion.com/player/metadata/video/x2lefik
+
+#EXTINF:-1 tvg-logo="gong.png" ,Gong
+[REGEX]<source.+?src="([^"]+)">[URL]http://www.gongnetworks.com/gong.php
+
+#EXTINF:-1 tvg-logo="gongmax.png" ,Gong Max
+[REGEX]<source.+?src="([^"]+)">[URL]http://www.bouquet-tv.live/gong-max/
+
+#EXTINF:-1 tvg-logo="virgineradiotv.png" ,Virgine Radio TV
+https://www.dailymotion.com/player/metadata/video/x1bcyq3

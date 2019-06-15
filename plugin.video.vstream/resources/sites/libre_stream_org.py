@@ -102,6 +102,7 @@ def showGenres():
     liste.append( ['Guerre', URL_MAIN + 'films/guerre/'] )
     liste.append( ['Historiques', URL_MAIN + 'films/historique/'] )
     liste.append( ['Horreur', URL_MAIN + 'films/horreur/'] )
+    liste.append( ['Manga', URL_MAIN + 'films/manga/'] )
     liste.append( ['Musicale', URL_MAIN + 'films/musical/'] )
     liste.append( ['Policier', URL_MAIN + 'films/policier/'] )
     liste.append( ['Romance', URL_MAIN + 'films/romance/'] )
