@@ -7,6 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, dialog
+from resources.lib.util import cUtil
 import re
 
 SITE_IDENTIFIER = 'filmstub_stream'
@@ -26,10 +27,10 @@ SERIE_GENRES = ('http://serie', 'showSerieGenres')
 ANIM_ANIMS = (URL_MAIN + 'anime-streaming/', 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'anime-streaming/', 'showMovies')
 
-URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 
 def load():
     oGui = cGui()
@@ -69,7 +70,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText
+        sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -201,18 +202,24 @@ def showMovies(sSearch = ''):
 
             if 'letters' in sUrl:
                 sUrl2 = aEntry[0]
-                sThumb = aEntry[1].replace('w92', 'w342')
+                sThumb = re.sub('/w\d+', '/w342', aEntry[1])
                 sTitle = aEntry[3]
                 sYear = aEntry[4]
+                #aEntry[2] sers à faire la difference entre film et serie
 
                 sDisplayTitle = ('%s (%s)') % (sTitle, sYear)
             else:
                 sUrl2 = aEntry[0]
-                sThumb = aEntry[1].replace('w185', 'w342')
+                sThumb = re.sub('/w\d+', '/w342', aEntry[1])
                 sTitle = aEntry[2]
                 sYear = aEntry[3]
 
                 sDisplayTitle = ('%s (%s)') % (sTitle, sYear)
+
+            # Si recherche et trop de resultat, on nettoye
+            if sSearch and total > 2:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
+                    continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -228,6 +235,7 @@ def showMovies(sSearch = ''):
 
         progress_.VSclose(progress_)
 
+    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -235,7 +243,7 @@ def showMovies(sSearch = ''):
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
-        oGui.setEndOfDirectory() #arriver la
+        oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
     sPattern = 'href="*([^">]+)"*>Next'
