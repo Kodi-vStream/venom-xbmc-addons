@@ -28,10 +28,10 @@ SERIE_GENRES = (URL_MAIN + 'serie/', 'showGenres')
 SERIE_ANNEES = (URL_MAIN + 'serie/date-', 'showYears')
 SERIE_PAYS = (URL_MAIN + 'serie/', 'showPays')
 
-URL_SEARCH = (URL_MAIN + 'search?Search=', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + 'search?Search=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + 'search?Search=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
+URL_SEARCH = (URL_MAIN + 'search?Search=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 
 def load():
     oGui = cGui()
@@ -201,7 +201,7 @@ def showMovies(sSearch = ''):
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     if sSearch:
-        sUrl = sSearch
+        sUrl = sSearch.replace(' ', '+')
         sPattern = 'href="([^"]+)" class="hvr-shutter-out-horizontal"><img src="([^"]+)"[^<>]+ alt="([^"]+)"'
 
     elif '/film' in sUrl:
