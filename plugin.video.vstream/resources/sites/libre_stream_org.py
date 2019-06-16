@@ -26,10 +26,10 @@ SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
 SERIE_VFS = (URL_MAIN + 'series/version-francaise/', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'series/vostfr/', 'showMovies')
 
-URL_SEARCH = (URL_MAIN + '?q=', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + '?q=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + '?q=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
+URL_SEARCH = (URL_MAIN + '?q=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 
 def load():
     oGui = cGui()
@@ -74,7 +74,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText
+        sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -212,7 +212,7 @@ def showMovies(sSearch = ''):
     if '/films' in sUrl:
         sPattern = sPattern + '.+?<div class="maskquality (.+?)">'
     if '/series' in sUrl:
-        sPattern = sPattern + '.+?>Séries</a>.+?<a href=".+?">(.+?)</a>'
+        sPattern = sPattern + '.+?>Séries</a>.+?<a href=".+?">([^<]+)</a>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -278,7 +278,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a href="([^<>""]+?)"><i class="fa fa-angle-right"></i></a>'
+    sPattern = '<a href="([^"]+)"><i class="fa fa-angle-right"></i></a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
