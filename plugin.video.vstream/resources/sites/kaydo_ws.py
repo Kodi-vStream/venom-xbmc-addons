@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress#, VSlog
 import re, base64
 
 from resources.lib.packer import cPacker
@@ -31,8 +31,8 @@ SERIE_SERIES = (URL_MAIN + 'tv-seriess/', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'tv-seriess/', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + 'search/', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + 'search/', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + 'search/', 'showMovies')
+URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'sHowResultSearch'
 
 def Decode(chain):
@@ -183,7 +183,7 @@ def showMovies(sSearch=''):
     if 'letters' in sUrl:
         sPattern = '<td class="MvTbImg"> *<a href="([^"]+)".+?(?:<img |data-wpfc-original-)src="([^"]+)".+?strong>([^<]+)<.+?span class="Qlty">([^<]+)<'
     elif 'serie' in sUrl:
-        sPattern = 'href="([^"]+)"><div class="Image"><figure class="Objf TpMvPlay AAIco-play_arrow"><img src="([^"]+)" alt="Image ([^"]+)"><figcaption>.+?</figure></div><h3 class="Title">[^<]+</h3>.+?class="Description"><p>[^,]+,([^<]+)<'
+        sPattern = 'href="([^"]+)"><div class="Image"><figure class="Objf TpMvPlay AAIco-play_arrow"><img src="([^"]+)" alt="Image ([^"]+)"> *<figcaption>.+?</figure></div><h3 class="Title">[^<]+</h3>.+?class="Description"><p>[^,]+,([^<]+)<'
     else:
         sPattern = 'href="([^"]+)"><div class="Image"><figure class="Objf TpMvPlay AAIco-play_arrow"><img src="([^"]+)" alt="Image ([^"]+)"></figure></div><h3 class="Title">[^<]+</h3>.+?class="Qlty">([^<]+)<.+?class="Description"><p>[^,]+,([^<]+)<'
 
@@ -200,33 +200,25 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
+            #partie commune
+            siteUrl = aEntry[0]
+            sThumb = re.sub('/w\d+', '/w342', aEntry[1])
+            if sThumb.startswith('/'):
+                sThumb = 'https:' + sThumb
+            sTitle = aEntry[2]
+
             if 'letters' in sUrl:
-                siteUrl = aEntry[0]
-                sThumb = aEntry[1].replace('w92', 'w342')
-                if sThumb.startswith('//'):
-                    sThumb = 'https:' + sThumb
-                sTitle = aEntry[2]
                 sQual = aEntry[3]
                 sDesc = ''
 
                 sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
 
             elif 'serie' in sUrl:
-                siteUrl = aEntry[0]
-                sThumb = aEntry[1].replace('w185', 'w342')
-                if sThumb.startswith('//'):
-                    sThumb = 'https:' + sThumb
-                sTitle = aEntry[2]
                 sDesc = aEntry[3]
 
                 sDisplayTitle = sTitle
 
             else:
-                siteUrl = aEntry[0]
-                sThumb = aEntry[1].replace('w154', 'w342').replace('w185', 'w342')
-                if sThumb.startswith('//'):
-                    sThumb = 'https:' + sThumb
-                sTitle = aEntry[2]
                 sQual = aEntry[3]
                 sDesc = aEntry[4]
 
@@ -243,13 +235,13 @@ def showMovies(sSearch=''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
+    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
 
 def ShowSaisonEpisodes():
@@ -276,9 +268,9 @@ def ShowSaisonEpisodes():
                 break
 
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]Saison: ' + aEntry[0] + '[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]Saison: ' + aEntry[0] + '[/COLOR]')
             else:
-                sThumb = aEntry[1].replace('w92', 'w342').replace('w185', 'w342')
+                sThumb = re.sub('/w\d+', '/w342', aEntry[1])
                 if sThumb.startswith('//'):
                     sThumb = 'https:' + sThumb
                 sUrl2 = aEntry[2]
@@ -352,7 +344,7 @@ def showHosters():
             sHtmlContent = oRequestHandler.request()
             sHosterUrl = oRequestHandler.getRealUrl()
             if 'public/dist' in sHosterUrl:
-                sHosterUrl = 'https://' + sHosterUrl.split('/')[2] + '/hls/'+sHosterUrl.split('id=')[1]+'/'+sHosterUrl.split('id=')[1]+'.playlist.m3u8'
+                sHosterUrl = 'https://' + sHosterUrl.split('/')[2] + '/hls/'+sHosterUrl.split('id=')[1] + '/'+sHosterUrl.split('id=')[1] + '.playlist.m3u8'
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
