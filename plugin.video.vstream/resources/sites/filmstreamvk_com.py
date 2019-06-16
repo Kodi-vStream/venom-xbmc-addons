@@ -184,6 +184,7 @@ def showMovies(sSearch = ''):
 
         progress_.VSclose(progress_)
 
+    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -293,7 +294,7 @@ def showEpisode():
             if aEntry[0]:
                 sLang = aEntry[0].decode("utf8")
                 sLang = cUtil().unescape(sLang).encode("utf8")
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + sLang + '[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + sLang + '[/COLOR]')
             else:
                 #ce ne sont pas les mêmes tirets ne pas supprimer
                 sMovieTitle = sMovieTitle.replace(' – Saison', ' Saison').replace(' - Saison', ' Saison')
