@@ -9,17 +9,18 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.comaddon import progress#, VSlog
+import re
 
 SITE_IDENTIFIER = 'dadyflix'
 SITE_NAME = 'DadyFlix'
 SITE_DESC = 'Films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
 URL_MAIN = 'https://ww2.dadyflix.com/'
-URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
-# URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
+
 FUNCTION_SEARCH = 'showMovies'
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 
 MOVIE_MOVIE = ('http://', 'showMenuMovies')
 MOVIE_NEWS = (URL_MAIN + 'filmstreaming/', 'showMovies')
@@ -175,12 +176,12 @@ def showMovies(sSearch = ''):
 
             if sSearch:
                 sUrl2 = aEntry[0]
-                sThumb = aEntry[1].replace('w92', 'w342').replace('w185', 'w342')
+                sThumb = re.sub('/w\d+', '/w342', aEntry[1])
                 sTitle = aEntry[2]
                 sQual = ''
                 setDisplayName = ('%s [%s]') % (sTitle, sQual)
             else:
-                sThumb = aEntry[0].replace('w185', 'w342')
+                sThumb = re.sub('/w\d+', '/w342', aEntry[0])
                 sTitle = aEntry[1]
                 sQual = aEntry[2].replace('Haute-qualité', 'HD')
                 sUrl2 = aEntry[3]
@@ -207,13 +208,13 @@ def showMovies(sSearch = ''):
 
         progress_.VSclose(progress_)
 
+    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
