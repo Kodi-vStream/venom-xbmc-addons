@@ -19,8 +19,8 @@ SITE_DESC = 'Films, Séries et Mangas Gratuit en streaming sur Full stream'
 URL_MAIN = 'https://w1.full-stream.cc/'
 
 URL_SEARCH = (URL_MAIN + 'wp-json/dooplay/search/?keyword=', 'AlphaDisplay')
-URL_SEARCH_MOVIES = (URL_MAIN + 'wp-json/dooplay/search/?keyword=', 'AlphaDisplay')
-URL_SEARCH_SERIES = (URL_MAIN + 'wp-json/dooplay/search/?keyword=', 'AlphaDisplay')
+URL_SEARCH_MOVIES = (URL_SEARCH[0], 'AlphaDisplay')
+URL_SEARCH_SERIES = (URL_SEARCH[0], 'AlphaDisplay')
 
 FUNCTION_SEARCH = 'AlphaDisplay'
 
@@ -223,7 +223,7 @@ def showMovies():
             if progress_.iscanceled():
                 break
 
-            sThumb = aEntry[0].replace('w185', 'w342')
+            sThumb = re.sub('/w\d+', '/w342', aEntry[0])
             sTitle = aEntry[1]
             sQual = aEntry[2]
             sUrl2 = aEntry[3]
