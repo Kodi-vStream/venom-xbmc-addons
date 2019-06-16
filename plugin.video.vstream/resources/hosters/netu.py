@@ -194,6 +194,7 @@ class cHoster(iHoster):
             data = urllib.unquote(data)
 
             data = DecodeAllThePage(data)
+            #VSlog(data)
 
             at = re.search(r'var\s*at\s*=\s*"([^"]*?)"', data).group(1)
 
@@ -241,16 +242,16 @@ class cHoster(iHoster):
 #            else:
 #                VSlog('prb2')
 
-        nameVar = re.search('true.+?\s*.+?link_1="\+encodeURIComponent\((.+?)\)\+"&server_2="\+encodeURIComponent\((.+?)\)',data)
+        nameVar = re.search('true.+?\s*.+?link_1="\+encodeURIComponent\((.+?)\)\+"&server_2="\+encodeURIComponent\((.+?)\)\+"&vid="\+encodeURIComponent\("(.+?)"\)',data)
         var1 = re.search('var '+nameVar.group(1)+' = "(.+?)"', data).group(1)
         var2 = re.search('var '+nameVar.group(2)+' = "(.+?)"', data).group(1)
 
         #bricolage
-        api_call = "https://hqq.tv/player/get_md5.php?ver=2&at="+urllib.quote(at, safe='~()*!.\'')+"&adb=1&b=1&link_1="+urllib.quote(var1, safe='~()*!.\'')+"&server_2="+urllib.quote(var2, safe='~()*!.\'')+"&vid="+urllib.quote(vid, safe='~()*!.\'')+"&ext=.mp4.m3u8"
+        api_call = "https://hqq.tv/player/get_md5.php?ver=2&at="+urllib.quote(at, safe='~()*!.\'')+"&adb="+urllib.quote("1/", safe='~()*!.\'')+"&b=1&link_1="+urllib.quote(var1, safe='~()*!.\'')+"&server_2="+urllib.quote(var2, safe='~()*!.\'')+"&vid="+urllib.quote(nameVar.group(3), safe='~()*!.\'')+"&ext=.mp4.m3u8"
 
         #use a fake headers
-        #Header = 'User-Agent=' + UA
-        api_call = api_call #+ '|' + Header >> pas besoin pour l'instant
+        Header = "Accept-Language= fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3&Accept-Encoding= gzip, deflate, br"
+        api_call = api_call + '|' + Header
 
         if not (api_call == False):
             return True, api_call
