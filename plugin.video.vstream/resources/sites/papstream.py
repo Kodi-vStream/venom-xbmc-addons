@@ -10,18 +10,16 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 #import urllib2
 
-
 SITE_IDENTIFIER = 'papstream'
 SITE_NAME = 'PapStream'
 SITE_DESC = 'Films, Séries & Mangas'
 
 URL_MAIN = 'https://www.papstream.site/'
 
+FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + 'rechercher', 'showMovies')
-
 URL_SEARCH_MOVIES = ('', 'showMovies')
 URL_SEARCH_SERIES = ('', 'showMovies')
-FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN + 'dernier-films.html', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'films.html', 'showMovies')
@@ -93,7 +91,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        showMovies( sSearchText )
+        showMovies(sSearchText)
         oGui.setEndOfDirectory()
         return
 
