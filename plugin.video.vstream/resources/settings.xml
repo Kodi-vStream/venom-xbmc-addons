@@ -134,7 +134,7 @@
 
         <setting visible="false" id="plugin_libre_stream_org" type="bool" label="Libre-stream" default="true"/>
 
-        <setting visible="false" id="plugin_livetv" type="bool" label="Live TV" default="false"/>       
+        <setting visible="false" id="plugin_livetv" type="bool" label="Live TV" default="true"/>       
 
         <setting visible="false" id="plugin_lsbd" type="bool" label="Liveset Database" default="true"/>
 
@@ -202,7 +202,7 @@
 
         <setting visible="false" id="plugin_voirfilms_org" type="bool" label="VoirFilms" default="true"/>
 
-        <setting visible="false" id="plugin_wawacity" type="bool" label="Wawacity" default="true"/>
+        <setting visible="false" id="plugin_wawacity" type="bool" label="Wawacity" default="false"/>
 
         <setting visible="false" id="plugin_youtitou_com" type="bool" label="YouTitou (Animés)" default="true"/>
 
