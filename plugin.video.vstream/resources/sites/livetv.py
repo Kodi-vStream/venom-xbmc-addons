@@ -279,12 +279,11 @@ def showHosters(sSearch = ''): #affiche les videos disponible du live
         sHosterUrl = ''
 
         url = aResult[1][0]
-        #VSlog(url)
 
         #url = 'http://www.sporcanli.com/frame2.html' #a garder peut etre utils pour ajouter un hébergeur
 
-        #VSlog(url)
-        if 'emb.aplayer1.me' in url:#Terminer
+        VSlog(url)
+        if 'emb.aplayer' in url:#Terminer
             Referer = url
             oRequestHandler = cRequestHandler(url)
             oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -326,7 +325,6 @@ def showHosters(sSearch = ''): #affiche les videos disponible du live
             aResult = re.findall(sPattern2, sHtmlContent2)
             if aResult:
                 sHosterUrl2 = aResult[0]
-                UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
                 oRequestHandler = cRequestHandler(sHosterUrl2)
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
                 oRequestHandler.addHeaderEntry('Referer', sHosterUrl2)
@@ -377,7 +375,6 @@ def showHosters(sSearch = ''): #affiche les videos disponible du live
             aResult = re.findall(sPattern2, sHtmlContent2)
             if aResult:
                 gameId = int(aResult[2]) + int(aResult[0]) - int(aResult[1]) - int(aResult[2])
-                VSlog(gameId)
                 sHosterUrl = 'http://91.192.80.210/edge0/xrecord/' + str(gameId) + '/prog_index.m3u8'
 
         if 'youtube' in url:#Je sais pas
@@ -390,31 +387,12 @@ def showHosters(sSearch = ''): #affiche les videos disponible du live
                 #VSlog(video_id)
 
             url1 = url.replace('/embed/', '/watch?v=').replace('?autoplay=1','')
-            oRequestHandler = cRequestHandler(url1)
-            sHtmlContent2 = oRequestHandler.request()
-
-            sPattern2 = '\W[\'"]?t[\'"]?: ?[\'"](.+?)[\'"]'
-            aResult = re.findall(sPattern2, sHtmlContent2)
-
-            if aResult:
-                token = aResult[0]
-                #sVSlog(token)
-
-            params = {
-                'video_id': video_id,
-                'el': '$el',
-                'ps': 'default',
-                'eurl': 'https://youtube.googleapis.com/v/' + video_id,
-                'hl': 'fr_FR',
-                't': urllib2.quote(token)}
 
             url2 = 'https://youtube.com/get_video_info?video_id=' + video_id + '&sts=17488&hl=fr'
 
-            req = urllib2.Request(url2)
-
-            response = urllib2.urlopen(req)
-            sHtmlContent3 = urllib2.unquote(response.read())
-            #VSlog(sHtmlContent3)
+            oRequestHandler = cRequestHandler(url2)
+            oRequestHandler.addHeaderEntry('User-Agent', UA)
+            sHtmlContent3 = urllib2.unquote(oRequestHandler.request())
 
             sPattern3 = 'hlsManifestUrl":"(.+?)"'
             aResult = re.findall(sPattern3, sHtmlContent3)
@@ -593,7 +571,6 @@ def showHosters(sSearch = ''): #affiche les videos disponible du live
                 sHtmlContent3 = oRequestHandler.request()
                 #VSlog(sHtmlContent3)
 
-
         if 'socolive.net' in url:#Probleme avec ea et autre (tout changé lol)
             oRequestHandler = cRequestHandler(url)
             sHtmlContent2 = oRequestHandler.request()
@@ -607,7 +584,6 @@ def showHosters(sSearch = ''): #affiche les videos disponible du live
                     #VSlog(channel)
                     #VSlog(g)
 
-            UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36'
             url2 = 'https://www.ucasterplayer.com/hembedplayer/' + channel + '/' + g + '/700/480'
             #VSlog(url2)
             oRequestHandler = cRequestHandler(url2)
@@ -634,24 +610,46 @@ def showHosters(sSearch = ''): #affiche les videos disponible du live
             if aResult1:
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
                 Referer = url2
-                UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36'
                 sHosterUrl = 'https://' + domaine + aResult1[0] + '|User-Agent=' + UA + '&referer=' + Referer
                 #VSlog(sHosterUrl)
 
-        if '1me.club' in url or 'sportz' in url:#Terminé
+        if '1me.club' in url or 'sportz' in url or 'streamhd' in url or 'hdsportslive' in url or 'cricfree' in url:#Terminé
             oRequestHandler = cRequestHandler(url)
             sHtmlContent2 = oRequestHandler.request()
-            sPattern2 = '<iframe src="(.+?)"'
-            aResult = re.findall(sPattern2, sHtmlContent2)
+
+            if 'hdsportslive' in url or 'cricfree' in url:
+                sPattern2 = 'document.write\(unescape\(\'(.+?)\'\)\)'
+                aResult = re.findall(sPattern2, sHtmlContent2)
+                unQuote = urllib2.unquote(aResult[0])
+
+                sPattern2 = '<iframe.+?src="(.+?)"'
+                aResult = re.findall(sPattern2, unQuote)
+
+                if not str(aResult[0]).startswith('http'):
+                    url = 'https:'+aResult[0]
+                else:
+                    url = aResult[0]
+
+                oRequestHandler = cRequestHandler(url)
+                sHtmlContent2 = oRequestHandler.request()
+
+                sPattern2 = '<iframe.+?src=\'(.+?)\''
+                aResult = re.findall(sPattern2, sHtmlContent2)
+
+            else:
+                sPattern2 = '<iframe src="(.+?)"'
+                aResult = re.findall(sPattern2, sHtmlContent2)
+
             if aResult[0]:
 
-                if 'whostreams.net' or 'streamcdn' in aResult[0]:#Terminé
+                if 'wstream.to' or 'streamcdn' in aResult[0]:#Terminé
                     embedUrl = aResult[0]
+                    VSlog(embedUrl)
 
                     if embedUrl.startswith('//'):
-                        embedUrl = 'http:' + embedUrl
+                        embedUrl = 'https:' + embedUrl
 
-                    if 'sportz' in url:
+                    if 'sportz' in url or 'hdsportslive' in url or 'cricfree' in url:
                         Referer = url
                     else:
                         Referer = 'http://1me.club'
@@ -671,7 +669,6 @@ def showHosters(sSearch = ''): #affiche les videos disponible du live
                         str2 = str2 + ';'
 
                     strs = cPacker().unpack(str2)
-                    #VSlog(str)
                     sPattern3 = '{source:"([^"]+)"'
                     aResult1 = re.findall(sPattern3, strs)
                     if aResult1:
@@ -693,17 +690,14 @@ def showHosters(sSearch = ''): #affiche les videos disponible du live
             if aResult[0]:
                 sHosterUrl = 'http://d.sportlevel.com' + aResult[0]
 
-        if 'shd' in url:
+        if ('shd' in url) or ('hd' in url and not 'streamhd' in url and not 'hdsportslive' in url):
             urlApi = 'https://api.livesports24.online/gethost'
-            sPattern = 'channel([^"]+)'
-            aResult = re.findall(sPattern, url)
-            if aResult[0]:
-                channel = aResult[0]
+            channel = url.split('/')[4]
 
             oRequestHandler = cRequestHandler(urlApi)
             oRequestHandler.addHeaderEntry('User-Agent', UA)
             oRequestHandler.addHeaderEntry('Referer', url)
-            oRequestHandler.addHeaderEntry('Origin', 'https://shd247.com')
+            oRequestHandler.addHeaderEntry('Origin', 'https://'+url.split('/')[2])
             sHtmlContent2 = oRequestHandler.request()
 
             sPattern1 = '([^"]+)'
@@ -711,9 +705,15 @@ def showHosters(sSearch = ''): #affiche les videos disponible du live
             if aResult[0]:
                 host = aResult[0]
 
-            sHosterUrl = 'https://' + host + channel + '.m3u8'
+            sHosterUrl = 'https://' + host + '/' + channel + '.m3u8'
 
-        oHoster = cHosterGui().checkHoster(sHosterUrl)
+        if 'sportgol7' in url:
+            sPattern1 = '<source src="(.+?)"'
+            aResult = re.findall(sPattern1, sHtmlContent2)
+            if aResult[0]:
+                sHosterUrl = aResult[0]
+
+        oHoster = cHosterGui().checkHoster("m3u8")
         if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle2) #nom affiche
                 oHoster.setFileName(sMovieTitle2) #idem
