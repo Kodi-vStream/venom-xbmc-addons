@@ -182,10 +182,8 @@ def showMovies(sSearch=''):
     #fh.close()
     if 'letters' in sUrl:
         sPattern = '<td class="MvTbImg"> *<a href="([^"]+)".+?(?:<img |data-wpfc-original-)src="([^"]+)".+?strong>([^<]+)<.+?span class="Qlty">([^<]+)<'
-    elif 'serie' in sUrl:
-        sPattern = 'href="([^"]+)"><div class="Image"><figure class="Objf TpMvPlay AAIco-play_arrow"><img src="([^"]+)" alt="Image ([^"]+)"> *<figcaption>.+?</figure></div><h3 class="Title">[^<]+</h3>.+?class="Description"><p>[^,]+,([^<]+)<'
     else:
-        sPattern = 'href="([^"]+)"><div class="Image"><figure class="Objf TpMvPlay AAIco-play_arrow"><img src="([^"]+)" alt="Image ([^"]+)"></figure></div><h3 class="Title">[^<]+</h3>.+?class="Qlty">([^<]+)<.+?class="Description"><p>[^,]+,([^<]+)<'
+        sPattern = 'class="TPost C">.+?href="([^"]+)">.+?<img.+?src="([^"]+)".+?<h3 class="Title">([^<]+)</h3> .+?class="Qlty">([^<]+)<.+?<p>.+?streaming,([^<]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -200,29 +198,19 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            #partie commune
-            siteUrl = aEntry[0]
-            sThumb = re.sub('/w\d+', '/w342', aEntry[1])
-            if sThumb.startswith('/'):
-                sThumb = 'https:' + sThumb
-            sTitle = aEntry[2]
-
             if 'letters' in sUrl:
-                sQual = aEntry[3]
                 sDesc = ''
-
-                sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
-
-            elif 'serie' in sUrl:
-                sDesc = aEntry[3]
-
-                sDisplayTitle = sTitle
-
             else:
-                sQual = aEntry[3]
                 sDesc = aEntry[4]
 
-                sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
+            siteUrl = aEntry[0]
+            sThumb = aEntry[1].replace('w92', 'w342')
+            if sThumb.startswith('//'):
+                sThumb = 'https:' + sThumb
+            sTitle = aEntry[2]
+            sQual = aEntry[3]
+
+            sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
