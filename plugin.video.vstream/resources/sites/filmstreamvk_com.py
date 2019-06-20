@@ -312,7 +312,6 @@ def showEpisode():
     oGui.setEndOfDirectory()
 
 def showHosters():
-    
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -322,20 +321,18 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-
     sPattern = '<input type="hidden" name="ep" id="ep" value="([^"]+)".+?name="type" id="type" value="([^"]+)".+?name="np" id="np" value="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         ep = aResult[1][0][0]
-        type = aResult[1][0][1]
+        types = aResult[1][0][1]
         np = aResult[1][0][2]
-        ref = sUrl.rsplit('/', 1)[0]
+        ref = sUrl
 
-        pdata = 'action=electeur&lien_referer=' + ref + '&ep=' + ep + '&type=' + type + '&np=' + np
+        pdata = 'action=electeur&lien_referer=' + ref + '&ep=' + ep + '&type=' + types + '&np=' + np
         
-
         oRequest = cRequestHandler(URL_MAIN + 'wp-admin/admin-ajax.php')
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0')
