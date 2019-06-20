@@ -16,7 +16,7 @@ SITE_NAME = 'FullStream'
 SITE_DESC = 'Films, Séries et Mangas Gratuit en streaming sur Full stream'
 
 #URL_MAIN = 'https://vf.full-stream.cc/'
-URL_MAIN = 'https://w1.full-stream.cc/'
+URL_MAIN = 'https://w2.full-stream.cc/'
 
 URL_SEARCH = (URL_MAIN + 'wp-json/dooplay/search/?keyword=', 'AlphaDisplay')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'AlphaDisplay')
@@ -69,12 +69,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste) ', 'az.png', oOutputParameterHandler)
 
-
-
     oGui.setEndOfDirectory()
 
 def showSearch():
-
     oGui = cGui()
     nonce = get_nonce()
     if not nonce == False:
@@ -125,7 +122,6 @@ def AlphaSearch():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', 'Lettre [COLOR coral]' + sLetter + '[/COLOR]', 'az.png', oOutputParameterHandler)
 
-
     oGui.setEndOfDirectory()
 
 def AlphaDisplay(sSearch = ''):
@@ -166,7 +162,6 @@ def AlphaDisplay(sSearch = ''):
     if not sSite == 'globalSearch':#globalsearch
         oGui.setEndOfDirectory()
 
-
 def showGenres():
     oGui = cGui()
 
@@ -195,7 +190,6 @@ def showGenres():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def showMovies():
     oGui = cGui()
@@ -252,7 +246,6 @@ def showMovies():
 
     oGui.setEndOfDirectory()
 
-
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<span class="current">.+?</span><a href=\'([^"]+)\''
@@ -261,7 +254,6 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
-
 
 def showEpisodes():
     oGui = cGui()
@@ -339,8 +331,6 @@ def showLink():
     else:
         sPattern = 'id="player-[^<>]+data-post="([^"]+)" data-nume="([^"]+)".*?"title">([^<]+)<\/*span.+?<img src=\'http.+?img\/flags\/(.+?).png\'>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    VSlog(aResult)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -428,8 +418,6 @@ def showHosters():
             aResult = oParser.parse(c, sPattern)
             if aResult[0]:
                 sHosterUrl = aResult[1][0]
-
-        VSlog(sHosterUrl)
 
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
