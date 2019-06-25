@@ -7,7 +7,9 @@ from resources.hosters.hoster import iHoster
 from resources.lib.aadecode import AADecoder
 import re
 
-#from resources.lib.comaddon import VSlog
+from resources.lib.comaddon import VSlog
+
+UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.'
 
 class cHoster(iHoster):
 
@@ -53,10 +55,21 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
         
         #VSlog(self.__sUrl)
+        url = self.__sUrl
+        
+        #url = self.__sUrl.replace('embed.mystream.to','mstream.cloud')
+        #url = 'https://mstream.cloud/gfa35ebu1nt1'
 
-        oRequest = cRequestHandler(self.__sUrl)
+        oRequest = cRequestHandler(url)
+        oRequest.addHeaderEntry('User-Agent', UA)
+        oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+        oRequest.addHeaderEntry('Accept-Encoding', 'identity')
         sHtmlContent = oRequest.request()
-        #VSlog(sHtmlContent)
+
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
+        
         oParser = cParser()
         
         api_call = False
@@ -66,12 +79,18 @@ class cHoster(iHoster):
         if aResult[0]:
             for i in aResult[1]:
                 decoded = AADecoder(i).decode()
+                
+                #VSlog(decoded)
+                
                 r = re.search("\('src', '([^']+)'\);", decoded, re.DOTALL | re.UNICODE)
                 if r:
                     api_call = r.group(1)
                     break
         
         #VSlog(api_call)
+        
+        if 'qziqcysljv' in api_call:
+            api_call = ''
 
         if (api_call):
             return True, api_call
