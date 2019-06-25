@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'streamingdivx'
 SITE_NAME = 'Streamingdivx'
 SITE_DESC = 'Films VF en streaming.'
 
-URL_MAIN = 'https://ww2.streamingdivx.co/'
+URL_MAIN = 'https://ww1.streamingdivx.ch/'
 
 MOVIE_NEWS = (URL_MAIN + 'films.html', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenres')
@@ -108,7 +108,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="short-images.+?<a href="([^"]+)" title="([^"]+)" class=.+?<img src="([^"]+)".+?(?:<div class="short-content">|<a href=.+?qualite.+?>(.+?)</a>.+?<a href=.+?langue.+?>(.+?)<\/a>)'
+    sPattern = '<div class="short-images.+?<a href="([^"]+)" title="([^"]+)" class=.+?<img src="([^"]+)".+?(?:<div class="short-content">|<a href=.+?qualite.+?>([^<>]+?)</a>.+?<a href=.+?langue.+?>(.+?)<\/a>)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == False):
@@ -128,6 +128,9 @@ def showMovies(sSearch = ''):
                 sUrl = URL_MAIN[:-1] + sUrl
 
             sTitle = aEntry[1].replace('Streaming', '').replace('streaming', '').replace('série', '')
+            
+            sTitle = sTitle.decode('utf-8').encode("latin-1")
+            #VSlog(sTitle)
 
             sThumb = aEntry[2]
             if sThumb.startswith('/'):
@@ -284,7 +287,7 @@ def showLinks():
         for aEntry in aResult[1]:
 
             sHost = aEntry[2].replace('server player-', '').capitalize()
-            sLang = aEntry[3].replace('/images/', '').replace('.png', '')
+            sLang = aEntry[3].split('/')[-1].replace('.png', '')
 
             sDisplayTitle = ('%s (%s) [COLOR %s]%s[/COLOR]') % (sMovieTitle, sLang, sColor, sHost)
 
