@@ -285,8 +285,6 @@ def showHosters():
     aResult1 = re.findall(sPattern, sHtmlContent, re.DOTALL)
     # VSlog(str(aResult1)) #Commenter ou supprimer cette ligne une fois fini
 
-    sHtmlContent = oParser.abParse(sHtmlContent, '<div class=VideoPlayer>', '<div class=Image>')
-
     sPattern2 = '<div id=VideoOption\d+ class="*Vid.+?>([^<]+)</div>'
     aResult2 = re.findall(sPattern2, sHtmlContent, re.DOTALL)
     # VSlog(str(aResult2)) #Commenter ou supprimer cette ligne une fois fini
