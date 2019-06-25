@@ -9,14 +9,13 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, VSlog
 
-import urllib2, re
+import urllib2, re, base64
 
 SITE_IDENTIFIER = 'fullstream'
 SITE_NAME = 'FullStream'
 SITE_DESC = 'Films, Séries et Mangas Gratuit en streaming sur Full stream'
 
-#URL_MAIN = 'https://vf.full-stream.cc/'
-URL_MAIN = 'https://w2.full-stream.cc/'
+URL_MAIN = 'https://vf.full-stream.cc/'
 
 URL_SEARCH = (URL_MAIN + 'wp-json/dooplay/search/?keyword=', 'AlphaDisplay')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'AlphaDisplay')
@@ -340,7 +339,7 @@ def showLink():
             if progress_.iscanceled():
                 break
 
-            sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
+            sUrl2 = "https://"+ sUrl.split('/')[2] + '/wp-admin/admin-ajax.php'
             sLang = aEntry[3].upper()
             sHost = aEntry[2].capitalize()
 
@@ -398,26 +397,32 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        sUrl = URL_MAIN[:-1] + aResult[1][0]
+    	if 'vidi.php' in str(aResult[1][0]):
+    		sPattern = "vid=([^']+)'"
+    		aResult = oParser.parse(sHtmlContent, sPattern)
 
-        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
-        headers = {'User-Agent': UA, 'Referer': sRef, 'Cookie': cooka}
-        req = urllib2.Request(sUrl, None, headers)
+    		sHosterUrl = base64.b64decode(aResult[1][0])
+    	else:
+	        sUrl = URL_MAIN[:-1] + aResult[1][0]
 
-        try:
-            response = urllib2.urlopen(req)
-        except urllib2.URLError, e:
-            return ''
+	        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
+	        headers = {'User-Agent': UA, 'Referer': sRef, 'Cookie': cooka}
+	        req = urllib2.Request(sUrl, None, headers)
 
-        sHosterUrl = ''
-        if not response.geturl() == sUrl:
-            sHosterUrl = response.geturl()
-        else:
-            c = str(response.read())
-            sPattern = 'src="([^"]+)"'
-            aResult = oParser.parse(c, sPattern)
-            if aResult[0]:
-                sHosterUrl = aResult[1][0]
+	        try:
+	            response = urllib2.urlopen(req)
+	        except urllib2.URLError, e:
+	            return ''
+
+	        sHosterUrl = ''
+	        if not response.geturl() == sUrl:
+	            sHosterUrl = response.geturl()
+	        else:
+	            c = str(response.read())
+	            sPattern = 'src="([^"]+)"'
+	            aResult = oParser.parse(c, sPattern)
+	            if aResult[0]:
+	                sHosterUrl = aResult[1][0]
 
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
