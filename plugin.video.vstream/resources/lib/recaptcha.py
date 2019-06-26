@@ -6,9 +6,8 @@
 from resources.lib.comaddon import xbmcgui, xbmc, VSlog
 from resources.lib.handler.requestHandler import cRequestHandler
 
-import re, base64, random, time, os
+import re, base64, random, time, os, xbmcaddon, xbmcvfs
 import urlparse, urllib,urllib2,cookielib
-import xbmcaddon, os, requests, xbmcvfs
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
 __addon__ = xbmcaddon.Addon('plugin.video.vstream')
@@ -216,9 +215,22 @@ def ResolveCaptcha(key, urlOuo):
         'Content-Type': 'application/x-www-form-urlencoded',
         'Content-Length':str(len(params))}
 
-    r = requests.post(urlBase, data='c='+c+responseFinal, headers=headers)
+    params = 'c='+c+responseFinal
 
-    token = re.search('<textarea dir="ltr" readonly>(.+?)<',r.text).group(1)
+    oRequestHandler = cRequestHandler(urlBase)
+    oRequestHandler.setRequestType(1)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    oRequestHandler.addHeaderEntry('Referer', url)
+    oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+    oRequestHandler.addHeaderEntry('Content-Length',str(len(params)))
+    oRequestHandler.addParametersLine(params)
+
+    sHtmlContent = oRequestHandler.request()
+
+    token = re.search('<textarea dir="ltr" readonly>(.+?)<',sHtmlContent).group(1)
     if not token:
         dialogs = dialog()
         dialogs.VSinfo("Captcha non valide")
