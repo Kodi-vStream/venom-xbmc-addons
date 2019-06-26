@@ -10,7 +10,8 @@ from resources.lib.parser import cParser
 from resources.lib.config import GestionCookie
 from resources.lib.recaptcha import ResolveCaptcha
 from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui, VSlog
-import re, urllib, requests
+
+import re, urllib
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
 
@@ -479,18 +480,36 @@ def DecryptOuo(sUrl):
 
     url = urlOuo.replace('/fbc/','/go/')
     params = '_token='+OuoToken+'&g-recaptcha-response='+gToken
-    headers = {'User-Agent': UA,
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Encoding': 'gzip, deflate',
-        'Referer': urlOuo,
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Content-Length':str(len(params)),
-        'Cookie':Cookie
-        }
 
-    r = requests.post(url,data=params, headers=headers)
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.setRequestType(1)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+    oRequestHandler.addHeaderEntry('Accept-Language', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    oRequestHandler.addHeaderEntry('Referer', urlOuo)
+    oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+    oRequestHandler.addHeaderEntry('Content-Length',str(len(params)))
+    oRequestHandler.addHeaderEntry('Cookie',Cookie)
+    oRequestHandler.addParametersLine(params)
+    sHtmlContent = oRequestHandler.request()
 
-    final = re.search('<form method="POST" action="(.+?)" accept-charset="UTF-8"><input name="_token" type="hidden" value="(.+?)">',str(r.text))
-    r = requests.post(final.group(1),data='_token='+final.group(2), headers=headers)
-    return r.url
+    final = re.search('<form method="POST" action="(.+?)" accept-charset="UTF-8"><input name="_token" type="hidden" value="(.+?)">',str(sHtmlContent))
+
+    url = final.group(1)
+    params = '_token='+final.group(2)
+
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.setRequestType(1)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+    oRequestHandler.addHeaderEntry('Accept-Language', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    oRequestHandler.addHeaderEntry('Referer', urlOuo)
+    oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+    oRequestHandler.addHeaderEntry('Content-Length',str(len(params)))
+    oRequestHandler.addHeaderEntry('Cookie',Cookie)
+    oRequestHandler.addParametersLine(params)
+    sHtmlContent = oRequestHandler.request()
+
+    return oRequestHandler.getRealUrl()
