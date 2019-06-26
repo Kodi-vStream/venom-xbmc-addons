@@ -292,20 +292,22 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     if sSearch:
-        sUrl = sSearch.replace(' ','%20').replace('[]','%5B%5D')
-    elif "index" in sUrl:
-    	sUrl = sUrl.replace(' ','%20').replace('[]','%5B%5D')
+        sUrl = sSearch
+    else:
+        sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    if sSearch or "index" in sUrl : # en mode recherche
+        sUrl = sUrl.replace(' ','%20').replace('[]','%5B%5D')
+        sPattern = '<a class="mov-t nowrap" href="([^"]+)" title="[^"]+"><div data-toggle=.+?\/h5>([^"]+)".+?<img src="([^"]+)".+?alt="([^"]+)"'
+    else:
+        sPattern = '<a class="mov-t nowrap" href="([^"]+)"> <div data-toggle=.+?\/h5>([^"]+)".+?<img src="([^"]+)".+?title="([^"]+)"'
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Encoding','gzip, deflate')
     sHtmlContent = oRequestHandler.request()
-
-    sPattern = '<a class="mov-t nowrap" href="([^"]+)"> <div data-toggle=.+?\/h5>([^"]+)".+?<img src="([^"]+)".+?title="([^"]+)"'
-
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -339,9 +341,9 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            if 'series' in sUrl or 'animes' in sUrl:
+            if 'series' in sUrl2 or 'animes' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
-            elif 'collection' in sUrl or 'integrale' in sUrl:
+            elif 'collection' in sUrl2 or 'integrale' in sUrl2:
                 oGui.addMoviePack(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
@@ -639,7 +641,7 @@ def showSeriesHosters():
 
         progress_.VSclose(progress_)
         oGui.setEndOfDirectory()
-    else:   # certains films mals classés appraissent dans les séries
+    else:   # certains films mals classés apparaissent dans les séries
         showHosters()
 
 
@@ -677,11 +679,11 @@ def Display_protected_link():
                 return
 
     if 'link' in sUrl:
-    	#Temporairement car la flemme de ce battre avec les redirection
-		import requests
-		headers = {'User-Agent':UA}
-		r = requests.get(sUrl.replace('//link','/link'),headers=headers)
-		sUrl = r.url
+        #Temporairement car la flemme de ce battre avec les redirection
+        import requests
+        headers = {'User-Agent':UA}
+        r = requests.get(sUrl.replace('//link','/link'),headers=headers)
+        sUrl = r.url
 
     if "dl-protect" in sUrl:
         sHtmlContent = DecryptDlProtecte(sUrl)
@@ -746,7 +748,6 @@ def CutSais(sHtmlContent):
 
 def DecryptDlProtecte(url):
     VSlog('DecryptDlProtecte : ' + url)
-    dialogs = dialog()
 
     if not (url):
         return ''
@@ -755,7 +756,6 @@ def DecryptDlProtecte(url):
     # 1ere Requete pour recuperer le cookie
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
-    sHtmlContent = oRequestHandler.request()
 
     cookies = GestionCookie().Readcookie('www_dl-protect1_co')
     #VSlog( 'cookie'  + str(cookies))
@@ -823,7 +823,6 @@ def encode_multipart(fields, files, boundary = None):
     """
 
     import mimetypes
-    import random
     import string
 
     _BOUNDARY_CHARS = string.digits
