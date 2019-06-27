@@ -14,7 +14,7 @@ import re, random
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
 SITE_IDENTIFIER = 'tirexo'
-SITE_NAME = 'Tirexo'
+SITE_NAME = '[COLOR violet]Tirexo (ZT lol)[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
 URL_MAIN = 'https://ww22.zone-telechargement.lol/'
 
@@ -23,16 +23,16 @@ URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist%5B
 URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?do=search&subaction=search&catlist%5B%5D=32&story=', 'showMovies')
 URL_SEARCH_MISC = (URL_MAIN + 'index.php?do=search&subaction=search&catlist%5B%5D=39&story=', 'showMovies')
 
-MOVIE_EXCLUS = (URL_MAIN + 'exclus/', 'showMovies') # exclus (films populaires)
-MOVIE_3D = (URL_MAIN + 'films-bluray-3d/', 'showMovies') # films en 3D
-MOVIE_SD = (URL_MAIN + 'films-bluray-hd/', 'showMovies') # films en SD (720p)
+MOVIE_EXCLUS = (URL_MAIN + 'exclus/', 'showMovies')
+MOVIE_3D = (URL_MAIN + 'films-bluray-3d/', 'showMovies')
+MOVIE_SD = (URL_MAIN + 'films-bluray-hd/', 'showMovies')
 MOVIE_MKV = (URL_MAIN + 'films-mkv/', 'showMovies')
-MOVIE_HD = (URL_MAIN + 'films-bluray-hd-1080/', 'showMovies') # films en HD (1080p)
+MOVIE_HD = (URL_MAIN + 'films-bluray-hd-1080/', 'showMovies')
 MOVIE_BDRIP = (URL_MAIN + 'films-dvdrip-bdrip/', 'showMovies')
-MOVIE_SDLIGHT = (URL_MAIN + 'hdlight-720/', 'showMovies') # films en 720p light
-MOVIE_HDLIGHT = (URL_MAIN + 'hdlight-1080/', 'showMovies') # films en 1080p light
-MOVIE_4KL = (URL_MAIN + 'film-ultra-hdlight-x265/', 'showMovies') # films "4k" light
-MOVIE_4K = (URL_MAIN + 'film-ultra-hd-x265/', 'showMovies') # films "4k"
+MOVIE_SDLIGHT = (URL_MAIN + 'hdlight-720/', 'showMovies')
+MOVIE_HDLIGHT = (URL_MAIN + 'hdlight-1080/', 'showMovies')
+MOVIE_4KL = (URL_MAIN + 'film-ultra-hdlight-x265/', 'showMovies')
+MOVIE_4K = (URL_MAIN + 'film-ultra-hd-x265/', 'showMovies')
 
 MOVIE_GENRES = (URL_MAIN , 'showGenre')
 
@@ -53,11 +53,11 @@ ANIM_VOSTFRS_720 = (URL_MAIN + 'animes-vostfr-720p/','showMovies')
 ANIM_VOSTFRS_1080 = (URL_MAIN + 'animes-vostfr-1080p/','showMovies')
 FILM_ANIM = (URL_MAIN + 'films-mangas/','showMovies')
 
-DOC_NEWS = (URL_MAIN + 'emissions-tv-documentaires/souscate_doc-Documentaire/', 'showMovies') # docs
-SPORT_SPORTS = (URL_MAIN + 'emissions-tv-documentaires/souscate_doc-Sport/', 'showMovies') # sports
-TV_NEWS = (URL_MAIN + 'emissions-tv-documentaires/souscate_doc-Émissions+TV/', 'showMovies') # dernieres emissions tv
-SPECT_NEWS = (URL_MAIN + 'emissions-tv-documentaires/souscate_doc-Spectacle/', 'showMovies') # spectacles
-CONCERT_NEWS = (URL_MAIN + 'musiques-mp3-gratuite/souscat_music-Concerts/', 'showMovies') # concerts
+DOC_NEWS = (URL_MAIN + 'emissions-tv-documentaires/souscate_doc-Documentaire/', 'showMovies')
+SPORT_SPORTS = (URL_MAIN + 'emissions-tv-documentaires/souscate_doc-Sport/', 'showMovies')
+TV_NEWS = (URL_MAIN + 'emissions-tv-documentaires/souscate_doc-Émissions+TV/', 'showMovies')
+SPECT_NEWS = (URL_MAIN + 'emissions-tv-documentaires/souscate_doc-Spectacle/', 'showMovies')
+CONCERT_NEWS = (URL_MAIN + 'musiques-mp3-gratuite/souscat_music-Concerts/', 'showMovies')
 
 def load():
     oGui = cGui()
@@ -379,7 +379,6 @@ def __checkForNextPage(sHtmlContent):
     return False
 
 def showMoviesLinks():
-    #VSlog('mode film')
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -455,7 +454,6 @@ def showMoviesLinks():
     oGui.setEndOfDirectory()
 
 def showSeriesLinks():
-    #VSlog('mode serie')
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -564,7 +562,6 @@ def showSeriesLinks():
     oGui.setEndOfDirectory()
 
 def showHosters():
-    #VSlog('showHosters')
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -605,7 +602,6 @@ def showHosters():
     oGui.setEndOfDirectory()
 
 def showSeriesHosters():
-    #VSlog('showSeriesHosters')
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -751,7 +747,6 @@ def DecryptDlProtecte(url):
 
     if not (url):
         return ''
-    #VSlog(url)
 
     # 1ere Requete pour recuperer le cookie
     oRequestHandler = cRequestHandler(url)
@@ -832,7 +827,7 @@ def encode_multipart(fields, files, boundary = None):
 
     if boundary is None:
         boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(29))
-        VSlog(boundary)
+        
     lines = []
 
     for name, value in fields.items():
