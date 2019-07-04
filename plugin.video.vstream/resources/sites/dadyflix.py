@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'dadyflix'
 SITE_NAME = 'DadyFlix'
 SITE_DESC = 'Films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
-URL_MAIN = 'https://ww2.dadyflix.com/'
+URL_MAIN = 'https://www.dadyflix.ws/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
@@ -23,7 +23,7 @@ URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 
 MOVIE_MOVIE = ('http://', 'showMenuMovies')
-MOVIE_NEWS = (URL_MAIN + 'filmstreaming/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'tendance/','showMovies')
 MOVIE_COMMENTS = (URL_MAIN + 'les-plus-populaires/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
