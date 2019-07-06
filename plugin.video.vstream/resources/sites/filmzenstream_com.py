@@ -8,13 +8,13 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.comaddon import progress
-from resources.lib.sucuri import SucurieBypass
+# from resources.lib.sucuri import SucurieBypass
 
 SITE_IDENTIFIER = 'filmzenstream_com'
 SITE_NAME = 'Filmzenstream'
 SITE_DESC = 'Film streaming HD gratuit complet'
 
-URL_MAIN = 'http://filmzenstream.online/'
+URL_MAIN = 'https://filmzenstream.online/'
 
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -190,7 +190,9 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    sHtmlContent = SucurieBypass().GetHtml(sUrl)
+    # sHtmlContent = SucurieBypass().GetHtml(sUrl)
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
 
     sPattern = '<iframe.+?src="([^"]+)"'
 
