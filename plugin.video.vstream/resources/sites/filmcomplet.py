@@ -17,18 +17,18 @@ SITE_IDENTIFIER = 'filmcomplet'
 SITE_NAME = 'Film Complet'
 SITE_DESC = 'Film Complet - film en streaming HD'
 
-URL_MAIN = 'https://ww1.mesfilms.top/'
+URL_MAIN = 'https://ww2.mesfilms.top/'
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0'
 
 #definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle sera affichee.
 #LA RECHERCHE GLOBAL N'UTILE PAS showSearch MAIS DIRECTEMENT LA FONCTION INSCRITE DANS LA VARIABLE URL_SEARCH_*
 URL_SEARCH = (URL_MAIN + '?s=', 'showSearchResult')
 #recherche global films
-URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showSearchResult')
+URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showSearchResult')
 FUNCTION_SEARCH = 'showSearchResult'
 
-MOVIE_NEWS = (URL_MAIN, 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'film/', 'showMovies')
+MOVIE_MOVIE = (True, 'load')
+MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'tendance/?get=movies', 'showMovies')
 MOVIE_NOTES = (URL_MAIN + 'evaluations/?get=movies', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
@@ -46,10 +46,6 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
@@ -308,7 +304,7 @@ def showLinks():
     except:
         pass
 
-    sPattern = 'class="dooplay_player_option " data-post="([^"]+)" data-nume="([^"]+)">\s*.+?\s*<span class="title">([^<]+)</span>\s*<span class="server">([^<]+)</span>'
+    sPattern = 'data-post="([^"]+)" data-nume="([^"]+)">\s*.+?\s*<span class="title">([^<]+)</span>\s*<span class="server">([^<]+)</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
