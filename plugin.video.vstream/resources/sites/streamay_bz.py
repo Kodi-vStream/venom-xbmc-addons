@@ -16,15 +16,15 @@ SITE_DESC = 'Films, Séries & Mangas en streaming'
 URL_MAIN = 'https://ww1.streamay.com/'
 
 MOVIE_MOVIE = ('http://', 'load')
-MOVIE_NEWS = (URL_MAIN + 'accueil/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'accueil-site/', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + '?v_sortby=views&v_orderby=desc', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_LIST = (URL_MAIN, 'AlphaSearch')
 
-URL_SEARCH = ('', 'showSearchMovies')
-URL_SEARCH_MOVIES = ('', 'showSearchMovies')
-# URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
-FUNCTION_SEARCH = 'showSearchMovies'
+FUNCTION_SEARCH = 'showMovies'
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+# résultat de la recherche trop aléatoire donc désactiver en search globale
+# URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 
 def load():
     oGui = cGui()
@@ -54,11 +54,61 @@ def load():
 
 def showSearch():
     oGui = cGui()
+
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        showSearchMovies(sSearchText)
+        sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
+        showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
+
+def showSearchMovies(sSearch = ''):
+    oGui = cGui()
+    if sSearch:
+        sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
+
+        pdata = 'nonce=af72e2fa42&action=tr_livearch&trsearch=' + sSearch #voir si nonce change
+
+        oRequest = cRequestHandler(sUrl2)
+        oRequest.setRequestType(1)
+        oRequest.addHeaderEntry('User-Agent', "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0")
+        oRequest.addParameters('Referer', URL_MAIN)
+
+        oRequest.addParametersLine(pdata)
+        sHtmlContent = oRequest.request()
+
+        sPattern = '<div class="TPost B">.+?<a href="([^"]+)">.+?<img src="([^"]+)".+?<div class="Title">([^<]+)</div>'
+
+        oParser = cParser()
+        aResult = oParser.parse(sHtmlContent, sPattern)
+
+        if (aResult[0] == True):
+            total = len(aResult[1])
+            progress_ = progress().VScreate(SITE_NAME)
+            for aEntry in aResult[1]:
+                progress_.VSupdate(progress_, total)
+                if progress_.iscanceled():
+                    break
+
+                sTitle = aEntry[2]
+                sUrl = aEntry[0]
+                sThumb = re.sub('/w\d+', '/w342', aEntry[1])
+                if sThumb.startswith('/'):
+                    sThumb = 'http:' + sThumb
+
+                #tris search
+                if sSearch and total > 3:
+                    if cUtil().CheckOccurence(sSearch, sTitle) == 0:
+                        continue
+
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+
+            progress_.VSclose(progress_)
 
 def AlphaSearch():
     oGui = cGui()
@@ -86,7 +136,7 @@ def showGenres():
 
     sHtmlContent = oParser.abParse(sHtmlContent, '<div class=Title>Film Streaming Par Genres</div>', '</div></aside>')
 
-    sPattern = '<li class="cat-item cat-item-.+?"><a href=([^>]+)>(.+?)</a>([^<]+)</li>'
+    sPattern = '<li class="cat-item cat-item-.+?"><a href=([^>]+)>([^<]+)</a>([^<]+)</li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -102,6 +152,7 @@ def showGenres():
 
 def showMovieslist():
     oGui = cGui()
+    oParser = cParser()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -109,9 +160,7 @@ def showMovieslist():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<span class="Num">.+?<a href="([^"]+)".+?<img src="(.+?)".+?<strong>(.+?)<\/strong>.+?<td>(.+?)<\/td>.+?<span class="Qlty">(.+?)<\/span>'
-
-    oParser = cParser()
+    sPattern = '<span class="Num">.+?<a href="([^"]+)".+?<img src="([^"]+)".+?<strong>([^<]+)<\/strong>.+?<td>([^<]+)<\/td>.+?<span class="Qlty">([^<]+)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -131,8 +180,8 @@ def showMovieslist():
             sTitle = aEntry[2]
             sYear = aEntry[3]
 
-            sThumb = aEntry[1].replace('w92', 'w342')
-            if not sThumb.startswith('http'):
+            sThumb = re.sub('/w\d+', '/w342', aEntry[1])
+            if sThumb.startswith('/'):
                sThumb = 'http:' + sThumb
 
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sYear)
@@ -154,68 +203,18 @@ def showMovieslist():
 
         oGui.setEndOfDirectory()
 
-def showSearchMovies(sSearch = ''):
-    oGui = cGui()
-    if sSearch:
-        sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
-
-        pdata = 'nonce=af72e2fa42&action=tr_livearch&trsearch=' + sSearch #voir si nonce change
-
-        oRequest = cRequestHandler(sUrl2)
-        oRequest.setRequestType(1)
-        oRequest.addHeaderEntry('User-Agent',"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0")
-        oRequest.addParameters('Referer', URL_MAIN)
-
-        oRequest.addParametersLine(pdata)
-        sHtmlContent = oRequest.request()
-
-        sPattern = '<div class="TPost B">.+?<a href="([^"]+)">.+?<img src="([^"]+)".+?<div class="Title">([^<]+)</div>'
-
-        oParser = cParser()
-        aResult = oParser.parse(sHtmlContent, sPattern)
-
-        if (aResult[0] == True):
-            total = len(aResult[1])
-            progress_ = progress().VScreate(SITE_NAME)
-            for aEntry in aResult[1]:
-                progress_.VSupdate(progress_, total)
-                if progress_.iscanceled():
-                    break
-
-                sTitle = aEntry[2]
-                sUrl = aEntry[0]
-                sThumb = aEntry[1].replace('w154', 'w342')
-                if not sThumb.startswith('http'):
-                    sThumb = 'http:' + sThumb
-
-
-                #tris search
-                if sSearch and total > 3:
-                    if cUtil().CheckOccurence(sSearch, sTitle) == 0:
-                        continue
-
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
-
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
-
-            progress_.VSclose(progress_)
-
 def showMovies(sSearch = ''):
     oGui = cGui()
+    oParser = cParser()
+
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    oParser = cParser()
-
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
     sHtmlContent = oParser.abParse(sHtmlContent, 'MovieList Rows', '</body></html>')
     sPattern = '<div class=Image>.+?src=([^ ]+) .+?<span class=Qlty>.+?<a href=([^>]+)><div class=Title>([^<]+)</div></a>.+?<div class=Description><p>(.+?)</p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -230,16 +229,16 @@ def showMovies(sSearch = ''):
 
             sUrl = aEntry[1]
             sTitle = aEntry[2]
-            sThumb = aEntry[0].replace('w154', 'w342')
-            if not sThumb.startswith('http'):
+            sThumb = re.sub('/w\d+', '/w342', aEntry[0])
+            if sThumb.startswith('/'):
                 sThumb = 'http:' + sThumb
 
             sDesc = aEntry[3]
 
             #tris search
-            if sSearch and total > 3:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
-                    continue
+            # if sSearch and total > 3:
+                # if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
+                    # continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -285,8 +284,6 @@ def showHosters():
     sPattern = '<p class=AAIco-language>([^<]+)</p><p class=AAIco-dns>.+?<p class=AAIco-equalizer>([^<]+)</p>' #lang,qual
     aResult1 = re.findall(sPattern, sHtmlContent, re.DOTALL)
     # VSlog(str(aResult1)) #Commenter ou supprimer cette ligne une fois fini
-
-    sHtmlContent = oParser.abParse(sHtmlContent, '<div class=VideoPlayer>', '<div class=Image>')
 
     sPattern2 = '<div id=VideoOption\d+ class="*Vid.+?>([^<]+)</div>'
     aResult2 = re.findall(sPattern2, sHtmlContent, re.DOTALL)

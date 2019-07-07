@@ -9,18 +9,17 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, VSlog
 
-import urllib2, re
+import urllib2, re, base64
 
 SITE_IDENTIFIER = 'fullstream'
 SITE_NAME = 'FullStream'
 SITE_DESC = 'Films, Séries et Mangas Gratuit en streaming sur Full stream'
 
-#URL_MAIN = 'https://vf.full-stream.cc/'
-URL_MAIN = 'https://w1.full-stream.cc/'
+URL_MAIN = 'https://vf.full-stream.cc/'
 
 URL_SEARCH = (URL_MAIN + 'wp-json/dooplay/search/?keyword=', 'AlphaDisplay')
-URL_SEARCH_MOVIES = (URL_MAIN + 'wp-json/dooplay/search/?keyword=', 'AlphaDisplay')
-URL_SEARCH_SERIES = (URL_MAIN + 'wp-json/dooplay/search/?keyword=', 'AlphaDisplay')
+URL_SEARCH_MOVIES = (URL_SEARCH[0], 'AlphaDisplay')
+URL_SEARCH_SERIES = (URL_SEARCH[0], 'AlphaDisplay')
 
 FUNCTION_SEARCH = 'AlphaDisplay'
 
@@ -69,12 +68,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste) ', 'az.png', oOutputParameterHandler)
 
-
-
     oGui.setEndOfDirectory()
 
 def showSearch():
-
     oGui = cGui()
     nonce = get_nonce()
     if not nonce == False:
@@ -125,7 +121,6 @@ def AlphaSearch():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', 'Lettre [COLOR coral]' + sLetter + '[/COLOR]', 'az.png', oOutputParameterHandler)
 
-
     oGui.setEndOfDirectory()
 
 def AlphaDisplay(sSearch = ''):
@@ -166,7 +161,6 @@ def AlphaDisplay(sSearch = ''):
     if not sSite == 'globalSearch':#globalsearch
         oGui.setEndOfDirectory()
 
-
 def showGenres():
     oGui = cGui()
 
@@ -196,7 +190,6 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
-
 def showMovies():
     oGui = cGui()
 
@@ -223,7 +216,7 @@ def showMovies():
             if progress_.iscanceled():
                 break
 
-            sThumb = aEntry[0].replace('w185', 'w342')
+            sThumb = re.sub('/w\d+', '/w342', aEntry[0])
             sTitle = aEntry[1]
             sQual = aEntry[2]
             sUrl2 = aEntry[3]
@@ -252,7 +245,6 @@ def showMovies():
 
     oGui.setEndOfDirectory()
 
-
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<span class="current">.+?</span><a href=\'([^"]+)\''
@@ -261,7 +253,6 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
-
 
 def showEpisodes():
     oGui = cGui()
@@ -339,8 +330,6 @@ def showLink():
     else:
         sPattern = 'id="player-[^<>]+data-post="([^"]+)" data-nume="([^"]+)".*?"title">([^<]+)<\/*span.+?<img src=\'http.+?img\/flags\/(.+?).png\'>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    VSlog(aResult)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -350,7 +339,7 @@ def showLink():
             if progress_.iscanceled():
                 break
 
-            sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
+            sUrl2 = "https://"+ sUrl.split('/')[2] + '/wp-admin/admin-ajax.php'
             sLang = aEntry[3].upper()
             sHost = aEntry[2].capitalize()
 
@@ -408,28 +397,32 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        sUrl = URL_MAIN[:-1] + aResult[1][0]
+    	if 'vidi.php' in str(aResult[1][0]):
+    		sPattern = "vid=([^']+)'"
+    		aResult = oParser.parse(sHtmlContent, sPattern)
 
-        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
-        headers = {'User-Agent': UA, 'Referer': sRef, 'Cookie': cooka}
-        req = urllib2.Request(sUrl, None, headers)
+    		sHosterUrl = base64.b64decode(aResult[1][0])
+    	else:
+	        sUrl = URL_MAIN[:-1] + aResult[1][0]
 
-        try:
-            response = urllib2.urlopen(req)
-        except urllib2.URLError, e:
-            return ''
+	        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
+	        headers = {'User-Agent': UA, 'Referer': sRef, 'Cookie': cooka}
+	        req = urllib2.Request(sUrl, None, headers)
 
-        sHosterUrl = ''
-        if not response.geturl() == sUrl:
-            sHosterUrl = response.geturl()
-        else:
-            c = str(response.read())
-            sPattern = 'src="([^"]+)"'
-            aResult = oParser.parse(c, sPattern)
-            if aResult[0]:
-                sHosterUrl = aResult[1][0]
+	        try:
+	            response = urllib2.urlopen(req)
+	        except urllib2.URLError, e:
+	            return ''
 
-        VSlog(sHosterUrl)
+	        sHosterUrl = ''
+	        if not response.geturl() == sUrl:
+	            sHosterUrl = response.geturl()
+	        else:
+	            c = str(response.read())
+	            sPattern = 'src="([^"]+)"'
+	            aResult = oParser.parse(c, sPattern)
+	            if aResult[0]:
+	                sHosterUrl = aResult[1][0]
 
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):

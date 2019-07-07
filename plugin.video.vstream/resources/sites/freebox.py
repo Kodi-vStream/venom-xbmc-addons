@@ -36,11 +36,11 @@ headers = {'User-Agent': UA,
 icon = 'tv.png'
 #/home/lordvenom/.kodi/
 #sRootArt = cConfig().getRootArt()
-sRootArt = "special://home/addons/plugin.video.vstream/resources/art/tv"
+sRootArt = 'special://home/addons/plugin.video.vstream/resources/art/tv'
 ADDON = addon()
 
 class track():
-    def __init__(self, length, title, path, icon,data=''):
+    def __init__(self, length, title, path, icon, data = ''):
         self.length = length
         self.title = title
         self.path = path
@@ -61,11 +61,11 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    oGui.addDir('radio', 'showGenres', addons.VSlang(30203) +' (Genres)', 'music.png', oOutputParameterHandler)
+    oGui.addDir('radio', 'showGenres', addons.VSlang(30203) + ' (Genres)', 'music.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
-    oGui.addDir('radio', 'showAZ', addons.VSlang(30203) +' (A-Z)', 'music.png', oOutputParameterHandler)
+    oGui.addDir('radio', 'showAZ', addons.VSlang(30203) + ' (A-Z)', 'music.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
@@ -81,13 +81,13 @@ def showIptvSite():
     oGui = cGui()
 
     #test f4mTester
-    sPath = "special://home/addons/plugin.video.f4mTester/default.py"
+    sPath = 'special://home/addons/plugin.video.f4mTester/default.py'
 
     if not xbmcvfs.exists(sPath):
         oGui.addText(SITE_IDENTIFIER, "[COLOR red]plugin.video.f4mTester: L'addon n'est pas présent[/COLOR]")
 
     liste = []
-    liste.append( ['IptvSource','iptv_source'] )
+    liste.append( ['IptvSource', 'iptv_source'] )
     liste.append( ['Iptv4Sat', 'iptv_four_sat'] )
     liste.append( ['Daily Iptv List', 'daily_iptv_list'])
     liste.append( ['Extinf', 'iptv'])
@@ -100,9 +100,9 @@ def showIptvSite():
 
     oGui.setEndOfDirectory()
 
-def getHtml(sUrl, data=None):#S'occupe des requetes
+def getHtml(sUrl, data = None):#S'occupe des requetes
     oRequestHandler = cRequestHandler(sUrl)
-    oRequestHandler.addHeaderEntry('User-Agent',UA)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
 
     if not data is None and 'watch' in sUrl:
         data = r.text
@@ -133,11 +133,11 @@ def parseM3U(sUrl=None, infile=None):#Traite les m3u local
             return
 
         elif not '#EXTM3U' in sUrl:
-            site= infile
+            site = infile
             headers = {'User-Agent': UA}
 
             oRequestHandler = cRequestHandler(sUrl)
-            oRequestHandler.addHeaderEntry('User-Agent',UA)
+            oRequestHandler.addHeaderEntry('User-Agent', UA)
             inf = oRequestHandler.request()
 
             if 'drive.google' in inf:
@@ -156,28 +156,28 @@ def parseM3U(sUrl=None, infile=None):#Traite les m3u local
         pass
 
     playlist=[]
-    song=track(None,None,None,None)
+    song = track(None, None, None, None)
     ValidEntry = False
 
     for line in inf:
-        line=line.strip()
+        line = line.strip()
         if line.startswith('#EXTINF:'):
-            length,title=line.split('#EXTINF:')[1].split(',',1)
+            length, title = line.split('#EXTINF:')[1].split(',', 1)
             try:
                 licon = line.split('#EXTINF:')[1].partition('tvg-logo=')[2]
                 icon = licon.split('"')[1]
             except:
-                icon = "tv.png"
+                icon = 'tv.png'
             ValidEntry = True
-            song=track(length,title,None,icon)
+            song = track(length, title, None, icon)
 
         elif (len(line) != 0):
             if (ValidEntry) and (not (line.startswith('!') or line.startswith('#'))):
                 ValidEntry = False
-                song.path=line
+                song.path = line
                 playlist.append(song)
                 #VSlog(playlist)
-                song=track(None,None,None,None)
+                song=track(None, None, None, None)
 
     try:
         inf.close()
@@ -186,7 +186,7 @@ def parseM3U(sUrl=None, infile=None):#Traite les m3u local
 
     return playlist
 
-def showWeb(infile=None):#Code qui s'occupe de liens TV du Web
+def showWeb(infile = None):#Code qui s'occupe de liens TV du Web
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
 
@@ -206,7 +206,7 @@ def showWeb(infile=None):#Code qui s'occupe de liens TV du Web
     if not playlist:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://')
-        oGui.addText(SITE_IDENTIFIER, "[COLOR red] Problème de lecture avec la playlist[/COLOR] ")
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Problème de lecture avec la playlist[/COLOR]')
 
     else:
         total = len(playlist)
@@ -224,7 +224,7 @@ def showWeb(infile=None):#Code qui s'occupe de liens TV du Web
             if not '[' in url2 and not ']' in url2 and not '.m3u8' in url2 and not 'dailymotion' in url2:
                 url2 = 'plugin://plugin.video.f4mTester/?url=' + urllib.quote_plus(url2) + '&amp;streamtype=TSDOWNLOADER&name=' + urllib.quote(track.title)
 
-            thumb = "/".join([sRootArt, sThumb])
+            thumb = '/'.join([sRootArt, sThumb])
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', url2)
@@ -276,14 +276,14 @@ def enregistrement():#Code qui gerent l'epg
 
     enregistrementIsActif = ADDON.getSetting('enregistrement_activer')
     if enregistrementIsActif == 'false':
-        oDialog = dialog().VSok('Merci d\'activer l\'enregistrement dans les option')
+        oDialog = dialog().VSok('Merci d\'activer l\'enregistrement dans les options')
         return
 
     if '[' in sUrl and ']' in sUrl:
         sUrl = GetRealUrl(sUrl)
 
     if 'plugin' in sUrl:
-        url = re.findall('url=(.+?)&amp',''.join(sUrl))
+        url = re.findall('url=(.+?)&amp', ''.join(sUrl))
         sUrl = urllib2.unquote(url[0])
     shebdule = cEnregistremement().programmation_enregistrement(sUrl)
 
@@ -403,13 +403,13 @@ def play__():#Lancer les liens
             pass
         if stype:
             from F4mProxy import f4mProxyHelper
-            f4mp=f4mProxyHelper()
-            xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=True)
-            f4mp.playF4mLink(sUrl, sTitle, proxy=None, use_proxy_for_chunks=False, maxbitrate=0, simpleDownloader=True, auth=None, streamtype=stype, setResolved=True, swf=None, callbackpath="", callbackparam="", iconImage=sThumbnail)
+            f4mp = f4mProxyHelper()
+            xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc = True)
+            f4mp.playF4mLink(sUrl, sTitle, proxy = None, use_proxy_for_chunks = False, maxbitrate=0, simpleDownloader = True, auth = None, streamtype = stype, setResolved = True, swf = None, callbackpath = '', callbackparam = '', iconImage = sThumbnail)
             return
 
     if 'dailymotion' in sUrl:
-        showDailymotionStream(sUrl,sTitle,sThumbnail)
+        showDailymotionStream(sUrl, sTitle, sThumbnail)
         return
 
     if 'f4mTester' in sUrl:
@@ -419,7 +419,7 @@ def play__():#Lancer les liens
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(SITE_IDENTIFIER)
         oGuiElement.setTitle(sTitle)
-        sUrl = sUrl.replace(' ','%20')
+        sUrl = sUrl.replace(' ', '%20')
         oGuiElement.setMediaUrl(sUrl)
         oGuiElement.setThumbnail(sThumbnail)
 
@@ -427,7 +427,7 @@ def play__():#Lancer les liens
         oPlayer.clearPlayList()
         oPlayer.addItemToPlaylist(oGuiElement)
         #tout repetter
-        xbmc.executebuiltin("xbmc.playercontrol(RepeatAll)")
+        xbmc.executebuiltin('xbmc.playercontrol(RepeatAll)')
 
         oPlayer.startPlayer()
         return
@@ -451,7 +451,7 @@ def GetRealUrl(chain):
     regex = ''
     sHtmlContent = ''
 
-    r = re.search('\[[BRIGHTCOVEKEY]+\](.+?)(?:(?:\[[A-Z]+\])|$)',chain)
+    r = re.search('\[[BRIGHTCOVEKEY]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
     if (r):
         access_token = getBrightcoveKey(r.group(1))
     else:
@@ -481,7 +481,7 @@ def GetRealUrl(chain):
     else:
         if access_token != '':
             oRequestHandler = cRequestHandler(url)
-            oRequestHandler.addHeaderEntry('Accept','application/json;pk='+access_token)
+            oRequestHandler.addHeaderEntry('Accept', 'application/json;pk=' + access_token)
             sHtmlContent = oRequestHandler.request()
 
         elif (url):
@@ -502,14 +502,14 @@ def GetRealUrl(chain):
     return url
 
 def openwindows():
-    xbmc.executebuiltin( "ActivateWindow(%d, return)" % ( 10601, ) )
+    xbmc.executebuiltin( 'ActivateWindow(%d, return)' % ( 10601, ) )
     return
 
 def decodeEmail(e):
-    head , e = e.split('a href=')
-    e , rest = e.split('</a>')
-    e = re.search('data-cfemail="(.+?)"',e).group(1)
-    de = ""
+    head, e = e.split('a href=')
+    e, rest = e.split('</a>')
+    e = re.search('data-cfemail="(.+?)"', e).group(1)
+    de = ''
     k = int(e[:2], 16)
 
     for i in range(2, len(e)-1, 2):
@@ -534,12 +534,12 @@ def unZip():
     showWeb(inf)
 
 def unGoogleDrive (infile):
-    ids = re.findall('<a href="https://drive.google.com/file/d/([^"]+)/view',infile)[0]
-    url = 'https://drive.google.com/uc?id='+ids+'&export=download'
+    ids = re.findall('<a href="https://drive.google.com/file/d/([^"]+)/view', infile)[0]
+    url = 'https://drive.google.com/uc?id=' + ids + '&export=download'
     inf = getHtml(url)
     return inf
 
-def showDailymotionStream(sUrl,sTitle,sThumbnail):
+def showDailymotionStream(sUrl, sTitle, sThumbnail):
     oGui = cGui()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -550,7 +550,7 @@ def showDailymotionStream(sUrl,sTitle,sThumbnail):
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', 'Android')
     mb = oRequestHandler.request()
-    mb = re.findall('NAME="([^"]+)"\n(.+)',mb)
+    mb = re.findall('NAME="([^"]+)"\n(.+)', mb)
     mb = sorted(mb,reverse=True)
     for entry in mb:
         if not entry[1].startswith('http'):
@@ -577,13 +577,13 @@ def getBrightcoveKey(sUrl):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    result = re.search('data-account="(.+?)" data-player="(.+?)"',sHtmlContent)
+    result = re.search('data-account="(.+?)" data-player="(.+?)"', sHtmlContent)
     account = result.group(1)
     player = result.group(2)
 
-    url = 'http://players.brightcove.net/%s/%s_default/index.min.js'%(account,player)
+    url = 'http://players.brightcove.net/%s/%s_default/index.min.js' % (account, player)
 
     oRequestHandler = cRequestHandler(url)
     sHtmlContent = oRequestHandler.request()
-    token = re.search('policyKey:"(.+?)"',sHtmlContent).group(1)
+    token = re.search('policyKey:"(.+?)"', sHtmlContent).group(1)
     return(token)

@@ -14,14 +14,14 @@ SITE_IDENTIFIER = 'regarderfilm'
 SITE_NAME = 'Regarder Film'
 SITE_DESC = 'Regarder, Voir Films En Streaming VF 100% Gratuit.'
 
-URL_MAIN = 'http://www.regarderfilm.cc/'
+URL_MAIN = 'https://www.regarderfilm.cc/'
 
-URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 
+MOVIE_MOVIE = (True, 'load')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
-MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
 def load():
@@ -46,7 +46,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText
+        sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -117,7 +117,6 @@ def showMovies(sSearch = ''):
 
     oParser = cParser()
     sPattern = '<div class="MovieItem".+?href="([^"]+)".+?src="([^"]+)" alt="([^"]+)"'
-
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):

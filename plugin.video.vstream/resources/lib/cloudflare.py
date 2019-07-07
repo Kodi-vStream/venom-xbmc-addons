@@ -51,10 +51,7 @@ class CipherSuiteAdapter(HTTPAdapter):
         kwargs['ssl_context'] = self.ssl_context
         return super(CipherSuiteAdapter, self).proxy_manager_for(*args, **kwargs)
 
-
-
 ##########################################################################################################################################################
-
 
 if (False):
     import logging
@@ -159,8 +156,7 @@ def checkpart(s,end='+'):
             pos = pos + 1
                 
             if (c == end) and (p == 0) and (pos > 1):
-                break
-                
+                break   
     except:
         pass
 
@@ -184,7 +180,6 @@ def showInfo(sTitle, sDescription, iSeconds=0):
     else:
         iSeconds = iSeconds * 1000
     #xbmc.executebuiltin("Notification(%s,%s,%s)" % (str(sTitle), (str(sDescription)), iSeconds))
-
 
 class CloudflareBypass(object):
 
@@ -393,10 +388,8 @@ class CloudflareBypass(object):
         
         return sContent
 
-        
 #----------------------------------------------------------------------------------------------------------------
 # Code from https://github.com/VeNoMouS/cloudflare-scrape-js2py
-
 class CloudflareScraper(Session):
     def __init__(self, *args, **kwargs):
     
@@ -421,11 +414,9 @@ class CloudflareScraper(Session):
         self.cipherSuite = None
         self.mount('https://', CipherSuiteAdapter(self.loadCipherSuite()))
         
-        
     ##########################################################################################################################################################
     #
     #Thx again to to VeNoMouS for this code
-    
     def loadCipherSuite(self):
         if self.cipherSuite:
             return self.cipherSuite
@@ -434,10 +425,9 @@ class CloudflareScraper(Session):
 
         if hasattr(ssl, 'PROTOCOL_TLS'):
             ciphers = [
-                'ECDHE-ECDSA-AES128-GCM-SHA256', 'ECDHE-RSA-AES128-GCM-SHA256', 'ECDHE-ECDSA-AES256-GCM-SHA384',
-                'ECDHE-RSA-AES256-GCM-SHA384', 'ECDHE-ECDSA-CHACHA20-POLY1305-SHA256', 'ECDHE-RSA-CHACHA20-POLY1305-SHA256',
-                'ECDHE-RSA-AES128-CBC-SHA', 'ECDHE-RSA-AES256-CBC-SHA', 'RSA-AES128-GCM-SHA256', 'RSA-AES256-GCM-SHA384',
-                'ECDHE-RSA-AES128-GCM-SHA256', 'RSA-AES256-SHA', '3DES-EDE-CBC'
+                'ECDHE-ECDSA-AES128-GCM-SHA256', 'ECDHE-ECDSA-CHACHA20-POLY1305-SHA256', 'ECDHE-RSA-CHACHA20-POLY1305-SHA256',
+                'ECDHE-RSA-AES128-CBC-SHA', 'ECDHE-RSA-AES256-CBC-SHA', 'RSA-AES128-GCM-SHA256',
+                'RSA-AES256-GCM-SHA384', 'RSA-AES256-SHA', '3DES-EDE-CBC'
             ]
 
             if hasattr(ssl, 'PROTOCOL_TLSv1_3'):
@@ -491,7 +481,6 @@ class CloudflareScraper(Session):
         
             return resp2
             
-
         # Otherwise, no Cloudflare anti-bot detected
         if resp:
             xbmc.log('Page decodee' , xbmc.LOGNOTICE)

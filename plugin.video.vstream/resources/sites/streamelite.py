@@ -9,7 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress#, VSlog
 
 import re
 
@@ -17,10 +17,10 @@ SITE_IDENTIFIER = 'streamelite'
 SITE_NAME = 'StreamElite'
 SITE_DESC = 'Séries VF & VOSTFR en streaming.'
 
-URL_MAIN = 'http://streamelite.net/'
+URL_MAIN = 'http://voir.streamelite.net/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_MOVIE = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
@@ -74,7 +74,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText
+        sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -149,7 +149,7 @@ def showYears():
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
 
-    sPattern = '<li><a href="([^"]+)">(.+?)</a>'
+    sPattern = '<li><a href="([^"]+)">([^<]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -168,13 +168,12 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
-        sUrl = sSearch
-        sUrl = sUrl.replace(' ','+')
-        sPattern = '<div class="result-item">.+?<img src="([^"]+)" alt="(.+?)".+?<a href="([^"]+)">.+?<p>(.+?)<\/p>'
+        sUrl = sSearch.replace(' ', '+')
+        sPattern = '<div class="result-item">.+?<img src="([^"]+)" alt="([^"]+)".+?<a href="([^"]+)">.+?<p>(.+?)<\/p>'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sPattern = '<div class="poster".+?img src="([^"]+)" alt="(.+?)".+?<div class="flag".+?flags\/([^"]+)\.png.+?<a href="([^"]+)">.+?(?:<article|<div class="texto">(.+?)<div)'
+        sPattern = '<div class="poster".+?img src="([^"]+)" alt="([^"]+)".+?<div class="flag".+?flags\/([^"]+)\.png.+?<a href="([^"]+)">.+?(?:<article|<div class="texto">(.+?)<div)'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -256,11 +255,11 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
 
-    sPattern = '<IFRAME SRC="(.+?)"'
+    sPattern = '<IFRAME SRC="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-        sPattern = '<iframe class="metaframe rptss" src="(.+?)".+?></iframe>'
+        sPattern = '<iframe class="metaframe rptss" src="([^"]+)".+?></iframe>'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):

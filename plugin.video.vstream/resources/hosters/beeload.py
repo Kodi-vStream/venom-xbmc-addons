@@ -71,7 +71,7 @@ class cHoster(iHoster):
             sUnpacked = cPacker().unpack(aResult[0])
             sHtmlContent = sUnpacked
 
-            sPattern = 'sources:\["([^"]+)"'
+            sPattern = "'([^<>']+?\.mp4)"
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
                 api_call = aResult[1][0]

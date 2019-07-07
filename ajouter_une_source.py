@@ -23,11 +23,11 @@ URL_MAIN = 'http://le_site.org/' #url de votre source
 #LA RECHERCHE GLOBAL N'UTILE PAS showSearch MAIS DIRECTEMENT LA FONCTION INSCRITE DANS LA VARIABLE URL_SEARCH_*
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 #recherche global films
-URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 #recherche global serie, manga
-URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 #recherche global divers
-URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MISC = (URL_SEARCH[0], 'showMovies')
 #
 FUNCTION_SEARCH = 'showMovies'
 
@@ -232,7 +232,7 @@ def showSerieYears():
 def showMovies(sSearch = ''):
     oGui = cGui() #ouvre l'affichage
     if sSearch: #si une url et envoyer directement grace a la fonction showSearch
-      sUrl = sSearch
+      sUrl = sSearch.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl') #recupere l'url sortie en parametre
@@ -243,7 +243,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>', '')
     #la fonction replace est pratique pour supprimer un code du resultat
 
-    sPattern = 'class="movie movie-block"><img src="([^<]+)" alt=".+?" title="([^<]+)"/>.+?<h2 onclick="window.location.href=\'([^<]+)\'">.+?<div style="color:#F29000">.+?<div.+?>(.+?)</div>'
+    sPattern = 'class="movie movie-block"><img src="([^"]+)" alt=".+?" title="([^"]+)"/>.+?<h2 onclick="window.location.href=\'([^"]+)\'">.+?<div style="color:#F29000">.+?<div.+?>(.+?)</div>'
     #pour faire simple recherche ce bout de code dans le code source de l'url
     #- "([^"]+)" je veux cette partie de code qui se trouve entre guillemets mais pas de guillemets dans la chaine
     #- .+? je ne veux pas cette partie et peux importe ceux qu'elle contient
@@ -310,6 +310,7 @@ def showMovies(sSearch = ''):
 
         progress_.VSclose(progress_) #fin du dialog
 
+    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent) #cherche la page suivante
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -317,13 +318,12 @@ def showMovies(sSearch = ''):
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
             #Ajoute une entree pour le lien Next | pas de addMisc pas de poster et de description inutile donc
 
-    if not sSearch:
         oGui.setEndOfDirectory() #ferme l'affichage
 
 
 def __checkForNextPage(sHtmlContent): #cherche la page suivante
     oParser = cParser()
-    sPattern = '<div class="navigation".+? <span.+? <a href="(.+?)">'
+    sPattern = '<div class="navigation".+? <span.+? <a href="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -343,7 +343,7 @@ def showHosters(): #recherche et affiche les hotes
     sHtmlContent = oRequestHandler.request() #requete sur l'url
 
     oParser = cParser()
-    sPattern = '<iframe.+?src="(.+?)"'
+    sPattern = '<iframe.+?src="([^"]+)"'
     #ici nous cherchons toute les sources iframe
 
     aResult = oParser.parse(sHtmlContent, sPattern)
