@@ -17,20 +17,16 @@ class cInputWindow(xbmcgui.WindowDialog):
     def __init__(self, *args, **kwargs):
 
         self.cptloc = kwargs.get('captcha')
-        self.img = xbmcgui.ControlImage(328, 200, 624, 400, "")
+        self.img = xbmcgui.ControlImage(328, 200, 624, 400, '')
         xbmc.sleep(500)
         self.img = xbmcgui.ControlImage(328, 200, 624, 399, self.cptloc)
         xbmc.sleep(500)
 
-        bg_image =  os.path.join( __addon__.getAddonInfo('path'), 'resources/art/' ) + "background.png"
-        check_image =  os.path.join( __addon__.getAddonInfo('path'), 'resources/art/' ) + "trans_checked.png"
+        bg_image = os.path.join( __addon__.getAddonInfo('path'), 'resources/art/' ) + 'background.png'
+        check_image = os.path.join( __addon__.getAddonInfo('path'), 'resources/art/' ) + 'trans_checked.png'
 
-        self.ctrlBackgound = xbmcgui.ControlImage(
-            0, 0,
-            1280, 720,
-            bg_image
-        )
-        self.cancelled=False
+        self.ctrlBackgound = xbmcgui.ControlImage(0, 0, 1280, 720, bg_image)
+        self.cancelled = False
         self.addControl (self.ctrlBackgound)
 
         self.strActionInfo = xbmcgui.ControlLabel(328, 20, 724, 400, 'Veuillez selectionnez les images correpondants au thème.\nNormalement il devrait y en avoir 3 ou 4 à sélectionner.', 'font40', '0xFFFF00FF')
@@ -38,7 +34,7 @@ class cInputWindow(xbmcgui.WindowDialog):
 
         self.msg = kwargs.get('msg')
         self.roundnum = kwargs.get('roundnum')
-        self.strActionInfo = xbmcgui.ControlLabel(328, 120, 700, 300, "Le thème est: " + self.msg, 'font13', '0xFFFF00FF')
+        self.strActionInfo = xbmcgui.ControlLabel(328, 120, 700, 300, 'Le thème est: ' + self.msg, 'font13', '0xFFFF00FF')
         self.addControl(self.strActionInfo)
 
         self.addControl(self.img)
@@ -189,9 +185,9 @@ def ResolveCaptcha(key, urlOuo):
     }
     query_string = urllib.urlencode(params)
 
-    url = 'https://www.google.com' + str(captchaScrap[0]) + "?" + query_string
+    url = 'https://www.google.com' + str(captchaScrap[0]) + '?' + query_string
 
-    filePath = "special://home/userdata/addon_data/plugin.video.vstream/Captcha.raw"
+    filePath = 'special://home/userdata/addon_data/plugin.video.vstream/Captcha.raw'
 
     oRequestHandler = cRequestHandler(url)
     htmlcontent = oRequestHandler.request()
@@ -340,13 +336,13 @@ class UnCaptchaReCaptcha:
                     VSlog('>>>>>>>> Captcha Failed')
                 break
 
-            cval = re.search(r'name="c"\s+value="([^"]+)',data).group(1)
+            cval = re.search(r'name="c"\s+value="([^"]+)', data).group(1)
             imgUrl = 'https://www.google.com%s' % (imgUrl.replace('&amp;', '&'))
             accepLabel = re.search(r'type="submit"\s+value="([^"]+)', data).group(1)
 
             filePath = 'c://c.jpeg'
             import random
-            n = random.randint(1,1000)
+            n = random.randint(1, 1000)
             filePath = 'c://c' + str(n) + '.jpeg'
 
             VSlog(">>>>>>>> Captcha message[%s]" % (message))
@@ -359,7 +355,7 @@ class UnCaptchaReCaptcha:
 
             ret = ''
             ret = getUrl(imgUrl, headers = headers, cookieJar = gcookieJar)
-            downloaded_image = file(filePath, "wb")
+            downloaded_image = file(filePath, 'wb')
             downloaded_image.write(ret)
             downloaded_image.close()
 
@@ -386,8 +382,8 @@ class UnCaptchaReCaptcha:
                                               't'       : timeToSolve,
                                               'bg'      : botguardstring,
                                               'ct'      : timeToSolveMore})
-                html = getUrl("https://www.google.com/recaptcha/api2/userverify?k=" + key, post = postdata, headers = headers)
-                fh = open('c:\\test.txt', "w")
+                html = getUrl('https://www.google.com/recaptcha/api2/userverify?k=' + key, post = postdata, headers = headers)
+                fh = open('c:\\test.txt', 'w')
                 fh.write(html)
                 fh.close()
 
@@ -417,7 +413,7 @@ def performCaptcha(sitename, cj, returnpage = True, captcharegex = 'data-sitekey
             sitepage = getUrl(sitename, cookieJar = cj, post = urllib.urlencode({"g-recaptcha-response": token}), headers = headers)
 
     if returnpage:
-        fh = open('c:\\reussi.txt', "w")
+        fh = open('c:\\reussi.txt', 'w')
         fh.write(sitepage)
         fh.close()
         return sitepage
