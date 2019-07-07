@@ -17,9 +17,9 @@ class cInputWindow(xbmcgui.WindowDialog):
     def __init__(self, *args, **kwargs):
 
         self.cptloc = kwargs.get('captcha')
-        self.img = xbmcgui.ControlImage(335, 200, 624, 400, "")
+        self.img = xbmcgui.ControlImage(328, 200, 624, 400, "")
         xbmc.sleep(500)
-        self.img = xbmcgui.ControlImage(335, 200, 624, 400, self.cptloc)
+        self.img = xbmcgui.ControlImage(328, 200, 624, 399, self.cptloc)
         xbmc.sleep(500)
 
         bg_image =  os.path.join( __addon__.getAddonInfo('path'), 'resources/art/' ) + "background.png"
@@ -33,12 +33,12 @@ class cInputWindow(xbmcgui.WindowDialog):
         self.cancelled=False
         self.addControl (self.ctrlBackgound)
 
-        self.strActionInfo = xbmcgui.ControlLabel(335, 20, 724, 400, 'Veuillez selectionnez les images correpondants au thème.\nNormalement il devrait y en avoir 3 ou 4 à sélectionner.', 'font40', '0xFFFF00FF')
+        self.strActionInfo = xbmcgui.ControlLabel(328, 20, 724, 400, 'Veuillez selectionnez les images correpondants au thème.\nNormalement il devrait y en avoir 3 ou 4 à sélectionner.', 'font40', '0xFFFF00FF')
         self.addControl(self.strActionInfo)
 
         self.msg = kwargs.get('msg')
         self.roundnum = kwargs.get('roundnum')
-        self.strActionInfo = xbmcgui.ControlLabel(335, 120, 700, 300, "Le thème est: " + self.msg, 'font13', '0xFFFF00FF')
+        self.strActionInfo = xbmcgui.ControlLabel(328, 120, 700, 300, "Le thème est: " + self.msg, 'font13', '0xFFFF00FF')
         self.addControl(self.strActionInfo)
 
         self.addControl(self.img)
@@ -48,42 +48,42 @@ class cInputWindow(xbmcgui.WindowDialog):
         self.chkstate = [False]*9
 
         if 1 == 2:
-            self.chk[0]= xbmcgui.ControlCheckMark(335, 190, 220, 150, '1', font = 'font14', focusTexture = check_image, checkWidth = 220, checkHeight = 150)
-            self.chk[1]= xbmcgui.ControlCheckMark(335 + 200, 190, 220, 150, '2', font = 'font14', focusTexture = check_image, checkWidth = 220, checkHeight = 150)
-            self.chk[2]= xbmcgui.ControlCheckMark(335 + 400, 190, 220, 150, '3', font = 'font14', focusTexture = check_image, checkWidth = 220, checkHeight = 150)
+            self.chk[0]= xbmcgui.ControlCheckMark(328, 200, 208, 133, '1', font = 'font14', focusTexture = check_image, checkWidth = 208, checkHeight = 133)
+            self.chk[1]= xbmcgui.ControlCheckMark(328 + 208, 200, 208, 133, '2', font = 'font14', focusTexture = check_image, checkWidth = 208, checkHeight = 133)
+            self.chk[2]= xbmcgui.ControlCheckMark(328 + 416, 200, 208, 133, '3', font = 'font14', focusTexture = check_image, checkWidth = 208, checkHeight = 133)
 
-            self.chk[3]= xbmcgui.ControlCheckMark(335, 190 + 130, 220, 150, '4', font = 'font14', focusTexture = check_image, checkWidth = 220, checkHeight = 150)
-            self.chk[4]= xbmcgui.ControlCheckMark(335 + 200, 190 + 130, 220, 150, '5', font = 'font14', focusTexture = check_image, checkWidth = 220, checkHeight = 150)
-            self.chk[5]= xbmcgui.ControlCheckMark(335 + 400, 190 + 130, 220, 150, '6', font = 'font14', focusTexture = check_image, checkWidth = 220, checkHeight = 150)
+            self.chk[3]= xbmcgui.ControlCheckMark(328, 200 + 133, 208, 133, '4', font = 'font14', focusTexture = check_image, checkWidth = 208, checkHeight = 133)
+            self.chk[4]= xbmcgui.ControlCheckMark(328 + 208, 200 + 133, 208, 133, '5', font = 'font14', focusTexture = check_image, checkWidth = 208, checkHeight = 133)
+            self.chk[5]= xbmcgui.ControlCheckMark(328 + 416, 200 + 133, 208, 133, '6', font = 'font14', focusTexture = check_image, checkWidth = 208, checkHeight = 133)
 
-            self.chk[6]= xbmcgui.ControlCheckMark(335, 190 + 260, 220, 150, '7', font = 'font14', focusTexture = check_image, checkWidth = 220, checkHeight = 150)
-            self.chk[7]= xbmcgui.ControlCheckMark(335 + 200, 190 + 260, 220, 150, '8', font = 'font14', focusTexture = check_image, checkWidth = 220, checkHeight = 150)
-            self.chk[8]= xbmcgui.ControlCheckMark(335 + 400, 190 + 260, 220, 150, '9', font = 'font14', focusTexture = check_image, checkWidth = 220, checkHeight = 150)
+            self.chk[6]= xbmcgui.ControlCheckMark(328, 200 + 266, 208, 133, '7', font = 'font14', focusTexture = check_image, checkWidth = 208, checkHeight = 133)
+            self.chk[7]= xbmcgui.ControlCheckMark(328 + 208, 200 + 266, 208, 133, '8', font = 'font14', focusTexture = check_image, checkWidth = 208, checkHeight = 133)
+            self.chk[8]= xbmcgui.ControlCheckMark(328 + 416, 200 + 266, 208, 133, '9', font = 'font14', focusTexture = check_image, checkWidth = 208, checkHeight = 133)
+
         else:
+            self.chk[0]= xbmcgui.ControlImage(328, 200, 208, 133, check_image)
+            self.chk[1]= xbmcgui.ControlImage(328 + 208, 200, 208, 133, check_image)
+            self.chk[2]= xbmcgui.ControlImage(328 + 416, 200, 208, 133, check_image)
 
-            self.chk[0]= xbmcgui.ControlImage(335, 190, 220, 150, check_image)
-            self.chk[1]= xbmcgui.ControlImage(335 + 200, 190, 220, 150, check_image)
-            self.chk[2]= xbmcgui.ControlImage(335 + 400, 190, 220, 150, check_image)
+            self.chk[3]= xbmcgui.ControlImage(328, 200 + 133, 208, 133, check_image)
+            self.chk[4]= xbmcgui.ControlImage(328 + 208, 200 + 133, 208, 133, check_image)
+            self.chk[5]= xbmcgui.ControlImage(328 + 416, 200 + 133, 208, 133, check_image)
 
-            self.chk[3]= xbmcgui.ControlImage(335, 190 + 130, 220, 150, check_image)
-            self.chk[4]= xbmcgui.ControlImage(335 + 200, 190 + 130, 220, 150, check_image)
-            self.chk[5]= xbmcgui.ControlImage(335 + 400, 190 + 130, 220, 150, check_image)
+            self.chk[6]= xbmcgui.ControlImage(328, 200 + 266, 208, 133, check_image)
+            self.chk[7]= xbmcgui.ControlImage(328 + 208, 200 + 266, 208, 133, check_image)
+            self.chk[8]= xbmcgui.ControlImage(328 + 416, 200 + 266, 208, 133, check_image)
 
-            self.chk[6]= xbmcgui.ControlImage(335, 190 + 260, 220, 150, check_image)
-            self.chk[7]= xbmcgui.ControlImage(335 + 200, 190 + 260, 220, 150, check_image)
-            self.chk[8]= xbmcgui.ControlImage(335 + 400, 190 + 260, 220, 150, check_image)
+            self.chkbutton[0]= xbmcgui.ControlButton(328, 200, 208, 133, '1', font = 'font1');
+            self.chkbutton[1]= xbmcgui.ControlButton(328 + 208, 200, 208, 133, '2', font = 'font1');
+            self.chkbutton[2]= xbmcgui.ControlButton(328 + 416, 200, 208, 133, '3', font = 'font1');
 
-            self.chkbutton[0]= xbmcgui.ControlButton(335, 190, 210, 150, '1', font = 'font1');
-            self.chkbutton[1]= xbmcgui.ControlButton(335 + 200, 190, 220, 150, '2', font = 'font1');
-            self.chkbutton[2]= xbmcgui.ControlButton(335 + 400, 190, 220, 150, '3', font = 'font1');
+            self.chkbutton[3]= xbmcgui.ControlButton(328, 200 + 133, 208, 133, '4', font = 'font1');
+            self.chkbutton[4]= xbmcgui.ControlButton(328 + 208, 200 + 133, 208, 133, '5', font = 'font1');
+            self.chkbutton[5]= xbmcgui.ControlButton(328 + 416, 200 + 133, 208, 133, '6', font = 'font1');
 
-            self.chkbutton[3]= xbmcgui.ControlButton(335, 190+130, 210, 150, '4', font = 'font1');
-            self.chkbutton[4]= xbmcgui.ControlButton(335 + 200, 190 + 130, 220, 150, '5', font = 'font1');
-            self.chkbutton[5]= xbmcgui.ControlButton(335 + 400, 190 + 130, 220, 150, '6', font = 'font1');
-
-            self.chkbutton[6]= xbmcgui.ControlButton(335, 190 + 260, 210, 150, '7', font = 'font1');
-            self.chkbutton[7]= xbmcgui.ControlButton(335 + 200, 190 + 260, 220, 150, '8', font = 'font1');
-            self.chkbutton[8]= xbmcgui.ControlButton(335 + 400, 190 + 260, 220, 150, '9', font = 'font1');
+            self.chkbutton[6]= xbmcgui.ControlButton(328, 200 + 266, 208, 133, '7', font = 'font1');
+            self.chkbutton[7]= xbmcgui.ControlButton(328 + 208, 200 + 266, 208, 133, '8', font = 'font1');
+            self.chkbutton[8]= xbmcgui.ControlButton(328 + 416, 200 + 266, 208, 133, '9', font = 'font1');
 
         for obj in self.chk:
             self.addControl(obj)
@@ -91,8 +91,8 @@ class cInputWindow(xbmcgui.WindowDialog):
         for obj in self.chkbutton:
             self.addControl(obj)
 
-        self.cancelbutton = xbmcgui.ControlButton(335 + 312 - 100, 610, 100, 40, 'Cancel', alignment = 2)
-        self.okbutton = xbmcgui.ControlButton(335 + 312 + 50, 610, 100, 40, 'OK', alignment = 2)
+        self.cancelbutton = xbmcgui.ControlButton(328 + 312 - 174, 610, 140, 50, 'Cancel', alignment = 2)
+        self.okbutton = xbmcgui.ControlButton(328 + 312 + 54, 610, 100, 50, 'OK', alignment = 2)
         self.addControl(self.okbutton)
         self.addControl(self.cancelbutton)
 
@@ -122,10 +122,10 @@ class cInputWindow(xbmcgui.WindowDialog):
 
         self.cancelled=False
         self.setFocus(self.okbutton)
-        self.okbutton.controlLeft(self.cancelbutton);self.okbutton.controlRight(self.cancelbutton);
-        self.cancelbutton.controlLeft(self.okbutton); self.cancelbutton.controlRight(self.okbutton);
-        self.okbutton.controlDown(self.chkbutton[2]);self.okbutton.controlUp(self.chkbutton[8]);
-        self.cancelbutton.controlDown(self.chkbutton[0]); self.cancelbutton.controlUp(self.chkbutton[6]);
+        self.okbutton.controlLeft(self.cancelbutton);      self.okbutton.controlRight(self.cancelbutton);
+        self.cancelbutton.controlLeft(self.okbutton);      self.cancelbutton.controlRight(self.okbutton);
+        self.okbutton.controlDown(self.chkbutton[2]);      self.okbutton.controlUp(self.chkbutton[8]);
+        self.cancelbutton.controlDown(self.chkbutton[0]);  self.cancelbutton.controlUp(self.chkbutton[6]);
 
     def get(self):
         self.doModal()
@@ -157,14 +157,14 @@ class cInputWindow(xbmcgui.WindowDialog):
             if 'xbmcgui.ControlButton' in repr(type(control)):
                 index = control.getLabel()
                 if index.isnumeric():
-                    self.chkstate[int(index)-1]= not self.chkstate[int(index)-1]
+                    self.chkstate[int(index)-1] = not self.chkstate[int(index)-1]
                     self.chk[int(index)-1].setVisible(self.chkstate[int(index)-1])
 
         except: pass
 
     def onAction(self, action):
         if action == 10:
-            self.cancelled=True
+            self.cancelled = True
             self.close()
 
 def ResolveCaptcha(key, urlOuo):
@@ -250,13 +250,13 @@ def getUrl(url, cookieJar = None, post = None, timeout = 20, headers = None, nor
 
     if headers:
         for h, hv in headers:
-            req.add_header(h,hv)
+            req.add_header(h, hv)
     else:
         req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.154 Safari/537.36')
         req.add_header('Accept-Language', __sLang__)
 
     VSlog('post : ' + str(post))
-    response = opener.open(req,post,timeout=timeout)
+    response = opener.open(req, post, timeout=timeout)
     link=response.read()
     response.close()
     return link;
@@ -363,7 +363,7 @@ class UnCaptchaReCaptcha:
             downloaded_image.write(ret)
             downloaded_image.close()
 
-            oSolver = cInputWindow(captcha = filePath,msg = message, roundnum = iteration)
+            oSolver = cInputWindow(captcha = filePath, msg = message, roundnum = iteration)
             retArg = oSolver.get()
             VSlog('>>>>>>>> Captcha response [%s]' % (retArg))
 
@@ -414,7 +414,7 @@ def performCaptcha(sitename, cj, returnpage = True, captcharegex = 'data-sitekey
             #gcookieJar.save('./gsite.jwl');
             headers=[("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0"),
              ("Referer", sitename)];
-            sitepage = getUrl(sitename, cookieJar = cj, post = urllib.urlencode({"g-recaptcha-response":token}), headers = headers)
+            sitepage = getUrl(sitename, cookieJar = cj, post = urllib.urlencode({"g-recaptcha-response": token}), headers = headers)
 
     if returnpage:
         fh = open('c:\\reussi.txt', "w")
