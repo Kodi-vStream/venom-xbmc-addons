@@ -7,7 +7,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress
 
 import urllib2, re, base64
 
@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'fullstream'
 SITE_NAME = 'FullStream'
 SITE_DESC = 'Films, Séries et Mangas Gratuit en streaming sur Full stream'
 
-URL_MAIN = 'https://vf.full-stream.cc/'
+URL_MAIN = 'https://w4.full-stream.cc/'
 
 URL_SEARCH = (URL_MAIN + 'wp-json/dooplay/search/?keyword=', 'AlphaDisplay')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'AlphaDisplay')
@@ -110,7 +110,7 @@ def AlphaSearch():
 
     nonce = get_nonce()
     if not nonce == False:
-       sPattern = '<a class="lglossary" data-type=".+?" data-glossary="([^"]+)">([^<]+)<\/a>'
+       sPattern = '<a class=lglossary data-type=.+?data-glossary=([^<]+)>([^<]+)<\/a>'
        aResult = oParser.parse(sHtmlContent, sPattern)
        if (aResult[0] == True):
             for aEntry in aResult[1]:
@@ -199,7 +199,7 @@ def showMovies():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'data-src="([^"]+)" alt="([^"]+)".+?(?:|<span class="quality">([^<]+)</span>.+?)<div class="see">.+?<a href="([^"]+)"'
+    sPattern = 'data-src=([^"]+) alt="([^"]+)".+?<div class=.+?<a href=([^<]+)>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -218,10 +218,9 @@ def showMovies():
 
             sThumb = re.sub('/w\d+', '/w342', aEntry[0])
             sTitle = aEntry[1]
-            sQual = aEntry[2]
-            sUrl2 = aEntry[3]
+            sUrl2 = aEntry[2]
 
-            sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
+            sDisplayTitle = ('%s') % (sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -247,7 +246,7 @@ def showMovies():
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<span class="current">.+?</span><a href=\'([^"]+)\''
+    sPattern = '<a class=arrow_pag href=([^<]+)>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         return aResult[1][0]
@@ -274,7 +273,7 @@ def showEpisodes():
 
     sHtmlContent = oParser.abParse(sHtmlContent, '<h2>Seasons and episodes</h2>', '<h2>titres similaires</h2>')
     #recuperation des suivants
-    sPattern = '<span class="title">([^<]+)<i>|<a href="([^"]+)"><img src=".+?">.+?<div class="numerando">([^<]+)</div>'
+    sPattern = '<span class=title>([^<]+)<i>|<a href=([^<]+)>.+?<div class=numerando>([^<]+)<\/div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -314,7 +313,7 @@ def showLink():
 
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
-    
+
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
@@ -326,9 +325,10 @@ def showLink():
             cooka = cooka + i + '; '
 
     if '/film/' in sUrl:
-        sPattern = '<a id="player-.+?" class="server.+?" data-post="([^"]+)" data-nume="([^"]+)">([^<]+)<.+?<img src=\'http.+?img/flags/(.+?).png\'>'
+        sPattern = '<a id=player-.+?data-post=([^"]+) data-nume=([^<]+)>([^<]+)<.+?<img src=http.+?img/flags/(.+?).png>'
     else:
-        sPattern = 'id="player-[^<>]+data-post="([^"]+)" data-nume="([^"]+)".*?"title">([^<]+)<\/*span.+?<img src=\'http.+?img\/flags\/(.+?).png\'>'
+        sPattern = 'id=player-.+?data-post=([^"]+) data-nume=([^<]+).*?title>([^<]+)<\/*span.+?<img src=http.+?img\/flags\/(.+?).png>'
+        
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
