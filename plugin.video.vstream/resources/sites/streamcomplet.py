@@ -19,6 +19,7 @@ URL_MAIN = 'https://stream-complet.me/'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
+MOVIE_MOVIE = ('http://', 'load')
 
 URL_SEARCH = (URL_MAIN + 'search/', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
@@ -105,7 +106,7 @@ def showMovies(sSearch = ''):
 
             sThumb = URL_MAIN + aEntry[0]
             sUrl = URL_MAIN + aEntry[2]
-            sTitle = aEntry[1]
+            sTitle = aEntry[1].replace('en streaming','')
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:

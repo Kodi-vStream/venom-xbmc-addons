@@ -22,7 +22,7 @@ MOVIE_LIST = (True, 'showAlpha')
 
 SERIE_SERIES = (URL_MAIN + 'series-streaming/', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'series-streaming/', 'showMovies')
-SERIE_GENRES = ('http://serie', 'showSerieGenres')
+SERIE_GENRES = ('http://serie', 'showGenres')
 
 ANIM_ANIMS = (URL_MAIN + 'anime-streaming/', 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'anime-streaming/', 'showMovies')
