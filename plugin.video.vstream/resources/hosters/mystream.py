@@ -73,24 +73,30 @@ class cHoster(iHoster):
         oParser = cParser()
         
         api_call = False
-        
-        sPattern =  '(?:[>;]\s*)(ﾟωﾟ.+?\(\'_\'\);)'
+        sPattern =  '<meta name="og:image" content="(.+?.jpg)">'
+
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0]:
-            for i in aResult[1]:
-                decoded = AADecoder(i).decode()
+        if (aResult[0] == True):
+    	    api_call = aResult[1][0].replace('img/','').replace('jpg','mp4')
+
+            
+        # sPattern =  '(?:[>;]\s*)(ﾟωﾟ.+?\(\'_\'\);)'
+        # aResult = oParser.parse(sHtmlContent, sPattern)
+        # if aResult[0]:
+            # for i in aResult[1]:
+                # decoded = AADecoder(i).decode()
                 
-                #VSlog(decoded)
+                # #VSlog(decoded)
                 
-                r = re.search("\('src', '([^']+)'\);", decoded, re.DOTALL | re.UNICODE)
-                if r:
-                    api_call = r.group(1)
-                    break
+                # r = re.search("\('src', '([^']+)'\);", decoded, re.DOTALL | re.UNICODE)
+                # if r:
+                    # api_call = r.group(1)
+                    # break
         
-        #VSlog(api_call)
+        # #VSlog(api_call)
         
-        if 'qziqcysljv' in api_call:
-            api_call = ''
+        # if 'qziqcysljv' in api_call:
+            # api_call = ''
 
         if (api_call):
             return True, api_call
