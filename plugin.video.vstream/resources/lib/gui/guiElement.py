@@ -175,6 +175,8 @@ class cGuiElement:
             sTitle = sTitle.decode("utf-8")
             #traitement du titre pour les caracteres speciaux
             sTitle = sTitle.replace('&#8212;', '-').replace('&#8217;', '\'').replace('&#8230;', '...').replace('&#8242;', '\'').replace('&lsquo;', '\'')
+            #traitement du titre pour retirer le - quand c'est une Saison
+            sTitle = sTitle.replace(' - Saison', ' Saison')
         except:
             pass
 
@@ -210,7 +212,7 @@ class cGuiElement:
             m = re.search(ur'(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', sTitle, re.UNICODE)
             if m:
                 #ok y a des episodes
-                sTitle = sTitle.replace(m.group(1),'')
+                sTitle = sTitle.replace(m.group(1), '')
                 ep = m.group(2)
                 if len(ep) == 1:
                     ep = '0' + ep
@@ -240,7 +242,7 @@ class cGuiElement:
                     self.addItemValues('Season', self.__Season)
 
         #supr les -
-        #sTitle = sTitle.replace('-',' ') # A gerer dans le fichier site plutot, car il peut etre utile dans certain cas
+        #sTitle = sTitle.replace('-', ' ') # A gerer dans le fichier site plutot, car il peut etre utile dans certain cas
         #vire doubles espaces
         sTitle = re.sub(' +', ' ', sTitle)
         sTitle = sTitle.replace('()', '').replace('[]', '').replace('- -', '-')
@@ -384,11 +386,11 @@ class cGuiElement:
         #data, saison = self.getSaisonTitre(data)
         #data, episode = self.getEpisodeTitre(data)
         #supprimer les balises
-        data=re.sub(r'\[.*\]|\(.*\)', r'', str(data))
-        data=data.replace('VF', '').replace('VOSTFR', '').replace('FR', '')
+        data = re.sub(r'\[.*\]|\(.*\)', r'', str(data))
+        data = data.replace('VF', '').replace('VOSTFR', '').replace('FR', '')
         #data=re.sub(r'[0-9]+?', r'', str(data))
-        data=data.replace('-', '')
-        data=data.replace('-', '').replace('Saison', '').replace('saison', '').replace('Season', '').replace('Episode', '').replace('episode', '')
+        data = data.replace('-', '')
+        data = data.replace('-', '').replace('Saison', '').replace('saison', '').replace('Season', '').replace('Episode', '').replace('episode', '')
         data = re.sub('[^%s]' % string.ascii_lowercase, ' ', data.lower())
         #data = urllib.quote_plus(data)
 
