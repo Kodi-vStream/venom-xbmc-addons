@@ -29,7 +29,7 @@ class cInputWindow(xbmcgui.WindowDialog):
         self.cancelled = False
         self.addControl (self.ctrlBackgound)
 
-        self.strActionInfo = xbmcgui.ControlLabel(250, 20, 724, 400, 'Veuillez sélectionnez les images correpondants au thème.\nIl devrait y en avoir 3 ou 4 à sélectionner.', 'font40', '0xFFFF00FF')
+        self.strActionInfo = xbmcgui.ControlLabel(250, 20, 724, 400, 'Veuillez sélectionnez les images correspondants au thème.\nIl devrait y en avoir 3 ou 4 à sélectionner.', 'font40', '0xFFFF00FF')
         self.addControl(self.strActionInfo)
 
         self.msg = kwargs.get('msg')
@@ -318,7 +318,7 @@ class UnCaptchaReCaptcha:
             millis_captcha_loading = int(round(time.time() * 1000))
 
             #,'cookiefile':self.COOKIE_FILE, 'use_cookie': True, 'load_cookie': True, 'save_cookie':True
-            data = getUrl(reCaptchaUrl ,headers=headers, post = post_data ,cookieJar=gcookieJar)
+            data = getUrl(reCaptchaUrl ,headers = headers, post = post_data ,cookieJar = gcookieJar)
             VSlog(reCaptchaUrl)
             imgUrl = re.search(r'"(/recaptcha/api2/payload[^"]+?)"',data).group(1)
 
