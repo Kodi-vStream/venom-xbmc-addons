@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, addon, VSlog
+from resources.lib.comaddon import progress, addon
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
 sColor = addon().getSetting("deco_color")
@@ -21,7 +21,7 @@ MOVIE_NEWS = (URL_MAIN + 'films.html', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenres')
 
 SERIE_NEWS = (URL_MAIN + 'series.html', 'showMovies')
-SERIE_GENRES = (URL_MAIN + 'series/', 'showGenres')
+
 
 URL_SEARCH = (URL_MAIN + '/recherche?q=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '/recherche?q=', 'showMovies')
@@ -45,10 +45,6 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -108,7 +104,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="short-images.+?<a href="([^"]+)" title="([^"]+)" class=.+?<img src="([^"]+)".+?(?:<div class="short-content">|<a href=.+?qualite.+?>([^<>]+?)</a>.+?<a href=.+?langue.+?>(.+?)<\/a>)'
+    sPattern = '<div class="short-images.+?<a href="([^"]+)" title="([^"]+)" class=.+?<img src="([^"]+)".+?(?:<div class="short-content">|<a href=.+?qualite.+?>([^<>]+?)</a>.+?<a href=.+?langue.+?>([^<]+)<\/a>)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == False):
@@ -128,9 +124,9 @@ def showMovies(sSearch = ''):
                 sUrl = URL_MAIN[:-1] + sUrl
 
             sTitle = aEntry[1].replace('Streaming', '').replace('streaming', '').replace('série', '')
-            
-            sTitle = sTitle.decode('utf-8').encode("latin-1")
-            #VSlog(sTitle)
+
+            # sTitle = sTitle.decode('utf-8').encode("latin-1")
+
 
             sThumb = aEntry[2]
             if sThumb.startswith('/'):
@@ -169,7 +165,7 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = 'pages-next"><a href="([^"]+)">'
+    sPattern = "pages-next\"><a href='([^']+)'"
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         if aResult[1][0].startswith('/'):
@@ -233,7 +229,8 @@ def showEp():
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sHtmlContent = oParser.abParse(sHtmlContent, '<h2 class="serie-middle"', 'Series similaires')
+
+    sHtmlContent = oParser.abParse(sHtmlContent, '<div class="episode-list">', 'Series similaires')
 
     sPattern = '<div class="sai.+?<a href="([^"]+)".+?<span>(.+?)<\/span>'
 
@@ -243,8 +240,8 @@ def showEp():
         for aEntry in aResult[1]:
 
             sUrl = aEntry[0]
-            if sUrl.startswith('/'):
-                sUrl = URL_MAIN[:-1] + sUrl
+            if not sUrl.startswith('http'):
+                sUrl = URL_MAIN + 'series/' + sUrl
 
             sTitle = aEntry[1]
 
@@ -280,21 +277,21 @@ def showLinks():
     except:
         pass
 
-    sPattern2 = '<li class="stream.+?"><div data-num="([^"]+)" data-code="([^"]+)".+?<i class="([^"]+)">.+?<img *src="([^"]+)"'
+    sPattern2 = '<li class="stream.+?"><div data-num=".+?" data-code=".+?".+?<i class="([^"]+)">.+?<img *src="([^"]+)".+?<input name="levideo" value="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern2)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHost = aEntry[2].replace('server player-', '').capitalize()
-            sLang = aEntry[3].split('/')[-1].replace('.png', '')
+            sHost = aEntry[0].replace('server player-', '').capitalize()
+            sLang = aEntry[1].split('/')[-1].replace('.png', '')
 
             sDisplayTitle = ('%s (%s) [COLOR %s]%s[/COLOR]') % (sMovieTitle, sLang, sColor, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('datanum', aEntry[0])
-            oOutputParameterHandler.addParameter('datacode', aEntry[1])
+            oOutputParameterHandler.addParameter('datacode', aEntry[2])
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
@@ -303,37 +300,53 @@ def showLinks():
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    datanum = oInputParameterHandler.getValue('datanum')
     datacode = oInputParameterHandler.getValue('datacode')
 
-    import urllib2
+    # import urllib2
 
-    sUrl = ('%s%s%s%s%s' % (URL_MAIN, 'streamer.php?p=', datanum, '&c=', datacode))
+    # sUrl = ('%s%s%s%s%s' % (URL_MAIN, 'streamer.php?p=', datanum, '&c=', datacode))
     
-    #VSlog(sUrl)
+    # class NoRedirection(urllib2.HTTPErrorProcessor):
+            # def http_response(self, request, response):
+                # return response
 
-    class NoRedirection(urllib2.HTTPErrorProcessor):
-            def http_response(self, request, response):
-                return response
+            # https_response = http_response
 
-            https_response = http_response
+    # opener = urllib2.build_opener(NoRedirection)
+    # opener.addheaders = [('User-Agent', UA)]
+    # opener.addheaders = [('Referer', URL_MAIN)]
+    # response = opener.open(sUrl)
+    # response.close()
+    # if response.code == 302:
+        # redirection_target = response.headers['Location']
+        # if redirection_target:
 
-    opener = urllib2.build_opener(NoRedirection)
-    opener.addheaders = [('User-Agent', UA)]
-    opener.addheaders = [('Referer', URL_MAIN)]
-    response = opener.open(sUrl)
-    response.close()
-    if response.code == 302:
-        redirection_target = response.headers['Location']
-        if redirection_target:
+            # sHosterUrl = redirection_target
 
-            sHosterUrl = redirection_target
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    oParser = cParser()        
+    oRequest = cRequestHandler(sUrl)
+    oRequest.setRequestType(1)
+    oRequest.addHeaderEntry('User-Agent', UA)
+    oRequest.addHeaderEntry('Referer', sUrl)
+    oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+    oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
 
-                oGui.setEndOfDirectory()
+    oRequest.addParametersLine('levideo=' + datacode)
+
+    sHtmlContent = oRequest.request()
+
+    sPattern = '<iframe id=.+?src="([^"]+)"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        sHosterUrl = aResult[1][0]
+    
+        oHoster = cHosterGui().checkHoster(sHosterUrl)
+        if (oHoster != False):
+            oHoster.setDisplayName(sMovieTitle)
+            oHoster.setFileName(sMovieTitle)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+        oGui.setEndOfDirectory()
