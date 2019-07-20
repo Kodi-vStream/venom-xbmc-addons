@@ -1,11 +1,11 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-
+#stream elite
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
+from resources.lib.packer import cPacker
 import re
-
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
 
 class cHoster(iHoster):
@@ -59,37 +59,46 @@ class cHoster(iHoster):
         oRequest.addHeaderEntry('Referer', self.__sUrl.replace('iframe.php?u=', ''))
         sHtmlContent = oRequest.request()
 
-        from resources.lib.packer import cPacker
-        sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
-        aResult = re.findall(sPattern,sHtmlContent)
+        sPattern = '<input  id=".+?name="([^"]+)" type="hidden" value="([^"]+)"/><input  id="challenge" name="([^"]+)" type="hidden" value="([^"]+)"/>'
 
-        if (aResult):
-            sUnpacked = cPacker().unpack(aResult[0])
-            sHtmlContent = sUnpacked
-            if (sHtmlContent):
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            postdata = aResult[1][0][0] + '=' + aResult[1][0][1] + '&' + aResult[1][0][2] + '=' + aResult[1][0][3]
+            
+            oRequest = cRequestHandler(self.__sUrl)
+            oRequest.setRequestType(1)
+            oRequest.addHeaderEntry('User-Agent', UA)
+            oRequest.addHeaderEntry('Referer', self.__sUrl)
+            oRequest.addParametersLine(postdata)
 
-                #window.location.replace(\'//rutube.ru/play/embed/10622163?p=gaY1LJ7uN2y6xhfO2mUCoA\');
+            sHtmlContent = oRequest.request()
+        
+            sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
+            aResult = re.findall(sPattern,sHtmlContent)
 
-                sPattern = "replace\(.*'(.+?)'"
-                aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult):
+                sUnpacked = cPacker().unpack(aResult[0])
+                sHtmlContent = sUnpacked
+                if (sHtmlContent):
+                    sPattern = "replace\(.*'(.+?)'"
+                    aResult = oParser.parse(sHtmlContent, sPattern)
 
-                if (aResult[0] == True):
+                    if (aResult[0] == True):
+                        from resources.lib.gui.hoster import cHosterGui
 
-                    from resources.lib.gui.hoster import cHosterGui
+                        sHosterUrl = aResult[1][0]
 
-                    sHosterUrl = aResult[1][0]
+                        if not sHosterUrl.startswith('http'):
+                            sHosterUrl = 'http:%s' % sHosterUrl
 
-                    if not sHosterUrl.startswith('http'):
-                        sHosterUrl = 'http:%s' % sHosterUrl
+                        sHosterUrl = sHosterUrl.replace('\\', '')
 
-                    sHosterUrl = sHosterUrl.replace('\\', '')
+                        oHoster = cHosterGui().checkHoster(sHosterUrl)
+                        oHoster.setUrl(sHosterUrl)
+                        api_call = oHoster.getMediaLink()
 
-                    oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    oHoster.setUrl(sHosterUrl)
-                    api_call = oHoster.getMediaLink()
-
-                    if (api_call[0] == True):
-                        return True, api_call[1]
+                        if (api_call[0] == True):
+                            return True, api_call[1]
 
 
-        return False, False
+                        return False, False
