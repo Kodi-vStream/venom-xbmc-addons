@@ -7,6 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, addon
+import re
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
 sColor = addon().getSetting("deco_color")
@@ -304,6 +305,10 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     datacode = oInputParameterHandler.getValue('datacode')
+
+    if not sUrl[:11] == URL_MAIN[:11]:
+        sUrl = re.sub(sUrl[:11],URL_MAIN[:11],sUrl)
+
 
     # import urllib2
 
