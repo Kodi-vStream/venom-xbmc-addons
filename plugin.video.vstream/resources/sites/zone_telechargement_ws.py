@@ -18,7 +18,7 @@ SITE_IDENTIFIER = 'zone_telechargement_ws'
 SITE_NAME = '[COLOR violet]Zone-Telechargement[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
-URL_HOST = 'http://www.annuaire-telechargement.com/'
+URL_HOST = 'https://www.zone-telechargement.net/'
 
 def GetURL_MAIN():
     ADDON = addon()
