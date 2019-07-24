@@ -13,12 +13,12 @@ import re
 SITE_IDENTIFIER = 'filmstub_stream'
 SITE_NAME = 'Filmstub'
 SITE_DESC = 'Films, Séries & Mangas en streaming'
-URL_MAIN = 'https://www.filmstub.cc/'
+URL_MAIN = 'https://www.filmstub.co/'
 
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN + 'films-streaming/', 'showMovies')
 MOVIE_GENRES = ('http://film', 'showGenres')
-MOVIE_LIST = (True, 'showAlpha')
+#MOVIE_LIST = (True, 'showAlpha') hs pour le moment
 
 SERIE_SERIES = (URL_MAIN + 'series-streaming/', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'series-streaming/', 'showMovies')
@@ -47,9 +47,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films & Séries (Liste)', 'az.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
+    # oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films & Séries (Liste)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
@@ -185,11 +185,10 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-
     if 'letters' in sUrl:
         sPattern = '<a href="([^"]+)" class="MvTbImg".+?<noscript><img src="([^"]+)" alt=.+?(?:|class="TpTv BgA">([^<]+)<.+?)strong>([^<]+)<.+?</td><td>([^<]+)<'
     else:
-        sPattern = 'class="TPost C"> *<a href="([^"]+)".+?data-lazy-src="([^"]+)".+?class="Title">([^<]+)<.+?<span class="Year">([^<]+)<\/span>'
+        sPattern = 'class="TPost C"> *<a href="([^"]+)".+?src="([^"]+)".+?class="Title">([^<]+)<.+?<span class="Year">([^<]+)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
