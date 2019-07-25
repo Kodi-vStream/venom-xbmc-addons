@@ -336,7 +336,7 @@ def showLinks():
     if 'episode' in sUrl:
         sPattern = 'data-tplayernv=".+?"><span>([^<]+)<\/span><span>([^<]+)<\/span>'
     else:
-        sPattern = 'data-tplayernv=".+?</noscript>([^<]+)<\/span><span>([^<]+)<\/span>'
+        sPattern = 'data-tplayernv=".+?>([^<]+)<\/span><span>([^<]+)<\/span>'
 
     aResult1 = re.findall(sPattern, sHtmlContent)
 
