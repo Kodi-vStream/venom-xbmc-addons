@@ -47,9 +47,10 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
-    # oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films & Séries (Liste)', 'az.png', oOutputParameterHandler)
+#  hs pour le moment
+#     oOutputParameterHandler = cOutputParameterHandler()
+#     oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
+#     oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films & Séries (Liste)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
@@ -185,8 +186,8 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    if 'letters' in sUrl:
-        sPattern = '<a href="([^"]+)" class="MvTbImg".+?<noscript><img src="([^"]+)" alt=.+?(?:|class="TpTv BgA">([^<]+)<.+?)strong>([^<]+)<.+?</td><td>([^<]+)<'
+    if 'letters' in sUrl or sSearch :
+        sPattern = '<a href="([^"]+)".+?<img src="([^"]+)" alt=.+?(?:|class="TpTv BgA">([^<]+)<.+?)"Title">([^<]+).+?>.+?<span class="Year">([^<]+)<'
     else:
         sPattern = 'class="TPost C"> *<a href="([^"]+)".+?src="([^"]+)".+?class="Title">([^<]+)<.+?<span class="Year">([^<]+)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -199,7 +200,7 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            if 'letters' in sUrl:
+            if 'letters' in sUrl or sSearch :
                 sUrl2 = aEntry[0]
                 sThumb = re.sub('/w\d+', '/w342', aEntry[1])
                 sTitle = aEntry[3]
@@ -227,7 +228,7 @@ def showMovies(sSearch = ''):
 
             if 'serie' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-            elif 'letters' in sUrl and 'Serie' in aEntry[2]:
+            elif 'Serie' in aEntry[2]:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
@@ -327,7 +328,7 @@ def showLinks():
     except:
         pass
 
-    sHtmlContent = oParser.abParse(sHtmlContent, 'TPost Sing', '<span class="btnsplyr">')#film serie
+    sHtmlContent = oParser.abParse(sHtmlContent, 'TPost Single', '<span class="btnsplyr">')#film serie
     sHtmlContent = re.sub(' SERVEUR <strong>[0-9]</strong>', ' SERVEUR', sHtmlContent)#Liste
     #sHtmlContent = re.sub('<img class="imgfav" *src="https://www.google.com/s2/favicons\?domain=.+?">', '', sHtmlContent)#film
     sHtmlContent = sHtmlContent.replace('&quot;', '"').replace('#038;', '').replace('&amp;', '&')
@@ -336,7 +337,7 @@ def showLinks():
     if 'episode' in sUrl:
         sPattern = 'data-tplayernv=".+?"><span>([^<]+)<\/span><span>([^<]+)<\/span>'
     else:
-        sPattern = 'data-tplayernv=".+?>([^<]+)<\/span><span>([^<]+)<\/span>'
+        sPattern = 'data-tplayernv=".+?src="[^">]+"> ([^<]+)<\/span>'
 
     aResult1 = re.findall(sPattern, sHtmlContent)
 
@@ -344,8 +345,7 @@ def showLinks():
     sPattern1 = 'src="(https:\/\/www.filmstub.+?)"'
     aResult2 = re.findall(sPattern1, sHtmlContent)
 
-    aResult = []
-    aResult = zip(aResult2, [x[1] + ' ' + x[0] for x in aResult1])
+    aResult = zip(aResult2, [x for x in aResult1])
     if (aResult):
         for aEntry in aResult:
 
