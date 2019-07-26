@@ -3,11 +3,10 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-
 from resources.lib.aadecode import AADecoder
 import re
-
 from resources.lib.comaddon import VSlog
+import base64
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.'
 
@@ -54,7 +53,6 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         
-        #VSlog(self.__sUrl)
         url = self.__sUrl
         
         #url = self.__sUrl.replace('embed.mystream.to','mstream.cloud')
@@ -63,42 +61,110 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(url)
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-        oRequest.addHeaderEntry('Accept-Encoding', 'identity')
         sHtmlContent = oRequest.request()
 
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
-        
+
         oParser = cParser()
         
         api_call = False
-        sPattern =  '<meta name="og:image" content="(.+?.jpg)">'
-
+        a = ''
+        b = ''
+        c = ''
+        urlcoded = ''
+        
+        sPattern =  '(?:[>;]\s*)(ﾟωﾟ.+?\(\'_\'\);)'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-    	    api_call = aResult[1][0].replace('img/','').replace('jpg','mp4')
+        if aResult[0]:
+            for i in aResult[1]:
+                decoded = AADecoder(i).decode()
+                
+                r = re.search("atob\(\'([^']+)\'\)", decoded, re.DOTALL | re.UNICODE)
+                if r:
+                    urlcoded = r.group(1)
+
+                    break
+                    
+        
+        reducesHtmlContent = oParser.abParse(sHtmlContent, '<z9></z9><script>','{if(document')
+
+        sPattern =  '(\w+)'
+        aResult = oParser.parse(reducesHtmlContent, sPattern)
+        if aResult[0]:
+            mlist = sorted(aResult[1], key=len)
+            mlist = mlist[-2:]
+            a = mlist[0]
+            b = mlist[1]
 
             
-        # sPattern =  '(?:[>;]\s*)(ﾟωﾟ.+?\(\'_\'\);)'
-        # aResult = oParser.parse(sHtmlContent, sPattern)
-        # if aResult[0]:
-            # for i in aResult[1]:
-                # decoded = AADecoder(i).decode()
-                
-                # #VSlog(decoded)
-                
-                # r = re.search("\('src', '([^']+)'\);", decoded, re.DOTALL | re.UNICODE)
-                # if r:
-                    # api_call = r.group(1)
-                    # break
-        
-        # #VSlog(api_call)
-        
-        # if 'qziqcysljv' in api_call:
-            # api_call = ''
+        sPattern =  "=\['getAttribute','([^']+)'\];"
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            c = aResult[1][0]
+
+        api_call = decode(urlcoded,a,b,c)
 
         if (api_call):
             return True, api_call
-
+            
         return False, False
+
+def decode(urlcoded,a,b,c):
+    TableauTest = {}
+    key = ''
+
+    l = a
+    n = "0123456789"
+    h = b
+    j = 0
+
+    while j < len(l) :
+        k = 0
+        while k < len(n):
+            TableauTest[l[j] + n[k]] = h[int(j + k)]
+
+            k+=1
+
+        j+=1
+
+    hash = c
+    i = 0
+    while i < len(hash):
+        key = key + TableauTest[hash[i] + hash[i + 1]]
+        i+= 2
+
+
+    chain = base64.b64decode(urlcoded)
+
+    secretKey = {}
+    y = 0
+    temp = ''
+    url = ""
+
+    x = 0
+    while x < 256:
+        secretKey[x] = x
+        x += 1
+
+    x = 0
+    while x < 256:
+        y = (y + secretKey[x] + ord(key[x % len(key)])) % 256
+        temp = secretKey[x]
+        secretKey[x] = secretKey[y]
+        secretKey[y] = temp
+        x += 1
+
+    x = 0
+    y = 0
+    i = 0
+    while i < len(chain):
+        x += 1 % 256
+        y = (y + secretKey[x]) % 256
+        temp = secretKey[x]
+        secretKey[x] = secretKey[y]
+        secretKey[y] = temp
+
+        url = url + (chr(ord(chain[i]) ^ secretKey[(secretKey[x] + secretKey[y]) % 256]))
+
+        i += 1
+        
+    return url
