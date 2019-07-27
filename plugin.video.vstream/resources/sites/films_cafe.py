@@ -17,11 +17,12 @@ SITE_DESC = 'Site de streaming en HD'
 URL_MAIN = 'https://ww1.films.cafe/'
 
 MOVIE_NEWS = (URL_MAIN + 'tous-les-films/?sort=date', 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'tous-les-films/', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'tous-les-films/', 'load')
 MOVIE_VIEWS = (URL_MAIN + 'tous-les-films/?sort=views', 'showMovies')
 MOVIE_COMMENTS = (URL_MAIN + 'tous-les-films/?sort=comments', 'showMovies')
 MOVIE_NOTES = (URL_MAIN + 'tous-les-films/?sort=imdb', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
+MOVIE_ANNEES = (True, 'showYears')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
@@ -49,9 +50,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
+    # oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
@@ -68,6 +69,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -108,6 +113,29 @@ def showMovieGenres():
     liste.append( ['Romance', URL_MAIN + 'category/romance/'] )
     liste.append( ['Thriller', URL_MAIN + 'category/thriller/'] )
     liste.append( ['Western', URL_MAIN + 'category/western/'] )
+
+    for sTitle, sUrl in liste:
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+def showYears():
+    oGui = cGui()
+    sUrl = URL_MAIN + 'tous-les-films/?release-year='
+
+    liste = []
+    liste.append( ['2018', sUrl + '2018'] )
+    liste.append( ['2017', sUrl + '2017'] )
+    liste.append( ['2016', sUrl + '2016'] )
+    liste.append( ['2015', sUrl + '2015'] )
+    liste.append( ['2014', sUrl + '2014'] )
+    liste.append( ['2013', sUrl + '2013'] )
+    liste.append( ['2012', sUrl + '2012'] )
+    liste.append( ['2011', sUrl + '2011'] )
+    liste.append( ['<2010', sUrl + '2010'] )
 
     for sTitle, sUrl in liste:
 

@@ -18,7 +18,7 @@ SITE_IDENTIFIER = 'cinemay_com'
 SITE_NAME = 'Cinemay'
 SITE_DESC = 'Films & Séries en streaming'
 
-URL_MAIN = 'https://cinemay.me/'
+URL_MAIN = 'https://cinemay.ch/'
 
 MOVIE_NEWS = (URL_MAIN + 'film-vf-streaming/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'film-vf-streaming/', 'showMovies')

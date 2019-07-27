@@ -341,7 +341,9 @@ class cHosterGui:
             return self.getHoster('freshstream')
         if ('jetload' in sHostName):
             return self.getHoster('jetload')
-
+        if ('french-vid' in sHostName):
+            return self.getHoster('frenchvid')
+        
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
             return self.getHoster('onefichier')

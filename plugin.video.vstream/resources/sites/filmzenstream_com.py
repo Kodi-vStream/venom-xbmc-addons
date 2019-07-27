@@ -60,26 +60,25 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action', URL_MAIN + 'category/action/'] )
-    liste.append( ['Animation', URL_MAIN + 'category/animation/'] )
-    liste.append( ['Aventure', URL_MAIN + 'category/aventure/'] )
-    liste.append( ['Biographie', URL_MAIN + 'category/biographie/'] )
-    liste.append( ['Comédie', URL_MAIN + 'category/comedie/'] )
-    liste.append( ['Crime', URL_MAIN + 'category/crime/'] )
-    liste.append( ['Drame', URL_MAIN + 'category/drame/'] )
-    liste.append( ['Familial', URL_MAIN + 'category/familial/'] )
-    liste.append( ['Fantastique', URL_MAIN + 'category/fantastique/'] )
-    liste.append( ['Guerre', URL_MAIN + 'category/guerre/'] )
-    liste.append( ['Histoire', URL_MAIN + 'category/histoire/'] )
-    liste.append( ['Horreur', URL_MAIN + 'category/horreur/'] )
-    liste.append( ['Musical', URL_MAIN + 'category/musical/'] )
-    liste.append( ['Mystère', URL_MAIN + 'category/mystere/'] )
-    liste.append( ['Non classé', URL_MAIN + 'category/non-classe/'] )
-    liste.append( ['Romance', URL_MAIN + 'category/romance/'] )
-    liste.append( ['Science-fiction', URL_MAIN + 'category/science-fiction/'] )
-    liste.append( ['Sport', URL_MAIN + 'category/sport/'] )
-    liste.append( ['Thriller', URL_MAIN + 'category/thriller/'] )
-    liste.append( ['War', URL_MAIN + 'category/war/'] )
+    liste.append( ['Action', URL_MAIN + 'category/action-films/'] )
+    liste.append( ['Animation', URL_MAIN + 'category/animation-films/'] )
+    liste.append( ['Aventure', URL_MAIN + 'category/aventure-films/'] )
+    liste.append( ['Biographie', URL_MAIN + 'category/biographie-films/'] )
+    liste.append( ['Comédie', URL_MAIN + 'category/comedie-films/'] )
+    liste.append( ['Crime', URL_MAIN + 'category/crime-films/'] )
+    liste.append( ['Drame', URL_MAIN + 'category/drame-films/'] )
+    liste.append( ['Familial', URL_MAIN + 'category/familial-films/'] )
+    liste.append( ['Fantastique', URL_MAIN + 'category/fantastique-films/'] )
+    liste.append( ['Guerre', URL_MAIN + 'category/guerre-films/'] )
+    liste.append( ['Histoire', URL_MAIN + 'category/histoire-films/'] )
+    liste.append( ['Horreur', URL_MAIN + 'category/horreur-films/'] )
+    liste.append( ['Musical', URL_MAIN + 'category/musical-films/'] )
+    liste.append( ['Mystère', URL_MAIN + 'category/mystere-films/'] )
+    liste.append( ['Romance', URL_MAIN + 'category/romance-films/'] )
+    liste.append( ['Science-fiction', URL_MAIN + 'category/science-fiction/'] ) # Pas de suffixe -films
+    liste.append( ['Sport', URL_MAIN + 'category/sport-films/'] )
+    liste.append( ['Thriller', URL_MAIN + 'category/thriller-films/'] )
+    liste.append( ['War', URL_MAIN + 'category/war-films/'] )
 
     for sTitle, sUrl in liste:
 
@@ -127,7 +126,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
     
     oParser = cParser()
-    sPattern = '<article id=".+?<a href="([^"]+)" title="([^"]+?)".+?<img.+?rc="([^"]+?)"'
+    sPattern = '<article id=".+?<a href="([^"]+)" title="([^"]+)".+?data-src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -167,16 +166,15 @@ def showMovies(sSearch = ''):
             if (sNextPage != False):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a href="([^"]+?)">Page suivante'
+    sPattern = '<a href="([^"]+?)" >Page suivante'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         return  aResult[1][0]
 

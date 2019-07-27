@@ -341,7 +341,7 @@ def seriesHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            if '/player' in aEntry[0]:
+            if '/player' in aEntry[0] or 'full-stream.' in aEntry[0] :
                 sTitle = sMovieTitle + aEntry[1] + '(Redirection)'
                 sUrl1 = aEntry[0].replace('player.full-stream.co/player?id=', 'full-stream.co/player.php?id=')
                 oOutputParameterHandler = cOutputParameterHandler()

@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'serie_streaminghd'
 SITE_NAME = 'Série-StreamingHD'
 SITE_DESC = 'Séries en streaming vf, vostfr'
 
-URL_MAIN = 'http://www.serie-streaminghd.com/'
+URL_MAIN = 'https://www.serie-streaminghd.org/'
 
 SERIE_NEWS = (URL_MAIN, 'showMovies')
 SERIE_SERIES = (URL_MAIN, 'showMovies')
@@ -64,7 +64,7 @@ def showSearch():
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-        sUrl = sSearch.replace(' ','+')
+        sUrl = sSearch.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -93,7 +93,7 @@ def showMovies(sSearch = ''):
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
 
-            sTitle =  aEntry[1].replace(' - Saison', ' Saison')
+            sTitle =  aEntry[1]#.replace(' - Saison', ' Saison')
             siteUrl = aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -109,7 +109,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()

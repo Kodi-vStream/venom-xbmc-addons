@@ -353,7 +353,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern='data-src="([^"]+)" target="filmPlayer".+?span class="([^"]+)"><\/span>.+?<span style="width.+?" class="([^"]+)"><\/span>'
+    sPattern='data-src="([^"]+)" target="filmPlayer".+?span class="([^"]+)"><\/span><span style="width.+?" class="([^"]+)"><\/span>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 

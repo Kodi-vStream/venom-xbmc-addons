@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'french_stream_com'
 SITE_NAME = 'French-stream'
 SITE_DESC = 'Films, Séries & Mangas en streaming'
 
-URL_MAIN = 'https://www5.french-streaming.com/'
+URL_MAIN = 'https://www6.french-streaming.com/'
 
 URL_SEARCH_MOVIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=9&story=', 'showMovies')
 URL_SEARCH_SERIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=10&story=', 'showSeries')
@@ -117,10 +117,9 @@ def ResolveUrl(url):
         id = re.search(pat, url, re.DOTALL).group(1)
         hash = re.search(pat, url, re.DOTALL).group(2)
         hash = base64.b64decode(base64.b64decode(hash))
+ 
 
-        if id == '1':
-            url2 = 'http://cloudvid.co/embed-'
-        elif id == '2':
+        if id == '2':
             url2 = 'https://oload.stream/embed/'
         elif id == '3':
             url2 = 'https://vidlox.me/embed-'
