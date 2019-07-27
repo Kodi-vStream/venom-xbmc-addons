@@ -4,6 +4,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.aadecode import AADecoder
+from resources.lib.jjdecode import JJDecoder
 import re
 from resources.lib.comaddon import VSlog
 import base64
@@ -94,19 +95,46 @@ class cHoster(iHoster):
             mlist = mlist[-2:]
             a = mlist[0]
             b = mlist[1]
-
+            #VSlog('a' + str(a))
+            #VSlog('b' + str(b))
             
-        sPattern =  "=\['getAttribute','([^']+)'\];"
+        sPattern =  "=\['getAttribute','*([^']+)'*\]"
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
-            c = aResult[1][0]
+            encodedC = aResult[1][0].replace('window.','')
 
-        api_call = decode(urlcoded,a,b,c)
+            c = Cdecode(sHtmlContent,encodedC)
+            if c:
+                #VSlog('c' + str(c))
+                api_call = decode(urlcoded,a,b,c)
 
+ 
         if (api_call):
             return True, api_call
             
         return False, False
+        
+def Cdecode(sHtmlContent,encodedC):
+    oParser = cParser()
+    sPattern =  '<([0-9a-zA-Z]+)><script>([^<]+)<\/script>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    z = []
+    y = []
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+            z.append(JJDecoder(aEntry[1]).decode())
+
+        for x in z:
+            r1 = re.search("atob\(\'([^']+)\'\)", x, re.DOTALL | re.UNICODE)
+            if r1:
+                y.append(base64.b64decode(r1.group(1)))
+                
+        for w in y:
+
+            r2 = re.search(encodedC + "='([^']+)'", w)
+            if r2:
+                return r2.group(1)
 
 def decode(urlcoded,a,b,c):
     TableauTest = {}
