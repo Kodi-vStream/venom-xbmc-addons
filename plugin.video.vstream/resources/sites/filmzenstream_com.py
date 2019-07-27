@@ -126,7 +126,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
     
     oParser = cParser()
-    sPattern = '<article id=".+?<a href="([^"]+)" title="([^"]+?)".+?<img.+?rc="([^"]+?)"'
+    sPattern = '<article id=".+?<a href="([^"]+)" title="([^"]+)".+?data-src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -175,7 +175,6 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<a href="([^"]+?)" >Page suivante'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         return  aResult[1][0]
 
