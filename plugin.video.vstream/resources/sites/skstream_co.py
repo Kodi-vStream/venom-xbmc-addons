@@ -7,14 +7,13 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-#from resources.lib.util import cUtil
 from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'skstream_co'
 SITE_NAME = 'Skstream'
 SITE_DESC = 'Films & Séries'
 
-URL_MAIN = 'https://skstream.tv/'
+URL_MAIN = 'https://www.skstream.best/'
 
 MOVIE_NEWS = (URL_MAIN + 'films', 'showMovies')
 MOVIE_MOVIE = ('http://films', 'showMenuMovies')
@@ -202,16 +201,16 @@ def showMovies(sSearch = ''):
 
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
-        sPattern = 'href="([^"]+)" class="hvr-shutter-out-horizontal"><img src="([^"]+)"[^<>]+ alt="([^"]+)"'
+        sPattern = 'href="([^"]+)" class="hvr-shutter-out-horizontal".+?<img src="([^"]+)"[^<>]+ alt="([^"]+)"'
 
     elif '/film' in sUrl:
-        sPattern = 'href="([^"]+)" class="hvr-shutter-out-horizontal"><img src="([^"]+)" title="([^"]+)".+?class="qual"><span>([^<]+)<.+?class="lang_img_poster".+?alt="([^"]+)"'
+        sPattern = 'href="([^"]+)" class="hvr-shutter-out-horizontal".+?<img src="([^"]+)" title="([^"]+)".+?class="qual".+?<span>([^<]+)<.+?class="lang_img_poster".+?alt="([^"]+)"'
     else:
-        sPattern = 'href="([^"]+)" class="hvr-shutter-out-horizontal"><img src="([^"]+)" title="([^"]+)"'
+        sPattern = 'href="([^"]+)" class="hvr-shutter-out-horizontal".+?<img src="([^"]+)" title="([^"]+)"'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
+  
     aResult = oParser.parse(sHtmlContent,sPattern)
 
     if (aResult[0] == False):
@@ -314,7 +313,7 @@ def showEpisodes():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'href="([^"]+)" class="epi_box"><span>([^<]+)<'
+    sPattern = 'href="([^"]+)" class="epi_box".+?<span>([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
