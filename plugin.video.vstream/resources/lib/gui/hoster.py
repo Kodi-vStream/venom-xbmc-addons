@@ -341,7 +341,7 @@ class cHosterGui:
             return self.getHoster('freshstream')
         if ('jetload' in sHostName):
             return self.getHoster('jetload')
-        if ('french-vid' in sHostName):
+        if ('french-vid' in sHostName or 'fembed.' in sHostName):
             return self.getHoster('frenchvid')
         
         #Lien telechargeable a convertir en stream
@@ -355,8 +355,6 @@ class cHosterGui:
             return self.getHoster('uploaded')
 
         if ('kaydo.ws' in sHostName):
-            return self.getHoster('lien_direct')
-        if ('fembed' in sHostName):
             return self.getHoster('lien_direct')
 
         #Si aucun hebergeur connu on teste les liens directs
