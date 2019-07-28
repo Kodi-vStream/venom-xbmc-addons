@@ -330,6 +330,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
+    sHtmlContent = re.sub(" rel='nofollow'","",sHtmlContent)#next genre
     sPattern = "<a href='([^']+)'>suiv.+?<\/a>"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
