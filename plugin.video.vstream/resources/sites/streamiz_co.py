@@ -6,14 +6,14 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress#, VSlog
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'streamiz_co'
 SITE_NAME = 'Streamiz'
 SITE_DESC = 'Tous vos films en streaming gratuitement'
 
-URL_MAIN = 'https://streaming.streamiz.co/'
-URL_API = 'https://api.streamiz.co/movies/'
+URL_MAIN = 'https://streaming.streamiz.ws/'
+URL_API = URL_MAIN + '/xhr/get-player/'
 
 MOVIE_NEWS = (URL_MAIN + 'recemment-ajoute/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
@@ -21,8 +21,8 @@ MOVIE_VIEWS = (URL_MAIN + 'les-plus-vus/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
 
-URL_SEARCH = (URL_API + 'search/?query=', 'showMovies')
-URL_SEARCH_MOVIES = (URL_API + 'search/?query=', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'xhr/search?q=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + 'xhr/search?q=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -63,7 +63,7 @@ def showMoviesSearch():
 def showGenres():
     oGui = cGui()
     oParser = cParser()
-    oRequestHandler = cRequestHandler(URL_MAIN + 'accueil-site/')
+    oRequestHandler = cRequestHandler(URL_MAIN + 'accueil/')
 
     sHtmlContent = oRequestHandler.request()
     sStart = '<h3 class="nav-title nop">Film Streaming par Genres</h3>'
@@ -91,7 +91,7 @@ def showYears():
     # from itertools import chain
     # generator = chain([1998, 1999], xrange(2000, 2019))#desordre
     # for i in reversed(list(generator)):
-    for i in reversed(range(2000, 2019)):
+    for i in reversed(range(2000, 2020)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', ('%s%s%s%s') % (URL_MAIN, 'annee/', Year, '/'))
@@ -106,8 +106,7 @@ def showMovies(sSearch = ''):
     oInputParameterHandler = cInputParameterHandler()
 
     if sSearch:
-        idx = sSearch.rfind("?query=") + 8
-        sUrl = sSearch[:idx] + "".join([i for i in sSearch[idx:] if i.isalpha() or i in [" ", "/"]]).replace(" ", "+")
+        sUrl = sSearch.replace(" ", "+")
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -118,7 +117,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = sHtmlContent.replace("\n", "")
 
     if sSearch:
-        sPattern = 'post_title":[\'"]([^<>\'"]+)[\'"],"post_name":[\'"]([^<>\'"]+)[\'"],"poster_url":[\'"]([^<>\'"]+)[\'"]'
+        sPattern = 'post_title":[\'"]([^<>\'"]+)[\'"],"post_slug":[\'"]([^<>\'"]+)[\'"],.+?"post_poster":[\'"]([^<>\'"]+)[\'"]'
     else:
         sPattern = '<div class=movie_last> *<a href=([^ ]+).+?src=([^ ]+).+?<div class=title>([^<]+)<\/div>.+?<i class=quality>([^<]+)</i>.+?class="nop synopsis">([^<]+)</p>'
 
@@ -177,6 +176,7 @@ def __checkForNextPage(sHtmlContent):
     return False
 
 def showHosters():
+    import json
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -192,37 +192,35 @@ def showHosters():
 
     if (Fresult[0] == True):
         sID = Fresult[1][0]
-        oRequestHandler = cRequestHandler(URL_API + sID + '/embeds')
+        oRequestHandler = cRequestHandler(URL_API + sID)
         sHtmlContent = oRequestHandler.request()
-
         if sHtmlContent:
-            sHtmlContent = sHtmlContent.replace('\\', '')
-            sHtmlContent = sHtmlContent.strip("['']")
-            sHtmlContent = sHtmlContent.replace('"', '')
-            sHtmlContent = sHtmlContent.split(',')
+            page = json.loads(sHtmlContent)
+            page = page["data"]
+            if page:
+                for x in page:
+                    #sTitle = x.keys()[0]
+                    sHosterUrl = x.values()[0]
 
-            for aEntry in sHtmlContent:
-                sHosterUrl = aEntry
+                    if 'playvid' in sHosterUrl:
+                        sHosterUrl = GetPlayvid(sHosterUrl)
 
-                if 'playvid' in sHosterUrl:
-                    sHosterUrl = GetPlayvid(sHosterUrl)
+                    if 'duckload' in sHosterUrl: #pas trouvé de liens ok
+                        sHosterUrl = 'https://' + sHosterUrl.split('/')[2] + '/hls/'+sHosterUrl.split('id=')[1] + '/' + sHosterUrl.split('id=')[1] + '.playlist.m3u8'
 
-                if 'duckload' in sHosterUrl:
-                    sHosterUrl = 'https://' + sHosterUrl.split('/')[2] + '/hls/'+sHosterUrl.split('id=')[1] + '/' + sHosterUrl.split('id=')[1] + '.playlist.m3u8'
+                    if 'make_mp4' in sHosterUrl:
+                        sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, "GoogleVideo")
+                        oOutputParameterHandler = cOutputParameterHandler()
+                        oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
+                        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                        oOutputParameterHandler.addParameter('sThumb', sThumb)
+                        oGui.addMovie(SITE_IDENTIFIER, 'showGoogleLink', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
-                if 'make_mp4' in sHosterUrl:
-                    sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, "GoogleVideo")
-                    oOutputParameterHandler = cOutputParameterHandler()
-                    oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
-                    oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                    oOutputParameterHandler.addParameter('sThumb', sThumb)
-                    oGui.addMovie(SITE_IDENTIFIER, 'showGoogleLink', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-
-                oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
-                    oHoster.setDisplayName(sMovieTitle)
-                    oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                    oHoster = cHosterGui().checkHoster(sHosterUrl)
+                    if (oHoster != False):
+                        oHoster.setDisplayName(sMovieTitle)
+                        oHoster.setFileName(sMovieTitle)
+                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
@@ -230,11 +228,10 @@ def GetPlayvid(url):
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.7')
     sHtmlContent = oRequestHandler.request()
-
+    
     oParser = cParser()
     sPattern = 'id="iframe" src="([^"]+)"'
     result = oParser.parse(sHtmlContent, sPattern)
-
     if result:
         return result[1][0]
 
@@ -263,4 +260,5 @@ def showGoogleLink():
                 oHoster.setDisplayName(sMovieTitle + ' ' + aEntry[1])
                 oHoster.setFileName(sMovieTitle + ' ' + aEntry[1])
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                
     oGui.setEndOfDirectory()
