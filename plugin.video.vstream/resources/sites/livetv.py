@@ -19,7 +19,7 @@ SITE_NAME = 'Live TV (beta)'
 SITE_DESC = 'Site pour regarder du sport en direct gratuitement'
 
 URL_MAIN = 'http://livetv.sx'
-URL_MAIN2 = 'http://cdn.livetvcdn.net'
+URL_MAIN2 = '//cdn.livetvcdn.club'
 URL_SEARCH = (URL_MAIN + '/frx/fanclubs/?q=', 'showMovies4')
 FUNCTION_SEARCH = 'showMovies4'
 
@@ -147,7 +147,7 @@ def showMovies2(sSearch = ''): #affiche les matchs en direct depuis la section s
     sHtmlContent = oRequestHandler.request()
     #VSlog(sHtmlContent)
 
-    sPattern = '<a class="live" href="([^>]+)">([^>]+)</a>\s*(?:<br><img src="//cdn.livetvcdn.net/img/live.gif"><br>|<br>)\s*<span class="evdesc">([^>]+)\s*<br>\s*([^>]+)</span>'
+    sPattern = '<a class="live" href="([^>]+)">([^>]+)</a>\s*(?:<br><img src="'+URL_MAIN2+'/img/live.gif"><br>|<br>)\s*<span class="evdesc">([^>]+)\s*<br>\s*([^>]+)</span>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -214,7 +214,7 @@ def showMovies3(sSearch = ''): #affiche les videos disponible du live
     sHtmlContent = oRequestHandler.request()
     sMovieTitle2 = oInputParameterHandler.getValue('sMovieTitle2')
 
-    sPattern = '<a title=".+?" *href="//cdn.livetvcdn.net(.+?)"'
+    sPattern = '<a title=".+?" *href="'+ URL_MAIN2 + '(.+?)"'
     oParser = cParser()
 
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -241,7 +241,7 @@ def showMovies3(sSearch = ''): #affiche les videos disponible du live
             sDesc = ''
 
             sTitle = ('%s') % (sMovieTitle2)
-            sUrl4 = URL_MAIN2 + sUrl4
+            sUrl4 = "http:"+URL_MAIN2 + sUrl4
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl4', sUrl4)
@@ -294,7 +294,7 @@ def showHosters(sSearch = ''): #affiche les videos disponible du live
                 sHosterUrl = aResult[0] + '|User-Agent=' + UA + '&referer=' + Referer
                 #VSlog(sHosterUrl)
 
-        if 'sport7.pw' or 'vip7stream' in url:#Terminé
+        if 'sport7.pw' in url or 'vip7stream' in url:#Terminé
             oRequestHandler = cRequestHandler(url)
             sHtmlContent2 = oRequestHandler.request()
             sPattern2 = 'videoLink = \'(.+?)\''
@@ -713,11 +713,12 @@ def showHosters(sSearch = ''): #affiche les videos disponible du live
             if aResult[0]:
                 sHosterUrl = aResult[0]
 
-        oHoster = cHosterGui().checkHoster("m3u8")
-        if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle2) #nom affiche
-                oHoster.setFileName(sMovieTitle2) #idem
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+        if sHosterUrl:
+            oHoster = cHosterGui().checkHoster("m3u8")
+            if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle2) #nom affiche
+                    oHoster.setFileName(sMovieTitle2) #idem
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
         oGui.setEndOfDirectory()
 
