@@ -172,11 +172,12 @@ class cGuiElement:
         #convertion unicode ne fonctionne pas avec les accents
 
         try:
-            sTitle = sTitle.decode("utf-8")
             #traitement du titre pour les caracteres speciaux
             sTitle = sTitle.replace('&#8212;', '-').replace('&#8217;', '\'').replace('&#8230;', '...').replace('&#8242;', '\'').replace('&lsquo;', '\'')
-            #traitement du titre pour retirer le - quand c'est une Saison
-            sTitle = sTitle.replace(' - Saison', ' Saison')
+            #traitement du titre pour retirer le - quand c'est une Saison. Tiret, tiret moyen et cadratin
+            sTitle = sTitle.replace(' - Saison', ' Saison').replace(' – Saison', ' Saison').replace(' — Saison', ' Saison')
+
+            sTitle = sTitle.decode("utf-8")
         except:
             pass
 
