@@ -147,7 +147,7 @@ def showMovies2(sSearch = ''): #affiche les matchs en direct depuis la section s
     sHtmlContent = oRequestHandler.request()
     #VSlog(sHtmlContent)
 
-    sPattern = '<a class="live" href="([^>]+)">([^>]+)</a>\s*(?:<br><img src="'+URL_MAIN2+'/img/live.gif"><br>|<br>)\s*<span class="evdesc">([^>]+)\s*<br>\s*([^>]+)</span>'
+    sPattern = '<a class="live" href="([^>]+)">([^>]+)</a>\s*(?:<br><img src="' + URL_MAIN2 + '/img/live.gif"><br>|<br>)\s*<span class="evdesc">([^>]+)\s*<br>\s*([^>]+)</span>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -214,7 +214,7 @@ def showMovies3(sSearch = ''): #affiche les videos disponible du live
     sHtmlContent = oRequestHandler.request()
     sMovieTitle2 = oInputParameterHandler.getValue('sMovieTitle2')
 
-    sPattern = '<a title=".+?" *href="'+ URL_MAIN2 + '(.+?)"'
+    sPattern = '<a title=".+?" *href="' + URL_MAIN2 + '(.+?)"'
     oParser = cParser()
 
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -241,7 +241,7 @@ def showMovies3(sSearch = ''): #affiche les videos disponible du live
             sDesc = ''
 
             sTitle = ('%s') % (sMovieTitle2)
-            sUrl4 = "http:"+URL_MAIN2 + sUrl4
+            sUrl4 = "http:" + URL_MAIN2 + sUrl4
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl4', sUrl4)
@@ -386,7 +386,7 @@ def showHosters(sSearch = ''): #affiche les videos disponible du live
                 video_id = aResult[0]
                 #VSlog(video_id)
 
-            url1 = url.replace('/embed/', '/watch?v=').replace('?autoplay=1','')
+            url1 = url.replace('/embed/', '/watch?v=').replace('?autoplay=1', '')
 
             url2 = 'https://youtube.com/get_video_info?video_id=' + video_id + '&sts=17488&hl=fr'
 
