@@ -148,7 +148,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = SucurieBypass().GetHtml(sUrl)
 
     oParser = cParser()
-    sPattern = 'class="item"> *<a href="([^<]+)">.+?<img src="([^<>"]+?)" alt="([^"]+?)".+?<span class="calidad2">(.+?)<\/span>'
+    sPattern = 'class="item"> *<a href="([^<]+)">.+?<img[^<>]+src="([^<>"]+?)" alt="([^"]+?)".+?<span class="calidad2">(.+?)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
