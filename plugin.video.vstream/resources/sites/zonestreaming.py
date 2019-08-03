@@ -447,8 +447,10 @@ def serieHosters():
                 break
 
             sHosterUrl = aEntry
-            #pour récuperer tous les liens
-            if '&url=' in sHosterUrl:
+            #pour récuperer tous les liens 2 variantes
+            if '&url==' in sHosterUrl:
+                sHosterUrl = sHosterUrl.split('&url==')[1]
+            elif '&url=' in sHosterUrl:
                 sHosterUrl = sHosterUrl.split('&url=')[1]
 
             #pour récuperer le lien jwplayer(GoogleDrive)
