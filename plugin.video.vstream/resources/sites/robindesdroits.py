@@ -13,7 +13,7 @@ from resources.lib.multihost import cMultiup
 from resources.lib.packer import cPacker
 from resources.lib.comaddon import progress, VSlog
 
-import urllib
+import urllib, re
 
 SITE_IDENTIFIER = 'robindesdroits'
 SITE_NAME = 'Robin des Droits'
@@ -285,7 +285,7 @@ def showLink():
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     VSlog(sUrl)
-
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -296,6 +296,11 @@ def showLink():
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sHost = cUtil().removeHtmlTags(aEntry[1])
+
+            if 'replay.robindesdroits' in sUrl:
+                oRequestHandler = cRequestHandler(sUrl)
+                sHtmlContent = oRequestHandler.request()
+                sUrl = re.search('<meta http-equiv="refresh" content=".+?URL=([^"]+)">', sHtmlContent).group(1)
 
             sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
