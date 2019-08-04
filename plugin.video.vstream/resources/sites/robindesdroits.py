@@ -13,7 +13,7 @@ from resources.lib.multihost import cMultiup
 from resources.lib.packer import cPacker
 from resources.lib.comaddon import progress, VSlog
 
-import urllib
+import urllib, re
 
 SITE_IDENTIFIER = 'robindesdroits'
 SITE_NAME = 'Robin des Droits'
@@ -394,12 +394,12 @@ def showHosters():
             oRequestHandler = cRequestHandler(sUrl)
             sHtmlContent = oRequestHandler.request()
             
-    if 'clictune' in sUrl or 'mylinks' in sUrl:
-        sPattern = '<b><a href=".+?redirect\/\?url\=(.+?)\&id.+?">'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0] == True:
-            sUrl = cUtil().urlDecode(aResult[1][0])
-            sUrl = sUrl
+    #clictune / mylink / ect ... 
+    sPattern = '<b><a href=".+?redirect\/\?url\=(.+?)\&id.+?">'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0] == True:
+        sUrl = cUtil().urlDecode(aResult[1][0])
+        sUrl = sUrl
         
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent.replace('\n', ''))
