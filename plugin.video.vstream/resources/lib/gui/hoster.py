@@ -343,6 +343,8 @@ class cHosterGui:
             return self.getHoster('jetload')
         if ('french-vid' in sHostName or 'fembed.' in sHostName):
             return self.getHoster('frenchvid')
+        if ('flix555' in sHostName):
+            return self.getHoster('flix555')
         
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
