@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'film_illimit_fr'
 SITE_NAME = 'Film illimité'
 SITE_DESC = 'Films, Séries HD en streaming'
 
-URL_MAIN = 'https://official-film-illimite.ws/'
+URL_MAIN = 'https://ww3.official-film-illimite.ws/'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
@@ -165,8 +165,6 @@ def showMovies(sSearch = ''):
 
             sTitle = aEntry[2].replace(' Streaming Ultra-HD', '').replace(' Streaming Full-HD', '')
             sTitle = sTitle.replace(' en Streaming HD', '').replace(' Streaming HD', '').replace(' streaming', '').replace('HD', '')
-            #delete du tiret
-            sTitle = sTitle.replace(' - Saison', ' Saison')
             sTitle = sTitle.decode('utf8')
             sTitle = cUtil().unescape(sTitle)
             try:
@@ -204,13 +202,13 @@ def showMovies(sSearch = ''):
             if (sNextPage != False):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = 'href="([^"]+)" >Prochaine</a>'
+    sPattern = "<a class=\'current.+?href=\'([^']+)\'"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
