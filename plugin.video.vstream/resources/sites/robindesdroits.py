@@ -382,7 +382,7 @@ def showHosters():
             sHtmlContent = oRequestHandler.request()
             
     #Ensuite les sites a la con
-    if (False):
+    if (True):
         if 'AdF' in sHtmlContent:
             sUrl = AdflyDecoder(sUrl)
             if 'motheregarded' in sUrl:
