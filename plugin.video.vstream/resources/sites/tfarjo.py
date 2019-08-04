@@ -142,7 +142,7 @@ def showMovies(sSearch = ''):
         oRequest.addParametersLine('search=' + sText + '&csrf_test_name=' + sCode)
 
         sHtmlContent = oRequest.request()
-        sHtmlContent = re.sub('<h2></h2>', '<span class="Langue..."></span><span class="qalite">Qualité...</span>', sHtmlContent) #recherche pas de qualité,langue
+        sHtmlContent = re.sub('<h2></h2>', '<span class="Langue..."></span><span class="qalite">Qualité...</span>', sHtmlContent)#recherche pas de qualité,langue
 
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -154,7 +154,7 @@ def showMovies(sSearch = ''):
         #parfois pas de qualité,langue,liens >> BA
         sHtmlContent = re.sub('<span class="bientot"></span>', '<span class="nothing"></span><span class="qalite">nothing</span>', sHtmlContent)
 
-    sPattern = '<div class="image">.+?<a href="([^"]+)".+?<img src="([^"]+)".+?title="(.+?)">.+?<span class="(.+?)"></span><span class="qalite">(.+?)</span>'
+    sPattern = '<div class="image">.+?<a href="([^"]+)".+?<img src="([^"]+)".+?title="([^"]+)">.+?<span class="([^"]+)"></span><span class="qalite">([^<]+)</span>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == False):
@@ -169,7 +169,7 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            if aEntry[3] == 'nothing' and aEntry[4] == 'nothing': #pas de qualité,langue,liens >> BA
+            if aEntry[3] == 'nothing' and aEntry[4] == 'nothing':#pas de qualité,langue,liens >> BA
                 continue
 
             sUrl = aEntry[0]
@@ -195,11 +195,10 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
-
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -210,7 +209,6 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
-
 def showSeries():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -220,7 +218,7 @@ def showSeries():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<div class="image">.+?<a href="([^"]+)".+?<img src="([^"]+)".+?title="(.+?)">'
+    sPattern = '<div class="image">.+?<a href="([^"]+)".+?<img src="([^"]+)".+?title="([^"]+)">'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -273,7 +271,7 @@ def showSaisons():
     #pas encore d'épisode >> timer avant sortie
     sHtmlContent = re.sub('<kbd><span', '<kbd>nothing</span>', sHtmlContent)
 
-    sPattern = '<h3 class="panel-title"><a href=".+?">(saison *\d+)<\/a>|<div class="panel-body">.+?href="([^"]+)">.+?<\/span>(.+?)</a>'
+    sPattern = '<h3 class="panel-title"><a href=".+?">(saison *\d+)<\/a>|<div class="panel-body">.+?href="([^"]+)">.+?<\/span>([^"]+)</a>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -305,7 +303,6 @@ def showSaisons():
 
         progress_.VSclose(progress_)
 
-
     oGui.setEndOfDirectory()
 
 def showLink():
@@ -321,7 +318,7 @@ def showLink():
     cook = oRequest.GetCookies()
     sCode = getcode(sHtmlContent)
 
-    sPattern2 = "<button *class=\"players(?:(vf|vo|vostfr))\" *onclick=\"getIframe\('([^']+)'\).+?<\/span>([^<]+)<"
+    sPattern2 = "<button *class=\"players(?:(vf|vo|vostfr))\" *onclick=\"getIframe\('([^']+)'\).+?<\/span> *([^<]+)<"
     aResult = oParser.parse(sHtmlContent, sPattern2)
 
     if (aResult[0] == True):
@@ -355,7 +352,7 @@ def showHosters():
     sCook = oInputParameterHandler.getValue('sCook')
 
     oParser = cParser()
-    
+
     #VSlog(URL_MAIN + 'getlinke')
     #VSlog(sCook)
 
@@ -365,15 +362,15 @@ def showHosters():
     else:
         oRequest = cRequestHandler(URL_MAIN + 'getlink')
         oRequest.addParametersLine('csrf_test_name=' + sCode + '&movie=' + sCode2)
-        
+
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('User-Agent', UA)
     oRequest.addHeaderEntry('Referer', sUrl)
     oRequest.addHeaderEntry('Cookie', sCook)
-    
+
     sHtmlContent = oRequest.request()
     sHtmlContent = sHtmlContent.replace('\\', '')
-    
+
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
