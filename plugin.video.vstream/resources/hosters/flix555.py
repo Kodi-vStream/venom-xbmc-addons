@@ -69,15 +69,15 @@ class cHoster(iHoster):
 
         sPattern = '(\s*eval\s*\(\s*function\(p,a,c,k,e(?:.|\s)+?)<\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
+
         #Attention sous titre present aussi
-        
+
         if (aResult[0] == True):
             sHtmlContent = cPacker().unpack(aResult[1][0])
-            
+
             sPattern =  '{sources:\[{file:"([^"]+)",label:"([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            
+
             if (aResult[0] == True):
                 api_call = aResult[1][0][0]
 
