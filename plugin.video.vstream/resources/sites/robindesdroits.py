@@ -13,7 +13,7 @@ from resources.lib.multihost import cMultiup
 from resources.lib.packer import cPacker
 from resources.lib.comaddon import progress, VSlog
 
-import urllib
+import urllib, re
 
 SITE_IDENTIFIER = 'robindesdroits'
 SITE_NAME = 'Robin des Droits'
@@ -371,80 +371,94 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    #D'abord on saute les redirections.
+    if 'replay.robindesdroits' in sUrl:
+        sPattern = 'content="0;URL=([^"]+)">'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult:
+            sUrl = aResult[1][0] 
+            oRequestHandler = cRequestHandler(sUrl)
+            sHtmlContent = oRequestHandler.request()
+            
+    #Ensuite les sites a la con
+    if (True):
+        if 'AdF' in sHtmlContent:
+            sUrl = AdflyDecoder(sUrl)
+            if 'motheregarded' in sUrl:
+                sPattern = 'href=(.+?)&dp_lp'
+                aResult = oParser.parse(sUrl, sPattern)
+                if (aResult[0] == True):
+                    sUrl = urllib.unquote(''.join(aResult[1])).decode('utf8')
 
-    if 'AdF' in sHtmlContent:
-        sUrl = AdflyDecoder(sUrl)
-        if 'motheregarded' in sUrl:
-            sPattern = 'href=(.+?)&dp_lp'
-            aResult = oParser.parse(sUrl, sPattern)
-            if (aResult[0] == True):
-                sUrl = urllib.unquote(''.join(aResult[1])).decode('utf8')
-
-        oRequestHandler = cRequestHandler(sUrl)
-        sHtmlContent = oRequestHandler.request()
-
+            oRequestHandler = cRequestHandler(sUrl)
+            sHtmlContent = oRequestHandler.request()
+            
+    #clictune / mylink / ect ... 
+    sPattern = '<b><a href=".+?redirect\/\?url\=(.+?)\&id.+?">'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0] == True:
+        sUrl = cUtil().urlDecode(aResult[1][0])
+        sUrl = sUrl
+        
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent.replace('\n', ''))
     #fh.close()
+    
+    VSlog(sUrl)
 
-    sPattern = '<b><a href=".+?redirect\/\?url\=(.+?)\&id.+?">'
-    aResult = oParser.parse(sHtmlContent, sPattern)
+    #Et maintenant le ou les liens
 
-    if (aResult[0] == True) or 'gounlimited' or 'jheberg' or 'multiup' in sUrl:
+    if 'gounlimited' in sUrl:
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request()
+
+        sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            sUrl = cUtil().urlDecode(aResult[1][0])
-            VSlog(sUrl)
+            sHtmlContent = cPacker().unpack(aResult[1][0])
 
-        if 'gounlimited' in sUrl:
-            oRequestHandler = cRequestHandler(sUrl)
-            sHtmlContent = oRequestHandler.request()
-
-            sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
+            sPattern = '{sources:\["([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
-                sHtmlContent = cPacker().unpack(aResult[1][0])
+                sHosterUrl = aResult[1][0]
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
-                sPattern = '{sources:\["([^"]+)"'
-                aResult = oParser.parse(sHtmlContent, sPattern)
-                if (aResult[0] == True):
-                    sHosterUrl = aResult[1][0]
-                    oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    if (oHoster != False):
-                        oHoster.setDisplayName(sMovieTitle)
-                        oHoster.setFileName(sMovieTitle)
-                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    elif 'jheberg' in sUrl:
+        aResult = cJheberg().GetUrls(sUrl)
+        if (aResult):
+            for aEntry in aResult:
+                sHosterUrl = aEntry
 
-        elif 'jheberg' in sUrl:
-            aResult = cJheberg().GetUrls(sUrl)
-            if (aResult):
-                for aEntry in aResult:
-                    sHosterUrl = aEntry
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
-                    oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    if (oHoster != False):
-                        oHoster.setDisplayName(sMovieTitle)
-                        oHoster.setFileName(sMovieTitle)
-                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    elif 'multiup' in sUrl:
+        aResult = cMultiup().GetUrls(sUrl)
 
-        elif 'multiup' in sUrl:
-            aResult = cMultiup().GetUrls(sUrl)
+        if (aResult):
+            for aEntry in aResult:
+                sHosterUrl = aEntry
 
-            if (aResult):
-                for aEntry in aResult:
-                    sHosterUrl = aEntry
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
-                    oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    if (oHoster != False):
-                        oHoster.setDisplayName(sMovieTitle)
-                        oHoster.setFileName(sMovieTitle)
-                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
-        else:
-            sHosterUrl = sUrl
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    else:
+        sHosterUrl = sUrl
+        oHoster = cHosterGui().checkHoster(sHosterUrl)
+        if (oHoster != False):
+            oHoster.setDisplayName(sMovieTitle)
+            oHoster.setFileName(sMovieTitle)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()

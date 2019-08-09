@@ -78,6 +78,7 @@ class cHoster(iHoster):
         if aResult[0]:
             for i in aResult[1]:
                 decoded = AADecoder(i).decode()
+                #VSlog(decoded)
                 
                 r = re.search("atob\(\'([^']+)\'\)", decoded, re.DOTALL | re.UNICODE)
                 if r:
@@ -95,22 +96,22 @@ class cHoster(iHoster):
             mlist = mlist[-2:]
             a = mlist[0]
             b = mlist[1]
-            #VSlog('a' + str(a))
-            #VSlog('b' + str(b))
+            #VSlog('a= ' + str(a))
+            #VSlog('b= ' + str(b))
             
         sPattern =  "=\['getAttribute','*([^']+)'*\]"
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             encodedC = aResult[1][0].replace('window.','')
-
+            #VSlog('encodec= ' + str(encodedC))
             c = Cdecode(sHtmlContent,encodedC)
             if c:
-                #VSlog('c' + str(c))
+                #VSlog('c= ' + str(c))
                 api_call = decode(urlcoded,a,b,c)
 
  
         if (api_call):
-            return True, api_call
+            return True, api_call + '|User-Agent=' + UA
             
         return False, False
         
@@ -124,7 +125,7 @@ def Cdecode(sHtmlContent,encodedC):
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             z.append(JJDecoder(aEntry[1]).decode())
-
+        #VSlog(z)
         for x in z:
             r1 = re.search("atob\(\'([^']+)\'\)", x, re.DOTALL | re.UNICODE)
             if r1:

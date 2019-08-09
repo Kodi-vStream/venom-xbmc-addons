@@ -22,13 +22,14 @@ SITE_DESC = 'NC'
 
 URL_MAIN = 'https://megastreaming.ws/'
 
+MOVIE_MOVIE = (True, 'showMoviesMenu')
 MOVIE_NEWS = (URL_MAIN + 'category/films/', 'showMovies')
 MOVIE_VOSTFR = (URL_MAIN + 'category/films/vostfr-films/', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'category/films-en-exclus/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
-MOVIE_MOVIE = ('http://', 'load')
 
-SERIE_SERIES = (URL_MAIN + 'category/series-tv/', 'showMovies')
+SERIE_SERIES = (True, 'showSeriesMenu')
+SERIE_NEWS = (URL_MAIN + 'category/series-tv/', 'showMovies')
 SERIE_VFS = (URL_MAIN + 'category/series-tv/series-streaming-vf/', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'category/series-tv/series-streaming-vostfr/', 'showMovies')
 SERIE_VFQ = (URL_MAIN + 'category/series-tv/vfq/', 'showMovies')
@@ -77,6 +78,28 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films (Menu)', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries (Menu)', 'series.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Replay tv', 'tv.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
+
+
+    oGui.setEndOfDirectory()
+
+def showMoviesMenu():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
     
@@ -92,9 +115,14 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
+    oGui.setEndOfDirectory()
+
+def showSeriesMenu():
+    oGui = cGui()
+
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
@@ -111,15 +139,6 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste)', 'az.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Replay tv', 'tv.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
-
 
     oGui.setEndOfDirectory()
 
@@ -222,8 +241,7 @@ def showMovies(sSearch = ''):
 
             sUrl2 = aEntry[0]
             sTitle = aEntry[1].replace('&prime;', '\'')
-            #on vire le tiret laisser les deux ils sont different
-            sTitle = sTitle.replace(' – Saison', ' Saison').replace(' - Saison', ' Saison')
+            sTitle = sTitle.replace('Saiosn', 'Saison')
             sThumb = aEntry[2]
             sDesc = aEntry[3]
             #Filtre recherche
@@ -249,7 +267,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -277,8 +295,8 @@ def showSeries():
     sHtmlContent = oRequestHandler.request()
 
     #Nettoyage du code, a simplifier, mais je trouve pas ce qui ne va pas
-    sHtmlContent = sHtmlContent.decode('utf-8', "replace")
-    sHtmlContent = unicodedata.normalize('NFD', sHtmlContent).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
+    sHtmlContent = sHtmlContent.decode('utf-8', 'replace')
+    sHtmlContent = unicodedata.normalize('NFD', sHtmlContent).encode('ascii', 'ignore').decode('unicode_escape')#vire accent et '\'
     sHtmlContent = sHtmlContent.encode('utf-8')#On remet en utf-8
 
     sHtmlContent = sHtmlContent.replace('<strong>Telechargement VOSTFR', '').replace('<strong>Telechargement VF', '').replace('<strong>Telechargement', '')
@@ -318,8 +336,6 @@ def showSeries():
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
             else:
-                #on vire le tiret laisser les tiret ils sont different
-                sMovieTitle = sMovieTitle.replace(' – Saison', ' Saison').replace(' - Saison', ' Saison')
                 sMovieTitle = sMovieTitle.replace('[Complete]', '')
                 sTitle = sMovieTitle + ' ' + aEntry[1]
                 sUrl = aEntry[2]
@@ -431,8 +447,10 @@ def serieHosters():
                 break
 
             sHosterUrl = aEntry
-            #pour récuperer tous les liens
-            if '&url=' in sHosterUrl:
+            #pour récuperer tous les liens 2 variantes
+            if '&url==' in sHosterUrl:
+                sHosterUrl = sHosterUrl.split('&url==')[1]
+            elif '&url=' in sHosterUrl:
                 sHosterUrl = sHosterUrl.split('&url=')[1]
 
             #pour récuperer le lien jwplayer(GoogleDrive)

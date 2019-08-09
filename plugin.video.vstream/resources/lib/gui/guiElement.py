@@ -172,11 +172,12 @@ class cGuiElement:
         #convertion unicode ne fonctionne pas avec les accents
 
         try:
-            sTitle = sTitle.decode("utf-8")
             #traitement du titre pour les caracteres speciaux
             sTitle = sTitle.replace('&#8212;', '-').replace('&#8217;', '\'').replace('&#8230;', '...').replace('&#8242;', '\'').replace('&lsquo;', '\'')
-            #traitement du titre pour retirer le - quand c'est une Saison
-            sTitle = sTitle.replace(' - Saison', ' Saison')
+            #traitement du titre pour retirer le - quand c'est une Saison. Tiret, tiret moyen et cadratin
+            sTitle = sTitle.replace(' - Saison', ' Saison').replace(' – Saison', ' Saison').replace(' — Saison', ' Saison')
+
+            sTitle = sTitle.decode("utf-8")
         except:
             pass
 
@@ -220,7 +221,7 @@ class cGuiElement:
                 self.addItemValues('Episode', self.__Episode)
 
                 #pr les saisons
-                m = re.search(ur'(?i)(s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle, re.UNICODE)
+                m = re.search(ur'(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle, re.UNICODE)
                 if m:
                     sTitle = sTitle.replace(m.group(1), '')
                     sa = m.group(2)
@@ -230,9 +231,8 @@ class cGuiElement:
                     self.addItemValues('Season', self.__Season)
 
             else:
-                #pas d'episode mais y a t il des saisons ?
-                #m = re.search('(?i)(s(?:aison +)*([0-9]+[0-9\-\?]*))(?:$| )', sTitle)
-                m = re.search(ur'(?i)(s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle, re.UNICODE)
+                #pas d'episode mais y a t il des saisons?
+                m = re.search(ur'(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle, re.UNICODE)
                 if m:
                     sTitle = sTitle.replace(m.group(1), '')
                     sa = m.group(2)
@@ -241,8 +241,6 @@ class cGuiElement:
                     self.__Season = sa
                     self.addItemValues('Season', self.__Season)
 
-        #supr les -
-        #sTitle = sTitle.replace('-', ' ') # A gerer dans le fichier site plutot, car il peut etre utile dans certain cas
         #vire doubles espaces
         sTitle = re.sub(' +', ' ', sTitle)
         sTitle = sTitle.replace('()', '').replace('[]', '').replace('- -', '-')
@@ -254,7 +252,7 @@ class cGuiElement:
             sTitle = sTitle[1:]
 
         #recherche les Tags restant : () ou [] sauf tag couleur
-        sTitle = re.sub(ur'([\(|\[](?!\/*COLOR)[^\)\(\]\[]+?[\]|\)])','[COLOR ' + self.__sDecoColor + ']\\1[/COLOR]', sTitle)
+        sTitle = re.sub(ur'([\(|\[](?!\/*COLOR)[^\)\(\]\[]+?[\]|\)])', '[COLOR ' + self.__sDecoColor + ']\\1[/COLOR]', sTitle)
 
         #on reformate SXXEXX Titre [tag] (Annee)
         sTitle2 = ''

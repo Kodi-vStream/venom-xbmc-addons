@@ -7,7 +7,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress#,VSlog
+from resources.lib.comaddon import progress
 #from resources.lib.util import cUtil
 import urllib2, urllib, re
 
@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'voirfilms_org'
 SITE_NAME = 'VoirFilms'
 SITE_DESC = 'Films, Séries & Animés en Streaming'
 
-URL_MAIN = 'https://www.voirfilms.ec/'
+URL_MAIN = 'https://www.voir-films.info/'
 
 MOVIE_MOVIE = (URL_MAIN + 'alphabet', 'showAlpha')
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming', 'showMovies')
@@ -330,7 +330,8 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = "<a href='([^'<>]+?)' rel='nofollow'>suiv »</a>"
+    sHtmlContent = re.sub(" rel='nofollow'","",sHtmlContent)#next genre
+    sPattern = "<a href='([^']+)'>suiv.+?<\/a>"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -353,7 +354,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern='data-src="([^"]+)" target="filmPlayer".+?span class="([^"]+)"><\/span><span style="width.+?" class="([^"]+)"><\/span>'
+    sPattern='data-src="([^"]+)" target="filmPlayer".+?span class="([^"]+)"><\/span>.+?class="([^"]+)"><\/span>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -362,6 +363,9 @@ def showHosters():
 
             sUrl = aEntry[0]
             sHost = aEntry[1].capitalize()
+            if 'apidgator' in sHost or 'dl_to' in sHost:
+                continue
+
             sLang = aEntry[2].upper().replace('L', '')
 
             sTitle = '%s (%s) [COLOR coral]%s[/COLOR]' % (sMovieTitle, sLang, sHost)

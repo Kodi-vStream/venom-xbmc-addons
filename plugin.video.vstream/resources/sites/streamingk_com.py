@@ -207,7 +207,7 @@ def showMovies(sSearch = ''):
                     continue
 
             sUrl1 = aEntry[0]
-            sTitle = aEntry[1].replace(' - Saison', ' Saison')
+            sTitle = aEntry[1].replace('Saiosn', 'Saison')
             sTitle = sTitle.replace(' [Streaming]', '')
             sTitle = sTitle.replace(' [Telecharger]', '').replace(' [Telechargement]', '')
             sDisplayTitle = sTitle
@@ -233,9 +233,7 @@ def showMovies(sSearch = ''):
             elif 'series' in sUrl1 or re.match('.+?saison [0-9]+', sTitle, re.IGNORECASE):
                 oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             elif 'mangas' in sUrl:
-
                 oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -246,7 +244,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()

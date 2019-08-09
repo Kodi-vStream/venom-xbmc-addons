@@ -16,7 +16,7 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/5
 SITE_IDENTIFIER = 'tirexo'
 SITE_NAME = '[COLOR violet]Tirexo (ZT lol)[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
-URL_MAIN = 'https://ww22.zone-telechargement.lol/'
+URL_MAIN = 'https://www.zone-telechargement.vip/'
 
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist%5B%5D=2&story=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist%5B%5D=15&story=', 'showMovies')
@@ -34,6 +34,15 @@ MOVIE_SDLIGHT = (URL_MAIN + 'hdlight-720/', 'showMovies')
 MOVIE_HDLIGHT = (URL_MAIN + 'hdlight-1080/', 'showMovies')
 MOVIE_4KL = (URL_MAIN + 'film-ultra-hdlight-x265/', 'showMovies')
 MOVIE_4K = (URL_MAIN + 'film-ultra-hd-x265/', 'showMovies')
+
+MOVIE_2010 = (URL_MAIN + 'films-2010-2019/', 'showMovies')
+MOVIE_2000 = (URL_MAIN + 'films-2000-2009/', 'showMovies')
+MOVIE_1990 = (URL_MAIN + 'films-1990-1999/', 'showMovies')
+MOVIE_1980 = (URL_MAIN + 'films-1980-1989/', 'showMovies')
+MOVIE_1970 = (URL_MAIN + 'films-1970-1979/', 'showMovies')
+MOVIE_1960 = (URL_MAIN + 'films-1960-1969/', 'showMovies')
+MOVIE_1950 = (URL_MAIN + 'films-1950-1959/', 'showMovies')
+MOVIE_1900 = (URL_MAIN + 'films-1900-1950/', 'showMovies')
 
 MOVIE_GENRES = ('films-gratuit/', 'showGenre')
 SERIE_GENRES = ('telecharger-series/', 'showGenre')
@@ -133,6 +142,38 @@ def showMenuMovies():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_3D[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_3D[1], 'Films (3D)', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_2010[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_2010[1], 'Films (2010)', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_2000[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_2000[1], 'Films (2000)', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_1990[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_1990[1], 'Films (1990)', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_1980[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_1980[1], 'Films (1980)', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_1970[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_1970[1], 'Films (1970)', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_1960[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_1960[1], 'Films (1960)', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_1950[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_1950[1], 'Films (1950)', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_1900[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_1900[1], 'Films (1900)', 'films.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

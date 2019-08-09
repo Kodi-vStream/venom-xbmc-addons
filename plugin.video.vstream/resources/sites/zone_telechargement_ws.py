@@ -656,7 +656,7 @@ def showHosters():
 
     oParser = cParser()
 
-    sPattern = '<font color=red>([^<]+?)</font>|<div style="font-weight:bold.+?">([^>]+?)</div></b><b><a target="_blank" href="([^<>"]+?)">T.+?charger<\/a>|>\[(Liens Premium) \]<|<span style="color:#FF0000">(.+?)</div></b><b><a target="_blank" href=href="https://([^"]+)/([^"]+?)">'
+    sPattern = '<font color=red>([^<]+?)</font>|<div style="font-weight.+?">([^>]+?)</div>.+?<form action="(.+?)".+?"url" value="(.+?)".+?"nextURL" value="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -672,18 +672,15 @@ def showHosters():
                 if ('Interchangeables' not in aEntry[0]):
                     oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
             else:
-                sTitle =  sMovieTitle + ' [COLOR coral]' + aEntry[1] + '[/COLOR] '
-                URL_DECRYPT = aEntry[3]
+                sDisplayTitle =  sMovieTitle + ' [COLOR coral]' + aEntry[1] + '[/COLOR] '
                 oOutputParameterHandler = cOutputParameterHandler()
-                if sUrl.startswith('http'):
-                    oOutputParameterHandler.addParameter('siteUrl', aEntry[2])
-                else:
-                    sUrl2 = 'https://' + aEntry[3] + '/' + aEntry[4]
-                    oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-
+                oOutputParameterHandler.addParameter('siteUrl', aEntry[2])
+                oOutputParameterHandler.addParameter('baseUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oOutputParameterHandler.addParameter('encodeData', urllib.quote_plus(aEntry[3]))
+                oOutputParameterHandler.addParameter('data', aEntry[4])
+                oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -707,7 +704,7 @@ def showSeriesHosters():
     if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent or 'premium' in sHtmlContent:
         sHtmlContent = CutPremiumlinks(sHtmlContent)
 
-    sPattern = '<div style="font-weight:bold;color:[^"]+?">([^<]+)</div>|<a target="_blank" href="https://([^"]+)/([^"]+?)">([^<]+)<'
+    sPattern = '<div style="font-weight:bold;color:.+?">(.+?)</div>|<form action="(.+?)".+?"url" value="(.+?)".+?"nextURL" value="(.+?)".+?<button class="subButton".+?>(.+?)</button>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -725,18 +722,21 @@ def showSeriesHosters():
                 else:
                     oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
             else:
-                sName = aEntry[3]
+                sName = aEntry[4]
                 sName = sName.replace('Télécharger', '')
                 sName = sName.replace('pisodes', 'pisode')
-                sUrl2 = 'https://' + aEntry[1] +  '/' + aEntry[2]
-
+                sUrl2 = aEntry[1]
+                encodeData = urllib.quote_plus(aEntry[2])
+                data = aEntry[3]
                 sTitle = sMovieTitle + ' ' + sName
-                URL_DECRYPT = aEntry[1]
 
                 oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('baseUrl', sUrl)
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('encodeData', encodeData)
+                oOutputParameterHandler.addParameter('data', data)
                 oGui.addTV(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -749,8 +749,11 @@ def Display_protected_link():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    baseUrl = oInputParameterHandler.getValue('baseUrl')
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumb=oInputParameterHandler.getValue('sThumb')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    encodeData = oInputParameterHandler.getValue('encodeData')
+    data = oInputParameterHandler.getValue('data')
 
     #Ne marche pas
     if (False):
@@ -778,7 +781,10 @@ def Display_protected_link():
 
     #Est ce un lien dl-protect ?
     if URL_DECRYPT in sUrl:
-        sHtmlContent = DecryptDlProtecte(sUrl)
+        f = { 'url' : encodeData, 'nextURL' : data}
+        data = urllib.urlencode(f)
+
+        sHtmlContent = DecryptDlProtecte(sUrl, data, baseUrl)
 
         if sHtmlContent:
             #Si redirection
@@ -842,7 +848,7 @@ def CutSais(sHtmlContent):
 
 def CutNonPremiumlinks(sHtmlContent):
     oParser = cParser()
-    sPattern = 'Lien Premium(.+?)Publie le '
+    sPattern = '(?:Lien.+?Premium - 1 lien|Lien.+?Premium)(.+?)</b></font></a></center>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
     if (aResult[0]):
@@ -861,7 +867,7 @@ def CutPremiumlinks(sHtmlContent):
     #Si ca marche pas on renvois le code complet
     return sHtmlContent
 
-def DecryptDlProtecte(url):
+def DecryptDlProtecte(url, data, baseUrl):
 
     VSlog('DecryptDlProtecte : ' + url)
     dialogs = dialog()
@@ -870,22 +876,56 @@ def DecryptDlProtecte(url):
         return ''
     #VSlog(url)
 
-    # 1ere Requete pour recuperer le cookie
     oRequestHandler = cRequestHandler(url)
+    oRequestHandler.setRequestType(1)
+    oRequestHandler.addHeaderEntry('Host', 'www.dl-protect1.com')
+    oRequestHandler.addHeaderEntry('Referer', baseUrl)
+    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
     oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
+    oRequestHandler.addHeaderEntry('Content-Type',  "application/x-www-form-urlencoded")
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    oRequestHandler.addParametersLine(data)
     sHtmlContent = oRequestHandler.request()
 
     cookies = GestionCookie().Readcookie('www_dl-protect1_com')
-    #VSlog( 'cookie'  + str(cookies))
+
+    aResult = re.search('<form action="([^"]+)" method="post".+?\s*.+?name="([^"]+)" value="([^"]+)"',str(sHtmlContent))
+    url = 'https://' + str(url.split('/')[2]) + str(aResult.group(1))
 
     #Tout ca a virer et utiliser oRequestHandler.addMultipartFiled('sess_id':sId,'upload_type':'url','srv_tmp_url':sTmp) quand ca marchera
     import string
     _BOUNDARY_CHARS = string.digits
-    boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(15))
+    boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(27))
     multipart_form_data = {'submit':'continuer','submit':'Continuer'}
-    data, headersMulti = encode_multipart(multipart_form_data, {}, boundary)
+    data, headersMulti = encode_multipart(multipart_form_data, {}, aResult.group(2),aResult.group(3),boundary)
 
-    #2 eme requete pour avoir le lien
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.setRequestType(1)
+    oRequestHandler.addHeaderEntry('Host', 'www.dl-protect1.com')
+    oRequestHandler.addHeaderEntry('Referer', url)
+    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    oRequestHandler.addHeaderEntry('Content-Length', headersMulti['Content-Length'])
+    oRequestHandler.addHeaderEntry('Content-Type', headersMulti['Content-Type'])
+    oRequestHandler.addHeaderEntry('Cookie', cookies)
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+
+    oRequestHandler.addParametersLine(data)
+
+    sHtmlContent = oRequestHandler.request()
+
+    aResult = re.search('name="([^"]+)" value="([^"]+)"',str(sHtmlContent))
+
+    #Tout ca a virer et utiliser oRequestHandler.addMultipartFiled('sess_id':sId,'upload_type':'url','srv_tmp_url':sTmp) quand ca marchera
+    import string
+    _BOUNDARY_CHARS = string.digits
+    boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(27))
+    multipart_form_data = {'submit':'continuer','submit':'Continuer'}
+    data, headersMulti = encode_multipart(multipart_form_data, {}, aResult.group(1), aResult.group(2),boundary)
+
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.setRequestType(1)
     oRequestHandler.addHeaderEntry('Host', 'www.dl-protect1.com')
@@ -913,7 +953,7 @@ def DecryptDlProtecte(url):
 
 """Encode multipart form data to upload files via POST."""
 
-def encode_multipart(fields, files, boundary = None):
+def encode_multipart(fields, files, typeUrl, param, boundary = None):
     r"""Encode dict of form fields and dict of files as multipart/form-data.
     Return tuple of (body_string, headers_dict). Each value in files is a dict
     with required keys 'filename' and 'content', and optional 'mimetype' (if
@@ -950,11 +990,15 @@ def encode_multipart(fields, files, boundary = None):
         return s.replace('"', '\\"')
 
     if boundary is None:
-        boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(15))
+        boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(27))
     lines = []
 
     for name, value in fields.items():
         lines.extend((
+            '-----------------------------{0}'.format(boundary),
+            'Content-Disposition: form-data; name="{0}"'.format(escape_quote(typeUrl)),
+            '',
+            '{0}'.format(param),
             '-----------------------------{0}'.format(boundary),
             'Content-Disposition: form-data; name="{0}"'.format(escape_quote(name)),
             '',

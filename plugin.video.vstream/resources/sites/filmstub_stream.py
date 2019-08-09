@@ -253,13 +253,19 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
-def showEpisode():
-    oGui = cGui()
+def showEpisode(sUrl = '',sThumb = '',sMovieTitle = '',oGui = ''):
 
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumb = oInputParameterHandler.getValue('sThumb')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    if sUrl:
+       sUrl = sUrl
+       sThumb = sThumb
+       sMovieTitle = sMovieTitle
+       oGui = oGui
+    else:
+       oGui = cGui()
+       oInputParameterHandler = cInputParameterHandler()
+       sUrl = oInputParameterHandler.getValue('siteUrl')
+       sThumb = oInputParameterHandler.getValue('sThumb')
+       sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -360,8 +366,11 @@ def showLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+        oGui.setEndOfDirectory()
+    else:
+        #c'est une serie ?
+        showEpisode(sUrl,sThumb,sMovieTitle,oGui)
 
-    oGui.setEndOfDirectory()
 
 def showHosters():
     oGui = cGui()

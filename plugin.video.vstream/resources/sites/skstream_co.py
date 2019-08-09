@@ -184,7 +184,7 @@ def showYears():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    for i in reversed(range(1980, 2019)):
+    for i in reversed(range(1980, 2020)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', ('%s%s') % (sUrl, Year))
@@ -210,7 +210,7 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-  
+
     aResult = oParser.parse(sHtmlContent,sPattern)
 
     if (aResult[0] == False):
@@ -244,7 +244,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -288,7 +288,7 @@ def showSaisons():
 
             sThumb = URL_MAIN[:-1] + aEntry[0]
             sUrl = aEntry[1]
-            sTitle = aEntry[2] + ' ' + sMovieTitle
+            sTitle =  sMovieTitle + ' ' + aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
