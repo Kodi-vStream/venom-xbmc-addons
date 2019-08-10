@@ -330,8 +330,12 @@ def showMovies(sSearch = ''):
 
     if sHtmlContent.startswith('<script type="text/javascript">'):
         sHtmlContent = FullUnescape(sHtmlContent)
-
-    sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=["\']*(.+?)[\'"]* class=.button'
+        
+    if sSearch or 'categorie.php' in sUrl or 'categorie_' in sUrl or 'listing3.php?' in sUrl:
+    
+        sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=["\']*(.+?)[\'"]* class=.button'
+    else:
+        sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?<a href="([^"]+)".+?alt="(.+?)" title.+?'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -347,46 +351,54 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
+  
             sThumb = aEntry[0]
             if not sThumb.startswith('http'):
-                sThumb = URL_MAIN + sThumb 
-
-            sTitle = str(aEntry[1])
+                sThumb = URL_MAIN + sThumb
+                
+            if sSearch or 'categorie.php' in sUrl or 'categorie_' in sUrl or 'listing3.php?' in sUrl:
+                sTitle = aEntry[1]
+                sUrl2 = aEntry[2]
+            else:
+                sTitle = str(aEntry[2])
+                sUrl2 = aEntry[1]
+                
             #sTitle = unicode(sTitle, errors='replace')
             sTitle = unicode(sTitle, 'iso-8859-1')
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')
             sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
             sTitle = cUtil().unescape(sTitle)
             sTitle = sTitle.replace('[Streaming] - ', '').replace(' (VF)', '').replace(' (VOSTFR)', '').replace(' DVDRIP', '')
+            
             if ' - Episode' in sTitle:
                 sTitle = sTitle.replace(' -', '')
 
-            sUrl = aEntry[2]
-            if not sUrl.startswith('http'):
-                sUrl = URL_MAIN + aEntry[2]
+
+            if not sUrl2.startswith('http'):
+                sUrl2 = URL_MAIN + sUrl2
 
             #affichage de la langue
             sLang = ''
-            if 'VF' in aEntry[1]:
+            if 'VF' in sTitle:
                 sLang = 'VF'
-            elif 'VOSTFR' in aEntry[1]:
+            elif 'VOSTFR' in sTitle:
                 sLang = 'VOSTFR'
 
             #affichage de la qualité
             sQual = ''
-            if 'DVDRIP' in aEntry[1]:
+            if 'DVDRIP' in sTitle:
                 sQual = 'DVDRIP'
 
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if '?manga=' in sUrl:
+            if '?manga=' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
-            elif '?serie=' in sUrl:
+            elif '?serie=' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
