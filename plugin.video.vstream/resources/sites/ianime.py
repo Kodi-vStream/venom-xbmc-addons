@@ -335,7 +335,10 @@ def showMovies(sSearch = ''):
     
         sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=["\']*(.+?)[\'"]* class=.button'
     else:
-        sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?<a href="([^"]+)".+?alt="(.+?)" title.+?'
+        sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?<a href="([^"]+)".+?alt="(.+?)".+?itle'
+        
+        
+    sHtmlContent = re.sub('<a\s*href=\"categorie.php\?watch=\"\s*class="genre\s*\"','',sHtmlContent,re.DOTALL)
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -368,7 +371,7 @@ def showMovies(sSearch = ''):
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')
             sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
             sTitle = cUtil().unescape(sTitle)
-            sTitle = sTitle.replace('[Streaming] - ', '').replace(' (VF)', '').replace(' (VOSTFR)', '').replace(' DVDRIP', '')
+            sTitle = sTitle.replace('[Streaming] - ', '').replace(' (VF)', '').replace(' (VOSTFR)', '').replace(' DVDRIP', '').replace('gratuitement maintenant','')
             
             if ' - Episode' in sTitle:
                 sTitle = sTitle.replace(' -', '')
@@ -400,6 +403,8 @@ def showMovies(sSearch = ''):
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
             elif '?serie=' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'series.png', sThumb, '', oOutputParameterHandler)
+            elif '?film=' in sUrl2:
+                oGui.addMovie(SITE_IDENTIFIER, 'showMovies', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)    
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
@@ -543,9 +548,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     #VSlog(sUrl)
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
+
 
     if 'HTML/JavaScript Encoder' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
@@ -696,8 +699,7 @@ def showHosters():
                 sHtmlContent = ICDecode(sHtmlContent)
 
                 sHosterUrl2 = ExtractLink(sHtmlContent)
-                
-                VSlog(sHosterUrl2)
+
                 
                 if 'intern_player2.png' in sHosterUrl2:
                     #VSlog('Fausse image : ' + sHosterUrl)
