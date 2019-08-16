@@ -89,9 +89,7 @@ def showMovies(sSearch = ''):
 
     #if 'category' in sUrl or sSearch:
     sPattern = 'class="post-title".+?<a href="([^"]+)"\s*rel="bookmark">([^<]+)<\/a>.+?class="post-excerpt">\s*<p>(.+?)<\/p>'
-    # else:
-        # sPattern = '<img\s*width=.+?src="([^"]+)".+?class="post-title".+?<a href="([^"]+)"\s*rel="bookmark">([^<]+)<\/a>.+?class="post-excerpt">\s*<p>(.+?)<\/p>'
-        
+
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -108,18 +106,20 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            # if 'category' in sUrl or sSearch:
-                # sThumb = THUMBDEF
-                # sUrl2 = aEntry[0]
-                # sTitle = aEntry[1]
-                # sDesc = aEntry[2]
 
-            # else:
-            sThumb = sThumb = THUMBDEF
             sUrl2 = aEntry[0]
+            if 'private-video' in sUrl2:
+                continue
+                
             sTitle = aEntry[1]
             sDesc = aEntry[2]
- 
+            # thumb 
+            sThumb = THUMBDEF
+            thumb = re.search('<div class="post-thumbnail".+?<a href="'+sUrl2+'"\s*class="post-list-item-thumb\s*">\s*<img\s*width=.+?src="([^"]+)"',sHtmlContent,re.DOTALL)
+            if thumb:
+                sThumb = thumb.group(1)
+
+
             sDesc = re.sub('<a\s*class="read-more".+','' ,sDesc).replace('<br />','')
             
             oOutputParameterHandler = cOutputParameterHandler()
