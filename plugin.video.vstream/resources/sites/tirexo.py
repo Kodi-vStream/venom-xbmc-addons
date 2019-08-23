@@ -334,6 +334,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
+    titles = set()
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
@@ -346,6 +347,12 @@ def showMovies(sSearch = ''):
             sDesc = aEntry[1]
             sThumb = aEntry[2]
             sTitle = aEntry[3]
+            
+            # Enlever les films en doublons, il s'agit du même film dans une autre qualité qu'on retrouvera au moment du choix de la qualité
+            if sTitle in titles :
+                continue;
+            titles.add(sTitle)
+            
             sDesc = sDesc.replace('<span>', '').replace('</span>', '')
             sDesc = sDesc.replace('<b>', '').replace('</b>', '')
             sDesc = sDesc.replace('<i>', '').replace('</i>', '')
@@ -599,7 +606,11 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = "<th.+?<img src=.+?>([^>]+?)</th>.+?href=\'([^>]+?)\'>"
+    
+    # Ajout des liens DL
+    # Gere si un Hoster propose plusieurs liens
+    # Retire les resultats proposés en plusieurs parties (ce sont des .rar) 
+    sPattern = "<th scope=(\"col\" class=\"no-sort\"><img src=.+?>(.+?)<\/th>|\"row\".+?class='download'.+?href=\'([^>]+?)\'>Télécharger <)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -611,8 +622,12 @@ def showHosters():
             if progress_.iscanceled():
                 break
 
-            sHoster = re.sub('\.\w+', '', aEntry[0])
-            sUrl2 = URL_MAIN[:-1] + aEntry[1]
+            if aEntry[1]:
+                sHoster = re.sub('\.\w+', '', aEntry[1])
+                continue;
+
+
+            sUrl2 = URL_MAIN[:-1] + aEntry[2]
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHoster)
 
             oOutputParameterHandler = cOutputParameterHandler()
