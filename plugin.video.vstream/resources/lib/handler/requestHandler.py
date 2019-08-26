@@ -72,6 +72,9 @@ class cRequestHandler:
         return self.__sRealUrl
 
     def GetCookies(self):
+        if not self.__sResponseHeader:
+            return ''
+
         if 'Set-Cookie' in self.__sResponseHeader:
             import re
             
