@@ -14,7 +14,9 @@ SITE_IDENTIFIER = 'libertyland_tv'
 SITE_NAME = 'Libertyland'
 SITE_DESC = 'Les films et séries récentes en streaming et en téléchargement'
 
-URL_MAIN = 'https://ww2.libertyvf.ch/'
+#URL_MAIN = 'https://ww2.libertyvf.ch/'
+#Modif du 26/08
+URL_MAIN = 'https://ww1.libertyvf.to/'
 
 URL_SEARCH = (URL_MAIN + 'v2/recherche/', 'showMovies')
 URL_SEARCH_MOVIES = ('', 'showMovies')
