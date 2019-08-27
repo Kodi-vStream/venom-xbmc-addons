@@ -74,7 +74,6 @@ class cRequestHandler:
     def GetCookies(self):
         if not self.__sResponseHeader:
             return ''
-
         if 'Set-Cookie' in self.__sResponseHeader:
             import re
             
@@ -82,7 +81,7 @@ class cRequestHandler:
             #c = ''
             #for i in cookie_string:
             #    c = c + i + ', '
-            c = self.__sResponseHeader.getheader('set-cookie')
+            c = self.__sResponseHeader.get('set-cookie')
 
             c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,\/]+?);',c)
             if c2:
@@ -167,7 +166,7 @@ class cRequestHandler:
                     VSlog( 'Page protegee par cloudflare')
                     CF = cloudflare.CloudflareBypass()
                     sContent = CF.GetHtml(self.__sUrl,e.read(),cookies,sParameters,oRequest.headers)
-                    self.__sRealUrl,self.__sResponseHeader = CF.GetReponseInfo()
+                    self.__sRealUrl, self.__sResponseHeader = CF.GetReponseInfo()
                 else:
                     sContent = e.read()
                     self.__sRealUrl = e.geturl()
