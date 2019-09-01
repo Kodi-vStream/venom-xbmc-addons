@@ -4,9 +4,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-
-sPattern1 = 'sources.+?"([^"]+mp4)"'
-
+UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0'
 
 class cHoster(iHoster):
 
@@ -51,12 +49,14 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-
+        
+        sPattern1 = 'sources.+?"([^"]+mp4)"'
+        
         aResult = oParser.parse(sHtmlContent, sPattern1)
         if (aResult[0] == True):
             api_call = aResult[1][0]
 
         if (api_call):
-            return True, api_call
+            return True, api_call + '|User-Agent=' + UA + '&Referer=' + self.__sUrl
 
         return False, False
