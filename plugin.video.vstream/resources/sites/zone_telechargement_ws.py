@@ -791,7 +791,7 @@ def Display_protected_link():
             if sHtmlContent.startswith('http'):
                 aResult_dlprotecte = (True, [sHtmlContent])
             else:
-                sPattern_dlprotecte = '<div class="lienet"><a href="(.+?)">'
+                sPattern_dlprotecte = '<div class="alert alert-primary".+?\s*<a href="(.+?)">'
                 aResult_dlprotecte = oParser.parse(sHtmlContent, sPattern_dlprotecte)
 
         else:
@@ -874,11 +874,10 @@ def DecryptDlProtecte(url, data, baseUrl):
 
     if not (url):
         return ''
-    #VSlog(url)
 
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.setRequestType(1)
-    oRequestHandler.addHeaderEntry('Host', 'www.dl-protect1.com')
+    oRequestHandler.addHeaderEntry('Host', url.split('/')[2])
     oRequestHandler.addHeaderEntry('Referer', baseUrl)
     oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -887,59 +886,6 @@ def DecryptDlProtecte(url, data, baseUrl):
     oRequestHandler.addHeaderEntry('Content-Type',  "application/x-www-form-urlencoded")
     oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
     oRequestHandler.addParametersLine(data)
-    sHtmlContent = oRequestHandler.request()
-
-    cookies = GestionCookie().Readcookie('www_dl-protect1_com')
-
-    aResult = re.search('<form action="([^"]+)" method="post".+?\s*.+?name="([^"]+)" value="([^"]+)"',str(sHtmlContent))
-    url = 'https://' + str(url.split('/')[2]) + str(aResult.group(1))
-
-    #Tout ca a virer et utiliser oRequestHandler.addMultipartFiled('sess_id':sId,'upload_type':'url','srv_tmp_url':sTmp) quand ca marchera
-    import string
-    _BOUNDARY_CHARS = string.digits
-    boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(27))
-    multipart_form_data = {'submit':'continuer','submit':'Continuer'}
-    data, headersMulti = encode_multipart(multipart_form_data, {}, aResult.group(2),aResult.group(3),boundary)
-
-    oRequestHandler = cRequestHandler(url)
-    oRequestHandler.setRequestType(1)
-    oRequestHandler.addHeaderEntry('Host', 'www.dl-protect1.com')
-    oRequestHandler.addHeaderEntry('Referer', url)
-    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    oRequestHandler.addHeaderEntry('Content-Length', headersMulti['Content-Length'])
-    oRequestHandler.addHeaderEntry('Content-Type', headersMulti['Content-Type'])
-    oRequestHandler.addHeaderEntry('Cookie', cookies)
-    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-
-    oRequestHandler.addParametersLine(data)
-
-    sHtmlContent = oRequestHandler.request()
-
-    aResult = re.search('name="([^"]+)" value="([^"]+)"',str(sHtmlContent))
-
-    #Tout ca a virer et utiliser oRequestHandler.addMultipartFiled('sess_id':sId,'upload_type':'url','srv_tmp_url':sTmp) quand ca marchera
-    import string
-    _BOUNDARY_CHARS = string.digits
-    boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(27))
-    multipart_form_data = {'submit':'continuer','submit':'Continuer'}
-    data, headersMulti = encode_multipart(multipart_form_data, {}, aResult.group(1), aResult.group(2),boundary)
-
-    oRequestHandler = cRequestHandler(url)
-    oRequestHandler.setRequestType(1)
-    oRequestHandler.addHeaderEntry('Host', 'www.dl-protect1.com')
-    oRequestHandler.addHeaderEntry('Referer', url)
-    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    oRequestHandler.addHeaderEntry('Content-Length', headersMulti['Content-Length'])
-    oRequestHandler.addHeaderEntry('Content-Type', headersMulti['Content-Type'])
-    oRequestHandler.addHeaderEntry('Cookie', cookies)
-    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-
-    oRequestHandler.addParametersLine(data)
-
     sHtmlContent = oRequestHandler.request()
 
     #fh = open('d:\\test.txt', "w")

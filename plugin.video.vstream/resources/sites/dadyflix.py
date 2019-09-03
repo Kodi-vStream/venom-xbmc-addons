@@ -213,7 +213,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -281,7 +281,7 @@ def ShowSerieSaisonEpisodes():
             if progress_.iscanceled():
                 break
 
-            sTitle = 'Saison ' + aEntry[2] + ' Episode' + aEntry[3] + ' ' + sMovieTitle
+            sTitle = sMovieTitle + ' Saison ' + aEntry[2] + ' Episode' + aEntry[3]
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
 

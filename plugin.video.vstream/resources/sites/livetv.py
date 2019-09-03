@@ -292,7 +292,13 @@ def showHosters(sSearch = ''): #affiche les videos disponible du live
             aResult = re.findall(sPattern2, sHtmlContent2)
             if aResult:
                 sHosterUrl = aResult[0] + '|User-Agent=' + UA + '&referer=' + Referer
-                #VSlog(sHosterUrl)
+            else:
+                sPattern2 = "pl.\init\('([^']+)'\);"
+                aResult = re.findall(sPattern2, sHtmlContent2)
+                if aResult:
+                    sHosterUrl = aResult[0] + '|User-Agent=' + UA + '&referer=' + Referer
+                
+            VSlog(sHosterUrl)
 
         if 'sport7.pw' in url or 'vip7stream' in url:#Terminé
             oRequestHandler = cRequestHandler(url)

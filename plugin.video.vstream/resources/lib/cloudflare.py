@@ -364,10 +364,14 @@ class CloudflareBypass(object):
         
         r = s.request(method,url,headers = self.SetHeader() , cookies = self.ParseCookies(cookies) , data = data )
         if r:
-            sContent = r.text.encode("utf-8") 
+            sContent = r.text.encode("utf-8")
+            self.RedirectionUrl = r.url
+            self.Header = r.headers
         else:
             xbmc.log("Erreur, delete cookie" , xbmc.LOGNOTICE)
             sContent = ''
+            #self.RedirectionUrl = r.url
+            #self.Header = r.headers
             s.MemCookie = ''
             GestionCookie().DeleteCookie(self.host.replace('.', '_'))
         
