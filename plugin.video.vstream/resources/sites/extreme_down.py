@@ -14,14 +14,14 @@ import re
 import urllib
 import xbmcgui, xbmcvfs
 
-UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0'
+UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/69.0'
 headers = { 'User-Agent': UA }
 
 SITE_IDENTIFIER = 'extreme_down'
 SITE_NAME = 'Extreme-Download (beta)'
 SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
-URL_MAIN = 'https://www.extreme-d0wn.net/'
+URL_MAIN = 'https://www.extreme-down.xyz/'
 
 URL_SEARCH = ('https://ww2.extreme-d0wn.net/home.html', 'showMovies')
 URL_SEARCH_MOVIES = ('https://ww2.extreme-d0wn.net/home.html', 'showMovies')
