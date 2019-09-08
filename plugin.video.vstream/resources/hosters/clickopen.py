@@ -1,11 +1,12 @@
-#coding: utf-8
+#-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
 import re
-import base64
-
+import json
+UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
+#meme code frenchvid etc.. fvsio
 class cHoster(iHoster):
 
     def __init__(self):
@@ -56,39 +57,31 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
 
-        api_call = ''
+        url = 'https://clickopen.win/api/source/' + self.__sUrl.rsplit('/', 1)[1]
 
-        oRequest = cRequestHandler(self.__sUrl)
+        postdata = 'r=&d=clickopen.win'
+
+        oRequest = cRequestHandler(url)
+        oRequest.setRequestType(1)
+        oRequest.addHeaderEntry('User-Agent', UA)
+        # oRequest.addHeaderEntry('Accept', '*/*')
+        # oRequest.addHeaderEntry('Accept-Encoding','gzip, deflate, br')
+        # oRequest.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+        # oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+        oRequest.addHeaderEntry('Referer',self.__sUrl)
+        oRequest.addParametersLine(postdata)
         sHtmlContent = oRequest.request()
 
-        oParser = cParser()
-        sPattern = 'JuicyCodes\.Run\("(.+?)"\);'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+        page = json.loads(sHtmlContent)
+        if page:
+            url = []
+            qua = []
+            for x in page['data']:
+                url.append(x['file'])
+                qua.append(x['label'])
 
-        if (aResult[0] == True):
-
-            media =  aResult[1][0].replace('+', '')
-            media = base64.b64decode(media)
-
-            #cPacker decode
-            from resources.lib.packer import cPacker
-            media = cPacker().unpack(media)
-
-            if (media):
-
-                sPattern = '{"file":"(.+?)","label":"(.+?)"'
-                aResult = oParser.parse(media, sPattern)
-
-                if (aResult[0] == True):
-                #initialisation des tableaux
-                    url=[]
-                    qua=[]
-                #Remplissage des tableaux
-                    for i in aResult[1]:
-                        url.append(str(i[0]))
-                        qua.append(str(i[1]))
-                #Si une seule url
-                    api_call = dialog().VSselectqual(qua, url)
+            if (url):
+                api_call = dialog().VSselectqual(qua, url)
 
         if (api_call):
             return True, api_call
