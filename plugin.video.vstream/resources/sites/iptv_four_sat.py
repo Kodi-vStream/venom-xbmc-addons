@@ -53,7 +53,7 @@ def showDailyList():
 
     oParser = cParser()
     sHtmlContent = getHtml(sUrl)
-    sPattern = '<div class="td-module-thumb"><a href="([^"]+)" rel="bookmark".+?title="([^"]+)"><img.+?data-img-url="([^"]+)"'
+    sPattern = '<div class="td-module-thumb"><a href="([^"]+)" rel="bookmark".+?title="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
