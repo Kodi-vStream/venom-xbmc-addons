@@ -15,7 +15,7 @@ import urllib
 import xbmcgui, xbmcvfs
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/69.0'
-headers = { 'User-Agent': UA }
+headers = {'User-Agent': UA}
 
 SITE_IDENTIFIER = 'extreme_down'
 SITE_NAME = 'Extreme Down (bêta)'
@@ -23,9 +23,9 @@ SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, r�
 
 URL_MAIN = 'https://www.extreme-down.xyz/'
 
-URL_SEARCH = ('https://www.extreme-down.xyz/home.html', 'showMovies')
-URL_SEARCH_MOVIES = ('https://www.extreme-down.xyz/home.html', 'showMovies')
-URL_SEARCH_SERIES = ('https://www.extreme-down.xyz/home.html', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'home.html', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + 'home.html', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'home.html', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -428,14 +428,14 @@ def showMovies(sSearch = ''):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sSearch)
                 oOutputParameterHandler.addParameter('Nextpagesearch', aResult[1][0])
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
         else:
             sNextPage = __checkForNextPage(sHtmlContent)
             if (sNextPage != False):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if Nextpagesearch:
         oGui.setEndOfDirectory()
