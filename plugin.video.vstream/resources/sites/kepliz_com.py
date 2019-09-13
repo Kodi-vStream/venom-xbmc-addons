@@ -7,14 +7,16 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress#, VSlog
+from resources.lib.comaddon import progress
 import urllib2, urllib, re
-import unicodedata
 
 #Je garde le nom kepliz pour pas perturber
 SITE_IDENTIFIER = 'kepliz_com'
 SITE_NAME = 'Kepliz'
 SITE_DESC = 'Films en streaming'
+
+# Source compatible avec les clones : toblek, bofiaz, nimvon
+# mais pas compatible avec les clones, qui ont une redirection direct : sajbo, trozam, radego
 URL_HOST = 'http://www.wonior.com/'
 URL_MAIN = 'URL_MAIN'
 
@@ -110,19 +112,23 @@ def showMovies(sSearch = ''):
         #limite de caractere sinon bug de la recherche
         sSearch = sSearch[:20]
         sUrl = URL_MAIN + 'index.php?ordering=&searchphrase=all&option=com_search&searchword=' + sSearch.replace(' ', '+')
-        sPattern = '<h4><a href="\/[0-9a-zA-Z]+\/(.+?)"  >(.+?)<'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sPattern = '<span style="list-style-type:none;" >.+? href="\/[0-9a-zA-Z]+\/(.+?)">(.+?)<\/a>'
 
+    # En cas de recherche direct OU lors de la navigation dans les differentes pages de résultats d'une recherche
+    if('searchword=' in sUrl) :
+        sPattern = '<h4><a href="\/[0-9a-zA-Z]+\/(.+?)"  >(.+?)<'
+    else:
+        sPattern = '<span style="list-style-type:none;" >.+? href="\/[0-9a-zA-Z]+\/(.+?)">(.+?)<\/a>'
+    
     #L'url change tres souvent donc faut la retrouver
     req = urllib2.Request(URL_HOST)
     response = urllib2.urlopen(req)
     data = response.read()
     response.close()
     sMainUrl = ''
-    aResult = oParser.parse(data, '<a href="([0-9a-zA-Z]+)"')
+    aResult = oParser.parse(data, '<a.+?href="(/*[0-9a-zA-Z]+)"')   #Compatible avec plusieurs clones
 
     if aResult[0]:
         #memorisation pour la suite
@@ -171,7 +177,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sMainUrl + sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -210,10 +216,6 @@ def showHosters():
     sLink = None
     sPostUrl = None
     sHtmlContent = sHtmlContent.replace('\r', '')
-
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
 
     #Format classique
     sPattern = 'GRUDALpluginsphp\("player1",{link:"([^"]+)"}\);'
