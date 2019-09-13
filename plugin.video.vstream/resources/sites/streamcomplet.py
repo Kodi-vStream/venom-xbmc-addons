@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'streamcomplet'
 SITE_NAME = 'StreamComplet'
 SITE_DESC = 'Streaming Gratuit de 7210 Films Complets en VF.'
 
-URL_MAIN = 'https://stream-complet.me/'
+URL_MAIN = 'https://www2.stream-complet.me/'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
@@ -106,7 +106,7 @@ def showMovies(sSearch = ''):
 
             sThumb = URL_MAIN + aEntry[0]
             sUrl = URL_MAIN + aEntry[2]
-            sTitle = aEntry[1].replace('en streaming','')
+            sTitle = aEntry[1].replace('en HD','').replace('Voir ','').replace('streaming','').replace('vf et vostfr','')
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
@@ -167,7 +167,7 @@ def showLinks():
             if progress_.iscanceled():
                 break
 
-            sUrl = URL_MAIN + aEntry[0]
+            sUrl = URL_MAIN[:-1] + aEntry[0]
             sDisplayName = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, aEntry[1])
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -204,12 +204,12 @@ def showHosters():
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
-####################################
+#
 #
 # Ancient code du site .xyz
 # si retour en arriere
 #
-####################################
+#
 
 #    sPattern = '<iframe.+?src="(http(?:|s):\/\/media\.vimple\.me.+?f=([^"]+))"'
 #    aResult = oParser.parse(sHtmlContent, sPattern)
