@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress#,VSlog
 
 SITE_IDENTIFIER = 'libre_stream_org'
 SITE_NAME = 'Libre-Streaming'
@@ -305,7 +305,7 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            if '/player' in aEntry:
+            if '/player' in aEntry or 'lecteur' in aEntry:
                 sTitle = sMovieTitle + ' (Redirection)'
                 sUrl1 = aEntry.replace('player.full-stream.co/player?id=', 'full-stream.co/player.php?id=')
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -341,7 +341,7 @@ def seriesHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            if '/player' in aEntry[0] or 'full-stream.' in aEntry[0] :
+            if '/player' in aEntry[0] or 'full-stream.' in aEntry[0] or 'lecteur' in aEntry[0]:
                 sTitle = sMovieTitle + aEntry[1] + '(Redirection)'
                 sUrl1 = aEntry[0].replace('player.full-stream.co/player?id=', 'full-stream.co/player.php?id=')
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -363,7 +363,7 @@ def seriesHosters():
 
 def redirectHosters():
     oGui = cGui()
-    UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
+    UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:69.0) Gecko/20100101 Firefox/69.0'
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
