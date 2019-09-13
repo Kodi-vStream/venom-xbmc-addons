@@ -1,20 +1,19 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress#,VSlog
 from resources.lib.parser import cParser
-#from resources.lib.util import cUtil #outils pouvant etre utiles
+
 
 SITE_IDENTIFIER = 'film_vf_gratuit'
 SITE_NAME = 'Film VF gratuit'
 SITE_DESC = 'Films en streaming'
 
-URL_MAIN = 'http://voir.film-vf-gratuit.net/'
+URL_MAIN = 'http://streamgeo.net/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
@@ -23,7 +22,7 @@ FUNCTION_SEARCH = 'showMovies'
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_VIEWS = (URL_MAIN + 'tendance/', 'showMovies')
-MOVIE_NOTES = (URL_MAIN + 'evaluations/', 'showMovies')
+#MOVIE_NOTES = (URL_MAIN + 'evaluation/', 'showMovies') #plante kodi
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
 
@@ -42,9 +41,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'views.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'notes.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
+    # oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'notes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -71,7 +70,7 @@ def showGenres():
     oGui = cGui()
     oParser = cParser()
 
-    oRequestHandler = cRequestHandler(URL_MAIN)
+    oRequestHandler = cRequestHandler(MOVIE_NEWS[0])
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '<li class="cat-item cat-item.+?"><a href="([^"]+)".+?>([^<]+)<\/a> *<i>([^<]+)<\/i>'
@@ -93,7 +92,7 @@ def showMovieYears():
     oGui = cGui()
     oParser = cParser()
 
-    oRequestHandler = cRequestHandler(URL_MAIN)
+    oRequestHandler = cRequestHandler(MOVIE_NEWS[0])
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '<li><a href="([^<]+)">([^<]+)</a></li>'
@@ -147,7 +146,7 @@ def showMovies(sSearch = ''):
             sQual = aEntry[2]
             sUrl2 = aEntry[3]
             sDesc = ''
-            if not 'tendance/' in sUrl and not 'evaluations/' in sUrl:
+            if not 'tendance/' in sUrl and not 'evaluation/' in sUrl:
                 sDesc = aEntry[4].replace('&#38;', '&')
 
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
@@ -195,13 +194,13 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('https://www.youtube.com/embed/', '')
 
-    sPattern = '<iframe.+?src="([^"]+)"'
+    sPattern = "<li id='player-option-[0-9]+' class='dooplay_player_option' data-type='([^']+)' data-post='([^']+)' data-nume='([^']+)'>"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = aEntry
+            sHosterUrl = geturl(aEntry)
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
@@ -210,3 +209,30 @@ def showHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+    
+def geturl(aEntry):
+    oParser = cParser()
+    
+    sPost = aEntry[1]
+    sNume = aEntry[2]
+    sType = aEntry[0]
+    
+    pdata = 'action=doo_player_ajax&post='+ sPost + '&nume=' + sNume + '&type=' + sType
+    
+    sUrl = URL_MAIN + 'wp-admin/admin-ajax.php'
+
+    oRequest = cRequestHandler(sUrl)
+    oRequest.setRequestType(1)
+    oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0')
+    oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+    oRequest.addParametersLine(pdata)
+
+    sHtmlContent = oRequest.request()
+
+
+    sPattern = "<iframe.+?src='([^']+)'"
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        return aResult[1][0]
+    else:
+        return ''
