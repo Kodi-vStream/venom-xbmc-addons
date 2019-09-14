@@ -1,10 +1,7 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-
 from resources.lib.gui.hoster import cHosterGui
-#from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-#from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -17,13 +14,11 @@ SITE_IDENTIFIER = 'filmcomplet'
 SITE_NAME = 'Film Complet'
 SITE_DESC = 'Film Complet - film en streaming HD'
 
-URL_MAIN = 'https://ww2.mesfilms.top/'
+URL_MAIN = 'https://www.mesfilms.stream/'
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0'
 
-#definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle sera affichee.
-#LA RECHERCHE GLOBAL N'UTILE PAS showSearch MAIS DIRECTEMENT LA FONCTION INSCRITE DANS LA VARIABLE URL_SEARCH_*
 URL_SEARCH = (URL_MAIN + '?s=', 'showSearchResult')
-#recherche global films
+
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showSearchResult')
 FUNCTION_SEARCH = 'showSearchResult'
 

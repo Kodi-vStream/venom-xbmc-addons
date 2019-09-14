@@ -7,13 +7,13 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress#,VSlog
 
 SITE_IDENTIFIER = 'skstream_co'
 SITE_NAME = 'Skstream'
 SITE_DESC = 'Films & Séries'
 
-URL_MAIN = 'https://www.skstream.best/'
+URL_MAIN = 'https://www.skstream.to/'
 
 MOVIE_NEWS = (URL_MAIN + 'films', 'showMovies')
 MOVIE_MOVIE = ('http://films', 'showMenuMovies')
@@ -343,9 +343,12 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
+    
+    if sUrl.endswith(' '):
+        sUrl = sUrl[:-1]
+        
+    oRequest = cRequestHandler(sUrl)
+    sHtmlContent = oRequest.request()
 
     oParser = cParser()
     sPattern = "href='([^']+)' (?:|target=\"_blank\" )class=\"a_server"

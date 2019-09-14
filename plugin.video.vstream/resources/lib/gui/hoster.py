@@ -154,6 +154,8 @@ class cHosterGui:
                 return tmp
 
         #Gestion classique
+        if ('streamax' in sHostName):
+            return self.getHoster('streamax')
         if ('livestream' in sHostName):
             return self.getHoster('lien_direct')
         if ('gounlimited' in sHostName):
