@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'streamingk_com'
 SITE_NAME = 'StreamingK'
 SITE_DESC = 'Films, Séries & Mangas en streaming. Tout les meilleurs streaming en illimité.'
 
-URL_MAIN = 'https://ww1.streamingk.com/'
+URL_MAIN = 'https://streamingk.net/'
 
 MOVIE_NEWS = (URL_MAIN + 'category/films/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'category/films/', 'showMovies')
