@@ -7,10 +7,9 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
+#from resources.lib.comaddon import VSlog
 
-from resources.lib.comaddon import VSlog
-
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:69.0) Gecko/20100101 Firefox/69.0'
 
 class cHoster(iHoster):
 
@@ -66,18 +65,12 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         api_call = ''
-
-        #VSlog(self.__sUrl)
         
         oParser = cParser()
         oRequest = cRequestHandler(self.__sUrl)
         oRequest.addHeaderEntry('Referer', self.__sUrl)
         oRequest.addParameters('User-Agent', UA)
         sHtmlContent = oRequest.request()
-        
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
 
         sPattern = 'sources:* \[(?:{file:)*"([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -96,10 +89,10 @@ class cHoster(iHoster):
                 if (aResult[0] == True):
                     api_call = self.extractSmil(aResult[1][0])
                 else:
-                    sPattern = '{file: *xpro\("(.+?)"'
+                    sPattern = 'src:"([^"]+.mp4)"'
                     aResult = oParser.parse(sHtmlContent, sPattern)
                     if (aResult[0] == True):
-                        api_call = aResult[1][0].decode('rot13')
+                        api_call = aResult[1][0] #.decode('rot13')
 
         if (api_call):
             return True, api_call
