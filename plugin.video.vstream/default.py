@@ -147,7 +147,7 @@ class main:
                 function = getattr(plugins, sFunction)
                 function()
             except Exception as e:
-                progress().VSclose()    # Refermer la dialogue en cas d'exception  
+                progress().VSclose()    # Refermer la dialogue en cas d'exception, sinon blocage de Kodi 
                 VSlog('could not load site: ' + sSiteName + ' error: ' + str(e))
                 import traceback
                 traceback.print_exc()

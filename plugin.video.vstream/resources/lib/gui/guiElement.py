@@ -207,7 +207,7 @@ class cGuiElement:
 
         #Recherche saison et episode a faire pr serie uniquement
         if (True):
-
+            
             #m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))',sTitle,re.UNICODE)
             m = re.search(ur'(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', sTitle, re.UNICODE)
             if m:

@@ -171,7 +171,7 @@ class progress(xbmcgui.DialogProgress):
             dialog=DIALOG2
         if not dialog:
             return
-        
+
         if window(10101).getProperty('search') == 'true':
             return
         dialog.close()
