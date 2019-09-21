@@ -4,7 +4,6 @@
 
 #from resources.lib.statistic import cStatistic
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.home import cHome
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.pluginHandler import cPluginHandler
@@ -148,6 +147,7 @@ class main:
                 function = getattr(plugins, sFunction)
                 function()
             except Exception as e:
+                progress().VSclose()    # Refermer la dialogue en cas d'exception  
                 VSlog('could not load site: ' + sSiteName + ' error: ' + str(e))
                 import traceback
                 traceback.print_exc()
