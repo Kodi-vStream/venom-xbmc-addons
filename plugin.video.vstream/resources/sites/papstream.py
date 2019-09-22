@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'papstream'
 SITE_NAME = 'PapStream'
 SITE_DESC = 'Films, Séries & Mangas'
 
-URL_MAIN = 'https://www.papstream.site/'
+URL_MAIN = 'https://www.papstream.info/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + 'rechercher', 'showMovies')
@@ -379,7 +379,9 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('sUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-
+    
+    if sUrl.startswith('/'):
+        sUrl = URL_MAIN[:-1] + sUrl
     #headers = {'User-Agent': UA, 'Referer': refUrl}
 
     oRequestHandler = cRequestHandler(sUrl)
