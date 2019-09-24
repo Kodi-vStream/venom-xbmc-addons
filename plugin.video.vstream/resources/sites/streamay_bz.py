@@ -92,7 +92,7 @@ def showSearchMovies(sSearch = ''):
 
                 sTitle = aEntry[2]
                 sUrl = aEntry[0]
-                sThumb = re.sub('/w\d+', '/w342', aEntry[1])
+                sThumb = re.sub('/w\d+', '/w342', aEntry[1], 1)
                 if sThumb.startswith('/'):
                     sThumb = 'http:' + sThumb
 
@@ -180,9 +180,9 @@ def showMovieslist():
             sTitle = aEntry[2]
             sYear = aEntry[3]
 
-            sThumb = re.sub('/w\d+', '/w342', aEntry[1])
+            sThumb = re.sub('/w\d+', '/w342', aEntry[1], 1)
             if sThumb.startswith('/'):
-               sThumb = 'http:' + sThumb
+                sThumb = 'http:' + sThumb
 
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sYear)
 
@@ -229,7 +229,7 @@ def showMovies(sSearch = ''):
 
             sUrl = aEntry[1]
             sTitle = aEntry[2]
-            sThumb = re.sub('/w\d+', '/w342', aEntry[0])
+            sThumb = re.sub('/w\d+', '/w342', aEntry[0], 1)
             if sThumb.startswith('/'):
                 sThumb = 'http:' + sThumb
 

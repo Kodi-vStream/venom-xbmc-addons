@@ -217,7 +217,7 @@ def showMovies():
             if progress_.iscanceled():
                 break
 
-            sThumb = re.sub('/w\d+', '/w342', aEntry[0])
+            sThumb = re.sub('/w\d+', '/w342', aEntry[0], 1)
             sTitle = aEntry[1]
             sUrl2 = aEntry[2]
 

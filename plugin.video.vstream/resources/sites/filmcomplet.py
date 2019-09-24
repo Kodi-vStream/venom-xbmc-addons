@@ -192,7 +192,7 @@ def showSearchResult(sSearch = ''):
                 break
 
             sUrl = aEntry[0]
-            sThumb = re.sub('/w\d+', '/w342', aEntry[1])
+            sThumb = re.sub('/w\d+', '/w342', aEntry[1], 1)
             sTitle = aEntry[2]
             sDesc = aEntry[3]
 
@@ -240,7 +240,7 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sThumb = re.sub('/w\d+', '/w342', aEntry[0])
+            sThumb = re.sub('/w\d+', '/w342', aEntry[0], 1)
             sTitle = aEntry[1]
             sQual = aEntry[2]
             sUrl2 = aEntry[3]

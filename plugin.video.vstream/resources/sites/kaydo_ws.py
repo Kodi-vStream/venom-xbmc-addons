@@ -258,7 +258,7 @@ def ShowSaisonEpisodes():
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]Saison: ' + aEntry[0] + '[/COLOR]')
             else:
-                sThumb = re.sub('/w\d+', '/w342', aEntry[1])
+                sThumb = re.sub('/w\d+', '/w342', aEntry[1], 1)
                 if sThumb.startswith('//'):
                     sThumb = 'https:' + sThumb
                 sUrl2 = aEntry[2]
