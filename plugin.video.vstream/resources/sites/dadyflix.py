@@ -10,6 +10,8 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.comaddon import progress#, VSlog
 import re
+from datetime import date
+
 
 SITE_IDENTIFIER = 'dadyflix'
 SITE_NAME = 'DadyFlix'
@@ -134,8 +136,8 @@ def showGenres():
 
 def showMovieYears():
     oGui = cGui()
-
-    for i in reversed (xrange(1971, 2019)):
+    
+    for i in reversed (xrange(1971, date.today().year+1)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + Year + '/')
@@ -150,11 +152,11 @@ def showMovies(sSearch = ''):
 
     if sSearch:
         sUrl = sSearch
-        sPattern = '<a href="([^"]+)"><img src="([^"]+)" alt=.+?href=.+?>([^<]+)<'
+        sPattern = '<a href="([^"]+)"><img src="([^"]+)" alt=.+?<span class="(.+?)".+?href=.+?>([^<]+)<.+?"year">(.+?)<.+?"contenido"><p>(.+?)<'
     elif '/les-plus-populaires/' in sUrl or '/tendance/' in sUrl:
-        sPattern = '<img src="([^"]+)" alt="(?:film|serie) ([^"]+)streaming".+?(?:|quality">([^<]+)<.+?)href="([^"]+)"'
+        sPattern = '<img src="([^"]+)" alt="(?:film|serie) ([^"]+)streaming".+?(?:|quality">([^<]+)<.+?)href="([^"]+)".+?<span>(.+?)<'
     else:
-        sPattern = '<img src="([^"]+)" alt="(?:film|serie) ([^"]+)streaming".+?(?:|quality">([^<]+)<.+?)href="([^"]+)".+?div class="texto">([^<]+)</div>'
+        sPattern = '<img src="([^"]+)" alt="(?:film|serie) ([^"]+)streaming".+?(?:|quality">([^<]+)<.+?)href="([^"]+)".+?<span>(.+?)<.+?div class="texto">([^<]+)</div>'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -176,20 +178,22 @@ def showMovies(sSearch = ''):
 
             if sSearch:
                 sUrl2 = aEntry[0]
-                sThumb = re.sub('/w\d+', '/w342', aEntry[1])
-                sTitle = aEntry[2]
-                sQual = ''
+                sThumb = re.sub('/w\d+', '/w342', aEntry[1], 1)
+                sQual = aEntry[2].replace('tvshows', 'Série').replace('movies', 'Film')
+                sTitle = aEntry[3]
                 setDisplayName = ('%s [%s]') % (sTitle, sQual)
             else:
-                sThumb = re.sub('/w\d+', '/w342', aEntry[0])
+                sThumb = re.sub('/w\d+', '/w342', aEntry[0], 1)
                 sTitle = aEntry[1]
                 sQual = aEntry[2].replace('Haute-qualité', 'HD')
                 sUrl2 = aEntry[3]
-                setDisplayName = ('%s [%s]') % (sTitle, sQual)
 
+            sYear = aEntry[4]
+            setDisplayName = ('%s [%s](%s)') % (sTitle, sQual, sYear)
+    
             sDesc = ''
-            if len(aEntry) > 4:
-                sDesc = aEntry[4].replace('&#8217;', '\'').replace('&#8230;', '...').replace('>', '')
+            if len(aEntry) > 5:
+                sDesc = aEntry[5].replace('&#8217;', '\'').replace('&#8230;', '...').replace('>', '')
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 3:
@@ -200,6 +204,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sYear', sYear)
 
             if '/series/' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', setDisplayName, '', sThumb, sDesc, oOutputParameterHandler)
