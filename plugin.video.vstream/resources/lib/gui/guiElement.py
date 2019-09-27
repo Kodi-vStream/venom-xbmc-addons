@@ -4,7 +4,7 @@
 from resources.lib.comaddon import addon, xbmc
 from resources.lib.db import cDb
 
-import re, urllib, string
+import os, re, urllib, string
 
 #rouge E26543
 #jaune F7D571
@@ -33,7 +33,7 @@ class cGuiElement:
         self.__sTmdb = ''
         self.__sMediaUrl = ''
         self.__sSiteUrl = ''
-        #contient le titre qui seras coloré
+        #contient le titre qui seras colorer
         self.__sTitle = ''
         #contient le titre propre
         self.__sCleanTitle = ''
@@ -42,7 +42,6 @@ class cGuiElement:
         #contient le titre modifier pour BDD
         self.__sFileName = ''
         self.__sDescription = ''
-        self.__sGenre = ''
         self.__sThumbnail = ''
         self.__sPoster = ''
         self.__Season = ''
@@ -126,15 +125,6 @@ class cGuiElement:
     def setYear(self, data):
         self.__Year = data
 
-    def getYear(self):
-        return self.__Year
-
-    def setGenre(self, genre):
-        self.__sGenre = genre
-
-    def getGenre(self):
-        return self.__sGenre
-
     def setMeta(self, sMeta):
         self.__sMeta = sMeta
 
@@ -196,7 +186,7 @@ class cGuiElement:
         if string:
             sTitle = sTitle.replace(string.group(0), '')
             self.__Year = str(string.group(0)[1:5])
-            self.addItemValues('year', self.__Year)
+            self.addItemValues('Year', self.__Year)
 
         #recherche une date
         string = re.search('([\d]{2}[\/|-]\d{2}[\/|-]\d{4})', sTitle)
@@ -366,11 +356,6 @@ class cGuiElement:
     def addItemValues(self, sItemKey, mItemValue):
         self.__aItemValues[sItemKey] = mItemValue
 
-    def getItemValue(self, sItemKey):
-        if sItemKey not in self.__aItemValues:
-            return
-        return self.__aItemValues[sItemKey]
-
     def getWatched(self):
 
         #Fonctionne pour marquer lus un dossier
@@ -378,7 +363,7 @@ class cGuiElement:
             return ''
 
         meta = {}
-        meta['title'] = self.getFileName() # A partir du titre original
+        meta['title'] = urllib.quote_plus(self.getTitle())
         meta['site'] = self.getSiteUrl()
 
         data = self.DB.get_watched(meta)
@@ -399,8 +384,8 @@ class cGuiElement:
         data = re.sub(r'\[.*\]|\(.*\)', r'', str(data))
         data = data.replace('VF', '').replace('VOSTFR', '').replace('FR', '')
         #data=re.sub(r'[0-9]+?', r'', str(data))
-        data = data.replace('-', ' ')   # on garde un espace pour que Orient-express ne devienne pas Orientexpress
-        data = data.replace('Saison', '').replace('saison', '').replace('Season', '').replace('Episode', '').replace('episode', '')
+        data = data.replace('-', '')
+        data = data.replace('-', '').replace('Saison', '').replace('saison', '').replace('Season', '').replace('Episode', '').replace('episode', '')
         data = re.sub('[^%s]' % string.ascii_lowercase, ' ', data.lower())
         #data = urllib.quote_plus(data)
 
@@ -453,18 +438,19 @@ class cGuiElement:
 
     def getMetadonne(self):
 
-        metaType = self.getMeta()
-        if metaType == 0:   # non media -> on sort, et on enleve le fanart
-            self.addItemProperties('fanart_image', '')
-            return
-
         sTitle = self.__sFileName
+
         #sTitle = self.__sTitle.decode('latin-1').encode("utf-8")
         #sTitle = re.sub(r'\[.*\]|\(.*\)', r'', str(self.__sFileName))
         #sTitle = sTitle.replace('VF', '').replace('VOSTFR', '').replace('FR', '')
 
-        # On nettoie le titre pour la recherche
-        sTitle=sTitle.replace('version longue', '')
+        #get_meta(self, media_type, name, imdb_id='', tmdb_id='', year='', overlay=6, update=False):
+        metaType = self.getMeta()
+
+        # non media -> pas de fanart
+        if metaType == 0:
+            self.addItemProperties('fanart_image', '')
+            return
 
         # Integrale de films, on nettoie le titre pour la recherche
         if metaType == 3 :
@@ -543,26 +529,30 @@ class cGuiElement:
         # else:
             # return
 
-#         if 'playcount' in meta:
-#             del meta['playcount']
-#         if 'trailer' in meta:
-#             del meta['trailer']
+        del meta['playcount']
+        del meta['trailer']
 
-        meta['title'] = self.getTitle()
+        if meta['title']:
+            meta['title'] = self.getTitle()
 
         for key, value in meta.items():
             self.addItemValues(key, value)
 
-        if 'imdb_id' in meta and meta['imdb_id']:
+        if meta['imdb_id']:
             self.__ImdbId = meta['imdb_id']
 
-        if 'tmdb_id' in meta and meta['tmdb_id']:
-            self.__TmdbId = meta['tmdb_id']
-#         if 'tvdb_id' in meta and meta['tvdb_id']:
-#             self.__TvdbId = meta['tvdb_id']
+        try:
+            if meta['tmdb_id']:
+                self.__TmdbId = meta['tmdb_id']
+        except: pass
+
+        try:
+            if meta['tvdb_id']:
+                self.__TmdbId = meta['tvdb_id']
+        except: pass
 
         # Si fanart trouvé dans les meta alors on l'utilise, sinon on n'en met pas
-        if 'backdrop_url' in meta and meta['backdrop_url']:
+        if meta['backdrop_url']:
             self.addItemProperties('fanart_image', meta['backdrop_url'])
             self.__sFanart = meta['backdrop_url']
         else:
@@ -580,11 +570,19 @@ class cGuiElement:
         return
 
     def getItemValues(self):
-        self.addItemValues('Title', self.getTitle())
+        self.__aItemValues['Title'] = self.getTitle()
+        self.__aItemValues['Plot'] = self.getDescription()
+
+        # Used only if there is data in db
+        w = self.getWatched()
+        if w == 1:
+            self.__aItemValues['Playcount'] = w
 
         #tmdbid
         if self.getTmdbId():
             self.addItemProperties('TmdbId', str(self.getTmdbId()))
+
+        #self.addItemProperties('fanart_image', self.__sFanart)
 
         # - Video Values:
         # - genre : string (Comedy)
@@ -626,24 +624,6 @@ class cGuiElement:
 
         if self.getMetaAddon() == 'true':
             self.getMetadonne()
-
-        # Utilisation des infos connues si non trouvées
-        if not self.getItemValue('plot') and self.getDescription():
-            self.addItemValues('plot', self.getDescription())
-        if not self.getItemValue('year') and self.getYear():
-            self.addItemValues('year', self.getYear())
-        if not self.getItemValue('cover_url') and self.getThumbnail():
-            self.addItemValues('cover_url', self.getThumbnail())
-        if not self.getItemValue('backdrop_url') and self.getPoster():
-            self.addItemValues('backdrop_url', self.getPoster())
-        if not self.getItemValue('genre') and self.getGenre():
-            self.addItemValues('genre', self.getGenre())
-
-        # Used only if there is data in db, overwrite getMetadonne()
-        w = self.getWatched()
-        if w == 1:
-            self.addItemValues('playcount', w)
-
         return self.__aItemValues
 
     def addItemProperties(self, sPropertyKey, mPropertyValue):
