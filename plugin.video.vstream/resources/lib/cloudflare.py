@@ -19,6 +19,9 @@ try:
     from urlparse import urlparse
 except ImportError:
     from urllib.parse import urlparse
+    
+#old version
+from requests.packages.urllib3.util.ssl_ import create_urllib3_context
 
 ##########################################################################################################################################################
 #
@@ -30,11 +33,15 @@ except ImportError:
 class CipherSuiteAdapter(HTTPAdapter):
 
     def __init__(self, cipherSuite=None, **kwargs):
+        self.cipherSuite = cipherSuite
 
-        self.ssl_context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
-        self.ssl_context.set_ciphers(cipherSuite)
-
-        self.ssl_context.options |= (ssl.OP_NO_SSLv2 | ssl.OP_NO_SSLv3 | ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1)
+        if hasattr(ssl, 'PROTOCOL_TLS'):
+            self.ssl_context = create_urllib3_context(
+                ssl_version=getattr(ssl, 'PROTOCOL_TLSv1_3', ssl.PROTOCOL_TLSv1_2),
+                ciphers=self.cipherSuite
+            )
+        else:
+            self.ssl_context = create_urllib3_context(ssl_version=ssl.PROTOCOL_TLSv1)
 
         super(CipherSuiteAdapter, self).__init__(**kwargs)
 
@@ -49,6 +56,26 @@ class CipherSuiteAdapter(HTTPAdapter):
 ##########################################################################################################################################################
 
 Mode_Debug = True
+
+if (False):
+    Mode_Debug = True
+    import logging
+    # These two lines enable debugging at httplib level (requests->urllib3->http.client)
+    # You will see the REQUEST, including HEADERS and DATA, and RESPONSE with HEADERS but without DATA.
+    # The only thing missing will be the response.body which is not logged.
+    try:
+        import http.client as http_client
+    except ImportError:
+        # Python 2
+        import httplib as http_client
+    http_client.HTTPConnection.debuglevel = 1
+
+    # You must initialize logging, otherwise you'll not see debug output.
+    logging.basicConfig()
+    logging.getLogger().setLevel(logging.DEBUG)
+    requests_log = logging.getLogger("requests.packages.urllib3")
+    requests_log.setLevel(logging.DEBUG)
+    requests_log.propagate = True
 
 #---------------------------------------------------------
 #Gros probleme, mais qui a l'air de passer
