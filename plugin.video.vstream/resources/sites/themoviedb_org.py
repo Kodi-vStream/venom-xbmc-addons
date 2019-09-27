@@ -10,8 +10,8 @@ from resources.lib.tmdb import cTMDb
 
 from resources.lib.comaddon import progress, addon, dialog, VSupdate
 
-try:    import json
-except: import simplejson as json
+# try:    import json
+# except: import simplejson as json
 
 SITE_IDENTIFIER = 'themoviedb_org'
 SITE_NAME = '[COLOR orange]TheMovieDB[/COLOR]'
@@ -466,17 +466,17 @@ def showUserLists():
 def showFolderList():
     oGui = cGui()
     liste = []
-    liste.append( ['Top Manga', '31665'] )
-    liste.append( ['Top Manga 2', '31695'] )
     liste.append( ['Disney Classic', '338'] )
     liste.append( ['Pixar', '3700'] )
-    liste.append( ['Top 50 des plus grands films', '10'] )
     liste.append( ['Marvel', '1'] )
     liste.append( ['DC Comics Universe', '3'] )
+    liste.append( ['Top 50 des plus grands films', '10'] )
     liste.append( ['Les films fascinants ', '43'] )
     liste.append( ['Gagnants des Oscars', '31670'] )
     liste.append( ['Les adaptations', '9883'] )
     liste.append( ['science-fiction', '3945'] )
+    liste.append( ['Top Manga', '31665'] )
+    liste.append( ['Top Manga 2', '31695'] )
     liste.append( ['Best séries', '36788'] )
     liste.append( ['Films de Noel', '40944'] )
     #liste.append( ['nom de la liste', 'ID de la liste'] )
@@ -493,9 +493,6 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     grab = cTMDb()
     addons = addon()
-
-    POSTER_URL = ('https://image.tmdb.org/t/p/%s') % (addons.getSetting('poster_tmdb'))
-    FANART_URL = ('https://image.tmdb.org/t/p/%s') % (addons.getSetting('backdrop_tmdb'))
 
     oInputParameterHandler = cInputParameterHandler()
 
@@ -518,8 +515,6 @@ def showMovies(sSearch = ''):
 
         sUrl = oInputParameterHandler.getValue('siteUrl')
         result = grab.getUrl(sUrl, iPage, term)
-        #result = grab.getUrl(sUrl, iPage)
-
 
     total = len(result)
     if (total > 0):
@@ -531,17 +526,10 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sId, sTitle, sOtitle, sThumb, sFanart, sDesc = i['id'], i['title'], i['original_title'], i['poster_path'], i['backdrop_path'], i['overview']
-            if sThumb:
-                sThumb = POSTER_URL + sThumb
-            else:
-                sThumb = ''
+            i = grab._format(i,'')
 
+            sId, sTitle, sType, sThumb, sFanart, sVote, sDesc, year = i['tmdb_id'], i['title'], i['media_type'], i['cover_url'], i['backdrop_url'], i['rating'], i['plot'], i['year']
             sTitle = sTitle.encode("utf-8")
-            if sFanart:
-                sFanart = FANART_URL + sFanart
-            else :
-                sFanart = ''
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://tmdb/%s' % sId)
@@ -551,7 +539,6 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('type', 'film')
             oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
 
-            #oGui.addMovieDB('globalSearch', 'showHosters', sTitle, 'films.png', sThumb, sFanart, oOutputParameterHandler)
             cGui.CONTENT = "movies"
             oGuiElement = cGuiElement()
             oGuiElement.setTmdbId(sId)
@@ -561,12 +548,14 @@ def showMovies(sSearch = ''):
             oGuiElement.setFileName(sTitle)
             oGuiElement.setIcon('films.png')
             oGuiElement.setMeta(1)
-            oGuiElement.setMetaAddon('true')
-            #oGuiElement.setThumbnail(sThumb)
-            #oGuiElement.setPoster(sThumb)
-            #oGuiElement.setFanart(sFanart)
+            oGuiElement.setThumbnail(sThumb)
+            oGuiElement.setPoster(sThumb)
+            oGuiElement.setFanart(sFanart)
             oGuiElement.setCat(1)
             oGuiElement.setDescription(sDesc)
+            oGuiElement.setYear(year)
+            if 'genre' in i:
+                oGuiElement.setGenre(i['genre'])
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
@@ -583,7 +572,7 @@ def showMovies(sSearch = ''):
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', oOutputParameterHandler)
 
 
-    #chnagement mode
+    #changement mode
     view = addons.getSetting('visuel-view')
 
     oGui.setEndOfDirectory(view)
@@ -673,7 +662,6 @@ def showSeries(sSearch=''):
             oGuiElement.setFileName(sTitle)
             oGuiElement.setIcon('series.png')
             oGuiElement.setMeta(2)
-            oGuiElement.setMetaAddon('true')
             #oGuiElement.setThumbnail(sThumb)
             #oGuiElement.setPoster(sThumb)
             #oGuiElement.setFanart(sFanart)
@@ -787,7 +775,6 @@ def showSeriesSaison():
             oGuiElement.setFileName(sMovieTitle)
             oGuiElement.setIcon('series.png')
             oGuiElement.setMeta(2)
-            oGuiElement.setMetaAddon('true')
             #oGuiElement.setThumbnail(sThumb)
             #oGuiElement.setPoster(sThumb)
             #oGuiElement.setFanart(sFanart)
@@ -897,7 +884,6 @@ def showSeriesEpisode():
             oGuiElement.setFileName(sMovieTitle)
             oGuiElement.setIcon('series.png')
             oGuiElement.setMeta(2)
-            oGuiElement.setMetaAddon('true')
             #oGuiElement.setThumbnail(sThumb)
             #oGuiElement.setFanart(sFanart)
             oGuiElement.setCat(2)
@@ -1064,17 +1050,16 @@ def showFilmActor():
             oGuiElement.setFileName(sTitle)
             oGuiElement.setIcon('actors.png')
             oGuiElement.setMeta(1)
-            oGuiElement.setMetaAddon('true')
-            #oGuiElement.setThumbnail(sThumb)
-            #oGuiElement.setPoster(sThumb)
-            #oGuiElement.setFanart(sFanart)
+            oGuiElement.setThumbnail(sThumb)
+            oGuiElement.setPoster(sThumb)
+            oGuiElement.setFanart(sFanart)
             oGuiElement.setCat(1)
-            #oGuiElement.setDescription(sDesc)
+            oGuiElement.setDescription(sDesc)
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
-         #pas de paramettre de page
+        #pas de paramettre de page
         # if (iPage > 0):
             # iNextPage = int(iPage) + 1
             # oOutputParameterHandler = cOutputParameterHandler()
@@ -1087,11 +1072,9 @@ def showFilmActor():
 
 
 def showLists():
+    oGui = cGui()
     grab = cTMDb()
     addons = addon()
-
-    POSTER_URL = ('https://image.tmdb.org/t/p/%s') % (addons.getSetting('poster_tmdb'))
-    FANART_URL = ('https://image.tmdb.org/t/p/%s') % (addons.getSetting('backdrop_tmdb'))
 
     oInputParameterHandler = cInputParameterHandler()
 
@@ -1100,14 +1083,9 @@ def showLists():
         iPage = oInputParameterHandler.getValue('page')
 
     sUrl = oInputParameterHandler.getValue('siteUrl')
-
-
     result = grab.getUrl('list/' + sUrl, iPage, '')
 
-    oGui = cGui()
-
     total = len(result)
-
     if (total > 0):
         total = len(result['items'])
         progress_ = progress().VScreate(SITE_NAME)
@@ -1117,25 +1095,11 @@ def showLists():
             if progress_.iscanceled():
                 break
 
-            sId, sType, sThumb, sFanart, sVote, sDesc = i['id'], i['media_type'], i['poster_path'], i['backdrop_path'], i['vote_average'], i['overview']
+            i = grab._format(i,'')
+            
+            sId, sTitle, sType, sThumb, sFanart, sVote, sDesc, year = i['tmdb_id'], i['title'], i['media_type'], i['cover_url'], i['backdrop_url'], i['rating'], i['plot'], i['year']
 
-            if sThumb:
-                sThumb = POSTER_URL + sThumb
-            else:
-                sThumb = ''
-
-            if sFanart:
-                sFanart = FANART_URL + sFanart
-            else :
-                sFanart = ''
-
-            sTitle = "None"
-
-            if 'name' in i:
-                sTitle = i['name'].encode("utf-8")
-            if 'title' in i:
-                sTitle = i['title'].encode("utf-8")
-
+            sTitle = sTitle.encode("utf-8")
             sDisplayTitle = "%s (%s)" % (sTitle, sVote)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -1145,10 +1109,7 @@ def showLists():
             oOutputParameterHandler.addParameter('sId', sId)
             oOutputParameterHandler.addParameter('sFanart', sFanart)
             oOutputParameterHandler.addParameter('sTmdbId', sId)
-            #oOutputParameterHandler.addParameter('searchtext', sTitle)
             oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
-
-            #oGui.addTVDB(SITE_IDENTIFIER, 'showSeriesSaison', sTitle, 'series.png', sThumb, sFanart, oOutputParameterHandler)
 
             cGui.CONTENT = "movies"
             oGuiElement = cGuiElement()
@@ -1157,18 +1118,21 @@ def showLists():
             oGuiElement.setFunction('showSearch')
             oGuiElement.setTitle(sDisplayTitle)
             oGuiElement.setFileName(sTitle)
-            oGuiElement.setIcon('series.png')
             if sType == 'movie':
+                oGuiElement.setIcon('films.png')
                 oGuiElement.setMeta(1)
                 oGuiElement.setCat(1)
             elif sType == 'tv':
+                oGuiElement.setIcon('series.png')
                 oGuiElement.setMeta(2)
                 oGuiElement.setCat(2)
-            oGuiElement.setMetaAddon('true')
-            #oGuiElement.setThumbnail(sThumb)
-            #oGuiElement.setPoster(sThumb)
-            #oGuiElement.setFanart(sFanart)
+            oGuiElement.setThumbnail(sThumb)
+            oGuiElement.setPoster(sThumb)
+            oGuiElement.setFanart(sFanart)
             oGuiElement.setDescription(sDesc)
+            oGuiElement.setYear(year)
+            if 'genre' in i:
+                oGuiElement.setGenre(i['genre'])
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
