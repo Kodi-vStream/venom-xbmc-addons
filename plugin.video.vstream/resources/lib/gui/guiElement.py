@@ -207,8 +207,7 @@ class cGuiElement:
 
         #Recherche saison et episode a faire pr serie uniquement
         if (True):
-            SXEX = ''
-
+            
             #m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))',sTitle,re.UNICODE)
             m = re.search(ur'(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', sTitle, re.UNICODE)
             if m:
@@ -286,16 +285,17 @@ class cGuiElement:
         return sTitle, False
 
     def setTitle(self, sTitle):
-        self.__sTitle = sTitle
+        self.__sCleanTitle = sTitle
+        if not '[/COLOR]' in sTitle:
+            self.__sTitle = self.TraiteTitre(sTitle)
+        else:
+            self.__sTitle = sTitle
 
     def getTitle(self):
-        sTitle = self.__sTitle
-        if not sTitle.startswith('[COLOR'):
-            sTitle = self.TraiteTitre(sTitle)
-        return sTitle
+        return self.__sTitle
 
     def getCleanTitle(self):
-        return self.__sTitle
+        return self.__sCleanTitle
 
     def setTitleSecond(self, sTitleSecond):
         self.__sTitleSecond = sTitleSecond
@@ -421,19 +421,19 @@ class cGuiElement:
         'episode': xbmc.getInfoLabel('ListItem.episode')
         }
 
-        if meta['title']:
+        if 'title' in meta and meta['title']:
             meta['title'] = self.getTitle()
 
         for key, value in meta.items():
             self.addItemValues(key, value)
 
-        if meta['backdrop_url']:
+        if 'backdrop_url' in meta and meta['backdrop_url']:
             self.addItemProperties('fanart_image', meta['backdrop_url'])
             self.__sFanart = meta['backdrop_url']
-        if meta['trailer']:
+        if 'trailer' in meta and meta['trailer']:
             meta['trailer'] = meta['trailer'].replace(u'\u200e', '').replace(u'\u200f', '')
             self.__sTrailerUrl = meta['trailer']
-        if meta['cover_url']:
+        if 'cover_url' in meta and meta['cover_url']:
             self.__sThumbnail = meta['cover_url']
             self.__sPoster = meta['cover_url']
 
@@ -469,7 +469,6 @@ class cGuiElement:
             sTitle=sTitle.replace('hexalogie', '')
             sTitle=sTitle.replace('tetralogie', '')
 
-        sType = '1'
         sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'movie')
 
         if sType:
@@ -515,7 +514,7 @@ class cGuiElement:
             # try:
                 # from metahandler import metahandlers
                 # grab = metahandlers.MetaData(preparezip=False, tmdb_api_key=cConfig().getSetting('api_tmdb'))
-               # Nom a nettoyer ?
+                # Nom a nettoyer ?
                 #attention l'annee peut mettre le bordel a cause des differences de sortie
                 # args = ("tvshow", self.__sFileName)
                 # kwargs = {}
@@ -568,7 +567,7 @@ class cGuiElement:
 
         # Pas de changement de cover pour les coffrets de films
         if metaType != 3:
-            if meta['cover_url']:
+            if 'cover_url' in meta and meta['cover_url']:
                 self.__sThumbnail = meta['cover_url']
                 self.__sPoster = meta['cover_url']
         return
@@ -588,7 +587,7 @@ class cGuiElement:
 
         #self.addItemProperties('fanart_image', self.__sFanart)
 
-         # - Video Values:
+        # - Video Values:
         # - genre : string (Comedy)
         # - year : integer (2009)
         # - episode : integer (4)
