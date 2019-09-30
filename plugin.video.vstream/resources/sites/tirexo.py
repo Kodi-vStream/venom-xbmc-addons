@@ -526,7 +526,7 @@ def showSeriesLinks():
     sHtmlContent = oRequestHandler.request()
 
     #Affichage du texte
-    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles pour cette saison:[/COLOR]')
+    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles pour cette saison :[/COLOR]')
 
     #récupération du Synopsis
     try:
@@ -549,6 +549,10 @@ def showSeriesLinks():
     if (aResult[0]):
         sTitle = aResult[1][0][0] + aResult[1][0][1]
 
+    numSaison = str(aResult[1][0][1]).lower().replace("saison", "").strip()
+    saisons = []
+    saisons.append(numSaison)
+    
     #on recherche d'abord la qualité courante
     sPattern = 'Qualité (.+?) \| (.+?)<br>'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -569,8 +573,10 @@ def showSeriesLinks():
 
     #on regarde si dispo dans d'autres qualités
     sHtmlContent1 = CutQual(sHtmlContent)
-    sPattern1 = '<a href="([^"]+)"><span class="otherquality">.+?<b>([^"]+)<\/b>.+?<b>([^"]+)<\/b>'
+    sPattern1 = '<a href="([^"]+)"><span class="otherquality">.+?<b>([^"]+)<\/b>.+?<b>([^"]+)<\/b>.+?<b> (.+?)<'
     aResult1 = oParser.parse(sHtmlContent1, sPattern1)
+    
+    otherSaison = False
 
     if (aResult1[0] == True):
         total = len(aResult1[1])
@@ -579,43 +585,51 @@ def showSeriesLinks():
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
+            
+            # Si saison différente
+            sSaison = aEntry[1].strip()
+            if numSaison != sSaison:
+                otherSaison = True
+                continue
+
+            sQual = aEntry[2]
+            sLang = aEntry[3]
+            sDisplayTitle = ('%s [%s] %s') % (sTitle, sQual, sLang)
 
             sUrl = aEntry[0]
-            sSaison = 'S ' + aEntry[1]
-            sQual = aEntry[2]
-            sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
-
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     #on regarde si dispo d'autres saisons
-    sHtmlContent2 = CutSais(sHtmlContent)
-    sPattern2 = '<a href="([^"]+)"><span class="otherquality"><span style=\'color: #.{6};\'> ([^"]+) <\/b>\(.+?\) </span><span style="color:#.{6}"><b>([^"]+)<\/b><\/span>'
-    aResult2 = oParser.parse(sHtmlContent2, sPattern2)
+    if (otherSaison):
 
-    #Affichage du texte
-    if (aResult2[0] == True):
-        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Autres Saisons disponibles pour cette série:[/COLOR]')
+        #Affichage du titre
+        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Autres saisons disponibles pour cette série :[/COLOR]')
 
-        for aEntry in aResult2[1]:
+        # Une ligne par saison, pas besoin d'afficher les qualités ici
+        for aEntry in aResult1[1]:
+
+            sSaison = aEntry[1].strip()
+            if sSaison in saisons:
+                continue
+            saisons.append(sSaison)
+            sSaison = 'Saison ' + sSaison
+            sDisplayTitle = ('%s %s') % (sMovieTitle, sSaison)
 
             sUrl = aEntry[0]
-            sSaison = aEntry[1].replace('<b>', '')
-            sQual = aEntry[2]
-            sTitle = ('%s %s [%s]') % (sSaison, sMovieTitle, sQual)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

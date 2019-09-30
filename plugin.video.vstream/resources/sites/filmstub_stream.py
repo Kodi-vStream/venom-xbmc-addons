@@ -201,7 +201,7 @@ def showMovies(sSearch = ''):
 
             if 'letters' in sUrl:
                 sUrl2 = aEntry[0]
-                sThumb = re.sub('/w\d+', '/w342', aEntry[1])
+                sThumb = re.sub('/w\d+', '/w342', aEntry[1], 1)
                 sTitle = aEntry[3]
                 sYear = aEntry[4]
                 #aEntry[2] sers à faire la difference entre film et serie
@@ -209,7 +209,7 @@ def showMovies(sSearch = ''):
                 sDisplayTitle = ('%s (%s)') % (sTitle, sYear)
             else:
                 sUrl2 = aEntry[0]
-                sThumb = re.sub('/w\d+', '/w342', aEntry[1])
+                sThumb = re.sub('/w\d+', '/w342', aEntry[1], 1)
                 sTitle = aEntry[2]
                 sYear = aEntry[3]
 
