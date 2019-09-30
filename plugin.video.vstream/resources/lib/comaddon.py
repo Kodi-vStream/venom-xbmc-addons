@@ -166,12 +166,7 @@ class progress(xbmcgui.DialogProgress):
         dialog.update(iPercent, 'Loading: '+str(COUNT)+'/'+str(total), text)
 
 
-    def VSclose(self, dialog=''):
-        if not dialog and DIALOG2:
-            dialog=DIALOG2
-        if not dialog:
-            return
-
+    def VSclose(self, dialog):
         if window(10101).getProperty('search') == 'true':
             return
         dialog.close()
