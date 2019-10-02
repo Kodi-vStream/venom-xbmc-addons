@@ -55,7 +55,7 @@ class CipherSuiteAdapter(HTTPAdapter):
 
 ##########################################################################################################################################################
 
-Mode_Debug = False
+Mode_Debug = True
 
 if (False):
     Mode_Debug = True
@@ -343,6 +343,9 @@ class CloudflareBypass(object):
                 cookies = cookieMem
             else:
                 cookies = self.Memorised_Cookies + '; ' + cookieMem
+        else:
+            if (Mode_Debug):
+                VSlog('Pas de cookies present sur disque ' )
                 
         data = {}
         if postdata:
@@ -482,10 +485,11 @@ class CloudflareScraper(Session):
             VSlog("url : " + url )
             VSlog("data send : " + str(kwargs.get('params','')) )
             VSlog("param send : " + str(kwargs.get('data','')) )
-            
+               
         resp = super(CloudflareScraper, self).request(method, url, *args, **kwargs)
 
-        #VSlog( 'cookie recu ' + str(resp.cookies.get_dict())  )
+        if Mode_Debug:
+            VSlog( 'cookie recu ' + str(resp.cookies.get_dict())  )
 
         #save cookie
         self.MemCookie.update( resp.cookies.get_dict() )
