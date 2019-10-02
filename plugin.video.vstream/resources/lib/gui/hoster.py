@@ -67,10 +67,6 @@ class cHosterGui:
         else:
             oGuiElement.setCat('4')
 
-        #existe dans le menu krypton 17
-        if not isKrypton():
-            oGui.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-
         #context playlit menu
         oContext = cContextElement()
         oContext.setFile('cHosterGui')
