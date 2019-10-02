@@ -161,7 +161,7 @@ class cRequestHandler:
                 #Protected by cloudFlare ?
                 from resources.lib import cloudflare
                 if cloudflare.CheckIfActive(e.read()):
- 
+                    self.__sResponseHeader = e.hdrs
                     cookies = self.GetCookies()
                     VSlog( 'Page protegee par cloudflare')
                     CF = cloudflare.CloudflareBypass()
