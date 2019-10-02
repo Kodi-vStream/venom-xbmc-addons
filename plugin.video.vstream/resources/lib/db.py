@@ -39,6 +39,7 @@ class cDb:
                 self.db.row_factory = sqlite.Row
                 self.dbcur = self.db.cursor()
                 self._create_tables()
+                return
         except:
             VSlog('erreur: Impossible d ecrire sur %s' % self.REALDB )
             pass
@@ -50,16 +51,14 @@ class cDb:
         except:
             VSlog('erreur: Impossible de ce connecter sur %s' % self.REALDB )
             pass
-
         
-      
-
     def __del__(self):
         ''' Cleanup db when object destroyed '''
         try:
             self.dbcur.close()
-            self.dbcon.close()
-        except: pass
+            self.db.close()
+        except Exception, e:
+            pass
 
     def _create_tables(self):
 
@@ -118,7 +117,6 @@ class cDb:
                 VSlog('SQL UPDATE history Successfully')
             VSlog('SQL ERROR INSERT') 
             pass
-        self.db.close()
 
     def insert_resume(self, meta):
         title = self.str_conv(meta['title'])
@@ -137,7 +135,6 @@ class cDb:
             #print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
             VSlog('SQL ERROR INSERT') 
             pass
-        self.db.close()  
 
     def insert_watched(self, meta):
 
@@ -152,7 +149,6 @@ class cDb:
             #print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
             VSlog('SQL ERROR INSERT') 
             pass
-        self.db.close()
 
     def get_history(self):
     
@@ -166,7 +162,6 @@ class cDb:
         except Exception, e:
             VSlog('SQL ERROR EXECUTE') 
             return None
-        self.dbcur.close()
 
     def get_resume(self, meta):
         title = self.str_conv(meta['title'])
@@ -185,7 +180,6 @@ class cDb:
         self.dbcur.close()
 
     def get_watched(self, meta):        
-        count = 0
         site = urllib.quote_plus(meta['site'])
         sql_select = "SELECT * FROM watched WHERE site = '%s'" % (site)
 
@@ -195,14 +189,11 @@ class cDb:
             matchedrow = self.dbcur.fetchall()
 
             if matchedrow:
-                count = 1
-            else:
-                count = 0    
-            return count        
+                return 1
+            return 0
         except Exception, e:
             VSlog('SQL ERROR EXECUTE') 
             return None
-        self.dbcur.close()          
 
     def del_history(self):
     
@@ -221,7 +212,6 @@ class cDb:
         except Exception, e:
             VSlog('SQL ERROR DELETE') 
             return False, False
-        self.dbcur.close()  
     
     
     def del_watched(self, meta):
@@ -235,7 +225,6 @@ class cDb:
         except Exception, e:
             VSlog('SQL ERROR EXECUTE') 
             return False, False
-        self.dbcur.close() 
         
     def del_resume(self, meta):
         site = urllib.quote_plus(meta['site'])
@@ -249,8 +238,6 @@ class cDb:
         except Exception, e:
             VSlog('SQL ERROR EXECUTE') 
             return False, False
-        self.dbcur.close()
-
         
         
     #***********************************
@@ -274,14 +261,13 @@ class cDb:
             
             self.db.commit() 
             
-            self.DIALOG.VSinfo('Enregistré avec succés', meta['title'])
+            self.DIALOG.VSinfo('Enregistré avec succès', meta['title'])
             VSlog('SQL INSERT favorite Successfully') 
         except Exception, e:
             if 'UNIQUE constraint failed' in e.message:
                 self.DIALOG.VSinfo('Marque-page deja present', meta['title'])
             VSlog('SQL ERROR INSERT') 
             pass
-        self.db.close()
         
     def get_favorite(self):
     
@@ -295,7 +281,6 @@ class cDb:
         except Exception, e:
             VSlog('SQL ERROR EXECUTE') 
             return None
-        self.dbcur.close()
 
     def del_favorite(self):
         
@@ -325,7 +310,6 @@ class cDb:
         except Exception, e:
             VSlog('SQL ERROR EXECUTE') 
             return False, False
-        self.dbcur.close() 
 
 #non utiliser ?
 
@@ -386,12 +370,11 @@ class cDb:
         try:
             self.db.commit() 
             VSlog('SQL INSERT download Successfully') 
-            self.DIALOG.VSinfo('Enregistré avec succés', meta['title'])
+            self.DIALOG.VSinfo('Enregistré avec succès', meta['title'])
         except Exception, e:
             #print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
             VSlog('SQL ERROR INSERT') 
             pass
-        self.db.close()
         
     def get_Download(self, meta = ''):
     
@@ -408,7 +391,6 @@ class cDb:
         except Exception, e:
             VSlog('SQL ERROR EXECUTE') 
             return None
-        self.dbcur.close()
         
     def clean_download(self):
 
@@ -421,7 +403,6 @@ class cDb:
         except Exception, e:
             VSlog('SQL ERROR EXECUTE') 
             return False, False
-        self.dbcur.close()
  
     def reset_download(self, meta):
 
@@ -435,7 +416,6 @@ class cDb:
         except Exception, e:
             VSlog('SQL ERROR EXECUTE') 
             return False, False
-        self.dbcur.close()     
         
     def del_download(self, meta):
 
@@ -455,7 +435,6 @@ class cDb:
         except Exception, e:
             VSlog('SQL ERROR EXECUTE') 
             return False, False
-        self.dbcur.close()
         
     def Cancel_download(self):
         sql_select = "UPDATE download SET status = '0' WHERE status = '1'"
@@ -466,7 +445,6 @@ class cDb:
         except Exception, e:
             VSlog('SQL ERROR EXECUTE') 
             return False, False
-        self.dbcur.close()   
         
     def update_download(self, meta):
     
@@ -484,4 +462,3 @@ class cDb:
         except Exception, e:
             VSlog('SQL ERROR EXECUTE') 
             return False, False
-        self.dbcur.close()    
