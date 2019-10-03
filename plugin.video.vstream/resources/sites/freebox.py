@@ -87,6 +87,7 @@ def showIptvSite():
         oGui.addText(SITE_IDENTIFIER, "[COLOR red]plugin.video.f4mTester: L'addon n'est pas présent[/COLOR]")
 
     liste = []
+    liste.append( ['IptvGratuit', 'iptv_gratuit'] )
     liste.append( ['IptvSource', 'iptv_source'] )
     liste.append( ['Iptv4Sat', 'iptv_four_sat'] )
     liste.append( ['Daily Iptv List', 'daily_iptv_list'])
