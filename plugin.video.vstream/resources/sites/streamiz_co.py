@@ -12,7 +12,7 @@ SITE_IDENTIFIER = 'streamiz_co'
 SITE_NAME = 'Streamiz'
 SITE_DESC = 'Tous vos films en streaming gratuitement'
 
-URL_MAIN = 'https://streaming.streamiz.ws/'
+URL_MAIN = 'https://streamiz.org/'
 URL_API = URL_MAIN + '/xhr/get-player/'
 
 MOVIE_NEWS = (URL_MAIN + 'recemment-ajoute/', 'showMovies')
@@ -226,17 +226,22 @@ def showHosters():
 
 def GetPlayvid(url):
     oRequestHandler = cRequestHandler(url)
-    oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.7')
+    oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0')
     sHtmlContent = oRequestHandler.request()
-    
+
     oParser = cParser()
     sPattern = 'id="iframe" src="([^"]+)"'
     result = oParser.parse(sHtmlContent, sPattern)
-    if result:
+
+    if (result[0] == True):
         return result[1][0]
 
-    return url
-
+    else:
+        sPattern = "<source src='([^']+)' *type="
+        result = oParser.parse(sHtmlContent, sPattern)
+        if (result[0] == True):
+            return result[1][0]
+            
 def showGoogleLink():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -245,7 +250,7 @@ def showGoogleLink():
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler('https://playvid.org' + sUrl)
-    oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.7')
+    oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0')
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
