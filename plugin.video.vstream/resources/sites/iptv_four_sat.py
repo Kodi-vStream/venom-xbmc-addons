@@ -8,8 +8,7 @@ from resources.lib.parser import cParser
 
 from resources.sites.freebox import getHtml, showWeb, play__
 from resources.lib.comaddon import progress, VSlog
-from resources.lib.util import cUtil
-import re, unicodedata, urllib, urllib2
+import re
 
 
 SITE_IDENTIFIER = 'iptv_four_sat'
