@@ -446,7 +446,7 @@ def showHostersLink3():
             sLink2 = aEntry[0].replace('\/', '/')
             sQual = aEntry[1]
             sTitle = sMovieTitle.replace(' [HD]', '')
-            sTitle = '[' + sQual + '] ' + sTitle
+            sTitle = sTitle + '[' + sQual + '] '
 
             if (False):
                 #decodage des liens
