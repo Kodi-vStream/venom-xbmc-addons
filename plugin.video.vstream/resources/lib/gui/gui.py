@@ -646,10 +646,12 @@ class cGui():
 
     def setWatched(self):
         if (True):
-            #Use database
+            #Use VStream database
             oInputParameterHandler = cInputParameterHandler()
             sSite = oInputParameterHandler.getValue('siteUrl')
             sTitle = oInputParameterHandler.getValue('sTitleWatched')
+            if not sTitle:
+                return
 
             meta = {}
             meta['title'] = sTitle
