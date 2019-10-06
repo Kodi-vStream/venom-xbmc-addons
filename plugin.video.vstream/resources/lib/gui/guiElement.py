@@ -4,7 +4,7 @@
 from resources.lib.comaddon import addon, xbmc
 from resources.lib.db import cDb
 
-import os, re, urllib, string
+import re, urllib, string
 
 #rouge E26543
 #jaune F7D571
@@ -33,13 +33,13 @@ class cGuiElement:
         self.__sTmdb = ''
         self.__sMediaUrl = ''
         self.__sSiteUrl = ''
-        #contient le titre qui seras colorer
+        #contient le titre qui sera coloré
         self.__sTitle = ''
         #contient le titre propre
         self.__sCleanTitle = ''
-        #vide
-        self.__sTitleSecond = ''
-        #contient le titre modifier pour BDD
+        #titre considéré Vu
+        self.__sTitleWatched = ''
+        #contient le titre modifié pour BDD
         self.__sFileName = ''
         self.__sDescription = ''
         self.__sThumbnail = ''
@@ -259,6 +259,12 @@ class cGuiElement:
             sTitle2 = sTitle2 + 'S' + self.__Season
         if self.__Episode:
             sTitle2 = sTitle2 + 'E' + self.__Episode
+            
+        #Titre unique pour pour marquer VU (avec numéro de l'épisode pour les séries)
+        self.__sTitleWatched = self.str_conv(sTitle).replace(' ', '')
+        if sTitle2:
+            self.__sTitleWatched += '_' + sTitle2
+            
         if sTitle2:
             sTitle2 = "[COLOR %s]%s[/COLOR] " % (self.__sDecoColor, sTitle2)
 
@@ -297,11 +303,11 @@ class cGuiElement:
     def getCleanTitle(self):
         return self.__sCleanTitle
 
-    def setTitleSecond(self, sTitleSecond):
-        self.__sTitleSecond = sTitleSecond
+#    def setTitleWatched(self, sTitleWatched):
+#        self.__sTitleWatched = sTitleWatched
 
-    def getTitleSecond(self):
-        return self.__sTitleSecond
+    def getTitleWatched(self):
+        return self.__sTitleWatched
 
     def setDescription(self, sDescription):
         self.__sDescription = sDescription
@@ -362,16 +368,15 @@ class cGuiElement:
     def getWatched(self):
 
         #Fonctionne pour marquer lus un dossier
-        if not self.getTitle():
-            return ''
+        if not self.getTitleWatched():
+            return 0
 
         meta = {}
-        meta['title'] = urllib.quote_plus(self.getTitle())
+        meta['title'] = self.getTitleWatched()
         meta['site'] = self.getSiteUrl()
 
         data = self.DB.get_watched(meta)
         return data
-
 
     def str_conv(self, data):
         if isinstance(data, str):
@@ -389,7 +394,7 @@ class cGuiElement:
         #data=re.sub(r'[0-9]+?', r'', str(data))
         data = data.replace('-', '')
         data = data.replace('-', '').replace('Saison', '').replace('saison', '').replace('Season', '').replace('Episode', '').replace('episode', '')
-        data = re.sub('[^%s]' % string.ascii_lowercase, ' ', data.lower())
+        data = re.sub('[^%s]' % (string.ascii_lowercase + string.digits), ' ', data.lower())
         #data = urllib.quote_plus(data)
 
         #data = data.decode('string-escape')
@@ -457,7 +462,7 @@ class cGuiElement:
 
         # Integrale de films, on nettoie le titre pour la recherche
         if metaType == 3 :
-            sTitle=self.__sFileName.replace('integrale', '')
+            sTitle=sTitle.replace('integrale', '')
             sTitle=sTitle.replace('2 films', '')
             sTitle=sTitle.replace('6 films', '')
             sTitle=sTitle.replace('7 films', '')
@@ -576,16 +581,9 @@ class cGuiElement:
         self.__aItemValues['Title'] = self.getTitle()
         self.__aItemValues['Plot'] = self.getDescription()
 
-        # Used only if there is data in db
-        w = self.getWatched()
-        if w == 1:
-            self.__aItemValues['Playcount'] = w
-
         #tmdbid
         if self.getTmdbId():
             self.addItemProperties('TmdbId', str(self.getTmdbId()))
-
-        #self.addItemProperties('fanart_image', self.__sFanart)
 
         # - Video Values:
         # - genre : string (Comedy)
@@ -624,9 +622,14 @@ class cGuiElement:
         # - trailer : string (/home/user/trailer.avi)
         # - dateadded : string (Y-m-d h:m:s = 2009-04-05 23:16:04)
 
-
         if self.getMetaAddon() == 'true':
             self.getMetadonne()
+
+        #Used only if there is data in db, overwrite getMetadonne()
+        w = self.getWatched()
+        if w == 1:
+            self.addItemValues('playcount', w)
+
         return self.__aItemValues
 
     def addItemProperties(self, sPropertyKey, mPropertyValue):
