@@ -22,7 +22,7 @@ FUNCTION_SEARCH = 'sHowResultSearch'
 
 sPattern1 = '<a href="([^"]+)".+?src="([^"]+)" alt.*?="(.+?)".*?>'
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:66.0) Gecko/20100101 Firefox/66.0'
 
 def load():
     oGui = cGui()
@@ -63,17 +63,17 @@ def sHowResultSearch(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<img src="([^"]+)"><div class="title">([^>]+)<\/div><\/a><a class="item" href="([^"]+)"'
+    sPattern = '<a class="item" href="([^"]+)" title="([^"]+)"> *<img src="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     if (aResult[0] == True):
         
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
 
-            sUrl = URL_MAIN + aEntry[2]
-            sThumb = URL_MAIN + aEntry[0]
+            sUrl = URL_MAIN[:-1] + aEntry[0]
+            sThumb = URL_MAIN + aEntry[2]
             sTitle = aEntry[1]
 
             if sSearch.lower() not in sTitle.lower():
@@ -109,12 +109,9 @@ def showMovies():
         sFiltre = oInputParameterHandler.getValue('filtre')
     else:
         sFiltre = "none"
+        
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
 
     if 'ajouts' in sFiltre:
         sHtmlContent = oParser.abParse(sHtmlContent, '</i> Derniers ajouts', '</section>')
@@ -140,7 +137,7 @@ def showMovies():
             if progress_.iscanceled():
                 break
 
-            sUrl = URL_MAIN + aEntry[0]
+            sUrl = URL_MAIN[:-1] + aEntry[0]
             sThumb = URL_MAIN + aEntry[1]
             sTitle = aEntry[2].replace('streaming', '').replace(' 1080p', '').replace('_', ' ')
 
@@ -173,7 +170,7 @@ def showHosters():
     elif 'data-ws=' in sHtmlContent:
         sPattern = 'data-ws="([^"]+)">(.+?)</span>'
     else:
-        sPattern = '<span class="qualiteversion" data-qualurl="([^"]+)">([^"]+)</span>'
+        sPattern = 'class="qualiteversion" data-qualurl="([^"]+)">([^"]+)</span>'
 
         
     aResult = oParser.parse(sHtmlContent, sPattern)
