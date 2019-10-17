@@ -16,7 +16,7 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/5
 SITE_IDENTIFIER = 'tirexo'
 SITE_NAME = '[COLOR violet]Tirexo (ZT lol)[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
-URL_MAIN = 'https://www.zone-telechargement.plus/'
+URL_MAIN = 'https://www.zone-telechargement.red/'
 
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist%5B%5D=2&story=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist%5B%5D=15&story=', 'showMovies')
@@ -339,14 +339,15 @@ def showMovies(sSearch = ''):
 
     if sSearch or "index" in sUrl: # en mode recherche
         sUrl = sUrl.replace(' ', '%20').replace('[]', '%5B%5D')
-        sPattern = '<a class="mov-t nowrap" href="([^"]+)" title="[^"]+"> *<div data-toggle=.+?\/h5>([^"]+)".+?<img src="([^"]+)".+?alt="([^"]+)"'
+        sPattern = '<a class="mov-t nowrap" href="([^"]+)" title="[^"]+"> *<div data-toggle=.+?data-content="([^"]+)".+?<img src="([^"]+)".+?alt="([^"]+)"'
     else:
-        sPattern = '<a class="mov-t nowrap" href="([^"]+)"> *<div data-toggle=.+?\/h5>([^"]+)".+?<img src="([^"]+)".+?title="([^"]+)"'
+        sPattern = '<a class="mov-t nowrap" href="([^"]+)"> *<div data-toggle=.+?data-content="([^"]+)".+?<img src="([^"]+)".+?title="([^"]+)"'
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
     sHtmlContent = oRequestHandler.request()
+
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     titles = set()
