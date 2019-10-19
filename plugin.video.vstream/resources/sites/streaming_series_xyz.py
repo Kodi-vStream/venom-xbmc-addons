@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress, dialog, xbmc#, VSlog
+from resources.lib.comaddon import progress, dialog, xbmc
 
 import requests
 
@@ -28,12 +28,14 @@ URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def ProtectstreamBypass(url):
-
+    if url.startswith('/'):
+        url = URL_MAIN + url
+ 
     #lien commencant par VID_
     # Codedurl = url
     Codedurl = url.replace('http:', 'https:')
 
-    UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0'
+    UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
 
     session = requests.Session()
     session.headers.update({
@@ -71,7 +73,7 @@ def ProtectstreamBypass(url):
         data = {'k': postdata}
 
         try:
-            response = session.post('https://www.protect-stream.com/secur2.php', data=data)
+            response = session.post('https://dpstreaming.to/embed_secur.php', data=data)
         except requests.exceptions.RequestException as e:
             print "erreur" + str(e)
             return ''
@@ -79,8 +81,8 @@ def ProtectstreamBypass(url):
         data = response.text
         data = data.encode('utf-8', 'ignore')
 
-        #VSlog(type(data))
-        #VSlog(repr(data))
+        # VSlog(type(data))
+        # VSlog(repr(data))
 
         #fh = open('c:\\test.txt', "w")
         #fh.write(data)

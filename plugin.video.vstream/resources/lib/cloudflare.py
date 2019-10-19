@@ -343,6 +343,9 @@ class CloudflareBypass(object):
                 cookies = cookieMem
             else:
                 cookies = self.Memorised_Cookies + '; ' + cookieMem
+        else:
+            if (Mode_Debug):
+                VSlog('Pas de cookies present sur disque ' )
                 
         data = {}
         if postdata:
@@ -443,20 +446,28 @@ class CloudflareScraper(Session):
         if self.cipherSuite:
             return self.cipherSuite
 
-        if hasattr(ssl, 'Purpose') and hasattr(ssl.Purpose, 'SERVER_AUTH'):
-            for cipher in self.cipherHeader["cipherSuite"]:
+        self.cipherSuite = ''
+
+        if hasattr(ssl, 'PROTOCOL_TLS'):
+            ciphers = [
+                'ECDHE-ECDSA-AES128-GCM-SHA256', 'ECDHE-ECDSA-CHACHA20-POLY1305-SHA256', 'ECDHE-RSA-CHACHA20-POLY1305-SHA256',
+                'ECDHE-RSA-AES128-CBC-SHA', 'ECDHE-RSA-AES256-CBC-SHA', 'RSA-AES128-GCM-SHA256',
+                'RSA-AES256-GCM-SHA384', 'RSA-AES256-SHA', '3DES-EDE-CBC'
+            ]
+
+            if hasattr(ssl, 'PROTOCOL_TLSv1_3'):
+                ciphers.insert(0, ['GREASE_3A', 'GREASE_6A', 'AES128-GCM-SHA256', 'AES256-GCM-SHA256', 'AES256-GCM-SHA384', 'CHACHA20-POLY1305-SHA256'])
+
+            ctx = ssl.SSLContext(getattr(ssl, 'PROTOCOL_TLSv1_3', ssl.PROTOCOL_TLSv1_2))
+
+            for cipher in ciphers:
                 try:
-                    context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
-                    context.set_ciphers(cipher)
-                except (ssl.SSLError):
-                    self.cipherHeader["cipherSuite"].remove(cipher)
+                    ctx.set_ciphers(cipher)
+                    self.cipherSuite = '{}:{}'.format(self.cipherSuite, cipher).rstrip(':')
+                except ssl.SSLError:
                     pass
 
-            if self.cipherHeader["cipherSuite"]:
-                self.cipherSuite = ':'.join(self.cipherHeader["cipherSuite"])
-                return self.cipherSuite
-
-        raise RuntimeError("The SSL compiled into python does not meet the minimum cipher suite requirements.")
+        return self.cipherSuite
 
     ##########################################################################################################################################################
 
@@ -474,10 +485,11 @@ class CloudflareScraper(Session):
             VSlog("url : " + url )
             VSlog("data send : " + str(kwargs.get('params','')) )
             VSlog("param send : " + str(kwargs.get('data','')) )
-            
+               
         resp = super(CloudflareScraper, self).request(method, url, *args, **kwargs)
 
-        #VSlog( 'cookie recu ' + str(resp.cookies.get_dict())  )
+        if Mode_Debug:
+            VSlog( 'cookie recu ' + str(resp.cookies.get_dict())  )
 
         #save cookie
         self.MemCookie.update( resp.cookies.get_dict() )

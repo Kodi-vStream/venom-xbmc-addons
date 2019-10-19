@@ -47,6 +47,7 @@ class cTMDb:
                 self.db.row_factory = sqlite.Row
                 self.dbcur = self.db.cursor()
                 self.__createdb()
+                return
         except:
             VSlog('erreur: Impossible d ecrire sur %s' % self.REALCACHE )
             pass
@@ -153,8 +154,9 @@ class cTMDb:
         ''' Cleanup db when object destroyed '''
         try:
             self.dbcur.close()
-            self.dbcon.close()
-        except: pass
+            self.db.close()
+        except:
+            pass
 
 
     def getToken(self):
@@ -193,8 +195,6 @@ class cTMDb:
     #cherche dans les films ou serie l'id par le nom return ID ou FALSE
     def get_idbyname(self, name, year='', type='movie', page=1):
 
-        meta = {}
-
         if year:
             term = quote_plus(name) + '&year=' + year
         else:
@@ -219,8 +219,6 @@ class cTMDb:
     # Search for movies by title.
     def search_movie_name(self, name, year='', page=1):
 
-        meta = {}
-
         if year:
             term = quote_plus(name) + '&year=' + year
         else:
@@ -244,8 +242,6 @@ class cTMDb:
 
             # Search for TV shows by title.
     def search_tvshow_name(self, name, year='', page=1):
-
-        meta = {}
 
         if year:
             term = quote_plus(name) + '&year=' + year
@@ -325,7 +321,7 @@ class cTMDb:
             if meta['runtime'] > 0:
                 _meta['duration'] = int(meta['runtime'])
             else:
-                 _meta['duration'] = 0
+                _meta['duration'] = 0
         if 'overview' in meta:
             _meta['plot'] = meta['overview']
 
@@ -333,7 +329,7 @@ class cTMDb:
             _meta['studio'] = ""
             for studio in meta['production_companies']:
                 if _meta['studio'] == "":
-                     _meta['studio'] += studio['name']
+                    _meta['studio'] += studio['name']
                 else:
                     _meta['studio'] += ' / '+studio['name']
 
@@ -341,7 +337,7 @@ class cTMDb:
             _meta['genre'] = ""
             for genre in eval(meta['genre']):
                 if _meta['genre'] == "":
-                     _meta['genre'] += genre['name']
+                    _meta['genre'] += genre['name']
                 else:
                     _meta['genre'] += ' / '+genre['name']
 
@@ -502,7 +498,6 @@ class cTMDb:
         except Exception, e:
             VSlog('SQL ERROR INSERT')
             pass
-        self.db.close()
 
     def _cache_save_season(self, meta, season):
 

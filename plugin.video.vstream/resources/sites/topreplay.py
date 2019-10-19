@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'topreplay'
 SITE_NAME = 'TopReplay'
 SITE_DESC = 'Replay TV'
 
-URL_MAIN = 'http://www.topreplay.video'
+URL_MAIN = 'https://www.topreplay.video'
 URL_SEARCH = (URL_MAIN + '/?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -57,7 +57,7 @@ def showGenre():
     
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
-    reducesHtmlContent = oParser.abParse(sHtmlContent, '<div class="awaken-navigation-container">','<div class="responsive-mainnav">')
+    reducesHtmlContent = oParser.abParse(sHtmlContent, '<nav class="main-menu-container">','<span class="search-handler">')
 
     sPattern = '<a href="([^"]+)">([^<]+)<\/a>'
     aResult = oParser.parse(reducesHtmlContent, sPattern)
@@ -93,8 +93,8 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    sPattern = '<figure class=.+?<a href="([^"]+)" title="([^"]+)".+?src="([^"]+)"'
+    
+    sPattern = 'data-src="([^"]+)".+?class="title"> *<a href="([^"]+)".+?class="post-title post-url">([^<]+)<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -108,9 +108,9 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sThumb = aEntry[2] 
-            sUrl = aEntry[0]
-            sTitle = aEntry[1]
+            sThumb = aEntry[0] 
+            sUrl = aEntry[1]
+            sTitle = aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -131,7 +131,7 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<a class="next page-numbers" href="([^"]+)">Next <'
+    sPattern = '<a class="nextpostslink" rel="next" href="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         return aResult[1][0]
@@ -148,7 +148,6 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
 
     aResult = []
  
@@ -169,7 +168,6 @@ def showHosters():
         aResult.append(aResult3.group(1))
         
     if (aResult):
-
         for aEntry in aResult:
             if not 'http' in aEntry:
                 sHosterUrl = decodeUN(aEntry)

@@ -52,6 +52,7 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
         oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
         oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
+        oOutputParameterHandler.addParameter('sTitleWatched', oGuiElement.getTitleWatched())
 
         oOutputParameterHandler.addParameter('sTitle', oHoster.getDisplayName())
         oOutputParameterHandler.addParameter('sId', 'cHosterGui')
@@ -66,10 +67,6 @@ class cHosterGui:
             oOutputParameterHandler.addParameter('sCat', sCat)
         else:
             oGuiElement.setCat('4')
-
-        #existe dans le menu krypton 17
-        if not isKrypton():
-            oGui.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
 
         #context playlit menu
         oContext = cContextElement()

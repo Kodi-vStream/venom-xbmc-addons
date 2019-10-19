@@ -15,20 +15,20 @@ SITE_IDENTIFIER = 'kepliz_com'
 SITE_NAME = 'Kepliz'
 SITE_DESC = 'Films en streaming'
 
-# Source compatible avec les clones : toblek, bofiaz, nimvon
-# mais pas compatible avec les clones, qui ont une redirection direct : sajbo, trozam, radego
+# Cette source est compatible avec les clones : wonior, toblek, bofiaz, nimvon, trozam, radego, sajbo
 URL_HOST = 'http://www.wonior.com/'
-URL_MAIN = 'URL_MAIN'
+#URL_MAIN =  l'URL est dynamique, elle est calculée à la volée
 
 #pour l'addon
-MOVIE_NEWS = (URL_MAIN, 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'index.php?option=com_content&view=category&id=29&Itemid=7', 'showMovies')
-MOVIE_GENRES = (True, 'showGenres')
-MOVIE_HD = (URL_MAIN, 'showMovies')
+MOVIE_NEWS = ('', 'showMovies')
+MOVIE_MOVIE = ('index.php?option=com_content&view=category&id=29&Itemid=7', 'showMovies')
+MOVIE_GENRES = ('', 'showGenres')
+MOVIE_HD = ('', 'showMovies')
 
-ANIM_NEWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=2&Itemid=2', 'showMovies')
-ANIM_ANIMS = (URL_MAIN + 'index.php?option=com_content&view=category&id=2&Itemid=19', 'showMovies')
-DOC_NEWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=26', 'showMovies')
+ANIM_NEWS = ('index.php?option=com_content&view=category&id=2&Itemid=2', 'showMovies')
+ANIM_ANIMS = ('index.php?option=com_content&view=category&id=2&Itemid=19', 'showMovies')
+DOC_NEWS = ('index.php?option=com_content&view=category&id=26', 'showMovies')
+DOC_SPECTALES = ('index.php?option=com_content&view=category&id=3', 'showMovies')
 DOC_DOCS = ('http://', 'load')
 
 URL_SEARCH = ('', 'showMovies')
@@ -36,36 +36,62 @@ URL_SEARCH_MOVIES = ('', 'showMovies')
 URL_SEARCH_MISC = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
+
+#Recherche de la partie dynamique de l'URL
+def sLinkdyn():
+    req = urllib2.Request(URL_HOST)
+    response = urllib2.urlopen(req)
+    data = response.read()
+    response.close()
+
+    #Compatible avec plusieurs clones
+    oParser = cParser()
+    aResult = oParser.parse(data, '(<a.+?href="(\/*[0-9a-zA-Z]+)"|window\.location\.href="(.+?)")')
+
+    if aResult[0]:
+        return URL_HOST + aResult[1][0][1] + aResult[1][0][2] + '/'
+
 def load():
+    
+    # L'URL_MAIN change souvent, il faut la retrouver
+    URL_MAIN = sLinkdyn()
+
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('sMainUrl', URL_MAIN)
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
+    oOutputParameterHandler.addParameter('sMainUrl', URL_MAIN)
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
+    oOutputParameterHandler.addParameter('sMainUrl', URL_MAIN)
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + MOVIE_MOVIE[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    oOutputParameterHandler.addParameter('sMainUrl', URL_MAIN)
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
+    oOutputParameterHandler.addParameter('sMainUrl', URL_MAIN)
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
+    oOutputParameterHandler.addParameter('sMainUrl', URL_MAIN)
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + DOC_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'index.php?option=com_content&view=category&id=3')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Spectacles', 'doc.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('sMainUrl', URL_MAIN)
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + DOC_SPECTALES[0])
+    oGui.addDir(SITE_IDENTIFIER, DOC_SPECTALES[1], 'Spectacles', 'doc.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -80,6 +106,9 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    URL_MAIN = oInputParameterHandler.getValue('sMainUrl')
 
     liste = []
     liste.append( ['A l\'affiche', URL_MAIN + 'index.php?option=com_content&view=category&id=29'] )
@@ -97,8 +126,8 @@ def showGenres():
     liste.append( ['Thriller', URL_MAIN + 'index.php?option=com_content&view=category&id=12'] )
 
     for sTitle, sUrl in liste:
-
         oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sMainUrl', URL_MAIN)
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -107,11 +136,17 @@ def showGenres():
 def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
+    oInputParameterHandler = cInputParameterHandler()
+    sMainUrl = oInputParameterHandler.getValue('sMainUrl')
+
+    # L'URL_MAIN est passé en paramètre, sinon il faut la retrouver
+    if not sMainUrl:
+        sMainUrl = sLinkdyn()
 
     if sSearch:
         #limite de caractere sinon bug de la recherche
         sSearch = sSearch[:20]
-        sUrl = URL_MAIN + 'index.php?ordering=&searchphrase=all&option=com_search&searchword=' + sSearch.replace(' ', '+')
+        sUrl = sMainUrl + 'index.php?ordering=&searchphrase=all&option=com_search&searchword=' + sSearch.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -122,23 +157,6 @@ def showMovies(sSearch = ''):
     else:
         sPattern = '<span style="list-style-type:none;" >.+? href="\/[0-9a-zA-Z]+\/(.+?)">(.+?)<\/a>'
     
-    #L'url change tres souvent donc faut la retrouver
-    req = urllib2.Request(URL_HOST)
-    response = urllib2.urlopen(req)
-    data = response.read()
-    response.close()
-    sMainUrl = ''
-    aResult = oParser.parse(data, '<a.+?href="(/*[0-9a-zA-Z]+)"')   #Compatible avec plusieurs clones
-
-    if aResult[0]:
-        #memorisation pour la suite
-        sMainUrl = URL_HOST + aResult[1][0] + '/'
-        #correction de l'url
-        sUrl = sUrl.replace('URL_MAIN', sMainUrl)
-    else:
-        #Si ca marche pas, pas la peine de continuer
-        return
-
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -176,6 +194,7 @@ def showMovies(sSearch = ''):
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('sMainUrl', sMainUrl)
             oOutputParameterHandler.addParameter('siteUrl', sMainUrl + sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
@@ -446,7 +465,7 @@ def showHostersLink3():
             sLink2 = aEntry[0].replace('\/', '/')
             sQual = aEntry[1]
             sTitle = sMovieTitle.replace(' [HD]', '')
-            sTitle = '[' + sQual + '] ' + sTitle
+            sTitle = sTitle + '[' + sQual + '] '
 
             if (False):
                 #decodage des liens
