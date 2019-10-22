@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
+#french-stream /18117-la-frontire-verte-saison-1.html
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
@@ -7,7 +8,7 @@ from resources.lib.comaddon import dialog
 import urllib
 import json
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.'
+UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
 
 class cHoster(iHoster):
 
@@ -46,10 +47,11 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-    
-        url = 'https://french-vid.ga/api/source/' + self.__sUrl.rsplit('/', 1)[1]
 
-        postdata = 'r=' + urllib.quote_plus(self.__sUrl) + '&d=french-vid.ga'
+        
+        url = 'https://www.fembed.com/api/source/' + self.__sUrl.rsplit('/', 1)[1]
+
+        postdata = 'r=' + urllib.quote_plus(self.__sUrl) + '&d=www.fembed.com'
 
         oRequest = cRequestHandler(url)
         oRequest.setRequestType(1)
