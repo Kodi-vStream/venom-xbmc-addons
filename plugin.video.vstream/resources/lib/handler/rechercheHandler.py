@@ -77,12 +77,9 @@ class cRechercheHandler:
         return aNameList
 
 
-    def __importPlugin(self, sName, sCat):
+    def importPlugin(self, sName, sCat):
         pluginData = {}
-        #oConfig = cConfig()
-        addons = addon()
-        sPluginSettingsName = 'plugin_' + sName
-        bPlugin = addons.getSetting(sPluginSettingsName)
+
         #multicherche
         # if sLabel == 'search5':
         #     bPlugin = 'true'
@@ -96,20 +93,18 @@ class cRechercheHandler:
         else :
             sSearch = 'URL_SEARCH'
 
+        try:
 
-        if (bPlugin == 'true'):
-            try:
+            plugin = __import__('resources.sites.%s' % sName, fromlist=[sName])
 
-                plugin = __import__('resources.sites.%s' % sName, fromlist=[sName])
+            pluginData['identifier'] = plugin.SITE_IDENTIFIER
+            pluginData['name'] = plugin.SITE_NAME
+            pluginData['search'] = getattr(plugin, sSearch)
+            return pluginData
 
-                pluginData['identifier'] = plugin.SITE_IDENTIFIER
-                pluginData['name'] = plugin.SITE_NAME
-                pluginData['search'] = getattr(plugin, sSearch)
-                return pluginData
-
-            except Exception, e:
-                #cConfig().log("cant import plugin: " + str(sName))
-                return False
+        except Exception, e:
+            #VSlog("cant import plugin: " + str(sName))
+            return False
 
 
     # def getRootFolder(self):
@@ -128,7 +123,6 @@ class cRechercheHandler:
 
     def getAvailablePlugins(self):
 
-        #oConfig = cConfig()
         addons = addon()
         sText = self.getText()
         if not sText:
@@ -159,9 +153,12 @@ class cRechercheHandler:
 
         aPlugins = []
         for sFileName in aFileNames:
-            aPlugin = self.__importPlugin(sFileName, sCat)
-            if aPlugin:
-                aPlugins.append(aPlugin)
+            sPluginSettingsName = 'plugin_' + sFileName
+            bPlugin = addons.getSetting(sPluginSettingsName)
+            if (bPlugin == 'true'):
+                aPlugin = self.importPlugin(sFileName, sCat)
+                if aPlugin:
+                    aPlugins.append(aPlugin)
         return aPlugins
 
     def __createAvailablePluginsItem(self, sPluginName, sPluginIdentifier, sPluginDesc):
