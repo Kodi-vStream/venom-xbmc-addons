@@ -9,11 +9,6 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, VSlog
 import re
 
-#Ce site a des probleme en http/1.1 >> incomplete read error
-import httplib
-httplib.HTTPConnection._http_vsn = 10
-httplib.HTTPConnection._http_vsn_str = 'HTTP/1.0'
-
 SITE_IDENTIFIER = 'adkami_com'
 SITE_NAME = 'ADKami'
 SITE_DESC = 'Bienvenue sur ADKami un site Animés Manga & Série en streaming.'
