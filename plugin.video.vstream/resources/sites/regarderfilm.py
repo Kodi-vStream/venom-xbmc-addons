@@ -17,8 +17,8 @@ SITE_DESC = 'Regarder, Voir Films En Streaming VF 100% Gratuit.'
 URL_MAIN = 'https://www.streamdivx.net/' # ou 'https://www.voustreaming.com/' < recherche hs
 
 FUNCTION_SEARCH = 'showMovies'
-URL_SEARCH = (URL_MAIN , 'showMovies')
-URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH = ('' , 'showMovies')
+URL_SEARCH_MOVIES = ('', 'showMovies')
 
 MOVIE_MOVIE = (True, 'load')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
