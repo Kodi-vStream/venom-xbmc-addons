@@ -105,7 +105,7 @@ def showMovieYears():
     
 def showMovies(sSearch = ''):
     oGui = cGui()
-    
+    oParser = cParser()
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
         
@@ -124,9 +124,13 @@ def showMovies(sSearch = ''):
 
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
+        
+        sStart = '<div class="films-group small'
+        sEnd = '<div class="side-title">films par Genres'
+        sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
+        
 
-    oParser = cParser()
-    sPattern = '<div class="film-uno *">.+?href="([^"]+)".+?src="([^"]+)" alt="([^"]+)"'
+    sPattern = '<div class="film-uno *">.+?href="([^"]+)".+?src="([^"]+)" alt="([^"]+)".+?<p class="nop short-story *">(.+?)<\/p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -143,7 +147,8 @@ def showMovies(sSearch = ''):
             sUrl = aEntry[0]
             sThumb = aEntry[1]
             sTitle = aEntry[2]#.decode("unicode_escape").encode("latin-1")
-
+            sDesc = aEntry[3]
+            
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
@@ -153,8 +158,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
