@@ -14,15 +14,16 @@ SITE_IDENTIFIER = 'regarderfilm'
 SITE_NAME = 'Regarder Film'
 SITE_DESC = 'Regarder, Voir Films En Streaming VF 100% Gratuit.'
 
-URL_MAIN = 'https://www.regarderfilm.cc/'
+URL_MAIN = 'https://www.streamdivx.net/' # ou 'https://www.voustreaming.com/' < recherche hs
 
 FUNCTION_SEARCH = 'showMovies'
-URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH = ('' , 'showMovies')
+URL_SEARCH_MOVIES = ('', 'showMovies')
 
 MOVIE_MOVIE = (True, 'load')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
+MOVIE_ANNEES = (True, 'showMovieYears')
 
 def load():
     oGui = cGui()
@@ -38,6 +39,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -46,7 +51,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
+        sUrl = sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -55,45 +60,29 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action', URL_MAIN + 'film-category/action'] )
-    liste.append( ['Animation', URL_MAIN + 'film-category/animation'] )
-    liste.append( ['Arts Martiaux', URL_MAIN + 'film-category/arts-martiaux'] )
-    liste.append( ['Aventure', URL_MAIN + 'film-category/aventure'] )
-    liste.append( ['Biopic', URL_MAIN + 'film-category/biopic'] )
-    liste.append( ['Bollywood', URL_MAIN + 'film-category/bollywood'] )
-    liste.append( ['Classique', URL_MAIN + 'film-category/classique'] )
-    liste.append( ['Comédie', URL_MAIN + 'film-category/comedie'] )
-    liste.append( ['Comédie Dramatique', URL_MAIN + 'film-category/comedie-dramatique'] )
-    liste.append( ['Comédie Musicale', URL_MAIN + 'film-category/comedie-musicale'] )
-    liste.append( ['Concert', URL_MAIN + 'film-category/concert'] )
-    liste.append( ['Dessin animé', URL_MAIN + 'film-category/dessin-anime'] )
-    liste.append( ['Divers', URL_MAIN + 'film-category/divers'] )
-    liste.append( ['Documentaire', URL_MAIN + 'film-category/documentaire'] )
-    liste.append( ['Drame', URL_MAIN + 'film-category/drame'] )
-    liste.append( ['Emissions TV', URL_MAIN + 'film-category/emissions-tv'] )
-    liste.append( ['Epouvante Horreur', URL_MAIN + 'film-category/epouvante-horreur'] )
-    liste.append( ['Erotique', URL_MAIN + 'film-category/erotique'] )
-    liste.append( ['Espionnage', URL_MAIN + 'film-category/espionnage/'] )
-    liste.append( ['Expérimental', URL_MAIN + 'film-category/experimental'] )
-    liste.append( ['Famille', URL_MAIN + 'film-category/famille'] )
-    liste.append( ['Fantastique', URL_MAIN + 'film-category/fantastique'] )
-    liste.append( ['Guerre', URL_MAIN + 'film-category/guerre'] )
-    liste.append( ['Historique', URL_MAIN + 'film-category/historique'] )
-    liste.append( ['Judiciaire', URL_MAIN + 'film-category/judiciaire'] )
-    liste.append( ['Musical', URL_MAIN + 'film-category/musical'] )
-    liste.append( ['Non classé', URL_MAIN + 'film-category/non-classe'] )
-    liste.append( ['Opéra', URL_MAIN + 'film-category/opera'] )
-    liste.append( ['Péplum', URL_MAIN + 'film-category/peplum'] )
-    liste.append( ['Policier', URL_MAIN + 'film-category/policier'] )
-    liste.append( ['Romance', URL_MAIN + 'film-category/romance'] )
-    liste.append( ['Science Fiction', URL_MAIN + 'film-category/science-fiction'] )
-    liste.append( ['Show', URL_MAIN + 'film-category/show'] )
-    liste.append( ['Spectacle', URL_MAIN + 'film-category/spectacle'] )
-    liste.append( ['Sport event', URL_MAIN + 'film-category/sport-event'] )
-    liste.append( ['Thriller', URL_MAIN + 'film-category/thriller'] )
-    liste.append( ['Vieux Films', URL_MAIN + 'film-category/vieux-films'] )
-    liste.append( ['Walt Disney', URL_MAIN + 'film-category/walt-disney'] )
-    liste.append( ['Western', URL_MAIN + 'film-category/western'] )
+    liste.append( ['Action', URL_MAIN + 'action/'] )
+    liste.append( ['Animation', URL_MAIN + 'animation/'] )
+    liste.append( ['Arts Martiaux', URL_MAIN + 'arts-martiaux/'] )
+    liste.append( ['Aventure', URL_MAIN + 'aventure/'] )
+    liste.append( ['Biopic', URL_MAIN + 'biopic/'] )
+    liste.append( ['Comédie', URL_MAIN + 'comedie/'] )
+    liste.append( ['Comédie Musicale', URL_MAIN + 'comedie-musicale/'] )
+    liste.append( ['Drame', URL_MAIN + 'drame/'] )
+    liste.append( ['Documentaire', URL_MAIN + 'documentaire/'] )
+    liste.append( ['Epouvante Horreur', URL_MAIN + 'epouvante-horreur/'] )
+    liste.append( ['Erotique', URL_MAIN + 'erotique/'] )
+    liste.append( ['Espionnage', URL_MAIN + 'espionnage//'] )
+    liste.append( ['Famille', URL_MAIN + 'famille/'] )
+    liste.append( ['Fantastique', URL_MAIN + 'fantastique/'] )
+    liste.append( ['Guerre', URL_MAIN + 'guerre/'] )
+    liste.append( ['Historique', URL_MAIN + 'historique/'] )
+    liste.append( ['Judiciaire', URL_MAIN + 'judiciaire/'] )
+    liste.append( ['Musical', URL_MAIN + 'musical/'] )
+    liste.append( ['Policier', URL_MAIN + 'policier/'] )
+    liste.append( ['Romance', URL_MAIN + 'romance/'] )
+    liste.append( ['Science Fiction', URL_MAIN + 'science-fiction/'] )
+    liste.append( ['Thriller', URL_MAIN + 'thriller/'] )
+    liste.append( ['Western', URL_MAIN + 'western/'] )
 
     for sTitle, sUrl in liste:
 
@@ -103,20 +92,45 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
+def showMovieYears():
+    oGui = cGui()
 
+    for i in reversed (xrange(1985, 2020)):
+        Year = str(i)
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'tags/' + Year + '/')
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+    
 def showMovies(sSearch = ''):
     oGui = cGui()
+    oParser = cParser()
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
+        
+        oRequest = cRequestHandler(URL_MAIN)
+        oRequest.setRequestType(1)
+        oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:66.0) Gecko/20100101 Firefox/66.0')
+        oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+        oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+        oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+        oRequest.addParametersLine('story=' + sUrl + '&do=search&subaction=search')
+        sHtmlContent = oRequest.request()
+        
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request()
+        
+        sStart = '<div class="films-group small'
+        sEnd = '<div class="side-title">films par Genres'
+        sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
+        
 
-    oParser = cParser()
-    sPattern = '<div class="MovieItem".+?href="([^"]+)".+?src="([^"]+)" alt="([^"]+)"'
+    sPattern = '<div class="film-uno *">.+?href="([^"]+)".+?src="([^"]+)" alt="([^"]+)".+?<p class="nop short-story *">(.+?)<\/p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -133,7 +147,8 @@ def showMovies(sSearch = ''):
             sUrl = aEntry[0]
             sThumb = aEntry[1]
             sTitle = aEntry[2]#.decode("unicode_escape").encode("latin-1")
-
+            sDesc = aEntry[3]
+            
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
@@ -143,8 +158,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-
-            oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -161,68 +175,67 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<a class="nextpostslink" rel="next" href="([^"]+)">'
+    sPattern = '<a href="([^"]+)">Last page<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         return aResult[1][0]
 
     return False
 
 
-def showLinks():
-    oGui = cGui()
+# def showLinks():
+    # oGui = cGui()
 
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumb = oInputParameterHandler.getValue('sThumb')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    # oInputParameterHandler = cInputParameterHandler()
+    # sUrl = oInputParameterHandler.getValue('siteUrl')
+    # sThumb = oInputParameterHandler.getValue('sThumb')
+    # sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-    oParser = cParser()
+    # oRequestHandler = cRequestHandler(sUrl)
+    # sHtmlContent = oRequestHandler.request()
+    # oParser = cParser()
+    # VSlog(sHtmlContent)
+    # sDesc = ''
+    # try:
+        # sPattern = '<p>(.+?)<\/p>.+?<div class'
+        # aResult = oParser.parse(sHtmlContent, sPattern)
+        # if (aResult[0] == True):
+            # sDesc = aResult[1][0]
+            # sDesc = re.sub('<[^<]+?>', '', sDesc)
+            # sDesc = sDesc.replace('&#8217;', '\'').replace('&#8230;', '...')
+    # except:
+        # pass
 
-    sDesc = ''
-    try:
-        sPattern = '<p>(.+?)<\/p>.+?<div class'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            sDesc = aResult[1][0]
-            sDesc = re.sub('<[^<]+?>', '', sDesc)
-            sDesc = sDesc.replace('&#8217;', '\'').replace('&#8230;', '...')
-    except:
-        pass
+    # sPattern = '<form action="#playfilm" method="post">.+?<span>([^<>]+)</span>.+?<input name="levideo" value="([^"]+)"'
+    # aResult = oParser.parse(sHtmlContent, sPattern)
 
-    sPattern = '<form action="#playfilm" method="post">.+?<span>([^<>]+)</span>.+?<input name="levideo" value="([^"]+)"'
-    aResult = oParser.parse(sHtmlContent, sPattern)
+    # if (aResult[0] == False):
+        # oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == False):
-        oGui.addText(SITE_IDENTIFIER)
+    # if (aResult[0] == True):
+        # total = len(aResult[1])
+        # progress_ = progress().VScreate(SITE_NAME)
 
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
+        # for aEntry in aResult[1]:
+            # progress_.VSupdate(progress_, total)
+            # if progress_.iscanceled():
+                # break
 
-        for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
+            # sHost = re.sub('\.\w+', '', aEntry[0])
+            # sHost = sHost.capitalize()
+            # sPost = aEntry[1]
+            # sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
-            sHost = re.sub('\.\w+', '', aEntry[0])
-            sHost = sHost.capitalize()
-            sPost = aEntry[1]
-            sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
+            # oOutputParameterHandler = cOutputParameterHandler()
+            # oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            # oOutputParameterHandler.addParameter('sPost', sPost)
+            # oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            # oOutputParameterHandler.addParameter('sThumb', sThumb)
+            # oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sPost', sPost)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
+        # progress_.VSclose(progress_)
 
-        progress_.VSclose(progress_)
-
-    oGui.setEndOfDirectory()
+    # oGui.setEndOfDirectory()
 
 
 def showHosters():
@@ -234,12 +247,12 @@ def showHosters():
     sPost = oInputParameterHandler.getValue('sPost')
 
     oRequestHandler = cRequestHandler(sUrl)
-    oRequestHandler.setRequestType(1)
-    oRequestHandler.addParameters('levideo', sPost)
+    # oRequestHandler.setRequestType(1)
+    # oRequestHandler.addParameters('levideo', sPost)
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<iframe.+?src=["\']([^"]+)["\']'
+    sPattern = '<a href="([^"]+)" target="iframe.+?"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 

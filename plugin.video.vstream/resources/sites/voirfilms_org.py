@@ -245,7 +245,7 @@ def showMovies(sSearch = ''):
 
         #pdata = 'action=recherche&story=' + sSearch
 
-        oRequest = cRequestHandler(URL_MAIN + 'recherche?story=' + sSearch)
+        oRequest = cRequestHandler(URL_MAIN + 'recherche?s=' + sSearch)
         #oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Referer', URL_MAIN)

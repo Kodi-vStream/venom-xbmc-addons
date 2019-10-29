@@ -17,7 +17,7 @@ SITE_DESC = 'Replay TV'
 
 URL_MAIN = 'https://www.topreplay.video'
 URL_SEARCH = (URL_MAIN + '/?s=', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + '/?s=', 'showMovies')
+URL_SEARCH_MISC = (URL_MAIN + '/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 REPLAYTV_GENRES = (True, 'showGenre')

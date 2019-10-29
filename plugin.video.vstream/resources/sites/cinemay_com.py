@@ -18,7 +18,7 @@ SITE_IDENTIFIER = 'cinemay_com'
 SITE_NAME = 'Cinemay'
 SITE_DESC = 'Films & Séries en streaming'
 
-URL_MAIN = 'https://www.cinemay.vip/'
+URL_MAIN = 'https://www.cinemay.bz/'
 
 MOVIE_NEWS = (URL_MAIN + 'film-vf-streaming/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'film-vf-streaming/', 'showMovies')
@@ -132,6 +132,10 @@ def showMovies(sSearch=''):
             sTitle = unicode(aEntry[1], 'utf-8')
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode("unicode_escape")
             sTitle = sTitle.encode("latin-1")
+            #Nettoyage du titre
+            sTitle = sTitle.replace(' en streaming', '')
+            if sTitle.startswith('Film'):
+                sTitle = sTitle.replace('Film ', '')
 
             sThumb = URL_MAIN[:-1] + aEntry[2]
             sUrl = URL_MAIN[:-1] + aEntry[0]
@@ -157,7 +161,7 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()

@@ -529,7 +529,10 @@ class CloudflareScraper(Session):
                     
             elif resp.status_code == 503:
                 return True
-                
+
+            elif resp.status_code == 403:
+                VSlog('403 Forbidden' )
+
             resp = False
             return False
         else:

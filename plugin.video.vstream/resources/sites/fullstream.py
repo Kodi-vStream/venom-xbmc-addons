@@ -114,8 +114,9 @@ def showMovies(sSearch = ''):
 
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
+        
 
-    sPattern = '<a class="short-poster" href="([^"]+)" title="([^"]+)">.+?<img src="([^"]+)"'
+    sPattern = '<a class="short-poster" href="([^"]+)" title="([^"]+)">.+?data-src="([^"]+)"'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -131,8 +132,11 @@ def showMovies(sSearch = ''):
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
-
-            sThumb = URL_MAIN[:-1] + aEntry[2]
+                
+            sThumb = aEntry[2]
+            if sThumb.startswith('/'):
+                sThumb = URL_MAIN[:-1] + aEntry[2]
+                
             sTitle = aEntry[1].replace('Regarder','').replace('en ligne gratuitement','')
             sUrl2 = aEntry[0]
 
@@ -189,7 +193,7 @@ def showEpisodes():
     sHtmlContent = oParser.abParse(sHtmlContent, 'class="movie-tabs">', 'similaires</h3>')
 
     #recuperation des suivants
-    sPattern = 'button class="llien">Lien(.+?)</button>|<a title=.+?target="seriePlayer" href="([^"]+)">([^<]+)</a>'
+    sPattern = 'button class="llien">Lien(.+?)</button>|<a title=.+?target="seriePlayer" data-id="([^"]+)">([^<]+)<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -236,7 +240,7 @@ def showLink():
     if aResult[0]:
         sDesc = re.sub('.+? : ','',aResult[1][0])
         
-    sPattern = '<a title="([^"]+)" target="seriePlayer" href="([^"]+)">([^<]+)</a>'
+    sPattern = '<a title="([^"]+)" target="seriePlayer" data-id="([^"]+)">([^<]+)<\/a>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -287,6 +291,9 @@ def showHosters():
     if (aResult[0] == True):
 
         sHosterUrl = aResult[1][0]
+        if 'https://woof.tube' in sHosterUrl:
+            sHosterUrl = sHosterUrl.replace('https://woof.tube','https://verystream.com')
+        
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
             oHoster.setDisplayName(sMovieTitle)
