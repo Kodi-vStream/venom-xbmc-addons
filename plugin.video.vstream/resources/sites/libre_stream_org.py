@@ -13,7 +13,7 @@ SITE_IDENTIFIER = 'libre_stream_org'
 SITE_NAME = 'Libre-Streaming'
 SITE_DESC = 'Films & Séries en streaming'
 
-URL_MAIN = 'http://ls-streaming.com/'
+URL_MAIN = 'http://ls-streaming.org/'
 
 MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
