@@ -33,7 +33,7 @@ def ProtectstreamBypass(url):
  
     #lien commencant par VID_
     # Codedurl = url
-    Codedurl = url.replace('http:', 'https:')
+    #Codedurl = url.replace('http:', 'https:')
 
     UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
 
