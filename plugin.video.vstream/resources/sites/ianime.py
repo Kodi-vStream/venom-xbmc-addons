@@ -22,7 +22,7 @@ SITE_IDENTIFIER = 'ianime'
 SITE_NAME = 'I anime'
 SITE_DESC = 'Animés en streaming'
 
-URL_MAIN = 'https://www.ianimes.top/'
+URL_MAIN = 'https://www.ianimes.org/'
 
 MOVIE_MOVIE = (URL_MAIN + 'films.php?liste=' + RandomKey, 'ShowAlpha')
 MOVIE_GENRES = (URL_MAIN + 'films.php?liste=' + RandomKey, 'showGenres')
@@ -338,7 +338,7 @@ def showMovies(sSearch = ''):
         sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?<a href="([^"]+)".+?alt="(.+?)".+?itle'
         
         
-    sHtmlContent = re.sub('<a\s*href=\"categorie.php\?watch=\"\s*class="genre\s*\"','',sHtmlContent,re.DOTALL)
+    sHtmlContent = re.sub('<a\s*href=\"categorie.php\?watch=\"\s*class="genre\s*\"', '', sHtmlContent, re.DOTALL)
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -417,7 +417,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -533,7 +533,7 @@ def ExtractLink(html):
     if (not final.startswith('http')) and (len(final) > 2):
         final = URL_MAIN + final
 
-    return final.replace(' ','').replace('\n','')
+    return final.replace(' ', '').replace('\n', '')
 
 def showHosters():
     oGui = cGui()
