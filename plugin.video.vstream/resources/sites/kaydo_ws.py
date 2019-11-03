@@ -228,9 +228,19 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
+
+def __checkForNextPage(sHtmlContent):
+    oParser = cParser()
+    sPattern = '<a class="next page-numbers" href="([^"]+?)"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        return aResult[1][0]
+
+    return False
 
 def ShowSaisonEpisodes():
     oGui = cGui()
@@ -275,16 +285,6 @@ def ShowSaisonEpisodes():
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
-
-def __checkForNextPage(sHtmlContent):
-    oParser = cParser()
-    sPattern = '<a class="next page-numbers" href="([^"]+?)"'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
-        return aResult[1][0]
-
-    return False
 
 def showHosters():
     UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
@@ -332,7 +332,7 @@ def showHosters():
             sHtmlContent = oRequestHandler.request()
             sHosterUrl = oRequestHandler.getRealUrl()
             if 'public/dist' in sHosterUrl:
-                sHosterUrl = 'https://' + sHosterUrl.split('/')[2] + '/hls/'+sHosterUrl.split('id=')[1] + '/'+sHosterUrl.split('id=')[1] + '.playlist.m3u8'
+                sHosterUrl = 'https://' + sHosterUrl.split('/')[2] + '/hls/'+sHosterUrl.split('id=')[1] + '/' + sHosterUrl.split('id=')[1] + '.playlist.m3u8'
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
