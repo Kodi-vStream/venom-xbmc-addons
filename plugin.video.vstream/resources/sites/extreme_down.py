@@ -24,8 +24,8 @@ SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, r�
 URL_MAIN = 'https://www.extreme-down.xyz/'
 
 URL_SEARCH = (URL_MAIN + 'home.html', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + 'home.html', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + 'home.html', 'showMovies')
+URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -362,7 +362,7 @@ def showMovies(sSearch = ''):
 
         if URL_SEARCH[0] in sSearch:
             bGlobal_Search = True
-            sSearch=sSearch.replace(URL_SEARCH[0], '')
+            sSearch = sSearch.replace(URL_SEARCH[0], '')
 
         if Nextpagesearch:
             query_args = (('do', 'search'), ('subaction', 'search'), ('search_start', Nextpagesearch), ('story', sSearch), ('titleonly', '3'))
@@ -398,9 +398,9 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sTitle = aEntry[2]
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
+            sTitle = aEntry[2]
             sDesc = ''
 
             if sSearch and total > 2:
@@ -663,7 +663,7 @@ def getHoster():#Ouvrir le clavier + requete
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     sThumb = ''
-    sSearchText = oGui.showKeyBoard(heading = "Mettre ici le lien du hoster après avoir passer les Recaptcha manuellement") #appelle le clavier xbmc
+    sSearchText = oGui.showKeyBoard(heading = "Mettre ici le lien du hoster après avoir passer les Recaptcha manuellement")#appelle le clavier xbmc
     if (sSearchText != False):
         sUrl = sSearchText
 
