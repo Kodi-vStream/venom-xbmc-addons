@@ -28,8 +28,8 @@ ANIM_ANIMS = (URL_MAIN + 'manga', 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'manga', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 
 FUNCTION_SEARCH = 'showMovies'
 
@@ -189,7 +189,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
