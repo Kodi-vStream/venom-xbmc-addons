@@ -172,7 +172,7 @@ def showMovies(sSearch = ''):
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
             #delete du tiret pour les series
-            sTitle = aEntry[2].replace(' - Saison', ' Saison')
+            sTitle = aEntry[2]#.replace(' - Saison', ' Saison')
             sDesc = ''
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -191,7 +191,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
