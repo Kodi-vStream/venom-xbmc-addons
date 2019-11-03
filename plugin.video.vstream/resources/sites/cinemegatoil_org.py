@@ -109,7 +109,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'class="poster.+?img src="([^"]+)".+?class="quality">([^<]+)<\/div>.+?class="title"><a href="([^"]+)".+?title="([^"]+)".+?class="label">Ann.+?<li>([^<]+)</li>.+?class="shortStory">([^<]+)</div>'
+    sPattern = 'class="poster.+?img src="([^"]+)".+?class="quality">([^<]+)<\/div>.+?class="title"><a href="([^"]+)".+?title="([^"]+)".+?class="label">Ann.+?<a href.+?>([^<]+)</a>.+?class="shortStory">([^<]+)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -148,7 +148,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -467,19 +467,19 @@ def get_response(img,cookie):
 def DecryptOuo(sUrl):
     urlOuo = sUrl
     if not '/fbc/' in urlOuo:
-        urlOuo = urlOuo.replace('io/','io/fbc/').replace('press/','press/fbc/')
+        urlOuo = urlOuo.replace('io/', 'io/fbc/').replace('press/', 'press/fbc/')
 
     oRequestHandler = cRequestHandler(urlOuo)
     sHtmlContent = oRequestHandler.request()
     Cookie = oRequestHandler.GetCookies()
 
-    key = re.search('sitekey: "(.+?)"',str(sHtmlContent)).group(1)
-    OuoToken = re.search('<input name="_token" type="hidden" value="(.+?)">',str(sHtmlContent)).group(1)
+    key = re.search('sitekey: "(.+?)"', str(sHtmlContent)).group(1)
+    OuoToken = re.search('<input name="_token" type="hidden" value="(.+?)">', str(sHtmlContent)).group(1)
 
     gToken = ResolveCaptcha(key, urlOuo)
 
-    url = urlOuo.replace('/fbc/','/go/')
-    params = '_token='+OuoToken+'&g-recaptcha-response='+gToken
+    url = urlOuo.replace('/fbc/', '/go/')
+    params = '_token=' + OuoToken + '&g-recaptcha-response=' + gToken
 
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.setRequestType(1)
@@ -489,15 +489,15 @@ def DecryptOuo(sUrl):
     oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
     oRequestHandler.addHeaderEntry('Referer', urlOuo)
     oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-    oRequestHandler.addHeaderEntry('Content-Length',str(len(params)))
-    oRequestHandler.addHeaderEntry('Cookie',Cookie)
+    oRequestHandler.addHeaderEntry('Content-Length', str(len(params)))
+    oRequestHandler.addHeaderEntry('Cookie', Cookie)
     oRequestHandler.addParametersLine(params)
     sHtmlContent = oRequestHandler.request()
 
-    final = re.search('<form method="POST" action="(.+?)" accept-charset="UTF-8"><input name="_token" type="hidden" value="(.+?)">',str(sHtmlContent))
+    final = re.search('<form method="POST" action="(.+?)" accept-charset="UTF-8"><input name="_token" type="hidden" value="(.+?)">', str(sHtmlContent))
 
     url = final.group(1)
-    params = '_token='+final.group(2)
+    params = '_token=' + final.group(2)
 
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.setRequestType(1)
@@ -507,8 +507,8 @@ def DecryptOuo(sUrl):
     oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
     oRequestHandler.addHeaderEntry('Referer', urlOuo)
     oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-    oRequestHandler.addHeaderEntry('Content-Length',str(len(params)))
-    oRequestHandler.addHeaderEntry('Cookie',Cookie)
+    oRequestHandler.addHeaderEntry('Content-Length', str(len(params)))
+    oRequestHandler.addHeaderEntry('Cookie', Cookie)
     oRequestHandler.addParametersLine(params)
     sHtmlContent = oRequestHandler.request()
 
