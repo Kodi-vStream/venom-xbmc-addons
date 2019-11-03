@@ -59,7 +59,7 @@ def showSearch():
 def sHowResultSearch(sSearch = ''):
     oGui = cGui()
 
-    oRequestHandler = cRequestHandler('https://disneyhd.tk/movies_list.php')
+    oRequestHandler = cRequestHandler(URL_MAIN + 'movies_list.php')
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
@@ -67,7 +67,7 @@ def sHowResultSearch(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        
+
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -90,13 +90,13 @@ def sHowResultSearch(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
-def order(sList,sIndex):
+def order(sList, sIndex):
     #remet en ordre le résultat du parser par un index ici par le titre qui est en position 2
     #exemple: ('http://venom', 'sThumb', 'sTitle')
-    #          aResult = order(aResult[1],2)
+    #          aResult = order(aResult[1], 2)
     aResult = sorted(sList, key=lambda a:a[sIndex])
     #retourne au format du parser
-    return True,aResult
+    return True, aResult
 
 def showMovies():
     oGui = cGui()
@@ -104,12 +104,12 @@ def showMovies():
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    
+
     if oInputParameterHandler.exist('filtre'):
         sFiltre = oInputParameterHandler.getValue('filtre')
     else:
         sFiltre = "none"
-        
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -166,13 +166,13 @@ def showHosters():
     #film
     if '<ol id="playlist">' in sHtmlContent:
         sPattern = '<li data-trackurl="([^"]+)">(.+?)<\/li>'
-        
+
     elif 'data-ws=' in sHtmlContent:
         sPattern = 'data-ws="([^"]+)">(.+?)</span>'
     else:
         sPattern = 'class="qualiteversion" data-qualurl="([^"]+)">([^"]+)</span>'
 
-        
+
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
