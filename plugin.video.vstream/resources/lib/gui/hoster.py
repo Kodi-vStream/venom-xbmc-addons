@@ -262,8 +262,8 @@ class cHosterGui:
             return self.getHoster('vidwatch')
         if ('up2stream' in sHostName):
             return self.getHoster('up2stream')
-        if ('stream.moe' in sHostName):
-            return self.getHoster('streammoe')
+        if ('vidbm.' in sHostName):
+            return self.getHoster('vidbm')
         if ('tune' in sHostName):
             return self.getHoster('tune')
         if ('sendvid' in sHostName):
