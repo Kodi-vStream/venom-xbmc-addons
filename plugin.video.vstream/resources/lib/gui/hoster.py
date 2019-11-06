@@ -244,8 +244,8 @@ class cHosterGui:
             return self.getHoster('uqload')
         if ('letwatch' in sHostName):
             return self.getHoster('letwatch')
-        if ('www.amazon' in sHostName):
-            return self.getHoster('amazon')
+        if ('letsupload' in sHostName):
+            return self.getHoster('letsupload')
         if ('filepup' in sHostName):
             return self.getHoster('filepup')
         if ('vimple.ru' in sHostName):
@@ -262,8 +262,8 @@ class cHosterGui:
             return self.getHoster('vidwatch')
         if ('up2stream' in sHostName):
             return self.getHoster('up2stream')
-        if ('stream.moe' in sHostName):
-            return self.getHoster('streammoe')
+        if ('vidbm.' in sHostName):
+            return self.getHoster('vidbm')
         if ('tune' in sHostName):
             return self.getHoster('tune')
         if ('sendvid' in sHostName):

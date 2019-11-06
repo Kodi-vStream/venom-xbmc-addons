@@ -137,7 +137,7 @@ def showMovies(sSearch = ''):
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + aEntry[2]
                 
-            sTitle = aEntry[1].replace('Regarder','').replace('en ligne gratuitement','')
+            sTitle = aEntry[1].replace('Regarder', '').replace('en ligne gratuitement', '')
             sUrl2 = aEntry[0]
 
             sDisplayTitle = ('%s') % (sTitle)
@@ -158,7 +158,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -210,7 +210,7 @@ def showEpisodes():
 
             else:
                 sUrl2 = URL_MAIN[:-1] + aEntry[1]
-                SxE = re.sub('lecteur (\d+)', '', aEntry[2]).upper().replace(' ','')
+                SxE = re.sub('lecteur (\d+)', '', aEntry[2]).upper().replace(' ', '')
                 sTitle = sMovieTitle + '[' + SxE + ']'
 
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -238,7 +238,7 @@ def showLink():
     sPattern = '<div class="full-text".+?<p>(.+?)<\/p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
-        sDesc = re.sub('.+? : ','',aResult[1][0])
+        sDesc = re.sub('.+? : ', '', aResult[1][0])
         
     sPattern = '<a title="([^"]+)" target="seriePlayer" data-id="([^"]+)">([^<]+)<\/a>'
 
@@ -253,7 +253,7 @@ def showLink():
                 break
 
             sUrl2 = URL_MAIN[:-1] + aEntry[1]
-            sHost = aEntry[2].replace(' ','')
+            sHost = aEntry[2].replace(' ', '')
             sLang = aEntry[0][-2:]
             sTitle = ('%s [%s] [%s]') % (sMovieTitle, sLang, sHost)
 
@@ -292,7 +292,7 @@ def showHosters():
 
         sHosterUrl = aResult[1][0]
         if 'https://woof.tube' in sHosterUrl:
-            sHosterUrl = sHosterUrl.replace('https://woof.tube','https://verystream.com')
+            sHosterUrl = sHosterUrl.replace('https://woof.tube', 'https://verystream.com')
         
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):

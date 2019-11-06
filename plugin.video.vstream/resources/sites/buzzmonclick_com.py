@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'buzzmonclick_com'
 SITE_NAME = 'BuzzMonClick'
 SITE_DESC = 'Films & Séries en Streaming de qualité entièrement gratuit.'
 
-URL_MAIN = 'https://buzzmonclick.com/category/replay-tv/'
+URL_MAIN = 'https://buzzmonclick.net/category/replay-tv/'
 
 REPLAYTV_NEWS = (URL_MAIN, 'showMovies')
 REPLAYTV_REPLAYTV = ('http://', 'load')
@@ -25,8 +25,8 @@ REPLAYTV_GENRES = (True, 'showGenres')
 DOC_DOCS = ('http://', 'load')
 DOC_NEWS = (URL_MAIN + 'documentaires/', 'showMovies')
 
-URL_SEARCH = ('https://buzzmonclick.com/?s=', 'showMovies')
-URL_SEARCH_MISC = ('https://buzzmonclick.com/?s=', 'showMovies')
+URL_SEARCH = ('https://buzzmonclick.net/?s=', 'showMovies')
+URL_SEARCH_MISC = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 
@@ -136,13 +136,13 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<span class=\'current\'>.+?href="([^"]+)"'
+    sPattern = 'class="nextpostslink" rel="next" href="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):

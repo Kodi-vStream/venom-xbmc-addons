@@ -30,8 +30,8 @@ SERIE_SERIES = (URL_MAIN + 'serie-tv/', 'showMovies')
 SERIE_HD = (URL_MAIN + 'serie-tv/', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -148,7 +148,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = SucurieBypass().GetHtml(sUrl)
 
     oParser = cParser()
-    sPattern = 'class="item"> *<a href="([^<]+)">.+?<img[^<>]+src="([^<>"]+?)" alt="([^"]+?)".+?<span class="calidad2">(.+?)<\/span>'
+    sPattern = 'class="item"> *<a href="([^<]+)">.+?<img[^<>]+src="([^<>"]+?)" alt="([^"]+?)".+?<span class="calidad2">([^<]+)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -232,7 +232,7 @@ def showHosters():
     sHtmlContent = sHtmlContent.replace('src="//www.youtube.com/', '')
 
 
-    sPattern = '<iframe.+?src="(.+?)"'
+    sPattern = '<iframe.+?src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
