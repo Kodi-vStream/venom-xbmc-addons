@@ -78,15 +78,18 @@ class cHoster(iHoster):
         if aResult[0]:
             for i in aResult[1]:
                 decoded = AADecoder(i).decode()
-                #VSlog(decoded)
+                # VSlog(decoded)
                 
                 r = re.search("atob\(\'([^']+)\'\)", decoded, re.DOTALL | re.UNICODE)
                 if r:
                     urlcoded = r.group(1)
-
                     break
-                    
-        
+                else:
+                    r = re.search("setAttribute\(\'src\', *\'(http.+?mp4)\'\)", decoded, re.DOTALL)
+                    if r:
+                        api_call = r.group(1)
+                        return True, api_call + '|User-Agent=' + UA
+
         reducesHtmlContent = oParser.abParse(sHtmlContent, '<z9></z9><script>','{if(document')
 
         sPattern =  '(\w+)'
