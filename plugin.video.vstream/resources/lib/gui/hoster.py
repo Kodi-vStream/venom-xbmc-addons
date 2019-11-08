@@ -151,6 +151,8 @@ class cHosterGui:
                 return tmp
 
         #Gestion classique
+        if ('streamz.' in sHostName):
+            return self.getHoster('streamz')
         if ('streamax' in sHostName):
             return self.getHoster('streamax')
         if ('livestream' in sHostName):
