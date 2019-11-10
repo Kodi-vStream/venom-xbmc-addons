@@ -267,3 +267,73 @@ def QuoteSafe(sUrl):
 #     #d'apres Kodi ne doit pas etre utiliser sur les special://
 #     return xbmc.translatePath(location).decode("utf-8")
 
+def GetGooglUrl(url):
+    if 'http://goo.gl' in url:
+        import urllib2
+        try:
+            headers = {'User-Agent' : 'Mozilla 5.10', 'Host' : 'goo.gl', 'Connection' : 'keep-alive'}
+            request = urllib2.Request(url, None, headers)
+            reponse = urllib2.urlopen(request)
+            url = reponse.geturl()
+        except:
+            pass
+    return url
+
+def GetTinyUrl(url):
+    if not 'tinyurl' in url:
+        return url
+    
+    #Lien deja connu ?
+    if '://tinyurl.com/h7c9sr7' in url:
+        url = url.replace('://tinyurl.com/h7c9sr7/', '://vidwatch.me/')
+    elif '://tinyurl.com/jxblgl5' in url:
+        url = url.replace('://tinyurl.com/jxblgl5/', '://streamin.to/')
+    elif '://tinyurl.com/q44uiep' in url:
+        url = url.replace('://tinyurl.com/q44uiep/', '://openload.co/')
+    elif '://tinyurl.com/jp3fg5x' in url:
+        url = url.replace('://tinyurl.com/jp3fg5x/', '://allmyvideos.net/')
+    elif '://tinyurl.com/kqhtvlv' in url:
+        url = url.replace('://tinyurl.com/kqhtvlv/', '://openload.co/embed/')
+    elif '://tinyurl.com/lr6ytvj' in url:
+        url = url.replace('://tinyurl.com/lr6ytvj/', '://netu.tv/')
+    elif '://tinyurl.com/kojastd' in url:
+        url = url.replace('://tinyurl.com/kojastd/', '://www.rapidvideo.com/embed/')
+    elif '://tinyurl.com/l3tjslm' in url:
+        url = url.replace('://tinyurl.com/l3tjslm/', '://hqq.tv/player/')
+    elif '://tinyurl.com/n34gtt7' in url:
+        url = url.replace('://tinyurl.com/n34gtt7/', '://vidlox.tv/')
+    elif '://tinyurl.com/kdo4xuk' in url:
+        url = url.replace('://tinyurl.com/kdo4xuk/', '://watchers.to/')
+    elif '://tinyurl.com/kjvlplm' in url:
+        url = url.replace('://tinyurl.com/kjvlplm/', '://streamango.com/')
+    elif '://tinyurl.com/kt3owzh' in url:
+        url = url.replace('://tinyurl.com/kt3owzh/', '://estream.to/')
+
+    #On va chercher le vrai lien
+    else:
+
+        #VSlog('Decodage lien tinyurl : ' + str(url))
+        
+        import urllib2
+
+        class NoRedirection(urllib2.HTTPErrorProcessor):
+            def http_response(self, request, response):
+                return response
+            https_response = http_response
+
+        headers9 = [('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'), ('Referer', URL_MAIN)]
+
+        opener = urllib2.build_opener(NoRedirection)
+        opener.addheaders = headers9
+        reponse = opener.open(url, None, 5)
+
+        UrlRedirect = reponse.geturl()
+
+        if not(UrlRedirect == url):
+            url = UrlRedirect
+        elif 'Location' in reponse.headers:
+            url = reponse.headers['Location']
+
+        reponse.close()
+        
+    return url
