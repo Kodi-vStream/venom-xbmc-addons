@@ -146,7 +146,7 @@ def __checkForNextPage(sHtmlContent):
     # sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oParser = cParser()
-    sPattern = ' class="last" title=".+?">.+?</a><a href="([^"]+)"><i class="td-icon-menu-right"></i>'
+    sPattern = ' class="last".+?href="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
