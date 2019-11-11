@@ -60,7 +60,7 @@ def showPays():
 
     oParser = cParser()
     sHtmlContent = getHtml(sUrl)
-    sPattern = '<li class="cat-item cat-item-.+?"><a href="([^"]+)">([^<]+)</a>'
+    sPattern = '<li class="cat-item cat-item-.+?"><a href="([^"]+)".+?>([^<]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
