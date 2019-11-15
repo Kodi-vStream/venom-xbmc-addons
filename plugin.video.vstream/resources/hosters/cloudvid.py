@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #http://cloudvid.co/embed-xxxx.html
+#https://clipwatching.com/embed-xxx.html
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
@@ -78,20 +79,23 @@ class cHoster(iHoster):
         if (aResult[0] == True):
             sHtmlContent = cPacker().unpack(aResult[1][0])
 
-        sPattern = '{file:"([^"]+)",label:"([^"]+)"}'
-        aResult = oParser.parse(sHtmlContent,sPattern)
-        if (aResult[0] == True):
+            sPattern = '{file:"([^"]+)",label:"([^"]+)"}'
+            aResult = oParser.parse(sHtmlContent,sPattern)
+            if (aResult[0] == True):
             #initialisation des tableaux
-            url=[]
-            qua=[]
-        
-            #Remplissage des tableaux
-            for i in aResult[1]:
-                url.append(str(i[0]))
-                qua.append(str(i[1]))
-                
-            api_call = dialog().VSselectqual(qua,url)
-
+                url=[]
+                qua=[]
+                for i in aResult[1]:
+                    url.append(str(i[0]))
+                    qua.append(str(i[1]))
+					
+                api_call = dialog().VSselectqual(qua,url)
+        else:
+            sPattern = 'sources: *\[{src: "([^"]+)", *type: "video/mp4"'
+            aResult = oParser.parse(sHtmlContent,sPattern)
+            if (aResult[0] == True):
+                api_call = aResult[1][0]
+				
         if (api_call):
             return True, api_call
 
