@@ -5,7 +5,6 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 
-
 class cHoster(iHoster):
 
     def __init__(self):
@@ -57,14 +56,19 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-
         oParser = cParser()
+        #type 3
+
+        sPattern = "var vsource *= *'([^']+)"
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            return True, aResult[1][0]
 
         sPattern1 = '<input type="hidden" id="file_name" value="([^"]+)">'
         aResult1 = oParser.parse(sHtmlContent, sPattern1)
         if (aResult1[0] == True):
             FN = aResult1[1][0]
-        
+
         #type 2
         sPattern = '<input type="hidden" id="srv_id" value="([^"]+)">'
         aResult = oParser.parse(sHtmlContent, sPattern)
