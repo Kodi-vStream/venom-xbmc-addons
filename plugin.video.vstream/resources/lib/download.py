@@ -51,7 +51,7 @@ class cDownloadProgressBar(threading.Thread):
         self.__sTitle = ''
         self.__sUrl = ''
         self.__fPath = ''
-        self.__bFastMode = False
+        self.__bFastMode = True
 
         if (kwargs):
             self.__sTitle = kwargs['title']
