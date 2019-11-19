@@ -74,27 +74,29 @@ class cHoster(iHoster):
 
         if (aResult[0] == True):
             sHtmlContent = cPacker().unpack(aResult[1][0])
-
-            sPattern =  '{file:"([^"]+)"(?:,label:"([^"]+)")*}'
-            aResult = oParser.parse(sHtmlContent, sPattern)
             
-            if (aResult[0] == True):
+            
 
-                #initialisation des tableaux
-                url=[]
-                qua=[]
+        sPattern =  '(?:file|src): *"([^"]+)"[^{}<>]+?(?:, *label: *"([^"]+)")*}'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        
+        if (aResult[0] == True):
 
-                #Remplissage des tableaux
-                for i in aResult[1]:
-                    url.append(str(i[0]))
-                    if len(i) > 1:
-                        q = str(i[1])
-                    else:
-                        q = "Inconnu"
-                    qua.append(q)
+            #initialisation des tableaux
+            url=[]
+            qua=[]
 
-                #Affichage du tableau
-                api_call = dialog().VSselectqual(qua, url)
+            #Remplissage des tableaux
+            for i in aResult[1]:
+                url.append(str(i[0]))
+                if len(i) > 1:
+                    q = str(i[1])
+                else:
+                    q = "Inconnu"
+                qua.append(q)
+
+            #Affichage du tableau
+            api_call = dialog().VSselectqual(qua, url)
 
         if (api_call):
             return True, api_call
