@@ -216,6 +216,8 @@ class cHosterGui:
            # return self.getHoster('netu')
         #if ('waaw' in sHostName):
            # return self.getHoster('netu')
+        if ('vfsplayer' in sHostName):
+            return self.getHoster('vfsplayer')
         if ('mail.ru' in sHostName):
             return self.getHoster('mailru')
         if ('onevideo' in sHostName):
