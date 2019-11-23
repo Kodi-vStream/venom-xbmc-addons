@@ -297,7 +297,7 @@ def ProtectstreamBypass(url):
 
         UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
 
-        oRequest = cRequestHandler(URL_MAIN + 'secur22.php')
+        oRequest = cRequestHandler(URL_MAIN + 'embed_secur.php')
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
         #oRequest.addHeaderEntry('Host', 'www.protect-stream.com')

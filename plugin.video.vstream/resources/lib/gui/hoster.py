@@ -151,6 +151,8 @@ class cHosterGui:
                 return tmp
 
         #Gestion classique
+        if ('streamz.' in sHostName):
+            return self.getHoster('streamz')
         if ('streamax' in sHostName):
             return self.getHoster('streamax')
         if ('livestream' in sHostName):
@@ -163,8 +165,8 @@ class cHosterGui:
             return self.getHoster('facebook')
         if ('cloudcartel' in sHostName):
             return self.getHoster('cloudcartel')
-        if (('raptu.com' in sHostName) or ('rapidvideo' in sHostName)):
-            return self.getHoster('raptu')
+        #if (('raptu.com' in sHostName) or ('rapidvideo' in sHostName)):
+        #    return self.getHoster('raptu')
         if ('mixloads' in sHostName):
             return self.getHoster('mixloads')
         if ('vidoza.' in sHostName):
@@ -181,7 +183,7 @@ class cHosterGui:
             return self.getHoster('vk')
         if ('megawatch' in sHostName):
             return self.getHoster('megawatch')
-        if ('vidto.me' in sHostName):
+        if ('vidtodo.' in sHostName)  or ('playvidto' in sHostName):
             return self.getHoster('vidto')
         if ('vidtodo.' in sHostName):
             return self.getHoster('vidtodo')
@@ -214,6 +216,8 @@ class cHosterGui:
            # return self.getHoster('netu')
         #if ('waaw' in sHostName):
            # return self.getHoster('netu')
+        if ('vfsplayer' in sHostName):
+            return self.getHoster('vfsplayer')
         if ('mail.ru' in sHostName):
             return self.getHoster('mailru')
         if ('onevideo' in sHostName):
@@ -232,12 +236,12 @@ class cHosterGui:
             return self.getHoster('ok_ru')
         if ('vimeo.com' in sHostName):
             return self.getHoster('vimeo')
-        if ('openload' in sHostName):
-            return self.getHoster('openload')
-        if ('oload.' in sHostName):
-            return self.getHoster('openload')
-        if ('oladblock.' in sHostName):
-            return self.getHoster('openload')
+        #if ('openload' in sHostName):
+        #    return self.getHoster('openload')
+        #if ('oload.' in sHostName):
+        #    return self.getHoster('openload')
+        #if ('oladblock.' in sHostName):
+        #    return self.getHoster('openload')
         if (('thevideo.' in sHostName) or ('video.tt' in sHostName) or ('vev.io' in sHostName)):
             return self.getHoster('thevideo_me')
         if ('uqload.' in sHostName):
@@ -286,10 +290,10 @@ class cHosterGui:
             return self.getHoster('estream')
         if ('hdvid' in sHostName):
             return self.getHoster('hdvid')
-        if ('streamango' in sHostName):
-            return self.getHoster('streamango')
-        if ('streamcherry' in sHostName):
-            return self.getHoster('streamango')
+        #if ('streamango' in sHostName):
+        #    return self.getHoster('streamango')
+        #if ('streamcherry' in sHostName):
+        #    return self.getHoster('streamango')
         if ('vshare' in sHostName):
             return self.getHoster('vshare')
         if ('giga' in sHostName):

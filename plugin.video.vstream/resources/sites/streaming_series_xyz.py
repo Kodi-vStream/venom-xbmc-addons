@@ -8,7 +8,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.comaddon import progress, dialog, xbmc
-
+import re
 import requests
 
 SITE_IDENTIFIER = 'streaming_series_xyz'
@@ -30,10 +30,7 @@ FUNCTION_SEARCH = 'showMovies'
 def ProtectstreamBypass(url):
     if url.startswith('/'):
         url = URL_MAIN + url
- 
-    #lien commencant par VID_
-    # Codedurl = url
-    #Codedurl = url.replace('http:', 'https:')
+
 
     UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
 
@@ -195,7 +192,9 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="moviefilm".+?<a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)".+?<p>(.+?)</p>'
+    sHtmlContent = re.sub('src="https://dpstreaming.to/wp-content/plugins/wp-fastest-cache-premium/pro/images/blank.gif"','',sHtmlContent)
+
+    sPattern = '<div class="moviefilm".+?<a href="([^"]+)".+?<img.+?src="([^"]+)" alt="([^"]+)".+?<p>(.+?)</p>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -212,6 +211,7 @@ def showMovies(sSearch = ''):
 
             sUrl = aEntry[0]
             sThumb = aEntry[1]
+            sThumb = re.sub('-119x125','',sThumb)
             sTitle = aEntry[2].replace(' Streaming', '')
             sDesc = aEntry[3]
 

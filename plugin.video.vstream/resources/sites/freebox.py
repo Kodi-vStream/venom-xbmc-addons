@@ -428,8 +428,8 @@ def play__():#Lancer les liens
         oPlayer.clearPlayList()
         oPlayer.addItemToPlaylist(oGuiElement)
         #tout repetter
-        xbmc.executebuiltin('xbmc.playercontrol(RepeatAll)')
-
+        #xbmc.executebuiltin('xbmc.playercontrol(RepeatAll)')
+        #active le mode repeat pour tous les liens dans vstream
         oPlayer.startPlayer()
         return
 

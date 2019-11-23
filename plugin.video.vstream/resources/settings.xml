@@ -90,9 +90,9 @@
 
         <setting visible="false" id="plugin_film_illimit_fr" type="bool" label="Film Illimité" default="true"/>
 
-        <setting visible="false" id="plugin_filmcomplet" type="bool" label="FilmComplet" default="true"/>
+        <setting visible="false" id="plugin_film_vf_gratuit" type="bool" label="Film VF Gratuit" default="true"/>
 
-        <setting visible="false" id="plugin_films_cafe" type="bool" label="Film cafe" default="true"/>
+        <setting visible="false" id="plugin_filmcomplet" type="bool" label="FilmComplet" default="true"/>
 
         <setting visible="false" id="plugin_filmstreamvk_com" type="bool" label="Film stream vk" default="true"/>
 
@@ -133,6 +133,8 @@
         <setting visible="false" id="plugin_lsbd" type="bool" label="Liveset Database" default="true"/>
 
         <setting visible="false" id="plugin_mamcin" type="bool" label="Mamcin" default="true"/>
+
+        <setting visible="false" id="plugin_monde_des_cartoons" type="bool" label="Le monde des cartoons" default="true"/>
 
         <setting visible="false" id="plugin_neko_sama" type="bool" label="Neko Sama" default="true"/>
 
