@@ -328,7 +328,7 @@ class CloudflareBypass(object):
             VSlog('url ' + url)
             if (htmlcontent):
                 VSlog('code html ok')
-            VSlog('cookies passés' + self.Memorised_Cookies)
+            VSlog('cookies passés : ' + self.Memorised_Cookies)
             VSlog('post data :' + str(postdata))
 
         self.hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)','\\1',url)
@@ -359,7 +359,7 @@ class CloudflareBypass(object):
             method = 'GET'
 
         s = CloudflareScraper()
-        
+
         r = s.request(method,url,headers = self.SetHeader() , cookies = self.ParseCookies(cookies) , data = data )
         if r:
             sContent = r.text.encode("utf-8")
@@ -478,13 +478,16 @@ class CloudflareScraper(Session):
         
         if 'cookies' in kwargs:
             self.MemCookie.update( kwargs['cookies'] )
+        
+        #kwargs['params'].update(kwargs['data'])
+        #kwargs.pop('data',None)
             
         if Mode_Debug:
             VSlog("Headers send : " + str(kwargs['headers']) )
             VSlog("Cookies send : " + str(kwargs['cookies']) )
             VSlog("url : " + url )
-            VSlog("data send : " + str(kwargs.get('params','')) )
-            VSlog("param send : " + str(kwargs.get('data','')) )
+            VSlog("param send : " + str(kwargs.get('params','')) )
+            VSlog("data send : " + str(kwargs.get('data','')) )
                
         resp = super(CloudflareScraper, self).request(method, url, *args, **kwargs)
 
