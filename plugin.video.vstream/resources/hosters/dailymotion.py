@@ -5,8 +5,6 @@ from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
 
-import urllib2, re
-
 class cHoster(iHoster):
 
     def __init__(self):
@@ -41,41 +39,7 @@ class cHoster(iHoster):
     def isDownloadable(self):
         return True
 
-    def isJDownloaderable(self):
-        return True
-
     def getPattern(self):
-        return ''
-        
-    def __getIdFromUrl(self):
-        sPattern = "?([^<]+)"
-        oParser = cParser()
-        aResult = oParser.parse(self.__sUrl, sPattern)
-        if (aResult[0] == True):
-            return aResult[1][0]
-
-        return ''
-        
-    def __modifyUrl(self, sUrl):
-        if (sUrl.startswith('http://')):
-            oRequestHandler = cRequestHandler(sUrl)
-            oRequestHandler.request()
-            sRealUrl = oRequestHandler.getRealUrl()
-            self.__sUrl = sRealUrl
-            return self.__getIdFromUrl()
-
-        return sUrl
-        
-    def __getKey(self):
-        oRequestHandler = cRequestHandler(self.__sUrl)
-        sHtmlContent = oRequestHandler.request()
-        sPattern = 'fkzd="(.+?)";'
-        oParser = cParser()
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            aResult = aResult[1][0].replace('.', '%2E')
-            return aResult
-
         return ''
 
     def setUrl(self, sUrl):
@@ -103,81 +67,32 @@ class cHoster(iHoster):
         url=[]
         qua=[]
         
-        #oRequest = cRequestHandler(self.__sUrl)
-        #sHtmlContent = oRequest.request()
-        
-        request = urllib2.Request(self.__sUrl)
-        request.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:22.0) Gecko/20100101 Firefox/22.0')
-        request.add_header('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-        request.add_header('Cookie', "ff=off") #supprime le filtre parental
-        
-        try: 
-            reponse = urllib2.urlopen(request)
-        except urllib2.HTTPError, e:
-            print e.read()
-            print e.reason
-            
-        sHtmlContent = reponse.read()
-        reponse.close()
+        oRequest = cRequestHandler(self.__sUrl)
+        oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
+        oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+        oRequest.addHeaderEntry('Cookie', "ff=off")
+        sHtmlContent = oRequest.request()
 
-        sHtmlContent=sHtmlContent.replace("\/", "\\")
-        
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
-        
-        #print self.__sUrl
-        
+
         oParser = cParser()
 
-        sPattern =  '"live_rtsp_url":"(.+?)"'
+        sPattern =  '{"type":"application.+?mpegURL","url":"([^"]+)"}'
         aResult = oParser.parse(sHtmlContent, sPattern)
+
         if (aResult[0] == True):
-            url.append(aResult[1][0])
-            qua.append('live')
+            oRequest = cRequestHandler(aResult[1][0])
+            oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
+            oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+            sHtmlContent = oRequest.request()
 
-        sPattern =  '"stream_h264_hd1080_url":"(.+?)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            url.append(aResult[1][0])
-            qua.append('1080p')
+            sPattern = 'NAME="([^"]+)",PROGRESSIVE-URI="([^"]+)"'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                for aEntry in reversed(aResult[1]):
+                    if aEntry[0] not in qua:
+                        qua.append(aEntry[0])
+                        url.append(aEntry[1])
 
-        sPattern =  '"stream_h264_hd_url":"(.+?)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            url.append(aResult[1][0])
-            qua.append('720p')
-
-        sPattern =  '"stream_h264_hq_url":"(.+?)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            url.append(aResult[1][0])
-            qua.append('high')
-
-        sPattern =  '"stream_h264_url":"(.+?)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            url.append(aResult[1][0])
-            qua.append('low')
-
-        sPattern =  '"stream_h264_ld_url":"(.+?)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            url.append(aResult[1][0])
-            qua.append('low 2')
-
-        aResult = re.findall(r'{"source":"type":"application\\x-mpegURL","url":"(.+?)"}', sHtmlContent)
-        if (aResult):
-            url.append(aResult[0])
-            qua.append('Live')
-
-        #pattern plus generaliste
-        aResult = re.findall(r'"([0-9]+)":\[{"type":"application.+?","url":".+?"}.+?"url":"(.+?)"}]', sHtmlContent)
-        #aResult = re.findall(r'{"type":"video.+?","url":"(.+?)"}],"(\d+)"', sHtmlContent)
-        if (aResult):
-            for aEntry in aResult:
-                url.append(aEntry[1])
-                qua.append(str(aEntry[0]) + 'p')
 
             api_call = dialog().VSselectqual(qua, url)
 
