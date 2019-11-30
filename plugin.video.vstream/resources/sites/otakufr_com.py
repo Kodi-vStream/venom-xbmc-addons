@@ -6,8 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
-#from resources.lib.util import cUtil
+from resources.lib.comaddon import progress,xbmc
 import urllib, re
 
 SITE_IDENTIFIER = 'otakufr_com'
@@ -301,29 +300,20 @@ def showHosters():
     sPattern = '<div class="vdo_wrp"><iframe.+?src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
+    
         sHosterUrl = aResult[1][0]
 
         if sHosterUrl.startswith('//'):
             sHosterUrl = 'http:' + sHosterUrl
 
-        if '//goo.gl' in sHosterUrl: #netu
-            import urllib2
-            try:
-                class NoRedirection(urllib2.HTTPErrorProcessor):
-                    def http_response(self, request, response):
-                        return response
-
-                url8 = sHosterUrl.replace('https', 'http')
-
-                opener = urllib2.build_opener(NoRedirection)
-                opener.addheaders.append (('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'))
-                opener.addheaders.append (('Connection', 'keep-alive'))
-
-                HttpReponse = opener.open(url8)
-                sHosterUrl = HttpReponse.headers['Location']
-            except:
-                pass
-
+        if 'parisanime' in sHosterUrl:
+            
+            sHtmlContent = unCap(sHosterUrl,sUrl)
+            sPattern = "data-url='([^']+)'"
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                sHosterUrl = aResult[1][0]
+                
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
             oHoster.setDisplayName(sMovieTitle)
@@ -331,3 +321,28 @@ def showHosters():
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+    
+def unCap(sHosterUrl,sUrl):
+
+    oRequest = cRequestHandler(sHosterUrl)
+    oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:66.0) Gecko/20100101 Firefox/66.0')
+    oRequest.addHeaderEntry('Referer', sUrl)
+    oRequest.addHeaderEntry('Accept', '*/*')
+    oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    sHtmlContent = oRequest.request()
+    Cookie = oRequest.GetCookies()
+    
+    xbmc.sleep(1000)
+    
+    oRequest = cRequestHandler(sHosterUrl)
+    oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:66.0) Gecko/20100101 Firefox/66.0')
+    oRequest.addHeaderEntry('Host', 'parisanime.com')
+    oRequest.addHeaderEntry('Referer', sHosterUrl)
+    oRequest.addHeaderEntry('Accept', '*/*')
+    oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    oRequest.addHeaderEntry('Cookie', Cookie)
+    oRequest.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
+    oRequest.addHeaderEntry('Connection', 'keep-alive')
+    sHtmlContent = oRequest.request()
+    return sHtmlContent
+    
