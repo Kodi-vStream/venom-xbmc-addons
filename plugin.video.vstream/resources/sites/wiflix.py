@@ -139,7 +139,7 @@ def showMovies(sSearch = ''):
 
     sPattern = '<div class="mov clearfix">.+?<img *src="([^"]+)" *alt="([^"]+)".+?data-link="([^"]+)".+?nbloc1">([^<]+)<\/span>.+?nbloc2">*([^<]+)<\/span>.+?div class="ml-label">Synopsis.+?<div class="ml-desc">(.+?)<\/div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    VSlog(sHtmlContent)
+
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
