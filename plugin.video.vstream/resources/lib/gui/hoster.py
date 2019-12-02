@@ -238,8 +238,8 @@ class cHosterGui:
             return self.getHoster('vimeo')
         #if ('openload' in sHostName):
         #    return self.getHoster('openload')
-        #if ('oload.' in sHostName):
-        #    return self.getHoster('openload')
+        if ('prostream' in sHostName):
+            return self.getHoster('prostream')
         if ('vidfast' in sHostName):
             return self.getHoster('vidfast')
         if (('thevideo.' in sHostName) or ('video.tt' in sHostName) or ('vev.io' in sHostName)):
