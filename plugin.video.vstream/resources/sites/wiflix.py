@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress,VSlog
+from resources.lib.comaddon import progress#, VSlog
 from resources.lib.util import cUtil
 
 import re
@@ -20,7 +20,7 @@ SITE_DESC = 'Films & Séries en streaming'
 URL_MAIN = 'https://www.wiflix.net/'
 
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming/', 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'film-vf-streaming/', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'film-en-streaming/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
 SERIE_NEWS = (URL_MAIN + 'serie-en-streaming/', 'showSeries')
@@ -137,7 +137,7 @@ def showMovies(sSearch = ''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="mov clearfix">.+?<img *src="([^"]+)" *alt="([^"]+)".+?data-link="([^"]+)".+?nbloc1">([^<]+)<\/span>.+?nbloc2">*([^<]+)<\/span>.+?div class="ml-label">Synopsis.+?<div class="ml-desc">(.+?)<\/div>'
+    sPattern = '<div class="mov clearfix">.+?<img *src="([^"]+)" *alt="([^"]+)".+?data-link="([^"]+)".+?nbloc1">([^<]+)<\/span>.+?nbloc2">([^<]+)*<\/span>.+?div class="ml-label">Synopsis.+?<div class="ml-desc">(.+?)<\/div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -156,8 +156,8 @@ def showMovies(sSearch = ''):
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + aEntry[0]
 
-            sTitle = aEntry[1].replace(' wiflix', '') 
-            sDisplaytitle = '%s (%s) (%s)' % (sTitle, aEntry[3], aEntry[4])
+            sTitle = aEntry[1].replace(' wiflix', '')
+            sDisplaytitle = '%s [%s] (%s)' % (sTitle, aEntry[4], aEntry[3])
             sUrl =  aEntry[2]
             sDesc = aEntry[5]
 
@@ -231,8 +231,8 @@ def showSeries(sSearch = ''):
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + aEntry[0]
 
-            sTitle = aEntry[1].replace(' wiflix', '') 
-            sLang = re.sub('Saison \d+','',aEntry[3]).replace(' ','')
+            sTitle = aEntry[1].replace(' wiflix', '')
+            sLang = re.sub('Saison \d+', '', aEntry[3]).replace(' ', '')
             sDisplaytitle = '%s (%s)' % (sTitle, sLang)
             sUrl =  aEntry[2]
             sDesc = aEntry[4]
@@ -263,7 +263,7 @@ def sHowEpisodes():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-  
+
 
     sPattern = '<div class="(ep.+?)"|<a href="([^"]+)" target="x_player">'
     oParser = cParser()
@@ -282,7 +282,7 @@ def sHowEpisodes():
                 if 'epblocks' in aEntry[0]:
                     continue
                 else:
-                    oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0].replace('ep','Episode') + '[/COLOR]')
+                    oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0].replace('ep', 'Episode ').replace('vs', ' Vostfr').replace('vf', ' VF') + '[/COLOR]')
 
             if aEntry[1]:
                 sHosterUrl = aEntry[1]
