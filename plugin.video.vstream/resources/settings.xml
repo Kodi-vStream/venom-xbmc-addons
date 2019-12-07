@@ -84,15 +84,9 @@
 
         <setting visible="false" id="plugin_disneyhd_tk" type="bool" label="DisneyHD" default="true"/>
 
-        <setting visible="false" id="plugin_documentaires_streaming_com" type="bool" label="Documentaires Streaming" default="true"/>
-
         <setting visible="false" id="plugin_extreme_down" type="bool" label="ExtremeDown" default="true"/>
 
         <setting visible="false" id="plugin_film_illimit_fr" type="bool" label="Film Illimité" default="true"/>
-
-        <setting visible="false" id="plugin_film_vf_gratuit" type="bool" label="Film VF Gratuit" default="true"/>
-
-        <setting visible="false" id="plugin_filmcomplet" type="bool" label="FilmComplet" default="true"/>
 
         <setting visible="false" id="plugin_filmstreamvk_com" type="bool" label="Film stream vk" default="true"/>
 
@@ -134,6 +128,8 @@
 
         <setting visible="false" id="plugin_mamcin" type="bool" label="Mamcin" default="true"/>
 
+        <setting visible="false" id="plugin_mesfilms" type="bool" label="Mes Films" default="true"/>
+
         <setting visible="false" id="plugin_monde_des_cartoons" type="bool" label="Le monde des cartoons" default="true"/>
 
         <setting visible="false" id="plugin_neko_sama" type="bool" label="Neko Sama" default="true"/>
@@ -147,8 +143,6 @@
         <setting visible="false" id="plugin_papstream" type="bool" label="PapStream" default="true"/>
 
         <setting visible="false" id="plugin_planet_streaming" type="bool" label="Planet Streaming" default="true"/>
-
-        <setting visible="false" id="plugin_regarderfilm" type="bool" label="RegarderFilm" default="true"/>
 
         <setting visible="false" id="plugin_replaytvstreaming_com" type="bool" label="ReplayTVstreaming" default="true"/>
 
@@ -169,6 +163,8 @@
         <setting visible="false" id="plugin_streamay_bz" type="bool" label="Streamay" default="true"/>
 
         <setting visible="false" id="plugin_streamcomplet" type="bool" label="StreamComplet" default="true"/>
+
+        <setting visible="false" id="plugin_streamdivx" type="bool" label="StreamDivx" default="true"/>
 
         <setting visible="false" id="plugin_streamelite" type="bool" label="StreamElite" default="true"/>
 
