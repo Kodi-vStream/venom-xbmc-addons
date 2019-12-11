@@ -252,7 +252,10 @@ def showLink():
             if progress_.iscanceled():
                 break
 
-            sUrl2 = URL_MAIN[:-1] + aEntry[1]
+            sUrl2 = aEntry[1]
+            if sUrl2.startswith('/'):
+                sUrl2 = URL_MAIN[:-1] + aEntry[1] # ou a voir https://4kvfsplayer.xyz
+
             sHost = aEntry[2].replace(' ', '')
             sLang = aEntry[0][-2:]
             sTitle = ('%s [%s] [%s]') % (sMovieTitle, sLang, sHost)
