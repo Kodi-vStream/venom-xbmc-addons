@@ -33,7 +33,7 @@ class cHoster(iHoster):
         return 'frenchvid'
 
     def isDownloadable(self):
-        return False
+        return True
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
