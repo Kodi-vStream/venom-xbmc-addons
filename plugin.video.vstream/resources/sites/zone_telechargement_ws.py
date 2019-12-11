@@ -66,7 +66,6 @@ def GetURL_MAIN():
 
 URL_MAIN = GetURL_MAIN()
 
-URL_DECRYPT =  ''
 
 URL_SEARCH = (URL_MAIN + 'engine/ajax/controller.php?mod=filter&q=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + 'engine/ajax/controller.php?mod=filter&q=', 'showMovies')
@@ -640,7 +639,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumb=oInputParameterHandler.getValue('sThumb')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl.replace('https','http'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -744,7 +743,7 @@ def showSeriesHosters():
     oGui.setEndOfDirectory()
 
 def Display_protected_link():
-    #VSlog('Display_protected_link')
+    # VSlog('Display_protected_link')
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -780,7 +779,7 @@ def Display_protected_link():
                 return
 
     #Est ce un lien dl-protect ?
-    if URL_DECRYPT in sUrl:
+    if sUrl:
         f = { 'url' : encodeData, 'nextURL' : data}
         data = urllib.urlencode(f)
 
@@ -869,9 +868,6 @@ def CutPremiumlinks(sHtmlContent):
 
 def DecryptDlProtecte(url, data, baseUrl):
 
-    VSlog('DecryptDlProtecte : ' + url)
-    dialogs = dialog()
-
     if not (url):
         return ''
 
@@ -888,9 +884,6 @@ def DecryptDlProtecte(url, data, baseUrl):
     oRequestHandler.addParametersLine(data)
     sHtmlContent = oRequestHandler.request()
 
-    #fh = open('d:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
 
     return sHtmlContent
 
