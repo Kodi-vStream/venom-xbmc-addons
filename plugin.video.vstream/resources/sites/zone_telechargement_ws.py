@@ -34,13 +34,14 @@ def GetURL_MAIN():
     # quand vstream load a partir du menu home on passe >> callplugin
     # quand vstream fabrique une liste de plugin pour menu(load site globalRun and call function search) >> search
     # quand l'url ne contient pas celle déjà enregistrer dans settings et que c'est pas dlprotect on active.
-    if not (Sources == 'callpluging' or Sources == 'globalSources' or Sources == 'search') and not ADDON.getSetting('ZT')[6:] in sUrl and not 'dl-protect1.com' in sUrl and not 'zt-protect.com' in sUrl:
+    if not (Sources == 'callpluging' or Sources == 'globalSources' or Sources == 'search') and not ADDON.getSetting('ZT')[6:] in sUrl and not 'dl-protect1.' in sUrl and not 'zt-protect.' in sUrl:
         oRequestHandler = cRequestHandler(URL_HOST)
         sHtmlContent = oRequestHandler.request()
         MemorisedHost = oRequestHandler.getRealUrl()
-        if MemorisedHost is not None and MemorisedHost != '':
-            ADDON.setSetting('ZT', MemorisedHost)
-            VSlog("ZT url  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('ZT'))
+        if MemorisedHost is not None and MemorisedHost != '' :
+            if not 'cf_chl_jschl_tk' in MemorisedHost:
+                ADDON.setSetting('ZT', MemorisedHost)
+                VSlog("ZT url  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('ZT'))
         else:
             ADDON.setSetting('ZT', URL_HOST)
             VSlog("Url non changer car egal a None le site peux etre surchager utilisation de >> ADDON.getSetting('ZT')")
@@ -53,8 +54,9 @@ def GetURL_MAIN():
             sHtmlContent = oRequestHandler.request()
             MemorisedHost = oRequestHandler.getRealUrl()
             if MemorisedHost is not None and MemorisedHost != '':
-                ADDON.setSetting('ZT', MemorisedHost)
-                VSlog("ZT url vide  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('ZT'))
+                if not 'cf_chl_jschl_tk' in MemorisedHost:
+                    ADDON.setSetting('ZT', MemorisedHost)
+                    VSlog("ZT url vide  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('ZT'))
             else:
                 ADDON.setSetting('ZT', URL_HOST)
                 VSlog("Url non changer car egal a None le site peux etre surchager utilisation de >> ADDON.getSetting('ZT')")
