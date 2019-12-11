@@ -216,8 +216,6 @@ class cHosterGui:
            # return self.getHoster('netu')
         #if ('waaw' in sHostName):
            # return self.getHoster('netu')
-        if ('vfsplayer' in sHostName):
-            return self.getHoster('vfsplayer')
         if ('mail.ru' in sHostName):
             return self.getHoster('mailru')
         if ('onevideo' in sHostName):
@@ -270,8 +268,6 @@ class cHosterGui:
             return self.getHoster('vidbm')
         if ('tune' in sHostName):
             return self.getHoster('tune')
-        if ('sendvid' in sHostName):
-            return self.getHoster('sendvid')
         if ('vidup' in sHostName):
             return self.getHoster('vidup')
         if ('vidbull' in sHostName):
@@ -344,7 +340,7 @@ class cHosterGui:
             return self.getHoster('freshstream')
         if ('jetload' in sHostName):
             return self.getHoster('jetload')
-        if ('french-vid' in sHostName or 'fembed.' in sHostName):
+        if ('french-vid' in sHostName or 'fembed.' in sHostName or 'yggseries' in sHostName or 'sendvid' in sHostName or 'vfsplayer' in sHostName):
             return self.getHoster('frenchvid')
         if ('flix555' in sHostName):
             return self.getHoster('flix555')
