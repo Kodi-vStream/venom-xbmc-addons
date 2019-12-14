@@ -19,7 +19,7 @@ SITE_IDENTIFIER = 'wawacity'
 SITE_NAME = '[COLOR violet]Wawacity[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
-URL_MAIN = 'https://wawacity.ec/'
+URL_MAIN = 'https://www.wawacity.best/'
 URL_PROTECT = 'https://wlnk.ec/'
 
 URL_SEARCH = (URL_MAIN + '?search=', 'showMovies')

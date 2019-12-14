@@ -1,17 +1,13 @@
-#-*- coding: utf-8 -*-
+#coding: utf-8
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog
-import urllib
-import json
-UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
 
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'VFSplayer'
+        self.__sDisplayName = 'Vidfast'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
 
@@ -28,7 +24,7 @@ class cHoster(iHoster):
         return self.__sFileName
 
     def getPluginIdentifier(self):
-        return 'vfsplayer'
+        return 'vidfast'
 
     def setHD(self, sHD):
         self.__sHD = ''
@@ -39,48 +35,28 @@ class cHoster(iHoster):
     def isDownloadable(self):
         return True
 
-    def getPattern(self):
-        return ''
-
-    def __getIdFromUrl(self, sUrl):
-        return ''
-
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
 
-    def checkUrl(self, sUrl):
-        return True
-
-    def __getUrl(self, media_id):
-        return
+    def getUrl(self):
+        return self.__sUrl
 
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        api_call = False
-
-        url = 'https://vfsplayer.xyz/api/source/' + self.__sUrl.rsplit('/', 1)[1]
-
-        postdata = 'r=' + urllib.quote_plus(self.__sUrl) + '&d=vfsplayer.xyz'
-
-        oRequest = cRequestHandler(url)
-        oRequest.setRequestType(1)
-        oRequest.addHeaderEntry('User-Agent', UA)
-        oRequest.addHeaderEntry('Referer',self.__sUrl)
-        oRequest.addParametersLine(postdata)
+ 
+        api_call = ''
+        
+        oParser = cParser()
+        oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
-        page = json.loads(sHtmlContent)
-        if page:
-            url = []
-            qua = []
-            for x in page['data']:
-                url.append(x['file'])
-                qua.append(x['label'])
+        sPattern = '{file:"([^"]+)"}'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            api_call = aResult[1][0].replace(',','').replace('master.m3u8','index-v1-a1.m3u8')
 
-            if (url):
-                api_call = dialog().VSselectqual(qua, url)
 
         if (api_call):
             return True, api_call

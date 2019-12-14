@@ -183,7 +183,7 @@ class cHosterGui:
             return self.getHoster('vk')
         if ('megawatch' in sHostName):
             return self.getHoster('megawatch')
-        if ('vidtodo.' in sHostName)  or ('playvidto' in sHostName):
+        if ('playvidto' in sHostName):
             return self.getHoster('vidto')
         if ('vidtodo.' in sHostName):
             return self.getHoster('vidtodo')
@@ -214,10 +214,8 @@ class cHosterGui:
             return self.getHoster('speedvid')
         #if (('netu' in sHostName) or ('hqq' in sHostName)):
            # return self.getHoster('netu')
-        #if ('waaw' in sHostName):
-           # return self.getHoster('netu')
-        if ('vfsplayer' in sHostName):
-            return self.getHoster('vfsplayer')
+        if ('upstream' in sHostName):
+            return self.getHoster('upstream')
         if ('mail.ru' in sHostName):
             return self.getHoster('mailru')
         if ('onevideo' in sHostName):
@@ -238,10 +236,10 @@ class cHosterGui:
             return self.getHoster('vimeo')
         #if ('openload' in sHostName):
         #    return self.getHoster('openload')
-        #if ('oload.' in sHostName):
-        #    return self.getHoster('openload')
-        #if ('oladblock.' in sHostName):
-        #    return self.getHoster('openload')
+        if ('prostream' in sHostName):
+            return self.getHoster('prostream')
+        if ('vidfast' in sHostName):
+            return self.getHoster('vidfast')
         if (('thevideo.' in sHostName) or ('video.tt' in sHostName) or ('vev.io' in sHostName)):
             return self.getHoster('thevideo_me')
         if ('uqload.' in sHostName):
@@ -270,8 +268,6 @@ class cHosterGui:
             return self.getHoster('vidbm')
         if ('tune' in sHostName):
             return self.getHoster('tune')
-        if ('sendvid' in sHostName):
-            return self.getHoster('sendvid')
         if ('vidup' in sHostName):
             return self.getHoster('vidup')
         if ('vidbull' in sHostName):
@@ -344,11 +340,11 @@ class cHosterGui:
             return self.getHoster('freshstream')
         if ('jetload' in sHostName):
             return self.getHoster('jetload')
-        if ('french-vid' in sHostName or 'fembed.' in sHostName):
+        if ('french-vid' in sHostName or 'fembed.' in sHostName or 'yggseries' in sHostName or 'sendvid' in sHostName or 'vfsplayer' in sHostName):
             return self.getHoster('frenchvid')
         if ('flix555' in sHostName):
             return self.getHoster('flix555')
-        if ('onlystream' in sHostName):
+        if ('onlystream' in sHostName or 'gotochus' in sHostName):
             return self.getHoster('onlystream')
         
         #Lien telechargeable a convertir en stream

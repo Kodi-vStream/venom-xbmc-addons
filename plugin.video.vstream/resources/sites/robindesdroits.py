@@ -11,7 +11,7 @@ from resources.lib.util import cUtil
 from resources.lib.multihost import cJheberg
 from resources.lib.multihost import cMultiup
 from resources.lib.packer import cPacker
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress
 
 import urllib, re
 
@@ -247,7 +247,9 @@ def showLinkGenres():
     except:
         pass
 
-    sPattern = '<span style="font-family: Arial, Helvetica,.+?font-size: 16pt;">(.+?)</span>|(<h3 class="entry-title mh-loop-title"|<li )><a href="([^"]+)".+?>(.+?)</a>'
+    sHtmlContent = sHtmlContent = oParser.abParse(sHtmlContent, 'class="entry-title page-title">', '<span class="screen-reader-text">Rechercher')
+
+    sPattern = '<span style="font-family: Arial, Helvetica,.+?font-size:.+?pt;">(.+?)<\/span>|(?:<h3 class="entry-title mh-loop-title"|<li )><a href="([^"]+)".+?>(.+?)<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -260,10 +262,11 @@ def showLinkGenres():
                 break
 
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR gold]' + aEntry[0] + '[/COLOR]')
+                title = aEntry[0].replace('<strong>','').replace('</strong>','')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR gold]' + title + '[/COLOR]')
             else:
-                sUrl = aEntry[2]
-                sTitle = aEntry[3]
+                sUrl = aEntry[1]
+                sTitle = aEntry[2]
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -284,7 +287,6 @@ def showLink():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    VSlog(sUrl)
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -367,8 +369,6 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    VSlog(sUrl)
-
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
@@ -404,8 +404,6 @@ def showHosters():
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent.replace('\n', ''))
     #fh.close()
-    
-    VSlog(sUrl)
 
     #Et maintenant le ou les liens
 

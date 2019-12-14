@@ -664,8 +664,8 @@ class cGui():
                 db.del_resume(meta)
             else:
                 db.insert_watched(meta)
-
-            xbmc.executebuiltin( 'Container.Refresh' )
+            #To test
+            #xbmc.executebuiltin( 'Container.Refresh' )
             
         else:
             # Use kodi buildin feature

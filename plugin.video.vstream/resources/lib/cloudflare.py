@@ -328,7 +328,7 @@ class CloudflareBypass(object):
             VSlog('url ' + url)
             if (htmlcontent):
                 VSlog('code html ok')
-            VSlog('cookies passés' + self.Memorised_Cookies)
+            VSlog('cookies passés : ' + self.Memorised_Cookies)
             VSlog('post data :' + str(postdata))
 
         self.hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)','\\1',url)
@@ -359,7 +359,7 @@ class CloudflareBypass(object):
             method = 'GET'
 
         s = CloudflareScraper()
-        
+
         r = s.request(method,url,headers = self.SetHeader() , cookies = self.ParseCookies(cookies) , data = data )
         if r:
             sContent = r.text.encode("utf-8")
@@ -478,13 +478,18 @@ class CloudflareScraper(Session):
         
         if 'cookies' in kwargs:
             self.MemCookie.update( kwargs['cookies'] )
+        
+        #kwargs['params'].update(kwargs['data'])
+        #kwargs.pop('data',None)
             
         if Mode_Debug:
             VSlog("Headers send : " + str(kwargs['headers']) )
             VSlog("Cookies send : " + str(kwargs['cookies']) )
             VSlog("url : " + url )
-            VSlog("data send : " + str(kwargs.get('params','')) )
-            VSlog("param send : " + str(kwargs.get('data','')) )
+            VSlog("Method : " + method )
+            VSlog("param send : " + str(kwargs.get('params','')) )
+            VSlog("data send : " + str(kwargs.get('data','')) )
+            
                
         resp = super(CloudflareScraper, self).request(method, url, *args, **kwargs)
 
@@ -543,10 +548,15 @@ class CloudflareScraper(Session):
         body = resp.text
         parsed_url = urlparse(resp.url)
         domain = parsed_url.netloc
-        submit_url = "%s://%s/cdn-cgi/l/chk_jschl" % (parsed_url.scheme, domain)
+        s_match = re.search('<form id="challenge-form" action="([^"]+)', body)
+        if s_match:
+            url_end = s_match.group(1)
+
+        submit_url = "%s://%s%s" % (parsed_url.scheme, domain,url_end)
 
         cloudflare_kwargs = original_kwargs.copy( )
-        params = cloudflare_kwargs.setdefault("params", OrderedDict())
+        #params = cloudflare_kwargs.setdefault("params", OrderedDict())
+        data = OrderedDict()
         headers = cloudflare_kwargs.setdefault("headers", {})
         headers["Referer"] = str(resp.url)
         
@@ -569,11 +579,13 @@ class CloudflareScraper(Session):
                 raise Exception('CF form not found')
             sub_body = body[form_index:]
 
-            s_match = re.search('name="s" value="(.+?)"', sub_body)
-            if s_match:
-                params["s"] = s_match.group(1) # On older variants this parameter is absent.
-            params["jschl_vc"] = str(re.search(r'name="jschl_vc" value="(\w+)"', sub_body).group(1))
-            params["pass"] = str(re.search(r'name="pass" value="(.+?)"', sub_body).group(1))
+            #s_match = re.search('name="s" value="(.+?)"', sub_body)
+            #if s_match:
+            #    params["s"] = s_match.group(1) # On older variants this parameter is absent.
+                
+            data["r"] = str(re.search(r'name="r" value="(.+?)"', sub_body).group(1))
+            data["jschl_vc"] = str(re.search(r'name="jschl_vc" value="(\w+)"', sub_body).group(1))
+            data["pass"] = str(re.search(r'name="pass" value="(.+?)"', sub_body).group(1)) 
 
             if body.find('id="cf-dn-', form_index) != -1:
                 extra_div_expression = re.search('id="cf-dn-.*?>(.+?)<', sub_body).group(1)
@@ -603,7 +615,7 @@ class CloudflareScraper(Session):
             if '+ t.length' in body:
                 js_answer += len(domain) # Only older variants add the domain length.
 
-            params["jschl_answer"] = '%.10f' % js_answer
+            data["jschl_answer"] = '%.10f' % js_answer
 
         except Exception as e:
             VSlog ('error')
@@ -624,6 +636,9 @@ class CloudflareScraper(Session):
         #VSlog('With :' + str(cloudflare_kwargs['headers']))
 
         #submit_url = 'http://httpbin.org/headers'
+        
+        cloudflare_kwargs['data'].update( data )
+        method = 'POST'
         
         redirect = self.request(method, submit_url, **cloudflare_kwargs) 
         

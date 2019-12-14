@@ -57,19 +57,26 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         oParser = cParser()
-        #type 3
+        #type 1
 
         sPattern = "var vsource *= *'([^']+)"
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             return True, aResult[1][0]
 
+        #type 2
+        sPattern1 = 'src: *"(.+?.mp4)",'
+        aResult1 = oParser.parse(sHtmlContent, sPattern1)
+        if (aResult1[0] == True):
+            return True, aResult1[1][0]
+
+        #type ?
         sPattern1 = '<input type="hidden" id="file_name" value="([^"]+)">'
         aResult1 = oParser.parse(sHtmlContent, sPattern1)
         if (aResult1[0] == True):
             FN = aResult1[1][0]
 
-        #type 2
+
         sPattern = '<input type="hidden" id="srv_id" value="([^"]+)">'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
@@ -87,7 +94,7 @@ class cHoster(iHoster):
 
             api_call = oRequest.request()
 
-        #type 1    
+        #type ?    
         else:
             sPattern = '<input type="hidden" id="srv" value="([^"]+)">'
             aResult = oParser.parse(sHtmlContent, sPattern)

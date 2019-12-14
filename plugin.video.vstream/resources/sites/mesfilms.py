@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-return false
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -11,9 +10,9 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import re, urllib, urllib2
 
-SITE_IDENTIFIER = 'filmcomplet'
-SITE_NAME = 'Film Complet'
-SITE_DESC = 'Film Complet - film en streaming HD'
+SITE_IDENTIFIER = 'mesfilms'
+SITE_NAME = 'Mes Films'
+SITE_DESC = 'Mes Films - Films en streaming HD'
 
 URL_MAIN = 'https://www.mesfilms.stream/'
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0'
@@ -26,6 +25,7 @@ MOVIE_MOVIE = (True, 'load')
 MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'tendance/?get=movies', 'showMovies')
 MOVIE_NOTES = (URL_MAIN + 'evaluations/?get=movies', 'showMovies')
+MOVIE_CLASS = (URL_MAIN + 'films-classiques/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
 #MOVIE_LIST = (True, 'showList')
@@ -49,6 +49,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'notes.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_CLASS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_CLASS[1], 'Films Classiques', 'star.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -269,7 +273,7 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<link rel="next" href="([^"]+)"'
+    sPattern = 'href="([^"]+)" ><span class="icon-chevron-right">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):

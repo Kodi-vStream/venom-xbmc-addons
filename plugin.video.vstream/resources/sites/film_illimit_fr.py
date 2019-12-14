@@ -17,7 +17,8 @@ SITE_IDENTIFIER = 'film_illimit_fr'
 SITE_NAME = 'Film illimité'
 SITE_DESC = 'Films, Séries HD en streaming'
 
-URL_MAIN = 'https://official-film-illimite.to/'
+URL_MAIN = 'https://www.official-film-illimite.to/'
+URL_SERIES = 'https://www.official-serie-illimite.com/'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_MOVIE = ( URL_MAIN + 'films/', 'showMovies')
@@ -25,13 +26,13 @@ MOVIE_HD = (URL_MAIN + 'films/streaming-720p-streaming-1080p/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
 
-SERIE_NEWS = (URL_MAIN + 'serie-tv/', 'showMovies')
-SERIE_SERIES = (URL_MAIN + 'serie-tv/', 'showMovies')
-SERIE_HD = (URL_MAIN + 'serie-tv/', 'showMovies')
+SERIE_NEWS = (URL_SERIES + 'serie-tv/', 'showMovies')
+SERIE_SERIES = (URL_SERIES + 'serie-tv/', 'showMovies')
+SERIE_HD = (URL_SERIES + 'serie-tv/', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
-URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_SERIES = (URL_SERIES + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():

@@ -287,7 +287,7 @@ def ShowSaisonEpisodes():
     oGui.setEndOfDirectory()
 
 def showHosters():
-    UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
+    UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0'
     oGui = cGui()
     oParser = cParser()
 
@@ -317,27 +317,53 @@ def showHosters():
             sPattern1 = '<div class="Video"><iframe.+?src="([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern1)
 
-            Url = ''.join(aResult[1])
+            Url = aResult[1][0]
             oRequestHandler = cRequestHandler(Url)
             sHtmlContent = oRequestHandler.request()
+
 
             #Recuperation de l'id
             sPattern1 = "var id.+?'(.+?)'"
             aResult = oParser.parse(sHtmlContent, sPattern1)
-            sPost = ''.join(aResult[1])[::-1]
-            sUrl1 = URL_MAIN + '?trhidee=1&trfex=' + sPost
 
-            oRequestHandler = cRequestHandler(sUrl1)
-            oRequestHandler.addHeaderEntry('Referer', Url)
-            sHtmlContent = oRequestHandler.request()
-            sHosterUrl = oRequestHandler.getRealUrl()
-            if 'public/dist' in sHosterUrl:
-                sHosterUrl = 'https://' + sHosterUrl.split('/')[2] + '/hls/'+sHosterUrl.split('id=')[1] + '/' + sHosterUrl.split('id=')[1] + '.playlist.m3u8'
+            sPost = decode(aResult[1][0])
+            if sPost:
 
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                sUrl1 = URL_MAIN + '?trhidee=1&trfex=' + sPost
+
+                oRequestHandler = cRequestHandler(sUrl1)
+                oRequestHandler.addHeaderEntry('Referer', Url)
+                sHtmlContent = oRequestHandler.request()
+
+                sHosterUrl = oRequestHandler.getRealUrl()
+
+#https://lb.hdsto.me/hls/xxx.playlist.m3u8
+#https://lb.hdsto.me/public/dist/index.html?id=xxx
+
+                if 'public/dist' in sHosterUrl:
+                    sHosterUrl = 'https://' + sHosterUrl.split('/')[2] + '/hls/' + sHosterUrl.split('id=')[1] + '/' + sHosterUrl.split('id=')[1] + '.m3u8'
+
+                    oRequestHandler = cRequestHandler(sHosterUrl)
+                    oRequestHandler.addHeaderEntry('Referer', Url)
+                    sHtmlContent = oRequestHandler.request()
+
+                    sHosterUrl = oRequestHandler.getRealUrl()
+                    sHosterUrl = sHosterUrl.replace('.playlist','')
+
+                    oHoster = cHosterGui().checkHoster(sHosterUrl)
+                    if (oHoster != False):
+                        oHoster.setDisplayName(sMovieTitle)
+                        oHoster.setFileName(sMovieTitle)
+                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
+def decode(t):
+    a = len(t) - 1
+    trde = ''
+    i = 0
+    while a >= 0:
+        trde = trde + t[a]
+        a -= 1
+
+    return trde

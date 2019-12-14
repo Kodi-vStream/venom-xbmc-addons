@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-return false
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -11,14 +10,14 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 import re
 
-SITE_IDENTIFIER = 'regarderfilm'
-SITE_NAME = 'Regarder Film'
+SITE_IDENTIFIER = 'streamdivx'
+SITE_NAME = 'StreamDivx'
 SITE_DESC = 'Regarder, Voir Films En Streaming VF 100% Gratuit.'
 
 URL_MAIN = 'https://www.streamdivx.net/' # ou 'https://www.voustreaming.com/' < recherche hs
 
 FUNCTION_SEARCH = 'showMovies'
-URL_SEARCH = ('' , 'showMovies')
+URL_SEARCH = ('', 'showMovies')
 URL_SEARCH_MOVIES = ('', 'showMovies')
 
 MOVIE_MOVIE = (True, 'load')
@@ -126,10 +125,12 @@ def showMovies(sSearch = ''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
         
-        sStart = '<div class="films-group small'
-        sEnd = '<div class="side-title">films par Genres'
-        sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
-        
+        if '<h2 class="side-title nop">film du moment</h2>' in sHtmlContent:
+            sStart = '<div class="films-group small'
+            sEnd = '<div class="side-title">films par Genres'
+            sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
+        else:
+            sHtmlContent = sHtmlContent
 
     sPattern = '<div class="film-uno *">.+?href="([^"]+)".+?src="([^"]+)" alt="([^"]+)".+?<p class="nop short-story *">(.+?)<\/p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -168,7 +169,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -182,62 +183,6 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
-
-
-# def showLinks():
-    # oGui = cGui()
-
-    # oInputParameterHandler = cInputParameterHandler()
-    # sUrl = oInputParameterHandler.getValue('siteUrl')
-    # sThumb = oInputParameterHandler.getValue('sThumb')
-    # sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-
-    # oRequestHandler = cRequestHandler(sUrl)
-    # sHtmlContent = oRequestHandler.request()
-    # oParser = cParser()
-    # VSlog(sHtmlContent)
-    # sDesc = ''
-    # try:
-        # sPattern = '<p>(.+?)<\/p>.+?<div class'
-        # aResult = oParser.parse(sHtmlContent, sPattern)
-        # if (aResult[0] == True):
-            # sDesc = aResult[1][0]
-            # sDesc = re.sub('<[^<]+?>', '', sDesc)
-            # sDesc = sDesc.replace('&#8217;', '\'').replace('&#8230;', '...')
-    # except:
-        # pass
-
-    # sPattern = '<form action="#playfilm" method="post">.+?<span>([^<>]+)</span>.+?<input name="levideo" value="([^"]+)"'
-    # aResult = oParser.parse(sHtmlContent, sPattern)
-
-    # if (aResult[0] == False):
-        # oGui.addText(SITE_IDENTIFIER)
-
-    # if (aResult[0] == True):
-        # total = len(aResult[1])
-        # progress_ = progress().VScreate(SITE_NAME)
-
-        # for aEntry in aResult[1]:
-            # progress_.VSupdate(progress_, total)
-            # if progress_.iscanceled():
-                # break
-
-            # sHost = re.sub('\.\w+', '', aEntry[0])
-            # sHost = sHost.capitalize()
-            # sPost = aEntry[1]
-            # sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
-
-            # oOutputParameterHandler = cOutputParameterHandler()
-            # oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            # oOutputParameterHandler.addParameter('sPost', sPost)
-            # oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            # oOutputParameterHandler.addParameter('sThumb', sThumb)
-            # oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
-
-        # progress_.VSclose(progress_)
-
-    # oGui.setEndOfDirectory()
-
 
 def showHosters():
     oGui = cGui()

@@ -57,7 +57,7 @@ def showGenre():
     
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
-    reducesHtmlContent = oParser.abParse(sHtmlContent, '<nav class="main-menu-container">','<span class="search-handler">')
+    reducesHtmlContent = oParser.abParse(sHtmlContent, 'class="main-menu menu bsm-pure clearfix">','<span class="menu-handler">')
 
     sPattern = '<a href="([^"]+)">([^<]+)<\/a>'
     aResult = oParser.parse(reducesHtmlContent, sPattern)
@@ -70,6 +70,8 @@ def showGenre():
                 break
 
             sTitle = aEntry[1]
+            if 'Contactez' in sTitle:
+                continue
             sUrl = aEntry[0]
 
             oOutputParameterHandler = cOutputParameterHandler()

@@ -318,8 +318,6 @@ class cAbout:
         while xbmc.getCondVisibility("Window.IsActive(10147)"):
             xbmc.sleep(100)
         ret = dialog().VSok('Mise à jour terminée')
-        if ret:
-            xbmc.executebuiltin("Container.Refresh")
         return
 
     def Box(self, listitems):
@@ -341,7 +339,6 @@ class cAbout:
                 self.setFocus(self.container)
 
             def onClick(self, controlId):
-                xbmc.executebuiltin("Container.Refresh")
                 self.close()
                 return
 
@@ -349,7 +346,6 @@ class cAbout:
                 self.controlId = controlId
 
             def _close_dialog( self ):
-                xbmc.executebuiltin("Container.Refresh")
                 self.close()
 
         path = "special://home/addons/plugin.video.vstream"
