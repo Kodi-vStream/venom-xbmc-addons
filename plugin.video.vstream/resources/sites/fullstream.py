@@ -209,7 +209,10 @@ def showEpisodes():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + aEntry[0] + '[/COLOR]')
 
             else:
-                sUrl2 = URL_MAIN[:-1] + aEntry[1]
+                sUrl2 = aEntry[1]
+                if sUrl2.startswith('/'):
+                    sUrl2 = URL_MAIN[:-1] + aEntry[1]
+
                 SxE = re.sub('lecteur (\d+)', '', aEntry[2]).upper().replace(' ', '')
                 sTitle = sMovieTitle + '[' + SxE + ']'
 
