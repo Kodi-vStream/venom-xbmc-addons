@@ -1,4 +1,4 @@
-import urllib
+import urllib.parse
 
 class cOutputParameterHandler:
 
@@ -8,22 +8,22 @@ class cOutputParameterHandler:
     def addParameter(self, sParameterName, mParameterValue):
         if not mParameterValue:
             return
-        #test du 20/10
-        #self.__aParams[sParameterName] = urllib.unquote_plus(str(mParameterValue))
-        self.__aParams[sParameterName] = urllib.unquote(str(mParameterValue))
+ 
+        self.__aParams[sParameterName] = urllib.parse.unquote(str(mParameterValue))
 
     def getParameterAsUri(self):
         if len(self.__aParams) > 0:
-                return urllib.urlencode(self.__aParams)
+            return urllib.parse.urlencode(self.__aParams)
+
         return 'params=0'
-    
+
     def getValue(self, sParamName):
         if (self.exist(sParamName)):
-                sParamValue = self.__aParams[sParamName]
-                #test du 20/10
-                #return urllib.unquote_plus(sParamValue)
-                return urllib.unquote(sParamValue)
+            sParamValue = self.__aParams[sParamName]
+            return urllib.parse.unquote(sParamValue)
+
         return False
-            
+
     def exist(self, sParamName):
-        return self.__aParams.has_key(sParamName)
+        if sParamName in self.__aParams:
+            return sParamName
