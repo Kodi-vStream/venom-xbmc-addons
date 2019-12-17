@@ -6,10 +6,9 @@ from resources.hosters.hoster import iHoster
 from resources.lib.aadecode import AADecoder
 from resources.lib.jjdecode import JJDecoder
 import re
-from resources.lib.comaddon import VSlog
 import base64
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.'
+UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
 
 class cHoster(iHoster):
 
@@ -37,11 +36,6 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-
-        # sPattern =  '(?:https*:\/\/|\/\/)(?:www.|embed.|)mystream.(?:la|com|to)\/(?:video\/|external\/|embed-|)([0-9a-zA-Z]+)'
-        # oParser = cParser()
-        # aResult = oParser.parse(sUrl, sPattern)
-        # self.__sUrl = 'https://mysembed.net/' + str(aResult[1][0])
 
     def checkUrl(self, sUrl):
         return True
@@ -71,18 +65,16 @@ class cHoster(iHoster):
         a = ''
         b = ''
         c = ''
-        urlcoded = ''
+        base64_coded = ''
         
         sPattern =  '(?:[>;]\s*)(ﾟωﾟ.+?\(\'_\'\);)'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             for i in aResult[1]:
                 decoded = AADecoder(i).decode()
-                # VSlog(decoded)
-                
                 r = re.search("atob\(\'([^']+)\'\)", decoded, re.DOTALL | re.UNICODE)
                 if r:
-                    urlcoded = r.group(1)
+                    base64_coded = r.group(1)
                     break
                 else:
                     r = re.search("setAttribute\(\'src\', *\'(http.+?mp4)\'\)", decoded, re.DOTALL)
@@ -99,18 +91,14 @@ class cHoster(iHoster):
             mlist = mlist[-2:]
             a = mlist[0]
             b = mlist[1]
-            #VSlog('a= ' + str(a))
-            #VSlog('b= ' + str(b))
-            
+
         sPattern =  "=\['getAttribute','*([^']+)'*\]"
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
-            encodedC = aResult[1][0].replace('window.','')
-            #VSlog('encodec= ' + str(encodedC))
-            c = Cdecode(sHtmlContent,encodedC)
+            winkey = aResult[1][0].replace('window.','')
+            c = Cdecode(sHtmlContent,winkey)
             if c:
-                #VSlog('c= ' + str(c))
-                api_call = decode(urlcoded,a,b,c)
+                api_call = decode(base64_coded,a,b,c)
 
  
         if (api_call):
@@ -128,19 +116,23 @@ def Cdecode(sHtmlContent,encodedC):
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             z.append(JJDecoder(aEntry[1]).decode())
-        #VSlog(z)
+
         for x in z:
             r1 = re.search("atob\(\'([^']+)\'\)", x, re.DOTALL | re.UNICODE)
             if r1:
-                y.append(base64.b64decode(r1.group(1)))
-                
-        for w in y:
+                y.append(base64.b64decode(r1.group(1)))  
+   
+        # w = ''.join(y)
+        # w = w.split('|')[1]
+        # return w
 
-            r2 = re.search(encodedC + "='([^']+)'", w)
-            if r2:
-                return r2.group(1)
+        w = str(y).split('|')
+        w = max(w, key=len)
+        if w:
+            return w
 
 def decode(urlcoded,a,b,c):
+
     TableauTest = {}
     key = ''
 
