@@ -165,8 +165,8 @@ class cHosterGui:
             return self.getHoster('facebook')
         if ('cloudcartel' in sHostName):
             return self.getHoster('cloudcartel')
-        #if (('raptu.com' in sHostName) or ('rapidvideo' in sHostName)):
-        #    return self.getHoster('raptu')
+        if ('mixdrop.' in sHostName):
+            return self.getHoster('mixdrop')
         if ('mixloads' in sHostName):
             return self.getHoster('mixloads')
         if ('vidoza.' in sHostName):
