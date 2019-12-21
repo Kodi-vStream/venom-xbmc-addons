@@ -2,7 +2,6 @@
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 #
 #alors la j'ai pas le courage
-from __future__ import division
 from resources.lib.comaddon import VSlog
 from resources.lib.config import GestionCookie
 
