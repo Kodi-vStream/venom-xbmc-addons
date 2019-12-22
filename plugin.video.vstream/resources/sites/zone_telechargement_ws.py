@@ -657,7 +657,7 @@ def showHosters():
 
     oParser = cParser()
 
-    sPattern = '<font color=red>([^<]+?)</font>|<div style="font-weight.+?">([^>]+?)</div>.+?<form action="(.+?)".+?"url" value="(.+?)".+?"nextURL" value="(.+?)"'
+    sPattern = '<font color=red>([^<]+?)</font>|<div style=".+?">([^<]+)</div>.+?<a class="btnToLink".+?href="([^"]+)">([^<]+)</a></b>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -679,8 +679,6 @@ def showHosters():
                 oOutputParameterHandler.addParameter('baseUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oOutputParameterHandler.addParameter('encodeData', urllib.quote_plus(aEntry[3]))
-                oOutputParameterHandler.addParameter('data', aEntry[4])
                 oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -705,7 +703,7 @@ def showSeriesHosters():
     if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent or 'premium' in sHtmlContent:
         sHtmlContent = CutPremiumlinks(sHtmlContent)
 
-    sPattern = '<div style="font-weight:bold;color:.+?">(.+?)</div>|<form action="(.+?)".+?"url" value="(.+?)".+?"nextURL" value="(.+?)".+?<button class="subButton".+?>(.+?)</button>'
+    sPattern = '<div style="font-weight:bold;color:.+?">(.+?)</div>|<a class="btnToLink".+?href="(.+?)">(.+?)</a></b>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -723,12 +721,10 @@ def showSeriesHosters():
                 else:
                     oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
             else:
-                sName = aEntry[4]
+                sName = aEntry[2]
                 sName = sName.replace('Télécharger', '')
                 sName = sName.replace('pisodes', 'pisode')
                 sUrl2 = aEntry[1]
-                encodeData = urllib.quote_plus(aEntry[2])
-                data = aEntry[3]
                 sTitle = sMovieTitle + ' ' + sName
 
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -736,8 +732,6 @@ def showSeriesHosters():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oOutputParameterHandler.addParameter('encodeData', encodeData)
-                oOutputParameterHandler.addParameter('data', data)
                 oGui.addTV(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -753,8 +747,6 @@ def Display_protected_link():
     baseUrl = oInputParameterHandler.getValue('baseUrl')
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    encodeData = oInputParameterHandler.getValue('encodeData')
-    data = oInputParameterHandler.getValue('data')
 
     #Ne marche pas
     if (False):
@@ -782,10 +774,8 @@ def Display_protected_link():
 
     #Est ce un lien dl-protect ?
     if sUrl:
-        f = { 'url' : encodeData, 'nextURL' : data}
-        data = urllib.urlencode(f)
 
-        sHtmlContent = DecryptDlProtecte(sUrl, data, baseUrl)
+        sHtmlContent = DecryptDlProtecte(sUrl)
 
         if sHtmlContent:
             #Si redirection
@@ -868,24 +858,39 @@ def CutPremiumlinks(sHtmlContent):
     #Si ca marche pas on renvois le code complet
     return sHtmlContent
 
-def DecryptDlProtecte(url, data, baseUrl):
+def DecryptDlProtecte(url):
 
     if not (url):
         return ''
 
     oRequestHandler = cRequestHandler(url)
-    oRequestHandler.setRequestType(1)
-    oRequestHandler.addHeaderEntry('Host', url.split('/')[2])
-    oRequestHandler.addHeaderEntry('Referer', baseUrl)
-    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
-    oRequestHandler.addHeaderEntry('Content-Type',  "application/x-www-form-urlencoded")
-    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-    oRequestHandler.addParametersLine(data)
     sHtmlContent = oRequestHandler.request()
 
+    oParser = cParser()
+    sPattern = '<form action="(.+?)".+?<input type="hidden" name="_token" value="(.+?)">.+?<input type="hidden" value="(.+?)".+?>'
+    result = oParser.parse(sHtmlContent, sPattern)
+
+    if (result[0]):
+        RestUrl = str(result[1][0][0])
+        token = str(result[1][0][1])
+        urlData = str(result[1][0][2])
+
+    f = { '_token' : token, 'url' : urlData}
+    data = urllib.urlencode(f)
+
+    oRequestHandler = cRequestHandler('http://'+url.split('/')[2]+'/to/'+RestUrl)
+    oRequestHandler.setRequestType(1)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Host', url.split('/')[2])
+    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    oRequestHandler.addHeaderEntry('Referer', url)
+    oRequestHandler.addHeaderEntry('Content-Type',  "application/x-www-form-urlencoded")
+    oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
+    oRequestHandler.addHeaderEntry('Origin', 'https://'+url.split('/')[2])
+    oRequestHandler.addParametersLine(data)
+    sHtmlContent = oRequestHandler.request()
 
     return sHtmlContent
 
