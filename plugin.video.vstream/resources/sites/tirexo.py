@@ -901,6 +901,29 @@ def DecryptDlProtecte(url):
 
     sHtmlContent = oRequestHandler.request()
 
+    import string
+    _BOUNDARY_CHARS = string.digits
+    boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(29))
+    multipart_form_data = {'submit': 'continuer', 'submit': 'Continuer'}
+    data, headersMulti = encode_multipart(multipart_form_data, {}, boundary)
+
+    #2 eme requete pour avoir le lien
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.setRequestType(1)
+    oRequestHandler.addHeaderEntry('Host', url.split('/')[2])
+    oRequestHandler.addHeaderEntry('Referer', url)
+    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    oRequestHandler.addHeaderEntry('Content-Length', headersMulti['Content-Length'])
+    oRequestHandler.addHeaderEntry('Content-Type', headersMulti['Content-Type'])
+    oRequestHandler.addHeaderEntry('Cookie', cookies)
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+
+    oRequestHandler.addParametersLine(data)
+
+    sHtmlContent = oRequestHandler.request()
+    
     #fh = open('d:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
