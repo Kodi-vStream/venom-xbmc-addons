@@ -261,17 +261,8 @@ def getToken():
     ADDON = addon()
     oGui = cGui()
 
-    username = oGui.showKeyBoard(heading = "Entrez votre nom d'utilisateur")
-    password = oGui.showKeyBoard(heading = "Entrez votre mot de passe")
-    oRequestHandler = cRequestHandler('https://api.alldebrid.com/user/login?agent=mySoft&username=' + username + '&password=' + password)
-    sHtmlContent = oRequestHandler.request()
-
-    sPattern = '"token":"([^"]+)"'
-
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    VSlog(aResult)
-    ADDON.setSetting('token_alldebrid', ''.join(aResult[1]))
+    token = oGui.showKeyBoard(heading = "Entrez votre token")
+    ADDON.setSetting('token_alldebrid', token)
     dialog().VSinfo('Token Ajouter', "Extreme-Download", 15)
     oGui.setEndOfDirectory()
 
