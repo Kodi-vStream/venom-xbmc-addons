@@ -876,18 +876,17 @@ def DecryptDlProtecte(url):
         urlData = str(result[1][0][2])
         
     else:
-        sPattern = '<form action="(.+?)".+?<input type="hidden" value="(.+?)".+?<input type="hidden" name="_token" value="(.+?)">.+?'
+        sPattern = ' name="url">---->.+?<form action="(.+?)" method="get">.+?<input type="hidden" name="_token" value="(.+?)">'
         result = oParser.parse(sHtmlContent, sPattern)
 
         if (result[0]):
             RestUrl = str(result[1][0][0])
-            token = str(result[1][0][2])
-            urlData = str(result[1][0][1])
+            token = str(result[1][0][1])
 
-    f = { '_token' : token, 'url' : urlData}
+    f = { '_token' : token}
     data = urllib.urlencode(f)
 
-    oRequestHandler = cRequestHandler('http://'+url.split('/')[2]+'/to/'+RestUrl)
+    oRequestHandler = cRequestHandler('http://'+url.split('/')[2]+RestUrl)
     oRequestHandler.setRequestType(1)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Host', url.split('/')[2])
