@@ -16,7 +16,7 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/5
 SITE_IDENTIFIER = 'tirexo'
 SITE_NAME = '[COLOR violet]Tirexo (ZT lol)[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
-URL_MAIN = 'https://www.zone-telechargement1.vip/'
+URL_MAIN = 'https://www.zone-telechargement2.vip/'
 
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist%5B%5D=2&story=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist%5B%5D=15&story=', 'showMovies')
@@ -880,30 +880,7 @@ def DecryptDlProtecte(url):
     #Tout ca a virer et utiliser oRequestHandler.addMultipartFiled('sess_id': sId, 'upload_type': 'url', 'srv_tmp_url': sTmp) quand ca marchera
     import string
     _BOUNDARY_CHARS = string.digits
-    boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(29))
-    multipart_form_data = {'submit': 'continuer', 'submit': 'Continuer'}
-    data, headersMulti = encode_multipart(multipart_form_data, {}, boundary)
-
-    #2 eme requete pour avoir le lien
-    oRequestHandler = cRequestHandler(url)
-    oRequestHandler.setRequestType(1)
-    oRequestHandler.addHeaderEntry('Host', url.split('/')[2])
-    oRequestHandler.addHeaderEntry('Referer', url)
-    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    oRequestHandler.addHeaderEntry('Content-Length', headersMulti['Content-Length'])
-    oRequestHandler.addHeaderEntry('Content-Type', headersMulti['Content-Type'])
-    oRequestHandler.addHeaderEntry('Cookie', cookies)
-    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-
-    oRequestHandler.addParametersLine(data)
-
-    sHtmlContent = oRequestHandler.request()
-
-    import string
-    _BOUNDARY_CHARS = string.digits
-    boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(29))
+    boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(15))
     multipart_form_data = {'submit': 'continuer', 'submit': 'Continuer'}
     data, headersMulti = encode_multipart(multipart_form_data, {}, boundary)
 
@@ -971,7 +948,7 @@ def encode_multipart(fields, files, boundary = None):
         return s.replace('"', '\\"')
 
     if boundary is None:
-        boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(29))
+        boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(15))
 
     lines = []
 
