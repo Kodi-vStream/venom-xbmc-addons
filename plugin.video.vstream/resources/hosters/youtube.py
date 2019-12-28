@@ -11,10 +11,9 @@ from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 from resources.lib.comaddon import dialog, VSlog
 from resources.lib import util
-import re
-import json
+import re, json, urllib
 
-URL_MAIN = 'https://keepvid.app/videos?url='
+URL_MAIN = 'https://www.youtube.com/get_video_info?video_id='
 
 class cHoster(iHoster):
 
@@ -60,7 +59,6 @@ class cHoster(iHoster):
         self.__sUrl = sUrl
         self.__sUrl = self.__sUrl.rsplit('/', 1)[1]
         self.__sUrl = self.__sUrl.replace('watch?v=', '')
-        self.__sUrl = 'https://www.youtube.com/watch?v=' + str(self.__sUrl)
 
     def checkUrl(self, sUrl):
         return True
@@ -69,11 +67,11 @@ class cHoster(iHoster):
         return
 
     def getMediaLink(self):
-        first_test = self.__getMediaLinkForGuest2()
+        first_test = self.__getMediaLinkForGuest()
         if first_test != False:
             return first_test
         else:
-            return self.__getMediaLinkForGuest()
+            return self.__getMediaLinkForGuest2()
 
     def __getMediaLinkForGuest2(self):
 
@@ -124,14 +122,14 @@ class cHoster(iHoster):
 
         oParser = cParser()
 
-        sUrl = util.QuotePlus(self.__sUrl)
+        oRequestHandler = cRequestHandler(URL_MAIN + self.__sUrl)
+        sHtml = urllib.unquote(oRequestHandler.request())
 
-        oRequest = cRequestHandler(URL_MAIN + sUrl)
-        sHtmlContent = oRequest.request()
+        html = re.search('"streamingData"([^<]+)"',sHtml).group(1)
 
-        sPattern = 'class="al">([^<]+)</td>.+?href="([^"]+)"'
+        sPattern = '"url":"([^"]+)".+?"qualityLabel":"([^"]+)"'
 
-        aResult = oParser.parse(sHtmlContent, sPattern)
+        aResult = oParser.parse(html, sPattern)
 
         if (aResult[0] == True):
             #initialisation des tableaux
@@ -139,14 +137,14 @@ class cHoster(iHoster):
             qua=[]
             #Remplissage des tableaux
             for i in aResult[1]:
-                url.append(str(i[1]))
-                qua.append(str(i[0]))
+                url.append(str(i[0]))
+                qua.append(str(i[1]))
 
             #dialogue qualité
             api_call = dialog().VSselectqual(qua, url)
 
         if (api_call):
-            return True, api_call
+            return True, api_call.replace('\u0026','&')
 
         return False, False
 
