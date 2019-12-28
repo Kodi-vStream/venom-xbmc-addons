@@ -59,7 +59,7 @@ class cHoster(iHoster):
         self.__sUrl = sUrl
         self.__sUrl = self.__sUrl.rsplit('/', 1)[1]
         self.__sUrl = self.__sUrl.replace('watch?v=', '')
-
+        self.__sUrl = self.__sUrl.replace('?feature=oembed','')
     def checkUrl(self, sUrl):
         return True
 
