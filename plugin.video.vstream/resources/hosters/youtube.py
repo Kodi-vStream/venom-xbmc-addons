@@ -9,9 +9,9 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
-from resources.lib.comaddon import dialog, VSlog
-from resources.lib import util
-import re, json, urllib
+from resources.lib.comaddon import dialog
+import re, urllib
+from resources.lib.util import cUtil
 
 URL_MAIN = 'https://www.youtube.com/get_video_info?video_id='
 
@@ -46,9 +46,6 @@ class cHoster(iHoster):
     def isDownloadable(self):
         return True
 
-    def isJDownloaderable(self):
-        return True
-
     def getPattern(self):
         return ''
 
@@ -60,6 +57,7 @@ class cHoster(iHoster):
         self.__sUrl = self.__sUrl.rsplit('/', 1)[1]
         self.__sUrl = self.__sUrl.replace('watch?v=', '')
         self.__sUrl = self.__sUrl.replace('?feature=oembed','')
+
     def checkUrl(self, sUrl):
         return True
 
@@ -73,103 +71,70 @@ class cHoster(iHoster):
         else:
             return self.__getMediaLinkForGuest2()
 
-    def __getMediaLinkForGuest2(self):
-
-        oRequestHandler = cRequestHandler(self.__sUrl)
-        sHtml = oRequestHandler.request()
-
-        try:
-            #note doit etre '{'sHtmlcontent'}'  | 18 premier '{'
-            player_conf = sHtml[18 + sHtml.find("ytplayer.config = "):sHtml.find(";ytplayer.load =")]
-            bracket_count = 0
-            for i, char in enumerate(player_conf):
-                if char == "{":
-                    bracket_count += 1
-                elif char == "}":
-                    bracket_count -= 1
-                    if bracket_count == 0:
-                        break
-            else:
-                VSlog("Cannot get JSON from HTML")
-
-            index = i + 1
-            data = json.loads(player_conf[:index])
-
-        except Exception as e:
-            VSlog("Cannot decode JSON: {0}" + str(e))
-
-
-        stream_map = parse_stream_map(data["args"]["url_encoded_fmt_stream_map"])
-
-        if not (stream_map == False):
-            video_urls = zip(stream_map["url"], stream_map["quality"])
-            #initialisation des tableaux
-            url=[]
-            qua=[]
-            #Remplissage des tableaux
-            for i in video_urls:
-                url.append(str(i[0]))
-                qua.append(str(i[1]))
-
-            #dialogue qualité
-            api_call = dialog().VSselectqual(qua, url)
-            if api_call:
-                return True, api_call
-        else:
-            return False
-
     def __getMediaLinkForGuest(self):
+        api_call = ''
 
         oParser = cParser()
 
         oRequestHandler = cRequestHandler(URL_MAIN + self.__sUrl)
-        sHtml = urllib.unquote(oRequestHandler.request())
+        sHtml = oRequestHandler.request()
 
-        html = re.search('"streamingData"([^<]+)"',sHtml).group(1)
+        sHtmlContent = sHtml[7 + sHtml.find("formats"):sHtml.rfind("adaptiveFormats")]
 
         sPattern = '"url":"([^"]+)".+?"qualityLabel":"([^"]+)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            url=[]
+            qua=[]
+            for aEntry in aResult[1]:
+                url.append(aEntry[0]) 
+                qua.append(aEntry[1])
 
-        aResult = oParser.parse(html, sPattern)
+            if url:
+               api_call = dialog().VSselectqual(qua, url)
 
+        if api_call:
+            return True, api_call
+        else:
+            return False
+
+    def __getMediaLinkForGuest2(self):
+        api_call = ''
+
+        oParser = cParser()
+
+        pdata = 'url=' + urllib.quote('https://www.youtube.com/embed/' + self.__sUrl) + '&submit=1'
+
+        oRequest = cRequestHandler('https://ytoffline.net/fr/validate/')
+        oRequest.setRequestType(1)
+        oRequest.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
+        oRequest.addHeaderEntry('Referer', 'https://ytoffline.net/fr/download/?url=https://www.youtube.com/embed/' + self.__sUrl)
+        oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+        oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+
+        oRequest.addParametersLine(pdata)
+
+        sHtmlContent = oRequest.request()
+
+        sHtmlContent1 = oParser.abParse(sHtmlContent, '<div id="mp4" class="display-block tabcontent">', '<div id="audio" class="tabcontent">')
+
+        sPattern = '<td>([^<]+)<small>.+?data-href="([^"]+)"'
+
+        aResult = oParser.parse(sHtmlContent1, sPattern)
         if (aResult[0] == True):
             #initialisation des tableaux
             url=[]
             qua=[]
             #Remplissage des tableaux
             for i in aResult[1]:
-                url.append(str(i[0]))
-                qua.append(str(i[1]))
+                url.append(str(i[1]))
+                qua.append(str(i[0]))
 
             #dialogue qualité
             api_call = dialog().VSselectqual(qua, url)
 
         if (api_call):
-            return True, api_call.replace('\u0026','&')
+            return True, api_call
 
         return False, False
 
-
-def parse_stream_map(sHtml):
-
-    if not '&sp=signature' in sHtml:
-
-        videoinfo = {"itag": [],
-                     "url": [],
-                     "quality": [],
-                     "fallback_host": [],
-                     "s": [],
-                     "type": [] }
-
-        # Split individual videos
-        videos = sHtml.split(",")
-        # Unquote the characters and split to parameters
-        videos = [video.split("&") for video in videos]
-        for video in videos:
-            for kv in video:
-                key, value = kv.split("=")
-                videoinfo.get(key, []).append(util.Unquote(value))
-
-        return videoinfo
-
-    else:
-        return False
