@@ -66,6 +66,7 @@ class cHoster(iHoster):
 
     def getMediaLink(self):
         first_test = self.__getMediaLinkForGuest()
+
         if first_test != False:
             return first_test
         else:
@@ -77,7 +78,7 @@ class cHoster(iHoster):
         oParser = cParser()
 
         oRequestHandler = cRequestHandler(URL_MAIN + self.__sUrl)
-        sHtml = oRequestHandler.request()
+        sHtml = urllib.unquote(oRequestHandler.request())
 
         sHtmlContent = sHtml[7 + sHtml.find("formats"):sHtml.rfind("adaptiveFormats")]
 
@@ -87,13 +88,14 @@ class cHoster(iHoster):
             url=[]
             qua=[]
             for aEntry in aResult[1]:
-                url.append(aEntry[0]) 
+                url.append(aEntry[0].replace('\u0026','&')) 
                 qua.append(aEntry[1])
 
             if url:
                api_call = dialog().VSselectqual(qua, url)
 
         if api_call:
+
             return True, api_call
         else:
             return False
