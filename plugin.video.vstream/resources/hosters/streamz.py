@@ -61,6 +61,7 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
+
         oParser = cParser()
         sPattern =  '(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -70,10 +71,14 @@ class cHoster(iHoster):
  
                 if "video=videojs" in decoded:
                     decoded = decoded.replace('\\','')
+                    
                     r = re.search("src:'([^']+)'", decoded, re.DOTALL)
                     if r:
-                        api_call = r.group(1)
+                        url = r.group(1)
 
+
+            oRequest = cRequestHandler(url)
+            api_call = oRequest.getHeaderLocationUrl()
 
         if (api_call):
             return True, api_call + '|User-Agent=' + UA
