@@ -1,18 +1,15 @@
-#-*- coding: utf-8 -*-
+#coding: utf-8
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#https://streamz.cc/xxx
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
+from resources.lib.comaddon import dialog
 from resources.lib.packer import cPacker
-import re
-
-UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0'
 
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Streamz'
+        self.__sDisplayName = 'Mixdrop'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
 
@@ -29,7 +26,7 @@ class cHoster(iHoster):
         return self.__sFileName
 
     def getPluginIdentifier(self):
-        return 'streamz'
+        return 'mixdrop'
 
     def setHD(self, sHD):
         self.__sHD = ''
@@ -38,49 +35,40 @@ class cHoster(iHoster):
         return self.__sHD
 
     def isDownloadable(self):
-        return True
-        
-    def getPattern(self):
-        return ''
+        return False
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
 
-    def checkUrl(self, sUrl):
-        return True
-
-    def __getUrl(self, media_id):
-        return
+    def getUrl(self):
+        return self.__sUrl
 
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        api_call = False
+ 
+        api_call = ''
+        
+        oParser = cParser()
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
+        sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>'
+        aResult = oParser.parse(sHtmlContent,sPattern)
+        if (aResult[0] == True):
+            sHtmlContent = cPacker().unpack(aResult[1][0])
 
-        oParser = cParser()
-        sPattern =  '(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0]:
-            for i in aResult[1]:
-                decoded = cPacker().unpack(i)
- 
-                if "video=videojs" in decoded:
-                    decoded = decoded.replace('\\','')
-                    
-                    r = re.search("src:'([^']+)'", decoded, re.DOTALL)
-                    if r:
-                        url = r.group(1)
+            sPattern = 'vsrc\d+="([^"]+)"'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                api_call = aResult[1][0]
 
-
-            oRequest = cRequestHandler(url)
-            api_call = oRequest.getHeaderLocationUrl()
-
+                if api_call.startswith('//'):
+                    api_call = 'https:' + aResult[1][0]
+                
         if (api_call):
-            return True, api_call + '|User-Agent=' + UA
+            return True, api_call
 
         return False, False

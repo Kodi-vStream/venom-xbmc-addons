@@ -153,16 +153,16 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
-        sPattern = '<div class="post-thumbnail".+?<a href="([^"]+)".+?src="([^"]+(?:png|jpeg|jpg))".+?alt="([^"]+)"'
+        sPattern = '<div class="post-thumbnail".+?<a href="([^"]+)".+?(?:src="([^"]+(?:png|jpeg|jpg)|)").+?alt="([^"]+)"'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sPattern = '<div class="post-thumbnail".+?<a href="([^"]+)".+?src="([^"]+(?:png|jpeg|jpg))".+?title="([^"]+)".+?<p>([^<]+)</p>'
+        sPattern = '<div class="post-thumbnail".+?<a href="([^"]+)".+?(?:src="([^"]+(?:png|jpeg|jpg)|)").+?alt="([^"]+)".+?<p>([^<]+)</p>'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #Magouille pour virer les 3 ligne en trop en cas de recherche
+    # Magouille pour virer les 3 ligne en trop en cas de recherche
     sHtmlContent = sHtmlContent.replace('quelle-est-votre-serie-preferee', '<>')
     sHtmlContent = sHtmlContent.replace('top-series-du-moment', '<>')
     sHtmlContent = sHtmlContent.replace('listes-des-series-annulees-et-renouvelees', '<>')
@@ -174,6 +174,7 @@ def showMovies(sSearch = ''):
 		oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -182,7 +183,7 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            #Si recherche et trop de resultat, on nettoye
+            # Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[2]) == 0:
                     continue
@@ -197,7 +198,7 @@ def showMovies(sSearch = ''):
             sTitle = sTitle.replace(' [Telecharger]', '').replace(' [Telechargement]', '')
             
             sDisplayTitle = sTitle
-            #on retire la qualité
+            # on retire la qualité
             sTitle = re.sub('\[\w+]', '', sTitle)
             sTitle = re.sub('\[\w+ \w+]', '', sTitle)
  

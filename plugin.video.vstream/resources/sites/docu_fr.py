@@ -13,16 +13,14 @@ SITE_IDENTIFIER = 'docu_fr'
 SITE_NAME = 'Docu Fr'
 SITE_DESC = 'Documentaire streaming sur YT'
 
-URL_MAIN = 'https://docu-fr.com/'
+URL_MAIN = 'https://documentaire.io/'
 
 DOC_NEWS = (URL_MAIN, 'showMovies')
 DOC_DOCS = ('http://', 'load')
 DOC_GENRES = (True, 'showGenres')
 
-URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
-THUMBDEF = 'https://github.com/Kodi-vStream/venom-xbmc-addons/raw/Beta/plugin.video.vstream/resources/art/doc.png'
 
 def load():
     oGui = cGui()
@@ -46,7 +44,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
+        sUrl = URL_SEARCH_MISC[0] + sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -55,15 +53,19 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Animaux', URL_MAIN + 'category/animaux/'] )
-    liste.append( ['Art', URL_MAIN + 'category/art/'] )
-    liste.append( ['Ecologie', URL_MAIN + 'category/ecologie'] )
-    liste.append( ['Histoire', URL_MAIN + 'category/histoire/'] )
-    liste.append( ['Santé', URL_MAIN + 'category/sante/'] )
-    liste.append( ['Sciences', URL_MAIN + 'category/sciences/'] )
-    liste.append( ['Société', URL_MAIN + 'category/societe/'] )
-    liste.append( ['Technologie', URL_MAIN + 'category/technologie/'] )
-    liste.append( ['Voyage', URL_MAIN + 'category/voyage/'] )
+    liste.append( ['Animaux', URL_MAIN + 'animaux/'] )
+    liste.append( ['Civilisations anciennes', URL_MAIN + 'civilisations-anciennes/'] )
+    liste.append( ['Consommation', URL_MAIN + 'consommation/'] )
+    liste.append( ['Environnement', URL_MAIN + 'environnement/'] )
+    liste.append( ['Grands conflits', URL_MAIN + 'grands-conflits/'] )
+    liste.append( ['Histoire', URL_MAIN + 'histoire/'] )
+    liste.append( ['Politique', URL_MAIN + 'politique/'] )
+    liste.append( ['Portraits', URL_MAIN + 'portraits'] )
+    liste.append( ['Santé', URL_MAIN + 'sante/'] )
+    liste.append( ['Science et technologie', URL_MAIN + 'science-et-technologie/'] )
+    liste.append( ['Société', URL_MAIN + 'societe/'] )
+    liste.append( ['Sport', URL_MAIN + 'sport/'] )
+    liste.append( ['Voyage', URL_MAIN + 'voyage/'] )
 
     for sTitle, sUrl in liste:
 
@@ -85,11 +87,10 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#8217;', '\'').replace('&#8212;', '-').replace('&laquo;', '<<').replace('&raquo;', '>>').replace('&nbsp;', '').replace('&hellip;','...')
+    sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#8217;', '\'').replace('&#8212;', '-').replace('&laquo;', '<<').replace('&raquo;', '>>').replace('&nbsp;', '').replace('&hellip;','...').replace('&#39;', '\'')
 
     #if 'category' in sUrl or sSearch:
-    sPattern = 'class="post-title".+?<a href="([^"]+)"\s*rel="bookmark">([^<]+)<\/a>.+?class="post-excerpt">\s*<p>(.+?)<\/p>'
-
+    sPattern = 'article id=".+?data-background="([^"]+)">.+?<div class="read-title">.+?<a href="([^"]+)">(.+?)<\/a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -107,26 +108,17 @@ def showMovies(sSearch = ''):
                 break
 
 
-            sUrl2 = aEntry[0]
-            if 'private-video' in sUrl2:
-                continue
-                
-            sTitle = aEntry[1]
-            sDesc = aEntry[2]
-            # thumb 
-            sThumb = THUMBDEF
-            thumb = re.search('<div class="post-thumbnail".+?<a href="'+sUrl2+'"\s*class="post-list-item-thumb\s*">\s*<img\s*width=.+?src="([^"]+)"',sHtmlContent,re.DOTALL)
-            if thumb:
-                sThumb = thumb.group(1)
+            sUrl2 = aEntry[1]
+            # if 'private-video' in sUrl2:
+                # continue 
+            sTitle = aEntry[2]
+            sThumb = aEntry[0]
 
-
-            sDesc = re.sub('<a\s*class="read-more".+','' ,sDesc).replace('<br />','')
-            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -140,7 +132,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<div\s*class="next-navigation"><a href="([^"]+)"\s*>'
+    sPattern = '<a class="next page-numbers" href="([^"]+)">Next<\/a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -164,7 +156,7 @@ def showHosters(): #YT pas vu un autre hébergeur
 
     if (aResult[0] == True):
         for aEntry in list(set(aResult[1])):
-            sHosterUrl = str(aEntry)
+            sHosterUrl = str(aEntry).replace('?&rel=0','')
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
