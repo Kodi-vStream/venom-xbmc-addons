@@ -59,6 +59,8 @@ class cHoster(iHoster):
             baseUrl = 'https://sendvid.net/api/source/'
         elif 'vfsplayer' in self.__sUrl:
             baseUrl = 'https://vfsplayer.xyz/api/source/'
+        elif 'fsimg' in self.__sUrl:
+            baseUrl = 'https://www.fsimg.info/api/source/'
 
         url = baseUrl + self.__sUrl.rsplit('/', 1)[1]
 

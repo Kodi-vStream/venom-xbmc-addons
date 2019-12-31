@@ -527,7 +527,6 @@ def showEpisode():
 
     sPattern = '<\/i> *(VF|VOSTFR) *<\/div>|<a id="([^"]+)".+?target="seriePlayer".+?"([^"]+)" data-rel="([^"]+)"'
     aResult = re.findall(sPattern, sHtmlContent)
-
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
@@ -561,13 +560,13 @@ def serieHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sData = oInputParameterHandler.getValue('sData')
-
+    if sData == 'episode1': #episode final au lieu du 1er donc pour le moment
+        return
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div id="' + sData + '".+?<\/div>'
+    sPattern = '<div id="' + sData + '" class="fullsfeature"(.+?)<div style=".+?"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         block = aResult[1][0]
     else:
@@ -575,7 +574,6 @@ def serieHosters():
 
     sPattern = '<a (?:|id="([^"]+)" (?:|onclick=".+?")) *href="([^"]+)"'
     aResult = oParser.parse(block, sPattern)
-
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
