@@ -113,7 +113,9 @@ def showMovies(sSearch = ''):
             sThumb = aEntry[0] 
             sUrl = aEntry[1]
             sTitle = aEntry[2]
-
+            if 'Générateur compte' in sTitle:
+                continue
+                
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
