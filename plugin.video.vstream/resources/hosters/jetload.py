@@ -15,7 +15,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]' + ' ' + '(Il faut pairer son ip au site https://jlpair.net/ tous les 3h)'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
