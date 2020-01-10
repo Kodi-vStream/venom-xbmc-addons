@@ -202,20 +202,14 @@ class cAbout:
 
         addons = addon()
         dialogs = dialog()
+        if dialogs.VSyesno("Êtes-vous sûr?"):
 
-        service_version = addons.getSetting('service_version')
-        if not service_version:
-            self.getUpdate()
-            addons = addon()  # recharger le contexte mis à jour par getUpdate
+            service_futur = addons.getSetting('service_futur')
             service_version = addons.getSetting('service_version')
-            
-        service_futur = addons.getSetting('service_futur')
-
-        if service_futur and service_version == service_futur:
-            dialog().VSinfo("Pas de mise à jour disponible")
-            return
-
-        if dialogs.VSyesno("Êtes-vous sûr ?"):
+            if not service_futur:
+                return self.getUpdate()
+            if not service_version:
+                return self.getUpdate()
 
             #result = self.resultGit()
             sUrl = 'https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/compare/%s...%s' % (service_version, service_futur)
@@ -229,11 +223,13 @@ class cAbout:
             progress_ = progress()
             progress_.VScreate('Update')
 
+            addons = addon()
             #site = ''
             sdown = 0
             add = 0
             dell = 0
             schange = 0
+            text = ''
             listitems = []
 
             if result:
@@ -293,7 +289,7 @@ class cAbout:
 
                 #fin = dialog().VSok(sContent)
                 #fin =  self.TextBoxes(sContent)
-                self.Box(listitems)
+                fin = self.Box(listitems)
         return
 
     def __download(self, WebUrl, RootUrl):
