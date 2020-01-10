@@ -351,9 +351,8 @@ class cHome:
         sSearchText = oGui.showKeyBoard(heading=self.ADDON.VSlang(30076))
         if sSearchText:
             self.showSearch(sSearchText)
-            
-        else:
             oGui.setEndOfDirectory()
+        else :
             return False
 
     def showSearch(self, searchtext=cInputParameterHandler().getValue('searchtext')):

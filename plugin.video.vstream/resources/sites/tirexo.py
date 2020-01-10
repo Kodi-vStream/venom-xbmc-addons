@@ -870,6 +870,8 @@ def DecryptDlProtecte(url):
     if not (url):
         return ''
 
+    passe = 0
+
     # 1ere Requete pour recuperer le cookie
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -877,6 +879,22 @@ def DecryptDlProtecte(url):
     cookies = GestionCookie().Readcookie('www_dl-protect1_co')
     #VSlog( 'cookie'  + str(cookies))
 
+    sHtmlContent = exectProtect(cookies, url)
+    
+    while (re.search('<input type="submit" class="continuer" name="submit" value="Continuer" />',sHtmlContent)):
+        if passe < 4:
+            sHtmlContent = exectProtect(cookies, url)
+            passe = passe + 1
+        else:
+            break
+
+    #fh = open('d:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
+
+    return sHtmlContent
+
+def exectProtect(cookies, url):
     #Tout ca a virer et utiliser oRequestHandler.addMultipartFiled('sess_id': sId, 'upload_type': 'url', 'srv_tmp_url': sTmp) quand ca marchera
     import string
     _BOUNDARY_CHARS = string.digits
@@ -900,11 +918,6 @@ def DecryptDlProtecte(url):
     oRequestHandler.addParametersLine(data)
 
     sHtmlContent = oRequestHandler.request()
-    
-    #fh = open('d:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
-
     return sHtmlContent
 
 #******************************************************************************

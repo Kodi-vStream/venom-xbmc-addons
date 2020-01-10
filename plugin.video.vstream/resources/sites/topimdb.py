@@ -95,6 +95,10 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP250[1], 'Top 250', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP2019[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP2019[1], 'Top Films 2019', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP2018[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP2018[1], 'Top Films 2018', 'films.png', oOutputParameterHandler)
 

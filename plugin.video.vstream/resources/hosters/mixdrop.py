@@ -65,6 +65,12 @@ class cHoster(iHoster):
             if (aResult[0] == True):
                 api_call = aResult[1][0]
 
+            else:
+                sPattern = 'furl="([^"]+)"'
+                aResult = oParser.parse(sHtmlContent, sPattern)
+                if (aResult[0] == True):
+                    api_call = aResult[1][0]
+
                 if api_call.startswith('//'):
                     api_call = 'https:' + aResult[1][0]
                 
