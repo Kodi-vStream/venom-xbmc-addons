@@ -289,7 +289,7 @@ def showHosters(): #affiche les videos disponible du live
                         url = aResult1[0]  # redirection vers un autre site
                         break
 
-        if 'emb.aplayer' in url:#Terminer
+        if 'emb.apl' in url:#Terminé - Supporte emb.aplayer et emb.apl3
             Referer = url
             oRequestHandler = cRequestHandler(url)
             oRequestHandler.addHeaderEntry('User-Agent', UA)
