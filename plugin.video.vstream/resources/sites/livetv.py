@@ -763,6 +763,50 @@ def showHosters(): #affiche les videos disponible du live
                 if aResult:
                     sHosterUrl = aResult[0]
 
+        if 'baltak.biz' in url: #Terminé
+            oRequestHandler = cRequestHandler(url)
+            sHtmlContent2 = oRequestHandler.request()
+            sPattern2 = '<iframe src="\/blok.php\?id=(.+?)"'
+            aResult = re.findall(sPattern2, sHtmlContent2)
+            if aResult:
+                url2 = aResult[0]
+                oRequestHandler = cRequestHandler(url2)
+                oRequestHandler.addHeaderEntry('User-Agent', UA)
+                oRequestHandler.addHeaderEntry('Referer', 'http://baltak.biz/blok.php?id=' + url2)
+                sHtmlContent2 = oRequestHandler.request()
+
+                sPattern2 = 'source: \'(.+?)\''
+                aResult = re.findall(sPattern2, sHtmlContent2)
+                if aResult:
+                    sHosterUrl = aResult[0]
+
+        if 'footballstream' in url: #Terminé
+            url = url.replace('/streams', '/hdstreams')
+            oRequestHandler = cRequestHandler(url)
+            oRequestHandler.addHeaderEntry('User-Agent', UA)
+            oRequestHandler.addHeaderEntry('Referer', url)
+            sHtmlContent2 = oRequestHandler.request()
+            sPattern2 = 'fid="(.+?)"; v_width=(.+?); v_height=(.+?);'
+            aResult = re.findall(sPattern2, sHtmlContent2)
+
+            if aResult:
+                fid = aResult[0][0]
+                vw=aResult[0][1]
+                vh=aResult[0][2]
+
+                embedded = "mobile" # "desktop"
+
+                url2 = 'http://www.b4ucast.me/embedra.php?player='+ embedded +'&live='+ fid +'&vw='+vw+'&vh='+vh
+                oRequestHandler = cRequestHandler(url2)
+                oRequestHandler.addHeaderEntry('User-Agent', UA)
+                oRequestHandler.addHeaderEntry('Referer', url)
+                sHtmlContent2 = oRequestHandler.request()
+
+                sPattern3 = 'source: \'(.+?)\''
+                aResult = re.findall(sPattern3, sHtmlContent2)
+                if aResult:
+                    sHosterUrl = 'http:'+aResult[0]
+
         if sHosterUrl:
             oHoster = cHosterGui().checkHoster("m3u8")
             if (oHoster != False):
