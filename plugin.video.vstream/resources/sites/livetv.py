@@ -807,6 +807,34 @@ def showHosters(): #affiche les videos disponible du live
                 if aResult:
                     sHosterUrl = 'http:'+aResult[0]
 
+        if 'tennistvgroup' in url: #Terminé
+            oRequestHandler = cRequestHandler(url)
+            sHtmlContent2 = oRequestHandler.request()
+            
+            print(sHtmlContent2)
+            
+            sPattern2 = 'source: "(.+?)"'
+            aResult = re.findall(sPattern2, sHtmlContent2)
+            if aResult:
+                sHosterUrl = aResult[0]
+
+        if 'box-live.stream' in url: #Terminé
+            oRequestHandler = cRequestHandler(url)
+            oRequestHandler.addHeaderEntry('User-Agent', UA)
+            oRequestHandler.addHeaderEntry('Referer', url)
+
+            sHtmlContent2 = oRequestHandler.request()
+            sPattern2 = 'source: \'(.+?)\''
+            aResult = re.findall(sPattern2, sHtmlContent2)
+            if aResult:
+                sHosterUrl = aResult[0] + '|User-Agent=' + UA + '&referer=' + url
+            else:
+                sPattern2 = 'var source = \"(.+?)\"'
+                aResult = re.findall(sPattern2, sHtmlContent2)
+                if aResult:
+                    sHosterUrl = aResult[0]
+            
+
         if sHosterUrl:
             oHoster = cHosterGui().checkHoster("m3u8")
             if (oHoster != False):
