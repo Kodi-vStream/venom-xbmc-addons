@@ -554,6 +554,26 @@ def showHosters(): #affiche les videos disponible du live
             if aResult:
                 sHosterUrl = aResult[0]
 
+        if 'sports-stream.link' in url:#Terminé
+            oRequestHandler = cRequestHandler(url)
+            sHtmlContent2 = oRequestHandler.request()
+            sPattern2 = 'sports-stream.+?ch=(.+?)"'
+            aResult = re.findall(sPattern2, sHtmlContent2)
+
+            if aResult:
+                fid = aResult[0]
+
+            url2 = 'https://www.airhdx.com/embedd.php?live=spstream' + fid + '&vw=700&vh=440'
+            oRequestHandler = cRequestHandler(url2)
+            oRequestHandler.addHeaderEntry('User-Agent', UA)
+            oRequestHandler.addHeaderEntry('Referer', 'http://www.sports-stream.link/chtv/sps.php?ch=' + fid)
+            sHtmlContent2 = oRequestHandler.request()
+
+            sPattern3 = 'source: "(.+?)",'
+            aResult = re.findall(sPattern3, sHtmlContent2)
+            if aResult:
+                sHosterUrl = aResult[0] + '|referer=' + url2
+
         if 'foot.futbol' in url:#Terminé
             oRequestHandler = cRequestHandler(url)
             sHtmlContent2 = oRequestHandler.request()
