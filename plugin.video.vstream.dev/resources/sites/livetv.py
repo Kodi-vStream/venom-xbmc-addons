@@ -203,6 +203,7 @@ def showMovies3(): #affiche les videos disponible du live
     sMovieTitle2 = oInputParameterHandler.getValue('sMovieTitle2')
 
     sPattern = '<a title=".+?" *href="(.+?)"'
+    sPatternType = 't=([A-Za-z0-9]+)&'
     oParser = cParser()
 
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -224,10 +225,13 @@ def showMovies3(): #affiche les videos disponible du live
             sThumb = ''
             #sLang = aEntry[3]
             #sQual = aEntry[3]
-            #sHoster = aEntry[2]
+            sHoster = 'NA'
             #sDesc = ''
-
-            sTitle = ('%s') % (sMovieTitle2)
+            aResult2 = re.findall(sPatternType, sUrl4)
+            if aResult2:
+                sHoster = aResult2[0]
+            
+            sTitle = ('[COLOR green]%s[COLOR] - %s') % (sHoster, sMovieTitle2)
             sUrl4 = "http:" + sUrl4
 
             oOutputParameterHandler = cOutputParameterHandler()
