@@ -21,7 +21,7 @@ SITE_IDENTIFIER = 'extreme_down'
 SITE_NAME = 'Extreme Down (bêta)'
 SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
-URL_MAIN = 'https://www.extreme-down.xyz/'
+URL_MAIN = 'https://www.extreme-down.ninja/'
 
 URL_SEARCH = (URL_MAIN + 'home.html', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
