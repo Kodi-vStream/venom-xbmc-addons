@@ -6,13 +6,13 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 
 SITE_IDENTIFIER = 'k_streaming'
 SITE_NAME = 'K-Streaming'
 SITE_DESC = 'Regarder Films en Streaming et Séries français gratuit'
 
-URL_MAIN = 'https://www.k-streaming.ch/'
+URL_MAIN = 'https://www1.k-streaming.co/'
 
 #definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle sera affichee.
 #LA RECHERCHE GLOBAL N'UTILE PAS showSearch MAIS DIRECTEMENT LA FONCTION INSCRITE DANS LA VARIABLE URL_SEARCH_*
@@ -23,7 +23,7 @@ URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 #recherche global serie
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 
-MOVIE_NEWS = (URL_MAIN, 'showMovies')
+MOVIE_NEWS = (URL_MAIN+ '/films/', 'showMovies')
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_VIEWS = (URL_MAIN + 'film-les-plus-vues/', 'showMovies')
 MOVIE_COMMENTS = (URL_MAIN + 'films-plus-commenter-streaming/', 'showMovies')
@@ -149,12 +149,14 @@ def showMovies(sSearch = ''):
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     if sSearch:
-      sUrl = sSearch.replace(' ', '+')
+        sUrl = sSearch.replace(' ', '+')
+      
+    VSlog(sUrl)
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="moviefilm"><a href="([^"]+)"><img src="([^"]+)" alt="([^"]+)"'
+    sPattern = '<div class="imagefilm">\s*<a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -174,6 +176,11 @@ def showMovies(sSearch = ''):
             #delete du tiret pour les series
             sTitle = aEntry[2]#.replace(' - Saison', ' Saison')
             sDesc = ''
+            if not sThumb.startswith('http'):
+                sThumb = URL_MAIN + sThumb
+                
+            if not sUrl2.startswith('http'):
+                sUrl2 = URL_MAIN + sUrl2
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
