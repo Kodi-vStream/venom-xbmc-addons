@@ -186,9 +186,9 @@ def showMovies(sSearch = ''):
 
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
-            sQual = aEntry[3]#.replace('qualite', '')
+            sQual = aEntry[3].replace('qualite', '')
             sTitle = aEntry[2].replace('Streaming', '')
-            #sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual)
+            sDisplayTitle = sTitle + ' [' + sQual + ']'
             
             sDesc = ''
             if not sThumb.startswith('http'):
@@ -207,7 +207,7 @@ def showMovies(sSearch = ''):
             if '-saison-' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
