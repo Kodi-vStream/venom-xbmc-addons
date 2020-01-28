@@ -31,7 +31,7 @@ MOVIE_NOTES = (URL_MAIN + 'film-streaming-populaires/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
 SERIE_SERIES = ('http://', 'load')
-SERIE_NEWS = (URL_MAIN + 'film/serie-gratuit-1/', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
 SERIE_VIEWS =  (URL_MAIN + 'film-les-plus-vues/', 'showMovies')
 SERIE_COMMENTS = (URL_MAIN + 'films-plus-commenter-streaming/', 'showMovies')
 SERIE_NOTES = (URL_MAIN + 'film-streaming-populaires/', 'showMovies')
@@ -113,31 +113,44 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action', URL_MAIN + 'film/action-complet/'] )
-    liste.append( ['Animation', URL_MAIN + 'film/animation-gratuit/'] )
-    liste.append( ['Arts Martiaux', URL_MAIN + 'film/arts-martiaux-streaming-vf/'] )
-    liste.append( ['Aventure', URL_MAIN + 'film/aventure-streaming-vf/'] )
-    liste.append( ['Comédie', URL_MAIN + 'film/films-comedie-streaming/'] )
-    liste.append( ['Documentaire', URL_MAIN + 'film/documentaire-streaming/'] )
-    liste.append( ['Drame', URL_MAIN + 'film/film-drame-streaming-vf/'] )
-    liste.append( ['Epouvante Horreur', URL_MAIN + 'film/horreur-streaming-film/'] )
-    liste.append( ['Espionnage', URL_MAIN + 'film-espionnage-streaming/'] )
-    liste.append( ['Famille', URL_MAIN + 'film/famille/'] )
-    liste.append( ['Fantastique', URL_MAIN + 'film-fantastique-streaming/'] )
-    liste.append( ['Guerre', URL_MAIN + 'film/film-guerre-streaming/'] )
-    liste.append( ['Historique', URL_MAIN + 'film/film-historique-streaming/'] )
-    liste.append( ['Musical', URL_MAIN + 'film/film-musical-streaming/'] )
-    liste.append( ['Policier', URL_MAIN + 'film/film-policier-streaming/'] )
-    liste.append( ['Romance', URL_MAIN + 'film-romance-streaming/'] )
-    liste.append( ['Science Fiction', URL_MAIN + 'film/film-science-fiction-streaming/'] )
-    liste.append( ['Spectacle', URL_MAIN + 'film/film-spectacles-streaming/'] )
-    liste.append( ['Thriller', URL_MAIN + 'film/film-thriller-streaming/'] )
-
+    liste.append( ['Action', URL_MAIN + 'action_1/'] )
+    liste.append( ['Animation', URL_MAIN + 'animation_1/'] )
+    liste.append( ['Arts Martiaux', URL_MAIN + 'arts-martiaux_1/'] )
+    liste.append( ['Aventure', URL_MAIN + 'aventure_1/'] )
+    liste.append( ['Comédie', URL_MAIN + 'comedie_1/'] )
+    liste.append( ['Documentaire', URL_MAIN + 'documentaire_1/'] )
+    liste.append( ['Biopic', URL_MAIN + 'biopic_1/'] )
+    liste.append( ['Drame', URL_MAIN + 'drame_1/'] )
+    liste.append( ['Epouvante Horreur', URL_MAIN + 'epouvante-horreur_1/'] )
+    liste.append( ['Espionnage', URL_MAIN + 'espionnage_1/'] )
+    liste.append( ['Famille', URL_MAIN + 'famille_1'] )
+    liste.append( ['Fantastique', URL_MAIN + 'fantastique_1/'] )
+    liste.append( ['Guerre', URL_MAIN + 'guerre_1/'] )
+    liste.append( ['Historique', URL_MAIN + 'historique_1/'] )
+    liste.append( ['Musical', URL_MAIN + 'musical_1/'] )
+    liste.append( ['Policier', URL_MAIN + 'policier_1/'] )
+    liste.append( ['Romance', URL_MAIN + 'romance_1/'] )
+    liste.append( ['Science Fiction', URL_MAIN + 'science-fiction_1/'] )
+    liste.append( ['Spectacle', URL_MAIN + 'spectacles_1/'] )
+    liste.append( ['Thriller', URL_MAIN + 'thriller_1/'] )
+    liste.append( ['Comédie Dramatique', URL_MAIN + 'comedie-dramatique_1/'] )
+    
     for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+def showYears():#creer une liste inversée d'annees
+    oGui = cGui()
+    
+
+    for i in reversed (xrange(1913, 2020)):
+        Year = str(i)
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/annee-' + Year)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -156,7 +169,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="imagefilm">\s*<a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)"'
+    sPattern = '<div class="imagefilm">\s*<a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)".+?<span class="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -173,19 +186,23 @@ def showMovies(sSearch = ''):
 
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
-            #delete du tiret pour les series
-            sTitle = aEntry[2]#.replace(' - Saison', ' Saison')
+            sQual = aEntry[3]#.replace('qualite', '')
+            sTitle = aEntry[2].replace('Streaming', '')
+            #sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual)
+            
             sDesc = ''
             if not sThumb.startswith('http'):
                 sThumb = URL_MAIN + sThumb
                 
             if not sUrl2.startswith('http'):
                 sUrl2 = URL_MAIN + sUrl2
-
+        
+            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            
 
             if '-saison-' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
