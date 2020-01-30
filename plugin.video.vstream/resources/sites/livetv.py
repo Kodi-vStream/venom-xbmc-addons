@@ -15,7 +15,7 @@ import base64
 from resources.lib.packer import cPacker
 
 SITE_IDENTIFIER = 'livetv'
-SITE_NAME = 'Live TV (beta)'
+SITE_NAME = 'Live TV'
 SITE_DESC = 'Site pour regarder du sport en direct gratuitement'
 
 URL_MAIN = 'http://livetv.sx'
@@ -798,15 +798,37 @@ def showHosters(): #affiche les videos disponible du live
                 vw=aResult[0][1]
                 vh=aResult[0][2]
 
-                url2 = 'http://player.jokehd.com/one.php?u=' + fid + '&vw='+vw+'&vh='+vh
+                url2 = 'http://www.jokerplayer.net/embed.php?u=' + fid + '&vw='+vw+'&vh='+vh
                 oRequestHandler = cRequestHandler(url2)
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
                 oRequestHandler.addHeaderEntry('Referer', url)
                 sHtmlContent2 = oRequestHandler.request()
-                sPattern3 = 'source: \'(.+?)\''
+                sPattern3 = 'src=http://(.+?)/(.+?) '
                 aResult = re.findall(sPattern3, sHtmlContent2)
                 if aResult:
-                    sHosterUrl = aResult[0]
+                    ip = aResult[0][0]
+                    url3 = 'http://' + ip + '/' + aResult[0][1]
+                    oRequestHandler = cRequestHandler(url3)
+                    oRequestHandler.addHeaderEntry('User-Agent', UA)
+                    oRequestHandler.addHeaderEntry('Referer', url2)
+                    sHtmlContent2 = oRequestHandler.request()
+                    sPattern3 = 'src=.+?e=(.+?)&st=(.+?)&'
+                    aResult = re.findall(sPattern3, sHtmlContent2)
+                    if aResult:
+                        e = aResult[0][0]
+                        st = aResult[0][1]
+                        sHosterUrl = 'http://' + ip+'/live/'+fid + '.m3u8'+'?e='+e+'&st='+st
+
+                if sHosterUrl == '':
+                    url2 = 'http://player.jokehd.com/one.php?u=' + fid + '&vw='+vw+'&vh='+vh
+                    oRequestHandler = cRequestHandler(url2)
+                    oRequestHandler.addHeaderEntry('User-Agent', UA)
+                    oRequestHandler.addHeaderEntry('Referer', url)
+                    sHtmlContent2 = oRequestHandler.request()
+                    sPattern3 = 'source: \'(.+?)\''
+                    aResult = re.findall(sPattern3, sHtmlContent2)
+                    if aResult:
+                        sHosterUrl = aResult[0]
 
         if 'baltak.biz' in url: #Terminé
             oRequestHandler = cRequestHandler(url)
