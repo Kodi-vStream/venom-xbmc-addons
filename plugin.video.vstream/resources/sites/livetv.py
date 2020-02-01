@@ -395,7 +395,7 @@ def showHosters(): #affiche les videos disponible du live
                 sHosterUrl = 'http://91.192.80.210/edge0/xrecord/' + str(gameId) + '/prog_index.m3u8'
 
         if 'youtube' in url:#Je sais pas
-            dialog().VSinfo('Youtube peut ne pas marcher c\'est de la faute à Kodi', "Livetv", 15)
+            dialog().VSinfo('Youtube peut ne pas marcher c\'est de la faute de Kodi', "Livetv", 15)
             sPattern2 = 'youtube.com/embed/(.+?)[?]autoplay=1'
             aResult = re.findall(sPattern2, url)
 
@@ -648,7 +648,7 @@ def showHosters(): #affiche les videos disponible du live
                 sHosterUrl = 'https://' + domaine + aResult1[0] + '|User-Agent=' + UA + '&referer=' + Referer
                 #VSlog(sHosterUrl)
 
-        if 'socolive.xyz' in url: #Terminé
+        if 'socolive.xyz' in url or 'sportsfix' in url: #Terminé
             oRequestHandler = cRequestHandler(url)
             sHtmlContent2 = oRequestHandler.request()
             sPattern2 = 'iframe src="(.+?)"'
@@ -843,6 +843,11 @@ def showHosters(): #affiche les videos disponible du live
                 sHtmlContent2 = oRequestHandler.request()
 
                 sPattern2 = 'source: \'(.+?)\''
+                aResult = re.findall(sPattern2, sHtmlContent2)
+                if aResult:
+                    sHosterUrl = aResult[0]
+            else:
+                sPattern2 = 'source: \"(.+?)\"'
                 aResult = re.findall(sPattern2, sHtmlContent2)
                 if aResult:
                     sHosterUrl = aResult[0]
