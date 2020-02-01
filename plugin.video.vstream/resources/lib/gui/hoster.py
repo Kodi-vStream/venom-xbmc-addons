@@ -346,6 +346,8 @@ class cHosterGui:
             return self.getHoster('flix555')
         if ('onlystream' in sHostName or 'gotochus' in sHostName):
             return self.getHoster('onlystream')
+        if ('pstream' in sHostName):
+            return self.getHoster('pstream')
         
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
