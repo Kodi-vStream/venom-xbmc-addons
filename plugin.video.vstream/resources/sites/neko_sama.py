@@ -17,8 +17,8 @@ SITE_DESC = 'anime en streaming'
 
 URL_MAIN = 'https://www.neko-sama.fr/'
 
-URL_SEARCH = (URL_MAIN + 'animes-search.json', 'showSearchResult')
-URL_SEARCH_SERIES = (URL_MAIN + 'animes-search.json', 'showSearchResult')
+URL_SEARCH = (URL_MAIN + 'animes-search.json?gkeorgkeogkccc', 'showSearchResult')
+URL_SEARCH_SERIES = (URL_MAIN + 'animes-search.json?gkeorgkeogkccc', 'showSearchResult')
 FUNCTION_SEARCH = 'showSearchResult'
 
 ANIM_ANIMS = ('http://', 'load')
@@ -102,7 +102,7 @@ def showSearchResult(sSearch):
     oGui = cGui()
     oRequestHandler = cRequestHandler(URL_SEARCH[0])
 
-    sSearch = sSearch.lower().split('.json')[1]
+    sSearch = sSearch.lower()
     data = json.loads(oRequestHandler.request())
 
     Title, Url, Thumb = parseJson(data, sSearch)
