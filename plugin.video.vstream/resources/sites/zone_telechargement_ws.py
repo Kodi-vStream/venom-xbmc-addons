@@ -7,9 +7,8 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, dialog, VSlog, addon
-from resources.lib.config import GestionCookie
 
-import urllib, re, urllib2, random
+import urllib, re, string, random
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 headers = { 'User-Agent': UA }
@@ -301,7 +300,8 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText + '&note=0&art=0&AiffchageMode=0&inputTirePar=0&cstart=1'
+        sSearchText = re.sub('[^%s]' % (string.ascii_lowercase + string.digits), '+', sSearchText.lower())
+        sUrl = URL_SEARCH[0] + sSearchText + '&note=0&art=0&AiffchageMode=0&inputTirePar=0&cstart=0'
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -361,7 +361,6 @@ def showMovies(sSearch = ''):
     oRequestHandler.addHeaderEntry('Accept-Encoding','gzip, deflate')
     sHtmlContent = oRequestHandler.request()
 
-    #sPattern = '<div style="height:[0-9]{3}px;"> *<a href="([^"]+)"><img class="[^"]+?" data-newsid="[^"]+?" src="([^<"]+)".+?<div class="[^"]+?" style="[^"]+?"> *<a href="[^"]+?"> ([^<]+?)<'
     sPattern = '<img class="mainimg.+?src="([^"]+)"(?:.|\s)+?<a href="([^"]+)">([^"]+)</a>.+?<span class=".+?<b>([^"]+)</span>.+?">([^<]+)</span>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -929,8 +928,6 @@ def encode_multipart(fields, files, typeUrl, param, boundary = None):
     """
 
     import mimetypes
-    import random
-    import string
 
     _BOUNDARY_CHARS = string.digits
 
