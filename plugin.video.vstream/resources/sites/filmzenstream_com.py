@@ -209,6 +209,16 @@ def showHosters():
                 oRequestHandler.request()
                 sHosterUrl = oRequestHandler.getRealUrl()
 
+            #pour récuperer le lien Downpit
+            elif 'downpit' in aEntry:
+                oRequestHandler = cRequestHandler(aEntry)
+                sHtmlContent = oRequestHandler.request()
+                sPattern = '<iframe.+?src="([^"]+)"'
+                aResult = oParser.parse(sHtmlContent, sPattern)
+                if (aResult[0] == True):
+                    for aEntry in aResult[1]:
+                        sHosterUrl = aEntry
+
             else:
                 sHosterUrl = aEntry
                 #Vire les bandes annonces
