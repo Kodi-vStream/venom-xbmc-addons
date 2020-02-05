@@ -395,7 +395,7 @@ def showHosters(): #affiche les videos disponible du live
                 sHosterUrl = 'http://91.192.80.210/edge0/xrecord/' + str(gameId) + '/prog_index.m3u8'
 
         if 'youtube' in url:#Je sais pas
-            dialog().VSinfo('Youtube peut ne pas marcher c\'est de la faute de Kodi', "Livetv", 15)
+            #dialog().VSinfo('Youtube peut ne pas marcher c\'est de la faute de Kodi', "Livetv", 15)
             sPattern2 = 'youtube.com/embed/(.+?)[?]autoplay=1'
             aResult = re.findall(sPattern2, url)
 
@@ -403,19 +403,19 @@ def showHosters(): #affiche les videos disponible du live
                 video_id = aResult[0]
                 #VSlog(video_id)
 
-            url1 = url.replace('/embed/', '/watch?v=').replace('?autoplay=1', '')
+                #url1 = url.replace('/embed/', '/watch?v=').replace('?autoplay=1', '')
 
-            url2 = 'https://youtube.com/get_video_info?video_id=' + video_id + '&sts=17488&hl=fr'
+                url2 = 'https://youtube.com/get_video_info?video_id=' + video_id + '&sts=17488&hl=fr'
 
-            oRequestHandler = cRequestHandler(url2)
-            oRequestHandler.addHeaderEntry('User-Agent', UA)
-            sHtmlContent3 = urllib2.unquote(oRequestHandler.request())
+                oRequestHandler = cRequestHandler(url2)
+                oRequestHandler.addHeaderEntry('User-Agent', UA)
+                sHtmlContent3 = urllib2.unquote(oRequestHandler.request())
 
-            sPattern3 = 'hlsManifestUrl":"(.+?)"'
-            aResult = re.findall(sPattern3, sHtmlContent3)
+                sPattern3 = 'hlsManifestUrl":"(.+?)"'
+                aResult = re.findall(sPattern3, sHtmlContent3)
 
-            if aResult:
-                sHosterUrl = aResult[0] + '|User-Agent=' + UA + '&Host=manifest.googlevideo.com'
+                if aResult:
+                    sHosterUrl = aResult[0] + '|User-Agent=' + UA + '&Host=manifest.googlevideo.com'
 
         if 'streamup.me' in url:#Terminé
             oRequestHandler = cRequestHandler(url)
@@ -874,7 +874,7 @@ def showHosters(): #affiche les videos disponible du live
                 oRequestHandler.addHeaderEntry('Referer', url)
                 sHtmlContent2 = oRequestHandler.request()
 
-                sPattern3 = 'source: \'(.+?)\''
+                sPattern3 = 'source: *["\'](.+?)["\']'
                 aResult = re.findall(sPattern3, sHtmlContent2)
                 if aResult:
                     sHosterUrl = 'http:'+aResult[0]
@@ -885,7 +885,7 @@ def showHosters(): #affiche les videos disponible du live
             
             print(sHtmlContent2)
             
-            sPattern2 = 'source: "(.+?)"'
+            sPattern2 = 'source: *["\'](.+?)["\']'
             aResult = re.findall(sPattern2, sHtmlContent2)
             if aResult:
                 sHosterUrl = aResult[0]
