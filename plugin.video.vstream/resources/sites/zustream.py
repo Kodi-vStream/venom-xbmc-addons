@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'zustream'
 SITE_NAME = 'ZuStream'
 SITE_DESC = 'Retrouvez un énorme répertoire de films, de séries et de mangas en streaming VF et VOSTFR complets'
 
-URL_MAIN = 'https://ww9.zustream.net/'
+URL_MAIN = 'https://www.zustream.biz/'
 
 MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
 MOVIE_MOVIE = ('http://', 'load')
