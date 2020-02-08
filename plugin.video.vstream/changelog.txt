@@ -4,7 +4,7 @@
 - Support: https://vstream.ga/
 =============================================================================
 =============================================================================
-- Auteurs : Venom, TmpName, Johngf, Arias800
+- Auteurs : Venom, TmpName, Arias800
 =============================================================================
 Merci au contributeur de la bêta.
 - Razorex/Kodigoal/chataigne73
