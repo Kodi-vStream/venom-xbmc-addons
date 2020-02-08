@@ -13,10 +13,10 @@ import base64, re
 SITE_IDENTIFIER = 'streamay_bz'
 SITE_NAME = 'Streamay'
 SITE_DESC = 'Films, Séries & Mangas en streaming'
-URL_MAIN = 'https://ww1.streamay.com/'
+URL_MAIN = 'https://www.filmstreamingvf.watch/'
 
 MOVIE_MOVIE = ('http://', 'load')
-MOVIE_NEWS = (URL_MAIN + 'accueil-site/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + '?v_sortby=views&v_orderby=desc', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_LIST = (URL_MAIN, 'AlphaSearch')
