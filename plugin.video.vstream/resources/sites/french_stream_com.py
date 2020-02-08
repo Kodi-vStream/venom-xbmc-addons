@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 
 import re, base64, urllib
 
@@ -474,33 +474,18 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'cid="([^"]+)" *id="([^"]+)" *target="seriePlayer".+?i>([^<]+)</a>'
+    sPattern = '<a style="display.+?cid="([^"]+)".+?</i>([^"]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sTitle = aEntry[2] + ' ' + sMovieTitle
 
-            url = aEntry[0]
-            #first convertion
-            tmp = ''
-            try:
-                tmp = re.search('input id="tmp".+?value="([^"]+)"', sHtmlContent, re.DOTALL).group(1)
-            except:
-                pass
-
-            if '/embed' in url or 'opsktp' in url or 'iframe' in url or 'jetload' in url:
-                sHosterUrl = url
-            else:
-                url = decode_url(url, aEntry[1], tmp)
-                #second convertion
-                sHosterUrl = ResolveUrl(url)
-
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            oHoster = cHosterGui().checkHoster(aEntry[0])
             if (oHoster != False):
+
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                cHosterGui().showHoster(oGui, oHoster, aEntry[0], sThumb)
 
     oGui.setEndOfDirectory()
 
@@ -567,13 +552,15 @@ def serieHosters():
 
     sPattern = '<div id="' + sData + '" class="fullsfeature"(.+?)<div style=".+?"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         block = aResult[1][0]
     else:
         return
 
-    sPattern = '<a (?:|id="([^"]+)" (?:|onclick=".+?")) *href="([^"]+)"'
+    sPattern = '<a (?:|id="([^"]+)" (?:|onclick=".+?")) *surl="([^"]+)"'
     aResult = oParser.parse(block, sPattern)
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
