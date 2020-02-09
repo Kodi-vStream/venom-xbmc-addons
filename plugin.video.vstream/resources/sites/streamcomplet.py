@@ -6,9 +6,6 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
-from resources.lib.packer import cPacker
-import re
 from resources.lib.comaddon import progress#, VSlog
 
 SITE_IDENTIFIER = 'streamcomplet'
@@ -82,7 +79,7 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
-      sUrl = sSearch.replace(' ', '+')
+        sUrl = sSearch.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -90,7 +87,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<img src="([^"]+)" alt="([^"]+)".+?<div class="movief">.+?href="([^"]+)"'
+    sPattern = '<a href="([^"]+)"><img src="([^"]+)" alt="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -104,9 +101,12 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sThumb = URL_MAIN + aEntry[0]
-            sUrl = URL_MAIN + aEntry[2]
-            sTitle = aEntry[1].replace('en HD','').replace('Voir ','').replace('streaming','').replace('vf et vostfr','')
+            if (aEntry[0] == '/'):
+                continue
+
+            sUrl = URL_MAIN + aEntry[0]
+            sThumb = URL_MAIN + aEntry[1]
+            sTitle = aEntry[2].replace('en HD','').replace('Voir ','').replace('streaming','').replace('vf et vostfr','')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -189,7 +189,7 @@ def showHosters():
 
     sPattern = 'url=([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-#
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sHosterUrl = aEntry
