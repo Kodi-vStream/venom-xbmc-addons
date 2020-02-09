@@ -64,14 +64,18 @@ class cHoster(iHoster):
         elif 'fem.tohds' in self.__sUrl:
             baseUrl = 'https://feurl.com/api/source/'
 
-        oRequestHandler = cRequestHandler(self.__sUrl)
-        sHtmlContent = oRequestHandler.request()
+        if 'fem.tohds' in self.__sUrl:
+            oRequestHandler = cRequestHandler(self.__sUrl)
+            sHtmlContent = oRequestHandler.request()
 
-        sPattern = '<iframe src="([^"]+)"'
-        oParser = cParser()
-        aResult = oParser.parse(sHtmlContent, sPattern)
+            sPattern = '<iframe src="([^"]+)"'
+            oParser = cParser()
+            aResult = oParser.parse(sHtmlContent, sPattern)
 
-        url = baseUrl + aResult[1][0].rsplit('/', 1)[1]
+            url = baseUrl + aResult[1][0].rsplit('/', 1)[1]
+
+        else:
+            url = baseUrl + self.__sUrl.rsplit('/', 1)[1]
 
         postdata = 'r=' + urllib.quote_plus(self.__sUrl) + '&d=' + baseUrl.replace('https://','').replace('/api/source/','')
 
