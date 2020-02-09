@@ -10,6 +10,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.comaddon import progress
 from resources.lib.parser import cParser
+from resources.lib.util import cUtil
 import re
 
 SITE_IDENTIFIER = 'zustream'
@@ -75,7 +76,7 @@ def showMovies(sSearch = ''):
 
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
-        sPattern = '<div class="image">.+?<a href="([^"]+)">.+?<img src="([^"]+)" alt="([^"]+)".+?<p>(.+?)<\/p>'
+        sPattern = '<div class="image">.+?<a href="([^"]+)"><img src="([^"]+)" alt="([^"]+)".+?<p>(.+?)<\/p>'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -92,6 +93,7 @@ def showMovies(sSearch = ''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+        utils = cUtil()
 
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
@@ -101,7 +103,7 @@ def showMovies(sSearch = ''):
             sQual = ''
             sDesc = ''
             if sSearch:
-                sUrl2 = aEntry[0]
+                sUrl = aEntry[0]
                 sThumb = aEntry[1]
                 sTitle = aEntry[2]
                 sDesc = aEntry[3]
@@ -114,6 +116,8 @@ def showMovies(sSearch = ''):
                 if aEntry[4]:
                     sDesc = aEntry[4]
 
+            sDesc = unicode(sDesc, 'utf-8') # converti en unicode
+            sDesc = utils.unescape(sDesc)   # retire les balises HTML
 
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
 
@@ -205,17 +209,21 @@ def showLink():
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
 
-    sPattern = "<span class='title'>(.+?)<\/span>.+?data-type='([^']+)' data-post='(\d+)' data-nume='(\d+)'>"
+    sPattern = "dooplay_player_option.+?data-post='(\d+)'.+?data-nume='(.+?)'>.+?'title'>(.+?)<"
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sortedList = sorted(aResult[1], key=getSortedKey)
         for aEntry in sortedList:
 
             sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
-            sTitle = aEntry[0].replace('Serveur','').replace('(','').replace(')','')
-            dtype = aEntry[1]
-            dpost = aEntry[2]
-            dnum = aEntry[3]
+            dtype = 'movie'     # fonctionne pour Film ou Série (pour info : série -> dtype = 'tv')
+            dpost = aEntry[0]
+            dnum = aEntry[1]
+            sTitle = aEntry[2].replace('Serveur','').replace('Télécharger','').replace('(','').replace(')','')
+            
+            if ('VIP - ' in sTitle):
+                continue                # Les liens VIP ne fonctionnent pas
+            
             sTitle = ('%s [%s]') % (sMovieTitle, sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -231,7 +239,7 @@ def showLink():
     oGui.setEndOfDirectory()
 
 def getSortedKey(item):
-    return item[0]
+    return item[2]
 
 def showHosters():
     oGui = cGui()
