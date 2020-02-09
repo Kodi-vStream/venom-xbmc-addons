@@ -90,7 +90,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<img src="([^"]+)" alt="([^"]+)" height=.+?</a>.+?<div class="movief">.+?href="([^"]+)"'
+    sPattern = '<img src="([^"]+)" alt="([^"]+)".+?<div class="movief">.+?href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -107,11 +107,6 @@ def showMovies(sSearch = ''):
             sThumb = URL_MAIN + aEntry[0]
             sUrl = URL_MAIN + aEntry[2]
             sTitle = aEntry[1].replace('en HD','').replace('Voir ','').replace('streaming','').replace('vf et vostfr','')
-
-            #Si recherche et trop de resultat, on nettoye
-            if sSearch and total > 2:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
-                    continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
