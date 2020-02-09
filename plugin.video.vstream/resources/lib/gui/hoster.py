@@ -332,15 +332,13 @@ class cHosterGui:
             return self.getHoster('rapidstream')
         if ('beeload' in sHostName):
             return self.getHoster('beeload')
-        if ('verystream.' in sHostName):
-            return self.getHoster('verystream')
         if ('archive.' in sHostName):
             return self.getHoster('archive')
         if ('freshstream' in sHostName):
             return self.getHoster('freshstream')
         if ('jetload' in sHostName):
             return self.getHoster('jetload')
-        if ('french-vid' in sHostName or 'fembed.' in sHostName or 'yggseries' in sHostName or 'sendvid' in sHostName or 'vfsplayer' in sHostName or 'fsimg' in sHostName):
+        if ('french-vid' in sHostName or 'fembed.' in sHostName or 'yggseries' in sHostName or 'sendvid' in sHostName or 'vfsplayer' in sHostName or 'fsimg' in sHostName or 'fem.tohds' in sHostName):
             return self.getHoster('frenchvid')
         if ('flix555' in sHostName):
             return self.getHoster('flix555')
