@@ -9,7 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress#, VSlog
+from resources.lib.comaddon import progress
 
 import re
 
@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'streamelite'
 SITE_NAME = 'StreamElite'
 SITE_DESC = 'Séries VF & VOSTFR en streaming.'
 
-URL_MAIN = 'http://voir.streamelite.net/'
+URL_MAIN = 'http://streamavie.com/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
@@ -86,7 +86,7 @@ def showGenres():
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<li class="cat-item cat-item.+?"><a href="([^<]+)" >([^<]+)</a> <i>([^<]+)</i>'
+    sPattern = '<li class="cat-item cat-item-.+?"><a href="([^<]+)">([^<]+)</a> <i>([^<]+)</i>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
@@ -144,7 +144,7 @@ def showYears():
     oParser = cParser()
     oRequestHandler = cRequestHandler(URL_MAIN)
 
-    sStart = '<ul class="year scrolling">'
+    sStart = '<ul class="releases scrolling">'
     sEnd = '</div>  <div class="content">'
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
@@ -173,7 +173,7 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sPattern = '<div class="poster".+?img src="([^"]+)" alt="([^"]+)".+?<div class="flag".+?flags\/([^"]+)\.png.+?<a href="([^"]+)">.+?(?:<article|<div class="texto">(.+?)<div)'
+        sPattern = '<div class="poster".+?img src="([^"]+)" alt="([^"]+)".+?<a href="([^"]+)">.+?(?:<article|<div class="texto">(.+?)<div)'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -191,11 +191,6 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            try:
-                sDesc = re.sub('(\A.+?: )', '', aEntry[4])
-            except:
-                sDesc= ''
-
             if sSearch:
                 sThumb = aEntry[0]
                 sTitle = aEntry[1]
@@ -205,10 +200,8 @@ def showMovies(sSearch = ''):
             else:
                 sThumb = aEntry[0]
                 sTitle = aEntry[1]
-                sLang = aEntry[2].upper()
-                sUrl2 = aEntry[3]
-
-            sDisplayTitle = ('%s (%s)') % (sTitle, sLang)
+                sUrl2 = aEntry[2]
+                sDesc = re.sub('(\A.+?: )', '', aEntry[3])
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
@@ -220,7 +213,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb )
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -244,23 +237,73 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
-def showHosters():
+def showLink():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
+    oRequest = cRequestHandler(sUrl)
+    sHtmlContent = oRequest.request()
+
+    sPattern = "data-type='([^']+)' data-post='(\d+)' data-nume='(\d+)'>.+?<span class='title'>(.+?)<\/span>"
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+
+            sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
+            sTitle = aEntry[3].replace('Serveur','').replace('(','').replace(')','')
+            dtype = aEntry[0]
+            dpost = aEntry[1]
+            dnum = aEntry[2]
+            sTitle = ('%s [%s]') % (sMovieTitle, sTitle)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('referer', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('data1', dtype)
+            oOutputParameterHandler.addParameter('data2', dpost)
+            oOutputParameterHandler.addParameter('data3', dnum)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+def showHosters():
+    oGui = cGui()
+    oParser = cParser()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    referer = oInputParameterHandler.getValue('referer')
+    dtype = oInputParameterHandler.getValue('data1')
+    dpost = oInputParameterHandler.getValue('data2')
+    dnum = oInputParameterHandler.getValue('data3')
+
+    pdata = 'action=doo_player_ajax&post=' + dpost + '&nume=' + dnum + '&type=' + dtype
+    oRequest = cRequestHandler(sUrl)
+    oRequest.setRequestType(1)
+    oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
+    oRequest.addHeaderEntry('Referer', referer)
+    oRequest.addHeaderEntry('Accept', '*/*')
+    oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+    oRequest.addParametersLine(pdata)
+
+    sHtmlContent = oRequest.request()
+
     oParser = cParser()
 
-    sPattern = '<IFRAME SRC="([^"]+)"'
-    aResult = oParser.parse(sHtmlContent, sPattern)
+    #sPattern = '<IFRAME SRC="([^"]+)"'
+    #aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
-        sPattern = '<iframe class="metaframe rptss" src="([^"]+)".+?></iframe>'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+    #if (aResult[0] == False):
+    sPattern = "src='([^']+)'"
+    aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
