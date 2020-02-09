@@ -53,28 +53,37 @@ class cHoster(iHoster):
         oParser = cParser()
 
         oRequest = cRequestHandler(self.__sUrl)
+        oRequest.addHeaderEntry('Cookie', 'hds2=1')
         sHtmlContent = oRequest.request()
 
         sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>'
         aResult = oParser.parse(sHtmlContent,sPattern)
+
         if (aResult[0] == True):
             sHtmlContent = cPacker().unpack(aResult[1][0])
 
-            sPattern = 'vsrc\d+="([^"]+)"'
+            sPattern = 'wurl="([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
                 api_call = aResult[1][0]
 
-            else:
-                sPattern = 'furl="([^"]+)"'
-                aResult = oParser.parse(sHtmlContent, sPattern)
-                if (aResult[0] == True):
-                    api_call = aResult[1][0]
+            #else:
+                #sPattern = 'vsrc\d+="([^"]+)"'
+                #aResult = oParser.parse(sHtmlContent, sPattern)
+                #if (aResult[0] == True):
+                #    api_call = aResult[1][0]
 
-                if api_call.startswith('//'):
-                    api_call = 'https:' + aResult[1][0]
+                #else:
+                #    sPattern = 'furl="([^"]+)"'
+                #    aResult = oParser.parse(sHtmlContent, sPattern)
+                #    if (aResult[0] == True):
+                #        api_call = aResult[1][0]
+
+            if api_call.startswith('//'):
+                api_call = 'https:' + aResult[1][0]
                 
-        if (api_call):
-            return True, api_call
+            if (api_call):
+                return True, api_call
 
         return False, False
+
