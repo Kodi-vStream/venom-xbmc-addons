@@ -319,37 +319,44 @@ def showLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '(?:<div class="title">(.+?)</div>.+?<div class="iframe".+?|<div class="video-video".+?)data-src="([^"]+)"'
-    sPattern1 = '<a class="team".+?>\[([^"]+)\]</a>'
+    sPattern = '(?:iframe.+?|<div class="video-video".+?)data-src="([^"]+)"'
     oParser = cParser()
-    aResult1 = oParser.parse(sHtmlContent, sPattern1)
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if not aResult[0]:
+        sPattern = '<div class="video-video".+?src="([^"]+)"'
+        oParser = cParser()
+        aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if "Crunchyroll" in str(aResult1) or "Wakanim" in str(aResult1) or "Anime Digital Network" in str(aResult1):
-        if (aResult1):
-            for aEntry in aResult1[1]:
-                if aEntry:
-                    sLicence = aEntry
-                    oGui.addText(SITE_IDENTIFIER, "[COLOR red]Animés dispo gratuitement et legalement sur %s [/COLOR]" % str(sLicence))
-    else:
-        aResult = re.findall(sPattern, sHtmlContent, re.DOTALL)
-        if (aResult):
-            for aEntry in aResult:
-                if aEntry[0]:
-                    sHost = aEntry[0].replace('Ouvrir ', '')
-                    sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
-                else:
-                    sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, 'Inconnu')
+    for aEntry in aResult[1]:
+        sUrl = aEntry.replace('+', 'plus')
+        try:
+            sUrl = decodex(sUrl)
+        except Exception:
+            pass
 
-                sUrl = aEntry[1].replace('https://www.youtube.com/embed/', '').replace('+', 'plus')
+        if sUrl.startswith('//'):
+            sUrl = "https:" + sUrl
 
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
+        if 'www.' in sUrl:
+            sHost = sUrl.split("/")[2].split('.')[1]
+        else:
+            sHost = sUrl.split("/")[2].split('.')[0]
+
+        if sHost:
+            if "crunchyroll" in str(sHost) or "wakanim" in str(sHost) or "animedigitalnetwork" in str(sHost):
+                sTitle = "[COLOR red]Licencié par : %s [/COLOR]" % str(sHost)
+            else:
+                sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
+        else:
+            sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, 'Inconnu')
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+        oOutputParameterHandler.addParameter('sThumb', sThumb)
+        oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def showHosters():
     oGui = cGui()
@@ -359,10 +366,7 @@ def showHosters():
 
     #bidouille facile
     sUrl = sUrl.replace('plus', '+')
-
-    sHosterUrl = decodex(sUrl)
-    if sHosterUrl.startswith('//'):
-        sHosterUrl = 'http:' + sHosterUrl
+    sHosterUrl  = sUrl
 
     if (sHosterUrl):
         oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -377,7 +381,7 @@ def decodex(x):
     from itertools import chain
     import base64
 
-    e = base64.b64decode(x)
+    e = base64.b64decode(x.replace("https://www.youtube.com/embed/",""))
     t = ''
     r = "ETEfazefzeaZa13MnZEe"
     a = 0
