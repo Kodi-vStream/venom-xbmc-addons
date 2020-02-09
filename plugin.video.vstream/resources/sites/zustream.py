@@ -208,7 +208,8 @@ def showLink():
     sPattern = "<span class='title'>(.+?)<\/span>.+?data-type='([^']+)' data-post='(\d+)' data-nume='(\d+)'>"
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        for aEntry in aResult[1]:
+        sortedList = sorted(aResult[1], key=getSortedKey)
+        for aEntry in sortedList:
 
             sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
             sTitle = aEntry[0].replace('Serveur','').replace('(','').replace(')','')
@@ -229,9 +230,11 @@ def showLink():
 
     oGui.setEndOfDirectory()
 
+def getSortedKey(item):
+    return item[0]
+
 def showHosters():
     oGui = cGui()
-    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -262,7 +265,6 @@ def showHosters():
     aResult2 = re.findall(sPattern, sHtmlContent)
 
     #fusion
-    aResult = []
     aResult = aResult1 + aResult2
 
     if (aResult):
