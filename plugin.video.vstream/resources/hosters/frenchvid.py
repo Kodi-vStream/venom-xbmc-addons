@@ -61,9 +61,17 @@ class cHoster(iHoster):
             baseUrl = 'https://vfsplayer.xyz/api/source/'
         elif 'fsimg' in self.__sUrl:
             baseUrl = 'https://www.fsimg.info/api/source/'
+        elif 'fem.tohds' in self.__sUrl:
+            baseUrl = 'https://feurl.com/api/source/'
 
-        url = baseUrl + self.__sUrl.rsplit('/', 1)[1]
+        oRequestHandler = cRequestHandler(self.__sUrl)
+        sHtmlContent = oRequestHandler.request()
 
+        sPattern = '<iframe src="([^"]+)"'
+        oParser = cParser()
+        aResult = oParser.parse(sHtmlContent, sPattern)
+
+        url = baseUrl + aResult[1][0].rsplit('/', 1)[1]
 
         postdata = 'r=' + urllib.quote_plus(self.__sUrl) + '&d=' + baseUrl.replace('https://','').replace('/api/source/','')
 
