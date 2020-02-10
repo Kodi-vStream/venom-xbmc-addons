@@ -7,8 +7,9 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, dialog, VSlog, addon
+from resources.lib.util import urlEncode
 
-import urllib, re, string, random
+import re, string, random
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 headers = { 'User-Agent': UA }
@@ -873,7 +874,7 @@ def DecryptDlProtecte(url):
             token = str(result[1][0][1])
 
     f = { '_token' : token}
-    data = urllib.urlencode(f)
+    data = urlEncode(f)
 
     oRequestHandler = cRequestHandler('http://'+url.split('/')[2]+RestUrl)
     oRequestHandler.setRequestType(1)
