@@ -62,7 +62,7 @@ def showGenres():
     liste.append( ['Guerre', URL_MAIN + 'films/guerre/'] )
     liste.append( ['Historique', URL_MAIN + 'films/historique/'] )
     liste.append( ['Horreur', URL_MAIN + 'films/horreur/'] )
-    liste.append( ['Musique', URL_MAIN + 'films/musique/'] )
+    liste.append( ['Musique', URL_MAIN + 'films/musical/'] )
     liste.append( ['Policier', URL_MAIN + 'films/policier/'] )
     liste.append( ['Romance', URL_MAIN + 'films/romance/'] )
     liste.append( ['Thriller', URL_MAIN + 'films/thriller/'] )
@@ -87,7 +87,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<a href="([^"]+)"><img src="([^"]+)" alt="([^"]+)"'
+    sPattern = '<a href="([^"]+)"><img src="([^"]+)" alt="([^"]+)".+?<div class="(movies">(.+?)<|arama")'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -107,11 +107,13 @@ def showMovies(sSearch = ''):
             sUrl = URL_MAIN + aEntry[0]
             sThumb = URL_MAIN + aEntry[1]
             sTitle = aEntry[2].replace('en HD','').replace('Voir ','').replace('streaming','').replace('vf et vostfr','')
+            sYear = aEntry[4]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -144,6 +146,7 @@ def showLinks():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sYear = oInputParameterHandler.getValue('sYear')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -169,6 +172,7 @@ def showLinks():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayName, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
