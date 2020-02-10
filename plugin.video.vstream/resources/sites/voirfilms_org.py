@@ -8,8 +8,9 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-#from resources.lib.util import cUtil
-import urllib2, urllib, re
+from resources.lib.util import Unquote, QuoteSafe, Noredirection
+
+import re
 
 SITE_IDENTIFIER = 'voirfilms_org'
 SITE_NAME = 'VoirFilms'
@@ -241,7 +242,7 @@ def showMovies(sSearch = ''):
     if sSearch:
         #on redecode la recherche codé il y a meme pas une seconde par l'addon
         sSearch = sSearch.replace(' ', '+')
-        sSearch = urllib2.unquote(sSearch)
+        sSearch = Unquote(sSearch)
 
         #pdata = 'action=recherche&story=' + sSearch
 
@@ -349,7 +350,7 @@ def showHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     # patch for unicode url
-    sUrl = urllib.quote(sUrl, ':/')
+    sUrl = QuoteSafe(sUrl)
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -452,21 +453,8 @@ def showHostersLink():
         redirection_target = oRequestHandler.getRealUrl()
 
     else:
-        class NoRedirection(urllib2.HTTPErrorProcessor):
-            def http_response(self, request, response):
-                return response
 
-            https_response = http_response
-
-        opener = urllib2.build_opener(NoRedirection)
-        opener.addheaders = [('User-agent', UA)]
-        opener.addheaders = [('Referer', host)]
-        response = opener.open(sUrl)
-        sHtmlContent = response.read()
-        redirection_target = sUrl
-        if response.code == 302:
-            redirection_target = response.headers['Location']
-        response.close()
+        sHtmlContent, redirection_target = Noredirection(UA, host, sUrl)
 
         #VSlog('cod > ' + sHtmlContent)
 
