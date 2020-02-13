@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'fullstream'
 SITE_NAME = 'FullStream'
 SITE_DESC = 'Films, Séries et Mangas Gratuit en streaming sur Full stream'
 
-URL_MAIN = 'https://vfspace.me/'
+URL_MAIN = 'http://w2.vfspace.co/'
 
 URL_SEARCH = ('', 'showMovies')
 URL_SEARCH_MOVIES = ('', 'showMovies')
@@ -112,7 +112,7 @@ def showMovies(sSearch = ''):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
-        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler = cRequestHandler(sUrl.replace('https','http'))
         sHtmlContent = oRequestHandler.request()
         
 
@@ -234,7 +234,7 @@ def showLink():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    oRequest = cRequestHandler(sUrl)
+    oRequest = cRequestHandler(sUrl.replace('https','http'))
     sHtmlContent = oRequest.request()
 
     sDesc = ''
