@@ -7,8 +7,7 @@ from resources.lib.aadecode import AADecoder
 from resources.lib.jjdecode import JJDecoder
 import re
 import base64
-
-UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
+UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0'
 
 class cHoster(iHoster):
 
@@ -82,7 +81,7 @@ class cHoster(iHoster):
                         api_call = r.group(1)
                         return True, api_call + '|User-Agent=' + UA
 
-        reducesHtmlContent = oParser.abParse(sHtmlContent, '<z9></z9><script>','{if(document')
+        reducesHtmlContent = oParser.abParse(sHtmlContent, '<z9></z9>','{if(document')
 
         sPattern =  '(\w+)'
         aResult = oParser.parse(reducesHtmlContent, sPattern)
@@ -96,7 +95,7 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             winkey = aResult[1][0].replace('window.','')
-            c = Cdecode(sHtmlContent,winkey)
+            c = Cdecode(sHtmlContent,winkey)#winkey not used recently
             if c:
                 api_call = decode(base64_coded,a,b,c)
 
@@ -118,6 +117,7 @@ def Cdecode(sHtmlContent,encodedC):
             z.append(JJDecoder(aEntry[1]).decode())
 
         for x in z:
+
             r1 = re.search("atob\(\'([^']+)\'\)", x, re.DOTALL | re.UNICODE)
             if r1:
                 y.append(base64.b64decode(r1.group(1)))  

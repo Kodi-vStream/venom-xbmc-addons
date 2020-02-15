@@ -474,12 +474,12 @@ def DecryptOuo(sUrl):
     Cookie = oRequestHandler.GetCookies()
 
     key = re.search('sitekey: "(.+?)"', str(sHtmlContent)).group(1)
-    OuoToken = re.search('<input name="_token" type="hidden" value="(.+?)">', str(sHtmlContent)).group(1)
+    OuoToken = re.search('<input name="_token" type="hidden" value="(.+?)">.+?<input id="v-token" name="v-token" type="hidden" value="(.+?)"', str(sHtmlContent), re.MULTILINE|re.DOTALL)
 
     gToken = ResolveCaptcha(key, urlOuo)
 
     url = urlOuo.replace('/fbc/', '/go/')
-    params = '_token=' + OuoToken + '&g-recaptcha-response=' + gToken
+    params = '_token=' + OuoToken.group(1) + '&g-recaptcha-response=' + gToken + "&v-token=" + OuoToken.group(2)
 
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.setRequestType(1)
@@ -494,10 +494,10 @@ def DecryptOuo(sUrl):
     oRequestHandler.addParametersLine(params)
     sHtmlContent = oRequestHandler.request()
 
-    final = re.search('<form method="POST" action="(.+?)" accept-charset="UTF-8"><input name="_token" type="hidden" value="(.+?)">', str(sHtmlContent))
+    final = re.search('<form method="POST" action="(.+?)" accept-charset=.+?<input name="_token" type="hidden" value="(.+?)">', str(sHtmlContent))
 
     url = final.group(1)
-    params = '_token=' + final.group(2)
+    params = '_token=' + final.group(2) + '&x-token=' + ""
 
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.setRequestType(1)

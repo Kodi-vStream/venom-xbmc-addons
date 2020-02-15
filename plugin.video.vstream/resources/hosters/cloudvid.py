@@ -6,7 +6,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 from resources.lib.packer import cPacker
-from resources.lib.comaddon import dialog
+from resources.lib.comaddon import dialog,VSlog
 
 class cHoster(iHoster):
 
@@ -68,6 +68,8 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(sUrl)
         sHtmlContent = oRequest.request()
+        
+        api_call = ''
 
         if 'File was deleted' in sHtmlContent:
             return False,False
@@ -77,10 +79,10 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent,sPattern)
 
         if (aResult[0] == True):
-            sHtmlContent = cPacker().unpack(aResult[1][0])
+            sHtmlContent2 = cPacker().unpack(aResult[1][0])
 
             sPattern = '{file:"([^"]+)",label:"([^"]+)"}'
-            aResult = oParser.parse(sHtmlContent,sPattern)
+            aResult = oParser.parse(sHtmlContent2,sPattern)
             if (aResult[0] == True):
             #initialisation des tableaux
                 url=[]
@@ -90,8 +92,15 @@ class cHoster(iHoster):
                     qua.append(str(i[1]))
 					
                 api_call = dialog().VSselectqual(qua,url)
-        else:
+                
+        if not api_call:
             sPattern = 'sources: *\[{src: "([^"]+)", *type: "video/mp4"'
+            aResult = oParser.parse(sHtmlContent,sPattern)
+            if (aResult[0] == True):
+                api_call = aResult[1][0]
+                
+        if not api_call:
+            sPattern = 'source src="([^"]+)" type='
             aResult = oParser.parse(sHtmlContent,sPattern)
             if (aResult[0] == True):
                 api_call = aResult[1][0]

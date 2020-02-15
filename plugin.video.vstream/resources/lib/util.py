@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
-import urllib
+import urllib, urllib2
 import htmlentitydefs
 import unicodedata
 
@@ -68,21 +68,6 @@ class cUtil:
             iMinutes = '0' + str(iMinutes)
 
         return str(iMinutes) + ':' + str(iSeconds)
-
-    def urlDecode(self, sUrl):
-        return urllib.unquote(sUrl)
-
-    def urlEncode(self, sUrl):
-        return urllib.quote(sUrl)
-
-    def unquotePlus(self, sUrl):
-        return urllib.unquote_plus(sUrl)
-
-    def quotePlus(self, sUrl):
-        return urllib.quote_plus(sUrl)
-
-    def DecoTitle(self, string):
-        return string
 
 
     def DecoTitle2(self, string):
@@ -250,8 +235,28 @@ def QuotePlus(sUrl):
     return urllib.quote_plus(sUrl)
 
 def QuoteSafe(sUrl):
-    return urllib.quote(sUrl,safe=':/?=')
+    return urllib.quote(sUrl,safe=':/')
 
+def urlEncode(sUrl):
+    return urllib.urlencode(sUrl)
+
+def Noredirection(UA, host, sUrl):
+	class NoRedirection(urllib2.HTTPErrorProcessor):
+	    def http_response(self, request, response):
+	        return response
+
+	    https_response = http_response
+
+	opener = urllib2.build_opener(NoRedirection)
+	opener.addheaders = [('User-agent', UA)]
+	opener.addheaders = [('Referer', host)]
+	response = opener.open(sUrl)
+	sHtmlContent = response.read()
+	redirection_target = sUrl
+	if response.code == 302:
+	    redirection_target = response.headers['Location']
+	response.close()
+	return sHtmlContent, redirection_target
 
 #deprecier utiliser comaddon dialog()
 # def updateDialogSearch(dialog, total, site):

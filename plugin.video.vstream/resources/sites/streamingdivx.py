@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'streamingdivx'
 SITE_NAME = 'Streamingdivx'
 SITE_DESC = 'Films VF en streaming.'
 
-URL_MAIN = 'https://ww1.streamingdivx.ch/'
+URL_MAIN = 'https://hd.streamingdivx.ch/'
 
 MOVIE_NEWS = (URL_MAIN + 'films.html', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenres')
@@ -278,7 +278,7 @@ def showLinks():
     except:
         pass
 
-    sPattern2 = '<li class="stream.+?"><div data-num=".+?" data-code=".+?".+?<i class="([^"]+)">.+?<img *src="([^"]+)".+?<input name="levideo" value="([^"]+)"'
+    sPattern2 = '<li class="stream.+?">.+?<i class="([^"]+)">.+?<img *src="([^"]+)".+?<input name="levideo" value="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern2)
 
     if (aResult[0] == True):

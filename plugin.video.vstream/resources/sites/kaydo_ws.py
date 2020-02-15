@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress#, VSlog
+from resources.lib.comaddon import progress
 import re, base64
 
 from resources.lib.packer import cPacker
@@ -300,7 +300,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     #Recuperer variable pour url de base
-    sPattern = 'id=.+?trembed=([^"]+).+?frameborder'
+    sPattern = 'trembed=(\d+).+?trid=(\d+).+?trtype=(\d+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -309,7 +309,7 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            site = URL_MAIN + "?trembed=" + aEntry
+            site = URL_MAIN + "?trembed="+ aEntry[0] +"&trid="+ aEntry[1] + "&trtype="+ aEntry[2]
             oRequestHandler = cRequestHandler(site)
             sHtmlContent = oRequestHandler.request()
 
@@ -327,6 +327,7 @@ def showHosters():
             aResult = oParser.parse(sHtmlContent, sPattern1)
 
             sPost = decode(aResult[1][0])
+
             if sPost:
 
                 sUrl1 = URL_MAIN + '?trhidee=1&trfex=' + sPost
@@ -337,8 +338,8 @@ def showHosters():
 
                 sHosterUrl = oRequestHandler.getRealUrl()
 
-#https://lb.hdsto.me/hls/xxx.playlist.m3u8
-#https://lb.hdsto.me/public/dist/index.html?id=xxx
+                #https://lb.hdsto.me/hls/xxx.playlist.m3u8
+                #https://lb.hdsto.me/public/dist/index.html?id=xxx
 
                 if 'public/dist' in sHosterUrl:
                     sHosterUrl = 'https://' + sHosterUrl.split('/')[2] + '/hls/' + sHosterUrl.split('id=')[1] + '/' + sHosterUrl.split('id=')[1] + '.m3u8'
@@ -348,13 +349,12 @@ def showHosters():
                     sHtmlContent = oRequestHandler.request()
 
                     sHosterUrl = oRequestHandler.getRealUrl()
-                    sHosterUrl = sHosterUrl.replace('.playlist','')
 
-                    oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    if (oHoster != False):
-                        oHoster.setDisplayName(sMovieTitle)
-                        oHoster.setFileName(sMovieTitle)
-                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 

@@ -16,7 +16,7 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/5
 SITE_IDENTIFIER = 'tirexo'
 SITE_NAME = '[COLOR violet]Tirexo (ZT lol)[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
-URL_MAIN = 'https://www.zone-telechargement2.vip/'
+URL_MAIN = 'https://www.zone-telechargement3.vip/'
 
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist%5B%5D=2&story=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist%5B%5D=15&story=', 'showMovies')
@@ -339,9 +339,9 @@ def showMovies(sSearch = ''):
 
     if sSearch or "index" in sUrl: # en mode recherche
         sUrl = sUrl.replace(' ', '%20').replace('[]', '%5B%5D')
-        sPattern = '<a class="mov-t nowrap" href="([^"]+)" title="[^"]+"> *<div data-toggle=.+?data-content="([^"]+)".+?<img src="([^"]+)".+?alt="([^"]+)"'
+        sPattern = '<a class="mov-t nowrap" href="([^"]+)" title="[^"]+"> *<div data-toggle=.+?data-content="([^"]+)".+?<img src="([^"]+)".+?alt="([^"]+)".+?<a href="([^"]+)">(.+?)<'
     else:
-        sPattern = '<a class="mov-t nowrap" href="([^"]+)"> *<div data-toggle=.+?data-content="([^"]+)".+?<img src="([^"]+)".+?title="([^"]+)"'
+        sPattern = '<a class="mov-t nowrap" href="([^"]+)"> *<div data-toggle=.+?data-content="([^"]+)".+?<img src="([^"]+)".+?title="([^"]+)".+?(> *<\/a>|annee-de-sortie\/(.+?)\/)'
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -363,11 +363,14 @@ def showMovies(sSearch = ''):
             sDesc = aEntry[1]
             sThumb = aEntry[2]
             sTitle = aEntry[3]
+            sYear = aEntry[5]
             
-            # Enlever les films en doublons, il s'agit du même film dans une autre qualité qu'on retrouvera au moment du choix de la qualité
-            if sTitle in titles :
+            # Enlever les films en doublons (même titre et même année)
+            # il s'agit du même film dans une autre qualité qu'on retrouvera au moment du choix de la qualité
+            key = sTitle + "-" + sYear
+            if key in titles :
                 continue;
-            titles.add(sTitle)
+            titles.add(key)
             
             sDesc = sDesc.replace('<span>', '').replace('</span>', '')
             sDesc = sDesc.replace('<b>', '').replace('</b>', '')
@@ -387,6 +390,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('sYear', sYear)
 
             if 'series' in sUrl2 or 'animes' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
@@ -433,6 +437,7 @@ def showMoviesLinks():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
+    sYear = oInputParameterHandler.getValue('sYear')
 
     oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -469,6 +474,7 @@ def showMoviesLinks():
     oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
     oOutputParameterHandler.addParameter('sThumb', sThumb)
     oOutputParameterHandler.addParameter('sDesc', sDesc)
+    oOutputParameterHandler.addParameter('sYear', sYear)
 
     oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -494,6 +500,7 @@ def showMoviesLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -521,6 +528,7 @@ def showMoviesLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
  
         progress_.VSclose(progress_)
@@ -535,6 +543,7 @@ def showSeriesLinks():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
+    sYear = oInputParameterHandler.getValue('sYear')
 
     oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -585,6 +594,7 @@ def showSeriesLinks():
     oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
     oOutputParameterHandler.addParameter('sThumb', sThumb)
     oOutputParameterHandler.addParameter('sDesc', sDesc)
+    oOutputParameterHandler.addParameter('sYear', sYear)
     oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     #on regarde si dispo dans d'autres qualités
@@ -618,6 +628,7 @@ def showSeriesLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -645,6 +656,7 @@ def showSeriesLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -656,6 +668,7 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb=oInputParameterHandler.getValue('sThumb')
     sDesc=oInputParameterHandler.getValue('sDesc')
+    sYear = oInputParameterHandler.getValue('sYear')
 
     oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -691,6 +704,8 @@ def showHosters():
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)

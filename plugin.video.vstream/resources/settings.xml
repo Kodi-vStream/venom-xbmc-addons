@@ -80,17 +80,13 @@
 
         <setting visible="false" id="plugin_cinemegatoil_org" type="bool" label="Cinemegatoil" default="true"/>
 
-        <setting visible="false" id="plugin_dadyflix" type="bool" label="Dadyflix" default="true"/>
-
         <setting visible="false" id="plugin_disneyhd_tk" type="bool" label="DisneyHD" default="true"/>
 
         <setting visible="false" id="plugin_extreme_down" type="bool" label="ExtremeDown" default="true"/>
 
         <setting visible="false" id="plugin_film_illimit_fr" type="bool" label="Film Illimité" default="true"/>
 
-        <setting visible="false" id="plugin_filmstreamvk_com" type="bool" label="Film stream vk" default="true"/>
-
-        <setting visible="false" id="plugin_filmstub_stream" type="bool" label="Filmstub" default="true"/>
+        <setting visible="false" id="plugin_filmstreamvk_com" type="bool" label="Filmstream vk" default="true"/>
 
         <setting visible="false" id="plugin_filmzenstream_com" type="bool" label="Filmzenstream)" default="true"/>
 
@@ -99,8 +95,6 @@
         <setting visible="false" id="plugin_freebox" type="bool" label="active freebox" default="false"/>
 
         <setting visible="false" id="plugin_french_stream_com" type="bool" label="French Stream" default="true"/>
-
-        <setting visible="false" id="plugin_full_stream_org" type="bool" label="Full Stream" default="true"/>
 
         <setting visible="false" id="plugin_fullstream" type="bool" label="FullStream" default="true"/>
 
@@ -146,8 +140,6 @@
 
         <setting visible="false" id="plugin_replaytvstreaming_com" type="bool" label="ReplayTVstreaming" default="true"/>
 
-        <setting visible="false" id="plugin_reportagestv_com" type="bool" label="Reportages TV" default="true"/>
-
         <setting visible="false" id="plugin_robindesdroits" type="bool" label="Robin Des Droits" default="true"/>
 
         <setting visible="false" id="plugin_serie_streaming_watch" type="bool" label="SerieStreaming.watch" default="true"/>
@@ -186,19 +178,19 @@
 
         <setting visible="false" id="plugin_tvrex_net" type="bool" label="Tvrex" default="true"/>
 
-        <setting visible="false" id="plugin_tvseriestreaming" type="bool" label="TV Serie Streaming" default="true"/>
+        <setting visible="false" id="plugin_tvseriestreaming" type="bool" label="TVseriestreaming" default="true"/>
 
         <setting visible="false" id="plugin_videobuzzy_com" type="bool" label="Videobuzzy" default="true"/>
 
         <setting visible="false" id="plugin_voirfilms_org" type="bool" label="VoirFilms" default="true"/>
 
-        <setting visible="false" id="plugin_wawacity" type="bool" label="Wawacity" default="false"/>
+        <setting visible="false" id="plugin_wiflix" type="bool" label="WiFlix" default="true"/>
 
         <setting visible="false" id="plugin_youtitou_com" type="bool" label="YouTitou (Animés)" default="true"/>
 
         <setting visible="false" id="plugin_zone_telechargement_ws" type="bool" label="Zone Téléchargement.ws" default="true"/>
 
-        <setting visible="false" id="plugin_zonestreaming" type="bool" label="ZoneStreaming" default="true"/>
+        <setting visible="false" id="plugin_zustream" type="bool" label="ZuStream" default="true"/>
 
     </category>
 
