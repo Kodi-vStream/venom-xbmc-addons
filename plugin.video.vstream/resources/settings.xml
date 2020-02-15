@@ -80,8 +80,6 @@
 
         <setting visible="false" id="plugin_cinemegatoil_org" type="bool" label="Cinemegatoil" default="true"/>
 
-        <setting visible="false" id="plugin_dadyflix" type="bool" label="DadyFlix" default="true"/>
-
         <setting visible="false" id="plugin_disneyhd_tk" type="bool" label="DisneyHD" default="true"/>
 
         <setting visible="false" id="plugin_extreme_down" type="bool" label="ExtremeDown" default="true"/>
@@ -90,8 +88,6 @@
 
         <setting visible="false" id="plugin_filmstreamvk_com" type="bool" label="Filmstream vk" default="true"/>
 
-        <setting visible="false" id="plugin_filmstub_stream" type="bool" label="Filmstub" default="true"/>
-
         <setting visible="false" id="plugin_filmzenstream_com" type="bool" label="Filmzenstream)" default="true"/>
 
         <setting visible="false" id="plugin_free_telechargement_org" type="bool" label="Free Telechargement" default="true"/>
@@ -99,8 +95,6 @@
         <setting visible="false" id="plugin_freebox" type="bool" label="active freebox" default="false"/>
 
         <setting visible="false" id="plugin_french_stream_com" type="bool" label="French Stream" default="true"/>
-
-        <setting visible="false" id="plugin_full_stream_org" type="bool" label="Full Stream" default="true"/>
 
         <setting visible="false" id="plugin_fullstream" type="bool" label="FullStream" default="true"/>
 
@@ -183,6 +177,8 @@
         <setting visible="false" id="plugin_topreplay" type="bool" label="TopReplay" default="true"/>
 
         <setting visible="false" id="plugin_tvrex_net" type="bool" label="Tvrex" default="true"/>
+
+        <setting visible="false" id="plugin_tvseriestreaming" type="bool" label="TVseriestreaming" default="true"/>
 
         <setting visible="false" id="plugin_videobuzzy_com" type="bool" label="Videobuzzy" default="true"/>
 
