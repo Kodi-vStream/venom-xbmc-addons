@@ -16,10 +16,10 @@ SITE_DESC = 'Films, Séries et Mangas Gratuit en streaming sur Full stream'
 
 URL_MAIN = 'http://w2.vfspace.co/'
 
-URL_SEARCH = ('', 'showMovies')
-URL_SEARCH_MOVIES = ('', 'showMovies')
-URL_SEARCH_SERIES = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
+URL_SEARCH = ('https://w2.vfspace.co/index.php?do=search', FUNCTION_SEARCH)
+URL_SEARCH_MOVIES = (URL_SEARCH[0] + '&subaction=search&catlist%5B%5D=9&story=', FUNCTION_SEARCH)
+URL_SEARCH_SERIES = (URL_SEARCH[0] + '&subaction=search&catlist%5B%5D=10&catlist%5B%5D=12&catlist%5B%5D=13&story=', FUNCTION_SEARCH)
 
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
@@ -32,8 +32,12 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MOVIES[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher films', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher séries', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
@@ -55,9 +59,13 @@ def load():
 
 def showSearch():
     oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        showMovies(sSearchText)
+        sUrl = sUrl + sSearchText
+        showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
 
@@ -95,23 +103,22 @@ def showGenres():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
-    if sSearch:
-        sUrl = URL_MAIN 
 
-        pdata = 'story=' + sSearch + '&do=search&subaction=search'
-
-        oRequest = cRequestHandler(sUrl)
-        oRequest.setRequestType(1)
-        oRequest.addHeaderEntry('User-Agent', "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0")
-        oRequest.addParameters('Referer', URL_MAIN)
-
-        oRequest.addParametersLine(pdata)
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    numPage = 1
+    
+    if sSearch or 'do=search' in sUrl:
+        if sSearch:
+            sUrl = sSearch
+        numPage = oInputParameterHandler.getValue('numPage')
+        if numPage:
+            numPage = eval(numPage) + 1
+        else:
+            numPage = 1
+        oRequest = cRequestHandler(sUrl + '&search_start='+ str(numPage) )
         sHtmlContent = oRequest.request()
-
     else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
-
         oRequestHandler = cRequestHandler(sUrl.replace('https','http'))
         sHtmlContent = oRequestHandler.request()
         
@@ -156,21 +163,28 @@ def showMovies(sSearch = ''):
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
+            if 'http' in sNextPage:
+                sUrl = sNextPage
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            if numPage:
+                oOutputParameterHandler.addParameter('numPage', numPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
 
+# Pas habituel mais compatible pour gérer plusieurs pages lors d'une recherche
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<span class="page_next".+?<a href="([^"]+)">'
+    sPattern = '<span class="page_next"(.+?)</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        return aResult[1][0]
-
-    return False
+    if aResult[0] and 'href' in aResult[1][0]:
+        sPattern = 'href="(.+?)"'
+        aResult = oParser.parse(aResult[1][0], sPattern)
+        if (aResult[0] == True):
+            return aResult[1][0]
+    return False    
 
 def showEpisodes():
     oGui = cGui()
