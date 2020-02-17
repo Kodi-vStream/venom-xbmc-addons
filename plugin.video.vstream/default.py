@@ -16,6 +16,30 @@ from resources.lib.comaddon import progress, VSlog, addon, window, xbmc
 #http://kodi.wiki/view/InfoLabels
 #http://kodi.wiki/view/List_of_boolean_conditions
 
+
+####################  
+#
+#  Permet de debuguer avec Eclipse
+#
+####################
+
+REMOTE_DBG = False
+
+if REMOTE_DBG:
+
+    # append pydev remote debugger
+    import sys
+    sys.path.append('C:\Program Files (x86)\Kodi\system\Python\Lib\pysrc')
+
+    # Make pydev debugger works for auto reload.
+    # Note pydevd module need to be copied in XBMC\system\python\Lib\pysrc
+    try:
+        import pysrc.pydevd as pydevd # with the addon script.module.pydevd, only use `import pydevd`
+        pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True)
+    except ImportError:
+        sys.stderr.write("Error: " + "You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
+
+
 class main:
     def __init__(self):
         self.parseUrl()
@@ -29,7 +53,6 @@ class main:
         #xbmc.log('Debug 2 >>' + str(xbmc.getInfoLabel('Container.FolderPath')), xbmc.LOGNOTICE)
 
         oInputParameterHandler = cInputParameterHandler()
-        oInputParameterHandler.getAllParameter()
 
         if (oInputParameterHandler.exist('function')):
             sFunction = oInputParameterHandler.getValue('function')
