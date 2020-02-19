@@ -12,7 +12,7 @@ SITE_IDENTIFIER = 'disneyhd_tk'
 SITE_NAME = 'Disney HD'
 SITE_DESC = 'Disney HD: Tous les films Disney en streaming'
 
-URL_MAIN = 'https://disneyhd.tk/'
+URL_MAIN = 'https://disneyhd.cf/'
 URL_LISTE = URL_MAIN + '?page=liste.php'
 ANIM_ENFANTS = ('http://', 'load')
 
@@ -122,7 +122,7 @@ def showMovies():
     else:
         sHtmlContent = oParser.abParse(sHtmlContent, 'style', '</html>')
         aResult = oParser.parse(sHtmlContent, sPattern1)
-        aResult = order(aResult[1],2)
+        aResult = order(aResult[1], 2)
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
@@ -166,12 +166,10 @@ def showHosters():
     #film
     if '<ol id="playlist">' in sHtmlContent:
         sPattern = '<li data-trackurl="([^"]+)">(.+?)<\/li>'
-
     elif 'data-ws=' in sHtmlContent:
         sPattern = 'data-ws="([^"]+)">(.+?)</span>'
     else:
         sPattern = 'class="qualiteversion" data-qualurl="([^"]+)">([^"]+)</span>'
-
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
