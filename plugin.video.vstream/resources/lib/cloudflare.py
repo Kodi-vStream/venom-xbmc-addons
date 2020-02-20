@@ -287,7 +287,11 @@ class CloudflareBypass(object):
         
         from resources.lib import cloudscraper
 
-        s = cloudscraper.create_scraper()
+        if 'dl-protect1' in url':
+             s = cloudscraper.create_scraper(browser={'custom': 'ScraperBot/1.0'})
+        else:
+            s = cloudscraper.create_scraper()
+
         r = s.request(method,url,headers = self.SetHeader() , cookies = self.ParseCookies(cookies) , data = data )
         #r = s.request(method,url)
         MemCookie = r.cookies.get_dict()
