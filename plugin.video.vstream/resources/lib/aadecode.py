@@ -170,7 +170,7 @@ class AADecoder(object):
         self.encoded_str = re.sub('^\s+|\s+$', '', self.encoded_str)
 
         # get data
-        pattern = (r"\(ﾟДﾟ\)\[ﾟoﾟ\]\+ (.+?)\(ﾟДﾟ\)\[ﾟoﾟ\]\)")
+        pattern = (r"\(ﾟДﾟ\)\[ﾟoﾟ\]\+ *(.+?)\(ﾟДﾟ\)\[ﾟoﾟ\]\)")
         result = re.search(pattern, self.encoded_str, re.DOTALL)
         if result is None:
             print "AADecoder: data not found"
