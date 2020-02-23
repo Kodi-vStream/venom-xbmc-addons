@@ -8,6 +8,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.comaddon import progress
+import urllib
 # from resources.lib.sucuri import SucurieBypass
 
 SITE_IDENTIFIER = 'filmzenstream_com'
@@ -116,7 +117,8 @@ def showYears():
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-        sUrl = sSearch.replace(' ', '+')
+        sSearch = urllib.unquote(sSearch)
+        sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
