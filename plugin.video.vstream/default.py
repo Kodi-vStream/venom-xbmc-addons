@@ -13,6 +13,8 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.db import cDb
 from resources.lib.comaddon import progress, VSlog, addon, window, xbmc
 
+import urllib
+
 #http://kodi.wiki/view/InfoLabels
 #http://kodi.wiki/view/List_of_boolean_conditions
 
@@ -240,7 +242,6 @@ def isTrakt(sSiteName, sFunction):
     return False
 
 def searchGlobal():
-    cancel = False
     oGui = cGui()
     addons = addon()
 
@@ -268,13 +269,13 @@ def searchGlobal():
     window(10101).setProperty('search', 'true')
 
     oGui.addText('globalSearch', addons.VSlang(30081) % (sSearchText), 'none.png')
+    sSearchText = urllib.quote(sSearchText)
 
     for count, plugin in enumerate(aPlugins):
 
         #text = '%s/%s - %s' % ((count + 1), total, plugin['name'])
         progress_.VSupdatesearch(progress_, total, plugin['name'])
         if progress_.iscanceled():
-            cancel = True
             progress_.close()
             break
 
@@ -300,17 +301,10 @@ def searchGlobal():
         progress_.VSupdatesearch(progress_, total, "Patience...")
 
 
-
         #result['params'].addParameter('VSTRMSEARCH', 'True')
 
         oGui.addFolder(result['guiElement'], result['params'])
         #VSlog('%s - %s' % (middle, old_label), xbmc.LOGNOTICE)
-
-        # if progress_.iscanceled():
-        #     if cancel == True:
-        #         continue
-        #     else:
-        #         break
 
     progress_.VSclose(progress_)
 
