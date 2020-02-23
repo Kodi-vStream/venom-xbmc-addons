@@ -7,11 +7,10 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.cloudflare import CloudflareBypass
 from resources.lib.config import GestionCookie
 from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui
 
-import re,unicodedata
+import re,unicodedata, urllib
 
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
@@ -22,17 +21,12 @@ SITE_DESC = 'Fichiers en DDL, HD, Films, Séries, Mangas Etc...'
 URL_MAIN = 'http://www.free-telechargements.com/'
 URL_PROTECT = 'liens.free-telechargements'
 
-#URL_SEARCH_MOVIES_SD = (URL_MAIN + '1/recherche/1.html?rech_cat=video&rech_fiche=', 'showMovies')
-#URL_SEARCH_MOVIES_HD = (URL_MAIN + '1/recherche/1.html?rech_cat=Films+HD&rech_fiche=', 'showMovies')
-
-#URL_SEARCH_SERIE_SD = (URL_MAIN + '1/recherche1/1.html?rech_cat=serie&rech_fiche=', 'showMovies')
-#URL_SEARCH_SERIE_HD = (URL_MAIN + '1/recherche1/1.html?rech_cat=seriehd&rech_fiche=', 'showMovies')
-URL_SEARCH_EMISSIONS_TV = (URL_MAIN, 'showMovies')
-URL_SEARCH_SPECTACLES = (URL_MAIN, 'showMovies')
-URL_SEARCH = (URL_MAIN + '1/recherche/1.html?rech_fiche=', 'showSearchResult')
-URL_SEARCH_MOVIES = (URL_MAIN + '1/recherche/1.html?rech_fiche=', 'showSearchResult')
-URL_SEARCH_SERIES = (URL_MAIN + '1/recherche/1.html?rech_fiche=', 'showSearchResult')
 FUNCTION_SEARCH = 'showSearchResult'
+URL_SEARCH = (URL_MAIN + '1/recherche/1.html?rech_fiche=', FUNCTION_SEARCH)
+URL_SEARCH_MOVIES = (URL_MAIN + '1/recherche/1.html?rech_cat=video&rech_fiche=', FUNCTION_SEARCH)
+URL_SEARCH_SERIES = (URL_MAIN + '1/recherche/1.html?rech_cat=serie&rech_fiche=', FUNCTION_SEARCH)
+URL_SEARCH_ANIMES = (URL_MAIN + '1/recherche/1.html?rech_cat=Animations&rech_fiche=', FUNCTION_SEARCH)
+URL_SEARCH_MISC = (URL_MAIN + '1/recherche/1.html?rech_cat=videos&rech_fiche=', FUNCTION_SEARCH)
 
 MOVIE_SD_DVDRIP = (URL_MAIN + '1/categorie-Films+DVDRiP+et+BDRiP/1.html', 'showMovies')
 MOVIE_SD_CAM = (URL_MAIN + '1/categorie-Films+CAM+TS+R5+et+DVDSCR/1.html', 'showMovies')
@@ -95,8 +89,7 @@ def showMenuFilms():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oOutputParameterHandler.addParameter('type', 'film')
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MOVIES[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de films', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -161,8 +154,7 @@ def showMenuSeries():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oOutputParameterHandler.addParameter('type', 'serie')
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de séries', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -203,9 +195,8 @@ def showMenuMangas():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oOutputParameterHandler.addParameter('type', 'anime')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchMangas', 'Recherche d\'animés', 'search.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMES[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d\'animés', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
@@ -225,8 +216,8 @@ def showMenuSpectacles():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchSpectacles', 'Recherche de Spectacles', 'search.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MISC[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de Spectacles', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPECTACLES[0])
@@ -238,8 +229,8 @@ def showMenuEmissionsTV():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchEmissionsTV', 'Recherche émissions TV', 'search.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MISC[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche émissions TV', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', EMISSIONS_TV[0])
@@ -251,25 +242,10 @@ def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText
-        showSearchResult(sUrl)
-        oGui.setEndOfDirectory()
-        return
-
-def showSearchSpectacles():
-    oGui = cGui()
-    sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
-        sUrl = URL_SEARCH_SPECTACLES[0] + sSearchText
-        showSearchResult(sUrl)
-        oGui.setEndOfDirectory()
-        return
-
-def showSearchEmissionsTV():
-    oGui = cGui()
-    sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
-        sUrl = URL_SEARCH_EMISSIONS_TV[0] + sSearchText
+        sSearchText = urllib.quote(sSearchText)
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('siteUrl')
+        sUrl = sUrl + sSearchText
         showSearchResult(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -330,31 +306,14 @@ def showSearchResult(sSearch = ''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
 
-    sUrl = sSearch.replace(' ','+')
+    loop = 2
 
-    HD = 0
-    SD = 0
-
-    #uniquement si c'est la premiere page
     if sSearch:
-        sType = oInputParameterHandler.getValue('type')
-
-        loop = 1
-
-        if sType:
-            if sType == "film":
-                sUrl = sUrl + '&rech_cat=video'
-                loop = 2
-            if sType == "serie":
-                sUrl = sUrl + '&rech_cat=serie'
-                loop = 2
-            if sType == "anime":
-                sUrl = sUrl + '&rech_cat=Animations'
-
+        SD = HD = 0
+        sUrl = sSearch
     else:
-        sUrl = oInputParameterHandler.getValue('siteUrl')
-        loop = 1
         SD = HD = -1
+        sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oParser = cParser()
     aResult = []
@@ -364,7 +323,7 @@ def showSearchResult(sSearch = ''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
         sHtmlContent = sHtmlContent.replace('<span style="background-color: yellow;"><font color="red">', '')
-        sPattern = '<b><p style="font-size: 18px;"><A href="([^"]+)">(.+?)<\/A.+?<td align="center">\s*<img src="([^"]+)".+?<b>Description : <\/b><\/br><\/br>(.+?)<'
+        sPattern = '<b><p style="font-size: 18px;"><A href="([^"]+)">(.+?)<\/A.+?<td align="center">\s*<img src="([^"]+)".+?<b>Description : (.+?)<br \/><br \/>'
         aResult1 = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult1[0] == False):
@@ -385,10 +344,12 @@ def showSearchResult(sSearch = ''):
         loop = loop - 1
         if (loop == 1):
             HD = len(aResult)
-            if sUrl.endswith('video'):
+            if sUrl.find('=video') > 0:
                 sUrl = sUrl.replace('=video', '=Films+HD')
-            if sUrl.endswith('serie'):
+            elif sUrl.find('=serie') > 0:
                 sUrl = sUrl.replace('=serie', '=seriehd')
+            else:
+                loop = 0
 
     if (aResult):
         i = 0
@@ -412,7 +373,7 @@ def showSearchResult(sSearch = ''):
             sUrl2 = URL_MAIN + aEntry[0]
 
             sDesc = aEntry[3]
-            sDesc = sDesc.decode("unicode_escape").encode("latin-1")
+            sDesc = re.sub('<[^<]+?>', '', sDesc) # retrait des balises html
             sThumb = aEntry[2]
 
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
@@ -768,8 +729,8 @@ def get_response(img,cookie):
     #PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
     #filename  = os.path.join(PathCache, 'Captcha.raw')
 
-    hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)', '\\1', img)
-    host = re.sub(r'https*:\/\/', '', hostComplet)
+    #hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)', '\\1', img)
+    # host = re.sub(r'https*:\/\/', '', hostComplet)
     url = img
 
     oRequestHandler = cRequestHandler(url)
