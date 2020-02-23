@@ -7,9 +7,8 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, dialog, VSlog, addon
-from resources.lib.util import urlEncode
 
-import re, string, random
+import urllib, re, string, random
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 headers = { 'User-Agent': UA }
@@ -301,7 +300,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sSearchText = re.sub('[^%s]' % (string.ascii_lowercase + string.digits), '+', sSearchText.lower())
+        sSearchText = urllib.quote(sSearchText)
         sUrl = URL_SEARCH[0] + sSearchText + '&note=0&art=0&AiffchageMode=0&inputTirePar=0&cstart=0'
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -348,7 +347,6 @@ def showGenre():
     oGui.setEndOfDirectory()
 
 def showMovies(sSearch = ''):
-    #ancienAffichage = False
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -874,7 +872,7 @@ def DecryptDlProtecte(url):
             token = str(result[1][0][1])
 
     f = { '_token' : token}
-    data = urlEncode(f)
+    data = urllib.urlencode(f)
 
     oRequestHandler = cRequestHandler('http://'+url.split('/')[2]+RestUrl)
     oRequestHandler.setRequestType(1)
