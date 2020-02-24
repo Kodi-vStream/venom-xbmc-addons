@@ -365,7 +365,7 @@ def showHosters():
                 oRequestHandler2 = cRequestHandler(torrent)
                 torrent_data = oRequestHandler2.request()
 
-                torrent = decode(torrent_data)
+                torrent = Torrent_decode(torrent_data)
                 
                 VSlog(torrent)
 
