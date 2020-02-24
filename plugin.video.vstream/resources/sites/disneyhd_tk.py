@@ -6,7 +6,10 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
+
+from urllib import unquote
+import re
 
 SITE_IDENTIFIER = 'disneyhd_tk'
 SITE_NAME = 'Disney HD'
@@ -23,6 +26,178 @@ FUNCTION_SEARCH = 'sHowResultSearch'
 sPattern1 = '<a href="([^"]+)".+?src="([^"]+)" alt.*?="(.+?)".*?>'
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:66.0) Gecko/20100101 Firefox/66.0'
+
+#**********************************************************
+#
+#  From https://github.com/Celend/bencode 
+#
+
+__data = bytes()
+__s = 0
+__l = 0
+__enc = False
+
+
+def Torrent_decode(x = None, enc=False):
+    """param:
+    1. bytes, the bytes will be decode.
+    2. str or list, when can not decode with utf-8 charset will try using this charset decoding. 
+return:
+    object, unable decoding data will return bytes.
+    """
+    global __data, __s, __l, __enc;
+    if enc != False:
+        __enc = enc;
+    if type(x) != bytes and x != None:
+        raise TypeError("To decode the data type must be bytes.")
+    elif x != None:
+        __s = 0
+        __l = 0
+        __data = x
+        __l = len(__data);
+    #dict
+    if __data[__s] == 100:
+        __s += 1;
+        d = {}
+        while __s < __l-1:
+            if __data[__s] not in range(48, 58):
+                break;
+                #raise RuntimeError("the dict key must be str.");
+            key = Torrent_decode()
+            value = Torrent_decode()
+            d.update({key:value})
+        __s += 1
+        return d
+    #int
+    elif __data[__s] == 105:
+        temp = __s + 1
+        key = ''
+        while __data[temp] in range(48, 58):
+            key += str(__data[temp]-48)
+            temp += 1
+        __s += len(key) + 2
+        return int(key);
+    #string
+    elif __data[__s] in range(48, 58):
+        temp = __s;
+        key  = ''
+        while __data[temp] in range(48, 58):
+            key += str(__data[temp]-48);
+            temp += 1
+        temp += 1
+        key = __data[temp:temp+int(key)];
+        __s = len(key)+temp;
+        if type(__enc) == list:
+            for ii in __enc:
+                try:
+                    return key.decode(ii);
+                except:
+                    continue
+        else:
+            try:
+                return key.decode('utf-8');
+            except:
+                try:
+                    return key.decode(__enc);
+                except:
+                    return key
+    #list
+    elif __data[__s] == 108:
+        li = [];
+        __s += 1;
+        while __s < __l:
+            if __data[__s] == 101:
+                __s += 1
+                break
+            li.append(Torrent_decode())
+        return li
+
+#**********************************************************
+
+def parse_blist(bdata):
+    """ Convert bencoded data to python list """
+    
+    blist = []
+
+    if bdata[0:1] == b'l':
+        bdata = bdata[1:]
+    
+    while bdata[0:1] != b'' and bdata[0:1] != b'e':
+        
+        parse_func = btype_dict.get(bdata[0:1], parse_bstring)
+        elem, bdata = parse_func(bdata) 
+    
+        blist.append(elem)
+
+    return blist, bdata[1:]
+
+
+def parse_bdict(bdata):
+    """ Convert bencoded data to python dict """
+
+    bdict = {}
+
+    if bdata[0:1] == b'd':
+        bdata = bdata[1:]
+
+    while bdata[0:1] != b'' and bdata[0:1] != b'e':
+        
+        parse_func = btype_dict.get(bdata[0:1], parse_bstring)
+        key, bdata = parse_func(bdata)
+        
+        if bdata[0:1] == '' or bdata[0:1] == 'e':
+            value = None
+        else:
+            parse_func = btype_dict.get(bdata[0:1], parse_bstring)
+            value, bdata = parse_func(bdata)
+
+        if key in bdict:
+            raise KeyError("Multiple keys in bencoded dictionary")
+        
+        bdict[key] = value
+
+    return bdict, bdata[1:]
+
+
+def parse_bint(bdata):
+    """ Convert bencoded data to int """
+    
+    end_pos = bdata.index(ord('e'))
+    num_str = bdata[1:end_pos]
+    bdata = bdata[end_pos + 1:]
+
+    return int(num_str), bdata
+
+
+def parse_bstring(bdata):
+    """ Convert bencoded data to string """
+    
+    delim_pos = bdata.index(ord(':'))
+    length = bdata[0:delim_pos]
+    length = int(length) 
+    
+    delim_pos += 1
+    bstring = bdata[delim_pos:delim_pos + length]
+    bdata = bdata[delim_pos + length:]
+
+    if len(bstring) != length:
+        raise ValueError("Incorrect bencoded string length")
+
+    return bstring, bdata
+
+
+def decode(bdata):
+    """ Parse data and return a list of objects """
+
+    return parse_blist(bdata)[0]
+    
+
+btype_dict = {
+    b'd' : parse_bdict,
+    b'l' : parse_blist,
+    b'i' : parse_bint
+}
+#************************************************************************
 
 def load():
     oGui = cGui()
@@ -145,6 +320,48 @@ def showMovies():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            if aEntry[0].startswith('s-'):
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, 'enfants.png', sThumb, '', oOutputParameterHandler)
+            else:
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'enfants.png', sThumb, '', oOutputParameterHandler)
+
+        progress_.VSclose(progress_)
+
+    oGui.setEndOfDirectory()
+
+#Non utilisé
+def ShowList():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    
+    VSlog(sUrl)
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    oParser = cParser()
+    
+    aResult = oParser.parse(sHtmlContent, '<li data-arr_pos="([0-9]+)">([^<]+)<')
+    
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        progress_ = progress().VScreate(SITE_NAME)
+
+        for aEntry in aResult[1]:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
+
+            sUrl = aEntry[0]
+            sTitle = aEntry[1]
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'enfants.png', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -157,6 +374,8 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    
+    VSlog(sUrl)
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -220,6 +439,28 @@ def showHosters():
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
         else:
-            oGui.addText(SITE_IDENTIFIER)
+            #Dernier essai avec les torrent
+            aResult = oParser.parse(sHtmlContent, 'data-maglink="([^"]+)')
+            if (aResult[0] == True):
+                match = unquote(aResult[1][0])
+                
+                folder = re.findall('ws=(https[^&]+)', match)[0] + '/'
+                torrent = re.findall('xs=(https[^&]+)', match)[0]
+                
+                oRequestHandler2 = cRequestHandler(torrent)
+                torrent_data = oRequestHandler2.request()
+
+                torrent = decode(torrent_data)
+                
+                VSlog(torrent)
+
+                files = torrent['info']['files']
+                name = torrent['info']['name']
+
+                #for i in files:
+                #    print (folder + name + '/' + i['path'][0])
+            #Bon c'est mort
+            else:
+                oGui.addText(SITE_IDENTIFIER)
 
     oGui.setEndOfDirectory()
