@@ -8,7 +8,10 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, dialog, VSlog, addon
 
-import urllib, re, string, random
+#Fonction de Vstream qui remplace urllib.urlencode, pour simplifier le passage en python 3
+from resources.lib.util import urlEncode, Quote
+
+import re, string, random
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 headers = { 'User-Agent': UA }
@@ -300,7 +303,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sSearchText = urllib.quote(sSearchText)
+        sSearchText = Quote(sSearchText)
         sUrl = URL_SEARCH[0] + sSearchText + '&note=0&art=0&AiffchageMode=0&inputTirePar=0&cstart=0'
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -853,6 +856,7 @@ def DecryptDlProtecte(url):
 
     oRequestHandler = cRequestHandler(url)
     sHtmlContent = oRequestHandler.request()
+    Cookie = oRequestHandler.GetCookies()
 
     oParser = cParser()
     sPattern = '<form action="(.+?)".+?<input type="hidden" name="_token" value="(.+?)">.+?<input type="hidden" value="(.+?)".+?>'
@@ -864,18 +868,24 @@ def DecryptDlProtecte(url):
         urlData = str(result[1][0][2])
         
     else:
-        sPattern = ' name="url">---->.+?<form action="(.+?)" method="get">.+?<input type="hidden" name="_token" value="(.+?)">'
+        sPattern = '<form action="(.+?)" method="(.+?)">.+?<input type="hidden".+?value="(.+?)"'
         result = oParser.parse(sHtmlContent, sPattern)
 
-        if (result[0]):
+        if (str(result[1][0][0]).startswith('/')):
             RestUrl = str(result[1][0][0])
-            token = str(result[1][0][1])
+            method = str(result[1][0][1])
+            token = str(result[1][0][2])
+        else:
+            RestUrl = str(result[1][1][0])
+            method = str(result[1][1][1])
+            token = str(result[1][1][2])
 
-    f = { '_token' : token}
-    data = urllib.urlencode(f)
+    #f = { '_token' : token}
+    #data = urlEncode(f)
 
-    oRequestHandler = cRequestHandler('http://'+url.split('/')[2]+RestUrl)
-    oRequestHandler.setRequestType(1)
+    oRequestHandler = cRequestHandler('http://' + url.split('/')[2] + RestUrl)
+    if method == "post":
+    	oRequestHandler.setRequestType(1)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Host', url.split('/')[2])
     oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
@@ -883,9 +893,11 @@ def DecryptDlProtecte(url):
     oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
     oRequestHandler.addHeaderEntry('Referer', url)
     oRequestHandler.addHeaderEntry('Content-Type',  "application/x-www-form-urlencoded")
-    oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
-    oRequestHandler.addHeaderEntry('Origin', 'https://'+url.split('/')[2])
-    oRequestHandler.addParametersLine(data)
+    #oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
+    oRequestHandler.addHeaderEntry('Origin', 'https://' + url.split('/')[2])
+    oRequestHandler.addHeaderEntry('Cookie', Cookie)
+    oRequestHandler.addParameters("_token", token)
+    #oRequestHandler.addParametersLine(data)
     sHtmlContent = oRequestHandler.request()
     
     #fh = open('c:\\test.txt', "w")
