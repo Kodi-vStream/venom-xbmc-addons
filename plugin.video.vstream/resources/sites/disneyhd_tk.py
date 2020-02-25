@@ -7,8 +7,8 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, VSlog
+from resources.lib.util import Unquote
 
-from urllib import unquote
 import re
 
 SITE_IDENTIFIER = 'disneyhd_tk'
@@ -27,92 +27,58 @@ sPattern1 = '<a href="([^"]+)".+?src="([^"]+)" alt.*?="(.+?)".*?>'
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:66.0) Gecko/20100101 Firefox/66.0'
 
-#**********************************************************
-#
-#  From https://github.com/Celend/bencode 
-#
+###################################################################################
+#DECODE TORRENT : https://effbot.org/zone/bencode.htm
+###################################################################################
 
-__data = bytes()
-__s = 0
-__l = 0
-__enc = False
+import re
 
-
-def Torrent_decode(x = None, enc=False):
-    """param:
-    1. bytes, the bytes will be decode.
-    2. str or list, when can not decode with utf-8 charset will try using this charset decoding. 
-return:
-    object, unable decoding data will return bytes.
-    """
-    global __data, __s, __l, __enc;
-    if enc != False:
-        __enc = enc;
-    if type(x) != bytes and x != None:
-        raise TypeError("To decode the data type must be bytes.")
-    elif x != None:
-        __s = 0
-        __l = 0
-        __data = x
-        __l = len(__data);
-    #dict
-    if __data[__s] == 100:
-        __s += 1;
-        d = {}
-        while __s < __l-1:
-            if __data[__s] not in range(48, 58):
-                break;
-                #raise RuntimeError("the dict key must be str.");
-            key = Torrent_decode()
-            value = Torrent_decode()
-            d.update({key:value})
-        __s += 1
-        return d
-    #int
-    elif __data[__s] == 105:
-        temp = __s + 1
-        key = ''
-        while __data[temp] in range(48, 58):
-            key += str(__data[temp]-48)
-            temp += 1
-        __s += len(key) + 2
-        return int(key);
-    #string
-    elif __data[__s] in range(48, 58):
-        temp = __s;
-        key  = ''
-        while __data[temp] in range(48, 58):
-            key += str(__data[temp]-48);
-            temp += 1
-        temp += 1
-        key = __data[temp:temp+int(key)];
-        __s = len(key)+temp;
-        if type(__enc) == list:
-            for ii in __enc:
-                try:
-                    return key.decode(ii);
-                except:
-                    continue
+def tokenize(text, match=re.compile("([idel])|(\d+):|(-?\d+)").match):
+    i = 0
+    while i < len(text):
+        m = match(text, i)
+        s = m.group(m.lastindex)
+        i = m.end()
+        if m.lastindex == 2:
+            yield "s"
+            yield text[i:i+int(s)]
+            i = i + int(s)
         else:
-            try:
-                return key.decode('utf-8');
-            except:
-                try:
-                    return key.decode(__enc);
-                except:
-                    return key
-    #list
-    elif __data[__s] == 108:
-        li = [];
-        __s += 1;
-        while __s < __l:
-            if __data[__s] == 101:
-                __s += 1
-                break
-            li.append(Torrent_decode())
-        return li
+            yield s
 
-#************************************************************************
+def decode_item(next, token):
+    if token == "i":
+        # integer: "i" value "e"
+        data = int(next())
+        if next() != "e":
+            raise ValueError
+    elif token == "s":
+        # string: "s" value (virtual tokens)
+        data = next()
+    elif token == "l" or token == "d":
+        # container: "l" (or "d") values "e"
+        data = []
+        tok = next()
+        while tok != "e":
+            data.append(decode_item(next, tok))
+            tok = next()
+        if token == "d":
+            data = dict(zip(data[0::2], data[1::2]))
+    else:
+        raise ValueError
+    return data
+
+def decode(text):
+    try:
+        src = tokenize(text)
+        data = decode_item(src.next, src.next())
+        for token in src: # look for more tokens
+            raise SyntaxError("trailing junk")
+    except (AttributeError, ValueError, StopIteration):
+        raise SyntaxError("syntax error")
+    return data
+
+###################################################################################
 
 def load():
     oGui = cGui()
@@ -357,24 +323,29 @@ def showHosters():
             #Dernier essai avec les torrent
             aResult = oParser.parse(sHtmlContent, 'data-maglink="([^"]+)')
             if (aResult[0] == True):
-                match = unquote(aResult[1][0])
+                match = Unquote(aResult[1][0])
                 
                 folder = re.findall('ws=(https[^&]+)', match)[0] + '/'
                 torrent = re.findall('xs=(https[^&]+)', match)[0]
                 
                 oRequestHandler2 = cRequestHandler(torrent)
-                torrent_data = oRequestHandler2.request()
-
-                torrent = Torrent_decode(torrent_data)
-                
+                torrent = decode(oRequestHandler2.request())
                 VSlog(torrent)
 
                 files = torrent['info']['files']
                 name = torrent['info']['name']
 
-                #for i in files:
-                #    print (folder + name + '/' + i['path'][0])
-            #Bon c'est mort
+                count = 0
+                for i in files:
+                    sHosterUrl = (folder + name + '/' + i['path'][0])
+                    count = count + 1
+
+                    oHoster = cHosterGui().checkHoster(sHosterUrl)
+                    if (oHoster != False):
+                        oHoster.setDisplayName(sMovieTitle + " " + name + "E" + str(count))
+                        oHoster.setFileName(sMovieTitle + " " + name + "E" + str(count))
+                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
             else:
                 oGui.addText(SITE_IDENTIFIER)
 
