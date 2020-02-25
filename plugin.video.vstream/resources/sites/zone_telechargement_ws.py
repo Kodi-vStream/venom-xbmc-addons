@@ -884,7 +884,11 @@ def DecryptDlProtecte(url):
         #VSlog(method)
         #VSlog(RestUrl)
 
-        if not RestUrl.startswith('https'):
+
+        if RestUrl.startswith('/link'):
+        	RestUrl = 'https://' + url.split('/')[2] + RestUrl
+
+        elif not RestUrl.startswith('https'):
         	RestUrl = 'https://' + url.split('/')[2] + "link/" + RestUrl
 
     #f = { '_token' : token}
