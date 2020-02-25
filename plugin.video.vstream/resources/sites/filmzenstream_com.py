@@ -149,6 +149,14 @@ def showMovies(sSearch = ''):
             if sThumb.startswith('//'):
                 sThumb = 'http:' + sThumb
 
+            sTitle = sTitle.replace(" VF Streaming", "")
+
+            
+            sYear = None
+            if len(sTitle)>4 and sTitle[-4:].isdigit():
+                sYear = sTitle[-4:]
+                sTitle = sTitle[0:len(sTitle)-4] + '(' + sYear + ')'
+
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 3:
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH_MOVIES[0], ''), sTitle) == 0:
@@ -158,6 +166,8 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            if sYear:
+                oOutputParameterHandler.addParameter('sYear', sYear)
 
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
