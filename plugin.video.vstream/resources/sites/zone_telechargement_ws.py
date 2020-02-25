@@ -856,7 +856,7 @@ def DecryptDlProtecte(url):
 
     oRequestHandler = cRequestHandler(url)
     sHtmlContent = oRequestHandler.request()
-    Cookie = oRequestHandler.GetCookies()
+    #Cookie = oRequestHandler.GetCookies()
 
     oParser = cParser()
     sPattern = '<form action="(.+?)".+?<input type="hidden" name="_token" value="(.+?)">.+?<input type="hidden" value="(.+?)".+?>'
@@ -868,34 +868,40 @@ def DecryptDlProtecte(url):
         urlData = str(result[1][0][2])
         
     else:
-        sPattern = '<form action="(.+?)" method="(.+?)">.+?<input type="hidden".+?value="(.+?)"'
+        sPattern = '<(.+?)action="([^"]+)" method="([^"]+)">.+?hidden".+?value="([^"]+)"'
         result = oParser.parse(sHtmlContent, sPattern)
 
-        if (str(result[1][0][0]).startswith('/')):
+        if not "<!-----" in (str(result[1][0][0])):
             RestUrl = str(result[1][0][0])
             method = str(result[1][0][1])
             token = str(result[1][0][2])
         else:
-            RestUrl = str(result[1][1][0])
-            method = str(result[1][1][1])
-            token = str(result[1][1][2])
+            RestUrl = str(result[1][1][1]).replace("}",'%7D')
+            method = str(result[1][1][2])
+            token = str(result[1][1][3])
+
+        #VSlog(token)
+        #VSlog(method)
+        #VSlog(RestUrl)
+
+        if not RestUrl.startswith('https'):
+        	RestUrl = 'https://' + url.split('/')[2] + "link/" + RestUrl
 
     #f = { '_token' : token}
     #data = urlEncode(f)
 
-    oRequestHandler = cRequestHandler('http://' + url.split('/')[2] + RestUrl)
+    oRequestHandler = cRequestHandler(RestUrl)
     if method == "post":
     	oRequestHandler.setRequestType(1)
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Host', url.split('/')[2])
-    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-    oRequestHandler.addHeaderEntry('Referer', url)
-    oRequestHandler.addHeaderEntry('Content-Type',  "application/x-www-form-urlencoded")
+    #oRequestHandler.addHeaderEntry('User-Agent', UA)
+    #oRequestHandler.addHeaderEntry('Host', url.split('/')[2])
+    #oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+    #oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    #oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    #oRequestHandler.addHeaderEntry('Referer', url)
+    #oRequestHandler.addHeaderEntry('Content-Type',  "application/x-www-form-urlencoded")
     #oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
-    oRequestHandler.addHeaderEntry('Origin', 'https://' + url.split('/')[2])
-    oRequestHandler.addHeaderEntry('Cookie', Cookie)
+    #oRequestHandler.addHeaderEntry('Cookie', Cookie)
     oRequestHandler.addParameters("_token", token)
     #oRequestHandler.addParametersLine(data)
     sHtmlContent = oRequestHandler.request()
