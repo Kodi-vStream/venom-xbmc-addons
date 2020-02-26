@@ -7,12 +7,10 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+from resources.lib.util import cUtil, urlEncode, QuotePlus
 from resources.lib.comaddon import progress, VSlog, xbmc, dialog, addon
 
-import re
-import urllib
-import xbmcgui, xbmcvfs
+import re, xbmcvfs
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/69.0'
 headers = {'User-Agent': UA}
@@ -35,7 +33,7 @@ MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
 
 MOVIE_VOSTFR = (URL_MAIN + 'films-sd/dvdrip-vostfr', 'showMovies')
-MOVIE_4K = (URL_MAIN + 'films-new-ultrahd/new-webrip-4k/', 'showMovies')
+MOVIE_4K = (URL_MAIN + 'films-new-ultrahd/', 'showMovies')
 MOVIE_720 = (URL_MAIN + 'films-new-hd/new-bluray-720p/', 'showMovies')
 MOVIE_1080X265 = (URL_MAIN + 'films-hd/films-1080p-x265', 'showMovies')
 MOVIE_BLURAYVOSTFR = (URL_MAIN + 'films-vostfr/films-1080p-vostfr', 'showMovies')
@@ -350,7 +348,7 @@ def showMovies(sSearch = ''):
         else:
             query_args = (('do', 'search'), ('subaction', 'search'), ('story', sSearch), ('titleonly', '3'))
 
-        data = urllib.urlencode(query_args)
+        data = urlEncode(query_args)
 
         oRequestHandler = cRequestHandler(URL_SEARCH[0])
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
@@ -631,7 +629,7 @@ def RecapchaBypassOld(sUrl):#Ouverture de Chrome Launcher s'il est intallez
     sPath = "special://home/addons/plugin.program.chrome.launcher/default.py"
 
     if xbmcvfs.exists(sPath):
-        sUrl2 = urllib.quote_plus(sUrl)
+        sUrl2 = QuotePlus(sUrl)
         xbmc.executebuiltin('RunPlugin("plugin://plugin.program.chrome.launcher/?url=' + sUrl2 + '&mode=showSite&stopPlayback=yes")')
 
     getHoster()
