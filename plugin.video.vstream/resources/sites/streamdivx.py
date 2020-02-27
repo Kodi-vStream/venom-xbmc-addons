@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'streamdivx'
 SITE_NAME = 'StreamDivx'
 SITE_DESC = 'Regarder, Voir Films En Streaming VF 100% Gratuit.'
 
-URL_MAIN = 'https://www.streamdivx.net/' # ou 'https://www.voustreaming.com/' < recherche hs
+URL_MAIN = 'https://wvvw.streamdivx.net/' # ou 'https://www.voustreaming.com/' < recherche hs
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = ('', 'showMovies')
@@ -28,9 +28,9 @@ MOVIE_ANNEES = (True, 'showMovieYears')
 def load():
     oGui = cGui()
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+#    oOutputParameterHandler = cOutputParameterHandler()
+#    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+#    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
