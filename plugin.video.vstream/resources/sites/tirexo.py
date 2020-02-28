@@ -338,7 +338,6 @@ def showMovies(sSearch = ''):
         sUrl = sSearch
 
     if sSearch or "index" in sUrl: # en mode recherche
-        sUrl = sUrl.replace(' ', '%20').replace('[]', '%5B%5D')
         sPattern = '<a class="mov-t nowrap" href="([^"]+)" title="[^"]+"> *<div data-toggle=.+?data-content="([^"]+)".+?<img src="([^"]+)".+?alt="([^"]+)".+?<a href="([^"]+)">(.+?)<'
     else:
         sPattern = '<a class="mov-t nowrap" href="([^"]+)"> *<div data-toggle=.+?data-content="([^"]+)".+?<img src="([^"]+)".+?title="([^"]+)".+?(> *<\/a>|annee-de-sortie\/(.+?)\/)'
@@ -372,11 +371,7 @@ def showMovies(sSearch = ''):
                 continue;
             titles.add(key)
             
-            sDesc = sDesc.replace('<span>', '').replace('</span>', '')
-            sDesc = sDesc.replace('<b>', '').replace('</b>', '')
-            sDesc = sDesc.replace('<i>', '').replace('</i>', '')
-            sDesc = sDesc.replace('<br>', '').replace('<br />', '')
-
+            sDesc = re.sub('<[^<]+?>', '', sDesc)
             sDisplayTitle = sTitle
 
             if not sThumb.startswith('http'):
