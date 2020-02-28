@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress
 from resources.lib.util import Unquote
 
 import re
@@ -19,9 +19,9 @@ URL_MAIN = 'https://disneyhd.cf/'
 URL_LISTE = URL_MAIN + '?page=liste.php'
 ANIM_ENFANTS = ('http://', 'load')
 
-#URL_SEARCH = ('', 'sHowResultSearch')
-#URL_SEARCH_MOVIES = ('', 'sHowResultSearch')
 FUNCTION_SEARCH = 'sHowResultSearch'
+URL_SEARCH = ('', FUNCTION_SEARCH)
+URL_SEARCH_MOVIES = ('', FUNCTION_SEARCH)
 
 sPattern1 = '<a href="([^"]+)".+?src="([^"]+)" alt.*?="(.+?)".*?>'
 
@@ -30,8 +30,6 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:66.0) Gecko/20100101 Firefox/66.0'
 ###################################################################################
 #DECODE TORRENT : https://effbot.org/zone/bencode.htm
 ###################################################################################
-
-import re
 
 def tokenize(text, match=re.compile("([idel])|(\d+):|(-?\d+)").match):
     i = 0
@@ -46,7 +44,7 @@ def tokenize(text, match=re.compile("([idel])|(\d+):|(-?\d+)").match):
         else:
             yield s
 
-def decode_item(next, token):
+def decode_item(nextItem, token):
     if token == "i":
         # integer: "i" value "e"
         data = int(next())
@@ -60,7 +58,7 @@ def decode_item(next, token):
         data = []
         tok = next()
         while tok != "e":
-            data.append(decode_item(next, tok))
+            data.append(decode_item(nextItem, tok))
             tok = next()
         if token == "d":
             data = dict(zip(data[0::2], data[1::2]))
@@ -115,6 +113,8 @@ def showSearch():
 def sHowResultSearch(sSearch = ''):
     oGui = cGui()
 
+    sSearch = Unquote(sSearch)
+
     oRequestHandler = cRequestHandler(URL_MAIN + 'movies_list.php')
     sHtmlContent = oRequestHandler.request()
 
@@ -124,17 +124,15 @@ def sHowResultSearch(sSearch = ''):
 
     if (aResult[0] == True):
 
-        total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-
-            sUrl = URL_MAIN[:-1] + aEntry[0]
-            sThumb = URL_MAIN + aEntry[2]
             sTitle = aEntry[1]
-
             if sSearch.lower() not in sTitle.lower():
                 continue
 
+            sUrl = URL_MAIN[:-1] + aEntry[0]
+            sThumb = URL_MAIN + aEntry[2]
+            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -218,8 +216,6 @@ def ShowList():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     
-    VSlog(sUrl)
-
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -256,8 +252,6 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     
-    VSlog(sUrl)
-
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -330,7 +324,6 @@ def showHosters():
                 
                 oRequestHandler2 = cRequestHandler(torrent)
                 torrent = decode(oRequestHandler2.request())
-                VSlog(torrent)
 
                 files = torrent['info']['files']
                 name = torrent['info']['name']
