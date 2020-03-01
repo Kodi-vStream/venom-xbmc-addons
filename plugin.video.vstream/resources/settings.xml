@@ -82,6 +82,8 @@
 
         <setting visible="false" id="plugin_disneyhd_tk" type="bool" label="DisneyHD" default="true"/>
 
+        <setting visible="false" id="plugin_docu_fr" type="bool" label="DisneyHD" default="true"/>
+
         <setting visible="false" id="plugin_extreme_down" type="bool" label="ExtremeDown" default="true"/>
 
         <setting visible="false" id="plugin_film_illimit_fr" type="bool" label="Film Illimité" default="true"/>
@@ -158,15 +160,13 @@
 
         <setting visible="false" id="plugin_streamelite" type="bool" label="StreamElite" default="true"/>
 
-        <setting visible="false" id="plugin_streaming_series" type="bool" label="Streaming-Series" default="true"/>
-
         <setting visible="false" id="plugin_streaming_series_xyz" type="bool" label="Streaming-series.cx" default="true"/>
+
+        <setting visible="false" id="plugin_streaming_series" type="bool" label="Streaming-Series" default="true"/>
 
         <setting visible="false" id="plugin_streamingdivx" type="bool" label="StreamingDivx" default="true"/>
 
         <setting visible="false" id="plugin_streamingk_com" type="bool" label="StreamingK" default="true"/>
-
-        <setting visible="false" id="plugin_streamiz_co" type="bool" label="Streamiz" default="true"/>
 
         <setting visible="false" id="plugin_tfarjo" type="bool" label="Tfarjo" default="true"/>
 
