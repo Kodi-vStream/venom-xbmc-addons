@@ -5,10 +5,9 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.util import cUtil
+# from resources.lib.util import cUtil
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-import re
 
 SITE_IDENTIFIER = 'streamdivx'
 SITE_NAME = 'StreamDivx'
@@ -17,8 +16,8 @@ SITE_DESC = 'Regarder, Voir Films En Streaming VF 100% Gratuit.'
 URL_MAIN = 'https://wvvw.streamdivx.net/' # ou 'https://www.voustreaming.com/' < recherche hs
 
 FUNCTION_SEARCH = 'showMovies'
-URL_SEARCH = ('', 'showMovies')
-URL_SEARCH_MOVIES = ('', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'tags/', FUNCTION_SEARCH)
+URL_SEARCH_MOVIES = (URL_SEARCH[0], FUNCTION_SEARCH)
 
 MOVIE_MOVIE = (True, 'load')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -28,9 +27,9 @@ MOVIE_ANNEES = (True, 'showMovieYears')
 def load():
     oGui = cGui()
 
-#    oOutputParameterHandler = cOutputParameterHandler()
-#    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-#    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
@@ -51,7 +50,8 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = sSearchText
+        sSearchText = sSearchText.replace(' ', '+')
+        sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -107,17 +107,9 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
-        sUrl = sSearch.replace(' ', '+')
-        
-        oRequest = cRequestHandler(URL_MAIN)
-        oRequest.setRequestType(1)
-        oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:66.0) Gecko/20100101 Firefox/66.0')
-        oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-        oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-        oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-        oRequest.addParametersLine('story=' + sUrl + '&do=search&subaction=search')
+        sUrl = sSearch
+        oRequest = cRequestHandler(sUrl)
         sHtmlContent = oRequest.request()
-        
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -151,11 +143,13 @@ def showMovies(sSearch = ''):
             sTitle = aEntry[2]#.decode("unicode_escape").encode("latin-1")
             sDesc = aEntry[3]
             
-            #Si recherche et trop de resultat, on nettoye
-            if sSearch and total > 2:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
-                    continue
-
+            # Nettoie le titre, la premiere phrase est souvent doublée
+            sDesc = sDesc.replace('SYNOPSIS ET DÉTAILS', '').lstrip()
+            if len (sDesc) > 180:
+                idx = sDesc.find(sDesc[:15], 30, 180)
+                if idx>0:
+                    sDesc = sDesc[idx:]
+            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
