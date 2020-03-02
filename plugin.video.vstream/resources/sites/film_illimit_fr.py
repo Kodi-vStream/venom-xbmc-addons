@@ -6,10 +6,10 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+from resources.lib.util import cUtil, QuotePlus, Noredirection
 from resources.lib.comaddon import progress
 from resources.lib.sucuri import SucurieBypass
-import re, urllib, urllib2
+import re
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 
@@ -245,14 +245,9 @@ def showHosters():
             sHosterUrl = str(aEntry)
             if '//goo.gl' in sHosterUrl:
                 try:
-                    class NoRedirection(urllib2.HTTPErrorProcessor):
-                        def http_response(self, request, response):
-                            return response
-                        https_response = http_response
-
                     url8 = sHosterUrl.replace('https', 'http')
 
-                    opener = urllib2.build_opener(NoRedirection)
+                    opener = Noredirection()
                     opener.addheaders.append (('User-Agent', UA))
                     opener.addheaders.append (('Connection', 'keep-alive'))
 
@@ -329,7 +324,7 @@ def ShowSpecialHosters():
 
     data = re.sub('(.+?f=)', '', sUrl)
     data = data.replace('&c=', '')
-    pdata = 'data=' + urllib.quote_plus(data)
+    pdata = 'data=' + QuotePlus(data)
 
     if 'fr-land.me' in sUrl:
         oRequest = cRequestHandler('http://fr-land.me/Htplugins/Loader.php')
