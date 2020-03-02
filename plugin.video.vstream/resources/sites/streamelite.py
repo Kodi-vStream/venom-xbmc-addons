@@ -173,7 +173,7 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sPattern = '<div class="poster".+?img src="([^"]+)" alt="([^"]+)".+?<a href="([^"]+)">.+?(?:<article|<div class="texto">(.+?)<div)'
+        sPattern = '<div class="poster".+?img src="([^"]+)" alt="([^"]+)".+?quality">([^"]+)<\/span.+?<a href="([^"]+)">.+?(?:<article|<div class="texto">(.+?)<div)'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -200,8 +200,10 @@ def showMovies(sSearch = ''):
             else:
                 sThumb = aEntry[0]
                 sTitle = aEntry[1]
-                sUrl2 = aEntry[2]
-                sDesc = re.sub('(\A.+?: )', '', aEntry[3])
+                sQual = aEntry[2]
+                sUrl2 = aEntry[3]
+                sDesc = re.sub('(\A.+?: )', '', aEntry[4])
+                sDisplayTitle = sTitle + ' [' + sQual + ']'
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
@@ -213,7 +215,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb )
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showLink', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
