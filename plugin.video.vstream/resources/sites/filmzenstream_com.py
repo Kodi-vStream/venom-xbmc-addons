@@ -6,9 +6,8 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+from resources.lib.util import cUtil, Unquote
 from resources.lib.comaddon import progress
-import urllib
 # from resources.lib.sucuri import SucurieBypass
 
 SITE_IDENTIFIER = 'filmzenstream_com'
@@ -117,7 +116,7 @@ def showYears():
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-        sSearch = urllib.unquote(sSearch)
+        sSearch = Unquote(sSearch)
         sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -150,17 +149,11 @@ def showMovies(sSearch = ''):
                 sThumb = 'http:' + sThumb
 
             sTitle = sTitle.replace(" VF Streaming", "")
-
             
             sYear = None
             if len(sTitle)>4 and sTitle[-4:].isdigit():
                 sYear = sTitle[-4:]
                 sTitle = sTitle[0:len(sTitle)-4] + '(' + sYear + ')'
-
-            #Si recherche et trop de resultat, on nettoye
-            if sSearch and total > 3:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH_MOVIES[0], ''), sTitle) == 0:
-                    continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -173,12 +166,11 @@ def showMovies(sSearch = ''):
 
         progress_.VSclose(progress_)
 
-        if not sSearch:
-            sNextPage = __checkForNextPage(sHtmlContent)
-            if (sNextPage != False):
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+        sNextPage = __checkForNextPage(sHtmlContent)
+        if (sNextPage != False):
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
