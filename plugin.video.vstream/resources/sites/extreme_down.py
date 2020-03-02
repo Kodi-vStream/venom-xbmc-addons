@@ -7,12 +7,10 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+from resources.lib.util import cUtil, urlEncode, QuotePlus
 from resources.lib.comaddon import progress, VSlog, xbmc, dialog, addon
 
-import re
-import urllib
-import xbmcgui, xbmcvfs
+import re, xbmcvfs
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/69.0'
 headers = {'User-Agent': UA}
@@ -30,22 +28,21 @@ FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_MOVIE = ('http://', 'showMenuFilms')
-MOVIE_HD1080 = (URL_MAIN + 'films-hd/bluray-1080p', 'showMovies')
+MOVIE_HD1080 = (URL_MAIN + 'films-new-hd/new-bluray-1080p/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
 
 MOVIE_VOSTFR = (URL_MAIN + 'films-sd/dvdrip-vostfr', 'showMovies')
-MOVIE_4K = (URL_MAIN + 'films-hd/ultrahd-4k', 'showMovies')
-MOVIE_720 = (URL_MAIN + 'films-hd/bluray-720p', 'showMovies')
+MOVIE_4K = (URL_MAIN + 'films-new-ultrahd/', 'showMovies')
+MOVIE_720 = (URL_MAIN + 'films-new-hd/new-bluray-720p/', 'showMovies')
 MOVIE_1080X265 = (URL_MAIN + 'films-hd/films-1080p-x265', 'showMovies')
-MOVIE_BLURAYVOSTFR = (URL_MAIN + 'films-hd/bluray-vostfr', 'showMovies')
-MOVIE_3D = (URL_MAIN + 'films-hd/bluray-3d', 'showMovies')
-MOVIE_FULL1080P = (URL_MAIN + 'films-hd/full-bluray', 'showMovies')
-MOVIE_FULL3D = (URL_MAIN + 'films-hd/full-bluray-3d', 'showMovies')
-MOVIE_FULL4K = (URL_MAIN + 'films-hd/full-bluray-ultrahd-4k', 'showMovies')
+MOVIE_BLURAYVOSTFR = (URL_MAIN + 'films-vostfr/films-1080p-vostfr', 'showMovies')
+MOVIE_3D = (URL_MAIN + 'films-new-hd/new-full-bluray-3d', 'showMovies')
+MOVIE_FULL1080P = (URL_MAIN + 'films-new-hd/new-full-bluray', 'showMovies')
+MOVIE_FULL4K = (URL_MAIN + 'films-new-ultrahd/new-full-bluray-ultrahd-4k', 'showMovies')
 MOVIE_LIGHT720 = (URL_MAIN + 'films-hdlight/hdlight-720p', 'showMovies')
 MOVIE_LIGHT1080 = (URL_MAIN + 'films-hdlight/hdlight-1080p', 'showMovies')
-MOVIE_LIGHTBDRIP = (URL_MAIN + 'films-hd/bdrip-720p', 'showMovies')
+MOVIE_LIGHTBDRIP = (URL_MAIN + 'films-new-hd/new-bdrip-720p', 'showMovies')
 MOVIE_BDRIP = (URL_MAIN + 'films-sd/dvdrip', 'showMovies')
 MOVIE_OLDDVD = (URL_MAIN + 'films-sd/ancien-dvdrip', 'showMovies')
 MOVIE_FILMO = (URL_MAIN + 'films-sd/filmographie', 'showMovies')
@@ -72,7 +69,6 @@ ANIM_MULTI = (URL_MAIN + 'mangas/series-multi/', 'showMovies')
 
 DOC_NEWS = (URL_MAIN + 'documentaires/', 'showMovies')
 SPECTACLE_NEWS =  (URL_MAIN + 'theatre/', 'showMovies')
-REPLAYTV_NEWS = (URL_MAIN + 'emissions-tv/', 'showMovies')
 
 def load():
     ADDON = addon()
@@ -139,10 +135,6 @@ def showMenuFilms():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_FULL1080P[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_FULL1080P[1], 'REMUX 1080P', 'films.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_FULL3D[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_FULL3D[1], 'REMUX 3D', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_FULL4K[0])
@@ -246,10 +238,6 @@ def showMenuAutre():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], "Documentaire (Derniers ajouts)", 'doc.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], "Replay Tv (Derniers ajouts)", 'replay.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPECTACLE_NEWS[0])
@@ -360,7 +348,7 @@ def showMovies(sSearch = ''):
         else:
             query_args = (('do', 'search'), ('subaction', 'search'), ('story', sSearch), ('titleonly', '3'))
 
-        data = urllib.urlencode(query_args)
+        data = urlEncode(query_args)
 
         oRequestHandler = cRequestHandler(URL_SEARCH[0])
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
@@ -641,7 +629,7 @@ def RecapchaBypassOld(sUrl):#Ouverture de Chrome Launcher s'il est intallez
     sPath = "special://home/addons/plugin.program.chrome.launcher/default.py"
 
     if xbmcvfs.exists(sPath):
-        sUrl2 = urllib.quote_plus(sUrl)
+        sUrl2 = QuotePlus(sUrl)
         xbmc.executebuiltin('RunPlugin("plugin://plugin.program.chrome.launcher/?url=' + sUrl2 + '&mode=showSite&stopPlayback=yes")')
 
     getHoster()
@@ -687,3 +675,4 @@ def CutSais(sHtmlContent):
     if (aResult[0]):
         return aResult[1][0]
     return ''
+

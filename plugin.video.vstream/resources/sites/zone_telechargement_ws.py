@@ -7,7 +7,9 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, dialog, VSlog, addon
-from resources.lib.util import urlEncode
+
+#Fonction de Vstream qui remplace urllib.urlencode, pour simplifier le passage en python 3
+from resources.lib.util import urlEncode, Quote
 
 import re, string, random
 
@@ -301,7 +303,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sSearchText = re.sub('[^%s]' % (string.ascii_lowercase + string.digits), '+', sSearchText.lower())
+        sSearchText = Quote(sSearchText)
         sUrl = URL_SEARCH[0] + sSearchText + '&note=0&art=0&AiffchageMode=0&inputTirePar=0&cstart=0'
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -348,7 +350,6 @@ def showGenre():
     oGui.setEndOfDirectory()
 
 def showMovies(sSearch = ''):
-    #ancienAffichage = False
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -855,6 +856,7 @@ def DecryptDlProtecte(url):
 
     oRequestHandler = cRequestHandler(url)
     sHtmlContent = oRequestHandler.request()
+    #Cookie = oRequestHandler.GetCookies()
 
     oParser = cParser()
     sPattern = '<form action="(.+?)".+?<input type="hidden" name="_token" value="(.+?)">.+?<input type="hidden" value="(.+?)".+?>'
@@ -866,28 +868,43 @@ def DecryptDlProtecte(url):
         urlData = str(result[1][0][2])
         
     else:
-        sPattern = ' name="url">---->.+?<form action="(.+?)" method="get">.+?<input type="hidden" name="_token" value="(.+?)">'
+        sPattern = '<(.+?)action="([^"]+)" method="([^"]+)">.+?hidden".+?value="([^"]+)"'
         result = oParser.parse(sHtmlContent, sPattern)
 
-        if (result[0]):
+        if not "<!-----" in (str(result[1][0][0])):
             RestUrl = str(result[1][0][0])
-            token = str(result[1][0][1])
+            method = str(result[1][0][1])
+            token = str(result[1][0][2])
+        else:
+            RestUrl = str(result[1][1][1]).replace("}",'%7D')
+            method = str(result[1][1][2])
+            token = str(result[1][1][3])
 
-    f = { '_token' : token}
-    data = urlEncode(f)
+        #VSlog(token)
+        #VSlog(method)
+        #VSlog(RestUrl)
 
-    oRequestHandler = cRequestHandler('http://'+url.split('/')[2]+RestUrl)
-    oRequestHandler.setRequestType(1)
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Host', url.split('/')[2])
-    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-    oRequestHandler.addHeaderEntry('Referer', url)
-    oRequestHandler.addHeaderEntry('Content-Type',  "application/x-www-form-urlencoded")
-    oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
-    oRequestHandler.addHeaderEntry('Origin', 'https://'+url.split('/')[2])
-    oRequestHandler.addParametersLine(data)
+
+        if RestUrl.startswith('/'):
+        	RestUrl = 'https://' + url.split('/')[2] + RestUrl
+
+    #f = { '_token' : token}
+    #data = urlEncode(f)
+
+    oRequestHandler = cRequestHandler(RestUrl)
+    if method == "post":
+    	oRequestHandler.setRequestType(1)
+    #oRequestHandler.addHeaderEntry('User-Agent', UA)
+    #oRequestHandler.addHeaderEntry('Host', url.split('/')[2])
+    #oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+    #oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    #oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    #oRequestHandler.addHeaderEntry('Referer', url)
+    #oRequestHandler.addHeaderEntry('Content-Type',  "application/x-www-form-urlencoded")
+    #oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
+    #oRequestHandler.addHeaderEntry('Cookie', Cookie)
+    oRequestHandler.addParameters("_token", token)
+    #oRequestHandler.addParametersLine(data)
     sHtmlContent = oRequestHandler.request()
     
     #fh = open('c:\\test.txt', "w")

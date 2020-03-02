@@ -8,13 +8,13 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.player import cPlayer
 from resources.lib.gui.hoster import cHosterGui
-
+from resources.lib.util import Unquote, Quote, QuotePlus
 from resources.lib.enregistrement import cEnregistremement
 from resources.lib.epg import cePg
 from resources.lib.comaddon import progress, addon, xbmc, VSlog, dialog
 
 from zipfile import ZipFile
-import re, urllib2, urllib, sys, string, json, io
+import re, sys, string, json, io
 import xbmcplugin, xbmcvfs
 
 SITE_IDENTIFIER = 'freebox'
@@ -223,7 +223,7 @@ def showWeb(infile = None):#Code qui s'occupe de liens TV du Web
             #les + ne peuvent pas passer
             url2 = track.path.replace('+', 'P_L_U_S')
             if not '[' in url2 and not ']' in url2 and not '.m3u8' in url2 and not 'dailymotion' in url2:
-                url2 = 'plugin://plugin.video.f4mTester/?url=' + urllib.quote_plus(url2) + '&amp;streamtype=TSDOWNLOADER&name=' + urllib.quote(track.title)
+                url2 = 'plugin://plugin.video.f4mTester/?url=' + QuotePlus(url2) + '&amp;streamtype=TSDOWNLOADER&name=' + Quote(track.title)
 
             thumb = '/'.join([sRootArt, sThumb])
 
@@ -285,7 +285,7 @@ def enregistrement():#Code qui gerent l'epg
 
     if 'plugin' in sUrl:
         url = re.findall('url=(.+?)&amp', ''.join(sUrl))
-        sUrl = urllib2.unquote(url[0])
+        sUrl = Unquote(url[0])
     shebdule = cEnregistremement().programmation_enregistrement(sUrl)
 
 def showAZ():

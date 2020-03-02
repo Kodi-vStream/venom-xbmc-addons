@@ -11,7 +11,7 @@ from resources.lib.config import GestionCookie
 from resources.lib.recaptcha import ResolveCaptcha
 from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui, VSlog
 
-import re, urllib
+import re
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
 

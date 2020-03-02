@@ -8,9 +8,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-from resources.lib.util import Unquote, QuoteSafe, Noredirection
-
-import re
+import urllib, re
 
 SITE_IDENTIFIER = 'voirfilms_org'
 SITE_NAME = 'VoirFilms'
@@ -240,20 +238,14 @@ def showMovies(sSearch = ''):
     oParser = cParser()
 
     if sSearch:
-        #on redecode la recherche codé il y a meme pas une seconde par l'addon
-        sSearch = sSearch.replace(' ', '+')
-        sSearch = Unquote(sSearch)
-
-        #pdata = 'action=recherche&story=' + sSearch
+        sSearch = urllib.quote(sSearch)
 
         oRequest = cRequestHandler(URL_MAIN + 'recherche?s=' + sSearch)
-        #oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Referer', URL_MAIN)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-        #oRequest.addParametersLine(pdata)
 
         sHtmlContent = oRequest.request()
 
@@ -290,7 +282,6 @@ def showMovies(sSearch = ''):
 
             sUrl = aEntry[0]
 
-            #sTitle = cUtil().unescape(aEntry[2])#ancien traitement du titre
             sTitle = sTitle.replace('film ', '') #genre
 
             if not 'http' in sThumb:

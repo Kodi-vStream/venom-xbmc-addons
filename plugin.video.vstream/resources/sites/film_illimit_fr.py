@@ -6,10 +6,10 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+from resources.lib.util import cUtil, QuotePlus, Noredirection
 from resources.lib.comaddon import progress
 from resources.lib.sucuri import SucurieBypass
-import re, urllib, urllib2
+import re
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 
@@ -18,7 +18,7 @@ SITE_NAME = 'Film illimité'
 SITE_DESC = 'Films, Séries HD en streaming'
 
 URL_MAIN = 'https://www.official-film-illimite.to/'
-URL_SERIES = 'https://www.official-serie-illimite.com/'
+# URL_SERIES = 'https://www.official-serie-illimite.com/'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_MOVIE = ( URL_MAIN + 'films/', 'showMovies')
@@ -26,13 +26,13 @@ MOVIE_HD = (URL_MAIN + 'films/streaming-720p-streaming-1080p/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
 
-SERIE_NEWS = (URL_SERIES + 'serie-tv/', 'showMovies')
-SERIE_SERIES = (URL_SERIES + 'serie-tv/', 'showMovies')
-SERIE_HD = (URL_SERIES + 'serie-tv/', 'showMovies')
+# SERIE_NEWS = (URL_SERIES + 'serie-tv/', 'showMovies')
+# SERIE_SERIES = (URL_SERIES + 'serie-tv/', 'showMovies')
+# SERIE_HD = (URL_SERIES + 'serie-tv/', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
-URL_SEARCH_SERIES = (URL_SERIES + '?s=', 'showMovies')
+# URL_SEARCH_SERIES = (URL_SERIES + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -58,9 +58,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
+    # oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -245,14 +245,9 @@ def showHosters():
             sHosterUrl = str(aEntry)
             if '//goo.gl' in sHosterUrl:
                 try:
-                    class NoRedirection(urllib2.HTTPErrorProcessor):
-                        def http_response(self, request, response):
-                            return response
-                        https_response = http_response
-
                     url8 = sHosterUrl.replace('https', 'http')
 
-                    opener = urllib2.build_opener(NoRedirection)
+                    opener = Noredirection()
                     opener.addheaders.append (('User-Agent', UA))
                     opener.addheaders.append (('Connection', 'keep-alive'))
 
@@ -329,7 +324,7 @@ def ShowSpecialHosters():
 
     data = re.sub('(.+?f=)', '', sUrl)
     data = data.replace('&c=', '')
-    pdata = 'data=' + urllib.quote_plus(data)
+    pdata = 'data=' + QuotePlus(data)
 
     if 'fr-land.me' in sUrl:
         oRequest = cRequestHandler('http://fr-land.me/Htplugins/Loader.php')

@@ -9,10 +9,9 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 from resources.lib.util import cUtil
 
-import re, unicodedata, urllib2
+import re, unicodedata
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
-headers = {'User-Agent': UA}
 
 SITE_IDENTIFIER = 'cinemay_com'
 SITE_NAME = 'Cinemay'
@@ -319,13 +318,11 @@ def showLinks():
     if (aResult[0] == True):
         MovieUrl = URL_MAIN + 'playery/?id=' + aResult[1][0]
 
-        req = urllib2.Request(MovieUrl, None, headers)
-        req.add_header('Referer', sRefUrl)
-        response = urllib2.urlopen(req)
-        head = response.headers
-        sHtmlContent = response.read()
-        response.close()
-
+        oRequestHandler = cRequestHandler(MovieUrl)
+        oRequestHandler.addHeaderEntry("User-Agent", UA)
+        oRequestHandler.addHeaderEntry("Referer", sRefUrl)
+        sHtmlContent = oRequestHandler.request()
+        head = oRequestHandler.getResponseHeader()
         cookies = getcookie(head)
 
     sPattern = '<input type="hidden" name="videov" id="videov" value="([^"]+)">.+?<\/b>([^<]+)<span class="dt_flag">.+?\/flags\/(.+?)\.'
@@ -422,19 +419,18 @@ def showHostersOld():
     sCookie = oInputParameterHandler.getValue('cookies')
 
     #validation
-    req = urllib2.Request(URL_MAIN + 'image/logo.png', None, headers)
-    req.add_header('Referer', sRefUrl)
-    req.add_header('Cookie', sCookie)
-    response = urllib2.urlopen(req)
-    response.close()
+    oRequestHandler = cRequestHandler(URL_MAIN + 'image/logo.png')
+    oRequestHandler.addHeaderEntry("User-Agent", UA)
+    oRequestHandler.addHeaderEntry("Referer", sRefUrl)
+    oRequestHandler.addHeaderEntry("Cookie", sCookie)
+    sHtmlContent = oRequestHandler.request()
 
     #final
-    req = urllib2.Request(sUrl, None, headers)
-    req.add_header('Referer', sRefUrl)
-    req.add_header('Cookie', sCookie)
-    response = urllib2.urlopen(req)
-    sHtmlContent = response.read()
-    response.close()
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addHeaderEntry("User-Agent", UA)
+    oRequestHandler.addHeaderEntry("Referer", sRefUrl)
+    oRequestHandler.addHeaderEntry("Cookie", sCookie)
+    sHtmlContent = oRequestHandler.request()
 
     sPattern = '<script type=\"text\/javascript\">;(.+?)<\/script>'
     oParser = cParser()

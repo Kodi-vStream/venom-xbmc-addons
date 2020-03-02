@@ -6,9 +6,12 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
-#from resources.lib.comaddon import VSlog
+from resources.lib.aadecode import decodeAA
+from resources.lib.packer import cPacker
 import re
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101 Firefox/68.0'
+from resources.lib.comaddon import VSlog
+
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:72.0) Gecko/20100101 Firefox/72.0'
 
 class cHoster(iHoster):
 
@@ -60,6 +63,8 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
 
+        api_call = False
+
         sUrl = 'https://www.vidbm.com/embed-' + self.__sUrl + '.html?auto=1'
 
         oRequest = cRequestHandler(sUrl)
@@ -67,29 +72,39 @@ class cHoster(iHoster):
 
         oParser = cParser()
 
-        sPattern = "as.src *= *'([^']+)';"
-        aResult = oParser.parse(sHtmlContent, sPattern)
-
-        if (aResult[0] == True):
-            oRequest = cRequestHandler('https://www.vidbm.com' + aResult[1][0])
-            oRequest.addHeaderEntry('Referer', sUrl)
-            sHtmlContent = oRequest.request()
-
-            sPattern = "document.cookie *= *'([^']+)';"
-            aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
-                cookie = aResult[1][0]
-
-                oRequest = cRequestHandler(sUrl)
-                oRequest.addHeaderEntry('Cookie', cookie)
-                sHtmlContent = oRequest.request()
-
+        packed = CheckCpacker(sHtmlContent)
+        if packed:
+            aa = CheckAADecoder(packed)
+            if aa:
                 sPattern = 'sources: *\[{file:"([^"]+)"'
-                aResult = oParser.parse(sHtmlContent, sPattern)
+                aResult = oParser.parse(aa, sPattern)
                 if (aResult[0] == True):
-                    api_call = aResult[1][0] + '|User-Agent=' + UA #+ '&Referer=' + self.__sUrl
+                    api_call = aResult[1][0] + '|User-Agent=' + UA
 
         if (api_call):
             return True, api_call
 
         return False, False
+
+def CheckCpacker(sHtmlContent):
+    oParser = cParser()
+    sPattern = "(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>"
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        str2 = aResult[1][0]
+        try:
+            result = cPacker().unpack(str2)
+            return result
+        except:
+            pass
+
+    return False
+
+def CheckAADecoder(sHtmlContent):
+    aResult = re.search("(ﾟωﾟ.+\(\\\\'_\\\\'\);)", sHtmlContent, re.DOTALL | re.UNICODE)
+    if (aResult):
+        j = aResult.group(1)
+        tmp = decodeAA(j)
+        return tmp
+
+    return False

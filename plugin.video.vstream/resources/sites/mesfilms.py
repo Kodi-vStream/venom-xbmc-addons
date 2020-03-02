@@ -8,7 +8,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.comaddon import progress#, VSlog
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import re, urllib, urllib2
+import re, urllib
 
 SITE_IDENTIFIER = 'mesfilms'
 SITE_NAME = 'Mes Films'
@@ -74,7 +74,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
+        sUrl = URL_SEARCH[0] + urllib.quote(sSearchText)
         showSearchResult(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -200,10 +200,10 @@ def showSearchResult(sSearch = ''):
             sTitle = aEntry[2]
             sDesc = aEntry[3]
 
-            #tris search
-            if sSearch and total > 3:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
-                    continue
+#             #tris search
+#             if sSearch and total > 3:
+#                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
+#                     continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)

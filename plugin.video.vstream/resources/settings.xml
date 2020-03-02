@@ -82,6 +82,8 @@
 
         <setting visible="false" id="plugin_disneyhd_tk" type="bool" label="DisneyHD" default="true"/>
 
+        <setting visible="false" id="plugin_docu_fr" type="bool" label="DisneyHD" default="true"/>
+
         <setting visible="false" id="plugin_extreme_down" type="bool" label="ExtremeDown" default="true"/>
 
         <setting visible="false" id="plugin_film_illimit_fr" type="bool" label="Film Illimité" default="true"/>
@@ -95,8 +97,6 @@
         <setting visible="false" id="plugin_freebox" type="bool" label="active freebox" default="false"/>
 
         <setting visible="false" id="plugin_french_stream_com" type="bool" label="French Stream" default="true"/>
-
-        <setting visible="false" id="plugin_fullstream" type="bool" label="FullStream" default="true"/>
 
         <setting visible="false" id="plugin_gum_gum_streaming_com" type="bool" label="Gum-Gum-Streaming" default="true"/>
 
@@ -160,15 +160,13 @@
 
         <setting visible="false" id="plugin_streamelite" type="bool" label="StreamElite" default="true"/>
 
-        <setting visible="false" id="plugin_streaming_series" type="bool" label="Streaming-Series" default="true"/>
-
         <setting visible="false" id="plugin_streaming_series_xyz" type="bool" label="Streaming-series.cx" default="true"/>
+
+        <setting visible="false" id="plugin_streaming_series" type="bool" label="Streaming-Series" default="true"/>
 
         <setting visible="false" id="plugin_streamingdivx" type="bool" label="StreamingDivx" default="true"/>
 
         <setting visible="false" id="plugin_streamingk_com" type="bool" label="StreamingK" default="true"/>
-
-        <setting visible="false" id="plugin_streamiz_co" type="bool" label="Streamiz" default="true"/>
 
         <setting visible="false" id="plugin_tfarjo" type="bool" label="Tfarjo" default="true"/>
 
@@ -179,6 +177,8 @@
         <setting visible="false" id="plugin_tvrex_net" type="bool" label="Tvrex" default="true"/>
 
         <setting visible="false" id="plugin_tvseriestreaming" type="bool" label="TVseriestreaming" default="true"/>
+
+        <setting visible="false" id="plugin_vf_space" type="bool" label="VF.Space" default="true"/>
 
         <setting visible="false" id="plugin_videobuzzy_com" type="bool" label="Videobuzzy" default="true"/>
 

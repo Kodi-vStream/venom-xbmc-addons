@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress#, VSlog
+from resources.lib.comaddon import progress, VSlog
 from resources.lib.util import cUtil
 
 import re
@@ -27,7 +27,7 @@ SERIE_NEWS = (URL_MAIN + 'serie-en-streaming/', 'showSeries')
 SERIE_SERIES = (URL_MAIN + 'serie-streaming/', 'showMovies')
 # SERIE_LIST = (URL_MAIN + 'serie-streaming/', 'showSeriesList')
 
-URL_SEARCH = (URL_MAIN + 'index.php?do=search', 'showSearch')
+URL_SEARCH = (URL_MAIN, 'showSearch')
 URL_SEARCH_MOVIES = ('', 'showMovies')
 URL_SEARCH_SERIES = ('', 'showSeries')
 FUNCTION_SEARCH = 'showSearch'
@@ -118,18 +118,23 @@ def showMovies(sSearch = ''):
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
 
-        pdata = 'do=search&subaction=search&story=' + sUrl + '&catlist%5B%5D=1'
-
+        pdata = 'do=search&subaction=search&story=' + sUrl + '&titleonly=3&all_word_seach=1&catlist[]=1'
+        
         oRequest = cRequestHandler(URL_SEARCH[0])
-        oRequest.setRequestType(1)
+        #oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Referer', URL_MAIN)
+        oRequest.addHeaderEntry('Origin', URL_MAIN)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
         oRequest.addParametersLine(pdata)
 
         sHtmlContent = oRequest.request()
+        
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
 
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -137,7 +142,8 @@ def showMovies(sSearch = ''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="mov clearfix">.+?<img *src="([^"]+)" *alt="([^"]+)".+?data-link="([^"]+)".+?nbloc1">([^<]+)<\/span>.+?nbloc2">([^<]+)*<\/span>.+?div class="ml-label">Synopsis.+?<div class="ml-desc">(.+?)<\/div>'
+    #sPattern = '<div class="mov clearfix">.+?<img *src="([^"]+)" *alt="([^"]+)".+?data-link="([^"]+)".+?nbloc1">([^<]+)<\/span>.+?nbloc2">([^<]+)*<\/span>.+?div class="ml-label">Synopsis.+?<div class="ml-desc">(.+?)<\/div>'
+    sPattern = '<img *src="([^"]+)" *alt="([^"]+)".+?data-link="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -153,13 +159,14 @@ def showMovies(sSearch = ''):
                 break
 
             sThumb = aEntry[0]
+            sDesc = ''#aEntry[5]
+            Squal = ''#aEntry[4]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + aEntry[0]
 
             sTitle = aEntry[1].replace(' wiflix', '')
-            sDisplaytitle = '%s [%s] (%s)' % (sTitle, aEntry[4], aEntry[3])
+            sDisplaytitle = '%s [%s]' % (sTitle, Squal)
             sUrl =  aEntry[2]
-            sDesc = aEntry[5]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -195,11 +202,10 @@ def showSeries(sSearch = ''):
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
 
-
-        pdata = 'do=search&subaction=search&story=' + sUrl + '&catlist%5B%5D=31'
+        pdata = 'do=search&subaction=search&story=' + sUrl + '&titleonly=3&all_word_seach=1&catlist[]=31'
 
         oRequest = cRequestHandler(URL_SEARCH[0])
-        oRequest.setRequestType(1)
+        #oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Referer', URL_MAIN)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')

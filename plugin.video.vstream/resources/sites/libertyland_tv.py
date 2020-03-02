@@ -16,7 +16,7 @@ SITE_DESC = 'Les films et séries récentes en streaming et en téléchargement'
 
 #URL_MAIN = 'https://ww2.libertyvf.ch/'
 #Modif du 26/08
-URL_MAIN = 'https://www.libertyland.am/'
+URL_MAIN = 'https://libertyland.am/'
 
 URL_SEARCH = (URL_MAIN + 'v2/recherche/', 'showMovies')
 URL_SEARCH_MOVIES = ('', 'showMovies')
@@ -256,7 +256,7 @@ def showMovies(sSearch = ''):
         oRequestHandler.addParameters('mot_search', sSearch)
         sHtmlContent = oRequestHandler.request()
 
-        sPattern = '<img class="img-responsive" *src="([^"]+)" alt="([^"]+)".+?<div class="divtelecha.+?href="([^"]+)"'
+        sPattern = '<img class="img-responsive" *src="([^"]+)".+?<div class="divtelecha.+?href="([^"]+)">([^<>]+)<'
 
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -285,8 +285,9 @@ def showMovies(sSearch = ''):
             if sSearch:
                 sQual = ''
                 sThumb = URL_MAIN[:-1] + aEntry[0]
-                sTitle = aEntry[1].replace('télécharger ', '').replace('en Streaming', '')
-                sUrl2 = URL_MAIN[:-1] + aEntry[2]
+                sTitle = aEntry[2].replace('télécharger ', '').replace('en Streaming', '')
+                sTitle =sTitle.replace(' TELECHARGEMENT GRATUIT', '')
+                sUrl2 = URL_MAIN[:-1] + aEntry[1]
             elif '/series' in sUrl:
                 sQual = ''
                 sUrl2 = URL_MAIN[:-1] + aEntry[0]

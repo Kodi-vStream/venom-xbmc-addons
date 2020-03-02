@@ -116,24 +116,6 @@ def checklowerkey(key,dict):
             return i
     return False
 
-def solvecharcode(chain,t):
-
-    v = chain.find('t.charCodeAt') + 12
-    if v == 11:
-        return chain
-        
-    dat = checkpart(chain[v:],')')
-
-    r = parseInt(dat)
-    v = ord(t[int(r)])
-    VSlog ('value ' + str(r) + ' Result ' + str(v))
-    chain = chain.replace('t.charCodeAt' + dat, '+' + str(v) )
-    
-    #Remove parzenthesis
-    chain = chain.replace( '(' + '+' + str(v) + ')' , '+' + str(v))
-
-    return chain
-
 def checkpart(s,end='+'):
     p = 0
     pos = 0
@@ -244,60 +226,6 @@ class CloudflareBypass(object):
 
         return head
 
-    def GetResponse(self,htmlcontent,domain):
-        #VSlog(htmlcontent)
-
-        #truc cache
-        rq = re.search('<div style="display:none;visibility:hidden;" id="(.*?)">(.*?)<\/div>', str(htmlcontent),re.MULTILINE | re.DOTALL)
-        id = rq.group(1)
-        val = rq.group(2)
-        #VSlog (str(id) + ' ' + str(val))
-
-        htmlcontent = re.sub(
-            r'function\(p\){var p = eval\(eval\(.+?return \+\(p\)}\(\);',
-            "{};".format(rq.group(2)),
-            str(htmlcontent)
-        )
-        
-        #For compatibility
-        if '+ t.length' not in htmlcontent:
-            #domain = 
-            pass
-
-        line1 = re.findall('var s,t,o,p,b,r,e,a,k,i,n,g,f, (.+?)={"(.+?)":\+*(.+?)};',str(htmlcontent))
-
-        varname = line1[0][0] + '.' + line1[0][1]
-        calcul = parseInt(line1[0][2])
-
-        t = domain
-
-        js = htmlcontent
-        #Cleaning
-        js = re.sub(r"a\.value = ((.+).toFixed\(10\))?", r"\1", js)
-        js = re.sub(r"\s{3,}[a-z](?: = |\.).+", "", js).replace("t.length", str(len(domain)))
-        js = js.replace('; 121', '')
-        js = re.sub(r'function\(p\){return eval\(\(true\+.+?}', 't.charCodeAt',js)
-        js = re.sub(r"[\n\\']", "", js)
-        js = solvecharcode(js,t)
-        htmlcontent = js
-
-        AllLines = re.findall(';' + varname + '([*\-+])=([^;]+)',str(htmlcontent))
-        #VSlog ('\nFirst line : ' + str(line1[0][2]) )
-
-        for aEntry in AllLines:
-
-            #VSlog ('\nother lines : ' + str(aEntry))
-            s = str(aEntry[0])
-            v = parseInt(aEntry[1])
-
-            calcul = eval( format(calcul,'.17g') + str(aEntry[0]) + format(v,'.17g'))
-            #VSlog(">>>>>>>>>>>>>>>>: " + format(calcul,'.17g')+ '\n')
-
-        rep = calcul# + len(domain)
-        ret = format(rep,'.10f')
-
-        return (str(ret))
-
     def GetReponseInfo(self):
         return self.RedirectionUrl, self.Header
 
@@ -356,20 +284,28 @@ class CloudflareBypass(object):
                 data[ddd[0]] = ddd[1]
         else:
             method = 'GET'
+        
+        from resources.lib import cloudscraper
 
-        s = CloudflareScraper()
+        #Fonctionne pour le moment sur tout les sites, donc on ne va pas se compliquer la vie.
+        s = cloudscraper.create_scraper(browser={'custom': 'ScraperBot/1.0'})
 
         r = s.request(method,url,headers = self.SetHeader() , cookies = self.ParseCookies(cookies) , data = data )
+        #r = s.request(method,url)
+        MemCookie = r.cookies.get_dict()
+        
         if r:
             sContent = r.text.encode("utf-8")
             self.RedirectionUrl = r.url
             self.Header = r.headers
+            VSlog("Page ok" )
         else:
             VSlog("Erreur, delete cookie" )
             sContent = ''
             #self.RedirectionUrl = r.url
             #self.Header = r.headers
-            s.MemCookie = ''
+            MemCookie = {}
+            #r.cookies.clear()
             GestionCookie().DeleteCookie(self.host.replace('.', '_'))
         
         #fh = open('c:\\test.txt', "w")
@@ -378,7 +314,7 @@ class CloudflareBypass(object):
             
         #Memorisation des cookies
         c = ''
-        cookie = s.MemCookie
+        cookie = MemCookie
         if cookie:
             for i in cookie:
                 c = c + i + '=' + cookie[i] + ';'
@@ -388,333 +324,3 @@ class CloudflareBypass(object):
                 VSlog("Sauvegarde cookies : " + str(c) )
         
         return sContent
-
-#----------------------------------------------------------------------------------------------------------------
-# Code from https://github.com/VeNoMouS/cloudscraper
-class CloudflareScraper(Session):
-    def __init__(self, *args, **kwargs):
-    
-        super(CloudflareScraper, self).__init__(*args, **kwargs)
-        self.cf_tries = 0
-        self.GetCaptha = False
-        
-        self.firsturl = ''
-        
-        self.headers = {
-                'User-Agent': UA,
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                'Accept-Language': 'en-US,en;q=0.5',
-                'Connection': 'close',
-                'Cache-Control': 'no-cache',
-                'Pragma': 'no-cache',
-                'DNT': '1'
-            }
-            
-        self.cipherHeader = {
-                'cipherSuite': [
-                    "TLS_AES_128_GCM_SHA256",
-                    "TLS_CHACHA20_POLY1305_SHA256",
-                    "TLS_AES_256_GCM_SHA384",
-                    "ECDHE-ECDSA-AES128-GCM-SHA256",
-                    "ECDHE-RSA-AES128-GCM-SHA256",
-                    "ECDHE-ECDSA-CHACHA20-POLY1305",
-                    "ECDHE-RSA-CHACHA20-POLY1305",
-                    "ECDHE-ECDSA-AES256-GCM-SHA384",
-                    "ECDHE-RSA-AES256-GCM-SHA384",
-                    "ECDHE-ECDSA-AES256-SHA",
-                    "ECDHE-ECDSA-AES128-SHA",
-                    "ECDHE-RSA-AES128-SHA",
-                    "ECDHE-RSA-AES256-SHA",
-                    "DHE-RSA-AES128-SHA",
-                    "AES128-SHA",
-                    "AES256-SHA"
-                ],
-            }
-
-        self.MemCookie = {}
-        
-        self.cipherSuite = None
-        self.mount('https://', CipherSuiteAdapter(self.loadCipherSuite()))
-        
-    ##########################################################################################################################################################
-    #
-    #Thx again to to VeNoMouS for this code
-    ##########################################################################################################################################################
-
-    def loadCipherSuite(self):
-        if self.cipherSuite:
-            return self.cipherSuite
-
-        self.cipherSuite = ''
-
-        if hasattr(ssl, 'PROTOCOL_TLS'):
-            ciphers = [
-                'ECDHE-ECDSA-AES128-GCM-SHA256', 'ECDHE-ECDSA-CHACHA20-POLY1305-SHA256', 'ECDHE-RSA-CHACHA20-POLY1305-SHA256',
-                'ECDHE-RSA-AES128-CBC-SHA', 'ECDHE-RSA-AES256-CBC-SHA', 'RSA-AES128-GCM-SHA256',
-                'RSA-AES256-GCM-SHA384', 'RSA-AES256-SHA', '3DES-EDE-CBC'
-            ]
-
-            if hasattr(ssl, 'PROTOCOL_TLSv1_3'):
-                ciphers.insert(0, ['GREASE_3A', 'GREASE_6A', 'AES128-GCM-SHA256', 'AES256-GCM-SHA256', 'AES256-GCM-SHA384', 'CHACHA20-POLY1305-SHA256'])
-
-            ctx = ssl.SSLContext(getattr(ssl, 'PROTOCOL_TLSv1_3', ssl.PROTOCOL_TLSv1_2))
-
-            for cipher in ciphers:
-                try:
-                    ctx.set_ciphers(cipher)
-                    self.cipherSuite = '{}:{}'.format(self.cipherSuite, cipher).rstrip(':')
-                except ssl.SSLError:
-                    pass
-
-        return self.cipherSuite
-
-    ##########################################################################################################################################################
-
-    def request(self, method, url, *args, **kwargs):
-        
-        if self.firsturl == '':
-            self.firsturl = url
-        
-        if 'cookies' in kwargs:
-            self.MemCookie.update( kwargs['cookies'] )
-        
-        #kwargs['params'].update(kwargs['data'])
-        #kwargs.pop('data',None)
-            
-        if Mode_Debug:
-            VSlog("Headers send : " + str(kwargs['headers']) )
-            VSlog("Cookies send : " + str(kwargs['cookies']) )
-            VSlog("url : " + url )
-            VSlog("Method : " + method )
-            VSlog("param send : " + str(kwargs.get('params','')) )
-            VSlog("data send : " + str(kwargs.get('data','')) )
-            
-               
-        resp = super(CloudflareScraper, self).request(method, url, *args, **kwargs)
-
-        if Mode_Debug:
-            VSlog( 'cookie recu ' + str(resp.cookies.get_dict())  )
-
-        #save cookie
-        self.MemCookie.update( resp.cookies.get_dict() )
-        
-        #bug
-        kwargs['cookies'].update( resp.cookies.get_dict() )
-
-        # Check if Cloudflare anti-bot is on
-        if self.ifCloudflare(resp):
-            
-            VSlog('Page still protected' )
-            
-            resp2 = self.solve_cf_challenge(resp, **kwargs)
-            
-            #self.MemCookie.update( resp.cookies.get_dict() )
-            #VSlog ('cookie recu ' + str(self.MemCookie) )
-        
-            return resp2
-            
-        # Otherwise, no Cloudflare anti-bot detected
-        if resp:
-            VSlog('Page decodee' )
-            
-        return resp
-
-    def ifCloudflare(self, resp):
-        if resp.headers.get('Server', '').startswith('cloudflare'):
-            if self.cf_tries >= 3:
-                VSlog('Failed to solve Cloudflare challenge!' )
-            elif b'/cdn-cgi/l/chk_captcha' in resp.content:
-                VSlog('Protect by Captcha' )
-                #One more try ?
-                if not self.GetCaptha:
-                    self.GetCaptha = True
-                    self.cf_tries = 0
-                    #return 'captcha'
-                    
-            elif resp.status_code == 503:
-                return True
-
-            elif resp.status_code == 403:
-                VSlog('403 Forbidden' )
-
-            resp = False
-            return False
-        else:
-            return False
-
-    def solve_cf_challenge(self, resp, **original_kwargs):
-        self.cf_tries += 1
-        body = resp.text
-        parsed_url = urlparse(resp.url)
-        domain = parsed_url.netloc
-        s_match = re.search('<form id="challenge-form" action="([^"]+)', body)
-        if s_match:
-            url_end = s_match.group(1)
-
-        submit_url = "%s://%s%s" % (parsed_url.scheme, domain,url_end)
-
-        cloudflare_kwargs = original_kwargs.copy( )
-        #params = cloudflare_kwargs.setdefault("params", OrderedDict())
-        data = OrderedDict()
-        headers = cloudflare_kwargs.setdefault("headers", {})
-        headers["Referer"] = str(resp.url)
-        
-        #fh = open('html.txt', "r")
-        #body = fh.read()
-        #fh.close()
-        
-        if Mode_Debug:
-            VSlog('Trying decoding, pass ' + str(self.cf_tries) )
-            
-            #fh = open('c:\\test.txt', "w")
-            #fh.write(body)
-            #fh.close()
-        
-        try:
-            cf_delay = float(re.search('submit.*?(\d+)', body, re.DOTALL).group(1)) / 1000.0
-
-            form_index = body.find('id="challenge-form"')
-            if form_index == -1:
-                raise Exception('CF form not found')
-            sub_body = body[form_index:]
-
-            #s_match = re.search('name="s" value="(.+?)"', sub_body)
-            #if s_match:
-            #    params["s"] = s_match.group(1) # On older variants this parameter is absent.
-                
-            data["r"] = str(re.search(r'name="r" value="(.+?)"', sub_body).group(1))
-            data["jschl_vc"] = str(re.search(r'name="jschl_vc" value="(\w+)"', sub_body).group(1))
-            data["pass"] = str(re.search(r'name="pass" value="(.+?)"', sub_body).group(1)) 
-
-            if body.find('id="cf-dn-', form_index) != -1:
-                extra_div_expression = re.search('id="cf-dn-.*?>(.+?)<', sub_body).group(1)
-
-            # Initial value.
-            js_answer = self.cf_parse_expression(
-                re.search('setTimeout\(function\(.*?:(.*?)}', body, re.DOTALL).group(1)
-            )
-            # Extract the arithmetic operations.
-            builder = re.search("challenge-form'\);\s*;(.*);a.value", body, re.DOTALL).group(1)
-            # Remove a function semicolon before splitting on semicolons, else it messes the order.
-            lines = builder.replace(' return +(p)}();', '', 1).split(';')
-
-            for line in lines:
-                if len(line) and '=' in line:
-                    heading, expression = line.split('=', 1)
-                    if 'eval(eval(' in expression:
-                        # Uses the expression in an external <div>.
-                        expression_value = self.cf_parse_expression(extra_div_expression)
-                    elif 'function(p' in expression:
-                        # Expression + domain sampling function.
-                        expression_value = self.cf_parse_expression(expression, domain)
-                    else:
-                        expression_value = self.cf_parse_expression(expression)
-                    js_answer = self.cf_arithmetic_op(heading[-1], js_answer, expression_value)
-
-            if '+ t.length' in body:
-                js_answer += len(domain) # Only older variants add the domain length.
-
-            data["jschl_answer"] = '%.10f' % js_answer
-
-        except Exception as e:
-            VSlog ('error')
-            raise
-
-        # Cloudflare requires a delay before solving the challenge.
-        # Always wait the full delay + 1s because of 'time.sleep()' imprecision.
-        time.sleep(cf_delay + 1.0)
-
-        # Requests transforms any request into a GET after a redirect,
-        # so the redirect has to be handled manually here to allow for
-        # performing other types of requests even as the first request.
-        method = resp.request.method
-        cloudflare_kwargs["allow_redirects"] = False
-        
-        #VSlog('Trying :' + str(params))
-        #VSlog('With :' + str(cloudflare_kwargs['cookies']))
-        #VSlog('With :' + str(cloudflare_kwargs['headers']))
-
-        #submit_url = 'http://httpbin.org/headers'
-        
-        cloudflare_kwargs['data'].update( data )
-        method = 'POST'
-        
-        redirect = self.request(method, submit_url, **cloudflare_kwargs) 
-        
-        if not redirect:
-            return False
-
-        #self.MemCookie.update( redirect.cookies.get_dict() )
-        
-        VSlog( '>>>' + str( redirect.headers)   )
-        
-        if 'Location' in redirect.headers:
-            redirect_location = urlparse(redirect.headers["Location"])
-            
-            #if not redirect_location.netloc:
-            #    redirect_url = "%s://%s%s" % (parsed_url.scheme, domain, redirect_location.path)
-            #    response = self.request(method, redirect_url, **original_kwargs)
-            #    VSlog( '1' )
-
-            if not redirect.headers["Location"].startswith('http'):
-                redirect = 'https://'+domain+redirect.headers["Location"]
-            else:
-                redirect = redirect.headers["Location"]
-
-            response = self.request(method, redirect, **original_kwargs)
-        else:
-            response = redirect
-
-        # Reset the repeated-try counter when the answer passes.
-        self.cf_tries = 0
-        return response
-
-    def cf_sample_domain_function(self, func_expression, domain):
-        parameter_start_index = func_expression.find('}(') + 2
-        # Send the expression with the "+" char and enclosing parenthesis included, as they are
-        # stripped inside ".cf_parse_expression()'.
-        sample_index = self.cf_parse_expression(
-            func_expression[parameter_start_index : func_expression.rfind(')))')]
-        )
-        return ord(domain[int(sample_index)])
-
-    def cf_arithmetic_op(self, op, a, b):
-        if op == '+':
-            return a + b
-        elif op == '/':
-            return a / float(b)
-        elif op == '*':
-            return a * float(b)
-        elif op == '-':
-            return a - b
-        else:
-            raise Exception('Unknown operation')
-
-    def cf_parse_expression(self, expression, domain=None):
-
-        def _get_jsfuck_number(section):
-            digit_expressions = section.replace('!+[]', '1').replace('+!![]', '1').replace('+[]', '0').split('+')
-            return int(
-                # Form a number string, with each digit as the sum of the values inside each parenthesis block.
-                ''.join(
-                    str(sum(int(digit_char) for digit_char in digit_expression[1:-1])) # Strip the parenthesis.
-                    for digit_expression in digit_expressions
-                )
-            )
-
-        if '/' in expression:
-            dividend, divisor = expression.split('/')
-            dividend = dividend[2:-1] # Strip the leading '+' char and the enclosing parenthesis.
-
-            if domain:
-                # 2019-04-02: At this moment, this extra domain sampling function always appears on the
-                # divisor side, at the end.
-                divisor_a, divisor_b = divisor.split('))+(')
-                divisor_a = _get_jsfuck_number(divisor_a[5:]) # Left-strip the sequence of "(+(+(".
-                divisor_b = self.cf_sample_domain_function(divisor_b, domain)
-                return _get_jsfuck_number(dividend) / float(divisor_a + divisor_b)
-            else:
-                divisor = divisor[2:-1]
-                return _get_jsfuck_number(dividend) / float(_get_jsfuck_number(divisor))
-        else:
-            return _get_jsfuck_number(expression[2:-1])
