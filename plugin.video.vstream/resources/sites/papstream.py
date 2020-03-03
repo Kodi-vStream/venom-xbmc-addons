@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'papstream'
 SITE_NAME = 'PapStream'
 SITE_DESC = 'Films, Séries & Mangas'
 
-URL_MAIN = 'https://www.papstream.info/'
+URL_MAIN = 'https://www.papstream.cc/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + 'rechercher', 'showMovies')
@@ -131,7 +131,7 @@ def showGenres():
 def showMovieYears():
     oGui = cGui()
 
-    for i in reversed (xrange(1918, 2019)):
+    for i in reversed (xrange(1918, 2020)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/annee/' + Year + '.html')
@@ -142,7 +142,7 @@ def showMovieYears():
 def showSerieYears():
     oGui = cGui()
 
-    for i in reversed (xrange(1936, 2019)):
+    for i in reversed (xrange(1936, 2020)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/annee/' + Year + '.html')
@@ -153,7 +153,7 @@ def showSerieYears():
 def showAnimeYears():
     oGui = cGui()
 
-    for i in reversed (xrange(1965, 2019)):
+    for i in reversed (xrange(1965, 2020)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'animes/annee/' + Year + '.html')
@@ -180,8 +180,8 @@ def showMovies(sSearch = ''):
         # oRequestHandler.addHeaderEntry('Origin', URL_MAIN)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-        oRequestHandler.addParametersLine('do=search')
-        oRequestHandler.addParametersLine('subaction=search')
+        # oRequestHandler.addParametersLine('do=search')
+        # oRequestHandler.addParametersLine('subaction=search')
         oRequestHandler.addParametersLine('story=' + sSearch)
 
     sHtmlContent = oRequestHandler.request()
@@ -221,7 +221,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -248,7 +248,7 @@ def showSaisons():
     sHtmlContent = oRequestHandler.request()
 
     sDesc = ''
-    sPattern = '<div class="fstory-content.+?</h2>(.+?)<div'
+    sPattern = '</a> :</h2>(.+?)<div'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if ( aResult[0] == True ):
         sDesc = aResult[1][0]
@@ -345,11 +345,12 @@ def showLink():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #if (not sDesc):
-        #sPattern = '<div class=["\']fstory-content.+?</h2>(.+?)<div'
-        #aResult = oParser.parse(sHtmlContent, sPattern)
-        #if aResult[0]:
-            #sDesc = aResult[1][0]
+    #récupération du synopsis pour les films
+    if (not sDesc):
+        sPattern = '</a> :</h2>(.+?)<div'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sDesc = aResult[1][0]
 
     sPattern = 'href="#" rel="([^"]+)".+?id="player".+?<i class="server player-.+?"></i>([^<]+)</span>.+?<img src="([^"]+)".+?<span style=".+?">([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -379,7 +380,7 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('sUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    
+
     if sUrl.startswith('/'):
         sUrl = URL_MAIN[:-1] + sUrl
     #headers = {'User-Agent': UA, 'Referer': refUrl}
