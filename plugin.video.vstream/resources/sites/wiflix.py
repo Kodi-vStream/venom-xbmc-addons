@@ -143,7 +143,7 @@ def showMovies(sSearch = ''):
         sHtmlContent = oRequestHandler.request()
 
     #sPattern = '<div class="mov clearfix">.+?<img *src="([^"]+)" *alt="([^"]+)".+?data-link="([^"]+)".+?nbloc1">([^<]+)<\/span>.+?nbloc2">([^<]+)*<\/span>.+?div class="ml-label">Synopsis.+?<div class="ml-desc">(.+?)<\/div>'
-    sPattern = '<img *src="([^"]+)" *alt="([^"]+)".+?data-link="([^"]+)"'
+    sPattern = '<img *src="([^"]+)" *alt="([^"]+)".+?data-link="([^"]+)".+?class="nbloc1">([^"]+)<\/span.+?class="nbloc2">([^"]+)<\/span'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -160,12 +160,13 @@ def showMovies(sSearch = ''):
 
             sThumb = aEntry[0]
             sDesc = ''#aEntry[5]
-            Squal = ''#aEntry[4]
+            Squal = aEntry[4]
+            sLang = aEntry[3]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + aEntry[0]
 
             sTitle = aEntry[1].replace(' wiflix', '')
-            sDisplaytitle = '%s [%s]' % (sTitle, Squal)
+            sDisplaytitle = '%s [%s]' % (sTitle, Squal) + ' [' + sLang + ']'
             sUrl =  aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
