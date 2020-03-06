@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, dialog, VSlog
+from resources.lib.comaddon import progress, dialog, VSlog, addon
 from resources.lib.config import GestionCookie
 
 import re, random
@@ -16,12 +16,59 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/5
 SITE_IDENTIFIER = 'tirexo'
 SITE_NAME = '[COLOR violet]Tirexo (ZT lol)[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
-URL_MAIN = 'https://www.zone-telechargement.monster/'
+URL_HOST = 'https://www.zone-telechargement.vip/'
 
-URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist%5B%5D=2&story=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist%5B%5D=15&story=', 'showMovies')
-URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?do=search&subaction=search&catlist%5B%5D=32&story=', 'showMovies')
-URL_SEARCH_MISC = (URL_MAIN + 'index.php?do=search&subaction=search&catlist%5B%5D=39&story=', 'showMovies')
+def GetURL_MAIN():
+    ADDON = addon()
+    MemorisedHost = ''
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    Sources = oInputParameterHandler.getValue('function')
+
+    # z = oInputParameterHandler.getAllParameter()
+    # VSlog(z)
+
+    # quand vstream load tous les sites on passe >> globalSources
+    # quand vstream load a partir du menu home on passe >> callplugin
+    # quand vstream fabrique une liste de plugin pour menu(load site globalRun and call function search) >> search
+    # quand l'url ne contient pas celle déjà enregistrer dans settings et que c'est pas dlprotect on active.
+    if not (Sources == 'callpluging' or Sources == 'globalSources' or Sources == 'search') and not ADDON.getSetting('Tirexo')[6:] in sUrl and not 'dl-protect.' in sUrl and not 'zt-protect.' in sUrl:
+        oRequestHandler = cRequestHandler(URL_HOST)
+        sHtmlContent = oRequestHandler.request()
+        MemorisedHost = oRequestHandler.getRealUrl()
+        if MemorisedHost is not None and MemorisedHost != '' :
+            if not 'cf_chl_jschl_tk' in MemorisedHost:
+                ADDON.setSetting('Tirexo', MemorisedHost)
+                VSlog("Tirexo url  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('Tirexo'))
+        else:
+            ADDON.setSetting('Tirexo', URL_HOST)
+            VSlog("Url non changer car egal a None le site peux etre surchager utilisation de >> ADDON.getSetting('Tirexo')")
+
+        return ADDON.getSetting('Tirexo')
+    else:
+        # si pas de zt dans settings on récup l'url une fois dans le site
+        if not ADDON.getSetting('Tirexo') and not (Sources == 'callpluging' or Sources == 'globalSources' or Sources == 'search'):
+            oRequestHandler = cRequestHandler(URL_HOST)
+            sHtmlContent = oRequestHandler.request()
+            MemorisedHost = oRequestHandler.getRealUrl()
+            if MemorisedHost is not None and MemorisedHost != '':
+                if not 'cf_chl_jschl_tk' in MemorisedHost:
+                    ADDON.setSetting('Tirexo', MemorisedHost)
+                    VSlog("Tirexo url vide  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('Tirexo'))
+            else:
+                ADDON.setSetting('Tirexo', URL_HOST)
+                VSlog("Url non changer car egal a None le site peux etre surchager utilisation de >> ADDON.getSetting('Tirexo')")
+
+            return ADDON.getSetting('Tirexo')
+        else:
+            VSlog("Tirexo pas besoin d'url")
+            return ADDON.getSetting('Tirexo')
+
+URL_MAIN = GetURL_MAIN()
+URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=2&story=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=15&story=', 'showMovies')
+URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=32&story=', 'showMovies')
+URL_SEARCH_MISC = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=39&story=', 'showMovies')
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_EXCLUS = (URL_MAIN + 'exclus/', 'showMovies')
