@@ -9,6 +9,7 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, dialog#, VSlog
 from resources.lib.util import cUtil
 import base64, re
+from resources.lib.util import Unquote
 
 SITE_IDENTIFIER = 'streamay_bz'
 SITE_NAME = 'Streamay'
@@ -23,8 +24,8 @@ MOVIE_LIST = (URL_MAIN, 'AlphaSearch')
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-# résultat de la recherche trop aléatoire donc désactiver en search globale
-# URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_MOVIES = ('', 'showSearchMovies')
+
 
 def load():
     oGui = cGui()
@@ -57,17 +58,19 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
-        showMovies(sUrl)
+        showSearchMovies(sSearchText)
         oGui.setEndOfDirectory()
         return
 
 def showSearchMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
+        
+        sSearch = Unquote(sSearch)
+        
         sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
 
-        pdata = 'nonce=af72e2fa42&action=tr_livearch&trsearch=' + sSearch #voir si nonce change
+        pdata = 'nonce=7a700d2f1b&action=tr_livearch&trsearch=' + sSearch #voir si nonce change
 
         oRequest = cRequestHandler(sUrl2)
         oRequest.setRequestType(1)
