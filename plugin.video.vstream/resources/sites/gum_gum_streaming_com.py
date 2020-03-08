@@ -156,7 +156,7 @@ def showEpisodes():
 
     #récupération du poster
     sThumb = ''
-    sPattern = '<h4 style=".+?"><img class="alignright".+?src="(.+?)"'
+    sPattern = '<h4 style=".+?"><img class="alignright".+?data-lazy-src="(.+?)"'
     sThumbResult = oParser.parse(sUsentContent, sPattern)
     if sThumbResult[0]:
         sThumb = sThumbResult[1][0]
@@ -286,7 +286,7 @@ def showHosters():
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<div class="video-container"><iframe.+?src="([^<>"]+?)"'
+    sPattern = '<div class="video-container"><iframe.+?data-lazy-src="([^<>"]+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     VSlog(aResult)
