@@ -27,7 +27,7 @@ class cUtil:
 
     def CheckOccurence(self,str1,str2):
 
-        Ignoreliste = ['du', 'la', 'le', 'les', 'de', 'un', 'une','des']
+        Ignoreliste = ['du', 'la', 'le', 'les', 'de', 'un', 'une', 'des', 'the']
 
         str1 = str1.replace('+',' ').replace('%20',' ')
         str1 = str1.lower()
