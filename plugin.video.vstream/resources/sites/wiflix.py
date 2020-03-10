@@ -143,7 +143,8 @@ def showMovies(sSearch = ''):
         sHtmlContent = oRequestHandler.request()
 
     #sPattern = '<div class="mov clearfix">.+?<img *src="([^"]+)" *alt="([^"]+)".+?data-link="([^"]+)".+?nbloc1">([^<]+)<\/span>.+?nbloc2">([^<]+)*<\/span>.+?div class="ml-label">Synopsis.+?<div class="ml-desc">(.+?)<\/div>'
-    sPattern = '<img *src="([^"]+)" *alt="([^"]+)".+?data-link="([^"]+)".+?class="nbloc1">([^"]+)<\/span.+?class="nbloc2">([^"]+)<\/span'
+    sPattern = '<div class="mov clearfix">.+?<img *src="([^"]+)" *alt="([^"]+)".+?data-link="([^"]+)".+?class="nbloc1">([^<]+)<\/span.+?class="nbloc2">([^<]+)*<\/span'
+    sPattern += '.+?"ml-label">Date de sortie:</div> <div class="ml-desc"> (.+?)</div>.+?"ml-label">Synopsis:</div> <div class="ml-desc">(.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -159,20 +160,39 @@ def showMovies(sSearch = ''):
                 break
 
             sThumb = aEntry[0]
-            sDesc = ''#aEntry[5]
-            Squal = aEntry[4]
+            sTitle = aEntry[1].replace(' wiflix', '')
+            sUrl =  aEntry[2]
             sLang = aEntry[3]
+            Squal = aEntry[4]
+            sYear = aEntry[5]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + aEntry[0]
 
-            sTitle = aEntry[1].replace(' wiflix', '')
-            sDisplaytitle = '%s [%s]' % (sTitle, Squal) + ' [' + sLang + ']'
-            sUrl =  aEntry[2]
+            # Nettoyage du titre
+            sDesc = str(aEntry[6])
+            sDesc = sDesc.replace('en streaming ', '')
+            sDesc = sDesc.replace('Regarder film ' + sTitle +';', '')
+            sDesc = sDesc.replace('Regarder film ' + sTitle +':', '')
+            sDesc = sDesc.replace('Voir film ' + sTitle +';', '')
+            sDesc = sDesc.replace('Voir film ' + sTitle +':', '')
+            sDesc = sDesc.replace('Voir Film ' + sTitle +':', '')
+            sDesc = sDesc.replace('Voir film ' + sTitle +' :', '')
+            sDesc = sDesc.replace('Regarder ' + sTitle +';', '')
+            sDesc = sDesc.replace('Regarder ' + sTitle +' :', '')
+            sDesc = sDesc.replace('Regarder ' + sTitle +':', '')
+            sDesc = sDesc.replace('voir ' + sTitle +';', '')
+            sDesc = sDesc.replace('voir ' + sTitle +':', '')
+            sDesc = sDesc.replace('Voir ' + sTitle +':', '')
+            sDesc = sDesc.replace('Regarder film ', '')
+            sDesc = sDesc.strip()
+
+            sDisplaytitle = '%s [%s] (%s)' % (sTitle, Squal, sLang)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sYear', sYear)
 
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplaytitle, '', sThumb, sDesc, oOutputParameterHandler)
 
