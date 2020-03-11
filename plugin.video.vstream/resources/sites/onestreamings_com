@@ -17,13 +17,13 @@ SITE_DESC = 'Films, Séries & Mangas'
 URL_MAIN = 'https://n1streamings.com/'
 
 FUNCTION_SEARCH = 'showMovies'
-URL_SEARCH = (URL_MAIN + 'rechercher', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'rechercher-', 'showMovies')
 URL_SEARCH_MOVIES = ('', 'showMovies')
 URL_SEARCH_SERIES = ('', 'showMovies')
 
 MOVIE_NEWS = (URL_MAIN + 'films.html', 'showMovies')
-MOVIE_MOVIE = (URL_MAIN , 'showMovies')
-MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenres')
+MOVIE_MOVIE = (True, 'load') #(URL_MAIN , 'showMovies')
+MOVIE_GENRES = (URL_MAIN , 'showGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
 
 SERIE_SERIES = (URL_MAIN + 'series.html', 'showMovies')
@@ -101,24 +101,24 @@ def showGenres():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
-    liste.append( ['Action', sUrl + 'action/'] )
-    liste.append( ['Animation', sUrl + 'animation/'] )
-    liste.append( ['Aventure', sUrl + 'aventure/'] )
-    liste.append( ['Biopic', sUrl + 'biopic/'] )
-    liste.append( ['Comédie', sUrl +'comedie/'] )
-    liste.append( ['Comédie Dramatique', sUrl + 'comedie-dramatique/'] )
-    liste.append( ['Comédie Musicale', sUrl + 'comedie-musicale/'] )
-    liste.append( ['Divers', sUrl + 'divers/'] )
-    liste.append( ['Documentaire', sUrl + 'documentaire/'] )
-    liste.append( ['Drame', sUrl + 'drame/'] )
-    liste.append( ['Epouvante Horreur', sUrl + 'epouvante-horreur/'] )
-    liste.append( ['Famille', sUrl + 'famille/'] )
-    liste.append( ['Fantastique', sUrl + 'fantastique/'] )
-    liste.append( ['Guerre', sUrl + 'guerre/'] )
-    liste.append( ['Policier', sUrl + 'policier/'] )
-    liste.append( ['Romance', sUrl +'romance/'] )
-    liste.append( ['Science Fiction', sUrl + 'science-fiction/'] )
-    liste.append( ['Thriller', sUrl + 'thriller/'] )
+    liste.append( ['Action', URL_MAIN + 'recherche-Genre-Action.html'] )
+    liste.append( ['Animation', URL_MAIN + 'recherche-Genre-Animation.html'] )
+    liste.append( ['Aventure', URL_MAIN + 'aventure/'] )
+    liste.append( ['Biopic', URL_MAIN + 'recherche-Genre-Biopic.html'] )
+    liste.append( ['Comédie', URL_MAIN +'comedie/'] )
+    liste.append( ['Comédie Dramatique', URL_MAIN + 'comedie-dramatique/'] )
+    liste.append( ['Comédie Musicale', URL_MAIN + 'comedie-musicale/'] )
+    liste.append( ['Divers', URL_MAIN + 'recherche-Genre-Divers.html'] )
+    liste.append( ['Documentaire', URL_MAIN + 'recherche-Genre-Documentaire.html'] )
+    liste.append( ['Drame', URL_MAIN + 'recherche-Genre-Drame.html'] )
+    liste.append( ['Epouvante Horreur', URL_MAIN + 'recherche-Genre-Epouvante-horreur.html'] )
+    liste.append( ['Famille', URL_MAIN + 'recherche-Genre-Famille.html'] )
+    liste.append( ['Fantastique', URL_MAIN + 'recherche-Genre-Fantastique.html'] )
+    liste.append( ['Guerre', URL_MAIN + 'recherche-Genre-Guerre.html'] )
+    liste.append( ['Policier', URL_MAIN + 'recherche-Genre-Policier.html'] )
+    liste.append( ['Romance', URL_MAIN +'recherche-Genre-Romance.html'] )
+    liste.append( ['Science Fiction', URL_MAIN + 'science-fiction/'] )
+    liste.append( ['Thriller', URL_MAIN + 'recherche-Genre-Thriller.html'] )
 
     for sTitle, sUrl in liste:
 
@@ -346,7 +346,7 @@ def showLink():
 
     sDesc = ''
     
-    sPattern = 'class="lectt " src="([^"]+)".+?class="bdpr">([^"]+)<\/span'
+    sPattern = 'class="lectt " src="([^"]+)".+?"lect1">([^"]+)<\/span.+?class="bdpr">([^"]+)<\/span'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -359,6 +359,8 @@ def showLink():
                 break
 
             sUrl2 = aEntry[0]
+            
+
             sHost = aEntry[1].replace('</span>', '')
             sQual = aEntry[2]
             sTitle = ('%s [%s] [COLOR coral]%s[/COLOR]') % (sMovieTitle, sQual, sHost)
@@ -403,3 +405,4 @@ def showHosters(): #recherche et affiche les hotes
                 #affiche le lien (oGui, oHoster, url du lien, poster)
 
     oGui.setEndOfDirectory() #fin
+
