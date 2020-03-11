@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'onestreamings_com'
 SITE_NAME = 'oneStreamings'
 SITE_DESC = 'Films, Séries & Mangas'
 
-URL_MAIN = 'https://n1streamings.com/'
+URL_MAIN = 'https://vvw.n1streaming.com/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + 'rechercher-', 'showMovies')
@@ -26,7 +26,8 @@ MOVIE_MOVIE = (True, 'load') #(URL_MAIN , 'showMovies')
 MOVIE_GENRES = (URL_MAIN , 'showGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
 
-SERIE_SERIES = (URL_MAIN + 'series.html', 'showMovies')
+SERIE_SERIES = (URL_MAIN + 'Series.html', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'Series.html', 'showMovies')
 SERIE_GENRES = (URL_MAIN + 'series/', 'showGenres')
 SERIE_ANNEES = (True, 'showSerieYears')
 
@@ -63,6 +64,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
+    
+    OutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
@@ -210,7 +215,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if '/series/' in sUrl or '/animes/' in sUrl:
+            if '/Series/' in sUrl: #or '/animes/' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLink', sTitle,'', sThumb, '', oOutputParameterHandler)
@@ -248,18 +253,11 @@ def showSaisons():
     sHtmlContent = oRequestHandler.request()
 
     sDesc = ''
-    sPattern = '<div class="fstory-content.+?</h2>(.+?)<div'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if ( aResult[0] == True ):
-        sDesc = aResult[1][0]
+    
 
-    #Decoupage pour cibler la partie des saisons
-    sPattern = '<div id="full-video">(.+?)<div class="fstory-info block-p">'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if ( aResult[0] == True ):
-        sHtmlContent = aResult
+    
 
-    sPattern = '<a href="([^"]+)" title=".+?(saison\s\d+)'
+    sPattern = 'class="short-link".+?a href="([^"]+)".+?>([^"]+)<\/a'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -275,10 +273,7 @@ def showSaisons():
                 break
 
             sUrl2   = aEntry[0]
-            if sUrl2.startswith('/'):
-                sUrl2 = URL_MAIN[:-1] + sUrl2
-            sSaison = aEntry[1]
-            sTitle  = ("%s %s") % (sSaison, sMovieTitle)
+            sTitle  = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -302,7 +297,7 @@ def ShowEpisodes():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="saision_LI2">.*?<a title="Regarder (.+?) en streaming" href=["\']([^"\']+)">'
+    sPattern = 'streaming" href="([^"]+)".+?class="arrow-right"><\/span>([^"]+)<'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -318,8 +313,10 @@ def ShowEpisodes():
             if progress_.iscanceled():
                 break
 
-            sTitle = aEntry[0]
-            sUrl2 = URL_MAIN + aEntry[1]
+            sEpisode = aEntry[1]
+            sUrl2 =  aEntry[0]
+            sDesc = ''
+            sDisplayTitle = ('%s [%s]') % (sTitle, sEpisode)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -327,7 +324,7 @@ def ShowEpisodes():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            oGui.addTV(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showLink', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
