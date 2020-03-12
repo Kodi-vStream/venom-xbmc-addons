@@ -22,7 +22,7 @@ URL_SEARCH_MOVIES = ('', 'showMovies')
 URL_SEARCH_SERIES = ('', 'showMovies')
 
 MOVIE_NEWS = (URL_MAIN + 'films.html', 'showMovies')
-MOVIE_MOVIE = (True, 'load') #(URL_MAIN , 'showMovies')
+MOVIE_MOVIE = (URL_MAIN , 'showMovies')
 MOVIE_GENRES = (URL_MAIN , 'showGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
 
@@ -387,26 +387,12 @@ def showHosters(): #recherche et affiche les hotes
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle') #appelle le titre
     sThumb = oInputParameterHandler.getValue('sThumb') #appelle le poster
 
-    oRequestHandler = cRequestHandler(sUrl) #requete sur l'url
-    sHtmlContent = oRequestHandler.request() #requete sur l'url
+    sHosterUrl = sUrl
+    oHoster = cHosterGui().checkHoster(sHosterUrl) #recherche l'hote dans l'addon
+    if (oHoster != False):
+        oHoster.setDisplayName(sMovieTitle) #nom affiche
+        oHoster.setFileName(sMovieTitle) #idem
+        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
-    oParser = cParser()
-    sPattern = '<iframe.+?src="([^"]+)"'
-    #ici nous cherchons toute les sources iframe
-
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    #pensez a faire un VSlog(str(aResult)) pour verifier
-
-    #si un lien ne s'affiche pas peux etre que l'hote n'est pas supporte par l'addon
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-
-            sHosterUrl = aEntry
-            oHoster = cHosterGui().checkHoster(sHosterUrl) #recherche l'hote dans l'addon
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle) #nom affiche
-                oHoster.setFileName(sMovieTitle) #idem
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-                #affiche le lien (oGui, oHoster, url du lien, poster)
 
     oGui.setEndOfDirectory() #fin
