@@ -13,8 +13,8 @@ from resources.lib.comaddon import progress
 
 import re
 
-SITE_IDENTIFIER = 'streamelite'
-SITE_NAME = 'StreamElite'
+SITE_IDENTIFIER = 'streamavie'
+SITE_NAME = 'Streamavie'
 SITE_DESC = 'Films VF & VOSTFR en streaming.'
 
 URL_MAIN = 'http://streamavie.com/'
