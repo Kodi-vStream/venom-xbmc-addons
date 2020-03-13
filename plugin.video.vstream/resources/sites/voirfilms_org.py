@@ -159,7 +159,7 @@ def showGenres():
 def showMovieYears():
     oGui = cGui()
 
-    for i in reversed (xrange(1913, 2019)):
+    for i in reversed (xrange(1913, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/annee-' + Year)
@@ -170,7 +170,7 @@ def showMovieYears():
 def showSerieYears():
     oGui = cGui()
 
-    for i in reversed (xrange(1936, 2019)):
+    for i in reversed (xrange(1936, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/annee-' + Year)
@@ -250,7 +250,7 @@ def showMovies(sSearch = ''):
 
         sHtmlContent = oRequest.request()
 
-        sPattern = '<div class="unfilm".+?<a href="([^"]+)" title="([^"]+)".+?<img src="([^"]+)"'
+        sPattern = '<div class="unfilm".+?<a href="([^"]+)" title="([^"]+)".+?<img src="([^"]+)".+?("suivre2">([^<]+)<|<span class="qualite ([^"]+)"|<div class="cdiv")'
 
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -258,7 +258,7 @@ def showMovies(sSearch = ''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
         sHtmlContent = re.sub('alt="title="', 'alt="', sHtmlContent) #anime
-        sPattern = '<div class="unfilm".+?<a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)"'
+        sPattern = '<div class="unfilm".+?<a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)".+?("suivre2">([^<]+)<|<span class="qualite ([^"]+)"|<div class="cdiv")'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -277,13 +277,19 @@ def showMovies(sSearch = ''):
             if sSearch:
                 sThumb = aEntry[2]
                 sTitle = aEntry[1]
+                sYear = aEntry[4]
+                sQual = aEntry[5]
             else:
                 sThumb = aEntry[1]
                 sTitle = aEntry[2]
+                sYear = aEntry[4]
+                sQual = aEntry[5]
 
             sUrl = aEntry[0]
 
             sTitle = sTitle.replace('film ', '') #genre
+            sTitle = sTitle.replace(' streaming', '') #genre
+            sTitle = '%s [%s] (%s)' % (sTitle, sQual, sYear)
 
             if not 'http' in sThumb:
                 sThumb = URL_MAIN + sThumb
@@ -396,11 +402,13 @@ def serieHosters():
         for aEntry in aResult[1]:
 
             if '-saison-' in sUrl or 'anime' in sUrl:
-                sLang = aEntry[0]
+                # Si plusieurs langues sont disponibles, une seule est affichée ici.
+                # Ne rien mettre, la langue sera ajoutée avec le host
+                # sLang = aEntry[0]
                 sUrl2 = aEntry[1]
                 sNM = aEntry[2].replace('<span>', ' ').replace('</span>', '')
                 sTitle = sMovieTitle + sNM
-                sDisplayTitle = sMovieTitle + sNM + ' (' + sLang + ')'
+                sDisplayTitle = sTitle #sMovieTitle + sNM + ' (' + sLang + ')'
             else:
                 sUrl2 = aEntry[0]
                 sTitle = re.sub('\d x ', 'E', aEntry[1])
