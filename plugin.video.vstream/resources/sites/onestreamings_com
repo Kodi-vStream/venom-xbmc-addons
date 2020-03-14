@@ -210,7 +210,9 @@ def showMovies(sSearch = ''):
             if sThumb.startswith('pagefilm'):
                 sThumb = URL_MAIN + sThumb
             sUrl = aEntry[2]
+            sQual = aEntry[2]
             sTitle = aEntry[1]
+            sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -220,7 +222,7 @@ def showMovies(sSearch = ''):
             if '/Series/' in sUrl: #or '/animes/' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showLink', sTitle,'', sThumb, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showLink', sDisplayTitle,'', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
