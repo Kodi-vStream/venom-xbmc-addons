@@ -207,6 +207,8 @@ def showMovies(sSearch = ''):
                 break
 
             sThumb = aEntry[0]
+            if sThumb.startswith('pagefilm'):
+                sThumb = URL_MAIN + sThumb
             sUrl = aEntry[2]
             sTitle = aEntry[1]
 
