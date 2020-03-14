@@ -16,7 +16,7 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/5
 SITE_IDENTIFIER = 'tirexo'
 SITE_NAME = '[COLOR violet]Tirexo (ZT lol)[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
-URL_HOST = 'https://www.zone-telechargement.vip/'
+URL_HOST = 'https://www.zone-warez.com/'
 
 def GetURL_MAIN():
     ADDON = addon()
