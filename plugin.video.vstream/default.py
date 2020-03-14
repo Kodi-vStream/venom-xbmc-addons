@@ -45,7 +45,7 @@ if REMOTE_DBG:
 class main:
     def __init__(self):
         self.parseUrl()
-        cDb()._create_tables()
+        #cDb()._create_tables()
 
     def parseUrl(self):
 
