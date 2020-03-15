@@ -39,7 +39,7 @@ class addon(xbmcaddon.Addon):
         #Bug avec accent xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang)).decode("utf-8")
 
     #deprecier utiliser addons.setSetting et addons.getSetting
-    def VSsetting(self, name, value=False):
+    def VSsetting(self, name, value = False):
         #adons = addon()
         #use addons.setting('name') pour getsetting
         #use addons.setting('name', 'value) pour setsetting
@@ -64,15 +64,15 @@ class dialog(xbmcgui.Dialog):
     #    xbmcgui.__init__('')
     #    pass
     
-    def VSok(self, desc, title='vStream'):
+    def VSok(self, desc, title = 'vStream'):
         dialog = self.ok(title, desc)
         return dialog
 
-    def VSyesno(self, desc, title='vStream'):
+    def VSyesno(self, desc, title = 'vStream'):
         dialog = self.yesno(title, desc)
         return dialog
 
-    def VSselect(self, desc, title='vStream'):
+    def VSselect(self, desc, title = 'vStream'):
         ret = self.select(title, desc)
         return ret
 
@@ -88,7 +88,7 @@ class dialog(xbmcgui.Dialog):
             return list_url[ret]
         return ''
 
-    def VSinfo(self, desc, title='vStream', iseconds=0, sound = False):
+    def VSinfo(self, desc, title = 'vStream', iseconds = 0, sound = False):
         if (iseconds == 0):
             iseconds = 1000
         else:
@@ -97,10 +97,10 @@ class dialog(xbmcgui.Dialog):
         if (addon().getSetting('Block_Noti_sound') == 'true'):
             sound = True
 
-        return self.notification(str(title), str(desc),xbmcgui.NOTIFICATION_INFO,iseconds,sound)
+        return self.notification(str(title), str(desc), xbmcgui.NOTIFICATION_INFO, iseconds, sound)
 
     def VSerror(self, e):
-        return self.notification('Vstream','Erreur: '+str(e),xbmcgui.NOTIFICATION_ERROR,2000), VSlog('Erreur: ' + str(e))
+        return self.notification('vStream', 'Erreur: ' + str(e), xbmcgui.NOTIFICATION_ERROR, 2000), VSlog('Erreur: ' + str(e))
         
 """
 from resources.lib.comaddon import progress
@@ -122,7 +122,7 @@ DIALOG2 = None
 
 class empty():
     
-    def VSupdate(self, dialog, total, text=''):
+    def VSupdate(self, dialog, total, text = ''):
         pass
 
     def iscanceled(self):
@@ -131,13 +131,13 @@ class empty():
     def VSclose(self, dialog):
         pass
     
-    def VSupdatesearch(self,dialog, total, text=''):
+    def VSupdatesearch(self, dialog, total, text = ''):
         pass
 
 class progress(xbmcgui.DialogProgress):
 
     
-    def VScreate(self, title='vStream', desc=''):
+    def VScreate(self, title = 'vStream', desc = ''):
         global DIALOG2
         
         current_window = xbmcgui.getCurrentWindowId()
@@ -151,22 +151,22 @@ class progress(xbmcgui.DialogProgress):
             return self
         else: return DIALOG2
 
-    def VSupdate(self, dialog, total, text=''):
+    def VSupdate(self, dialog, total, text = ''):
         if window(10101).getProperty('search') == 'true':
             return
         global COUNT
         COUNT += 1
         iPercent = int(float(COUNT * 100) / total)
-        dialog.update(iPercent, 'Loading: '+str(COUNT)+'/'+str(total), text)
+        dialog.update(iPercent, 'Loading: ' + str(COUNT) + '/' + str(total), text)
 
-    def VSupdatesearch(self, dialog, total, text=''):
+    def VSupdatesearch(self, dialog, total, text = ''):
         global COUNT
         COUNT += 1
         iPercent = int(float(COUNT * 100) / total)
-        dialog.update(iPercent, 'Loading: '+str(COUNT)+'/'+str(total), text)
+        dialog.update(iPercent, 'Loading: ' + str(COUNT) + '/' + str(total), text)
 
 
-    def VSclose(self, dialog=''):
+    def VSclose(self, dialog = ''):
         if not dialog and DIALOG2:
             dialog=DIALOG2
         if not dialog:
@@ -203,7 +203,7 @@ class listitem(xbmcgui.ListItem):
 
     #ListItem([label, label2, iconImage, thumbnailImage, path])
     
-    def __init__(self, label="", label2="", iconImage="", thumbnailImage="", path=""):
+    def __init__(self, label = "", label2 = "", iconImage = "", thumbnailImage = "", path = ""):
         pass
 
 """
@@ -214,11 +214,11 @@ xbmc.log
 """
 
 #xbmc des fonctions pas des class
-def VSlog(e, level=xbmc.LOGDEBUG):
+def VSlog(e, level = xbmc.LOGDEBUG):
     #rapelle l'ID de l'addon pour être apeller hors addon
     if (addon('plugin.video.vstream').getSetting('debug') == 'true'):
         level = xbmc.LOGNOTICE
-    return xbmc.log('\t[PLUGIN] Vstream: '+str(e), level)
+    return xbmc.log('\t[PLUGIN] Vstream: ' + str(e), level)
 
 def VSupdate():
     return xbmc.executebuiltin("Container.Refresh")
@@ -252,5 +252,5 @@ def VSread(sHtmlContent):
     f.close()
 
 #use cGui.showKeyBoard
-def VSkeyboard(sDefaultText=''):
+def VSkeyboard(sDefaultText = ''):
     return False
