@@ -95,7 +95,7 @@ def showGenres():
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-        sUrl = sSearch.replace(' ','+')
+        sUrl = sSearch.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -124,9 +124,7 @@ def showMovies(sSearch = ''):
                 sUrl = URL_MAIN[:-1] + sUrl
 
             sTitle = aEntry[1].replace('Streaming', '').replace('streaming', '').replace('série', '')
-
             # sTitle = sTitle.decode('utf-8').encode("latin-1")
-
 
             sThumb = aEntry[2]
             if sThumb.startswith('/'):
@@ -140,7 +138,7 @@ def showMovies(sSearch = ''):
             if aEntry[4]:
                 sLang = aEntry[4]
 
-            sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
+            sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang.upper())
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -284,6 +282,8 @@ def showLinks():
         for aEntry in aResult[1]:
 
             sHost = aEntry[0].replace('server player-', '').capitalize()
+            if 'Allocine' in sHost:
+                continue
             sLang = aEntry[1].split('/')[-1].replace('.png', '')
 
             sDisplayTitle = ('%s (%s) [COLOR %s]%s[/COLOR]') % (sMovieTitle, sLang, sColor, sHost)
