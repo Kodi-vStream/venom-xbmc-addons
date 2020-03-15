@@ -383,26 +383,12 @@ def showHosters(): #recherche et affiche les hotes
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle') #appelle le titre
     sThumb = oInputParameterHandler.getValue('sThumb') #appelle le poster
 
-    oRequestHandler = cRequestHandler(sUrl) #requete sur l'url
-    sHtmlContent = oRequestHandler.request() #requete sur l'url
-
-    oParser = cParser()
-    sPattern = '<iframe.+?src="([^"]+)"'
-    #ici nous cherchons toute les sources iframe
-
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    #pensez a faire un VSlog(str(aResult)) pour verifier
-
-    #si un lien ne s'affiche pas peux etre que l'hote n'est pas supporte par l'addon
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-
-            sHosterUrl = sUrl
-            oHoster = cHosterGui().checkHoster(sHosterUrl) #recherche l'hote dans l'addon
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle) #nom affiche
-                oHoster.setFileName(sMovieTitle) #idem
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    sHosterUrl = sUrl
+    oHoster = cHosterGui().checkHoster(sHosterUrl) #recherche l'hote dans l'addon
+    if (oHoster != False):
+        oHoster.setDisplayName(sMovieTitle) #nom affiche
+        oHoster.setFileName(sMovieTitle) #idem
+        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
                 #affiche le lien (oGui, oHoster, url du lien, poster)
 
     oGui.setEndOfDirectory() #fin
