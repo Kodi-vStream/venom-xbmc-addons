@@ -24,7 +24,7 @@ URL_SEARCH_SERIES = ('', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'films.html', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN , 'showMovies')
 MOVIE_GENRES = (URL_MAIN , 'showGenres')
-MOVIE_ANNEES = (True, 'showMovieYears')
+#MOVIE_ANNEES = (True, 'showMovieYears')
 
 SERIE_SERIES = (URL_MAIN + 'Series.html', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'Series.html', 'showMovies')
@@ -45,9 +45,9 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     # Résultat identique à MOVIE_MOVIE
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    # oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
@@ -57,9 +57,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
+    #oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
@@ -112,9 +112,9 @@ def showGenres():
     liste.append( ['Aventure', URL_MAIN + 'recherche-Genre-aventure.html'] )
     liste.append( ['Biopic', URL_MAIN + 'recherche-Genre-Biopic.html'] )
     liste.append( ['Comédie', URL_MAIN +'recherche-Genre-comedie.html'] )
-    liste.append( ['Comédie Dramatique', URL_MAIN + 'comedie-dramatique/'] )
-    #liste.append( ['Comédie Musicale', URL_MAIN + 'comedie-musicale/'] )
-    liste.append( ['Divers', URL_MAIN + 'recherche-Genre-Divers.html'] )
+    liste.append( ['Comédie Dramatique', URL_MAIN + 'recherche-Genre-comedie-dramatique.html'] )
+    liste.append( ['Comédie Musicale', URL_MAIN + 'recherche-Genre-comedie-musicale.html'] )
+    #liste.append( ['Divers', URL_MAIN + 'recherche-Genre-Divers.html'] )
     liste.append( ['Documentaire', URL_MAIN + 'recherche-Genre-Documentaire.html'] )
     liste.append( ['Drame', URL_MAIN + 'recherche-Genre-Drame.html'] )
     liste.append( ['Epouvante Horreur', URL_MAIN + 'recherche-Genre-Epouvante-horreur.html'] )
@@ -123,7 +123,7 @@ def showGenres():
     liste.append( ['Guerre', URL_MAIN + 'recherche-Genre-Guerre.html'] )
     liste.append( ['Policier', URL_MAIN + 'recherche-Genre-Policier.html'] )
     liste.append( ['Romance', URL_MAIN +'recherche-Genre-Romance.html'] )
-    #liste.append( ['Science Fiction', URL_MAIN + 'science-fiction/'] )
+    liste.append( ['Science Fiction', URL_MAIN + 'recherche-Genre-science-fiction.html'] )
     liste.append( ['Thriller', URL_MAIN + 'recherche-Genre-Thriller.html'] )
 
     for sTitle, sUrl in liste:
@@ -134,7 +134,7 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
-def showMovieYears():
+#def showMovieYears():
     oGui = cGui()
 
     for i in reversed (xrange(1918, 2019)):
@@ -392,3 +392,4 @@ def showHosters(): #recherche et affiche les hotes
                 #affiche le lien (oGui, oHoster, url du lien, poster)
 
     oGui.setEndOfDirectory() #fin
+
