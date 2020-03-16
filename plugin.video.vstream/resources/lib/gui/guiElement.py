@@ -173,7 +173,7 @@ class cGuiElement:
 
         try:
             #traitement du titre pour les caracteres speciaux
-            sTitle = sTitle.replace('&#8212;', '-').replace('&#8217;', '\'').replace('&#8230;', '...').replace('&#8242;', '\'').replace('&lsquo;', '\'')
+            sTitle = sTitle.replace('&#884;', '\'').replace('&#8212;', '-').replace('&#8217;', '\'').replace('&#8230;', '...').replace('&#8242;', '\'').replace('&lsquo;', '\'')
             #traitement du titre pour retirer le - quand c'est une Saison. Tiret, tiret moyen et cadratin
             sTitle = sTitle.replace(' - Saison', ' Saison').replace(' – Saison', ' Saison').replace(' — Saison', ' Saison')
 
