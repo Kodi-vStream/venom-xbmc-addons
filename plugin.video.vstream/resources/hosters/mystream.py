@@ -1,12 +1,13 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
+#jj ne fonctionne pas et je n'ai pas trouvé pourquoi
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.aadecode import AADecoder
-from resources.lib.jjdecode import JJDecoder
+#from resources.lib.aadecode import AADecoder
+#from resources.lib.jjdecode import JJDecoder
 import re
-import base64
+#import base64
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0'
 
 class cHoster(iHoster):
@@ -61,134 +62,74 @@ class cHoster(iHoster):
         oParser = cParser()
         
         api_call = False
-        a = ''
-        b = ''
-        c = ''
-        base64_coded = ''
-        
-        sPattern =  '(?:[>;]\s*)(ﾟωﾟ.+?\(\'_\'\);)'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0]:
-            for i in aResult[1]:
-                decoded = AADecoder(i).decode()
-                r = re.search("atob\(\'([^']+)\'\)", decoded, re.DOTALL | re.UNICODE)
-                if r:
-                    base64_coded = r.group(1)
-                    break
-                else:
+
+        sPattern =  '([$]=.+?\(\)\)\(\);)'
+        aResult = re.findall(sPattern,sHtmlContent,re.DOTALL)
+        if aResult:
+            for i in aResult:
+                decoded = temp_decode(i)
+                if decoded:
                     r = re.search("setAttribute\(\'src\', *\'(http.+?mp4)\'\)", decoded, re.DOTALL)
                     if r:
                         api_call = r.group(1)
-                        return True, api_call + '|User-Agent=' + UA
 
-        reducesHtmlContent = oParser.abParse(sHtmlContent, '<z9></z9>','{if(document')
 
-        sPattern =  '(\w+)'
-        aResult = oParser.parse(reducesHtmlContent, sPattern)
-        if aResult[0]:
-            mlist = sorted(aResult[1], key=len)
-            mlist = mlist[-2:]
-            a = mlist[0]
-            b = mlist[1]
 
-        sPattern =  "=\['getAttribute','*([^']+)'*\]"
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0]:
-            winkey = aResult[1][0].replace('window.','')
-            c = Cdecode(sHtmlContent,winkey)#winkey not used recently
-            if c:
-                api_call = decode(base64_coded,a,b,c)
-
- 
         if (api_call):
-            return True, api_call + '|User-Agent=' + UA
+            return True, api_call + '|User-Agent=' + UA + '&Referer=' + self.__sUrl 
             
         return False, False
         
-def Cdecode(sHtmlContent,encodedC):
-    oParser = cParser()
-    sPattern =  '<([0-9a-zA-Z]+)><script>([^<]+)<\/script>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
+def temp_decode(data):
+    startpos = data.find('"\\""+') + 5
+    endpos = data.find('"\\"")())()')
 
-    z = []
-    y = []
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-            z.append(JJDecoder(aEntry[1]).decode())
+    first_group = data[startpos:endpos]
 
-        for x in z:
+    l = re.search("(\(!\[\]\+\"\"\)\[.+?\]\+)",first_group,re.DOTALL)
+    if l:
+        first_group = first_group.replace(l.group(1), 'l').replace('$.__+','t').replace('$._+','u').replace('$._$+','o')
 
-            r1 = re.search("atob\(\'([^']+)\'\)", x, re.DOTALL | re.UNICODE)
-            if r1:
-                y.append(base64.b64decode(r1.group(1)))  
-   
-        # w = ''.join(y)
-        # w = w.split('|')[1]
-        # return w
+        tmplist = []
+        js = re.search('(\$={.+?});',data,re.DOTALL)
+        if js:
+            js_group = js.group(1)[3:][:-1]
 
-        w = str(y).split('|')
-        w = max(w, key=len)
-        if w:
-            return w
+            second_group = js_group.split(',')
 
-def decode(urlcoded,a,b,c):
+            i = -1
 
-    TableauTest = {}
-    key = ''
+            for x in second_group:
+                a,b = x.split(':')
 
-    l = a
-    n = "0123456789"
-    h = b
-    j = 0
+                if b == '++$':
+                    i += 1
+                    tmplist.append(("{}{}{}".format('$.',a,'+'),i))
 
-    while j < len(l) :
-        k = 0
-        while k < len(n):
-            TableauTest[l[j] + n[k]] = h[int(j + k)]
+                elif b == '(![]+"")[$]':
+                    tmplist.append(("{}{}{}".format('$.',a,'+'),'false'[i]))
 
-            k+=1
+                elif b == '({}+"")[$]':
+                    tmplist.append(("{}{}{}".format('$.',a,'+'),'[object Object]'[i]))
 
-        j+=1
+                elif b == '($[$]+"")[$]':
+                    tmplist.append(("{}{}{}".format('$.',a,'+'),'undefined'[i]))
 
-    hash = c
-    i = 0
-    while i < len(hash):
-        key = key + TableauTest[hash[i] + hash[i + 1]]
-        i+= 2
+                elif b == '(!""+"")[$]':
+                    tmplist.append(("{}{}{}".format('$.',a,'+'),'true'[i]))
 
 
-    chain = base64.b64decode(urlcoded)
+            tmplist = sorted(tmplist, key=lambda x: x[1])
 
-    secretKey = {}
-    y = 0
-    temp = ''
-    url = ""
+            for x in tmplist:
+                first_group = first_group.replace(x[0], str(x[1]))
 
-    x = 0
-    while x < 256:
-        secretKey[x] = x
-        x += 1
+            first_group = first_group.replace(r'\\"' , '\\').replace("\"\\\\\\\\\"", "\\\\").replace('\\"','\\').replace('"','').replace("+", "")
 
-    x = 0
-    while x < 256:
-        y = (y + secretKey[x] + ord(key[x % len(key)])) % 256
-        temp = secretKey[x]
-        secretKey[x] = secretKey[y]
-        secretKey[y] = temp
-        x += 1
 
-    x = 0
-    y = 0
-    i = 0
-    while i < len(chain):
-        x += 1 % 256
-        y = (y + secretKey[x]) % 256
-        temp = secretKey[x]
-        secretKey[x] = secretKey[y]
-        secretKey[y] = temp
 
-        url = url + (chr(ord(chain[i]) ^ secretKey[(secretKey[x] + secretKey[y]) % 256]))
-
-        i += 1
-        
-    return url
+    try:
+        final_data = unicode(first_group, encoding='unicode-escape')
+        return final_data
+    except:
+        return False
