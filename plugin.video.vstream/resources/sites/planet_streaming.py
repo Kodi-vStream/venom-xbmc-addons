@@ -234,14 +234,12 @@ def showHosters():
 
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
+                continue
 
             sHosterUrl = aEntry[1]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
 
             if (oHoster != False):
-                try:
-                    oHoster.setHD(sHosterUrl)
-                except: pass
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
