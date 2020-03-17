@@ -36,7 +36,7 @@ class addon(xbmcaddon.Addon):
     def VSlang(self, lang):
         return xbmc.translatePath(self.getLocalizedString(lang))
         #xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang))
-        #Bug avec accent xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang)).decode("utf-8")
+        #Bug avec accent xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang)).decode('utf-8')
 
     #deprecier utiliser addons.setSetting et addons.getSetting
     def VSsetting(self, name, value = False):
@@ -52,7 +52,7 @@ class addon(xbmcaddon.Addon):
 """
 from resources.lib.comaddon import dialog
 
-ne peux pas utiliser les autres fonction que dialog 
+ne peux pas utiliser les autres fonction que dialog
 dialogs = dialog()
 dialogs.VSinfo('test')
 http://mirrors.kodi.tv/docs/python-docs/16.x-jarvis/xbmcgui.html#Dialog
@@ -63,7 +63,7 @@ class dialog(xbmcgui.Dialog):
     #def __init__(self):
     #    xbmcgui.__init__('')
     #    pass
-    
+
     def VSok(self, desc, title = 'vStream'):
         dialog = self.ok(title, desc)
         return dialog
@@ -77,12 +77,12 @@ class dialog(xbmcgui.Dialog):
         return ret
 
     def VSselectqual(self, list_qual, list_url):
-        
+
         if len(list_url) == 0:
             return ''
         if len(list_url) == 1:
             return list_url[0]
-        
+
         ret = self.select(addon().VSlang(30448), list_qual)
         if ret > -1:
             return list_url[ret]
@@ -93,7 +93,7 @@ class dialog(xbmcgui.Dialog):
             iseconds = 1000
         else:
             iseconds = iseconds * 1000
-        
+
         if (addon().getSetting('Block_Noti_sound') == 'true'):
             sound = True
 
@@ -101,7 +101,7 @@ class dialog(xbmcgui.Dialog):
 
     def VSerror(self, e):
         return self.notification('vStream', 'Erreur: ' + str(e), xbmcgui.NOTIFICATION_ERROR, 2000), VSlog('Erreur: ' + str(e))
-        
+
 """
 from resources.lib.comaddon import progress
 
@@ -121,7 +121,7 @@ COUNT = 0
 DIALOG2 = None
 
 class empty():
-    
+
     def VSupdate(self, dialog, total, text = ''):
         pass
 
@@ -130,16 +130,15 @@ class empty():
 
     def VSclose(self, dialog):
         pass
-    
+
     def VSupdatesearch(self, dialog, total, text = ''):
         pass
 
 class progress(xbmcgui.DialogProgress):
 
-    
     def VScreate(self, title = 'vStream', desc = ''):
         global DIALOG2
-        
+
         current_window = xbmcgui.getCurrentWindowId()
         if current_window == 10000:
             return empty()
@@ -165,7 +164,6 @@ class progress(xbmcgui.DialogProgress):
         iPercent = int(float(COUNT * 100) / total)
         dialog.update(iPercent, 'Loading: ' + str(COUNT) + '/' + str(total), text)
 
-
     def VSclose(self, dialog = ''):
         if not dialog and DIALOG2:
             dialog=DIALOG2
@@ -179,7 +177,6 @@ class progress(xbmcgui.DialogProgress):
         del dialog
         return False
 
-        
 """
 from resources.lib.comaddon import window
 
@@ -188,10 +185,9 @@ http://mirrors.kodi.tv/docs/python-docs/16.x-jarvis/xbmcgui.html#Window
 """
 
 class window(xbmcgui.Window):
-    
+
     def __init__(self, id):
         pass
-
 
 """
 from resources.lib.comaddon import listitem
@@ -202,8 +198,8 @@ http://mirrors.kodi.tv/docs/python-docs/16.x-jarvis/xbmcgui.html#ListItem
 class listitem(xbmcgui.ListItem):
 
     #ListItem([label, label2, iconImage, thumbnailImage, path])
-    
-    def __init__(self, label = "", label2 = "", iconImage = "", thumbnailImage = "", path = ""):
+
+    def __init__(self, label = '', label2 = '', iconImage = '', thumbnailImage = '', path = ''):
         pass
 
 """
@@ -218,10 +214,10 @@ def VSlog(e, level = xbmc.LOGDEBUG):
     #rapelle l'ID de l'addon pour être apeller hors addon
     if (addon('plugin.video.vstream').getSetting('debug') == 'true'):
         level = xbmc.LOGNOTICE
-    return xbmc.log('\t[PLUGIN] Vstream: ' + str(e), level)
+    return xbmc.log('\t[PLUGIN] vStream: ' + str(e), level)
 
 def VSupdate():
-    return xbmc.executebuiltin("Container.Refresh")
+    return xbmc.executebuiltin('Container.Refresh')
 
 def VSshow_busy():
     xbmc.executebuiltin('ActivateWindow(busydialog)')
@@ -234,7 +230,7 @@ def VShide_busy():
 def isKrypton():
     try:
         version = xbmc.getInfoLabel('system.buildversion')
-        if version[0:2] >= "17":
+        if version[0:2] >= '17':
             return True
         else:
             return False
@@ -243,7 +239,7 @@ def isKrypton():
 
 def VSread(sHtmlContent):
     import xbmcvfs
-    file = "special://userdata/addon_data/plugin.video.vstream/html.txt"
+    file = 'special://userdata/addon_data/plugin.video.vstream/html.txt'
     if xbmcvfs.exists(file):
         xbmcvfs.delete(file)
 
