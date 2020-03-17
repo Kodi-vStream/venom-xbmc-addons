@@ -486,7 +486,15 @@ def showHostersLink():
         redirection_target = oRequestHandler.getRealUrl()
 
     else:
-        sHtmlContent, redirection_target = Noredirection(UA, host, sUrl)
+        opener = Noredirection()
+        opener.addheaders = [('User-agent', UA)]
+        opener.addheaders = [('Referer', host)]
+        response = opener.open(sUrl)
+        sHtmlContent = response.read()
+        redirection_target = sUrl
+        if response.code == 302:
+            redirection_target = response.headers['Location']
+        response.close()
 
         #VSlog('cod > ' + sHtmlContent)
 
