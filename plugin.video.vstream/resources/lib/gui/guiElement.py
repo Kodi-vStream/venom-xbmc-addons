@@ -3,7 +3,6 @@
 #Venom.
 from resources.lib.comaddon import addon, xbmc
 from resources.lib.db import cDb
-
 import re, urllib, string
 
 #rouge E26543
@@ -207,7 +206,6 @@ class cGuiElement:
 
         #Recherche saison et episode a faire pr serie uniquement
         if (True):
-            
             #m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))',sTitle,re.UNICODE)
             m = re.search(ur'(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', sTitle, re.UNICODE)
             if m:
@@ -259,12 +257,12 @@ class cGuiElement:
             sTitle2 = sTitle2 + 'S' + self.__Season
         if self.__Episode:
             sTitle2 = sTitle2 + 'E' + self.__Episode
-            
+
         #Titre unique pour pour marquer VU (avec numéro de l'épisode pour les séries)
         self.__sTitleWatched = self.str_conv(sTitle).replace(' ', '')
         if sTitle2:
             self.__sTitleWatched += '_' + sTitle2
-            
+
         if sTitle2:
             sTitle2 = "[COLOR %s]%s[/COLOR] " % (self.__sDecoColor, sTitle2)
 
@@ -292,7 +290,7 @@ class cGuiElement:
 
     def setTitle(self, sTitle):
         self.__sCleanTitle = sTitle
-        if not sTitle.startswith('[COLOR') :
+        if not sTitle.startswith('[COLOR'):
             self.__sTitle = self.TraiteTitre(sTitle)
         else:
             self.__sTitle = sTitle
@@ -530,7 +528,7 @@ class cGuiElement:
                     # if (self.__TmdbId):
                         # kwargs['tmdb_id'] = self.__TmdbId
                     # if (self.__Year):
-                        # kwargs['year'] =  self.__Year
+                        # kwargs['year'] = self.__Year
                 # meta = grab.get_meta(*args, **kwargs)
             # except:
                 # return
