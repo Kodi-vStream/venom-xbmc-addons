@@ -20,7 +20,7 @@ import threading
 
 # try:
 #     import StorageServer
-#     Memorise = StorageServer.StorageServer("VstreamDownloader")
+#     Memorise = StorageServer.StorageServer('VstreamDownloader')
 # except:
 #     print 'Le download ne marchera pas correctement'
 
@@ -58,7 +58,7 @@ class cDownloadProgressBar(threading.Thread):
             self.__sUrl = kwargs['url']
             self.__fPath = kwargs['Dpath']
             if'FastMode' in kwargs:
-                print 'Telechargement en mode Turbo'
+                print 'Téléchargement en mode Turbo'
                 self.__bFastMode = True
 
         threading.Thread.__init__(self)
@@ -86,21 +86,21 @@ class cDownloadProgressBar(threading.Thread):
         #diag.isFinished()
 
         xbmcgui.Window(10101).setProperty('arret', '0')
-        #self.Memorise.set("VstreamDownloaderWorking", "1")
+        #self.Memorise.set('VstreamDownloaderWorking', '1')
 
         headers = self.oUrlHandler.info()
 
         #print headers
 
         iTotalSize = -1
-        if "content-length" in headers:
-            iTotalSize = int(headers["Content-Length"])
+        if 'content-length' in headers:
+            iTotalSize = int(headers['Content-Length'])
 
         chunk = 16 * 1024
         TotDown = 0
 
         #mise a jour pour info taille
-        self.__updatedb(TotDown,iTotalSize)
+        self.__updatedb(TotDown, iTotalSize)
         self.DIALOG.VSinfo('Téléchargement Démarré')
 
         while not (self.processIsCanceled or diag.isFinished()):
@@ -112,10 +112,10 @@ class cDownloadProgressBar(threading.Thread):
 
             self.file.write(data)
             TotDown = TotDown + data.__len__()
-            self.__updatedb(TotDown,iTotalSize)
+            self.__updatedb(TotDown, iTotalSize)
 
             self.__stateCallBackFunction(TotDown, iTotalSize)
-            #if self.Memorise.get("VstreamDownloaderWorking") == "0":
+            #if self.Memorise.get('VstreamDownloaderWorking') == '0':
             #    self.processIsCanceled = True
             if xbmcgui.Window(10101).getProperty('arret') == '1':
                 self.processIsCanceled = True
@@ -130,7 +130,7 @@ class cDownloadProgressBar(threading.Thread):
 
         #On autorise le prochain DL
         #????????????????
-        #Memorise.unlock("VstreamDownloaderLock")
+        #Memorise.unlock('VstreamDownloaderLock')
 
         #fait une pause pour fermer le Dialog
         xbmc.sleep(900)
@@ -145,8 +145,8 @@ class cDownloadProgressBar(threading.Thread):
             meta['status'] = 2
             try:
                 cDb().update_download(meta)
-                self.DIALOG.VSinfo('Téléchargements Termine', self.__sTitle)
-                #print 'Téléchargements Termine : %s' % self.__sTitle
+                self.DIALOG.VSinfo('Téléchargements Terminé', self.__sTitle)
+                #print 'Téléchargements Terminé: %s' % self.__sTitle
                 self.RefreshDownloadList()
             except:
                 pass
@@ -154,14 +154,14 @@ class cDownloadProgressBar(threading.Thread):
             meta['status'] = 0
             try:
                 cDb().update_download(meta)
-                self.DIALOG.VSinfo('Téléchargements Arrete', self.__sTitle)
-                #print 'Téléchargements Arrete : %s' % self.__sTitle
+                self.DIALOG.VSinfo('Téléchargements Arrêté', self.__sTitle)
+                #print 'Téléchargements Arrêté: %s' % self.__sTitle
                 self.RefreshDownloadList()
             except:
                 pass
             return
 
-        #ok tout est bon on contiinu ou pas ?
+        #ok tout est bon on continu ou pas?
         #if Memorise.get('SimpleDownloaderQueue') == '1':
         if xbmcgui.Window(10101).getProperty('SimpleDownloaderQueue') == '1':
             print 'Download suivant'
@@ -169,11 +169,10 @@ class cDownloadProgressBar(threading.Thread):
             data = tmp.GetNextFile()
             tmp.StartDownload(data)
 
-
     def __updatedb(self, TotDown, iTotalSize):
         #percent 3 chiffre
         percent = '{0:.2f}'.format(min(100 * float(TotDown) / float(iTotalSize), 100))
-        if percent in ['0.00','10.00','20.00','30.00','40.00','50.00','60.00','70.00','80.00','90.00']:
+        if percent in ['0.00', '10.00', '20.00', '30.00', '40.00', '50.00', '60.00', '70.00', '80.00', '90.00']:
             meta = {}
             meta['path'] = self.__fPath
             meta['size'] = TotDown
@@ -186,14 +185,13 @@ class cDownloadProgressBar(threading.Thread):
             except:
                 pass
 
-
     def __stateCallBackFunction(self, iDownsize, iTotalSize):
 
         if self.__oDialog.isFinished():
             self.createProcessDialog()
 
         iPercent = int(float(iDownsize * 100) / iTotalSize)
-        self.__oDialog.update(iPercent, self.__sTitle, self.__formatFileSize(float(iDownsize))+'/'+self.__formatFileSize(iTotalSize))
+        self.__oDialog.update(iPercent, self.__sTitle, self.__formatFileSize(float(iDownsize)) + '/' + self.__formatFileSize(iTotalSize))
 
         if (self.__oDialog.isFinished()) and not (self.__processIsCanceled):
             self.__processIsCanceled = True
@@ -209,7 +207,7 @@ class cDownloadProgressBar(threading.Thread):
             if len (self.__sUrl.split('|')) > 1:
                 u = self.__sUrl.split('|')[1].split('&')
                 for i in u:
-                    headers[i.split('=')[0]] = i.replace(i.split('=')[0] + '=','')
+                    headers[i.split('=')[0]] = i.replace(i.split('=')[0] + '=', '')
 
             #Rajout du user-agent si abscent
             if not ('User-Agent' in headers):
@@ -217,7 +215,7 @@ class cDownloadProgressBar(threading.Thread):
 
             req = urllib2.Request(url, None, headers)
 
-            self.oUrlHandler = urllib2.urlopen(req,timeout=30)
+            self.oUrlHandler = urllib2.urlopen(req, timeout = 30)
             #self.__instance = repr(self)
             self.file = xbmcvfs.File(self.__fPath, 'w')
         except:
@@ -226,12 +224,12 @@ class cDownloadProgressBar(threading.Thread):
             self.DIALOG.VSinfo('Erreur initialisation', 'Download error')
             return
 
-        # if not Memorise.lock("VstreamDownloaderLock"):
-        #     self.DIALOG.VSinfo('Telechargements deja demarrés', 'Download error')
+        # if not Memorise.lock('VstreamDownloaderLock'):
+        #     self.DIALOG.VSinfo('Téléchargements déjà démarrés', 'Download error')
         #     return
 
-        if xbmc.getCondVisibility("Window.IsVisible(10151)"):
-            self.DIALOG.VSinfo('Telechargements deja demarrés', 'Erreur')
+        if xbmc.getCondVisibility('Window.IsVisible(10151)'):
+            self.DIALOG.VSinfo('Téléchargements déjà démarrés', 'Erreur')
             return
 
         self._StartDownload()
@@ -246,7 +244,7 @@ class cDownloadProgressBar(threading.Thread):
     def StopAll(self):
 
         self.processIsCanceled = True
-        #Memorise.unlock("VstreamDownloaderLock")
+        #Memorise.unlock('VstreamDownloaderLock')
         #Memorise.set('SimpleDownloaderQueue', '0')
         xbmcgui.Window(10101).setProperty('SimpleDownloaderQueue', '0')
 
@@ -263,7 +261,6 @@ class cDownloadProgressBar(threading.Thread):
         if 'function=getDownload' in xbmc.getInfoLabel('Container.FolderPath'):
             VSupdate()
 
-
 class cDownload:
 
     DIALOG = dialog()
@@ -274,13 +271,13 @@ class cDownload:
         pass
 
     def __createDownloadFilename(self, sTitle):
-        sTitle = re.sub(' +',' ',sTitle) #Vire double espace
-        valid_chars = "-_.() abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        sTitle = re.sub(' +', ' ', sTitle) #Vire double espace
+        valid_chars = '-_.() abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
         filename = ''.join(c for c in sTitle if c in valid_chars)
-        filename = filename.replace(' .','.')
+        filename = filename.replace(' .', '.')
         if filename.startswith(' '):
             filename = filename[1:]
-        #filename = filename.replace(' ','_') #pas besoin de ca, enfin pr moi en tout cas
+        #filename = filename.replace(' ', '_') #pas besoin de ca, enfin pr moi en tout cas
         return filename
 
     def __formatFileSize(self, iBytes):
@@ -288,7 +285,7 @@ class cDownload:
         if (iBytes == 0):
             return '%.*f %s' % (2, 0, 'MB')
 
-        return '%.*f %s' % (2, iBytes/(1024*1024.0) , 'MB')
+        return '%.*f %s' % (2, iBytes/(1024*1024.0), 'MB')
 
     def isDownloading_old(self):
 
@@ -298,15 +295,14 @@ class cDownload:
 
     def isDownloading(self):
 
-        if not xbmc.getCondVisibility("Window.IsVisible(10151)"):
+        if not xbmc.getCondVisibility('Window.IsVisible(10151)'):
             return False
         return True
 
-
-    def download(self, sDBUrl, sTitle,sDownloadPath,FastMode = False):
+    def download(self, sDBUrl, sTitle, sDownloadPath, FastMode = False):
 
         if self.isDownloading():
-            self.DIALOG.VSinfo('Telechargements deja demarrés', 'Erreur')
+            self.DIALOG.VSinfo('Téléchargements déjà démarrés', 'Erreur')
             return False
 
         self.__sTitle = sTitle
@@ -322,34 +318,32 @@ class cDownload:
             sUrl = aLink[1]
         else:
             print 'Lien non resolvable'
-            self.DIALOG.VSinfo('Lien non resolvable', sTitle)
+            self.DIALOG.VSinfo('Lien non résolvable', sTitle)
             return False
 
-        if (not sUrl.startswith('http')) or sUrl.split('|')[0].endswith('.m3u8') :
-            self.DIALOG.VSinfo('Format non supporte', sTitle)
+        if (not sUrl.startswith('http')) or sUrl.split('|')[0].endswith('.m3u8'):
+            self.DIALOG.VSinfo('Format non supporté', sTitle)
             return False
 
         try:
-            VSlog("Telechargement " + str(sUrl))
+            VSlog('Téléchargement ' + str(sUrl))
 
             #background download task
             if FastMode:
-                cDownloadProgressBar(title = self.__sTitle , url = sUrl , Dpath = sDownloadPath , FastMode = True ).start()
+                cDownloadProgressBar(title = self.__sTitle, url = sUrl, Dpath = sDownloadPath, FastMode = True ).start()
             else:
-                cDownloadProgressBar(title = self.__sTitle , url = sUrl , Dpath = sDownloadPath ).start()
+                cDownloadProgressBar(title = self.__sTitle, url = sUrl, Dpath = sDownloadPath ).start()
 
-            VSlog("Telechargement ok")
+            VSlog('Téléchargement Ok')
             VSlog(sDownloadPath)
-
 
         except:
             #print_exc()
-            self.DIALOG.VSinfo('Telechargement impossible', sTitle)
-            VSlog("Telechargement impossible")
+            self.DIALOG.VSinfo('Téléchargement impossible', sTitle)
+            VSlog('Téléchargement impossible')
             return False
 
         return True
-
 
     def __createTitle(self, sUrl, sTitle):
 
@@ -370,31 +364,28 @@ class cDownload:
         else:
             sTitle = sTitle + '.flv' #Si quedale on en prend une au pif
 
-
         return sTitle
-
 
     def getDownload(self):
 
         oGui = cGui()
         sPluginHandle = cPluginHandler().getPluginHandle()
         sPluginPath = cPluginHandler().getPluginPath()
-        sItemUrl = '%s?site=%s&function=%s&title=%s' % (sPluginPath, SITE_IDENTIFIER, 'StartDownloadList', 'tittle')
-        meta = {'title': 'Demarrer la liste'}
-        item = xbmcgui.ListItem('Demarrer la liste', iconImage='special://home/addons/plugin.video.vstream/resources/art/download.png')
+        sItemUrl = '%s?site=%s&function=%s&title=%s' % (sPluginPath, SITE_IDENTIFIER, 'StartDownloadList', 'title')
+        meta = {'title': 'Démarrer la liste'}
+        item = xbmcgui.ListItem('Démarrer la liste', iconImage = 'special://home/addons/plugin.video.vstream/resources/art/download.png')
 
-        #item.setInfo(type="Video", infoLabels = meta)
+        #item.setInfo(type='Video', infoLabels = meta)
+        #item.setProperty('Video', 'false')
+        #item.setProperty('IsPlayable', 'false')
 
-        #item.setProperty("Video", "false")
-        #item.setProperty("IsPlayable", "false")
-
-        xbmcplugin.addDirectoryItem(sPluginHandle,sItemUrl,item,isFolder=False)
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oGui.addDir(SITE_IDENTIFIER, 'StopDownloadList', 'Arreter les Téléchargements', 'download.png', oOutputParameterHandler)
+        xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, item, isFolder = False)
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oGui.addDir(SITE_IDENTIFIER, 'getDownloadList', 'Liste de Téléchargement', 'download.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'StopDownloadList', 'Arrêter les Téléchargements', 'download.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oGui.addDir(SITE_IDENTIFIER, 'getDownloadList', 'Liste de Téléchargement', 'az.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oGui.addDir(SITE_IDENTIFIER, 'CleanDownloadList', 'Nettoyer la liste (Fichiers finis)', 'download.png', oOutputParameterHandler)
@@ -405,7 +396,7 @@ class cDownload:
 
         try:
             cDb().clean_download()
-            self.DIALOG.VSinfo('Liste mise a jour')
+            self.DIALOG.VSinfo('Liste mise à jour')
             #VSupdate()
         except:
             pass
@@ -415,13 +406,12 @@ class cDownload:
     def dummy(self):
         return
 
-    def StartDownloadOneFile(self,meta = []):
+    def StartDownloadOneFile(self, meta = []):
         if not meta:
             meta = self.GetOnefile()
 
         xbmcgui.Window(10101).setProperty('SimpleDownloaderQueue', '0')
         self.StartDownload(meta)
-
 
     def ResetDownload(self):
         oInputParameterHandler = cInputParameterHandler()
@@ -431,7 +421,7 @@ class cDownload:
 
         try:
             cDb().reset_download(meta)
-            self.DIALOG.VSinfo('Liste mise a jour')
+            self.DIALOG.VSinfo('Liste mise à jour')
             VSupdate()
         except:
             pass
@@ -463,7 +453,7 @@ class cDownload:
         oInputParameterHandler = cInputParameterHandler()
         path = oInputParameterHandler.getValue('sPath')
 
-        oDialog = self.DIALOG.VSyesno('Voulez vous vraiment supprimer ce fichier ? Operation non reversible.')
+        oDialog = self.DIALOG.VSyesno('Voulez vous vraiment supprimer ce fichier? \nOpération non réversible.')
         if (oDialog == 1):
             meta = {}
             meta['url'] = ''
@@ -502,7 +492,6 @@ class cDownload:
 
         return row[0]
 
-
     def StartDownload(self,data):
         if not (data):
             return
@@ -516,7 +505,7 @@ class cDownload:
         self.download(url,title,path)
 
     def StartDownloadList(self):
-        self.DIALOG.VSinfo('Demarrage de la liste complete')
+        self.DIALOG.VSinfo('Démarrage de la liste complète')
         #Memorise.set('SimpleDownloaderQueue', '1')
         xbmcgui.Window(10101).setProperty('SimpleDownloaderQueue', '1')
         data = self.GetNextFile()
@@ -529,11 +518,11 @@ class cDownload:
         #status = oInputParameterHandler.getValue('sStatus')
 
 
-        #WINDOW_PROGRESS = xbmcgui.Window( 10101 )
+        #WINDOW_PROGRESS = xbmcgui.Window(10101)
         #WINDOW_PROGRESS.close()
         #xbmcgui.Window(10101).setProperty('arret', '1')
-        #xbmc.executebuiltin("Dialog.Close(%s, true)" % 10101)
-        #xbmc.getCondVisibility('Window.IsActive(10101)'))
+        #xbmc.executebuiltin('Dialog.Close(%s, true)' % 10101)
+        #xbmc.getCondVisibility('Window.IsActive(10101)')
 
         #thread actif
         if xbmcgui.Window(10101).getProperty('arret') == '0':
@@ -552,8 +541,8 @@ class cDownload:
     def getDownloadList(self):
 
         #from resources.lib.downloadplay import download_and_play
-        ##download_and_play('https://a-2.1fichier.com/c2290838997?inline','test.avi','D:\Temporaire')
-        #download_and_play('https://1fichier.com/?56eplh6nth','test.avi','D:\Temporaire')
+        ##download_and_play('https://a-2.1fichier.com/c2290838997?inline', 'test.avi', 'D:\Temporaire')
+        #download_and_play('https://1fichier.com/?56eplh6nth', 'test.avi', 'D:\Temporaire')
         #return
 
         oGui = cGui()
@@ -594,14 +583,14 @@ class cDownload:
                 sStatus='[COLOR=green][Fini] [/COLOR]'
 
             if size:
-                sTitle = sStatus + title + ' (' + self.__formatFileSize(size)+'/'+self.__formatFileSize(totalsize)+')'
+                sTitle = sStatus + title + ' (' + self.__formatFileSize(size) + '/' + self.__formatFileSize(totalsize) + ')'
             else:
                 sTitle = sStatus + title
 
             oGuiElement = cGuiElement()
 
             if not thumbnail or thumbnail == 'False':
-                thumbnail = "mark.png"
+                thumbnail = 'mark.png'
 
             oGuiElement.setSiteName(SITE_IDENTIFIER)
             if status == '2':
@@ -618,7 +607,6 @@ class cDownload:
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-
         oGui.setEndOfDirectory()
 
         return
@@ -633,7 +621,7 @@ class cDownload:
 
         try:
             cDb().del_download(meta)
-            self.DIALOG.VSinfo('Liste mise a jour')
+            self.DIALOG.VSinfo('Liste mise à jour')
             VSupdate()
         except:
             pass
@@ -659,17 +647,17 @@ class cDownload:
             sPath = dialog.browse(3, 'Downloadfolder', 'files', '', False, False , sPath2)
 
             if (sPath != ''):
-                self.ADDON.setSetting('download_folder',sPath)
-                sDownloadPath = xbmc.translatePath(sPath +  '%s' % (sTitle, ))
+                self.ADDON.setSetting('download_folder', sPath)
+                sDownloadPath = xbmc.translatePath(sPath + '%s' % (sTitle, ))
 
                 if xbmcvfs.exists(sDownloadPath):
-                    self.DIALOG.VSinfo('Nom deja utilise', sTitle)
+                    self.DIALOG.VSinfo('Nom déjà utilisé', sTitle)
                     return self.AddDownload(meta)
                 else:
                     xbmcvfs.File(sDownloadPath, 'w')
 
                 try:
-                    VSlog("Rajout en liste de telechargement " + str(sUrl))
+                    VSlog('Ajout en liste de téléchargement ' + str(sUrl))
                     meta['title'] = sTitle
                     meta['path'] = sDownloadPath
 
@@ -679,11 +667,10 @@ class cDownload:
 
                 except:
                     #print_exc()
-                    self.DIALOG.VSinfo('Telechargement impossible', sTitle)
-                    VSlog("Telechargement impossible")
+                    self.DIALOG.VSinfo('Téléchargement impossible', sTitle)
+                    VSlog('Téléchargement impossible')
 
         return False
-
 
     def AddtoDownloadList(self):
 
@@ -697,7 +684,7 @@ class cDownload:
         #if (bGetRedirectUrl == 'True'):
         #    sMediaUrl = self.__getRedirectUrl(sMediaUrl)
 
-        VSlog("Telechargement " + sMediaUrl)
+        VSlog('Téléchargement ' + sMediaUrl)
 
         meta = {}
         meta['url'] = sMediaUrl
@@ -722,7 +709,7 @@ class cDownload:
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
         sFileName = oInputParameterHandler.getValue('sFileName')
 
-        VSlog("Telechargement " + sMediaUrl)
+        VSlog('Téléchargement ' + sMediaUrl)
 
         meta = {}
         meta['url'] = sMediaUrl
@@ -741,11 +728,11 @@ class cDownload:
                     path = row[0][3]
                     #thumbnail = urllib.unquote_plus(row[0][4])
                     #status = row[0][8]
-                    if (self.download(url,title,path,True) == True): #Download in fastmode
+                    if (self.download(url, title, path, True) == True): #Download in fastmode
 
                         #ok on attend un peu, et on lance le stream
                         tempo = 100
-                        progress_ = progress().VScreate('Creation buffer')
+                        progress_ = progress().VScreate('Bufferisation')
 
                         while (tempo > 0):
                             #if canceled do nothing
@@ -773,5 +760,5 @@ class cDownload:
                             oPlayer.startPlayer()
 
                     else:
-                        self.DIALOG.VSinfo('Echec du telechargement', 'Erreur')
+                        self.DIALOG.VSinfo('Echec du téléchargement', 'Erreur')
         return
