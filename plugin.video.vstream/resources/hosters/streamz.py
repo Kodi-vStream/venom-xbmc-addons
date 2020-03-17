@@ -97,6 +97,6 @@ class cHoster(iHoster):
             api_call = Getheader(url,cookie)
 
         if (api_call):
-            return True, api_call + '|User-Agent=' + UA
+            return True, api_call + '|User-Agent=' + UA +'&Referer=' + self.__sUrl
 
         return False, False
