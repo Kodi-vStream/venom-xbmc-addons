@@ -7,9 +7,7 @@ from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-
 from resources.lib.comaddon import dialog, addon, xbmc
-
 import urllib
 
 SITE_IDENTIFIER = 'cFav'
@@ -38,7 +36,7 @@ class cFav:
         #Comptages des favoris
         row = cDb().get_favorite()
 
-        compt = [0,0,0,0,0,0,0,0]
+        compt = [0, 0, 0, 0, 0, 0, 0, 0]
         for i in row:
             compt[int(i[5])] = compt[int(i[5])] + 1
 
@@ -79,7 +77,7 @@ class cFav:
         if compt[0] > 0:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sCat', '0')
-            oGui.addDir(SITE_IDENTIFIER, 'getFav', '[COLOR red]Erreur /!\ lien a supprimer !!! (' + str(compt[0]) + ')[/COLOR]', 'mark.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'getFav', '[COLOR red]Erreur /!\ lien à supprimer!!! (' + str(compt[0]) + ')[/COLOR]', 'mark.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -99,7 +97,6 @@ class cFav:
             sCat = '5'
             gen = (x for x in row if x[5] not in ('1', '2', '6'))
 
-
         for data in gen:
 
             try:
@@ -112,9 +109,7 @@ class cFav:
             except:
                 thumbnail = data[6]
 
-
             try:
-
                 siteurl = urllib.unquote_plus(data[2])
                 site = data[3]
                 function = data[4]
@@ -138,9 +133,7 @@ class cFav:
                     oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
                     oOutputParameterHandler.addParameter('sMediaUrl', siteurl)
 
-
                 oGuiElement = cGuiElement()
-
                 oGuiElement.setSiteName(site)
                 oGuiElement.setFunction(function)
                 oGuiElement.setTitle(title)
@@ -185,11 +178,11 @@ class cFav:
         oInputParameterHandler = cInputParameterHandler()
 
         if oInputParameterHandler.getValue('sId') == 'kepliz_com':
-            self.DIALOG.VSinfo('Error', 'Non possible pour ce site')
+            self.DIALOG.VSinfo('Error', 'Pas possible pour ce site')
             return
 
         if int(oInputParameterHandler.getValue('sCat')) < 1:
-            self.DIALOG.VSinfo('Error', 'Mise en Favoris non possible pour ce lien')
+            self.DIALOG.VSinfo('Error', 'Mise en Favoris pas possible pour ce lien')
             return
 
         meta = {}
