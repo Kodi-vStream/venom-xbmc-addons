@@ -172,9 +172,8 @@ def showMovies(sSearch = ''):
                 sThumb = URL_MAIN + sThumb
             sUrl = aEntry[3]
             sQual = aEntry[2]
-            sTitle = aEntry[1].replace('&#884;', '\'')# en attendant de trouver mieux
+            sTitle = aEntry[1]
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
-
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -184,17 +183,18 @@ def showMovies(sSearch = ''):
             if '/Series/' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showLink', sDisplayTitle,'', sThumb, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showLink', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
+    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
+    # if not sSearch:
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
@@ -219,6 +219,13 @@ def showSaisons():
     sHtmlContent = oRequestHandler.request()
 
     sDesc = ''
+    try:
+        sPattern = '<div class="fsynopsis"><p>(.+?)<\/p>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sDesc = aResult[1][0].replace('&#884;', '\'').replace('&#8217;', '\'').replace('&#8230;', '...').replace('<p>', '').replace('<span>', '').replace('</span>', '')
+    except:
+        pass
 
     sPattern = 'class="short-link".+?a href="([^"]+)".+?>([^<]+)<\/a'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -282,17 +289,15 @@ def ShowEpisodes():
             if progress_.iscanceled():
                 break
 
-            sEpisode = 'Episode' + aEntry[1]
             sUrl2 =  aEntry[0]
+            sEpisode = 'Episode' + aEntry[1]
 
-            sDesc = ''
             sDisplayTitle = ('%s %s') % (sEpisode, sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
 
             oGui.addTV(SITE_IDENTIFIER, 'showLink', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -311,10 +316,17 @@ def showLink():
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
 
+    #recuperation pour les films du synopsis
     sDesc = ''
+    try:
+        sPattern = '<div class="fsynopsis"><p>(.+?)<\/p>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sDesc = aResult[1][0].replace('&#884;', '\'').replace('&#8217;', '\'').replace('&#8230;', '...').replace('<p>', '').replace('<span>', '').replace('</span>', '')
+    except:
+        pass
 
     sPattern = 'class="lectt " src="([^"]+)".+?"lect1">([^<]+)<\/span.+?class="bdpr">([^<]+)<\/span.+?\/img\/([^"]+)'
-
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -335,7 +347,7 @@ def showLink():
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
