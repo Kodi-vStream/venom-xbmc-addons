@@ -241,22 +241,22 @@ def urlEncode(sUrl):
     return urllib.urlencode(sUrl)
 
 def Noredirection(UA, host, sUrl):
-	class NoRedirection(urllib2.HTTPErrorProcessor):
-	    def http_response(self, request, response):
-	        return response
+    class NoRedirection(urllib2.HTTPErrorProcessor):
+        def http_response(self, request, response):
+            return response
 
-	    https_response = http_response
+        https_response = http_response
 
-	opener = urllib2.build_opener(NoRedirection)
-	opener.addheaders = [('User-agent', UA)]
-	opener.addheaders = [('Referer', host)]
-	response = opener.open(sUrl)
-	sHtmlContent = response.read()
-	redirection_target = sUrl
-	if response.code == 302:
-	    redirection_target = response.headers['Location']
-	response.close()
-	return sHtmlContent, redirection_target
+    opener = urllib2.build_opener(NoRedirection)
+    opener.addheaders = [('User-agent', UA)]
+    opener.addheaders = [('Referer', host)]
+    response = opener.open(sUrl)
+    sHtmlContent = response.read()
+    redirection_target = sUrl
+    if response.code == 302:
+        redirection_target = response.headers['Location']
+    response.close()
+    return sHtmlContent, redirection_target
 
 #deprecier utiliser comaddon dialog()
 # def updateDialogSearch(dialog, total, site):
