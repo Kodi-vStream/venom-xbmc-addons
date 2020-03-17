@@ -8,8 +8,8 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-from resources.lib.util import QuoteSafe, Noredirection
-import urllib, re
+from resources.lib.util import QuoteSafe, Noredirection, Quote
+import re
 
 SITE_IDENTIFIER = 'voirfilms_org'
 SITE_NAME = 'VoirFilms'
@@ -273,7 +273,7 @@ def showMovies(sSearch = ''):
     oParser = cParser()
 
     if sSearch:
-        sSearch = urllib.quote(sSearch)
+        sSearch = Quote(sSearch)
 
         oRequest = cRequestHandler(URL_MAIN + 'recherche?s=' + sSearch)
         oRequest.addHeaderEntry('User-Agent', UA)
