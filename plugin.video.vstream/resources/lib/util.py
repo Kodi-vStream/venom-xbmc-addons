@@ -78,17 +78,17 @@ class cUtil:
         #pr les tag Crochet
         string = re.sub('([\[].+?[\]])',' [COLOR coral]\\1[/COLOR] ', string)
         #pr les tag parentheses
-        string = re.sub('([\(](?![0-9]{4}).{1,7}[\)])',' [COLOR coral]\\1[/COLOR] ', string)
+        string = re.sub('([\(](?![0-9]{4}).{1,7}[\)])', ' [COLOR coral]\\1[/COLOR] ', string)
         #pr les series
         string = self.FormatSerie(string)
-        string = re.sub('(?i)(.*) ((?:[S|E][0-9\.\-\_]+){1,2})','\\1 [COLOR coral]\\2[/COLOR] ', string)
+        string = re.sub('(?i)(.*) ((?:[S|E][0-9\.\-\_]+){1,2})', '\\1 [COLOR coral]\\2[/COLOR] ', string)
 
         #vire doubles espaces
         string = re.sub(' +', ' ', string)
 
         return string
 
-    def unescape(self,text):
+    def unescape(self, text):
         def fixup(m):
             text = m.group(0)
             if text[:2] == '&#':
@@ -110,7 +110,7 @@ class cUtil:
         return re.sub('&#?\w+;', fixup, text)
 
 
-    def CleanName(self,name):
+    def CleanName(self, name):
         #vire accent et '\'
         try:
             name = unicode(name, 'utf-8')#converti en unicode pour aider aux convertions
@@ -198,7 +198,7 @@ class cUtil:
         #reconvertion utf-8
         return string.encode('utf-8')
 
-    def EvalJSString(self,s):
+    def EvalJSString(self, s):
         s = s.replace(' ', '')
         try:
             s = s.replace('!+[]', '1').replace('!![]', '1').replace('[]', '0')
@@ -266,7 +266,6 @@ def Noredirection():
 
 def GetGooglUrl(url):
     if 'http://goo.gl' in url:
-        import urllib2
         try:
             headers = {'User-Agent' : 'Mozilla 5.10', 'Host' : 'goo.gl', 'Connection' : 'keep-alive'}
             request = urllib2.Request(url, None, headers)
@@ -310,8 +309,6 @@ def GetTinyUrl(url):
     else:
 
         #VSlog('Decodage lien tinyurl : ' + str(url))
-
-        import urllib2
 
         class NoRedirection(urllib2.HTTPErrorProcessor):
             def http_response(self, request, response):
