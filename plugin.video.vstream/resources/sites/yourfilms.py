@@ -10,9 +10,9 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 #import urllib2
 
-SITE_IDENTIFIER = 'onestreamings_com'
-SITE_NAME = 'oneStreamings'
-SITE_DESC = 'Films, Séries & Mangas'
+SITE_IDENTIFIER = 'yourfilms'
+SITE_NAME = 'Yourfilms'
+SITE_DESC = 'Films & Séries'
 
 URL_MAIN = 'https://yourfilms.net/'
 
