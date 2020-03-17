@@ -31,11 +31,7 @@ SERIE_NEWS = (URL_MAIN + 'Series.html', 'showMovies')
 #SERIE_GENRES = (URL_MAIN + 'series/', 'showGenres')
 #SERIE_ANNEES = (True, 'showSerieYears')
 
-#ANIM_ANIMS = (URL_MAIN + 'animes.html', 'showMovies')
-#ANIM_GENRES = (URL_MAIN + 'animes/', 'showGenres')
-#ANIM_ANNEES = (True, 'showAnimeYears')
-
-UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0'
+# UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0'
 
 def load():
     oGui = cGui()
@@ -76,18 +72,6 @@ def load():
     #oOutputParameterHandler = cOutputParameterHandler()
     #oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
     #oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Par années)', 'annees.png', oOutputParameterHandler)
-
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    #oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
-
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
-    #oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genres)', 'genres.png', oOutputParameterHandler)
-
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', ANIM_ANNEES[0])
-    #oGui.addDir(SITE_IDENTIFIER, ANIM_ANNEES[1], 'Animés (Par années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -156,30 +140,16 @@ def showSerieYears():
 
     oGui.setEndOfDirectory()
 
-def showAnimeYears():
-    oGui = cGui()
-
-    for i in reversed (xrange(1965, 2019)):
-        Year = str(i)
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'animes/annee/' + Year + '.html')
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
 def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
-        sUrl = sSearch.replace(' ','-') + '.html'
+        sUrl = sSearch.replace(' ', '-') + '.html'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
-
-
-
     sHtmlContent = oRequestHandler.request()
     sPattern = 'img src="([^"]+)".+?alt="([^"]+)".+?<span.+?class="film-rip.+?html">([^"]+)<\/a.+?short.+?href="([^"]+)"'
 
@@ -202,7 +172,7 @@ def showMovies(sSearch = ''):
                 sThumb = URL_MAIN + sThumb
             sUrl = aEntry[3]
             sQual = aEntry[2]
-            sTitle = aEntry[1].replace('&#884;','\'')# en attendant de trouver mieux
+            sTitle = aEntry[1].replace('&#884;', '\'')# en attendant de trouver mieux
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
 
 
@@ -211,7 +181,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if '/Series/' in sUrl: #or '/animes/' in sUrl:
+            if '/Series/' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLink', sDisplayTitle,'', sThumb, '', oOutputParameterHandler)
@@ -222,7 +192,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -250,7 +220,7 @@ def showSaisons():
 
     sDesc = ''
 
-    sPattern = 'class="short-link".+?a href="([^"]+)".+?>([^"]+)<\/a'
+    sPattern = 'class="short-link".+?a href="([^"]+)".+?>([^<]+)<\/a'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -283,21 +253,21 @@ def ShowEpisodes():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
-    sUrl   = oInputParameterHandler.getValue('siteUrl')
-    sDesc  = oInputParameterHandler.getValue('sDesc')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sDesc = oInputParameterHandler.getValue('sDesc')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     sTitle = ''
-    sPattern = '<h1 class="fstory-h1">([^"]+)<a'
+    sPattern = '<h1 class="fstory-h1">([^<]+)<a'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if ( aResult[0] == True ):
         sTitle = aResult[1][0]
 
-    sPattern = 'streaming" href="([^"]+)".+?class="arrow-right"><\/span>([^"]+)<\/span'
-
+    sPattern = 'streaming" href="([^"]+)".+?class="arrow-right"><\/span>([^<]+)<\/span'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -316,7 +286,7 @@ def ShowEpisodes():
             sUrl2 =  aEntry[0]
 
             sDesc = ''
-            sDisplayTitle = ('%s [%s]') % (sTitle, sEpisode)
+            sDisplayTitle = ('%s %s') % (sEpisode, sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -343,7 +313,7 @@ def showLink():
 
     sDesc = ''
 
-    sPattern = 'class="lectt " src="([^"]+)".+?"lect1">([^"]+)<\/span.+?class="bdpr">([^"]+)<\/span.+?\/img\/([^"]+)'
+    sPattern = 'class="lectt " src="([^"]+)".+?"lect1">([^<]+)<\/span.+?class="bdpr">([^<]+)<\/span.+?\/img\/([^"]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -356,16 +326,14 @@ def showLink():
                 break
 
             sUrl2 = aEntry[0]
-            sLang = aEntry[3].replace('.png' , '')
-
-
-            sHost = aEntry[1].replace('</span>', '')
+            sHost = aEntry[1].capitalize()
             sQual = aEntry[2]
-            sTitle = ('%s [%s] [COLOR coral]%s[/COLOR]') % (sMovieTitle, sQual, sHost) +  ' [' + sLang + ']'
+            sLang = aEntry[3].replace('.png', '').upper()
+            sTitle = ('%s [%s] (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sQual, sLang, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
@@ -373,20 +341,19 @@ def showLink():
 
     oGui.setEndOfDirectory()
 
-def showHosters(): #recherche et affiche les hotes
-    oGui = cGui() #ouvre l'affichage
-    oInputParameterHandler = cInputParameterHandler() #apelle l'entree de parametre
-    sUrl = oInputParameterHandler.getValue('siteUrl') #apelle siteUrl
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle') #appelle le titre
-    sThumb = oInputParameterHandler.getValue('sThumb') #appelle le poster
+def showHosters():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     sHosterUrl = sUrl
-    oHoster = cHosterGui().checkHoster(sHosterUrl) #recherche l'hote dans l'addon
+    oHoster = cHosterGui().checkHoster(sHosterUrl)
     if (oHoster != False):
-        oHoster.setDisplayName(sMovieTitle) #nom affiche
-        oHoster.setFileName(sMovieTitle) #idem
+        oHoster.setDisplayName(sMovieTitle)
+        oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-                #affiche le lien (oGui, oHoster, url du lien, poster)
 
-    oGui.setEndOfDirectory() #fin
+    oGui.setEndOfDirectory()
 
