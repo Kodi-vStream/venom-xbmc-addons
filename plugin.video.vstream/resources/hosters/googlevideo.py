@@ -1,14 +1,10 @@
-#coding: utf-8
+#-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.hosters.hoster import iHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import VSlog, xbmcgui
 import urllib2, re
-#import cookielib
-#import json
-#import simplejson
-
 
 class cHoster(iHoster):
 
@@ -97,7 +93,7 @@ class cHoster(iHoster):
                 VSlog('Attention: lien sans cookies')
                 return True, self.__sUrl
 
-        web_url = self.getUrl(r[0],r[1])
+        web_url = self.getUrl(r[0], r[1])
 
         headers = {'Referer': web_url}
 
