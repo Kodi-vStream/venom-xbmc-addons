@@ -1,9 +1,9 @@
-#coding: utf-8
+#-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog
+# from resources.lib.comaddon import dialog
 
 class cHoster(iHoster):
 
@@ -46,20 +46,20 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
- 
+
         api_call = ''
-        
+
         oParser = cParser()
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
+
         sPattern = '<source src="([^"]+.mp4)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             api_call = aResult[1][0]
             if api_call.startswith('/'):
                 api_call = 'https://archive.org' + aResult[1][0]
-                
+
         if (api_call):
             return True, api_call
 
