@@ -4,13 +4,15 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.player import cPlayer
-from resources.lib.comaddon import addon, dialog, VSlog
+from resources.lib.comaddon import addon, dialog#, VSlog
 
 import re, urllib2
 import ssl
 
-try:    import json
-except: import simplejson as json
+try:
+    import json
+except:
+    import simplejson as json
 
 SITE_IDENTIFIER = 'cBA'
 SITE_NAME = 'BA'
@@ -18,22 +20,22 @@ SITE_NAME = 'BA'
 class cShowBA:
 
     def __init__(self):
-        self.search =''
-        self.key = "AIzaSyC5grY-gOPMpUM_tn0sfTKV3pKUtf9---M"
+        self.search = ''
+        self.key = 'AIzaSyC5grY-gOPMpUM_tn0sfTKV3pKUtf9---M'
 
     def SetSearch(self,search):
-        self.search = search.replace(' ','+')
+        self.search = search.replace(' ', '+')
         self.search =  self.search + '+bande+annonce'
 
     def SearchBA_old(self):
 
-            url = "https://www.googleapis.com/youtube/v3/search?part=id,snippet&q=%s&maxResults=1&relevanceLanguage=fr&key=%s" % (self.search, self.key)
+            url = 'https://www.googleapis.com/youtube/v3/search?part=id,snippet&q=%s&maxResults=1&relevanceLanguage=fr&key=%s' % (self.search, self.key)
 
             req = urllib2.Request(url)
 
             try:
                 gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-                response = urllib2.urlopen(req,context=gcontext)
+                response = urllib2.urlopen(req, context = gcontext)
             except:
                 response = urllib2.urlopen(req)
             sHtmlContent = response.read()
@@ -53,7 +55,7 @@ class cShowBA:
 
                 oGuiElement = cGuiElement()
                 oGuiElement.setSiteName(SITE_IDENTIFIER)
-                oGuiElement.setTitle(self.search.replace('+',' '))
+                oGuiElement.setTitle(self.search.replace('+', ' '))
                 oGuiElement.setMediaUrl(api_call)
                 oGuiElement.setThumbnail(oGuiElement.getIcon())
 
@@ -73,11 +75,11 @@ class cShowBA:
         oRequestHandler = cRequestHandler(self.url)
         sHtmlContent = oRequestHandler.request()
 
-        list = re.findall('"url":"\/watch\?v=([^"]+)"',sHtmlContent)
-        
+        list = re.findall('"url":"\/watch\?v=([^"]+)"', sHtmlContent)
+
         if list:
             url = 'http://www.youtube.com/watch?v=' + list[0]
-            exec "from resources.hosters.youtube import cHoster"
+            exec 'from resources.hosters.youtube import cHoster'
             hote = cHoster()
             hote.setUrl(url)
             api_call = hote.getMediaLink()[1]
@@ -86,7 +88,7 @@ class cShowBA:
 
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName(SITE_IDENTIFIER)
-            oGuiElement.setTitle(self.search.replace('+',' '))
+            oGuiElement.setTitle(self.search.replace('+', ' '))
             oGuiElement.setMediaUrl(api_call)
             oGuiElement.setThumbnail(oGuiElement.getIcon())
 
