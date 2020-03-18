@@ -1,9 +1,8 @@
-#coding: utf-8
+#-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-
 import re
 
 class cHoster(iHoster):
@@ -87,14 +86,11 @@ class cHoster(iHoster):
                         sHosterUrl = 'http:%s' % sHosterUrl
 
                     sHosterUrl = sHosterUrl.replace('\\', '')
-
-
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
                     oHoster.setUrl(sHosterUrl)
                     api_call = oHoster.getMediaLink()
 
                     if (api_call[0] == True):
                         return True, api_call[1]
-
 
         return False, False
