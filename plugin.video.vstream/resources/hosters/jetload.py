@@ -4,6 +4,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -40,7 +41,7 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        self.__sUrl = self.__sUrl.replace('/e/','/api/fetch/')
+        self.__sUrl = self.__sUrl.replace('/e/', '/api/fetch/')
 
     def checkUrl(self, sUrl):
         return True
@@ -88,14 +89,14 @@ class cHoster(iHoster):
             # oRequest = cRequestHandler('https://jetload.net/api/download')
             # oRequest.setRequestType(1)
             # #oRequest.addHeaderEntry('User-Agent', UA)
-            # oRequest.addHeaderEntry('Referer',self.__sUrl)
+            # oRequest.addHeaderEntry('Referer', self.__sUrl)
             # oRequest.addHeaderEntry('Accept', 'application/json, text/plain, */*')
             # oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
             # oRequest.addParametersLine(pdata)
 
             # api_call = oRequest.request()
 
-        # #type ?    
+        # #type ?
         # else:
             # sPattern = '<input type="hidden" id="srv" value="([^"]+)">'
             # aResult = oParser.parse(sHtmlContent, sPattern)
@@ -104,7 +105,7 @@ class cHoster(iHoster):
 
 
                 # api_call = Host + '/v2/schema/' + FN + '/master.m3u8'
-            
+
 
         if (api_call):
             return True, api_call
