@@ -1,4 +1,4 @@
-#coding: utf-8
+#-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -20,16 +20,16 @@ def ASCIIDecode(string):
     ret = ''
     while i < l:
         c =string[i]
-        if string[i:(i+2)] == '\\x':
-            c = chr(int(string[(i+2):(i+4)], 16))
-            i+=3
-        if string[i:(i+2)] == '\\u':
-            cc = int(string[(i+2):(i+6)], 16)
+        if string[i:(i + 2)] == '\\x':
+            c = chr(int(string[(i + 2):(i + 4)], 16))
+            i +=3
+        if string[i:(i + 2)] == '\\u':
+            cc = int(string[(i + 2):(i + 6)], 16)
             if cc > 256:
                 #ok c'est de l'unicode, pas du ascii
                 return ''
             c = chr(cc)
-            i+= 5
+            i += 5
         ret = ret + c
         i = i + 1
 
@@ -43,7 +43,7 @@ def GetHtml(url, headers):
 
     return sCode
 
-def UnlockUrl(url2=None):
+def UnlockUrl(url2 = None):
     headers9 = {
     'User-Agent': UA,
     'Referer': 'https://www.flashx.co/dl?playthis'
@@ -91,7 +91,7 @@ def UnlockUrl(url2=None):
     if url:
         VSlog('Good Url :' + url1)
         VSlog(url)
-        GetHtml(url,headers9)
+        GetHtml(url, headers9)
         return True
 
     VSlog('Bad Url :' + url1)
@@ -106,7 +106,7 @@ def LoadLinks(htmlcode):
         aResult = re.findall(sPattern, htmlcode, re.DOTALL)
 
         #VSlog(str(aResult))
-        for http,urlspam in aResult:
+        for http, urlspam in aResult:
             sUrl = urlspam
 
             if http:
@@ -255,7 +255,7 @@ class cHoster(iHoster):
                 else:
                     break
             except urllib2.URLError, e:
-                if (e.code == 301) or  (e.code == 302):
+                if (e.code == 301) or (e.code == 302):
                     redirection_target = e.headers['Location']
                 else:
                     #VSlog(str(e.code))
