@@ -1,9 +1,8 @@
-#coding: utf-8
+#-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-
 import re
 
 class cHoster(iHoster):
@@ -61,9 +60,9 @@ class cHoster(iHoster):
         api_call = False
         oParser = cParser()
 
-        id = self.__getIdFromUrl(self.__sUrl)
+        sId = self.__getIdFromUrl(self.__sUrl)
 
-        url = 'http://gorillavid.in/' + id
+        url = 'http://gorillavid.in/' + sId
         oRequest = cRequestHandler(url)
         sHtmlContent = oRequest.request()
         sPattern =  '<input type="hidden" name="([^"]+)" value="([^"]+)"'
