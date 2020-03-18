@@ -1,4 +1,4 @@
-#coding: utf-8
+#-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
@@ -57,7 +57,7 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        
+
     def checkUrl(self, sUrl):
         return True
 
@@ -71,7 +71,7 @@ class cHoster(iHoster):
         url=[]
         qua=[]
         api_call = ''
-        
+
         #reformatage du lien
         sId = self.__getIdFromUrl(self.__sUrl)
         sUrl = 'https://drive.google.com/file/d/' + sId + '/view' #?pli=1
@@ -98,7 +98,7 @@ class cHoster(iHoster):
         if not aResult[0]:
             if '"errorcode","150"]' in sHtmlContent:
                 dialog().VSinfo("Nombre de lectures max dépassé")
-            return False,False
+            return False, False
 
         sListUrl = aResult[1][0]
 
@@ -112,11 +112,11 @@ class cHoster(iHoster):
                 for i in aResult2[1]:
                     if item[0] == i[0]:
                         qua.append(i[1])
-       
+
         #Afichage du tableau
         api_call = dialog().VSselectqual(qua, url)
         api_call = api_call + '|User-Agent=' + UA + '&Cookie=' + cookies
-        
+
         if (api_call):
             return True, api_call
 
