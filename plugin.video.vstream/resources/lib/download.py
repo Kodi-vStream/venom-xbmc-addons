@@ -15,7 +15,7 @@ from resources.lib.comaddon import addon, dialog, progress, VSlog, VSupdate, xbm
 import urllib2,urllib
 import xbmcplugin
 import xbmcvfs
-import re,sys
+import re, sys
 import threading
 
 # try:
@@ -539,14 +539,8 @@ class cDownload:
         return
 
     def getDownloadList(self):
-
-        #from resources.lib.downloadplay import download_and_play
-        ##download_and_play('https://a-2.1fichier.com/c2290838997?inline', 'test.avi', 'D:\Temporaire')
-        #download_and_play('https://1fichier.com/?56eplh6nth', 'test.avi', 'D:\Temporaire')
-        #return
-
         oGui = cGui()
-        oInputParameterHandler = cInputParameterHandler()
+        # oInputParameterHandler = cInputParameterHandler()
 
         row = cDb().get_Download()
 
@@ -554,11 +548,11 @@ class cDownload:
 
             title = data[1]
             url = urllib.unquote_plus(data[2])
-            cat = data[4]
+            path = data[3]
+            # cat = data[4]
             thumbnail = urllib.unquote_plus(data[5])
-            #The url is unicode format ? Not managed yet
+            #The url is unicode format? Not managed yet
             try:
-                #thumbnail = urllib.quote(thumbnail.encode('utf-8'), safe=':/.+?&')
                 thumbnail = str(thumbnail)
             except:
                 thumbnail = ''
@@ -566,7 +560,6 @@ class cDownload:
             size = data[6]
             totalsize = data[7]
             status = data[8]
-            path = data[3]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sUrl', url)
@@ -603,7 +596,7 @@ class cDownload:
             oGuiElement.setMeta(0)
             oGuiElement.setThumbnail(thumbnail)
 
-            oGui.createContexMenuDownload(oGuiElement, oOutputParameterHandler,status)
+            oGui.createContexMenuDownload(oGuiElement, oOutputParameterHandler, status)
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
@@ -628,7 +621,7 @@ class cDownload:
 
         return
 
-    def AddDownload(self,meta):
+    def AddDownload(self, meta):
 
         sTitle = meta['title']
         sUrl = meta['url']
@@ -644,11 +637,11 @@ class cDownload:
             sPath2 = xbmc.translatePath(self.ADDON.getSetting('download_folder'))
 
             dialog = xbmcgui.Dialog()
-            sPath = dialog.browse(3, 'Downloadfolder', 'files', '', False, False , sPath2)
+            sPath = dialog.browse(3, 'Downloadfolder', 'files', '', False, False, sPath2)
 
             if (sPath != ''):
                 self.ADDON.setSetting('download_folder', sPath)
-                sDownloadPath = xbmc.translatePath(sPath + '%s' % (sTitle, ))
+                sDownloadPath = xbmc.translatePath(sPath + '%s' % (sTitle))
 
                 if xbmcvfs.exists(sDownloadPath):
                     self.DIALOG.VSinfo('Nom déjà utilisé', sTitle)
@@ -675,11 +668,10 @@ class cDownload:
     def AddtoDownloadList(self):
 
         oInputParameterHandler = cInputParameterHandler()
-
-        sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
-        #bGetRedirectUrl = oInputParameterHandler.getValue('bGetRedirectUrl')
         sFileName = oInputParameterHandler.getValue('sFileName')
+        # sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
+        #bGetRedirectUrl = oInputParameterHandler.getValue('bGetRedirectUrl')
 
         #if (bGetRedirectUrl == 'True'):
         #    sMediaUrl = self.__getRedirectUrl(sMediaUrl)
@@ -693,7 +685,7 @@ class cDownload:
         meta['icon'] = xbmc.getInfoLabel('ListItem.Art(thumb)')
 
         if (self.AddDownload(meta)):
-            #telechargement direct ou pas ?
+            #telechargement direct ou pas?
             if not self.isDownloading():
                 row = cDb().get_Download(meta)
                 if row:
@@ -704,10 +696,9 @@ class cDownload:
     def AddtoDownloadListandview(self):
 
         oInputParameterHandler = cInputParameterHandler()
-
-        sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
         sFileName = oInputParameterHandler.getValue('sFileName')
+        # sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
 
         VSlog('Téléchargement ' + sMediaUrl)
 
