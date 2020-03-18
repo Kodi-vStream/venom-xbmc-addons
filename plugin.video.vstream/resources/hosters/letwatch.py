@@ -60,10 +60,10 @@ class cHoster(iHoster):
 
     def __getUrlFromJavascriptCode(self, sHtmlContent):
 
-        sPattern = "(eval\(function.*?)(.+?)</script>"
-
-        oParser = cParser()
+        # oParser = cParser()
+        # sPattern = "(eval\(function.*?)(.+?)</script>"
         #aResult = oParser.parse(sHtmlContent, sPattern)
+
         aResult = re.search('(eval\(function.*?)\s*</script>', sHtmlContent, re.DOTALL)
 
         if (aResult.group(1)):
