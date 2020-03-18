@@ -64,7 +64,7 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             postdata = aResult[1][0][0] + '=' + aResult[1][0][1] + '&' + aResult[1][0][2] + '=' + aResult[1][0][3]
-            
+
             oRequest = cRequestHandler(self.__sUrl)
             oRequest.setRequestType(1)
             oRequest.addHeaderEntry('User-Agent', UA)
@@ -72,9 +72,9 @@ class cHoster(iHoster):
             oRequest.addParametersLine(postdata)
 
             sHtmlContent = oRequest.request()
-        
+
             sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
-            aResult = re.findall(sPattern,sHtmlContent)
+            aResult = re.findall(sPattern, sHtmlContent)
 
             if (aResult):
                 sUnpacked = cPacker().unpack(aResult[0])
@@ -99,6 +99,5 @@ class cHoster(iHoster):
 
                         if (api_call[0] == True):
                             return True, api_call[1]
-
 
                         return False, False
