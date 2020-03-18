@@ -66,7 +66,7 @@ class cHoster(iHoster):
         api_call = False
         url=[]
         qua=[]
-        
+
         oRequest = cRequestHandler(self.__sUrl)
         oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
@@ -98,5 +98,5 @@ class cHoster(iHoster):
 
         if (api_call):
             return True, api_call
-        
+
         return False, False
