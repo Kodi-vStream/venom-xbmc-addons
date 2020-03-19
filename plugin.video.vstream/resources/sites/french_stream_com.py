@@ -7,9 +7,9 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress
 
-import re, base64, urllib
+import re, base64
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'french_stream_com'
 SITE_NAME = 'French-stream'
 SITE_DESC = 'Films, Séries & Mangas en streaming'
 
-URL_MAIN = 'https://www6.french-streaming.com/'
+URL_MAIN = 'https://www8.french-streaming.com/'
 
 URL_SEARCH_MOVIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=9&story=', 'showMovies')
 URL_SEARCH_SERIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=10&story=', 'showSeries')
@@ -39,12 +39,12 @@ SERIE_GENRES = (True, 'showSerieGenres')
 ANIM_ANIMS = (URL_MAIN + 'mangas/', 'showMangasMenu')
 ANIM_NEWS = (URL_MAIN + 'mangas/', 'showSeries')
 
-def decode_url_Serie(url, id, tmp = ''):
+def decode_url_Serie(url, sId, tmp = ''):
 
     v = url
 
-    if 'singh' in id:
-        id2 = id[6:]
+    if 'singh' in sId:
+        # sId2 = sId[6:]
         fields = url.split('nbsp')
         try:
             t = base64.b64encode(base64.b64encode(fields[1]))
@@ -54,55 +54,55 @@ def decode_url_Serie(url, id, tmp = ''):
             return
         v = "/s.php?p_id=1&&c_id=" + t
 
-    if id == 'honey':
-        id2 = id[6:]
+    if sId == 'honey':
+        # sId2 = sId[6:]
         fields = url.split('nbsp')
         t = base64.b64encode(base64.b64encode(fields[1]))
         v = "/s.php?p_id=1&&c_id=" + t
 
-    if id == 'yoyo':
-        id2 = id[5:]
+    if sId == 'yoyo':
+        # sId2 = sId[5:]
         fields = url.split('nbsp')
         t = base64.b64encode(base64.b64encode(fields[1]))
         v = "/s.php?p_id=1&&c_id=" + t
 
-    if id == 'seriePlayer':
+    if sId == 'seriePlayer':
         fields = url.split('nbsp')
         t = base64.b64encode(base64.b64encode(fields[1]))
         v = "/s.php?p_id=1&&c_id=" + t
 
     return v
 
-def decode_url(url, id, tmp = ''):
+def decode_url(url, sId, tmp = ''):
 
     v = url
 
-    if id == 'seriePlayer':
+    if sId == 'seriePlayer':
         fields = tmp.split('sig=705&&')
         t = base64.b64encode(base64.b64encode(fields[1]))
         v = '/f.php?p_id=1&&c_id=' + t
 
-    if id == 'gGotop1':
+    if sId == 'gGotop1':
         fields = tmp.split('sig=705&&')
         t = base64.b64encode(base64.b64encode(fields[1]))
         v = '/f.php?p_id=1&&c_id=' + t
 
-    if id == 'gGotop2':
+    if sId == 'gGotop2':
         fields = url.split('nbsp')
         t = base64.b64encode(base64.b64encode(fields[1]))
         v = "/f.php?p_id=2&&c_id=" + t
 
-    if id == 'gGotop3':
+    if sId == 'gGotop3':
         fields = url.split('nbsq')
         t = base64.b64encode(base64.b64encode(fields[1]))
         v = "/f.php?p_id=3&&c_id=" + t
 
-    if id == 'gGotop4':
+    if sId == 'gGotop4':
         fields = url.split('nbsr')
         t = base64.b64encode(base64.b64encode(fields[1]))
         v = "/f.php?p_id=4&&c_id=" + t
 
-    if id == 'gGotop5':
+    if sId == 'gGotop5':
         fields = url.split('nbss')
         t = base64.b64encode(base64.b64encode(fields[1]))
         v = "/dl.php?p_id=5&&c_id=" + t
@@ -114,19 +114,19 @@ def ResolveUrl(url):
     try:
         url2 = ''
         pat = 'p_id=([0-9]+).+?c_id=([^&]+)'
-        id = re.search(pat, url, re.DOTALL).group(1)
-        hash = re.search(pat, url, re.DOTALL).group(2)
-        hash = base64.b64decode(base64.b64decode(hash))
+        sId = re.search(pat, url, re.DOTALL).group(1)
+        hAsh = re.search(pat, url, re.DOTALL).group(2)
+        hAsh = base64.b64decode(base64.b64decode(hAsh))
  
 
-        if id == '2':
+        if sId == '2':
             url2 = 'https://oload.stream/embed/'
-        elif id == '3':
+        elif sId == '3':
             url2 = 'https://vidlox.me/embed-'
-        elif id == '4':
+        elif sId == '4':
             url2 = 'https://hqq.watch/player/embed_player.php?vid='
 
-        url2 = url2 + hash
+        url2 = url2 + hAsh
         return url2
     except:
         return ''
@@ -285,32 +285,32 @@ def showSerieGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action', URL_MAIN +'genre-serie/Action/'] )
-    liste.append( ['Animation', URL_MAIN+'genre-serie/Animation/'])
-    liste.append( ['Arts Martiaux', URL_MAIN + 'genre-serie/Arts-Martiaux/'] )
-    liste.append( ['Aventure', URL_MAIN + 'genre-serie/Aventure/'])
-    liste.append( ['Biopic', URL_MAIN + 'genre-serie/Biopic/'])
-    liste.append( ['Comédie', URL_MAIN + 'genre-serie/Comédie/'])
-    liste.append( ['Comédie Dramatique', URL_MAIN + 'genre-serie/Comédie+dramatique/'] )
-    liste.append( ['Comédie Musicale', URL_MAIN + 'genre-serie/Comédie+musicale/'] )
-    liste.append( ['Documentaire', URL_MAIN + 'genre-serie/Documentaire/'] )
-    liste.append( ['Drame', URL_MAIN + 'genre-serie/Drame/'])
-    liste.append( ['Epouvante Horreur', URL_MAIN + 'genre-serie/Epouvante-horreur/'] )
-    liste.append( ['Espionnage', URL_MAIN + 'genre-serie/Espionnage/'])
-    liste.append( ['Famille', URL_MAIN + 'genre-serie/Famille/'])
-    liste.append( ['Fantastique', URL_MAIN + 'genre-serie/Fantastique/'] )
-    liste.append( ['Guerre', URL_MAIN + 'genre-serie/Guerre/'])
-    liste.append( ['Historique', URL_MAIN + 'genre-serie/Historique/'])
-    liste.append( ['Judiciaire', URL_MAIN + 'genre-serie/Judiciaire/'])
-    liste.append( ['Médical', URL_MAIN + 'genre-serie/Médical/'])
-    liste.append( ['Musical', URL_MAIN + 'genre-serie/Musical/'] )
-    liste.append( ['Policier', URL_MAIN + 'genre-serie/Policier/'] )
-    liste.append( ['Romance', URL_MAIN + 'genre-serie/Romance/'] )
-    liste.append( ['Science Fiction', URL_MAIN + 'genre-serie/Science+fiction/'] )
-    liste.append( ['Soap', URL_MAIN + 'genre-serie/Soap/'] )
-    liste.append( ['Sport', URL_MAIN + 'genre-serie/Sport+event/'] )
-    liste.append( ['Thriller', URL_MAIN + 'genre-serie/Thriller/'] )
-    liste.append( ['Western', URL_MAIN + 'genre-serie/Western/'] )
+    liste.append( ['Action', URL_MAIN +'serie-genre/Action/'] )
+    liste.append( ['Animation', URL_MAIN+'serie-genre/Animation/'])
+    liste.append( ['Arts Martiaux', URL_MAIN + 'serie-genre/Arts-Martiaux/'] )
+    liste.append( ['Aventure', URL_MAIN + 'serie-genre/Aventure/'])
+    liste.append( ['Biopic', URL_MAIN + 'serie-genre/Biopic/'])
+    liste.append( ['Comédie', URL_MAIN + 'serie-genre/Comédie/'])
+    liste.append( ['Comédie Dramatique', URL_MAIN + 'serie-genre/Comédie+dramatique/'] )
+    liste.append( ['Comédie Musicale', URL_MAIN + 'serie-genre/Comédie+musicale/'] )
+    liste.append( ['Documentaire', URL_MAIN + 'serie-genre/Documentaire/'] )
+    liste.append( ['Drame', URL_MAIN + 'serie-genre/Drame/'])
+    liste.append( ['Epouvante Horreur', URL_MAIN + 'serie-genre/Epouvante-horreur/'] )
+    liste.append( ['Espionnage', URL_MAIN + 'serie-genre/Espionnage/'])
+    liste.append( ['Famille', URL_MAIN + 'serie-genre/Famille/'])
+    liste.append( ['Fantastique', URL_MAIN + 'serie-genre/Fantastique/'] )
+    liste.append( ['Guerre', URL_MAIN + 'serie-genre/Guerre/'])
+    liste.append( ['Historique', URL_MAIN + 'serie-genre/Historique/'])
+    liste.append( ['Judiciaire', URL_MAIN + 'serie-genre/Judiciaire/'])
+    liste.append( ['Médical', URL_MAIN + 'serie-genre/Médical/'])
+    liste.append( ['Musical', URL_MAIN + 'serie-genre/Musical/'] )
+    liste.append( ['Policier', URL_MAIN + 'serie-genre/Policier/'] )
+    liste.append( ['Romance', URL_MAIN + 'serie-genre/Romance/'] )
+    liste.append( ['Science Fiction', URL_MAIN + 'serie-genre/Science+fiction/'] )
+    liste.append( ['Soap', URL_MAIN + 'serie-genre/Soap/'] )
+    liste.append( ['Sport', URL_MAIN + 'serie-genre/Sport+event/'] )
+    liste.append( ['Thriller', URL_MAIN + 'serie-genre/Thriller/'] )
+    liste.append( ['Western', URL_MAIN + 'serie-genre/Western/'] )
 
     for sTitle, sUrl in liste:
 
@@ -503,7 +503,7 @@ def showEpisode():
 
     sDesc = ''
     try:
-        sPattern = 'id="s-desc">(.+?)<'
+        sPattern = 'id="s-desc">.+?streaming : (.+?)<'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
