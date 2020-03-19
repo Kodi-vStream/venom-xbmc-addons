@@ -14,7 +14,7 @@ import unicodedata, random
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0'
 
 #Make random url
-s = "azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN";
+s = 'azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN'
 RandomKey = ''.join(random.choice(s) for i in range(32))
 
 
@@ -310,7 +310,7 @@ def showMovies(sSearch = ''):
         sSearch = urllib.quote_plus(sSearch).upper() #passe en majuscule et remplace espace par +
 
         url = URL_MAIN + 'resultat+' + sSearch + '.html'
-        
+
         oRequestHandler = cRequestHandler(url)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
@@ -330,14 +330,13 @@ def showMovies(sSearch = ''):
 
     if sHtmlContent.startswith('<script type="text/javascript">'):
         sHtmlContent = FullUnescape(sHtmlContent)
-        
+
     if sSearch or 'categorie.php' in sUrl or 'categorie_' in sUrl or 'listing3.php?' in sUrl:
-    
         sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=["\']*(.+?)[\'"]* class=.button'
     else:
         sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?<a href="([^"]+)".+?alt="(.+?)".+?itle'
-        
-        
+
+
     sHtmlContent = re.sub('<a\s*href=\"categorie.php\?watch=\"\s*class="genre\s*\"', '', sHtmlContent, re.DOTALL)
 
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -354,25 +353,25 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-  
+
             sThumb = aEntry[0]
             if not sThumb.startswith('http'):
                 sThumb = URL_MAIN + sThumb
-                
+
             if sSearch or 'categorie.php' in sUrl or 'categorie_' in sUrl or 'listing3.php?' in sUrl:
                 sTitle = aEntry[1]
                 sUrl2 = aEntry[2]
             else:
                 sTitle = str(aEntry[2])
                 sUrl2 = aEntry[1]
-                
+
             #sTitle = unicode(sTitle, errors='replace')
             sTitle = unicode(sTitle, 'iso-8859-1')
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')
             sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
             sTitle = cUtil().unescape(sTitle)
             sTitle = sTitle.replace('[Streaming] - ', '').replace(' (VF)', '').replace(' (VOSTFR)', '').replace(' DVDRIP', '').replace('gratuitement maintenant','')
-            
+
             if ' - Episode' in sTitle:
                 sTitle = sTitle.replace(' -', '')
 
@@ -404,7 +403,7 @@ def showMovies(sSearch = ''):
             elif '?serie=' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             elif '?film=' in sUrl2:
-                oGui.addMovie(SITE_IDENTIFIER, 'showMovies', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)    
+                oGui.addMovie(SITE_IDENTIFIER, 'showMovies', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
@@ -442,7 +441,6 @@ def showEpisode():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -497,7 +495,7 @@ def showEpisode():
 def ExtractLink(html):
     #Fake link
     fake = 'https://www.youtube.com'
-    
+
     final = ''
 
     oParser = cParser()
@@ -683,57 +681,57 @@ def showHosters():
             aResult = oParser.parse(sHosterUrl, sPattern)
             #VSlog('1>>' + str(sHosterUrl))
             if aResult[0]:
-                
+
                 VSlog('>>' + sHosterUrl)
-                
+
                 oRequestHandler = cRequestHandler(sHosterUrl)
                 oRequestHandler.addHeaderEntry('Referer', sUrl)
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
-                
+
                 sHtmlContent = oRequestHandler.request()
 
                 #fh = open('c:\\test.txt', "w")
                 #fh.write(sHtmlContent)
                 #fh.close()
-                
+
                 sHtmlContent = ICDecode(sHtmlContent)
 
                 sHosterUrl2 = ExtractLink(sHtmlContent)
 
-                
+
                 if 'intern_player2.png' in sHosterUrl2:
                     #VSlog('Fausse image : ' + sHosterUrl)
                     #VSlog(sHtmlContent)
-                    
+
                     xx = str(random.randint(300, 350))#347
                     yy = str(random.randint(200, 255))#216
-                    
+
                     oRequestHandler = cRequestHandler(sHosterUrl)
                     oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
                     #Add params
                     oRequestHandler.addParameters('submit.x', xx)
                     oRequestHandler.addParameters('submit.y', yy)
-                    
+
                     #look for hidden params
                     p1 = re.search(r'name="valeur" value="([^"]+)"', sHtmlContent)
                     if p1:
                         #VSlog('Hidden param')
                         oRequestHandler.addParameters('valeur', p1.group(1))
-                    
+
                     #Set headers
                     oRequestHandler.addHeaderEntry('Referer', sUrl)
                     oRequestHandler.addHeaderEntry('User-Agent', UA)
                     sHtmlContent = oRequestHandler.request()
-                    
+
                     #VSlog("Img decode " + sHtmlContent)
-                    
+
                     sHosterUrl2 = ExtractLink(sHtmlContent)
-                 
+
                 sHosterUrl = sHosterUrl2
 
             if 'tinyurl' in sHosterUrl:
                 sHosterUrl = GetTinyUrl(sHosterUrl)
-                        
+
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
@@ -744,11 +742,11 @@ def showHosters():
 
 
 
-#-----------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------
 def GetTinyUrl(url):
     if not 'tinyurl' in url:
         return url
-    
+
     #Lien deja connu ?
     if '://tinyurl.com/h7c9sr7' in url:
         url = url.replace('://tinyurl.com/h7c9sr7/', '://vidwatch.me/')
@@ -799,5 +797,5 @@ def GetTinyUrl(url):
             url = reponse.headers['Location']
 
         reponse.close()
-        
+
     return url
