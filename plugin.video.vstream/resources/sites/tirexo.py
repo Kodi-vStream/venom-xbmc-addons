@@ -500,7 +500,7 @@ def showMoviesLinks():
         sDesc = sDesc.replace('<br>', '').replace('<br />', '')
 
     #on recherche d'abord la qualité courante
-    sPattern = '<div style=".+?"> *Qualité (.+?) [|] (.+?)<br> *<\/div>'
+    sPattern = 'couleur-qualitesz"> *Qualité (.+?) <.+?"couleur-languesz">(.+?)</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sTitle = sMovieTitle
@@ -609,19 +609,19 @@ def showSeriesLinks():
         pass
 
     #Mise à jour du titre
-    sPattern = '<h2>Télécharger <b itemprop="name">(.+?)</b>(.+?)</h2>'
+    sPattern = '<h2>Télécharger <b itemprop="name">(.+?)</b>.+?>(.+?)</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sTitle = sMovieTitle
     if (aResult[0]):
-        sTitle = aResult[1][0][0] + aResult[1][0][1]
+        sTitle = aResult[1][0][0] + " " + aResult[1][0][1]
 
     numSaison = str(aResult[1][0][1]).lower().replace("saison", "").strip()
     saisons = []
     saisons.append(numSaison)
     
     #on recherche d'abord la qualité courante
-    sPattern = 'Qualité (.+?) \| (.+?)<br>'
+    sPattern = 'couleur-qualitesz">Qualité (.+?) <.+?couleur-languesz">(.+?)</span><br>.+?"couleur-seriesz">(.+?)\['
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sDisplayTitle = sTitle
@@ -722,7 +722,7 @@ def showHosters():
     # Ajout des liens DL
     # Gere si un Hoster propose plusieurs liens
     # Retire les resultats proposés en plusieurs parties (ce sont des .rar) 
-    sPattern = "<th scope=(\"col\" class=\"no-sort\"><img src=.+?>(.+?)<\/th>|\"row\".+?class='download'.+?href=\'([^>]+?)\'>Télécharger <)"
+    sPattern = '<th scope="col" class="no-sort"><img src=.+?>(.+?)<\/th>|class=\'download\'.+?href=\'([^>]+?)\'>Télécharger <'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -734,12 +734,12 @@ def showHosters():
             if progress_.iscanceled():
                 break
 
-            if aEntry[1]:
-                sHoster = re.sub('\.\w+', '', aEntry[1])
+            if aEntry[0]:
+                sHoster = re.sub('\.\w+', '', aEntry[0])
                 continue;
 
 
-            sUrl2 = URL_MAIN[:-1] + aEntry[2]
+            sUrl2 = URL_MAIN[:-1] + aEntry[1]
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHoster)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -793,7 +793,7 @@ def showSeriesHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = 'href=\'([^>]+?)\'>Episode ([^>]+)<'
+    sPattern = '<th scope="col" class="no-sort"><img alt=.+?>(.+?)<\/th>|href=\'([^>]+?)\'>Episode ([^>]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -806,15 +806,21 @@ def showSeriesHosters():
             if progress_.iscanceled():
                 break
 
-            sUrl2 = URL_MAIN[:-1] + aEntry[0]
-            sTitle = sMovieTitle + ' E' + aEntry[1].replace('FINAL ', '')
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            if aEntry[0]:
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + re.sub('\.\w+', '', aEntry[0]) + '[/COLOR]')
+
+            else:
+
+	            sUrl2 = URL_MAIN[:-1] + aEntry[1]
+	            sTitle = sMovieTitle + ' E' + aEntry[2].replace('FINAL ', '')
+	            oOutputParameterHandler = cOutputParameterHandler()
+	            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+	            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+	            oOutputParameterHandler.addParameter('sThumb', sThumb)
+	            oGui.addTV(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
+
         oGui.setEndOfDirectory()
     else:   # certains films mals classés apparaissent dans les séries
         showHosters()
@@ -955,7 +961,7 @@ def exectProtect(cookies, url):
     #Tout ca a virer et utiliser oRequestHandler.addMultipartFiled('sess_id': sId, 'upload_type': 'url', 'srv_tmp_url': sTmp) quand ca marchera
     import string
     _BOUNDARY_CHARS = string.digits
-    boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(15))
+    boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(30))
     multipart_form_data = {'submit': 'continuer', 'submit': 'Continuer'}
     data, headersMulti = encode_multipart(multipart_form_data, {}, boundary)
 
@@ -982,7 +988,7 @@ def exectProtect(cookies, url):
 
 """Encode multipart form data to upload files via POST."""
 
-def encode_multipart(fields, files, boundary = None):
+def encode_multipart(fields, files, boundary):
     r"""Encode dict of form fields and dict of files as multipart/form-data.
     Return tuple of (body_string, headers_dict). Each value in files is a dict
     with required keys 'filename' and 'content', and optional 'mimetype' (if
@@ -1016,9 +1022,6 @@ def encode_multipart(fields, files, boundary = None):
 
     def escape_quote(s):
         return s.replace('"', '\\"')
-
-    if boundary is None:
-        boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(15))
 
     lines = []
 
