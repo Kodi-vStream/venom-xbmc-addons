@@ -30,6 +30,7 @@ class cHoster(iHoster):
         self.__sUrl = sUrl.replace('https', 'http')
         self.__sUrl = self.__sUrl.replace('http://netu.tv/', 'http://hqq.tv/')
         self.__sUrl = self.__sUrl.replace('http://waaw.tv/', 'http://hqq.tv/')
+        self.__sUrl = self.__sUrl.replace('http://vizplay.icu/', 'http://hqq.tv/')
         self.__sUrl = self.__sUrl.replace('http://hqq.tv/player/hash.php?hash=', 'http://hqq.tv/player/embed_player.php?vid=')
         self.__sUrl = self.__sUrl.replace('http://hqq.tv/watch_video.php?v=', 'http://hqq.tv/player/embed_player.php?vid=')
 
