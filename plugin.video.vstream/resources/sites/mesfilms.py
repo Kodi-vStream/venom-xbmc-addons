@@ -165,7 +165,7 @@ def showList():
 def showMovieYears():
     oGui = cGui()
 
-    for i in reversed (xrange(1963, 2019)):
+    for i in reversed (xrange(1963, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + Year + '/')
