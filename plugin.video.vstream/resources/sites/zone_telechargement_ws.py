@@ -367,6 +367,8 @@ def showMovies(sSearch = ''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
+    titles = set()
+
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
@@ -389,6 +391,13 @@ def showMovies(sSearch = ''):
             #nettoyage du titre
             sDisplayTitle = sTitle.replace('Complete', 'Complète')
             sTitle = re.sub('\[\w+]', '', sTitle)
+
+            # Enlever les films en doublons (même titre et même pochette)
+            # il s'agit du même film dans une autre qualité qu'on retrouvera au moment du choix de la qualité
+            key = sTitle + "-" + sThumb
+            if key in titles :
+                continue;
+            titles.add(key)
 
             sDisplayTitle = ('%s [%s] %s') % (sTitle, sQual, sLang)
 
