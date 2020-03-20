@@ -149,12 +149,13 @@ def showMovies(sSearch = ''):
             sQual = aEntry[2]
             sYear = aEntry[3].replace('/li>','')
 
-            sDisplayTitle = ('%s') % (sTitle) + ' [' + sQual + ']' + ' [' + sYear + ']'
+            sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sYear', sYear)
 
             if 'serie' in sUrl2 or 'saison' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
