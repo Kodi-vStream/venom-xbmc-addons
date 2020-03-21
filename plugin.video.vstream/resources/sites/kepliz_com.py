@@ -253,7 +253,7 @@ def showHosters():
                 sLink = URL_HOST[:-1] + sLink
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            # oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sLink', sLink)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
 
@@ -272,7 +272,7 @@ def showHosters():
                 sLink = URL_HOST[:-1] + sLink
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            # oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sLink', sLink)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
 
@@ -330,7 +330,7 @@ def showHostersLink2():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    # sUrl = oInputParameterHandler.getValue('siteUrl')
     sLink = oInputParameterHandler.getValue('sLink')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
@@ -385,13 +385,11 @@ def showHostersLink2():
 
     oGui.setEndOfDirectory()
 
-
-
 def showHostersLink3():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    # sUrl = oInputParameterHandler.getValue('siteUrl')
     sLink = oInputParameterHandler.getValue('sLink')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
