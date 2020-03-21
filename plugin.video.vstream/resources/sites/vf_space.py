@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'vf_space'
 SITE_NAME = 'VF.Space'
 SITE_DESC = 'Films, Séries et Mangas Gratuit en streaming sur Full stream'
 
-URL_MAIN = 'https://w3.vfspace.co/'
+URL_MAIN = 'https://vvww.vfspace.me/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + 'index.php?do=search', FUNCTION_SEARCH)
@@ -284,7 +284,7 @@ def showLink():
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
