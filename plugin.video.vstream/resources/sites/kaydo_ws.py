@@ -20,17 +20,17 @@ SITE_DESC = 'Site de streaming en HD'
 
 URL_MAIN = 'https://hdss.to/'
 
-MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
-MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'films-z/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'films-z/', 'showMovies')
 MOVIE_COMMENTS = (URL_MAIN + 'populaires/', 'showMovies')
 MOVIE_NOTES = (URL_MAIN + 'mieux-notes/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 MOVIE_LIST = (True, 'showAlpha')
 
-SERIE_SERIES = (URL_MAIN + 'tv-seriess/', 'showMovies')
-SERIE_NEWS = (URL_MAIN + 'tv-seriess/', 'showMovies')
+SERIE_SERIES = (URL_MAIN + 'tv-series-z/', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'tv-series-z/', 'showMovies')
 
-URL_SEARCH = (URL_MAIN + 'search/', 'showMovies')
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'sHowResultSearch'
@@ -169,21 +169,22 @@ def showMovies(sSearch=''):
 
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
+        
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     #réécriture pour prendre les séries dans le menu des genres
-    sHtmlContent = sHtmlContent.replace('<span class="Qlty">TV</span></div><h3', '</div><h3')
+    #sHtmlContent = sHtmlContent.replace('<span class="Qlty">TV</span></div><h3', '</div><h3')
 
     #fh = open('d:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
-    if 'letters' in sUrl:
-        sPattern = '<td class="MvTbImg"> *<a href="([^"]+)".+?(?:<img |data-wpfc-original-)src="([^"]+)".+?strong>([^<]+)<.+?span class="Qlty">([^<]+)<'
+    if sSearch:
+        sPattern = 'Title">Search<.+?<a href="([^"]+)".+?img src="([^"]+)".+?Title">([^<]+).+?Year">([^<]+).+?Qlty">([^<]+).+?Description"><p>([^<]+)'
     else:
-        sPattern = 'class="TPost C">.+?href="([^"]+)">.+?<img.+?src="([^"]+)".+?<h3 class="Title">([^<]+)</h3> .+?class="Qlty">([^<]+)<.+?<p>.+?streaming,([^<]+)'
+        sPattern = 'class="TPost C">.+?href="([^"]+)".+?img src="([^"]+)".+?Title">([^<]+).+?Year">([^<]+).+?Qlty">([^<]+).+?Description"><p>([^<]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -198,19 +199,19 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            if 'letters' in sUrl:
-                sDesc = ''
-            else:
-                sDesc = aEntry[4]
+            
+            
 
             siteUrl = aEntry[0]
-            sThumb = aEntry[1].replace('w92', 'w342')
+            sThumb = aEntry[1]#.replace('w92', 'w342')
             if sThumb.startswith('//'):
                 sThumb = 'https:' + sThumb
             sTitle = aEntry[2]
-            sQual = aEntry[3]
-
-            sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
+            sYear = aEntry[3]
+            sQual = aEntry[4]
+            sDesc = aEntry[5]
+            
+            sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sYear)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)

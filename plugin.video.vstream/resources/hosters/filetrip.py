@@ -3,7 +3,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-import urllib
+# import urllib
 
 class cHoster(iHoster):
 

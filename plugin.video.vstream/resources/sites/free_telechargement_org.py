@@ -432,7 +432,7 @@ def showMovies():
             sDesc = aEntry[2]
             sDesc = sDesc.decode("unicode_escape").encode("latin-1")
             sThumb = aEntry[3]
-            sTitle = unicodedata.normalize('NFKD', sTitle.decode('latin-1')).encode('ascii', 'ignore')
+            # sTitle = unicodedata.normalize('NFKD', sTitle.decode('latin-1')).encode('ascii', 'ignore')
 
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
 

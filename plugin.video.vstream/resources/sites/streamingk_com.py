@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 from resources.lib.multihost import cJheberg
 import re, unicodedata
 
@@ -277,14 +277,14 @@ def showSeries(sLoop = False):
     except:
         pass
 
-    sPattern = '<span style="color: #33cccc;[^<>"]*">(?:<(?:strong|b)>)*((?:Stream|Telec)[^<>]+)|"center">(.pisode[^<]{2,12})<(?!\/a>)(.*?a href="http.+?)(?:<.p>|<br|<.div)'
+    sPattern = '<span style="color: #33cccc;[^<>"]*">(?:<(?:strong|b)>)((?:Stream|Telec)[^<>]+)|"center">(.pisode[^<]{2,12})*<(?!\/a>)([^<>]*a href="http.+?)(?:<.p>|<br|<.div)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     #astuce en cas d'episode unique
-    if (aResult[0] == False) and (sLoop == False):
-        #oGui.setEndOfDirectory()
-        serieHosters(True)
-        return
+    #if (aResult[0] == False) and (sLoop == False):
+    #    #oGui.setEndOfDirectory()
+    #    serieHosters(True)
+    #    return
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -301,7 +301,15 @@ def showSeries(sLoop = False):
             #episode
             else:
                 sUrl = aEntry[2]
-                sTitle = sMovieTitle + ' ' + aEntry[1].replace(' New', '')
+                
+                SXXEX = re.search(">(S[0-9]{2}E[0-9]{2})<", sUrl)
+                HOST = re.search('a href="https*:\/\/([^"]+)', sUrl)
+                if SXXEX:
+                    sTitle = sMovieTitle + ' ' + SXXEX.group(1)
+                    if HOST:
+                        sTitle = sTitle + ' (' + HOST.group(1).split('/')[0] + ')'
+                else:
+                    sTitle = sMovieTitle + ' ' + aEntry[1].replace(' New', '')
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)

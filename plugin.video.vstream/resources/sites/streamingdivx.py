@@ -23,9 +23,8 @@ MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenres')
 
 SERIE_NEWS = (URL_MAIN + 'series.html', 'showMovies')
 
-
-URL_SEARCH = (URL_MAIN + '/recherche?q=', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + '/recherche?q=', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'recherche?q=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + 'recherche?q=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -96,7 +95,7 @@ def showGenres():
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-        sUrl = sSearch.replace(' ','+')
+        sUrl = sSearch.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -125,9 +124,7 @@ def showMovies(sSearch = ''):
                 sUrl = URL_MAIN[:-1] + sUrl
 
             sTitle = aEntry[1].replace('Streaming', '').replace('streaming', '').replace('série', '')
-
             # sTitle = sTitle.decode('utf-8').encode("latin-1")
-
 
             sThumb = aEntry[2]
             if sThumb.startswith('/'):
@@ -141,7 +138,7 @@ def showMovies(sSearch = ''):
             if aEntry[4]:
                 sLang = aEntry[4]
 
-            sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
+            sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang.upper())
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -159,7 +156,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -285,6 +282,8 @@ def showLinks():
         for aEntry in aResult[1]:
 
             sHost = aEntry[0].replace('server player-', '').capitalize()
+            if 'Allocine' in sHost:
+                continue
             sLang = aEntry[1].split('/')[-1].replace('.png', '')
 
             sDisplayTitle = ('%s (%s) [COLOR %s]%s[/COLOR]') % (sMovieTitle, sLang, sColor, sHost)
@@ -307,13 +306,13 @@ def showHosters():
     datacode = oInputParameterHandler.getValue('datacode')
 
     if not sUrl[:11] == URL_MAIN[:11]:
-        sUrl = re.sub(sUrl[:11],URL_MAIN[:11],sUrl)
+        sUrl = re.sub(sUrl[:11], URL_MAIN[:11], sUrl)
 
 
     # import urllib2
 
     # sUrl = ('%s%s%s%s%s' % (URL_MAIN, 'streamer.php?p=', datanum, '&c=', datacode))
-    
+
     # class NoRedirection(urllib2.HTTPErrorProcessor):
             # def http_response(self, request, response):
                 # return response
@@ -331,7 +330,7 @@ def showHosters():
 
             # sHosterUrl = redirection_target
 
-    oParser = cParser()        
+    oParser = cParser()
     oRequest = cRequestHandler(sUrl)
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('User-Agent', UA)
@@ -347,7 +346,7 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sHosterUrl = aResult[1][0]
-    
+
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
             oHoster.setDisplayName(sMovieTitle)

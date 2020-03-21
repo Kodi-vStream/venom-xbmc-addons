@@ -3,7 +3,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
-from resources.lib.packer import cPacker
+# from resources.lib.packer import cPacker
 
 class cHoster(iHoster):
 

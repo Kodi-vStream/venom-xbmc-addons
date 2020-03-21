@@ -11,7 +11,7 @@ from resources.lib.gui.hoster import cHosterGui
 from resources.lib.util import Unquote, Quote, QuotePlus
 from resources.lib.enregistrement import cEnregistremement
 from resources.lib.epg import cePg
-from resources.lib.comaddon import progress, addon, xbmc, VSlog, dialog
+from resources.lib.comaddon import progress, addon, xbmc, dialog#, VSlog
 
 from zipfile import ZipFile
 import re, sys, string, json, io
@@ -156,7 +156,7 @@ def parseM3U(sUrl=None, infile=None):#Traite les m3u local
     except:
         pass
 
-    playlist=[]
+    playlist = []
     song = track(None, None, None, None)
     ValidEntry = False
 
@@ -200,9 +200,9 @@ def showWeb(infile = None):#Code qui s'occupe de liens TV du Web
     if (oInputParameterHandler.exist('AZ')):
         sAZ = oInputParameterHandler.getValue('AZ')
         string = filter(lambda t: t.title.strip().capitalize().startswith(sAZ), playlist)
-        playlist = sorted(string, key=lambda t: t.title.strip().capitalize())
+        playlist = sorted(string, key = lambda t: t.title.strip().capitalize())
     else :
-        playlist = sorted(playlist, key=lambda t: t.title.strip().capitalize())
+        playlist = sorted(playlist, key = lambda t: t.title.strip().capitalize())
 
     if not playlist:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -256,23 +256,21 @@ def showWeb(infile = None):#Code qui s'occupe de liens TV du Web
     oGui.setEndOfDirectory()
 
 def direct_epg():#Code qui gerent l'epg
-    oGuiElement = cGuiElement()
+    # oGuiElement = cGuiElement()
     oInputParameterHandler = cInputParameterHandler()
     #aParams = oInputParameterHandler.getAllParameter()
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sCom = cePg().get_epg(sTitle, 'direct')
 
 def soir_epg():#Code qui gerent l'epg
-    oGuiElement = cGuiElement()
+    # oGuiElement = cGuiElement()
     oInputParameterHandler = cInputParameterHandler()
-
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sCom = cePg().get_epg(sTitle, 'soir')
 
 def enregistrement():#Code qui gerent l'epg
-    oGuiElement = cGuiElement()
+    # oGuiElement = cGuiElement()
     oInputParameterHandler = cInputParameterHandler()
-
     sUrl = oInputParameterHandler.getValue('siteUrl').replace('P_L_U_S', '+')
 
     enregistrementIsActif = ADDON.getSetting('enregistrement_activer')
@@ -289,9 +287,7 @@ def enregistrement():#Code qui gerent l'epg
     shebdule = cEnregistremement().programmation_enregistrement(sUrl)
 
 def showAZ():
-
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -310,9 +306,7 @@ def showAZ():
     oGui.setEndOfDirectory()
 
 def showAZRadio():
-
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -376,8 +370,8 @@ def showTV():
             oGuiElement.setDirectTvFanart()
             oGuiElement.setCat(6)
 
-            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
-            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
+            oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
+            oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
             oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'enregistrement', 'Enregistrement')
             oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
@@ -406,7 +400,7 @@ def play__():#Lancer les liens
             from F4mProxy import f4mProxyHelper
             f4mp = f4mProxyHelper()
             xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc = True)
-            f4mp.playF4mLink(sUrl, sTitle, proxy = None, use_proxy_for_chunks = False, maxbitrate=0, simpleDownloader = True, auth = None, streamtype = stype, setResolved = True, swf = None, callbackpath = '', callbackparam = '', iconImage = sThumbnail)
+            f4mp.playF4mLink(sUrl, sTitle, proxy = None, use_proxy_for_chunks = False, maxbitrate = 0, simpleDownloader = True, auth = None, streamtype = stype, setResolved = True, swf = None, callbackpath = '', callbackparam = '', iconImage = sThumbnail)
             return
 
     if 'dailymotion' in sUrl:
@@ -444,7 +438,6 @@ def play__():#Lancer les liens
 #############################################################################
 
 def GetRealUrl(chain):
-
     oParser = cParser()
 
     UA2 = UA
@@ -503,7 +496,7 @@ def GetRealUrl(chain):
     return url
 
 def openwindows():
-    xbmc.executebuiltin( 'ActivateWindow(%d, return)' % ( 10601, ) )
+    xbmc.executebuiltin('ActivateWindow(%d, return)' % ( 10601, ))
     return
 
 def decodeEmail(e):

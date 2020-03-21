@@ -123,7 +123,7 @@ def showMovies(sSearch = ''):
         sHtmlContent = oRequestHandler.request()
 
 
-    sPattern = '<a class="short-poster" href="([^"]+)" title="([^"]+)">.+?data-src="([^"]+)"'
+    sPattern = '<a class="short-poster" href="([^"]+)" title="([^"]+)">.+?<li>([^"]+)<\/li.+?class="white">([^"]+)<.+?data-src="([^"]+)'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -140,19 +140,22 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sThumb = aEntry[2]
+            sThumb = aEntry[4]
             if sThumb.startswith('/'):
-                sThumb = URL_MAIN[:-1] + aEntry[2]
+                sThumb = URL_MAIN[:-1] + aEntry[4]
 
             sTitle = aEntry[1].replace('Regarder', '').replace('en ligne gratuitement', '')
             sUrl2 = aEntry[0]
+            sQual = aEntry[2]
+            sYear = aEntry[3].replace('/li>','')
 
-            sDisplayTitle = ('%s') % (sTitle)
+            sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sYear', sYear)
 
             if 'serie' in sUrl2 or 'saison' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)

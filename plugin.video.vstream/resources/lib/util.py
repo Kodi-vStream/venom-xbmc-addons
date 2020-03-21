@@ -7,7 +7,7 @@ import unicodedata
 
 #function util n'utilise pas xbmc, xbmcgui, xbmcaddon ect...
 
-#reste a transformer la class en fonction distancte.
+#reste a transformer la class en fonction distante.
 
 class cUtil:
 
@@ -25,11 +25,11 @@ class cUtil:
 
         return count
 
-    def CheckOccurence(self,str1,str2):
+    def CheckOccurence(self, str1, str2):
 
-        Ignoreliste = ['du', 'la', 'le', 'les', 'de', 'un', 'une','des']
+        Ignoreliste = ['du', 'la', 'le', 'les', 'de', 'un', 'une', 'des', 'the']
 
-        str1 = str1.replace('+',' ').replace('%20',' ')
+        str1 = str1.replace('+', ' ').replace('%20', ' ')
         str1 = str1.lower()
         str2 = str2.lower()
         try:
@@ -73,28 +73,28 @@ class cUtil:
     def DecoTitle2(self, string):
 
         #on vire ancienne deco en cas de bug
-        string = re.sub('\[\/*COLOR.*?\]','',str(string))
+        string = re.sub('\[\/*COLOR.*?\]', '', str(string))
 
         #pr les tag Crochet
         string = re.sub('([\[].+?[\]])',' [COLOR coral]\\1[/COLOR] ', string)
         #pr les tag parentheses
-        string = re.sub('([\(](?![0-9]{4}).{1,7}[\)])',' [COLOR coral]\\1[/COLOR] ', string)
+        string = re.sub('([\(](?![0-9]{4}).{1,7}[\)])', ' [COLOR coral]\\1[/COLOR] ', string)
         #pr les series
         string = self.FormatSerie(string)
-        string = re.sub('(?i)(.*) ((?:[S|E][0-9\.\-\_]+){1,2})','\\1 [COLOR coral]\\2[/COLOR] ', string)
+        string = re.sub('(?i)(.*) ((?:[S|E][0-9\.\-\_]+){1,2})', '\\1 [COLOR coral]\\2[/COLOR] ', string)
 
         #vire doubles espaces
-        string = re.sub(' +',' ',string)
+        string = re.sub(' +', ' ', string)
 
         return string
 
-    def unescape(self,text):
+    def unescape(self, text):
         def fixup(m):
             text = m.group(0)
-            if text[:2] == "&#":
+            if text[:2] == '&#':
                 # character reference
                 try:
-                    if text[:3] == "&#x":
+                    if text[:3] == '&#x':
                         return unichr(int(text[3:-1], 16))
                     else:
                         return unichr(int(text[2:-1]))
@@ -107,37 +107,37 @@ class cUtil:
                 except KeyError:
                     pass
             return text # leave as is
-        return re.sub("&#?\w+;", fixup, text)
+        return re.sub('&#?\w+;', fixup, text)
 
 
-    def CleanName(self,name):
+    def CleanName(self, name):
         #vire accent et '\'
         try:
             name = unicode(name, 'utf-8')#converti en unicode pour aider aux convertions
         except:
             pass
-        name = unicodedata.normalize('NFD', name).encode('ascii', 'ignore').decode("unicode_escape")
-        name = name.encode("utf-8") #on repasse en utf-8
+        name = unicodedata.normalize('NFD', name).encode('ascii', 'ignore').decode('unicode_escape')
+        name = name.encode('utf-8') #on repasse en utf-8
 
         #on cherche l'annee
         annee = ''
         m = re.search('(\([0-9]{4}\))', name)
         if m:
             annee = str(m.group(0))
-            name = name.replace(annee,'')
+            name = name.replace(annee, '')
 
         #vire tag
-        name = re.sub('[\(\[].+?[\)\]]','', name)
-        #les apostrohes remplacer par des espaces
+        name = re.sub('[\(\[].+?[\)\]]', '', name)
+        #les apostrophes remplacer par des espaces
         name = name.replace("'", " ")
         #vire caractere special
-        #name = re.sub("[^a-zA-Z0-9 ]", "",name)
+        #name = re.sub('[^a-zA-Z0-9 ]', '', name)
         #Modif du 15/12 caractere special
-        name = re.sub("[^a-zA-Z0-9 : -]", "",name)
+        name = re.sub('[^a-zA-Z0-9 : -]', '', name)
         #tout en minuscule
         name = name.lower()
         #vire espace double
-        name = re.sub(' +',' ',name)
+        name = re.sub(' +', ' ', name)
 
         #vire espace a la fin
         if name.endswith(' '):
@@ -149,12 +149,12 @@ class cUtil:
 
         return name
 
-    def FormatSerie(self,string):
+    def FormatSerie(self, string):
 
         #xbmc.log(string)
 
         #vire doubles espaces
-        string = re.sub(' +',' ',string)
+        string = re.sub(' +', ' ', string)
 
         #vire espace a la fin
         if string.endswith(' '):
@@ -165,15 +165,15 @@ class cUtil:
             string = string[1:]
 
         #convertion unicode
-        string = string.decode("utf-8")
+        string = string.decode('utf-8')
 
         SXEX = ''
-        #m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))(?:$| [^a\u00E0])',string,re.UNICODE)
-        m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))',string,re.UNICODE)
+        #m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))(?:$| [^a\u00E0])', string, re.UNICODE)
+        m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))', string, re.UNICODE)
         if m:
             #ok y a des episodes
-            string = string.replace(m.group(1),'')
-            #SXEX + "%02d" % int(m.group(2))
+            string = string.replace(m.group(1), '')
+            #SXEX + '%02d' % int(m.group(2))
             SXEX = m.group(2)
             if len(SXEX) < 2:
                 SXEX = '0' + SXEX
@@ -182,30 +182,30 @@ class cUtil:
             #pr les saisons
             m = re.search('(?i)(s(?:aison )*([0-9]+))', string)
             if m:
-                string = string.replace(m.group(1),'')
-                SXEX = 'S' + "%02d" % int(m.group(2)) + SXEX
+                string = string.replace(m.group(1), '')
+                SXEX = 'S' + '%02d' % int(m.group(2)) + SXEX
             string = string + ' ' + SXEX
 
         else:
             #pas d'episode mais y a t il des saisons ?
             m = re.search('(?i)(s(?:aison )*([0-9]+))(?:$| )', string)
             if m:
-                string = string.replace(m.group(1),'')
-                SXEX = 'S' + "%02d" % int(m.group(2))
+                string = string.replace(m.group(1), '')
+                SXEX = 'S' + '%02d' % int(m.group(2))
 
                 string = string + ' ' + SXEX
 
         #reconvertion utf-8
         return string.encode('utf-8')
 
-    def EvalJSString(self,s):
-        s = s.replace(' ','')
+    def EvalJSString(self, s):
+        s = s.replace(' ', '')
         try:
-            s = s.replace('!+[]','1').replace('!![]','1').replace('[]','0')
-            s = re.sub(r'(\([^()]+)\+\[\]\)','(\\1)*10)',s)  # si le bloc fini par +[] >> *10
-            s = re.sub(r'\[([^\]]+)\]','str(\\1)',s)
-            # s = s.replace('[','(').replace(']',')')
-            if s[0]=='+':
+            s = s.replace('!+[]', '1').replace('!![]', '1').replace('[]', '0')
+            s = re.sub(r'(\([^()]+)\+\[\]\)', '(\\1)*10)',s)  # si le bloc fini par +[] >> *10
+            s = re.sub(r'\[([^\]]+)\]', 'str(\\1)', s)
+            # s = s.replace('[', '(').replace(']', ')')
+            if s[0] == '+':
                 s = s[1:]
             val = int(eval(s))
             return val
@@ -235,38 +235,37 @@ def QuotePlus(sUrl):
     return urllib.quote_plus(sUrl)
 
 def QuoteSafe(sUrl):
-    return urllib.quote(sUrl,safe=':/')
+    return urllib.quote(sUrl, safe = ':/')
 
 def urlEncode(sUrl):
     return urllib.urlencode(sUrl)
 
 def Noredirection():
-	class NoRedirection(urllib2.HTTPErrorProcessor):
-	    def http_response(self, request, response):
-	        return response
+    class NoRedirection(urllib2.HTTPErrorProcessor):
+        def http_response(self, request, response):
+            return response
 
-	    https_response = http_response
+        https_response = http_response
 
-	opener = urllib2.build_opener(NoRedirection)
-	return opener
+    opener = urllib2.build_opener(NoRedirection)
+    return opener
 
 #deprecier utiliser comaddon dialog()
 # def updateDialogSearch(dialog, total, site):
 #     global COUNT
 #     COUNT += 1
 #     iPercent = int(float(COUNT * 100) / total)
-#     dialog.update(iPercent, 'Chargement: '+str(site))
+#     dialog.update(iPercent, 'Chargement: ' + str(site))
 
 
 
 # def VStranslatePath(location):
-#     #ex util.VStranslatePath("special://logpath/") > http://kodi.wiki/view/Special_protocol
+#     #ex util.VStranslatePath('special://logpath/') > http://kodi.wiki/view/Special_protocol
 #     #d'apres Kodi ne doit pas etre utiliser sur les special://
-#     return xbmc.translatePath(location).decode("utf-8")
+#     return xbmc.translatePath(location).decode('utf-8')
 
 def GetGooglUrl(url):
     if 'http://goo.gl' in url:
-        import urllib2
         try:
             headers = {'User-Agent' : 'Mozilla 5.10', 'Host' : 'goo.gl', 'Connection' : 'keep-alive'}
             request = urllib2.Request(url, None, headers)
@@ -279,7 +278,7 @@ def GetGooglUrl(url):
 def GetTinyUrl(url):
     if not 'tinyurl' in url:
         return url
-    
+
     #Lien deja connu ?
     if '://tinyurl.com/h7c9sr7' in url:
         url = url.replace('://tinyurl.com/h7c9sr7/', '://vidwatch.me/')
@@ -310,8 +309,6 @@ def GetTinyUrl(url):
     else:
 
         #VSlog('Decodage lien tinyurl : ' + str(url))
-        
-        import urllib2
 
         class NoRedirection(urllib2.HTTPErrorProcessor):
             def http_response(self, request, response):
@@ -332,5 +329,5 @@ def GetTinyUrl(url):
             url = reponse.headers['Location']
 
         reponse.close()
-        
+
     return url

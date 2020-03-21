@@ -1,4 +1,4 @@
-#coding: utf-8
+#-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #2 hoster giga & 2gigalink
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -57,7 +57,7 @@ class cHoster(iHoster):
         myContext = ssl._create_unverified_context()
 
         req = urllib2.Request(the_url)
-        handle = urllib2.urlopen(req, context=myContext)
+        handle = urllib2.urlopen(req, context = myContext)
         sHtmlContent = handle.read()
         handle.close()
 

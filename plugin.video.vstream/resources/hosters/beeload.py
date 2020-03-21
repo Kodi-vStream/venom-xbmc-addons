@@ -1,11 +1,12 @@
-#coding: utf-8
+#-*- coding: utf-8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.hosters.hoster import iHoster
-import xbmcgui, re
-
 from resources.lib.packer import cPacker
-from resources.lib.comaddon import VSlog
+# from resources.lib.comaddon import VSlog
+from resources.hosters.hoster import iHoster
+import re#, xbmcgui
+
 
 class cHoster(iHoster):
 
@@ -66,7 +67,7 @@ class cHoster(iHoster):
 
         sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
         aResult = re.findall(sPattern, sHtmlContent)
-        
+
         if (aResult):
             sUnpacked = cPacker().unpack(aResult[0])
             sHtmlContent = sUnpacked

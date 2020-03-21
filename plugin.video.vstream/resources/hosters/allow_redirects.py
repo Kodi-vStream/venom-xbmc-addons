@@ -1,8 +1,8 @@
-#coding: utf-8
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
+#-*- coding: utf-8 -*-
+# from resources.lib.handler.requestHandler import cRequestHandler
+# from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-import xbmcgui, re
+import xbmcgui#, re
 import requests
 
 class cHoster(iHoster):
@@ -59,7 +59,7 @@ class cHoster(iHoster):
         url = self.__sUrl
 
         session = requests.Session() #so connections are recycled
-        resp = session.head(url, allow_redirects=True)
+        resp = session.head(url, allow_redirects = True)
         sHosterUrl = resp.url
 
         if sHosterUrl:

@@ -1,12 +1,10 @@
-#coding: utf-8
+#-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.packer import cPacker
 from resources.hosters.hoster import iHoster
-
 import re
-
 
 class cHoster(iHoster):
 
@@ -62,10 +60,10 @@ class cHoster(iHoster):
 
     def __getUrlFromJavascriptCode(self, sHtmlContent):
 
-        sPattern = "(eval\(function.*?)(.+?)</script>"
-
-        oParser = cParser()
+        # oParser = cParser()
+        # sPattern = "(eval\(function.*?)(.+?)</script>"
         #aResult = oParser.parse(sHtmlContent, sPattern)
+
         aResult = re.search('(eval\(function.*?)\s*</script>', sHtmlContent, re.DOTALL)
 
         if (aResult.group(1)):

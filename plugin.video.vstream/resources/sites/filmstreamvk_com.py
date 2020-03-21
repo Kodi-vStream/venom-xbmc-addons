@@ -245,6 +245,10 @@ def showLinks():
         for aEntry in ListeUrl:
 
             sHost = aEntry[1].capitalize()
+            oHoster = cHosterGui().checkHoster(sHost)
+            if not oHoster:
+                continue
+
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
             if 'pisode' in aEntry[1]:
                 sTitle = sMovieTitle

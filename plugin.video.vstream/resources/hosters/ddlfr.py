@@ -1,10 +1,11 @@
-#coding: utf-8
+#-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
-from resources.lib.comaddon import progress, VSlog
-import re
+from resources.lib.comaddon import VSlog
+# import re
 import base64
 
 class cHoster(iHoster):
@@ -60,7 +61,7 @@ class cHoster(iHoster):
         api_call = ''
 
         oRequest = cRequestHandler(self.__sUrl)
-        oRequest.addHeaderEntry('Referer',self.__sUrl)
+        oRequest.addHeaderEntry('Referer', self.__sUrl)
         sHtmlContent = oRequest.request()
         #VSlog(sHtmlContent)
         oParser = cParser()
@@ -87,7 +88,7 @@ class cHoster(iHoster):
                     qua=[]
                 #Remplissage des tableaux
                     for i in aResult[1]:
-                        url.append(str(i[0]+ '|Referer=' + self.__sUrl))
+                        url.append(str(i[0] + '|Referer=' + self.__sUrl))
                         qua.append(str(i[1]))
                 #Si une seule url
                     api_call = dialog().VSselectqual(qua, url)

@@ -3,7 +3,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
-import re
+# import re
 import json
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
 #meme code frenchvid etc.. fvsio
@@ -68,7 +68,7 @@ class cHoster(iHoster):
         # oRequest.addHeaderEntry('Accept-Encoding','gzip, deflate, br')
         # oRequest.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         # oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
-        oRequest.addHeaderEntry('Referer',self.__sUrl)
+        oRequest.addHeaderEntry('Referer', self.__sUrl)
         oRequest.addParametersLine(postdata)
         sHtmlContent = oRequest.request()
 

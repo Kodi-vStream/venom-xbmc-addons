@@ -68,9 +68,8 @@ class cHoster(iHoster):
 
         oParser = cParser()
         sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
-        #sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
+
         if (aResult[0] == True):
 
             sHtmlContent = cPacker().unpack(aResult[1][0])

@@ -1,3 +1,5 @@
+#-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
@@ -33,7 +35,7 @@ class cHoster(iHoster):
     def getPattern(self):
         return ''
 
-    def __getIdFromUrl(self,sUrl):
+    def __getIdFromUrl(self, sUrl):
         sPattern = 'http://daclips.in/embed-([^<]+)-'
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
@@ -60,9 +62,9 @@ class cHoster(iHoster):
 
         oParser = cParser()
 
-        id = self.__getIdFromUrl(self.__sUrl)
+        sId = self.__getIdFromUrl(self.__sUrl)
 
-        url = 'http://daclips.in/' + id
+        url = 'http://daclips.in/' + sId
         oRequest = cRequestHandler(url)
         sHtmlContent = oRequest.request()
         sPattern =  '<input type="hidden" name="([^"]+)" value="([^"]+)"'
@@ -77,8 +79,8 @@ class cHoster(iHoster):
             r2 = re.search('file: "([^"]+)",', sHtmlContent)
             if (r2):
                 api_call = r2.group(1)
-                
+
         if (api_call):
             return True, api_call
 
-        return False , False
+        return False, False

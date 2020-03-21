@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil, Unquote
+from resources.lib.util import Unquote
 from resources.lib.comaddon import progress
 # from resources.lib.sucuri import SucurieBypass
 
@@ -14,15 +14,15 @@ SITE_IDENTIFIER = 'filmzenstream_com'
 SITE_NAME = 'Filmzenstream'
 SITE_DESC = 'Film streaming HD gratuit complet'
 
-URL_MAIN = 'https://filmzenstream.online/'
+URL_MAIN = 'https://filmzenstream.xyz/'
 
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
-# MOVIE_ANNEES = (True, 'showYears')
+MOVIE_ANNEES = (True, 'showYears')
 
-URL_SEARCH = (URL_MAIN + 'index.php?s=', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?s=', 'showMovies')
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -40,9 +40,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    # oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -51,7 +51,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH_MOVIES[0] + sSearchText
+        sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -60,25 +60,26 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action', URL_MAIN + 'genre/action-films/'] )
-    liste.append( ['Animation', URL_MAIN + 'genre/animation-films/'] )
-    liste.append( ['Aventure', URL_MAIN + 'genre/aventure-films/'] )
-    liste.append( ['Biographie', URL_MAIN + 'genre/biographie-films/'] )
-    liste.append( ['Comédie', URL_MAIN + 'genre/comedie-online-vf/'] )
-    liste.append( ['Crime', URL_MAIN + 'genre/crime-films/'] )
-    liste.append( ['Drame', URL_MAIN + 'genre/drame-films/'] )
-    liste.append( ['Familial', URL_MAIN + 'genre/familial-films/'] )
-    liste.append( ['Fantastique', URL_MAIN + 'genre/fantastique-films/'] )
-    liste.append( ['Guerre', URL_MAIN + 'genre/guerre-films/'] )
-    liste.append( ['Histoire', URL_MAIN + 'genre/histoire-films/'] )
-    liste.append( ['Horreur', URL_MAIN + 'genre/horreur-online-hd/'] )
-    liste.append( ['Musical', URL_MAIN + 'genre/musical-films/'] )
-    liste.append( ['Mystère', URL_MAIN + 'genre/mystere-films/'] )
-    liste.append( ['Romance', URL_MAIN + 'genre/romance-films/'] )
-    liste.append( ['Science-fiction', URL_MAIN + 'genre/science-fiction/'] ) # Pas de suffixe -films
-    liste.append( ['Sport', URL_MAIN + 'genre/sport-films/'] )
-    liste.append( ['Thriller', URL_MAIN + 'genre/thriller-films/'] )
-    liste.append( ['War', URL_MAIN + 'genre/war-films/'] )
+    liste.append( ['Action', URL_MAIN + 'Categorie/action/'] )
+    liste.append( ['Animation', URL_MAIN + 'Categorie/animation/'] )
+    liste.append( ['Aventure', URL_MAIN + 'Categorie/aventure/'] )
+    liste.append( ['Biographie', URL_MAIN + 'Categorie/biography/'] )
+    liste.append( ['Comédie', URL_MAIN + 'Categorie/comedie/'] )
+    liste.append( ['Crime', URL_MAIN + 'Categorie/crime/'] )
+    liste.append( ['Drame', URL_MAIN + 'Categorie/drame/'] )
+    liste.append( ['Documentaire', URL_MAIN + 'Categorie/documentaire/'] )
+    liste.append( ['Famille', URL_MAIN + 'Categorie/famille/'] )
+    liste.append( ['Fantaisie', URL_MAIN + 'Categorie/fantaisie/'] )
+    # liste.append( ['Guerre', URL_MAIN + 'Categorie/guerre/'] )
+    liste.append( ['Histoire', URL_MAIN + 'Categorie/history/'] )
+    liste.append( ['Horreur', URL_MAIN + 'Categorie/horreur/'] )
+    liste.append( ['Musical', URL_MAIN + 'Categorie/musique/'] )
+    liste.append( ['Mystère', URL_MAIN + 'Categorie/mystere/'] )
+    liste.append( ['Romance', URL_MAIN + 'Categorie/romance/'] )
+    liste.append( ['Science-fiction', URL_MAIN + 'Categorie/science-fiction/'] ) # Pas de suffixe -films
+    liste.append( ['Sport', URL_MAIN + 'Categorie/sport/'] )
+    liste.append( ['Thriller', URL_MAIN + 'Categorie/thriller/'] )
+    liste.append( ['War', URL_MAIN + 'Categorie/war/'] )
 
     for sTitle, sUrl in liste:
 
@@ -90,26 +91,12 @@ def showGenres():
 
 def showYears():
     oGui = cGui()
-    oParser = cParser()
-    oRequestHandler = cRequestHandler(URL_MAIN)
-    sHtmlContent = oRequestHandler.request()
 
-    sStart = '<h3>Année de sortie'
-    sEnd = '<h3>Qualité'
-    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
-
-    sPattern = '<a href="([^"]+)">(.+?)</a>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-
-            sUrl = aEntry[0]
-            sTitle = aEntry[1]
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'annees.png', oOutputParameterHandler)
+    for i in reversed (xrange(2017, 2021)):
+        Year = str(i)
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'Categorie/' + Year + '-films/')
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -148,7 +135,8 @@ def showMovies(sSearch = ''):
             if sThumb.startswith('//'):
                 sThumb = 'http:' + sThumb
 
-            sTitle = sTitle.replace(" VF Streaming", "")
+            sTitle = sTitle.replace(' VF Streaming', '')
+
             
             sYear = None
             if len(sTitle)>4 and sTitle[-4:].isdigit():
@@ -176,7 +164,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a href="([^"]+?)">Page suivante'
+    sPattern = 'href="([^"]+?)" class="next">&raquo;'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):

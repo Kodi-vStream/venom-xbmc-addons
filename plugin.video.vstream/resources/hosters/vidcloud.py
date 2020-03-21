@@ -4,8 +4,6 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-import re
-
 
 class cHoster(iHoster):
 
@@ -44,9 +42,7 @@ class cHoster(iHoster):
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0]):
             return aResult[1][0]
-
         return ''
-
 
     def __getKey(self):
         return ''
@@ -67,7 +63,6 @@ class cHoster(iHoster):
         api_call = False
 
         sId = self.__getIdFromUrl(self.__sUrl)
-
         url = 'https://vcstream.to/player?fid=%s&page=embed' % sId
 
         sPattern = 'file.+?\\"([^<]+)\\"\}'
@@ -76,7 +71,6 @@ class cHoster(iHoster):
 
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-
 
         if (aResult[0]):
             api_call = aResult[1][0].replace('\\\\', '').replace(':\\"', '')

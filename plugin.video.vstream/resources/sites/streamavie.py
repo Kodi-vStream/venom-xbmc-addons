@@ -13,9 +13,9 @@ from resources.lib.comaddon import progress
 
 import re
 
-SITE_IDENTIFIER = 'streamelite'
-SITE_NAME = 'StreamElite'
-SITE_DESC = 'Séries VF & VOSTFR en streaming.'
+SITE_IDENTIFIER = 'streamavie'
+SITE_NAME = 'Streamavie'
+SITE_DESC = 'Films VF & VOSTFR en streaming.'
 
 URL_MAIN = 'http://streamavie.com/'
 
@@ -167,17 +167,22 @@ def showYears():
 def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
+
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
-        sPattern = '<div class="result-item">.+?<img src="([^"]+)" alt="([^"]+)".+?<a href="([^"]+)">.+?<p>(.+?)<\/p>'
+        sPattern = '<div class="result-item">.+?<img src="([^"]+)" alt="([^"]+)".+?<a href="([^"]+)".+?<p>(.+?)<\/p>'
+
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sPattern = '<div class="poster".+?img src="([^"]+)" alt="([^"]+)".+?quality">([^"]+)<\/span.+?<a href="([^"]+)">.+?(?:<article|<div class="texto">(.+?)<div)'
+
+        if '/films/' in sUrl or '/annee/' in sUrl or '/genre/' in sUrl:
+            sPattern = '<div class="poster".+?src="([^"]+)" alt="([^"]+)".+?quality">([^<]+)<.+?<a href="([^"]+)".+?<div class="texto">([^<]+)<'
+        else:#qualite pas tjrs presente et pas de description
+            sPattern = '<div class="poster".+?src="([^"]+)" alt="([^"]+)".+?(?:|quality">([^<]+)<.+?)<a href="([^"]+)"'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -194,15 +199,22 @@ def showMovies(sSearch = ''):
             if sSearch:
                 sThumb = aEntry[0]
                 sTitle = aEntry[1]
-                sLang = ''
                 sUrl2 = aEntry[2]
-                sDesc = re.sub('(\A.+?: )', '', aEntry[3])
+                sDesc = aEntry[3]
+                sDisplayTitle = sTitle
+            elif '/films/' in sUrl or '/annee/' in sUrl or '/genre/' in sUrl:
+                sThumb = aEntry[0]
+                sTitle = aEntry[1]
+                sQual = aEntry[2]
+                sUrl2 = aEntry[3]
+                sDesc = aEntry[4]
+                sDisplayTitle = sTitle + ' [' + sQual + ']'
             else:
                 sThumb = aEntry[0]
                 sTitle = aEntry[1]
                 sQual = aEntry[2]
                 sUrl2 = aEntry[3]
-                sDesc = re.sub('(\A.+?: )', '', aEntry[4])
+                sDesc = ''
                 sDisplayTitle = sTitle + ' [' + sQual + ']'
 
             #Si recherche et trop de resultat, on nettoye
@@ -224,7 +236,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -250,26 +262,27 @@ def showLink():
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
 
-    sPattern = "data-type='([^']+)' data-post='(\d+)' data-nume='(\d+)'>.+?<span class='title'>(.+?)<\/span>"
+    sPattern = "data-type='([^']+)' data-post='(\d+)' data-nume='(\d+)'>.+?class='server'>([^<]+)<"
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
             sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
-            sTitle = aEntry[3].replace('Serveur','').replace('(','').replace(')','')
-            dtype = aEntry[0]
-            dpost = aEntry[1]
-            dnum = aEntry[2]
-            sTitle = ('%s [%s]') % (sMovieTitle, sTitle)
+            dType = aEntry[0]
+            dPost = aEntry[1]
+            dNum = aEntry[2]
+            sHost = re.sub('\.\w+', '', aEntry[3]).capitalize()
+
+            sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('referer', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('data1', dtype)
-            oOutputParameterHandler.addParameter('data2', dpost)
-            oOutputParameterHandler.addParameter('data3', dnum)
+            oOutputParameterHandler.addParameter('dType', dType)
+            oOutputParameterHandler.addParameter('dPost', dPost)
+            oOutputParameterHandler.addParameter('dNum', dNum)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -282,11 +295,11 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     referer = oInputParameterHandler.getValue('referer')
-    dtype = oInputParameterHandler.getValue('data1')
-    dpost = oInputParameterHandler.getValue('data2')
-    dnum = oInputParameterHandler.getValue('data3')
+    dPost = oInputParameterHandler.getValue('dPost')
+    dNum = oInputParameterHandler.getValue('dNum')
+    dType = oInputParameterHandler.getValue('dType')
 
-    pdata = 'action=doo_player_ajax&post=' + dpost + '&nume=' + dnum + '&type=' + dtype
+    pdata = 'action=doo_player_ajax&post=' + dPost + '&nume=' + dNum + '&type=' + dType
     oRequest = cRequestHandler(sUrl)
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')

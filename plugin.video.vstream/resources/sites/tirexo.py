@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, dialog, VSlog
+from resources.lib.comaddon import progress, dialog, VSlog, addon
 from resources.lib.config import GestionCookie
 
 import re, random
@@ -16,12 +16,59 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/5
 SITE_IDENTIFIER = 'tirexo'
 SITE_NAME = '[COLOR violet]Tirexo (ZT lol)[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
-URL_MAIN = 'https://www.zone-telechargement.monster/'
+URL_HOST = 'https://www.zone-warez.com/'
 
-URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist%5B%5D=2&story=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist%5B%5D=15&story=', 'showMovies')
-URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?do=search&subaction=search&catlist%5B%5D=32&story=', 'showMovies')
-URL_SEARCH_MISC = (URL_MAIN + 'index.php?do=search&subaction=search&catlist%5B%5D=39&story=', 'showMovies')
+def GetURL_MAIN():
+    ADDON = addon()
+    MemorisedHost = ''
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    Sources = oInputParameterHandler.getValue('function')
+
+    # z = oInputParameterHandler.getAllParameter()
+    # VSlog(z)
+
+    # quand vstream load tous les sites on passe >> globalSources
+    # quand vstream load a partir du menu home on passe >> callplugin
+    # quand vstream fabrique une liste de plugin pour menu(load site globalRun and call function search) >> search
+    # quand l'url ne contient pas celle déjà enregistrer dans settings et que c'est pas dlprotect on active.
+    if not (Sources == 'callpluging' or Sources == 'globalSources' or Sources == 'search') and not ADDON.getSetting('Tirexo')[6:] in sUrl and not 'dl-protect.' in sUrl and not 'zt-protect.' in sUrl:
+        oRequestHandler = cRequestHandler(URL_HOST)
+        sHtmlContent = oRequestHandler.request()
+        MemorisedHost = oRequestHandler.getRealUrl()
+        if MemorisedHost is not None and MemorisedHost != '' :
+            if not 'cf_chl_jschl_tk' in MemorisedHost:
+                ADDON.setSetting('Tirexo', MemorisedHost)
+                VSlog("Tirexo url  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('Tirexo'))
+        else:
+            ADDON.setSetting('Tirexo', URL_HOST)
+            VSlog("Url non changer car egal a None le site peux etre surchager utilisation de >> ADDON.getSetting('Tirexo')")
+
+        return ADDON.getSetting('Tirexo')
+    else:
+        # si pas de zt dans settings on récup l'url une fois dans le site
+        if not ADDON.getSetting('Tirexo') and not (Sources == 'callpluging' or Sources == 'globalSources' or Sources == 'search'):
+            oRequestHandler = cRequestHandler(URL_HOST)
+            sHtmlContent = oRequestHandler.request()
+            MemorisedHost = oRequestHandler.getRealUrl()
+            if MemorisedHost is not None and MemorisedHost != '':
+                if not 'cf_chl_jschl_tk' in MemorisedHost:
+                    ADDON.setSetting('Tirexo', MemorisedHost)
+                    VSlog("Tirexo url vide  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('Tirexo'))
+            else:
+                ADDON.setSetting('Tirexo', URL_HOST)
+                VSlog("Url non changer car egal a None le site peux etre surchager utilisation de >> ADDON.getSetting('Tirexo')")
+
+            return ADDON.getSetting('Tirexo')
+        else:
+            VSlog("Tirexo pas besoin d'url")
+            return ADDON.getSetting('Tirexo')
+
+URL_MAIN = GetURL_MAIN()
+URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=2&story=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=15&story=', 'showMovies')
+URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=32&story=', 'showMovies')
+URL_SEARCH_MISC = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=39&story=', 'showMovies')
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_EXCLUS = (URL_MAIN + 'exclus/', 'showMovies')
@@ -453,7 +500,7 @@ def showMoviesLinks():
         sDesc = sDesc.replace('<br>', '').replace('<br />', '')
 
     #on recherche d'abord la qualité courante
-    sPattern = '<div style=".+?"> *Qualité (.+?) [|] (.+?)<br> *<\/div>'
+    sPattern = 'couleur-qualitesz"> *Qualité (.+?) <.+?"couleur-languesz">(.+?)</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sTitle = sMovieTitle
@@ -562,19 +609,19 @@ def showSeriesLinks():
         pass
 
     #Mise à jour du titre
-    sPattern = '<h2>Télécharger <b itemprop="name">(.+?)</b>(.+?)</h2>'
+    sPattern = '<h2>Télécharger <b itemprop="name">(.+?)</b>.+?>(.+?)</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sTitle = sMovieTitle
     if (aResult[0]):
-        sTitle = aResult[1][0][0] + aResult[1][0][1]
+        sTitle = aResult[1][0][0] + " " + aResult[1][0][1]
 
     numSaison = str(aResult[1][0][1]).lower().replace("saison", "").strip()
     saisons = []
     saisons.append(numSaison)
     
     #on recherche d'abord la qualité courante
-    sPattern = 'Qualité (.+?) \| (.+?)<br>'
+    sPattern = 'couleur-qualitesz">Qualité (.+?) <.+?couleur-languesz">(.+?)</span><br>.+?"couleur-seriesz">(.+?)\['
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sDisplayTitle = sTitle
@@ -675,7 +722,7 @@ def showHosters():
     # Ajout des liens DL
     # Gere si un Hoster propose plusieurs liens
     # Retire les resultats proposés en plusieurs parties (ce sont des .rar) 
-    sPattern = "<th scope=(\"col\" class=\"no-sort\"><img src=.+?>(.+?)<\/th>|\"row\".+?class='download'.+?href=\'([^>]+?)\'>Télécharger <)"
+    sPattern = '<th scope="col" class="no-sort"><img src=.+?>(.+?)<\/th>|class=\'download\'.+?href=\'([^>]+?)\'>Télécharger <'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -687,12 +734,12 @@ def showHosters():
             if progress_.iscanceled():
                 break
 
-            if aEntry[1]:
-                sHoster = re.sub('\.\w+', '', aEntry[1])
+            if aEntry[0]:
+                sHoster = re.sub('\.\w+', '', aEntry[0])
                 continue;
 
 
-            sUrl2 = URL_MAIN[:-1] + aEntry[2]
+            sUrl2 = URL_MAIN[:-1] + aEntry[1]
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHoster)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -746,7 +793,7 @@ def showSeriesHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = 'href=\'([^>]+?)\'>Episode ([^>]+)<'
+    sPattern = '<th scope="col" class="no-sort"><img alt=.+?>(.+?)<\/th>|href=\'([^>]+?)\'>Episode ([^>]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -759,15 +806,21 @@ def showSeriesHosters():
             if progress_.iscanceled():
                 break
 
-            sUrl2 = URL_MAIN[:-1] + aEntry[0]
-            sTitle = sMovieTitle + ' E' + aEntry[1].replace('FINAL ', '')
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            if aEntry[0]:
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + re.sub('\.\w+', '', aEntry[0]) + '[/COLOR]')
+
+            else:
+
+	            sUrl2 = URL_MAIN[:-1] + aEntry[1]
+	            sTitle = sMovieTitle + ' E' + aEntry[2].replace('FINAL ', '')
+	            oOutputParameterHandler = cOutputParameterHandler()
+	            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+	            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+	            oOutputParameterHandler.addParameter('sThumb', sThumb)
+	            oGui.addTV(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
+
         oGui.setEndOfDirectory()
     else:   # certains films mals classés apparaissent dans les séries
         showHosters()
@@ -908,7 +961,7 @@ def exectProtect(cookies, url):
     #Tout ca a virer et utiliser oRequestHandler.addMultipartFiled('sess_id': sId, 'upload_type': 'url', 'srv_tmp_url': sTmp) quand ca marchera
     import string
     _BOUNDARY_CHARS = string.digits
-    boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(15))
+    boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(30))
     multipart_form_data = {'submit': 'continuer', 'submit': 'Continuer'}
     data, headersMulti = encode_multipart(multipart_form_data, {}, boundary)
 
@@ -935,7 +988,7 @@ def exectProtect(cookies, url):
 
 """Encode multipart form data to upload files via POST."""
 
-def encode_multipart(fields, files, boundary = None):
+def encode_multipart(fields, files, boundary):
     r"""Encode dict of form fields and dict of files as multipart/form-data.
     Return tuple of (body_string, headers_dict). Each value in files is a dict
     with required keys 'filename' and 'content', and optional 'mimetype' (if
@@ -969,9 +1022,6 @@ def encode_multipart(fields, files, boundary = None):
 
     def escape_quote(s):
         return s.replace('"', '\\"')
-
-    if boundary is None:
-        boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(15))
 
     lines = []
 

@@ -37,7 +37,7 @@ class cHoster(iHoster):
     #facultatif mais a laisser pour compatibilitee
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
-        
+
     #facultatif mais a laisser pour compatibilitee
     def getFileName(self):
         return self.__sFileName
@@ -45,11 +45,11 @@ class cHoster(iHoster):
     def getPluginIdentifier(self):
         #Nom du fichier exact sans .py
         return 'vidzstore'
-        
+
     #facultatif mais a laisser pour compatibilitee
     def setHD(self, sHD):
         self.__sHD = ''
-        
+
     #facultatif mais a laisser pour compatibilitee
     def getHD(self):
         return self.__sHD
@@ -65,10 +65,10 @@ class cHoster(iHoster):
     #facultatif mais a laisser pour compatibilitee
     def getPattern(self):
         return ''
-    
+
     #facultatif mais a laisser pour compatibilitee
     def __getIdFromUrl(self, sUrl):
-        sPattern = '<iframe src="([^<]+)"'
+        sPattern = '<iframe src="([^"]+)"'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
@@ -88,7 +88,7 @@ class cHoster(iHoster):
     #facultatif mais a laisser pour compatibilitee
     def __getUrl(self, media_id):
         return
-    
+
     #Fonction appelle par Vstream pour avoir le lien decode
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
@@ -102,21 +102,21 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  'file: "([^<>"]+?mp4)\"'
+        sPattern =  'file: "([^"]+)\"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
-        
+
+
         if (aResult[0]):
             api_call = aResult[1][0]
-            
+
         if (api_call):
             #Rajout d'un header ?
             #api_call = api_call + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
             return True, api_call
-        
+
         return False, False
 
-        
+
 #Attention : Pour fonctionner le nouvel hebergeur doit etre rajoute dans le corps de Vstream, fichier Hosters.py.
 #----------------------------------------------------------------------------------------------------------------
 #
@@ -124,18 +124,18 @@ class cHoster(iHoster):
 #--------------------------------------
 #
 #            from resources.lib.comaddon import dialog
-#           
+#
 #            url=[]
 #            qua=[]
 #            api_call = False
-#            
+#
 #            for aEntry in aResult[1]:
 #                url.append(aEntry[0])
 #                qua.append(aEntry[1])
 #
 #            #Afichage du tableau
 #            api_call = dialog().VSselectqual(qua, url)
-#                
+#
 #             if (api_call):
 #                  return True, api_call
 

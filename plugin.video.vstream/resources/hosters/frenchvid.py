@@ -77,7 +77,7 @@ class cHoster(iHoster):
         else:
             url = baseUrl + self.__sUrl.rsplit('/', 1)[1]
 
-        postdata = 'r=' + urllib.quote_plus(self.__sUrl) + '&d=' + baseUrl.replace('https://','').replace('/api/source/','')
+        postdata = 'r=' + urllib.quote_plus(self.__sUrl) + '&d=' + baseUrl.replace('https://', '').replace('/api/source/', '')
 
         oRequest = cRequestHandler(url)
         oRequest.setRequestType(1)

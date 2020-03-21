@@ -4,9 +4,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-
 from resources.lib.packer import cPacker
-from resources.lib.comaddon import VSlog
 
 class cHoster(iHoster):
 
