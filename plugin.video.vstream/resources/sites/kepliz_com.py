@@ -29,7 +29,7 @@ MOVIE_HD = (URL_MAIN, 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=2&Itemid=2', 'showMovies')
 ANIM_ANIMS = (URL_MAIN + 'index.php?option=com_content&view=category&id=2&Itemid=19', 'showMovies')
 DOC_NEWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=26', 'showMovies')
-DOC_DOCS = ('http://', 'load')
+SHOW_SHOWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=3', 'showMovies')#Spectacle
 
 URL_SEARCH = ('', 'showMovies')
 URL_SEARCH_MOVIES = ('', 'showMovies')
@@ -64,8 +64,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'index.php?option=com_content&view=category&id=3')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Spectacles', 'doc.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SHOW_SHOWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SHOW_SHOWS[1], 'Spectacles', 'doc.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -296,7 +296,7 @@ def showHostersLink():
                'Accept-Encoding': 'gzip, deflate',
                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
 
-    post_data = {'link' : sLink}
+    post_data = {'link': sLink}
 
     req = urllib2.Request(sPostUrl, urllib.urlencode(post_data), headers)
 
