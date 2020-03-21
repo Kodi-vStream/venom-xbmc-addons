@@ -34,17 +34,14 @@ ANIM_LIST = (URL_MAIN + 'animes/alphabet/', 'AlphaSearch')
 ANIM_NEWS = (URL_MAIN + 'animes/', 'showMovies')
 
 URL_SEARCH = ('', 'showMovies')
-URL_SEARCH_MOVIES = ('', 'showMovies')
-URL_SEARCH_SERIES = ('', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + 'recherche?type=film&s=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'recherche?type=serie&s=', 'showMovies')
+URL_SEARCH_ANIMS = (URL_MAIN + 'recherche?type=anime&s=', 'showMovies')
 #FUNCTION_SEARCH = 'showMovies'
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 
 def load():
     oGui = cGui()
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
@@ -64,7 +61,7 @@ def showMenuMovies():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MOVIES[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -89,6 +86,10 @@ def showMenuSeries():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
@@ -110,6 +111,10 @@ def showMenuAnims():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMS[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
@@ -124,7 +129,10 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        showMovies(sSearchText)
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('siteUrl')
+        sUrl = sUrl + Quote(sSearchText)
+        showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
 
@@ -273,9 +281,15 @@ def showMovies(sSearch = ''):
     oParser = cParser()
 
     if sSearch:
-        sSearch = Quote(sSearch)
-
-        oRequest = cRequestHandler(URL_MAIN + 'recherche?s=' + sSearch)
+        sUrl = sSearch
+        
+        sTypeSearch = oParser.parseSingleResult(sUrl, '\?type=(.+?)&')
+        if sTypeSearch[0]:
+            sTypeSearch = sTypeSearch[1]
+        else:
+            sTypeSearch = False
+            
+        oRequest = cRequestHandler(sUrl)
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Referer', URL_MAIN)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
@@ -284,7 +298,7 @@ def showMovies(sSearch = ''):
 
         sHtmlContent = oRequest.request()
 
-        sPattern = '<div class="unfilm".+?<a href="([^"]+)" title="([^"]+)".+?<img src="([^"]+)".+?("suivre2">([^<]+)<|<span class="qualite ([^"]+)"|<div class="cdiv")'
+        sPattern = '<div class="unfilm".+?<a href="([^"]+)" title="([^"]+)".+?class="type ([^"]+)".+?<img src="([^"]+)".+?("suivre2">([^<]+)<|<span class="qualite ([^"]+)"|<div class="cdiv")'
 
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -310,9 +324,13 @@ def showMovies(sSearch = ''):
 
             if sSearch:
                 sTitle = aEntry[1]
-                sThumb = aEntry[2]
-                sYear = aEntry[4]
-                sQual = aEntry[5]
+                sType = aEntry[2]
+                sThumb = aEntry[3]
+                sYear = aEntry[5]
+                sQual = aEntry[6]
+                if sTypeSearch:
+                    if sTypeSearch != sType: # genre recherché :  film/serie/anime
+                        continue
             else:
                 sThumb = aEntry[1]
                 sTitle = aEntry[2]
