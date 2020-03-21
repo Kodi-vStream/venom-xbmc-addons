@@ -205,7 +205,7 @@ def showHosters():
     #Recuperation info film, com et image
     sThumb = ''
     sDesc = ''
-    sPattern = '<div class="article-content"><p style="text-align: center;"><img src="([^"]+)" border.+?<p style="text-align: left;">([^<>]+?)<\/p>'
+    sPattern = '<p style="text-align: center;"><img src="([^"]+)".+?<p style="text-align: left;">([^<]+)<\/p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
