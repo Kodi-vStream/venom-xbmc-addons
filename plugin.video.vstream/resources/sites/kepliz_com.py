@@ -29,7 +29,7 @@ MOVIE_HD = (URL_MAIN, 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=2&Itemid=2', 'showMovies')
 ANIM_ANIMS = (URL_MAIN + 'index.php?option=com_content&view=category&id=2&Itemid=19', 'showMovies')
 DOC_NEWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=26', 'showMovies')
-DOC_DOCS = ('http://', 'load')
+SHOW_SHOWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=3', 'showMovies')#Spectacle
 
 URL_SEARCH = ('', 'showMovies')
 URL_SEARCH_MOVIES = ('', 'showMovies')
@@ -64,8 +64,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'index.php?option=com_content&view=category&id=3')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Spectacles', 'doc.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SHOW_SHOWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SHOW_SHOWS[1], 'Spectacles', 'doc.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -202,10 +202,12 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
+    sHtmlContent = sHtmlContent.replace('<br/>', '')#traitement de sDesc
+
     #Recuperation info film, com et image
     sThumb = ''
     sDesc = ''
-    sPattern = '<div class="article-content"><p style="text-align: center;"><img src="([^"]+)" border.+?<p style="text-align: left;">([^<>]+?)<\/p>'
+    sPattern = '<p style="text-align: center;"><img src="([^"]+)".+?<p style="text-align: left;">(.+?)<\/p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -251,7 +253,7 @@ def showHosters():
                 sLink = URL_HOST[:-1] + sLink
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            # oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sLink', sLink)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
 
@@ -270,7 +272,7 @@ def showHosters():
                 sLink = URL_HOST[:-1] + sLink
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            # oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sLink', sLink)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
 
@@ -296,7 +298,7 @@ def showHostersLink():
                'Accept-Encoding': 'gzip, deflate',
                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
 
-    post_data = {'link' : sLink}
+    post_data = {'link': sLink}
 
     req = urllib2.Request(sPostUrl, urllib.urlencode(post_data), headers)
 
@@ -328,7 +330,7 @@ def showHostersLink2():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    # sUrl = oInputParameterHandler.getValue('siteUrl')
     sLink = oInputParameterHandler.getValue('sLink')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
@@ -383,13 +385,11 @@ def showHostersLink2():
 
     oGui.setEndOfDirectory()
 
-
-
 def showHostersLink3():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    # sUrl = oInputParameterHandler.getValue('siteUrl')
     sLink = oInputParameterHandler.getValue('sLink')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 

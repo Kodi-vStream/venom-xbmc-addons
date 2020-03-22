@@ -397,7 +397,7 @@ class cTMDb:
         return title
 
 
-    def _cache_search(self, media_type, name, tmdb_id = '', year = '', season = ''):
+    def _cache_search(self, media_type, name, tmdb_id = '', year = '', season = '', episode = ''):
         if media_type == 'movie':
             sql_select = 'SELECT * FROM movie'
             if tmdb_id:

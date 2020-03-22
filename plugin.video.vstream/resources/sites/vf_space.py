@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'vf_space'
 SITE_NAME = 'VF.Space'
 SITE_DESC = 'Films, Séries et Mangas Gratuit en streaming sur Full stream'
 
-URL_MAIN = 'https://w3.vfspace.co/'
+URL_MAIN = 'https://vvww.vfspace.me/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + 'index.php?do=search', FUNCTION_SEARCH)
@@ -197,6 +197,7 @@ def showEpisodes():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sYear = oInputParameterHandler.getValue('sYear')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -237,6 +238,7 @@ def showEpisodes():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('sYear', sYear)
                 oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -250,6 +252,7 @@ def showLink():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sYear = oInputParameterHandler.getValue('sYear')
 
     oRequest = cRequestHandler(sUrl.replace('https', 'http'))
     sHtmlContent = oRequest.request()
@@ -275,8 +278,13 @@ def showLink():
             sUrl2 = aEntry[1]
             if sUrl2.startswith('/'):
                 sUrl2 = URL_MAIN[:-1] + aEntry[1] # ou a voir https://4kvfsplayer.xyz
-
+            
+            # On ne propose que les hosts qu'on sait décoder
             sHost = aEntry[2].replace(' ', '')
+            oHoster = cHosterGui().checkHoster(sHost)
+            if not oHoster:
+                continue
+
             sLang = aEntry[0][-2:]
             sTitle = ('%s [%s] [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
 
@@ -284,7 +292,8 @@ def showLink():
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sYear', sYear)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
