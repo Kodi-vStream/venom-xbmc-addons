@@ -19,7 +19,7 @@ Wiki vStream:
 https://github.com/Kodi-vStream/venom-xbmc-addons/wiki
 
 Url d'installation : 
-http://vstream.ga/repo/
+https://github.com/Kodi-vStream/venom-xbmc-addons/releases/tag/0.0.3
 
 La communauté francophone du media center Kodi.
 http://kodi-fr.rf.gd/index.php
