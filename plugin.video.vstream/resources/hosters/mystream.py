@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-#jj ne fonctionne pas et je n'ai pas trouvé pourquoi
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
@@ -66,17 +66,19 @@ class cHoster(iHoster):
         sPattern =  '([$]=.+?\(\)\)\(\);)'
         aResult = re.findall(sPattern,sHtmlContent,re.DOTALL)
         if aResult:
+
             for i in aResult:
                 decoded = temp_decode(i)
+
                 if decoded:
-                    r = re.search("setAttribute\(\'src\', *\'(http.+?mp4)\'\)", decoded, re.DOTALL)
+                    r = re.search("setAttribute\(\'src\', *\'([^']+)\'\)", decoded, re.DOTALL)
                     if r:
                         api_call = r.group(1)
 
 
 
         if (api_call):
-            return True, api_call + '|User-Agent=' + UA + '&Referer=' + self.__sUrl 
+            return True, api_call + '|User-Agent=' + UA + '&Referer=' + self.__sUrl + '&Origin=https://embed.mystream.to'
             
         return False, False
         
