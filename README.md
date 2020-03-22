@@ -29,7 +29,7 @@ Pour créer une nouvelle source, utilisez le fichier avec commentaires pour vous
 
 Pour créer un nouvel hébergeur, utilisez le fichier avec commentaires pour vous aider.
 
-[![images](https://img.shields.io/badge/Ficher-H%C3%A9bergeur-yellow.svg?style=for-the-badge)](https://github.com/Kodi-vStream/venom-xbmc-addons/blob/Beta/ajouter_un_hebergeur.py)
+[![images](https://img.shields.io/badge/Fichier-H%C3%A9bergeur-yellow.svg?style=for-the-badge)](https://github.com/Kodi-vStream/venom-xbmc-addons/blob/Beta/ajouter_un_hebergeur.py)
 
 Pour participer directement au projet:
 
