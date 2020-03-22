@@ -346,6 +346,8 @@ class cHosterGui:
             return self.getHoster('onlystream')
         if ('pstream' in sHostName):
             return self.getHoster('pstream')
+        if ('vudeo' in sHostName):
+            return self.getHoster('vudeo')
         
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
