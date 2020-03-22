@@ -1,5 +1,5 @@
-import time, os, subprocess, xbmcvfs
-from resources.lib.comaddon import progress, addon, xbmc, xbmcgui, VSlog, dialog
+import time, subprocess, xbmcvfs#, os
+from resources.lib.comaddon import addon, xbmc, VSlog#, xbmcgui, progress, dialog
 from datetime import datetime
 
 def service():
@@ -9,8 +9,8 @@ def service():
     if enregistrementIsActif == 'false':
         return
 
-    PathProgrammation = "special://userdata/addon_data/plugin.video.vstream/Enregistrement"
-    path = "".join([PathProgrammation])
+    PathProgrammation = 'special://userdata/addon_data/plugin.video.vstream/Enregistrement'
+    path = ''.join([PathProgrammation])
     if not xbmcvfs.exists(path):
         xbmcvfs.mkdir(path)
 
@@ -29,7 +29,7 @@ def service():
             heure = xbmc.translatePath(heure)
             EnregistrementEnCours = True
             VSlog('python ' + heure)
-            command ='python ' + heure
+            command = 'python ' + heure
             proc = subprocess.Popen(command, stdout=subprocess.PIPE)
             p_status = proc.wait()
 
