@@ -16,7 +16,7 @@ Repository vStream:
 https://github.com/Kodi-vStream/venom-xbmc-addons/releases/tag/Repository
 
 Wiki vStream:
-https://github.com/Kodi-vStream/venom-xbmc-addons/wiki
+https://kodi-vstream.github.io/
 
 Url d'installation: 
 https://github.com/Kodi-vStream/venom-xbmc-addons/tree/Beta/repo/plugin.video.vstream
