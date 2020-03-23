@@ -5,9 +5,9 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog #,VSlog
+from resources.lib.comaddon import dialog ,VSlog
 
-import urllib, re
+import urllib, re , base64
 
 
 class cHoster(iHoster):
@@ -120,12 +120,21 @@ class cHoster(iHoster):
         SubTitle = ''
         SubTitle = self.checkSubtitle(sHtmlContent)
         #VSlog(SubTitle)
+        
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
 
         oParser = cParser()
+        
+        #Test preliminaire
+        sPattern =  "window\.sources = JSON\.parse\(atob\('([^']+)'"
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            sHtmlContent = base64.b64decode(aResult[1][0])
+        
         sPattern =  'src":[\'"]([^<>\'"]+)[\'"],"type":[\'"][^\'"><]+?[\'"],"label":[\'"]([0-9]+p)[\'"].+?"lang":[\'"]([^\'"]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
-
-        #VSlog(str(aResult))
 
         if (aResult[0] == True):
             url=[]
