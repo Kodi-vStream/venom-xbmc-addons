@@ -318,6 +318,8 @@ def showLinks():
             sQual = aEntry[2]
             sHost = re.sub('\.\w+', '', aEntry[3])
             sHost = sHost.capitalize()
+            if 'Youtube' in sHost:#filtrage des hosters
+                continue
             sTitle = ('%s [%s] [COLOR coral]%s[/COLOR]') % (sMovieTitle, sQual, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
