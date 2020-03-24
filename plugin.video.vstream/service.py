@@ -1,4 +1,4 @@
-import time, subprocess, xbmcvfs#, os
+import subprocess, xbmcvfs#, time, os
 from resources.lib.comaddon import addon, xbmc, VSlog#, xbmcgui, progress, dialog
 from datetime import datetime
 
