@@ -88,7 +88,7 @@ def showSearch():
 def showSeries(sSearch = ''):
     oGui = cGui()
     if sSearch:
-      sUrl = sSearch
+        sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -201,7 +201,7 @@ def showOst():
         #On renvoi l'url memoriser et le numero de page pour l'incrementer a chaque fois
         oOutputParameterHandler.addParameter('MemorisedUrl', MemorisedUrl)
         oOutputParameterHandler.addParameter('Page', Page)
-        oGui.addNext(SITE_IDENTIFIER, 'showOst', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+        oGui.addNext(SITE_IDENTIFIER, 'showOst', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -270,7 +270,6 @@ def showMusic():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oParser = cParser()
