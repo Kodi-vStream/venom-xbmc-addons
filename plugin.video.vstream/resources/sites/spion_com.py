@@ -16,7 +16,7 @@ SITE_DESC = 'Insolite du web'
 URL_MAIN = 'https://www.spi0n.com/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MISC = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 NETS_NETS = ('http://', 'load')
@@ -27,11 +27,11 @@ NETS_GENRES = (True, 'showGenres')
 SPION_CENSURE = True
 
 #logo censure -18ans
-LOGO_CSA = "http://a398.idata.over-blog.com/1/40/34/11/archives/0/16588469.jpg"
+LOGO_CSA = 'http://a398.idata.over-blog.com/1/40/34/11/archives/0/16588469.jpg'
 
 def showCensure():
 
-    content = "Pour activer le contenu (+18) mettre: \n[COLOR coral]SPION_CENSURE = False[/COLOR]\ndans le fichier:\n[COLOR coral]plugin.video.vstream/resources/sites/spion_com.py[/COLOR]"
+    content = 'Pour activer le contenu (+18) mettre: \n[COLOR coral]SPION_CENSURE = False[/COLOR]\ndans le fichier:\n[COLOR coral]plugin.video.vstream/resources/sites/spion_com.py[/COLOR]'
     dialog().VSok(content)
 
 def load():
@@ -104,7 +104,7 @@ def showMovies(sSearch = ''):
     oGui = cGui()
 
     if sSearch:
-      sUrl = sSearch.replace(" ", "+")
+        sUrl = sSearch.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -142,19 +142,19 @@ def showMovies(sSearch = ''):
             #vire lien categorie image
             if (sCat != 'Image'):
 
-                 oOutputParameterHandler = cOutputParameterHandler()
-                 oOutputParameterHandler.addParameter('siteUrl', sUrlp)
-                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                 oOutputParameterHandler.addParameter('sThumb', sPoster)
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrlp)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumb', sPoster)
 
-                 if (SPION_CENSURE == True):
+                if (SPION_CENSURE == True):
                     if (sCat == 'NSFW') or (sCat == 'Trash'):
                         sPoster = LOGO_CSA
                         oGui.addMovie(SITE_IDENTIFIER, 'showCensure', sDisplayTitle, '', sPoster,'', oOutputParameterHandler)
                     else:
                         oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sPoster,'', oOutputParameterHandler)
-                 else:
-                     oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sPoster,'', oOutputParameterHandler)
+                else:
+                    oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sPoster,'', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -162,7 +162,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -193,7 +193,6 @@ def showHosters():
 
     #prise en compte lien direct mp4
     sPattern = '<iframe.+?src="(.+?)"'
-    #sPattern = '<p style=".+?"><iframe.+?src="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -204,7 +203,7 @@ def showHosters():
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
-            # Certains URL "dailymotion" sont écrits : //www.dailymotion.com
+            # Certains URL "dailymotion" sont écrits: //www.dailymotion.com
             if sHosterUrl[:4] != 'http':
                 sHosterUrl = 'http:' + sHosterUrl
 
