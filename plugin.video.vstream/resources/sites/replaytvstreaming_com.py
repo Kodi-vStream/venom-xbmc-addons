@@ -9,7 +9,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
-from resources.lib.comaddon import progress,VSlog
+from resources.lib.comaddon import progress#, VSlog
 
 SITE_IDENTIFIER = 'replaytvstreaming_com'
 SITE_NAME = 'Replay Tv Streaming'
@@ -63,12 +63,12 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ["Emissions et Magazines", URL_MAIN + "emission-magazine"] )
-    liste.append( ["Documentaires", URL_MAIN + "documentaire"] )
-    liste.append( ["Spectacles", URL_MAIN + "spectacle"] )
-    liste.append( ["Sports", URL_MAIN + "sport"] )
-    liste.append( ["Téléfilms Fiction", URL_MAIN + "telefilm-fiction"] )
-    liste.append( ["Films", URL_MAIN + "film"] )
+    liste.append( ['Emissions et Magazines', URL_MAIN + 'emission-magazine'] )
+    liste.append( ['Documentaires', URL_MAIN + 'documentaire'] )
+    liste.append( ['Spectacles', URL_MAIN + 'spectacle'] )
+    liste.append( ['Sports', URL_MAIN + 'sport'] )
+    liste.append( ['Téléfilms Fiction', URL_MAIN + 'telefilm-fiction'] )
+    liste.append( ['Films', URL_MAIN + 'film'] )
 
     for sTitle, sUrl in liste:
 
@@ -95,7 +95,6 @@ def showMovies(sSearch = ''):
 
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-
         sPattern = '<div class="item-box"><a class="item-link" href="([^"]+)">.+?<img src="([^"]+)".+?<div class="item-title">([^<]+)<\/div><div class="item-info clearfix">([^<]+)<\/div>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -134,7 +133,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -168,9 +167,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-
     sPattern = '<div id="video_[0-9]+" class="epizode re_poleta.+?" data-re_idnews="([^"]+)" data-re_xfn="video" data-re_page="([^"]+)">([^<]+)</div>'
-
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sTest = ''
@@ -184,7 +181,7 @@ def showHosters():
             sHosterUrl = cUtil().unescape(sHosterUrl)
 
             sTitle = aEntry[2]
-            
+
             if not 'Lecteur' in sTitle and sTest != sTitle:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR olive]' + sTitle + '[/COLOR]')
                 sTest = sTitle
