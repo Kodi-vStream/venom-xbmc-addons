@@ -19,7 +19,7 @@ SITE_DESC = 'Site pour Telecharger ou Regarder des Documentaires et Emissions TV
 URL_MAIN = 'https://9docu.net/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MISC = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 DOC_NEWS = (URL_MAIN, 'showMovies')
@@ -124,7 +124,7 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
-      sUrl = sSearch.replace(' ', '+')
+        sUrl = sSearch.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -163,7 +163,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -199,7 +199,7 @@ def showHosters():
                 idUrl = aEntry.split('/')[3]
 
                 #Make random key
-                s = "azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN_-#@";
+                s = "azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN_-#@"
                 RandomKey = ''.join(random.choice(s) for i in range(32))
 
                 oRequestHandler = cRequestHandler(url2)
