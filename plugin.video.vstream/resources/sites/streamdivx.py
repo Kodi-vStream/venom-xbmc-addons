@@ -38,7 +38,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
@@ -95,14 +95,14 @@ def showGenres():
 def showMovieYears():
     oGui = cGui()
 
-    for i in reversed (xrange(1985, 2020)):
+    for i in reversed (xrange(1985, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'tags/' + Year + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-    
+
 def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
@@ -116,7 +116,7 @@ def showMovies(sSearch = ''):
 
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-        
+
         if '<h2 class="side-title nop">film du moment</h2>' in sHtmlContent:
             sStart = '<div class="films-group small'
             sEnd = '<div class="side-title">films par Genres'
@@ -142,14 +142,14 @@ def showMovies(sSearch = ''):
             sThumb = aEntry[1]
             sTitle = aEntry[2]#.decode("unicode_escape").encode("latin-1")
             sDesc = aEntry[3]
-            
+
             # Nettoie le titre, la premiere phrase est souvent doublée
             sDesc = sDesc.replace('SYNOPSIS ET DÉTAILS', '').lstrip()
             if len (sDesc) > 180:
                 idx = sDesc.find(sDesc[:15], 30, 180)
                 if idx>0:
                     sDesc = sDesc[idx:]
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -184,7 +184,7 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    sPost = oInputParameterHandler.getValue('sPost')
+    # sPost = oInputParameterHandler.getValue('sPost')
 
     oRequestHandler = cRequestHandler(sUrl)
     # oRequestHandler.setRequestType(1)
