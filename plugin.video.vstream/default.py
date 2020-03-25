@@ -12,12 +12,9 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.db import cDb
 from resources.lib.comaddon import progress, VSlog, addon, window, xbmc
-
-import urllib
-
+from resources.lib.util import Quote
 #http://kodi.wiki/view/InfoLabels
 #http://kodi.wiki/view/List_of_boolean_conditions
-
 
 ####################  
 #
@@ -193,14 +190,14 @@ def setSetting(id, value):
 def isHosterGui(sSiteName, sFunction):
     if (sSiteName == 'cHosterGui'):
         oHosterGui = cHosterGui()
-        exec "oHosterGui." + sFunction + "()"
+        exec ("oHosterGui." + sFunction + "()")
         return True
     return False
 
 def isGui(sSiteName, sFunction):
     if (sSiteName == 'cGui'):
         oGui = cGui()
-        exec "oGui." + sFunction + "()"
+        exec ("oGui." + sFunction + "()")
         return True
     return False
 
@@ -208,7 +205,7 @@ def isFav(sSiteName, sFunction):
     if (sSiteName == 'cFav'):
         from resources.lib.favourite import cFav
         oFav = cFav()
-        exec "oFav." + sFunction + "()"
+        exec ("oFav." + sFunction + "()")
         return True
     return False
 
@@ -216,7 +213,7 @@ def isLibrary(sSiteName, sFunction):
     if (sSiteName == 'cLibrary'):
         from resources.lib.library import cLibrary
         oLibrary = cLibrary()
-        exec "oLibrary." + sFunction + "()"
+        exec ("oLibrary." + sFunction + "()")
         return True
     return False
 
@@ -224,14 +221,14 @@ def isDl(sSiteName, sFunction):
     if (sSiteName == 'cDownload'):
         from resources.lib.download import cDownload
         oDownload = cDownload()
-        exec "oDownload." + sFunction + "()"
+        exec ("oDownload." + sFunction + "()")
         return True
     return False
 
 def isHome(sSiteName, sFunction):
     if (sSiteName == 'cHome'):
         oHome = cHome()
-        exec "oHome." + sFunction + "()"
+        exec ("oHome." + sFunction + "()")
         return True
     return False
 
@@ -239,11 +236,12 @@ def isTrakt(sSiteName, sFunction):
     if (sSiteName == 'cTrakt'):
         from resources.lib.trakt import cTrakt
         oTrakt = cTrakt()
-        exec "oTrakt." + sFunction + "()"
+        exec ("oTrakt." + sFunction + "()")
         return True
     return False
 
 def searchGlobal():
+    cancel = False
     oGui = cGui()
     addons = addon()
 
@@ -271,13 +269,14 @@ def searchGlobal():
     window(10101).setProperty('search', 'true')
 
     oGui.addText('globalSearch', addons.VSlang(30081) % (sSearchText), 'none.png')
-    sSearchText = urllib.quote(sSearchText)
+    sSearchText = Quote(sSearchText)
 
     for count, plugin in enumerate(aPlugins):
 
         #text = '%s/%s - %s' % ((count + 1), total, plugin['name'])
         progress_.VSupdatesearch(progress_, total, plugin['name'])
         if progress_.iscanceled():
+            cancel = True
             progress_.close()
             break
 
@@ -301,7 +300,6 @@ def searchGlobal():
         #else:
         #    cConfig().updateDialogSearch(dialog, total, text)
         progress_.VSupdatesearch(progress_, total, "Patience...")
-
 
         #result['params'].addParameter('VSTRMSEARCH', 'True')
 
