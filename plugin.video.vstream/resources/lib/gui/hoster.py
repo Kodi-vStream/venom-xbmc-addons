@@ -332,7 +332,7 @@ class cHosterGui:
             return self.getHoster('archive')
         if ('jetload' in sHostName):
             return self.getHoster('jetload')
-        if ('french-vid' in sHostName or 'fembed.' in sHostName or 'yggseries' in sHostName or 'sendvid' in sHostName or 'vfsplayer' in sHostName or 'fsimg' in sHostName or 'fem.tohds' in sHostName):
+        if ('french-vid' in sHostName or 'fembed.' in sHostName or 'yggseries' in sHostName or 'vfsplayer' in sHostName or 'fsimg' in sHostName or 'fem.tohds' in sHostName):
             return self.getHoster('frenchvid')
         if ('flix555' in sHostName):
             return self.getHoster('flix555')
@@ -342,6 +342,8 @@ class cHosterGui:
             return self.getHoster('pstream')
         if ('vudeo' in sHostName):
             return self.getHoster('vudeo')
+        if ('sendvid' in sHostName):
+            return self.getHoster('sendvid')
         
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
