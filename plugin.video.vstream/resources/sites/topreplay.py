@@ -8,7 +8,6 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-
 import re
 
 SITE_IDENTIFIER = 'topreplay'
@@ -88,7 +87,7 @@ def showMovies(sSearch = ''):
     oParser = cParser()
 
     if sSearch:
-      sUrl = sSearch.replace(" ", "+")
+        sUrl = sSearch.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -144,7 +143,7 @@ def __checkForNextPage(sHtmlContent):
 
 def showHosters():
     oGui = cGui()
-    oParser = cParser()
+    # oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -187,14 +186,14 @@ def showHosters():
     oGui.setEndOfDirectory()
     
 def decodeUN(a):
-    s2 = ""
+    s2 = ''
 
     i = 0
     while i < len(a):
-      s2 += ('\u0' + a[i:i+3])
-      i = i + 3
+        s2 += ('\u0' + a[i:i+3])
+        i = i + 3
 
     s3 = s2.decode('unicode-escape')
-    s3 = s3.replace('{"v":"','').replace('"}','')
+    s3 = s3.replace('{"v":"', '').replace('"}', '')
     s3 = 'https://hqq.tv/player/embed_player.php?vid=' + str(s3)
     return s3
