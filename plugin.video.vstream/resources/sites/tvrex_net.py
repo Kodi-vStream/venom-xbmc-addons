@@ -9,8 +9,8 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import GestionCookie
-from resources.lib.comaddon import progress, VSlog
+#from resources.lib.config import GestionCookie
+from resources.lib.comaddon import progress#, VSlog
 
 import re, urllib2
 import base64
@@ -23,7 +23,7 @@ URL_MAIN = 'http://tvrex.net/'
 REDDIT = 'https://www.reddit.com/r/nbastreams/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MISC = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 SPORT_SPORTS = ('http://', 'load')
@@ -32,14 +32,12 @@ Logo_Reddit = 'aHR0cHM6Ly9iLnRodW1icy5yZWRkaXRtZWRpYS5jb20va1c5ZFNqRFlzUDhGbEJYe
 Logo_Nba = 'aHR0cDovL3d3dy5vZmZpY2lhbHBzZHMuY29tL2ltYWdlcy90aHVtYnMvSS1sb3ZlLXRoaXMtZ2FtZS1uYmEtbG9nby1wc2Q2MDQwNy5wbmc='
 
 def TimeET():
-
     sUrl = 'http://www.worldtimeserver.com/current_time_in_CA-ON.aspx'
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
 
     sPattern = '<span id="theTime" class="fontTS">\s*(.+?)\s*</span>'
-
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -76,8 +74,6 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REDDIT)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Live NBA Games (bêta)', 'tv.png', oOutputParameterHandler)
-
-
 
     oGui.setEndOfDirectory()
 
@@ -208,7 +204,7 @@ def showMovies(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -226,7 +222,7 @@ def showMovies(sSearch = ''):
                     sUrl2 = aEntry[1]
                     sTitle = aEntry[0]
                     sThumb = base64.b64decode(Logo_Reddit)
-                    sTitle2= sTitle.split("(")
+                    sTitle2= sTitle.split('(')
                     sTitle = sTitle2[0]
                     sTimeLive = sTitle2[1]
                     sTimeLive = sTimeLive.replace(')', '')
@@ -243,22 +239,22 @@ def showMovies(sSearch = ''):
 
                 if ('category/20' in sUrl):
 
-                    sTitle = aEntry[1]
                     sUrl2 = aEntry[0]
+                    sTitle = aEntry[1]
                     sThumb = ' '
                 elif '?s=' in sUrl:
                     sTitle = aEntry[0]
                     sUrl2 = aEntry[1]
                     sThumb = aEntry[2]
                 else:
-                    sTitle = aEntry[2]
                     sUrl2 = aEntry[0]
                     sThumb = aEntry[1]
+                    sTitle = aEntry[2]
 
             try:
                 if 'category/nba' in sUrl:
 
-                    sTitle2 = sTitle.split(" – ")
+                    sTitle2 = sTitle.split(' – ')
                     sTitle = sTitle2[0]
                     sDateReplay =  sTitle2[1]
 
@@ -281,7 +277,7 @@ def showMovies(sSearch = ''):
                         sTitle3 = sTitle
 
                     sTitle3 = sTitle3.replace('\xe2\x80\x93', '-')
-                    sTitle = sTitle3.split("-")
+                    sTitle = sTitle3.split('-')
                     sTeam = sTitle[0]
                     if sTitle[1]:
                         sDatePlayoff = sTitle[1]
@@ -313,7 +309,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     else:
         if  'reddit' in sUrl:
@@ -495,18 +491,17 @@ def showLiveHosters():
     UA='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36'
 
     try:
-       request = urllib2.Request(sUrl)
-       request.add_header('User-agent', UA)
+        request = urllib2.Request(sUrl)
+        request.add_header('User-agent', UA)
 
-       response = urllib2.urlopen(request)
-       sHtmlContent = response.read()
-       response.close()
+        response = urllib2.urlopen(request)
+        sHtmlContent = response.read()
+        response.close()
     except urllib2.HTTPError:
-                            sHtmlContent = ''
-                            pass
+        sHtmlContent = ''
+        pass
 
     sPattern = '(?:\"|\')(.+?m3u8.+?)(?:\"|\')'
-
     aResult = re.findall(sPattern, sHtmlContent)
 
     if (aResult):
@@ -558,25 +553,25 @@ def showHosters4():
                 sHosterUrl = 'http:' + sHosterUrl
 
             if 'fembed' in sHosterUrl:
-                videoID = re.findall('v/([^"]+)',sHosterUrl)
+                videoID = re.findall('v/([^"]+)', sHosterUrl)
                 oRequestHandler = cRequestHandler(sUrl)
                 sHtmlContent = oRequestHandler.request()
                 cookies = oRequestHandler.GetCookies()
 
-                apiUrl = 'https://www.fembed.com/api/source/'+videoID[0]
+                apiUrl = 'https://www.fembed.com/api/source/' + videoID[0]
                 oRequestHandler = cRequestHandler(apiUrl)
                 oRequestHandler.setRequestType(1)
-                oRequestHandler.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0')
-                oRequestHandler.addHeaderEntry('Referer',sHosterUrl)
-                oRequestHandler.addHeaderEntry('Cookie',cookies)
-                oRequestHandler.addParameters('r','')
-                oRequestHandler.addParameters('d','www.fembed.com')
+                oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0')
+                oRequestHandler.addHeaderEntry('Referer', sHosterUrl)
+                oRequestHandler.addHeaderEntry('Cookie', cookies)
+                oRequestHandler.addParameters('r', '')
+                oRequestHandler.addParameters('d', 'www.fembed.com')
                 sHtmlContent = oRequestHandler.request()
 
-                aResult = re.findall('"file":"(.+?)"',sHtmlContent)
+                aResult = re.findall('"file":"(.+?)"', sHtmlContent)
                 if (aResult):
                     for aEntry in aResult:
-                        sHosterUrl = aEntry.replace('\/','\\')
+                        sHosterUrl = aEntry.replace('\/', '\\')
                         if not sHosterUrl.startswith('http'):
                             sHosterUrl = 'https://www.fembed.com' + sHosterUrl
 
