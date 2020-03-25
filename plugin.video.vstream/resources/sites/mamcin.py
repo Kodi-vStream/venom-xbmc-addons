@@ -154,6 +154,8 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sHosterUrl = aEntry
+            if not sHosterUrl.startswith('http'):
+                sHosterUrl = 'https:' + aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
