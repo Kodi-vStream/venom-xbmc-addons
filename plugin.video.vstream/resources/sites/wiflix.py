@@ -6,8 +6,8 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
-from resources.lib.util import cUtil
+from resources.lib.comaddon import progress#, VSlog
+# from resources.lib.util import cUtil
 
 import re
 
@@ -142,7 +142,6 @@ def showMovies(sSearch = ''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    #sPattern = '<div class="mov clearfix">.+?<img *src="([^"]+)" *alt="([^"]+)".+?data-link="([^"]+)".+?nbloc1">([^<]+)<\/span>.+?nbloc2">([^<]+)*<\/span>.+?div class="ml-label">Synopsis.+?<div class="ml-desc">(.+?)<\/div>'
     sPattern = '<div class="mov clearfix">.+?<img *src="([^"]+)" *alt="([^"]+)".+?data-link="([^"]+)".+?class="nbloc1">([^<]+)<\/span.+?class="nbloc2">([^<]+)*<\/span'
     sPattern += '.+?"ml-label">Date de sortie:</div> <div class="ml-desc"> (.+?)</div>.+?"ml-label">Synopsis:</div> <div class="ml-desc">(.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -290,8 +289,6 @@ def sHowEpisodes():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-
     sPattern = '<div class="(ep.+?)"|<a href="([^"]+)" target="x_player">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -321,7 +318,6 @@ def sHowEpisodes():
 
         progress_.VSclose(progress_)
 
-
     oGui.setEndOfDirectory()
 
 def showHosters():
@@ -331,13 +327,12 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
+    oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    oParser = cParser()
     sPattern = '<a href="([^"]+)" *target="x_player_wfx"><span>.+?<\/span>'
-
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
