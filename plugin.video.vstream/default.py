@@ -45,7 +45,9 @@ if REMOTE_DBG:
 class main:
     def __init__(self):
         self.parseUrl()
-        #cDb()._create_tables()
+        #Ne pas desactiver la ligne d'en dessous, car sinon ca genere
+        #des probleme de Db sous Android.
+        cDb()._create_tables()
 
     def parseUrl(self):
 
