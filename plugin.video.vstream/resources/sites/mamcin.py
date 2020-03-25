@@ -32,15 +32,15 @@ def load():
     oGui.setEndOfDirectory()
 
 #search function
-def showSearch():
-    oGui = cGui()
+# def showSearch():
+    # oGui = cGui()
 
-    sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText
-        showMovies(sUrl)
-        oGui.setEndOfDirectory()
-        return
+    # sSearchText = oGui.showKeyBoard()
+    # if (sSearchText != False):
+        # sUrl = URL_SEARCH[0] + sSearchText
+        # showMovies(sUrl)
+        # oGui.setEndOfDirectory()
+        # return
 
 #genre definition
 def showGenres():
@@ -61,7 +61,7 @@ def showGenres():
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-      sUrl = sSearch
+        sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
