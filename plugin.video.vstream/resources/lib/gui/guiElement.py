@@ -3,7 +3,8 @@
 #Venom.
 from resources.lib.comaddon import addon, xbmc
 from resources.lib.db import cDb
-import re, urllib, string
+from resources.lib.util import QuotePlus
+import re, string
 
 #rouge E26543
 #jaune F7D571
@@ -207,7 +208,7 @@ class cGuiElement:
         #Recherche saison et episode a faire pr serie uniquement
         if (True):
             #m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))',sTitle,re.UNICODE)
-            m = re.search(ur'(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', sTitle, re.UNICODE)
+            m = re.search('(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', sTitle, re.UNICODE)
             if m:
                 #ok y a des episodes
                 sTitle = sTitle.replace(m.group(1), '')
@@ -218,7 +219,7 @@ class cGuiElement:
                 self.addItemValues('Episode', self.__Episode)
 
                 #pr les saisons
-                m = re.search(ur'(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle, re.UNICODE)
+                m = re.search('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle, re.UNICODE)
                 if m:
                     sTitle = sTitle.replace(m.group(1), '')
                     sa = m.group(2)
@@ -229,7 +230,7 @@ class cGuiElement:
 
             else:
                 #pas d'episode mais y a t il des saisons?
-                m = re.search(ur'(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle, re.UNICODE)
+                m = re.search('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle, re.UNICODE)
                 if m:
                     sTitle = sTitle.replace(m.group(1), '')
                     sa = m.group(2)
@@ -243,13 +244,13 @@ class cGuiElement:
         sTitle = sTitle.replace('()', '').replace('[]', '').replace('- -', '-')
 
         #vire espace a la fin et les - (attention, il y a 2 tirets differents meme si invisible a l'oeil nu et un est en unicode)
-        sTitle = re.sub(ur'[- –]+$', '', sTitle)
+        sTitle = re.sub('[- –]+$', '', sTitle)
         #et en debut
         if sTitle.startswith(' '):
             sTitle = sTitle[1:]
 
         #recherche les Tags restant : () ou [] sauf tag couleur
-        sTitle = re.sub(ur'([\(|\[](?!\/*COLOR)[^\)\(\]\[]+?[\]|\)])', '[COLOR ' + self.__sDecoColor + ']\\1[/COLOR]', sTitle)
+        sTitle = re.sub('([\(|\[](?!\/*COLOR)[^\)\(\]\[]+?[\]|\)])', '[COLOR ' + self.__sDecoColor + ']\\1[/COLOR]', sTitle)
 
         #on reformate SXXEXX Titre [tag] (Annee)
         sTitle2 = ''
@@ -350,7 +351,7 @@ class cGuiElement:
         except:
             self.__sIcon = sIcon
         self.__sIcon = self.__sIcon.encode("utf-8")
-        self.__sIcon = urllib.quote_plus(self.__sIcon, safe = ':/')
+        self.__sIcon = QuotePlus(self.__sIcon)
 
     def getIcon(self):
         #if 'http' in self.__sIcon:
