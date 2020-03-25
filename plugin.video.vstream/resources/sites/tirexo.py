@@ -42,7 +42,7 @@ def GetURL_MAIN():
                 VSlog("Tirexo url  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('Tirexo'))
         else:
             ADDON.setSetting('Tirexo', URL_HOST)
-            VSlog("Url non changer car egal a None le site peux etre surchager utilisation de >> ADDON.getSetting('Tirexo')")
+            VSlog("Url non changer car égal à None le site peux être surcharger utilisation de >> ADDON.getSetting('Tirexo')")
 
         return ADDON.getSetting('Tirexo')
     else:
@@ -57,7 +57,7 @@ def GetURL_MAIN():
                     VSlog("Tirexo url vide  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('Tirexo'))
             else:
                 ADDON.setSetting('Tirexo', URL_HOST)
-                VSlog("Url non changer car egal a None le site peux etre surchager utilisation de >> ADDON.getSetting('Tirexo')")
+                VSlog("Url non changer car égal à None le site peux être surcharger utilisation de >> ADDON.getSetting('Tirexo')")
 
             return ADDON.getSetting('Tirexo')
         else:
@@ -152,7 +152,7 @@ def showMenuMovies():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Derniers ajouts', 'news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_EXCLUS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_EXCLUS[1], 'Exclus (Films populaires)', 'news.png', oOutputParameterHandler)
@@ -282,7 +282,7 @@ def showMenuMangas():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher Animes', 'search.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Derniers ajouts', 'news.png', oOutputParameterHandler)
@@ -365,14 +365,13 @@ def showGenre():
     URL_MOVIES = URL_MAIN + sUrl + 'genre-'
 
     listeGenres = ['Action', 'Animation', 'Arts Martiaux', 'Aventure', 'Biopic', 'Bollywood', 'Comédie Dramatique',
-                   'Comédie Musicale', 'Comédie', 'Documentaire', 'Drame', 'Epouvante-horreur', 'Espionnage', 
-                   'Famille', 'Fantastique', 'Guerre', 'Historique', 'Horreur', 'Musical', 'Péplum', 
-                   'Policier', 'Romance', 'Science Fiction', 'Thriller', 'Western' ]
+                   'Comédie Musicale', 'Comédie', 'Documentaire', 'Drame', 'Epouvante-horreur', 'Espionnage',
+                   'Famille', 'Fantastique', 'Guerre', 'Historique', 'Horreur', 'Musical', 'Péplum',
+                   'Policier', 'Romance', 'Science Fiction', 'Thriller', 'Western']
     for genre in listeGenres:
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', URL_MOVIES + genre.replace(' ','%20')+ '/')
+        oOutputParameterHandler.addParameter('siteUrl', URL_MOVIES + genre.replace(' ', '%20')+ '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', genre, 'genres.png', oOutputParameterHandler)
-
 
     oGui.setEndOfDirectory()
 
@@ -410,14 +409,14 @@ def showMovies(sSearch = ''):
             sThumb = aEntry[2]
             sTitle = aEntry[3]
             sYear = aEntry[5]
-            
+
             # Enlever les films en doublons (même titre et même année)
             # il s'agit du même film dans une autre qualité qu'on retrouvera au moment du choix de la qualité
             key = sTitle + "-" + sYear
             if key in titles :
                 continue;
             titles.add(key)
-            
+
             sDesc = re.sub('<[^<]+?>', '', sDesc)
             sDisplayTitle = sTitle
 
@@ -550,21 +549,21 @@ def showMoviesLinks():
     #  Qualité STREAMING
     sPattern = '<th .+?<img src=.+?>([^>]+?)<\/th>.+?class=\'streaming\' href=\'#\' data-text=.+? data-lien=\'([^>]+?)\' data-id=\'([^>]+?)\''
     aResult = oParser.parse(sHtmlContent, sPattern)
- 
+
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
- 
+
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
- 
+
             data_lien = aEntry[1]
             data_id = aEntry[2]
             sUrl2 = URL_MAIN + "?do=streaming&id_lien="+data_id+"&lien="+data_lien
             sTitle = ('%s [STREAMING]') % (sMovieTitle)
- 
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -572,7 +571,7 @@ def showMoviesLinks():
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
- 
+
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
@@ -619,7 +618,7 @@ def showSeriesLinks():
     numSaison = str(aResult[1][0][1]).lower().replace("saison", "").strip()
     saisons = []
     saisons.append(numSaison)
-    
+
     #on recherche d'abord la qualité courante
     sPattern = 'couleur-qualitesz">Qualité (.+?) <.+?couleur-languesz">(.+?)</span><br>.+?"couleur-seriesz">(.+?)\['
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -643,7 +642,7 @@ def showSeriesLinks():
     sHtmlContent1 = CutQual(sHtmlContent)
     sPattern1 = '<a href="([^"]+)"><span class="otherquality">.+?<b>([^"]+)<\/b>.+?<b>([^"]+)<\/b>.+?<b> (.+?)<'
     aResult1 = oParser.parse(sHtmlContent1, sPattern1)
-    
+
     otherSaison = False
 
     if (aResult1[0] == True):
@@ -653,7 +652,7 @@ def showSeriesLinks():
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
-            
+
             # Si saison différente
             sSaison = aEntry[1].strip()
             if numSaison != sSaison:
@@ -718,10 +717,10 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    
+
     # Ajout des liens DL
     # Gere si un Hoster propose plusieurs liens
-    # Retire les resultats proposés en plusieurs parties (ce sont des .rar) 
+    # Retire les resultats proposés en plusieurs parties (ce sont des .rar)
     sPattern = '<th scope="col" class="no-sort"><img src=.+?>(.+?)<\/th>|class=\'download\'.+?href=\'([^>]+?)\'>Télécharger <'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -737,7 +736,6 @@ def showHosters():
             if aEntry[0]:
                 sHoster = re.sub('\.\w+', '', aEntry[0])
                 continue;
-
 
             sUrl2 = URL_MAIN[:-1] + aEntry[1]
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHoster)
@@ -810,21 +808,19 @@ def showSeriesHosters():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + re.sub('\.\w+', '', aEntry[0]) + '[/COLOR]')
 
             else:
-
-	            sUrl2 = URL_MAIN[:-1] + aEntry[1]
-	            sTitle = sMovieTitle + ' E' + aEntry[2].replace('FINAL ', '')
-	            oOutputParameterHandler = cOutputParameterHandler()
-	            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-	            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-	            oOutputParameterHandler.addParameter('sThumb', sThumb)
-	            oGui.addTV(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                sUrl2 = URL_MAIN[:-1] + aEntry[1]
+                sTitle = sMovieTitle + ' E' + aEntry[2].replace('FINAL ', '')
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oGui.addTV(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
         oGui.setEndOfDirectory()
     else:   # certains films mals classés apparaissent dans les séries
         showHosters()
-
 
 def Display_protected_link():
     #VSlog('Display_protected_link')
@@ -878,7 +874,7 @@ def Display_protected_link():
                 aResult_dlprotecte = oParser.parse(sHtmlContent, sPattern_dlprotecte)
 
         else:
-            oDialog = dialog().VSok('Erreur décryptage du lien')
+            oDialog = dialog().VSok('Erreur de décryptage du lien')
             aResult_dlprotecte = (False, False)
 
     #Si lien normal
@@ -943,8 +939,8 @@ def DecryptDlProtecte(url):
     #VSlog( 'cookie'  + str(cookies))
 
     sHtmlContent = exectProtect(cookies, url)
-    
-    while (re.search('<input type="submit" class="continuer" name="submit" value="Continuer" />',sHtmlContent)):
+
+    while (re.search('<input type="submit" class="continuer" name="submit" value="Continuer" />', sHtmlContent)):
         if passe < 4:
             sHtmlContent = exectProtect(cookies, url)
             passe = passe + 1
