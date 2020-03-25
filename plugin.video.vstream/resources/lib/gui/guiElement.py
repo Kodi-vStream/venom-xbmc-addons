@@ -3,7 +3,7 @@
 #Venom.
 from resources.lib.comaddon import addon, xbmc
 from resources.lib.db import cDb
-from resources.lib.util import QuotePlus
+from resources.lib.util import QuoteSafe
 import re, string
 
 #rouge E26543
@@ -351,7 +351,7 @@ class cGuiElement:
         except:
             self.__sIcon = sIcon
         self.__sIcon = self.__sIcon.encode("utf-8")
-        self.__sIcon = QuotePlus(self.__sIcon)
+        self.__sIcon = QuoteSafe(self.__sIcon)
 
     def getIcon(self):
         #if 'http' in self.__sIcon:
