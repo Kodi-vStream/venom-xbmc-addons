@@ -163,8 +163,6 @@ class cHosterGui:
             return self.getHoster('xdrive')
         if ('facebook' in sHostName):
             return self.getHoster('facebook')
-        if ('cloudcartel' in sHostName):
-            return self.getHoster('cloudcartel')
         if ('mixdrop.' in sHostName):
             return self.getHoster('mixdrop')
         if ('mixloads' in sHostName):
@@ -330,12 +328,8 @@ class cHosterGui:
             return self.getHoster('hd_stream')
         if ('rapidstream' in sHostName):
             return self.getHoster('rapidstream')
-        if ('beeload' in sHostName):
-            return self.getHoster('beeload')
         if ('archive.' in sHostName):
             return self.getHoster('archive')
-        if ('freshstream' in sHostName):
-            return self.getHoster('freshstream')
         if ('jetload' in sHostName):
             return self.getHoster('jetload')
         if ('french-vid' in sHostName or 'fembed.' in sHostName or 'yggseries' in sHostName or 'sendvid' in sHostName or 'vfsplayer' in sHostName or 'fsimg' in sHostName or 'fem.tohds' in sHostName):
