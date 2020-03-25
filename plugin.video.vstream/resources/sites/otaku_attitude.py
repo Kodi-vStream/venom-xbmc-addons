@@ -16,7 +16,7 @@ SITE_NAME = 'Otaku-Attitude'
 SITE_DESC = 'Animes, Drama et OST en DDL et Streaming'
 
 URL_MAIN = 'http://www.otaku-attitude.net/'
-OST_MAIN = 'https://forum.otaku-attitude.net/musicbox/'
+OST_MAIN = 'https://forum.otaku-attitude.net/musicbox/playlists/'
 
 URL_SEARCH_SERIES = (URL_MAIN + 'recherche.html?cat=1&q=', 'showSeries')
 URL_SEARCH_DRAMAS = (URL_MAIN + 'recherche.html?cat=2&q=', 'showSeries')
@@ -28,42 +28,40 @@ ANIM_VOSTFRS  = (URL_MAIN + 'liste-dl-animes.php', 'showSeries')
 SERIE_SERIES = ('http://', 'load')
 DRAMAS = (URL_MAIN + 'liste-dl-dramas.php', 'showSeries')
 
-OST_ANIME =(OST_MAIN + 'playlists/', 'showGenres')
+OST_ANIME =(True, 'showGenres')
 
 def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche [Animés]', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Animés)', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_DRAMAS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche [Dramas]', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Dramas)', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS [0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS [1], 'Animés [VOSTFR]', 'animes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS [1], 'Animés (VOSTFR)', 'animes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DRAMAS[0])
-    oGui.addDir(SITE_IDENTIFIER, DRAMAS[1], 'Dramas [VOSTFR]', 'vostfr.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, DRAMAS[1], 'Dramas (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', OST_ANIME[0])
-    oGui.addDir(SITE_IDENTIFIER, OST_ANIME[1], 'Musicbox [OST]', 'music.png',  oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, OST_ANIME[1], 'Musicbox (OST)', 'music.png',  oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 def showGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
-    liste.append( ['Animés', sUrl + '1-anime/'] )
-    liste.append( ['Dramas', sUrl + '6-drama/'] )
-    liste.append( ['Jeux Vidéo', sUrl + '7-jeu-vidéo/'] )
+    liste.append( ['Animés', OST_MAIN + '1-anime/'] )
+    liste.append( ['Dramas', OST_MAIN + '6-drama/'] )
+    liste.append( ['Jeux Vidéo', OST_MAIN + '7-jeu-vidéo/'] )
 
     for sTitle, sUrl in liste:
 
@@ -125,9 +123,9 @@ def showSeries(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sTitle = aEntry[2].replace('...', '').replace('-...', '').replace('!', ' !')
             sUrl2 = URL_MAIN + aEntry[0]
             sThumb = aEntry[1]
+            sTitle = aEntry[2].replace('-...', '').replace('...', '').replace('!', ' !')
             sDesc = aEntry[3]
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -147,7 +145,7 @@ def showSeries(sSearch = ''):
         #On renvoi l'url memoriser et le numero de page pour l'incrementer a chaque fois
         oOutputParameterHandler.addParameter('MemorisedUrl', MemorisedUrl)
         oOutputParameterHandler.addParameter('Page', Page)
-        oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+        oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -167,7 +165,7 @@ def showOst():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = "<div class='plWrapper'>.+?href='([^']+)' title='([^']+)'.+?src='([^']+)'.+?</a"
+    sPattern = "<div class='plWrapper'>.+?href='([^']+)' title='([^']+)'.+?src=\"([^\"]+)\""
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -182,8 +180,8 @@ def showOst():
             if progress_.iscanceled():
                 break
 
-            sTitle = aEntry[1].replace('- Artiste non défini', '')
             sUrl2 = aEntry[0]
+            sTitle = aEntry[1].replace('- Artiste non défini', '')
             sThumb = aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
