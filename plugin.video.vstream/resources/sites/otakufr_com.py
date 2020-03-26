@@ -262,8 +262,8 @@ def showLinks():
             if progress_.iscanceled():
                 break
 
-            fIlter = aEntry[1].lower()
-            if 'brightcove' in fIlter or 'purevid' in fIlter or 'videomega' in fIlter:
+            sFilter = aEntry[1].lower()
+            if 'brightcove' in sFilter or 'purevid' in sFilter or 'videomega' in sFilter:
                 continue
 
             sUrl = aEntry[0]
@@ -328,7 +328,9 @@ def unCap(sHosterUrl, sUrl):
     oRequest.addHeaderEntry('Referer', sUrl)
     oRequest.addHeaderEntry('Accept', '*/*')
     oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    sHtmlContent = oRequest.request()
+    
+    # Requete pour récupérer le cookie
+    oRequest.request()
     Cookie = oRequest.GetCookies()
 
     xbmc.sleep(1000)
