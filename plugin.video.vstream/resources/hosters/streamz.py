@@ -79,6 +79,12 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
         
         cookie = oRequest.GetCookies()
+        
+        #By-pass fake video
+        Fakeurl = 'https://streamz.cc/count.php?abc=1'
+        oRequest = cRequestHandler(Fakeurl)
+        oRequest.addHeaderEntry('User-Agent', UA)
+        sHtmlContent2 = oRequest.request()
 
         oParser = cParser()
         sPattern =  '(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>'
@@ -93,8 +99,12 @@ class cHoster(iHoster):
                     r = re.search("src:'([^']+)'", decoded, re.DOTALL)
                     if r:
                         url = r.group(1)
+                        
+            VSlog(url)
 
             api_call = Getheader(url,cookie)
+            
+        VSlog(api_call)
 
         if (api_call):
             return True, api_call + '|User-Agent=' + UA +'&Referer=' + self.__sUrl
