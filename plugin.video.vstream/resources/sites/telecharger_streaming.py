@@ -66,7 +66,10 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<h1 class="title"><a href="([^"]+)" title="([^"]+)".+?<img class="alignleft".+?src="([^"]+)".+?Synopsis :(.+?)<\/p>'
+    if sSearch:
+        sPattern = '<h1 class="title"><a href="([^"]+)" title="([^"]+)">.+?<p>.+?Synopsis :([^"]+)</p>'
+    else:
+        sPattern = '<h1 class="title"><a href="([^"]+)" title="([^"]+)".+?<img class="alignleft".+?src="([^"]+)".+?Synopsis :(.+?)<\/p>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -84,10 +87,16 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrl2 = aEntry[0]
-            sTitle = aEntry[1]
-            sThumb = aEntry[2]
-            sDesc = aEntry[3].replace('</strong>', '')
+            if sSearch:
+                sUrl2 = aEntry[0]
+                sTitle = aEntry[1]
+                sThumb = ""
+                sDesc = aEntry[2].replace('</strong>', '')
+            else:
+                sUrl2 = aEntry[0]
+                sTitle = aEntry[1]
+                sThumb = aEntry[2]
+                sDesc = aEntry[3].replace('</strong>', '')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
