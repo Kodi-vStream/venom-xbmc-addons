@@ -83,11 +83,15 @@
 
         <setting visible="false" id="plugin_disneyhd_tk" type="bool" label="DisneyHD" default="true"/>
 
-        <setting visible="false" id="plugin_docu_fr" type="bool" label="DisneyHD" default="true"/>
+        <setting visible="false" id="plugin_docu_fr" type="bool" label="Docu Fr" default="true"/>
+
+        <setting visible="false" id="plugin_dpstreaming" type="bool" label="DP Streaming" default="true"/>
 
         <setting visible="false" id="plugin_extreme_down" type="bool" label="ExtremeDown" default="true"/>
 
         <setting visible="false" id="plugin_film_illimit_fr" type="bool" label="Film Illimité" default="true"/>
+
+        <setting visible="false" id="plugin_filmspourenfants" type="bool" label="Films pour Enfants" default="true"/>
 
         <setting visible="false" id="plugin_filmstreamvk_com" type="bool" label="Filmstream vk" default="true"/>
 
@@ -157,6 +161,8 @@
 
         <setting visible="false" id="plugin_streamay_bz" type="bool" label="Streamay" default="true"/>
 
+        <setting visible="false" id="plugin_streamay_series" type="bool" label="StreamAy Séries" default="true"/>
+
         <setting visible="false" id="plugin_streamcomplet" type="bool" label="StreamComplet" default="true"/>
 
         <setting visible="false" id="plugin_streamdivx" type="bool" label="StreamDivx" default="true"/>
@@ -168,6 +174,8 @@
         <setting visible="false" id="plugin_streamingdivx" type="bool" label="StreamingDivx" default="true"/>
 
         <setting visible="false" id="plugin_streamingk_com" type="bool" label="StreamingK" default="true"/>
+
+        <setting visible="false" id="plugin_telecharger_streaming" type="bool" label="Télécharger-streaming" default="true"/>
 
         <setting visible="false" id="plugin_tfarjo" type="bool" label="Tfarjo" default="true"/>
 
@@ -186,8 +194,6 @@
         <setting visible="false" id="plugin_voirfilms_org" type="bool" label="VoirFilms" default="true"/>
 
         <setting visible="false" id="plugin_wiflix" type="bool" label="WiFlix" default="true"/>
-
-        <setting visible="false" id="plugin_yourfilms" type="bool" label="Yourfilms" default="true"/>
 
         <setting visible="false" id="plugin_youtitou_com" type="bool" label="YouTitou (Animés)" default="true"/>
 
