@@ -24,7 +24,7 @@ SERIE_GENRES = (True, 'showGenres')
 ANIM_ENFANTS = (URL_MAIN + 'serie-category/series/dessin-anime/', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def ProtectstreamBypass(url):
@@ -45,7 +45,7 @@ def ProtectstreamBypass(url):
         response = session.get(url, timeout=5)
         response.raise_for_status()
     except requests.exceptions.RequestException as e:
-        print "erreur " + str(e)
+        print 'erreur ' + str(e)
         return ''
 
     sHtmlContent = response.text
@@ -56,7 +56,7 @@ def ProtectstreamBypass(url):
 
     if (aResult[0] == True):
 
-        dialog().VSinfo('Décodage en cours', "Patientez", 5)
+        dialog().VSinfo('Décodage en cours', 'Patientez', 5)
         xbmc.sleep(5000)
 
         postdata = aResult[1][0]
@@ -66,13 +66,13 @@ def ProtectstreamBypass(url):
             'Referer': url,
             'Content-Type': 'application/x-www-form-urlencoded',
         }
-        session.headers.update( headers )
+        session.headers.update(headers)
         data = {'k': postdata}
 
         try:
             response = session.post('https://dpstreaming.to/embed_secur.php', data=data)
         except requests.exceptions.RequestException as e:
-            print "erreur" + str(e)
+            print 'erreur' + str(e)
             return ''
 
         data = response.text
@@ -81,14 +81,14 @@ def ProtectstreamBypass(url):
         # VSlog(type(data))
         # VSlog(repr(data))
 
-        #fh = open('c:\\test.txt', "w")
+        #fh = open('c:\\test.txt', 'w')
         #fh.write(data)
         #fh.close()
 
         #Test de fonctionnement
         aResult = oParser.parse(data, sPattern)
         if aResult[0]:
-            dialog().VSinfo('Lien encore protegé', "Erreur", 5)
+            dialog().VSinfo('Lien encore protegé', 'Erreur', 5)
             return ''
 
         #recherche du lien embed
@@ -192,7 +192,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sHtmlContent = re.sub('src="https://dpstreaming.to/wp-content/plugins/wp-fastest-cache-premium/pro/images/blank.gif"','',sHtmlContent)
+    sHtmlContent = re.sub('src="https://dpstreaming.to/wp-content/plugins/wp-fastest-cache-premium/pro/images/blank.gif"', '', sHtmlContent)
 
     sPattern = '<div class="moviefilm".+?<a href="([^"]+)".+?<img.+?src="([^"]+)" alt="([^"]+)".+?<p>(.+?)</p>'
 
@@ -211,7 +211,7 @@ def showMovies(sSearch = ''):
 
             sUrl = aEntry[0]
             sThumb = aEntry[1]
-            sThumb = re.sub('-119x125','',sThumb)
+            sThumb = re.sub('-119x125', '', sThumb)
             sTitle = aEntry[2].replace(' Streaming', '')
             sDesc = aEntry[3]
 
@@ -228,7 +228,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -259,8 +259,8 @@ def showSeries():
         sPattern = 'class="lab_syn">Synopsis :</span>(.+?)<\/p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
-            sDesc = aResult[1][0].decode("utf-8")
-            sDesc = cUtil().unescape(sDesc).encode("utf-8")
+            sDesc = aResult[1][0].decode('utf-8')
+            sDesc = cUtil().unescape(sDesc).encode('utf-8')
     except:
         pass
 
@@ -310,7 +310,6 @@ def showLinks():
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
-
 
             sLang = aEntry[0]
             sHost = aEntry[1]
