@@ -12,7 +12,6 @@
             <!-- <animation effect="fade" start="100" end="0" time="800">WindowClose</animation> -->
             <!-- <animation effect="fade" start="0" end="100"  time="1000" delay="500">WindowOpen</animation> -->
 
-
             <animation type="WindowOpen">
                 <effect type="slide" start="1100,0" end="0,0" time="800" tween="back" easing="out"/>
                 <effect type="fade" start="0" end="100" time="800" delay="100"/>
@@ -29,7 +28,6 @@
 				<texture fallback="fanart.jpg">$INFO[Window(Home).Property(ListItem.backdrop_url)]</texture>
               	<aspectratio align="center" aligny="center" scalediffuse="false">scale</aspectratio>
 			</control>
-
 
 			<control type="image">
 				<texture>special://home/addons/plugin.video.vstream/resources/extra/debuggrid1080.png</texture>
@@ -59,7 +57,6 @@
 				</control>
 			</control>
 
-
 			<!-- Info de base -->
 			<control type="group">
 				<!--<visible>Control.HasFocus(7)</visible>-->
@@ -72,7 +69,6 @@
 					<right>0</right>
 					<texture>nofocus.png</texture>
 				</control>
-
 
 				<!-- tab1 -->
 				<control type="list">
@@ -195,7 +191,6 @@
 
 					<itemlayout width="340" height="115">
 
-					
 						<control type="textbox">
 							<top>20</top>
 							<left>-170</left>
@@ -239,7 +234,7 @@
 							<textcolor>white</textcolor>
 							<pagecontrol>-</pagecontrol>
 							<info>ListItem.Label</info>
-							<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+							<autoscroll time="6000" delay="8000" repeat="10000">true</autoscroll>
 							<!--<visible>!Control.IsVisible(50)</visible>-->
 							<visible>Control.HasFocus(36)</visible>
 						</control>
@@ -270,7 +265,7 @@
 							<textcolor>white</textcolor>
 							<pagecontrol>-</pagecontrol>
 							<info>ListItem.Label</info>
-							<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+							<autoscroll time="6000" delay="8000" repeat="10000">true</autoscroll>
 							<!--<visible>!Control.IsVisible(50)</visible>-->
 							<visible>Control.HasFocus(36)</visible>
 						</control>
@@ -301,7 +296,6 @@
 						</item>
 					</content>
 				</control>
-
 
 				<!-- tab3 -->
 				<control type="list">
@@ -478,10 +472,7 @@
 						</item>
 					</content>
 				</control>
-
 			</control>
-
-
 
 			<!--rating image -->
 			<control type="group">
@@ -667,7 +658,6 @@
 
 			</control>
 
-
 		<!-- Casting -->
 			<control type="wraplist" id="50">
 				<left>230</left>
@@ -686,7 +676,6 @@
 					<effect type="slide" start="400,0" end="0,0" time="800" tween="back" easing="out"/>
 					<effect type="fade" start="0" end="100" time="800" delay="100"/>
 				</animation>
-
 
 				<itemlayout height="132" width="110">
 					<control type="image">
@@ -731,7 +720,6 @@
 					<effect type="slide" start="400,0" end="0,0" time="800" tween="back" easing="out"/>
 					<effect type="fade" start="0" end="100" time="800" delay="100"/>
 				</animation>
-
 
 				<itemlayout height="132" width="110">
 
@@ -854,9 +842,7 @@
 							<onclick>SendClick(10000,30)</onclick>
 						</item>
 					</content>
-			</control>
-			
-								
+			</control>			
 
 			<control type="grouplist" id="9000">
 				<visible>False</visible>
