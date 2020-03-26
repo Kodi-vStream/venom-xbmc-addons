@@ -11,8 +11,8 @@ from resources.lib.comaddon import progress, dialog, xbmc
 import re
 import requests
 
-SITE_IDENTIFIER = 'streaming_series_xyz'
-SITE_NAME = 'Streaming-Series.cx'
+SITE_IDENTIFIER = 'dpstreaming'
+SITE_NAME = 'DP Streaming'
 SITE_DESC = 'Séries en Streaming'
 
 URL_MAIN = 'https://dpstreaming.to/'
