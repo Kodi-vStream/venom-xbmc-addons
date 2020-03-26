@@ -931,19 +931,20 @@ def DecryptDlProtecte(url):
 
     passe = 0
 
-    # 1ere Requete pour recuperer le cookie
-    oRequestHandler = cRequestHandler(url)
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-
+    # 1ere Requete on tente de voir si ca passe du 1er coup
     cookies = GestionCookie().Readcookie('www_dl-protect1_co')
-    #VSlog( 'cookie'  + str(cookies))
-
     sHtmlContent = exectProtect(cookies, url)
 
     while (re.search('<input type="submit" class="continuer" name="submit" value="Continuer" />', sHtmlContent)):
-        if passe < 4:
+        if passe == 0:
+            cookies = GestionCookie().Readcookie('www_dl-protect1_co')
+            passe = passe + 1
+
+        elif passe <= 3:
+            #On brute force pour voir
             sHtmlContent = exectProtect(cookies, url)
             passe = passe + 1
+
         else:
             break
 
