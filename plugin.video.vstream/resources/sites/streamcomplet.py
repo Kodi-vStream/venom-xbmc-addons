@@ -87,7 +87,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<a href="([^"]+)"><img src="([^"]+)" alt="([^"]+)".+?<div class="(movies">(.+?)<|arama")'
+    sPattern = '<div class="moviefilm">.+?<a href="\/([^"]+)">.+?<img src="\/([^"]+)".+?alt="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -106,8 +106,8 @@ def showMovies(sSearch = ''):
 
             sUrl = URL_MAIN + aEntry[0]
             sThumb = URL_MAIN + aEntry[1]
-            sTitle = aEntry[2].replace('en HD','').replace('Voir ','').replace('streaming','').replace('vf et vostfr','')
-            sYear = aEntry[4]
+            sTitle = aEntry[2]#.replace('en HD','').replace('Voir ','').replace('streaming','').replace('vf et vostfr','')
+            #sYear = aEntry[4]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
