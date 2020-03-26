@@ -84,8 +84,8 @@ def showNews():
             sTitle = aEntry[0].replace(' VOSTFR', '').replace(' VF', '')
             sDisplayTitle = ('%s (%s)') % (sTitle, sLang)
 
-            fIlter = re.search('(\d+)-(\d+)', sUrl)
-            if fIlter:
+            sFilter = re.search('(\d+)-(\d+)', sUrl)
+            if sFilter:
                 continue
 
             oOutputParameterHandler = cOutputParameterHandler()
