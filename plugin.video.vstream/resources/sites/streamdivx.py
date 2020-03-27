@@ -124,7 +124,7 @@ def showMovies(sSearch = ''):
         else:
             sHtmlContent = sHtmlContent
 
-    sPattern = '<div class="film-uno *">.+?href="([^"]+)".+?src="([^"]+)" alt="([^"]+)".+?<p class="nop short-story *">(.+?)<\/p>'
+    sPattern = '<div class="film-uno *">.+?href="([^"]+)".+?src="([^"]+)" alt="([^"]+)".+?class="quality ">([^<]+).+?<p class="nop short-story *">(.+?)<\/p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -141,7 +141,9 @@ def showMovies(sSearch = ''):
             sUrl = aEntry[0]
             sThumb = aEntry[1]
             sTitle = aEntry[2]#.decode("unicode_escape").encode("latin-1")
-            sDesc = aEntry[3]
+            sQual = aEntry[3]
+            sDesc = aEntry[4]
+            sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
 
             # Nettoie le titre, la premiere phrase est souvent doublée
             sDesc = sDesc.replace('SYNOPSIS ET DÉTAILS', '').lstrip()
@@ -154,7 +156,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
