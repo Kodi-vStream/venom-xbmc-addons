@@ -104,8 +104,7 @@ def showMovies(sSearch = ''):
 
             sUrl = URL_MAIN[:-1] + aEntry[0]
             sThumb = URL_MAIN[:-1] + aEntry[1]
-            sTitle = aEntry[2].replace('en HD', '').replace('Voir ', '').replace('streaming', '').replace('vf et vostfr', '')
-            sYear = ''
+            sTitle = aEntry[2]
 
             #tris search
             if sSearch and total > 3:
