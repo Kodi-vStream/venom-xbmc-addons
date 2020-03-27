@@ -10,8 +10,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 from resources.lib.comaddon import dialog
-import re, urllib
-from resources.lib.util import cUtil
+import urllib
 
 URL_MAIN = 'https://www.youtube.com/get_video_info?video_id='
 
@@ -56,7 +55,11 @@ class cHoster(iHoster):
         self.__sUrl = sUrl
         self.__sUrl = self.__sUrl.rsplit('/', 1)[1]
         self.__sUrl = self.__sUrl.replace('watch?v=', '')
-        self.__sUrl = self.__sUrl.replace('?feature=oembed','')
+        self.__sUrl = self.__sUrl.replace('?','').replace('&','')
+        self.__sUrl = self.__sUrl.replace('feature=oembed','')
+        self.__sUrl = self.__sUrl.replace('autoplay=1','')
+        self.__sUrl = self.__sUrl.replace('autohide=1','')
+
 
     def checkUrl(self, sUrl):
         return True
@@ -92,10 +95,9 @@ class cHoster(iHoster):
                 qua.append(aEntry[1])
 
             if url:
-               api_call = dialog().VSselectqual(qua, url)
+                api_call = dialog().VSselectqual(qua, url)
 
         if api_call:
-
             return True, api_call
         else:
             return False
@@ -117,7 +119,7 @@ class cHoster(iHoster):
         oRequest.addParametersLine(pdata)
 
         sHtmlContent = oRequest.request()
-
+        
         sHtmlContent1 = oParser.abParse(sHtmlContent, '<div id="mp4" class="display-block tabcontent">', '<div id="audio" class="tabcontent">')
 
         sPattern = '<td>([^<]+)<small>.+?data-href="([^"]+)"'
