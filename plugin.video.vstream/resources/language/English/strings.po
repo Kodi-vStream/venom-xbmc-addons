@@ -470,11 +470,15 @@ msgid "Library"
 msgstr ""
 
 msgctxt "#30325"
-msgid "Uptobox"
+msgid "UpToBox"
 msgstr ""
 
 msgctxt "#30326"
 msgid "Download and Read"
+msgstr ""
+
+msgctxt "#30327"
+msgid "1Fichier"
 msgstr ""
 
 msgctxt "#30330"
@@ -786,7 +790,7 @@ msgid "Continue streaming via Uptostream"
 msgstr ""
 
 msgctxt "#30454"
-msgid "Continue direct via Uptobox"
+msgid "Continue direct via UpToBox"
 msgstr ""
 
 msgctxt "#30455"
