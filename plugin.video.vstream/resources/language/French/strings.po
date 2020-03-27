@@ -470,12 +470,16 @@ msgid "Library"
 msgstr "Librairie"
 
 msgctxt "#30325"
-msgid "Uptobox"
-msgstr "Uptobox"
+msgid "UpToBox"
+msgstr "UpToBox"
 
 msgctxt "#30326"
 msgid "Download and Read"
 msgstr "Télécharger et Lire"
+
+msgctxt "#30327"
+msgid "1Fichier"
+msgstr "1Fichier"
 
 msgctxt "#30330"
 msgid "Search"
@@ -786,8 +790,8 @@ msgid "Continue streaming via Uptostream"
 msgstr "Passer en Streaming (via Uptostream)"
 
 msgctxt "#30454"
-msgid "Continue direct via Uptobox"
-msgstr "Rester en direct (via Uptobox)"
+msgid "Continue direct via UpToBox"
+msgstr "Rester en direct (via UpToBox)"
 
 msgctxt "#30455"
 msgid "My accounts"
