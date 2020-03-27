@@ -1,5 +1,5 @@
 # Addon Name: vStream
-# Addon id: plugin.video.vstream
+# Addon id: plugin.video.vStream
 # Addon Provider: vStream
 msgid ""
 msgstr ""
@@ -25,7 +25,7 @@ msgid "Filter Error"
 msgstr ""
 
 msgctxt "#30005"
-msgid "VStream will be faster with your own API key."
+msgid "vStream will be faster with your own API key."
 msgstr ""
 
 msgctxt "#30006"
@@ -58,10 +58,6 @@ msgstr ""
 
 msgctxt "#30021"
 msgid "General"
-msgstr ""
-
-msgctxt "#30022"
-msgid "Plugins on/off (1/3)"
 msgstr ""
 
 msgctxt "#30023"
@@ -105,7 +101,7 @@ msgid "View"
 msgstr ""
 
 msgctxt "#30033"
-msgid "Tool"
+msgid "Tools"
 msgstr ""
 
 msgctxt "#30034"
@@ -213,7 +209,7 @@ msgid "Documentary"
 msgstr ""
 
 msgctxt "#30113"
-msgid "Sport"
+msgid "Sports"
 msgstr ""
 
 msgctxt "#30114"
@@ -286,14 +282,6 @@ msgstr ""
 
 msgctxt "#30146"
 msgid "Show / Hide search settings"
-msgstr ""
-
-msgctxt "#30147"
-msgid "Plugins on/off (2/3)"
-msgstr ""
-
-msgctxt "#30148"
-msgid "Plugins on/off (3/3)"
 msgstr ""
 
 msgctxt "#30160"
@@ -486,7 +474,7 @@ msgid "Uptobox"
 msgstr ""
 
 msgctxt "#30326"
-msgid "DL and Read"
+msgid "Download and Read"
 msgstr ""
 
 msgctxt "#30330"
@@ -598,19 +586,19 @@ msgid "Activate"
 msgstr ""
 
 msgctxt "#30404"
-msgid "View : Movies (recommended 50-51-500-501-508) "
+msgid "View : Movies (recommended 50-51-500-501-508)"
 msgstr ""
 
 msgctxt "#30405"
-msgid "View: Tvshow (recommended 50-51-500-501-508) "
+msgid "View: Tvshow (recommended 50-51-500-501-508)"
 msgstr ""
 
 msgctxt "#30406"
-msgid "View: Default (recommended 50-51-500) "
+msgid "View: Default (recommended 50-51-500)"
 msgstr ""
 
 msgctxt "#30407"
-msgid "Vue: Home (recommended 50-51-500) "
+msgid "Vue: Home (recommended 50-51-500)"
 msgstr ""
 
 msgctxt "#30408"
@@ -635,6 +623,7 @@ msgstr ""
 
 msgctxt "#30413"
 msgid "[COLOR red]Delete history[/COLOR]"
+msgstr ""
 
 msgctxt "#30414"
 msgid "[COLOR gold]Full series search[/COLOR]"
@@ -805,7 +794,7 @@ msgid "My accounts"
 msgstr ""
 
 msgctxt "#30456"
-msgid "Are you sure ?"
+msgid "Are you sure?"
 msgstr ""
 
 msgctxt "#30457"
