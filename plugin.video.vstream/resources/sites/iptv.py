@@ -13,7 +13,7 @@ SITE_IDENTIFIER = 'iptv'
 SITE_NAME = 'Iptv'
 SITE_DESC = 'Regarder la télévision'
 
-URL_MAIN = 'https://extinf.tk/'
+URL_MAIN = 'https://www.extinf.com/'
 FREE_M3U = URL_MAIN + 'home-passion-for-iptv-free-m3u-links-working-and-updated/'
 
 def load():
@@ -36,7 +36,7 @@ def showPays():
 
     oParser = cParser()
     sHtmlContent = getHtml(sUrl)
-    sPattern = '<li class="cat-item cat-item-.+?"><a href=([^"]+)(?:>([^<]+)</a>|([^<]+)includes)'
+    sPattern = '<li class="cat-item cat-item-.+?"><a href="([^"]+)"(?:>([^<]+)</a>|([^<]+)includes)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -48,11 +48,11 @@ def showPays():
             if progress_.iscanceled():
                 break
 
-            if str(aEntry[1]) != "":
+            if str(aEntry[1]) != '':
                 sTitle = aEntry[1]
             else:
-                sTitle = aEntry[2].replace('"','')
-            sUrl2 = aEntry[0].replace(' title=','')
+                sTitle = aEntry[2].replace('"', '')
+            sUrl2 = aEntry[0].replace(' title=', '')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
