@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 #vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
+# from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.parser import cParser
@@ -14,11 +14,11 @@ SITE_NAME = 'Daily Iptv List'
 SITE_DESC = 'Regarder la télévision'
 
 URL_MAIN = 'https://www.dailyiptvlist.com/'
-URL_EUROPE = URL_MAIN + 'europe/'
-URL_AMERICA = URL_MAIN + 'america/'
+URL_EUROPE = URL_MAIN + 'europe-m3u-iptv/'
+URL_AMERICA = URL_MAIN + 'iptv-american/'
 URL_ASIA = URL_MAIN + 'asia/'
-URL_SPORT = URL_MAIN + 'sports/'
-URL_WORLDWIDE = URL_MAIN + 'worldwide/'
+URL_SPORT = URL_MAIN + 'sport-iptv-m3u/'
+URL_WORLDWIDE = URL_MAIN + 'iptv-world-wide/'
 
 def load():
     oGui = cGui()
@@ -124,9 +124,6 @@ def showDailyList():
     oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    # oInputParameterHandler = cInputParameterHandler()
-    # sUrl = oInputParameterHandler.getValue('siteUrl')
-
     oParser = cParser()
     sPattern = '<a class="next page-numbers" href="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -143,7 +140,7 @@ def showAllPlaylist():
 
     oParser = cParser()
     sHtmlContent = getHtml(sUrl)
-    sPattern = '<p></br><br /><strong>2. Click on link to download .+? iptv channels list</strong></p>.+?<a href="([^"]+)">Download ([^<]+)</a>'
+    sPattern = '<p></br><br /><strong>2. Click on link to download .+? iptv channels list</strong></p>|<a href="([^"]+)">Download ([^<]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
