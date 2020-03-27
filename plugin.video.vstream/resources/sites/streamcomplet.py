@@ -79,7 +79,7 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
-        sUrl = sSearch.replace(' ', '+') + '/'
+        sUrl = sSearch.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -87,7 +87,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="moviefilm">.+?<a href="\/([^"]+)">.+?<img src="\/([^"]+)".+?alt="([^"]+)"'
+    sPattern = '<div class="moviefilm"><a href="\/([^"]+)"><img src="\/([^"]+)".+?alt="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
