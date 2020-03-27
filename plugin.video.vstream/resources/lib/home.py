@@ -80,14 +80,6 @@ class cHome:
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir(SITE_IDENTIFIER, 'showNets', self.ADDON.VSlang(30114), 'buzz.png', oOutputParameterHandler)
 
-        # oOutputParameterHandler = cOutputParameterHandler()
-        # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        # oGui.addDir('themoviedb_org', 'showMyTmdb', 'TMDB', 'tmdb.png', oOutputParameterHandler)
-
-        # oOutputParameterHandler = cOutputParameterHandler()
-        # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        # oGui.addDir('cTrakt', 'getLoad', self.ADDON.VSlang(30214), 'trakt.png', oOutputParameterHandler)
-
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir(SITE_IDENTIFIER, 'showUsers', self.ADDON.VSlang(30455), 'user.png', oOutputParameterHandler)
@@ -109,10 +101,6 @@ class cHome:
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir('globalSources', 'globalSources', self.ADDON.VSlang(30138), 'host.png', oOutputParameterHandler)
 
-        # oOutputParameterHandler = cOutputParameterHandler()
-        # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        # oGui.addDir('globalParametre', 'showSources', '[COLOR teal]' + self.ADDON.VSlang(30023) + '[/COLOR]', 'param.png', oOutputParameterHandler)
-
         view = False
         if (self.ADDON.getSetting('active-view') == 'true'):
             view = self.ADDON.getSetting('accueil-view')
@@ -127,80 +115,105 @@ class cHome:
             pass
         return
 
-    def ShowTools(self):
+    def showSearchText(self):
         oGui = cGui()
+        sSearchText = oGui.showKeyBoard(heading=self.ADDON.VSlang(30076))
+        if sSearchText:
+            self.showSearch(sSearchText)
+            oGui.setEndOfDirectory()
+        else :
+            return False
+
+    def showSearch(self, searchtext=cInputParameterHandler().getValue('searchtext')):
+
+        if not searchtext:
+            return self.showSearchText()
+
+        #n'existe plus mais pas sure.
+        #xbmcgui.Window(10101).clearProperty('search_text')
+        window(10101).clearProperty('search_text')
+
+        oGui = cGui()
+
+        #print xbmc.getInfoLabel('ListItem.Property(Category)')
+
+        oGui.addText('globalSearch', self.ADDON.VSlang(30077) % (searchtext), 'none.png')
+
+        #utilisation de guielement pour ajouter la bonne catégorie
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('cLibrary', 'getLibrary', self.ADDON.VSlang(30300), 'library.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('searchtext', searchtext)
+
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName('globalSearch')
+        oGuiElement.setFunction('showSearch')
+        oGuiElement.setTitle(self.ADDON.VSlang(30078))
+        oGuiElement.setFileName(self.ADDON.VSlang(30078))
+        oGuiElement.setIcon('search.png')
+        oGuiElement.setMeta(0)
+        #oGuiElement.setThumbnail(sThumbnail)
+        #oGuiElement.setFanart(sFanart)
+        oGuiElement.setCat(1)
+
+        oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('cDownload', 'getDownload', self.ADDON.VSlang(30202), 'download.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('searchtext', searchtext)
+
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName('globalSearch')
+        oGuiElement.setFunction('showSearch')
+        oGuiElement.setTitle(self.ADDON.VSlang(30079))
+        oGuiElement.setFileName(self.ADDON.VSlang(30079))
+        oGuiElement.setIcon('search.png')
+        oGuiElement.setMeta(0)
+        #oGuiElement.setThumbnail(sThumbnail)
+        #oGuiElement.setFanart(sFanart)
+        oGuiElement.setCat(2)
+
+        oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'showHostDirect', self.ADDON.VSlang(30469), 'search.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('searchtext', searchtext)
+
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName('globalSearch')
+        oGuiElement.setFunction('showSearch')
+        oGuiElement.setTitle(self.ADDON.VSlang(30080))
+        oGuiElement.setFileName(self.ADDON.VSlang(30080))
+        oGuiElement.setIcon('search.png')
+        oGuiElement.setMeta(0)
+        #oGuiElement.setThumbnail(sThumbnail)
+        #oGuiElement.setFanart(sFanart)
+        oGuiElement.setCat(3)
+
+        oGui.addFolder(oGuiElement, oOutputParameterHandler)
+
+        # oOutputParameterHandler = cOutputParameterHandler()
+        # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        # oOutputParameterHandler.addParameter('searchtext', searchtext)
+        # oOutputParameterHandler.addParameter('disp', 'search10')
+        # oOutputParameterHandler.addParameter('readdb', 'True')
+        # oGui.addDir('globalSearch', 'showSearchText', '[COLOR orange]Recherche: Alluc_ee[/COLOR]', 'search.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
-    def showUsers(self):
+    def showReplay(self):
         oGui = cGui()
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'http://')
-        oGui.addDir('themoviedb_org', 'showMyTmdb', 'TMDB', 'tmdb.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('siteUrl', 'REPLAYTV_NEWS')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.ADDON.VSlang(30117), self.ADDON.VSlang(30101)), 'news.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'http://')
-        oGui.addDir('cTrakt', 'getLoad', self.ADDON.VSlang(30214), 'trakt.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('siteUrl', 'REPLAYTV_GENRES')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.ADDON.VSlang(30117), self.ADDON.VSlang(30105)), 'genres.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'http://')
-        oGui.addDir('siteuptobox', 'load', 'Uptobox', 'sites/siteuptobox.png', oOutputParameterHandler)
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'http://')
-        oGui.addDir('siteonefichier', 'load', '1fichier', 'sites/siteonefichier.png', oOutputParameterHandler)
-
-        oGui.setEndOfDirectory()
-
-    def showDocs(self):
-        oGui = cGui()
-
-        # Affiche les Nouveautés Documentaires
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'DOC_NEWS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.ADDON.VSlang(30112), self.ADDON.VSlang(30101)), 'news.png', oOutputParameterHandler)
-
-        # Affiche les Genres Documentaires
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'DOC_GENRES')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.ADDON.VSlang(30112), self.ADDON.VSlang(30105)), 'genres.png', oOutputParameterHandler)
-
-        # Affiche les Sources Documentaires
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'DOC_DOCS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', self.ADDON.VSlang(30138), 'host.png', oOutputParameterHandler)
-
-        oGui.setEndOfDirectory()
-
-    def showNets(self):
-        oGui = cGui()
-
-        # Affiche les Nouveautés Vidéos
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'NETS_NEWS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.ADDON.VSlang(30114), self.ADDON.VSlang(30101)), 'news.png', oOutputParameterHandler)
-
-        # Affiche les Genres Vidéos
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'NETS_GENRES')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.ADDON.VSlang(30114), self.ADDON.VSlang(30105)), 'genres.png', oOutputParameterHandler)
-
-        # Affiche les Sources Vidéos
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'NETS_NETS')
+        oOutputParameterHandler.addParameter('siteUrl', 'REPLAYTV_REPLAYTV')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', self.ADDON.VSlang(30138), 'host.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
@@ -316,124 +329,85 @@ class cHome:
 
         oGui.setEndOfDirectory()
 
-    def showReplay(self):
+    def showDocs(self):
         oGui = cGui()
 
+        # Affiche les Nouveautés Documentaires
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'REPLAYTV_NEWS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.ADDON.VSlang(30117), self.ADDON.VSlang(30101)), 'news.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('siteUrl', 'DOC_NEWS')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.ADDON.VSlang(30112), self.ADDON.VSlang(30101)), 'news.png', oOutputParameterHandler)
 
+        # Affiche les Genres Documentaires
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'REPLAYTV_GENRES')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.ADDON.VSlang(30117), self.ADDON.VSlang(30105)), 'genres.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('siteUrl', 'DOC_GENRES')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.ADDON.VSlang(30112), self.ADDON.VSlang(30105)), 'genres.png', oOutputParameterHandler)
 
+        # Affiche les Sources Documentaires
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'REPLAYTV_REPLAYTV')
+        oOutputParameterHandler.addParameter('siteUrl', 'DOC_DOCS')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', self.ADDON.VSlang(30138), 'host.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
-    # def showSources(self):
-    #     oGui = cGui()
-
-    #     oPluginHandler = cPluginHandler()
-    #     aPlugins = oPluginHandler.getAvailablePlugins()
-    #     for aPlugin in aPlugins:
-    #         oOutputParameterHandler = cOutputParameterHandler()
-    #         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    #         icon = 'sites/%s.png' % (aPlugin[1])
-    #         oGui.addDir(aPlugin[1], 'load', aPlugin[0], icon, oOutputParameterHandler)
-
-    #     oGui.setEndOfDirectory()
-
-    def showSearchText(self):
-        oGui = cGui()
-        sSearchText = oGui.showKeyBoard(heading=self.ADDON.VSlang(30076))
-        if sSearchText:
-            self.showSearch(sSearchText)
-            oGui.setEndOfDirectory()
-        else :
-            return False
-
-    def showSearch(self, searchtext=cInputParameterHandler().getValue('searchtext')):
-
-        if not searchtext:
-            return self.showSearchText()
-
-        #n'existe plus mais pas sure.
-        #xbmcgui.Window(10101).clearProperty('search_text')
-        window(10101).clearProperty('search_text')
-
+    def showNets(self):
         oGui = cGui()
 
-        #print xbmc.getInfoLabel('ListItem.Property(Category)')
+        # Affiche les Nouveautés Vidéos
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'NETS_NEWS')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.ADDON.VSlang(30114), self.ADDON.VSlang(30101)), 'news.png', oOutputParameterHandler)
 
-        oGui.addText('globalSearch', self.ADDON.VSlang(30077) % (searchtext), 'none.png')
+        # Affiche les Genres Vidéos
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'NETS_GENRES')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.ADDON.VSlang(30114), self.ADDON.VSlang(30105)), 'genres.png', oOutputParameterHandler)
 
-        #utilisation de guielement pour ajouter la bonne catégorie
+        # Affiche les Sources Vidéos
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'NETS_NETS')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', self.ADDON.VSlang(30138), 'host.png', oOutputParameterHandler)
+
+        oGui.setEndOfDirectory()
+
+    def showUsers(self):
+        oGui = cGui()
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://')
+        oGui.addDir('themoviedb_org', 'showMyTmdb', 'TMDB', 'tmdb.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://')
+        oGui.addDir('cTrakt', 'getLoad', self.ADDON.VSlang(30214), 'trakt.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://')
+        oGui.addDir('siteuptobox', 'load', self.ADDON.VSlang(30325), 'sites/siteuptobox.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://')
+        oGui.addDir('siteonefichier', 'load', self.ADDON.VSlang(30327), 'sites/siteonefichier.png', oOutputParameterHandler)
+
+        oGui.setEndOfDirectory()
+
+    def ShowTools(self):
+        oGui = cGui()
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oOutputParameterHandler.addParameter('searchtext', searchtext)
-
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName('globalSearch')
-        oGuiElement.setFunction('showSearch')
-        oGuiElement.setTitle(self.ADDON.VSlang(30078))
-        oGuiElement.setFileName(self.ADDON.VSlang(30078))
-        oGuiElement.setIcon('search.png')
-        oGuiElement.setMeta(0)
-        #oGuiElement.setThumbnail(sThumbnail)
-        #oGuiElement.setFanart(sFanart)
-        oGuiElement.setCat(1)
-
-        oGui.addFolder(oGuiElement, oOutputParameterHandler)
+        oGui.addDir('cLibrary', 'getLibrary', self.ADDON.VSlang(30300), 'library.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oOutputParameterHandler.addParameter('searchtext', searchtext)
-
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName('globalSearch')
-        oGuiElement.setFunction('showSearch')
-        oGuiElement.setTitle(self.ADDON.VSlang(30079))
-        oGuiElement.setFileName(self.ADDON.VSlang(30079))
-        oGuiElement.setIcon('search.png')
-        oGuiElement.setMeta(0)
-        #oGuiElement.setThumbnail(sThumbnail)
-        #oGuiElement.setFanart(sFanart)
-        oGuiElement.setCat(2)
-
-        oGui.addFolder(oGuiElement, oOutputParameterHandler)
+        oGui.addDir('cDownload', 'getDownload', self.ADDON.VSlang(30202), 'download.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oOutputParameterHandler.addParameter('searchtext', searchtext)
-
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName('globalSearch')
-        oGuiElement.setFunction('showSearch')
-        oGuiElement.setTitle(self.ADDON.VSlang(30080))
-        oGuiElement.setFileName(self.ADDON.VSlang(30080))
-        oGuiElement.setIcon('search.png')
-        oGuiElement.setMeta(0)
-        #oGuiElement.setThumbnail(sThumbnail)
-        #oGuiElement.setFanart(sFanart)
-        oGuiElement.setCat(3)
-
-        oGui.addFolder(oGuiElement, oOutputParameterHandler)
-
-        # oOutputParameterHandler = cOutputParameterHandler()
-        # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        # oOutputParameterHandler.addParameter('searchtext', searchtext)
-        # oOutputParameterHandler.addParameter('disp', 'search10')
-        # oOutputParameterHandler.addParameter('readdb', 'True')
-        # oGui.addDir('globalSearch', 'showSearchText', '[COLOR orange]Recherche: Alluc_ee[/COLOR]', 'search.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showHostDirect', self.ADDON.VSlang(30469), 'search.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
     def showHistory(self):
-
         oGui = cGui()
 
         row = cDb().get_history()
@@ -526,3 +500,17 @@ class cHome:
     #     aPlugins = oHandler.getAvailablePlugins()
 
     #     oGui.setEndOfDirectory()
+
+    # def showSources(self):
+    #     oGui = cGui()
+
+    #     oPluginHandler = cPluginHandler()
+    #     aPlugins = oPluginHandler.getAvailablePlugins()
+    #     for aPlugin in aPlugins:
+    #         oOutputParameterHandler = cOutputParameterHandler()
+    #         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+    #         icon = 'sites/%s.png' % (aPlugin[1])
+    #         oGui.addDir(aPlugin[1], 'load', aPlugin[0], icon, oOutputParameterHandler)
+
+    #     oGui.setEndOfDirectory()
+
