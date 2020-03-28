@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #2 hoster giga & 2gigalink
-from resources.lib.handler.requestHandler import cRequestHandler
+# from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 
