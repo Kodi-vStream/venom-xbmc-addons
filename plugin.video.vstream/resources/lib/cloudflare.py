@@ -285,10 +285,10 @@ class CloudflareBypass(object):
         else:
             method = 'GET'
 
-        from resources.lib import cloudscraper
+        from resources.lib import cloudscrape
 
         #Fonctionne pour le moment sur tout les sites, donc on ne va pas se compliquer la vie.
-        s = cloudscraper.create_scraper(browser={'custom': 'ScraperBot/1.0'})
+        s = cloudscrape.create_scraper(browser={'custom': 'ScraperBot/1.0'})
 
         r = s.request(method,url,headers = self.SetHeader(), cookies = self.ParseCookies(cookies), data = data)
         #r = s.request(method, url)
