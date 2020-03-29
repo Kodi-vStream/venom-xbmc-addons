@@ -256,12 +256,13 @@ def showSeries(sLoop = False):
     sHtmlContent = oRequestHandler.request()
 
     sHtmlContent = sHtmlContent.decode('utf-8', "replace")
-    sHtmlContent = unicodedata.normalize('NFD', sHtmlContent).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
+    sHtmlContent = unicodedata.normalize('NFD', sHtmlContent).encode('ascii', 'ignore').decode('unicode_escape')#vire accent et '\'
     sHtmlContent = sHtmlContent.encode('utf-8')#On remet en utf-8
 
     #Réécriture de sHtmlContent pour prendre les liens et pour récuperer le dernier episode
     sHtmlContent = sHtmlContent.replace('<span style="color: #ff9900;">New</span><b> </b>', '')
     sHtmlContent = sHtmlContent.replace('<b> </b>', ' ')
+    sHtmlContent = sHtmlContent.replace('<b></b>', ' ')
     sHtmlContent = sHtmlContent.replace('<span class="su-lightbox" data-mfp-src', '<a href')
     sHtmlContent = sHtmlContent.replace('https://cut-urls.com/st?api=d6e46f2fcd4bfed906a9f3ecbbb6830e862b3afb&amp;url=', '')
 
