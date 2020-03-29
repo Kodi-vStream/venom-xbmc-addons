@@ -259,8 +259,9 @@ def showSeries(sLoop = False):
     sHtmlContent = unicodedata.normalize('NFD', sHtmlContent).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
     sHtmlContent = sHtmlContent.encode('utf-8')#On remet en utf-8
 
-    #renomme pour prendre les liens
-    sHtmlContent = sHtmlContent.replace('<b> </b> ', '')
+    #Réécriture de sHtmlContent pour prendre les liens et pour récuperer le dernier episode
+    sHtmlContent = sHtmlContent.replace('<span style="color: #ff9900;">New</span><b> </b>', '')
+    sHtmlContent = sHtmlContent.replace('<b> </b>', ' ')
     sHtmlContent = sHtmlContent.replace('<span class="su-lightbox" data-mfp-src', '<a href')
     sHtmlContent = sHtmlContent.replace('https://cut-urls.com/st?api=d6e46f2fcd4bfed906a9f3ecbbb6830e862b3afb&amp;url=', '')
 
@@ -299,7 +300,7 @@ def showSeries(sLoop = False):
             else:#Saisons et episodes
                 sUrl = aEntry[2]
 
-                SXXEX = re.search(">(S[0-9]{2}E[0-9]{2})<", sUrl)
+                SXXEX = re.search('>(S[0-9]{2}E[0-9]{2})<', sUrl)
                 HOST = re.search('a href="https*:\/\/([^.]+)', sUrl)
                 if SXXEX:
                     #on vire le double affichage des saisons
