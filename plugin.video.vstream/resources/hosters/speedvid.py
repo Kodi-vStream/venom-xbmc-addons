@@ -3,7 +3,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.aadecode import AADecoder
+# from resources.lib.aadecode import AADecoder
 from resources.lib.jjdecode import JJDecoder
 from resources.lib.packer import cPacker
 from resources.lib.jsparser import JsParser
