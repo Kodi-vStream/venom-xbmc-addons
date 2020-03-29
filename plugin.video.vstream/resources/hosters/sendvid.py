@@ -5,12 +5,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, VSlog
-import urllib
-import json
-
-
-UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0'
+# from resources.lib.comaddon import VSlog
 
 class cHoster(iHoster):
 
@@ -63,7 +58,7 @@ class cHoster(iHoster):
         sPattern =  'video_source *= *"([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
         
-        VSlog(aResult)
+        # VSlog(aResult)
         
         if (aResult[0] == True):
             api_call = aResult[1][0]
