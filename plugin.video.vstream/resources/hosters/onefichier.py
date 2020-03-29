@@ -1,12 +1,11 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-from resources.lib.handler.requestHandler import cRequestHandler
+# from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, VSlog #, xbmc
+from resources.lib.comaddon import dialog#, VSlog #, xbmc
 from resources.lib.handler.premiumHandler import cPremiumHandler
-
 import urllib, urllib2
 import re
 
@@ -49,13 +48,13 @@ class cHoster(iHoster):
     def __getIdFromUrl(self, sUrl):
         #http://kzu0y3.1fichier.com/
         #https://1fichier.com/?s6gdceia9y
-        id = sUrl.replace('https://', '')
-        id = id.replace('http://', '')
-        id = id.replace('1fichier.com/?', '')
-        id = id.replace('.1fichier.com', '')
-        id = id.replace('/', '')
+        sId = sUrl.replace('https://', '')
+        sId = sId.replace('http://', '')
+        sId = sId.replace('1fichier.com/?', '')
+        sId = sId.replace('.1fichier.com', '')
+        sId = sId.replace('/', '')
 
-        return id
+        return sId
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
@@ -73,7 +72,7 @@ class cHoster(iHoster):
 
         import sys
         if ('site=cDownload&function' not in sys.argv[2]) and not (self.oPremiumHandler.isPremiumModeAvailable()):
-            oDialog = dialog().VSok('Pas de streaming sans premium\nPour voir le film passer par l\'option "DL et Visualiser" du menu contextuel.')
+            oDialog = dialog().VSok('Pas de streaming sans premium\nPour voir le film passer par l\'option "Télécharger et Lire" du menu contextuel.')
             return False, False
 
         if (self.oPremiumHandler.isPremiumModeAvailable()):
@@ -91,7 +90,7 @@ class cHoster(iHoster):
         url = 'https://1fichier.com/?' + self.__getIdFromUrl(self.__sUrl)
         #La partie ci-dessous permet d'utiliser l'option "Forcer l'affichage du menu pour les téléchargements" permettant notamment de choisir depuis l'interface web de télécharger ou d'ajouter un fichier.
         #Pour cela, on va ajouter le paramètre e=1 (cf. https://1fichier.com/hlp.html#dev ) à la requête permettant d'obtenir le lien direct
-        sHtmlContent = self.oPremiumHandler.GetHtml("%s" % url + '&e=1')
+        sHtmlContent = self.oPremiumHandler.GetHtml('%s' % url + '&e=1')
         if(sHtmlContent):
             #L'option est désactivée : la réponse sera de type "text/plain; charset=utf-8", exemple :
             #https://serveur-2b.1fichier.com/lelienactif;Film.de.Jacquie.et.Michel.a.la.montagne.mkv;1234567890;0
@@ -129,9 +128,9 @@ class cHoster(iHoster):
             return False, False
 
         #Mode = ''
-        #Mode = {'dl_no_ssl' : 'on' , 'dlinline' : 'on'}
-        #Mode = {'dl_no_ssl' : 'on' }
-        #postdata = urllib.urlencode( Mode )
+        #Mode = {'dl_no_ssl': 'on' , 'dlinline': 'on'}
+        #Mode = {'dl_no_ssl': 'on' }
+        #postdata = urllib.urlencode(Mode)
 
         #Pas de page html mais lien direct
         #sHtmlContent = self.oPremiumHandler.GetHtml(url,postdata)
@@ -167,9 +166,9 @@ class cHoster(iHoster):
         adcode = random.uniform(000.000000000, 999.999999999)
 
         Mode = ''
-        #Mode = {'dl_no_ssl' : 'on' , 'dlinline' : 'on'}
-        Mode = {'dl_no_ssl' : 'on' ,'adzone' : adcode}
-        postdata = urllib.urlencode( Mode )
+        #Mode = {'dl_no_ssl': 'on', 'dlinline': 'on'}
+        Mode = {'dl_no_ssl': 'on', 'adzone': adcode}
+        postdata = urllib.urlencode(Mode)
 
         req = urllib2.Request(url, postdata, headers)
 
