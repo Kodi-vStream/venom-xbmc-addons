@@ -3,7 +3,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog
+# from resources.lib.comaddon import dialog
 from resources.lib.packer import cPacker
 
 class cHoster(iHoster):
@@ -47,9 +47,9 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
- 
+
         api_call = ''
-        
+
         oParser = cParser()
 
         oRequest = cRequestHandler(self.__sUrl)
@@ -81,9 +81,8 @@ class cHoster(iHoster):
 
             if api_call.startswith('//'):
                 api_call = 'https:' + aResult[1][0]
-                
+
             if (api_call):
                 return True, api_call
 
         return False, False
-
