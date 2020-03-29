@@ -15,7 +15,7 @@
 
 """Unpacker for Dean Edward's p.a.c.k.e.r"""
 
-import re,urllib2
+import re, urllib2
 import string
 #import xbmc
 
@@ -27,16 +27,16 @@ class cPacker():
     def unpack(self, source):
         """Unpacks P.A.C.K.E.R. packed js code."""
         payload, symtab, radix, count = self._filterargs(source)
-        
+
         #correction pour eviter bypass
         if (len(symtab) > count) and (count > 0):
             del symtab[count:]
         if (len(symtab) < count) and (count > 0):
-            symtab.append('BUGGED')   
+            symtab.append('BUGGED')
 
         if count != len(symtab):
             raise UnpackingError('Malformed p.a.c.k.e.r. symtab.')
-        
+
         try:
             unbase = Unbaser(radix)
         except TypeError:
@@ -62,22 +62,22 @@ class cPacker():
                     b = ord(c) + int(a[1])
                     return chr(b if (90 if c <= "Z" else 122) >= b else b - 26)
 
-                str = re.sub(r"[a-zA-Z]", openload_re, a[0]);
+                str = re.sub(r"[a-zA-Z]", openload_re, a[0])
                 str = urllib2.unquote(str)
 
         elif str.find("decodeURIComponent") == 0:
-            str = re.sub(r"(^decodeURIComponent\s*\(\s*('|\"))|(('|\")\s*\)$)", "", str);
+            str = re.sub(r"(^decodeURIComponent\s*\(\s*('|\"))|(('|\")\s*\)$)", "", str)
             str = urllib2.unquote(str)
         elif str.find("\"") == 0:
-            str = re.sub(r"(^\")|(\"$)|(\".*?\")", "", str);
+            str = re.sub(r"(^\")|(\"$)|(\".*?\")", "", str)
         elif str.find("'") == 0:
-            str = re.sub(r"(^')|('$)|('.*?')", "", str);
+            str = re.sub(r"(^')|('$)|('.*?')", "", str)
 
         return str
 
     def _filterargs(self, source):
         """Juice from a source file the four args needed by decoder."""
-        
+
         source = source.replace(',[],',',0,')
 
         juicer = (r"}\s*\(\s*(.*?)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\((.*?)\).split\((.*?)\)")
@@ -101,8 +101,6 @@ class cPacker():
         # could not find a satisfying regex
         raise UnpackingError('Could not make sense of p.a.c.k.e.r data (unexpected code structure)')
 
-
-
     def _replacestrings(self, source):
         """Strip string lookup table (list) and replace values in source."""
         match = re.search(r'var *(_\w+)\=\["(.*?)"\];', source, re.DOTALL)
@@ -116,7 +114,7 @@ class cPacker():
                 source = source.replace(variable % index, '"%s"' % value)
             return source[startpoint:]
         return source
-        
+
 def UnpackingError(Exception):
     #Badly packed source or general error.#
     #xbmc.log(str(Exception))
@@ -135,11 +133,11 @@ class Unbaser(object):
 
     def __init__(self, base):
         self.base = base
-        
+
         #Error not possible, use 36 by defaut
         if base == 0 :
             base = 36
-        
+
         # If base can be handled by int() builtin, let it do it for us
         if 2 <= base <= 36:
             self.unbase = lambda string: int(string, base)
@@ -162,7 +160,7 @@ class Unbaser(object):
     def _dictunbaser(self, string):
         """Decodes a  value to an integer."""
         ret = 0
-        
+
         for index, cipher in enumerate(string[::-1]):
             ret += (self.base ** index) * self.dictionary[cipher]
         return ret
