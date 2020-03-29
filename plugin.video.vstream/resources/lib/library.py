@@ -1,14 +1,11 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.gui.gui import cGui
+# from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+# from resources.lib.gui.gui import cGui
 from resources.lib.util import cUtil
-from resources.lib.comaddon import addon, dialog, window, VSlog, xbmc
-
-import xbmcvfs
-import urllib,re
-
+from resources.lib.comaddon import addon, dialog, xbmc#, window, VSlog
+import xbmcvfs, urllib#, re
 
 SITE_IDENTIFIER = 'cLibrary'
 SITE_NAME = 'Library'
@@ -16,7 +13,6 @@ SITE_NAME = 'Library'
 #sources.xml
 
 class cLibrary:
-
     ADDON = addon()
     DIALOG = dialog()
 
@@ -26,17 +22,17 @@ class cLibrary:
 
         if not self.__sMovieFolder:
             #PathCache = cConfig().getSettingCache()
-            #self.__sMovieFolder = os.path.join(PathCache,'Movies\\').decode("utf-8")
-            self.__sMovieFolder = "special://userdata/addon_data/plugin.video.vstream/Films"
-            self.ADDON.setSetting('Library_folder_Movies',self.__sMovieFolder)
+            #self.__sMovieFolder = os.path.join(PathCache, 'Movies\\').decode('utf-8')
+            self.__sMovieFolder = 'special://userdata/addon_data/plugin.video.vstream/Films'
+            self.ADDON.setSetting('Library_folder_Movies', self.__sMovieFolder)
         if not xbmcvfs.exists(self.__sMovieFolder):
                 xbmcvfs.mkdir(self.__sMovieFolder)
 
         if not self.__sTVFolder:
             #PathCache = cConfig().getSettingCache()
-            #self.__sTVFolder = os.path.join(PathCache,'TVs\\').decode("utf-8")
-            self.__sTVFolder = "special://userdata/addon_data/plugin.video.vstream/Series"
-            Self.ADDON.setSetting('Library_folder_TVs',self.__sTVFolder)
+            #self.__sTVFolder = os.path.join(PathCache, 'TVs\\').decode('utf-8')
+            self.__sTVFolder = 'special://userdata/addon_data/plugin.video.vstream/Series'
+            Self.ADDON.setSetting('Library_folder_TVs', self.__sTVFolder)
         if not xbmcvfs.exists(self.__sTVFolder):
                 xbmcvfs.mkdir(self.__sTVFolder)
 
@@ -44,19 +40,18 @@ class cLibrary:
 
     def setLibrary(self):
         oInputParameterHandler = cInputParameterHandler()
+        # sUrl = oInputParameterHandler.getValue('siteUrl')
+        sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
+        sFileName = oInputParameterHandler.getValue('sFileName')
+        sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
 
-        ret = self.DIALOG.select('Selectionner une categorie',['Film','Serie'])
+        ret = self.DIALOG.select('Sélectionner une catégorie', ['Film', 'Série'])
         if ret == 0:
             sCat = '1'
         elif ret == -1:
             return
         else:
             sCat = '2'
-
-        sUrl = oInputParameterHandler.getValue('siteUrl')
-        sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
-        sFileName = oInputParameterHandler.getValue('sFileName')
-        sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
 
         #cConfig().log(oInputParameterHandler.getAllParameter())
 
@@ -69,8 +64,7 @@ class cLibrary:
 
         #folder = self.__sMovieFolder
 
-        #film
-        if sCat == '1':
+        if sCat == '1':#film
             #folder = self.__sMovieFolder
 
             sTitle = cUtil().CleanName(sTitle)
@@ -78,7 +72,7 @@ class cLibrary:
 
             try:
                 #folder = '%s%s/' % (folder, sTitle)
-                sPath = "/".join([self.__sMovieFolder, sTitle])
+                sPath = '/'.join([self.__sMovieFolder, sTitle])
 
                 # if not os.path.exists(folder):
                     # os.mkdir(folder)
@@ -90,14 +84,13 @@ class cLibrary:
             except:
                 self.DIALOG.VSinfo('Rajout impossible')
 
-        #serie
-        elif sCat == '2':
+        elif sCat == '2':#serie
 
             #sTitle = cUtil().FormatSerie(sTitle)
             sTitle = cUtil().CleanName(sTitle)
             sFTitle =  self.showKeyBoard(sTitle, 'Recommandé Nomdeserie/Saison00')
             
-            #sTitleGlobal = re.sub('((?:[s|e][0-9]+){1,2})','',sTitle)
+            #sTitleGlobal = re.sub('((?:[s|e][0-9]+){1,2})', '', sTitle)
             
             # if sTitleGlobal.endswith(' '):
             #     sTitleGlobal = sTitleGlobal[:-1]
@@ -109,7 +102,7 @@ class cLibrary:
 
                 #folder2 = folder + '/' + sTitleGlobal + '/'
                 #folder2 = '%s%s/' % (self.__sTVFolder, sTitleGlobal)
-                sPath = "/".join([self.__sTVFolder, sFTitle])
+                sPath = '/'.join([self.__sTVFolder, sFTitle])
 
                 #if not os.path.exists(folder2):
                     #os.mkdir(folder2)
@@ -126,21 +119,21 @@ class cLibrary:
 
     def MakeFile(self,folder,name,content):
         #stream = os.path.join(folder, str(name) + '.strm')
-        #stream = "%s%s.strm" % (folder, str(name))
-        stream = "/".join([folder, str(name)]) + '.strm'
+        #stream = '%s%s.strm' % (folder, str(name))
+        stream = '/'.join([folder, str(name)]) + '.strm'
         #f = open(stream, 'w')
         f = xbmcvfs.File(stream, 'w')
         result = f.write(str(content))
         f.close()
         if result:
-            self.DIALOG.VSinfo('Element rajouté a la librairie')
+            self.DIALOG.VSinfo('Elément rajouté à la librairie')
         else:
             self.DIALOG.VSinfo('Rajout impossible')
 
 
     def getLibrary(self):
-        xbmc.executebuiltin("Container.Update(special://userdata/addon_data/plugin.video.vstream/)", True)
-        #xbmc.executebuiltin('ActivateWindow(Videos,"special://userdata/addon_data/plugin.video.vstream/")', True)
+        xbmc.executebuiltin('Container.Update(special://userdata/addon_data/plugin.video.vstream/)', True)
+        #xbmc.executebuiltin('ActivateWindow(Videos, 'special://userdata/addon_data/plugin.video.vstream/')', True)
         return True
 
 
@@ -151,20 +144,20 @@ class cLibrary:
         #os.remove(sFile)
         xbmcvfs.delete(sFile)
 
-        runClean = self.DIALOG.VSyesno("Voulez vous mettre a jour la librairie maintenant (non conseille)", "Fichier supprime")
+        runClean = self.DIALOG.VSyesno('Voulez vous mettre à jour la librairie maintenant (non conseillé)', 'Fichier supprimé')
         if(not runClean):
             return
 
-        xbmc.executebuiltin("CleanLibrary(video)")
+        xbmc.executebuiltin('CleanLibrary(video)')
 
     def ShowContent(self):
         oInputParameterHandler = cInputParameterHandler()
         sFolder = oInputParameterHandler.getValue('folder')
-        xbmc.executebuiltin("Container.Update(" + sFolder + ")")
+        xbmc.executebuiltin('Container.Update(' + sFolder + ')')
 
     def showKeyBoard(self, sDefaultText='', Heading=''):
         keyboard = xbmc.Keyboard(sDefaultText)
-        keyboard.setHeading(Heading) # optional
+        keyboard.setHeading(Heading) #optional
         keyboard.doModal()
         if (keyboard.isConfirmed()):
             sSearchText = keyboard.getText()
