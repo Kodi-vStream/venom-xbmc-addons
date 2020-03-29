@@ -4,10 +4,10 @@ import re
 class cParser:
 
     def parseSingleResult(self, sHtmlContent, sPattern):
-	aMatches = re.compile(sPattern).findall(sHtmlContent)
-	if (len(aMatches) == 1):
-                aMatches[0] = self.__replaceSpecialCharacters(aMatches[0])
-		return True, aMatches[0]
+        aMatches = re.compile(sPattern).findall(sHtmlContent)
+        if (len(aMatches) == 1):
+            aMatches[0] = self.__replaceSpecialCharacters(aMatches[0])
+            return True, aMatches[0]
         return False, aMatches
 
     def __replaceSpecialCharacters(self, sString):
@@ -21,7 +21,7 @@ class cParser:
         return False, aMatches
 
     def replace(self, sPattern, sReplaceString, sValue):
-         return re.sub(sPattern, sReplaceString, sValue)
+        return re.sub(sPattern, sReplaceString, sValue)
 
     def escape(self, sValue):
         return re.escape(sValue)
