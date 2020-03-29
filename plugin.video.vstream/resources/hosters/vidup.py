@@ -7,7 +7,7 @@
 #https://vidup.io/embed/xxx
 #https://vidup.io/xxx
 
-from resources.lib.handler.requestHandler import cRequestHandler
+#from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
