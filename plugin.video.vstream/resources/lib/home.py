@@ -86,7 +86,7 @@ class cHome:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'ShowTools', self.ADDON.VSlang(30500), 'download.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'ShowTools', self.ADDON.VSlang(30033), 'download.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
