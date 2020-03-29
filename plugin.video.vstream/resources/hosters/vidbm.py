@@ -9,7 +9,6 @@ from resources.lib.parser import cParser
 from resources.lib.aadecode import decodeAA
 from resources.lib.packer import cPacker
 import re
-from resources.lib.comaddon import VSlog
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:72.0) Gecko/20100101 Firefox/72.0'
 
@@ -51,7 +50,7 @@ class cHoster(iHoster):
         self.__sUrl = self.__sUrl.replace('emb.html?', '')
         self.__sUrl = self.__sUrl.replace('.html?auto=1','')
         self.__sUrl = self.__sUrl.replace('.html','')
-  
+
     def checkUrl(self, sUrl):
         return True
 
