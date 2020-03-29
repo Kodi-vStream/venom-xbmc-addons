@@ -64,14 +64,14 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
         api_call = False
 
-        id = self.__getIdFromUrl(self.__sUrl)
+        sId = self.__getIdFromUrl(self.__sUrl)
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
         r = re.search('var fkzd="([^"]+)"', sHtmlContent)
         if (r):
-            url = 'http://www.wholecloud.net/api/player.api.php?key=' + r.group(1) + '&file=' + id
+            url = 'http://www.wholecloud.net/api/player.api.php?key=' + r.group(1) + '&file=' + sId
             oRequest = cRequestHandler(url)
             sHtmlContent = oRequest.request()
             r2 = re.search('^url=([^&]+)&', sHtmlContent)
