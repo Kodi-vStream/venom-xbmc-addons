@@ -4,14 +4,10 @@
 #alors la j'ai pas le courage
 from resources.lib.comaddon import VSlog
 from resources.lib.config import GestionCookie
-
 from requests.adapters import HTTPAdapter
 from collections import OrderedDict
-
-import re, os, time, json, random, ssl, requests
-
+import re, ssl, requests#, os, time, json, random
 from requests.sessions import Session
-
 from jsunfuck import JSUnfuck
 
 try:
@@ -88,7 +84,7 @@ if (False):
 
 #Light method
 #Ne marche que si meme user-agent
-    # req = urllib.request.Request(sUrl,None,headers)
+    # req = urllib.request.Request(sUrl, None, headers)
     # try:
         # response = urllib.request.urlopen(req)
         # sHtmlContent = response.read()
@@ -100,7 +96,7 @@ if (False):
             # if CloudflareBypass().check(e.headers):
                 # cookies = e.headers['Set-Cookie']
                 # cookies = cookies.split(';')[0]
-                # sHtmlContent = CloudflareBypass().GetHtml(sUrl,e.read(),cookies)
+                # sHtmlContent = CloudflareBypass().GetHtml(sUrl, e.read(), cookies)
 
 #Heavy method
 # sHtmlContent = CloudflareBypass().GetHtml(sUrl)
@@ -155,7 +151,7 @@ def showInfo(sTitle, sDescription, iSeconds=0):
         iSeconds = 1000
     else:
         iSeconds = iSeconds * 1000
-    #xbmc.executebuiltin('Notification(%s,%s,%s)' % (str(sTitle), (str(sDescription)), iSeconds))
+    #xbmc.executebuiltin('Notification(%s, %s, %s)' % (str(sTitle), (str(sDescription)), iSeconds))
 
 class CloudflareBypass(object):
 
@@ -272,7 +268,7 @@ class CloudflareBypass(object):
                 cookies = self.Memorised_Cookies + '; ' + cookieMem
         else:
             if (Mode_Debug):
-                VSlog('Pas de cookies présent sur disque ' )
+                VSlog('Pas de cookies présent sur disque' )
 
         data = {}
         if postdata:
