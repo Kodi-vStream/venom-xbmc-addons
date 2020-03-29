@@ -103,12 +103,12 @@ class cHoster(iHoster):
         if (aResult[0] == True):
 
             for aEntry in aResult[1]:
-                 url.append(aEntry[0])
-                 qua.append(str(aEntry[1]))
+                url.append(aEntry[0])
+                qua.append(str(aEntry[1]))
 
             dialog2 = xbmcgui.Dialog()
             ret = dialog2.select('Select Quality', qua)
-            #sUrl = url[ret]+'.'+qua[ret]+'.mp4'
+            #sUrl = url[ret] + '.' + qua[ret] + '.mp4'
             api_call = ('%s.%s.mp4') % (url[ret], qua[ret])
 
             if api_call:
