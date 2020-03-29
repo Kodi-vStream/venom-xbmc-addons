@@ -348,6 +348,8 @@ class cHosterGui:
             return self.getHoster('sendvid')
         if ('supervideo' in sHostName):
             return self.getHoster('supervideo')
+        if ('dood' in sHostName):
+            return self.getHoster('dood')
         
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
