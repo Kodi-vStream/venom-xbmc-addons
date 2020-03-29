@@ -48,11 +48,11 @@ msgctxt "#30010"
 msgid "Color Text note"
 msgstr "Couleur texte information"
 
-msgctxt "#30500"
+msgctxt "#30011"
 msgid "Select"
 msgstr "Sélectionner"
 
-msgctxt "#30501"
+msgctxt "#30012"
 msgid "Name"
 msgstr "Nom"
 
@@ -366,8 +366,7 @@ msgstr "Lire"
 
 msgctxt "#30220"
 msgid "Reset"
-msgstr "réinitialiser"
-
+msgstr "Réinitialiser"
 
 msgctxt "#30300"
 msgid "Library"
@@ -852,7 +851,3 @@ msgstr "Lieu"
 msgctxt "#30469"
 msgid "Hoster Direct"
 msgstr ""
-
-msgctxt "#30500"
-msgid "Tools"
-msgstr "Outils"
