@@ -334,6 +334,8 @@ class cHosterGui:
             return self.getHoster('jetload')
         if ('french-vid' in sHostName or 'fembed.' in sHostName or 'yggseries' in sHostName or 'vfsplayer' in sHostName or 'fsimg' in sHostName or 'fem.tohds' in sHostName):
             return self.getHoster('frenchvid')
+        if ('core1player' in sHostName):
+            return self.getHoster('frenchvid')
         if ('flix555' in sHostName):
             return self.getHoster('flix555')
         if ('onlystream' in sHostName or 'gotochus' in sHostName):
