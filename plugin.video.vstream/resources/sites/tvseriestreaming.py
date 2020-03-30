@@ -25,7 +25,7 @@ SERIE_SERIES = ('http://', 'load')
 SERIE_NEWS = (URL_MAIN + 'dernieres-et-meilleures-series-en-streaming', 'showMovies')
 SERIE_VIEWS = (URL_MAIN + 'la-top-des-meilleures-serie', 'showMovies')
 SERIE_COMMENT = (URL_MAIN + '1-les-serie-populaire-streaming', 'showMovies')
-SERIE_LIST = (URL_MAIN, 'showAZ')
+#SERIE_LIST = (URL_MAIN, 'showAZ')
 SERIE_GENRES = (True, 'showGenres')
 SERIE_ANNEES = (True, 'showSerieYears')
 
@@ -52,9 +52,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_COMMENT[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENT[1], 'Séries (Populaire)', 'comments.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Series (Liste)', 'listes.png', oOutputParameterHandler)
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
+    #oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Series (Liste)', 'listes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
@@ -89,7 +89,7 @@ def showSerieYears():
 
     oGui.setEndOfDirectory()
 
-def showAZ():
+#def showAZ():
     oGui = cGui()
 
     for i in range(0, 27):
