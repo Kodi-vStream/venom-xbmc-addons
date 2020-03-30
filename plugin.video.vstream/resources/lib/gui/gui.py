@@ -47,7 +47,9 @@ class cGui():
             sTitle = oOutputParameterHandler.getValue('sMovieTitle')
             oGuiElement.setFileName(sTitle)
 
-        self.addFolder(oGuiElement, oOutputParameterHandler)
+        try:
+            self.addFolder(oGuiElement, oOutputParameterHandler)
+        except: pass
 
 	# Coffret et integrale de films
     def addMoviePack(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
@@ -68,7 +70,9 @@ class cGui():
             sTitle = oOutputParameterHandler.getValue('sMovieTitle')
             oGuiElement.setFileName(sTitle)
 
-        self.addFolder(oGuiElement, oOutputParameterHandler)
+        try:
+            self.addFolder(oGuiElement, oOutputParameterHandler)
+        except: pass
 
     def addTV(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
         cGui.CONTENT = "tvshows"
@@ -88,7 +92,9 @@ class cGui():
             sTitle = oOutputParameterHandler.getValue('sMovieTitle')
             oGuiElement.setFileName(sTitle)
 
-        self.addFolder(oGuiElement, oOutputParameterHandler)
+        try:
+            self.addFolder(oGuiElement, oOutputParameterHandler)
+        except: pass
 
     def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
         #cGui.CONTENT = "movies"
@@ -113,7 +119,9 @@ class cGui():
         #self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
         self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
 
-        self.addFolder(oGuiElement, oOutputParameterHandler)
+        try:
+            self.addFolder(oGuiElement, oOutputParameterHandler)
+        except: pass
 
     #non utiliser le 18/04
     #def addFav(self, sId, sFunction, sLabel, sIcon, sThumbnail, fanart, oOutputParameterHandler = ''):
@@ -149,7 +157,9 @@ class cGui():
         if sCat:
             oGuiElement.setCat(sCat)
 
-        self.addFolder(oGuiElement, oOutputParameterHandler)
+        try:
+            self.addFolder(oGuiElement, oOutputParameterHandler)
+        except: pass
 
     def addDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler = ''):
         oGuiElement = cGuiElement()
@@ -167,7 +177,9 @@ class cGui():
         if isKrypton():
             self.createContexMenuSettings(oGuiElement, oOutputParameterHandler)
 
-        self.addFolder(oGuiElement, oOutputParameterHandler)
+        try:
+            self.addFolder(oGuiElement, oOutputParameterHandler)
+        except: pass
 
     def addNext(self, sId, sFunction, sLabel, oOutputParameterHandler):
         oGuiElement = cGuiElement()
