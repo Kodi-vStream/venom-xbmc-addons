@@ -301,7 +301,7 @@ msgid "Radio"
 msgstr ""
 
 msgctxt "#30204"
-msgid "[COLOR red]No informations[/COLOR]"
+msgid "[COLOR red]No information[/COLOR]"
 msgstr ""
 
 msgctxt "#30205"
