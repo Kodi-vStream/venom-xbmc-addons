@@ -185,7 +185,7 @@ msgid "Top rated"
 msgstr "Les mieux notés"
 
 msgctxt "#30105"
-msgid "Genre"
+msgid "Genres"
 msgstr "Genres"
 
 msgctxt "#30106"
