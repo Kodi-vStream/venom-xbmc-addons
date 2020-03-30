@@ -61,7 +61,6 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
 
         VSlog(self.__sUrl)
-        api_call = ''
 
         oRequest = cRequestHandler(self.__sUrl)
         oRequest.addHeaderEntry('User-Agent', UA)
@@ -83,8 +82,9 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             for i in aResult[1]:
-            if 'app-' in i:
-                url2 = i
+                if 'app-' in i:
+                    url2 = i
+                    break
         else:
             VSlog('err id1')
             return False
