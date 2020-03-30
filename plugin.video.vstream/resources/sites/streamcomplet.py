@@ -11,7 +11,7 @@ from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'streamcomplet'
 SITE_NAME = 'StreamComplet'
-SITE_DESC = 'Streaming Gratuit de 7210 Films Complets en VF.'
+SITE_DESC = 'Les meilleurs films en version française'
 
 URL_MAIN = 'https://www2.stream-complet.me/'
 
@@ -88,7 +88,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="moviefilm".+?href="([^"]+)".+?src="([^"]+)" alt="([^"]+)"'
+    sPattern = '<a href="([^"]+)"><img src="([^"]+)" alt="([^"]+)".+?<div class="(movies">(.+?)<|moviefilm">)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -102,9 +102,13 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
+            if (aEntry[0] == '/'):
+                continue
+
             sUrl = URL_MAIN[:-1] + aEntry[0]
             sThumb = URL_MAIN[:-1] + aEntry[1]
             sTitle = aEntry[2]
+            sYear = aEntry[4]
 
             #tris search
             if sSearch and total > 3:
@@ -115,6 +119,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -146,6 +151,7 @@ def showLinks():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sYear = oInputParameterHandler.getValue('sYear')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -171,6 +177,7 @@ def showLinks():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayName, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
