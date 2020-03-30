@@ -473,7 +473,7 @@ msgid "UpToBox"
 msgstr ""
 
 msgctxt "#30326"
-msgid "Download and Read"
+msgid "Download and Play"
 msgstr ""
 
 msgctxt "#30327"
