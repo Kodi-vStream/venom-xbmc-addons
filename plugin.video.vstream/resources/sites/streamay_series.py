@@ -315,24 +315,47 @@ def seriesHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
+    oRequest = cRequestHandler(sUrl)
+    sHtmlContent = oRequest.request()
+    sHtmlContent = sHtmlContent.replace(' class="download-server"', '')
 
-    sPattern = '<div data-url="([^"]+)".+?<img src="\/storage\/icon\/(.+?)_l.png"'
+    sPattern = '<div data-url="([^"]+)".+?id="player_v_DIV_5">([^<]+)<.+?<img src="\/storage\/icon\/(.+?)_l.png"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = aEntry[0]
-            sLang = aEntry[1].upper()
-            sTitle = sMovieTitle + ' (' + sLang + ')'
+            sUrl = aEntry[0]
+            sHost = aEntry[1].capitalize()
+            sLang = aEntry[2].upper()
 
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sTitle)
-                oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+            sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addLink(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, sThumb, '', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+def showLinks():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+
+    sHosterUrl = URL_MAIN[:-1] + sUrl
+    oRequestHandler = cRequestHandler(sHosterUrl)
+    oRequestHandler.request()
+    sHosterUrl = oRequestHandler.getRealUrl()
+
+    oHoster = cHosterGui().checkHoster(sHosterUrl)
+    if (oHoster != False):
+        oHoster.setDisplayName(sMovieTitle)
+        oHoster.setFileName(sMovieTitle)
+        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
