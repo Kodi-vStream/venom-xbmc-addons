@@ -359,6 +359,8 @@ class cHosterGui:
         if ('uplea.com' in sHostName):
             return self.getHoster('uplea')
         if ('uploaded' in sHostName or 'ul.to' in sHostName):
+            if('/file/forbidden' in sHosterUrl):
+                return False
             return self.getHoster('uploaded')
 
         if ('kaydo.ws' in sHostName):
