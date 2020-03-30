@@ -185,7 +185,7 @@ msgid "Top rated"
 msgstr ""
 
 msgctxt "#30105"
-msgid "Genre"
+msgid "Genres"
 msgstr ""
 
 msgctxt "#30106"
@@ -249,7 +249,7 @@ msgid "Beta Tester (not recommended)"
 msgstr ""
 
 msgctxt "#30127"
-msgid "Tool"
+msgid "Tools"
 msgstr ""
 
 msgctxt "#30128"
