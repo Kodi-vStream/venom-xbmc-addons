@@ -798,7 +798,7 @@ msgstr "Mes Comptes"
 
 msgctxt "#30456"
 msgid "Are you sure?"
-msgstr "Êtes-vous sûr?"
+msgstr "Êtes-vous sûr ?"
 
 msgctxt "#30457"
 msgid "Trailer"
