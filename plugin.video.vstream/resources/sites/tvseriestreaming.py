@@ -22,7 +22,7 @@ SITE_DESC = 'Séries & Animés en Streaming'
 URL_MAIN = 'https://seriestreaminglist.com/'
 
 SERIE_SERIES = ('http://', 'load')
-SERIE_NEWS = (URL_MAIN + 'nouv-episodes', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'dernieres-et-meilleures-series-en-streaming', 'showMovies')
 SERIE_VIEWS = (URL_MAIN + 'la-top-des-meilleures-series', 'showMovies')
 SERIE_COMMENT = (URL_MAIN + 'les-serie-populaire-streaming', 'showMovies')
 SERIE_LIST = (URL_MAIN, 'showAZ')
@@ -207,7 +207,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     #news
-    if 'nouv-episodes' in sUrl:
+    if 'dernieres-et-meilleures-series-en-streaming' in sUrl:
         sPattern = '<a href="([^"]+)" class="list-group-item.+?>(.+?)<b>(.+?)</b>'
         sHtmlContent = oParser.abParse(sHtmlContent, "<h4>Les derniers episodes", "les plus vues")
     #reste
@@ -226,9 +226,9 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            if 'nouv-episodes' in sUrl:
+            if 'dernieres-et-meilleures-series-en-streaming' in sUrl:
                 sUrl2 = aEntry[0]
-                sTitle = aEntry[1].replace(' -', ' ') + aEntry[2].replace(' ', '')
+                sTitle = aEntry[1]#.replace(' -', ' ') + aEntry[2].replace(' ', '')
                 sThumb = 'news.png'
             else:
                 sTitle = aEntry[0].replace('Streaming', '')
@@ -241,7 +241,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if 'nouv-episodes' in sUrl:
+            if 'dernieres-et-meilleures-series-en-streaming' in sUrl:
                 oGui.addDir(SITE_IDENTIFIER, 'showLink', sTitle, sThumb, oOutputParameterHandler)
             else:
                 oGui.addMisc(SITE_IDENTIFIER, 'showS_E', sTitle, '', sThumb, '', oOutputParameterHandler)
@@ -341,7 +341,7 @@ def showLink():
         pass
 
     linkid = ''
-    sPattern = "link_id.+?'([^']+)';"
+    sPattern = 'data-id="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         linkid = aResult[1][0]
