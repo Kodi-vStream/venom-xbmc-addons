@@ -58,14 +58,21 @@ class cHoster(iHoster):
             if (aResult[0] == True):
                 sHtmlContent = cPacker().unpack(aResult[1][0])
 
-                sPattern =  '{sources:\["([^"]+)"\]'
+                sPattern =  '{src:"([^"]+)"'
                 aResult = oParser.parse(sHtmlContent, sPattern)
+
+                # fh = open('c:\\test.txt', 'w')
+                # fh.write(sHtmlContent)
+                # fh.close()
+
                 if (aResult[0] == True):
                     api_call = aResult[1][0]
         else:
             api_call = self.__sUrl
 
-        if (api_call):
+        if (api_call).endswith('.mp4'):
+            return True, api_call
+        else:
             return True, api_call + '|User-Agent=' + UA
 
         return False, False
