@@ -301,8 +301,8 @@ msgid "Radio"
 msgstr "Radio"
 
 msgctxt "#30204"
-msgid "[COLOR red]No informations[/COLOR]"
-msgstr "[COLOR red]Aucune informations[/COLOR]"
+msgid "[COLOR red]No information[/COLOR]"
+msgstr "[COLOR red]Aucune information[/COLOR]"
 
 msgctxt "#30205"
 msgid "Connection Failed"
@@ -318,7 +318,7 @@ msgstr "Marque-Pages"
 
 msgctxt "#30208"
 msgid "Information"
-msgstr "Informations"
+msgstr "Information"
 
 msgctxt "#30209"
 msgid "[COLOR red]Delete Bookmark[/COLOR]"
