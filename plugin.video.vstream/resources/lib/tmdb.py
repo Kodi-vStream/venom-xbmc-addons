@@ -147,7 +147,7 @@ class cTMDb:
                            ");"
 
         self.dbcur.execute(sql_create)
-        VSlog('table créer')
+        VSlog('table créée')
 
     def __del__(self):
         ''' Cleanup db when object destroyed '''
@@ -192,14 +192,14 @@ class cTMDb:
         return
 
     #cherche dans les films ou serie l'id par le nom return ID ou FALSE
-    def get_idbyname(self, name, year = '', Type = 'movie', page = 1):
+    def get_idbyname(self, name, year = '', mediaType = 'movie', page = 1):
 
         if year:
             term = quote_plus(name) + '&year=' + year
         else:
             term = quote_plus(name)
 
-        meta = self._call('search/' + str(Type), 'query=' + term + '&page=' + str(page))
+        meta = self._call('search/' + str(mediaType), 'query=' + term + '&page=' + str(page))
         #teste sans l'année
         if 'errors' not in meta and 'status_code' not in meta:
             if 'total_results' in meta and meta['total_results'] == 0 and year:
@@ -300,10 +300,10 @@ class cTMDb:
         _meta['episode'] = 0
         _meta['playcount'] = 0
 
-        if not 'title' in meta:
-            _meta['title'] = name
-        else:
+        if 'title' in meta and meta['title']:
             _meta['title'] = meta['title']
+        elif 'name' in meta and meta['name']:
+            _meta['title'] = meta['name']
         if 'tmdb_id' in meta:
             _meta['tmdb_id'] = meta['tmdb_id']
         if 'imdb_id' in meta:
@@ -362,7 +362,7 @@ class cTMDb:
         # if 'cast' in meta:
             # xbmc.log('passeeeeeeeeeeeeeeeeeee')
             # _meta['cast'] = json.loads(_meta['cast'])
-        if 'credits' in meta:
+        if 'credits' in meta and meta['credits']:
             meta['credits'] = eval(str(meta['credits']))
             licast = []
             for cast in meta['credits']['cast']:
@@ -494,7 +494,7 @@ class cTMDb:
 
             self.db.commit()
             VSlog('SQL INSERT Successfully')
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR INSERT')
             pass
 
@@ -540,7 +540,7 @@ class cTMDb:
 
         #xbmc.log('vstream Meta', 0)
         VSlog('Attempting to retrieve meta data for %s: %s %s %s %s' % (media_type, name, year, imdb_id, tmdb_id))
-        #recherche dans la base de donner
+        #recherche dans la base de données
         if not update:
             meta = self._cache_search(media_type, self._clean_title(name), tmdb_id, year, season, episode)
         else:
