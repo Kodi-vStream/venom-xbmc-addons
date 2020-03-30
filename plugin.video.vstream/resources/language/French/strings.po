@@ -249,8 +249,8 @@ msgid "Beta Tester (not recommended)"
 msgstr "Bêta testeur (Non recommandé)"
 
 msgctxt "#30127"
-msgid "Tool"
-msgstr "Outil"
+msgid "Tools"
+msgstr "Outils"
 
 msgctxt "#30128"
 msgid "Clear Cache Addon"
