@@ -23,8 +23,8 @@ URL_MAIN = 'https://seriestreaminglist.com/'
 
 SERIE_SERIES = ('http://', 'load')
 SERIE_NEWS = (URL_MAIN + 'dernieres-et-meilleures-series-en-streaming', 'showMovies')
-SERIE_VIEWS = (URL_MAIN + 'la-top-des-meilleures-series', 'showMovies')
-SERIE_COMMENT = (URL_MAIN + 'les-serie-populaire-streaming', 'showMovies')
+SERIE_VIEWS = (URL_MAIN + '1-les-serie-populaire-streaming', 'showMovies')
+SERIE_COMMENT = (URL_MAIN + '1-les-serie-populaire-streaming', 'showMovies')
 SERIE_LIST = (URL_MAIN, 'showAZ')
 SERIE_GENRES = (True, 'showGenres')
 SERIE_ANNEES = (True, 'showSerieYears')
