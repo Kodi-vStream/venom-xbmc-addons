@@ -20,6 +20,9 @@ from resources.lib.util import Quote
 #
 #  Permet de debuguer avec Eclipse
 #
+# Tuto ici :
+# https://github.com/Kodi-vStream/venom-xbmc-addons/issues/2739
+#
 ####################
 
 REMOTE_DBG = False
@@ -63,14 +66,16 @@ class main:
 
         if (sFunction == 'setSetting'):
             if (oInputParameterHandler.exist('id')):
-                id = oInputParameterHandler.getValue('id')
-            else: return
+                plugin_id = oInputParameterHandler.getValue('id')
+            else:
+                return
 
             if (oInputParameterHandler.exist('value')):
                 value = oInputParameterHandler.getValue('value')
-            else: return
+            else:
+                return
 
-            setSetting(id, value)
+            setSetting(plugin_id, value)
             return
 
         if (sFunction == 'DoNothing'):
@@ -97,9 +102,9 @@ class main:
 
         if (oInputParameterHandler.exist('site')):
             sSiteName = oInputParameterHandler.getValue('site')
-            if (oInputParameterHandler.exist('title')):
-                sTitle = oInputParameterHandler.getValue('title')
-            else: sTitle = "none"
+#            if (oInputParameterHandler.exist('title')):
+#                sTitle = oInputParameterHandler.getValue('title')
+#            else: sTitle = "none"
 
             VSlog('load site ' + sSiteName + ' and call function ' + sFunction)
             #cStatistic().callStartPlugin(sSiteName, sTitle)
@@ -177,14 +182,15 @@ class main:
                 traceback.print_exc()
                 return
 
-def setSetting(id, value):
+def setSetting(plugin_id, value):
     addons = addon()
-    setting = addons.getSetting(id)
-
+    setting = addons.getSetting(plugin_id)
+    
     # Si le parametre existe, on autorise la modification
-    if (setting != ''):
-        addons.setSetting(id, value)
+    if (setting != '' and setting != value):
+        addons.setSetting(plugin_id, value)
         return True
+    
     return False
 
 def isHosterGui(sSiteName, sFunction):
@@ -241,7 +247,6 @@ def isTrakt(sSiteName, sFunction):
     return False
 
 def searchGlobal():
-    cancel = False
     oGui = cGui()
     addons = addon()
 
@@ -276,7 +281,6 @@ def searchGlobal():
         #text = '%s/%s - %s' % ((count + 1), total, plugin['name'])
         progress_.VSupdatesearch(progress_, total, plugin['name'])
         if progress_.iscanceled():
-            cancel = True
             progress_.close()
             break
 
@@ -289,10 +293,10 @@ def searchGlobal():
     #progress_.VSclose(progress_)
 
     #affichage
-    total=len(oGui.searchResults)
+    total = len(oGui.searchResults)
     #progress_ = progress().VScreate()
 
-    for count,result in enumerate(oGui.searchResults):
+    for count, result in enumerate(oGui.searchResults):
         #text = '%s/%s - %s' % ((count+1/total), total, result['guiElement'].getTitle())
 
         #if(count == 0):
