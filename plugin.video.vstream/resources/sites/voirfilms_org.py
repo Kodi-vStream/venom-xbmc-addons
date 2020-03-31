@@ -16,6 +16,7 @@ SITE_NAME = 'VoirFilms'
 SITE_DESC = 'Films, Séries & Animés en Streaming'
 
 URL_MAIN = 'https://www.voir-films.info/'
+#URL_MAIN = 'https://wwv.voirfilms.media/'#url de repli site sans pub
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_LIST = (URL_MAIN + 'alphabet', 'showAlpha')
