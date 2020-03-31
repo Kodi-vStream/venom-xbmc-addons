@@ -70,19 +70,19 @@ class cHoster(iHoster):
 
 
         oRequestHandler = cRequestHandler(self.__sUrl)
-        oRequestHandler.addHeaderEntry('User-Agent',UA)
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
         html = oRequestHandler.request()
 
         vid = re.search("videokeyorig *= *\'(.+?)\'", html, re.DOTALL).group(1)
 
-        url = "ver=0&secure=0&adb=0%2F&v={}&token=&gt=&embed_from=0".format(vid)
+        url = "time=1&ver=0&secure=0&adb=0%2F&v={}&token=&gt=&embed_from=0&wasmcheck=1".format(vid)
 
-        oRequestHandler = cRequestHandler('http://hqq.tv/player/get_md5.php?' + url)
-        oRequestHandler.addHeaderEntry('User-Agent',UA)
-        oRequestHandler.addHeaderEntry('Host','hqq.tv')
-        oRequestHandler.addHeaderEntry('Accept','*/*')
-        oRequestHandler.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+        oRequestHandler = cRequestHandler('https://hqq.tv/player/get_md5.php?' + url)
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Accept', '*/*')
+        oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         oRequestHandler.addHeaderEntry('x-requested-with', 'XMLHttpRequest')
+        oRequestHandler.addHeaderEntry('Referer', self.__sUrl)
         #ok
 
         oRequestHandler.request()
