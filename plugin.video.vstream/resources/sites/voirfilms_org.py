@@ -343,7 +343,7 @@ def showMovies(sSearch = ''):
 
             sTitle = sTitle.replace('film ', '') #genre
             sTitle = sTitle.replace(' streaming', '') #genre
-            sTitle = '%s [%s] (%s)' % (sTitle, sQual, sYear)
+            sDisplayTitle = '%s [%s] (%s)' % (sTitle, sQual, sYear)
 
             if not 'http' in sThumb:
                 sThumb = URL_MAIN + sThumb
@@ -363,12 +363,11 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if '/serie' in sUrl or 'anime' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, sThumb, sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, sThumb, sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sThumb, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
-
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
