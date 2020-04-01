@@ -163,7 +163,7 @@ def showAnimeYears():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
-    oParser = cParser()
+
     if sSearch:
         sUrl = URL_SEARCH[0]
     else:
@@ -176,7 +176,7 @@ def showMovies(sSearch = ''):
 
         oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
-        # oRequestHandler.addHeaderEntry('Host', 'www.papstream.xyz')
+        # oRequestHandler.addHeaderEntry('Host', 'wwv.papstream.cc')
         # oRequestHandler.addHeaderEntry('Origin', URL_MAIN)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
@@ -186,7 +186,7 @@ def showMovies(sSearch = ''):
 
     sHtmlContent = oRequestHandler.request()
     sPattern = 'class="short-images-link".+?img src="([^"]+)".+?short-link"><a href="([^"]+)".+?>([^<]+)</a>'
-
+    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -232,7 +232,7 @@ def __checkForNextPage(sHtmlContent):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        return URL_MAIN + aResult[1][0]
+        return URL_MAIN[:-1] + aResult[1][0]
 
     return False
 
@@ -278,7 +278,7 @@ def showSaisons():
             if sUrl2.startswith('/'):
                 sUrl2 = URL_MAIN[:-1] + sUrl2
             sSaison = aEntry[1]
-            sTitle  = ("%s %s") % (sSaison, sMovieTitle)
+            sTitle  = ("%s %s") % (sMovieTitle, sSaison)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -293,7 +293,6 @@ def showSaisons():
 
 def ShowEpisodes():
     oGui = cGui()
-    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl   = oInputParameterHandler.getValue('siteUrl')
     sDesc  = oInputParameterHandler.getValue('sDesc')
@@ -301,9 +300,8 @@ def ShowEpisodes():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
     sPattern = '<div class="saision_LI2">.*?<a title="Regarder (.+?) en streaming" href=["\']([^"\']+)">'
-
+    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -319,7 +317,7 @@ def ShowEpisodes():
                 break
 
             sTitle = aEntry[0]
-            sUrl2 = URL_MAIN + aEntry[1]
+            sUrl2 = URL_MAIN[:-1] + aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
