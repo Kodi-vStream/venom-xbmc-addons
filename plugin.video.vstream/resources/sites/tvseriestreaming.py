@@ -22,10 +22,10 @@ SITE_DESC = 'Séries & Animés en Streaming'
 URL_MAIN = 'https://seriestreaminglist.com/'
 
 SERIE_SERIES = ('http://', 'load')
-SERIE_NEWS = (URL_MAIN + 'nouv-episodes', 'showMovies')
-SERIE_VIEWS = (URL_MAIN + 'la-top-des-meilleures-series', 'showMovies')
-SERIE_COMMENT = (URL_MAIN + 'les-serie-populaire-streaming', 'showMovies')
-SERIE_LIST = (URL_MAIN, 'showAZ')
+SERIE_NEWS = (URL_MAIN + 'dernieres-et-meilleures-series-en-streaming', 'showMovies')
+SERIE_VIEWS = (URL_MAIN + 'la-top-des-meilleures-serie', 'showMovies')
+SERIE_COMMENT = (URL_MAIN + '1-les-serie-populaire-streaming', 'showMovies')
+#SERIE_LIST = (URL_MAIN, 'showAZ')
 SERIE_GENRES = (True, 'showGenres')
 SERIE_ANNEES = (True, 'showSerieYears')
 
@@ -52,9 +52,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_COMMENT[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENT[1], 'Séries (Populaire)', 'comments.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Series (Liste)', 'listes.png', oOutputParameterHandler)
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
+    #oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Series (Liste)', 'listes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
@@ -79,7 +79,7 @@ def showSerieYears():
     #for i in itertools.chain(xrange(5, 7), [8, 9]): afficher dans l'ordre (pense bete ne pas effacer)
     oGui = cGui()
     from itertools import chain
-    generator = chain([1936, 1940, 1941, 1950, 1955], xrange(1958, 2019))#desordre
+    generator = chain([1936, 1940, 1941, 1950, 1955], xrange(1958, 2021))#desordre
 
     for i in reversed(list(generator)):
         Year = str(i)
@@ -89,7 +89,7 @@ def showSerieYears():
 
     oGui.setEndOfDirectory()
 
-def showAZ():
+#def showAZ():
     oGui = cGui()
 
     for i in range(0, 27):
@@ -207,7 +207,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     #news
-    if 'nouv-episodes' in sUrl:
+    if 'dernieres-et-meilleures-series-en-streaming' in sUrl:
         sPattern = '<a href="([^"]+)" class="list-group-item.+?>(.+?)<b>(.+?)</b>'
         sHtmlContent = oParser.abParse(sHtmlContent, "<h4>Les derniers episodes", "les plus vues")
     #reste
@@ -226,9 +226,9 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            if 'nouv-episodes' in sUrl:
+            if 'dernieres-et-meilleures-series-en-streaming' in sUrl:
                 sUrl2 = aEntry[0]
-                sTitle = aEntry[1].replace(' -', ' ') + aEntry[2].replace(' ', '')
+                sTitle = aEntry[1]#.replace(' -', ' ') + aEntry[2].replace(' ', '')
                 sThumb = 'news.png'
             else:
                 sTitle = aEntry[0].replace('Streaming', '')
@@ -241,7 +241,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if 'nouv-episodes' in sUrl:
+            if 'dernieres-et-meilleures-series-en-streaming' in sUrl:
                 oGui.addDir(SITE_IDENTIFIER, 'showLink', sTitle, sThumb, oOutputParameterHandler)
             else:
                 oGui.addMisc(SITE_IDENTIFIER, 'showS_E', sTitle, '', sThumb, '', oOutputParameterHandler)
@@ -341,7 +341,7 @@ def showLink():
         pass
 
     linkid = ''
-    sPattern = "link_id.+?'([^']+)';"
+    sPattern = 'data-id="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         linkid = aResult[1][0]

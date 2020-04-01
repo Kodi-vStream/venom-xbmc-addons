@@ -2,34 +2,32 @@
 <window id="130">
 	<defaultcontrol always="false">9001</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
-	<include file="variables.xml" />
+	<include file="variables.xml"/>
 	<controls>
 
 		<control type="group">
 			<visible>!Window.IsVisible(FileBrowser)</visible>
 			<!-- <animation effect="slide" start="1100,0" end="0,0" time="400" tween="quadratic" easing="out">WindowOpen</animation> -->
 			<!-- <animation effect="slide" start="0,0" end="1100,0" time="400" tween="quadratic" easing="out">WindowClose</animation> -->
-            <!-- <animation effect="fade" start="100" end="0" time="800">WindowClose</animation> -->
-            <!-- <animation effect="fade" start="0" end="100"  time="1000" delay="500">WindowOpen</animation> -->
+			<!-- <animation effect="fade" start="100" end="0" time="800">WindowClose</animation> -->
+			<!-- <animation effect="fade" start="0" end="100"  time="1000" delay="500">WindowOpen</animation> -->
 
-
-            <animation type="WindowOpen">
-                <effect type="slide" start="1100,0" end="0,0" time="800" tween="back" easing="out"/>
-                <effect type="fade" start="0" end="100" time="800" delay="100"/>
-            </animation>
-            <animation type="WindowClose">
-                <effect type="slide" start="0,0" end="1100,0" time="800" tween="back" easing="in"/>
-                <effect type="fade" start="100" end="0" time="800" delay="400"/>
-            </animation>
+			<animation type="WindowOpen">
+				<effect type="slide" start="1100,0" end="0,0" time="800" tween="back" easing="out"/>
+				<effect type="fade" start="0" end="100" time="800" delay="100"/>
+			</animation>
+			<animation type="WindowClose">
+				<effect type="slide" start="0,0" end="1100,0" time="800" tween="back" easing="in"/>
+				<effect type="fade" start="100" end="0" time="800" delay="400"/>
+			</animation>
 
 			<control type="image">
 				<posx>0</posx>
 				<posy>0</posy>
-              	<fadetime>200</fadetime>
+				<fadetime>200</fadetime>
 				<texture fallback="fanart.jpg">$INFO[Window(Home).Property(ListItem.backdrop_url)]</texture>
-              	<aspectratio align="center" aligny="center" scalediffuse="false">scale</aspectratio>
+				<aspectratio align="center" aligny="center" scalediffuse="false">scale</aspectratio>
 			</control>
-
 
 			<control type="image">
 				<texture>special://home/addons/plugin.video.vstream/resources/extra/debuggrid1080.png</texture>
@@ -59,7 +57,6 @@
 				</control>
 			</control>
 
-
 			<!-- Info de base -->
 			<control type="group">
 				<!--<visible>Control.HasFocus(7)</visible>-->
@@ -72,7 +69,6 @@
 					<right>0</right>
 					<texture>nofocus.png</texture>
 				</control>
-
 
 				<!-- tab1 -->
 				<control type="list">
@@ -195,7 +191,6 @@
 
 					<itemlayout width="340" height="115">
 
-					
 						<control type="textbox">
 							<top>20</top>
 							<left>-170</left>
@@ -239,7 +234,7 @@
 							<textcolor>white</textcolor>
 							<pagecontrol>-</pagecontrol>
 							<info>ListItem.Label</info>
-							<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+							<autoscroll time="6000" delay="8000" repeat="10000">true</autoscroll>
 							<!--<visible>!Control.IsVisible(50)</visible>-->
 							<visible>Control.HasFocus(36)</visible>
 						</control>
@@ -270,7 +265,7 @@
 							<textcolor>white</textcolor>
 							<pagecontrol>-</pagecontrol>
 							<info>ListItem.Label</info>
-							<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+							<autoscroll time="6000" delay="8000" repeat="10000">true</autoscroll>
 							<!--<visible>!Control.IsVisible(50)</visible>-->
 							<visible>Control.HasFocus(36)</visible>
 						</control>
@@ -302,7 +297,6 @@
 					</content>
 				</control>
 
-
 				<!-- tab3 -->
 				<control type="list">
 					<height>150</height>
@@ -314,7 +308,7 @@
 					<onup>9000</onup>
 					<ondown>61</ondown>
 					<orientation>horizontal</orientation>
-					<wrapmultiline>true</wrapmultiline>						
+					<wrapmultiline>true</wrapmultiline>
 
 					<itemlayout width="340" height="32">
 						<control type="label">
@@ -446,7 +440,7 @@
 					<wrapmultiline>true</wrapmultiline>
 
 					<visible>!Control.HasFocus(50) + !Control.HasFocus(36) + !Control.HasFocus(5200)</visible>
-					
+
 					<itemlayout width="340" height="32">
 						<control type="label">
 							<top>117</top>
@@ -478,10 +472,7 @@
 						</item>
 					</content>
 				</control>
-
 			</control>
-
-
 
 			<!--rating image -->
 			<control type="group">
@@ -555,9 +546,9 @@
 				</control>
 
 			</control>
-			
+
 			<!-->
-            <control type="image">
+			<control type="image">
 				<left>180</left>
 				<top>0</top>
 				<width>1100</width>
@@ -569,7 +560,7 @@
 			<control type="group">
 				<animation effect="fade" delay="400" start="0" end="100" time="200">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
-                <bottom>195</bottom>
+				<bottom>195</bottom>
 				<left>20</left>
 
 				<control type="label">
@@ -624,7 +615,7 @@
 				<top>-80</top>
 				<left>-80</left>
 
-				<control type="panel" id="36">					
+				<control type="panel" id="36">
 					<bottom>10</bottom>
 					<width>250</width>
 					<height>150</height>
@@ -653,7 +644,7 @@
 							<label>$INFO[Window(Home).Property(biography),[B]Biographie[/B]: ]</label>
 							<autoscroll time="3000" delay="4000" repeat="5000">!Control.HasFocus(61)</autoscroll>
 							<visible>Control.HasFocus(50)</visible>
-						</control>-->	
+						</control>-->
 						</itemlayout>
 						<focusedlayout>
 						</focusedlayout>
@@ -663,10 +654,9 @@
 								<onclick>noop</onclick>
 							</item>
 						</content>
-				</control>							
+				</control>
 
 			</control>
-
 
 		<!-- Casting -->
 			<control type="wraplist" id="50">
@@ -686,7 +676,6 @@
 					<effect type="slide" start="400,0" end="0,0" time="800" tween="back" easing="out"/>
 					<effect type="fade" start="0" end="100" time="800" delay="100"/>
 				</animation>
-
 
 				<itemlayout height="132" width="110">
 					<control type="image">
@@ -732,7 +721,6 @@
 					<effect type="fade" start="0" end="100" time="800" delay="100"/>
 				</animation>
 
-
 				<itemlayout height="132" width="110">
 
 					<control type="image">
@@ -775,7 +763,7 @@
 					</control>-->
 
 			<!--BUTTON icon -->
-			<control type="list" id="9001">	
+			<control type="list" id="9001">
 				<bottom>55</bottom>
 				<height>50</height>
 				<width>200</width>
@@ -805,7 +793,7 @@
 						<info>-</info>
 						<angle>90</angle>
 					</control>
-	
+
 					</itemlayout>
 					<focusedlayout width="186" height="40">
 
@@ -855,8 +843,6 @@
 						</item>
 					</content>
 			</control>
-			
-								
 
 			<control type="grouplist" id="9000">
 				<visible>False</visible>

@@ -7,10 +7,11 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress#, VSlog
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'streamcomplet'
 SITE_NAME = 'StreamComplet'
-SITE_DESC = 'Streaming Gratuit de 7210 Films Complets en VF.'
+SITE_DESC = 'Les meilleurs films en version française'
 
 URL_MAIN = 'https://www2.stream-complet.me/'
 
@@ -87,7 +88,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<a href="([^"]+)"><img src="([^"]+)" alt="([^"]+)".+?<div class="(movies">(.+?)<|arama")'
+    sPattern = '<a href="([^"]+)"><img src="([^"]+)" alt="([^"]+)".+?<div class="(movies">(.+?)<|moviefilm">)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -104,10 +105,15 @@ def showMovies(sSearch = ''):
             if (aEntry[0] == '/'):
                 continue
 
-            sUrl = URL_MAIN + aEntry[0]
-            sThumb = URL_MAIN + aEntry[1]
-            sTitle = aEntry[2].replace('en HD','').replace('Voir ','').replace('streaming','').replace('vf et vostfr','')
+            sUrl = URL_MAIN[:-1] + aEntry[0]
+            sThumb = URL_MAIN[:-1] + aEntry[1]
+            sTitle = aEntry[2]
             sYear = aEntry[4]
+
+            #tris search
+            if sSearch and total > 3:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
+                    continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -123,9 +129,8 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):

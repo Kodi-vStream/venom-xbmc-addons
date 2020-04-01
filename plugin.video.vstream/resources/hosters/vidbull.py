@@ -9,8 +9,8 @@ import re
 
 #import resources.lib.pyaes as pyaes (no module name pyaes found)
 
-import resources.lib.GKDecrypter
-from resources.lib.GKDecrypter import decryptKey
+#import resources.lib.GKDecrypter
+#from resources.lib.GKDecrypter import decryptKey
 from resources.lib.GKDecrypter import GKDecrypter
 
 #https://forums.tvaddons.ag/tknorris-release-repository/10792-debugging-daclips-2.html

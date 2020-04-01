@@ -7,7 +7,6 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.comaddon import progress#, VSlog
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
 import re, urllib
 
 SITE_IDENTIFIER = 'mesfilms'
@@ -200,11 +199,6 @@ def showSearchResult(sSearch = ''):
             sTitle = aEntry[2]
             sDesc = aEntry[3]
 
-#             #tris search
-#             if sSearch and total > 3:
-#                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
-#                     continue
-
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -318,6 +312,12 @@ def showLinks():
             sQual = aEntry[2]
             sHost = re.sub('\.\w+', '', aEntry[3])
             sHost = sHost.capitalize()
+            
+            # filtrage des hosters
+            oHoster = cHosterGui().checkHoster(sHost)
+            if not oHoster:
+                continue
+
             sTitle = ('%s [%s] [COLOR coral]%s[/COLOR]') % (sMovieTitle, sQual, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -334,15 +334,14 @@ def showHosters():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sPost = oInputParameterHandler.getValue('sPost')
     sNume = oInputParameterHandler.getValue('sNume')
 
-    #trouve la vrais url
+    #trouve la vraie url
     oRequestHandler = cRequestHandler(URL_MAIN)
-    sHtmlContent = oRequestHandler.request()
+    oRequestHandler.request()
     sUrl2 = oRequestHandler.getRealUrl() + 'wp-admin/admin-ajax.php'
 
     oRequestHandler = cRequestHandler(sUrl2)
@@ -353,9 +352,8 @@ def showHosters():
     oRequestHandler.addParameters('post', sPost)
     oRequestHandler.addParameters('nume', sNume)
     sHtmlContent = oRequestHandler.request()
-    #VSlog(sHtmlContent)
 
-    sPattern = "<iframe.+?src='([^']+)'"
+    sPattern = "<iframe.+?src=[',\"]([^'\"]+)[',\"]"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):

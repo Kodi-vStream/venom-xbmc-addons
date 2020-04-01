@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 #vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-#Venom 
+#Venom
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -8,13 +8,10 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.player import cPlayer
-from resources.lib.gui.hoster import cHosterGui
-
-
-from resources.lib.comaddon import progress, addon, xbmc
-
-import re, random, string
+from resources.lib.comaddon import addon, xbmc#, progress
+# from resources.lib.gui.hoster import cHosterGui
 import xbmcplugin, xbmcvfs
+import re, string#, random
 
 SITE_IDENTIFIER = 'radio'
 SITE_NAME = '[COLOR orange]Radio[/COLOR]'
@@ -30,7 +27,7 @@ headers = {'User-Agent': USER_AGENT,
 icon = 'tv.png'
 #/home/lordvenom/.kodi/
 #sRootArt = cConfig().getRootArt()
-sRootArt = "special://home/addons/plugin.video.vstream/resources/art/tv"
+sRootArt = 'special://home/addons/plugin.video.vstream/resources/art/tv'
 ADDON = addon()
 
 class track():
@@ -95,14 +92,14 @@ def showGenres():
 
 def parseWebM3U():#Traite les m3u
     playlist=[]
-    song=track(None, None, None, None)
+    song = track(None, None, None, None)
 
-    file = "special://home/addons/plugin.video.vstream/resources/extra/radio.xspf"
+    sFile = 'special://home/addons/plugin.video.vstream/resources/extra/radio.xspf'
 
-    if not xbmcvfs.exists(file):
+    if not xbmcvfs.exists(sFile):
         return
 
-    f = xbmcvfs.File(file, 'rb')
+    f = xbmcvfs.File(sFile, 'rb')
     sHtmlContent = f.read()
     f.close()
 
@@ -114,7 +111,7 @@ def parseWebM3U():#Traite les m3u
 
         for result in line:
             #sUrl2 = result[0].replace('\r', '')
-            song=track(result[0], result[1], result[2], result[3])
+            song = track(result[0], result[1], result[2], result[3])
             playlist.append(song)
 
     return playlist
@@ -123,7 +120,7 @@ def showWeb():#Code qui s'occupe de liens TV du Web
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    # sUrl = oInputParameterHandler.getValue('siteUrl')
 
     playlist = parseWebM3U()
 
@@ -141,7 +138,7 @@ def showWeb():#Code qui s'occupe de liens TV du Web
     if not playlist:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://')
-        oGui.addText(SITE_IDENTIFIER, "[COLOR red]Aucun résultat[/COLOR] ")
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Aucun résultat[/COLOR] ')
 
     else:
         for track in playlist:
@@ -194,7 +191,7 @@ def showAZ():
     oGui.setEndOfDirectory()
 
 def play__():#Lancer les liens
-    oGui = cGui()
+    # oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl').replace('P_L_U_S', '+')
@@ -212,7 +209,7 @@ def play__():#Lancer les liens
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(SITE_IDENTIFIER)
         oGuiElement.setTitle(sTitle)
-        sUrl = sUrl.replace(' ','%20')
+        sUrl = sUrl.replace(' ', '%20')
         oGuiElement.setMediaUrl(sUrl)
         oGuiElement.setThumbnail(sThumbnail)
 
@@ -220,7 +217,7 @@ def play__():#Lancer les liens
         oPlayer.clearPlayList()
         oPlayer.addItemToPlaylist(oGuiElement)
         #tout repetter
-        xbmc.executebuiltin("xbmc.playercontrol(RepeatAll)")
+        xbmc.executebuiltin('xbmc.playercontrol(RepeatAll)')
 
         oPlayer.startPlayer()
         return
@@ -246,7 +243,7 @@ def GetRealUrl(chain):#Recupere les liens des regex
     if (r):
         url = r.group(1)
 
-    #post metehod ?
+    #post methode ?
     r = re.search('\[[POSTFORM]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
     if (r):
         param = r.group(1)

@@ -1,8 +1,8 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
+# from resources.lib.handler.requestHandler import cRequestHandler
+# from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 import urllib, urllib2, re
 
@@ -73,7 +73,7 @@ class cHoster(iHoster):
         data = urllib.urlencode(query_args)
         headers = {'User-Agent': 'Mozilla 5.10'}
         url = 'http://api.letitbit.net'
-        request = urllib2.Request(url,data,headers)
+        request = urllib2.Request(url, data, headers)
 
         try:
             reponse = urllib2.urlopen(request)
@@ -96,5 +96,3 @@ class cHoster(iHoster):
             return True, api_call
 
         return False, False
-
-

@@ -44,11 +44,8 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-
-        oParser = cParser()
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-
         sPattern =  'src: *"([^"]+)".+?label:"([^"]+)"'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)

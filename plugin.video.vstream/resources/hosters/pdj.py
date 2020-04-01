@@ -5,12 +5,9 @@ from resources.lib.handler.requestHandler import cRequestHandler #requete url
 from resources.lib.parser import cParser #recherche de code
 from resources.hosters.hoster import iHoster
 
-import re, urllib2, urllib
-
 class cHoster(iHoster):
 
     def __init__(self):
-        #Nom a afficher dans Vstream
         self.__sDisplayName = 'Promo DJ'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
@@ -28,7 +25,6 @@ class cHoster(iHoster):
         return self.__sFileName
 
     def getPluginIdentifier(self):
-        #Nom du fichier exact sans .py
         return 'pdj'
 
     def setHD(self, sHD):

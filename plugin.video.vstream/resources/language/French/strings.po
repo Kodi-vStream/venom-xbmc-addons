@@ -1,5 +1,5 @@
 # Addon Name: vStream
-# Addon id: plugin.video.vstream
+# Addon id: plugin.video.vStream
 # Addon Provider: vStream
 msgid ""
 msgstr ""
@@ -25,7 +25,7 @@ msgid "Filter Error"
 msgstr "Erreur du filtre"
 
 msgctxt "#30005"
-msgid "VStream will be faster with your own API key."
+msgid "vStream will be faster with your own API key."
 msgstr "vStream sera plus rapide avec votre propre clef API."
 
 msgctxt "#30006"
@@ -48,21 +48,17 @@ msgctxt "#30010"
 msgid "Color Text note"
 msgstr "Couleur texte information"
 
-msgctxt "#30500"
+msgctxt "#30011"
 msgid "Select"
 msgstr "Sélectionner"
 
-msgctxt "#30501"
+msgctxt "#30012"
 msgid "Name"
 msgstr "Nom"
 
 msgctxt "#30021"
 msgid "General"
 msgstr "Général"
-
-msgctxt "#30022"
-msgid "Plugins on/off (1/3)"
-msgstr "Plugins on/off (1/3)"
 
 msgctxt "#30023"
 msgid "Plugins Preferences"
@@ -105,8 +101,8 @@ msgid "View"
 msgstr "Affichage"
 
 msgctxt "#30033"
-msgid "Tool"
-msgstr "Outil"
+msgid "Tools"
+msgstr "Outils"
 
 msgctxt "#30034"
 msgid "About"
@@ -189,7 +185,7 @@ msgid "Top rated"
 msgstr "Les mieux notés"
 
 msgctxt "#30105"
-msgid "Genre"
+msgid "Genres"
 msgstr "Genres"
 
 msgctxt "#30106"
@@ -213,7 +209,7 @@ msgid "Documentary"
 msgstr "Documentaires"
 
 msgctxt "#30113"
-msgid "Sport"
+msgid "Sports"
 msgstr "Sports"
 
 msgctxt "#30114"
@@ -253,8 +249,8 @@ msgid "Beta Tester (not recommended)"
 msgstr "Bêta testeur (Non recommandé)"
 
 msgctxt "#30127"
-msgid "Tool"
-msgstr "Outil"
+msgid "Tools"
+msgstr "Outils"
 
 msgctxt "#30128"
 msgid "Clear Cache Addon"
@@ -288,21 +284,13 @@ msgctxt "#30146"
 msgid "Show / Hide search settings"
 msgstr "Afficher/Masquer les paramètres de recherche"
 
-msgctxt "#30147"
-msgid "Plugins on/off (2/3)"
-msgstr "Plugins on/off (2/3)"
-
-msgctxt "#30148"
-msgid "Plugins on/off (3/3)"
-msgstr "Plugins on/off (3/3)"
+msgctxt "#30160"
+msgid "Quality HD"
+msgstr "Qualité HD"
 
 msgctxt "#30201"
 msgid "Playlist"
 msgstr "Playlist"
-
-msgctxt "#30160"
-msgid "Quality HD"
-msgstr "Qualité HD"
 
 msgctxt "#30202"
 msgid "Download"
@@ -313,7 +301,7 @@ msgid "Radio"
 msgstr "Radio"
 
 msgctxt "#30204"
-msgid "[COLOR red]No informations[/COLOR]"
+msgid "[COLOR red]No information[/COLOR]"
 msgstr "[COLOR red]Aucune information[/COLOR]"
 
 msgctxt "#30205"
@@ -330,7 +318,7 @@ msgstr "Marque-Pages"
 
 msgctxt "#30208"
 msgid "Information"
-msgstr "Informations"
+msgstr "Information"
 
 msgctxt "#30209"
 msgid "[COLOR red]Delete Bookmark[/COLOR]"
@@ -378,8 +366,7 @@ msgstr "Lire"
 
 msgctxt "#30220"
 msgid "Reset"
-msgstr "réinitialiser"
-
+msgstr "Réinitialiser"
 
 msgctxt "#30300"
 msgid "Library"
@@ -459,11 +446,11 @@ msgstr "A surveiller (saisons)"
 
 msgctxt "#30319"
 msgid "Watchlist (episodes)"
-msgstr "A surveiller (episodes)"
+msgstr "A surveiller (épisodes)"
 
 msgctxt "#30320"
 msgid "You have successfully logged out"
-msgstr "Vous avez été déconnecté avec succés"
+msgstr "Vous avez été déconnecté avec succès"
 
 msgctxt "#30321"
 msgid "Add collection"
@@ -482,12 +469,16 @@ msgid "Library"
 msgstr "Librairie"
 
 msgctxt "#30325"
-msgid "Uptobox"
-msgstr "Uptobox"
+msgid "UpToBox"
+msgstr "UpToBox"
 
 msgctxt "#30326"
-msgid "DL and Read"
-msgstr "DL et Lire"
+msgid "Download and Play"
+msgstr "Télécharger et Lire"
+
+msgctxt "#30327"
+msgid "1Fichier"
+msgstr "1Fichier"
 
 msgctxt "#30330"
 msgid "Search"
@@ -598,20 +589,20 @@ msgid "Activate"
 msgstr "Activer"
 
 msgctxt "#30404"
-msgid "View : Movies (recommended 50-51-500-501-508) "
-msgstr "Vue : Films (recommandé 50-51-500-501-508) "
+msgid "View : Movies (recommended 50-51-500-501-508)"
+msgstr "Vue : Films (recommandé 50-51-500-501-508)"
 
 msgctxt "#30405"
-msgid "View: Tvshow (recommended 50-51-500-501-508) "
-msgstr "Vue: Séries (recommandé 50-51-500-501-508) "
+msgid "View: Tvshow (recommended 50-51-500-501-508)"
+msgstr "Vue: Séries (recommandé 50-51-500-501-508)"
 
 msgctxt "#30406"
-msgid "View: Default (recommended 50-51-500) "
-msgstr "Vue: Défaut (recommandé 50-51-500) "
+msgid "View: Default (recommended 50-51-500)"
+msgstr "Vue: Défaut (recommandé 50-51-500)"
 
 msgctxt "#30407"
-msgid "Vue: Home (recommended 50-51-500) "
-msgstr "Vue: Accueil (recommandé 50-51-500) "
+msgid "Vue: Home (recommended 50-51-500)"
+msgstr "Vue: Accueil (recommandé 50-51-500)"
 
 msgctxt "#30408"
 msgid "Enable customized view"
@@ -671,7 +662,7 @@ msgstr "Rendez vous sur [COLOR teal]%s[CR]%s[/COLOR][CR], Valider vStream, seule
 
 msgctxt "#30422"
 msgid "Enable log records"
-msgstr "Activer les notices de log"
+msgstr "Activer les enregistrements de log"
 
 msgctxt "#30423"
 msgid "Search (Movies)"
@@ -798,15 +789,15 @@ msgid "Continue streaming via Uptostream"
 msgstr "Passer en Streaming (via Uptostream)"
 
 msgctxt "#30454"
-msgid "Continue direct via Uptobox"
-msgstr "Rester en direct (via Uptobox)"
+msgid "Continue direct via UpToBox"
+msgstr "Rester en direct (via UpToBox)"
 
 msgctxt "#30455"
 msgid "My accounts"
 msgstr "Mes Comptes"
 
 msgctxt "#30456"
-msgid "Are you sure ?"
+msgid "Are you sure?"
 msgstr "Êtes-vous sûr ?"
 
 msgctxt "#30457"
@@ -859,8 +850,4 @@ msgstr "Lieu"
 
 msgctxt "#30469"
 msgid "Hoster Direct"
-msgstr ""
-
-msgctxt "#30500"
-msgid "Outils"
 msgstr ""

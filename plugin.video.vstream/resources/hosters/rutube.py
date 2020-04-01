@@ -3,9 +3,7 @@
 from resources.hosters.hoster import iHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.gui.gui import cGui
 from resources.lib.comaddon import dialog
-
 import urllib
 
 class cHoster(iHoster):
@@ -36,7 +34,7 @@ class cHoster(iHoster):
         self.__sUrl = self.__sUrl.replace('rutube.ru/play/embed/', '')
         self.__sUrl = 'http://rutube.ru/play/embed/' + str(self.__sUrl)
 
-    def __getIdFromUrl(self,url):
+    def __getIdFromUrl(self, url):
         sPattern = "\/play\/embed\/(\w+)" #au cas ou test \/play\/embed\/(\w+)(?:\?|\\?)
         oParser = cParser()
         aResult = oParser.parse(url, sPattern)

@@ -69,9 +69,9 @@ def showMovies():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtml = oRequestHandler.request()
-
     sPattern = '<p style="text-align: center;"><a href="(http:\/\/www.youtitou.com\/videos.+?)">.+?<img.+?src="([^"]+)"'
     aResult = oParser.parse(sHtml, sPattern)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
@@ -90,7 +90,6 @@ def showMovies():
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addMovie(SITE_IDENTIFIER, 'showEpisode', sTitle, 'enfants.png', sThumb, '', oOutputParameterHandler)
 
@@ -103,23 +102,22 @@ def showEpisode():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtml = oRequestHandler.request()
-
     sPattern = '<div class="media-object">.+?<a href="(http:\/\/www.youtitou.com\/videos.+?)">.+?<img src="([^"]+)" alt="(.+?)"'
     aResult = oParser.parse(sHtml, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
+
             sUrl = aEntry[0]
             if sUrl.endswith('//'):
                 sUrl = sUrl[:-1]
 
-            sTitle = aEntry[2]
             sThumb = aEntry[1]
+            sTitle = aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)

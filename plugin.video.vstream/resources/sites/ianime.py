@@ -6,9 +6,9 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+from resources.lib.util import cUtil, Unquote, QuotePlus
 from resources.lib.comaddon import progress, VSlog
-import urllib2, urllib, re
+import urllib2, re
 import unicodedata, random
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0'
@@ -64,7 +64,7 @@ def FullUnescape(code):
     sPattern = '<script type="text\/javascript">document\.write\(unescape\(".+?"\)\);<\/script>'
     aResult = re.findall(sPattern, code)
     if aResult:
-        return urllib.unquote(aResult[0])
+        return Unquote(aResult[0])
     return code
 
 def ICDecode(html):
@@ -89,12 +89,12 @@ def ICDecode(html):
     i = 0
     while i < len(c):
         if (i%3==0):
-            d = d + "%"
+            d = d + '%'
         else:
             d = d + c[i];
         i = i + 1
 
-    c = urllib.unquote(d)
+    c = Unquote(d)
     #Recuperation du tableau
     aResult = re.findall('t=Array\(([0-9,]+)\);', c)
     if not aResult:
@@ -303,11 +303,11 @@ def showMovies(sSearch = ''):
         #data = urllib.urlencode(query_args)
         #headers = {'User-Agent' : 'Mozilla 5.10', 'Referer' : 'URL_MAIN'}
         #url = URL_MAIN + 'result.php'
-        #request = urllib2.Request(url,data,headers)
+        #request = urllib2.Request(url, data, headers)
         #reponse = urllib2.urlopen(request)
 
-        sSearch = urllib2.unquote(sSearch)
-        sSearch = urllib.quote_plus(sSearch).upper() #passe en majuscule et remplace espace par +
+        sSearch = Unquote(sSearch)
+        sSearch = QuotePlus(sSearch).upper() #remplace espace par + et passe en majuscule
 
         url = URL_MAIN + 'resultat+' + sSearch + '.html'
 
@@ -412,7 +412,7 @@ def showMovies(sSearch = ''):
         if sSearch:
             sNextPage = False
         else:
-            sNextPage = __checkForNextPage(sHtmlContent, sUrl)
+            sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
@@ -421,7 +421,7 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
-def __checkForNextPage(sHtmlContent, sUrl):
+def __checkForNextPage(sHtmlContent):
     oParser = cParser()
 
     sPattern ='class=.button red light. title=.Voir la page.+?<a href=.(.+?)(?:\'|") class=.button light.'
@@ -590,7 +590,7 @@ def showHosters():
     if (aResult[0] == True):
         #VSlog("methode 3")
         for aEntry in aResult[1]:
-            tmp = urllib.unquote(aEntry)
+            tmp = Unquote(aEntry)
 
             sPattern2 = 'src=["\']([^"\']+)["\']'
             aResult = re.findall(sPattern2, tmp)

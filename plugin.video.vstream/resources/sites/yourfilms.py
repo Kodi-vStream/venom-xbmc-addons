@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'yourfilms'
 SITE_NAME = 'Yourfilms'
 SITE_DESC = 'Films & Séries'
 
-URL_MAIN = 'https://yourfilms.net/'
+URL_MAIN = 'https://www.n1streaming.co'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + 'recherche-', 'showMovies')
@@ -312,6 +312,7 @@ def showLink():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sUrl = URL_MAIN + sUrl
 
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()

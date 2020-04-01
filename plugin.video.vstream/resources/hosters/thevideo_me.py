@@ -2,14 +2,12 @@
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #http://www.video.tt/embed/xxx
 #http://thevideo.me/embed-xxx-xxx.html
-from resources.lib.handler.requestHandler import cRequestHandler
+#from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.packer import cPacker
+#from resources.lib.packer import cPacker
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, VSlog, xbmc
-
-import re, urllib2
-
+from resources.lib.comaddon import dialog#, VSlog, xbmc
+import urllib2#, re
 import ssl, json
 
 

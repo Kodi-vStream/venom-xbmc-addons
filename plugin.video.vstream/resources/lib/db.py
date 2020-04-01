@@ -2,10 +2,8 @@
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 #Venom.
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-# from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.util import QuotePlus, Unquote
 from resources.lib.comaddon import dialog, VSlog, xbmc
-
-import urllib
 import xbmcvfs
 
 SITE_IDENTIFIER = 'cDb'
@@ -96,8 +94,8 @@ class cDb:
 
     def insert_history(self, meta):
 
-        #title = urllib.unquote(meta['title']).decode('ascii', 'ignore')
-        title = self.str_conv(urllib.unquote(meta['title']))
+        #title = Unquote(meta['title']).decode('ascii', 'ignore')
+        title = self.str_conv(Unquote(meta['title']))
         disp = meta['disp']
         icon = 'icon.png'
 
@@ -117,7 +115,7 @@ class cDb:
 
     def insert_resume(self, meta):
         title = self.str_conv(meta['title'])
-        site = urllib.quote_plus(meta['site'])
+        site = QuotePlus(meta['site'])
         #hoster = meta['hoster']
         point = meta['point']
         ex = "DELETE FROM resume WHERE hoster = '%s'" % (site)
@@ -138,7 +136,7 @@ class cDb:
         if not title:
             return
 
-        site = urllib.quote_plus(meta['site'])
+        site = QuotePlus(meta['site'])
         ex = 'INSERT INTO watched (title, site) VALUES (?, ?)'
         self.dbcur.execute(ex, (title, site))
         try:
@@ -163,7 +161,7 @@ class cDb:
 
     def get_resume(self, meta):
         title = self.str_conv(meta['title'])
-        site = urllib.quote_plus(meta['site'])
+        site = QuotePlus(meta['site'])
 
         sql_select = "SELECT * FROM resume WHERE hoster = '%s'" % (site)
 
@@ -229,7 +227,7 @@ class cDb:
             return False, False
 
     def del_resume(self, meta):
-        site = urllib.quote_plus(meta['site'])
+        site = QuotePlus(meta['site'])
 
         sql_select = "DELETE FROM resume WHERE hoster = '%s'" % (site)
 
@@ -249,7 +247,7 @@ class cDb:
     def insert_favorite(self, meta):
 
         title = self.str_conv(meta['title'])
-        siteurl = urllib.quote_plus(meta['siteurl'])
+        siteurl = QuotePlus(meta['siteurl'])
 
         try:
             sIcon = meta['icon'].decode('UTF-8')
@@ -295,7 +293,7 @@ class cDb:
 
             siteUrl = oInputParameterHandler.getValue('siteUrl')
             sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-            siteUrl = urllib.quote_plus(siteUrl)
+            siteUrl = QuotePlus(siteUrl)
             title = self.str_conv(sMovieTitle)
             title = title.replace("'", r"''")
             sql_delete = "DELETE FROM favorite WHERE siteurl = '%s' AND title = '%s'" % (siteUrl, title)
@@ -328,7 +326,7 @@ class cDb:
     #     else:
     #         sCat = '5'
 
-    #     sUrl = urllib.quote_plus(sUrl)
+    #     sUrl = QuotePlus(sUrl)
     #     fav_db = self.__sFile
     #     watched = {}
     #     if not os.path.exists(fav_db):
@@ -362,8 +360,8 @@ class cDb:
     def insert_download(self, meta):
 
         title = self.str_conv(meta['title'])
-        url = urllib.quote_plus(meta['url'])
-        sIcon = urllib.quote_plus(meta['icon'])
+        url = QuotePlus(meta['url'])
+        sIcon = QuotePlus(meta['icon'])
         sPath = meta['path']
 
         ex = 'INSERT INTO download (title, url, path, cat, icon, size, totalsize, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
@@ -383,7 +381,7 @@ class cDb:
         if meta == '':
             sql_select = 'SELECT * FROM download'
         else:
-            url = urllib.quote_plus(meta['url'])
+            url = QuotePlus(meta['url'])
             sql_select = "SELECT * FROM download WHERE url = '%s' AND status = '0'" % (url)
 
         try:
@@ -408,7 +406,7 @@ class cDb:
 
     def reset_download(self, meta):
 
-        url = urllib.quote_plus(meta['url'])
+        url = QuotePlus(meta['url'])
         sql_select = "UPDATE download SET status = '0' WHERE status = '2' AND url = '%s'" % (url)
 
         try:
@@ -422,7 +420,7 @@ class cDb:
     def del_download(self, meta):
 
         if len(meta['url']) > 1:
-            url = urllib.quote_plus(meta['url'])
+            url = QuotePlus(meta['url'])
             sql_select = "DELETE FROM download WHERE url = '%s'" % (url)
         elif len(meta['path']) > 1:
             path = meta['path']

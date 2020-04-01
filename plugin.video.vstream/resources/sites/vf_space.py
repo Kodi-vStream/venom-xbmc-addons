@@ -7,12 +7,11 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-
 import re
 
 SITE_IDENTIFIER = 'vf_space'
 SITE_NAME = 'VF.Space'
-SITE_DESC = 'Films, Séries et Mangas Gratuit en streaming sur Full stream'
+SITE_DESC = 'Films, Séries et Mangas Gratuit en streaming'
 
 URL_MAIN = 'https://vvww.vfspace.me/'
 
@@ -122,9 +121,11 @@ def showMovies(sSearch = ''):
         oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
         sHtmlContent = oRequestHandler.request()
 
+    #reprise du fichier html pour récupérer les films et les séries en cas d'absence d'argument
+    sHtmlContent = re.sub('<li class="red">\d+</li>', '', sHtmlContent)
+    sHtmlContent = sHtmlContent.replace(' class="red"', '')
 
-    sPattern = '<a class="short-poster" href="([^"]+)" title="([^"]+)">.+?<li>([^"]+)<\/li.+?class="white">([^"]+)<.+?data-src="([^"]+)'
-
+    sPattern = '<a class="short-poster" href="([^"]+)" title="([^"]+)">.+?(?:|<li>([^<]*)<\/li.+?)class="white">([^<]*)<.+?data-src="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -140,22 +141,20 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
+            sUrl2 = aEntry[0]
+            sTitle = aEntry[1].replace('Regarder', '').replace('en ligne gratuitement', '')
+            sQual = aEntry[2]
+            sYear = aEntry[3]
             sThumb = aEntry[4]
             if sThumb.startswith('/'):
-                sThumb = URL_MAIN[:-1] + aEntry[4]
+                sThumb = URL_MAIN[:-1] + sThumb
 
-            sTitle = aEntry[1].replace('Regarder', '').replace('en ligne gratuitement', '')
-            sUrl2 = aEntry[0]
-            sQual = aEntry[2]
-            sYear = aEntry[3].replace('/li>','')
-
-            sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
+            sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sYear)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sYear', sYear)
 
             if 'serie' in sUrl2 or 'saison' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
@@ -197,7 +196,6 @@ def showEpisodes():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sYear = oInputParameterHandler.getValue('sYear')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -210,8 +208,7 @@ def showEpisodes():
 
     sHtmlContent = oParser.abParse(sHtmlContent, 'class="movie-tabs">', 'similaires</h3>')
 
-    #recuperation des suivants
-    sPattern = 'button class="llien">Lien(.+?)</button>|<a title=.+?target="seriePlayer" data-id="([^"]+)">([^<]+)<\/a>'
+    sPattern = 'button class="llien">Lien([^<]+)</button>|<a title=.+?target="seriePlayer" data-id="([^"]+)">([^<]+)<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -223,7 +220,7 @@ def showEpisodes():
             if progress_.iscanceled():
                 break
 
-            if aEntry[0]:
+            if aEntry[0]:#affichage de l'episode
                 oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + aEntry[0] + '[/COLOR]')
 
             else:
@@ -231,14 +228,13 @@ def showEpisodes():
                 if sUrl2.startswith('/'):
                     sUrl2 = URL_MAIN[:-1] + aEntry[1]
 
-                SxE = re.sub('lecteur (\d+)', '', aEntry[2]).upper().replace(' ', '')
-                sTitle = sMovieTitle + '[' + SxE + ']'
+                sLang = re.sub('lecteur (\d+)', '', aEntry[2]).upper().replace(' ', '')
+                sTitle = sMovieTitle + '(' + sLang + ')'
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oOutputParameterHandler.addParameter('sYear', sYear)
                 oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -252,7 +248,6 @@ def showLink():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    sYear = oInputParameterHandler.getValue('sYear')
 
     oRequest = cRequestHandler(sUrl.replace('https', 'http'))
     sHtmlContent = oRequest.request()
@@ -278,7 +273,7 @@ def showLink():
             sUrl2 = aEntry[1]
             if sUrl2.startswith('/'):
                 sUrl2 = URL_MAIN[:-1] + aEntry[1] # ou a voir https://4kvfsplayer.xyz
-            
+
             # On ne propose que les hosts qu'on sait décoder
             sHost = aEntry[2].replace(' ', '')
             oHoster = cHosterGui().checkHoster(sHost)
@@ -286,13 +281,12 @@ def showLink():
                 continue
 
             sLang = aEntry[0][-2:]
-            sTitle = ('%s [%s] [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
+            sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -307,7 +301,6 @@ def showHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequest = cRequestHandler(sUrl)
-
     oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:66.0) Gecko/20100101 Firefox/66.0')
     oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
     oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')

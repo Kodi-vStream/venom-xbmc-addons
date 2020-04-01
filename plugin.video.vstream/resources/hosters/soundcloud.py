@@ -4,10 +4,12 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, VSlog
+from resources.lib.comaddon import VSlog#, dialog
 
-try:    import json
-except: import simplejson as json
+try:
+    import json
+except:
+    import simplejson as json
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -59,7 +61,6 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
 
         VSlog(self.__sUrl)
-        api_call = ''
 
         oRequest = cRequestHandler(self.__sUrl)
         oRequest.addHeaderEntry('User-Agent', UA)
@@ -81,8 +82,9 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             for i in aResult[1]:
-             if 'app-' in i:
-                url2 = i
+                if 'app-' in i:
+                    url2 = i
+                    break
         else:
             VSlog('err id1')
             return False
@@ -94,13 +96,13 @@ class cHoster(iHoster):
         sPattern =  'client_id:"([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
-            id = aResult[1][0]
+            sId = aResult[1][0]
         else:
             VSlog('err id2')
             return False
 
         #json call
-        jsonurl = 'https://api.soundcloud.com/i1/tracks/' + n + '/streams?client_id=' + id
+        jsonurl = 'https://api.soundcloud.com/i1/tracks/' + n + '/streams?client_id=' + sId
 
         VSlog(jsonurl)
 
@@ -108,7 +110,7 @@ class cHoster(iHoster):
         oRequest.addHeaderEntry('User-Agent', UA)
         sHtmlContent = oRequest.request()
 
-        #fh = open('c:\\test.txt', "w")
+        #fh = open('c:\\test.txt', 'w')
         #fh.write(sHtmlContent)
         #fh.close()
 

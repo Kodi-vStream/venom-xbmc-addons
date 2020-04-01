@@ -1,21 +1,19 @@
 #-*- coding: utf-8 -*-
 #vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
+# from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.parser import cParser
-
 from resources.sites.freebox import getHtml, showWeb, play__, decodeEmail
 from resources.lib.comaddon import progress#, VSlog
-
 import re
 
 SITE_IDENTIFIER = 'iptv'
 SITE_NAME = 'Iptv'
 SITE_DESC = 'Regarder la télévision'
 
-URL_MAIN = 'https://extinf.tk/'
+URL_MAIN = 'https://www.extinf.com/'
 FREE_M3U = URL_MAIN + 'home-passion-for-iptv-free-m3u-links-working-and-updated/'
 
 def load():
@@ -38,7 +36,7 @@ def showPays():
 
     oParser = cParser()
     sHtmlContent = getHtml(sUrl)
-    sPattern = '<li class="cat-item cat-item-.+?"><a href=([^"]+)(?:>([^<]+)</a>|([^<]+)includes)'
+    sPattern = '<li class="cat-item cat-item-.+?"><a href="([^"]+)"(?:>([^<]+)</a>|([^<]+)includes)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -50,11 +48,11 @@ def showPays():
             if progress_.iscanceled():
                 break
 
-            if str(aEntry[1]) != "":
+            if str(aEntry[1]) != '':
                 sTitle = aEntry[1]
             else:
-                sTitle = aEntry[2].replace('"','')
-            sUrl2 = aEntry[0].replace(' title=','')
+                sTitle = aEntry[2].replace('"', '')
+            sUrl2 = aEntry[0].replace(' title=', '')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -105,14 +103,11 @@ def showDailyList():
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showDailyList', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showDailyList', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    # oInputParameterHandler = cInputParameterHandler()
-    # sUrl = oInputParameterHandler.getValue('siteUrl')
-
     oParser = cParser()
     sPattern = '<a class="next page-numbers" href=([^"]+)>Next</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)

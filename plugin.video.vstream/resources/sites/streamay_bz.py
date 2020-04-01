@@ -7,9 +7,8 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, dialog#, VSlog
-from resources.lib.util import cUtil
+from resources.lib.util import cUtil, Unquote
 import base64, re
-from resources.lib.util import Unquote
 
 SITE_IDENTIFIER = 'streamay_bz'
 SITE_NAME = 'Streamay'
@@ -22,9 +21,10 @@ MOVIE_VIEWS = (URL_MAIN + '?v_sortby=views&v_orderby=desc', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_LIST = (URL_MAIN, 'AlphaSearch')
 
-FUNCTION_SEARCH = 'showMovies'
-URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_MOVIES = ('', 'showSearchMovies')
+#la recherche ne fonctionne pas
+# FUNCTION_SEARCH = 'showMovies'
+# URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+# URL_SEARCH_MOVIES = ('', 'showSearchMovies')
 
 
 def load():
@@ -47,9 +47,9 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
     #30/10 Ne marche pas le site ne renvoi rien
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
-    #oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Liste) ', 'listes.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Liste) ', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -65,9 +65,9 @@ def showSearch():
 def showSearchMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-        
+
         sSearch = Unquote(sSearch)
-        
+
         sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
 
         pdata = 'nonce=7a700d2f1b&action=tr_livearch&trsearch=' + sSearch #voir si nonce change
@@ -123,7 +123,7 @@ def AlphaSearch():
             sUrl = URL_MAIN + 'letters/0-9/'
         else:
             sLetter = chr(64 + i)
-            sUrl = URL_MAIN + 'letters/' + sLetter
+            sUrl = URL_MAIN + 'letters/' + sLetter + '/'
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -163,7 +163,7 @@ def showMovieslist():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<span class="Num">.+?<a href="([^"]+)".+?<img src="([^"]+)".+?<strong>([^<]+)<\/strong>.+?<td>([^<]+)<\/td>.+?<span class="Qlty">([^<]+)<\/span>'
+    sPattern = '<span class=Num>.+?href=(.+?) class=MvTbImg> <img src=(.+?) alt=.+?<strong>([^<]+)</strong> </a></td><td>([^<]+)<.+?class=Qlty>([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -179,13 +179,12 @@ def showMovieslist():
                 break
 
             sUrl = aEntry[0]
-            sQual = aEntry[4]
-            sTitle = aEntry[2]
-            sYear = aEntry[3]
-
             sThumb = re.sub('/w\d+', '/w342', aEntry[1], 1)
             if sThumb.startswith('/'):
                 sThumb = 'http:' + sThumb
+            sTitle = aEntry[2]
+            sYear = aEntry[3]
+            sQual = aEntry[4]
 
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sYear)
 
@@ -202,7 +201,7 @@ def showMovieslist():
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovieslist', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovieslist', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -258,7 +257,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()

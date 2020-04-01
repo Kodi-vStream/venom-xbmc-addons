@@ -1,11 +1,10 @@
 #-*- coding: utf-8 -*-
 #vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
+# from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.parser import cParser
-
 from resources.sites.freebox import getHtml, showWeb, play__
 from resources.lib.comaddon import progress#, VSlog
 
@@ -20,7 +19,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN)
-    oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Derniere liste', 'listes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Dernières listes', 'listes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN)
@@ -47,8 +46,8 @@ def showPays():
             if progress_.iscanceled():
                 break
 
-            sTitle = aEntry[1]
             sUrl2 = aEntry[0]
+            sTitle = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -79,8 +78,8 @@ def showDailyList():
             if progress_.iscanceled():
                 break
 
-            sTitle = aEntry[1]
             sUrl2 = aEntry[0]
+            sTitle = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -94,14 +93,11 @@ def showDailyList():
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showDailyList', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showDailyList', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    # oInputParameterHandler = cInputParameterHandler()
-    # sUrl = oInputParameterHandler.getValue('siteUrl')
-
     oParser = cParser()
     sPattern = ' class="last".+?href="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -132,6 +128,7 @@ def showAllPlaylist():
 
             sTitle = aEntry[1]
             sUrl2 = aEntry[0]
+            sTitle = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)

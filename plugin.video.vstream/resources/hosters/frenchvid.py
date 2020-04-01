@@ -5,9 +5,10 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog
+from resources.lib.comaddon import dialog, VSlog
 import urllib
 import json
+
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0'
 
@@ -55,14 +56,14 @@ class cHoster(iHoster):
             baseUrl = 'https://www.fembed.com/api/source/'
         elif 'fembed.' in self.__sUrl:
             baseUrl = 'https://www.fembed.com/api/source/'
-        elif 'sendvid' in self.__sUrl:
-            baseUrl = 'https://sendvid.net/api/source/'
         elif 'vfsplayer' in self.__sUrl:
             baseUrl = 'https://vfsplayer.xyz/api/source/'
         elif 'fsimg' in self.__sUrl:
             baseUrl = 'https://www.fsimg.info/api/source/'
         elif 'fem.tohds' in self.__sUrl:
             baseUrl = 'https://feurl.com/api/source/'
+        elif 'core1player' in self.__sUrl:
+            baseUrl = 'https://www.core1player.com/api/source/'
 
         if 'fem.tohds' in self.__sUrl:
             oRequestHandler = cRequestHandler(self.__sUrl)
@@ -73,12 +74,14 @@ class cHoster(iHoster):
             aResult = oParser.parse(sHtmlContent, sPattern)
 
             url = baseUrl + aResult[1][0].rsplit('/', 1)[1]
+            
+            postdata = 'r=' + urllib.quote_plus(self.__sUrl) + '&d=' + baseUrl.replace('https://', '').replace('/api/source/', '')
 
         else:
             url = baseUrl + self.__sUrl.rsplit('/', 1)[1]
+            postdata = 'r=' + urllib.quote_plus(self.__sUrl) + '&d=' + baseUrl.replace('https://', '').replace('/api/source/', '')
 
-        postdata = 'r=' + urllib.quote_plus(self.__sUrl) + '&d=' + baseUrl.replace('https://', '').replace('/api/source/', '')
-
+        VSlog(url)
         oRequest = cRequestHandler(url)
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
@@ -89,6 +92,8 @@ class cHoster(iHoster):
         oRequest.addHeaderEntry('Referer',self.__sUrl)
         oRequest.addParametersLine(postdata)
         sHtmlContent = oRequest.request()
+        
+        VSlog(sHtmlContent)
         
         page = json.loads(sHtmlContent)
         if page:

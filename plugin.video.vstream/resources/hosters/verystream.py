@@ -4,8 +4,6 @@ from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 import xbmcgui, re
 
-from resources.lib.comaddon import VSlog
-
 class cHoster(iHoster):
 
     def __init__(self):
@@ -55,19 +53,16 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
         api_call = ''
 
-        oParser = cParser()
-
         sPattern =  'id="videolink">([^<>]+)<\/p>'
         aResult = re.findall(sPattern, sHtmlContent)
-        
+
         if (aResult):
-            
+
             api_call = 'https://verystream.com/gettoken/' + aResult[0] + '?mime=true'
 
         if (api_call):

@@ -12,8 +12,7 @@ from resources.lib.multihost import cJheberg
 from resources.lib.multihost import cMultiup
 from resources.lib.packer import cPacker
 from resources.lib.comaddon import progress
-
-import urllib, re
+import urllib#, re
 
 SITE_IDENTIFIER = 'robindesdroits'
 SITE_NAME = 'Robin des Droits'
@@ -248,7 +247,6 @@ def showLinkGenres():
         pass
 
     sHtmlContent = sHtmlContent = oParser.abParse(sHtmlContent, 'class="entry-title page-title">', '<span class="screen-reader-text">Rechercher')
-
     sPattern = '<span style="font-family: Arial, Helvetica,.+?font-size:.+?pt;">(.+?)<\/span>|(?:<h3 class="entry-title mh-loop-title"|<li )><a href="([^"]+)".+?>(.+?)<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -262,7 +260,7 @@ def showLinkGenres():
                 break
 
             if aEntry[0]:
-                title = aEntry[0].replace('<strong>','').replace('</strong>','')
+                title = aEntry[0].replace('<strong>', '').replace('</strong>', '')
                 oGui.addText(SITE_IDENTIFIER, '[COLOR gold]' + title + '[/COLOR]')
             else:
                 sUrl = aEntry[1]

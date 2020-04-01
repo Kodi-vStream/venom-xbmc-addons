@@ -2,8 +2,8 @@
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 #Venom.
 from resources.lib.handler.requestHandler import cRequestHandler
-import re, urllib
-from resources.lib.comaddon import VSlog
+import re#, urllib
+# from resources.lib.comaddon import VSlog
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 #modif cloudflare
 def GetHtml(url, postdata = None):
@@ -42,8 +42,8 @@ class cMultiup:
     def GetUrls(self, url):
         sHtmlContent = GetHtml(url)
         sPattern = '<form action="(.+?)" method="post">'
-        result = re.findall(sPattern,sHtmlContent)
-        url = 'https://multiup.org'+''.join(result[0])
+        result = re.findall(sPattern, sHtmlContent)
+        url = 'https://multiup.org' + ''.join(result[0])
 
         NewUrl = url.replace('http://www.multiup.org/fr/download', 'http://www.multiup.eu/fr/mirror').replace('http://www.multiup.eu/fr/download', 'http://www.multiup.eu/fr/mirror').replace('http://www.multiup.org/download', 'http://www.multiup.eu/fr/mirror')
 
@@ -68,10 +68,10 @@ class cJheberg:
         self.list = []
 
     def GetUrls(self, url):
-        
+
         if url.endswith('/'):
             url = url[:-1]
-        
+
         idFile = url.rsplit('/', 1)[-1]
         NewUrl = 'https://api.jheberg.net/file/' + idFile
         sHtmlContent = GetHtml(NewUrl)

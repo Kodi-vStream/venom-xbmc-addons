@@ -18,7 +18,7 @@ SITE_DESC = 'anime en streaming'
 URL_MAIN = 'https://www.neko-sama.fr/'
 
 URL_SEARCH = (URL_MAIN + 'animes-search.json?gkeorgkeogkccc', 'showSearchResult')
-URL_SEARCH_SERIES = (URL_MAIN + 'animes-search.json?gkeorgkeogkccc', 'showSearchResult')
+URL_SEARCH_SERIES = (URL_SEARCH[0], 'showSearchResult')
 FUNCTION_SEARCH = 'showSearchResult'
 
 ANIM_ANIMS = ('http://', 'load')
@@ -132,16 +132,14 @@ def showSearchResult(sSearch):
 
 def showMovies():
     oGui = cGui()
+    oParser = cParser()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
     sPattern = '<a href="([^"]+)"><div class="nekosama-lazy-wrapper">.+?<img src="#" data-src="([^"]+)" alt="([^"]+)"'
-
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -156,9 +154,9 @@ def showMovies():
             if progress_.iscanceled():
                 break
 
-            sTitle = aEntry[2]
             sUrl2 = URL_MAIN + aEntry[0]
             sThumb = aEntry[1]
+            sTitle = aEntry[2]
             sDesc = ''
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -174,7 +172,7 @@ def showMovies():
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -190,6 +188,7 @@ def __checkForNextPage(sHtmlContent):
 
 def ShowSerieSaisonEpisodes():
     oGui = cGui()
+    oParser = cParser()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -199,7 +198,6 @@ def ShowSerieSaisonEpisodes():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    oParser = cParser()
     sDesc = ''
     try:
         sPattern = '<p>([^"]+)</p>'
@@ -210,12 +208,10 @@ def ShowSerieSaisonEpisodes():
         pass
 
     sPattern = '"episode":"([^"]+)".+?"url":"([^"]+)","url_image":"([^"]+)"'
-
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         total = len(aResult[1])
-
         progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
@@ -223,7 +219,7 @@ def ShowSerieSaisonEpisodes():
             if progress_.iscanceled():
                 break
 
-            sTitle = sMovieTitle + ' ' + aEntry[0].replace('Ep. ','E')
+            sTitle = sMovieTitle + ' ' + aEntry[0].replace('Ep. ', 'E')
             sUrl2 = URL_MAIN + aEntry[1].replace('\\/', '/')
             sThumb = aEntry[2]
 

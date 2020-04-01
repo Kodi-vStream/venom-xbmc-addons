@@ -65,12 +65,11 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         api_call = ''
-        oParser = cParser()
         url = []
         qua = []
-        id = self.__getIdFromUrl(self.__sUrl)
+        sId = self.__getIdFromUrl(self.__sUrl)
 
-        sUrl = 'https://api.tune.pk/v3/videos/' + id
+        sUrl = 'https://api.tune.pk/v3/videos/' + sId
 
         oRequest = cRequestHandler(sUrl)
         oRequest.addHeaderEntry('User-Agent', UA)

@@ -5,7 +5,6 @@ from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
 
-
 class cHoster(iHoster):
 
     def __init__(self):
@@ -67,9 +66,9 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
         api_call = False
 
-        id = self.__getIdFromUrl(self.__sUrl)
+        sId = self.__getIdFromUrl(self.__sUrl)
 
-        web_url = 'https://player.vimeo.com/video/' + id
+        web_url = 'https://player.vimeo.com/video/' + sId
 
         oRequest = cRequestHandler(web_url)
         sHtmlContent = oRequest.request()

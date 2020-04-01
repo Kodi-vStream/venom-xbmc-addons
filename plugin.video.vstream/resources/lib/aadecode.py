@@ -45,7 +45,7 @@ class AADecoder(object):
         str_char = ""
         while enc_char != '':
             found = False
-            
+
             for i in range(len(self.b)):
                 if enc_char.find(self.b[i]) == 0:
                     str_char += self.base_repr(i, radix)
@@ -54,87 +54,87 @@ class AADecoder(object):
                     break
 
             if not found:
-                for i in range(len(self.b)):             
-                    enc_char=enc_char.replace(self.b[i], str(i))
-                
+                for i in range(len(self.b)):
+                    enc_char = enc_char.replace(self.b[i], str(i))
+
                 startpos=0
                 findClose=True
                 balance=1
                 result=[]
                 if enc_char.startswith('('):
-                    l=0
-                    
+                    l = 0
+
                     for t in enc_char[1:]:
                         l+=1
-                        if findClose and t==')':
-                            balance-=1;
-                            if balance==0:
-                                result+=[enc_char[startpos:l+1]]
-                                findClose=False
+                        if findClose and t == ')':
+                            balance -= 1
+                            if balance == 0:
+                                result += [enc_char[startpos:l+1]]
+                                findClose = False
                                 continue
-                        elif not findClose and t=='(':
-                            startpos=l
-                            findClose=True
-                            balance=1
+                        elif not findClose and t == '(':
+                            startpos = l
+                            findClose = True
+                            balance = 1
                             continue
-                        elif t=='(':
-                            balance+=1
-                 
+                        elif t == '(':
+                            balance += 1
 
-                if result is None or len(result)==0:
+
+                if result is None or len(result) == 0:
                     return ""
                 else:
-                    
+
                     for r in result:
                         value = self.decode_digit(r, radix)
                         if value == "":
                             return ""
                         else:
                             str_char += value
-                            
+
                     return str_char
 
             enc_char = enc_char[len(end_char):]
 
         return str_char
 
-        
-              
+
+
     def decode_digit(self, enc_int, radix):
 
-        #enc_int=enc_int.replace('(ﾟΘﾟ)','1').replace('(ﾟｰﾟ)','4').replace('(c^_^o)','0').replace('(o^_^o)','3')  
+        #enc_int = enc_int.replace('(ﾟΘﾟ)', '1').replace('(ﾟｰﾟ)', '4').replace('(c^_^o)', '0').replace('(o^_^o)', '3')
 
         rr = '(\(.+?\)\))\+'
-        rerr=enc_int.split('))+')
+        rerr = enc_int.split('))+')
         v = ''
-        
+
         #new mode
         if (True):
 
             for c in rerr:
-                
+
                 if len(c)>0:
                     if c.strip().endswith('+'):
-                        c=c.strip()[:-1]
+                        c = c.strip()[:-1]
 
-                    startbrackets=len(c)-len(c.replace('(',''))
-                    endbrackets=len(c)-len(c.replace(')',''))
-                    
+                    startbrackets=len(c)-len(c.replace('(', ''))
+                    endbrackets=len(c)-len(c.replace(')', ''))
+
                     if startbrackets>endbrackets:
-                        c+=')'*startbrackets-endbrackets
-                    
+                        c += ')'*startbrackets-endbrackets
+
                     #fh = open('c:\\test.txt', "w")
                     #fh.write(c)
                     #fh.close()
-                    
-                    c = c.replace('!+[]','1')
-                    c = c.replace('-~','1+')
-                    c = c.replace('[]','0')
-                    
-                    v+=str(eval(c))
-                    
+
+                    c = c.replace('!+[]', '1')
+                    c = c.replace('-~', '1+')
+                    c = c.replace('[]', '0')
+
+                    v += str(eval(c))
+
             return v
-         
+
         # mode 0=+, 1=-
         mode = 0
         value = 0
@@ -201,7 +201,7 @@ class AADecoder(object):
                 enc_char = data[:data.find(begin_char)]
                 data = data[len(enc_char):]
 
-            
+
             radix = 8
             # Detect radix 16 for utf8 char
             if enc_char.find(alt_char) == 0:
@@ -209,16 +209,16 @@ class AADecoder(object):
                 radix = 16
 
             str_char = self.decode_char(enc_char, radix)
-            
+
             if str_char == "":
-                print "no match :  "
+                print "no match:  "
                 print  data + "\nout = " + out + "\n"
                 return False
-            
+
             out += chr(int(str_char, radix))
 
         if out == "":
-            print "no match : " + data
+            print "no match: " + data
             return False
 
         return out
@@ -248,12 +248,14 @@ def decodeAA(text):
             .replace("(+", "(")
         char = re.sub(r'\((\d)\)', r'\1', char)
 
-        c = "";
+        c = ""
         subchar = ""
         for v in char:
             c += v
             try:
-                x = c; subchar += str(eval(x)); c = ""
+                x = c
+                subchar += str(eval(x))
+                c = ""
             except:
                 pass
         if subchar != '': txt += subchar + "|"

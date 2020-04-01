@@ -6,7 +6,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog, VSlog, addon
-import urllib2,urllib,re
+import urllib,re, base64
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'}
 
@@ -109,12 +109,11 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         self.stream = True
-        self.__sUrl = self.__sUrl.replace('uptobox.com/', 'uptostream.com/')
+        self.__sUrl = self.__sUrl.replace('uptobox.com/', 'uptostream.com/iframe/')
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
-        SubTitle = ''
         SubTitle = self.checkSubtitle(sHtmlContent)
 
         if (self.stream):
@@ -173,6 +172,13 @@ class cHoster(iHoster):
     def GetMedialinkStreaming(self, sHtmlContent):
 
         oParser = cParser()
+
+        #Parfois codée
+        sPattern =  "window\.sources = JSON\.parse\(atob\('([^']+)'"
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            sHtmlContent = base64.b64decode(aResult[1][0])
+        
         sPattern =  'src":[\'"]([^<>\'"]+)[\'"],"type":[\'"][^\'"><]+?[\'"],"label":[\'"]([0-9]+p)[\'"].+?"lang":[\'"]([^\'"]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -195,7 +201,7 @@ class cHoster(iHoster):
                 stream_url = url[0]
             #si plus de une
             elif len(url) > 1:
-            #tableau qualiter
+            #tableau qualitée
                 select = dialog().VSselectqual(qua, url)
                 if (select):
                     stream_url = select

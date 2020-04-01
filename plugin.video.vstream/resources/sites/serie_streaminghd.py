@@ -93,7 +93,7 @@ def showMovies(sSearch = ''):
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
 
-            sTitle =  aEntry[1]#.replace(' - Saison', ' Saison')
+            sTitle = aEntry[1]
             siteUrl = aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -161,7 +161,7 @@ def showHosters():
             for aEntry in aResult[1]:
                 progress_.VSupdate(progress_, total)
                 if progress_.iscanceled():
-                   break
+                    break
 
                 sHosterUrl = aEntry[0]
                 sMovieTitle2 = sMovieTitle + 'episode ' + aEntry[1]
@@ -189,7 +189,7 @@ def showHosters():
                 for aEntry in aResult[1]:
                     progress_.VSupdate(progress_, total3)
                     if progress_.iscanceled():
-                       break
+                        break
 
                     sHosterUrl = aEntry[0]
                     sMovieTitle2 = sMovieTitle + 'episode ' + aEntry[1]

@@ -323,7 +323,7 @@ class cHoster(iHoster):
         #VSlog('red ' + res.geturl())
 
         if 'embed' is res.geturl():
-            return false
+            return False
 
         html = res.read()
 

@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress#, VSlog
 import re
 
 SITE_IDENTIFIER = 'adkami_com'
@@ -206,7 +206,7 @@ def showList():
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-      sUrl = sSearch.replace(' ', '+')
+        sUrl = sSearch.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -335,7 +335,7 @@ def showLinks():
             pass
 
         if sUrl.startswith('//'):
-            sUrl = "https:" + sUrl
+            sUrl = 'https:' + sUrl
 
         if 'www.' in sUrl:
             sHost = sUrl.split("/")[2].split('.')[1]
@@ -381,7 +381,7 @@ def decodex(x):
     from itertools import chain
     import base64
 
-    e = base64.b64decode(x.replace("https://www.youtube.com/embed/",""))
+    e = base64.b64decode(x.replace('https://www.youtube.com/embed/', ''))
     t = ''
     r = "ETEfazefzeaZa13MnZEe"
     a = 0

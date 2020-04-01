@@ -12,16 +12,16 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.db import cDb
 from resources.lib.comaddon import progress, VSlog, addon, window, xbmc
-
-import urllib
-
+from resources.lib.util import Quote
 #http://kodi.wiki/view/InfoLabels
 #http://kodi.wiki/view/List_of_boolean_conditions
-
 
 ####################  
 #
 #  Permet de debuguer avec Eclipse
+#
+# Tuto ici :
+# https://github.com/Kodi-vStream/venom-xbmc-addons/issues/2739
 #
 ####################
 
@@ -45,7 +45,9 @@ if REMOTE_DBG:
 class main:
     def __init__(self):
         self.parseUrl()
-        #cDb()._create_tables()
+        #Ne pas desactiver la ligne d'en dessous, car sinon ca genere
+        #des probleme de Db sous Android.
+        cDb()._create_tables()
 
     def parseUrl(self):
 
@@ -64,14 +66,16 @@ class main:
 
         if (sFunction == 'setSetting'):
             if (oInputParameterHandler.exist('id')):
-                id = oInputParameterHandler.getValue('id')
-            else: return
+                plugin_id = oInputParameterHandler.getValue('id')
+            else:
+                return
 
             if (oInputParameterHandler.exist('value')):
                 value = oInputParameterHandler.getValue('value')
-            else: return
+            else:
+                return
 
-            setSetting(id, value)
+            setSetting(plugin_id, value)
             return
 
         if (sFunction == 'DoNothing'):
@@ -98,9 +102,9 @@ class main:
 
         if (oInputParameterHandler.exist('site')):
             sSiteName = oInputParameterHandler.getValue('site')
-            if (oInputParameterHandler.exist('title')):
-                sTitle = oInputParameterHandler.getValue('title')
-            else: sTitle = "none"
+#            if (oInputParameterHandler.exist('title')):
+#                sTitle = oInputParameterHandler.getValue('title')
+#            else: sTitle = "none"
 
             VSlog('load site ' + sSiteName + ' and call function ' + sFunction)
             #cStatistic().callStartPlugin(sSiteName, sTitle)
@@ -178,27 +182,28 @@ class main:
                 traceback.print_exc()
                 return
 
-def setSetting(id, value):
+def setSetting(plugin_id, value):
     addons = addon()
-    setting = addons.getSetting(id)
-
+    setting = addons.getSetting(plugin_id)
+    
     # Si le parametre existe, on autorise la modification
-    if (setting != ''):
-        addons.setSetting(id, value)
+    if (setting != '' and setting != value):
+        addons.setSetting(plugin_id, value)
         return True
+    
     return False
 
 def isHosterGui(sSiteName, sFunction):
     if (sSiteName == 'cHosterGui'):
         oHosterGui = cHosterGui()
-        exec "oHosterGui." + sFunction + "()"
+        exec ("oHosterGui." + sFunction + "()")
         return True
     return False
 
 def isGui(sSiteName, sFunction):
     if (sSiteName == 'cGui'):
         oGui = cGui()
-        exec "oGui." + sFunction + "()"
+        exec ("oGui." + sFunction + "()")
         return True
     return False
 
@@ -206,7 +211,7 @@ def isFav(sSiteName, sFunction):
     if (sSiteName == 'cFav'):
         from resources.lib.favourite import cFav
         oFav = cFav()
-        exec "oFav." + sFunction + "()"
+        exec ("oFav." + sFunction + "()")
         return True
     return False
 
@@ -214,7 +219,7 @@ def isLibrary(sSiteName, sFunction):
     if (sSiteName == 'cLibrary'):
         from resources.lib.library import cLibrary
         oLibrary = cLibrary()
-        exec "oLibrary." + sFunction + "()"
+        exec ("oLibrary." + sFunction + "()")
         return True
     return False
 
@@ -222,14 +227,14 @@ def isDl(sSiteName, sFunction):
     if (sSiteName == 'cDownload'):
         from resources.lib.download import cDownload
         oDownload = cDownload()
-        exec "oDownload." + sFunction + "()"
+        exec ("oDownload." + sFunction + "()")
         return True
     return False
 
 def isHome(sSiteName, sFunction):
     if (sSiteName == 'cHome'):
         oHome = cHome()
-        exec "oHome." + sFunction + "()"
+        exec ("oHome." + sFunction + "()")
         return True
     return False
 
@@ -237,7 +242,7 @@ def isTrakt(sSiteName, sFunction):
     if (sSiteName == 'cTrakt'):
         from resources.lib.trakt import cTrakt
         oTrakt = cTrakt()
-        exec "oTrakt." + sFunction + "()"
+        exec ("oTrakt." + sFunction + "()")
         return True
     return False
 
@@ -269,7 +274,7 @@ def searchGlobal():
     window(10101).setProperty('search', 'true')
 
     oGui.addText('globalSearch', addons.VSlang(30081) % (sSearchText), 'none.png')
-    sSearchText = urllib.quote(sSearchText)
+    sSearchText = Quote(sSearchText)
 
     for count, plugin in enumerate(aPlugins):
 
@@ -288,10 +293,10 @@ def searchGlobal():
     #progress_.VSclose(progress_)
 
     #affichage
-    total=len(oGui.searchResults)
+    total = len(oGui.searchResults)
     #progress_ = progress().VScreate()
 
-    for count,result in enumerate(oGui.searchResults):
+    for count, result in enumerate(oGui.searchResults):
         #text = '%s/%s - %s' % ((count+1/total), total, result['guiElement'].getTitle())
 
         #if(count == 0):
@@ -299,7 +304,6 @@ def searchGlobal():
         #else:
         #    cConfig().updateDialogSearch(dialog, total, text)
         progress_.VSupdatesearch(progress_, total, "Patience...")
-
 
         #result['params'].addParameter('VSTRMSEARCH', 'True')
 

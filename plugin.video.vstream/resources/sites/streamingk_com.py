@@ -27,9 +27,6 @@ MOVIE_GENRES = (True, 'showGenres')
 SERIE_SERIES = (URL_MAIN + 'category/series-tv/', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'category/series-tv/', 'showMovies')
 SERIE_LIST = (True, 'showList')
-#SERIE_VIEWS = (URL_MAIN + 'most-viewed/', 'showMovies')
-#SERIE_COMMENTS = (URL_MAIN + 'most-popular/', 'showMovies')
-#SERIE_NOTES = (URL_MAIN + 'most-like/', 'showMovies')
 SERIE_VFS = (URL_MAIN + 'category/series-tv/series-streaming-vf/', 'showMovies')
 SERIE_VOSTFR = (URL_MAIN + 'category/series-tv/series-streaming-vostfr/', 'showMovies')
 
@@ -259,12 +256,15 @@ def showSeries(sLoop = False):
     sHtmlContent = oRequestHandler.request()
 
     sHtmlContent = sHtmlContent.decode('utf-8', "replace")
-    sHtmlContent = unicodedata.normalize('NFD', sHtmlContent).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
+    sHtmlContent = unicodedata.normalize('NFD', sHtmlContent).encode('ascii', 'ignore').decode('unicode_escape')#vire accent et '\'
     sHtmlContent = sHtmlContent.encode('utf-8')#On remet en utf-8
 
-    #renomme pour prendre les liens openload
-    sHtmlContent = sHtmlContent.replace('<b> </b> ', '')
+    #Réécriture de sHtmlContent pour prendre les liens et pour récuperer le dernier episode
+    sHtmlContent = sHtmlContent.replace('<span style="color: #ff9900;">New</span><b> </b>', '')
+    sHtmlContent = sHtmlContent.replace('<b> </b>', ' ')
+    sHtmlContent = sHtmlContent.replace('<b></b>', ' ')
     sHtmlContent = sHtmlContent.replace('<span class="su-lightbox" data-mfp-src', '<a href')
+    sHtmlContent = sHtmlContent.replace('https://cut-urls.com/st?api=d6e46f2fcd4bfed906a9f3ecbbb6830e862b3afb&amp;url=', '')
 
     #récupération du Synopsis
     sDesc = ''
@@ -295,27 +295,28 @@ def showSeries(sLoop = False):
             if progress_.iscanceled():
                 break
 
-            #langue
-            if aEntry[0]:
+            if aEntry[0]:#stream ou telechargement
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
-            #episode
-            else:
+
+            else:#Saisons et episodes
                 sUrl = aEntry[2]
 
-                SXXEX = re.search(">(S[0-9]{2}E[0-9]{2})<", sUrl)
-                HOST = re.search('a href="https*:\/\/([^"]+)', sUrl)
+                SXXEX = re.search('>(S[0-9]{2}E[0-9]{2})<', sUrl)
+                HOST = re.search('a href="https*:\/\/([^.]+)', sUrl)
                 if SXXEX:
-                    sTitle = sMovieTitle + ' ' + SXXEX.group(1)
+                    #on vire le double affichage des saisons
+                    sTitle = re.sub(' - Saison \d+', '', sMovieTitle) + ' ' + SXXEX.group(1)
                     if HOST:
-                        sTitle = sTitle + ' (' + HOST.group(1).split('/')[0] + ')'
+                        sDisplayTitle = sTitle + ' [COLOR coral]' + HOST.group(1).split('/')[0] + '[/COLOR]'
                 else:
                     sTitle = sMovieTitle + ' ' + aEntry[1].replace(' New', '')
+                    sDisplayTitle = sTitle
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addMisc(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addMisc(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 

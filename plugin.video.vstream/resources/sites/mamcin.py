@@ -32,15 +32,15 @@ def load():
     oGui.setEndOfDirectory()
 
 #search function
-def showSearch():
-    oGui = cGui()
+# def showSearch():
+    # oGui = cGui()
 
-    sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText
-        showMovies(sUrl)
-        oGui.setEndOfDirectory()
-        return
+    # sSearchText = oGui.showKeyBoard()
+    # if (sSearchText != False):
+        # sUrl = URL_SEARCH[0] + sSearchText
+        # showMovies(sUrl)
+        # oGui.setEndOfDirectory()
+        # return
 
 #genre definition
 def showGenres():
@@ -61,7 +61,7 @@ def showGenres():
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-      sUrl = sSearch
+        sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -69,7 +69,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="featured-image"><a href="(.+?)" title="(.+?)"><img width=".+?" height=".+?" src="(.+?)"'
+    sPattern = '<div class="featured-image"><a href="([^"]+)" title="([^"]+)"><img width=".+?" height=".+?" src="([^"]+)"'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -104,7 +104,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -112,7 +112,7 @@ def showMovies(sSearch = ''):
 #search the next page
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<ul class="default-wp-page clearfix"><li class="previous"><a href="(.+?)" >'
+    sPattern = '<ul class="default-wp-page clearfix"><li class="previous"><a href="([^"]+)" >'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -139,7 +139,7 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             if not aEntry.startswith('http'):
-                sHosterUrl = "http:" + aEntry
+                sHosterUrl = 'https:' + aEntry
             else:
                 sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -149,11 +149,13 @@ def showHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     #add sendvid sources
-    sPattern = '<source src="(.+?)" type=\'video/mp4\' />'
+    sPattern = '<(?:source|iframe) src="(.+?)" width'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sHosterUrl = aEntry
+            if not sHosterUrl.startswith('http'):
+                sHosterUrl = 'https:' + aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)

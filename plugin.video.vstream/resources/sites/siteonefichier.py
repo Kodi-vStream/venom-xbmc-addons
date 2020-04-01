@@ -8,12 +8,12 @@ from resources.lib.parser import cParser
 from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.config import GestionCookie
 from resources.lib.comaddon import progress, dialog, addon
-import xbmc,xbmcgui
+import xbmc, xbmcgui
 
-sColor = addon().getSetting("deco_color")
+sColor = addon().getSetting('deco_color')
 
 SITE_IDENTIFIER = 'siteonefichier'
-SITE_NAME = "[COLOR %s]%s[/COLOR] [COLOR %s](%s)[/COLOR]" % ("dodgerblue", "Compte1fichier", sColor, "beta")
+SITE_NAME = '[COLOR %s]%s[/COLOR] [COLOR %s](%s)[/COLOR]' % ('dodgerblue', 'Compte1fichier', sColor, 'beta')
 
 SITE_DESC = 'Fichiers sur compte 1Fichier'
 URL_MAIN = 'https://1fichier.com/'
@@ -26,8 +26,8 @@ def load():
 
     if (addons.getSetting('hoster_onefichier_username') == '') and (addons.getSetting('hoster_onefichier_password') == ''):
         oGui = cGui()
-        oGui.addText(SITE_IDENTIFIER, "[COLOR %s]%s[/COLOR]" % ("red", "Nécessite Un Compte 1Fichier Premium ou Gratuit"))
-        
+        oGui.addText(SITE_IDENTIFIER, '[COLOR %s]%s[/COLOR]' % ('red', 'Nécessite un Compte 1Fichier Premium ou Gratuit'))
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
         oGui.addDir(SITE_IDENTIFIER,'opensetting', addons.VSlang(30023), 'none.png', oOutputParameterHandler)
@@ -41,7 +41,7 @@ def load():
             Connection = oPremiumHandler.Authentificate()
             if (Connection == False):
                 oGui = cGui()
-                oGui.addText(SITE_IDENTIFIER, "[COLOR %s]%s[/COLOR]" % ("red", "Connexion refusée"))
+                oGui.addText(SITE_IDENTIFIER, '[COLOR %s]%s[/COLOR]' % ('red', 'Connexion refusée'))
                 oGui.setEndOfDirectory()
 
             else:
@@ -56,10 +56,10 @@ def showFile(sFileTree = ''):
     #sUrl = oInputParameterHandler.getValue('siteUrl')
     if (oInputParameterHandler.exist('siteUrl')):
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        
+
     if sFileTree:
         sUrl = sFileTree
-        
+
     oPremiumHandler = cPremiumHandler('onefichier')
 
     sHtmlContent = oPremiumHandler.GetHtml(sUrl)
@@ -78,23 +78,20 @@ def showFile(sFileTree = ''):
 
             if aEntry[0]:
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', "%s%s%s%s" % (URL_FILE, "?dir_id=", aEntry[1], '&oby=0&search='))
+                oOutputParameterHandler.addParameter('siteUrl', '%s%s%s%s' % (URL_FILE, '?dir_id=', aEntry[1], '&oby=0&search='))
                 oOutputParameterHandler.addParameter('sTitle', aEntry[2])
                 oGui.addDir(SITE_IDENTIFIER, 'showFile', aEntry[2], 'genres.png', oOutputParameterHandler)
 
             else:
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', "%s%s" % (URL_MAIN, "console/link.pl"))
+                oOutputParameterHandler.addParameter('siteUrl', '%s%s' % (URL_MAIN, 'console/link.pl'))
                 oOutputParameterHandler.addParameter('sCode', aEntry[1])
                 oOutputParameterHandler.addParameter('sTitle', aEntry[2])
                 oGui.addDir(SITE_IDENTIFIER, 'showHosters', aEntry[2], 'genres.png', oOutputParameterHandler)
 
-
         progress_.VSclose(progress_)
 
-
     oGui.setEndOfDirectory()
-
 
 def showHosters():
     oGui = cGui()
@@ -103,9 +100,8 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sTitle = oInputParameterHandler.getValue('sTitle')
     sCode = oInputParameterHandler.getValue('sCode')
-    
-    oPremiumHandler = cPremiumHandler('onefichier')
 
+    oPremiumHandler = cPremiumHandler('onefichier')
     sHtmlContent = oPremiumHandler.GetHtml(sUrl,'selected%5B%5D=' + sCode)
 
     sPattern = '<a href="([^"]+)">(.+?)<\/a><\/td>'
@@ -113,7 +109,7 @@ def showHosters():
     if (aResult[0] == True):
         sHosterUrl = aResult[1][0][0]
         sTitle = aResult[1][0][1]
-        
+
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
             oHoster.setDisplayName(sTitle)
@@ -122,29 +118,26 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
-
 def UptomyAccount():
     oInputParameterHandler = cInputParameterHandler()
     sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
 
     oPremiumHandler = cPremiumHandler('onefichier')
     #verif du lien
-    sHtmlContent = oPremiumHandler.GetHtml("%s" % (URL_VERIF + sMediaUrl))
+    sHtmlContent = oPremiumHandler.GetHtml('%s' % (URL_VERIF + sMediaUrl))
     if (sHtmlContent):
         sCheck = sHtmlContent.find('NOT FOUND')
         if sCheck != -1:
             #penible ce dialog auth
-            xbmc.executebuiltin("Dialog.Close(all,true)")
+            xbmc.executebuiltin('Dialog.Close(all,true)')
             xbmcgui.Dialog().notification('Info upload', 'Fichier introuvable', xbmcgui.NOTIFICATION_INFO, 2000, False)
-        
+
         else:
             # si liens ok >> requete
-            sHtmlContent = oPremiumHandler.GetHtml(URL_REMOTE,"%s%s%s" % ("links=", sMediaUrl, "&did=0"))
+            sHtmlContent = oPremiumHandler.GetHtml(URL_REMOTE, '%s%s%s' % ('links=', sMediaUrl, '&did=0'))
             if (sHtmlContent):
                 sCheck = sHtmlContent.find('1 liens')
                 if sCheck != -1:
                     #penible ce dialog auth
-                    xbmc.executebuiltin("Dialog.Close(all,true)")
-                    xbmcgui.Dialog().notification('Info upload', 'Ajouter a votre compte', xbmcgui.NOTIFICATION_INFO, 2000, False)
-
-
+                    xbmc.executebuiltin('Dialog.Close(all,true)')
+                    xbmcgui.Dialog().notification('Info upload', 'Ajouter à votre compte', xbmcgui.NOTIFICATION_INFO, 2000, False)

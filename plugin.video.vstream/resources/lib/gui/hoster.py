@@ -151,7 +151,7 @@ class cHosterGui:
                 return tmp
 
         #Gestion classique
-        if ('streamz.' in sHostName):
+        if ('streamz' in sHostName):
             return self.getHoster('streamz')
         if ('streamax' in sHostName):
             return self.getHoster('streamax')
@@ -163,8 +163,6 @@ class cHosterGui:
             return self.getHoster('xdrive')
         if ('facebook' in sHostName):
             return self.getHoster('facebook')
-        if ('cloudcartel' in sHostName):
-            return self.getHoster('cloudcartel')
         if ('mixdrop.' in sHostName):
             return self.getHoster('mixdrop')
         if ('mixloads' in sHostName):
@@ -330,15 +328,13 @@ class cHosterGui:
             return self.getHoster('hd_stream')
         if ('rapidstream' in sHostName):
             return self.getHoster('rapidstream')
-        if ('beeload' in sHostName):
-            return self.getHoster('beeload')
         if ('archive.' in sHostName):
             return self.getHoster('archive')
-        if ('freshstream' in sHostName):
-            return self.getHoster('freshstream')
         if ('jetload' in sHostName):
             return self.getHoster('jetload')
-        if ('french-vid' in sHostName or 'fembed.' in sHostName or 'yggseries' in sHostName or 'sendvid' in sHostName or 'vfsplayer' in sHostName or 'fsimg' in sHostName or 'fem.tohds' in sHostName):
+        if ('french-vid' in sHostName or 'fembed.' in sHostName or 'yggseries' in sHostName or 'vfsplayer' in sHostName or 'fsimg' in sHostName or 'fem.tohds' in sHostName):
+            return self.getHoster('frenchvid')
+        if ('core1player' in sHostName):
             return self.getHoster('frenchvid')
         if ('flix555' in sHostName):
             return self.getHoster('flix555')
@@ -346,6 +342,14 @@ class cHosterGui:
             return self.getHoster('onlystream')
         if ('pstream' in sHostName):
             return self.getHoster('pstream')
+        if ('vudeo' in sHostName):
+            return self.getHoster('vudeo')
+        if ('sendvid' in sHostName):
+            return self.getHoster('sendvid')
+        if ('supervideo' in sHostName):
+            return self.getHoster('supervideo')
+        if ('dood' in sHostName):
+            return self.getHoster('dood')
         
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
@@ -355,6 +359,8 @@ class cHosterGui:
         if ('uplea.com' in sHostName):
             return self.getHoster('uplea')
         if ('uploaded' in sHostName or 'ul.to' in sHostName):
+            if('/file/forbidden' in sHosterUrl):
+                return False
             return self.getHoster('uploaded')
 
         if ('kaydo.ws' in sHostName):
@@ -370,7 +376,7 @@ class cHosterGui:
         return False
 
     def getHoster(self, sHosterFileName):
-        exec "from resources.hosters." + sHosterFileName + " import cHoster"
+        exec ("from resources.hosters." + sHosterFileName + " import cHoster")
 
         return cHoster()
 
