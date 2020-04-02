@@ -224,7 +224,7 @@
 
         <setting type="sep"/>
         <setting subsetting="true" label="Import/Export la BDD (Marque-Page, Historique, etc..)" type="lsep"/>
-        <!--<setting label="Clear Cache Addon" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, addon)"/>-->
+        <!--<setting label="Import/Export" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, addon)"/>-->
         <setting label="Import/Export" type="action" action="XBMC.RunScript(plugin.video.vstream, sauv, ?site=globalRun&amp;function=sauv)"/>
 
         <setting type="sep"/>
@@ -234,13 +234,13 @@
 
         <setting type="sep"/>
         <setting subsetting="true" label="Supprime la BDD du cache pour les métadonnées" type="lsep"/>
-        <!--<setting label="Clear Cache Addon" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, addon)"/>-->
-        <setting label="Clear Cache Addon" type="action" action="XBMC.RunScript(plugin.video.vstream, addon, ?site=globalRun&amp;function=addon)"/>
+        <!--<setting label="Clear Cache vStream" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, addon)"/>-->
+        <setting label="30128" type="action" action="XBMC.RunScript(plugin.video.vstream, addon, ?site=globalRun&amp;function=addon)"/>
 
         <setting type="sep"/>
         <setting subsetting="true" label="Supprime les fichiers temporaire de Kodi" type="lsep"/>
-        <!--<setting label="Clear Cache XBMC" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, xbmc)"/>-->
-        <setting label="Clear Cache XBMC" type="action" action="XBMC.RunScript(plugin.video.vstream, xbmc, ?site=globalRun&amp;function=xbmc)"/>
+        <!--<setting label="Clear Cache Kodi" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, xbmc)"/>-->
+        <setting label="30129" type="action" action="XBMC.RunScript(plugin.video.vstream, xbmc, ?site=globalRun&amp;function=xbmc)"/>
 
         <setting type="sep"/>
         <setting subsetting="true" label="Supprime les fichiers de navigation temporaire de Kodi" type="lsep"/>
