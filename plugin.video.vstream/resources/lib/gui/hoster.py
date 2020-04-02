@@ -362,6 +362,8 @@ class cHosterGui:
             if('/file/forbidden' in sHosterUrl):
                 return False
             return self.getHoster('uploaded')
+        if ('vidload' in sHostName):
+            return self.getHoster('vidload')
 
         if ('kaydo.ws' in sHostName):
             return self.getHoster('lien_direct')
