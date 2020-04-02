@@ -253,11 +253,11 @@ msgid "Tools"
 msgstr ""
 
 msgctxt "#30128"
-msgid "Clear Cache Addon"
+msgid "Clear Cache vStream"
 msgstr ""
 
 msgctxt "#30129"
-msgid "Clear Cache Addon"
+msgid "Clear Cache Kodi"
 msgstr ""
 
 msgctxt "#30130"
