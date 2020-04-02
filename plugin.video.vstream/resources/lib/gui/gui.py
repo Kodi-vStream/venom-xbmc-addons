@@ -2,20 +2,14 @@
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
-
-#from resources.lib.config import cConfig
 from resources.lib.db import cDb
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.parser import cParser
-from resources.lib import util
-
+from resources.lib.util import cUtil, QuotePlus
 from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window, xbmc
-
-import xbmcplugin
-import urllib
-import unicodedata, re
+import xbmcplugin, re#, unicodedata
 
 class cGui():
 
@@ -30,7 +24,7 @@ class cGui():
         CONTENT = 'addons'
 
     def addMovie(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
-        cGui.CONTENT = "movies"
+        cGui.CONTENT = 'movies'
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
@@ -49,11 +43,12 @@ class cGui():
 
         try:
             self.addFolder(oGuiElement, oOutputParameterHandler)
-        except: pass
+        except:
+            pass
 
-	# Coffret et integrale de films
+    # Coffret et integrale de films
     def addMoviePack(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
-        cGui.CONTENT = "movies"
+        cGui.CONTENT = 'movies'
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
@@ -72,10 +67,11 @@ class cGui():
 
         try:
             self.addFolder(oGuiElement, oOutputParameterHandler)
-        except: pass
+        except:
+            pass
 
     def addTV(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
-        cGui.CONTENT = "tvshows"
+        cGui.CONTENT = 'tvshows'
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
@@ -94,22 +90,22 @@ class cGui():
 
         try:
             self.addFolder(oGuiElement, oOutputParameterHandler)
-        except: pass
+        except:
+            pass
 
     def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
-        #cGui.CONTENT = "movies"
+        #cGui.CONTENT = 'movies'
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
         oGuiElement.setTitle(sLabel)
         oGuiElement.setIcon(sIcon)
         oGuiElement.setThumbnail(sThumbnail)
+        oGuiElement.setDescription(sDesc)
         #oGuiElement.setPoster(sThumbnail)
         oGuiElement.setMeta(0)
         #oGuiElement.setDirFanart(sIcon)
         oGuiElement.setCat(5)
-
-        oGuiElement.setDescription(sDesc)
 
         if oOutputParameterHandler.getValue('sMovieTitle'):
             sTitle = oOutputParameterHandler.getValue('sMovieTitle')
@@ -121,11 +117,12 @@ class cGui():
 
         try:
             self.addFolder(oGuiElement, oOutputParameterHandler)
-        except: pass
+        except:
+            pass
 
     #non utiliser le 18/04
     #def addFav(self, sId, sFunction, sLabel, sIcon, sThumbnail, fanart, oOutputParameterHandler = ''):
-        #cGui.CONTENT = "files"
+        #cGui.CONTENT = 'files'
         #oGuiElement = cGuiElement()
         #oGuiElement.setSiteName(sId)
         #oGuiElement.setFunction(sFunction)
@@ -140,7 +137,7 @@ class cGui():
         #self.addFolder(oGuiElement, oOutputParameterHandler)
 
     def addLink(self, sId, sFunction, sLabel, sThumbnail, sDesc, oOutputParameterHandler = ''):
-        cGui.CONTENT = "files"
+        cGui.CONTENT = 'files'
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
@@ -159,7 +156,8 @@ class cGui():
 
         try:
             self.addFolder(oGuiElement, oOutputParameterHandler)
-        except: pass
+        except:
+            pass
 
     def addDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler = ''):
         oGuiElement = cGuiElement()
@@ -179,7 +177,8 @@ class cGui():
 
         try:
             self.addFolder(oGuiElement, oOutputParameterHandler)
-        except: pass
+        except:
+            pass
 
     def addNext(self, sId, sFunction, sLabel, oOutputParameterHandler):
         oGuiElement = cGuiElement()
@@ -201,7 +200,7 @@ class cGui():
     def addNone(self, sId):
         return self.addText(sId)
 
-    def addText(self, sId, sLabel="", sIcon='none.png'):
+    def addText(self, sId, sLabel = '', sIcon = 'none.png'):
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction('DoNothing')
@@ -213,13 +212,12 @@ class cGui():
         oGuiElement.setMeta(0)
 
         oOutputParameterHandler = cOutputParameterHandler()
-
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
     #non utiliser depuis le 22/04
     def addMovieDB(self, sId, sFunction, sLabel, sIcon, sThumbnail, sFanart, oOutputParameterHandler = ''):
 
-        cGui.CONTENT = "movies"
+        cGui.CONTENT = 'movies'
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
@@ -239,7 +237,7 @@ class cGui():
     #non utiliser 22/04
     def addTVDB(self, sId, sFunction, sLabel, sIcon, sThumbnail, sFanart, oOutputParameterHandler = ''):
 
-        cGui.CONTENT = "tvshows"
+        cGui.CONTENT = 'tvshows'
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
@@ -257,20 +255,20 @@ class cGui():
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
     #afficher les liens non playable
-    def addFolder(self, oGuiElement, oOutputParameterHandler='', _isFolder=True):
+    def addFolder(self, oGuiElement, oOutputParameterHandler = '', _isFolder = True):
 
         #recherche append les reponses
         if  window(10101).getProperty('search') == 'true':
             import copy
-            cGui.searchResults.append({'guiElement':oGuiElement, 'params':copy.deepcopy(oOutputParameterHandler)})
+            cGui.searchResults.append({'guiElement': oGuiElement, 'params': copy.deepcopy(oOutputParameterHandler)})
             return
 
         #Des infos a rajouter ?
         params = {
-            "siteUrl": oGuiElement.setSiteUrl,#indispensable
-            "sTmdbId": oGuiElement.setTmdbId,
-            "sImbdId": oGuiElement.setImdbId,#inutile ?
-            "sYear": oGuiElement.setYear,
+            'siteUrl': oGuiElement.setSiteUrl,#indispensable
+            'sTmdbId': oGuiElement.setTmdbId,
+            'sImbdId': oGuiElement.setImdbId,#inutile ?
+            'sYear': oGuiElement.setYear,
         }
 
         for sParam, callback in params.iteritems():
@@ -279,15 +277,15 @@ class cGui():
                 callback(value)
 
         oListItem = self.createListItem(oGuiElement)
-        oListItem.setProperty("IsPlayable", "false")
+        oListItem.setProperty('IsPlayable', 'false')
 
         #affiche tag HD
         # if '1080' in oGuiElement.getTitle():
-        #     oListItem.addStreamInfo('video', { 'aspect': '1.78', 'width':1920, 'height' : 1080 })
+        #     oListItem.addStreamInfo('video', {'aspect': '1.78', 'width': 1920, 'height': 1080})
         # elif '720' in oGuiElement.getTitle():
-        #     oListItem.addStreamInfo('video', { 'aspect': '1.50', 'width':1280, 'height' : 720 })
+        #     oListItem.addStreamInfo('video', {'aspect': '1.50', 'width': 1280, 'height': 720})
         # elif '2160'in oGuiElement.getTitle():
-        #     oListItem.addStreamInfo('video', { 'aspect': '1.78', 'width':3840, 'height' : 2160 })
+        #     oListItem.addStreamInfo('video', {'aspect': '1.78', 'width': 3840, 'height': 2160})
         #oListItem.addStreamInfo('audio', {'language': 'fr'})
 
         # if oGuiElement.getMeta():
@@ -301,28 +299,26 @@ class cGui():
 
         #new context prend en charge les metas
         if (oGuiElement.getMeta() > 0):
-            if cGui.CONTENT == "movies":
+            if cGui.CONTENT == 'movies':
                 self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
-                
                 self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuba(oGuiElement, oOutputParameterHandler)
-                
-                if self.ADDON.getSetting("bstoken") != '':
+
+                if self.ADDON.getSetting('bstoken') != '':
                     self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
                 if self.ADDON.getSetting('tmdb_account')!= '':
                     self.createContexMenuTMDB(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
 
 
-            elif cGui.CONTENT == "tvshows":
+            elif cGui.CONTENT == 'tvshows':
                 self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
-                
                 self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuba(oGuiElement, oOutputParameterHandler)
-                
-                if self.ADDON.getSetting("bstoken") != '':
+
+                if self.ADDON.getSetting('bstoken') != '':
                     self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
                 if self.ADDON.getSetting('tmdb_account') != '':
                     self.createContexMenuTMDB(oGuiElement, oOutputParameterHandler)
@@ -343,7 +339,7 @@ class cGui():
         #oListItem.setIconImage(oGuiElement.getIcon())
 
         #krypton et sont comportement
-        oListItem.setArt({'poster': oGuiElement.getPoster(), 'thumb': oGuiElement.getThumbnail(), 'icon': oGuiElement.getIcon(), 'fanart': oGuiElement.getFanart() })
+        oListItem.setArt({'poster': oGuiElement.getPoster(), 'thumb': oGuiElement.getThumbnail(), 'icon': oGuiElement.getIcon(), 'fanart': oGuiElement.getFanart()})
 
         aProperties = oGuiElement.getItemProperties()
         for sPropertyKey in aProperties.keys():
@@ -362,9 +358,8 @@ class cGui():
             oGuiElement.setSiteUrl(sSiteUrl)
 
         oListItem = self.createListItem(oGuiElement)
-        oListItem.setProperty("IsPlayable", "true")
-        oListItem.setProperty("Video", "true")
-
+        oListItem.setProperty('IsPlayable', 'true')
+        oListItem.setProperty('Video', 'true')
         oListItem.addStreamInfo('video', {})
 
         sItemUrl = self.__createItemUrl(oGuiElement, oOutputParameterHandler)
@@ -388,22 +383,18 @@ class cGui():
         #sSiteUrl = oGuiElement.getSiteName()
 
         oContext = cContextElement()
-
         oContext.setFile('cGui')
         oContext.setSiteName('cGui')
-
         oContext.setFunction('selectpage')
-        oContext.setTitle('[COLOR azure]Selectionner page[/COLOR]')
+        oContext.setTitle('[COLOR azure]Sélectionner page[/COLOR]')
         oOutputParameterHandler.addParameter('OldFunction', oGuiElement.getFunction())
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oContext.setOutputParameterHandler(oOutputParameterHandler)
         oGuiElement.addContextItem(oContext)
 
         oContext = cContextElement()
-
         oContext.setFile('cGui')
         oContext.setSiteName('cGui')
-
         oContext.setFunction('viewback')
         oContext.setTitle('[COLOR azure]Retour Site[/COLOR]')
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
@@ -411,7 +402,7 @@ class cGui():
         oGuiElement.addContextItem(oContext)
 
     #marque page
-    def createContexMenuFav(self, oGuiElement, oOutputParameterHandler= ''):
+    def createContexMenuFav(self, oGuiElement, oOutputParameterHandler = ''):
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
         oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
@@ -428,7 +419,7 @@ class cGui():
         oOutputParameterHandler.addParameter('sType', sType)
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cTrakt', 'cTrakt', 'getAction', self.ADDON.VSlang(30214))
 
-    def createContexMenuTMDB(self, oGuiElement, oOutputParameterHandler= ''):
+    def createContexMenuTMDB(self, oGuiElement, oOutputParameterHandler = ''):
 
         oOutputParameterHandler.addParameter('sImdbId', oGuiElement.getImdbId())
         oOutputParameterHandler.addParameter('sTmdbId', oGuiElement.getTmdbId())
@@ -436,7 +427,7 @@ class cGui():
 
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'themoviedb_org', 'themoviedb_org', 'getAction', 'TMDB')
 
-    def createContexMenuDownload(self, oGuiElement, oOutputParameterHandler= '', status = '0'):
+    def createContexMenuDownload(self, oGuiElement, oOutputParameterHandler = '', status = '0'):
 
         if status == '0':
             self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'StartDownloadOneFile', self.ADDON.VSlang(30215))
@@ -453,7 +444,7 @@ class cGui():
             self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'ResetDownload', self.ADDON.VSlang(30220))
 
     #Information
-    def createContexMenuinfo(self, oGuiElement, oOutputParameterHandler= ''):
+    def createContexMenuinfo(self, oGuiElement, oOutputParameterHandler = ''):
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
@@ -463,7 +454,8 @@ class cGui():
 
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewinfo', self.ADDON.VSlang(30208))
 
-    def createContexMenuba(self, oGuiElement, oOutputParameterHandler= ''):
+    #Bande annonce
+    def createContexMenuba(self, oGuiElement, oOutputParameterHandler = ''):
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
@@ -471,8 +463,8 @@ class cGui():
 
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewBA', self.ADDON.VSlang(30212))
 
-
-    def createContexMenuSimil(self, oGuiElement, oOutputParameterHandler= ''):
+    #Recherche similaire
+    def createContexMenuSimil(self, oGuiElement, oOutputParameterHandler = ''):
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
@@ -481,7 +473,7 @@ class cGui():
 
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewsimil', self.ADDON.VSlang(30213))
 
-    def CreateSimpleMenu(self,oGuiElement, oOutputParameterHandler, file, name, function, title):
+    def CreateSimpleMenu(self, oGuiElement, oOutputParameterHandler, file, name, function, title):
         oContext = cContextElement()
         oContext.setFile(file)
         oContext.setSiteName(name)
@@ -489,13 +481,12 @@ class cGui():
         oContext.setTitle(title)
 
         oContext.setOutputParameterHandler(oOutputParameterHandler)
-
         oGuiElement.addContextItem(oContext)
 
-    def createContexMenuDelFav(self, oGuiElement, oOutputParameterHandler= ''):
+    def createContexMenuDelFav(self, oGuiElement, oOutputParameterHandler = ''):
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cFav', 'cFav', 'delFavouritesMenu', self.ADDON.VSlang(30209))
 
-    def createContexMenuSettings(self, oGuiElement, oOutputParameterHandler= ''):
+    def createContexMenuSettings(self, oGuiElement, oOutputParameterHandler = ''):
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'globalParametre', 'globalParametre', 'opensetting', self.ADDON.VSlang(30023))
 
     def __createContextMenu(self, oGuiElement, oListItem):
@@ -508,7 +499,7 @@ class cGui():
                 oOutputParameterHandler = oContextItem.getOutputParameterHandler()
                 sParams = oOutputParameterHandler.getParameterAsUri()
                 sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-                aContextMenus+= [ ( oContextItem.getTitle(), "XBMC.RunPlugin(%s)" % (sTest,),)]
+                aContextMenus += [(oContextItem.getTitle(), 'XBMC.RunPlugin(%s)' % (sTest, ), )]
 
             oListItem.addContextMenuItems(aContextMenus, True)
 
@@ -523,7 +514,7 @@ class cGui():
                 oOutputParameterHandler = oContextItem.getOutputParameterHandler()
                 sParams = oOutputParameterHandler.getParameterAsUri()
                 sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-                aContextMenus+= [ ( oContextItem.getTitle(), "XBMC.RunPlugin(%s)" % (sTest,),)]
+                aContextMenus += [(oContextItem.getTitle(), 'XBMC.RunPlugin(%s)' % (sTest, ), )]
 
             oListItem.addContextMenuItems(aContextMenus)
             #oListItem.addContextMenuItems(aContextMenus, True)
@@ -539,7 +530,7 @@ class cGui():
                 oOutputParameterHandler = oContextItem.getOutputParameterHandler()
                 sParams = oOutputParameterHandler.getParameterAsUri()
                 sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-                aContextMenus+= [ ( oContextItem.getTitle(), "XBMC.RunPlugin(%s)" % (sTest,),)]
+                aContextMenus += [(oContextItem.getTitle(), 'XBMC.RunPlugin(%s)' % (sTest, ), )]
 
             oListItem.addContextMenuItems(aContextMenus)
             #oListItem.addContextMenuItems(aContextMenus, True)
@@ -555,64 +546,61 @@ class cGui():
 
         xbmcplugin.addDirectoryItems(iHandler, self.listing, len(self.listing))
 
-        xbmcplugin.setPluginCategory(iHandler, "")
+        xbmcplugin.setPluginCategory(iHandler, '')
         xbmcplugin.setContent(iHandler, cGui.CONTENT)
         xbmcplugin.addSortMethod(iHandler, xbmcplugin.SORT_METHOD_NONE)
-        xbmcplugin.endOfDirectory(iHandler, succeeded=True, cacheToDisc=True)
+        xbmcplugin.endOfDirectory(iHandler, succeeded = True, cacheToDisc = True)
         #reglage vue
         #50 = liste / 51 grande liste / 500 icone / 501 gallerie / 508 fanart /
         if (ForceViewMode):
             xbmc.executebuiltin('Container.SetViewMode(' + str(ForceViewMode) + ')')
         else:
             if (self.ADDON.getSetting('active-view') == 'true'):
-                if cGui.CONTENT == "movies":
+                if cGui.CONTENT == 'movies':
                     #xbmc.executebuiltin('Container.SetViewMode(507)')
                     xbmc.executebuiltin('Container.SetViewMode(%s)' % self.ADDON.getSetting('movie-view'))
-                elif cGui.CONTENT == "tvshows":
+                elif cGui.CONTENT == 'tvshows':
                     xbmc.executebuiltin('Container.SetViewMode(%s)' % self.ADDON.getSetting('serie-view'))
-                elif cGui.CONTENT == "files":
+                elif cGui.CONTENT == 'files':
                     xbmc.executebuiltin('Container.SetViewMode(%s)' % self.ADDON.getSetting('default-view'))
 
         #bug affichage Kodi 18
         del self.listing [:]
 
     def updateDirectory(self):
-        xbmc.executebuiltin("Container.Refresh")
+        xbmc.executebuiltin('Container.Refresh')
 
     def viewback(self):
         sPluginPath = cPluginHandler().getPluginPath()
         oInputParameterHandler = cInputParameterHandler()
-        sParams = oInputParameterHandler.getAllParameter()
-
+        # sParams = oInputParameterHandler.getAllParameter()
         sId = oInputParameterHandler.getValue('sId')
 
         sTest = '%s?site=%s' % (sPluginPath, sId)
-        xbmc.executebuiltin('XBMC.Container.Update(%s, replace)' % sTest )
+        xbmc.executebuiltin('XBMC.Container.Update(%s, replace)' % sTest)
 
     def viewsimil(self):
         sPluginPath = cPluginHandler().getPluginPath()
         oInputParameterHandler = cInputParameterHandler()
-        sFileName = oInputParameterHandler.getValue('sFileName')
+        # sFileName = oInputParameterHandler.getValue('sFileName')
         sTitle = oInputParameterHandler.getValue('sTitle')
         sCat = oInputParameterHandler.getValue('sCat')
 
         oOutputParameterHandler = cOutputParameterHandler()
         #oOutputParameterHandler.addParameter('searchtext', sFileName)
-        oOutputParameterHandler.addParameter('searchtext', util.cUtil().CleanName(sTitle))
+        oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
         oOutputParameterHandler.addParameter('sCat', sCat)
-
         oOutputParameterHandler.addParameter('readdb', 'False')
 
         sParams = oOutputParameterHandler.getParameterAsUri()
         sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, 'globalSearch', 'globalSearch', sParams)
-        xbmc.executebuiltin('XBMC.Container.Update(%s)' % sTest )
+        xbmc.executebuiltin('XBMC.Container.Update(%s)' % sTest)
         return False
 
     def selectpage(self):
         sPluginPath = cPluginHandler().getPluginPath()
         oInputParameterHandler = cInputParameterHandler()
         #sParams = oInputParameterHandler.getAllParameter()
-
         sId = oInputParameterHandler.getValue('sId')
         sFunction = oInputParameterHandler.getValue('OldFunction')
         siteUrl = oInputParameterHandler.getValue('siteUrl')
@@ -630,7 +618,7 @@ class cGui():
                 oOutputParameterHandler.addParameter('siteUrl', siteUrl)
                 sParams = oOutputParameterHandler.getParameterAsUri()
                 sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, sId, sFunction, sParams)
-                xbmc.executebuiltin('XBMC.Container.Update(%s)' % sTest )
+                xbmc.executebuiltin('XBMC.Container.Update(%s)' % sTest)
             except:
                 return False
 
@@ -654,7 +642,7 @@ class cGui():
 
         sParams = oOutputParameterHandler.getParameterAsUri()
         sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, sId, sFunction, sParams)
-        xbmc.executebuiltin('XBMC.Container.Update(%s, replace)' % sTest )
+        xbmc.executebuiltin('XBMC.Container.Update(%s, replace)' % sTest)
 
     def setWatched(self):
         if (True):
@@ -668,7 +656,7 @@ class cGui():
             meta = {}
             meta['title'] = sTitle
             meta['site'] = sSite
-            
+
             db = cDb()
             row = db.get_watched(meta)
             if row:
@@ -677,14 +665,14 @@ class cGui():
             else:
                 db.insert_watched(meta)
             #To test
-            #xbmc.executebuiltin( 'Container.Refresh' )
-            
+            #xbmc.executebuiltin('Container.Refresh')
+
         else:
             # Use kodi buildin feature
-            xbmc.executebuiltin( 'Action(ToggleWatched)' )
+            xbmc.executebuiltin('Action(ToggleWatched)')
 
         #Not usefull ?
-        #xbmc.executebuiltin( 'Container.Refresh' )
+        #xbmc.executebuiltin('Container.Refresh')
 
     def viewBA(self):
         oInputParameterHandler = cInputParameterHandler()
@@ -698,17 +686,16 @@ class cGui():
     def viewinfo(self):
         from resources.lib.config import WindowsBoxes
 
-        oGuiElement = cGuiElement()
+        # oGuiElement = cGuiElement()
         oInputParameterHandler = cInputParameterHandler()
-
         sTitle = oInputParameterHandler.getValue('sTitle')
-        sId = oInputParameterHandler.getValue('sId')
+        # sId = oInputParameterHandler.getValue('sId')
         sFileName = oInputParameterHandler.getValue('sFileName')
-        sYear = oInputParameterHandler.getValue('sYear')
         sMeta = oInputParameterHandler.getValue('sMeta')
+        sYear = oInputParameterHandler.getValue('sYear')
 
         #sMeta = 1 >> film sMeta = 2 >> serie
-        sCleanTitle = util.cUtil().CleanName(sFileName)
+        sCleanTitle = cUtil().CleanName(sFileName)
 
         #on vire saison et episode
         if (True):#sMeta == 2:
@@ -719,7 +706,7 @@ class cGui():
 
         ui = WindowsBoxes(sTitle, sCleanTitle, sMeta, sYear)
 
-    def __createItemUrl(self, oGuiElement, oOutputParameterHandler=''):
+    def __createItemUrl(self, oGuiElement, oOutputParameterHandler = ''):
         if (oOutputParameterHandler == ''):
             oOutputParameterHandler = cOutputParameterHandler()
 
@@ -731,14 +718,14 @@ class cGui():
         sPluginPath = cPluginHandler().getPluginPath()
 
         if (len(oGuiElement.getFunction()) == 0):
-            sItemUrl = '%s?site=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), urllib.quote_plus(oGuiElement.getCleanTitle()), sParams)
+            sItemUrl = '%s?site=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), QuotePlus(oGuiElement.getCleanTitle()), sParams)
         else:
-            sItemUrl = '%s?site=%s&function=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), oGuiElement.getFunction(), urllib.quote_plus(oGuiElement.getCleanTitle()), sParams)
+            sItemUrl = '%s?site=%s&function=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), oGuiElement.getFunction(), QuotePlus(oGuiElement.getCleanTitle()), sParams)
 
         #print sItemUrl
         return sItemUrl
-    
-    def showKeyBoard(self, sDefaultText='', heading = ''):
+
+    def showKeyBoard(self, sDefaultText = '', heading = ''):
         keyboard = xbmc.Keyboard(sDefaultText)
         keyboard.setHeading(heading)
         keyboard.doModal()
@@ -746,10 +733,10 @@ class cGui():
             sSearchText = keyboard.getText()
             if (len(sSearchText)) > 0:
                 return sSearchText
-            
+
         return False
 
-    def showNumBoard(self, sDefaultNum=''):
+    def showNumBoard(self, sDefaultNum = ''):
         dialogs = dialog()
         numboard = dialogs.numeric(0, 'Entrer la page', sDefaultNum)
         #numboard.doModal()
@@ -761,11 +748,11 @@ class cGui():
     def openSettings(self):
         return False
 
-    def showNofication(self, sTitle, iSeconds=0):
+    def showNofication(self, sTitle, iSeconds = 0):
         return False
 
-    def showError(self, sTitle, sDescription, iSeconds=0):
+    def showError(self, sTitle, sDescription, iSeconds = 0):
         return False
 
-    def showInfo(self, sTitle, sDescription, iSeconds=0):
+    def showInfo(self, sTitle, sDescription, iSeconds = 0):
         return False
