@@ -193,11 +193,11 @@ msgid "Years"
 msgstr ""
 
 msgctxt "#30107"
-msgid "Vf"
+msgid "VF"
 msgstr ""
 
 msgctxt "#30108"
-msgid "Vostfr"
+msgid "VOSTFR"
 msgstr ""
 
 msgctxt "#30109"
@@ -797,7 +797,7 @@ msgid "My accounts"
 msgstr ""
 
 msgctxt "#30456"
-msgid "Are you sure?"
+msgid "Are you sure ?"
 msgstr ""
 
 msgctxt "#30457"
