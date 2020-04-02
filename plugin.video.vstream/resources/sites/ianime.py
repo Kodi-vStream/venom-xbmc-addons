@@ -370,7 +370,7 @@ def showMovies(sSearch = ''):
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')
             sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
             sTitle = cUtil().unescape(sTitle)
-            sTitle = sTitle.replace('[Streaming] - ', '').replace(' (VF)', '').replace(' (VOSTFR)', '').replace(' DVDRIP', '').replace('gratuitement maintenant','')
+            sTitle = sTitle.replace('Visionnez ', '').replace('[Streaming] - ', '').replace(' (VF)', '').replace(' (VOSTFR)', '').replace(' DVDRIP', '').replace('gratuitement maintenant','')
 
             if ' - Episode' in sTitle:
                 sTitle = sTitle.replace(' -', '')
@@ -494,7 +494,8 @@ def showEpisode():
 
 def ExtractLink(html):
     #Fake link
-    fake = 'https://www.youtube.com'
+    fake1 = 'https://www.youtube.com'
+    fake2 = '/api.js'
 
     final = ''
 
@@ -503,25 +504,24 @@ def ExtractLink(html):
     sPattern = '(?i)src=(?:\'|")(.+?)(?:\'|")'
     aResult = re.findall(sPattern, html, re.DOTALL)
 
-    loop = 0
     if aResult:
         for a in aResult:
             if ('adnetworkperformance' in a) or ('jquery' in a):
                 continue
-            if fake not in a:
+            if fake1 not in a and fake2 not in a :
                 final = a
                 break
 
     sPattern = 'encodeURI\("(.+?)"\)'
     aResult = re.findall(sPattern, html)
     if aResult:
-        if fake not in aResult[0]:
+        if fake1 not in aResult[0] and fake2 not in aResult[0]:
             final = aResult[0]
 
     sPattern = "'file': '(.+?)',"
     aResult = oParser.parse(html, sPattern)
     if aResult[0] == True:
-        if fake not in aResult[1][0]:
+        if fake1 not in aResult[1][0] and fake2 not in aResult[1][0]:
             final = aResult[1][0]
 
     #nouveau codage
