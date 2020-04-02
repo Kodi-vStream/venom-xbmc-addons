@@ -473,12 +473,12 @@ class cGui():
 
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewsimil', self.ADDON.VSlang(30213))
 
-    def CreateSimpleMenu(self, oGuiElement, oOutputParameterHandler, file, name, function, title):
+    def CreateSimpleMenu(self, oGuiElement, oOutputParameterHandler, sFile, sName, sFunction, sTitle):
         oContext = cContextElement()
-        oContext.setFile(file)
-        oContext.setSiteName(name)
-        oContext.setFunction(function)
-        oContext.setTitle(title)
+        oContext.setFile(sFile)
+        oContext.setSiteName(sName)
+        oContext.setFunction(sFunction)
+        oContext.setTitle(sTitle)
 
         oContext.setOutputParameterHandler(oOutputParameterHandler)
         oGuiElement.addContextItem(oContext)
@@ -627,12 +627,11 @@ class cGui():
     def selectpage2(self):
         sPluginPath = cPluginHandler().getPluginPath()
         oInputParameterHandler = cInputParameterHandler()
-
-        sParams = oInputParameterHandler.getAllParameter()
-
         sId = oInputParameterHandler.getValue('sId')
-        siteUrl = oInputParameterHandler.getValue('siteUrl')
         sFunction = oInputParameterHandler.getValue('OldFunction')
+        siteUrl = oInputParameterHandler.getValue('siteUrl')
+
+        # sParams = oInputParameterHandler.getAllParameter()
 
         selpage = self.showNumBoard()
 
