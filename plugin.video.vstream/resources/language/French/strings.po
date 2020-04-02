@@ -193,12 +193,12 @@ msgid "Years"
 msgstr "Années"
 
 msgctxt "#30107"
-msgid "Vf"
-msgstr "Vf"
+msgid "VF"
+msgstr "VF"
 
 msgctxt "#30108"
-msgid "Vostfr"
-msgstr "Vostfr"
+msgid "VOSTFR"
+msgstr "VOSTFR"
 
 msgctxt "#30109"
 msgid "Children"
@@ -338,7 +338,7 @@ msgstr "Bande annonce"
 
 msgctxt "#30213"
 msgid "Search Similar"
-msgstr "Recherche Similaire"
+msgstr "Recherche similaire"
 
 msgctxt "#30214"
 msgid "Trakt"
@@ -786,18 +786,18 @@ msgstr "Toujours me demander"
 
 msgctxt "#30453"
 msgid "Continue streaming via Uptostream"
-msgstr "Passer en Streaming (via Uptostream)"
+msgstr "Passer en Streaming via Uptostream"
 
 msgctxt "#30454"
 msgid "Continue direct via UpToBox"
-msgstr "Rester en direct (via UpToBox)"
+msgstr "Rester en direct via UpToBox"
 
 msgctxt "#30455"
 msgid "My accounts"
-msgstr "Mes Comptes"
+msgstr "Mes comptes"
 
 msgctxt "#30456"
-msgid "Are you sure?"
+msgid "Are you sure ?"
 msgstr "Êtes-vous sûr ?"
 
 msgctxt "#30457"
