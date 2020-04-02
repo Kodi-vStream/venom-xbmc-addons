@@ -253,12 +253,12 @@ msgid "Tools"
 msgstr "Outils"
 
 msgctxt "#30128"
-msgid "Clear Cache Addon"
-msgstr "Vider Cache Addon"
+msgid "Clear Cache vStream"
+msgstr "Vider Cache vStream"
 
 msgctxt "#30129"
-msgid "Clear Cache Addon"
-msgstr "Vider Cache Addon"
+msgid "Clear Cache Kodi"
+msgstr "Vider Cache Kodi"
 
 msgctxt "#30130"
 msgid "Lists"
@@ -314,7 +314,7 @@ msgstr "Marquer vu/Non vu"
 
 msgctxt "#30207"
 msgid "Bookmarks"
-msgstr "Marque-Pages"
+msgstr "Marque-pages"
 
 msgctxt "#30208"
 msgid "Information"
@@ -326,7 +326,7 @@ msgstr "[COLOR red]Supprimer TOUT[/COLOR]"
 
 msgctxt "#30210"
 msgid "Bookmark"
-msgstr "Marque-pages"
+msgstr "Marque-page"
 
 msgctxt "#30211"
 msgid "[COLOR red]Clear this category[/COLOR]"
