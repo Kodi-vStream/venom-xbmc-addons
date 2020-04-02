@@ -254,11 +254,11 @@ msgstr "Outils"
 
 msgctxt "#30128"
 msgid "Clear Cache vStream"
-msgstr "Vider Cache vStream"
+msgstr "Vider le Cache de vStream"
 
 msgctxt "#30129"
 msgid "Clear Cache Kodi"
-msgstr "Vider Cache Kodi"
+msgstr "Vider le Cache de Kodi"
 
 msgctxt "#30130"
 msgid "Lists"
