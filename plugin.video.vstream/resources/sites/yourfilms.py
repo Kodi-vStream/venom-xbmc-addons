@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-#return False
+return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'yourfilms'
 SITE_NAME = 'Yourfilms'
 SITE_DESC = 'Films & Séries'
 
-URL_MAIN = 'https://www.n1streaming.co'
+URL_MAIN = 'https://www.n1streaming.co/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + 'recherche-', 'showMovies')
