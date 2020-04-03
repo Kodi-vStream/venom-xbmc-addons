@@ -72,11 +72,10 @@ def showSearch():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
-    oParser = cParser()
 
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
-        sPattern = '<div class="image">.+?<a href="([^"]+)"><img src="([^"]+)" alt="([^"]+)".+?<p>(.+?)<\/p>'
+        sPattern = '<div class="image">.+?<a href="([^"]+)">\s*<img src="([^"]+)" alt="([^"]+)".+?<p>(.+?)<\/p>'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -84,7 +83,7 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
+    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -219,7 +218,7 @@ def showLink():
             dtype = 'movie'     # fonctionne pour Film ou Série (pour info : série -> dtype = 'tv')
             dpost = aEntry[0]
             dnum = aEntry[1]
-            sTitle = aEntry[2].replace('Serveur','').replace('Télécharger','').replace('(','').replace(')','')
+            sTitle = aEntry[2].replace('Serveur', '').replace('Télécharger', '').replace('(', '').replace(')', '')
             
             if ('VIP - ' in sTitle):
                 continue                # Les liens VIP ne fonctionnent pas
