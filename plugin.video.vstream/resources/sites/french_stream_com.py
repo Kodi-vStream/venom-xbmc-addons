@@ -20,8 +20,8 @@ URL_MAIN = 'https://www8.french-streaming.com/'
 
 # URL_SEARCH_MOVIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=9&story=', 'showMovies')
 # URL_SEARCH_SERIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=10&story=', 'showSeries')
-URL_SEARCH_MOVIE = (URL_MAIN + 'search/', 'showMovies')
-URL_SEARCH_SERIE = (URL_MAIN + 'search/', 'showSeries')
+URL_SEARCH_MOVIES = (URL_MAIN + 'search/', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'search/', 'showSeries')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN + 'films-streaming/', 'showMovies')
@@ -226,7 +226,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH_MOVIE[0] + sSearchText
+        sUrl = URL_SEARCH_MOVIES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -236,7 +236,7 @@ def showSearchSeries():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH_SERIE[0] + sSearchText
+        sUrl = URL_SEARCH_SERIES[0] + sSearchText
         showSeries(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -363,7 +363,7 @@ def showMovies(sSearch = ''):
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 3:
-                if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH_MOVIE[0], ''), sTitle) == 0:
+                if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH_MOVIES[0], ''), sTitle) == 0:
                     continue
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -430,7 +430,7 @@ def showSeries(sSearch = ''):
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
-                if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH_SERIE[0], ''), sTitle) == 0:
+                if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH_SERIES[0], ''), sTitle) == 0:
                     continue
 
             oOutputParameterHandler = cOutputParameterHandler()
