@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#https://xdrive.cc/embed/xxxxxx/blabla.mp4 >fstreamvk
+#==>otakufr
 
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
