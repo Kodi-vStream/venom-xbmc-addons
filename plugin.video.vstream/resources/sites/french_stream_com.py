@@ -19,8 +19,8 @@ SITE_DESC = 'Films, Séries & Mangas en streaming'
 
 URL_MAIN = 'https://www8.french-streaming.com/'
 
-URL_SEARCH_MOVIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=9&story=', 'showMovies')
-URL_SEARCH_SERIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=10&story=', 'showSeries')
+URL_SEARCH_MOVIE = (URL_MAIN + 'search/', 'showMovies')
+URL_SEARCH_SERIE = (URL_MAIN + 'search/', 'showSeries')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN + 'films-streaming/', 'showMovies')
@@ -397,7 +397,7 @@ def showSeries(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'class="short-poster.+?href="([^"]+)".+?img src="([^"]+)".*?class="short-title.+?>([^<]+)<'
+    sPattern = 'img-box with-mask" href="([^"]+)".+?img src="([^"]+)".+?"short-title">([^<]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -419,8 +419,8 @@ def showSeries(sSearch = ''):
                     continue
 
             sUrl2 = URL_MAIN[:-1] + aEntry[0]
-            sThumb = re.sub('http.+?/img/french-stream.com.php\?src=', '', aEntry[1])
-            sThumb = sThumb.split('&')[0]
+            sThumb = aEntry[1])
+            #sThumb = sThumb.split('&')[0]
             if sThumb.startswith ('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
 
