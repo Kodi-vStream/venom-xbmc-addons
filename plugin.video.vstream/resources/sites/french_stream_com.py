@@ -333,7 +333,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'film-ripz".+?href=".+?">([^<]+)<.+?film-verz".+?href.+?>([^<]+)<.+?href="([^"]+)".+?src="([^"]+)".+?class="short-titl.+?>([^<]+)<'
+    sPattern = 'img-box with-mask" href="([^"]+)".+?img src="([^"]+)".+?"short-title">([^<]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -351,27 +351,27 @@ def showMovies(sSearch = ''):
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
-                if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH_MOVIE[0], ''), aEntry[4]) == 0:
+                if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH_MOVIE[0], ''), aEntry[2]) == 0:
                     continue
 
-            sQual = aEntry[0]
-            sLang = aEntry[1]
-            sUrl2 = URL_MAIN[:-1] + aEntry[2]
+            #sQual = aEntry[0]
+            #sLang = aEntry[1]
+            sUrl2 = URL_MAIN[:-1] + aEntry[0]
             
-            sThumb = re.sub('http.+?/img/french-stream.com.php\?src=', '', aEntry[3])
-            sThumb = sThumb.split('&')[0]
+            sThumb =  aEntry[1]
+            #sThumb = sThumb.split('&')[0]
             if sThumb.startswith ('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
                 
-            sTitle = aEntry[4].replace('en streaming', '').replace('Film ', '')
-            sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
+            sTitle = aEntry[2]
+            #sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -631,3 +631,4 @@ def mangaHosters():
         oGui.addLink(SITE_IDENTIFIER, 'showHosters', sMovieTitle, sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
