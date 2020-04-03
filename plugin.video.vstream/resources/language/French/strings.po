@@ -797,7 +797,7 @@ msgid "My accounts"
 msgstr "Mes comptes"
 
 msgctxt "#30456"
-msgid "Are you sure ?"
+msgid "Are you sure?"
 msgstr "Êtes-vous sûr ?"
 
 msgctxt "#30457"
