@@ -14,7 +14,7 @@
         <setting type="sep"/>
         <setting subsetting="true" label="30005" type="lsep"/>
         <setting id="meta-view" type="bool" label="30006" default="false"/>
-        <setting id="api_tmdb" type="text" label="API"  default="92ab39516970ab9d86396866456ec9b6" />
+        <setting id="api_tmdb" type="text" label="API"  default="92ab39516970ab9d86396866456ec9b6"/>
         <setting id="poster_tmdb" type="select" label="30007" values="w92|w154|w185|w342|w500|w780|original" default="w342"/>
         <setting id="backdrop_tmdb" type="select" label="30008" values="w300|w780|w1280|original" default="w1280"/>
         <setting id="extendedinfo-view" type="bool" label="Use extendedinfo" default="false"/>
@@ -121,7 +121,7 @@
 
         <setting visible="false" id="plugin_libre_stream_org" type="bool" label="Libre-stream" default="true"/>
 
-        <setting visible="false" id="plugin_livetv" type="bool" label="Live TV" default="true"/>       
+        <setting visible="false" id="plugin_livetv" type="bool" label="Live TV" default="true"/>
 
         <setting visible="false" id="plugin_lsbd" type="bool" label="Liveset Database" default="true"/>
 
@@ -166,6 +166,8 @@
         <setting visible="false" id="plugin_streamcomplet" type="bool" label="StreamComplet" default="true"/>
 
         <setting visible="false" id="plugin_streamdivx" type="bool" label="StreamDivx" default="true"/>
+
+        <setting visible="false" id="plugin_streaming_planet" type="bool" label="Streaming-Planet" default="true"/>
 
         <setting visible="false" id="plugin_streaming_series_xyz" type="bool" label="Streaming-series.cx" default="true"/>
 
