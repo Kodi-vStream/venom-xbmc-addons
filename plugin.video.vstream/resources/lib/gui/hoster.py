@@ -7,11 +7,8 @@ from resources.lib.gui.contextElement import cContextElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.player import cPlayer
-
 from resources.lib.handler.requestHandler import cRequestHandler
-
 from resources.lib.comaddon import dialog, addon, VSlog, isKrypton
-
 
 class cHosterGui:
 
@@ -96,20 +93,19 @@ class cHosterGui:
             oGuiElement.addContextItem(oContext)
 
         #Upload menu uptobox
-        if cInputParameterHandler().getValue('site') != 'siteuptobox' and self.ADDON.getSetting('hoster_uptobox_premium') == 'true' :
+        if cInputParameterHandler().getValue('site') != 'siteuptobox' and self.ADDON.getSetting('hoster_uptobox_premium') == 'true':
             host = oHoster.getPluginIdentifier()
-            accept = ['uptobox','uptostream','onefichier','uploaded','uplea']
+            accept = ['uptobox', 'uptostream', 'onefichier', 'uploaded', 'uplea']
             for i in accept:
-                if host == i :
+                if host == i:
                     oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'siteuptobox', 'siteuptobox', 'UptomyAccount', self.ADDON.VSlang(30325))
 
         #onefichier
-        if cInputParameterHandler().getValue('site') != 'siteonefichier' and self.ADDON.getSetting('hoster_onefichier_premium') == 'true' :
+        if cInputParameterHandler().getValue('site') != 'siteonefichier' and self.ADDON.getSetting('hoster_onefichier_premium') == 'true':
             host = oHoster.getPluginIdentifier()
             accept = 'onefichier' #les autres ne fonctionnent pas
-            if host == accept :
+            if host == accept:
                 oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'siteonefichier', 'siteonefichier', 'UptomyAccount', '1fichier')
-
 
         #context FAV menu
         oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
@@ -119,10 +115,7 @@ class cHosterGui:
 
         #bug
         oGui.addHost(oGuiElement, oOutputParameterHandler)
-
         #oGui.addFolder(oGuiElement, oOutputParameterHandler)
-
-
 
     def checkHoster(self, sHosterUrl):
         #securite
@@ -142,12 +135,12 @@ class cHosterGui:
         #L'user a active l'url resolver ?
         if self.ADDON.getSetting('UserUrlResolver') == 'true':
             import urlresolver
-            hmf = urlresolver.HostedMediaFile(url=sHosterUrl)
+            hmf = urlresolver.HostedMediaFile(url = sHosterUrl)
             if hmf.valid_url():
                 tmp = self.getHoster('resolver')
                 RH = sHosterUrl.split('/')[2]
-                RH = RH.replace('www.','')
-                tmp.setRealHost( RH[:3].upper() )
+                RH = RH.replace('www.', '')
+                tmp.setRealHost(RH[:3].upper())
                 return tmp
 
         #Gestion classique
@@ -155,8 +148,6 @@ class cHosterGui:
             return self.getHoster('streamz')
         if ('streamax' in sHostName):
             return self.getHoster('streamax')
-        if ('livestream' in sHostName):
-            return self.getHoster('lien_direct')
         if ('gounlimited' in sHostName):
             return self.getHoster('gounlimited')
         if ('xdrive' in sHostName):
@@ -200,6 +191,10 @@ class cHosterGui:
                 return self.getHoster('lien_direct')
             else:
                 return self.getHoster('dailymotion')
+        if ('livestream' in sHostName):
+            return self.getHoster('lien_direct')
+        if ('flashx' in sHostName):
+            return self.getHoster('flashx')
         if ('filez.' in sHostName):
             return self.getHoster('flashx')
         if ('mystream' in sHostName) or ('mstream' in sHostName):
@@ -226,14 +221,10 @@ class cHosterGui:
             return self.getHoster('googlevideo')
         if ('playreplay' in sHostName):
             return self.getHoster('playreplay')
-        if ('flashx' in sHostName):
-            return self.getHoster('flashx')
         if (('ok.ru' in sHostName) or ('odnoklassniki' in sHostName)):
             return self.getHoster('ok_ru')
         if ('vimeo.com' in sHostName):
             return self.getHoster('vimeo')
-        #if ('openload' in sHostName):
-        #    return self.getHoster('openload')
         if ('prostream' in sHostName):
             return self.getHoster('prostream')
         if ('vidfast' in sHostName):
@@ -284,10 +275,6 @@ class cHosterGui:
             return self.getHoster('estream')
         if ('hdvid' in sHostName):
             return self.getHoster('hdvid')
-        #if ('streamango' in sHostName):
-        #    return self.getHoster('streamango')
-        #if ('streamcherry' in sHostName):
-        #    return self.getHoster('streamango')
         if ('vshare' in sHostName):
             return self.getHoster('vshare')
         if ('giga' in sHostName):
@@ -296,7 +283,7 @@ class cHosterGui:
             return self.getHoster('vidbom')
         if ('upvid.' in sHostName):
             return self.getHoster('upvid')
-        if (('cloudvid' in sHostName ) or ('clipwatching.' in sHostName)):#meme code
+        if (('cloudvid' in sHostName ) or ('clipwatching' in sHostName)):
             return self.getHoster('cloudvid')
         if ('megadrive' in sHostName):
             return self.getHoster('megadrive')
@@ -350,7 +337,7 @@ class cHosterGui:
             return self.getHoster('supervideo')
         if ('dood' in sHostName):
             return self.getHoster('dood')
-        
+
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
             return self.getHoster('onefichier')
@@ -364,9 +351,10 @@ class cHosterGui:
             return self.getHoster('uploaded')
         if ('vidload' in sHostName):
             return self.getHoster('vidload')
-
         if ('kaydo.ws' in sHostName):
             return self.getHoster('lien_direct')
+        if ('cloudhost' in sHostName):
+            return self.getHoster('cloudhost')
 
         #Si aucun hebergeur connu on teste les liens directs
         if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8.webm'):
@@ -378,14 +366,12 @@ class cHosterGui:
         return False
 
     def getHoster(self, sHosterFileName):
-        exec ("from resources.hosters." + sHosterFileName + " import cHoster")
-
+        exec ('from resources.hosters.' + sHosterFileName + ' import cHoster')
         return cHoster()
 
     def play(self):
         oGui = cGui()
         oInputParameterHandler = cInputParameterHandler()
-
         sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
         bGetRedirectUrl = oInputParameterHandler.getValue('bGetRedirectUrl')
@@ -399,7 +385,7 @@ class cHosterGui:
         if (bGetRedirectUrl == 'True'):
             sMediaUrl = self.__getRedirectUrl(sMediaUrl)
 
-        VSlog("Hoster - play " + sMediaUrl)
+        VSlog('Hoster - play ' + sMediaUrl)
 
         oHoster = self.getHoster(sHosterIdentifier)
         oHoster.setFileName(sFileName)
@@ -429,20 +415,18 @@ class cHosterGui:
                 oPlayer.run(oGuiElement, oHoster.getFileName(), aLink[1])
                 return
             else:
-                self.DIALOG.VSerror("Fichier introuvable")
+                self.DIALOG.VSerror('Fichier introuvable')
                 return
 
         except:
-            self.DIALOG.VSerror("Fichier introuvable")
+            self.DIALOG.VSerror('Fichier introuvable')
             return
 
         oGui.setEndOfDirectory()
 
     def addToPlaylist(self):
         oGui = cGui()
-
         oInputParameterHandler = cInputParameterHandler()
-
         sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
         bGetRedirectUrl = oInputParameterHandler.getValue('bGetRedirectUrl')
@@ -451,7 +435,7 @@ class cHosterGui:
         if (bGetRedirectUrl == 'True'):
             sMediaUrl = self.__getRedirectUrl(sMediaUrl)
 
-        VSlog("Hoster - playlist " + sMediaUrl)
+        VSlog('Hoster - playlist ' + sMediaUrl)
         oHoster = self.getHoster(sHosterIdentifier)
         oHoster.setFileName(sFileName)
 
