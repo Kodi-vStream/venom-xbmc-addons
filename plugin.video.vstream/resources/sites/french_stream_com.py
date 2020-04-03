@@ -353,6 +353,10 @@ def showMovies(sSearch = ''):
                 sThumb = URL_MAIN[:-1] + sThumb
                 
             sTitle = aEntry[2]
+            
+            if (sSearch and ' - Saison ' in sTitle):  # La recherche retourne aussi des séries
+                continue
+            
             #on recupere le titre dans le poster le site ne l'affiche pas toujours
             if (aEntry[2] == ' '):
                 sTitle = aEntry[1].replace('/static/poster/', '').replace('-', ' ').replace('.jpg', '').title()
@@ -415,6 +419,9 @@ def showSeries(sSearch = ''):
                 sThumb = URL_MAIN[:-1] + sThumb
             sTitle = aEntry[2]
 
+            if (sSearch and not ' - Saison ' in sTitle):  # La recherche retourne aussi des films
+                continue
+             
             #filtre pour réorienter les mangas
             # if '/manga' in sUrl:
                 # sType = 'mangas'
