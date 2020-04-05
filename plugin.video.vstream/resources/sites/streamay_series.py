@@ -287,7 +287,7 @@ def showEpisodes():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="saision_LI2">*<a href="([^"]+)">*<span>([^<]+)<'
+    sPattern = '<div class="saision_LI2".+?href="([^"]+)".+?span>([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
