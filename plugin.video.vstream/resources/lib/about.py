@@ -160,7 +160,6 @@ class cAbout:
             progress_ = progress()
             progress_.VScreate('Update')
 
-            addons = addon()
             #site = ''
             sdown = 0
             add = 0
@@ -188,14 +187,14 @@ class cAbout:
                             sdown = sdown + 1
                             schange += i['changes']
                         except:
-                            #site += "[COLOR red]"+i['filename'].encode("utf-8")+"[/COLOR][CR]"
+                            #site += "[COLOR red]" + i['filename'].encode("utf-8") + "[/COLOR][CR]"
                             sdown = sdown + 1
                             pass
 
                 progress_.VSclose(progress_)
 
-                #donner fichier
-                sContent = 'Ajouter (%s) | Supprimer (%s) | Changement (%s) [CR]Fichiers mise à jour %s / %s' %  (add, dell, schange, sdown, total)
+                #données fichiers
+                sContent = 'Ajouter (%s) | Supprimer (%s) | Changement (%s) [CR]Fichiers mise à jour %s / %s' % (add, dell, schange, sdown, total)
                 listitem = xbmcgui.ListItem(label = 'vStream', label2 = sContent)
                 icon = 'special://home/addons/plugin.video.vstream/resources/art/update.png'
                 listitem.setArt({'icon': icon, 'thumb': icon})
@@ -207,16 +206,16 @@ class cAbout:
                         #text += '[B]%s[/B]: %s[CR]' % (i['commit']['author']['name'], i['commit']['message'].encode('utf-8'))
                         icon = i['author']['avatar_url']
                         login = i['author']['login']
-                        desc = i['commit']['message'].encode("utf-8")
+                        desc = i['commit']['message'].encode('utf-8')
                         listitem = xbmcgui.ListItem(label = login, label2 = desc)
-                        listitem.setArt({'icon' : icon, 'thumb' : icon})
+                        listitem.setArt({'icon': icon, 'thumb': icon})
                     except:
                         #text += '[B]%s[/B]: nop[CR]' % (i['commit']['author']['name'])
                         listitem = xbmcgui.ListItem(label = 'None', label2 = 'none')
                         pass
                     listitems.append(listitem)
 
-                #sContent = 'Changement (%s) | Fichiers mise à jour %s / %s [CR]' %  (schange, sdown, total)
+                #sContent = 'Changement (%s) | Fichiers mise à jour %s / %s [CR]' % (schange, sdown, total)
                 #sContent += '%s' %  (text.encode('utf-8'))
                 #sContent += '%s' %  (site)
 
@@ -225,7 +224,7 @@ class cAbout:
                 addons.setSetting('home_update', str('false'))
 
                 #fin = dialog().VSok(sContent)
-                #fin =  self.TextBoxes(sContent)
+                #fin = self.TextBoxes(sContent)
                 fin = self.Box(listitems)
         return
 
@@ -243,7 +242,7 @@ class cAbout:
 
     def TextBoxes(self, anounce):
         # activate the text viewer window
-        xbmc.executebuiltin('ActivateWindow(%d)' % (10147))
+        xbmc.executebuiltin('ActivateWindow(%d)' % (10147, ))
         # get window
         win = window(10147)
         #win.show()
