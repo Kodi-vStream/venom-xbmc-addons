@@ -166,7 +166,9 @@ class cPlayer(xbmc.Player):
         self.playBackStoppedEventReceived = True
 
         #calcul le temp de lecture
-        pourcent =  float('%.2f' % (self.currentTime / self.totalTime))
+        pourcent =  0
+        if self.totalTime > 0:
+            pourcent = float('%.2f' % (self.currentTime / self.totalTime))
         if (pourcent > 0.90):
 
             # Marqué VU dans la BDD Vstream

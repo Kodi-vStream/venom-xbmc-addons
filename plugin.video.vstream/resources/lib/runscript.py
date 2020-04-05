@@ -56,7 +56,7 @@ class cClear:
                 sContent = oResponse.read()
                 self.TextBoxes('vStream Changelog', sContent)
             except:
-                self.DIALOG.VSerror("%s,%s" % (self.ADDON.VSlang(30205), sUrl))
+                self.DIALOG.VSerror("%s, %s" % (self.ADDON.VSlang(30205), sUrl))
             return
 
         elif (env == 'changelog'):
@@ -126,11 +126,11 @@ class cClear:
                 sContent = oResponse.read()
                 self.TextBoxes('vStream Soutient', sContent)
             except:
-                self.DIALOG.VSerror("%s,%s" % (self.ADDON.VSlang(30205), sUrl))
+                self.DIALOG.VSerror("%s, %s" % (self.ADDON.VSlang(30205), sUrl))
             return
 
         elif (env == 'addon'):
-            if self.DIALOG.VSyesno("Êtes-vous sûr?"):
+            if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
                 #cached_Cache = cConfig().getFileCache()
                 #cached_Cache = xbmc.translatePath(cached_Cache).decode("utf-8")
                 cached_Cache = "special://home/userdata/addon_data/plugin.video.vstream/video_cache.db"
@@ -180,7 +180,7 @@ class cClear:
             return
 
         elif (env == 'xbmc'):
-            if self.DIALOG.VSyesno('Êtes-vous sûr?'):
+            if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
                 #temp = xbmc.translatePath('special://temp/').decode("utf-8")
                 path = "special://temp/"
                 #self.ClearDir(temp,True)
@@ -192,7 +192,7 @@ class cClear:
             return
 
         elif (env == 'fi'):
-            if self.DIALOG.VSyesno('Êtes-vous sûr?'):
+            if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
                 #path = xbmc.translatePath('special://temp/').decode("utf-8")
                 path = "special://temp/archive_cache/"
                 try:
@@ -207,7 +207,7 @@ class cClear:
             return
 
         elif (env == 'uplog'):
-            if self.DIALOG.VSyesno('Êtes-vous sûr?'):
+            if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
                 #path = xbmc.translatePath('special://logpath/').decode("utf-8")
                 path = "special://logpath/kodi.log"
                 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'

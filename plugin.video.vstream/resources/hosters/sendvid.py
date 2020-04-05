@@ -5,7 +5,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-# from resources.lib.comaddon import VSlog
+#from resources.lib.comaddon import VSlog
 
 class cHoster(iHoster):
 
@@ -47,23 +47,30 @@ class cHoster(iHoster):
         
         api_call = ''
 
-        oRequest = cRequestHandler(self.__sUrl)
+        data = 'r=&d='+self.__sUrl.split('/')[2]
+        oRequest = cRequestHandler("https://sendvid.net/api/source/" + self.__sUrl.split('/')[4])
+        oRequest.setRequestType(1)
+        oRequest.addHeaderEntry('Content-Length', len(str(data)))
+        oRequest.addParametersLine(data)
         sHtmlContent = oRequest.request()
-        
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
-        
+
         oParser = cParser()
-        sPattern =  'video_source *= *"([^"]+)"'
+        sPattern =  '"file":"([^"]+)","label":"([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
-        # VSlog(aResult)
-        
-        if (aResult[0] == True):
-            api_call = aResult[1][0]
-            
+
+        from resources.lib.comaddon import dialog
+
+        url=[]
+        qua=[]
+        api_call = False
+
+        for aEntry in aResult[1]:
+           url.append(aEntry[0])
+           qua.append(aEntry[1])
+
+        api_call = dialog().VSselectqual(qua, url)
+
         if (api_call):
-            return True, api_call
+             return True, api_call
 
         return False, False

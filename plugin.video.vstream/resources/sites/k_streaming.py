@@ -6,25 +6,26 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress
+import re
 
 SITE_IDENTIFIER = 'k_streaming'
 SITE_NAME = 'K-Streaming'
-SITE_DESC = 'Regarder Films en Streaming et Séries français gratuit'
+SITE_DESC = 'Regarder Films et Séries en Streaming gratuit'
 
 URL_MAIN = 'https://www1.k-streaming.co'
 
 #definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle sera affichee.
 #LA RECHERCHE GLOBAL N'UTILE PAS showSearch MAIS DIRECTEMENT LA FONCTION INSCRITE DANS LA VARIABLE URL_SEARCH_*
 FUNCTION_SEARCH = 'showMovies'
-URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH = (URL_MAIN + '/recherche/', 'showMovies')
 #recherche global films
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 #recherche global serie
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 
 MOVIE_NEWS = (URL_MAIN + '/films/', 'showMovies')
-MOVIE_MOVIE = ('http://', 'load')
+MOVIE_MOVIE = ('http://', 'showMenuMovies')
 # MOVIE_VIEWS = (URL_MAIN + '/film-les-plus-vues/', 'showMovies')
 # MOVIE_COMMENTS = (URL_MAIN + '/films-plus-commenter-streaming/', 'showMovies')
 # MOVIE_NOTES = (URL_MAIN + '/film-streaming-populaires/', 'showMovies')
@@ -32,7 +33,7 @@ MOVIE_GENRES = (URL_MAIN, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
 MOVIE_LIST = (URL_MAIN, 'showAlpha')
 
-SERIE_SERIES = ('http://', 'load')
+SERIE_SERIES = ('http://', 'showMenuSeries')
 SERIE_NEWS = (URL_MAIN + '/series/', 'showMovies')
 # SERIE_VIEWS =  (URL_MAIN + '/film-les-plus-vues/', 'showMovies')
 # SERIE_COMMENTS = (URL_MAIN + '/films-plus-commenter-streaming/', 'showMovies')
@@ -225,7 +226,7 @@ def showAlpha():
 def showYears():#creer une liste inversée d'annees
     oGui = cGui()
 
-    for i in reversed (xrange(1918, 2020)):
+    for i in reversed (xrange(1918, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/films/annee-' + Year)
@@ -236,7 +237,7 @@ def showYears():#creer une liste inversée d'annees
 def showSeriesYears():#creer une liste inversée d'annees
     oGui = cGui()
 
-    for i in reversed (xrange(1980, 2020)):
+    for i in reversed (xrange(1980, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/series/annee-' + Year)
@@ -254,12 +255,10 @@ def showMovies(sSearch = ''):
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
 
-    VSlog(sUrl)
-
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    sPattern = '<div class="imagefilm">\s*<a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)".+?<span class="([^"]+)"'
+    #la qualité est une option pour la recherche
+    sPattern = '<div class="imagefilm">\s*<a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)".+?(?:|<span class="([^"]+)".+?)<\/div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -276,8 +275,8 @@ def showMovies(sSearch = ''):
 
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
-            sQual = aEntry[3].replace('qualite ', '')
             sTitle = aEntry[2].replace('Streaming', '')
+            sQual = aEntry[3].replace('qualite ', '')
             sDisplayTitle = sTitle + ' [' + sQual + ']'
 
             sDesc = ''
@@ -320,18 +319,15 @@ def __checkForNextPage(sHtmlContent):
 
 def showSaisons():
     #Uniquement saison a chaque fois
-
     oGui = cGui()
-    oParser = cParser()
-
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
     sPattern = '<div class="unepetitesaisons">\s*<a href="([^"]+)" title="([^"]+)"'
+    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -339,26 +335,22 @@ def showSaisons():
         for aEntry in aResult[1]:
 
             sUrl = aEntry[0]
-            sMovieTitle = aEntry[1]
+            sTitle = aEntry[1]
+            sTitle = re.sub(' - Saison \d+', '', sTitle)#double affichage de la saison
 
             if not sUrl.startswith('http'):
                 sUrl = URL_MAIN + sUrl
-
-            sDesc = ''
-
-            VSlog('++++' + sUrl)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sMovieTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 def showEpisodes():
     oGui = cGui()
-    oParser = cParser()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -367,29 +359,26 @@ def showEpisodes():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    VSlog(sUrl)
-
     sPattern = '<a class="n_episode2" title="([^"]+)"\s*href="([^"]+)"'
+    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
 
         for aEntry in aResult[1]:
 
+            sTitle = aEntry[0].replace(' , VOSTFR , ', '')#Systematiquement affiché en vostfr
+            sTitle = re.sub(' - Saison \d+', '', sTitle)#double affichage de la saison
             sUrl = aEntry[1]
-            sTitle = aEntry[0]
-
             if not sUrl.startswith('http'):
                 sUrl = URL_MAIN + sUrl
-
-            sDesc = ''
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -402,10 +391,8 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    oParser = cParser()
     sPattern = 'data-src="([^"]+)" target="filmPlayer"'
-
+    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):

@@ -8,7 +8,6 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.comaddon import progress
-
 import re, base64
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
@@ -19,8 +18,10 @@ SITE_DESC = 'Films, Séries & Mangas en streaming'
 
 URL_MAIN = 'https://www8.french-streaming.com/'
 
-URL_SEARCH_MOVIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=9&story=', 'showMovies')
-URL_SEARCH_SERIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=10&story=', 'showSeries')
+# URL_SEARCH_MOVIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=9&story=', 'showMovies')
+# URL_SEARCH_SERIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=10&story=', 'showSeries')
+URL_SEARCH_MOVIES = (URL_MAIN + 'search/', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'search/', 'showSeries')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN + 'films-streaming/', 'showMovies')
@@ -225,7 +226,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH_MOVIE[0] + sSearchText
+        sUrl = URL_SEARCH_MOVIES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -235,7 +236,7 @@ def showSearchSeries():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH_SERIE[0] + sSearchText
+        sUrl = URL_SEARCH_SERIES[0] + sSearchText
         showSeries(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -322,8 +323,6 @@ def showSerieGenres():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
-    oParser = cParser()
-
     if sSearch:
         sUrl = sSearch
     else:
@@ -332,9 +331,8 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    sPattern = 'film-ripz".+?href=".+?">([^<]+)<.+?film-verz".+?href.+?>([^<]+)<.+?href="([^"]+)".+?src="([^"]+)".+?class="short-titl.+?>([^<]+)<'
-
+    sPattern = 'film-ripz".+?href="([^"]+)" title="[^"]+"><img src="([^"]+)".+?class="short-titl.+?>([^<]+)<'
+    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -349,29 +347,31 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            #Si recherche et trop de resultat, on nettoye
-            if sSearch and total > 2:
-                if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH_MOVIE[0], ''), aEntry[4]) == 0:
-                    continue
-
-            sQual = aEntry[0]
-            sLang = aEntry[1]
-            sUrl2 = URL_MAIN[:-1] + aEntry[2]
-            
-            sThumb = re.sub('http.+?/img/french-stream.com.php\?src=', '', aEntry[3])
-            sThumb = sThumb.split('&')[0]
+            sUrl2 = URL_MAIN[:-1] + aEntry[0]       
+            sThumb = aEntry[1]
             if sThumb.startswith ('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
                 
-            sTitle = aEntry[4].replace('en streaming', '').replace('Film ', '')
-            sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
+            sTitle = aEntry[2]
+            
+            if (sSearch and ' - Saison ' in sTitle):  # La recherche retourne aussi des séries
+                continue
+            
+            #on recupere le titre dans le poster le site ne l'affiche pas toujours
+            if (aEntry[2] == ' '):
+                sTitle = aEntry[1].replace('/static/poster/', '').replace('-', ' ').replace('.jpg', '').title()
+
+            #Si recherche et trop de resultat, on nettoye
+            if sSearch and total > 3:
+                if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH_MOVIES[0], ''), sTitle) == 0:
+                    continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -397,7 +397,7 @@ def showSeries(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'class="short-poster.+?href="([^"]+)".+?img src="([^"]+)".*?class="short-title.+?>([^<]+)<'
+    sPattern = 'class="short-poster.+?href="([^"]+)".+?img src="([^"]*)".*?class="short-title.+?>([^<]+)<'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -413,24 +413,25 @@ def showSeries(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            #Si recherche et trop de resultat, on nettoye
-            if sSearch and total > 2:
-                if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH_SERIE[0], ''), aEntry[2]) == 0:
-                    continue
-
             sUrl2 = URL_MAIN[:-1] + aEntry[0]
-            sThumb = re.sub('http.+?/img/french-stream.com.php\?src=', '', aEntry[1])
-            sThumb = sThumb.split('&')[0]
+            sThumb = aEntry[1]
             if sThumb.startswith ('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
+            sTitle = aEntry[2]
 
+            if (sSearch and not ' - Saison ' in sTitle):  # La recherche retourne aussi des films
+                continue
+             
             #filtre pour réorienter les mangas
             # if '/manga' in sUrl:
                 # sType = 'mangas'
             # else:
                 # sType = 'autre'
 
-            sTitle = aEntry[2]
+            #Si recherche et trop de resultat, on nettoye
+            if sSearch and total > 2:
+                if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH_SERIES[0], ''), sTitle) == 0:
+                    continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -545,12 +546,12 @@ def serieHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sData = oInputParameterHandler.getValue('sData')
-    if sData == 'episode1': #episode final au lieu du 1er donc pour le moment
-        return
+    # if sData == 'episode1': #episode final au lieu du 1er donc pour le moment
+        # return
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div id="' + sData + '" class="fullsfeature"(.+?)<div style=".+?"'
+    sPattern = '<div id="' + sData + '" class="fullsfeature"(.+?)<div style='
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -558,14 +559,13 @@ def serieHosters():
     else:
         return
 
-    sPattern = '<a (?:|id="([^"]+)" (?:|onclick=".+?")) *surl="([^"]+)"'
+    sPattern = '<a (?:id="([^"]+)"|onclick=".+?") *surl="([^"]+)"'
     aResult = oParser.parse(block, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
             if aEntry[0]:
-
                 url = aEntry[1]
                 tmp = ''
                 try:

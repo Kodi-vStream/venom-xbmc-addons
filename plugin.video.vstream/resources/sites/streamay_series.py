@@ -12,7 +12,7 @@ SITE_IDENTIFIER = 'streamay_series'
 SITE_NAME = 'StreamAy Séries'
 SITE_DESC = 'Séries en Streaming'
 
-URL_MAIN = 'https://www.streamay.site/'
+URL_MAIN = 'https://wwv.streamay.site/'
 
 SERIE_SERIES = (URL_MAIN + 'series.html', 'showMovies')
 SERIE_NEWS = (URL_MAIN, 'showSeriesNews')
@@ -287,7 +287,7 @@ def showEpisodes():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="saision_LI2"><a href="([^"]+)"><span>([^<]+)<'
+    sPattern = '<div class="saision_LI2">*<a href="([^"]+)">*<span>([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):

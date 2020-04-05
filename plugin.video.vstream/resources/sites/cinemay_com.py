@@ -8,7 +8,6 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 from resources.lib.util import cUtil
-
 import re, unicodedata
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
@@ -112,7 +111,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<a href="([^"]+)" data-url=".+?" class=".+?" title="([^"]+)"><img.+?src="([^"]+)"'
+    sPattern = '<a href="([^"]+)" data-url=".+?" class=".+?" title="([^"]+)"><img.+?src="([^"]*)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -129,15 +128,15 @@ def showMovies(sSearch=''):
 
             #encode/decode pour affichage des accents
             sTitle = unicode(aEntry[1], 'utf-8')
-            sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode("unicode_escape")
-            sTitle = sTitle.encode("latin-1")
+            sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode('unicode_escape')
+            sTitle = sTitle.encode('latin-1')
             #Nettoyage du titre
             sTitle = sTitle.replace(' en streaming', '')
             if sTitle.startswith('Film'):
                 sTitle = sTitle.replace('Film ', '')
 
-            sThumb = URL_MAIN[:-1] + aEntry[2]
             sUrl = URL_MAIN[:-1] + aEntry[0]
+            sThumb = URL_MAIN[:-1] + aEntry[2]
 
             #tris search
             if sSearch and total > 3:
@@ -195,7 +194,7 @@ def showSeriesNews():
                 break
 
             sUrl = aEntry[0]
-            sTitle = re.sub('(\d+)&#215;(\d+)', "S\g<1>E\g<2>", aEntry[1])
+            sTitle = re.sub('(\d+)&#215;(\d+)', 'S\g<1>E\g<2>', aEntry[1])
             sTitle = sTitle.replace(':', '')
             cCleantitle = re.sub('S\d+E\d+', '', sTitle)
 
@@ -256,11 +255,19 @@ def showSeries():
     sHtmlContent = sHtmlContent.replace('width: 50%;float: left;', 'VF')
     sHtmlContent = sHtmlContent.replace('width: 50%;float: right;', 'VOSTFR')
 
-    sPattern = '<ul class="episodios" style="([^"]+)">|<div class="numerando" style="margin: 0">([^<]+)<.+?data-target="([^"]+)"'
-
     oParser = cParser()
+
+    sDesc = ''
+    try:
+        sPattern = '<p>Résumé.+?treaming : (.+?)<\/p>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sDesc = aResult[1][0].replace('&#8217;', '\'').replace('&#8230;', '...')
+    except:
+        pass
+
+    sPattern = '<ul class="episodios" style="([^"]+)">|<div class="numerando" style="margin: 0">([^<]+)<.+?data-target="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    # sThumb = ''
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
@@ -273,11 +280,12 @@ def showSeries():
             if progress_.iscanceled():
                 break
 
-            if aEntry[0]:
+            if aEntry[0]:#Affichage de la langue
                 oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + aEntry[0] + '[/COLOR]')
             else:
-                # sUrl = aEntry[3]
-                sTitle = aEntry[1].replace(' x ', '').replace(' ', '') + ' ' + sMovieTitle
+                #on vire le double affichage de la saison
+                sMovieTitle = re.sub('- Saison \d+', '', sMovieTitle)
+                sTitle = sMovieTitle + ' ' + aEntry[1].replace(' x ', '').replace(' ', '')
                 sData = aEntry[2]
 
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -285,7 +293,7 @@ def showSeries():
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sData', sData)
-                oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -298,10 +306,9 @@ def showLinks():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    oParser = cParser()
-
     oRequestHandler = cRequestHandler(sRefUrl)
     sHtmlContent = oRequestHandler.request()
+    oParser = cParser()
 
     sDesc = ''
     try:

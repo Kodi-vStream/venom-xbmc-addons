@@ -193,12 +193,12 @@ msgid "Years"
 msgstr "Années"
 
 msgctxt "#30107"
-msgid "Vf"
-msgstr "Vf"
+msgid "VF"
+msgstr "VF"
 
 msgctxt "#30108"
-msgid "Vostfr"
-msgstr "Vostfr"
+msgid "VOSTFR"
+msgstr "VOSTFR"
 
 msgctxt "#30109"
 msgid "Children"
@@ -253,12 +253,12 @@ msgid "Tools"
 msgstr "Outils"
 
 msgctxt "#30128"
-msgid "Clear Cache Addon"
-msgstr "Vider Cache Addon"
+msgid "Clear Cache vStream"
+msgstr "Vider le Cache de vStream"
 
 msgctxt "#30129"
-msgid "Clear Cache Addon"
-msgstr "Vider Cache Addon"
+msgid "Clear Cache Kodi"
+msgstr "Vider le Cache de Kodi"
 
 msgctxt "#30130"
 msgid "Lists"
@@ -314,7 +314,7 @@ msgstr "Marquer vu/Non vu"
 
 msgctxt "#30207"
 msgid "Bookmarks"
-msgstr "Marque-Pages"
+msgstr "Marque-pages"
 
 msgctxt "#30208"
 msgid "Information"
@@ -326,7 +326,7 @@ msgstr "[COLOR red]Supprimer TOUT[/COLOR]"
 
 msgctxt "#30210"
 msgid "Bookmark"
-msgstr "Marque-pages"
+msgstr "Marque-page"
 
 msgctxt "#30211"
 msgid "[COLOR red]Clear this category[/COLOR]"
@@ -338,7 +338,7 @@ msgstr "Bande annonce"
 
 msgctxt "#30213"
 msgid "Search Similar"
-msgstr "Recherche Similaire"
+msgstr "Recherche similaire"
 
 msgctxt "#30214"
 msgid "Trakt"
@@ -786,15 +786,15 @@ msgstr "Toujours me demander"
 
 msgctxt "#30453"
 msgid "Continue streaming via Uptostream"
-msgstr "Passer en Streaming (via Uptostream)"
+msgstr "Passer en Streaming via Uptostream"
 
 msgctxt "#30454"
 msgid "Continue direct via UpToBox"
-msgstr "Rester en direct (via UpToBox)"
+msgstr "Rester en direct via UpToBox"
 
 msgctxt "#30455"
 msgid "My accounts"
-msgstr "Mes Comptes"
+msgstr "Mes comptes"
 
 msgctxt "#30456"
 msgid "Are you sure?"
