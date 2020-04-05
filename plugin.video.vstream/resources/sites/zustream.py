@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-# 
+#
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -95,7 +95,7 @@ def showMenuSeries():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_AMAZON[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_AMAZON[1], 'Séries (Amazon Prime)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_AMAZON[1], 'Séries (Amazon)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_DISNEY[0])
@@ -179,7 +179,7 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sPattern = '<article id="post-\d+".+?img src="([^"]+)" alt="([^"]+)".+?(?:|class="quality">([^<]+)<.+?)<a href="([^"]+)">.+?<div class="texto">(.+?)<\/div>'
+        sPattern = '<article id="post-\d+".+?img src="([^"]+)" alt="([^"]+)".+?(?:|class="quality">([^<]+)<.+?)(?:|class="dtyearfr">([^<]+)<.+?)<a href="([^"]+)">.+?<div class="texto">(.+?)<\/div>'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -199,7 +199,8 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sQual = ''
+            sLang = ''
+            sYear = ''
             sDesc = ''
             if sSearch:
                 sUrl = aEntry[0]
@@ -210,15 +211,17 @@ def showMovies(sSearch = ''):
                 sThumb = aEntry[0]
                 sTitle = aEntry[1]
                 if aEntry[2]:
-                    sQual = aEntry[2]
-                sUrl = aEntry[3]
-                if aEntry[4]:
-                    sDesc = aEntry[4]
+                    sLang = aEntry[2]
+                if aEntry[3]:
+                    sYear = aEntry[3]
+                sUrl = aEntry[4]
+                if aEntry[5]:
+                    sDesc = aEntry[5]
 
             sDesc = unicode(sDesc, 'utf-8') # converti en unicode
             sDesc = utils.unescape(sDesc)   # retire les balises HTML
 
-            sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
+            sDisplayTitle = ('%s (%s) (%s)') % (sTitle, sLang, sYear)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -226,7 +229,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if '/serie' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showSxE', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSxE', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLink', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -253,8 +256,6 @@ def __checkForNextPage(sHtmlContent):
 
 def showSxE():
     oGui = cGui()
-    oParser = cParser()
-
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
@@ -262,9 +263,8 @@ def showSxE():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    #recuperation des suivants
     sPattern = "<span class='title'>(.+?)<i>|<div class='numerando'>(.+?)</div><div class='episodiotitle'><a href='([^']+)'>"
+    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -281,11 +281,10 @@ def showSxE():
 
             else:
                 sUrl = aEntry[2]
-                SxE = re.sub('(\d+) - (\d+)', 'saison \g<1> Episode \g<2>',aEntry[1])
+                SxE = re.sub('(\d+) - (\d+)', 'saison \g<1> Episode \g<2>', aEntry[1])
+                sTitle = sMovieTitle + ' ' + SxE
 
-                sTitle = sMovieTitle + ' ' + SxE 
-
-                sDisplaytitle = sMovieTitle + ' ' + re.sub('saison \d+ ','',SxE)
+                sDisplaytitle = sMovieTitle + ' ' + re.sub('saison \d+ ', '', SxE)
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -299,7 +298,6 @@ def showSxE():
 
 def showLink():
     oGui = cGui()
-    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -307,22 +305,23 @@ def showLink():
 
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
-
     sPattern = "dooplay_player_option.+?data-post='(\d+)'.+?data-nume='(.+?)'>.+?'title'>(.+?)<"
+    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
-        sortedList = sorted(aResult[1], key=getSortedKey)
+        sortedList = sorted(aResult[1], key = getSortedKey)
         for aEntry in sortedList:
 
             sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
-            dtype = 'movie'     # fonctionne pour Film ou Série (pour info : série -> dtype = 'tv')
+            dtype = 'movie'# fonctionne pour Film ou Série (pour info : série -> dtype = 'tv')
             dpost = aEntry[0]
             dnum = aEntry[1]
             sTitle = aEntry[2].replace('Serveur', '').replace('Télécharger', '').replace('(', '').replace(')', '')
-            
-            if ('VIP - ' in sTitle):
-                continue                # Les liens VIP ne fonctionnent pas
-            
+
+            if ('VIP - ' in sTitle):# Les liens VIP ne fonctionnent pas
+                continue
+
             sTitle = ('%s [%s]') % (sMovieTitle, sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
