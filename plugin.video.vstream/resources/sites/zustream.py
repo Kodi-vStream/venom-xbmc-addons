@@ -30,6 +30,7 @@ SERIE_AMAZON = (URL_MAIN + 'network/amazon/', 'showMovies')
 SERIE_DISNEY = (URL_MAIN + 'network/disney/', 'showMovies')
 SERIE_APPLE = (URL_MAIN + 'network/apple-tv/', 'showMovies')
 SERIE_YOUTUBE = (URL_MAIN + 'network/youtube-premium/', 'showMovies')
+SERIE_ANNEES = (True, 'showYearsSeries')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?post_types=movies&s=', 'showMovies')
@@ -84,6 +85,10 @@ def showMenuSeries():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Par années)', 'annees.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_MANGAS[0])
@@ -157,6 +162,16 @@ def showYears():
 
     oGui.setEndOfDirectory()
 
+def showYearsSeries():
+    oGui = cGui()
+
+    for i in reversed (xrange(1997, 2021)):
+        Year = str(i)
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'sortie/' + Year + '/?post_types=tvshows')
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
 
 def showSearch():
     oGui = cGui()
