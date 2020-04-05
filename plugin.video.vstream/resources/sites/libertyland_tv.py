@@ -19,8 +19,8 @@ SITE_DESC = 'Les films et séries récentes en streaming et en téléchargement'
 URL_MAIN = 'https://libertyland.am/'
 
 URL_SEARCH = (URL_MAIN + 'v2/recherche/', 'showMovies')
-URL_SEARCH_MOVIES = ('', 'showMovies')
-URL_SEARCH_SERIES = ('', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + 'v2/recherche/categorie=films&mot_search=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'v2/recherche/categorie=series&mot_search=', 'showMovies')
 
 FUNCTION_SEARCH = 'showMovies'
 
@@ -54,8 +54,7 @@ def showMenuMovies():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oOutputParameterHandler.addParameter('sCat', '1')
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MOVIES[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche film', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -84,8 +83,7 @@ def showMenuSeries():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oOutputParameterHandler.addParameter('sCat', '2')
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche série', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -104,10 +102,12 @@ def showMenuSeries():
 
 def showSearch():
     oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = sSearchText
+        sUrl = sUrl + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -214,35 +214,21 @@ def showSerieAnnees():
 def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
-    oInputParameterHandler = cInputParameterHandler()
 
     if sSearch:
-
-        scategorie = ''
-        sUrl = ''
-        sCat = oInputParameterHandler.getValue('sCat')
-
-        if (sCat == '2'):#serie
-            scategorie = 'series'
-        elif (sCat == '1'):#film
-            scategorie = 'films'
-        else:#tout le reste
-            scategorie = 'films'
-
-        sUrl = URL_MAIN + 'v2/recherche/categorie=' + scategorie + '&mot_search=' + sSearch
-        oRequestHandler = cRequestHandler(sUrl)
-        sHtmlContent = oRequestHandler.request()
+        sUrl = sSearch
         sPattern = '<img class="img-responsive" *src="([^"]+)".+?<div class="divtelecha.+?href="([^"]+)">([^<>]+)<'
 #        sPattern = '<div class="bloc-generale">.+?href="([^"]+)"> *<img class="img-responsive" *src="([^"]+)" *alt="([^"]+)"'
     else:
+        oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        oRequestHandler = cRequestHandler(sUrl)
-        sHtmlContent = oRequestHandler.request()
-
         if '/series' in sUrl:
             sPattern = '<div class="divtelecha.+?href="([^"]+)"><strong>([^<]+)<\/strong>.+?<img class="img-responsive".+?src="([^"]+)"'
         else:  # films
             sPattern = '<h2 class="heading"> *<a href="[^"]+">([^<]+)<.+?<img class="img-responsive" *src="([^"]+)" *alt.+?(?:<font color="#.+?">([^<]+)<\/font>.+?).+?>film de (\d{4})<.+?Synopsis : ([^<]+)<.+?<div class="divtelecha.+?href="([^"]+)"'
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
