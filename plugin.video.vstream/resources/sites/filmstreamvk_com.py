@@ -124,7 +124,7 @@ def showMovies(sSearch = ''):
             else:
                 sThumb = aEntry[0]
                 sUrl = aEntry[1]
-                sTitle = aEntry[2]
+                sTitle = aEntry[2].replace('streaming', ' ')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
