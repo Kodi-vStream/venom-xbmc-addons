@@ -26,6 +26,7 @@ SERIE_NEWS = (URL_MAIN + 'serie/', 'showMovies')
 SERIE_GENRES = ('?post_types=tvshows', 'showGenres')
 SERIE_MANGAS = (URL_MAIN + 'genre/mangas/', 'showMovies')
 SERIE_NETFLIX = (URL_MAIN + 'network/netflix/', 'showMovies')
+SERIE_CANAL = (URL_MAIN + 'network/canal/', 'showMovies')
 SERIE_AMAZON = (URL_MAIN + 'network/amazon/', 'showMovies')
 SERIE_DISNEY = (URL_MAIN + 'network/disney/', 'showMovies')
 SERIE_APPLE = (URL_MAIN + 'network/apple-tv/', 'showMovies')
@@ -99,8 +100,12 @@ def showMenuSeries():
     oGui.addDir(SITE_IDENTIFIER, SERIE_NETFLIX[1], 'Séries (Netflix)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_CANAL[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_CANAL[1], 'Séries (Canal+)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_AMAZON[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_AMAZON[1], 'Séries (Amazon)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_AMAZON[1], 'Séries (Amazon Prime)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_DISNEY[0])
