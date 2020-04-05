@@ -179,8 +179,7 @@ def showLinks():
             dtype = 'movie'
             dpost = aEntry[0]
             dnum = aEntry[1]
-            # Add replace from yodidon (show issue #2824)
-            sTitle = aEntry[2].replace(‘streaming’, ‘ ‘)pour supprimer le mot
+            sTitle = aEntry[2]
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
