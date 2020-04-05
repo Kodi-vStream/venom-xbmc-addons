@@ -287,7 +287,7 @@ def showEpisodes():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="saision_LI2".+?href="([^"]+)".+?span>([^<]+)<'
+    sPattern = '<div class="saision_LI2">\s*<a href="([^"]+)">\s*<span>([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -328,6 +328,8 @@ def seriesHosters():
 
             sUrl = aEntry[0]
             sHost = aEntry[1].capitalize()
+            if 'Lecteur hd vip' in sHost:
+                continue
             sLang = aEntry[2].upper()
 
             sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
