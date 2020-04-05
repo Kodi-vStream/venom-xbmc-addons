@@ -29,7 +29,7 @@ FUNCTION_SEARCH = 'showMovies'
 
 def ProtectstreamBypass(url):
     if url.startswith('/'):
-        url = URL_MAIN + url
+        url = URL_MAIN[:-1] + url
 
 
     UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
@@ -70,7 +70,7 @@ def ProtectstreamBypass(url):
         data = {'k': postdata}
 
         try:
-            response = session.post('https://dpstreaming.to/embed_secur.php', data=data)
+            response = session.post(URL_MAIN + 'embed_secur.php', data = data)
         except requests.exceptions.RequestException as e:
             print 'erreur' + str(e)
             return ''
@@ -179,7 +179,6 @@ def showGenres():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
-    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
 
     if sSearch:
@@ -191,11 +190,9 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
     sHtmlContent = re.sub('src="https://dpstreaming.to/wp-content/plugins/wp-fastest-cache-premium/pro/images/blank.gif"', '', sHtmlContent)
-
     sPattern = '<div class="moviefilm".+?<a href="([^"]+)".+?<img.+?src="([^"]+)" alt="([^"]+)".+?<p>(.+?)</p>'
-
+    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -210,8 +207,7 @@ def showMovies(sSearch = ''):
                 break
 
             sUrl = aEntry[0]
-            sThumb = aEntry[1]
-            sThumb = re.sub('-119x125', '', sThumb)
+            sThumb = re.sub('-119x125', '', aEntry[1])
             sTitle = aEntry[2].replace(' Streaming', '')
             sDesc = aEntry[3]
 
@@ -253,7 +249,7 @@ def showSeries():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #récupération du Synopsis
+    #récupération du Synopsis plus complet que dans showmovies
     sDesc = ''
     try:
         sPattern = 'class="lab_syn">Synopsis :</span>(.+?)<\/p>'
