@@ -673,12 +673,12 @@ msgid "Enable log records"
 msgstr "Activer les enregistrements de log"
 
 msgctxt "#30423"
-msgid "Search (Movies)"
-msgstr "Recherche (Films)"
+msgid "Search a Movie"
+msgstr "Rechercher un Film"
 
 msgctxt "#30424"
-msgid "Search (TV Shows)"
-msgstr "Recherche (Séries)"
+msgid "Search a Serie"
+msgstr "Rechercher une Série"
 
 msgctxt "#30425"
 msgid "Movies (Popular)"
