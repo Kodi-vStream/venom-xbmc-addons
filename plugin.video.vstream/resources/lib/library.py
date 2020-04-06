@@ -3,9 +3,9 @@
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 # from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 # from resources.lib.gui.gui import cGui
-from resources.lib.util import cUtil
+from resources.lib.util import cUtil, QuotePlus
 from resources.lib.comaddon import addon, dialog, xbmc#, window, VSlog
-import xbmcvfs, urllib#, re
+import xbmcvfs#, re
 
 SITE_IDENTIFIER = 'cLibrary'
 SITE_NAME = 'Library'
@@ -26,7 +26,7 @@ class cLibrary:
             self.__sMovieFolder = 'special://userdata/addon_data/plugin.video.vstream/Films'
             self.ADDON.setSetting('Library_folder_Movies', self.__sMovieFolder)
         if not xbmcvfs.exists(self.__sMovieFolder):
-                xbmcvfs.mkdir(self.__sMovieFolder)
+            xbmcvfs.mkdir(self.__sMovieFolder)
 
         if not self.__sTVFolder:
             #PathCache = cConfig().getSettingCache()
@@ -34,7 +34,7 @@ class cLibrary:
             self.__sTVFolder = 'special://userdata/addon_data/plugin.video.vstream/Series'
             Self.ADDON.setSetting('Library_folder_TVs', self.__sTVFolder)
         if not xbmcvfs.exists(self.__sTVFolder):
-                xbmcvfs.mkdir(self.__sTVFolder)
+            xbmcvfs.mkdir(self.__sTVFolder)
 
         self.__sTitle = ''
 
@@ -55,8 +55,8 @@ class cLibrary:
 
         #cConfig().log(oInputParameterHandler.getAllParameter())
 
-        sMediaUrl = urllib.quote_plus(sMediaUrl)
-        sFileName = urllib.quote_plus(sFileName)
+        sMediaUrl = QuotePlus(sMediaUrl)
+        sFileName = QuotePlus(sFileName)
 
         sLink = 'plugin://plugin.video.vstream/?function=play&site=cHosterGui&sFileName=' + sFileName + '&sMediaUrl=' + sMediaUrl + '&sHosterIdentifier=' + sHosterIdentifier
 
@@ -80,7 +80,7 @@ class cLibrary:
                     xbmcvfs.mkdir(sPath)
 
                 self.MakeFile(sPath,sTitle,sLink)
-                #xbmc.executebuiltin('UpdateLibrary(video, '+ folder + ')')
+                #xbmc.executebuiltin('UpdateLibrary(video, ' + folder + ')')
             except:
                 self.DIALOG.VSinfo('Rajout impossible')
 
@@ -89,9 +89,9 @@ class cLibrary:
             #sTitle = cUtil().FormatSerie(sTitle)
             sTitle = cUtil().CleanName(sTitle)
             sFTitle =  self.showKeyBoard(sTitle, 'Recommandé Nomdeserie/Saison00')
-            
+
             #sTitleGlobal = re.sub('((?:[s|e][0-9]+){1,2})', '', sTitle)
-            
+
             # if sTitleGlobal.endswith(' '):
             #     sTitleGlobal = sTitleGlobal[:-1]
             # if sTitleGlobal.endswith('FINAL'):
@@ -112,12 +112,12 @@ class cLibrary:
                 sTitle =  self.showKeyBoard(sTitle, 'Recommandé NomdeserieS00E00')
 
                 self.MakeFile(sPath,sTitle,sLink)
-                #xbmc.executebuiltin('UpdateLibrary(video, '+ folder + ')')
+                #xbmc.executebuiltin('UpdateLibrary(video, ' + folder + ')')
             except:
                 self.DIALOG.VSinfo('Rajout impossible')
 
 
-    def MakeFile(self,folder,name,content):
+    def MakeFile(self, folder, name, content):
         #stream = os.path.join(folder, str(name) + '.strm')
         #stream = '%s%s.strm' % (folder, str(name))
         stream = '/'.join([folder, str(name)]) + '.strm'
@@ -155,7 +155,7 @@ class cLibrary:
         sFolder = oInputParameterHandler.getValue('folder')
         xbmc.executebuiltin('Container.Update(' + sFolder + ')')
 
-    def showKeyBoard(self, sDefaultText='', Heading=''):
+    def showKeyBoard(self, sDefaultText = '', Heading = ''):
         keyboard = xbmc.Keyboard(sDefaultText)
         keyboard.setHeading(Heading) #optional
         keyboard.doModal()
