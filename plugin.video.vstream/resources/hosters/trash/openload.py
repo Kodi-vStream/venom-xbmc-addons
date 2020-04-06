@@ -4,16 +4,14 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-
 from resources.lib.aadecode import AADecoder
 from resources.lib.jjdecode import JJDecoder
 from resources.lib.packer import cPacker
-
+from resources.lib.util import QuoteSafe
 from resources.lib.comaddon import dialog, VSlog, xbmc
 #Pour le futur
 from resources.lib.jsparser import JsParser
-
-import re, urllib2, urllib, base64, math
+import re, urllib2, base64, math
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
 
@@ -28,7 +26,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'#[COLOR khaki]' + self.__sHD + '[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -60,9 +58,9 @@ class cHoster(iHoster):
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
         self.__sUrl = self.__sUrl.replace('openload.io', 'openload.co')
-        self.__sUrl = urllib.quote(sUrl, safe=':/')
+        self.__sUrl = QuoteSafe(sUrl)
         if self.__sUrl[-4:-3] == '.':
-            self.__sUrl = self.__sUrl.replace(self.__sUrl.split('/')[-1], "")
+            self.__sUrl = self.__sUrl.replace(self.__sUrl.split('/')[-1], '')
 
     def checkUrl(self, sUrl):
         return True
@@ -131,11 +129,11 @@ class cHoster(iHoster):
 
         code = sHtmlContent3
 
-        #fh = open('c:\\html.txt', "w")
+        #fh = open('c:\\html.txt', 'w')
         #fh.write(code)
         #fh.close()
 
-        id_final = ""
+        id_final = ''
         sPattern = 'var srclink.*?\/stream\/.*?(#[^\'"]+).*?mime=true'
         aResult = re.findall(sPattern, code)
         if (aResult):
@@ -163,7 +161,7 @@ class cHoster(iHoster):
         #Nettoyage du code pr traitement
         code = CleanCode(code, Coded_url)
 
-        #fh = open('c:\\JS.txt', "w")
+        #fh = open('c:\\JS.txt', 'w'w)
         #fh.write(code)
         #fh.close()
 
@@ -192,7 +190,7 @@ class cHoster(iHoster):
 
         dialog().VSinfo('Ok, lien décodé.', self.__sDisplayName, 15)
 
-        api_call = self.__getHost() + "/stream/" + url + "?mime=true"
+        api_call = self.__getHost() + '/stream/' + url + '?mime=true'
 
         if '::' in api_call:
             dialog().VSinfo('Possible problème d\'ip V6', self.__sDisplayName, 5)
@@ -215,17 +213,17 @@ def ASCIIDecode(string):
     l = len(string)
     ret = ''
     while i < l:
-        c =string[i]
+        c = string[i]
         if string[i:(i + 2)] == '\\x':
             c = chr(int(string[(i + 2):(i + 4)], 16))
-            i+= 3
+            i += 3
         if string[i:(i + 2)] == '\\u':
             cc = int(string[(i + 2):(i + 6)], 16)
             if cc > 256:
                 #ok c'est de l'unicode, pas du ascii
                 return ''
             c = chr(cc)
-            i+= 5
+            i += 5
         ret = ret + c
         i = i + 1
 
