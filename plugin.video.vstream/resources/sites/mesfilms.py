@@ -196,7 +196,7 @@ def showSearchResult(sSearch = ''):
                 break
 
             sUrl = aEntry[0]
-            sThumb = re.sub('/w\d+', '/w342', aEntry[1], 1)#retraite l'url pour etre sure d'avoir la meilleur qualité
+            sThumb = re.sub('/w\d+', '/w342', aEntry[1], 1) #retraite l'url pour etre sure d'avoir la meilleure qualité
             sTitle = aEntry[2]
             sYear = aEntry[3]
             sDesc = aEntry[4]
@@ -205,6 +205,7 @@ def showSearchResult(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sYear', sYear)    # permet à addMovie d'afficher l'année dans le détail
 
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -225,9 +226,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="poster"><img src="([^"]+)" alt="([^"]+)".+?(?:|class="quality">([^<]+)<.+?)<a href="([^"]+)".+?<span>([^<]+)'
-    if (not '/film/' in sUrl) and (not '/tendance/' in sUrl) and (not '/evaluations/' in sUrl):#cas ou la sdesc n'est pas presente
-        sPattern = sPattern + '.+?<div class="texto">(.*?)<'
+    sPattern = '<div class="poster"><img src="([^"]+)" alt="([^"]+)".+?(?:|class="quality">([^<]+)<.+?)<a href="([^"]+)".+?<span>([^<]+).+?(<div class="texto">(.*?)<|<\/article)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -248,10 +247,9 @@ def showMovies(sSearch = ''):
             sQual = aEntry[2]
             sUrl2 = aEntry[3]
             sYear = aEntry[4]
-            sDesc = ''#cas ou la sdesc n'est pas presente
-            if (not '/film/' in sUrl) and (not '/tendance/' in sUrl) and (not '/evaluations/' in sUrl):
-                sDesc = aEntry[5]
-
+            sDesc = '' #cas ou la sdesc n'est pas presente
+            if aEntry[6]:
+                sDesc = aEntry[6]
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sYear)
 
             oOutputParameterHandler = cOutputParameterHandler()
