@@ -7,7 +7,8 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.comaddon import progress#, VSlog
 from resources.lib.parser import cParser
-import re, urllib
+from resources.lib.util import Quote
+import re
 
 SITE_IDENTIFIER = 'mesfilms'
 SITE_NAME = 'Mes Films'
@@ -73,7 +74,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + urllib.quote(sSearchText)
+        sUrl = URL_SEARCH[0] + Quote(sSearchText)
         showSearchResult(sUrl)
         oGui.setEndOfDirectory()
         return
