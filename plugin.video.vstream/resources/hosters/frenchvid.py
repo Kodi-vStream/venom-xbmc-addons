@@ -6,7 +6,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog, VSlog
-import urllib
+from resources.lib.util import QuotePlus
 import json
 
 
@@ -74,12 +74,12 @@ class cHoster(iHoster):
             aResult = oParser.parse(sHtmlContent, sPattern)
 
             url = baseUrl + aResult[1][0].rsplit('/', 1)[1]
-            
-            postdata = 'r=' + urllib.quote_plus(self.__sUrl) + '&d=' + baseUrl.replace('https://', '').replace('/api/source/', '')
+
+            postdata = 'r=' + QuotePlus(self.__sUrl) + '&d=' + baseUrl.replace('https://', '').replace('/api/source/', '')
 
         else:
             url = baseUrl + self.__sUrl.rsplit('/', 1)[1]
-            postdata = 'r=' + urllib.quote_plus(self.__sUrl) + '&d=' + baseUrl.replace('https://', '').replace('/api/source/', '')
+            postdata = 'r=' + QuotePlus(self.__sUrl) + '&d=' + baseUrl.replace('https://', '').replace('/api/source/', '')
 
         VSlog(url)
         oRequest = cRequestHandler(url)
@@ -92,9 +92,9 @@ class cHoster(iHoster):
         oRequest.addHeaderEntry('Referer',self.__sUrl)
         oRequest.addParametersLine(postdata)
         sHtmlContent = oRequest.request()
-        
+
         VSlog(sHtmlContent)
-        
+
         page = json.loads(sHtmlContent)
         if page:
             url = []
