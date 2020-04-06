@@ -677,7 +677,7 @@ msgid "Search a Movie"
 msgstr ""
 
 msgctxt "#30424"
-msgid "Search a serie"
+msgid "Search a Serie"
 msgstr ""
 
 msgctxt "#30425"
