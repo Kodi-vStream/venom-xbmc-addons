@@ -673,11 +673,11 @@ msgid "Enable log records"
 msgstr ""
 
 msgctxt "#30423"
-msgid "Search (Movies)"
+msgid "Search a Movie"
 msgstr ""
 
 msgctxt "#30424"
-msgid "Search (TV Shows)"
+msgid "Search a serie"
 msgstr ""
 
 msgctxt "#30425"
