@@ -857,10 +857,10 @@ def Display_protected_link():
 
     if 'link' in sUrl:
         #Temporairement car la flemme de ce battre avec les redirection
-        import requests
-        headers = {'User-Agent': UA}
-        r = requests.get(sUrl.replace('//link', '/link'), headers = headers)
-        sUrl = r.url
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        sHtmlContent = oRequestHandler.request()
+        sUrl = oRequestHandler.getRealUrl()
 
     if "dl-protect" in sUrl:
         sHtmlContent = DecryptDlProtecte(sUrl)
