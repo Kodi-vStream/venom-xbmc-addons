@@ -27,6 +27,7 @@ MOVIE_NOTES = (URL_MAIN + 'evaluations/?get=movies', 'showMovies')
 MOVIE_CLASS = (URL_MAIN + 'films-classiques/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
+#MOVIE_LIST = (True, 'showList')
 
 
 def load():
@@ -59,6 +60,11 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
+
+    #ne fonctionne plus sur le site
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
+    #oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Liste)', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -189,7 +195,7 @@ def showSearchResult(sSearch = ''):
                 break
 
             sUrl = aEntry[0]
-            sThumb = re.sub('/w\d+', '/w342', aEntry[1], 1)
+            sThumb = re.sub('/w\d+', '/w342', aEntry[1], 1)#retraite l'url pour etre sure d'avoir la meilleur qualité
             sTitle = aEntry[2]
             sYear = aEntry[3]
             sDesc = aEntry[4]
@@ -198,9 +204,8 @@ def showSearchResult(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sYear', sYear)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -219,7 +224,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="poster"><img src="([^"]+)" alt="([^"]+)".+?(?:|class="quality">([^<]+)<.+?)<a href="([^"]+)".+?<span>([^<]+).+?<div class="texto">(.*?)<'
+    sPattern = '<div class="poster"><img src="([^"]+)" alt="([^"]+)".+?(?:|class="quality">([^<]+)<.+?)<a href="([^"]+)".+?<span>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -234,12 +239,12 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sThumb = re.sub('/w\d+', '/w342', aEntry[0], 1)
+            sThumb = re.sub('/w\d+', '/w342', aEntry[0], 1)#retraite l'url pour etre sure d'avoir la meilleur qualité
             sTitle = aEntry[1]
             sQual = aEntry[2]
             sUrl2 = aEntry[3]
             sYear = aEntry[4]
-            sDesc = aEntry[5]
+            sDesc = ''
 
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sYear)
 
@@ -248,7 +253,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -273,7 +278,7 @@ def __checkForNextPage(sHtmlContent):
     return False
 
 
-def showLinks():
+def showHosters():
     oGui = cGui()
     oParser = cParser()
 
@@ -284,6 +289,15 @@ def showLinks():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+
+    sDesc = ''
+    try:
+        sPattern = 'property="og:description" content="(.+?)" /><meta property='
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            sDesc = aResult[1][0].replace('&#8217;', '\'').replace('&#8230;', '...').replace('&hellip;', '...')
+    except:
+        pass
 
     sPattern = 'data-post="([^"]+)" data-nume="([^"]+)">\s*.+?\s*<span class="title">([^<]+)</span>\s*<span class="server">([^<]+)</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -313,11 +327,11 @@ def showLinks():
             oOutputParameterHandler.addParameter('sNume', sNume)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
-def showHosters():
+def showLink():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
