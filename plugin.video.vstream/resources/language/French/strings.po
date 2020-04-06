@@ -29,8 +29,8 @@ msgid "vStream will be faster with your own API key."
 msgstr "vStream sera plus rapide avec votre propre clef API."
 
 msgctxt "#30006"
-msgid "Search Metadata (slowed the Addon)"
-msgstr "Recherche les Métadonnées (ralenti l'Addon)"
+msgid "Search Metadata (slowed vStream)"
+msgstr "Recherche les Métadonnées (ralenti vStream)"
 
 msgctxt "#30007"
 msgid "Posters Size"
@@ -367,6 +367,14 @@ msgstr "Lire"
 msgctxt "#30220"
 msgid "Reset"
 msgstr "Réinitialiser"
+
+msgctxt "#30221"
+msgid "Add:"
+msgstr "Ajouter:"
+
+msgctxt "#30222"
+msgid "Delete:"
+msgstr "Supprimer:"
 
 msgctxt "#30300"
 msgid "Library"
