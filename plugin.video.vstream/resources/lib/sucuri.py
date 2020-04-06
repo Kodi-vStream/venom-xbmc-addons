@@ -6,7 +6,7 @@ import xbmc
 import xbmcaddon
 import base64
 
-PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
+PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo('profile'))
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
 class NoRedirection(urllib2.HTTPErrorProcessor):
@@ -25,19 +25,17 @@ class SucurieBypass(object):
     def DeleteCookie(self, Domain):
         print 'Effacement cookies'
         file = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt')
-        os.remove(os.path.join(PathCache, file).decode("utf-8"))
+        os.remove(os.path.join(PathCache, file).decode('utf-8'))
 
     def SaveCookie(self,Domain,data):
-        Name = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt').decode("utf-8")
-
+        Name = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt').decode('utf-8')
         #save it
         file = open(Name, 'w')
         file.write(data)
-
         file.close()
 
     def Readcookie(self,Domain):
-        Name = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt').decode("utf-8")
+        Name = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt').decode('utf-8')
 
         try:
             file = open(Name, 'r')
@@ -48,7 +46,7 @@ class SucurieBypass(object):
 
         return data
 
-    def DecryptCookie(self,htmlcontent):
+    def DecryptCookie(self, htmlcontent):
         match = re.search("S\s*=\s*'([^']+)", htmlcontent)
         if match:
             s = base64.b64decode(match.group(1))
@@ -74,7 +72,6 @@ class SucurieBypass(object):
 
     #Return param for head
     def GetHeadercookie(self, url):
-        #urllib.quote_plus()
         Domain = re.sub(r'https*:\/\/([^/]+)(\/*.*)', '\\1', url)
         cook = self.Readcookie(Domain.replace('.', '_'))
         if cook == '':
@@ -87,7 +84,6 @@ class SucurieBypass(object):
             return True
         return False
 
-
     def SetHeader(self):
         head=[]
         head.append(('User-Agent', UA))
@@ -98,14 +94,13 @@ class SucurieBypass(object):
         head.append(('Accept-Encodinge', 'identity'))
         return head
 
-    def GetHtml(self, url, data=None):
+    def GetHtml(self, url, data = None):
         self.hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)', '\\1', url)
         self.host = re.sub(r'https*:\/\/', '', self.hostComplet)
         self.url = url
 
         #on cherche des precedents cookies
         cookies = self.Readcookie(self.host.replace('.', '_'))
-
         htmlcontent,url2 = self.htmlrequest(url, cookies, data)
 
         if not self.CheckIfActive(htmlcontent):
@@ -114,13 +109,13 @@ class SucurieBypass(object):
             if url2 == url:
                 return htmlcontent
             else:
-                htmlcontent,dummy = self.htmlrequest(url2, cookies, data, False)
+                htmlcontent, dummy = self.htmlrequest(url2, cookies, data, False)
                 return htmlcontent
 
         #on cherche le nouveau cookie
         cookies = self.DecryptCookie(htmlcontent)
         if not cookies:
-            print 'Erreur sucuri decodage'
+            print 'Erreur sucuri décodage'
             return ''
 
         print 'Protection Sucuri active'
@@ -129,7 +124,7 @@ class SucurieBypass(object):
         self.SaveCookie(self.host.replace('.', '_'), cookies)
 
         #et on recommence
-        htmlcontent,dummy = self.htmlrequest(url, cookies, data)
+        htmlcontent, dummy = self.htmlrequest(url, cookies, data)
 
         return htmlcontent
 
@@ -145,7 +140,7 @@ class SucurieBypass(object):
         if cookies:
             opener.addheaders.append(('Cookie', cookies))
 
-        response = opener.open(url,data)
+        response = opener.open(url, data)
         htmlcontent = response.read()
 
         redirecturl = response.geturl()
