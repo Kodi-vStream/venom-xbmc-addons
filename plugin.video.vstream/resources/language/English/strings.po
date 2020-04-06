@@ -29,7 +29,7 @@ msgid "vStream will be faster with your own API key."
 msgstr ""
 
 msgctxt "#30006"
-msgid "Search Metadata (slowed the Addon)"
+msgid "Search Metadata (slowed vStream)"
 msgstr ""
 
 msgctxt "#30007"
@@ -366,6 +366,14 @@ msgstr ""
 
 msgctxt "#30220"
 msgid "Reset"
+msgstr ""
+
+msgctxt "#30221"
+msgid "Add:"
+msgstr ""
+
+msgctxt "#30222"
+msgid "Delete:"
 msgstr ""
 
 msgctxt "#30300"
