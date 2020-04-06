@@ -10,7 +10,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 from resources.lib.comaddon import dialog
-import urllib
+from resources.lib.util import Unquote
 
 URL_MAIN = 'https://www.youtube.com/get_video_info?video_id='
 
@@ -81,7 +81,7 @@ class cHoster(iHoster):
         oParser = cParser()
 
         oRequestHandler = cRequestHandler(URL_MAIN + self.__sUrl)
-        sHtml = urllib.unquote(oRequestHandler.request())
+        sHtml = Unquote(oRequestHandler.request())
 
         sHtmlContent = sHtml[7 + sHtml.find("formats"):sHtml.rfind("adaptiveFormats")]
 
