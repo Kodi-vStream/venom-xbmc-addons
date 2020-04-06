@@ -225,6 +225,9 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '<div class="poster"><img src="([^"]+)" alt="([^"]+)".+?(?:|class="quality">([^<]+)<.+?)<a href="([^"]+)".+?<span>([^<]+)'
+    if (not '/film/' in sUrl) and (not '/tendance/' in sUrl) and (not '/evaluations/' in sUrl):#cas ou la sdesc n'est pas presente
+        sPattern = sPattern + '.+?<div class="texto">(.*?)<'
+
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -244,7 +247,9 @@ def showMovies(sSearch = ''):
             sQual = aEntry[2]
             sUrl2 = aEntry[3]
             sYear = aEntry[4]
-            sDesc = ''
+            sDesc = ''#cas ou la sdesc n'est pas presente
+            if (not '/film/' in sUrl) and (not '/tendance/' in sUrl) and (not '/evaluations/' in sUrl):
+                sDesc = aEntry[5]
 
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sYear)
 
