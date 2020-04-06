@@ -10,7 +10,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 from resources.lib.comaddon import dialog
-from resources.lib.util import Unquote
+from resources.lib.util import Unquote, Quote
 
 URL_MAIN = 'https://www.youtube.com/get_video_info?video_id='
 
@@ -55,11 +55,10 @@ class cHoster(iHoster):
         self.__sUrl = sUrl
         self.__sUrl = self.__sUrl.rsplit('/', 1)[1]
         self.__sUrl = self.__sUrl.replace('watch?v=', '')
-        self.__sUrl = self.__sUrl.replace('?','').replace('&','')
-        self.__sUrl = self.__sUrl.replace('feature=oembed','')
-        self.__sUrl = self.__sUrl.replace('autoplay=1','')
-        self.__sUrl = self.__sUrl.replace('autohide=1','')
-
+        self.__sUrl = self.__sUrl.replace('?', '').replace('&', '')
+        self.__sUrl = self.__sUrl.replace('feature=oembed', '')
+        self.__sUrl = self.__sUrl.replace('autoplay=1', '')
+        self.__sUrl = self.__sUrl.replace('autohide=1', '')
 
     def checkUrl(self, sUrl):
         return True
@@ -79,19 +78,17 @@ class cHoster(iHoster):
         api_call = ''
 
         oParser = cParser()
-
         oRequestHandler = cRequestHandler(URL_MAIN + self.__sUrl)
         sHtml = Unquote(oRequestHandler.request())
-
-        sHtmlContent = sHtml[7 + sHtml.find("formats"):sHtml.rfind("adaptiveFormats")]
-
+        sHtmlContent = sHtml[7 + sHtml.find('formats'):sHtml.rfind('adaptiveFormats')]
         sPattern = '"url":"([^"]+)".+?"qualityLabel":"([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
+
         if (aResult[0] == True):
             url=[]
             qua=[]
             for aEntry in aResult[1]:
-                url.append(aEntry[0].replace('\u0026','&')) 
+                url.append(aEntry[0].replace('\u0026', '&'))
                 qua.append(aEntry[1])
 
             if url:
@@ -106,8 +103,7 @@ class cHoster(iHoster):
         api_call = ''
 
         oParser = cParser()
-
-        pdata = 'url=' + urllib.quote('https://www.youtube.com/embed/' + self.__sUrl) + '&submit=1'
+        pdata = 'url=' + Quote('https://www.youtube.com/embed/' + self.__sUrl) + '&submit=1'
 
         oRequest = cRequestHandler('https://ytoffline.net/fr/validate/')
         oRequest.setRequestType(1)
@@ -119,12 +115,10 @@ class cHoster(iHoster):
         oRequest.addParametersLine(pdata)
 
         sHtmlContent = oRequest.request()
-        
         sHtmlContent1 = oParser.abParse(sHtmlContent, '<div id="mp4" class="display-block tabcontent">', '<div id="audio" class="tabcontent">')
-
         sPattern = '<td>([^<]+)<small>.+?data-href="([^"]+)"'
-
         aResult = oParser.parse(sHtmlContent1, sPattern)
+
         if (aResult[0] == True):
             #initialisation des tableaux
             url=[]
@@ -141,4 +135,3 @@ class cHoster(iHoster):
             return True, api_call
 
         return False, False
-
