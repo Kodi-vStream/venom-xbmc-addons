@@ -4,7 +4,7 @@ from resources.hosters.hoster import iHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import dialog
-import urllib
+from resources.lib.util import QuotePlus
 
 class cHoster(iHoster):
 
@@ -85,7 +85,7 @@ class cHoster(iHoster):
         sID = self.__getIdFromUrl(self.__sUrl)
         sRestUrl = self.__getRestFromUrl(self.__sUrl)
 
-        api = 'http://rutube.ru/api/play/options/' + sID + '/?format=json&no_404=true&referer=' + urllib.quote(self.__sUrl, safe = '')
+        api = 'http://rutube.ru/api/play/options/' + sID + '/?format=json&no_404=true&referer=' + QuotePlus(self.__sUrl)
         api = api + '&' + sRestUrl
 
         oRequest = cRequestHandler(api)
