@@ -9,14 +9,16 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.rechercheHandler import cRechercheHandler
 from resources.lib.comaddon import addon, dialog, progress, VSlog, xbmc
+from resources.lib.util import Quote
 
-
-import urllib, urllib2, re
+import urllib2, re
 import unicodedata
 import datetime, time
 
-try: import json
-except: import simplejson as json
+try:
+    import json
+except:
+    import simplejson as json
 
 SITE_IDENTIFIER = 'cTrakt'
 SITE_NAME = 'Trakt'
@@ -52,7 +54,7 @@ class cTrakt:
         post = json.dumps(post)
 
 
-        req = urllib2.Request('https://api.trakt.tv/oauth/device/code', post,headers)
+        req = urllib2.Request('https://api.trakt.tv/oauth/device/code', post, headers)
         response = urllib2.urlopen(req)
         sHtmlContent = response.read()
         result = json.loads(sHtmlContent)
@@ -130,7 +132,7 @@ class cTrakt:
             #post = json.dumps(post)
 
             try:
-                req = urllib2.Request('https://api.trakt.tv/users/me', None,headers)
+                req = urllib2.Request('https://api.trakt.tv/users/me', None, headers)
                 response = urllib2.urlopen(req)
             except:
                 return self.getToken()
@@ -192,7 +194,7 @@ class cTrakt:
         # if (sSearchText != False):
             # oInputParameterHandler = cInputParameterHandler()
             # sType = oInputParameterHandler.getValue('type')
-            # sUrl = 'https://api.trakt.tv/search/' + sType + '?query=' + urllib.quote_plus(sSearchText)
+            # sUrl = 'https://api.trakt.tv/search/' + sType + '?query=' + QuotePlus(sSearchText)
             # self.getTrakt(sUrl)
             # return
         # oGui.setEndOfDirectory()
@@ -207,7 +209,7 @@ class cTrakt:
         liste.append( ['Mes sorties sur les 7 jours à venir', 'https://api.trakt.tv/calendars/my/shows/' + today_date + '/7'] )
         liste.append( ['Mes sorties sur les 30 jours à venir', 'https://api.trakt.tv/calendars/my/shows/' + today_date + '/30'] )
         liste.append( ['Nouveautées sur 7 jours', 'https://api.trakt.tv/calendars/all/shows/new/' + today_date + '/7'] )
-        #liste.append( ['Freeze - Nouveautées sur la journee à venir', 'https://api.trakt.tv/calendars/all/shows/' + today_date + '/1'] )
+        #liste.append( ['Freeze - Nouveautées sur la journée à venir', 'https://api.trakt.tv/calendars/all/shows/' + today_date + '/1'] )
 
         for sTitle, sUrl in liste:
 
@@ -750,7 +752,8 @@ class cTrakt:
 
                     sTitle2 = ('%s Lectures - %s(E%02d)') % (sPlays, sTitle.encode('utf-8'), int(sNumber))
 
-                else: return
+                else:
+                    return
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl + str(sNumber))
@@ -766,13 +769,11 @@ class cTrakt:
     def getFolder(self, oGui, sId, sTitle, sFile, sFunction, sImdb, sTmdb, oOutputParameterHandler):
 
         oGuiElement = cGuiElement()
-
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
         oGuiElement.setTitle(sTitle)
         oGuiElement.setFileName(sFile)
         oGuiElement.setIcon('trakt.png')
-
         #oGuiElement.setThumbnail(sThumb)
         oGuiElement.setImdbId(sImdb)
         oGuiElement.setTmdbId(sTmdb)
@@ -801,31 +802,29 @@ class cTrakt:
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
         #oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'next.png', oOutputParameterHandler)
 
-
     def getContext(self):
 
         disp = []
         lang = []
         disp.append('https://api.trakt.tv/sync/collection')
-        lang.append('Ajouter: ' + self.ADDON.VSlang(30310))
+        lang.append(self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30310))
 
         disp.append('https://api.trakt.tv/sync/collection/remove')
-        lang.append('[COLOR red]Supprimer: ' + self.ADDON.VSlang(30310) + '[/COLOR]')
+        lang.append('[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30310) + '[/COLOR]')
 
         disp.append('https://api.trakt.tv/sync/watchlist')
-        lang.append('Ajouter: '+self.ADDON.VSlang(30311))
+        lang.append(self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30311))
 
         disp.append('https://api.trakt.tv/sync/watchlist/remove')
-        lang.append('[COLOR red]Supprimer: ' + self.ADDON.VSlang(30311) + '[/COLOR]')
+        lang.append('[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30311) + '[/COLOR]')
 
         disp.append('https://api.trakt.tv/sync/history')
-        lang.append('Ajouter: ' + self.ADDON.VSlang(30312))
+        lang.append(self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30312))
 
         disp.append('https://api.trakt.tv/sync/history/remove')
-        lang.append('[COLOR red]Supprimer: ' + self.ADDON.VSlang(30312) + '[/COLOR]')
+        lang.append('[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30312) + '[/COLOR]')
 
-
-        ret = self.DIALOG.select('Trakt',lang)
+        ret = self.DIALOG.select('Trakt', lang)
 
         if ret > -1:
             self.__sAction = disp[ret]
@@ -1013,12 +1012,12 @@ class cTrakt:
     def createContexTrakt(self, oGui, oGuiElement, oOutputParameterHandler = ''):
 
         liste = []
-        liste.append( ['[COLOR teal]Ajouter: ' + self.ADDON.VSlang(30310) + '[/COLOR]', 'https://api.trakt.tv/sync/collection'] )
-        liste.append( ['[COLOR red]Supprimer: ' + self.ADDON.VSlang(30310) + '[/COLOR]', 'https://api.trakt.tv/sync/collection/remove'] )
-        liste.append( ['[COLOR teal]Ajouter: ' + self.ADDON.VSlang(30311) + '[/COLOR]', 'https://api.trakt.tv/sync/watchlist'] )
-        liste.append( ['[COLOR red]Supprimer: ' + self.ADDON.VSlang(30311) + '[/COLOR]', 'https://api.trakt.tv/sync/watchlist/remove'] )
-        liste.append( ['[COLOR teal]Ajouter: ' + self.ADDON.VSlang(30312) + '[/COLOR]', 'https://api.trakt.tv/sync/history'] )
-        liste.append( ['[COLOR red]Supprimer: ' + self.ADDON.VSlang(30312) + '[/COLOR]', 'https://api.trakt.tv/sync/history/remove'] )
+        liste.append( ['[COLOR teal]' + self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30310) + '[/COLOR]', 'https://api.trakt.tv/sync/collection'] )
+        liste.append( ['[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30310) + '[/COLOR]', 'https://api.trakt.tv/sync/collection/remove'] )
+        liste.append( ['[COLOR teal]' + self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30311) + '[/COLOR]', 'https://api.trakt.tv/sync/watchlist'] )
+        liste.append( ['[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30311) + '[/COLOR]', 'https://api.trakt.tv/sync/watchlist/remove'] )
+        liste.append( ['[COLOR teal]' + self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30312) + '[/COLOR]', 'https://api.trakt.tv/sync/history'] )
+        liste.append( ['[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30312) + '[/COLOR]', 'https://api.trakt.tv/sync/history/remove'] )
         for sTitle,sUrl in liste:
             oOutputParameterHandler = cOutputParameterHandler()
             if cTrakt.CONTENT == '2':
@@ -1043,9 +1042,7 @@ class cTrakt:
         sMovieTitle = unicode(sMovieTitle, 'utf-8')#converti en unicode pour aider aux convertions
         sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'replace').decode('unicode_escape')#vire accent et '\'
         sMovieTitle = sMovieTitle.encode('utf-8').lower() #on repasse en utf-8
-
-        sMovieTitle = urllib.quote(sMovieTitle)
-
+        sMovieTitle = Quote(sMovieTitle)
         sMovieTitle = re.sub('\(.+?\)', ' ', sMovieTitle) #vire les tags entre parentheses
 
         #modif venom si le titre comporte un - il doit le chercher
@@ -1093,7 +1090,7 @@ class cTrakt:
         return
 
         if not sTmdb:
-            VSlog('Probleme sTmdb')
+            VSlog('Problème sTmdb')
             return
 
         oRequestHandler = cRequestHandler('https://api.themoviedb.org/3/movie/' + str(sTmdb))
