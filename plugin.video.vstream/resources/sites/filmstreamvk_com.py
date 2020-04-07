@@ -180,7 +180,16 @@ def showLinks():
             dtype = 'movie'
             dpost = aEntry[0]
             dnum = aEntry[1]
-            sTitle = aEntry[2]
+            sHoster = aEntry[2]
+            sTitle = ''
+            try:
+              sPattern = 'jpg" alt="(.+?)"'
+              aResult = oParser.parse(sHtmlContent, sPattern)
+              if aResult[0]:
+                sTitle = aResult[1][0]
+            except:
+                pass
+            sDisplaytitle = '%s [COLOR coral]%s[/COLOR]' % (sTitle, sHoster)
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -190,7 +199,7 @@ def showLinks():
             oOutputParameterHandler.addParameter('data1', dtype)
             oOutputParameterHandler.addParameter('data2', dpost)
             oOutputParameterHandler.addParameter('data3', dnum)
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplaytitle, sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
