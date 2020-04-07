@@ -116,6 +116,14 @@ msgctxt "#30036"
 msgid "Changelog"
 msgstr "Changelog"
 
+msgctxt "#30037"
+msgid "Not possible for this site"
+msgstr "Pas possible pour ce site"
+
+msgctxt "#30038"
+msgid "Bookmarking not possible for this link"
+msgstr "Mise en Marque-page pas possible pour ce lien"
+
 msgctxt "#30076"
 msgid "Search"
 msgstr "Recherche"
