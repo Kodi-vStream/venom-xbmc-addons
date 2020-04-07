@@ -3,7 +3,7 @@
 #Venom.
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.util import QuotePlus, Unquote
-from resources.lib.comaddon import dialog, VSlog, xbmc
+from resources.lib.comaddon import dialog, addon, VSlog, xbmc
 import xbmcvfs
 
 SITE_IDENTIFIER = 'cDb'
@@ -24,6 +24,7 @@ class cDb:
     #important seul xbmcvfs peux lire le special
     REALDB = xbmc.translatePath(DB).decode('utf-8')
     DIALOG = dialog()
+    ADDON = addon()
 
     def __init__(self):
 
@@ -36,7 +37,7 @@ class cDb:
                 self._create_tables()
                 return
         except:
-            VSlog('Erreur: Impossible d\'ecrire sur %s' % self.REALDB )
+            VSlog(self.ADDON.VSlang(30039) % self.REALDB)
             pass
 
         try:
@@ -44,7 +45,7 @@ class cDb:
             self.db.row_factory = sqlite.Row
             self.dbcur = self.db.cursor()
         except:
-            VSlog('Erreur: Impossible de ce connecter sur %s' % self.REALDB )
+            VSlog(self.ADDON.VSlang(30040) % self.REALDB)
             pass
 
     def __del__(self):
@@ -204,7 +205,7 @@ class cDb:
         try:
             self.dbcur.execute(sql_delete)
             self.db.commit()
-            self.DIALOG.VSinfo('Historique supprime')
+            self.DIALOG.VSinfo(self.ADDON.VSlang(30041))
             xbmc.executebuiltin('Container.Refresh')
             return False, False
         except Exception, e:
@@ -261,11 +262,11 @@ class cDb:
 
             self.db.commit()
 
-            self.DIALOG.VSinfo('Enregistre avec succes', meta['title'])
+            self.DIALOG.VSinfo(self.ADDON.VSlang(30042), meta['title'])
             VSlog('SQL INSERT favorite Successfully')
         except Exception, e:
             if 'UNIQUE constraint failed' in e.message:
-                self.DIALOG.VSinfo('Marque-page dejà present', meta['title'])
+                self.DIALOG.VSinfo(self.ADDON.VSlang(30043), meta['title'])
             VSlog('SQL ERROR INSERT')
             pass
 
@@ -304,7 +305,7 @@ class cDb:
         try:
             self.dbcur.execute(sql_delete)
             self.db.commit()
-            self.DIALOG.VSinfo('Favoris supprime')
+            self.DIALOG.VSinfo(self.ADDON.VSlang(30044))
             xbmc.executebuiltin('Container.Refresh')
             return False, False
         except Exception, e:
@@ -370,7 +371,7 @@ class cDb:
         try:
             self.db.commit()
             VSlog('SQL INSERT download Successfully')
-            self.DIALOG.VSinfo('Enregistre avec succes', meta['title'])
+            self.DIALOG.VSinfo(self.ADDON.VSlang(30042), meta['title'])
         except Exception, e:
             #print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
             VSlog('SQL ERROR INSERT')
