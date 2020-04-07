@@ -36,7 +36,7 @@ class cDb:
                 self._create_tables()
                 return
         except:
-            VSlog('Erreur: Impossible d\'écrire sur %s' % self.REALDB )
+            VSlog('Erreur: Impossible d\'ecrire sur %s' % self.REALDB )
             pass
 
         try:
@@ -204,7 +204,7 @@ class cDb:
         try:
             self.dbcur.execute(sql_delete)
             self.db.commit()
-            self.DIALOG.VSinfo('Historique supprimé')
+            self.DIALOG.VSinfo('Historique supprime')
             xbmc.executebuiltin('Container.Refresh')
             return False, False
         except Exception, e:
@@ -261,11 +261,11 @@ class cDb:
 
             self.db.commit()
 
-            self.DIALOG.VSinfo('Enregistré avec succès', meta['title'])
+            self.DIALOG.VSinfo('Enregistre avec succes', meta['title'])
             VSlog('SQL INSERT favorite Successfully')
         except Exception, e:
             if 'UNIQUE constraint failed' in e.message:
-                self.DIALOG.VSinfo('Marque-page déjà présent', meta['title'])
+                self.DIALOG.VSinfo('Marque-page dejà present', meta['title'])
             VSlog('SQL ERROR INSERT')
             pass
 
@@ -304,7 +304,7 @@ class cDb:
         try:
             self.dbcur.execute(sql_delete)
             self.db.commit()
-            self.DIALOG.VSinfo('Favoris supprimé')
+            self.DIALOG.VSinfo('Favoris supprime')
             xbmc.executebuiltin('Container.Refresh')
             return False, False
         except Exception, e:
@@ -370,7 +370,7 @@ class cDb:
         try:
             self.db.commit()
             VSlog('SQL INSERT download Successfully')
-            self.DIALOG.VSinfo('Enregistré avec succès', meta['title'])
+            self.DIALOG.VSinfo('Enregistre avec succes', meta['title'])
         except Exception, e:
             #print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
             VSlog('SQL ERROR INSERT')
