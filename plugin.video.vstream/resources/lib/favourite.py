@@ -33,14 +33,14 @@ class cFav:
     def getFavourites(self):
         oGui = cGui()
 
-        #Comptages des favoris
+        #Comptages des marque-pages
         row = cDb().get_favorite()
 
         compt = [0, 0, 0, 0, 0, 0, 0, 0]
         for i in row:
             compt[int(i[5])] = compt[int(i[5])] + 1
 
-        # sTitle = '[COLOR khaki]Vous avez %s marque page[/COLOR]' % (len(row))
+        # sTitle = '[COLOR khaki]Vous avez %s marque-page[/COLOR]' % (len(row))
         # oOutputParameterHandler = cOutputParameterHandler()
         # oOutputParameterHandler.addParameter('siteUrl', 'http://')
         # oGui.addText(SITE_IDENTIFIER, sTitle)
@@ -63,10 +63,10 @@ class cFav:
 
         # oOutputParameterHandler = cOutputParameterHandler()
         # oOutputParameterHandler.addParameter('sCat', '7')
-        # oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Recherche Visuelle (' + str(compt[7]) + ')', 'mark.png', oOutputParameterHandler)
+        # oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30088), str(compt[7])), 'mark.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
-        total = compt[3]+compt[4]+compt[5]
+        total = compt[3] + compt[4] + compt[5]
         oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30410), str(total)), 'mark.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -161,7 +161,7 @@ class cFav:
                 else:
                     oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-                    #oGui.addFav(site, function, title, "mark.png", thumbnail, fanart, oOutputParameterHandler)
+                    #oGui.addFav(site, function, title, 'mark.png', thumbnail, fanart, oOutputParameterHandler)
 
             except:
                 oGui.addDir(SITE_IDENTIFIER, 'DoNothing', '[COLOR red]ERROR[/COLOR]', 'films.png', oOutputParameterHandler)
@@ -178,11 +178,11 @@ class cFav:
         oInputParameterHandler = cInputParameterHandler()
 
         if oInputParameterHandler.getValue('sId') == 'kepliz_com':
-            self.DIALOG.VSinfo('Error', 'Pas possible pour ce site')
+            self.DIALOG.VSinfo('Error', self.ADDON.VSlang(30037))
             return
 
         if int(oInputParameterHandler.getValue('sCat')) < 1:
-            self.DIALOG.VSinfo('Error', 'Mise en Favoris pas possible pour ce lien')
+            self.DIALOG.VSinfo('Error', self.ADDON.VSlang(30038))
             return
 
         meta = {}
