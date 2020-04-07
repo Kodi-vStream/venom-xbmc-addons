@@ -93,7 +93,7 @@ def showMovies(sSearch = ''):
         sPattern = '<div class="image">.+?<a href="([^"]+)">\s*<img src="([^"]+)" alt="([^"]+)"'
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sPattern = '<div class="poster">.+?<img src="([^"]+)".+?<a href="([^"]+)" title="([^"]+)"'
+        sPattern = '<div class="poster">.+?<img src="([^"]+)".+?<a href="([^"]+)" title="([^"]+)".+?class="texto">([^<]+)'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -125,6 +125,7 @@ def showMovies(sSearch = ''):
                 sThumb = aEntry[0]
                 sUrl = aEntry[1]
                 sTitle = aEntry[2].replace('streaming', ' ')
+                sDesc = aEntry[3]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -135,7 +136,7 @@ def showMovies(sSearch = ''):
             #if '/series/' in sUrl or '/serie/' in sUrl or '/manga/' in sUrl:
             #    oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
             #else:
-            oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
