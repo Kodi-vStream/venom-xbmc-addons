@@ -124,6 +124,30 @@ msgctxt "#30038"
 msgid "Bookmarking not possible for this link"
 msgstr ""
 
+msgctxt "#30039"
+msgid "Error: Unable to write to %s"
+msgstr ""
+
+msgctxt "#30040"
+msgid "Error: Unable to connect to %s"
+msgstr ""
+
+msgctxt "#30041"
+msgid "History deleted"
+msgstr ""
+
+msgctxt "#30042"
+msgid "Successfully registered"
+msgstr ""
+
+msgctxt "#30043"
+msgid "Bookmark already present"
+msgstr ""
+
+msgctxt "#30044"
+msgid "Bookmark deleted"
+msgstr ""
+
 msgctxt "#30076"
 msgid "Search"
 msgstr ""
