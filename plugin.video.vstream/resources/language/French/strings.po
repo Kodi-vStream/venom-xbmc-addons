@@ -124,6 +124,30 @@ msgctxt "#30038"
 msgid "Bookmarking not possible for this link"
 msgstr "Mise en Marque-page pas possible pour ce lien"
 
+msgctxt "#30039"
+msgid "Error: Unable to write to %s"
+msgstr "Erreur: Impossible d'écrire sur %s"
+
+msgctxt "#30040"
+msgid "Error: Unable to connect to %s"
+msgstr "Erreur: Impossible de ce connecter sur %s"
+
+msgctxt "#30041"
+msgid "History deleted"
+msgstr "Historique supprimé"
+
+msgctxt "#30042"
+msgid "Successfully registered"
+msgstr "Enregistré avec succès"
+
+msgctxt "#30043"
+msgid "Bookmark already present"
+msgstr "Marque-page déjà présent"
+
+msgctxt "#30044"
+msgid "Bookmark deleted"
+msgstr "Marque-page supprimé"
+
 msgctxt "#30076"
 msgid "Search"
 msgstr "Recherche"
