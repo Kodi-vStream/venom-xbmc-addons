@@ -56,6 +56,22 @@ msgctxt "#30012"
 msgid "Name"
 msgstr "Nom"
 
+msgctxt "#30013"
+msgid "vStream update"
+msgstr "vStream mise à jour"
+
+msgctxt "#30014"
+msgid "Update complete"
+msgstr "Mise à jour terminée"
+
+msgctxt "#30015"
+msgid "Update"
+msgstr "Mise à jour"
+
+msgctxt "#30016"
+msgid "Activate search history"
+msgstr "Activer l'historique de recherche"
+
 msgctxt "#30021"
 msgid "General"
 msgstr "Général"
@@ -93,7 +109,7 @@ msgid "Play"
 msgstr "Lecture"
 
 msgctxt "#30031"
-msgid "Métadata"
+msgid "Metadata"
 msgstr "Métadonnées"
 
 msgctxt "#30032"
@@ -155,6 +171,106 @@ msgstr "Tapez le lien que vous souhaitez rechercher"
 msgctxt "#30046"
 msgid "Here is your link: "
 msgstr "Voici votre lien: "
+
+msgctxt "#30047"
+msgid "Last auto update on:"
+msgstr "Dernière mise à jour auto le:"
+
+msgctxt "#30048"
+msgid "Next update check on: "
+msgstr "Prochaine vérification de mise à jour le: "
+
+msgctxt "#30049"
+msgid "Path ffmpeg"
+msgstr "Chemin ffmpeg"
+
+msgctxt "#30050"
+msgid "Recording path"
+msgstr "Chemin d'enregistrement"
+
+msgctxt "#30051"
+msgid "Activate recording"
+msgstr "Activer l'enregistrement"
+
+msgctxt "#30052"
+msgid "Minute automatically add to your chosen duration (in minutes)"
+msgstr "Minute ajouter automatiquement à votre durer choisie (en minute)"
+
+msgctxt "#30053"
+msgid "Time interval between each time check (in seconds)"
+msgstr "Intervalle de temps entre chaque vérification de l'heure (en seconde)"
+
+msgctxt "#30054"
+msgid "Url of your log:"
+msgstr "Url de votre log:"
+
+msgctxt "#30055"
+msgid "Import/Export the BDD (Bookmark, History, etc.)"
+msgstr "Importer/Exporter la BDD (Marque-Page, Historique, etc..)"
+
+msgctxt "#30056"
+msgid "Remove BDD from vStream"
+msgstr "Supprime les BDD de vStream"
+
+msgctxt "#30057"
+msgid "Delete a database"
+msgstr "Supprimer une BDD"
+
+msgctxt "#30058"
+msgid "Removes the BDD from the cache for metadata"
+msgstr "Supprime la BDD du cache pour les métadonnées"
+
+msgctxt "#30059"
+msgid "Delete temporary Kodi files"
+msgstr "Supprime les fichiers temporaire de Kodi"
+
+msgctxt "#30060"
+msgid "Delete temporary browsing files from Kodi"
+msgstr "Supprime les fichiers de navigation temporaire de Kodi"
+
+msgctxt "#30061"
+msgid "Clear .fi Files"
+msgstr "Effacer les fichiers .fi"
+
+msgctxt "#30062"
+msgid "Deletes temporary Kodi physical and BDD image files"
+msgstr "Supprime les fichiers images temporaire de Kodi physique et BDD"
+
+msgctxt "#30063"
+msgid "Clear Thumbnails"
+msgstr "Effacer les vignettes"
+
+msgctxt "#30064"
+msgid "Refresh Skin"
+msgstr "Rafraîchir le Skin"
+
+msgctxt "#30065"
+msgid "Using UrlResolver will allow you to use premium link generators"
+msgstr "Utiliser UrlResolver vous permettra d'utiliser les débrideurs"
+
+msgctxt "#30066"
+msgid "Go through UrlResolver"
+msgstr "Passer par UrlResolver"
+
+msgctxt "#30067"
+msgid "Configure UrlResolver"
+msgstr "Configurer UrlResolver"
+
+msgctxt "#30068"
+msgid "WARNING: vStream does not manage this part, [CR] remember to deactivate it if the videos no longer work."
+msgstr "ATTENTION: vStream ne gère pas cette partie, [CR] pensez à le désactiver si les vidéos ne marchent plus."
+
+msgctxt "#30069"
+msgid "Unless you have a premium link generator, [CR] checking this box will bring you more problems than advantages."
+msgstr "A moins d'avoir un débrideur, [CR] cocher cette case vous apportera plus de problèmes que d'avantages."
+
+msgctxt "#30070"
+msgid "Choose your sources click OK [CR] - To validate the modifications click again on OK"
+msgstr "Choisissez vos sources cliquez OK [CR]- Pour valider les modifications cliquez encore sur OK"
+
+msgctxt "#30071"
+msgid "Use Extendedinfo"
+msgstr "Utiliser Extendedinfo"
 
 msgctxt "#30076"
 msgid "Search"
@@ -665,8 +781,8 @@ msgid "Divers"
 msgstr "Divers"
 
 msgctxt "#30411"
-msgid "Enable sounds notifications"
-msgstr "Activer les sons des notifications"
+msgid "Enable sound notifications"
+msgstr "Activer le son des notifications"
 
 msgctxt "#30412"
 msgid "[COLOR red]Delete entry[/COLOR]"
