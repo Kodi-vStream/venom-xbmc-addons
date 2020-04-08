@@ -1,3 +1,5 @@
+return False # Désactivé le 08/04/2020
+
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
