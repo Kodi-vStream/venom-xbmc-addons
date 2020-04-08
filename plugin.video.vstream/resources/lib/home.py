@@ -30,7 +30,7 @@ SITE_NAME = 'Home'
 addons = addon()
 
 class cHome:
-    addons = addon()#pas un doublon si absent bug vStream
+    addons = addons
 
     def load(self):
 
