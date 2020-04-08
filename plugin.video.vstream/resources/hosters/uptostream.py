@@ -5,10 +5,14 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 #from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog#, VSlog
+from resources.lib.comaddon import dialog, VSlog
 
+from resources.lib.jsparser import JsParser
+
+import json
 import urllib, re, base64
 
+UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0'
 
 class cHoster(iHoster):
 
@@ -41,13 +45,7 @@ class cHoster(iHoster):
         return ''
 
     def __getIdFromUrl(self):
-        sPattern = "id=([^<]+)"
-        oParser = cParser()
-        aResult = oParser.parse(self.__sUrl, sPattern)
-        if (aResult[0] == True):
-            return aResult[1][0]
-
-        return ''
+        return self.__sUrl.split('/')[-1]
 
     def __modifyUrl(self, sUrl):
         if (sUrl.startswith('http://')):
@@ -113,55 +111,53 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         api_call = False
+        
+        self.__sUrl = 'https://uptostream.com/api/streaming/source/get?token=null&file_code=' + self.__getIdFromUrl()
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-
-        SubTitle = ''
-        SubTitle = self.checkSubtitle(sHtmlContent)
-        #VSlog(SubTitle)
-
+        
         #fh = open('c:\\test.txt', 'w')
         #fh.write(sHtmlContent)
         #fh.close()
+        
 
-        oParser = cParser()
+        SubTitle = ''
+        #Disabled for the moment
+        #SubTitle = self.checkSubtitle(sHtmlContent)
+        #VSlog(SubTitle)
+        
+        page = json.loads(sHtmlContent)
+        JScode = page['data']['sources']
+        JScode = JScode.encode('utf-8')
+        
+        #fh = open('c:\\test.txt', 'w')
+        #fh.write(JScode1)
+        #fh.close()
+        
+        VSlog(JScode)
 
-        #Test preliminaire
-        sPattern = "window\.sources = JSON\.parse\(atob\('([^']+)'"
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            sHtmlContent = base64.b64decode(aResult[1][0])
+        JP = JsParser()
+        Liste_var = []
+        dialog().VSinfo('Décodage: Peut durer plus d\'une minute.', "Attention", 15)
+       
+        sHtmlContent = JP.ProcessJS(JScode,Liste_var)
+        res = JP.GetVar(Liste_var,'sources')[0]['src']
+       
+        VSlog(res)
+        
+        api_call = res
+            
+        if (api_call):
 
-        sPattern = 'src":[\'"]([^<>\'"]+)[\'"],"type":[\'"][^\'"><]+?[\'"],"label":[\'"]([0-9]+p)[\'"].+?"lang":[\'"]([^\'"]+)'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+            #api_call = urllib.unquote(api_call)
 
-        if (aResult[0] == True):
-            url=[]
-            qua=[]
-            lang=[]
+            if not api_call.startswith('http'):
+                api_call = 'http:' + api_call
 
-            for aEntry in aResult[1]:
-                url.append(aEntry[0])
-                tmp_qua = aEntry[1]
-
-                if (len(aEntry)>2):
-                    if 'unknow' not in aEntry[2]:
-                        tmp_qua = tmp_qua + ' (' + aEntry[2] + ')'
-                qua.append(tmp_qua)
-
-            api_call = dialog().VSselectqual(qua, url)
-
-            if (api_call):
-
-                api_call = urllib.unquote(api_call)
-
-                if not api_call.startswith('http'):
-                    api_call = 'http:' + api_call
-
-                if SubTitle:
-                    return True, api_call, SubTitle
-                else:
-                    return True, api_call
+            if SubTitle:
+                return True, api_call, SubTitle
+            else:
+                return True, api_call
 
         return False, False
