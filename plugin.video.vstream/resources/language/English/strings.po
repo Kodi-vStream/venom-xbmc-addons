@@ -56,6 +56,22 @@ msgctxt "#30012"
 msgid "Name"
 msgstr ""
 
+msgctxt "#30013"
+msgid "vStream update"
+msgstr ""
+
+msgctxt "#30014"
+msgid "Update complete"
+msgstr ""
+
+msgctxt "#30015"
+msgid "Update"
+msgstr ""
+
+msgctxt "#30016"
+msgid "Activate search history"
+msgstr ""
+
 msgctxt "#30021"
 msgid "General"
 msgstr ""
@@ -93,7 +109,7 @@ msgid "Play"
 msgstr ""
 
 msgctxt "#30031"
-msgid "Métadata"
+msgid "Metadata"
 msgstr ""
 
 msgctxt "#30032"
@@ -154,6 +170,106 @@ msgstr ""
 
 msgctxt "#30046"
 msgid "Here is your link: "
+msgstr ""
+
+msgctxt "#30047"
+msgid "Last auto update on:"
+msgstr ""
+
+msgctxt "#30048"
+msgid "Next update check on: "
+msgstr ""
+
+msgctxt "#30049"
+msgid "Path ffmpeg"
+msgstr ""
+
+msgctxt "#30050"
+msgid "Recording path"
+msgstr ""
+
+msgctxt "#30051"
+msgid "Activate recording"
+msgstr ""
+
+msgctxt "#30052"
+msgid "Minute automatically add to your chosen duration (in minutes)"
+msgstr ""
+
+msgctxt "#30053"
+msgid "Time interval between each time check (in seconds)"
+msgstr ""
+
+msgctxt "#30054"
+msgid "Url of your log:"
+msgstr ""
+
+msgctxt "#30055"
+msgid "Import/Export the BDD (Bookmark, History, etc.)"
+msgstr ""
+
+msgctxt "#30056"
+msgid "Remove BDD from vStream"
+msgstr ""
+
+msgctxt "#30057"
+msgid "Delete a database"
+msgstr ""
+
+msgctxt "#30058"
+msgid "Removes the BDD from the cache for metadata"
+msgstr ""
+
+msgctxt "#30059"
+msgid "Delete temporary Kodi files"
+msgstr ""
+
+msgctxt "#30060"
+msgid "Delete temporary browsing files from Kodi"
+msgstr ""
+
+msgctxt "#30061"
+msgid "Clear .fi Files"
+msgstr ""
+
+msgctxt "#30062"
+msgid ""
+msgstr ""
+
+msgctxt "#30063"
+msgid "Clear Thumbnails"
+msgstr ""
+
+msgctxt "#30064"
+msgid "Refresh Skin"
+msgstr ""
+
+msgctxt "#30065"
+msgid "Using UrlResolver will allow you to use premium link generators"
+msgstr ""
+
+msgctxt "#30066"
+msgid "Go through UrlResolver"
+msgstr ""
+
+msgctxt "#30067"
+msgid "Configure UrlResolver"
+msgstr ""
+
+msgctxt "#30068"
+msgid "WARNING: vStream does not manage this part, [CR] remember to deactivate it if the videos no longer work."
+msgstr ""
+
+msgctxt "#30069"
+msgid "Unless you have a premium link generator, [CR] checking this box will bring you more problems than advantages."
+msgstr ""
+
+msgctxt "#30070"
+msgid "Choose your sources click OK [CR] - To validate the modifications click again on OK"
+msgstr ""
+
+msgctxt "#30071"
+msgid "Use Extendedinfo"
 msgstr ""
 
 msgctxt "#30076"
@@ -665,7 +781,7 @@ msgid "Divers"
 msgstr ""
 
 msgctxt "#30411"
-msgid "Enable sounds notifications"
+msgid "Enable sound notifications"
 msgstr ""
 
 msgctxt "#30412"
