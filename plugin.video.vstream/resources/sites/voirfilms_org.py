@@ -381,7 +381,7 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     sHtmlContent = re.sub(" rel='nofollow'", "", sHtmlContent)#next genre
-    sPattern = "<a href='([^']+)'>suiv »"
+    sPattern = "href='([^']+)'>suiv »"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
