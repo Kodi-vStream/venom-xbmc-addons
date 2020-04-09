@@ -91,11 +91,11 @@ class cAbout:
                     addons.setSetting('service_futur', str(result['tag_name']))
                     addons.setSetting('home_update', str('true'))
                     addons.setSetting('service_time', str(datetime.datetime.now()))
-                    dialog().VSinfo('Mise à jour disponible')
+                    dialog().VSinfo(addons.VSlang(30418))
                 else:
                     addons.setSetting('service_time', str(datetime.datetime.now()))
                     addons.setSetting('home_update', str('false'))
-                    VSlog('Prochaine vérification de MAJ le: ' + str(time_sleep + time_service))
+                    VSlog(addons.VSlang(30048) + str(time_sleep + time_service))
         return
 
     #bug python
@@ -129,8 +129,8 @@ class cAbout:
             sHtmlContent = oRequestHandler.request()
             result += json.loads(sHtmlContent)
             #filtre trash & _init
-            result = filter(lambda x: x['name']!="trash", result)
-            result = filter(lambda x: x['name']!="__init__.py", result)
+            result = filter(lambda x: x['name'] != "trash", result)
+            result = filter(lambda x: x['name'] != "__init__.py", result)
         except:
             return False
         return result
@@ -139,7 +139,7 @@ class cAbout:
 
         addons = addon()
         dialogs = dialog()
-        if dialogs.VSyesno("Êtes-vous sûr?"):
+        if dialogs.VSyesno(addons.VSlang(30456)):
 
             service_futur = addons.getSetting('service_futur')
             service_version = addons.getSetting('service_version')
@@ -158,7 +158,7 @@ class cAbout:
             result = json.loads(sHtmlContent)
 
             progress_ = progress()
-            progress_.VScreate('Update')
+            progress_.VScreate(addons.VSlang(30015))
 
             #site = ''
             sdown = 0
@@ -241,6 +241,7 @@ class cAbout:
         return
 
     def TextBoxes(self, anounce):
+        addons = addon()
         # activate the text viewer window
         xbmc.executebuiltin('ActivateWindow(%d)' % (10147, ))
         # get window
@@ -249,14 +250,15 @@ class cAbout:
         # give window time to initialize
         xbmc.sleep(100)
         # set heading
-        win.getControl(1).setLabel('vStream mise à jour')
+        win.getControl(1).setLabel(addons.VSlang(30013))
         win.getControl(5).setText(anounce)
         while xbmc.getCondVisibility('Window.IsActive(10147)'):
             xbmc.sleep(100)
-        ret = dialog().VSok('Mise à jour terminée')
+        ret = dialog().VSok(addons.VSlang(30014))
         return
 
     def Box(self, listitems):
+        addons = addon()
 
         class XMLDialog(xbmcgui.WindowXMLDialog):
 
@@ -269,7 +271,7 @@ class cAbout:
                 self.container = self.getControl(6)
                 self.button = self.getControl(5)
                 self.getControl(3).setVisible(False)
-                self.getControl(1).setLabel('Mise à jour')
+                self.getControl(1).setLabel(addons.VSlang(30015))
                 self.button.setLabel('OK')
                 self.container.addItems(listitems)
                 self.setFocus(self.container)
