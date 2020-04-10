@@ -148,7 +148,7 @@ def showMovies(sSearch = ''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="fullstream fullstreaming">\s*<img src="([^"]+)"[^<>]+alt="([^"]+)".+?<h3 class="mov-title"><a href="([^"]+)".+?<strong>(?:Qualité|Version)(.+?)<\/*strong>'
+    sPattern = '<div class="fullstream fullstreaming">\s*<img src="([^"]+)"[^<>]+alt="([^"]+)".+?<h3 class="mov-title"><a href="([^"]+)".+?<strong>(?:Qualité|Version)(.+?)<\/*strong>.+?xfsearch.+?">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -170,8 +170,9 @@ def showMovies(sSearch = ''):
             sTitle = aEntry[1]
             sQual = cUtil().removeHtmlTags(aEntry[3])
             sQual = sQual.replace(':', '').replace(' ', '').replace(',', '/')
+            sYear = aEntry[4]
 
-            sDisplayTitle = sTitle + ' [' + sQual + ']'
+            sDisplayTitle = '%s [COLOR coral][%s] [/COLOR] (%s)' % (sTitle, sQual,sYear)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
