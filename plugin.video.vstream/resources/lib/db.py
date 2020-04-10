@@ -245,7 +245,7 @@ class cDb:
     #   Favoris fonctions
     #***********************************
 
-    def insert_favorite(self, meta):
+    def insert_bookmark(self, meta):
 
         title = self.str_conv(meta['title'])
         siteurl = QuotePlus(meta['siteurl'])
@@ -270,7 +270,7 @@ class cDb:
             VSlog('SQL ERROR INSERT')
             pass
 
-    def get_favorite(self):
+    def get_bookmark(self):
 
         sql_select = 'SELECT * FROM favorite'
 
@@ -283,7 +283,7 @@ class cDb:
             VSlog('SQL ERROR EXECUTE')
             return None
 
-    def del_favorite(self):
+    def del_bookmark(self):
 
         oInputParameterHandler = cInputParameterHandler()
 
@@ -314,7 +314,7 @@ class cDb:
 
 #non utiliser ?
 
-    # def writeFavourites(self):
+    # def writeBookmarks(self):
 
     #     oInputParameterHandler = cInputParameterHandler()
     #     sTitle = oInputParameterHandler.getValue('sTitle')

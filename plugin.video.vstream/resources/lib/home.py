@@ -91,7 +91,7 @@ class cHome:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('cFav', 'getFavourites', addons.VSlang(30207), 'mark.png', oOutputParameterHandler)
+        oGui.addDir('cFav', 'getBookmarks', addons.VSlang(30207), 'mark.png', oOutputParameterHandler)
 
         if (addons.getSetting('history-view') == 'true'):
             oOutputParameterHandler = cOutputParameterHandler()

@@ -19,22 +19,22 @@ class cFav:
     ADDON = addon()
 
     #effacement direct par menu
-    def delFavouritesMenu(self):
+    def delBookmarksMenu(self):
         if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
-            cDb().del_favorite()
+            cDb().del_bookmark()
         return True
 
     #avec confirmation pour les autres
-    def delFavourites(self):
+    def delBookmarks(self):
         if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
-            cDb().del_favorite()
+            cDb().del_bookmark()
         return True
 
-    def getFavourites(self):
+    def getBookmarks(self):
         oGui = cGui()
 
         #Comptages des marque-pages
-        row = cDb().get_favorite()
+        row = cDb().get_bookmark()
 
         compt = [0, 0, 0, 0, 0, 0, 0, 0]
         for i in row:
@@ -71,7 +71,7 @@ class cFav:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sAll', 'true')
-        oGui.addDir(SITE_IDENTIFIER, 'delFavourites', self.ADDON.VSlang(30209), 'trash.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'delBookmarks', self.ADDON.VSlang(30209), 'trash.png', oOutputParameterHandler)
 
         #A virer dans les versions future, pour le moment c'est juste pr supprimer les liens bugges
         if compt[0] > 0:
@@ -88,7 +88,7 @@ class cFav:
 
         #aParams = oInputParameterHandler.getAllParameter()
 
-        row = cDb().get_favorite()
+        row = cDb().get_bookmark()
 
         if (oInputParameterHandler.exist('sCat')):
             sCat = oInputParameterHandler.getValue('sCat')
@@ -154,7 +154,7 @@ class cFav:
                 oGuiElement.setFanart(fanart)
 
                 #self.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
-                oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler, 'cFav', 'cFav', 'delFavouritesMenu', self.ADDON.VSlang(30412))
+                oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler, 'cFav', 'cFav', 'delBookmarksMenu', self.ADDON.VSlang(30412))
 
                 if (function == 'play'):
                     oGui.addHost(oGuiElement, oOutputParameterHandler)
@@ -168,13 +168,13 @@ class cFav:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', sCat)
-        oGui.addDir(SITE_IDENTIFIER, 'delFavourites', self.ADDON.VSlang(30211), 'trash.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'delBookmarks', self.ADDON.VSlang(30211), 'trash.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
         return
 
-    def setFavorite(self):
+    def setBookmark(self):
         oInputParameterHandler = cInputParameterHandler()
 
         if oInputParameterHandler.getValue('sId') == 'kepliz_com':
@@ -201,6 +201,6 @@ class cFav:
         meta['icon'] = xbmc.getInfoLabel('ListItem.Art(thumb)')
         meta['fanart'] =  xbmc.getInfoLabel('ListItem.Art(fanart)')
         try:
-            cDb().insert_favorite(meta)
+            cDb().insert_bookmark(meta)
         except:
             pass
