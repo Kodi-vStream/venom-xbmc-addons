@@ -172,7 +172,7 @@ def showMovies(sSearch = ''):
             sQual = sQual.replace(':', '').replace(' ', '').replace(',', '/')
             sYear = aEntry[4]
 
-            sDisplayTitle = '%s [COLOR coral][%s] [/COLOR] (%s)' % (sTitle, sQual,sYear)
+            sDisplayTitle = '%s [%s] (%s)' % (sTitle, sQual, sYear)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
