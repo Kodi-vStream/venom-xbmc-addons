@@ -16,7 +16,7 @@ from resources.lib.util import Quote
 #http://kodi.wiki/view/InfoLabels
 #http://kodi.wiki/view/List_of_boolean_conditions
 
-####################  
+####################
 #
 #  Permet de debuguer avec Eclipse
 #
@@ -37,7 +37,7 @@ if REMOTE_DBG:
     # Note pydevd module need to be copied in XBMC\system\python\Lib\pysrc
     try:
         import pysrc.pydevd as pydevd # with the addon script.module.pydevd, only use `import pydevd`
-        pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True)
+        pydevd.settrace('localhost', stdoutToServer = True, stderrToServer = True)
     except ImportError:
         sys.stderr.write("Error: " + "You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
 
@@ -94,7 +94,7 @@ class main:
                 pass
 
             #charge home
-            plugins = __import__('resources.lib.home', fromlist=['home']).cHome()
+            plugins = __import__('resources.lib.home', fromlist = ['home']).cHome()
             function = getattr(plugins, 'load')
             function()
             return
@@ -102,9 +102,10 @@ class main:
 
         if (oInputParameterHandler.exist('site')):
             sSiteName = oInputParameterHandler.getValue('site')
-#            if (oInputParameterHandler.exist('title')):
-#                sTitle = oInputParameterHandler.getValue('title')
-#            else: sTitle = "none"
+            #if (oInputParameterHandler.exist('title')):
+                #sTitle = oInputParameterHandler.getValue('title')
+            #else:
+                #sTitle = "none"
 
             VSlog('load site ' + sSiteName + ' and call function ' + sFunction)
             #cStatistic().callStartPlugin(sSiteName, sTitle)
@@ -176,7 +177,7 @@ class main:
                 function = getattr(plugins, sFunction)
                 function()
             except Exception as e:
-                progress().VSclose()    # Refermer la dialogue en cas d'exception, sinon blocage de Kodi 
+                progress().VSclose()    # Referme le dialogue en cas d'exception, sinon blocage de Kodi
                 VSlog('could not load site: ' + sSiteName + ' error: ' + str(e))
                 import traceback
                 traceback.print_exc()
@@ -185,12 +186,12 @@ class main:
 def setSetting(plugin_id, value):
     addons = addon()
     setting = addons.getSetting(plugin_id)
-    
+
     # Si le parametre existe, on autorise la modification
     if (setting != '' and setting != value):
         addons.setSetting(plugin_id, value)
         return True
-    
+
     return False
 
 def isHosterGui(sSiteName, sFunction):
@@ -259,7 +260,8 @@ def searchGlobal():
     oHandler.setText(sSearchText)
     oHandler.setCat(sCat)
     aPlugins = oHandler.getAvailablePlugins()
-    if not aPlugins: return True
+    if not aPlugins:
+        return True
     total = len(aPlugins)
 
     #VSlog(str(aPlugins), xbmc.LOGNOTICE)
@@ -269,7 +271,8 @@ def searchGlobal():
     #kodi 17 vire la fenetre busy qui ce pose au dessus de la barre de Progress
     try:
         xbmc.executebuiltin("Dialog.Close(busydialog)")
-    except: pass
+    except:
+        pass
 
     window(10101).setProperty('search', 'true')
 
