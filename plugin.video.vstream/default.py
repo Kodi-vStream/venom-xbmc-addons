@@ -210,7 +210,7 @@ def isGui(sSiteName, sFunction):
 
 def isFav(sSiteName, sFunction):
     if (sSiteName == 'cFav'):
-        from resources.lib.favourite import cFav
+        from resources.lib.bookmark import cFav
         oFav = cFav()
         exec ("oFav." + sFunction + "()")
         return True
