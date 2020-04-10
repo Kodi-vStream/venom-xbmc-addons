@@ -407,7 +407,7 @@ class cGui():
         oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
         oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
 
-        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cFav', 'cFav', 'setFavorite', self.ADDON.VSlang(30210))
+        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cFav', 'cFav', 'setBookmark', self.ADDON.VSlang(30210))
 
     def createContexMenuTrakt(self, oGuiElement, oOutputParameterHandler= ''):
 
@@ -484,7 +484,7 @@ class cGui():
         oGuiElement.addContextItem(oContext)
 
     def createContexMenuDelFav(self, oGuiElement, oOutputParameterHandler = ''):
-        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cFav', 'cFav', 'delFavouritesMenu', self.ADDON.VSlang(30209))
+        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cFav', 'cFav', 'delBookmarksMenu', self.ADDON.VSlang(30209))
 
     def createContexMenuSettings(self, oGuiElement, oOutputParameterHandler = ''):
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'globalParametre', 'globalParametre', 'opensetting', self.ADDON.VSlang(30023))
