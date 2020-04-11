@@ -112,23 +112,11 @@ class cHoster(iHoster):
         self.stream = True
         self.__sUrl = self.__sUrl.replace('uptobox.com/', 'uptostream.com/iframe/')
 
-        oRequest = cRequestHandler(self.__sUrl)
-        sHtmlContent = oRequest.request()
-
-        SubTitle = self.checkSubtitle(sHtmlContent)
-
-        if (self.stream):
-            api_call = self.GetMedialinkStreaming(sHtmlContent)
-        else:
-            api_call = self.GetMedialinkDL(sHtmlContent)
-
-        if api_call:
-            if SubTitle:
-                return True, api_call, SubTitle
-            else:
-                return True, api_call
-
-        return False, False
+        # On redirige vers le hoster uptostream
+        from resources.hosters.uptostream import cHoster
+        oHoster = cHoster()
+        oHoster.setUrl(self.__sUrl)
+        return oHoster.__getMediaLinkForGuest()
 
     def __getMediaLinkByPremiumUser(self):
 
