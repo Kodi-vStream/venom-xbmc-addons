@@ -16,6 +16,7 @@ from resources.lib.util import Quote
 #http://kodi.wiki/view/InfoLabels
 #http://kodi.wiki/view/List_of_boolean_conditions
 
+
 ####################
 #
 #  Permet de debuguer avec Eclipse
@@ -25,9 +26,15 @@ from resources.lib.util import Quote
 #
 ####################
 
-REMOTE_DBG = False
+DEBUG = False  # Mettre True pour activer le debug
 
-if REMOTE_DBG:
+if DEBUG:
+
+####################
+#
+# Version WINDOWS
+#
+####################
 
     # append pydev remote debugger
     import sys
@@ -40,6 +47,20 @@ if REMOTE_DBG:
         pydevd.settrace('localhost', stdoutToServer = True, stderrToServer = True)
     except ImportError:
         sys.stderr.write("Error: " + "You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
+
+####################
+#
+# Version LINUX
+#
+####################
+
+    # Make pydev debugger works for auto reload.
+    # Note pydevd module need to be copied in XBMC\system\python\Lib\pysrc
+#     try:
+#         import pydevd
+#         pydevd.settrace('localhost', stdoutToServer = True, stderrToServer = True)
+#     except ImportError:
+#         sys.stderr.write("Error: " + "You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
 
 
 class main:
