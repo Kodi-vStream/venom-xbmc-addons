@@ -793,7 +793,7 @@ msgid "[COLOR red]Delete history[/COLOR]"
 msgstr ""
 
 msgctxt "#30414"
-msgid "[COLOR gold]Full series search[/COLOR]"
+msgid "[COLOR gold]Full TV Shows search[/COLOR]"
 msgstr ""
 
 msgctxt "#30415"
@@ -833,7 +833,7 @@ msgid "Search a Movie"
 msgstr ""
 
 msgctxt "#30424"
-msgid "Search a Serie"
+msgid "Search a TV Show"
 msgstr ""
 
 msgctxt "#30425"
