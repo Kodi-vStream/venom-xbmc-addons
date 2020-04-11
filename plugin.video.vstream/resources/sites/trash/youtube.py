@@ -802,5 +802,5 @@ def play__():#Lancer les liens
         return
 
 def openwindows():
-    xbmc.executebuiltin("ActivateWindow(%d, return)" % (10601, ))
+    xbmc.executebuiltin("ActivateWindow(%d, return)" % (10601))
     return
