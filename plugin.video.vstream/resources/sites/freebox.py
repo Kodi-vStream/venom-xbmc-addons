@@ -496,7 +496,7 @@ def GetRealUrl(chain):
     return url
 
 def openwindows():
-    xbmc.executebuiltin('ActivateWindow(%d, return)' % ( 10601, ))
+    xbmc.executebuiltin('ActivateWindow(%d, return)' % ( 10601))
     return
 
 def decodeEmail(e):
