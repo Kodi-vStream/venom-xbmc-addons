@@ -243,7 +243,7 @@ class cAbout:
     def TextBoxes(self, anounce):
         addons = addon()
         # activate the text viewer window
-        xbmc.executebuiltin('ActivateWindow(%d)' % (10147, ))
+        xbmc.executebuiltin('ActivateWindow(%d)' % (10147))
         # get window
         win = window(10147)
         #win.show()
