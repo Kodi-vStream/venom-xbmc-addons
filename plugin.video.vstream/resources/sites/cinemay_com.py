@@ -377,6 +377,12 @@ def showHosters():
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
+
+            if 'opsktp' in aEntry:# redirection vers ==> fsimg
+                oRequestHandler = cRequestHandler(aEntry)
+                oRequestHandler.request()
+                sHosterUrl = oRequestHandler.getRealUrl()
+
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
