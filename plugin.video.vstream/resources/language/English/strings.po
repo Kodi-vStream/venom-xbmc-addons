@@ -793,7 +793,7 @@ msgid "[COLOR red]Delete history[/COLOR]"
 msgstr ""
 
 msgctxt "#30414"
-msgid "[COLOR gold]Full TV Shows search[/COLOR]"
+msgid "[COLOR gold]Full TV Show search[/COLOR]"
 msgstr ""
 
 msgctxt "#30415"
