@@ -67,6 +67,8 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         api_call = False
+        
+        oParser = cParser()
 
         oRequest = cRequestHandler(self.__sUrl)
         oRequest.addHeaderEntry('User-Agent', UA)
@@ -75,11 +77,27 @@ class cHoster(iHoster):
         cookie = oRequest.GetCookies()
 
         #By-pass fake video
-        Fakeurl = 'https://streamz.cc/count.php?abc=1'
+        #Get url
+        urlJS = 'https://streamz.cc/js/count.js'
+        oRequest = cRequestHandler(urlJS)
+        oRequest.addHeaderEntry('User-Agent', UA)
+        JScode = oRequest.request()
+        
+        r = "if\(\$\.adblock!=null\){\$\.get\('([^']+)',{([^}]+)}"
+        aResult = oParser.parse(JScode, r)
+        
+        if not aResult[0]:
+            return False, False
+        
+        data = aResult[1][0][1].split(':')
+        Fakeurl = aResult[1][0][0] + '?' + data[0] + '=' + data[1].replace("'","")
+        
+        #Request URL
         oRequest = cRequestHandler(Fakeurl)
         oRequest.addHeaderEntry('User-Agent', UA)
-
-        oParser = cParser()
+        tmp = oRequest.request()
+        
+  
         sPattern =  '(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
