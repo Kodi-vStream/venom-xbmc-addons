@@ -206,18 +206,19 @@ def decodeur1(Html):
                                     Html = Html[1:]
 
                         if tableau:
-                            langFre = False
+                            langFre = True # langue par défaut si pas précisée
                             qual = ''
                             for i,j in tableau.items():
                                 if j.startswith('http') and j.endswith('com'): #url
                                     url = tableau[i] if not tableau[i] in url else url
-
-                                if len(i) == 5 and len(j) >=10 and j.isalnum() and not 'video' in j:
-                                    movieID = tableau[i] if not tableau[i] in id else id
-                                    
+                                    continue
                                 
-                                if j == 'fre' : # on ne gere pas plusieurs langues car on sait pas l'associer à la bonne qualité
-                                    langFre = True
+                                if len(i) == 5 and len(j) >=10 and j.isalnum() and not 'video' in j:
+                                    movieID = j if not j in movieID else movieID
+                                    continue
+                                
+                                if j == 'eng' : # on ne gere pas plusieurs langues car on sait pas l'associer à la bonne qualité
+                                    langFre = False
                                 
                                 if j == '360' or j == '480' or j == '720' or j == '1080' :
                                     qual = j
