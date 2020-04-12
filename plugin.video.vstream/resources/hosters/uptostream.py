@@ -217,8 +217,9 @@ def decodeur1(Html):
                                     movieID = j if not j in movieID else movieID
                                     continue
                                 
-                                if j == 'eng' : # on ne gere pas plusieurs langues car on sait pas l'associer à la bonne qualité
-                                    langFre = False
+                                if len(test2)>1: # s'il y a plusieurs flux
+                                    if j == 'eng' : # on ne gere pas plusieurs langues car on sait pas l'associer à la bonne qualité
+                                        langFre = False
                                 
                                 if j == '360' or j == '480' or j == '720' or j == '1080' :
                                     qual = j
