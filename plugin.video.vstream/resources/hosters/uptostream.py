@@ -3,22 +3,17 @@
 #
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-#from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, VSlog
-
-from resources.lib.jsparser import JsParser
-
-import json
-import urllib, re, base64
-
-UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0'
+from resources.lib.comaddon import dialog ,VSlog
+from resources.lib.handler.premiumHandler import cPremiumHandler
+import urllib,re,base64
 
 class cHoster(iHoster):
 
     def __init__(self):
         self.__sDisplayName = 'UpToStream'
         self.__sFileName = self.__sDisplayName
+        self.oPremiumHandler = None
 
     def getDisplayName(self):
         return  self.__sDisplayName
@@ -47,27 +42,6 @@ class cHoster(iHoster):
     def __getIdFromUrl(self):
         return self.__sUrl.split('/')[-1]
 
-    def __modifyUrl(self, sUrl):
-        if (sUrl.startswith('http://')):
-            oRequestHandler = cRequestHandler(sUrl)
-            oRequestHandler.request()
-            sRealUrl = oRequestHandler.getRealUrl()
-            self.__sUrl = sRealUrl
-            return self.__getIdFromUrl()
-
-        return sUrl
-
-    def __getKey(self):
-        oRequestHandler = cRequestHandler(self.__sUrl)
-        sHtmlContent = oRequestHandler.request()
-        sPattern = 'flashvars.filekey="(.+?)";'
-        oParser = cParser()
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            aResult = aResult[1][0].replace('.', '%2E')
-            return aResult
-
-        return ''
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
@@ -106,58 +80,204 @@ class cHoster(iHoster):
     def getUrl(self):
         return self.__sUrl
 
+
     def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
+        self.oPremiumHandler = cPremiumHandler('uptobox')
+        if (self.oPremiumHandler.isPremiumModeAvailable()):
+            return self.__getMediaLinkForGuest(premium=True)
 
-    def __getMediaLinkForGuest(self):
+        else:
+            VSlog('no premium')
+            return self.__getMediaLinkForGuest()
+
+    def __getMediaLinkForGuest(self,premium=False):
+
         api_call = False
-        
-        self.__sUrl = 'https://uptostream.com/api/streaming/source/get?token=null&file_code=' + self.__getIdFromUrl()
+        #compte gratuit ou payant
+        token = ''
+        if premium:
+            if self.oPremiumHandler.Authentificate():
+                sHtmlContent = self.oPremiumHandler.GetHtml(self.__sUrl)
+                sPattern = "window\.token = '([^']+)';"
+                token = re.search(sPattern,sHtmlContent,re.DOTALL)
+                if token:
+                    token = token.group(1)
 
-        oRequest = cRequestHandler(self.__sUrl)
-        sHtmlContent = oRequest.request()
-        
-        #fh = open('c:\\test.txt', 'w')
-        #fh.write(sHtmlContent)
-        #fh.close()
-        
-
-        SubTitle = ''
-        #Disabled for the moment
-        #SubTitle = self.checkSubtitle(sHtmlContent)
-        #VSlog(SubTitle)
-        
-        page = json.loads(sHtmlContent)
-        JScode = page['data']['sources']
-        JScode = JScode.encode('utf-8')
-        
-        #fh = open('c:\\test.txt', 'w')
-        #fh.write(JScode1)
-        #fh.close()
-        
-        VSlog(JScode)
-
-        JP = JsParser()
-        Liste_var = []
-        dialog().VSinfo('Décodage: Peut durer plus d\'une minute.', "Attention", 15)
+        else:
+            VSlog('no Premium')
        
-        sHtmlContent = JP.ProcessJS(JScode,Liste_var)
-        res = JP.GetVar(Liste_var,'sources')[0]['src']
-       
-        VSlog(res)
-        
-        api_call = res
-            
+        if token:
+            sUrl2 = "https://uptostream.com/api/streaming/source/get?token={}&file_code={}".format(token,self.__getIdFromUrl())
+            sHtml = self.oPremiumHandler.GetHtml(sUrl2)
+
+        else:
+            #pas de compte
+            sUrl2 = "https://uptostream.com/api/streaming/source/get?token=null&file_code={}".format(self.__getIdFromUrl())
+
+            oRequest = cRequestHandler(sUrl2)
+            sHtml = oRequest.request()
+
+        qua,url_list = decodeur1(sHtml)
+        if qua and url_list:
+            api_call = dialog().VSselectqual(qua, url_list)
+
         if (api_call):
-
-            #api_call = urllib.unquote(api_call)
-
-            if not api_call.startswith('http'):
-                api_call = 'http:' + api_call
-
-            if SubTitle:
-                return True, api_call, SubTitle
-            else:
-                return True, api_call
+            return True, api_call.replace('\\','')
 
         return False, False
+     
+def decodeur1(Html):
+    from ast import literal_eval
+    #search list64 and his var name.
+    vl = re.search('var *(_\w+) *= *(\[[^;]+\]);',Html,re.DOTALL)
+    if vl:
+        var_name = vl.group(1)
+        list_b64 = vl.group(2)
+        #reduce html
+        start = Html.find(list_b64)
+        Html = Html[start:]
+
+        list_b64 = literal_eval(list_b64)
+
+        #search ref number to re-order the b64list and the var name.
+        nrvr = re.search(var_name + ',(0x\w+)\)*; *var *([^=]+) *=',Html,re.DOTALL)
+        if nrvr:
+            number_ref = int(nrvr.group(1),16)
+            var_ref = nrvr.group(2)
+
+            i = 0
+            while i < number_ref:
+                list_b64.append(list_b64.pop(0))
+                i += 1
+
+            #search for group 
+            test2 = re.findall("(?:;|;}\(\)\);)sources(.+?)};",Html,re.DOTALL)
+            if test2:
+                url = ''
+                movieID = ''
+                qua_list = []
+
+                for page in test2:
+                    tableau = {}
+                    data = page.find("={")
+                    if data != -1:
+                        Html = page[data:]
+                        if Html:
+                            i = 0
+                            vname = ''
+                            for i in xrange(len(Html)):
+                                fisrt_r = re.match("([^']+)':",Html,re.DOTALL)
+                                if fisrt_r:
+                                    vname = fisrt_r.group(1)
+                                    tableau[vname] = 'null'
+
+                                    index = len(fisrt_r.group()[:-1])
+                                    Html = Html[index:]
+
+                                whats =  re.match("[:+]'([^']+)'",Html,re.DOTALL)
+                                if whats:
+                                    if vname:
+                                        ln = tableau[vname]
+                                        if not ln == 'null':
+                                            tableau[vname] = tableau[vname] + whats.group(1)
+                                        else:
+                                            tableau[vname] = whats.group(1)
+
+                                    index = len(whats.group(0))
+                                    Html = Html[index:]
+
+                                else:
+                                    whats = re.match("\+*" + var_ref + "\(\'([^']+)\' *, *\'([^']+)\'\)",Html,re.DOTALL)
+                                    if whats:
+                                        if vname:
+                                            ln = tableau[vname]
+                                            if not ln == 'null':
+                                                tableau[vname] = tableau[vname] + decoder(list_b64[int(whats.group(1),16)],whats.group(2)) 
+
+                                            else:
+                                                tableau[vname] =  decoder(list_b64[int(whats.group(1),16)],whats.group(2)) 
+                                
+
+                                        index = len(whats.group(0))
+                                        Html = Html[index:]
+
+
+                                if not whats:
+                                    Html = Html[1:]
+
+                        if tableau:
+                            langFre = False
+                            qual = ''
+                            for i,j in tableau.items():
+                                if j.startswith('http') and j.endswith('com'): #url
+                                    url = tableau[i] if not tableau[i] in url else url
+
+                                if len(i) == 5 and len(j) >=10 and j.isalnum() and not 'video' in j:
+                                    movieID = tableau[i] if not tableau[i] in id else id
+                                    
+                                
+                                if j == 'fre' : # on ne gere pas plusieurs langues car on sait pas l'associer à la bonne qualité
+                                    langFre = True
+                                
+                                if j == '360' or j == '480' or j == '720' or j == '1080' :
+                                    qual = j
+
+                            if langFre and qual:
+                                qua_list.append(qual)
+
+
+                qua_list.sort()
+                url_list = []
+                for qual in qua_list:
+                    url_list.append("{}/{}/{}/0/video.mp4".format(url,movieID,qual))
+
+                return qua_list,url_list
+
+
+
+def decoder(data,fn):
+    data = base64.b64decode(data)
+
+    secretKey = {}
+    url = ''
+    temp = ''
+    tempData = ''
+
+    for i in xrange(len(data)):
+        tempData += ("%" + format(ord(data[i]), '02x'))
+
+    data = urllib.unquote(tempData)
+
+    x = 0
+    while x < 256:
+        secretKey[x] = x
+        x += 1
+
+    y = 0
+    x = 0
+    while x < 256:
+        y = (y + secretKey[x] + ord(fn[x % len(fn)])) % 256
+
+        temp = secretKey[x]
+        secretKey[x] = secretKey[y]
+        secretKey[y] = temp
+        x+=1
+
+
+    x = 0
+    y = 0
+    i = 0
+    while i < len(data.decode('utf-8')):
+
+        x = (x + 1) % 256
+        y = (y + secretKey[x]) % 256
+
+        temp = secretKey[x]
+        secretKey[x] = secretKey[y]
+        secretKey[y] = temp
+
+        url += (chr(ord(data.decode('utf-8')[i]) ^ secretKey[(secretKey[x] + secretKey[y]) % 256]))
+
+        i += 1
+
+    return url
