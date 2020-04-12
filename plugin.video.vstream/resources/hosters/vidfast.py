@@ -3,6 +3,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
+UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0'
 
 class cHoster(iHoster):
 
@@ -59,6 +60,6 @@ class cHoster(iHoster):
 
 
         if (api_call):
-            return True, api_call
+            return True, api_call + '|User-Agent=' + UA + '&Referer=' + self.__sUrl + '&Origin=https://vidfast.co'
 
         return False, False
