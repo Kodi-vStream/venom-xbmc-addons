@@ -16,7 +16,6 @@ SITE_DESC = 'Films, Séries & Mangas en Streaming'
 
 URL_MAIN = 'https://filmstreamvk.bz/'
 
-#MOVIE_MOVIE = (URL_MAIN , 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_SERIE_VIEWS = (URL_MAIN + 'tendance/', 'showMovies')
@@ -298,15 +297,13 @@ def showLinks():
             dpost = aEntry[0]
             dnum = aEntry[1]
             sHoster = aEntry[2]
-            sTitle = ''
-            try:
-              sPattern = 'jpg" alt="(.+?)"'
-              aResult = oParser.parse(sHtmlContent, sPattern)
-              if aResult[0]:
-                sTitle = aResult[1][0]
-            except:
-                pass
-            sDisplaytitle = '%s [COLOR coral]%s[/COLOR]' % (sTitle, sHoster)
+            
+            #trie des hosters
+            oHoster = cHosterGui().checkHoster(sHoster)
+            if not oHoster:
+                continue
+            
+            sDisplaytitle = '%s [COLOR coral]%s[/COLOR]' % (sMovieTitle, sHoster)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
