@@ -174,9 +174,12 @@ class cHosterGui:
             return self.getHoster('megawatch')
         if ('playvidto' in sHostName):
             return self.getHoster('vidto')
-        if ('vidtodo.' in sHostName):
+        #vidtodo et clone
+        if ('vidtodo' in sHostName):
             return self.getHoster('vidtodo')
-        if ('vidstodo.' in sHostName):
+        if ('viddoto' in sHostName):
+            return self.getHoster('vidtodo')
+        if ('vidstodo' in sHostName):
             return self.getHoster('vidtodo')
         if ('vidzi' in sHostName):
             return self.getHoster('vidzi')
