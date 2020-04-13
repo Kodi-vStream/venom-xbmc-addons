@@ -4,7 +4,20 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-#from resources.lib.comaddon import VSlog
+from resources.lib.comaddon import VSlog
+
+import time, random, base64
+
+UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0'
+
+def compute(s):
+    a = s.replace("/","1")
+    a = base64.b64decode(a)
+    a = a.replace("/","Z")
+    a = base64.b64decode(a)
+    a = a.replace("@","a")
+    a = base64.b64decode(a)
+    return a
 
 class cHoster(iHoster):
 
@@ -55,7 +68,7 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        self.__sUrl = self.__sUrl.replace('/e/','/d/')
+        #self.__sUrl = self.__sUrl.replace('/e/','/d/')
 
     def checkUrl(self, sUrl):
         return True
@@ -70,24 +83,29 @@ class cHoster(iHoster):
         api_call = False
 
         oRequest = cRequestHandler(self.__sUrl)
+        oRequest.addHeaderEntry('User-Agent', UA)
         sHtmlContent = oRequest.request()
-
+        
+        urlDonwload = oRequest.getRealUrl()
+        
         oParser = cParser()
-        sPattern =  '<a href="([^"]+)" class="btn btn-primary d-flex align-items-center justify-content-between">'
+        
+        possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+        fin_url = ''.join(random.choice(possible) for _ in range(10))
+        
+        sPattern = 'return a\+"(\?token=[^"]+)"'
+        fin_url = fin_url + oParser.parse(sHtmlContent, sPattern)[1][0] + str(int(1000*time.time()))
+        
+        sPattern =  "\$\.get\('([^']+)',"
         aResult = oParser.parse(sHtmlContent, sPattern)
-
-        if (aResult[0]):
-            urlDonwload = "https://" + self.__sUrl.split('/')[2] + "/" + aResult[1][0]
-
-            oRequest = cRequestHandler(urlDonwload)
-            sHtmlContent = oRequest.request()
-
-            oParser = cParser()
-            sPattern =  "window.open\('(.+?)\'"
-            aResult = oParser.parse(sHtmlContent, sPattern)
-
-            if (aResult[0]):
-                api_call = aResult[1][0]
+        url2 = 'https://' + urlDonwload.split('/')[2] + aResult[1][0]
+        
+        oRequest = cRequestHandler(url2)
+        oRequest.addHeaderEntry('User-Agent', UA)
+        oRequest.addHeaderEntry('Referer', urlDonwload)
+        sHtmlContent = oRequest.request()
+        
+        api_call = compute(sHtmlContent) + fin_url
 
         if (api_call):
             api_call = api_call + '|Referer=' + urlDonwload
