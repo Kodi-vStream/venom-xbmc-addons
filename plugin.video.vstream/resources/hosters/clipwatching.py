@@ -3,6 +3,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
+from resources.lib.comaddon import dialog
 
 class cHoster(iHoster):
 
@@ -42,17 +43,28 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-
         api_call = ''
 
+        oParser = cParser()
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
-        sPattern = 'sources: *\["([^"]+)"'
-        oParser = cParser()
+        #accelère le traitement
+        sHtmlContent = oParser.abParse(sHtmlContent, 'var player', 'vvplay')
+        sPattern = '"(http[^"]+\.mp4)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
+
         if (aResult[0] == True):
-            api_call = aResult[1][0]
+            #initialisation des tableaux
+            url = []
+            qua = ['Lien 1', 'Lien 2']
+
+            #Remplissage des tableaux
+            for i in aResult[1]:
+                url.append(str(i))
+
+            #dialogue Lien si 2 url
+            api_call = dialog().VSselectqual(qua, url)
 
         if (api_call):
             return True, api_call
