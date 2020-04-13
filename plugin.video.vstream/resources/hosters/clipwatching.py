@@ -57,13 +57,16 @@ class cHoster(iHoster):
         if (aResult[0] == True):
             #initialisation des tableaux
             url = []
-            qua = ['Lien 1', 'Lien 2']
+            qua = []
+            n = 1
 
             #Remplissage des tableaux
             for i in aResult[1]:
                 url.append(str(i))
+                qua.append('Lien ' + str(n))
+                n += 1
 
-            #dialogue Lien si 2 url
+            #dialogue Lien si plus d'une url
             api_call = dialog().VSselectqual(qua, url)
 
         if (api_call):
