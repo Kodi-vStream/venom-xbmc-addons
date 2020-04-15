@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
@@ -9,14 +9,15 @@ from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil, QuotePlus
 from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window, xbmc
-import xbmcplugin, re#, unicodedata
+import re, xbmcplugin
+
 
 class cGui():
 
     SITE_NAME = 'cGui'
     CONTENT = 'files'
     searchResults = []
-    #modif 22/06
+    # modif 22/06
     listing = []
     ADDON = addon()
 
@@ -171,7 +172,7 @@ class cGui():
 
         oOutputParameterHandler.addParameter('sFav', sFunction)
 
-        #context parametre
+        # context parametre
         if isKrypton():
             self.createContexMenuSettings(oGuiElement, oOutputParameterHandler)
 
@@ -196,7 +197,7 @@ class cGui():
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
-    #utiliser oGui.addText(SITE_IDENTIFIER)
+    # utiliser oGui.addText(SITE_IDENTIFIER)
     def addNone(self, sId):
         return self.addText(sId)
 
@@ -214,7 +215,7 @@ class cGui():
         oOutputParameterHandler = cOutputParameterHandler()
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
-    #non utiliser depuis le 22/04
+    # non utiliser depuis le 22/04
     def addMovieDB(self, sId, sFunction, sLabel, sIcon, sThumbnail, sFanart, oOutputParameterHandler = ''):
 
         cGui.CONTENT = 'movies'
@@ -234,7 +235,7 @@ class cGui():
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
-    #non utiliser 22/04
+    # non utiliser 22/04
     def addTVDB(self, sId, sFunction, sLabel, sIcon, sThumbnail, sFanart, oOutputParameterHandler = ''):
 
         cGui.CONTENT = 'tvshows'
@@ -254,20 +255,20 @@ class cGui():
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
-    #afficher les liens non playable
+    # afficher les liens non playable
     def addFolder(self, oGuiElement, oOutputParameterHandler = '', _isFolder = True):
 
-        #recherche append les reponses
+        # recherche append les reponses
         if  window(10101).getProperty('search') == 'true':
             import copy
             cGui.searchResults.append({'guiElement': oGuiElement, 'params': copy.deepcopy(oOutputParameterHandler)})
             return
 
-        #Des infos a rajouter ?
+        # Des infos a rajouter ?
         params = {
-            'siteUrl': oGuiElement.setSiteUrl,#indispensable
+            'siteUrl': oGuiElement.setSiteUrl,  # indispensable
             'sTmdbId': oGuiElement.setTmdbId,
-            'sImbdId': oGuiElement.setImdbId,#inutile ?
+            'sImbdId': oGuiElement.setImdbId,  # inutile ?
             'sYear': oGuiElement.setYear,
         }
 
@@ -279,17 +280,17 @@ class cGui():
         oListItem = self.createListItem(oGuiElement)
         oListItem.setProperty('IsPlayable', 'false')
 
-        #affiche tag HD
+        # affiche tag HD
         # if '1080' in oGuiElement.getTitle():
         #     oListItem.addStreamInfo('video', {'aspect': '1.78', 'width': 1920, 'height': 1080})
         # elif '720' in oGuiElement.getTitle():
         #     oListItem.addStreamInfo('video', {'aspect': '1.50', 'width': 1280, 'height': 720})
         # elif '2160'in oGuiElement.getTitle():
         #     oListItem.addStreamInfo('video', {'aspect': '1.78', 'width': 3840, 'height': 2160})
-        #oListItem.addStreamInfo('audio', {'language': 'fr'})
+        # oListItem.addStreamInfo('audio', {'language': 'fr'})
 
         # if oGuiElement.getMeta():
-        #oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
+        #     oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
         if oGuiElement.getCat():
             oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
 
@@ -297,8 +298,8 @@ class cGui():
 
         oOutputParameterHandler.addParameter('sTitleWatched', oGuiElement.getTitleWatched())
 
-        #new context prend en charge les metas
-        if (oGuiElement.getMeta() > 0):
+        # new context prend en charge les metas
+        if oGuiElement.getMeta() > 0:
             if cGui.CONTENT == 'movies':
                 self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
@@ -307,10 +308,9 @@ class cGui():
 
                 if self.ADDON.getSetting('bstoken') != '':
                     self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
-                if self.ADDON.getSetting('tmdb_account')!= '':
+                if self.ADDON.getSetting('tmdb_account') != '':
                     self.createContexMenuTMDB(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
-
 
             elif cGui.CONTENT == 'tvshows':
                 self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
@@ -327,7 +327,7 @@ class cGui():
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
 
         #sPluginHandle = cPluginHandler().getPluginHandle()
-        #modif 22/06
+        # modif 22/06
         #xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=_isFolder)
         self.listing.append((sItemUrl, oListItem, _isFolder))
 
@@ -338,7 +338,7 @@ class cGui():
         #oListItem.setThumbnailImage(oGuiElement.getThumbnail())
         #oListItem.setIconImage(oGuiElement.getIcon())
 
-        #krypton et sont comportement
+        # krypton et sont comportement
         oListItem.setArt({'poster': oGuiElement.getPoster(), 'thumb': oGuiElement.getThumbnail(), 'icon': oGuiElement.getIcon(), 'fanart': oGuiElement.getFanart()})
 
         aProperties = oGuiElement.getItemProperties()
@@ -347,8 +347,8 @@ class cGui():
 
         return oListItem
 
-    #affiche les liens playable
-    def addHost(self, oGuiElement, oOutputParameterHandler=''):
+    # affiche les liens playable
+    def addHost(self, oGuiElement, oOutputParameterHandler = ''):
 
         if isKrypton():
             cGui.CONTENT = 'movies'
@@ -371,7 +371,7 @@ class cGui():
 
 #        sPluginHandle = cPluginHandler().getPluginHandle()
 
-        #modif 13/09
+        # modif 13/09
         #xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=False)
         self.listing.append((sItemUrl, oListItem, False))
 
@@ -386,7 +386,7 @@ class cGui():
         oContext.setFile('cGui')
         oContext.setSiteName('cGui')
         oContext.setFunction('selectpage')
-        oContext.setTitle('[COLOR azure]Sélectionner page[/COLOR]')
+        oContext.setTitle(self.ADDON.VSlang(30017))
         oOutputParameterHandler.addParameter('OldFunction', oGuiElement.getFunction())
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oContext.setOutputParameterHandler(oOutputParameterHandler)
@@ -396,7 +396,7 @@ class cGui():
         oContext.setFile('cGui')
         oContext.setSiteName('cGui')
         oContext.setFunction('viewback')
-        oContext.setTitle('[COLOR azure]Retour Site[/COLOR]')
+        oContext.setTitle(self.ADDON.VSlang(30018))
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oContext.setOutputParameterHandler(oOutputParameterHandler)
         oGuiElement.addContextItem(oContext)
@@ -443,7 +443,7 @@ class cGui():
             self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'ReadDownload', self.ADDON.VSlang(30219))
             self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'ResetDownload', self.ADDON.VSlang(30220))
 
-    #Information
+    # Information
     def createContexMenuinfo(self, oGuiElement, oOutputParameterHandler = ''):
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -454,7 +454,7 @@ class cGui():
 
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewinfo', self.ADDON.VSlang(30208))
 
-    #Bande annonce
+    # Bande annonce
     def createContexMenuba(self, oGuiElement, oOutputParameterHandler = ''):
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -463,7 +463,7 @@ class cGui():
 
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewBA', self.ADDON.VSlang(30212))
 
-    #Recherche similaire
+    # Recherche similaire
     def createContexMenuSimil(self, oGuiElement, oOutputParameterHandler = ''):
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -493,7 +493,7 @@ class cGui():
         sPluginPath = cPluginHandler().getPluginPath()
         aContextMenus = []
 
-        #Menus classiques reglés a la base
+        # Menus classiques reglés a la base
         if (len(oGuiElement.getContextItems()) > 0):
             for oContextItem in oGuiElement.getContextItems():
                 oOutputParameterHandler = oContextItem.getOutputParameterHandler()
@@ -509,7 +509,7 @@ class cGui():
         sPluginPath = cPluginHandler().getPluginPath()
         aContextMenus = []
 
-        if (len(oGuiElement.getContextItems()) > 0):
+        if len(oGuiElement.getContextItems()) > 0:
             for oContextItem in oGuiElement.getContextItems():
                 oOutputParameterHandler = oContextItem.getOutputParameterHandler()
                 sParams = oOutputParameterHandler.getParameterAsUri()
@@ -540,7 +540,7 @@ class cGui():
     def setEndOfDirectory(self, ForceViewMode = False):
 
         iHandler = cPluginHandler().getPluginHandle()
-        #modif 22/06
+        # modif 22/06
         if not self.listing:
             self.addText('cGui')
 
@@ -550,12 +550,12 @@ class cGui():
         xbmcplugin.setContent(iHandler, cGui.CONTENT)
         xbmcplugin.addSortMethod(iHandler, xbmcplugin.SORT_METHOD_NONE)
         xbmcplugin.endOfDirectory(iHandler, succeeded = True, cacheToDisc = True)
-        #reglage vue
-        #50 = liste / 51 grande liste / 500 icone / 501 gallerie / 508 fanart /
-        if (ForceViewMode):
+        # reglage vue
+        # 50 = liste / 51 grande liste / 500 icone / 501 gallerie / 508 fanart /
+        if ForceViewMode:
             xbmc.executebuiltin('Container.SetViewMode(' + str(ForceViewMode) + ')')
         else:
-            if (self.ADDON.getSetting('active-view') == 'true'):
+            if self.ADDON.getSetting('active-view') == 'true':
                 if cGui.CONTENT == 'movies':
                     #xbmc.executebuiltin('Container.SetViewMode(507)')
                     xbmc.executebuiltin('Container.SetViewMode(%s)' % self.ADDON.getSetting('movie-view'))
@@ -564,7 +564,7 @@ class cGui():
                 elif cGui.CONTENT == 'files':
                     xbmc.executebuiltin('Container.SetViewMode(%s)' % self.ADDON.getSetting('default-view'))
 
-        #bug affichage Kodi 18
+        # bug affichage Kodi 18
         del self.listing [:]
 
     def updateDirectory(self):
@@ -644,7 +644,7 @@ class cGui():
         xbmc.executebuiltin('XBMC.Container.Update(%s, replace)' % sTest)
 
     def setWatched(self):
-        if (True):
+        if True:
             #Use VStream database
             oInputParameterHandler = cInputParameterHandler()
             sSite = oInputParameterHandler.getValue('siteUrl')
@@ -663,14 +663,14 @@ class cGui():
                 db.del_resume(meta)
             else:
                 db.insert_watched(meta)
-            #To test
+            # To test
             #xbmc.executebuiltin('Container.Refresh')
 
         else:
             # Use kodi buildin feature
             xbmc.executebuiltin('Action(ToggleWatched)')
 
-        #Not usefull ?
+        # Not usefull ?
         #xbmc.executebuiltin('Container.Refresh')
 
     def viewBA(self):
@@ -693,11 +693,11 @@ class cGui():
         sMeta = oInputParameterHandler.getValue('sMeta')
         sYear = oInputParameterHandler.getValue('sYear')
 
-        #sMeta = 1 >> film sMeta = 2 >> serie
+        # sMeta = 1 >> film sMeta = 2 >> serie
         sCleanTitle = cUtil().CleanName(sFileName)
 
-        #on vire saison et episode
-        if (True):#sMeta == 2:
+        # on vire saison et episode
+        if True:  # sMeta == 2:
             sCleanTitle = re.sub('(?i).pisode [0-9]+', '', sCleanTitle)
             sCleanTitle = re.sub('(?i)saison [0-9]+', '', sCleanTitle)
             sCleanTitle = re.sub('(?i)S[0-9]+E[0-9]+', '', sCleanTitle)
@@ -710,7 +710,7 @@ class cGui():
             oOutputParameterHandler = cOutputParameterHandler()
 
         sParams = oOutputParameterHandler.getParameterAsUri()
-        #cree une id unique
+        # cree une id unique
         # if oGuiElement.getSiteUrl():
             # print  str(hash(oGuiElement.getSiteUrl()))
 
@@ -737,7 +737,7 @@ class cGui():
 
     def showNumBoard(self, sDefaultNum = ''):
         dialogs = dialog()
-        numboard = dialogs.numeric(0, 'Entrer la page', sDefaultNum)
+        numboard = dialogs.numeric(0, self.ADDON.VSlang(30019), sDefaultNum)
         #numboard.doModal()
         if numboard != None:
                 return numboard
