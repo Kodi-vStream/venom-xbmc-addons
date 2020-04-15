@@ -19,7 +19,7 @@ MOVIE_NEWS = (URL_MAIN + 'index.php?do=lastnews', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
 
-URL_SEARCH = (URL_MAIN + 'index.php?story=', 'showSearch')
+URL_SEARCH = (URL_MAIN + '&subaction=search&titleonly=3&story=', 'showSearch')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
