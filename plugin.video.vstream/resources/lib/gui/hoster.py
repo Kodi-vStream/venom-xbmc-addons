@@ -10,6 +10,7 @@ from resources.lib.player import cPlayer
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.comaddon import dialog, addon, VSlog, isKrypton
 
+
 class cHosterGui:
 
     SITE_NAME = 'cHosterGui'
@@ -56,7 +57,7 @@ class cHosterGui:
         # oOutputParameterHandler.addParameter('sCat', '4')
 
         # nouveaux pour la lecture.
-        if (oInputParameterHandler.exist('sCat')):
+        if oInputParameterHandler.exist('sCat'):
             sCat = oInputParameterHandler.getValue('sCat')
             oGuiElement.setCat(sCat)
             oOutputParameterHandler.addParameter('sCat', sCat)
@@ -73,7 +74,7 @@ class cHosterGui:
         oGuiElement.addContextItem(oContext)
 
         # Download menu
-        if (oHoster.isDownloadable() == True):
+        if oHoster.isDownloadable() == True:
             oContext = cContextElement()
             oContext.setFile('cDownload')
             oContext.setSiteName('cDownload')
@@ -82,7 +83,7 @@ class cHosterGui:
             oContext.setOutputParameterHandler(oOutputParameterHandler)
             oGuiElement.addContextItem(oContext)
 
-        if (oHoster.isDownloadable() == True):
+        if oHoster.isDownloadable() == True:
             # Beta context download and view menu
             oContext = cContextElement()
             oContext.setFile('cDownload')
@@ -119,7 +120,7 @@ class cHosterGui:
 
     def checkHoster(self, sHosterUrl):
         # securite
-        if (not sHosterUrl):
+        if not sHosterUrl:
             return False
 
         # Petit nettoyage
@@ -389,7 +390,7 @@ class cHosterGui:
         if not sTitle:
             sTitle = sFileName
 
-        if (bGetRedirectUrl == 'True'):
+        if bGetRedirectUrl == 'True':
             sMediaUrl = self.__getRedirectUrl(sMediaUrl)
 
         VSlog('Hoster - play ' + sMediaUrl)
@@ -405,7 +406,7 @@ class cHosterGui:
             oHoster.setUrl(sMediaUrl)
             aLink = oHoster.getMediaLink()
 
-            if (aLink[0] == True):
+            if aLink[0] == True:
                 oGuiElement = cGuiElement()
                 oGuiElement.setSiteName(self.SITE_NAME)
                 oGuiElement.setMediaUrl(aLink[1])
@@ -439,7 +440,7 @@ class cHosterGui:
         bGetRedirectUrl = oInputParameterHandler.getValue('bGetRedirectUrl')
         sFileName = oInputParameterHandler.getValue('sFileName')
 
-        if (bGetRedirectUrl == 'True'):
+        if bGetRedirectUrl == 'True':
             sMediaUrl = self.__getRedirectUrl(sMediaUrl)
 
         VSlog('Hoster - playlist ' + sMediaUrl)
@@ -449,7 +450,7 @@ class cHosterGui:
         oHoster.setUrl(sMediaUrl)
         aLink = oHoster.getMediaLink()
 
-        if (aLink[0] == True):
+        if aLink[0] == True:
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName(self.SITE_NAME)
             oGuiElement.setMediaUrl(aLink[1])
