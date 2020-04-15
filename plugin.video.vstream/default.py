@@ -130,25 +130,25 @@ class main:
             VSlog('load site ' + sSiteName + ' and call function ' + sFunction)
             # cStatistic().callStartPlugin(sSiteName, sTitle)
 
-            if isHosterGui(sSiteName, sFunction) == True:
+            if isHosterGui(sSiteName, sFunction):
                 return
 
-            if isGui(sSiteName, sFunction) == True:
+            if isGui(sSiteName, sFunction):
                 return
 
-            if isFav(sSiteName, sFunction) == True:
+            if isFav(sSiteName, sFunction):
                 return
 
-            if isLibrary(sSiteName, sFunction) == True:
+            if isLibrary(sSiteName, sFunction):
                 return
 
-            if isDl(sSiteName, sFunction) == True:
+            if isDl(sSiteName, sFunction):
                 return
 
-            if isHome(sSiteName, sFunction) == True:
+            if isHome(sSiteName, sFunction):
                 return
 
-            if isTrakt(sSiteName, sFunction) == True:
+            if isTrakt(sSiteName, sFunction):
                 return
 
             if sSiteName == 'globalSearch':
