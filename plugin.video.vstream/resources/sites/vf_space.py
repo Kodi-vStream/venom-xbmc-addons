@@ -17,7 +17,7 @@ URL_MAIN = 'https://vvww.vfspace.me/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + 'index.php?do=search', FUNCTION_SEARCH)
-URL_SEARCH_MOVIES = (URL_SEARCH[0] + '&subaction=search&catlist%5B%5D=9&story=', FUNCTION_SEARCH)
+URL_SEARCH_MOVIES = (URL_SEARCH[0] + '&subaction=search&titleonly=3&catlist%5B%5D=9&story=', FUNCTION_SEARCH)
 URL_SEARCH_SERIES = (URL_SEARCH[0] + '&subaction=search&catlist%5B%5D=10&catlist%5B%5D=12&catlist%5B%5D=13&story=', FUNCTION_SEARCH)
 
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
