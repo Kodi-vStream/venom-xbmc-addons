@@ -8,7 +8,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.player import cPlayer
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import dialog, addon, VSlog, isKrypton
+from resources.lib.comaddon import dialog, addon, VSlog
 
 
 class cHosterGui:
