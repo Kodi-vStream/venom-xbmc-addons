@@ -74,7 +74,7 @@ class cHosterGui:
         oGuiElement.addContextItem(oContext)
 
         # Download menu
-        if oHoster.isDownloadable() == True:
+        if oHoster.isDownloadable():
             oContext = cContextElement()
             oContext.setFile('cDownload')
             oContext.setSiteName('cDownload')
@@ -83,7 +83,7 @@ class cHosterGui:
             oContext.setOutputParameterHandler(oOutputParameterHandler)
             oGuiElement.addContextItem(oContext)
 
-        if oHoster.isDownloadable() == True:
+        if oHoster.isDownloadable():
             # Beta context download and view menu
             oContext = cContextElement()
             oContext.setFile('cDownload')
@@ -406,7 +406,7 @@ class cHosterGui:
             oHoster.setUrl(sMediaUrl)
             aLink = oHoster.getMediaLink()
 
-            if aLink[0] == True:
+            if aLink[0]:
                 oGuiElement = cGuiElement()
                 oGuiElement.setSiteName(self.SITE_NAME)
                 oGuiElement.setMediaUrl(aLink[1])
@@ -450,7 +450,7 @@ class cHosterGui:
         oHoster.setUrl(sMediaUrl)
         aLink = oHoster.getMediaLink()
 
-        if aLink[0] == True:
+        if aLink[0]:
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName(self.SITE_NAME)
             oGuiElement.setMediaUrl(aLink[1])
