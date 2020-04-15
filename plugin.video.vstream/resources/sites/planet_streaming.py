@@ -124,7 +124,7 @@ def showMovies(sSearch = ''):
         if Nextpagesearch:
             query_args = (('do', 'search'), ('subaction', 'search'), ('search_start', Nextpagesearch), ('story', sSearch))
         else:
-            query_args = (('do', 'search'), ('subaction', 'search'), ('story', sSearch))
+            query_args = (('do', 'search'), ('subaction', 'search'), ('story', sSearch), ('titleonly', '3'))
 
         data = urllib.urlencode(query_args)
 
