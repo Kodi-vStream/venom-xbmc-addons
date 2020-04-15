@@ -84,6 +84,10 @@ msgctxt "#30019"
 msgid "Enter the page"
 msgstr "Entrer la page"
 
+msgctxt "#30020"
+msgid "File not found"
+msgstr "Fichier introuvable"
+
 msgctxt "#30021"
 msgid "General"
 msgstr "Général"
