@@ -494,7 +494,7 @@ class cGui():
         aContextMenus = []
 
         # Menus classiques reglés a la base
-        if (len(oGuiElement.getContextItems()) > 0):
+        if len(oGuiElement.getContextItems()) > 0:
             for oContextItem in oGuiElement.getContextItems():
                 oOutputParameterHandler = oContextItem.getOutputParameterHandler()
                 sParams = oOutputParameterHandler.getParameterAsUri()
@@ -525,7 +525,7 @@ class cGui():
         sPluginPath = cPluginHandler().getPluginPath()
         aContextMenus = []
 
-        if (len(oGuiElement.getContextItems()) > 0):
+        if len(oGuiElement.getContextItems()) > 0:
             for oContextItem in oGuiElement.getContextItems():
                 oOutputParameterHandler = oContextItem.getOutputParameterHandler()
                 sParams = oOutputParameterHandler.getParameterAsUri()
