@@ -1,37 +1,42 @@
-import subprocess, xbmcvfs#, time, os
-from resources.lib.comaddon import addon, xbmc, VSlog#, xbmcgui, progress, dialog
+# -*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
+import subprocess  # , time, os
+import xbmcvfs
 from datetime import datetime
+from resources.lib.comaddon import addon, xbmc, VSlog  # , xbmcgui, progress, dialog
+
 
 def service():
     ADDON = addon()
-    intervalle = ADDON.getSetting('heure_verification')
-    enregistrementIsActif = ADDON.getSetting('enregistrement_activer')
-    if enregistrementIsActif == 'false':
+    interval = ADDON.getSetting('heure_verification')
+    record_is_activate = ADDON.getSetting('enregistrement_activer')
+    if record_is_activate == 'false':
         return
 
-    PathProgrammation = 'special://userdata/addon_data/plugin.video.vstream/Enregistrement'
-    path = ''.join([PathProgrammation])
+    path_recording = 'special://userdata/addon_data/plugin.video.vstream/Enregistrement'
+    path = ''.join([path_recording])
     if not xbmcvfs.exists(path):
         xbmcvfs.mkdir(path)
 
-    ListeEnregistrement = xbmcvfs.listdir(path)
+    record_list = xbmcvfs.listdir(path)
     ADDON.setSetting('path_enregistrement_programmation', path)
-    EnregistrementEnCours = False
+    record_in_progress = False
     monitor = xbmc.Monitor()
 
-    while not monitor.abortRequested() and not EnregistrementEnCours == True:
-        if monitor.waitForAbort(int(intervalle)):
+    while not monitor.abortRequested() and not record_in_progress == True:
+        if monitor.waitForAbort(int(interval)):
             break
 
-        heure = datetime.now().strftime('%d-%H-%M') + '.py'
-        if heure in str(ListeEnregistrement):
-            heure = path + '/' + heure
-            heure = xbmc.translatePath(heure)
-            EnregistrementEnCours = True
-            VSlog('python ' + heure)
-            command = 'python ' + heure
+        hour = datetime.now().strftime('%d-%H-%M') + '.py'
+        if hour in str(record_list):
+            hour = path + '/' + hour
+            hour = xbmc.translatePath(hour)
+            record_in_progress = True
+            VSlog('python ' + hour)
+            command = 'python ' + hour
             proc = subprocess.Popen(command, stdout=subprocess.PIPE)
             p_status = proc.wait()
+
 
 if __name__ == '__main__':
     service()
