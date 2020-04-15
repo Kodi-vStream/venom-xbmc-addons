@@ -72,6 +72,18 @@ msgctxt "#30016"
 msgid "Activate search history"
 msgstr ""
 
+msgctxt "#30017"
+msgid "[COLOR azure]Select page[/COLOR]"
+msgstr ""
+
+msgctxt "#30018"
+msgid "[COLOR azure]Back to site[/COLOR]"
+msgstr ""
+
+msgctxt "#30019"
+msgid "Enter the page"
+msgstr ""
+
 msgctxt "#30021"
 msgid "General"
 msgstr ""
