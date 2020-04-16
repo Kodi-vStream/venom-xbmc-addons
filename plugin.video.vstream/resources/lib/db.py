@@ -37,7 +37,7 @@ class cDb:
                 self._create_tables()
                 return
         except:
-            VSlog(self.ADDON.VSlang(30039) % self.REALDB)
+            VSlog('Error: Unable to write to %s' % self.REALDB)
             pass
 
         try:
@@ -45,7 +45,7 @@ class cDb:
             self.db.row_factory = sqlite.Row
             self.dbcur = self.db.cursor()
         except:
-            VSlog(self.ADDON.VSlang(30040) % self.REALDB)
+            VSlog('Error: Unable to access to %s' % self.REALDB)
             pass
 
     def __del__(self):
