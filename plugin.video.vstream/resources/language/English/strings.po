@@ -16,6 +16,14 @@ msgctxt "#30002"
 msgid "Auto-activate subtitles"
 msgstr ""
 
+msgctxt "#30003"
+msgid "Downloads Completed"
+msgstr ""
+
+msgctxt "#30004"
+msgid "Downloads Stopped"
+msgstr ""
+
 msgctxt "#30005"
 msgid "vStream will be faster with your own API key."
 msgstr ""
@@ -38,6 +46,14 @@ msgstr ""
 
 msgctxt "#30010"
 msgid "Color Text note"
+msgstr ""
+
+msgctxt "#30011"
+msgid "Initialization error"
+msgstr ""
+
+msgctxt "#30012"
+msgid "Downloads already started"
 msgstr ""
 
 msgctxt "#30013"
@@ -76,8 +92,20 @@ msgctxt "#30021"
 msgid "General"
 msgstr ""
 
+msgctxt "#30022"
+msgid "Unsupported format"
+msgstr ""
+
 msgctxt "#30023"
 msgid "Plugins Preferences"
+msgstr ""
+
+msgctxt "#30024"
+msgid "Unable to download"
+msgstr ""
+
+msgctxt "#30025"
+msgid "Stop Downloads"
 msgstr ""
 
 msgctxt "#30026"
@@ -132,6 +160,14 @@ msgctxt "#30038"
 msgid "Bookmarking not possible for this link"
 msgstr ""
 
+msgctxt "#30039"
+msgid "Download List"
+msgstr ""
+
+msgctxt "#30040"
+msgid "Clean the list (Finished files)"
+msgstr ""
+
 msgctxt "#30041"
 msgid "History deleted"
 msgstr ""
@@ -161,7 +197,7 @@ msgid "Last auto update on:"
 msgstr ""
 
 msgctxt "#30048"
-msgid "Next update check on: "
+msgid "Next update check on:"
 msgstr ""
 
 msgctxt "#30049"
@@ -217,7 +253,7 @@ msgid "Clear .fi Files"
 msgstr ""
 
 msgctxt "#30062"
-msgid ""
+msgid "Deletes temporary Kodi physical and BDD image files"
 msgstr ""
 
 msgctxt "#30063"
@@ -252,6 +288,26 @@ msgctxt "#30070"
 msgid "Choose your sources click OK [CR] - To validate the modifications click again on OK"
 msgstr ""
 
+msgctxt "#30071"
+msgid "Updated list"
+msgstr ""
+
+msgctxt "#30072"
+msgid "File deleted"
+msgstr ""
+
+msgctxt "#30073"
+msgid "Error, file cannot be deleted"
+msgstr ""
+
+msgctxt "#30074"
+msgid "Are you sure you want to delete this file? \nNon-reversible operation."
+msgstr ""
+
+msgctxt "#30075"
+msgid "Starting the full list"
+msgstr ""
+
 msgctxt "#30076"
 msgid "Search"
 msgstr ""
@@ -274,6 +330,22 @@ msgstr ""
 
 msgctxt "#30081"
 msgid "[COLOR gold]Results for: %s[/COLOR]"
+msgstr ""
+
+msgctxt "#30082"
+msgid "Name already used"
+msgstr ""
+
+msgctxt "#30083"
+msgid "Add to download list"
+msgstr ""
+
+msgctxt "#30084"
+msgid "Unable to download"
+msgstr ""
+
+msgctxt "#30085"
+msgid "Download failed"
 msgstr ""
 
 msgctxt "#30088"
