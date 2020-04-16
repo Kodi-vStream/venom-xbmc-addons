@@ -351,7 +351,7 @@ def _pluginSearch(plugin, sSearchText):
         function = getattr(plugins, plugin['search'][1])
         sUrl = plugin['search'][0] + str(sSearchText)
         function(sUrl)
-        VSlog('Load Recherche: ' + str(plugin['identifier']))
+        VSlog('Load Search: ' + str(plugin['identifier']))
     except:
         VSlog(plugin['identifier'] + ': search failed')
 
