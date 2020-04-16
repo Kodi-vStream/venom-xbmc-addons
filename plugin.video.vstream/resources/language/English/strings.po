@@ -156,14 +156,6 @@ msgctxt "#30038"
 msgid "Bookmarking not possible for this link"
 msgstr ""
 
-msgctxt "#30039"
-msgid "Error: Unable to write to %s"
-msgstr ""
-
-msgctxt "#30040"
-msgid "Error: Unable to connect to %s"
-msgstr ""
-
 msgctxt "#30041"
 msgid "History deleted"
 msgstr ""
