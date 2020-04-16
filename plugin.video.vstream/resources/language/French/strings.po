@@ -16,14 +16,6 @@ msgctxt "#30002"
 msgid "Auto-activate subtitles"
 msgstr "Activation auto des sous-titres"
 
-msgctxt "#30003"
-msgid "Activate filtering search"
-msgstr "Activation filtrage recherche"
-
-msgctxt "#30004"
-msgid "Filter Error"
-msgstr "Erreur du filtre"
-
 msgctxt "#30005"
 msgid "vStream will be faster with your own API key."
 msgstr "vStream sera plus rapide avec votre propre clef API."
@@ -47,14 +39,6 @@ msgstr "Utiliser extendedinfo"
 msgctxt "#30010"
 msgid "Color Text note"
 msgstr "Couleur texte information"
-
-msgctxt "#30011"
-msgid "Select"
-msgstr "Sélectionner"
-
-msgctxt "#30012"
-msgid "Name"
-msgstr "Nom"
 
 msgctxt "#30013"
 msgid "vStream update"
@@ -95,14 +79,6 @@ msgstr "Général"
 msgctxt "#30023"
 msgid "Plugins Preferences"
 msgstr "Plugins Préférences"
-
-msgctxt "#30024"
-msgid "Host"
-msgstr "Hôte"
-
-msgctxt "#30025"
-msgid "Home"
-msgstr "Accueil"
 
 msgctxt "#30026"
 msgid "IPTV and TV Guid"
@@ -276,10 +252,6 @@ msgctxt "#30070"
 msgid "Choose your sources click OK [CR] - To validate the modifications click again on OK"
 msgstr "Choisissez vos sources cliquez OK [CR]- Pour valider les modifications cliquez encore sur OK"
 
-msgctxt "#30071"
-msgid "Use Extendedinfo"
-msgstr "Utiliser Extendedinfo"
-
 msgctxt "#30076"
 msgid "Search"
 msgstr "Recherche"
@@ -307,26 +279,6 @@ msgstr "[COLOR gold]Résultats pour: %s[/COLOR]"
 msgctxt "#30088"
 msgid "Visual search"
 msgstr "Recherche visuelle"
-
-msgctxt "#30089"
-msgid "Search 2"
-msgstr "Recherche 2"
-
-msgctxt "#30090"
-msgid "Search 3"
-msgstr "Recherche 3"
-
-msgctxt "#30091"
-msgid "Search 4"
-msgstr "Recherche 4"
-
-msgctxt "#30092"
-msgid "Multiple Choices"
-msgstr "Choix Multiples"
-
-msgctxt "#30093"
-msgid "Select Search Engine"
-msgstr "Sélectionner un Moteur de Recherche"
 
 msgctxt "#30094"
 msgid "Select your Sources"
@@ -404,14 +356,6 @@ msgctxt "#30122"
 msgid "Animes"
 msgstr "Animés"
 
-msgctxt "#30125"
-msgid "Research Update (source only)"
-msgstr "Recherche mise à jour (Sources Uniquement)"
-
-msgctxt "#30126"
-msgid "Beta Tester (not recommended)"
-msgstr "Bêta testeur (Non recommandé)"
-
 msgctxt "#30127"
 msgid "Tools"
 msgstr "Outils"
@@ -424,18 +368,6 @@ msgctxt "#30129"
 msgid "Clear Cache Kodi"
 msgstr "Vider le Cache de Kodi"
 
-msgctxt "#30130"
-msgid "Lists"
-msgstr "Listes"
-
-msgctxt "#30134"
-msgid "Movies VF"
-msgstr "VF"
-
-msgctxt "#30135"
-msgid "Movies VOSTFR"
-msgstr "VOSTFR"
-
 msgctxt "#30138"
 msgid "Sources"
 msgstr "Sources"
@@ -443,10 +375,6 @@ msgstr "Sources"
 msgctxt "#30145"
 msgid "Download folder"
 msgstr "Dossier de Téléchargement"
-
-msgctxt "#30146"
-msgid "Show / Hide search settings"
-msgstr "Afficher/Masquer les paramètres de recherche"
 
 msgctxt "#30160"
 msgid "Quality HD"
@@ -552,10 +480,6 @@ msgctxt "#30302"
 msgid "Auto update"
 msgstr "Mise à jour à chaque ajout"
 
-msgctxt "#30303"
-msgid "Enable/Disable"
-msgstr "Activer/Désactiver"
-
 msgctxt "#30304"
 msgid "Go to [COLOR teal]%s[/COLOR] Enter the code [COLOR teal]%s[/COLOR]"
 msgstr "Rendez vous sur [COLOR teal]%s[/COLOR] Entrer le code [COLOR teal]%s[/COLOR]"
@@ -567,10 +491,6 @@ msgstr "[COLOR khaki]Cliquez ici, pour vous connecter[/COLOR]"
 msgctxt "#30306"
 msgid "[COLOR khaki]Hello, %s[/COLOR]"
 msgstr "[COLOR khaki][COLOR khaki]Bonjour, %s[/COLOR]"
-
-msgctxt "#30307"
-msgid "Movie (%s/%s) watch / Show watch (%s) / episode (%s/%s) watch"
-msgstr "Films (%s/%s) regardés / Séries regardées (%s) / Episodes (%s/%s) regardés"
 
 msgctxt "#30308"
 msgid "History"
@@ -623,18 +543,6 @@ msgstr "A surveiller (épisodes)"
 msgctxt "#30320"
 msgid "You have successfully logged out"
 msgstr "Vous avez été déconnecté avec succès"
-
-msgctxt "#30321"
-msgid "Add collection"
-msgstr "Ajouter à la collection"
-
-msgctxt "#30322"
-msgid "Add watch history"
-msgstr "Marquer comme regardé"
-
-msgctxt "#30323"
-msgid "Add watchlist"
-msgstr "Marquer à surveiller"
 
 msgctxt "#30324"
 msgid "Library"
@@ -1007,18 +915,6 @@ msgstr "Durée"
 msgctxt "#30465"
 msgid "Minute"
 msgstr "Minute"
-
-msgctxt "#30466"
-msgid "Actor/Role"
-msgstr "Acteur/Rôle"
-
-msgctxt "#30467"
-msgid "Birth"
-msgstr "Naissance"
-
-msgctxt "#30468"
-msgid "Place"
-msgstr "Lieu"
 
 msgctxt "#30469"
 msgid "Hoster Direct"
