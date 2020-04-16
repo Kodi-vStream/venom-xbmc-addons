@@ -40,6 +40,7 @@ SITE_IDENTIFIER = 'cDownload'
 
 class cDownloadProgressBar(threading.Thread):
     DIALOG = dialog()
+    ADDON = addon()
 
     def __init__(self, *args, **kwargs):
 
@@ -96,7 +97,7 @@ class cDownloadProgressBar(threading.Thread):
 
         # mise a jour pour info taille
         self.__updatedb(TotDown, iTotalSize)
-        self.DIALOG.VSinfo('Téléchargement Démarré')
+        self.DIALOG.VSinfo(self.ADDON.VSlang(30086))
 
         while not (self.processIsCanceled or diag.isFinished()):
 
