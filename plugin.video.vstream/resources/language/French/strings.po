@@ -348,6 +348,10 @@ msgctxt "#30085"
 msgid "Download failed"
 msgstr "Echec du téléchargement"
 
+msgctxt "#30086"
+msgid "Download Started"
+msgstr "Téléchargement Démarré"
+
 msgctxt "#30088"
 msgid "Visual search"
 msgstr "Recherche visuelle"
