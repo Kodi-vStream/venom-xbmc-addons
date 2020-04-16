@@ -16,14 +16,6 @@ msgctxt "#30002"
 msgid "Auto-activate subtitles"
 msgstr ""
 
-msgctxt "#30003"
-msgid "Activate filtering search"
-msgstr ""
-
-msgctxt "#30004"
-msgid "Filter Error"
-msgstr ""
-
 msgctxt "#30005"
 msgid "vStream will be faster with your own API key."
 msgstr ""
@@ -46,14 +38,6 @@ msgstr ""
 
 msgctxt "#30010"
 msgid "Color Text note"
-msgstr ""
-
-msgctxt "#30011"
-msgid "Select"
-msgstr ""
-
-msgctxt "#30012"
-msgid "Name"
 msgstr ""
 
 msgctxt "#30013"
@@ -94,14 +78,6 @@ msgstr ""
 
 msgctxt "#30023"
 msgid "Plugins Preferences"
-msgstr ""
-
-msgctxt "#30024"
-msgid "Host"
-msgstr ""
-
-msgctxt "#30025"
-msgid "Home"
 msgstr ""
 
 msgctxt "#30026"
@@ -276,10 +252,6 @@ msgctxt "#30070"
 msgid "Choose your sources click OK [CR] - To validate the modifications click again on OK"
 msgstr ""
 
-msgctxt "#30071"
-msgid "Use Extendedinfo"
-msgstr ""
-
 msgctxt "#30076"
 msgid "Search"
 msgstr ""
@@ -306,26 +278,6 @@ msgstr ""
 
 msgctxt "#30088"
 msgid "Visual search"
-msgstr ""
-
-msgctxt "#30089"
-msgid "Search 2"
-msgstr ""
-
-msgctxt "#30090"
-msgid "Search 3"
-msgstr ""
-
-msgctxt "#30091"
-msgid "Search 4"
-msgstr ""
-
-msgctxt "#30092"
-msgid "Multiple Choices"
-msgstr ""
-
-msgctxt "#30093"
-msgid "Select Search Engine"
 msgstr ""
 
 msgctxt "#30094"
@@ -404,14 +356,6 @@ msgctxt "#30122"
 msgid "Animes"
 msgstr ""
 
-msgctxt "#30125"
-msgid "Research Update (source only)"
-msgstr ""
-
-msgctxt "#30126"
-msgid "Beta Tester (not recommended)"
-msgstr ""
-
 msgctxt "#30127"
 msgid "Tools"
 msgstr ""
@@ -424,28 +368,12 @@ msgctxt "#30129"
 msgid "Clear Cache Kodi"
 msgstr ""
 
-msgctxt "#30130"
-msgid "Lists"
-msgstr ""
-
-msgctxt "#30134"
-msgid "Movies VF"
-msgstr ""
-
-msgctxt "#30135"
-msgid "Movies VOSTFR"
-msgstr ""
-
 msgctxt "#30138"
 msgid "Sources"
 msgstr ""
 
 msgctxt "#30145"
 msgid "Download folder"
-msgstr ""
-
-msgctxt "#30146"
-msgid "Show / Hide search settings"
 msgstr ""
 
 msgctxt "#30160"
@@ -552,10 +480,6 @@ msgctxt "#30302"
 msgid "Auto update"
 msgstr ""
 
-msgctxt "#30303"
-msgid "Enable/Disable"
-msgstr ""
-
 msgctxt "#30304"
 msgid "Go to [COLOR teal]%s[/COLOR] Enter the code [COLOR teal]%s[/COLOR]"
 msgstr ""
@@ -566,10 +490,6 @@ msgstr ""
 
 msgctxt "#30306"
 msgid "[COLOR khaki]Hello, %s[/COLOR]"
-msgstr ""
-
-msgctxt "#30307"
-msgid "Movie (%s/%s) watch / Show watch (%s) / episode (%s/%s) watch"
 msgstr ""
 
 msgctxt "#30308"
@@ -624,18 +544,6 @@ msgctxt "#30320"
 msgid "You have successfully logged out"
 msgstr ""
 
-msgctxt "#30321"
-msgid "Add collection"
-msgstr ""
-
-msgctxt "#30322"
-msgid "Add watch history"
-msgstr ""
-
-msgctxt "#30323"
-msgid "Add watchlist"
-msgstr ""
-
 msgctxt "#30324"
 msgid "Library"
 msgstr ""
@@ -661,7 +569,7 @@ msgid "Calendar"
 msgstr ""
 
 msgctxt "#30332"
-msgid "Iptv (officiel)"
+msgid "Iptv (official)"
 msgstr ""
 
 msgctxt "#30340"
@@ -1006,18 +914,6 @@ msgstr ""
 
 msgctxt "#30465"
 msgid "Minute"
-msgstr ""
-
-msgctxt "#30466"
-msgid "Actor/Role"
-msgstr ""
-
-msgctxt "#30467"
-msgid "Birth"
-msgstr ""
-
-msgctxt "#30468"
-msgid "Place"
 msgstr ""
 
 msgctxt "#30469"
