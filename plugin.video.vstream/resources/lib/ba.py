@@ -1,13 +1,13 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-#Venom.
+# Venom.
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.player import cPlayer
-from resources.lib.comaddon import addon, dialog#, VSlog
-
-import re, urllib2
+from resources.lib.comaddon import addon, dialog
+import urllib2
 import ssl
+import re
 
 try:
     import json
@@ -17,13 +17,14 @@ except:
 SITE_IDENTIFIER = 'cBA'
 SITE_NAME = 'BA'
 
+
 class cShowBA:
 
     def __init__(self):
         self.search = ''
         self.key = 'AIzaSyC5grY-gOPMpUM_tn0sfTKV3pKUtf9---M'
 
-    def SetSearch(self,search):
+    def SetSearch(self, search):
         self.search = search.replace(' ', '+')
         self.search =  self.search + '+bande+annonce'
 
