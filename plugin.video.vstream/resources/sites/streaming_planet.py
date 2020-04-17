@@ -19,7 +19,7 @@ MOVIE_NEWS = (URL_MAIN + 'index.php?do=lastnews', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
 
-URL_SEARCH = (URL_MAIN + '&subaction=search&titleonly=3&story=', 'showSearch')
+URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&titleonly=3&story=', 'showSearch')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
@@ -49,7 +49,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sSearch = URL_SEARCH[0] + sSearchText
+        sSearch = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showMovies(sSearch)
         oGui.setEndOfDirectory()
         return
@@ -105,12 +105,11 @@ def showMovies(sSearch = ''):
     oGui = cGui()
 
     if sSearch:
-        sUrl = sSearch.replace(' ', '+') + '&do=search&subaction=search'
-        oRequestHandler = cRequestHandler(sUrl)
+        sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler = cRequestHandler(sUrl)
 
     sHtmlContent = oRequestHandler.request()
     sPattern = 'movie-item">\s*<a href="([^"]+)">\s*<h3>([^<]*)</h3>.+?<li style=".+?">([^<]*)<.+?">([^<]*)<.+?">([^<]*)<.+?src="([^"]+)"'
