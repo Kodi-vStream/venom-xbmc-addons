@@ -1,13 +1,13 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 #
 # author : Djeman
 # Updated by Shani-08 (https://github.com/Shani-08/ShaniXBMCWork2)
-
 import re
+
 
 class AADecoder(object):
     def __init__(self, aa_encoded_data):
-        self.encoded_str = aa_encoded_data.replace('/*´∇｀*/','')
+        self.encoded_str = aa_encoded_data.replace('/*´∇｀*/', '')
 
         self.b = ["(c^_^o)", "(ﾟΘﾟ)", "((o^_^o) - (ﾟΘﾟ))", "(o^_^o)",
                   "(ﾟｰﾟ)", "((ﾟｰﾟ) + (ﾟΘﾟ))", "((o^_^o) +(o^_^o))", "((ﾟｰﾟ) + (o^_^o))",
@@ -57,15 +57,15 @@ class AADecoder(object):
                 for i in range(len(self.b)):
                     enc_char = enc_char.replace(self.b[i], str(i))
 
-                startpos=0
-                findClose=True
-                balance=1
-                result=[]
+                startpos = 0
+                findClose = True
+                balance = 1
+                result = []
                 if enc_char.startswith('('):
                     l = 0
 
                     for t in enc_char[1:]:
-                        l+=1
+                        l += 1
                         if findClose and t == ')':
                             balance -= 1
                             if balance == 0:
@@ -79,7 +79,6 @@ class AADecoder(object):
                             continue
                         elif t == '(':
                             balance += 1
-
 
                 if result is None or len(result) == 0:
                     return ""
@@ -98,34 +97,32 @@ class AADecoder(object):
 
         return str_char
 
-
-
     def decode_digit(self, enc_int, radix):
 
-        #enc_int = enc_int.replace('(ﾟΘﾟ)', '1').replace('(ﾟｰﾟ)', '4').replace('(c^_^o)', '0').replace('(o^_^o)', '3')
+        # enc_int = enc_int.replace('(ﾟΘﾟ)', '1').replace('(ﾟｰﾟ)', '4').replace('(c^_^o)', '0').replace('(o^_^o)', '3')
 
         rr = '(\(.+?\)\))\+'
         rerr = enc_int.split('))+')
         v = ''
 
-        #new mode
-        if (True):
+        # new mode
+        if True:
 
             for c in rerr:
 
-                if len(c)>0:
+                if len(c) > 0:
                     if c.strip().endswith('+'):
                         c = c.strip()[:-1]
 
-                    startbrackets=len(c)-len(c.replace('(', ''))
-                    endbrackets=len(c)-len(c.replace(')', ''))
+                    startbrackets = len(c)-len(c.replace('(', ''))
+                    endbrackets = len(c)-len(c.replace(')', ''))
 
-                    if startbrackets>endbrackets:
-                        c += ')'*startbrackets-endbrackets
+                    if startbrackets > endbrackets:
+                        c += ')' * startbrackets-endbrackets
 
-                    #fh = open('c:\\test.txt', "w")
-                    #fh.write(c)
-                    #fh.close()
+                    # fh = open('c:\\test.txt', "w")
+                    # fh.write(c)
+                    # fh.close()
 
                     c = c.replace('!+[]', '1')
                     c = c.replace('-~', '1+')
@@ -201,7 +198,6 @@ class AADecoder(object):
                 enc_char = data[:data.find(begin_char)]
                 data = data[len(enc_char):]
 
-
             radix = 8
             # Detect radix 16 for utf8 char
             if enc_char.find(alt_char) == 0:
@@ -223,11 +219,12 @@ class AADecoder(object):
 
         return out
 
-#version 2 si l'autre fonctionne pas.
-#https://github.com/alfa-addon/addon/blob/master/plugin.video.alfa/lib/aadecode.py
+# version 2 si l'autre fonctionne pas.
+# https://github.com/alfa-addon/addon/blob/master/plugin.video.alfa/lib/aadecode.py
 # ------------------------------------------------------------
 # Modified by jsergio
-#
+
+
 def decodeAA(text):
     text = re.sub(r"\s+|/\*.*?\*/", "", text)
     data = text.split("+(ﾟДﾟ)[ﾟoﾟ]")[1]
@@ -272,8 +269,10 @@ def toStringCases(txt_result):
     if ".toString(" in txt_result:
         if "+(" in txt_result:
             m3 = True
-            try: sum_base = "+" + re.search(".toString...(\d+).", txt_result, re.DOTALL).groups(1)
-            except: sum_base = ""
+            try:
+                sum_base = "+" + re.search(".toString...(\d+).", txt_result, re.DOTALL).groups(1)
+            except:
+                sum_base = ""
             txt_pre_temp = re.findall("..(\d),(\d+).", txt_result, re.DOTALL)
             txt_temp = [(n, b) for b, n in txt_pre_temp]
         else:
