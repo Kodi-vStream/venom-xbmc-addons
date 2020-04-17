@@ -1,6 +1,6 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-#Venom.
+# Venom.
 from resources.lib.db import cDb
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
@@ -8,23 +8,24 @@ from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.comaddon import dialog, addon, xbmc
-import urllib
+from resources.lib.util import UnquotePlus
 
 SITE_IDENTIFIER = 'cFav'
 SITE_NAME = 'Fav'
+
 
 class cFav:
 
     DIALOG = dialog()
     ADDON = addon()
 
-    #effacement direct par menu
+    # effacement direct par menu
     def delBookmarksMenu(self):
         if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
             cDb().del_bookmark()
         return True
 
-    #avec confirmation pour les autres
+    # avec confirmation pour les autres
     def delBookmarks(self):
         if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
             cDb().del_bookmark()
@@ -33,7 +34,7 @@ class cFav:
     def getBookmarks(self):
         oGui = cGui()
 
-        #Comptages des marque-pages
+        # Comptages des marque-pages
         row = cDb().get_bookmark()
 
         compt = [0, 0, 0, 0, 0, 0, 0, 0]
@@ -73,7 +74,7 @@ class cFav:
         oOutputParameterHandler.addParameter('sAll', 'true')
         oGui.addDir(SITE_IDENTIFIER, 'delBookmarks', self.ADDON.VSlang(30209), 'trash.png', oOutputParameterHandler)
 
-        #A virer dans les versions future, pour le moment c'est juste pr supprimer les liens bugges
+        # A virer dans les versions future, pour le moment c'est juste pr supprimer les liens bugges
         if compt[0] > 0:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sCat', '0')
@@ -83,10 +84,7 @@ class cFav:
 
     def getFav(self):
         oGui = cGui()
-
         oInputParameterHandler = cInputParameterHandler()
-
-        #aParams = oInputParameterHandler.getAllParameter()
 
         row = cDb().get_bookmark()
 
@@ -110,7 +108,7 @@ class cFav:
                 thumbnail = data[6]
 
             try:
-                siteurl = urllib.unquote_plus(data[2])
+                siteurl = UnquotePlus(data[2])
                 site = data[3]
                 function = data[4]
                 cat = data[5]
@@ -124,7 +122,7 @@ class cFav:
                 oOutputParameterHandler.addParameter('sMovieTitle', title)
                 oOutputParameterHandler.addParameter('searchtext', title)
                 oOutputParameterHandler.addParameter('sThumbnail', thumbnail)
-                #Dans ajouter source c'est bien sThumb donc...
+                # Dans ajouter source c'est bien sThumb donc...
                 oOutputParameterHandler.addParameter('sThumb', thumbnail)
 
                 if (function == 'play'):
@@ -153,15 +151,12 @@ class cFav:
                 oGuiElement.setThumbnail(thumbnail)
                 oGuiElement.setFanart(fanart)
 
-                #self.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
                 oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler, 'cFav', 'cFav', 'delBookmarksMenu', self.ADDON.VSlang(30412))
 
                 if (function == 'play'):
                     oGui.addHost(oGuiElement, oOutputParameterHandler)
                 else:
                     oGui.addFolder(oGuiElement, oOutputParameterHandler)
-
-                    #oGui.addFav(site, function, title, 'mark.png', thumbnail, fanart, oOutputParameterHandler)
 
             except:
                 oGui.addDir(SITE_IDENTIFIER, 'DoNothing', '[COLOR red]ERROR[/COLOR]', 'films.png', oOutputParameterHandler)
@@ -191,15 +186,15 @@ class cFav:
         meta['fav'] = oInputParameterHandler.getValue('sFav')
         meta['cat'] = oInputParameterHandler.getValue('sCat')
 
-        #ListItem.title contient des code de couleurs, sMovieTitle le titre en plus "propre"
-        #Inutile a la prochaine version, car plus de couleurs a la base.
+        # ListItem.title contient des code de couleurs, sMovieTitle le titre en plus "propre"
+        # Inutile a la prochaine version, car plus de couleurs a la base.
         if oInputParameterHandler.getValue('sMovieTitle'):
             meta['title'] = oInputParameterHandler.getValue('sMovieTitle')
         else:
             meta['title'] = xbmc.getInfoLabel('ListItem.title')
 
         meta['icon'] = xbmc.getInfoLabel('ListItem.Art(thumb)')
-        meta['fanart'] =  xbmc.getInfoLabel('ListItem.Art(fanart)')
+        meta['fanart'] = xbmc.getInfoLabel('ListItem.Art(fanart)')
         try:
             cDb().insert_bookmark(meta)
         except:
