@@ -224,7 +224,7 @@ def decodeur1(Html):
                                 if j == '360' or j == '480' or j == '720' or j == '1080' :
                                     qual = j
 
-                            if langFre and qual:
+                            if langFre and qual and qual not in qua_list:
                                 qua_list.append(qual)
 
 
