@@ -18,7 +18,7 @@ URL_MAIN = 'https://filmstreamvk.bz/'
 
 MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
-MOVIE_SERIE_VIEWS = (URL_MAIN + 'tendance/', 'showMovies')
+MOVIE_EXCLUS = (URL_MAIN + 'tendance/', 'showMovies')
 
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
 SERIE_EPISODES = (URL_MAIN + 'episodes/', 'showMovies')
@@ -26,6 +26,7 @@ SERIE_NETFLIX = (URL_MAIN + 'network/netflix/', 'showMovies')
 SERIE_AMAZON = (URL_MAIN + 'network/amazon/', 'showMovies')
 SERIE_DISNEY = (URL_MAIN + 'network/disney/', 'showMovies')
 SERIE_APPLE = (URL_MAIN + 'network/apple-tv/', 'showMovies')
+SERIE_CANAL = (URL_MAIN + 'network/canal/', 'showMovies')
 SERIE_YOUTUBE = (URL_MAIN + 'network/youtube-premium/', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
@@ -48,14 +49,14 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuSeries', 'Séries', 'series.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_SERIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_SERIE_VIEWS[1], 'Tendance', 'news.png', oOutputParameterHandler)
-
     oGui.setEndOfDirectory()
 
 def showMenuFilms():
     oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_EXCLUS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_EXCLUS[1], 'Films (Populaire)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
@@ -74,29 +75,34 @@ def showMenuSeries():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_EPISODES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_EPISODES[1], 'Séries (Episodes)', 'news.png', oOutputParameterHandler)
+#     Inutilisable
+#     oOutputParameterHandler = cOutputParameterHandler()
+#     oOutputParameterHandler.addParameter('siteUrl', SERIE_EPISODES[0])
+#     oGui.addDir(SITE_IDENTIFIER, SERIE_EPISODES[1], 'Séries (Episodes)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NETFLIX[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NETFLIX[1], 'Séries (Netflix)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_AMAZON[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_AMAZON[1], 'Séries (Amazon Prime)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_CANAL[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_CANAL[1], 'Séries (Canal+)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_DISNEY[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_DISNEY[1], 'Séries (Disney+)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_AMAZON[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_AMAZON[1], 'Séries (Amazon)', 'news.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_APPLE[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_APPLE[1], 'Séries (Apple)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_APPLE[1], 'Séries (Apple TV+)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_YOUTUBE[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_YOUTUBE[1], 'Séries (Youtube-prenium)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_YOUTUBE[1], 'Séries (Youtube Originals)', 'news.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -105,7 +111,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText
+        sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -145,12 +151,12 @@ def showMovies(sSearch = ''):
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     if sSearch:
-        sUrl = sSearch.replace(' ', '+')
-        sPattern = '<div class="image">.+?<a href="([^"]+)">\s*<img src="([^"]+)" alt="([^"]+)".+?<p>(.+?)<'
+        sUrl = sSearch
+        sPattern = '<div class="image">.*?<a href="([^"]+)">\s*<img src="([^"]+)" alt="([^"]+)".+?<p>(.+?)<'
     elif 'episodes' in sUrl:
-        sPattern = '<div class="poster">.+?<img src="([^"]+)" alt="(.+?)".+?<a href="([^"]+)">'
+        sPattern = '<div class="poster">.*?<img src="([^"]+)" alt="(.+?)".+?<a href="([^"]+)">'
     else:
-        sPattern = '<div class="poster">.+?<img src="([^"]+)".+?<a href="([^"]+)" title="([^"]+)".+?class="texto">([^<]+)'
+        sPattern = '<div class="poster"> *<img src="([^"]+)".+?<a href="([^"]+)" *title="([^"]+)".+?class="texto">([^<]+)'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -174,6 +180,7 @@ def showMovies(sSearch = ''):
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[2]) == 0:
                     continue
 
+            sDesc = ''
             if sSearch:
                 sThumb = aEntry[1]
                 sUrl = aEntry[0]
@@ -189,8 +196,8 @@ def showMovies(sSearch = ''):
                 sTitle = aEntry[2].replace('streaming', ' ')
                 sDesc = aEntry[3]
 
-            if 'episodes' not in sUrl:
-                sDesc = unicode(sDesc, 'utf-8') # converti en unicode
+            if sDesc:
+                sDesc = cUtil().unescape(sDesc .decode('utf8'))
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -217,7 +224,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<div class="pagination">.+?<a href="([^"]+)"'
+    sPattern = '\'arrow_pag\' *href="([^"]+)"><i id=\'nextpagination\''
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
