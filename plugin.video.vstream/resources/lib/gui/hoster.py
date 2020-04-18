@@ -176,7 +176,7 @@ class cHosterGui:
         if ('playvidto' in sHostName):
             return self.getHoster('vidto')
         #vidtodo et clone
-        if ('vidtodo' in sHostName):
+        if ('vidtodo.' in sHostName) or ('vixtodo.' in sHostName):
             return self.getHoster('vidtodo')
         if ('viddoto' in sHostName):
             return self.getHoster('vidtodo')
