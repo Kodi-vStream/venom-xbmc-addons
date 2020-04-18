@@ -18,7 +18,7 @@ URL_MAIN = 'https://filmstreamvk.bz/'
 
 MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
-MOVIE_SERIE_VIEWS = (URL_MAIN + 'tendance/', 'showMovies')
+MOVIE_EXCLUS = (URL_MAIN + 'tendance/', 'showMovies')
 
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
 SERIE_EPISODES = (URL_MAIN + 'episodes/', 'showMovies')
@@ -48,14 +48,14 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuSeries', 'Séries', 'series.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_SERIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_SERIE_VIEWS[1], 'Tendance', 'news.png', oOutputParameterHandler)
-
     oGui.setEndOfDirectory()
 
 def showMenuFilms():
     oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_EXCLUS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_EXCLUS[1], 'Films (Populaire)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
@@ -105,7 +105,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText
+        sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -145,12 +145,12 @@ def showMovies(sSearch = ''):
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     if sSearch:
-        sUrl = sSearch.replace(' ', '+')
-        sPattern = '<div class="image">.+?<a href="([^"]+)">\s*<img src="([^"]+)" alt="([^"]+)".+?<p>(.+?)<'
+        sUrl = sSearch
+        sPattern = '<div class="image">.*?<a href="([^"]+)">\s*<img src="([^"]+)" alt="([^"]+)".+?<p>(.+?)<'
     elif 'episodes' in sUrl:
-        sPattern = '<div class="poster">.+?<img src="([^"]+)" alt="(.+?)".+?<a href="([^"]+)">'
+        sPattern = '<div class="poster">.*?<img src="([^"]+)" alt="(.+?)".+?<a href="([^"]+)">'
     else:
-        sPattern = '<div class="poster">.+?<img src="([^"]+)".+?<a href="([^"]+)" title="([^"]+)".+?class="texto">([^<]+)'
+        sPattern = '<div class="poster"> *<img src="([^"]+)".+?<a href="([^"]+)" *title="([^"]+)".+?class="texto">([^<]+)'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -217,7 +217,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<div class="pagination">.+?<a href="([^"]+)"'
+    sPattern = '\'arrow_pag\' *href="([^"]+)"><i id=\'nextpagination\''
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
