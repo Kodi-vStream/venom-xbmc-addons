@@ -277,15 +277,15 @@ msgid "Configure UrlResolver"
 msgstr ""
 
 msgctxt "#30068"
-msgid "WARNING: vStream does not manage this part, [CR] remember to deactivate it if the videos no longer work."
+msgid "WARNING: vStream does not manage this part,[CR] remember to deactivate it if the videos no longer work."
 msgstr ""
 
 msgctxt "#30069"
-msgid "Unless you have a premium link generator, [CR] checking this box will bring you more problems than advantages."
+msgid "Unless you have a premium link generator,[CR] checking this box will bring you more problems than advantages."
 msgstr ""
 
 msgctxt "#30070"
-msgid "Choose your sources click OK [CR] - To validate the modifications click again on OK"
+msgid "Choose your sources click OK[CR]- To validate the modifications click again on OK"
 msgstr ""
 
 msgctxt "#30071"
@@ -352,12 +352,60 @@ msgctxt "#30086"
 msgid "Download Started"
 msgstr ""
 
+msgctxt "#30087"
+msgid "Clear Cache vStream, Error"
+msgstr ""
+
 msgctxt "#30088"
 msgid "Visual search"
 msgstr ""
 
+msgctxt "#30089"
+msgid "Clear vStream Cache, Successful[CR](Important relaunch vStream)"
+msgstr ""
+
+msgctxt "#30090"
+msgid "Suppression Database, Successful[CR] (Important relaunch vStream)"
+msgstr ""
+
+msgctxt "#30091"
+msgid "Suppression Database, Error"
+msgstr ""
+
+msgctxt "#30092"
+msgid "Clear Kodi Cache, Successful[CR](Important relaunch Kodi)"
+msgstr ""
+
+msgctxt "#30093"
+msgid "Clear Kodi Cache, Error"
+msgstr ""
+
 msgctxt "#30094"
 msgid "Select your Sources"
+msgstr ""
+
+msgctxt "#30095"
+msgid "Clear Archive_cache Cache, Successful[CR](Important relaunch Kodi)"
+msgstr ""
+
+msgctxt "#30096"
+msgid "Clear Archive_cache Cache, Error"
+msgstr ""
+
+msgctxt "#30097"
+msgid "This code must be transmitted when you open an Issue, please note it:"
+msgstr ""
+
+msgctxt "#30098"
+msgid "Are you sure? This will erase all thumbnails"
+msgstr ""
+
+msgctxt "#30099"
+msgid "Import/Export Database, Successful"
+msgstr ""
+
+msgctxt "#30100"
+msgid "Import/Export Database, Error"
 msgstr ""
 
 msgctxt "#30101"
@@ -394,6 +442,14 @@ msgstr ""
 
 msgctxt "#30109"
 msgid "Children"
+msgstr ""
+
+msgctxt "#30110"
+msgid "Database to be delete"
+msgstr ""
+
+msgctxt "#30111"
+msgid ""
 msgstr ""
 
 msgctxt "#30112"
