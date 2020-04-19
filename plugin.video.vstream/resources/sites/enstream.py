@@ -7,15 +7,16 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
+from resources.lib.util import Unquote
 
 SITE_IDENTIFIER = 'enstream'
 SITE_NAME = 'Enstream'
-SITE_DESC = 'Regarder, Voir Films En Streaming VF 100% Gratuit.'
+SITE_DESC = 'Regarder tous vos films streaming complets, gratuit et illimité'
 
 URL_MAIN = 'https://ww1.enstream.co/' 
 
 FUNCTION_SEARCH = 'showMovies'
-URL_SEARCH = (URL_MAIN + 'tags/', FUNCTION_SEARCH)
+URL_SEARCH = ('', FUNCTION_SEARCH)
 URL_SEARCH_MOVIES = (URL_SEARCH[0], FUNCTION_SEARCH)
 
 MOVIE_MOVIE = (True, 'load')
@@ -40,16 +41,16 @@ def load():
     
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sSearchText = sSearchText.replace(' ', '+')
-        sUrl = URL_SEARCH[0] + sSearchText
-        showMovies(sUrl)
+        showMovies(sSearchText)
         oGui.setEndOfDirectory()
         return
+
 
 def showGenres():
     oGui = cGui()
@@ -86,28 +87,32 @@ def showGenres():
     oGui.setEndOfDirectory()
 
 
-
 def showMovies(sSearch = ''):
     oGui = cGui()
-    oParser = cParser()
     if sSearch:
-        sUrl = sSearch
-        oRequest = cRequestHandler(sUrl)
-        sHtmlContent = oRequest.request()
+        sUrl = URL_MAIN + 'search.php'
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+        oRequestHandler.addParameters('q', Unquote(sSearch))
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
+        oRequestHandler = cRequestHandler(sUrl)
 
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
+    oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
+    sHtmlContent = oRequestHandler.request() 
 
        
     sHtmlContent = sHtmlContent
     oParser = cParser()
 
-    sPattern = 'film-uno"><a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)".+?short-story">([^<]+)'
-    if 'genre/' in sUrl :
-      sPattern = 'film-uno"><a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)"'
+    if sSearch:
+        sPattern = '<a href="([^"]+)".+?url\((.+?)\).+?<div class="title"> (.+?) </div>'
+    elif 'genre/' in sUrl :
+        sPattern = 'film-uno"><a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)"'
+    else:
+        sPattern = 'film-uno"><a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)".+?short-story">([^<]+)'
+
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -128,9 +133,6 @@ def showMovies(sSearch = ''):
             sDesc = ''
             if len(aEntry)>3:
                 sDesc = aEntry[3]
-            
-            
-            
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -159,6 +161,8 @@ def __checkForNextPage(sHtmlContent):
         return URL_MAIN[:-1] + aResult[1][0]
 
     return False
+
+
 def showHoster():
     oGui = cGui()
     oParser = cParser()
@@ -173,7 +177,6 @@ def showHoster():
 
     
     sPattern = 'data-url="([^"]+)".+?data-code="([^"]+)".+?domain=([^"]+).+?mobile">([^<]+)'
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -215,10 +218,6 @@ def showHostersLinks():
     referer = oInputParameterHandler.getValue('referer')
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('Referer', referer)
-   
-    
-       
-    
 
     oRequestHandler.request()
     sHosterUrl = oRequestHandler.getRealUrl()
