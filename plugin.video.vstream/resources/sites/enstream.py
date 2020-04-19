@@ -6,7 +6,6 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
 from resources.lib.util import Unquote
 
 SITE_IDENTIFIER = 'enstream'
@@ -119,13 +118,7 @@ def showMovies(sSearch = ''):
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sUrl = aEntry[0]
             sThumb = aEntry[1]
             sTitle = aEntry[2]
@@ -139,8 +132,6 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addMovie(SITE_IDENTIFIER, 'showHoster', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
     if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
@@ -174,9 +165,8 @@ def showHoster():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
     
-    sPattern = 'data-url="([^"]+)".+?data-code="([^"]+)".+?domain=([^"]+).+?mobile">([^<]+)'
+    sPattern = 'data-url="([^"]+)".+?data-code="([^"]+)".+?mobile">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -187,12 +177,12 @@ def showHoster():
 
             sDataUrl = aEntry[0]
             sDataCode = aEntry[1]
-            lienhost = aEntry[2]
-            sHost = aEntry[3]
+            sHost = aEntry[2]
             sDesc = ''
+            
             # filtrage des hosters
-            #oHoster = cHosterGui().checkHoster(sHost)
-            if (sHost=='ENSTREAM'):
+            oHoster = cHosterGui().checkHoster(sHost)
+            if not oHoster:
                 continue
 
             sTitle = ('%s  [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
