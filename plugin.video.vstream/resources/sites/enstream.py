@@ -101,10 +101,6 @@ def showMovies(sSearch = ''):
     oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
     sHtmlContent = oRequestHandler.request() 
 
-       
-    sHtmlContent = sHtmlContent
-    oParser = cParser()
-
     if sSearch:
         sPattern = '<a href="([^"]+)".+?url\((.+?)\).+?<div class="title"> (.+?) </div>'
     elif 'genre/' in sUrl :
@@ -112,6 +108,7 @@ def showMovies(sSearch = ''):
     else:
         sPattern = 'film-uno"><a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)".+?short-story">([^<]+)'
 
+    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):

@@ -1,15 +1,15 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-import re
-import urllib, urllib2
 import htmlentitydefs
+import re
 import unicodedata
+import urllib
+import urllib2
+# function util n'utilise pas xbmc, xbmcgui, xbmcaddon ect...
 
-#function util n'utilise pas xbmc, xbmcgui, xbmcaddon ect...
-
-#reste a transformer la class en fonction distante.
 
 class cUtil:
+    # reste a transformer la class en fonction distante.
 
     def CheckOrd(self, label):
         count = 0
@@ -32,29 +32,29 @@ class cUtil:
         str1 = str1.replace('+', ' ').replace('%20', ' ')
         str1 = str1.lower()
         str2 = str2.lower()
+
         try:
             str1 = unicode(str1, 'utf-8')
         except:
             pass
+
         try:
             str2 = unicode(str2, 'utf-8')
         except:
             pass
+
         str1 = unicodedata.normalize('NFKD', str1).encode('ASCII', 'ignore')
         str2 = unicodedata.normalize('NFKD', str2).encode('ASCII', 'ignore')
-
-        #xbmc.log(str1 + ' ---- ' + str2, xbmc.LOGNOTICE)
 
         i = 0
         for part in str1.split(' '):
             if (part in str2) and (part not in Ignoreliste):
-                i = i + 1
+                i += 1
         return i
 
-    def removeHtmlTags(self, sValue, sReplace = ''):
+    def removeHtmlTags(self, sValue, sReplace=''):
         p = re.compile(r'<.*?>')
         return p.sub(sReplace, sValue)
-
 
     def formatTime(self, iSeconds):
         iSeconds = int(iSeconds)
@@ -69,21 +69,20 @@ class cUtil:
 
         return str(iMinutes) + ':' + str(iSeconds)
 
-
     def DecoTitle2(self, string):
 
-        #on vire ancienne deco en cas de bug
+        # on vire ancienne deco en cas de bug
         string = re.sub('\[\/*COLOR.*?\]', '', str(string))
 
-        #pr les tag Crochet
+        # pr les tag Crochet
         string = re.sub('([\[].+?[\]])',' [COLOR coral]\\1[/COLOR] ', string)
-        #pr les tag parentheses
+        # pr les tag parentheses
         string = re.sub('([\(](?![0-9]{4}).{1,7}[\)])', ' [COLOR coral]\\1[/COLOR] ', string)
-        #pr les series
+        # pr les series
         string = self.FormatSerie(string)
         string = re.sub('(?i)(.*) ((?:[S|E][0-9\.\-\_]+){1,2})', '\\1 [COLOR coral]\\2[/COLOR] ', string)
 
-        #vire doubles espaces
+        # vire doubles espaces
         string = re.sub(' +', ' ', string)
 
         return string
@@ -106,44 +105,43 @@ class cUtil:
                     text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
                 except KeyError:
                     pass
-            return text # leave as is
+            return text  # leave as is
         return re.sub('&#?\w+;', fixup, text)
 
-
     def CleanName(self, name):
-        #vire accent et '\'
+        # vire accent et '\'
         try:
-            name = unicode(name, 'utf-8')#converti en unicode pour aider aux convertions
+            name = unicode(name, 'utf-8')  # converti en unicode pour aider aux convertions
         except:
             pass
         name = unicodedata.normalize('NFD', name).encode('ascii', 'ignore').decode('unicode_escape')
-        name = name.encode('utf-8') #on repasse en utf-8
+        name = name.encode('utf-8')  # on repasse en utf-8
 
-        #on cherche l'annee
+        # on cherche l'annee
         annee = ''
         m = re.search('(\([0-9]{4}\))', name)
         if m:
             annee = str(m.group(0))
             name = name.replace(annee, '')
 
-        #vire tag
+        # vire tag
         name = re.sub('[\(\[].+?[\)\]]', '', name)
-        #les apostrophes remplacer par des espaces
+        # les apostrophes remplacer par des espaces
         name = name.replace("'", " ")
-        #vire caractere special
-        #name = re.sub('[^a-zA-Z0-9 ]', '', name)
-        #Modif du 15/12 caractere special
+        # vire caractere special
+        # name = re.sub('[^a-zA-Z0-9 ]', '', name)
+        # Modif du 15/12 caractere special
         name = re.sub('[^a-zA-Z0-9 : -]', '', name)
-        #tout en minuscule
+        # tout en minuscule
         name = name.lower()
-        #vire espace double
+        # vire espace double
         name = re.sub(' +', ' ', name)
 
-        #vire espace a la fin
+        # vire espace a la fin
         if name.endswith(' '):
             name = name[:-1]
 
-        #on remet l'annee
+        # on remet l'annee
         if annee:
             name = name + ' ' + annee
 
@@ -151,35 +149,33 @@ class cUtil:
 
     def FormatSerie(self, string):
 
-        #xbmc.log(string)
-
-        #vire doubles espaces
+        # vire doubles espaces
         string = re.sub(' +', ' ', string)
 
-        #vire espace a la fin
+        # vire espace a la fin
         if string.endswith(' '):
             string = string[:-1]
 
-        #vire espace au debut
+        # vire espace au debut
         if string.startswith(' '):
             string = string[1:]
 
-        #convertion unicode
+        # convertion unicode
         string = string.decode('utf-8')
 
         SXEX = ''
-        #m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))(?:$| [^a\u00E0])', string, re.UNICODE)
+        # m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))(?:$| [^a\u00E0])', string, re.UNICODE)
         m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))', string, re.UNICODE)
         if m:
-            #ok y a des episodes
+            # ok y a des episodes
             string = string.replace(m.group(1), '')
-            #SXEX + '%02d' % int(m.group(2))
+            # SXEX + '%02d' % int(m.group(2))
             SXEX = m.group(2)
             if len(SXEX) < 2:
                 SXEX = '0' + SXEX
             SXEX = 'E' + SXEX
 
-            #pr les saisons
+            # pr les saisons
             m = re.search('(?i)(s(?:aison )*([0-9]+))', string)
             if m:
                 string = string.replace(m.group(1), '')
@@ -187,7 +183,7 @@ class cUtil:
             string = string + ' ' + SXEX
 
         else:
-            #pas d'episode mais y a t il des saisons ?
+            # pas d'episode mais y a t il des saisons ?
             m = re.search('(?i)(s(?:aison )*([0-9]+))(?:$| )', string)
             if m:
                 string = string.replace(m.group(1), '')
@@ -195,7 +191,7 @@ class cUtil:
 
                 string = string + ' ' + SXEX
 
-        #reconvertion utf-8
+        # reconvertion utf-8
         return string.encode('utf-8')
 
     def EvalJSString(self, s):
@@ -213,32 +209,39 @@ class cUtil:
             return 0
 
 
+"""
+# ***********************
+# Fonctions lights
+# ***********************
+# Pour les avoirs
+# from resources.lib import util
+# puis util.VSlog('test')
+"""
 
-#***********************
-#Fonctions lights
-#***********************
-
-#Pour les avoir
-#from resources.lib import util
-#puis util.VSlog('test')
 
 def Unquote(sUrl):
     return urllib.unquote(sUrl)
 
+
 def Quote(sUrl):
     return urllib.quote(sUrl)
+
 
 def UnquotePlus(sUrl):
     return urllib.unquote_plus(sUrl)
 
+
 def QuotePlus(sUrl):
     return urllib.quote_plus(sUrl)
+
 
 def QuoteSafe(sUrl):
     return urllib.quote(sUrl, safe = ':/')
 
+
 def urlEncode(sUrl):
     return urllib.urlencode(sUrl)
+
 
 def Noredirection():
     class NoRedirection(urllib2.HTTPErrorProcessor):
@@ -250,7 +253,8 @@ def Noredirection():
     opener = urllib2.build_opener(NoRedirection)
     return opener
 
-#deprecier utiliser comaddon dialog()
+
+# deprecier utiliser comaddon dialog()
 # def updateDialogSearch(dialog, total, site):
 #     global COUNT
 #     COUNT += 1
@@ -258,16 +262,16 @@ def Noredirection():
 #     dialog.update(iPercent, 'Chargement: ' + str(site))
 
 
-
 # def VStranslatePath(location):
 #     #ex util.VStranslatePath('special://logpath/') > http://kodi.wiki/view/Special_protocol
 #     #d'apres Kodi ne doit pas etre utiliser sur les special://
 #     return xbmc.translatePath(location).decode('utf-8')
 
+
 def GetGooglUrl(url):
     if 'http://goo.gl' in url:
         try:
-            headers = {'User-Agent' : 'Mozilla 5.10', 'Host' : 'goo.gl', 'Connection' : 'keep-alive'}
+            headers = {'User-Agent': 'Mozilla 5.10', 'Host': 'goo.gl', 'Connection': 'keep-alive'}
             request = urllib2.Request(url, None, headers)
             reponse = urllib2.urlopen(request)
             url = reponse.geturl()
@@ -275,11 +279,12 @@ def GetGooglUrl(url):
             pass
     return url
 
+
 def GetTinyUrl(url):
     if not 'tinyurl' in url:
         return url
 
-    #Lien deja connu ?
+    # Lien deja connu ?
     if '://tinyurl.com/h7c9sr7' in url:
         url = url.replace('://tinyurl.com/h7c9sr7/', '://vidwatch.me/')
     elif '://tinyurl.com/jxblgl5' in url:
@@ -305,10 +310,9 @@ def GetTinyUrl(url):
     elif '://tinyurl.com/kt3owzh' in url:
         url = url.replace('://tinyurl.com/kt3owzh/', '://estream.to/')
 
-    #On va chercher le vrai lien
+    # On va chercher le vrai lien
     else:
-
-        #VSlog('Decodage lien tinyurl : ' + str(url))
+        # VSlog('Decodage lien tinyurl : ' + str(url))
 
         class NoRedirection(urllib2.HTTPErrorProcessor):
             def http_response(self, request, response):

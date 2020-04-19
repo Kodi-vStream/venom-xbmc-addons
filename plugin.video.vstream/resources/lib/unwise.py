@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
+
 """
     urlresolver XBMC Addon
     Copyright (C) 2013 Bstrdsmkr
@@ -19,14 +22,13 @@
     http://playonscripts.com/?w=files&id=34
     
     usage:
-
     html_with_unpacked_js = unwise_process(html_with_packed_js)
-
 
 Unpacker for w.i.s.e
 """
 
 import re
+
 
 def unwise1(w):
     int1 = 0
@@ -35,6 +37,7 @@ def unwise1(w):
         result = result + chr(int(w[int1:int1 + 2], 36))
         int1 += 2
     return result
+
 
 def unwise(w, i, s, e, wi, ii, si, ei):
     int1 = 0
@@ -84,6 +87,7 @@ def unwise(w, i, s, e, wi, ii, si, ei):
         int1 += 2
     return result
 
+
 def unwise_process(result):
     while True:
         a = re.compile(r';?eval\s*\(\s*function\s*\(\s*w\s*,\s*i\s*,\s*s\s*,\s*e\s*\).+?[\"\']\s*\)\s*\)(?:\s*;)?').search(result)
@@ -110,6 +114,7 @@ def unwise_process(result):
                 result = result.replace(a, unwise(wisestr[0], wisestr[1], wisestr[2], wisestr[3], wiseint[0], wiseint[1], wiseint[2], wiseint[3]))
     return result
 
+
 def resolve_var(HTML, key):  # this should probably be located elsewhere
     key = re.escape(key)
     tmp1 = HTML.replace("\r", "")
@@ -124,7 +129,7 @@ def resolve_var(HTML, key):  # this should probably be located elsewhere
         else:
             key = key.split("\\.")
             if len(key) == 2:
-                tmp2 = re.compile(r'[^\w\.]' + key[0] + '\s*=\s*\{.*[^\w\.]' + key[1] + '\s*\:\s*[\"\'](.*?)[\"\']').search(tmp1)  # for 'vars = { key: "value" }', cloudy
+                tmp2 = re.compile(r'[^\w\.]' + key[0] + '\s*=\s*\{.*[^\w\.]' + key[1] + '\s*\:\s*[\"\'](.*?)[\"\']').search(tmp1)  # for 'vars = {key: "value"}', cloudy
             if tmp2:
                 tmp2 = tmp2.group(1)
             else:
