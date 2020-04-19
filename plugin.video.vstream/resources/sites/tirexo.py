@@ -18,9 +18,18 @@ SITE_NAME = '[COLOR violet]Tirexo (ZT lol)[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
 URL_HOST = 'https://www.zone-warez.com/'
 
+def getURL():
+    oParser = cParser()
+    oRequestHandler = cRequestHandler(URL_HOST)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = '<a class="full-wrap clearfix btn btn-danger" href="([^"]+)">Acc&eacute;der au site</a></div>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    return aResult[1][0]
+
 def GetURL_MAIN():
     ADDON = addon()
-    MemorisedHost = ''
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     Sources = oInputParameterHandler.getValue('function')
@@ -33,9 +42,7 @@ def GetURL_MAIN():
     # quand vstream fabrique une liste de plugin pour menu(load site globalRun and call function search) >> search
     # quand l'url ne contient pas celle déjà enregistrer dans settings et que c'est pas dlprotect on active.
     if not (Sources == 'callpluging' or Sources == 'globalSources' or Sources == 'search') and not ADDON.getSetting('Tirexo')[6:] in sUrl and not 'dl-protect.' in sUrl and not 'zt-protect.' in sUrl:
-        oRequestHandler = cRequestHandler(URL_HOST)
-        sHtmlContent = oRequestHandler.request()
-        MemorisedHost = oRequestHandler.getRealUrl()
+        MemorisedHost = getURL()
         if MemorisedHost is not None and MemorisedHost != '' :
             if not 'cf_chl_jschl_tk' in MemorisedHost:
                 ADDON.setSetting('Tirexo', MemorisedHost)
@@ -48,9 +55,7 @@ def GetURL_MAIN():
     else:
         # si pas de zt dans settings on récup l'url une fois dans le site
         if not ADDON.getSetting('Tirexo') and not (Sources == 'callpluging' or Sources == 'globalSources' or Sources == 'search'):
-            oRequestHandler = cRequestHandler(URL_HOST)
-            sHtmlContent = oRequestHandler.request()
-            MemorisedHost = oRequestHandler.getRealUrl()
+            MemorisedHost = getURL()
             if MemorisedHost is not None and MemorisedHost != '':
                 if not 'cf_chl_jschl_tk' in MemorisedHost:
                     ADDON.setSetting('Tirexo', MemorisedHost)
@@ -769,7 +774,11 @@ def showHostersLink():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        sHosterUrl = aResult[1][0]
+        if not aResult[1][0].startswith('http'):
+            sHosterUrl = "https:" + aResult[1][0]
+        else:
+            sHosterUrl = aResult[1][0]
+            
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
             oHoster.setDisplayName(sMovieTitle)
