@@ -155,7 +155,7 @@ class cHosterGui:
             return self.getHoster('xdrive')
         if ('facebook' in sHostName):
             return self.getHoster('facebook')
-        if ('mixdrop.' in sHostName):
+        if ('mixdrop' in sHostName):
             return self.getHoster('mixdrop')
         if ('mixloads' in sHostName):
             return self.getHoster('mixloads')
@@ -176,7 +176,7 @@ class cHosterGui:
         if ('playvidto' in sHostName):
             return self.getHoster('vidto')
         #vidtodo et clone
-        if ('vidtodo.' in sHostName) or ('vixtodo.' in sHostName):
+        if ('vidtodo' in sHostName) or ('vixtodo' in sHostName):
             return self.getHoster('vidtodo')
         if ('viddoto' in sHostName):
             return self.getHoster('vidtodo')
@@ -235,7 +235,7 @@ class cHosterGui:
             return self.getHoster('vidfast')
         if (('thevideo.' in sHostName) or ('video.tt' in sHostName) or ('vev.io' in sHostName)):
             return self.getHoster('thevideo_me')
-        if ('uqload.' in sHostName):
+        if ('uqload' in sHostName):
             return self.getHoster('uqload')
         if ('letwatch' in sHostName):
             return self.getHoster('letwatch')
@@ -285,7 +285,7 @@ class cHosterGui:
             return self.getHoster('giga')
         if ('vidbom' in sHostName):
             return self.getHoster('vidbom')
-        if ('upvid.' in sHostName):
+        if ('upvid' in sHostName):
             return self.getHoster('upvid')
         if ('cloudvid' in sHostName):
             return self.getHoster('cloudvid')
