@@ -88,6 +88,8 @@
 
         <setting visible="false" id="plugin_dpstreaming" type="bool" label="DP Streaming" default="true"/>
 
+        <setting visible="false" id="plugin_enstream" type="bool" label="Enstream" default="true"/>
+
         <setting visible="false" id="plugin_extreme_down" type="bool" label="ExtremeDown" default="true"/>
 
         <setting visible="false" id="plugin_film_illimit_fr" type="bool" label="Film Illimité" default="true"/>
