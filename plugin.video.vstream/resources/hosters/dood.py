@@ -101,8 +101,6 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent, sPattern)
         url2 = 'https://' + urlDonwload.split('/')[2] + aResult[1][0]
         
-        VSlog(url2)
-        
         oRequest = cRequestHandler(url2)
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Referer', urlDonwload)
