@@ -132,8 +132,6 @@
 
         <setting visible="false" id="plugin_mesfilms" type="bool" label="Mes Films" default="true"/>
 
-        <setting visible="false" id="plugin_monde_des_cartoons" type="bool" label="Le monde des cartoons" default="true"/>
-
         <setting visible="false" id="plugin_neko_sama" type="bool" label="Neko Sama" default="true"/>
 
         <setting visible="false" id="plugin_neuf_docu" type="bool" label="9Docu" default="true"/>
@@ -171,8 +169,6 @@
         <setting visible="false" id="plugin_streamdivx" type="bool" label="StreamDivx" default="true"/>
 
         <setting visible="false" id="plugin_streaming_planet" type="bool" label="Streaming-Planet" default="true"/>
-
-        <setting visible="false" id="plugin_streaming_series_xyz" type="bool" label="Streaming-series.cx" default="true"/>
 
         <setting visible="false" id="plugin_streaming_series" type="bool" label="Streaming-Series" default="true"/>
 
