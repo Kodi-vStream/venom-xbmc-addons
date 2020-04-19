@@ -39,6 +39,7 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
+        self.__sUrl = self.__sUrl.replace("/f/","/e/")
 
     def getUrl(self):
         return self.__sUrl
