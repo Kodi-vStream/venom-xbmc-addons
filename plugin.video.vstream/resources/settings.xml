@@ -202,6 +202,8 @@
 
         <setting visible="false" id="plugin_zone_telechargement_ws" type="bool" label="Zone Téléchargement.ws" default="true"/>
 
+        <setting visible="false" id="plugin_zt_stream" type="bool" label="Zone Téléchargement Stream" default="true"/>
+
         <setting visible="false" id="plugin_zustream" type="bool" label="ZuStream" default="true"/>
     </category>
 
