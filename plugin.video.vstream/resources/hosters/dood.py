@@ -68,7 +68,7 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        #self.__sUrl = self.__sUrl.replace('/e/','/d/')
+        self.__sUrl = self.__sUrl.replace('/d/','/e/')
 
     def checkUrl(self, sUrl):
         return True
@@ -94,11 +94,14 @@ class cHoster(iHoster):
         fin_url = ''.join(random.choice(possible) for _ in range(10))
         
         sPattern = 'return a\+"(\?token=[^"]+)"'
-        fin_url = fin_url + oParser.parse(sHtmlContent, sPattern)[1][0] + str(int(1000*time.time()))
+        d = oParser.parse(sHtmlContent, sPattern)[1][0]
+        fin_url = fin_url + d + str(int(1000*time.time()))
         
         sPattern =  "\$\.get\('([^']+)',"
         aResult = oParser.parse(sHtmlContent, sPattern)
         url2 = 'https://' + urlDonwload.split('/')[2] + aResult[1][0]
+        
+        VSlog(url2)
         
         oRequest = cRequestHandler(url2)
         oRequest.addHeaderEntry('User-Agent', UA)
