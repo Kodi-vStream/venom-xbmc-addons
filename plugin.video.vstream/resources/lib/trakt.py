@@ -31,7 +31,7 @@ API_KEY = '7139b7dace25c7bdf0bd79acf46fb02bd63310548b1f671d88832f75a4ac3dd6'
 API_SECRET = 'bb02b2b0267b045590bc25c21dac21b1c47446a62b792091b3275e9c4a943e74'
 API_VERS = '2'
 
-maxresult = 10
+maxResult = 10
 
 
 class cTrakt:
@@ -169,7 +169,7 @@ class cTrakt:
                 oGui.addDir(SITE_IDENTIFIER, 'getLists', self.ADDON.VSlang(30360), 'trakt.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', URL_API + 'users/me/history?page=1&limit=' + str(maxresult))
+            oOutputParameterHandler.addParameter('siteUrl', URL_API + 'users/me/history?page=1&limit=' + str(maxResult))
             oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30308), 'trakt.png', oOutputParameterHandler)
 
             # oOutputParameterHandler = cOutputParameterHandler()
@@ -236,13 +236,13 @@ class cTrakt:
 
         liste = []
         if sType == 'movie':
-            liste.append( ['%s (%s)' % (self.ADDON.VSlang(30310), result2['movies']['collected'] ), URL_API + 'users/me/collection/movies?page=1&limit=' + str(maxresult)] )
+            liste.append( ['%s (%s)' % (self.ADDON.VSlang(30310), result2['movies']['collected'] ), URL_API + 'users/me/collection/movies?page=1&limit=' + str(maxResult)] )
 
             if self.ADDON.getSetting('trakt_movies_show_watchlist') == 'true':
-                liste.append( [self.ADDON.VSlang(30311), URL_API + 'users/me/watchlist/movies?page=1&limit=' + str(maxresult) ] )
+                liste.append( [self.ADDON.VSlang(30311), URL_API + 'users/me/watchlist/movies?page=1&limit=' + str(maxResult) ] )
 
             if self.ADDON.getSetting('trakt_movies_show_watched') == 'true':
-                liste.append( ['%s (%s)' % (self.ADDON.VSlang(30312), result2['movies']['watched'] ), URL_API + 'users/me/watched/movies?page=1&limit=' + str(maxresult)] )
+                liste.append( ['%s (%s)' % (self.ADDON.VSlang(30312), result2['movies']['watched'] ), URL_API + 'users/me/watched/movies?page=1&limit=' + str(maxResult)] )
 
             if self.ADDON.getSetting('trakt_movies_show_recommended') == 'true':
                 liste.append( [self.ADDON.VSlang(30313), URL_API + 'recommendations/movies'] )
@@ -251,42 +251,42 @@ class cTrakt:
                 liste.append( [self.ADDON.VSlang(30314), URL_API + 'movies/boxoffice'] )
 
             if self.ADDON.getSetting('trakt_movies_show_popular') == 'true':
-                liste.append( [self.ADDON.VSlang(30315), URL_API + 'movies/popular?page=1&limit=' + str(maxresult)] )
+                liste.append( [self.ADDON.VSlang(30315), URL_API + 'movies/popular?page=1&limit=' + str(maxResult)] )
 
             if self.ADDON.getSetting('trakt_movies_show_most_weekly') == 'true':
-                liste.append( [self.ADDON.VSlang(30316), URL_API + 'movies/played/weekly?page=1&limit=' + str(maxresult)] )
+                liste.append( [self.ADDON.VSlang(30316), URL_API + 'movies/played/weekly?page=1&limit=' + str(maxResult)] )
 
             if self.ADDON.getSetting('trakt_movies_show_most_monthly') == 'true':
-                liste.append( [self.ADDON.VSlang(30317), URL_API + 'movies/played/monthly?page=1&limit=' + str(maxresult)] )
+                liste.append( [self.ADDON.VSlang(30317), URL_API + 'movies/played/monthly?page=1&limit=' + str(maxResult)] )
 
             # liste.append( ['historique de Films', URL_API + 'users/me/history/movies'] )
 
         elif sType == 'show':
-            liste.append( ['%s (%s)' % (self.ADDON.VSlang(30310), result2['shows']['collected'] ), URL_API + 'users/me/collection/shows?page=1&limit=' + str(maxresult)] )
+            liste.append( ['%s (%s)' % (self.ADDON.VSlang(30310), result2['shows']['collected'] ), URL_API + 'users/me/collection/shows?page=1&limit=' + str(maxResult)] )
 
             if self.ADDON.getSetting('trakt_tvshows_show_watchlist') == 'true':
-                liste.append( [self.ADDON.VSlang(30311), URL_API + 'users/me/watchlist/shows?page=1&limit=' + str(maxresult) ] )
+                liste.append( [self.ADDON.VSlang(30311), URL_API + 'users/me/watchlist/shows?page=1&limit=' + str(maxResult) ] )
 
             if self.ADDON.getSetting('trakt_tvshows_show_watchlist_seasons') == 'true':
-                liste.append( [self.ADDON.VSlang(30318), URL_API + 'users/me/watchlist/seasons?page=1&limit=' + str(maxresult)] )
+                liste.append( [self.ADDON.VSlang(30318), URL_API + 'users/me/watchlist/seasons?page=1&limit=' + str(maxResult)] )
 
             if self.ADDON.getSetting('trakt_tvshows_show_watchlist_episodes') == 'true':
-                liste.append( [self.ADDON.VSlang(30319), URL_API + 'users/me/watchlist/episodes?page=1&limit=' + str(maxresult)] )
+                liste.append( [self.ADDON.VSlang(30319), URL_API + 'users/me/watchlist/episodes?page=1&limit=' + str(maxResult)] )
 
             if self.ADDON.getSetting('trakt_tvshows_show_watched') == 'true':
-                liste.append( ['%s (%s)' % (self.ADDON.VSlang(30312), result2['movies']['watched']), URL_API + 'users/me/watched/shows?page=1&limit=' + str(maxresult)] )
+                liste.append( ['%s (%s)' % (self.ADDON.VSlang(30312), result2['movies']['watched']), URL_API + 'users/me/watched/shows?page=1&limit=' + str(maxResult)] )
 
             if self.ADDON.getSetting('trakt_tvshows_show_recommended') == 'true':
                 liste.append( [self.ADDON.VSlang(30313), URL_API + 'recommendations/shows'] )
 
             if self.ADDON.getSetting('trakt_tvshows_show_popular') == 'true':
-                liste.append( [self.ADDON.VSlang(30315), URL_API + 'shows/popular?page=1&limit=' + str(maxresult)] )
+                liste.append( [self.ADDON.VSlang(30315), URL_API + 'shows/popular?page=1&limit=' + str(maxResult)] )
 
             if self.ADDON.getSetting('trakt_tvshows_show_most_weekly') == 'true':
-                liste.append( [self.ADDON.VSlang(30316), URL_API + 'shows/played/weekly?page=1&limit=' + str(maxresult)] )
+                liste.append( [self.ADDON.VSlang(30316), URL_API + 'shows/played/weekly?page=1&limit=' + str(maxResult)] )
 
             if self.ADDON.getSetting('trakt_tvshows_show_most_monthly') == 'true':
-                liste.append( [self.ADDON.VSlang(30317), URL_API + 'shows/played/monthly?page=1&limit=' + str(maxresult)] )
+                liste.append( [self.ADDON.VSlang(30317), URL_API + 'shows/played/monthly?page=1&limit=' + str(maxResult)] )
 
             # liste.append( ['Historique de séries', URL_API + 'users/me/history/shows'] )
 
