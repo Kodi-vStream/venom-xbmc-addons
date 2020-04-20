@@ -143,7 +143,7 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = 'class="pagination".+?a href=\'([^"]+?)\''
+    sPattern = 'class=\'Paginaactual\'.+?a href=\'([^"]+?)\''
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         return URL_MAIN[:-1] + aResult[1][0]
