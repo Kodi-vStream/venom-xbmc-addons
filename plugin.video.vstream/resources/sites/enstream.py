@@ -12,7 +12,7 @@ SITE_IDENTIFIER = 'enstream'
 SITE_NAME = 'Enstream'
 SITE_DESC = 'Regarder tous vos films streaming complets, gratuit et illimité'
 
-URL_MAIN = 'https://ww1.enstream.co/' 
+URL_MAIN = 'https://ww1.enstream.co/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = ('', FUNCTION_SEARCH)
@@ -37,7 +37,7 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
-    
+
     oGui.setEndOfDirectory()
 
 
@@ -57,14 +57,15 @@ def showGenres():
     liste = []
     liste.append( ['Action', URL_MAIN + 'genre/action/'] )
     liste.append( ['Animation', URL_MAIN + 'genre/animation/'] )
-    liste.append( ['Arts Martiaux', URL_MAIN + 'arts-martiaux/'] )
     liste.append( ['Aventure', URL_MAIN + 'genre/aventure/'] )
     liste.append( ['Biopic', URL_MAIN + 'genre/biopic/'] )
     liste.append( ['Comédie', URL_MAIN + 'genre/comedie/'] )
+    liste.append( ['Comédie Dramatique', URL_MAIN + 'genre/comedie-dramatique/'] )
     liste.append( ['Comédie Musicale', URL_MAIN + 'genre/comedie-musical/'] )
     liste.append( ['Drame', URL_MAIN + 'genre/drame/'] )
     liste.append( ['Epouvante Horreur', URL_MAIN + 'genre/epouvante-horreur/'] )
     liste.append( ['Espionnage', URL_MAIN + 'genre/espionnage/'] )
+    liste.append( ['Famille', URL_MAIN + 'genre/famille/'] )
     liste.append( ['Fantastique', URL_MAIN + 'genre/fantastique/'] )
     liste.append( ['Guerre', URL_MAIN + 'genre/guerre/'] )
     liste.append( ['Historique', URL_MAIN + 'genre/historique/'] )
@@ -88,6 +89,7 @@ def showGenres():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
+
     if sSearch:
         sUrl = URL_MAIN + 'search.php'
         oRequestHandler = cRequestHandler(sUrl)
@@ -99,11 +101,11 @@ def showMovies(sSearch = ''):
         oRequestHandler = cRequestHandler(sUrl)
 
     oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
-    sHtmlContent = oRequestHandler.request() 
+    sHtmlContent = oRequestHandler.request()
 
     if sSearch:
         sPattern = '<a href="([^"]+)".+?url\((.+?)\).+?<div class="title"> (.+?) </div>'
-    elif 'genre/' in sUrl :
+    elif 'genre/' in sUrl:
         sPattern = 'film-uno"><a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)"'
     else:
         sPattern = 'film-uno"><a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)".+?short-story">([^<]+)'
@@ -116,18 +118,19 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
+
             sUrl = aEntry[0]
             sThumb = aEntry[1]
             sTitle = aEntry[2]
-            
             sDesc = ''
-            if len(aEntry)>3:
+            if len(aEntry) > 3:
                 sDesc = aEntry[3]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+
             oGui.addMovie(SITE_IDENTIFIER, 'showHoster', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     if not sSearch:
@@ -137,7 +140,6 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
 
 
@@ -153,16 +155,15 @@ def __checkForNextPage(sHtmlContent):
 
 def showHoster():
     oGui = cGui()
-    oParser = cParser()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
+    oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
     sPattern = 'data-url="([^"]+)".+?data-code="([^"]+)".+?mobile">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -174,9 +175,9 @@ def showHoster():
 
             sDataUrl = aEntry[0]
             sDataCode = aEntry[1]
-            sHost = aEntry[2]
+            sHost = aEntry[2].capitalize()
             sDesc = ''
-            
+
             # filtrage des hosters
             oHoster = cHosterGui().checkHoster(sHost)
             if not oHoster:
@@ -186,11 +187,11 @@ def showHoster():
             lien = URL_MAIN + 'Players.php?PPl=' + sDataUrl + '&CData=' + sDataCode
 
             oOutputParameterHandler = cOutputParameterHandler()
-
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('siteUrl', lien)
             oOutputParameterHandler.addParameter('referer', sUrl)
+
             oGui.addLink(SITE_IDENTIFIER, 'showHostersLinks', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -209,6 +210,7 @@ def showHostersLinks():
     oRequestHandler.request()
     sHosterUrl = oRequestHandler.getRealUrl()
     oHoster = cHosterGui().checkHoster(sHosterUrl)
+
     if (oHoster != False):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
