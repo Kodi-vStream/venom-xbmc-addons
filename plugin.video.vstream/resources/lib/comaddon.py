@@ -122,16 +122,13 @@ DIALOG2 = None
 
 class empty():
 
-    def VSupdate(self, dialog, total, text = ''):
+    def VSupdate(self, dialog, total, text = '', search = False):
         pass
 
     def iscanceled(self):
         pass
 
     def VSclose(self, dialog):
-        pass
-
-    def VSupdatesearch(self, dialog, total, text = ''):
         pass
 
 class progress(xbmcgui.DialogProgress):
@@ -150,19 +147,14 @@ class progress(xbmcgui.DialogProgress):
             return self
         else: return DIALOG2
 
-    def VSupdate(self, dialog, total, text = ''):
-        if window(10101).getProperty('search') == 'true':
+    def VSupdate(self, dialog, total, text = '', search = False):
+        if not search and window(10101).getProperty('search') == 'true':
             return
         global COUNT
         COUNT += 1
         iPercent = int(float(COUNT * 100) / total)
         dialog.update(iPercent, 'Loading: ' + str(COUNT) + '/' + str(total), text)
 
-    def VSupdatesearch(self, dialog, total, text = ''):
-        global COUNT
-        COUNT += 1
-        iPercent = int(float(COUNT * 100) / total)
-        dialog.update(iPercent, 'Loading: ' + str(COUNT) + '/' + str(total), text)
 
     def VSclose(self, dialog = ''):
         if not dialog and DIALOG2:

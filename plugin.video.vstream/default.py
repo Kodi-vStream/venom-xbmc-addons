@@ -293,67 +293,60 @@ def searchGlobal():
     total = len(aPlugins)
     progress_ = progress().VScreate()
 
-    # kodi 17 vire la fenetre busy qui ce pose au dessus de la barre de Progress
+    # kodi 17 vire la fenetre busy qui se pose au dessus de la barre de Progress
     try:
         xbmc.executebuiltin('Dialog.Close(busydialog)')
     except:
         pass
 
-    window(10101).setProperty('search', 'true')
-
     oGui.addText('globalSearch', addons.VSlang(30081) % sSearchText, 'none.png')
     sSearchText = Quote(sSearchText)
 
-    for count, plugin in enumerate(aPlugins):
-
-        # text = '%s/%s - %s' % ((count + 1), total, plugin['name'])
-        progress_.VSupdatesearch(progress_, total, plugin['name'])
+    count = 0
+    for plugin in aPlugins:
+ 
+        progress_.VSupdate(progress_, total, plugin['name'], True)
         if progress_.iscanceled():
             progress_.close()
             break
-
-        # nom du site
-        oGui.addText(plugin['identifier'], '%s. [COLOR olive]%s[/COLOR]' % ((count + 1), plugin['name']), 'sites/%s.png' % (plugin['identifier']))
-        # recherche import
+ 
+        oGui.searchResults[:] = []  # vider le tableau de résultats pour les récupérer par source
         _pluginSearch(plugin, sSearchText)
 
-    window(10101).setProperty('search', 'false')
-    # progress_.VSclose(progress_)
+        if len(oGui.searchResults) > 0: # Au moins un résultat
+            count += 1
 
-    # affichage
-    total = len(oGui.searchResults)
-    # progress_ = progress().VScreate()
-
-    for count, result in enumerate(oGui.searchResults):
-        # text = '%s/%s - %s' % ((count + 1 / total), total, result['guiElement'].getTitle())
-
-        # if(count == 0):
-        #     cConfig().updateDialogSearch(dialog, total, text,True)
-        # else:
-        #     cConfig().updateDialogSearch(dialog, total, text)
-        progress_.VSupdatesearch(progress_, total, 'Patience...')
-
-        # result['params'].addParameter('VSTRMSEARCH', 'True')
-
-        oGui.addFolder(result['guiElement'], result['params'])
-        # VSlog('%s - %s' % (middle, old_label), xbmc.LOGNOTICE)
+            # nom du site
+            oGui.addText(plugin['identifier'], '%s. [COLOR olive]%s[/COLOR]' % (count, plugin['name']), 'sites/%s.png' % (plugin['identifier']))
+            for result in oGui.searchResults:
+                oGui.addFolder(result['guiElement'], result['params'])
+ 
+    if not count:   # aucune source ne retourne de résultats
+        oGui.addText('globalSearch') # "Aucune information"
 
     progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
-
     return True
 
 
 def _pluginSearch(plugin, sSearchText):
+
+    # Appeler la source en mode Recherche globale
+    window(10101).setProperty('search', 'true')
+    
     try:
         plugins = __import__('resources.sites.%s' % plugin['identifier'], fromlist = [plugin['identifier']])
         function = getattr(plugins, plugin['search'][1])
         sUrl = plugin['search'][0] + str(sSearchText)
+        
         function(sUrl)
+        
         VSlog('Load Search: ' + str(plugin['identifier']))
     except:
         VSlog(plugin['identifier'] + ': search failed')
+
+    window(10101).setProperty('search', 'false')
 
 
 main()
