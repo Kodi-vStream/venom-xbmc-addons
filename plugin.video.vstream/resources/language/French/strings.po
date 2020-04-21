@@ -314,7 +314,7 @@ msgstr "Recherche"
 
 msgctxt "#30077"
 msgid "[COLOR gold]Select your search for: %s[/COLOR]"
-msgstr "[COLOR gold]Sélectionnez votre recherche pour: %s[/COLOR]"
+msgstr "[COLOR gold]Sélectionnez votre recherche pour : %s[/COLOR]"
 
 msgctxt "#30078"
 msgid "Search (Movie)"
