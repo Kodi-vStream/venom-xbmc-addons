@@ -244,7 +244,7 @@ def showMovies(sSearch = ''):
     
     
 
-    sPattern = 'class="data".+?href="([^"]+)">([^<]+).+?img src="([^"]+)"'
+    sPattern = 'id="post-[0-9].+?<img src="([^"]+)".+?class="data".+?href="([^"]+)">([^<]+)'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -264,9 +264,9 @@ def showMovies(sSearch = ''):
                 break
 
             
-            sUrl2 = aEntry[0]
-            sTitle = aEntry[1]
-            sThumb ='https:' +  aEntry[2]
+            sThumb ='https:' +  aEntry[0]
+            sUrl2 = aEntry[1]
+            sTitle = aEntry[2]
             
             sDesc = ''
 
