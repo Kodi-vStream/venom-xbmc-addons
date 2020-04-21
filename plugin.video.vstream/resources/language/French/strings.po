@@ -330,7 +330,7 @@ msgstr "Recherche (Autre catégories)"
 
 msgctxt "#30081"
 msgid "[COLOR gold]Results for: %s[/COLOR]"
-msgstr "[COLOR gold]Résultats pour: %s[/COLOR]"
+msgstr "[COLOR gold]Résultats pour : %s[/COLOR]"
 
 msgctxt "#30082"
 msgid "Name already used"
