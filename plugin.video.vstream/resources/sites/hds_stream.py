@@ -329,15 +329,17 @@ def showLink():
             dType = aEntry[0]
             dPost = aEntry[1]
             dNum = aEntry[2]
-            #if dNum == 2 :
-                #sHost = 'MyStream'
-            #elif dNum == 3:
-                #sHost = 'UqLoad'
-            #else :
-                #sHost = 'lien' + dNum     
+             dNum = aEntry[2]
+            sHost = ''
+            if '1' in dNum :
+                sHost = 'Frenchvid'
+            elif '2' in dNum :
+                sHost = 'MyStream'
+            elif '3' in dNum:
+                sHost = 'UqLoad' 
    
-            #sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
-            sTitle = sMovieTitle + 'Lien' + dNum
+            sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
+            #Title = sMovieTitle + 'Lien' + dNum
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
