@@ -74,24 +74,25 @@ class cHosterGui:
         oGuiElement.addContextItem(oContext)
 
         # Download menu
-        if oHoster.isDownloadable():
-            oContext = cContextElement()
-            oContext.setFile('cDownload')
-            oContext.setSiteName('cDownload')
-            oContext.setFunction('AddtoDownloadList')
-            oContext.setTitle(self.ADDON.VSlang(30202))
-            oContext.setOutputParameterHandler(oOutputParameterHandler)
-            oGuiElement.addContextItem(oContext)
-
-        if oHoster.isDownloadable():
-            # Beta context download and view menu
-            oContext = cContextElement()
-            oContext.setFile('cDownload')
-            oContext.setSiteName('cDownload')
-            oContext.setFunction('AddtoDownloadListandview')
-            oContext.setTitle(self.ADDON.VSlang(30326))
-            oContext.setOutputParameterHandler(oOutputParameterHandler)
-            oGuiElement.addContextItem(oContext)
+        if self.ADDON.getSetting('enregistrement_activer') == True :
+            if oHoster.isDownloadable():
+                oContext = cContextElement()
+                oContext.setFile('cDownload')
+                oContext.setSiteName('cDownload')
+                oContext.setFunction('AddtoDownloadList')
+                oContext.setTitle(self.ADDON.VSlang(30202))
+                oContext.setOutputParameterHandler(oOutputParameterHandler)
+                oGuiElement.addContextItem(oContext)
+    
+            if oHoster.isDownloadable():
+                # Beta context download and view menu
+                oContext = cContextElement()
+                oContext.setFile('cDownload')
+                oContext.setSiteName('cDownload')
+                oContext.setFunction('AddtoDownloadListandview')
+                oContext.setTitle(self.ADDON.VSlang(30326))
+                oContext.setOutputParameterHandler(oOutputParameterHandler)
+                oGuiElement.addContextItem(oContext)
 
         # Upload menu uptobox
         if cInputParameterHandler().getValue('site') != 'siteuptobox' and self.ADDON.getSetting('hoster_uptobox_premium') == 'true':
