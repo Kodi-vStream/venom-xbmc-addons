@@ -74,11 +74,6 @@ def load():
     ADDON = addon()
     oGui = cGui()
 
-    if ADDON.getSetting('token_alldebrid') == "":
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-        oGui.addDir(SITE_IDENTIFIER, 'getToken', '[COLOR red]Les utilisateurs d\'Alldebrid cliquez ici. Pour les autres ceci n\'est pas nécéssaire \ncar l\'ancienne méthode est toujours fonctionnelle.[/COLOR]', 'films.png', oOutputParameterHandler)
-
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'films.png', oOutputParameterHandler)
@@ -98,6 +93,11 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuAutre', 'Autres', 'tv.png', oOutputParameterHandler)
+
+    if ADDON.getSetting('token_alldebrid') == "":
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+        oGui.addDir(SITE_IDENTIFIER, 'getToken', '[COLOR red]Les utilisateurs d\'Alldebrid cliquez ici.[/COLOR]', 'films.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -332,15 +332,12 @@ def showMovies(sSearch = ''):
     Nextpagesearch = oInputParameterHandler.getValue('Nextpagesearch')
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    bGlobal_Search = False
-
     if Nextpagesearch:
         sSearch = sUrl
 
     if sSearch:
 
         if URL_SEARCH[0] in sSearch:
-            bGlobal_Search = True
             sSearch = sSearch.replace(URL_SEARCH[0], '')
 
         if Nextpagesearch:
@@ -449,7 +446,7 @@ def showLinks():
     if (aResult[1]):
         sMovieTitle = aResult[1][0][1]
 
-    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Qualités disponibles:[/COLOR]')
+    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Qualités disponibles :[/COLOR]')
 
     sPattern = '<meta property="og:title" content=".+? - (.+?)(VOSTFR|VF)*/>'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -500,16 +497,16 @@ def showLinks():
     #print aResult2
 
     if (aResult2[0] == True):
-        oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Autres saisons disponibles:[/COLOR]')
+        oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Autres saisons disponibles :[/COLOR]')
 
         for aEntry in aResult2[1]:
 
             sUrl = aEntry[0]
-            sTitle = sMovieTitle + '[COLOR skyblue]' + aEntry[1] + '[/COLOR]'
+            sTitle = '[COLOR skyblue]' + aEntry[1] + '[/COLOR]'
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
 
@@ -526,7 +523,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #Detection de la taille des fichier pour separer les fichier premuim des parties en .rar
+    # Detection de la taille des fichier pour separer les fichier premium des parties en .rar
     if not 'saison' in sUrl:
         fileSize = re.findall('<strong>Taille</strong><span style="float: right;">([^<]+)</span></td>', sHtmlContent)
         if 'et' in str(fileSize[0]):
@@ -552,9 +549,10 @@ def showHosters():
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
+    # Il n'existe que des fichiers en parties, non fonctionnel
     if (aResult[0] == False) and float(size) > 4.85:
         oGui.addText(SITE_IDENTIFIER)
-        dialog().VSinfo('Il n\'existe que des fichiers en parties non fonctionnel sur Kodi', "Extreme-Download", 15)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -657,7 +655,7 @@ def getHoster():#Ouvrir le clavier + requete
 
 def CutQual(sHtmlContent):
     oParser = cParser()
-    sPattern = '<span class="other-qualities">&Eacute;galement disponible en :</span>([^<]+)<span class="other-qualities">Autres saisons :</span>'
+    sPattern = '<span class="other-qualities">&Eacute;galement disponible en :</span>(.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
     if (aResult[0]):
@@ -669,7 +667,7 @@ def CutQual(sHtmlContent):
 
 def CutSais(sHtmlContent):
     oParser = cParser()
-    sPattern = '<span class="other-qualities">Autres saisons :</span>([^<]+)</div>'
+    sPattern = '<span class="other-qualities">Autres saisons :</span>(.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
     if (aResult[0]):
