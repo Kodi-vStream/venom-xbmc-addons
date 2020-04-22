@@ -213,8 +213,8 @@ msgid "Activate recording"
 msgstr "Activer l'enregistrement"
 
 msgctxt "#30052"
-msgid "Minute automatically add to your chosen duration (in minutes)"
-msgstr "Minute ajouter automatiquement à votre durer choisie (en minute)"
+msgid "Minute automatically added to the chosen duration (in minutes)"
+msgstr "Minute ajoutée automatiquement à la durée choisie (en minute)"
 
 msgctxt "#30053"
 msgid "Time interval between each time check (in seconds)"
