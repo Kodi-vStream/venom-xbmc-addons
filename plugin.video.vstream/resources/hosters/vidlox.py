@@ -50,6 +50,7 @@ class cHoster(iHoster):
 
         oParser = cParser()
         oRequest = cRequestHandler(self.__sUrl)
+        oRequest.addHeaderEntry('Referer', "https://vidlox.me/8m8p7kane4r1.html")
         sHtmlContent = oRequest.request()
 
         #accelère le traitement
