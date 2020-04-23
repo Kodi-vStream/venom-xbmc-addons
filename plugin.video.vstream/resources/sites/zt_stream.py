@@ -151,7 +151,7 @@ def showMenuFilms():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VO[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VO[1], 'Films en Version original (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-# Un seul film n'est proposé dans les coffrets
+# Un seul film est proposé dans les coffrets
 #     oOutputParameterHandler = cOutputParameterHandler()
 #     oOutputParameterHandler.addParameter('siteUrl', MOVIE_INTEGRAL[0])
 #     oGui.addDir(SITE_IDENTIFIER, MOVIE_INTEGRAL[1], 'Integral de films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
@@ -412,6 +412,8 @@ def showMoviesLinks():
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sDisplayTitle = oInputParameterHandler.getValue('sDisplayTitle')
+    if not sDisplayTitle:   # Si on arrive par un marque-page
+        sDisplayTitle = sMovieTitle
     sThumb = oInputParameterHandler.getValue('sThumb')
     sUrl = oInputParameterHandler.getValue('siteUrl')
 

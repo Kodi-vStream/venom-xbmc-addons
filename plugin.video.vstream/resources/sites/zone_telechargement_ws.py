@@ -460,6 +460,8 @@ def showMoviesLinks():
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sDisplayTitle = oInputParameterHandler.getValue('sDisplayTitle')
+    if not sDisplayTitle:   # Si on arrive par un marque-page
+        sDisplayTitle = sMovieTitle
     sThumb = oInputParameterHandler.getValue('sThumb')
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
