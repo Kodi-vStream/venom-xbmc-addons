@@ -25,7 +25,7 @@ SITE_DESC = 'Animés en streaming'
 URL_MAIN = 'https://www.ianimes.org/'
 
 MOVIE_MOVIE = (URL_MAIN + 'films.php?liste=' + RandomKey, 'ShowAlpha')
-MOVIE_GENRES = (URL_MAIN + 'films.php?liste=' + RandomKey, 'showGenres')
+MOVIE_GENRES = (URL_MAIN , 'showGenresF')
 
 SERIE_SERIES = (URL_MAIN + 'series.php?liste=' + RandomKey, 'ShowAlpha')
 
@@ -33,7 +33,7 @@ ANIM_NEWS = (URL_MAIN + 'nouveautees.html', 'showMovies')
 ANIM_ANIMS = (URL_MAIN + 'animes.php?liste=' + RandomKey, 'ShowAlpha')
 ANIM_VFS = (URL_MAIN + 'listing_vf.php', 'ShowAlpha2')
 ANIM_VOSTFRS = (URL_MAIN + 'listing_vostfr.php', 'ShowAlpha2')
-ANIM_GENRES = (URL_MAIN + 'animes.php?liste=' + RandomKey, 'showGenres')
+ANIM_GENRES = (URL_MAIN + 'categorie.php?watch=' + RandomKey, 'showGenres')
 
 URL_SEARCH_SERIES = ('', 'showMovies')
 URL_SEARCH = ('', 'showMovies')
@@ -182,6 +182,40 @@ def showSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
+
+def showGenresF(): #affiche les genres
+    oGui = cGui()
+
+    #juste a entrer les categories et les liens qui vont bien
+    liste = []
+    liste.append( ['Action', URL_MAIN + 'categorie_action_page1.html'] )
+    liste.append( ['Animation', URL_MAIN + 'categorie_animation_page1.html'] )
+    liste.append( ['Arts Martiaux', URL_MAIN + 'arts-martiaux/'] )
+    liste.append( ['Aventure', URL_MAIN + 'categorie_aventure_page1.html'] )
+    liste.append( ['Combat', URL_MAIN + 'categorie_combats_page1.html'] )
+    liste.append( ['Comédie', URL_MAIN + 'categorie_comedie_page1.html'] )
+    
+    liste.append( ['Drame', URL_MAIN + 'categorie_drame_page1.html'] )
+    liste.append( ['Epouvante Horreur', URL_MAIN + 'categorie_horreur_page1.html'] )
+    liste.append( ['Espionnage', URL_MAIN + 'categorie_espionnage_page1.html'] )
+    liste.append( ['Fantastique', URL_MAIN + 'categorie_fantastique_page1.html'] )
+    liste.append( ['Guerre', URL_MAIN + 'categorie_guerre_page1.html'] )
+    liste.append( ['Musical', URL_MAIN + 'categorie_musical_page1.html'] )
+    liste.append( ['Péplum', URL_MAIN + 'categorie_peplum_page1.html'] )
+    liste.append( ['Policier', URL_MAIN + 'categorie_policier_page1.html'] )
+    liste.append( ['Romance', URL_MAIN + 'categorie_romance_page1.html'] )
+    liste.append( ['Science Fiction', URL_MAIN + 'genre/science-fiction/'] )
+    liste.append( ['Thriller', URL_MAIN + 'categorie_thriller_page1.html'] )
+    
+
+    for sTitle, sUrl in liste: #boucle
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl) #sortie de l'url en parametre
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+        #ajouter un dossier vers la fonction showMovies avec le titre de chaque categorie.
+
+    oGui.setEndOfDirectory()
 
 def showGenres():
     oGui = cGui()
@@ -457,7 +491,7 @@ def showEpisode():
     # sPattern = '<img src="(.+?).+? alt="&#101;&#112;&#105;&#115;&#111;&#100;&#101;&#115;".+?<a href="(.+?)" title="(.+?)"'
     # aResult = oParser.parse(aResult[1][0], sPattern)
 
-    sPattern = '<headline11>(.+?)<\/headline11><\/a>|<a href="*([^"]+)"* title="([^"]+)"[^>]+style="*text-decoration:none;"*>'
+    sPattern = '<headline11>.+?font color.+?>([^<]+).+?<\/headline11><\/a>|<a href="*([^"]+)"* title="([^"]+)"[^>]+style="*text-decoration:none;"*>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -799,3 +833,4 @@ def GetTinyUrl(url):
         reponse.close()
 
     return url
+
