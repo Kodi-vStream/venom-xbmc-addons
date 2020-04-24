@@ -597,7 +597,7 @@ def RecapchaBypass():#Ouverture de Chrome Launcher s'il est intallez
     if Token_Alldebrid == "":
         RecapchaBypassOld(sUrl)
     else:
-        sUrl_Bypass = "https://api.alldebrid.com/link/redirector?agent=mySoft&token=" + Token_Alldebrid + "&link=" + sUrl
+        sUrl_Bypass = "https://api.alldebrid.com/v4/link/redirector?agent=service&version=1.0-&apikey=" + Token_Alldebrid + "&link=" + sUrl
 
     oRequestHandler = cRequestHandler(sUrl_Bypass)
     sHtmlContent = oRequestHandler.request()
