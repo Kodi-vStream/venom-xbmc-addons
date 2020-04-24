@@ -22,9 +22,9 @@ SITE_DESC = 'Séries & Animés en Streaming'
 URL_MAIN = 'https://seriestreaminglist.com/'
 
 SERIE_SERIES = ('http://', 'load')
-SERIE_NEWS = (URL_MAIN + 'dernieres-et-meilleures-series-en-streaming', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'dernieres-et-meilleures-series-en-streaming-2020-1', 'showMovies')
 SERIE_VIEWS = (URL_MAIN + 'la-top-des-meilleures-serie', 'showMovies')
-SERIE_COMMENT = (URL_MAIN + '1-les-serie-populaire-streaming', 'showMovies')
+SERIE_COMMENT = (URL_MAIN + 'meilleurs-serie-populaire-streaming', 'showMovies')
 #SERIE_LIST = (URL_MAIN, 'showAZ')
 SERIE_GENRES = (True, 'showGenres')
 SERIE_ANNEES = (True, 'showSerieYears')
