@@ -26,7 +26,8 @@ def getURL():
 
     sPattern = '<a class="full-wrap clearfix btn btn-danger" href="([^"]+)">Acc&eacute;der au site</a></div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    return aResult[1][0]
+    if aResult[0]:
+        return aResult[1][0]
 
 def GetURL_MAIN():
     ADDON = addon()
