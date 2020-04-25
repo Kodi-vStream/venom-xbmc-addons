@@ -389,7 +389,8 @@ def showLink():
             if progress_.iscanceled():
                 break
 
-            sHost = re.sub('\..+', '', aEntry[0]).capitalize()
+            sHost = aEntry[0].replace('www.', '')
+            sHost = re.sub('\..+', '', sHost).capitalize()
 
             if aEntry[2] == '':
                 #sUrl = URL_MAIN + 'link/' + aEntry[3] + '/' + linkid
