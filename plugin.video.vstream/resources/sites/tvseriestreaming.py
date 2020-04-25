@@ -204,7 +204,7 @@ def showGenres():
     liste.append( ['Special-interest', URL_MAIN + 'category/special-interest'] )
     liste.append( ['Sport', URL_MAIN + 'category/sport'] )
     liste.append( ['Super-hero', URL_MAIN + 'category/superhero'] )
-    liste.append( ['Suspence', URL_MAIN + 'category/suspence'] )
+    liste.append( ['Suspense', URL_MAIN + 'category/suspense'] )
     liste.append( ['Talk-Show', URL_MAIN + 'category/talk-show'] )
     liste.append( ['Thriller', URL_MAIN + 'category/thriller'] )
     liste.append( ['Guerre', URL_MAIN + 'category/war'] )
