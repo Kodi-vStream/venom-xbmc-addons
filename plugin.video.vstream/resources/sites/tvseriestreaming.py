@@ -8,7 +8,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import Unquote
-from resources.lib.comaddon import progress, addon
+from resources.lib.comaddon import progress
 import re
 
 
