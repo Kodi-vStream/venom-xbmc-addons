@@ -7,7 +7,8 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, addon, VSlog
+from resources.lib.util import Unquote
+from resources.lib.comaddon import progress, addon#, VSlog
 import re
 
 
@@ -19,17 +20,17 @@ SITE_IDENTIFIER = 'tvseriestreaming'
 SITE_NAME = 'Tv_seriestreaming'
 SITE_DESC = 'Séries & Animés en Streaming'
 
-URL_MAIN = 'https://seriestreaminglist.com/'
+URL_MAIN = 'https://seriestreamingtv.com/'
 
 SERIE_SERIES = ('http://', 'load')
 SERIE_NEWS = (URL_MAIN + 'dernieres-et-meilleures-series-en-streaming-2020-1', 'showMovies')
 SERIE_VIEWS = (URL_MAIN + 'la-top-des-meilleures-serie', 'showMovies')
 SERIE_COMMENT = (URL_MAIN + 'meilleurs-serie-populaire-streaming', 'showMovies')
-#SERIE_LIST = (URL_MAIN, 'showAZ')
+SERIE_LIST = (URL_MAIN, 'showAZ')
 SERIE_GENRES = (True, 'showGenres')
 SERIE_ANNEES = (True, 'showSerieYears')
 
-URL_SEARCH_SERIES = (URL_MAIN + 'search?q=', 'showMovies')
+URL_SEARCH_SERIES = ('', 'searchSerie')
 
 FUNCTION_SEARCH = 'showMovies'
 
@@ -40,9 +41,10 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+# Inutilisable
+#     oOutputParameterHandler = cOutputParameterHandler()
+#     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+#     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
@@ -52,9 +54,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_COMMENT[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENT[1], 'Séries (Populaire)', 'comments.png', oOutputParameterHandler)
 
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
-    #oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Series (Liste)', 'listes.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Series (Liste)', 'listes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
@@ -71,7 +73,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        showMovies(URL_SEARCH_SERIES[0] + sSearchText)
+        searchSerie(sSearchText)
         oGui.setEndOfDirectory()
         return
 
@@ -89,9 +91,9 @@ def showSerieYears():
 
     oGui.setEndOfDirectory()
 
-#def showAZ():
+def showAZ():
     oGui = cGui()
-
+ 
     for i in range(0, 27):
         if (i < 1):
             sLetter = '\d+'
@@ -99,11 +101,11 @@ def showSerieYears():
         else:
             sLetter = chr(64 + i)
             aLetter = sLetter
-
+ 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sLetter', sLetter)
         oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', "%s [COLOR %s]%s[/COLOR]" % ("Lettre", sColor, aLetter), 'az.png', oOutputParameterHandler)
-
+ 
     oGui.setEndOfDirectory()
 
 def AlphaDisplay():
@@ -112,13 +114,14 @@ def AlphaDisplay():
     oInputParameterHandler = cInputParameterHandler()
     sLetter = oInputParameterHandler.getValue('sLetter')
 
-    oRequestHandler = cRequestHandler(URL_MAIN + 'serie-vf.html')
+    oRequestHandler = cRequestHandler(URL_MAIN + 'acceuils-2')
     sHtmlContent = oRequestHandler.request()
 
     sHtmlContent = oParser.abParse(sHtmlContent, '<h1>Listes des séries:</h1>', '<div class="container"><br>')
 
     sPattern = '<a title="(' + sLetter + '.+?)" href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
@@ -127,8 +130,8 @@ def AlphaDisplay():
             if progress_.iscanceled():
                 break
 
+            sTitle = aEntry[0].replace('en streaming', '')
             sUrl = aEntry[1]
-            sTitle = aEntry[0]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -138,6 +141,29 @@ def AlphaDisplay():
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
+
+def searchSerie(sSearch):
+    oGui = cGui()
+    oParser = cParser()
+    sSearch = Unquote(sSearch)
+
+    oRequestHandler = cRequestHandler(URL_MAIN + 'acceuils-2')
+    sHtmlContent = oRequestHandler.request()
+
+    sHtmlContent = oParser.abParse(sHtmlContent, '<h1>Listes des séries:</h1>', '<div class="container"><br>')
+
+    sPattern = '<a title="([^"]*' + sSearch +'.*?)\" href="([^"]+)"'
+    
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+            sTitle = aEntry[0].replace('en streaming', '')
+            sUrl = aEntry[1]
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oGui.addDir(SITE_IDENTIFIER, 'showS_E', sTitle, 'series.png', oOutputParameterHandler)
 
 
 def showGenres():
@@ -349,11 +375,11 @@ def showLink():
     except:
         pass
     
-    linkid = ''
-    sPattern = 'data-id="([^"]+)"'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        linkid = aResult[1][0]
+#     linkid = ''
+#     sPattern = 'data-id="([^"]+)"'
+#     aResult = oParser.parse(sHtmlContent, sPattern)
+#     if (aResult[0] == True):
+#         linkid = aResult[1][0]
 
     sPattern = '<\/i> *Lien.+?</td>.+?alt="([^"]+)".+?(?:|center">([^<]+)</td>.+?)(?:|data-uid="([^"]+)") data-id="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -401,9 +427,7 @@ def showHosters():
     oRequest.addHeaderEntry('User-Agent', UA)
     oRequest.addHeaderEntry('Referer', sUrl)
 
-    sHtmlContent = oRequest.request()
-    oParser = cParser()
-    
+    oRequest.request()
     sHosterUrl = oRequest.getRealUrl()
 
     if sHosterUrl:
