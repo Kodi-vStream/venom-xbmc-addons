@@ -8,7 +8,6 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import Unquote
-from resources.lib.comaddon import progress
 import re
 
 
@@ -21,7 +20,6 @@ SITE_DESC = 'Séries & Animés en Streaming'
 URL_MAIN = 'https://seriestreamingtv.com/'
 
 SERIE_SERIES = ('http://', 'load')
-SERIE_NEWS = (URL_MAIN + 'dernieres-et-meilleures-series-en-streaming-2020-1', 'showMovies')
 SERIE_VIEWS = (URL_MAIN + 'la-top-des-meilleures-serie', 'showMovies')
 SERIE_COMMENT = (URL_MAIN + 'meilleurs-serie-populaire-streaming', 'showMovies')
 SERIE_LIST = (URL_MAIN, 'showAZ')
@@ -38,11 +36,6 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-
-# Inutilisable
-#     oOutputParameterHandler = cOutputParameterHandler()
-#     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-#     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
@@ -146,12 +139,11 @@ def searchSerie(sSearch):
 
     oRequestHandler = cRequestHandler(URL_MAIN + 'acceuils-2')
     sHtmlContent = oRequestHandler.request()
-
     sHtmlContent = oParser.abParse(sHtmlContent, '<h1>Listes des séries:</h1>', '<div class="container"><br>')
 
     sPattern = '<a title="([^"]*' + sSearch + '.*?)\" href="([^"]+)"'
-
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sTitle = aEntry[0].replace('en streaming', '')
@@ -161,7 +153,6 @@ def searchSerie(sSearch):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oGui.addDir(SITE_IDENTIFIER, 'showS_E', sTitle, 'series.png', oOutputParameterHandler)
-
 
 def showGenres():
     oGui = cGui()
@@ -233,13 +224,7 @@ def showMovies(sSearch=''):
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             if 'dernieres-et-meilleures-series-en-streaming' in sUrl:
                 sUrl2 = aEntry[0]
                 sTitle = aEntry[1]#.replace(' -', ' ') + aEntry[2].replace(' ', '')
@@ -248,7 +233,6 @@ def showMovies(sSearch=''):
                 sTitle = aEntry[0].replace('Streaming', '')
                 sUrl2 = aEntry[1]
                 sThumb = aEntry[2]
-
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -259,8 +243,6 @@ def showMovies(sSearch=''):
                 oGui.addDir(SITE_IDENTIFIER, 'showLink', sTitle, sThumb, oOutputParameterHandler)
             else:
                 oGui.addMisc(SITE_IDENTIFIER, 'showS_E', sTitle, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -296,13 +278,7 @@ def showS_E():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             if '/saison/' in rUrl:#episode
                 if aEntry[0]:
                     sThumb = aEntry[0]
@@ -330,8 +306,6 @@ def showS_E():
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
                     oGui.addTV(SITE_IDENTIFIER, 'showS_E', sTitle, '', sThumb, '', oOutputParameterHandler)
 
-        progress_.VSclose(progress_)
-
     oGui.setEndOfDirectory()
 
 def showLink():
@@ -353,34 +327,18 @@ def showLink():
     except:
         pass
 
-#     linkid = ''
-#     sPattern = 'data-id="([^"]+)"'
-#     aResult = oParser.parse(sHtmlContent, sPattern)
-#     if (aResult[0] == True):
-#         linkid = aResult[1][0]
-
     sPattern = '<\/i> *Lien.+?</td>.+?alt="([^"]+)".+?(?:|center">([^<]+)</td>.+?)(?:|data-uid="([^"]+)") data-id="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sHost = aEntry[0].replace('www.', '')
             sHost = re.sub('\..+', '', sHost).capitalize()
 
             if aEntry[2] == '':
-                #sUrl = URL_MAIN + 'link/' + aEntry[3] + '/' + linkid
                 sUrl = URL_MAIN + 'll/captcha?hash=' + aEntry[3]
-
             else:
-                #sUrl = URL_MAIN + 'links/' + aEntry[3] #ancienne methode du site tjr ok
                 sUrl = URL_MAIN + 'll/captcha?hash=' + aEntry[3]
-
 
             sLang = aEntry[1].replace(' ', '')
             sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
@@ -390,8 +348,6 @@ def showLink():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
