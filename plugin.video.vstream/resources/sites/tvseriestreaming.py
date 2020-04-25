@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -8,11 +8,9 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import Unquote
-from resources.lib.comaddon import progress, addon#, VSlog
+from resources.lib.comaddon import progress, addon
 import re
 
-
-sColor = addon().getSetting("deco_color")
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101 Firefox/60.0'
 
@@ -93,7 +91,7 @@ def showSerieYears():
 
 def showAZ():
     oGui = cGui()
- 
+
     for i in range(0, 27):
         if (i < 1):
             sLetter = '\d+'
@@ -101,11 +99,11 @@ def showAZ():
         else:
             sLetter = chr(64 + i)
             aLetter = sLetter
- 
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sLetter', sLetter)
-        oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', "%s [COLOR %s]%s[/COLOR]" % ("Lettre", sColor, aLetter), 'az.png', oOutputParameterHandler)
- 
+        oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', "%s [COLOR coral]%s[/COLOR]" % ("Lettre", aLetter), 'az.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
 
 def AlphaDisplay():
@@ -121,7 +119,7 @@ def AlphaDisplay():
 
     sPattern = '<a title="(' + sLetter + '.+?)" href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
@@ -152,8 +150,8 @@ def searchSerie(sSearch):
 
     sHtmlContent = oParser.abParse(sHtmlContent, '<h1>Listes des séries:</h1>', '<div class="container"><br>')
 
-    sPattern = '<a title="([^"]*' + sSearch +'.*?)\" href="([^"]+)"'
-    
+    sPattern = '<a title="([^"]*' + sSearch + '.*?)\" href="([^"]+)"'
+
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
@@ -278,7 +276,7 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -362,19 +360,18 @@ def showLink():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sThumb = aResult[1][0]
-
     except:
         pass
+
     sTitle1 = ''
     try:
         sPattern = '<title>([^<]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
-            sTitle1 = aResult[1][0].replace('Regarder Serie','').replace('Streaming','')
-
+            sTitle1 = aResult[1][0].replace('Regarder Serie', '').replace('Streaming', '')
     except:
         pass
-    
+
 #     linkid = ''
 #     sPattern = 'data-id="([^"]+)"'
 #     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -403,8 +400,8 @@ def showLink():
                 sUrl = URL_MAIN + 'll/captcha?hash=' + aEntry[3]
 
 
-            sLang = aEntry[1]
-            sTitle = ('%s (%s) [COLOR %s]%s[/COLOR]') % (sTitle1, sLang, sColor, sHost)
+            sLang = aEntry[1].replace(' ', '')
+            sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sTitle1, sLang, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -422,7 +419,7 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    
+
     oRequest = cRequestHandler(sUrl)
     oRequest.addHeaderEntry('User-Agent', UA)
     oRequest.addHeaderEntry('Referer', sUrl)
