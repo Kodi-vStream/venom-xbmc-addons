@@ -54,8 +54,10 @@ class cHoster(iHoster):
             baseUrl = 'https://yggseries.com/api/source/'
         elif 'french-vid' in self.__sUrl:
             baseUrl = 'https://www.fembed.com/api/source/'
-        elif 'fembed.' in self.__sUrl:
+        elif 'fembed' in self.__sUrl:
             baseUrl = 'https://www.fembed.com/api/source/'
+        elif 'feurl' in self.__sUrl:
+            baseUrl = 'https://feurl.com/api/source/'
         elif 'vfsplayer' in self.__sUrl:
             baseUrl = 'https://vfsplayer.xyz/api/source/'
         elif 'fsimg' in self.__sUrl:
