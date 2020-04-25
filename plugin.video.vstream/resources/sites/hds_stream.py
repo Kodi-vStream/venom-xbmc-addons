@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Votre nom ou pseudo
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -21,11 +21,12 @@ SITE_IDENTIFIER = 'hds_stream'
 SITE_NAME = 'Hds-stream'
 SITE_DESC = 'Film streaming HD complet en vf. Des films et séries pour les fan de streaming hds.'
 
-URL_MAIN = 'https://ww4.hds-stream.to/'
+URL_MAIN = 'https://www.hds-stream.to/'
 
 MOVIE_EXCLUS = (URL_MAIN + 'tendance/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
+MOVIE_ANNEES = (True, 'showMovieYears')
 
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
 
@@ -35,7 +36,7 @@ URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 
-def load():
+def load(): 
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -149,7 +150,6 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
     aResult = oParser.parse(sHtmlContent, sPattern)
     #le plus simple et de faire un  VSlog(str(aResult))
     #dans le fichier log d'xbmc vous pourrez voir un array de ce que recupere le script
@@ -180,7 +180,7 @@ def showMovies(sSearch = ''):
                 sUrl = aEntry[1]
                 sTitle = aEntry[2]
                 sDesc = '' # Temporaire
-
+            
             #Si vous avez des information dans aEntry Qualiter lang organiser un peux vos titre exemple.
             #Si vous pouvez la langue et la Qualite en MAJ ".upper()" vostfr.upper() = VOSTFR
             # sTitle = ('%s [%s] (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sQual, sLang.upper(), sHoster)
@@ -248,7 +248,7 @@ def showLinks():
             dType = aEntry[0]
             dPost = aEntry[1]
             dNum = aEntry[2]
-            sHost = 'Serveur' + dNum
+            sHost = 'Serveur' + dNum 
 
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
             #Title = sMovieTitle + 'Lien' + dNum
