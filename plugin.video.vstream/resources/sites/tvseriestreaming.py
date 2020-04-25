@@ -114,29 +114,28 @@ def AlphaDisplay():
 
     oRequestHandler = cRequestHandler(URL_MAIN + 'acceuils-2')
     sHtmlContent = oRequestHandler.request()
-
     sHtmlContent = oParser.abParse(sHtmlContent, '<h1>Listes des séries:</h1>', '<div class="container"><br>')
 
     sPattern = '<a title="(' + sLetter + '.+?)" href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
+    if aResult[0]:
+        
+        series = []
+        
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sTitle = aEntry[0].replace('en streaming', '')
             sUrl = aEntry[1]
-
+            series.append((sTitle, sUrl))
+            
+        # Trie des séries par ordre alphabétique
+        series = sorted(series, key=lambda serie: serie[0])
+        
+        for sTitle,sUrl in series:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oGui.addDir(SITE_IDENTIFIER, 'showS_E', sTitle, 'series.png', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
