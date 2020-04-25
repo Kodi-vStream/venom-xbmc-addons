@@ -195,7 +195,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if '/series' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSaisonEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
                 #addTV pour sortir les series tv (identifiant, function, titre, icon, poster, description, sortie parametre)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
@@ -266,7 +266,8 @@ def showLinks():
 
     oGui.setEndOfDirectory()
 
-def showHosters(): #recherche et affiche les hotes
+
+def showHosters():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -305,8 +306,8 @@ def showHosters(): #recherche et affiche les hotes
 
     oGui.setEndOfDirectory()
 
-#Pour les series, il y a generalement une etape en plus pour la selection des episodes ou saisons.
-def ShowSerieSaisonEpisodes():
+
+def showSaisonEpisodes():
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
@@ -316,15 +317,15 @@ def ShowSerieSaisonEpisodes():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    sPattern = '?????????????????????'
-
     oParser = cParser()
+    sPattern = '<span class=\'title\'>([^<]+)<i>|<div class=\'numerando\'>(\d+) - (\d+)</div>.+?class=\'episodiotitle\'><a href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
-
         progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
@@ -332,21 +333,25 @@ def ShowSerieSaisonEpisodes():
             if progress_.iscanceled():
                 break
 
-            sTitle = sMovieTitle + aEntry[0]
-            sUrl2 = aEntry[1]
+            if (aEntry[0]):
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
 
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            else:
+                sUrl = aEntry[3]
+                sTitle = sMovieTitle + ' Saison ' + aEntry[1] + ' Episode' + aEntry[2]
 
-            oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
-def seriesHosters(): #cherche les episodes de series
+
+def seriesHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
