@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Votre nom ou pseudo
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -21,11 +21,12 @@ SITE_IDENTIFIER = 'hds_stream'
 SITE_NAME = 'Hds-stream'
 SITE_DESC = 'Film streaming HD complet en vf. Des films et séries pour les fan de streaming hds.'
 
-URL_MAIN = 'https://ww4.hds-stream.to/'
+URL_MAIN = 'https://www.hds-stream.to/'
 
+MOVIE_EXCLUS = (URL_MAIN + 'tendance/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
-MOVIE_EXCLUS = (URL_MAIN + 'tendance/', 'showMovies')
+MOVIE_ANNEES = (True, 'showMovieYears')
 
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
 
@@ -55,6 +56,10 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
@@ -72,56 +77,48 @@ def showSearch():
         return
 
 
-def showGenres(): #affiche les genres
+def showGenres():
     oGui = cGui()
+    oParser = cParser()
+    oRequestHandler = cRequestHandler(MOVIE_NEWS[0])
+    sHtmlContent = oRequestHandler.request()
 
-    #juste a entrer les categories et les liens qui vont bien
-    liste = []
-    liste.append( ['Action', URL_MAIN + 'action/'] )
-    liste.append( ['Animation', URL_MAIN + 'animation/'] )
-    liste.append( ['Arts Martiaux', URL_MAIN + 'arts-martiaux/'] )
-    liste.append( ['Aventure', URL_MAIN + 'aventure/'] )
-    liste.append( ['Biopic', URL_MAIN + 'biopic/'] )
-    liste.append( ['Comédie', URL_MAIN + 'comedie/'] )
-    liste.append( ['Comédie Dramatique', URL_MAIN + 'comedie-dramatique/'] )
-    liste.append( ['Comédie Musicale', URL_MAIN + 'comedie-musicale/'] )
-    liste.append( ['Documentaire', URL_MAIN + 'documentaire/'] )
-    liste.append( ['Drame', URL_MAIN + 'drame/'] )
-    liste.append( ['Epouvante Horreur', URL_MAIN + 'epouvante-horreur/'] )
-    liste.append( ['Erotique', URL_MAIN + 'erotique'] )
-    liste.append( ['Espionnage', URL_MAIN + 'espionnage/'] )
-    liste.append( ['Famille', URL_MAIN + 'famille/'] )
-    liste.append( ['Fantastique', URL_MAIN + 'fantastique/'] )
-    liste.append( ['Guerre', URL_MAIN + 'guerre/'] )
-    liste.append( ['Historique', URL_MAIN + 'historique/'] )
-    liste.append( ['Musical', URL_MAIN + 'musical/'] )
-    liste.append( ['Policier', URL_MAIN + 'policier/'] )
-    liste.append( ['Péplum', URL_MAIN + 'peplum/'] )
-    liste.append( ['Romance', URL_MAIN + 'romance/'] )
-    liste.append( ['Science Fiction', URL_MAIN + 'science-fiction/'] )
-    liste.append( ['Spectacle', URL_MAIN + 'spectacle/'] )
-    liste.append( ['Thriller', URL_MAIN + 'thriller/'] )
-    liste.append( ['Western', URL_MAIN + 'western/'] )
-    liste.append( ['Divers', URL_MAIN + 'divers/'] )
+    sHtmlContent = oParser.abParse(sHtmlContent, '<h2>Films Par Genres</h2>', '<footer class="main">')
 
-    for sTitle, sUrl in liste: #boucle
+    sPattern = 'href="([^"]+)">([^<]+)</a> <i>([^<]+)<'
+    aResult = oParser.parse(sHtmlContent, sPattern)
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl) #sortie de l'url en parametre
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-        #ajouter un dossier vers la fonction showMovies avec le titre de chaque categorie.
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+            sUrl = aEntry[0]
+            sTitle = aEntry[1] + ' (' + aEntry[2] + ')'
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def showMovieYears():#creer une liste inversée d'annees
+def showMovieYears():
     oGui = cGui()
+    oParser = cParser()
+    oRequestHandler = cRequestHandler(URL_MAIN)
+    sHtmlContent = oRequestHandler.request()
 
-    for i in reversed (xrange(1913, 2019)):
-        Year = str(i)
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/annee-' + Year)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
+    sHtmlContent = oParser.abParse(sHtmlContent, '<h2>Films Par Années</h2>', '<h2>Films Par Genres</h2>')
+
+    sPattern = '<li><a href="([^"]+)">([^<]+)<'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+            sUrl = aEntry[0]
+            sYear = aEntry[1]
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -211,17 +208,16 @@ def showMovies(sSearch = ''):
         progress_.VSclose(progress_) #fin du dialog
 
     if not sSearch:
-        sNextPage = __checkForNextPage(sHtmlContent) #cherche la page suivante
+        sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
-            #Ajoute une entree pour le lien Next | pas de addMisc pas de poster et de description inutile donc
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
-        oGui.setEndOfDirectory() #ferme l'affichage
+        oGui.setEndOfDirectory()
 
 
-def __checkForNextPage(sHtmlContent): #cherche la page suivante
+def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = 'a><a class=\'arrow_pag\' href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -252,9 +248,15 @@ def showLinks():
             dType = aEntry[0]
             dPost = aEntry[1]
             dNum = aEntry[2]
-            sHost = 'Serveur' + dNum 
+            sHost = ''
 
-            
+            if '1' in dNum:
+                sHost = 'Frenchvid'
+            elif '2' in dNum:
+                sHost = 'MyStream'
+            elif '3' in dNum:
+                sHost = 'UqLoad'
+
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
             #Title = sMovieTitle + 'Lien' + dNum
 
