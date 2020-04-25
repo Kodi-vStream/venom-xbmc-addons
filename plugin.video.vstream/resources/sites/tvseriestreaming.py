@@ -363,15 +363,6 @@ def showLink():
     except:
         pass
 
-    sTitle1 = ''
-    try:
-        sPattern = '<title>([^<]+)'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0]:
-            sTitle1 = aResult[1][0].replace('Regarder Serie', '').replace('Streaming', '')
-    except:
-        pass
-
 #     linkid = ''
 #     sPattern = 'data-id="([^"]+)"'
 #     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -402,7 +393,7 @@ def showLink():
 
 
             sLang = aEntry[1].replace(' ', '')
-            sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sTitle1, sLang, sHost)
+            sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
