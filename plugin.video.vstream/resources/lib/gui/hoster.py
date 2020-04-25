@@ -329,13 +329,13 @@ class cHosterGui:
         if ('dustreaming' in sHostName):
             return self.getHoster('dustreaming')
         #frenchvid et clone
-        if ('french-vid' in sHostName or 'yggseries' in sHostName:
+        if ('french-vid' in sHostName) or ('yggseries' in sHostName):
             return self.getHoster('frenchvid')
-        if ('fembed' in sHostName) or 'fem.tohds' in sHostName):
+        if ('fembed' in sHostName) or ('fem.tohds' in sHostName):
             return self.getHoster('frenchvid')
-        if ('feurl' in sHostName) or 'fsimg' in sHostName:
+        if ('feurl' in sHostName) or ('fsimg' in sHostName):
             return self.getHoster('frenchvid')
-        if ('core1player' in sHostName) or 'vfsplayer' in sHostName:
+        if ('core1player' in sHostName) or ('vfsplayer' in sHostName):
             return self.getHoster('frenchvid')
 
         if ('flix555' in sHostName):
