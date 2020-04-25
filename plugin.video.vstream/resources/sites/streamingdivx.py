@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'streamingdivx'
 SITE_NAME = 'Streamingdivx'
 SITE_DESC = 'Films VF en streaming.'
 
-URL_MAIN = 'https://hd.streamingdivx.ch/'
+URL_MAIN = 'https://www.streamingdivx.vip/'
 
 MOVIE_NEWS = (URL_MAIN + 'films.html', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenres')
@@ -64,25 +64,25 @@ def showGenres():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
-    liste.append( ['Action', sUrl + 'action/'] )
-    liste.append( ['Animation', sUrl + 'animation/'] )
-    liste.append( ['Aventure', sUrl + 'aventure/'] )
-    liste.append( ['Biopic', sUrl + 'biopic/'] )
-    liste.append( ['Comédie', sUrl + 'comedie/'] )
-    liste.append( ['Comédie-dramatique', sUrl + 'comedie-dramatique/'] )
-    liste.append( ['Comédie-musicale', sUrl + 'comedie-musicale/'] )
-    liste.append( ['Documentaire', sUrl + 'documentaire/'] )
-    liste.append( ['Drame', sUrl + 'drame/'] )
-    liste.append( ['Divers', sUrl + 'divers/'] )
-    liste.append( ['Epouvante Horreur', sUrl + 'epouvante-horreur/'] )
-    liste.append( ['Famille', sUrl + 'famille/'] )
-    liste.append( ['Fantastique', sUrl + 'fantastique/'] )
-    liste.append( ['Guerre', sUrl + 'guerre/'] )
-    liste.append( ['Opera', sUrl + 'opera/'] )
-    liste.append( ['Policier', sUrl + 'policier/'] )
-    liste.append( ['Romance', sUrl + 'romance/'] )
-    liste.append( ['Science-fiction', sUrl + 'science-fiction/'] )
-    liste.append( ['Thriller', sUrl + 'thriller/'] )
+    liste.append( ['Action', sUrl + 'action'] )
+    liste.append( ['Animation', sUrl + 'animation'] )
+    liste.append( ['Aventure', sUrl + 'aventure'] )
+    liste.append( ['Biopic', sUrl + 'biopic'] )
+    liste.append( ['Comédie', sUrl + 'comedie'] )
+    liste.append( ['Comédie-dramatique', sUrl + 'comedie-dramatique'] )
+    liste.append( ['Comédie-musicale', sUrl + 'comedie-musicale'] )
+    liste.append( ['Documentaire', sUrl + 'documentaire'] )
+    liste.append( ['Drame', sUrl + 'drame'] )
+    liste.append( ['Divers', sUrl + 'divers'] )
+    liste.append( ['Epouvante Horreur', sUrl + 'epouvante-horreur'] )
+    liste.append( ['Famille', sUrl + 'famille'] )
+    liste.append( ['Fantastique', sUrl + 'fantastique'] )
+    liste.append( ['Guerre', sUrl + 'guerre'] )
+    liste.append( ['Opera', sUrl + 'opera'] )
+    liste.append( ['Policier', sUrl + 'policier'] )
+    liste.append( ['Romance', sUrl + 'romance'] )
+    liste.append( ['Science-fiction', sUrl + 'science-fiction'] )
+    liste.append( ['Thriller', sUrl + 'thriller'] )
 
     for sTitle, sUrl in liste:
 
@@ -104,7 +104,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="short-images.+?<a href="([^"]+)" title="([^"]+)" class=.+?<img src="([^"]+)".+?(?:<div class="short-content">|<a href=.+?qualite.+?>([^<>]+?)</a>.+?<a href=.+?langue.+?>([^<]+)<\/a>)'
+    sPattern = '<div class="short-images.+?<a href="([^"]+)" title="([^"]+)" class=.+?<img src="([^"]+)".+?(?:<div class="short-content">|<a href=.+?qualite.+?>(.*?)</a>.+?<a href=.+?langue.+?>(.*?)<\/a>)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == False):
@@ -129,6 +129,8 @@ def showMovies(sSearch = ''):
             sThumb = aEntry[2]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
+            sThumb = sThumb.replace('wwww.', 'www.')    # pb d'url sur les images lors des recherches
+
 
             sQual = ''
             if aEntry[3]:
@@ -281,9 +283,13 @@ def showLinks():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHost = aEntry[0].replace('server player-', '').capitalize()
-            if 'Allocine' in sHost:
+            sHost = aEntry[0].replace('server player-', '').replace('télécharger sur ', '').capitalize()
+
+            # Filtre des host
+            oHoster = cHosterGui().checkHoster(sHost)
+            if not oHoster:
                 continue
+
             sLang = aEntry[1].split('/')[-1].replace('.png', '')
 
             sDisplayTitle = ('%s (%s) [COLOR %s]%s[/COLOR]') % (sMovieTitle, sLang, sColor, sHost)
@@ -307,28 +313,6 @@ def showHosters():
 
     if not sUrl[:11] == URL_MAIN[:11]:
         sUrl = re.sub(sUrl[:11], URL_MAIN[:11], sUrl)
-
-
-    # import urllib2
-
-    # sUrl = ('%s%s%s%s%s' % (URL_MAIN, 'streamer.php?p=', datanum, '&c=', datacode))
-
-    # class NoRedirection(urllib2.HTTPErrorProcessor):
-            # def http_response(self, request, response):
-                # return response
-
-            # https_response = http_response
-
-    # opener = urllib2.build_opener(NoRedirection)
-    # opener.addheaders = [('User-Agent', UA)]
-    # opener.addheaders = [('Referer', URL_MAIN)]
-    # response = opener.open(sUrl)
-    # response.close()
-    # if response.code == 302:
-        # redirection_target = response.headers['Location']
-        # if redirection_target:
-
-            # sHosterUrl = redirection_target
 
     oParser = cParser()
     oRequest = cRequestHandler(sUrl)
