@@ -19,7 +19,7 @@ import re
 
 SITE_IDENTIFIER = 'hds_stream'
 SITE_NAME = 'Hds-stream'
-SITE_DESC = 'Film streaming HD complet en vf. Des films et séries pour les fan de streaming hds.'
+SITE_DESC = 'Film streaming HD complet en vf. Des films et séries pour les fans de streaming hds.'
 
 URL_MAIN = 'https://www.hds-stream.to/'
 
@@ -238,7 +238,7 @@ def showLinks():
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
 
-    sPattern = "class='loader'.+?data-type='([^']+)'.+?data-post='([^']+)'.+?data-nume='([^']+)'"
+    sPattern = "class='dooplay_player_option' data-type='([^']+)' data-post='([^']+)' data-nume='([^']+)'"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
