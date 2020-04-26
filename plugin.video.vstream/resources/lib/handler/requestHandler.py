@@ -1,13 +1,12 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 #
 import urllib
 import urllib2
 
-
 from urllib2 import HTTPError, URLError
-
 from resources.lib.comaddon import addon, dialog, VSlog
+
 
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
@@ -41,13 +40,13 @@ class cRequestHandler:
         self.__cType = cType
 
     def setTimeout(self, valeur):
-        self.__timeout = valeur    
+        self.__timeout = valeur
 
     def addHeaderEntry(self, sHeaderKey, sHeaderValue):
         for sublist in self.__aHeaderEntries:
             if sHeaderKey in sublist:
                 self.__aHeaderEntries.remove(sublist)
-        aHeader = {sHeaderKey : sHeaderValue}
+        aHeader = {sHeaderKey: sHeaderValue}
         self.__aHeaderEntries.append(aHeader)
 
     def addParameters(self, sParameterKey, mParameterValue):
@@ -56,14 +55,14 @@ class cRequestHandler:
     def addParametersLine(self, mParameterValue):
         self.__aParamatersLine = mParameterValue
 
-    #egg addMultipartFiled({'sess_id':sId,'upload_type':'url','srv_tmp_url':sTmp})
-    def addMultipartFiled(self,fields ):
+    #egg addMultipartFiled({'sess_id': sId, 'upload_type': 'url', 'srv_tmp_url': sTmp})
+    def addMultipartFiled(self, fields):
         mpartdata = MPencode(fields)
         self.__aParamatersLine = mpartdata[1]
         self.addHeaderEntry('Content-Type', mpartdata[0] )
         self.addHeaderEntry('Content-Length', len(mpartdata[1]))
 
-    #Je sais plus si elle gere les doublons
+    # Je sais plus si elle gere les doublons
     def getResponseHeader(self):
         return self.__sResponseHeader
 
@@ -76,24 +75,24 @@ class cRequestHandler:
             return ''
         if 'Set-Cookie' in self.__sResponseHeader:
             import re
-            
+
             #cookie_string = self.__sResponseHeader.getheaders('set-cookie')
             #c = ''
             #for i in cookie_string:
             #    c = c + i + ', '
             c = self.__sResponseHeader.get('set-cookie')
 
-            c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,\/]+?);',c)
+            c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,\/]+?);', c)
             if c2:
                 cookies = ''
                 for cook in c2:
-                    cookies = cookies + cook[0] + '=' + cook[1]+ ';'
+                    cookies = cookies + cook[0] + '=' + cook[1] + ';'
                 cookies = cookies[:-1]
                 return cookies
         return ''
 
     def request(self):
-        #Supprimee car deconne si url contient ' ' et '+' en meme temps
+        # Supprimee car deconne si url contient ' ' et '+' en meme temps
         #self.__sUrl = self.__sUrl.replace(' ', '+')
         return self.__callRequest()
 
@@ -136,7 +135,7 @@ class cRequestHandler:
                 VSlog('Retrying with SSL bug')
                 import ssl
                 gcontext = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
-                oResponse = urllib2.urlopen(oRequest, timeout = self.__timeout,context=gcontext)
+                oResponse = urllib2.urlopen(oRequest, timeout = self.__timeout, context=gcontext)
             else:
                 oResponse = urllib2.urlopen(oRequest, timeout = self.__timeout)
 
@@ -144,12 +143,12 @@ class cRequestHandler:
 
             self.__sResponseHeader = oResponse.info()
 
-            #compressed page ?
+            # compressed page ?
             if self.__sResponseHeader.get('Content-Encoding') == 'gzip':
                 import zlib
                 sContent = zlib.decompress(sContent, zlib.MAX_WBITS|16)
 
-            #https://bugs.python.org/issue4773
+            # https://bugs.python.org/issue4773
             self.__sRealUrl = oResponse.geturl()
             self.__sResponseHeader = oResponse.info()
 
@@ -158,31 +157,31 @@ class cRequestHandler:
         except urllib2.HTTPError, e:
             if e.code == 503:
 
-                #Protected by cloudFlare ?
+                # Protected by cloudFlare ?
                 from resources.lib import cloudflare
                 if cloudflare.CheckIfActive(e.read()):
                     self.__sResponseHeader = e.hdrs
                     cookies = self.GetCookies()
-                    VSlog( 'Page protegee par cloudflare')
+                    VSlog('Page protegee par cloudflare')
                     CF = cloudflare.CloudflareBypass()
-                    sContent = CF.GetHtml(self.__sUrl,e.read(),cookies,sParameters,oRequest.headers)
+                    sContent = CF.GetHtml(self.__sUrl, e.read(), cookies, sParameters, oRequest.headers)
                     self.__sRealUrl, self.__sResponseHeader = CF.GetReponseInfo()
                 else:
                     sContent = e.read()
                     self.__sRealUrl = e.geturl()
                     self.__sResponseHeader = e.headers()
-                    
+
             else:
                 try:
-                    VSlog("%s (%d),%s" % (self.ADDON.VSlang(30205), e.code , self.__sUrl))
+                    VSlog("%s (%d),%s" % (self.ADDON.VSlang(30205), e.code, self.__sUrl))
                     self.__sRealUrl = e.geturl()
                     self.__sResponseHeader = e.headers
-                    sContent = e.read()           
+                    sContent = e.read()
                 except:
                     sContent = ''
 
             if not sContent:
-                self.DIALOG.VSerror("%s (%d),%s" % (self.ADDON.VSlang(30205), e.code , self.__sUrl))
+                self.DIALOG.VSerror("%s (%d),%s" % (self.ADDON.VSlang(30205), e.code, self.__sUrl))
                 return ''
 
         except urllib2.URLError, e:
@@ -190,24 +189,26 @@ class cRequestHandler:
                 self.BUG_SSL = True
                 return self.__callRequest()
 
-            self.DIALOG.VSerror("%s (%s),%s" % (self.ADDON.VSlang(30205), e.reason , self.__sUrl))
-            return ''           
+            self.DIALOG.VSerror("%s (%s),%s" % (self.ADDON.VSlang(30205), e.reason, self.__sUrl))
+            return ''
 
         if (self.__bRemoveNewLines == True):
-            sContent = sContent.replace("\n","")
-            sContent = sContent.replace("\r\t","")
+            sContent = sContent.replace("\n", "")
+            sContent = sContent.replace("\r\t", "")
 
         if (self.__bRemoveBreakLines == True):
-            sContent = sContent.replace("&nbsp;","")
+            sContent = sContent.replace("&nbsp;", "")
 
         return sContent
 
-    def getHeaderLocationUrl(self):        
+    def getHeaderLocationUrl(self):
         opened = urllib.urlopen(self.__sUrl)
         return opened.geturl()
 
-#******************************************************************************
-#from https://github.com/eliellis/mpart.py
+# ******************************************************************************
+# from https://github.com/eliellis/mpart.py
+# ******************************************************************************
+
 
 def MPencode(fields):
     import mimetypes
@@ -235,13 +236,15 @@ def MPencode(fields):
 
     return content_type, ''.join(form_data)
 
-def __randy_boundary(length=10,reshuffle=False):
-    import random,string
-    
-    character_string = string.letters+string.digits
+
+def __randy_boundary(length=10, reshuffle=False):
+    import string
+    import random
+
+    character_string = string.letters + string.digits
     boundary_string = []
-    for i in range(0,length):
-        rand_index = random.randint(0,len(character_string) - 1)
+    for i in range(0, length):
+        rand_index = random.randint(0, len(character_string) - 1)
         boundary_string.append(character_string[rand_index])
     if reshuffle:
         random.shuffle(boundary_string)

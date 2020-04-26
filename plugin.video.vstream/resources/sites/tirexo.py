@@ -26,7 +26,8 @@ def getURL():
 
     sPattern = '<a class="full-wrap clearfix btn btn-danger" href="([^"]+)">Acc&eacute;der au site</a></div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    return aResult[1][0]
+    if aResult[0]:
+        return aResult[1][0]
 
 def GetURL_MAIN():
     ADDON = addon()
@@ -69,7 +70,7 @@ def GetURL_MAIN():
             VSlog("Tirexo pas besoin d'url")
             return ADDON.getSetting('Tirexo')
 
-URL_MAIN = GetURL_MAIN()
+URL_MAIN = "https://www2.zone-warez.org/"
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=2&story=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=15&story=', 'showMovies')
 URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=32&story=', 'showMovies')

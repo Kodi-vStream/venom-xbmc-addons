@@ -213,8 +213,8 @@ msgid "Activate recording"
 msgstr "Activer l'enregistrement"
 
 msgctxt "#30052"
-msgid "Minute automatically add to your chosen duration (in minutes)"
-msgstr "Minute ajouter automatiquement à votre durer choisie (en minute)"
+msgid "Minute automatically added to the chosen duration (in minutes)"
+msgstr "Minute ajoutée automatiquement à la durée choisie (en minute)"
 
 msgctxt "#30053"
 msgid "Time interval between each time check (in seconds)"
@@ -314,7 +314,7 @@ msgstr "Recherche"
 
 msgctxt "#30077"
 msgid "[COLOR gold]Select your search for: %s[/COLOR]"
-msgstr "[COLOR gold]Sélectionnez votre recherche pour: %s[/COLOR]"
+msgstr "[COLOR gold]Sélectionnez votre recherche pour : %s[/COLOR]"
 
 msgctxt "#30078"
 msgid "Search (Movie)"
@@ -330,7 +330,7 @@ msgstr "Recherche (Autre catégories)"
 
 msgctxt "#30081"
 msgid "[COLOR gold]Results for: %s[/COLOR]"
-msgstr "[COLOR gold]Résultats pour: %s[/COLOR]"
+msgstr "[COLOR gold]Résultats pour : %s[/COLOR]"
 
 msgctxt "#30082"
 msgid "Name already used"

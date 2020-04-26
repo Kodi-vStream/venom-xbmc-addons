@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -19,7 +19,6 @@ URL_MAIN = 'https://streaming-series.la/'
 SERIE_NEWS = (URL_MAIN, 'showMovies')
 SERIE_SERIES = ('http://', 'load')
 SERIE_GENRES = (True, 'showGenres')
-
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
@@ -98,7 +97,6 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
     sPattern = 'class="post-thumbnail">.+?href="([^"]+)" *title="([^"]+)".+?src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -135,7 +133,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -151,7 +149,7 @@ def __checkForNextPage(sHtmlContent):
 
 def showEpisodes():
     oGui = cGui()
-    oParser = cParser()
+
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -159,6 +157,7 @@ def showEpisodes():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    oParser = cParser()
 
     sDesc = ''
     try:
@@ -199,6 +198,7 @@ def showEpisodes():
 
 def showLinks():
     oGui = cGui()
+
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -208,7 +208,6 @@ def showLinks():
     oParser = cParser()
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
-
     sPattern = '<span class="lg">([^<]+)<|<span class="myLecteur">.+?<b>([^<]+)</b>.+?href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -222,7 +221,6 @@ def showLinks():
             else:
                 sHost = aEntry[1]
                 sUrl = URL_MAIN[:-1] + aEntry[2]
-
                 sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -236,6 +234,7 @@ def showLinks():
 
 def showHosters():
     oGui = cGui()
+
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')

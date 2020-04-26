@@ -1,6 +1,6 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-#Par jojotango
+# Par jojotango
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -9,14 +9,13 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, VSlog
 from resources.lib.config import GestionCookie
-#from resources.lib.util import cUtil
 import random, re
 
 SITE_IDENTIFIER = 'neuf_docu'
 SITE_NAME = '9Docu'
 SITE_DESC = 'Site pour Telecharger ou Regarder des Documentaires et Emissions TV Gratuitement'
 
-URL_MAIN = 'https://9docu.net/'
+URL_MAIN = 'https://9docu.org/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MISC = (URL_SEARCH[0], 'showMovies')

@@ -202,6 +202,11 @@ class cGui():
         return self.addText(sId)
 
     def addText(self, sId, sLabel = '', sIcon = 'none.png'):
+        
+        # Pas de texte lors des recherches globales
+        if window(10101).getProperty('search') == 'true':
+            return
+
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction('DoNothing')

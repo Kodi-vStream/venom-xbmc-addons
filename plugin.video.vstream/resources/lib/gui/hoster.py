@@ -74,24 +74,25 @@ class cHosterGui:
         oGuiElement.addContextItem(oContext)
 
         # Download menu
-        if oHoster.isDownloadable():
-            oContext = cContextElement()
-            oContext.setFile('cDownload')
-            oContext.setSiteName('cDownload')
-            oContext.setFunction('AddtoDownloadList')
-            oContext.setTitle(self.ADDON.VSlang(30202))
-            oContext.setOutputParameterHandler(oOutputParameterHandler)
-            oGuiElement.addContextItem(oContext)
-
-        if oHoster.isDownloadable():
-            # Beta context download and view menu
-            oContext = cContextElement()
-            oContext.setFile('cDownload')
-            oContext.setSiteName('cDownload')
-            oContext.setFunction('AddtoDownloadListandview')
-            oContext.setTitle(self.ADDON.VSlang(30326))
-            oContext.setOutputParameterHandler(oOutputParameterHandler)
-            oGuiElement.addContextItem(oContext)
+        if self.ADDON.getSetting('enregistrement_activer') == True :
+            if oHoster.isDownloadable():
+                oContext = cContextElement()
+                oContext.setFile('cDownload')
+                oContext.setSiteName('cDownload')
+                oContext.setFunction('AddtoDownloadList')
+                oContext.setTitle(self.ADDON.VSlang(30202))
+                oContext.setOutputParameterHandler(oOutputParameterHandler)
+                oGuiElement.addContextItem(oContext)
+    
+            if oHoster.isDownloadable():
+                # Beta context download and view menu
+                oContext = cContextElement()
+                oContext.setFile('cDownload')
+                oContext.setSiteName('cDownload')
+                oContext.setFunction('AddtoDownloadListandview')
+                oContext.setTitle(self.ADDON.VSlang(30326))
+                oContext.setOutputParameterHandler(oOutputParameterHandler)
+                oGuiElement.addContextItem(oContext)
 
         # Upload menu uptobox
         if cInputParameterHandler().getValue('site') != 'siteuptobox' and self.ADDON.getSetting('hoster_uptobox_premium') == 'true':
@@ -327,10 +328,16 @@ class cHosterGui:
             return self.getHoster('jetload')
         if ('dustreaming' in sHostName):
             return self.getHoster('dustreaming')
-        if ('french-vid' in sHostName or 'fembed.' in sHostName or 'yggseries' in sHostName or 'vfsplayer' in sHostName or 'fsimg' in sHostName or 'fem.tohds' in sHostName):
+        #frenchvid et clone
+        if ('french-vid' in sHostName) or ('yggseries' in sHostName):
             return self.getHoster('frenchvid')
-        if ('core1player' in sHostName):
+        if ('fembed' in sHostName) or ('fem.tohds' in sHostName):
             return self.getHoster('frenchvid')
+        if ('feurl' in sHostName) or ('fsimg' in sHostName):
+            return self.getHoster('frenchvid')
+        if ('core1player' in sHostName) or ('vfsplayer' in sHostName):
+            return self.getHoster('frenchvid')
+
         if ('flix555' in sHostName):
             return self.getHoster('flix555')
         if ('onlystream' in sHostName or 'gotochus' in sHostName):
@@ -345,6 +352,8 @@ class cHosterGui:
             return self.getHoster('supervideo')
         if ('dood' in sHostName):
             return self.getHoster('dood')
+        if ('vidia' in sHostName):
+            return self.getHoster('vidia')
 
         # Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):

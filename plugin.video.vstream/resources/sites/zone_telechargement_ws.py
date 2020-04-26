@@ -20,7 +20,7 @@ SITE_IDENTIFIER = 'zone_telechargement_ws'
 SITE_NAME = '[COLOR violet]Zone-Telechargement[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
-URL_HOST = 'https://www.zone-annuaire.com/'
+URL_HOST = 'https://wvvw.zone-annuaire.com/'
 
 def GetURL_MAIN():
     ADDON = addon()
@@ -460,6 +460,8 @@ def showMoviesLinks():
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sDisplayTitle = oInputParameterHandler.getValue('sDisplayTitle')
+    if not sDisplayTitle:   # Si on arrive par un marque-page
+        sDisplayTitle = sMovieTitle
     sThumb = oInputParameterHandler.getValue('sThumb')
     sUrl = oInputParameterHandler.getValue('siteUrl')
 

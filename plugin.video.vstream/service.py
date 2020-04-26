@@ -9,29 +9,29 @@ from resources.lib.comaddon import addon, xbmc, VSlog  # , xbmcgui, progress, di
 def service():
     ADDON = addon()
     interval = ADDON.getSetting('heure_verification')
-    record_is_activate = ADDON.getSetting('enregistrement_activer')
-    if record_is_activate == 'false':
+    recordIsActivate = ADDON.getSetting('enregistrement_activer')
+    if recordIsActivate == 'false':
         return
 
-    path_recording = 'special://userdata/addon_data/plugin.video.vstream/Enregistrement'
-    path = ''.join([path_recording])
+    pathRecording = 'special://userdata/addon_data/plugin.video.vstream/Enregistrement'
+    path = ''.join([pathRecording])
     if not xbmcvfs.exists(path):
         xbmcvfs.mkdir(path)
 
-    record_list = xbmcvfs.listdir(path)
+    recordList = xbmcvfs.listdir(path)
     ADDON.setSetting('path_enregistrement_programmation', path)
-    record_in_progress = False
+    recordInProgress = False
     monitor = xbmc.Monitor()
 
-    while not monitor.abortRequested() and not record_in_progress == True:
+    while not monitor.abortRequested() and not recordInProgress == True:
         if monitor.waitForAbort(int(interval)):
             break
 
         hour = datetime.now().strftime('%d-%H-%M') + '.py'
-        if hour in str(record_list):
+        if hour in str(recordList):
             hour = path + '/' + hour
             hour = xbmc.translatePath(hour)
-            record_in_progress = True
+            recordInProgress = True
             VSlog('python ' + hour)
             command = 'python ' + hour
             proc = subprocess.Popen(command, stdout=subprocess.PIPE)

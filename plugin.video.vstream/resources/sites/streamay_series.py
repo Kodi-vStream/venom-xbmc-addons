@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -12,7 +12,7 @@ SITE_IDENTIFIER = 'streamay_series'
 SITE_NAME = 'StreamAy Séries'
 SITE_DESC = 'Séries en Streaming'
 
-URL_MAIN = 'https://wwv.streamay.site/'
+URL_MAIN = 'https://wvv.streamay.site/'
 
 SERIE_SERIES = (URL_MAIN + 'series.html', 'showMovies')
 SERIE_NEWS = (URL_MAIN, 'showSeriesNews')
@@ -23,6 +23,7 @@ SERIE_ANNEES = (True, 'showSerieYears')
 URL_SEARCH = (URL_MAIN + 'recherche?q=', 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
+
 
 def load():
     oGui = cGui()

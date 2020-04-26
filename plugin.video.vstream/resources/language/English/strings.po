@@ -213,7 +213,7 @@ msgid "Activate recording"
 msgstr ""
 
 msgctxt "#30052"
-msgid "Minute automatically add to your chosen duration (in minutes)"
+msgid "Minute automatically added to the chosen duration (in minutes)"
 msgstr ""
 
 msgctxt "#30053"
