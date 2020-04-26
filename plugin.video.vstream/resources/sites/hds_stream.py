@@ -72,7 +72,6 @@ def showGenres():
     oParser = cParser()
     oRequestHandler = cRequestHandler(MOVIE_NEWS[0])
     sHtmlContent = oRequestHandler.request()
-
     sHtmlContent = oParser.abParse(sHtmlContent, '<h2>Films Par Genres</h2>', '<footer class="main">')
 
     sPattern = 'href="([^"]+)">([^<]+)</a> <i>([^<]+)<'
@@ -232,7 +231,7 @@ def showSxE():
                 oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
-
+    
     oGui.setEndOfDirectory()
 
 def showLinks():
@@ -321,7 +320,7 @@ def ShowSerieSaisonEpisodes():
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
 
-    sPattern = "id='player-option-.+?data-type='([^']+)'.+?data-post='([^']+)'.+?data-nume='([^']+)'.+?'server'>([^.]+)"
+    sPattern = "id='player-option-.+?data-type='([^']+)'.+?data-post='([^']+)'.+?data-nume='([^']+)'.+?'server'>([^.|^<]+)"
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
@@ -373,9 +372,9 @@ def seriesHosters():
 
     sHtmlContent = oRequest.request()
 
-    sPattern = sPattern = '(?:<iframe|<IFRAME).+?(?:src|SRC)=(?:\'|")(.+?)(?:\'|")'
+    sPattern = '(?:<iframe|<IFRAME).+?(?:src|SRC)=(?:\'|")(.+?)(?:\'|")'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sHosterUrl = aEntry
