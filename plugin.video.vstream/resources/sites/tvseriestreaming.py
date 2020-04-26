@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'tvseriestreaming'
 SITE_NAME = 'Tv_seriestreaming'
 SITE_DESC = 'Séries & Animés en Streaming'
 
-URL_MAIN = 'https://seriestreamingtv.com/'
+URL_MAIN = 'https://seriestreamingtv.com/'  #https://seriestreaming.co/
 
 SERIE_SERIES = ('http://', 'load')
 SERIE_VIEWS = (URL_MAIN + 'la-top-des-meilleures-serie', 'showMovies')
