@@ -73,12 +73,15 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         oRequest.addHeaderEntry('User-Agent', UA)
         sHtmlContent = oRequest.request()
+        
+        urlDonwload = oRequest.getRealUrl()
+        host = 'https://' + urlDonwload.split('/')[2]
 
         cookie = oRequest.GetCookies()
 
         #By-pass fake video
         #Get url
-        urlJS = 'https://streamz.cc/js/count.js'
+        urlJS = host + '/js/count.js'
         oRequest = cRequestHandler(urlJS)
         oRequest.addHeaderEntry('User-Agent', UA)
         JScode = oRequest.request()
@@ -96,7 +99,6 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(Fakeurl)
         oRequest.addHeaderEntry('User-Agent', UA)
         tmp = oRequest.request()
-        
   
         sPattern =  '(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -112,6 +114,7 @@ class cHoster(iHoster):
                         url = r.group(1)
 
             VSlog(url)
+            url = url.replace("getlink-","getmp4-")
 
             api_call = Getheader(url, cookie)
 
