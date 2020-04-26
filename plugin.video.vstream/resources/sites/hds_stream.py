@@ -373,9 +373,9 @@ def seriesHosters():
 
     sHtmlContent = oRequest.request()
 
-    sPattern = "<iframe.+?src='([^']+)'"
+    sPattern = sPattern = '(?:<iframe|<IFRAME).+?(?:src|SRC)=(?:\'|")(.+?)(?:\'|")'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
+    
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sHosterUrl = aEntry
