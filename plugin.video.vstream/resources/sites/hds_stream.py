@@ -330,7 +330,10 @@ def ShowSerieSaisonEpisodes():
             dType = aEntry[0]
             dPost = aEntry[1]
             dNum = aEntry[2]
-            sHost = aEntry[3].capitalize()
+            if (aEntry[3]).startswith('Unknown'):
+                sHost = 'Serveur' + dNum
+            else:      
+                sHost = aEntry[3].capitalize()
 
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
