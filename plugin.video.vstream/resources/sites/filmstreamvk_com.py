@@ -197,7 +197,7 @@ def showMovies(sSearch = ''):
                 sDesc = aEntry[3]
 
             if sDesc:
-                sDesc = cUtil().unescape(sDesc .decode('utf8'))
+                sDesc = cUtil().unescape(sDesc.decode('utf8'))
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
