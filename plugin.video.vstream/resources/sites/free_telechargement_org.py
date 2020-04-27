@@ -1,9 +1,5 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#Site qui sert comme panneau d'affichage pour leur site payant.
-#Beaucoup de liens renvoie sur leurs ancien domaine.
-#Beaucoup de contenu payant.
-return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -14,7 +10,7 @@ from resources.lib.util import cUtil, Quote
 from resources.lib.config import GestionCookie
 from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui
 
-import re,unicodedata
+import re
 
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
@@ -22,7 +18,7 @@ SITE_IDENTIFIER = 'free_telechargement_org'
 SITE_NAME = '[COLOR violet]Free-Téléchargement[/COLOR]'
 SITE_DESC = 'Fichiers en DDL, HD, Films, Séries, Mangas Etc...'
 
-URL_MAIN = 'http://www.free-telechargements.com/'
+URL_MAIN = 'http://www.free-telecharger.com/'
 URL_PROTECT = 'liens.free-telechargements'
 
 FUNCTION_SEARCH = 'showSearchResult'
@@ -436,7 +432,6 @@ def showMovies():
             sDesc = aEntry[2]
             sDesc = sDesc.decode("unicode_escape").encode("latin-1")
             sThumb = aEntry[3]
-            # sTitle = unicodedata.normalize('NFKD', sTitle.decode('latin-1')).encode('ascii', 'ignore')
 
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
 
@@ -637,9 +632,8 @@ def Display_protected_link():
                 aResult_dlprotect = oParser.parse(sHtmlContent, sPattern_dlprotect)
 
         else:
-            oDialog = dialog().VSok('Désolé, problème de captcha.\n Veuillez en rentrer un directement sur le site, le temps de réparer')
+            dialog().VSok('Désolé, problème de captcha.')
             aResult_dlprotect = (False, False)
-
     #Si lien normal
     else:
         if not sUrl.startswith('http'):
@@ -668,7 +662,6 @@ def DecryptddlProtect(url):
     tmp = url.split('/')
     host = tmp[0] + '//' + tmp[2] + '/'
 
-    cookies = ''
     dialogs = dialog()
     #try to get previous cookie
     cookies = GestionCookie().Readcookie('liens_free-telechargement_org')
