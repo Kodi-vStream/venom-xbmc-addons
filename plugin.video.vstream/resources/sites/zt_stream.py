@@ -6,6 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
+from resources.lib.comaddon import progress
 from resources.lib.util import Quote, cUtil
 
 import re
@@ -326,8 +327,13 @@ def showMovies(sSearch = ''):
     titles = set() # filtrer les titres similaires
 
     if (aResult[0] == True):
+        total = len(aResult[1])
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
+            
             sTitle = aEntry[2]
             sUrl2 = aEntry[1]
             sThumb = aEntry[0]
@@ -372,6 +378,8 @@ def showMovies(sSearch = ''):
                 oGui.addMoviePack(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
+
+        progress_.VSclose(progress_)
 
         if sSearch: # une seule page de résultats
             return
@@ -465,7 +473,7 @@ def showMoviesLinks():
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
+        
     oGui.setEndOfDirectory()
 
 def showSeriesLinks():
