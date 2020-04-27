@@ -16,7 +16,7 @@ UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/
 headers = {'User-Agent': UA}
 
 SITE_IDENTIFIER = 'extreme_down'
-SITE_NAME = 'Extreme Down (bêta)'
+SITE_NAME = 'Extreme Down'
 SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
 URL_MAIN = 'https://www.extreme-down.ninja/'
@@ -471,13 +471,7 @@ def showLinks():
     #print aResult1
 
     if (aResult1[0] == True):
-        total = len(aResult1[1])
-        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult1[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sUrl = aEntry[0]
             sQual = aEntry[1]
             sDisplayTitle = ('%s [%s]') % (sMovieTitle, sQual)
@@ -487,8 +481,6 @@ def showLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
     sHtmlContent2 = CutSais(sHtmlContent)
     sPattern2 = '<a class="btn-other" href="([^"]+)">([^<]+)<'
@@ -555,14 +547,8 @@ def showHosters():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-
-        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
 
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
@@ -580,8 +566,6 @@ def showHosters():
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
 
                 oGui.addTV(SITE_IDENTIFIER, 'RecapchaBypass', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
