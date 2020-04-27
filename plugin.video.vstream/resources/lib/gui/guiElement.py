@@ -42,6 +42,7 @@ class cGuiElement:
         # contient le titre modifié pour BDD
         self.__sFileName = ''
         self.__sDescription = ''
+        self.__sGenre = ''
         self.__sThumbnail = ''
         self.__sPoster = ''
         self.__Season = ''
@@ -125,6 +126,15 @@ class cGuiElement:
     def setYear(self, data):
         self.__Year = data
 
+    def getYear(self):
+        return self.__Year
+
+    def setGenre(self, genre):
+        self.__sGenre = genre
+
+    def getGenre(self):
+        return self.__sGenre
+
     def setMeta(self, sMeta):
         self.__sMeta = sMeta
 
@@ -186,7 +196,7 @@ class cGuiElement:
         if string:
             sTitle = sTitle.replace(string.group(0), '')
             self.__Year = str(string.group(0)[1:5])
-            self.addItemValues('Year', self.__Year)
+            self.addItemValues('year', self.__Year)
 
         # recherche une date
         string = re.search('([\d]{2}[\/|-]\d{2}[\/|-]\d{4})', sTitle)
@@ -363,6 +373,11 @@ class cGuiElement:
     def addItemValues(self, sItemKey, mItemValue):
         self.__aItemValues[sItemKey] = mItemValue
 
+    def getItemValue(self, sItemKey):
+        if sItemKey not in self.__aItemValues:
+            return
+        return self.__aItemValues[sItemKey]
+
     def getWatched(self):
 
         # Fonctionne pour marquer lus un dossier
@@ -444,19 +459,19 @@ class cGuiElement:
 
     def getMetadonne(self):
 
+        metaType = self.getMeta()
+        if metaType == 0:   # non media -> on sort, et on enleve le fanart
+            self.addItemProperties('fanart_image', '')
+            return
+
         sTitle = self.__sFileName
 
         #sTitle = self.__sTitle.decode('latin-1').encode('utf-8')
         #sTitle = re.sub(r'\[.*\]|\(.*\)', r'', str(self.__sFileName))
         #sTitle = sTitle.replace('VF', '').replace('VOSTFR', '').replace('FR', '')
 
-        #get_meta(self, media_type, name, imdb_id='', tmdb_id='', year='', overlay=6, update=False):
-        metaType = self.getMeta()
-
-        # non media -> pas de fanart
-        if metaType == 0:
-            self.addItemProperties('fanart_image', '')
-            return
+        # On nettoie le titre pour la recherche
+        sTitle=sTitle.replace('version longue', '')
 
         # Integrale de films, on nettoie le titre pour la recherche
         if metaType == 3 :
@@ -535,32 +550,25 @@ class cGuiElement:
         # else:
             # return
 
-        del meta['playcount']
-        del meta['trailer']
+        #del meta['playcount']
+        #del meta['trailer']
 
-        if meta['title']:
-            meta['title'] = self.getTitle()
+        meta['title'] = self.getTitle()
 
         for key, value in meta.items():
             self.addItemValues(key, value)
 
-        if meta['imdb_id']:
+        if 'imdb_id' in meta and meta['imdb_id']:
             self.__ImdbId = meta['imdb_id']
 
-        try:
-            if meta['tmdb_id']:
-                self.__TmdbId = meta['tmdb_id']
-        except:
-            pass
+        if 'tmdb_id' in meta and meta['tmdb_id']:
+            self.__TmdbId = meta['tmdb_id']
 
-        try:
-            if meta['tvdb_id']:
-                self.__TmdbId = meta['tvdb_id']
-        except:
-            pass
+#         if 'tvdb_id' in meta and meta['tvdb_id']:
+#             self.__TvdbId = meta['tvdb_id']
 
         # Si fanart trouvé dans les meta alors on l'utilise, sinon on n'en met pas
-        if meta['backdrop_url']:
+        if 'backdrop_url' in meta and meta['backdrop_url']:
             self.addItemProperties('fanart_image', meta['backdrop_url'])
             self.__sFanart = meta['backdrop_url']
         else:
@@ -578,8 +586,7 @@ class cGuiElement:
         return
 
     def getItemValues(self):
-        self.__aItemValues['Title'] = self.getTitle()
-        self.__aItemValues['Plot'] = self.getDescription()
+        self.addItemValues('Title', self.getTitle())
 
         #tmdbid
         if self.getTmdbId():
@@ -624,6 +631,14 @@ class cGuiElement:
 
         if self.getMetaAddon() == 'true':
             self.getMetadonne()
+
+        # Utilisation des infos connues si non trouvées
+        if not self.getItemValue('plot') and self.getDescription():
+            self.addItemValues('plot', self.getDescription())
+        if not self.getItemValue('year') and self.getYear():
+            self.addItemValues('year', self.getYear())
+        if not self.getItemValue('genre') and self.getGenre():
+            self.addItemValues('genre', self.getGenre())
 
         #Used only if there is data in db, overwrite getMetadonne()
         w = self.getWatched()
