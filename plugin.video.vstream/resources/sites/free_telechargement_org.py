@@ -1,5 +1,9 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+#Site qui sert comme panneau d'affichage pour leur site payant.
+#Beaucoup de liens renvoie sur leurs ancien domaine.
+#Beaucoup de contenu payant.
+return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
