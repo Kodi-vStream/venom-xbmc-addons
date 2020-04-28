@@ -7,6 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import Unquote
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'enstream'
 SITE_NAME = 'Enstream'
@@ -117,6 +118,8 @@ def showMovies(sSearch = ''):
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        total = len(aResult[1])
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
 
             sUrl = aEntry[0]
