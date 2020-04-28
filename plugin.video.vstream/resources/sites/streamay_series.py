@@ -331,6 +331,10 @@ def seriesHosters():
             sHost = aEntry[1].capitalize()
             if 'Lecteur hd vip' in sHost:
                 continue
+            # Filtre host connue
+            oHoster = cHosterGui().checkHoster(sHost)
+            if not oHoster:
+                continue
             sLang = aEntry[2].upper()
 
             sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
