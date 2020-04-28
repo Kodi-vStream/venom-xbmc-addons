@@ -74,7 +74,7 @@ class cHosterGui:
         oGuiElement.addContextItem(oContext)
 
         # Download menu
-        if self.ADDON.getSetting('enregistrement_activer') == True :
+        if self.ADDON.getSetting('enregistrement_activer') == 'true' :
             if oHoster.isDownloadable():
                 oContext = cContextElement()
                 oContext.setFile('cDownload')
