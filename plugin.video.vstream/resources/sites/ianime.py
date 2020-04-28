@@ -35,8 +35,11 @@ ANIM_VFS = (URL_MAIN + 'listing_vf.php', 'ShowAlpha2')
 ANIM_VOSTFRS = (URL_MAIN + 'listing_vostfr.php', 'ShowAlpha2')
 ANIM_GENRES = (URL_MAIN + 'categorie.php?watch=' + RandomKey, 'showGenres')
 
-URL_SEARCH_SERIES = ('', 'showMovies')
-URL_SEARCH = ('', 'showMovies')
+URL_SEARCH_MOVIES = ('movies=', 'showMovies')
+URL_SEARCH_SERIES = ('tvshow=', 'showMovies')
+URL_SEARCH_ANIMS = ('anime=', 'showMovies')
+URL_SEARCH = (URL_MAIN+'resultat+', 'showMovies')
+
 FUNCTION_SEARCH = 'showMovies'
 
 def DecryptMangacity(chain):
@@ -136,8 +139,16 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MOVIES[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche films', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche séries', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMS[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche animés', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
@@ -175,11 +186,12 @@ def load():
 
 def showSearch():
     oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = sSearchText
-        showMovies(sUrl)
+        showMovies(sUrl+sSearchText)
         oGui.setEndOfDirectory()
         return
 
@@ -319,24 +331,18 @@ def showMovies(sSearch = ''):
     oParser = cParser()
 
     if sSearch:
-
-        #query_args = { 's': str(sSearch) }
-        #data = urllib.urlencode(query_args)
-        #headers = {'User-Agent' : 'Mozilla 5.10', 'Referer' : 'URL_MAIN'}
-        #url = URL_MAIN + 'result.php'
-        #request = urllib2.Request(url, data, headers)
-        #reponse = urllib2.urlopen(request)
-
+        typeSearch, sSearch = sSearch.split('=')
         sSearch = Unquote(sSearch)
+        sSearch = cUtil().CleanName(sSearch)
         sSearch = QuotePlus(sSearch).upper() #remplace espace par + et passe en majuscule
 
-        url = URL_MAIN + 'resultat+' + sSearch + '.html'
+        url = URL_SEARCH[0] + sSearch + '.html'
 
         oRequestHandler = cRequestHandler(url)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
         sHtmlContent = oRequestHandler.request()
-
+        sHtmlContent = cutSearch(sHtmlContent, typeSearch)
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -807,3 +813,18 @@ def GetTinyUrl(url):
         reponse.close()
 
     return url
+
+
+def cutSearch(sHtmlContent, typeSearch):
+    types = {
+            'movies': 'Films et Animations',
+            'tvshow': 'S&eacute;ries et Drama',
+            'anime': 'Animes et Mangas'
+    }
+    sPattern = types.get(typeSearch) + '<.+?alt="separateur"(.+?)alt="separateur"'
+
+    aResult = cParser().parse(sHtmlContent, sPattern)
+    if (aResult[0]):
+        return aResult[1][0]
+    return ''
+
