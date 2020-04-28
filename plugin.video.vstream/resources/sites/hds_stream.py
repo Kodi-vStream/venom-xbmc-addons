@@ -7,7 +7,6 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-import re
 #from resources.lib.util import cUtil #outils pouvant etre utiles
 
 SITE_IDENTIFIER = 'hds_stream'
@@ -117,8 +116,8 @@ def showMovies(sSearch = ''):
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     if sSearch:
-      sUrl = sSearch
-      sPattern = '<div class="result-item">.*?<a href="([^"]+)"><img src="([^"]+)".*?<div class="title"><a.*?>([^"]+)</a.*?class="year">([^"]+)</span>.*?<div class="contenido"><p>([^"]+)</p>'
+        sUrl = sSearch
+        sPattern = '<div class="result-item">.*?<a href="([^"]+)"><img src="([^"]+)".*?<div class="title"><a.*?>([^"]+)</a.*?class="year">([^"]+)</span>.*?<div class="contenido"><p>([^"]+)</p>'
     elif 'tendance/' in sUrl:
         sPattern = 'id="post-[0-9].+?<img src="([^"]+)".+?class="data".+?href="([^"]+)">([^<]+).*?, ([^"]+)</span>'
     else:
@@ -186,7 +185,7 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = 'class="current".+?a href="([^"]+\/page\/\d)'
+    sPattern = 'class="current".+?a href="([^"]+/page/\d)/" class="inactive"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
