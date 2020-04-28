@@ -821,6 +821,11 @@ def showHosters():
             if aEntry[0]:
                 sHoster = re.sub('\.\w+', '', aEntry[0])
                 continue;
+            
+            # filtrer les hosts connus
+            oHoster = cHosterGui().checkHoster(sHoster)
+            if not oHoster:
+                continue
 
             sUrl2 = URL_MAIN[:-1] + aEntry[1]
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHoster)
