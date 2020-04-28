@@ -16,7 +16,7 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/5
 SITE_IDENTIFIER = 'tirexo'
 SITE_NAME = '[COLOR violet]Tirexo (ZT lol)[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
-URL_HOST = 'https://www.zone-warez.com/'
+URL_HOST = 'https://www.tirexo.com/'
 
 def getURL():
     oParser = cParser()
@@ -70,7 +70,8 @@ def GetURL_MAIN():
             VSlog("Tirexo pas besoin d'url")
             return ADDON.getSetting('Tirexo')
 
-URL_MAIN = "https://www2.zone-warez.org/"
+#Teste pour le moment avec une url fixe.
+URL_MAIN = "https://www2.tirexo.com/"
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=2&story=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=15&story=', 'showMovies')
 URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=32&story=', 'showMovies')
