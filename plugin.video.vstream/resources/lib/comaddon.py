@@ -207,7 +207,10 @@ def VSlog(e, level = xbmc.LOGDEBUG):
     #rapelle l'ID de l'addon pour être appelé hors addon
     if (addon('plugin.video.vstream').getSetting('debug') == 'true'):
         level = xbmc.LOGNOTICE
-    return xbmc.log('\t[PLUGIN] vStream: ' + str(e), level)
+    try:
+        xbmc.log('\t[PLUGIN] vStream: ' + str(e), level)
+    except:
+        pass
 
 def VSupdate():
     return xbmc.executebuiltin('Container.Refresh')
