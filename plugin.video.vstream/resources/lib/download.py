@@ -213,7 +213,7 @@ class cDownloadProgressBar(threading.Thread):
             # self.__instance = repr(self)
             self.file = xbmcvfs.File(self.__fPath, 'w')
         except:
-            VSlog('download error', self.__sUrl)
+            VSlog('download error ' + self.__sUrl)
             self.DIALOG.VSinfo('Download error', self.ADDON.VSlang(30011))
             return
 
@@ -318,7 +318,7 @@ class cDownload:
             return False
 
         try:
-            VSlog('Download', str(sUrl))
+            VSlog('Download ' + str(sUrl))
 
             # background download task
             if FastMode:
@@ -326,7 +326,7 @@ class cDownload:
             else:
                 cDownloadProgressBar(title = self.__sTitle, url = sUrl, Dpath = sDownloadPath ).start()
 
-            VSlog('Download Ok', sDownloadPath)
+            VSlog('Download Ok ' + sDownloadPath)
 
         except:
             self.DIALOG.VSinfo(self.ADDON.VSlang(30024), sTitle)
@@ -639,7 +639,7 @@ class cDownload:
                     xbmcvfs.File(sDownloadPath, 'w')
 
                 try:
-                    VSlog(self.ADDON.VSlang(30083), str(sUrl))
+                    VSlog(self.ADDON.VSlang(30083) + ' ' + str(sUrl))
                     meta['title'] = sTitle
                     meta['path'] = sDownloadPath
 
@@ -665,7 +665,7 @@ class cDownload:
         #if (bGetRedirectUrl == 'True'):
         #    sMediaUrl = self.__getRedirectUrl(sMediaUrl)
 
-        VSlog('Download', sMediaUrl)
+        VSlog('Download ' + sMediaUrl)
 
         meta = {}
         meta['url'] = sMediaUrl
@@ -689,7 +689,7 @@ class cDownload:
         sFileName = oInputParameterHandler.getValue('sFileName')
         # sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
 
-        VSlog('Download', sMediaUrl)
+        VSlog('Download ' + sMediaUrl)
 
         meta = {}
         meta['url'] = sMediaUrl
