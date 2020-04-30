@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -22,6 +22,9 @@ URL_SEARCH_MOVIES = (URL_SEARCH[0], FUNCTION_SEARCH)
 MOVIE_MOVIE = (True, 'load')
 MOVIE_NEWS = (URL_MAIN + 'films-streaming/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
+MOVIE_ANNEES = (True, 'showYears')
+MOVIE_LIST = (True, 'showAlpha')
+
 
 def load():
     oGui = cGui()
@@ -38,6 +41,13 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Ordre alphabétique)', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -88,6 +98,60 @@ def showGenres():
     oGui.setEndOfDirectory()
 
 
+def showYears():
+    oGui = cGui()
+
+    for i in reversed (xrange(1942, 2021)):
+        Year = str(i)
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'Annee/' + Year)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showAlpha():
+    oGui = cGui()
+    sUrl = URL_MAIN + 'ABC/'
+
+    liste = []
+    liste.append( ['0-9', sUrl] )
+    liste.append( ['A', sUrl + 'A'] )
+    liste.append( ['B', sUrl + 'B'] )
+    liste.append( ['C', sUrl + 'C'] )
+    liste.append( ['D', sUrl + 'D'] )
+    liste.append( ['E', sUrl + 'E'] )
+    liste.append( ['F', sUrl + 'F'] )
+    liste.append( ['G', sUrl + 'G'] )
+    liste.append( ['H', sUrl + 'H'] )
+    liste.append( ['I', sUrl + 'I'] )
+    liste.append( ['J', sUrl + 'J'] )
+    liste.append( ['K', sUrl + 'K'] )
+    liste.append( ['L', sUrl + 'L'] )
+    liste.append( ['M', sUrl + 'M'] )
+    liste.append( ['N', sUrl + 'N'] )
+    liste.append( ['O', sUrl + 'O'] )
+    liste.append( ['P', sUrl + 'P'] )
+    liste.append( ['Q', sUrl + 'Q'] )
+    liste.append( ['R', sUrl + 'R'] )
+    liste.append( ['S', sUrl + 'S'] )
+    liste.append( ['T', sUrl + 'T'] )
+    liste.append( ['U', sUrl + 'U'] )
+    liste.append( ['V', sUrl + 'V'] )
+    liste.append( ['W', sUrl + 'W'] )
+    liste.append( ['X', sUrl + 'X'] )
+    liste.append( ['Y', sUrl + 'Y'] )
+    liste.append( ['Z', sUrl + 'Z'] )
+
+    for sTitle, sUrl in liste:
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'listes.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
 def showMovies(sSearch = ''):
     oGui = cGui()
 
@@ -106,6 +170,8 @@ def showMovies(sSearch = ''):
 
     if sSearch:
         sPattern = '<a href="([^"]+)".+?url\((.+?)\).+?<div class="title"> (.+?) </div>'
+    elif 'Annee/' in sUrl or '/ABC' in sUrl:
+        sPattern = '<div class="table-movies-content"><a href="([^"]+)".+?url\((.+?)\).+?</i> ([^<]+) <'
     elif 'genre/' in sUrl:
         sPattern = 'film-uno"><a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)"'
     else:
