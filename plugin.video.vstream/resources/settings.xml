@@ -96,6 +96,8 @@
 
         <setting visible="false" id="plugin_filmspourenfants" type="bool" label="Films pour Enfants" default="true"/>
 
+        <setting visible="false" id="plugin_filmstreaming" type="bool" label="Film Streaming" default="true"/>
+
         <setting visible="false" id="plugin_filmstreamvk_com" type="bool" label="Filmstream vk" default="true"/>
 
         <setting visible="false" id="plugin_filmzenstream_com" type="bool" label="Filmzenstream)" default="true"/>
@@ -161,8 +163,6 @@
         <setting visible="false" id="plugin_spion_com" type="bool" label="Spion" default="true"/>
 
         <setting visible="false" id="plugin_streamavie" type="bool" label="Streamavie" default="true"/>
-
-        <setting visible="false" id="plugin_streamay_bz" type="bool" label="Streamay" default="true"/>
 
         <setting visible="false" id="plugin_streamay_series" type="bool" label="StreamAy Séries" default="true"/>
 
