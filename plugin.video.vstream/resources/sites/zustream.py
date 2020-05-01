@@ -329,7 +329,9 @@ def showLink():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        sortedList = sorted(aResult[1], key = getSortedKey)
+        
+        # trie par numéro de serveur
+        sortedList = sorted(aResult[1], key = lambda item:item[2])
         for aEntry in sortedList:
 
             sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
@@ -354,9 +356,6 @@ def showLink():
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
-def getSortedKey(item):
-    return item[2]
 
 def showHosters():
     oGui = cGui()
