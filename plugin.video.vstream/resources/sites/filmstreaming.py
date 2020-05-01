@@ -1,18 +1,20 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.gui.hoster import cHosterGui
+import base64
+import re
+
+from resources.lib.comaddon import progress  # , VSlog
 from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, dialog#, VSlog
 from resources.lib.util import cUtil, Unquote
-import base64, re
 
-SITE_IDENTIFIER = 'streamay_bz'
-SITE_NAME = 'Streamay'
-SITE_DESC = 'Films, Séries & Mangas en streaming'
+SITE_IDENTIFIER = 'filmstreaming'
+SITE_NAME = 'Film Streaming'
+SITE_DESC = 'Films en streaming'
 URL_MAIN = 'https://www.filmstreamingvf.watch/'
 
 MOVIE_MOVIE = ('http://', 'load')
@@ -21,7 +23,7 @@ MOVIE_VIEWS = (URL_MAIN + '?v_sortby=views&v_orderby=desc', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_LIST = (URL_MAIN, 'AlphaSearch')
 
-#la recherche ne fonctionne pas
+# la recherche ne fonctionne pas
 # FUNCTION_SEARCH = 'showMovies'
 # URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 # URL_SEARCH_MOVIES = ('', 'showSearchMovies')
@@ -46,12 +48,12 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
-    #30/10 Ne marche pas le site ne renvoi rien
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Liste) ', 'listes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Ordre alphabétique)', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showSearch():
     oGui = cGui()
@@ -61,6 +63,7 @@ def showSearch():
         showSearchMovies(sSearchText)
         oGui.setEndOfDirectory()
         return
+
 
 def showSearchMovies(sSearch = ''):
     oGui = cGui()
@@ -112,11 +115,13 @@ def showSearchMovies(sSearch = ''):
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
             progress_.VSclose(progress_)
+    oGui.setEndOfDirectory()
+
 
 def AlphaSearch():
     oGui = cGui()
 
-    for i in range(0, 27) :
+    for i in range(0, 27):
 
         if (i < 1):
             sLetter = '0-9'
@@ -130,6 +135,7 @@ def AlphaSearch():
         oGui.addDir(SITE_IDENTIFIER, 'showMovieslist', 'Lettre [COLOR coral]' + sLetter + '[/COLOR]', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showGenres():
     oGui = cGui()
@@ -152,6 +158,7 @@ def showGenres():
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMovieslist():
     oGui = cGui()
@@ -205,6 +212,7 @@ def showMovieslist():
 
         oGui.setEndOfDirectory()
 
+
 def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
@@ -233,7 +241,7 @@ def showMovies(sSearch = ''):
             sTitle = aEntry[2]
             sThumb = re.sub('/w\d+', '/w342', aEntry[0], 1)
             if sThumb.startswith('/'):
-                sThumb = 'http:' + sThumb
+                sThumb = 'https:' + sThumb
 
             sDesc = aEntry[3]
 
@@ -262,6 +270,7 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
+
 def __checkForNextPage(sHtmlContent):
     sPattern = 'href="*([^">]+)"*>Next'
     oParser = cParser()
@@ -270,6 +279,7 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
+
 
 def showHosters():
     oGui = cGui()
@@ -283,7 +293,7 @@ def showHosters():
 
     oParser = cParser()
 
-    sPattern = '<p class=AAIco-language>([^<]+)</p><p class=AAIco-dns>.+?<p class=AAIco-equalizer>([^<]+)</p>' #lang,qual
+    sPattern = '<p class=AAIco-language>([^<]+)</p><p class=AAIco-dns>.+?<p class=AAIco-equalizer>([^<]+)</p>'  # qual, lang
     aResult1 = re.findall(sPattern, sHtmlContent, re.DOTALL)
     # VSlog(str(aResult1)) #Commenter ou supprimer cette ligne une fois fini
 
