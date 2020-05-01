@@ -23,10 +23,10 @@ MOVIE_VIEWS = (URL_MAIN + '?v_sortby=views&v_orderby=desc', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_LIST = (URL_MAIN, 'AlphaSearch')
 
-# la recherche ne fonctionne pas
-# FUNCTION_SEARCH = 'showMovies'
-# URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-# URL_SEARCH_MOVIES = ('', 'showSearchMovies')
+# la recherche global ne fonctionne pas
+FUNCTION_SEARCH = 'showSearchMovies'
+URL_SEARCH = ('', 'showSearchMovies')
+URL_SEARCH_MOVIES = ('', 'showSearchMovies')
 
 
 def load():
@@ -70,21 +70,17 @@ def showSearchMovies(sSearch = ''):
     if sSearch:
 
         sSearch = Unquote(sSearch)
-
         sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
-
-        pdata = 'nonce=7a700d2f1b&action=tr_livearch&trsearch=' + sSearch #voir si nonce change
+        pdata = 'nonce=3293a1b68c&action=tr_livearch&trsearch=' + sSearch #la valeur nonce change
 
         oRequest = cRequestHandler(sUrl2)
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0")
         oRequest.addParameters('Referer', URL_MAIN)
-
         oRequest.addParametersLine(pdata)
+
         sHtmlContent = oRequest.request()
-
         sPattern = '<div class="TPost B">.+?<a href="([^"]+)">.+?<img src="([^"]+)".+?<div class="Title">([^<]+)</div>'
-
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -96,11 +92,11 @@ def showSearchMovies(sSearch = ''):
                 if progress_.iscanceled():
                     break
 
-                sTitle = aEntry[2]
                 sUrl = aEntry[0]
                 sThumb = re.sub('/w\d+', '/w342', aEntry[1], 1)
                 if sThumb.startswith('/'):
-                    sThumb = 'http:' + sThumb
+                    sThumb = 'https:' + sThumb
+                sTitle = aEntry[2]
 
                 #tris search
                 if sSearch and total > 3:
@@ -237,18 +233,13 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrl = aEntry[1]
-            sTitle = aEntry[2]
             sThumb = re.sub('/w\d+', '/w342', aEntry[0], 1)
             if sThumb.startswith('/'):
                 sThumb = 'https:' + sThumb
 
+            sUrl = aEntry[1]
+            sTitle = aEntry[2]
             sDesc = aEntry[3]
-
-            #tris search
-            # if sSearch and total > 3:
-                # if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
-                    # continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -267,7 +258,6 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
 
 
