@@ -641,19 +641,14 @@ def CutQual(sHtmlContent):
     oParser = cParser()
     sPattern = '<span class="other-qualities">&Eacute;galement disponible en :</span>(.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #print aResult
     if (aResult[0]):
         return aResult[1][0]
-    else:
-        return sHtmlContent
-
     return ''
 
 def CutSais(sHtmlContent):
     oParser = cParser()
     sPattern = '<span class="other-qualities">Autres saisons :</span>(.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #print aResult
     if (aResult[0]):
         return aResult[1][0]
     return ''
