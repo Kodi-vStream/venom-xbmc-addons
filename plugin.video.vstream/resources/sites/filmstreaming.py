@@ -111,7 +111,6 @@ def showSearchMovies(sSearch = ''):
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
             progress_.VSclose(progress_)
-    oGui.setEndOfDirectory()
 
 
 def AlphaSearch():
@@ -206,7 +205,7 @@ def showMovieslist():
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovieslist', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
-        oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory()
 
 
 def showMovies(sSearch = ''):
