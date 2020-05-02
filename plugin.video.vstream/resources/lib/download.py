@@ -1,19 +1,22 @@
 # -*- coding: utf-8 -*-
-# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+import re
+import sys
+import threading
+import urllib2
+
+import xbmcplugin
+import xbmcvfs
+
+from resources.lib.comaddon import addon, dialog, progress, VSlog, VSupdate, xbmc, xbmcgui
+from resources.lib.db import cDb
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.player import cPlayer
-from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
-from resources.lib.db import cDb
 from resources.lib.util import cUtil, UnquotePlus
-from resources.lib.comaddon import addon, dialog, progress, VSlog, VSupdate, xbmc , xbmcgui
-import urllib2
-import xbmcplugin
-import xbmcvfs
-import re, sys
-import threading
 
 # try:
 #     import StorageServer
@@ -28,14 +31,13 @@ SITE_IDENTIFIER = 'cDownload'
 # https://pymotw.com/2/threading/
 # https://code.google.com/p/navi-x/source/browse/trunk/Navi-X/src/CDownLoader.py?r=155
 
+# status = 0 => pas telechargé
+# status = 1 => en cours de DL (ou bloque si bug)
+# status = 2 => fini de DL
 
-#status = 0 => pas telechargé
-#status = 1 => en cours de DL (ou bloque si bug)
-#status = 2 => fini de DL
-
-#GetProperty('arret') = '0' => Telechargement en cours
-#GetProperty('arret') = '1' => Arret demandé
-#GetProperty('arret') = '' =>  Jamais eu de telechargement
+# GetProperty('arret') = '0' => Telechargement en cours
+# GetProperty('arret') = '1' => Arret demandé
+# GetProperty('arret') = '' =>  Jamais eu de telechargement
 
 
 class cDownloadProgressBar(threading.Thread):
@@ -279,12 +281,6 @@ class cDownload:
 
         return '%.*f %s' % (2, iBytes/(1024*1024.0), 'MB')
 
-    def isDownloading_old(self):
-
-        if not Memorise.get('VstreamDownloaderLock'):
-            return False
-        return True
-
     def isDownloading(self):
 
         if not xbmc.getCondVisibility('Window.IsVisible(10151)'):
@@ -304,7 +300,7 @@ class cDownload:
         oHoster = cHosterGui().checkHoster(sDBUrl)
         oHoster.setUrl(sDBUrl)
         aLink = oHoster.getMediaLink()
-        # aLink = (True,'https://github.com/LordVenom/venom-xbmc-addons-beta/blob/master/plugin.video.vstream/Thumbs.db?raw=true')
+        # aLink = (True, 'https://github.com/LordVenom/venom-xbmc-addons-beta/blob/master/plugin.video.vstream/Thumbs.db?raw=true')
 
         if aLink[0]:
             sUrl = aLink[1]
@@ -337,7 +333,7 @@ class cDownload:
 
     def __createTitle(self, sUrl, sTitle):
 
-        #sTitle = re.sub('[\(\[].+?[\)\]]',' ', sTitle)
+        #sTitle = re.sub('[\(\[].+?[\)\]]', ' ', sTitle)
         sTitle = cUtil().FormatSerie(sTitle)
         sTitle = cUtil().CleanName(sTitle)
 
@@ -362,7 +358,7 @@ class cDownload:
         sPluginHandle = cPluginHandler().getPluginHandle()
         sPluginPath = cPluginHandler().getPluginPath()
         sItemUrl = '%s?site=%s&function=%s&title=%s' % (sPluginPath, SITE_IDENTIFIER, 'StartDownloadList', 'title')
-        meta = {'title': 'Démarrer la liste'}
+        # meta = {'title': 'Démarrer la liste'}
         item = xbmcgui.ListItem('Démarrer la liste', iconImage = 'special://home/addons/plugin.video.vstream/resources/art/download.png')
 
         # item.setInfo(type='Video', infoLabels=meta)
@@ -395,7 +391,9 @@ class cDownload:
     def dummy(self):
         return
 
-    def StartDownloadOneFile(self, meta=[]):
+    def StartDownloadOneFile(self, meta=None):
+        if meta is None:
+            meta = []
         if not meta:
             meta = self.GetOnefile()
 
@@ -481,7 +479,7 @@ class cDownload:
 
         return row[0]
 
-    def StartDownload(self,data):
+    def StartDownload(self, data):
         if not (data):
             return
 
@@ -491,7 +489,7 @@ class cDownload:
         #thumbnail = UnquotePlus(data[4])
         #status = data[8]
 
-        self.download(url,title,path)
+        self.download(url, title, path)
 
     def StartDownloadList(self):
         self.DIALOG.VSinfo(self.ADDON.VSlang(30075))
@@ -505,7 +503,6 @@ class cDownload:
         #oInputParameterHandler = cInputParameterHandler()
         #path = oInputParameterHandler.getValue('sPath')
         #status = oInputParameterHandler.getValue('sStatus')
-
 
         #WINDOW_PROGRESS = xbmcgui.Window(10101)
         #WINDOW_PROGRESS.close()
@@ -562,7 +559,7 @@ class cDownload:
             elif status == '1':
                 sStatus = '[COLOR=red][En cours] [/COLOR]'
             elif status == '2':
-                sStatus='[COLOR=green][Fini] [/COLOR]'
+                sStatus = '[COLOR=green][Fini] [/COLOR]'
 
             if size:
                 sTitle = sStatus + title + ' (' + self.__formatFileSize(size) + '/' + self.__formatFileSize(totalsize) + ')'
