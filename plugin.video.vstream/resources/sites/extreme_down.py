@@ -377,14 +377,14 @@ def showMovies(sSearch = ''):
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
             sTitle = aEntry[2]
-            sQal = aEntry[3].replace('Avec TRUEFRENCH', '').replace('FRENCH', '')
+            sQual = aEntry[3].replace('Avec TRUEFRENCH', '').replace('FRENCH', '')
             sDesc = ''
 
             if sSearch and total > 2:
                 if cUtil().CheckOccurence(sSearch, sTitle) == 0:
                     continue
 
-            sDisplayTitle = ('%s [%s]') % (sTitle, sQal)
+            sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
