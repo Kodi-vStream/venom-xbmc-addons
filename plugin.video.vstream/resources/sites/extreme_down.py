@@ -377,20 +377,21 @@ def showMovies(sSearch = ''):
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
             sTitle = aEntry[2]
+            sQal = aEntry[3].replace('Avec TRUEFRENCH', '').replace('FRENCH', '')
             sDesc = ''
 
             if sSearch and total > 2:
                 if cUtil().CheckOccurence(sSearch, sTitle) == 0:
                     continue
 
-            sDisplayTitle = ('%s [%s]') % (sTitle, aEntry[3])
+            sDisplayTitle = ('%s [%s]') % (sTitle, sQal)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if 'mangas' in sUrl and not 'manga-films' in sUrl:
+            if '/films-' in sUrl or 'manga-films' in sUrl:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
