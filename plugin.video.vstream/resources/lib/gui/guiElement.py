@@ -574,9 +574,9 @@ class cGuiElement:
         else:
             self.addItemProperties('fanart_image', '')
 
-        # if meta['trailer_url']:
-            # meta['trailer'] = meta['trailer'].replace(u'\u200e', '').replace(u'\u200f', '')
-            # self.__sTrailerUrl = meta['trailer']
+        if 'trailer' in meta and meta['trailer']:
+#             meta['trailer'] = meta['trailer'].replace(u'\u200e', '').replace(u'\u200f', '')
+            self.__sTrailerUrl = meta['trailer']
 
         # Pas de changement de cover pour les coffrets de films
         if metaType != 3:
@@ -639,6 +639,10 @@ class cGuiElement:
             self.addItemValues('year', self.getYear())
         if not self.getItemValue('genre') and self.getGenre():
             self.addItemValues('genre', self.getGenre())
+#        if not self.getItemValue('cover_url') and self.getThumbnail():
+#            self.addItemValues('cover_url', self.getThumbnail())
+#        if not self.getItemValue('backdrop_url') and self.getPoster():
+#            self.addItemValues('backdrop_url', self.getPoster())
 
         #Used only if there is data in db, overwrite getMetadonne()
         w = self.getWatched()

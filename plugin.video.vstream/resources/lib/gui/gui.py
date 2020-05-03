@@ -192,8 +192,8 @@ class cGui():
         #oGuiElement.setDirFanart('next.png')
         oGuiElement.setCat(5)
 
-        self.createContexMenuPageSelect(oGuiElement, oOutputParameterHandler)
-        self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+#         self.createContexMenuPageSelect(oGuiElement, oOutputParameterHandler)
+#         self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
@@ -465,6 +465,9 @@ class cGui():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
+        oOutputParameterHandler.addParameter('sYear', oGuiElement.getYear())
+        oOutputParameterHandler.addParameter('sTrailerUrl', oGuiElement.getTrailerUrl())
+        oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
 
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewBA', self.ADDON.VSlang(30212))
 
@@ -681,10 +684,16 @@ class cGui():
     def viewBA(self):
         oInputParameterHandler = cInputParameterHandler()
         sFileName = oInputParameterHandler.getValue('sFileName')
+        sYear = oInputParameterHandler.getValue('sYear')
+        sTrailerUrl = oInputParameterHandler.getValue('sTrailerUrl')
+        sMeta = oInputParameterHandler.getValue('sMeta')
 
         from resources.lib.ba import cShowBA
         cBA = cShowBA()
         cBA.SetSearch(sFileName)
+        cBA.SetYear(sYear)
+        cBA.SetTrailerUrl(sTrailerUrl)
+        cBA.SetMetaType(sMeta)
         cBA.SearchBA()
 
     def viewinfo(self):
