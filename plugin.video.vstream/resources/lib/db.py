@@ -51,12 +51,12 @@ class cDb:
         try:
             self.dbcur.close()
             self.db.close()
-        except Exception, e:
+        except Exception:
             pass
 
     def _create_tables(self):
 
-        sql_create2 = 'DROP TABLE history'
+        # sql_create2 = 'DROP TABLE history'
 
         ''' Create table '''
         sql_create = "CREATE TABLE IF NOT EXISTS history ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""disp TEXT, ""icone TEXT, ""isfolder TEXT, ""level TEXT, ""lastwatched TIMESTAMP "", ""UNIQUE(title)"");"
@@ -70,9 +70,6 @@ class cDb:
 
         sql_create = "CREATE TABLE IF NOT EXISTS favorite ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""siteurl TEXT, ""site TEXT, ""fav TEXT, ""cat TEXT, ""icon TEXT, ""fanart TEXT, ""UNIQUE(title, site)"");"
         self.dbcur.execute(sql_create)
-
-        #sql_create = "DROP TABLE download"
-        #self.dbcur.execute(sql_create)
 
         sql_create = "CREATE TABLE IF NOT EXISTS download ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""url TEXT, ""path TEXT, ""cat TEXT, ""icon TEXT, ""size TEXT,""totalsize TEXT, ""status TEXT, ""UNIQUE(title, path)"");"
         self.dbcur.execute(sql_create)
@@ -124,7 +121,7 @@ class cDb:
             # matchedrow = self.dbcur.fetchone()
             matchedrow = self.dbcur.fetchall()
             return matchedrow
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return None
 
@@ -142,7 +139,7 @@ class cDb:
             self.DIALOG.VSinfo(self.ADDON.VSlang(30041))
             xbmc.executebuiltin('Container.Refresh')
             return False, False
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR DELETE')
             return False, False
 
@@ -161,8 +158,7 @@ class cDb:
         try:
             self.db.commit()
             VSlog('SQL INSERT watched Successfully')
-        except Exception, e:
-            # print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
+        except Exception:
             VSlog('SQL ERROR INSERT')
             pass
 
@@ -181,7 +177,7 @@ class cDb:
             if matchedrow:
                 return 1
             return 0
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return None
 
@@ -195,7 +191,7 @@ class cDb:
             self.dbcur.execute(sql_select)
             self.db.commit()
             return False, False
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return False, False
 
@@ -216,13 +212,12 @@ class cDb:
         try:
             self.db.commit()
             VSlog('SQL INSERT resume Successfully')
-        except Exception, e:
-            # print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
+        except Exception:
             VSlog('SQL ERROR INSERT')
             pass
 
     def get_resume(self, meta):
-        title = self.str_conv(meta['title'])
+        # title = self.str_conv(meta['title'])
         site = QuotePlus(meta['site'])
 
         sql_select = "SELECT * FROM resume WHERE hoster = '%s'" % site
@@ -232,7 +227,7 @@ class cDb:
             # matchedrow = self.dbcur.fetchone()
             matchedrow = self.dbcur.fetchall()
             return matchedrow
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return None
 
@@ -245,7 +240,7 @@ class cDb:
             self.dbcur.execute(sql_select)
             self.db.commit()
             return False, False
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return False, False
 
@@ -288,7 +283,7 @@ class cDb:
             # matchedrow = self.dbcur.fetchone()
             matchedrow = self.dbcur.fetchall()
             return matchedrow
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return None
 
@@ -317,7 +312,7 @@ class cDb:
             self.DIALOG.VSinfo(self.ADDON.VSlang(30044))
             xbmc.executebuiltin('Container.Refresh')
             return False, False
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return False, False
 
@@ -339,8 +334,7 @@ class cDb:
             self.db.commit()
             VSlog('SQL INSERT download Successfully')
             self.DIALOG.VSinfo(self.ADDON.VSlang(30042), meta['title'])
-        except Exception, e:
-            # print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
+        except Exception:
             VSlog('SQL ERROR INSERT')
             pass
 
@@ -356,7 +350,7 @@ class cDb:
             self.dbcur.execute(sql_select)
             matchedrow = self.dbcur.fetchall()
             return matchedrow
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return None
 
@@ -368,7 +362,7 @@ class cDb:
             self.dbcur.execute(sql_select)
             self.db.commit()
             return False, False
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return False, False
 
@@ -381,7 +375,7 @@ class cDb:
             self.dbcur.execute(sql_select)
             self.db.commit()
             return False, False
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return False, False
 
@@ -400,7 +394,7 @@ class cDb:
             self.dbcur.execute(sql_select)
             self.db.commit()
             return False, False
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return False, False
 
@@ -410,7 +404,7 @@ class cDb:
             self.dbcur.execute(sql_select)
             self.db.commit()
             return False, False
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return False, False
 
@@ -427,6 +421,6 @@ class cDb:
             self.dbcur.execute(sql_select)
             self.db.commit()
             return False, False
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return False, False
