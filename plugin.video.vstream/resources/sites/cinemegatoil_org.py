@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 
-#07/05/20
+#07/05/20 mise en place recaptcha
 return False
 
 from resources.lib.gui.hoster import cHosterGui
