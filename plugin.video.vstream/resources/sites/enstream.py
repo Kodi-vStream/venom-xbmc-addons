@@ -13,7 +13,7 @@ SITE_IDENTIFIER = 'enstream'
 SITE_NAME = 'Enstream'
 SITE_DESC = 'Regarder tous vos films streaming complets, gratuit et illimité'
 
-URL_MAIN = 'https://ww1.enstream.co/'
+URL_MAIN = 'https://enstream.to/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = ('', FUNCTION_SEARCH)
@@ -175,7 +175,7 @@ def showMovies(sSearch = ''):
     elif 'genre/' in sUrl:
         sPattern = 'film-uno"><a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)"'
     else:
-        sPattern = 'film-uno"><a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)".+?short-story">([^<]+)'
+        sPattern = 'film-uno">.+?<a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)".+?short-story">([^<]+)'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
