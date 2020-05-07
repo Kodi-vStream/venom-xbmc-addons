@@ -205,7 +205,7 @@ class cDownloadProgressBar(threading.Thread):
                 for i in u:
                     headers[i.split('=')[0]] = i.replace(i.split('=')[0] + '=', '')
 
-            # Rajout du user-agent si abscent
+            # Rajout du user-agent si absent
             if not ('User-Agent' in headers):
                 headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
 
@@ -220,7 +220,7 @@ class cDownloadProgressBar(threading.Thread):
             return
 
         # if not Memorise.lock('VstreamDownloaderLock'):
-        #     self.DIALOG.VSinfo('Téléchargements déjà démarrés', 'Download error')
+        #     self.DIALOG.VSinfo(self.ADDON.VSlang(30012), 'Download error')
         #     return
 
         if xbmc.getCondVisibility('Window.IsVisible(10151)'):
@@ -318,9 +318,9 @@ class cDownload:
 
             # background download task
             if FastMode:
-                cDownloadProgressBar(title=self.__sTitle, url=sUrl, Dpath=sDownloadPath, FastMode=True ).start()
+                cDownloadProgressBar(title=self.__sTitle, url=sUrl, Dpath=sDownloadPath, FastMode=True).start()
             else:
-                cDownloadProgressBar(title = self.__sTitle, url = sUrl, Dpath = sDownloadPath ).start()
+                cDownloadProgressBar(title = self.__sTitle, url = sUrl, Dpath = sDownloadPath).start()
 
             VSlog('Download Ok ' + sDownloadPath)
 
@@ -427,14 +427,12 @@ class cDownload:
         #oGuiElement.getInfoLabel()
 
         oPlayer = cPlayer()
-        #oPlayer.clearPlayList()
-        #oPlayer.addItemToPlaylist(oGuiElement)
-        if not (sys.argv[ 1 ] == '-1'):
-            oPlayer.run(oGuiElement, sTitle, path)
-        else:
-            oPlayer.clearPlayList()
-            oPlayer.addItemToPlaylist(oGuiElement)
-            oPlayer.startPlayer()
+        # if not (sys.argv[1] == '-1'):
+            # oPlayer.run(oGuiElement, sTitle, path)
+        # else:
+        oPlayer.clearPlayList()
+        oPlayer.addItemToPlaylist(oGuiElement)
+        oPlayer.startPlayer()
 
     def DelFile(self):
         oInputParameterHandler = cInputParameterHandler()
@@ -575,8 +573,9 @@ class cDownload:
             if status == '2':
                 oGuiElement.setFunction('ReadDownload')
             else:
-                #oGuiElement.setFunction('StartDownloadOneFile')  # marche pas a cause de fenetre xbmc
+                # oGuiElement.setFunction('StartDownloadOneFile')  # marche pas a cause de fenetre xbmc
                 oGuiElement.setFunction('ReadDownload')
+
             oGuiElement.setTitle(sTitle)
             oGuiElement.setIcon('download.png')
             oGuiElement.setMeta(0)
