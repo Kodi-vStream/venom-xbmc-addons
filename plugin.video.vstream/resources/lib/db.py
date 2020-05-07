@@ -59,19 +59,60 @@ class cDb:
         # sql_create2 = 'DROP TABLE history'
 
         ''' Create table '''
-        sql_create = "CREATE TABLE IF NOT EXISTS history ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""disp TEXT, ""icone TEXT, ""isfolder TEXT, ""level TEXT, ""lastwatched TIMESTAMP "", ""UNIQUE(title)"");"
+        sql_create = "CREATE TABLE IF NOT EXISTS history ("\
+                        "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
+                        "title TEXT, "\
+                        "disp TEXT, "\
+                        "icone TEXT, "\
+                        "isfolder TEXT, "\
+                        "level TEXT, "\
+                        "lastwatched TIMESTAMP "", "\
+                        "UNIQUE(title)"\
+                        ");"
         self.dbcur.execute(sql_create)
 
-        sql_create = "CREATE TABLE IF NOT EXISTS resume ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""hoster TEXT, ""point TEXT, ""UNIQUE(title, hoster)"");"
+        sql_create = "CREATE TABLE IF NOT EXISTS resume ("\
+                        "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
+                        "title TEXT, "\
+                        "hoster TEXT, "\
+                        "point TEXT, "\
+                        "UNIQUE(title, hoster)"\
+                        ");"
         self.dbcur.execute(sql_create)
 
-        sql_create = "CREATE TABLE IF NOT EXISTS watched ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""site TEXT, ""UNIQUE(title, site)"");"
+        sql_create = "CREATE TABLE IF NOT EXISTS watched ("\
+                        "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
+                        "title TEXT, "\
+                        "site TEXT, "\
+                        "UNIQUE(title, site)"\
+                        ");"
         self.dbcur.execute(sql_create)
 
-        sql_create = "CREATE TABLE IF NOT EXISTS favorite ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""siteurl TEXT, ""site TEXT, ""fav TEXT, ""cat TEXT, ""icon TEXT, ""fanart TEXT, ""UNIQUE(title, site)"");"
+        sql_create = "CREATE TABLE IF NOT EXISTS favorite ("\
+                        "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
+                        "title TEXT, "\
+                        "siteurl TEXT, "\
+                        "site TEXT, "\
+                        "fav TEXT, "\
+                        "cat TEXT, "\
+                        "icon TEXT, "\
+                        "fanart TEXT, "\
+                        "UNIQUE(title, site)"\
+                        ");"
         self.dbcur.execute(sql_create)
 
-        sql_create = "CREATE TABLE IF NOT EXISTS download ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""url TEXT, ""path TEXT, ""cat TEXT, ""icon TEXT, ""size TEXT,""totalsize TEXT, ""status TEXT, ""UNIQUE(title, path)"");"
+        sql_create = "CREATE TABLE IF NOT EXISTS download ("\
+                        "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
+                        "title TEXT, "\
+                        "url TEXT, "\
+                        "path TEXT, "\
+                        "cat TEXT, "\
+                        "icon TEXT, "\
+                        "size TEXT,"\
+                        "totalsize TEXT, "\
+                        "status TEXT, "\
+                        "UNIQUE(title, path)"\
+                        ");"
         self.dbcur.execute(sql_create)
 
         VSlog('Table initialized')
