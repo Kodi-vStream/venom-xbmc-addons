@@ -332,7 +332,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<a class="th-in" href="([^"]+)">.+?<img src="([^"]+)" alt="([^"]+)".+?<div class="th-tip-meta.+?</span><span>([^<]+)</span>.+?style="color: #aaa;">([^<]+)</span>'
+    sPattern = '<a class="th-in" href="([^"]+)".+?src="([^"]+)" alt="([^"]+)".+?<div class="th-tip-meta.+?<span>([^\D]+).+?style="color: #aaa;">([^<]+)<'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
