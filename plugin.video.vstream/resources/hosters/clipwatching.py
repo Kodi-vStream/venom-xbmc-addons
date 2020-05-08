@@ -50,7 +50,7 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         #accelère le traitement
-        sHtmlContent = oParser.abParse(sHtmlContent, 'var player', 'vvplay')
+        sHtmlContent = oParser.abParse(sHtmlContent, 'var holaplayer', 'vvplay')
         sPattern = '"(http[^"]+\.mp4)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -68,6 +68,12 @@ class cHoster(iHoster):
 
             #dialogue Lien si plus d'une url
             api_call = dialog().VSselectqual(qua, url)
+
+        if not api_call:
+            sPattern = 'sources: *\[{src: "([^"]+)", *type:'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                api_call = aResult[1][0].replace(',', '').replace('master.m3u8', 'index-v1-a1.m3u8')
 
         if (api_call):
             return True, api_call
