@@ -10,13 +10,13 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil, urlEncode, QuotePlus
 from resources.lib.comaddon import progress, VSlog, xbmc, dialog, addon
 
-import re, xbmcvfs
+import re, xbmcvfs, json
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/69.0'
 headers = {'User-Agent': UA}
 
 SITE_IDENTIFIER = 'extreme_down'
-SITE_NAME = 'Extreme Down'
+SITE_NAME = '[COLOR violet]Extreme Down[/COLOR]'
 SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
 URL_MAIN = 'https://www.extreme-down.ninja/'
@@ -26,7 +26,7 @@ URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-MOVIE_NEWS = (URL_MAIN, 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_MOVIE = ('http://', 'showMenuFilms')
 MOVIE_HD1080 = (URL_MAIN + 'films-new-hd/new-bluray-1080p/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
@@ -50,6 +50,7 @@ MOVIE_CLASSIQUE_SD = (URL_MAIN + 'films-classique/classiques-sd', 'showMovies')
 MOVIE_CLASSIQUE_HD = (URL_MAIN + 'films-classique/classiques-hd', 'showMovies')
 
 SERIE_SERIES = ('http://', 'showMenuSeries')
+SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
 SERIE_HD = (URL_MAIN + 'series-hd/1080p-series-vf', 'showMovies')
 SERIE_GENRES = (True, 'showGenres')
 SERIE_ANNEES = (True, 'showSerieYears')
@@ -62,6 +63,7 @@ SERIE_SDVO = (URL_MAIN + 'series/vostfr/', 'showMovies')
 SERIE_SDVF = (URL_MAIN + 'series/vf/', 'showMovies')
 
 ANIM_ANIMS = ('http://', 'showMenuMangas')
+ANIM_NEWS = (URL_MAIN + 'mangas/', 'showMovies')
 ANIM_FILM = (URL_MAIN + 'mangas/manga-films/', 'showMovies')
 ANIM_VOSTFRS =  (URL_MAIN + 'mangas/series-vostfr/', 'showMovies')
 ANIM_VFS = (URL_MAIN + 'mangas/series-vf/', 'showMovies')
@@ -69,6 +71,7 @@ ANIM_MULTI = (URL_MAIN + 'mangas/series-multi/', 'showMovies')
 
 DOC_NEWS = (URL_MAIN + 'documentaires/', 'showMovies')
 SPECTACLE_NEWS =  (URL_MAIN + 'theatre/', 'showMovies')
+
 
 def load():
     ADDON = addon()
@@ -103,6 +106,10 @@ def load():
 
 def showMenuFilms():
     oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD1080[0])
@@ -178,6 +185,10 @@ def showMenuSeries():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Series (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_HD[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_HD[1], 'Séries 1080p VF', 'series.png', oOutputParameterHandler)
 
@@ -213,6 +224,10 @@ def showMenuSeries():
 
 def showMenuMangas():
     oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animes (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_FILM[0])
@@ -585,20 +600,14 @@ def RecapchaBypass():#Ouverture de Chrome Launcher s'il est intallez
         sUrl_Bypass = "https://api.alldebrid.com/v4/link/redirector?agent=service&version=1.0-&apikey=" + Token_Alldebrid + "&link=" + sUrl
 
     oRequestHandler = cRequestHandler(sUrl_Bypass)
-    sHtmlContent = oRequestHandler.request()
+    sHtmlContent = json.loads(oRequestHandler.request())
 
-    oParser = cParser()
-    sPattern1 = '"https([^"]+)"'
-    aResult3 = oParser.parse(sHtmlContent, sPattern1)
-    if (aResult3[0] == True):
-        for aEntry in aResult3[1]:
-
-            sHosterUrl = 'https' + str(aEntry)
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    sHosterUrl = sHtmlContent["data"]["links"][0]
+    oHoster = cHosterGui().checkHoster(sHosterUrl)
+    if (oHoster != False):
+        oHoster.setDisplayName(sMovieTitle)
+        oHoster.setFileName(sMovieTitle)
+        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
@@ -653,4 +662,3 @@ def CutSais(sHtmlContent):
     if (aResult[0]):
         return aResult[1][0]
     return ''
-
