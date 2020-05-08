@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -15,29 +15,23 @@ SITE_DESC = 'Regarder Films et Séries en Streaming gratuit'
 
 URL_MAIN = 'https://www1.k-streaming.co'
 
-#definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle sera affichee.
-#LA RECHERCHE GLOBAL N'UTILE PAS showSearch MAIS DIRECTEMENT LA FONCTION INSCRITE DANS LA VARIABLE URL_SEARCH_*
+# definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle sera affichee.
+# LA RECHERCHE GLOBAL N'UTILISE PAS showSearch MAIS DIRECTEMENT LA FONCTION INSCRITE DANS LA VARIABLE URL_SEARCH_*
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + '/recherche/', 'showMovies')
-#recherche global films
+# recherche global films
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
-#recherche global serie
+# recherche global serie
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 
-MOVIE_NEWS = (URL_MAIN + '/films/', 'showMovies')
 MOVIE_MOVIE = ('http://', 'showMenuMovies')
-# MOVIE_VIEWS = (URL_MAIN + '/film-les-plus-vues/', 'showMovies')
-# MOVIE_COMMENTS = (URL_MAIN + '/films-plus-commenter-streaming/', 'showMovies')
-# MOVIE_NOTES = (URL_MAIN + '/film-streaming-populaires/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + '/films/', 'showMovies')
 MOVIE_GENRES = (URL_MAIN, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
 MOVIE_LIST = (URL_MAIN, 'showAlpha')
 
 SERIE_SERIES = ('http://', 'showMenuSeries')
 SERIE_NEWS = (URL_MAIN + '/series/', 'showMovies')
-# SERIE_VIEWS =  (URL_MAIN + '/film-les-plus-vues/', 'showMovies')
-# SERIE_COMMENTS = (URL_MAIN + '/films-plus-commenter-streaming/', 'showMovies')
-# SERIE_NOTES = (URL_MAIN + '/film-streaming-populaires/', 'showMovies')
 SERIE_GENRES = (SERIE_NEWS[0], 'showGenres')
 SERIE_ANNEES = (True, 'showSeriesYears')
 SERIE_LIST = (URL_MAIN + '/series/', 'showAlpha')
@@ -51,11 +45,11 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMenuMovies', 'Films (Menu)', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuMovies', 'Films', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMenuSeries', 'Séries (Menu)', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuSeries', 'Séries', 'series.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -78,18 +72,6 @@ def showMenuMovies():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Ordre alphabétique)', 'listes.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    # oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'views.png', oOutputParameterHandler)
-
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_COMMENTS[0])
-    # oGui.addDir(SITE_IDENTIFIER, MOVIE_COMMENTS[1], 'Films (Les plus commentés)', 'comments.png', oOutputParameterHandler)
-
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
-    # oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'notes.png', oOutputParameterHandler)
-
     oGui.setEndOfDirectory()
 
 def showMenuSeries():
@@ -111,18 +93,6 @@ def showMenuSeries():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Ordre alphabétique)', 'listes.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
-    # oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Les plus vues)', 'views.png', oOutputParameterHandler)
-
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', SERIE_COMMENTS[0])
-    # oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENTS[1], 'Séries (Les plus commentées) ', 'comments.png', oOutputParameterHandler)
-
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', SERIE_NOTES[0])
-    # oGui.addDir(SITE_IDENTIFIER, SERIE_NOTES[1], 'Séries (Les mieux notées)', 'notes.png', oOutputParameterHandler)
-
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -130,7 +100,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
+        sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '%20')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -223,7 +193,7 @@ def showAlpha():
 
     oGui.setEndOfDirectory()
 
-def showYears():#creer une liste inversée d'annees
+def showYears():
     oGui = cGui()
 
     for i in reversed (xrange(1918, 2021)):
@@ -234,7 +204,7 @@ def showYears():#creer une liste inversée d'annees
 
     oGui.setEndOfDirectory()
 
-def showSeriesYears():#creer une liste inversée d'annees
+def showSeriesYears():
     oGui = cGui()
 
     for i in reversed (xrange(1980, 2021)):
@@ -253,7 +223,7 @@ def showMovies(sSearch = ''):
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     if sSearch:
-        sUrl = sSearch.replace(' ', '+')
+        sUrl = sSearch.replace(' ', '%20')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -274,23 +244,23 @@ def showMovies(sSearch = ''):
                 break
 
             sUrl2 = aEntry[0]
+            if not sUrl2.startswith('http'):
+                sUrl2 = URL_MAIN + sUrl2
+
             sThumb = aEntry[1]
+            if not sThumb.startswith('http'):
+                sThumb = URL_MAIN + sThumb
+
             sTitle = aEntry[2].replace('Streaming', '')
             sQual = aEntry[3].replace('qualite ', '')
             sDisplayTitle = sTitle + ' [' + sQual + ']'
 
             sDesc = ''
-            if not sThumb.startswith('http'):
-                sThumb = URL_MAIN + sThumb
-
-            if not sUrl2.startswith('http'):
-                sUrl2 = URL_MAIN + sUrl2
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-
 
             if '-saison-' in sUrl2 or '/series-' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
@@ -318,7 +288,7 @@ def __checkForNextPage(sHtmlContent):
     return False
 
 def showSaisons():
-    #Uniquement saison a chaque fois
+    # Uniquement saison a chaque fois
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -336,7 +306,7 @@ def showSaisons():
 
             sUrl = aEntry[0]
             sTitle = aEntry[1]
-            sTitle = re.sub(' - Saison \d+', '', sTitle)#double affichage de la saison
+            sTitle = re.sub(' - Saison \d+', '', sTitle)  # double affichage de la saison
 
             if not sUrl.startswith('http'):
                 sUrl = URL_MAIN + sUrl
