@@ -1,14 +1,16 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.gui.hoster import cHosterGui
+import re
+import unicodedata
+
+from resources.lib.comaddon import progress
 from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
 from resources.lib.util import cUtil
-import re, unicodedata
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
 
@@ -30,6 +32,7 @@ URL_SEARCH = (URL_MAIN + '?keyword=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
+
 
 def load():
     oGui = cGui()
@@ -56,6 +59,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
@@ -64,6 +68,7 @@ def showSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
+
 
 def showGenres():
     oGui = cGui()
@@ -99,6 +104,7 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
+
 def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
@@ -126,11 +132,11 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            #encode/decode pour affichage des accents
+            # encode/decode pour affichage des accents
             sTitle = unicode(aEntry[1], 'utf-8')
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode('unicode_escape')
             sTitle = sTitle.encode('latin-1')
-            #Nettoyage du titre
+            # Nettoyage du titre
             sTitle = sTitle.replace(' en streaming', '')
             if sTitle.startswith('Film'):
                 sTitle = sTitle.replace('Film ', '')
@@ -138,7 +144,7 @@ def showMovies(sSearch=''):
             sUrl = URL_MAIN[:-1] + aEntry[0]
             sThumb = URL_MAIN[:-1] + aEntry[2]
 
-            #tris search
+            # tris search
             if sSearch and total > 3:
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
                     continue
@@ -155,14 +161,15 @@ def showMovies(sSearch=''):
 
         progress_.VSclose(progress_)
 
+    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     sPattern = 'href="([^"]+)">>><'
@@ -172,6 +179,7 @@ def __checkForNextPage(sHtmlContent):
         return URL_MAIN[:-1] + aResult[1][0]
 
     return False
+
 
 def showSeriesNews():
     oGui = cGui()
@@ -207,6 +215,7 @@ def showSeriesNews():
 
     oGui.setEndOfDirectory()
 
+
 def showSeriesList():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -231,7 +240,7 @@ def showSeriesList():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
             else:
                 sUrl = aEntry[1]
-                sTitle =  aEntry[2]
+                sTitle = aEntry[2]
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -242,6 +251,7 @@ def showSeriesList():
 
     oGui.setEndOfDirectory()
 
+
 def showSeries():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -251,7 +261,7 @@ def showSeries():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    #on remplace pour afficher la langue
+    # on remplace pour afficher la langue
     sHtmlContent = sHtmlContent.replace('width: 50%;float: left;', 'VF')
     sHtmlContent = sHtmlContent.replace('width: 50%;float: right;', 'VOSTFR')
 
@@ -259,7 +269,7 @@ def showSeries():
 
     sDesc = ''
     try:
-        sPattern = '<p>Résumé.+?treaming : (.+?)<\/p>'
+        sPattern = '<p>Résumé.+?treaming : (.+?)</p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0].replace('&#8217;', '\'').replace('&#8230;', '...')
@@ -280,10 +290,10 @@ def showSeries():
             if progress_.iscanceled():
                 break
 
-            if aEntry[0]:#Affichage de la langue
+            if aEntry[0]:  # Affichage de la langue
                 oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + aEntry[0] + '[/COLOR]')
             else:
-                #on vire le double affichage de la saison
+                # on vire le double affichage de la saison
                 sMovieTitle = re.sub('- Saison \d+', '', sMovieTitle)
                 sTitle = sMovieTitle + ' ' + aEntry[1].replace(' x ', '').replace(' ', '')
                 sData = aEntry[2]
@@ -299,6 +309,7 @@ def showSeries():
 
     oGui.setEndOfDirectory()
 
+
 def showLinks():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -312,7 +323,7 @@ def showLinks():
 
     sDesc = ''
     try:
-        sPattern = '<p>([^<>"]+)<\/p>'
+        sPattern = '<p>([^<>"]+)</p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0].replace('&#8217;', '\'').replace('&#8230;', '...')
@@ -358,6 +369,7 @@ def showLinks():
 
     oGui.setEndOfDirectory()
 
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -378,7 +390,7 @@ def showHosters():
 
             sHosterUrl = aEntry
 
-            if 'opsktp' in aEntry:# redirection vers ==> fsimg
+            if 'opsktp' in aEntry:  # redirection vers ==> fsimg
                 oRequestHandler = cRequestHandler(aEntry)
                 oRequestHandler.request()
                 sHosterUrl = oRequestHandler.getRealUrl()
@@ -390,6 +402,7 @@ def showHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
 
 def showSeriesHosters():
     oGui = cGui()
@@ -403,7 +416,7 @@ def showSeriesHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    #Decoupage pour cibler l'épisode
+    # Decoupage pour cibler l'épisode
     sPattern = sData + '">(.+?)</ul>'
     sHtmlContent = oParser.parse(sHtmlContent, sPattern)
 
@@ -422,6 +435,7 @@ def showSeriesHosters():
 
     oGui.setEndOfDirectory()
 
+
 def showHostersOld():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -431,14 +445,14 @@ def showHostersOld():
     sRefUrl = oInputParameterHandler.getValue('sRefUrl')
     sCookie = oInputParameterHandler.getValue('cookies')
 
-    #validation
+    # validation
     oRequestHandler = cRequestHandler(URL_MAIN + 'image/logo.png')
     oRequestHandler.addHeaderEntry("User-Agent", UA)
     oRequestHandler.addHeaderEntry("Referer", sRefUrl)
     oRequestHandler.addHeaderEntry("Cookie", sCookie)
     sHtmlContent = oRequestHandler.request()
 
-    #final
+    # final
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry("User-Agent", UA)
     oRequestHandler.addHeaderEntry("Referer", sRefUrl)
@@ -459,7 +473,7 @@ def showHostersOld():
             sPattern = "join\(\'\'\)\;\}\('(.+?)','(.+?)','(.+?)','(.+?)'\)\)"
             args = re.findall(sPattern, jscode, re.DOTALL)
             jscode = decode_js(args[0][0], args[0][1], args[0][2], args[0][3])
-            maxretries = maxretries -1
+            maxretries = maxretries - 1
 
         sPattern='url=([^"]+)\"'
         oParser = cParser()
@@ -474,8 +488,9 @@ def showHostersOld():
 
     oGui.setEndOfDirectory()
 
+
 def getcookie(head):
-    #get cookie
+    # get cookie
     cookies = ''
     if 'Set-Cookie' in head:
         oParser = cParser()
@@ -486,7 +501,8 @@ def getcookie(head):
                 cookies = cookies + cook[0] + '=' + cook[1] + ';'
             return cookies
 
-#author @NizarAlaoui
+
+# author @NizarAlaoui
 def decode_js(k, i, s, e):
     varinc = 0
     incerement2 = 0
@@ -520,7 +536,7 @@ def decode_js(k, i, s, e):
         localvar = -1
         if ord(secondstr[incerement2]) % 2:
             localvar = 1
-        finaltab.append(chr(int(firststr[varinc:varinc+2], base=36) - localvar))
+        finaltab.append(chr(int(firststr[varinc: varinc+2], base=36) - localvar))
         incerement2=incerement2 + 1
         if incerement2 >= len(secondtab):
             incerement2 = 0
