@@ -602,12 +602,14 @@ def RecapchaBypass():#Ouverture de Chrome Launcher s'il est intallez
     oRequestHandler = cRequestHandler(sUrl_Bypass)
     sHtmlContent = json.loads(oRequestHandler.request())
 
-    sHosterUrl = sHtmlContent["data"]["links"][0]
-    oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if (oHoster != False):
-        oHoster.setDisplayName(sMovieTitle)
-        oHoster.setFileName(sMovieTitle)
-        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    HostURL = sHtmlContent["data"]["links"]
+    for sHosterUrl in HostURL:
+
+        oHoster = cHosterGui().checkHoster(sHosterUrl)
+        if (oHoster != False):
+            oHoster.setDisplayName(sMovieTitle)
+            oHoster.setFileName(sMovieTitle)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
