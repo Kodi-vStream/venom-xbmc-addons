@@ -1,6 +1,6 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-#return False
+# return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -8,13 +8,13 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-#import urllib2
+# import urllib2
 
 SITE_IDENTIFIER = 'papstream'
 SITE_NAME = 'PapStream'
 SITE_DESC = 'Films, Séries & Mangas'
 
-URL_MAIN = 'https://wvv.papstream.cc/'
+URL_MAIN = 'https://wvw.papstream.cc/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + 'rechercher', 'showMovies')
@@ -22,7 +22,7 @@ URL_SEARCH_MOVIES = ('', 'showMovies')
 URL_SEARCH_SERIES = ('', 'showMovies')
 
 MOVIE_NEWS = (URL_MAIN + 'dernier-films.html', 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'films.html', 'showMovies')
+# MOVIE_MOVIE = (URL_MAIN + 'films.html', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
 
@@ -35,6 +35,7 @@ ANIM_GENRES = (URL_MAIN + 'animes/', 'showGenres')
 ANIM_ANNEES = (True, 'showAnimeYears')
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0'
+
 
 def load():
     oGui = cGui()
@@ -130,7 +131,7 @@ def showGenres():
 def showMovieYears():
     oGui = cGui()
 
-    for i in reversed (xrange(1918, 2020)):
+    for i in reversed(xrange(1918, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/annee/' + Year + '.html')
@@ -141,7 +142,7 @@ def showMovieYears():
 def showSerieYears():
     oGui = cGui()
 
-    for i in reversed (xrange(1936, 2020)):
+    for i in reversed(xrange(1936, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/annee/' + Year + '.html')
@@ -152,7 +153,7 @@ def showSerieYears():
 def showAnimeYears():
     oGui = cGui()
 
-    for i in reversed (xrange(1965, 2020)):
+    for i in reversed(xrange(1965, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'animes/annee/' + Year + '.html')
@@ -273,11 +274,11 @@ def showSaisons():
             if progress_.iscanceled():
                 break
 
-            sUrl2   = aEntry[0]
+            sUrl2 = aEntry[0]
             if sUrl2.startswith('/'):
                 sUrl2 = URL_MAIN[:-1] + sUrl2
             sSaison = aEntry[1]
-            sTitle  = ("%s %s") % (sMovieTitle, sSaison)
+            sTitle = ("%s %s") % (sMovieTitle, sSaison)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -293,8 +294,8 @@ def showSaisons():
 def ShowEpisodes():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    sUrl   = oInputParameterHandler.getValue('siteUrl')
-    sDesc  = oInputParameterHandler.getValue('sDesc')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sDesc = oInputParameterHandler.getValue('sDesc')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -355,10 +356,10 @@ def showLink():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sUrl2  = aEntry[0]
-            sHost  = aEntry[1].capitalize()
-            sLang  = aEntry[2].replace('/images/', '').replace('.png', '')
-            sQual  = aEntry[3].replace('(', '').replace(')', '')
+            sUrl2 = aEntry[0]
+            sHost = aEntry[1].capitalize()
+            sLang = aEntry[2].replace('/images/', '').replace('.png', '')
+            sQual = aEntry[3].replace('(', '').replace(')', '')
             sTitle = '%s [%s] (%s) [COLOR coral]%s[/COLOR]' % (sMovieTitle, sQual, sLang.upper(), sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
