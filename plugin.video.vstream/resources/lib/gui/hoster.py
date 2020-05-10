@@ -82,7 +82,7 @@ class cHosterGui:
             oContext.setTitle(self.ADDON.VSlang(30202))
             oContext.setOutputParameterHandler(oOutputParameterHandler)
             oGuiElement.addContextItem(oContext)
-    
+
         if oHoster.isDownloadable():
             # Beta context download and view menu
             oContext = cContextElement()
@@ -175,13 +175,14 @@ class cHosterGui:
             return self.getHoster('megawatch')
         if ('playvidto' in sHostName):
             return self.getHoster('vidto')
-        #vidtodo et clone
+        # vidtodo et clone
         if ('vidtodo' in sHostName) or ('vixtodo' in sHostName):
             return self.getHoster('vidtodo')
         if ('viddoto' in sHostName):
             return self.getHoster('vidtodo')
         if ('vidstodo' in sHostName):
             return self.getHoster('vidtodo')
+
         if ('vidzi' in sHostName):
             return self.getHoster('vidzi')
         if ('vcstream' in sHostName):
@@ -265,8 +266,12 @@ class cHosterGui:
             return self.getHoster('vidup')
         if ('vidbull' in sHostName):
             return self.getHoster('vidbull')
+        # vidlox et clone
         if ('vidlox' in sHostName):
             return self.getHoster('vidlox')
+        if ('videobin' in sHostName):
+            return self.getHoster('videobin')
+
         if ('stagevu' in sHostName):
             return self.getHoster('stagevu')
         if (('movshare' in sHostName) or ('wholecloud' in sHostName)):
