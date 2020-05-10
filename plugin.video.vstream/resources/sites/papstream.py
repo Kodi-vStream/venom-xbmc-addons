@@ -21,8 +21,8 @@ URL_SEARCH = (URL_MAIN + 'rechercher', 'showMovies')
 URL_SEARCH_MOVIES = ('', 'showMovies')
 URL_SEARCH_SERIES = ('', 'showMovies')
 
-MOVIE_NEWS = (URL_MAIN + 'dernier-films.html', 'showMovies')
-# MOVIE_MOVIE = (URL_MAIN + 'films.html', 'showMovies')
+# MOVIE_NEWS = (URL_MAIN + 'dernier-films.html', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'films.html', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
 
