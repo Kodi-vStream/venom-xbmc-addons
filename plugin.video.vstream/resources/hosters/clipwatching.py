@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
@@ -49,31 +49,27 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
-        #accelère le traitement
+        # accelère le traitement
         sHtmlContent = oParser.abParse(sHtmlContent, 'var holaplayer', 'vvplay')
-        sPattern = '"(http[^"]+\.mp4)"'
+        # Traitement pour les liens m3u8
+        sHtmlContent = sHtmlContent.replace(',', '').replace('master.m3u8', 'index-v1-a1.m3u8')
+        sPattern = '"(http[^"]+(?:.m3u8|.mp4))"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0] == True):
-            #initialisation des tableaux
+            # initialisation des tableaux
             url = []
             qua = []
             n = 1
 
-            #Remplissage des tableaux
+            # Remplissage des tableaux
             for i in aResult[1]:
                 url.append(str(i))
                 qua.append('Lien ' + str(n))
                 n += 1
 
-            #dialogue Lien si plus d'une url
+            # dialogue Lien si plus d'une url
             api_call = dialog().VSselectqual(qua, url)
-
-        if not api_call:
-            sPattern = 'sources: *\[{src: "([^"]+)", *type:'
-            aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
-                api_call = aResult[1][0].replace(',', '').replace('master.m3u8', 'index-v1-a1.m3u8')
 
         if (api_call):
             return True, api_call
