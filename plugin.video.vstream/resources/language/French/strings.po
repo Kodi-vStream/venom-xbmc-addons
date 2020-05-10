@@ -1050,4 +1050,8 @@ msgstr "Minute"
 
 msgctxt "#30469"
 msgid "Hoster Direct"
-msgstr ""
+msgstr "Hoster Direct"
+
+msgctxt "#30470"
+msgid "Addon dnspython missing"
+msgstr "Addon dnspython manquant"

@@ -7,7 +7,6 @@ import urllib2
 from urllib2 import HTTPError, URLError
 from resources.lib.comaddon import addon, dialog, VSlog
 
-
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
     REQUEST_TYPE_POST = 1
@@ -29,6 +28,7 @@ class cRequestHandler:
         self.__bRemoveBreakLines = False
         self.__sResponseHeader = ''
         self.BUG_SSL = False
+        self.__enableDNS = False
 
     def removeNewLines(self, bRemoveNewLines):
         self.__bRemoveNewLines = bRemoveNewLines
@@ -105,6 +105,11 @@ class cRequestHandler:
         self.addHeaderEntry('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.7')
 
     def __callRequest(self):
+        if self.__enableDNS:
+            import socket
+            self.save_getaddrinfo = socket.getaddrinfo
+            socket.getaddrinfo = self.new_getaddrinfo
+
         if self.__aParamatersLine:
             sParameters = self.__aParamatersLine
         else:
@@ -182,28 +187,66 @@ class cRequestHandler:
 
             if not sContent:
                 self.DIALOG.VSerror("%s (%d),%s" % (self.ADDON.VSlang(30205), e.code, self.__sUrl))
-                return ''
 
         except urllib2.URLError, e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e.reason) and self.BUG_SSL == False:
                 self.BUG_SSL = True
                 return self.__callRequest()
+            elif 'getaddrinfo failed' in str(e.reason) and self.__enableDNS == False:
+                # Retry with DNS only if addon is present
+                import xbmcvfs
+                if xbmcvfs.exists('special://home/addons/script.module.dnspython/'):
+                    self.__enableDNS = True
+                    return self.__callRequest()
+                else:
+                    error_msg = self.ADDON.VSlang(30470)
+            else:
+                error_msg = "%s (%s),%s" % (self.ADDON.VSlang(30205), e.reason, self.__sUrl)
 
-            self.DIALOG.VSerror("%s (%s),%s" % (self.ADDON.VSlang(30205), e.reason, self.__sUrl))
-            return ''
+            self.DIALOG.VSerror(error_msg)
+            sContent = ''
 
-        if (self.__bRemoveNewLines == True):
-            sContent = sContent.replace("\n", "")
-            sContent = sContent.replace("\r\t", "")
+        if sContent:
+            if (self.__bRemoveNewLines == True):
+                sContent = sContent.replace("\n", "")
+                sContent = sContent.replace("\r\t", "")
 
-        if (self.__bRemoveBreakLines == True):
-            sContent = sContent.replace("&nbsp;", "")
+            if (self.__bRemoveBreakLines == True):
+                sContent = sContent.replace("&nbsp;", "")
+
+        if self.__enableDNS:
+            socket.getaddrinfo = self.save_getaddrinfo
+            self.__enableDNS = False
 
         return sContent
 
     def getHeaderLocationUrl(self):
         opened = urllib.urlopen(self.__sUrl)
         return opened.geturl()
+
+    def new_getaddrinfo(self, *args):
+        try:
+            import sys, xbmc
+            path = xbmc.translatePath('special://home/addons/script.module.dnspython/lib/').decode('utf-8')
+            if path not in sys.path:
+                sys.path.append(path)
+            import dns.resolver
+            host = args[0]
+            port = args[1]
+            # Keep the domain only: http://example.com/foo/bar => example.com
+            if "//" in host: host = host[host.find("//"):]
+            if "/" in host: host = host[:host.find("/")]
+            resolver = dns.resolver.Resolver(configure=False)
+            # Résolveurs DNS ouverts: https://www.fdn.fr/actions/dns/
+            resolver.nameservers = [ '80.67.169.12', '2001:910:800::12', '80.67.169.40', '2001:910:800::40' ]
+            answer = resolver.query(host, 'a')
+            host_found = str(answer[0])
+            VSlog("new_getaddrinfo found host %s" % host_found)
+            # Keep same return schema as socket.getaddrinfo (family, type, proto, canonname, sockaddr)
+            return [(2, 1, 0, '', (host_found, port)), (2, 1, 0, '', (host_found, port))]
+        except Exception as e:
+            VSlog("new_getaddrinfo ERROR: {0}".format(e))
+            return self.save_getaddrinfo(*args)
 
 # ******************************************************************************
 # from https://github.com/eliellis/mpart.py
