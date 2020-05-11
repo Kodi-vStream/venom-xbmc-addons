@@ -2,7 +2,7 @@
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 
 #07/05/20 mise en place recaptcha
-return False
+#return False
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -181,46 +181,64 @@ def showHosters():
 
     #sHtmlContent = oParser.abParse(sHtmlContent, '<div class="tcontainer video-box">', '<div class="tcontainer video-box" id=')
 
-    sPattern = '<b>([^"]+)</b><tr> <br>|(?:<a class="" rel="noreferrer" href="([^"]+)".+?<img src="/templates/Flymix/images/(.+?).png" /> *</a>|<a href="([^"]+)" >([^"]+)</a>)'
+    sPattern = '<iframe src="([^"]+)"'
+    sPattern2 = '<a.+?href="(https\:\/\/ouo.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    aResult2 = oParser.parse(sHtmlContent, sPattern2)
+    #VSlog(aResult)
+    #VSlog(aResult2)
 
-    if (aResult[0] == True):
-        total = len(aResult[1])
+    if (aResult2[0] == True):
+        total = len(aResult2[1])
         progress_ = progress().VScreate(SITE_NAME)
         oGui.addText(SITE_IDENTIFIER, sMovieTitle)
-
-        for aEntry in aResult[1]:
+        for aEntry2 in aResult2[1]:
             progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
-            if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
-            else:
-                if aEntry[3]:
-                    try:
-                        sHost, sTitle = aEntry[4].split('-',1)
-                        sHost = '[COLOR coral]' + sHost + '[/COLOR]'
-                        sUrl = aEntry[3]
-                    except ValueError:
-                        sHost = '[COLOR coral]' + aEntry[4].capitalize() + '[/COLOR]'
-                        sHost = re.sub('\.\w+', '', sHost)
-                        sUrl = aEntry[3]
-                else:
-                    sHost = '[COLOR coral]' + aEntry[2].capitalize() + '[/COLOR]'
-                    sHost = re.sub('\.\w+', '', sHost)
-                    sUrl = aEntry[1]
-
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oOutputParameterHandler.addParameter('sDesc', sDesc)
-                oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sHost, sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+            #oGui.addText(SITE_IDENTIFIER, aEntry2)
+            sUrl = aEntry2
+            #VSlog(sUrl)
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oGui.addLink(SITE_IDENTIFIER, 'OUO', sUrl, sThumb, sDesc, oOutputParameterHandler)
+            progress_.VSclose(progress_)
+                    
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+            sHosterUrl = aEntry
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
+def OUO():# fonction pour résoudre que les liens ouo présent
+    oGui = cGui()
+    oParser = cParser()
+    oInputParameterHandler = cInputParameterHandler()
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    #VSlog(sUrl)
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    
+    if sUrl:
+        sHosterUrl = DecryptOuo(sUrl)
+        #VSlog(sHosterUrl)
+        if (sHosterUrl):
+            sTitle = sMovieTitle
+            
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sTitle)
+                oHoster.setFileName(sTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+        
+        oGui.setEndOfDirectory()
+            
 
 def Display_protected_link():
     oGui = cGui()
