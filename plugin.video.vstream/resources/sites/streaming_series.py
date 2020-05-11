@@ -115,7 +115,7 @@ def showMovies(sSearch = ''):
             sThumb = aEntry[2]
             sTitle = aEntry[1]
 
-            #Si recherche et trop de resultat, on nettoye
+            # Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
                     continue
@@ -129,14 +129,13 @@ def showMovies(sSearch = ''):
 
         progress_.VSclose(progress_)
 
-        if not sSearch: # une seule page par recherche
-            sNextPage = __checkForNextPage(sHtmlContent)
-            if (sNextPage != False):
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+    if not sSearch: # une seule page par recherche
+        sNextPage = __checkForNextPage(sHtmlContent)
+        if (sNextPage != False):
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
@@ -215,10 +214,10 @@ def showLinks():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            #langue
+            # langue
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
-            #hote
+            # hote
             else:
                 sHost = aEntry[1]
                 sUrl = URL_MAIN[:-1] + aEntry[2]
@@ -254,7 +253,7 @@ def showHosters():
 
 def ProtectstreamBypass(url):
 
-    #lien commencant par VID_
+    # lien commencant par VID_
     Codedurl = url
     oRequestHandler = cRequestHandler(Codedurl)
     sHtmlContent = oRequestHandler.request()
@@ -274,26 +273,26 @@ def ProtectstreamBypass(url):
         oRequest = cRequestHandler(URL_MAIN + 'embed_secur.php')
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
-        #oRequest.addHeaderEntry('Host', 'www.protect-stream.com')
+        # oRequest.addHeaderEntry('Host', 'www.protect-stream.com')
         oRequest.addHeaderEntry('Referer', Codedurl)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
         oRequest.addParametersLine(postdata)
         sHtmlContent = oRequest.request()
 
-        #Test de fonctionnement
+        # Test de fonctionnement
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             dialog().VSinfo('Lien encore protégé', "Erreur", 5)
             return ''
 
-        #recherche du lien embed
+        # recherche du lien embed
         sPattern = '<iframe src=["\']([^<>"\']+?)["\']'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             return aResult[1][0]
 
-        #recherche d'un lien redirige
+        # recherche d'un lien redirige
         sPattern = '<a class=.button. href=["\']([^<>"\']+?)["\'] target=._blank.>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
