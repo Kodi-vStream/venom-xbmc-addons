@@ -224,6 +224,9 @@ class cTMDb:
     # Search for movies by title.
     def search_movie_name(self, name, year='', page=1):
 
+        name = name.replace('  ', ' ') # plusieurs espaces se suivent
+        name = name.replace('  ', ' ') # plusieurs espaces se suivent encore
+
         if year:
             term = quote_plus(name) + '&year=' + year
         else:
@@ -231,15 +234,44 @@ class cTMDb:
 
         meta = self._call('search/movie', 'query=' + term + '&page=' + str(page))
 
-        # teste sans l'année si pas trouvé
         if 'errors' not in meta and 'status_code' not in meta:
+            
+            # si pas de résultat avec l'année, on teste sans l'année
             if 'total_results' in meta and meta['total_results'] == 0 and year:
                 meta = self.search_movie_name(name, '')
 
             # cherche 1 seul resultat
             if 'total_results' in meta and meta['total_results'] != 0:
-                tmdb_id = meta['results'][0]['id']
-                #cherche toutes les infos
+                
+                movie = ''
+                
+                # s'il n'y en a qu'un, c'est le bon
+                if meta['total_results'] == 1:
+                    movie = meta['results'][0]
+ 
+                else:
+                    # premiere boucle, recherche la correspondance parfaite sur le nom
+                    for searchMovie in meta['results']:
+                        if searchMovie['genre_ids'] and 99 not in searchMovie['genre_ids']:
+                            if searchMovie['title'].lower() == name:
+                                movie = searchMovie
+                                break
+                    # sinon, hors documentaire et année proche
+                    if not movie:
+                        for movie in meta['results']:
+                            if movie['genre_ids'] and 99 not in movie['genre_ids']:
+                                
+                                # controle supplémentaire sur l'année meme si déjà dans la requete
+                                if year:
+                                    if 'release_date' in movie and movie['release_date']:
+                                        release_date = movie['release_date']
+                                        yy = release_date[:4]
+                                        if int(year)-int(yy) > 1 :
+                                            continue    # plus de deux ans d'écart, c'est pas bon
+                                break
+
+                # recherche de toutes les infos
+                tmdb_id = movie['id']
                 meta = self.search_movie_id(tmdb_id)
         else:
             meta = {}
@@ -583,6 +615,9 @@ class cTMDb:
         Returns:
             DICT of meta data or None if cannot be found.
         """
+
+        name = name.replace('  ', ' ') # plusieurs espaces se suivent
+        name = name.replace('  ', ' ') # plusieurs espaces se suivent encore
 
         VSlog('Attempting to retrieve meta data for %s: %s %s %s %s' % (media_type, name, year, imdb_id, tmdb_id))
 
