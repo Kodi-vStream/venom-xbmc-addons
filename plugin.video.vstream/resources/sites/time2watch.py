@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Arias800
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -61,6 +61,7 @@ ANIM_ANNEES = (URL_MAIN + 'anime/date/', 'showYears')
 
 DOC_NEWS = (URL_MAIN + 'documentaires/', 'showMovies')
 SPECTACLE_NEWS =  (URL_MAIN + 'theatre/', 'showMovies')
+
 
 def load():
     oGui = cGui()
@@ -182,7 +183,7 @@ def showMenuMangas():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ANNEES[1], 'Animes (Années)', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANNEES[1], 'Animes (Par années)', 'annees.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_HD1080[0])
@@ -190,7 +191,7 @@ def showMenuMangas():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_POPULAIRE[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_POPULAIRE[1], 'Animes les plus populaire', 'views.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_POPULAIRE[1], 'Animes (Les plus populaire)', 'views.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFR[0])
@@ -202,20 +203,20 @@ def showMenuMangas():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NOTE[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_NOTE[1], 'Animes les mieux notés', 'notes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_NOTE[1], 'Animes (Les mieux notés)', 'notes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 def showDetail():
-    dialog().VStextView(desc= """Explication du captcha :
-Pour passer le captcha il suffit de choisir le bon titre parmis les 5 propositions.
-Attention vous avez 20 seconds pour valider votre réponses.
+    dialog().VStextView(desc="""Explication du Captcha:
+Pour passer le Captcha il suffit de choisir le bon titre parmi les 5 propositions.
+Attention vous avez 20 secondes pour valider votre réponse.
 Si jamais vous vous trompez il suffit de recharger la page.
 
 Utilité d'avoir un compte:
 Le site est limité en nombre de passage pour les personnes qui n'ont pas de compte.
-Avoir un compte permets aussi de ne pas avoir le captcha qui apparait a chaque fois.
-Vous pouvez activer la connexion au compte dans les parametre de Vstream.""", title = "Fonctionnement du site")
+Avoir un compte permet aussi de ne pas avoir le Captcha qui apparait à chaque fois.
+Vous pouvez activer la connexion au compte dans les paramètres de vStream.""", title="Fonctionnement du site")
 
 def showSearch():
     oGui = cGui()
@@ -235,7 +236,7 @@ def showGenre():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    html = re.search('<section id="section_genre">(.+?)</section>',sHtmlContent,re.DOTALL).group(1)
+    html = re.search('<section id="section_genre">(.+?)</section>', sHtmlContent,re.DOTALL).group(1)
     sPattern = '<a href="([^"]+)">([^"]+)</a>'
 
     oParser = cParser()
@@ -256,7 +257,7 @@ def showYears():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    html = re.search('<section id="section_genre">(.+?)</section>',sHtmlContent,re.DOTALL).group(1)
+    html = re.search('<section id="section_genre">(.+?)</section>', sHtmlContent, re.DOTALL).group(1)
     sPattern = '<a href="([^"]+)">([^"]+)</a>'
 
     oParser = cParser()
@@ -269,7 +270,7 @@ def showYears():
 
     oGui.setEndOfDirectory()
 
-def showMovies(sSearch = ''):
+def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
 
@@ -280,7 +281,7 @@ def showMovies(sSearch = ''):
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
     Cookie = GestionCookie().Readcookie('time2watch')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     if Cookie:
         oRequestHandler.addHeaderEntry('Cookie', Cookie)
@@ -294,16 +295,16 @@ def showMovies(sSearch = ''):
         s = requests.Session()
 
         headers = {"Host": "time2watch.io",
-            "User-Agent": UA,
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-            "Accept-Language": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3",
-            "Accept-Encoding": "gzip, deflate",
-            "Origin": "https://time2watch.io",
-            "DNT": "1",
-            "Connection": "keep-alive",
-            "Referer": sUrl,
-            "Upgrade-Insecure-Requests": "1",
-            "TE": "Trailers"}
+                   "User-Agent": UA,
+                   "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                   "Accept-Language": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3",
+                   "Accept-Encoding": "gzip, deflate",
+                   "Origin": "https://time2watch.io",
+                   "DNT": "1",
+                   "Connection": "keep-alive",
+                   "Referer": sUrl,
+                   "Upgrade-Insecure-Requests": "1",
+                   "TE": "Trailers"}
 
         r = s.get("https://time2watch.io/login/", headers=headers)
         sHtmlContent = r.content
@@ -311,14 +312,14 @@ def showMovies(sSearch = ''):
         sPattern = '<input type="hidden" name="token" id="token" value="(.+?)">.+?<script>.+?\(\'co_js\'\).+?= (.+?);</script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        data = {'username': ADDON.getSetting('hoster_time2watch_username'), 'pwd': ADDON.getSetting('hoster_time2watch_password'), 'hidden': aResult[1][0][1], "token":aResult[1][0][0]}
-        
+        data = {'username': ADDON.getSetting('hoster_time2watch_username'), 'pwd': ADDON.getSetting('hoster_time2watch_password'), 'hidden': aResult[1][0][1], "token": aResult[1][0][0]}
+
         headers["Content-Type"] = "application/x-www-form-urlencoded"
         headers["Content-Length"] = str(len(data))
         headers["Referer"] = "https://time2watch.io/login/"
 
-        r = s.post("https://time2watch.io/login/", data = data, headers=headers, allow_redirects=False)
-        Cookie = "; ".join([str(x)+"="+str(y) for x,y in s.cookies.get_dict().items()])
+        r = s.post("https://time2watch.io/login/", data=data, headers=headers, allow_redirects=False)
+        Cookie = "; ".join([str(x) + "=" + str(y) for x, y in s.cookies.get_dict().items()])
 
         GestionCookie().SaveCookie('time2watch', Cookie)
 
@@ -371,7 +372,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -400,8 +401,8 @@ def showMoviesLink():
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '<i class="fa fa-download fa-fw"></i>.+?<b>(.+?)</b></a>'
-    var = re.search('var hash = (.+?);',sHtmlContent).group(1).replace('"',"").strip('][').split(',')
-    url = re.search("document\.getElementById\(\'openlink_\'\+n\).href = '(.+?)';",sHtmlContent).group(1)
+    var = re.search('var hash = (.+?);', sHtmlContent).group(1).replace('"', "").strip('][').split(',')
+    url = re.search("document\.getElementById\(\'openlink_\'\+n\).href = '(.+?)';", sHtmlContent).group(1)
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -413,7 +414,7 @@ def showMoviesLink():
             if progress_.iscanceled():
                 break
 
-            sUrl2 = URL_MAIN + url.replace("'+nhash+'",VAR)
+            sUrl2 = URL_MAIN + url.replace("'+nhash+'", VAR)
             sTitle = ('%s [%s]') % (sMovieTitle, aEntry)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -441,7 +442,7 @@ def ShowSerieSaisonEpisodes():
         oRequestHandler.addHeaderEntry('Cookie', Cookie)
     sHtmlContent = oRequestHandler.request()
 
-    url = re.search("document\.getElementById\(\'openlink_\'\+n\).href = '(.+?)';",sHtmlContent).group(1)
+    url = re.search("document\.getElementById\(\'openlink_\'\+n\).href = '(.+?)';", sHtmlContent).group(1)
     oParser = cParser()
     sPattern = '<span style="margin-left: 20px;">(.+?)</span>|<span style="margin-left: 35px;">(.+?)<.+?<span class="fa arrow">|onmousedown.+?<b>(.+?)</b>.+?var hash_.+?= "(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -462,7 +463,7 @@ def ShowSerieSaisonEpisodes():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + ses + ' ' + aEntry[1] + '[/COLOR]')
 
             else:
-                sUrl2 = URL_MAIN + url.replace("'+nhash+'",aEntry[3])
+                sUrl2 = URL_MAIN + url.replace("'+nhash+'", aEntry[3])
                 sDisplayTitle = ('%s [%s]') % (sMovieTitle, aEntry[2])
 
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -525,16 +526,16 @@ def DecryptTime():
         for base64_string in aResult[1]:
             imgdata = base64.b64decode(base64_string[1])
 
-            downloaded_image = xbmcvfs.File("special://home/userdata/addon_data/plugin.video.vstream/test"+str(i)+".png", 'wb')
+            downloaded_image = xbmcvfs.File("special://home/userdata/addon_data/plugin.video.vstream/test" + str(i) + ".png", 'wb')
             downloaded_image.write(imgdata)
             downloaded_image.close()
-            Filename.append("special://home/userdata/addon_data/plugin.video.vstream/test"+str(i)+".png")
+            Filename.append("special://home/userdata/addon_data/plugin.video.vstream/test" + str(i) + ".png")
             i = i + 1
 
-        oSolver = cInputWindow(captcha = Filename, challenge = "special://home/userdata/addon_data/plugin.video.vstream/challenge.png")
+        oSolver = cInputWindow(captcha=Filename, challenge="special://home/userdata/addon_data/plugin.video.vstream/challenge.png")
         retArg = oSolver.get()
 
-        data = "challenge="+challengeTok+"&g-recaptcha-response="+aResult[1][int(retArg)][0]
+        data = "challenge=" + challengeTok + "&g-recaptcha-response=" + aResult[1][int(retArg)][0]
 
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.setRequestType(1)
@@ -546,7 +547,7 @@ def DecryptTime():
         oRequestHandler.addParametersLine(data)
         sHtmlContent = getLinkHtml(oRequestHandler.request())
         if sHtmlContent == False:
-            dialog().VSok(desc="Limite journaliere atteinte, pour continuez a utiliser le site ajourd\'hui, il faut utilisez un compte (c\'est gratuit)", title = "Limites atteintes")
+            dialog().VSok(desc="Limite journalière atteinte, pour continuez à utiliser le site aujourd'hui, il faut utilisez un compte (c'est gratuit)", title="Limites atteintes")
 
     else:
         sHtmlContent = getLinkHtml(sHtmlContent)
@@ -572,8 +573,8 @@ class cInputWindow(xbmcgui.WindowDialog):
         u = 0
         pos = []
 
-        bg_image = os.path.join( __addon__.getAddonInfo('path'), 'resources/art/' ) + 'background.png'
-        check_image = os.path.join( __addon__.getAddonInfo('path'), 'resources/art/' ) + 'trans_checked.png'
+        bg_image = os.path.join(__addon__.getAddonInfo('path'), 'resources/art/') + 'background.png'
+        check_image = os.path.join(__addon__.getAddonInfo('path'), 'resources/art/') + 'trans_checked.png'
 
         self.ctrlBackground = xbmcgui.ControlImage(0, 0, 1280, 720, bg_image)
         self.cancelled = False
@@ -597,12 +598,12 @@ class cInputWindow(xbmcgui.WindowDialog):
         i = 0
         while i < 5:
             if 1 == 2:
-                self.chk[i] = xbmcgui.ControlCheckMark(pos[i], 400, 250, 200, str(i + 1), font = 'font14', focusTexture = check_image, checkWidth = 260, checkHeight = 166)
+                self.chk[i] = xbmcgui.ControlCheckMark(pos[i], 400, 250, 200, str(i + 1), font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
 
             else:
                 self.chk[i] = xbmcgui.ControlImage(pos[i], 400, 250, 200, check_image)
 
-                self.chkbutton[i] = xbmcgui.ControlButton(pos[i], 400, 250, 200, str(i + 1), font = 'font1')
+                self.chkbutton[i] = xbmcgui.ControlButton(pos[i], 400, 250, 200, str(i + 1), font='font1')
 
             i = i + 1
 
@@ -612,8 +613,8 @@ class cInputWindow(xbmcgui.WindowDialog):
         for obj in self.chkbutton:
             self.addControl(obj)
 
-        self.cancelbutton = xbmcgui.ControlButton(250 + 260 - 70, 620, 140, 50, 'Cancel', alignment = 2)
-        self.okbutton = xbmcgui.ControlButton(250 + 520 - 50, 620, 100, 50, 'OK', alignment = 2)
+        self.cancelbutton = xbmcgui.ControlButton(250 + 260 - 70, 620, 140, 50, 'Cancel', alignment=2)
+        self.okbutton = xbmcgui.ControlButton(250 + 520 - 50, 620, 100, 50, 'OK', alignment=2)
         self.addControl(self.okbutton)
         self.addControl(self.cancelbutton)
 
@@ -627,7 +628,7 @@ class cInputWindow(xbmcgui.WindowDialog):
         self.chkbutton[1].controlLeft(self.chkbutton[0]);  self.chkbutton[1].controlRight(self.chkbutton[2]);
         self.chkbutton[2].controlLeft(self.chkbutton[1]);  self.chkbutton[2].controlRight(self.chkbutton[3]);
         self.chkbutton[3].controlLeft(self.chkbutton[2]);  self.chkbutton[3].controlRight(self.chkbutton[4]);
-        self.chkbutton[4].controlLeft(self.chkbutton[3]);  self.chkbutton[4].controlRight(self.chkbutton[0]);        
+        self.chkbutton[4].controlLeft(self.chkbutton[3]);  self.chkbutton[4].controlRight(self.chkbutton[0]);
 
         self.cancelled = False
         self.setFocus(self.okbutton)
