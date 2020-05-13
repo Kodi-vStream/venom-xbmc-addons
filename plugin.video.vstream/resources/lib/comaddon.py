@@ -102,6 +102,9 @@ class dialog(xbmcgui.Dialog):
     def VSerror(self, e):
         return self.notification('vStream', 'Erreur: ' + str(e), xbmcgui.NOTIFICATION_ERROR, 2000), VSlog('Erreur: ' + str(e))
 
+    def VStextView(self, desc, title = "vStream"):
+        dialog = self.textviewer(title, desc)
+        return dialog
 """
 from resources.lib.comaddon import progress
 
