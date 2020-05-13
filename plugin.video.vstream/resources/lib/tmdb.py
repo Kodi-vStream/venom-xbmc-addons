@@ -3,6 +3,7 @@
 # Modif pour vStream
 # https://github.com/Kodi-vStream/venom-xbmc-addons/
 
+import re
 import json
 import urllib2
 from urllib import quote_plus, urlopen
@@ -224,8 +225,7 @@ class cTMDb:
     # Search for movies by title.
     def search_movie_name(self, name, year='', page=1):
 
-        name = name.replace('  ', ' ') # plusieurs espaces se suivent
-        name = name.replace('  ', ' ') # plusieurs espaces se suivent encore
+        name = re.sub(" +", " ", name) # nettoyage du titre
 
         if year:
             term = quote_plus(name) + '&year=' + year
@@ -616,8 +616,7 @@ class cTMDb:
             DICT of meta data or None if cannot be found.
         """
 
-        name = name.replace('  ', ' ') # plusieurs espaces se suivent
-        name = name.replace('  ', ' ') # plusieurs espaces se suivent encore
+        name = re.sub(" +", " ", name) # nettoyage du titre
 
         VSlog('Attempting to retrieve meta data for %s: %s %s %s %s' % (media_type, name, year, imdb_id, tmdb_id))
 
