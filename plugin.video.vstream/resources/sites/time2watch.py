@@ -31,31 +31,31 @@ FUNCTION_SEARCH = 'showMovies'
 DERNIER_AJOUT = (URL_MAIN + 'last/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'film/last/', 'showMovies')
 MOVIE_MOVIE = ('http://', 'showMenuFilms')
-MOVIE_POPULAIRE = (URL_MAIN + "film/popular/", 'showMovies')
+MOVIE_POPULAR = (URL_MAIN + "film/popular/", 'showMovies')
 MOVIE_HD1080 = (URL_MAIN + 'film/bluray/', 'showMovies')
 MOVIE_VOSTFR = (URL_MAIN + 'film/vostfr/', 'showMovies')
 MOVIE_VFR = (URL_MAIN + 'film/vfr/', 'showMovies')
-MOVIE_NOTE = (URL_MAIN + 'film/loved/', 'showMovies')
+MOVIE_NOTES = (URL_MAIN + 'film/loved/', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'film/genre/', 'showGenre')
 MOVIE_ANNEES = (URL_MAIN + 'film/date/', 'showYears')
 
 SERIE_NEWS = (URL_MAIN + 'serie/last/', 'showMovies')
 SERIE_SERIES = ('http://', 'showMenuSeries')
-SERIE_POPULAIRE = (URL_MAIN + "serie/popular/", 'showMovies')
+SERIE_POPULAR = (URL_MAIN + "serie/popular/", 'showMovies')
 SERIE_HD1080 = (URL_MAIN + 'serie/bluray/', 'showMovies')
 SERIE_VOSTFR = (URL_MAIN + 'serie/vostfr/', 'showMovies')
 SERIE_VFR = (URL_MAIN + 'serie/vfr/', 'showMovies')
-SERIE_NOTE = (URL_MAIN + 'serie/loved/', 'showMovies')
+SERIE_NOTES = (URL_MAIN + 'serie/loved/', 'showMovies')
 SERIE_GENRES = (URL_MAIN + 'serie/genre/', 'showGenre')
 SERIE_ANNEES = (URL_MAIN + 'serie/date/', 'showYears')
 
 ANIM_NEWS = (URL_MAIN + 'anime/last/', 'showMovies')
 ANIM_ANIMS = ('http://', 'showMenuAnimes')
-ANIM_POPULAIRE = (URL_MAIN + "anime/popular/", 'showMovies')
+ANIM_POPULAR = (URL_MAIN + "anime/popular/", 'showMovies')
 ANIM_HD1080 = (URL_MAIN + 'anime/bluray/', 'showMovies')
 ANIM_VOSTFR = (URL_MAIN + 'anime/vostfr/', 'showMovies')
 ANIM_VFR = (URL_MAIN + 'anime/vfr/', 'showMovies')
-ANIM_NOTE = (URL_MAIN + 'anime/loved/', 'showMovies')
+ANIM_NOTES = (URL_MAIN + 'anime/loved/', 'showMovies')
 ANIM_GENRES = (URL_MAIN + 'anime/genre/', 'showGenre')
 ANIM_ANNEES = (URL_MAIN + 'anime/date/', 'showYears')
 
@@ -109,15 +109,15 @@ def showMenuFilms():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Années)', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD1080[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_HD1080[1], 'Bluray 1080P', 'hd.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_POPULAIRE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_POPULAIRE[1], 'Films les plus populaire', 'views.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_POPULAR[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_POPULAR[1], 'Films (Les plus populaires)', 'views.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VOSTFR[0])
@@ -125,11 +125,11 @@ def showMenuFilms():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VFR[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VFR[1], 'Film (VFR)', 'vf.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VFR[1], 'Films (VFR)', 'vf.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTE[1], 'Film les mieux notés', 'notes.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'notes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -146,15 +146,15 @@ def showMenuSeries():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Series (Années)', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Series (Par années)', 'annees.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_HD1080[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_HD1080[1], 'Bluray 1080P', 'hd.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_POPULAIRE[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_POPULAIRE[1], 'Series les plus populaire', 'views.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_POPULAR[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_POPULAR[1], 'Series (Les plus populaires)', 'views.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFR[0])
@@ -165,8 +165,8 @@ def showMenuSeries():
     oGui.addDir(SITE_IDENTIFIER, SERIE_VFR[1], 'Series (VFR)', 'vf.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_NOTE[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NOTE[1], 'Series les mieux notés', 'notes.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NOTES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NOTES[1], 'Series (Les mieux notées)', 'notes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -190,20 +190,20 @@ def showMenuMangas():
     oGui.addDir(SITE_IDENTIFIER, ANIM_HD1080[1], 'Bluray 1080P', 'hd.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_POPULAIRE[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_POPULAIRE[1], 'Animes (Les plus populaire)', 'views.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_POPULAR[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_POPULAR[1], 'Animes (Les plus populaires)', 'views.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFR[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFR[1], 'Animes (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFR[1], 'Animés (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VFR[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VFR[1], 'Animes (VFR)', 'vf.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VFR[1], 'Animés (VFR)', 'vf.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_NOTE[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_NOTE[1], 'Animes (Les mieux notés)', 'notes.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_NOTES[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_NOTES[1], 'Animés (Les mieux notés)', 'notes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
