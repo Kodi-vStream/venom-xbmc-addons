@@ -32,35 +32,35 @@ MOVIE_HD = (URL_MAIN + 'film-bluray-hd/', 'showMovies') # films en HD
 MOVIE_HDLIGHT = (URL_MAIN + 'film-x265-x264-hdlight/', 'showMovies') # films en x265 et x264
 MOVIE_VOSTFR = (URL_MAIN + 'filmsenvostfr/', 'showMovies') # films VOSTFR
 MOVIE_4K = (URL_MAIN + 'films-ultra-hd-4k/', 'showMovies') # films "4k"
-MOVIE_GENRES = (URL_MAIN + 'engine/ajax/controller.php?mod=filter&catid=0&q=&genre%5B%5D={}&note=0&categorie%5B%5D=2&art=0&AiffchageMode=0&inputTirePar=0&cstart=1',"showGenre")
+MOVIE_GENRES = (URL_MAIN + 'engine/ajax/controller.php?mod=filter&catid=0&q=&genre%5B%5D={}&note=0&categorie%5B%5D=2&art=0&AiffchageMode=0&inputTirePar=0&cstart=1', "showGenre")
 MOVIE_ANIME = (URL_MAIN + 'dessins-animes/', 'showMovies') # dessins animes
 MOVIE_BDRIP = (URL_MAIN + 'film-dvdrip-bdrip/', 'showMovies')
 MOVIE_TS_CAM = (URL_MAIN + 'tscam-films-2020/', 'showMovies')
 MOVIE_VFSTFR = (URL_MAIN + 'film-vfstfr/', 'showMovies')
 MOVIE_MKV = (URL_MAIN + 'film-mkv/', 'showMovies')
-MOVIE_VO = (URL_MAIN + 'films-vo/','showMovies')
-MOVIE_INTEGRAL = (URL_MAIN + 'collections-films-integrale/','showMovies')
+MOVIE_VO = (URL_MAIN + 'films-vo/', 'showMovies')
+MOVIE_INTEGRAL = (URL_MAIN + 'collections-films-integrale/', 'showMovies')
 
 SERIE_SERIES = ('http://', 'showMenuSeries')
 SERIE_VFS = (URL_MAIN + 'serie-vf/', 'showMovies')
-SERIE_VF_720 = (URL_MAIN + 'serie-vf-en-hd/','showMovies')
-SERIE_VF_1080 = (URL_MAIN + 'serie-vf-1080p/','showMovies')
+SERIE_VF_720 = (URL_MAIN + 'serie-vf-en-hd/', 'showMovies')
+SERIE_VF_1080 = (URL_MAIN + 'serie-vf-1080p/', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'serie-vostfr/', 'showMovies')
-SERIE_VOSTFRS_720 = (URL_MAIN + 'serie-vostfr-hd/','showMovies')
-SERIE_VOSTFRS_1080 = (URL_MAIN + 'serie-vostfr-1080p/','showMovies')
+SERIE_VOSTFRS_720 = (URL_MAIN + 'serie-vostfr-hd/', 'showMovies')
+SERIE_VOSTFRS_1080 = (URL_MAIN + 'serie-vostfr-1080p/', 'showMovies')
 SERIE_VO = (URL_MAIN + 'serie-vo/', 'showMovies')
 ANCIENNE_SERIE = (URL_MAIN + 'telecharger-serie/ancienne-serie/', 'showMovies')
 
 ANIM_ANIMS = ('http://', 'showMenuMangas')
 ANIM_VFS = (URL_MAIN + 'animes-vf/', 'showMovies')
-ANIM_VF_720 = (URL_MAIN + 'animes-vf-720p/','showMovies')
-ANIM_VF_1080 = (URL_MAIN + 'animes-vf-1080p/','showMovies')
+ANIM_VF_720 = (URL_MAIN + 'animes-vf-720p/', 'showMovies')
+ANIM_VF_1080 = (URL_MAIN + 'animes-vf-1080p/', 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + 'animes-vostfr/', 'showMovies')
-ANIM_VOSTFRS_720 = (URL_MAIN + 'animes-vostfr-720p/','showMovies')
-ANIM_VOSTFRS_1080 = (URL_MAIN + 'animes-vostfr-1080p/','showMovies')
+ANIM_VOSTFRS_720 = (URL_MAIN + 'animes-vostfr-720p/', 'showMovies')
+ANIM_VOSTFRS_1080 = (URL_MAIN + 'animes-vostfr-1080p/', 'showMovies')
 ANIM_VOSTEN = (URL_MAIN + 'animes-vosten/', 'showMovies')
-FILM_ANIM = (URL_MAIN + 'films-mangas/','showMovies')
-OAV = (URL_MAIN + 'oav/','showMovies')
+FILM_ANIM = (URL_MAIN + 'films-mangas/', 'showMovies')
+OAV = (URL_MAIN + 'oav/', 'showMovies')
 
 DOC_NEWS = (URL_MAIN + 'documentaire-gratuit/', 'showMovies') # docs
 DOC_DOCS = ('http://', 'load')
@@ -70,6 +70,7 @@ TV_NEWS = (URL_MAIN + 'emissions-tv/', 'showMovies') # dernieres emissions tv
 SPECT_NEWS = (URL_MAIN + 'spectacles/', 'showMovies') # derniers spectacles
 CONCERT_NEWS = (URL_MAIN + 'concert/', 'showMovies') # derniers concerts
 AUTOFORM_VID = (URL_MAIN + 'autoformations-videos/', 'showMovies')
+
 
 def load():
     oGui = cGui()
@@ -141,7 +142,7 @@ def showMenuFilms():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VFSTFR[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VFSTFR[1], 'Films en francais sous titre francais (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VFSTFR[1], 'Films en Francais sous titre Francais (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MKV[0])
@@ -305,7 +306,7 @@ def showGenre():
 
     oGui.setEndOfDirectory()
 
-def showMovies(sSearch = ''):
+def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
 
@@ -314,10 +315,10 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        
-    oRequestHandler = cRequestHandler(sUrl.replace('https','http'))
+
+    oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept-Encoding','gzip, deflate')
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '<img class="mainimg.+?src="([^"]+)"(?:.|\s)+?<a href="([^"]+)">([^"]+)</a>.+?<span class=".+?<b>([^"]+)</span>.+?">([^<]+)</span>'
@@ -333,7 +334,7 @@ def showMovies(sSearch = ''):
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
-            
+
             sTitle = aEntry[2]
             sUrl2 = aEntry[1]
             sThumb = aEntry[0]
@@ -353,7 +354,7 @@ def showMovies(sSearch = ''):
             # il s'agit du même film dans une autre qualité qu'on retrouvera au moment du choix de la qualité
             key = sTitle + "-" + sThumb
             if key in titles :
-                continue;
+                continue
             titles.add(key)
 
             sDisplayTitle = ('%s [%s] %s') % (sTitle, sQual, sLang)
@@ -381,15 +382,15 @@ def showMovies(sSearch = ''):
 
         progress_.VSclose(progress_)
 
-        if sSearch: # une seule page de résultats
+        if sSearch:  # une seule page de résultats
             return
 
-        if 'controller.php' in sUrl:    # par genre
+        if 'controller.php' in sUrl:  # par genre
             sPattern = '<a href="#" class="nav" data-cstart="([^"]+)">Suivant</a></div>'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', re.sub('cstart=(\d+)','cstart='+str(aResult[1][0]),sUrl))
+                oOutputParameterHandler.addParameter('siteUrl', re.sub('cstart=(\d+)', 'cstart=' + str(aResult[1][0]), sUrl))
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
         else:
@@ -419,16 +420,16 @@ def showMoviesLinks():
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sDisplayTitle = oInputParameterHandler.getValue('sDisplayTitle')
-    if not sDisplayTitle:   # Si on arrive par un marque-page
+    if not sDisplayTitle:  # Si on arrive par un marque-page
         sDisplayTitle = sMovieTitle
     sThumb = oInputParameterHandler.getValue('sThumb')
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    oRequestHandler = cRequestHandler(sUrl.replace('https','http'))
+    oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept-Encoding','gzip, deflate')
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
     sHtmlContent = oRequestHandler.request()
-    
+
     # Affichage du texte
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles pour ce film :[/COLOR]')
 
@@ -473,7 +474,7 @@ def showMoviesLinks():
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-        
+
     oGui.setEndOfDirectory()
 
 def showSeriesLinks():
@@ -484,9 +485,9 @@ def showSeriesLinks():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    oRequestHandler = cRequestHandler(sUrl.replace('https','http'))
+    oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept-Encoding','gzip, deflate')
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
     sHtmlContent = oRequestHandler.request()
 
     # Affichage du texte
@@ -505,10 +506,10 @@ def showSeriesLinks():
     # On recherche d'abord la qualité courante
     sPattern = '<div style="[^"]+?">.+?Qualité (.+?) [|] (.+?)<.+?img src="(([^"]+))"'
     aResult = oParser.parse(sHtmlContent, sPattern)
- 
+
     sQual = ''
     sLang = ''
-    if (aResult[1]):    
+    if (aResult[1]):
         aEntry = aResult[1][0]
         sQual = aEntry[0]
         sLang = aEntry[1]
@@ -585,17 +586,17 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    oRequestHandler = cRequestHandler(sUrl.replace('https','http'))
+    oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept-Encoding','gzip, deflate')
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = 'class="btnToLink" target="_blank" href="([^"]+)">Regarder' # '>Regarder' à la fin permet de ne pas prendre les liens en plusieurs parties
+    sPattern = 'class="btnToLink" target="_blank" href="([^"]+)">Regarder'  # '>Regarder' à la fin permet de ne pas prendre les liens en plusieurs parties
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
-        sUrl = aResult[1][0]    # Un seul lien, on va directement chercher le hoster 
+        sUrl = aResult[1][0]  # Un seul lien, on va directement chercher le hoster
         sHosterUrl = get_protected_link(sUrl)
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
@@ -612,9 +613,9 @@ def showSerieEpisodes():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    oRequestHandler = cRequestHandler(sUrl.replace('https','http'))
+    oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept-Encoding','gzip, deflate')
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
@@ -625,15 +626,15 @@ def showSerieEpisodes():
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             numEpisode = aEntry[1]
-            
-            sDisplayTitle = 'Episode %s - %s' % (numEpisode, sMovieTitle) 
+
+            sDisplayTitle = 'Episode %s - %s' % (numEpisode, sMovieTitle)
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sDisplayTitle', sDisplayTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, sMovieTitle, oOutputParameterHandler)
-            
+
     oGui.setEndOfDirectory()
 
 
@@ -707,7 +708,7 @@ def DecryptDlProtecte(url):
         RestUrl = str(result[1][0][0])
         token = str(result[1][0][1])
         # urlData = str(result[1][0][2])
-        
+
     else:
         sPattern = '<(.+?)action="([^"]+)" method="([^"]+)">.+?hidden".+?value="([^"]+)"'
         result = oParser.parse(sHtmlContent, sPattern)
@@ -718,10 +719,10 @@ def DecryptDlProtecte(url):
                 method = str(result[1][0][1])
                 token = str(result[1][0][2])
             else:
-                RestUrl = str(result[1][1][1]).replace("}",'%7D')
+                RestUrl = str(result[1][1][1]).replace("}", '%7D')
                 method = str(result[1][1][2])
                 token = str(result[1][1][3])
-    
+
             if RestUrl.startswith('/'):
                 RestUrl = 'https://' + url.split('/')[2] + RestUrl
 
@@ -730,6 +731,6 @@ def DecryptDlProtecte(url):
         oRequestHandler.setRequestType(1)
     oRequestHandler.addParameters("_token", token)
     sHtmlContent = oRequestHandler.request()
-    
+
     return sHtmlContent
 
