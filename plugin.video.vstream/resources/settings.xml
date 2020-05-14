@@ -82,7 +82,7 @@
 
         <setting visible="false" id="plugin_cinemegatoil_org" type="bool" label="Cinemegatoil" default="true"/>
 
-        <setting visible="false" id="plugin_disneyhd_tk" type="bool" label="DisneyHD" default="true"/>
+        <setting visible="false" id="plugin_ddl1" type="bool" label="DDL1" default="true"/>
 
         <setting visible="false" id="plugin_docu_fr" type="bool" label="Docu Fr" default="true"/>
 
@@ -182,6 +182,8 @@
 
         <setting visible="false" id="plugin_tfarjo" type="bool" label="Tfarjo" default="true"/>
 
+        <setting visible="false" id="plugin_time2watch" type="bool" label="Time2Watch" default="true"/>
+
         <setting visible="false" id="plugin_tirexo" type="bool" label="Tirexo" default="true"/>
 
         <setting visible="false" id="plugin_topreplay" type="bool" label="TopReplay" default="true"/>
@@ -203,7 +205,7 @@
         <setting visible="false" id="plugin_zone_telechargement_ws" type="bool" label="Zone Téléchargement.ws" default="true"/>
 
         <setting visible="false" id="plugin_zonefilms" type="bool" label="Zone Films" default="true"/>
-
+        
         <setting visible="false" id="plugin_zt_stream" type="bool" label="Zone Téléchargement Stream" default="true"/>
 
         <setting visible="false" id="plugin_zustream" type="bool" label="ZuStream" default="true"/>
