@@ -6,7 +6,7 @@
         <import addon="script.module.simplejson" version="3.3.0"/>
         <import addon="script.module.urlresolver" optional="true"/>
         <import addon="script.module.requests" version="2.9.1"/>
-	    <import addon="script.video.F4mProxy" optional="true"/>
+        <import addon="script.video.F4mProxy" optional="true"/>
         <import addon="repository.vstream" version="0.0.3"/>
 <!-- Pour le DEBUG        <import addon="script.module.pydevd" version="4.4.0"/> -->
     </requires>
@@ -33,14 +33,14 @@
         <platform>all</platform>
         <license>GNU GENERAL PUBLIC LICENSE</license>
         <forum>https://github.com/Kodi-vStream/venom-xbmc-addons/issues</forum>
-		<source>https://github.com/Kodi-vStream/venom-xbmc-addons/</source>
+        <source>https://github.com/Kodi-vStream/venom-xbmc-addons/</source>
         <assets>
-			<icon>icon.png</icon>
-			<fanart>fanart.jpg</fanart>
-			<screenshot>screenshot-01.jpg</screenshot>
-			<screenshot>screenshot-02.jpg</screenshot>
-			<screenshot>screenshot-03.jpg</screenshot>
-		</assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+            <screenshot>screenshot-01.jpg</screenshot>
+            <screenshot>screenshot-02.jpg</screenshot>
+            <screenshot>screenshot-03.jpg</screenshot>
+        </assets>
     </extension>
 </addon>
 
