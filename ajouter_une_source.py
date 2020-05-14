@@ -315,7 +315,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
             #Ajoute une entree pour le lien Next | pas de addMisc pas de poster et de description inutile donc
 
         oGui.setEndOfDirectory() #ferme l'affichage
@@ -349,7 +349,7 @@ def showHosters(): #recherche et affiche les hotes
     aResult = oParser.parse(sHtmlContent, sPattern)
     #pensez a faire un VSlog(str(aResult)) pour verifier
 
-    #si un lien ne s'affiche pas peux etre que l'hote n'est pas supporte par l'addon
+    # si un lien ne s'affiche pas, peut etre que l'hote n'est pas supporte par l'addon
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
@@ -363,7 +363,7 @@ def showHosters(): #recherche et affiche les hotes
 
     oGui.setEndOfDirectory() #fin
 
-#Pour les series, il y a generalement une etape en plus pour la selection des episodes ou saisons.
+# Pour les series, il y a generalement une etape en plus pour la selection des episodes ou saisons.
 def ShowSerieSaisonEpisodes():
     oGui = cGui()
 
