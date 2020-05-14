@@ -35,7 +35,7 @@ SERIE_VFQ = (URL_MAIN + 'category/series-tv/vfq/', 'showMovies')
 
 REPLAYTV_NEWS = (URL_MAIN + 'category/emissions-tv/', 'showMovies')
 REPLAYTV_TELE = (URL_MAIN + 'category/emissions-tv/telerealite/', 'showMovies')
-# REPLAYTV_REPLAYTV = ('http://', 'load')
+REPLAYTV_REPLAYTV = (True, 'showReplayMenu')
 
 DOC_NEWS = (URL_MAIN + 'category/documentaire/', 'showMovies')
 DOC_DOCS = (URL_MAIN + 'category/documentaire/', 'showMovies')
