@@ -43,10 +43,8 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        self.__sUrl = self.__sUrl.replace('http://uptobox.com/', '')
-        self.__sUrl = self.__sUrl.replace('https://uptobox.com/', '')
         self.__sUrl = self.__sUrl.replace('iframe/', '')
-        self.__sUrl = 'https://uptobox.com/' + str(self.__sUrl)
+        self.__sUrl = self.__sUrl.replace('http:', 'https:')
 
     def checkSubtitle(self,sHtmlContent):
         oParser = cParser()
@@ -110,7 +108,7 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         self.stream = True
-        self.__sUrl = self.__sUrl.replace('uptobox.com/', 'uptostream.com/iframe/')
+        self.__sUrl = self.__sUrl.replace('uptobox.com/', 'uptostream.com/')
 
         # On redirige vers le hoster uptostream
         from resources.hosters.uptostream import cHoster
