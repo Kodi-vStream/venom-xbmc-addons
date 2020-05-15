@@ -191,6 +191,8 @@ def showMovies(sSearch=''):
             sUrl = aEntry[3]
             sTitle = aEntry[4]
             # sQual and sLang absent for a search and series
+            sQual = ''
+            sLang = ''
             if len(aEntry) > 3:
                 sQual = aEntry[1]
                 sLang = aEntry[2].upper()
@@ -401,11 +403,14 @@ def showHosters():
     oRequestHandler.setRequestType(1)
     oRequestHandler.addParameters('levideo', sPost)
     sHtmlContent = oRequestHandler.request()
-
     oParser = cParser()
-    sPattern = '<iframe.+?src=["\'](.+?)["\']'
+    sPattern = '<iframe class.+?src=["\'](.+?)["\']'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
+
+    # fh = open('c:\\test.txt', "w")
+    # fh.write(sHtmlContent)
+    # fh.close()
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
