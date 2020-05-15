@@ -1,16 +1,21 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Arias800
-from resources.lib.gui.hoster import cHosterGui
+import base64
+import os
+# import random
+import re
+import xbmcaddon
+import xbmcvfs
+
+from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui, VSlog, addon
+from resources.lib.config import GestionCookie
 from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import GestionCookie
-from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui, VSlog, addon
-
-import re, base64, random, os, xbmcaddon, xbmcvfs
 
 ADDON = addon()
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
@@ -28,9 +33,9 @@ URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_MISC = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
+MOVIE_MOVIE = (True, 'showMenuFilms')
 DERNIER_AJOUT = (URL_MAIN + 'last/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'film/last/', 'showMovies')
-MOVIE_MOVIE = ('http://', 'showMenuFilms')
 MOVIE_POPULAR = (URL_MAIN + "film/popular/", 'showMovies')
 MOVIE_HD1080 = (URL_MAIN + 'film/bluray/', 'showMovies')
 MOVIE_VOSTFR = (URL_MAIN + 'film/vostfr/', 'showMovies')
@@ -39,8 +44,8 @@ MOVIE_NOTES = (URL_MAIN + 'film/loved/', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'film/genre/', 'showGenre')
 MOVIE_ANNEES = (URL_MAIN + 'film/date/', 'showYears')
 
+SERIE_SERIES = (True, 'showMenuSeries')
 SERIE_NEWS = (URL_MAIN + 'serie/last/', 'showMovies')
-SERIE_SERIES = ('http://', 'showMenuSeries')
 SERIE_POPULAR = (URL_MAIN + "serie/popular/", 'showMovies')
 SERIE_HD1080 = (URL_MAIN + 'serie/bluray/', 'showMovies')
 SERIE_VOSTFR = (URL_MAIN + 'serie/vostfr/', 'showMovies')
@@ -49,8 +54,8 @@ SERIE_NOTES = (URL_MAIN + 'serie/loved/', 'showMovies')
 SERIE_GENRES = (URL_MAIN + 'serie/genre/', 'showGenre')
 SERIE_ANNEES = (URL_MAIN + 'serie/date/', 'showYears')
 
+ANIM_ANIMS = (True, 'showMenuAnimes')
 ANIM_NEWS = (URL_MAIN + 'anime/last/', 'showMovies')
-ANIM_ANIMS = ('http://', 'showMenuAnimes')
 ANIM_POPULAR = (URL_MAIN + "anime/popular/", 'showMovies')
 ANIM_HD1080 = (URL_MAIN + 'anime/bluray/', 'showMovies')
 ANIM_VOSTFR = (URL_MAIN + 'anime/vostfr/', 'showMovies')
@@ -60,7 +65,7 @@ ANIM_GENRES = (URL_MAIN + 'anime/genre/', 'showGenre')
 ANIM_ANNEES = (URL_MAIN + 'anime/date/', 'showYears')
 
 DOC_NEWS = (URL_MAIN + 'documentaires/', 'showMovies')
-SPECTACLE_NEWS =  (URL_MAIN + 'theatre/', 'showMovies')
+SPECTACLE_NEWS = (URL_MAIN + 'theatre/', 'showMovies')
 
 
 def load():
@@ -95,6 +100,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showMenuAutre', 'Autres', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMenuFilms():
     oGui = cGui()
@@ -133,6 +139,7 @@ def showMenuFilms():
 
     oGui.setEndOfDirectory()
 
+
 def showMenuSeries():
     oGui = cGui()
 
@@ -169,6 +176,7 @@ def showMenuSeries():
     oGui.addDir(SITE_IDENTIFIER, SERIE_NOTES[1], 'Series (Les mieux notées)', 'notes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMenuMangas():
     oGui = cGui()
@@ -207,6 +215,7 @@ def showMenuMangas():
 
     oGui.setEndOfDirectory()
 
+
 def showDetail():
     dialog().VStextView(desc="""Explication du Captcha:
 Pour passer le Captcha il suffit de choisir le bon titre parmi les 5 propositions.
@@ -218,6 +227,7 @@ Le site est limité en nombre de passage pour les personnes qui n'ont pas de com
 Avoir un compte permet aussi de ne pas avoir le Captcha qui apparait à chaque fois.
 Vous pouvez activer la connexion au compte dans les paramètres de vStream.""", title="Fonctionnement du site")
 
+
 def showSearch():
     oGui = cGui()
 
@@ -228,6 +238,7 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showGenre():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -236,7 +247,7 @@ def showGenre():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    html = re.search('<section id="section_genre">(.+?)</section>', sHtmlContent,re.DOTALL).group(1)
+    html = re.search('<section id="section_genre">(.+?)</section>', sHtmlContent, re.DOTALL).group(1)
     sPattern = '<a href="([^"]+)">([^"]+)</a>'
 
     oParser = cParser()
@@ -248,6 +259,7 @@ def showGenre():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', genre[1], 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showYears():
     oGui = cGui()
@@ -270,12 +282,13 @@ def showYears():
 
     oGui.setEndOfDirectory()
 
+
 def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
 
     if sSearch:
-      sUrl = sSearch.replace(' ', '+')
+        sUrl = sSearch.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -346,7 +359,7 @@ def showMovies(sSearch=''):
             sThumb = URL_MAIN + aEntry[1]
             sTitle = aEntry[2]
             #sLang = aEntry[3]
-            sQual = aEntry[3]
+            sQual = aEntry[3].replace(' ', '')
             #sHoster = aEntry[5]
             sDesc = aEntry[4]
 
@@ -358,10 +371,11 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sCookie', Cookie)
 
             if '/serie/' in sUrl2 or '/anime/' in sUrl2:
-                oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSaisonEpisodes', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLink', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -376,6 +390,7 @@ def showMovies(sSearch=''):
 
         oGui.setEndOfDirectory()
 
+
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<a class="light_pagination" href="([^"]+)" aria-label="Next">'
@@ -386,6 +401,7 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
+
 def showMoviesLink():
     oGui = cGui()
     oParser = cParser()
@@ -393,6 +409,7 @@ def showMoviesLink():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
     Cookie = oInputParameterHandler.getValue('sCookie')
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -423,18 +440,20 @@ def showMoviesLink():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sCookie', Cookie)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'DecryptTime', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'decryptTime', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
-def ShowSerieSaisonEpisodes():
+
+def showSaisonEpisodes():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
     Cookie = oInputParameterHandler.getValue('sCookie')
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -470,13 +489,15 @@ def ShowSerieSaisonEpisodes():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oOutputParameterHandler.addParameter('sCookie', Cookie)
 
-                oGui.addTV(SITE_IDENTIFIER, 'DecryptTime', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'decryptTime', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
+
 
 def getLinkHtml(sHtmlContent):
     if not "Limite atteinte" in sHtmlContent:
@@ -486,7 +507,8 @@ def getLinkHtml(sHtmlContent):
         return aResult[1][0]
     return False
 
-def DecryptTime():
+
+def decryptTime():
     oGui = cGui()
     oParser = cParser()
 
@@ -566,6 +588,7 @@ def DecryptTime():
 
     oGui.setEndOfDirectory()
 
+
 class cInputWindow(xbmcgui.WindowDialog):
     def __init__(self, *args, **kwargs):
         self.cptloc = kwargs.get('captcha')
@@ -624,18 +647,18 @@ class cInputWindow(xbmcgui.WindowDialog):
         self.chkbutton[3].controlDown(self.okbutton);
         self.chkbutton[4].controlDown(self.okbutton);
 
-        self.chkbutton[0].controlLeft(self.chkbutton[4]);  self.chkbutton[0].controlRight(self.chkbutton[1]);
-        self.chkbutton[1].controlLeft(self.chkbutton[0]);  self.chkbutton[1].controlRight(self.chkbutton[2]);
-        self.chkbutton[2].controlLeft(self.chkbutton[1]);  self.chkbutton[2].controlRight(self.chkbutton[3]);
-        self.chkbutton[3].controlLeft(self.chkbutton[2]);  self.chkbutton[3].controlRight(self.chkbutton[4]);
-        self.chkbutton[4].controlLeft(self.chkbutton[3]);  self.chkbutton[4].controlRight(self.chkbutton[0]);
+        self.chkbutton[0].controlLeft(self.chkbutton[4]);   self.chkbutton[0].controlRight(self.chkbutton[1]);
+        self.chkbutton[1].controlLeft(self.chkbutton[0]);   self.chkbutton[1].controlRight(self.chkbutton[2]);
+        self.chkbutton[2].controlLeft(self.chkbutton[1]);   self.chkbutton[2].controlRight(self.chkbutton[3]);
+        self.chkbutton[3].controlLeft(self.chkbutton[2]);   self.chkbutton[3].controlRight(self.chkbutton[4]);
+        self.chkbutton[4].controlLeft(self.chkbutton[3]);   self.chkbutton[4].controlRight(self.chkbutton[0]);
 
         self.cancelled = False
         self.setFocus(self.okbutton)
-        self.okbutton.controlLeft(self.cancelbutton);      self.okbutton.controlRight(self.cancelbutton);
-        self.cancelbutton.controlLeft(self.okbutton);      self.cancelbutton.controlRight(self.okbutton);
-        self.okbutton.controlDown(self.chkbutton[4]);      self.okbutton.controlUp(self.chkbutton[4]);
-        self.cancelbutton.controlDown(self.chkbutton[0]);  self.cancelbutton.controlUp(self.chkbutton[0]);
+        self.okbutton.controlLeft(self.cancelbutton);       self.okbutton.controlRight(self.cancelbutton);
+        self.cancelbutton.controlLeft(self.okbutton);       self.cancelbutton.controlRight(self.okbutton);
+        self.okbutton.controlDown(self.chkbutton[4]);       self.okbutton.controlUp(self.chkbutton[4]);
+        self.cancelbutton.controlDown(self.chkbutton[0]);   self.cancelbutton.controlUp(self.chkbutton[0]);
 
     def get(self):
         self.doModal()
@@ -646,7 +669,6 @@ class cInputWindow(xbmcgui.WindowDialog):
                 if self.chkstate[objn]:
                     retval += ("" if retval == "" else ",") + str(objn)
             return retval
-
         else:
             return ""
 
@@ -669,7 +691,6 @@ class cInputWindow(xbmcgui.WindowDialog):
                 if index.isnumeric():
                     self.chkstate[int(index)-1] = not self.chkstate[int(index)-1]
                     self.chk[int(index)-1].setVisible(self.chkstate[int(index)-1])
-
         except:
             pass
 
