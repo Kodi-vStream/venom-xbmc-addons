@@ -297,7 +297,8 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl2) #sortie de l'url
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle) #sortie du titre
             oOutputParameterHandler.addParameter('sThumb', sThumb) #sortie du poster
-
+            oOutputParameterHandler.addParameter('referer', sUrl) # URL d'origine, parfois utile comme référence
+            
             if '/series' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
                 #addTV pour sortir les series tv (identifiant, function, titre, icon, poster, description, sortie parametre)
@@ -338,9 +339,11 @@ def showHosters(): #recherche et affiche les hotes
     sUrl = oInputParameterHandler.getValue('siteUrl') #apelle siteUrl
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle') #appelle le titre
     sThumb = oInputParameterHandler.getValue('sThumb') #appelle le poster
-
-    oRequestHandler = cRequestHandler(sUrl) #requete sur l'url
-    sHtmlContent = oRequestHandler.request() #requete sur l'url
+    referer = oInputParameterHandler.getValue('referer') # récupere l'URL appelante
+    
+    oRequestHandler = cRequestHandler(sUrl) # requete sur l'url
+    oRequestHandler.addHeaderEntry('Referer', referer) # parametre pour passer l'URL appelante (n'est pas forcement necessaire)
+    sHtmlContent = oRequestHandler.request() # requete sur l'url
 
     oParser = cParser()
     sPattern = '<iframe.+?src="([^"]+)"'
