@@ -344,11 +344,12 @@ class cDownload:
 
         # recherche d'une extension
         sUrl = sUrl.lower()
+
         m = re.search('(flv|avi|mp4|mpg|mpeg|mkv)', sUrl)
         if m:
             sTitle = sTitle + '.' + m.group(0)
         else:
-            sTitle = sTitle + '.flv'  # Si quedale on en prend une au pif
+            sTitle = sTitle + '.mp4'  # Si quedale on en prend une au pif
 
         return sTitle
 
@@ -728,12 +729,12 @@ class cDownload:
 
                         oPlayer = cPlayer()
 
-                        if not (sys.argv[1] == '-1'):
-                            oPlayer.run(oGuiElement, title, path)
-                        else:
-                            oPlayer.clearPlayList()
-                            oPlayer.addItemToPlaylist(oGuiElement)
-                            oPlayer.startPlayer()
+                        # if not (sys.argv[1] == '-1'):
+                            # oPlayer.run(oGuiElement, title, path)
+                        # else:
+                        oPlayer.clearPlayList()
+                        oPlayer.addItemToPlaylist(oGuiElement)
+                        oPlayer.startPlayer()
 
                     else:
                         self.DIALOG.VSinfo('Erreur', self.ADDON.VSlang(30085))
