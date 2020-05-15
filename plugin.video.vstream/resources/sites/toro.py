@@ -33,9 +33,7 @@ MOVIE_GENRES = (URL_MAIN + 'genre/', 'showGenres')
 
 SERIE_SERIES = ('http://', 'showMenuSeries')
 SERIE_NEWS = (URL_MAIN + '/series-streaming/', 'showMovies')
-# SERIE_VIEWS =  (URL_MAIN + '/film-les-plus-vues/', 'showMovies')
-# SERIE_COMMENTS = (URL_MAIN + '/films-plus-commenter-streaming/', 'showMovies')
-# SERIE_NOTES = (URL_MAIN + '/film-streaming-populaires/', 'showMovies')
+
 SERIE_GENRES = (SERIE_NEWS[0], 'showGenres')
 
 def load():
@@ -68,17 +66,7 @@ def showMenuMovies():
 
        
 
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    # oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'views.png', oOutputParameterHandler)
-
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_COMMENTS[0])
-    # oGui.addDir(SITE_IDENTIFIER, MOVIE_COMMENTS[1], 'Films (Les plus commentés)', 'comments.png', oOutputParameterHandler)
-
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
-    # oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'notes.png', oOutputParameterHandler)
+    
 
     oGui.setEndOfDirectory()
 
@@ -94,18 +82,7 @@ def showMenuSeries():
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
     
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
-    # oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Les plus vues)', 'views.png', oOutputParameterHandler)
-
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', SERIE_COMMENTS[0])
-    # oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENTS[1], 'Séries (Les plus commentées) ', 'comments.png', oOutputParameterHandler)
-
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', SERIE_NOTES[0])
-    # oGui.addDir(SITE_IDENTIFIER, SERIE_NOTES[1], 'Séries (Les mieux notées)', 'notes.png', oOutputParameterHandler)
-
+    
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -157,7 +134,7 @@ def showGenres():
 
 
 
-def showYears():#creer une liste inversée d'annees
+def showYears():
     oGui = cGui()
 
     for i in reversed (xrange(1918, 2021)):
@@ -168,7 +145,7 @@ def showYears():#creer une liste inversée d'annees
 
     oGui.setEndOfDirectory()
 
-def showSeriesYears():#creer une liste inversée d'annees
+def showSeriesYears():
     oGui = cGui()
 
     for i in reversed (xrange(1980, 2021)):
@@ -227,7 +204,7 @@ def showMovies(sSearch = ''):
 
 
             if 'series-/' in sUrl2 or '/serie-' in sUrl2:
-                oGui.addTV(SITE_IDENTIFIER, 'showSXE', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSXE', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -252,7 +229,7 @@ def __checkForNextPage(sHtmlContent):
     return False
 
 def showSXE():
-    #Uniquement saison a chaque fois
+    
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -282,6 +259,7 @@ def showSXE():
                 #EpTitle = aEntry[3]
                 Ep = aEntry[1]
                 sTitle = sMovieTitle + ' Episode' + Ep 
+                sYear = aEntry[3] 
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
