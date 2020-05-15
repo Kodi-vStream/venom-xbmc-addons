@@ -15,8 +15,7 @@ SITE_DESC = 'Regarder Films et Séries en Streaming gratuit'
 
 URL_MAIN = 'https://voir.torostreaming.com/'
 
-#definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle sera affichee.
-#LA RECHERCHE GLOBAL N'UTILE PAS showSearch MAIS DIRECTEMENT LA FONCTION INSCRITE DANS LA VARIABLE URL_SEARCH_*
+
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + '/?s=', 'showMovies')
 #recherche global films
