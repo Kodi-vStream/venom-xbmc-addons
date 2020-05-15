@@ -189,6 +189,8 @@
         <setting visible="false" id="plugin_tirexo" type="bool" label="Tirexo" default="true"/>
 
         <setting visible="false" id="plugin_topreplay" type="bool" label="TopReplay" default="true"/>
+        
+        <setting visible="false" id="plugin_toro" type="bool" label="Toro" default="true"/>
 
         <setting visible="false" id="plugin_tvrex_net" type="bool" label="Tvrex" default="true"/>
 
