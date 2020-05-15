@@ -214,7 +214,12 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            sPattern = 'class="next page-numbers".+?page\/(\d{1,3})'
+            oParser = cParser()
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                page = 'Page ' + aResult[1][0]
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]' + page, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
