@@ -136,6 +136,8 @@
 
         <setting visible="false" id="plugin_mesfilms" type="bool" label="Mes Films" default="true"/>
 
+        <setting visible="false" id="plugin_n1streaming" type="bool" label="N1 Streaming" default="true"/>
+
         <setting visible="false" id="plugin_neko_sama" type="bool" label="Neko Sama" default="true"/>
 
         <setting visible="false" id="plugin_neuf_docu" type="bool" label="9Docu" default="true"/>
