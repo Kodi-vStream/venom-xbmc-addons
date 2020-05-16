@@ -7,10 +7,12 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 from resources.lib.parser import cParser
+from resources.lib.packer import cPacker
 from resources.lib.util import cUtil
 import re
+import requests
 
 SITE_IDENTIFIER = 'zustream'
 SITE_NAME = 'ZuStream'
@@ -379,17 +381,22 @@ def showHosters():
     oRequest.addParametersLine(pdata)
 
     sHtmlContent = oRequest.request()
+    oParser = cParser()
 
     #1
     sPattern = '(?:<iframe|<IFRAME).+?(?:src|SRC)=(?:\'|")(.+?)(?:\'|")'
     aResult1 = re.findall(sPattern, sHtmlContent)
+    #VSlog(aResult1)
 
     #2
     sPattern = '<a href="([^"]+)">'
     aResult2 = re.findall(sPattern, sHtmlContent)
+    #VSlog(aResult2)
 
     #fusion
     aResult = aResult1 + aResult2
+    #VSlog(aResult)
+    
 
     if (aResult):
         for aEntry in aResult:
@@ -397,11 +404,46 @@ def showHosters():
             sHosterUrl = aEntry
             if 'zustreamv2/viplayer' in sHosterUrl:
                 return
+            
+            
+            if 're.zu-lien.com' in sHosterUrl:
+                UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
+                oRequestHandler = cRequestHandler(sHosterUrl)
+                oRequestHandler.addHeaderEntry('User-Agent', UA)
+                oRequestHandler.addHeaderEntry('Referer', 'https://re.zu-lien.com')
+                sHtmlContent2 = oRequestHandler.request()
+                sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
+                sPattern2 = '<div id="videolink".+?>\/\/([^<>]+)'
+                    
+                aResult2 = oParser.parse(sHtmlContent2, sPattern)
+                aResult = re.findall(sPattern2, sHtmlContent2)
+                
+                if (aResult2[0] == True):#Gounlimited
+                    sHtmlContent = cPacker().unpack(aResult2[1][0])
+                    VSlog(sHtmlContent)
+                    sPattern = 'src:"([^"]+)"'
+                    aResult3 = oParser.parse(sHtmlContent, sPattern)
+                    if (aResult3[0] == True):
+                        sHosterUrl = aResult3[1][0]
+                        oHoster = cHosterGui().checkHoster(sHosterUrl)
+                        if (oHoster != False):
+                            oHoster.setDisplayName(sMovieTitle)
+                            oHoster.setFileName(sMovieTitle)
+                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                
+                
+                if aResult:#streamtape
+                    redi = "https://" + aResult[0]
+                    VSlog(redi)
+                    session = requests.Session() #so connections are recycled
+                    resp = session.head(redi, allow_redirects = True)
+                    sHosterUrl = resp.url
+                    
 
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+        oHoster = cHosterGui().checkHoster(sHosterUrl)
+        if (oHoster != False):
+            oHoster.setDisplayName(sMovieTitle)
+            oHoster.setFileName(sMovieTitle)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
