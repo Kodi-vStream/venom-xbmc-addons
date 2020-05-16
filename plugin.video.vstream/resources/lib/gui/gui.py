@@ -339,6 +339,8 @@ class cGui():
     def createListItem(self, oGuiElement):
 
         oListItem = listitem(oGuiElement.getTitle())
+        
+        # voir : https://kodi.wiki/view/InfoLabels
         oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
         #oListItem.setThumbnailImage(oGuiElement.getThumbnail())
         #oListItem.setIconImage(oGuiElement.getIcon())

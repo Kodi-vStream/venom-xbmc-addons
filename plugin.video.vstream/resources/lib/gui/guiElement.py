@@ -449,7 +449,7 @@ class cGuiElement:
             self.addItemProperties('fanart_image', meta['backdrop_url'])
             self.__sFanart = meta['backdrop_url']
         if 'trailer' in meta and meta['trailer']:
-            meta['trailer'] = meta['trailer'].replace(u'\u200e', '').replace(u'\u200f', '')
+#            meta['trailer'] = meta['trailer'].replace(u'\u200e', '').replace(u'\u200f', '')
             self.__sTrailerUrl = meta['trailer']
         if 'cover_url' in meta and meta['cover_url']:
             self.__sThumbnail = meta['cover_url']
@@ -588,10 +588,6 @@ class cGuiElement:
     def getItemValues(self):
         self.addItemValues('Title', self.getTitle())
 
-        #tmdbid
-        if self.getTmdbId():
-            self.addItemProperties('TmdbId', str(self.getTmdbId()))
-
         # - Video Values:
         # - genre : string (Comedy)
         # - year : integer (2009)
@@ -632,6 +628,11 @@ class cGuiElement:
         if self.getMetaAddon() == 'true':
             self.getMetadonne()
 
+        # tmdbid
+        if self.getTmdbId():
+            self.addItemProperties('TmdbId', str(self.getTmdbId()))
+            self.addItemValues('DBID', str(self.getTmdbId()))
+
         # Utilisation des infos connues si non trouvées
         if not self.getItemValue('plot') and self.getDescription():
             self.addItemValues('plot', self.getDescription())
@@ -643,6 +644,8 @@ class cGuiElement:
 #            self.addItemValues('cover_url', self.getThumbnail())
 #        if not self.getItemValue('backdrop_url') and self.getPoster():
 #            self.addItemValues('backdrop_url', self.getPoster())
+        if not self.getItemValue('trailer') and self.getTrailerUrl():
+            self.addItemValues('trailer', self.getTrailerUrl())
 
         #Used only if there is data in db, overwrite getMetadonne()
         w = self.getWatched()

@@ -457,7 +457,7 @@ class cTMDb:
                 if not trailer_id:
                     trailer_id = meta['trailers']['youtube'][0]['source']
                 _meta['trailer_url'] = 'http://www.youtube.com/watch?v=' + trailer_id
-                _meta['trailer'] = 'plugin://plugin.video.youtube/?action=play_video&videoid=%s' % trailer_id
+                _meta['trailer'] = 'plugin://plugin.video.youtube/play/?videoid=%s' % trailer_id
             except:
                 pass
 
