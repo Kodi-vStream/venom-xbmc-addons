@@ -300,8 +300,16 @@ def showSXE():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'class="Title AA-Season.+?tab="(\d)|class="Num">(\d{1,2}).+?href="([^"]+)"'
     oParser = cParser()
+
+    # récupération du synopsis
+    sDesc = ''
+    sPattern = 'class="Description"><p>(.+?)</p>'
+    aResultDesc = oParser.parse(sHtmlContent, sPattern)
+    if aResultDesc[0]:
+        sDesc = aResultDesc[1][0]
+
+    sPattern = 'class="Title AA-Season.+?tab="(\d)|class="Num">(\d{1,2}).+?href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -326,8 +334,9 @@ def showSXE():
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sYear', sYear)
+                oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-                oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -356,7 +365,7 @@ def showLinks():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
-        sDesc = re.sub('.+? : ', '', aResult[1][0])
+        sDesc = aResult[1][0]
 
     nbElement = len(aResult0)
     for i in range(nbElement):
@@ -386,6 +395,7 @@ def showSeriesLinks():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sYear = oInputParameterHandler.getValue('sYear')
+    sDesc = oInputParameterHandler.getValue('sDesc')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -393,14 +403,6 @@ def showSeriesLinks():
     aResult0 = re.findall(sPattern, sHtmlContent)
     sPattern = 'id="Opt\d.+?src=.+?trembed=(\d).+?trid=(\d{5,6})'
     aResult1 = re.findall(sPattern, sHtmlContent)
-
-    # récupération du synopsis
-    sDesc = ''
-    sPattern = 'class="Description"><p>(.+?)</p>'
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0]:
-        sDesc = re.sub('.+? : ', '', aResult[1][0])
 
     nbElement = len(aResult0)
     for i in range(nbElement):
