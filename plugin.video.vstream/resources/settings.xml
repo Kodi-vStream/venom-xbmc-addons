@@ -76,6 +76,8 @@
         <!--activation invisible des sources -->
         <setting visible="false" id="plugin_adkami_com" type="bool" label="ADKami" default="true"/>
 
+        <setting visible="false" id="plugin_asia_insane" type="bool" label="Asia Insane" default="true"/>
+
         <setting visible="false" id="plugin_buzzmonclick_com" type="bool" label="BuzzMonClick" default="true"/>
 
         <setting visible="false" id="plugin_cinemay_com" type="bool" label="Cinemay" default="true"/>
