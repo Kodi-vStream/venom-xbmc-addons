@@ -420,21 +420,16 @@ def showHosters():
                 
                 if (aResult2[0] == True):#Gounlimited
                     sHtmlContent = cPacker().unpack(aResult2[1][0])
-                    VSlog(sHtmlContent)
+                    #VSlog(sHtmlContent)
                     sPattern = 'src:"([^"]+)"'
                     aResult3 = oParser.parse(sHtmlContent, sPattern)
                     if (aResult3[0] == True):
                         sHosterUrl = aResult3[1][0]
-                        oHoster = cHosterGui().checkHoster(sHosterUrl)
-                        if (oHoster != False):
-                            oHoster.setDisplayName(sMovieTitle)
-                            oHoster.setFileName(sMovieTitle)
-                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
                 
                 
                 if aResult:#streamtape
                     redi = "https://" + aResult[0]
-                    VSlog(redi)
+                    #VSlog(redi)
                     session = requests.Session() #so connections are recycled
                     resp = session.head(redi, allow_redirects = True)
                     sHosterUrl = resp.url
