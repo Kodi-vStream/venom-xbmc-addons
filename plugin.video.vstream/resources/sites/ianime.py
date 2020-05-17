@@ -6,9 +6,9 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil, Unquote, QuotePlus
+from resources.lib.util import cUtil, Unquote, QuotePlus, Noredirection
 from resources.lib.comaddon import progress, VSlog
-import urllib2, re
+import re
 import unicodedata, random
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
@@ -574,187 +574,199 @@ def showHosters():
     sHtmlContent = sHtmlContent.replace('<iframe src="http://www.promoliens.net', '')
     sHtmlContent = sHtmlContent.replace("<iframe src='cache_vote.php", '')
 
-    list_url = []
-
-    #1 er methode
-    sPattern = '<div class="box"><iframe.+?src=[\'|"](.+?)[\'|"]'
+    sPattern = '<iframe.+?src=\'([^<>"]+?)\''
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-            if re.match(".+?&#[0-9]+;", aEntry):#directe mais codé html
-                sHosterUrl = cUtil().unescape(aEntry)
+    #VSlog(aResult)
 
-            else:#directe en clair
-                sHosterUrl = str(aEntry)
+    if 'animedigitalnetwork.fr' in str(aResult[1]):
+        oGui.addText(SITE_IDENTIFIER, "[COLOR red]Animés dispo gratuitement et legalement sur :[/COLOR][COLOR coral] anime digital network[/COLOR]")
+    elif 'crunchyroll.com' in str(aResult[1]):
+        oGui.addText(SITE_IDENTIFIER, "[COLOR red]Animés dispo gratuitement et legalement sur :[/COLOR][COLOR coral] crunchyroll[/COLOR]")
+    elif 'wakanim.tv' in str(aResult[1]):
+        oGui.addText(SITE_IDENTIFIER, "[COLOR red]Animés dispo gratuitement et legalement sur :[/COLOR][COLOR coral] wakanim[/COLOR]")
+    else:
+        list_url = []
 
-            #Ces liens sont tjours des liens
-            if (not sHosterUrl.startswith('http')) and (len(sHosterUrl) > 2):
-                sHosterUrl = URL_MAIN + sHosterUrl
+        #1 er methode
+        sPattern = '<div class="box"><iframe.+?src=[\'|"](.+?)[\'|"]'
+        aResult = oParser.parse(sHtmlContent, sPattern)
 
-            list_url.append(sHosterUrl)
+        if (aResult[0] == True):
+            for aEntry in aResult[1]:
+                if re.match(".+?&#[0-9]+;", aEntry):#directe mais codé html
+                    sHosterUrl = cUtil().unescape(aEntry)
 
-    #2 eme methode
-    sPattern = '<script>eval\(unescape\((.+?)\); eval\(unescape\((.+?)\);<\/script>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-            #si url cryptee mangacity algo
-            sHosterUrl = DecryptMangacity(aEntry[1])
-            sHosterUrl = sHosterUrl.replace('\\', '')
-            list_url.append(sHosterUrl)
+                else:#directe en clair
+                    sHosterUrl = str(aEntry)
 
-    #3 eme methode
-    sPattern = 'document\.write\(unescape\("(%3c%.+?)"\)\);'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        #VSlog("methode 3")
-        for aEntry in aResult[1]:
-            tmp = Unquote(aEntry)
+                #Ces liens sont tjours des liens
+                if (not sHosterUrl.startswith('http')) and (len(sHosterUrl) > 2):
+                    sHosterUrl = URL_MAIN + sHosterUrl
 
-            sPattern2 = 'src=["\']([^"\']+)["\']'
-            aResult = re.findall(sPattern2, tmp)
-            if aResult:
-                list_url.append(aResult[0])
+                list_url.append(sHosterUrl)
 
-    #VSlog(str(list_url))
+        #2 eme methode
+        sPattern = '<script>eval\(unescape\((.+?)\); eval\(unescape\((.+?)\);<\/script>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            for aEntry in aResult[1]:
+                #si url cryptee mangacity algo
+                sHosterUrl = DecryptMangacity(aEntry[1])
+                sHosterUrl = sHosterUrl.replace('\\', '')
+                list_url.append(sHosterUrl)
 
-    if len(list_url) > 0:
-        for aEntry in list_url:
+        #3 eme methode
+        sPattern = 'document\.write\(unescape\("(%3c%.+?)"\)\);'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            #VSlog("methode 3")
+            for aEntry in aResult[1]:
+                tmp = Unquote(aEntry)
 
-            sHosterUrl = aEntry
+                sPattern2 = 'src=["\']([^"\']+)["\']'
+                aResult = re.findall(sPattern2, tmp)
+                if aResult:
+                    list_url.append(aResult[0])
 
-            #Dans le cas ou l'adresse n'est pas directe,on cherche a l'extraire
-            if not sHosterUrl[:4] == 'http':
-                sHosterUrl = ExtractLink(sHosterUrl)
+        #VSlog(str(list_url))
 
-            #Si aucun lien on arrete ici
-            if not sHosterUrl:
-                continue
+        if len(list_url) > 0:
+            for aEntry in list_url:
 
-            #si openload code
-            if 'openload2.php' in sHosterUrl:
-                #on telecharge la page
+                sHosterUrl = aEntry
 
-                oRequestHandler = cRequestHandler(sHosterUrl )
-                oRequestHandler.addHeaderEntry('User-Agent', UA)
-                sHtmlContent = oRequestHandler.request()
-                #Et on remplace le code
-                sHtmlContent = ICDecode(sHtmlContent)
-                sHosterUrl = ExtractLink(sHtmlContent)
+                #Dans le cas ou l'adresse n'est pas directe,on cherche a l'extraire
+                if not sHosterUrl[:4] == 'http':
+                    sHosterUrl = ExtractLink(sHosterUrl)
 
-            #Passe par lien .asx ??
-            sPattern = '(https*:\/\/www.ianime[^\/\\]+\/[0-9a-zA-Z_-]+\.asx)'
-            aResult = oParser.parse(sHosterUrl, sPattern)
-            if aResult[0] :
-                #on telecharge la page
-                oRequestHandler = cRequestHandler(sHosterUrl )
-                oRequestHandler.addHeaderEntry('Referer', sUrl)
-                oRequestHandler.addHeaderEntry('User-Agent', UA)
-                sHtmlContent = oRequestHandler.request()
+                #Si aucun lien on arrete ici
+                if not sHosterUrl:
+                    continue
 
-                #Si c'est une redirection, on passe juste le vrai lien
-                if ('ianime' not in oRequestHandler.getRealUrl().split('/')[2]):
-                    sHosterUrl = oRequestHandler.getRealUrl()
-                else:
-                    #Sinon on remplace le code
-                    html = ICDecode(sHtmlContent)
-                    sHosterUrl = ExtractLink(html)
+                #si openload code
+                if 'openload2.php' in sHosterUrl:
+                    #on telecharge la page
 
-            #Passe par lien .vxm ??
-            #sPattern = 'http:\/\/www.ianime[^\/\\]+\/([0-9a-zA-Z_-]+)\.vxm'
-            #aResult = oParser.parse(sHosterUrl, sPattern)
-            #if aResult[0] :
-            #    sHosterUrl = 'http://embed.nowvideo.sx/embed.php?v=' + aResult[1][0]
+                    oRequestHandler = cRequestHandler(sHosterUrl )
+                    oRequestHandler.addHeaderEntry('User-Agent', UA)
+                    sHtmlContent = oRequestHandler.request()
+                    #Et on remplace le code
+                    sHtmlContent = ICDecode(sHtmlContent)
+                    sHosterUrl = ExtractLink(sHtmlContent)
 
-            #redirection tinyurl
-            if 'tinyurl' in sHosterUrl:
-                sHosterUrl = GetTinyUrl(sHosterUrl)
-
-
-            #test pr liens raccourcis
-            if 'http://goo.gl' in sHosterUrl:
-                try:
-                    headers = {'User-Agent' : 'Mozilla 5.10', 'Host' : 'goo.gl', 'Connection' : 'keep-alive'}
-                    request = urllib2.Request(sHosterUrl, None, headers)
-                    reponse = urllib2.urlopen(request)
-                    sHosterUrl = reponse.geturl()
-                except:
-                    pass
-
-            #Potection visio.php
-            if '/visio.php?' in sHosterUrl:
-                oRequestHandler = cRequestHandler(sHosterUrl )
-                oRequestHandler.addHeaderEntry('Referer', sUrl)
-                oRequestHandler.addHeaderEntry('User-Agent', UA)
-                sHtmlContent = oRequestHandler.request()
-
-                sHtmlContent = ICDecode(sHtmlContent)
-
-                sPattern = 'src=[\'"]([^\'"]+)[\'"]'
-                aResult = oParser.parse(sHtmlContent, sPattern)
-                if aResult[0]:
-                    sHosterUrl = aResult[1][0]
-
-            #Derniere en date
-            sPattern = "(https*:\/\/www.ianime[^\/\\]+\/[^']+)"
-            aResult = oParser.parse(sHosterUrl, sPattern)
-            if aResult[0]:
-
-                VSlog('>>' + sHosterUrl)
-
-                oRequestHandler = cRequestHandler(sHosterUrl)
-                oRequestHandler.addHeaderEntry('Referer', sUrl)
-                oRequestHandler.addHeaderEntry('User-Agent', UA)
-
-                sHtmlContent = oRequestHandler.request()
-
-                sHtmlContent = ICDecode(sHtmlContent)
-
-                sHosterUrl2 = ExtractLink(sHtmlContent)
-
-
-                if 'intern_player.png' in sHosterUrl2 or 'intern_player2.png' in sHosterUrl2:
-                    #VSlog('Fausse image : ' + sHosterUrl)
-
-                    xx = str(random.randint(300, 350))#347
-                    yy = str(random.randint(200, 255))#216
-
-                    oRequestHandler = cRequestHandler(sHosterUrl)
-                    oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-                    #Add params
-                    oRequestHandler.addParameters('submit.x', xx)
-                    oRequestHandler.addParameters('submit.y', yy)
-
-                    #look for hidden params
-                    p1 = re.search(r'name="valeur" value="([^"]+)"', sHtmlContent)
-                    if p1:
-                        #VSlog('Hidden param')
-                        oRequestHandler.addParameters('valeur', p1.group(1))
-
-                    #Set headers
+                #Passe par lien .asx ??
+                sPattern = '(https*:\/\/www.ianime[^\/\\]+\/[0-9a-zA-Z_-]+\.asx)'
+                aResult = oParser.parse(sHosterUrl, sPattern)
+                if aResult[0] :
+                    #on telecharge la page
+                    oRequestHandler = cRequestHandler(sHosterUrl )
                     oRequestHandler.addHeaderEntry('Referer', sUrl)
                     oRequestHandler.addHeaderEntry('User-Agent', UA)
                     sHtmlContent = oRequestHandler.request()
 
-                    #VSlog("Img decode " + sHtmlContent)
+                    #Si c'est une redirection, on passe juste le vrai lien
+                    if ('ianime' not in oRequestHandler.getRealUrl().split('/')[2]):
+                        sHosterUrl = oRequestHandler.getRealUrl()
+                    else:
+                        #Sinon on remplace le code
+                        html = ICDecode(sHtmlContent)
+                        sHosterUrl = ExtractLink(html)
+
+                #Passe par lien .vxm ??
+                #sPattern = 'http:\/\/www.ianime[^\/\\]+\/([0-9a-zA-Z_-]+)\.vxm'
+                #aResult = oParser.parse(sHosterUrl, sPattern)
+                #if aResult[0] :
+                #    sHosterUrl = 'http://embed.nowvideo.sx/embed.php?v=' + aResult[1][0]
+
+                #redirection tinyurl
+                if 'tinyurl' in sHosterUrl:
+                    sHosterUrl = GetTinyUrl(sHosterUrl)
+
+
+                #test pr liens raccourcis
+                if 'http://goo.gl' in sHosterUrl:
+                    try:
+                        oRequestHandler = cRequestHandler(RestUrl)
+                        oRequestHandler.addHeaderEntry('User-Agent', "Mozilla 5.10")
+                        oRequestHandler.addHeaderEntry('Host', "goo.gl")
+                        oRequestHandler.addHeaderEntry('Connection', 'keep-alive')
+                        sHtmlContent = oRequestHandler.request()
+                        sHosterUrl = oRequestHandler.getRealUrl()
+
+                    except:
+                        pass
+
+                #Potection visio.php
+                if '/visio.php?' in sHosterUrl:
+                    oRequestHandler = cRequestHandler(sHosterUrl )
+                    oRequestHandler.addHeaderEntry('Referer', sUrl)
+                    oRequestHandler.addHeaderEntry('User-Agent', UA)
+                    sHtmlContent = oRequestHandler.request()
+
+                    sHtmlContent = ICDecode(sHtmlContent)
+
+                    sPattern = 'src=[\'"]([^\'"]+)[\'"]'
+                    aResult = oParser.parse(sHtmlContent, sPattern)
+                    if aResult[0]:
+                        sHosterUrl = aResult[1][0]
+
+                #Derniere en date
+                sPattern = "(https*:\/\/www.ianime[^\/\\]+\/[^']+)"
+                aResult = oParser.parse(sHosterUrl, sPattern)
+                if aResult[0]:
+
+                    VSlog('>>' + sHosterUrl)
+
+                    oRequestHandler = cRequestHandler(sHosterUrl)
+                    oRequestHandler.addHeaderEntry('Referer', sUrl)
+                    oRequestHandler.addHeaderEntry('User-Agent', UA)
+
+                    sHtmlContent = oRequestHandler.request()
+
+                    sHtmlContent = ICDecode(sHtmlContent)
 
                     sHosterUrl2 = ExtractLink(sHtmlContent)
 
-                sHosterUrl = sHosterUrl2
+                    if 'intern_player.png' in sHosterUrl2 or 'intern_player2.png' in sHosterUrl2:
+                        #VSlog('Fausse image : ' + sHosterUrl)
 
-            if 'tinyurl' in sHosterUrl:
-                sHosterUrl = GetTinyUrl(sHosterUrl)
+                        xx = str(random.randint(300, 350))#347
+                        yy = str(random.randint(200, 255))#216
 
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                        oRequestHandler = cRequestHandler(sHosterUrl)
+                        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+                        #Add params
+                        oRequestHandler.addParameters('submit.x', xx)
+                        oRequestHandler.addParameters('submit.y', yy)
+
+                        #look for hidden params
+                        p1 = re.search(r'name="valeur" value="([^"]+)"', sHtmlContent)
+                        if p1:
+                            #VSlog('Hidden param')
+                            oRequestHandler.addParameters('valeur', p1.group(1))
+
+                        #Set headers
+                        oRequestHandler.addHeaderEntry('Referer', sUrl)
+                        oRequestHandler.addHeaderEntry('User-Agent', UA)
+                        sHtmlContent = oRequestHandler.request()
+
+                        #VSlog("Img decode " + sHtmlContent)
+
+                        sHosterUrl2 = ExtractLink(sHtmlContent)
+
+                    sHosterUrl = sHosterUrl2
+
+                if 'tinyurl' in sHosterUrl:
+                    sHosterUrl = GetTinyUrl(sHosterUrl)
+
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
-
-
 
 #-------------------------------------------------------------------------------------------
 def GetTinyUrl(url):
@@ -792,14 +804,10 @@ def GetTinyUrl(url):
 
         #VSlog('Decodage lien tinyurl : ' + str(url))
 
-        class NoRedirection(urllib2.HTTPErrorProcessor):
-            def http_response(self, request, response):
-                return response
-            https_response = http_response
 
         headers9 = [('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'), ('Referer', URL_MAIN)]
 
-        opener = urllib2.build_opener(NoRedirection)
+        opener = Noredirection()
         opener.addheaders = headers9
         reponse = opener.open(url, None, 5)
 
@@ -814,7 +822,6 @@ def GetTinyUrl(url):
 
     return url
 
-
 def cutSearch(sHtmlContent, typeSearch):
     types = {
             'movies': 'Films et Animations',
@@ -827,4 +834,3 @@ def cutSearch(sHtmlContent, typeSearch):
     if (aResult[0]):
         return aResult[1][0]
     return ''
-
