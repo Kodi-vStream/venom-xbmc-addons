@@ -6,9 +6,9 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+from resources.lib.util import cUtil, urlEncode
 from resources.lib.comaddon import progress
-import urllib2, urllib, re
+import re
 
 #Je garde le nom kepliz pour pas perturber
 SITE_IDENTIFIER = 'kepliz_com'
@@ -123,10 +123,9 @@ def showMovies(sSearch = ''):
         sPattern = '<span style="list-style-type:none;" >.+? href="\/[0-9a-zA-Z]+\/(.+?)">(.+?)<\/a>'
     
     #L'url change tres souvent donc faut la retrouver
-    req = urllib2.Request(URL_HOST)
-    response = urllib2.urlopen(req)
-    data = response.read()
-    response.close()
+    oRequestHandler = cRequestHandler(URL_HOST)
+    data = oRequestHandler.request()
+
     sMainUrl = ''
     aResult = oParser.parse(data, '<a.+?href="(/*[0-9a-zA-Z]+)"')   #Compatible avec plusieurs clones
 
@@ -289,22 +288,18 @@ def showHostersLink():
     sPostUrl = oInputParameterHandler.getValue('sPostUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
-    UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
-    headers = {'User-Agent': UA,
-               'Host': 'ozporo.com',
-               'Referer': sUrl,
-               'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-               'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
-               'Accept-Encoding': 'gzip, deflate',
-               'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
-
-    post_data = {'link': sLink}
-
-    req = urllib2.Request(sPostUrl, urllib.urlencode(post_data), headers)
-
-    response = urllib2.urlopen(req)
-    data = response.read()
-    response.close()
+    oRequestHandler = cRequestHandler(RestUrl)
+    oRequestHandler.setRequestType(1)
+    oRequestHandler.addHeaderEntry('User-Agent', "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0")
+    oRequestHandler.addHeaderEntry('Host', url.split('/')[2])
+    oRequestHandler.addHeaderEntry('Referer', sUrl)
+    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    oRequestHandler.addHeaderEntry('Content-Type',  "application/x-www-form-urlencoded; charset=UTF-8'")
+    oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
+    oRequestHandler.addParameters('link', sLink)
+    data = oRequestHandler.request()
 
     sPattern = '"link":"([^"]+?)","label":"([^"]+?)"'
     aResult = oParser.parse(data, sPattern)
@@ -345,10 +340,8 @@ def showHostersLink2():
                #'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
                }
 
-    req = urllib2.Request(sLink)
-    response = urllib2.urlopen(req)
-    data = response.read()
-    response.close()
+    oRequestHandler = cRequestHandler(sLink)
+    data = oRequestHandler.request()
 
     sPattern = '"file":"([^"]+)","type":"mp4","label":"([^"]+)"'
     aResult = oParser.parse(data, sPattern)
@@ -361,19 +354,22 @@ def showHostersLink2():
             sQual = aEntry[1]
             sTitle = sMovieTitle + ' [' + sQual + ']'
 
-            #decodage des liens
-            req = urllib2.Request(sLink2, None, headers)
+            oRequestHandler = cRequestHandler(sLink2)
+            oRequestHandler.addHeaderEntry('User-Agent', "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0")
+            oRequestHandler.addHeaderEntry('Referer', sLink)
+            oRequestHandler.addHeaderEntry('Accept', 'video/webm,video/ogg,video/*;q=0.9,application/ogg;q=0.7,audio/*;q=0.6,*/*;q=0.5')
+            oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+            oRequestHandler.addHeaderEntry('Range', 'bytes=0-')
 
             try:
-                response = urllib2.urlopen(req)
-                sLink2 = response.geturl()
-                response.close()
+                data = oRequestHandler.request()
+                sLink2 = oRequestHandler.getRealUrl()
 
                 sHosterUrl = str(sLink2)
                 oHoster = cHosterGui().getHoster('lien_direct')
                 #data = response.read()
 
-            except urllib2.URLError, e:
+            except:
                 sLink2 = e.geturl()
                 sHosterUrl = sLink2
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -406,10 +402,8 @@ def showHostersLink3():
 
     #VSlog(sLink)
 
-    req = urllib2.Request(sLink)
-    response = urllib2.urlopen(req)
-    data = response.read()
-    response.close()
+    oRequestHandler = cRequestHandler(sLink)
+    data = oRequestHandler.request()
 
     # Recherche du premier lien
     sPattern = 'href=["\'](http[^"\']+)["\']'
@@ -428,10 +422,13 @@ def showHostersLink3():
         # VSlog(href)
 
         #VSlog(aResult[1][0])
-        req = urllib2.Request(aResult[1][0], None, headers)
-        response = urllib2.urlopen(req)
-        data = response.read()
-        response.close()
+        oRequestHandler = cRequestHandler(aResult[1][0])
+        oRequestHandler.addHeaderEntry('User-Agent', "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0")
+        oRequestHandler.addHeaderEntry('Referer', sLink)
+        oRequestHandler.addHeaderEntry('Accept', 'video/webm,video/ogg,video/*;q=0.9,application/ogg;q=0.7,audio/*;q=0.6,*/*;q=0.5')
+        oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+        oRequestHandler.addHeaderEntry('Range', 'bytes=0-')
+        data = oRequestHandler.request()
 
     #VSlog(data)
 
@@ -449,22 +446,27 @@ def showHostersLink3():
             sTitle = sTitle + '[' + sQual + '] '
 
             if (False):
-                #decodage des liens
-                req = urllib2.Request(sLink2, None, headers)
+
+                oRequestHandler = cRequestHandler(sLink2)
+                oRequestHandler.addHeaderEntry('User-Agent', "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0")
+                oRequestHandler.addHeaderEntry('Referer', sLink)
+                oRequestHandler.addHeaderEntry('Accept', 'video/webm,video/ogg,video/*;q=0.9,application/ogg;q=0.7,audio/*;q=0.6,*/*;q=0.5')
+                oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+                oRequestHandler.addHeaderEntry('Range', 'bytes=0-')
 
                 try:
-                    response = urllib2.urlopen(req)
-                    sLink2 = response.geturl()
-                    response.close()
+                    data = oRequestHandler.request()
+                    sLink2 = oRequestHandler.getRealUrl()
 
                     sHosterUrl = str(sLink2)
                     oHoster = cHosterGui().getHoster('lien_direct')
                     #data = response.read()
 
-                except urllib2.URLError, e:
+                except:
                     sLink2 = e.geturl()
                     sHosterUrl = str(sLink2)
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
+
             elif "amazonaws.com" in sLink2:
                 sHosterUrl = str(sLink2)
                 oHoster = cHosterGui().getHoster('lien_direct')
