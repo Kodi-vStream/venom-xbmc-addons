@@ -11,7 +11,7 @@ from resources.lib.util import cUtil
 from resources.lib.multihost import cJheberg
 from resources.lib.multihost import cMultiup
 from resources.lib.packer import cPacker
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 import urllib#, re
 
 SITE_IDENTIFIER = 'robindesdroits'
@@ -140,6 +140,7 @@ def showCat():
     sHtmlContent = oRequestHandler.request()
 
     aResult = oParser.parse(sHtmlContent, sPattern)
+    #VSlog(aResult)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -181,7 +182,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="mh-loop-thumb"><a href="([^"]+)"><img src=".+?" style="background:url\(\'(.+?)\'\).+?rel="bookmark">(.+?)</a></h3>'
+    sPattern = '<figure class="mh-loop-thumb">.+?<a href="([^"]+)"><img src=".+?" style="background:url\(\'(.+?)\'\).+?rel="bookmark">(.+?)</a>.+?</h3>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -236,18 +237,19 @@ def showLinkGenres():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    VSlog(sHtmlContent)
 
     sThumb = ''
     try:
-        sPattern = '<p style="text-align: center;"><img src="([^"]+)".+?/>'
+        sPattern = '<p style="text-align: center;"><img src="([^"]+)".+?</p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sThumb = aResult[1][0]
     except:
         pass
 
-    sHtmlContent = sHtmlContent = oParser.abParse(sHtmlContent, 'class="entry-title page-title">', '<span class="screen-reader-text">Rechercher')
-    sPattern = '<span style="font-family: Arial, Helvetica,.+?font-size:.+?pt;">(.+?)<\/span>|(?:<h3 class="entry-title mh-loop-title"|<li )><a href="([^"]+)".+?>(.+?)<\/a>'
+    #sHtmlContent = oParser.abParse(sHtmlContent, 'class="entry-title page-title">', '<span class="screen-reader-text">Rechercher')#Provoque un bug si je l'active
+    sPattern = '<span style="font-family: Arial, Helvetica,.+?font-size:.+?pt;">([^<>]+)<\/span>|<li ><a href="([^"]+)" title=".+?">([^<>]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -260,11 +262,12 @@ def showLinkGenres():
                 break
 
             if aEntry[0]:
-                title = aEntry[0].replace('<strong>', '').replace('</strong>', '')
+                title = aEntry[0]
                 oGui.addText(SITE_IDENTIFIER, '[COLOR gold]' + title + '[/COLOR]')
             else:
                 sUrl = aEntry[1]
                 sTitle = aEntry[2]
+                
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
