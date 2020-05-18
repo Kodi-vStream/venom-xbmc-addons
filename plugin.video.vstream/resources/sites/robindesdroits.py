@@ -237,7 +237,7 @@ def showLinkGenres():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    VSlog(sHtmlContent)
+    #VSlog(sHtmlContent)
 
     sThumb = ''
     try:
