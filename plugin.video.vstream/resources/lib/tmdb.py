@@ -6,10 +6,10 @@
 import re
 import json
 import urllib2
-from urllib import quote_plus, urlopen
-
 import xbmcvfs
 
+from urllib import urlopen
+from resources.lib.util import QuotePlus
 from resources.lib.comaddon import addon, dialog, VSlog, xbmc
 
 try:
@@ -45,12 +45,12 @@ class cTMDb:
         self.lang = lang
         self.poster = 'https://image.tmdb.org/t/p/%s' % self.ADDON.getSetting('poster_tmdb')
         self.fanart = 'https://image.tmdb.org/t/p/%s' % self.ADDON.getSetting('backdrop_tmdb')
-        #self.cache = cConfig().getFileCache()
+        # self.cache = cConfig().getFileCache()
 
         try:
             if not xbmcvfs.exists(self.CACHE):
-                #f = open(self.cache, 'w')
-                #f.close()
+                # f = open(self.cache, 'w')
+                # f.close()
                 self.db = sqlite.connect(self.REALCACHE)
                 self.db.row_factory = sqlite.Row
                 self.dbcur = self.db.cursor()
@@ -202,15 +202,14 @@ class cTMDb:
     def get_idbyname(self, name, year='', mediaType='movie', page=1):
 
         if year:
-            term = quote_plus(name) + '&year=' + year
+            term = QuotePlus(name) + '&year=' + year
         else:
-            term = quote_plus(name)
+            term = QuotePlus(name)
 
         meta = self._call('search/' + str(mediaType), 'query=' + term + '&page=' + str(page))
         #teste sans l'année
         if 'errors' not in meta and 'status_code' not in meta:
             if 'total_results' in meta and meta['total_results'] == 0 and year:
-                    #meta = self.get_movie_idbyname(name,'')
                     meta = self.search_movie_name(name, '')
 
             #cherche 1 seul resultat
@@ -225,12 +224,12 @@ class cTMDb:
     # Search for movies by title.
     def search_movie_name(self, name, year='', page=1):
 
-        name = re.sub(" +", " ", name) # nettoyage du titre
+        name = re.sub(" +", " ", name)  # nettoyage du titre
 
         if year:
-            term = quote_plus(name) + '&year=' + year
+            term = QuotePlus(name) + '&year=' + year
         else:
-            term = quote_plus(name)
+            term = QuotePlus(name)
 
         meta = self._call('search/movie', 'query=' + term + '&page=' + str(page))
 
@@ -282,9 +281,9 @@ class cTMDb:
     def search_tvshow_name(self, name, year='', page=1):
 
         if year:
-            term = quote_plus(name) + '&year=' + year
+            term = QuotePlus(name) + '&year=' + year
         else:
-            term = quote_plus(name)
+            term = QuotePlus(name)
 
         meta = self._call('search/tv', 'query=' + term + '&page=' + str(page))
         if 'errors' not in meta and 'status_code' not in meta:
@@ -493,7 +492,6 @@ class cTMDb:
             licast = []
             for cast in listCredits['cast']:
                 licast.append((cast['name'], cast['character'], self.poster + str(cast['profile_path']), str(cast['id'])))
-                #licast.append((cast['name'], cast['character'], self.poster + str(cast['profile_path'])))
             _meta['cast'] = licast
 
             _meta['writer'] = ''
@@ -545,7 +543,7 @@ class cTMDb:
         try:
             self.dbcur.execute(sql_select)
             matchedrow = self.dbcur.fetchone()
-        except Exception, e:
+        except Exception as e:
             VSlog('************* Error selecting from cache db: %s' % e, 4)
             return None
 
