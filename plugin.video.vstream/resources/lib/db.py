@@ -145,7 +145,7 @@ class cDb:
             self.dbcur.execute(ex, (title, disp, icon))
             self.db.commit()
             VSlog('SQL INSERT history Successfully')
-        except Exception, e:
+        except Exception as e:
             if 'UNIQUE constraint failed' in e.message:
                 ex = "UPDATE history set title = '%s', disp = '%s', icone= '%s' WHERE title = '%s'" % (title, disp, icon, title)
                 self.dbcur.execute(ex)
@@ -300,7 +300,6 @@ class cDb:
         except:
             sIcon = meta['icon']
 
-
         try:
             ex = 'INSERT INTO favorite (title, siteurl, site, fav, cat, icon, fanart) VALUES (?, ?, ?, ?, ?, ?, ?)'
             self.dbcur.execute(ex, (title, siteurl, meta['site'], meta['fav'], meta['cat'], sIcon, meta['fanart']))
@@ -309,7 +308,7 @@ class cDb:
 
             self.DIALOG.VSinfo(self.ADDON.VSlang(30042), meta['title'])
             VSlog('SQL INSERT favorite Successfully')
-        except Exception, e:
+        except Exception as e:
             if 'UNIQUE constraint failed' in e.message:
                 self.DIALOG.VSinfo(self.ADDON.VSlang(30043), meta['title'])
             VSlog('SQL ERROR INSERT')
