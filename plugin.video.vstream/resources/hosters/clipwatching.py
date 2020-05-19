@@ -43,8 +43,7 @@ class cHoster(iHoster):
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
-    def __getMediaLinkForGuest(self):
-        api_call = ''
+    def __getMediaLinkForGuest(self, api_call=None):
 
         oParser = cParser()
         oRequest = cRequestHandler(self.__sUrl)
@@ -57,7 +56,7 @@ class cHoster(iHoster):
         sPattern = '"(http[^"]+(?:.m3u8|.mp4))"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if aResult[0]:
             # initialisation des tableaux
             url = []
             qua = []
@@ -72,7 +71,7 @@ class cHoster(iHoster):
             # dialogue Lien si plus d'une url
             api_call = dialog().VSselectqual(qua, url)
 
-        if (api_call):
+        if api_call:
             return True, api_call
 
         return False, False
