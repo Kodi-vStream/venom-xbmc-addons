@@ -1,9 +1,10 @@
-#-*- coding: utf-8 -*-
-# from resources.lib.handler.requestHandler import cRequestHandler
-# from resources.lib.parser import cParser
-from resources.hosters.hoster import iHoster
-import xbmcgui#, re
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
 import requests
+
+from resources.hosters.hoster import iHoster
+
 
 class cHoster(iHoster):
 
@@ -11,9 +12,8 @@ class cHoster(iHoster):
         self.__sDisplayName = 'Allow_redirects'
         self.__sFileName = self.__sDisplayName
 
-
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -58,8 +58,8 @@ class cHoster(iHoster):
 
         url = self.__sUrl
 
-        session = requests.Session() #so connections are recycled
-        resp = session.head(url, allow_redirects = True)
+        session = requests.Session()  # so connections are recycled
+        resp = session.head(url, allow_redirects=True)
         sHosterUrl = resp.url
 
         if sHosterUrl:
@@ -73,7 +73,7 @@ class cHoster(iHoster):
             if (api_call[0] == True):
                 return True, api_call[1]
 
-        else :
+        else:
             return False, False
 
         return False, False
