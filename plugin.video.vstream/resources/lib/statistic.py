@@ -4,6 +4,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 import time
 import random
 
+
 class cStatistic:
 
     STATISTIC_URL = 'http://www.google-analytics.com/__utm.gif'
@@ -15,8 +16,8 @@ class cStatistic:
 
             oRequestHandler.addParameters('utmac', self.STATISTIC_ID)
 
-            rndX = random.randint(1, 99999999-10000000)+10000000
-            rndY = random.randint(1, 999999999-100001000)+100000000
+            rndX = random.randint(1, 99999999-10000000) + 10000000
+            rndY = random.randint(1, 999999999-100001000) + 100000000
             ts1 = float(time.time())
             ts2 = float(time.time())
             ts3 = float(time.time())
@@ -26,7 +27,7 @@ class cStatistic:
             sUtmccValue = '__utma=' + str(rndY) + '.' + str(rndX) + '.' + str(ts1) + '.' + str(ts2) + '.' + str(ts3) + '; '
             sUtmccValue = sUtmccValue + '+__utmz=' + str(rndY) + '.' + str(ts4) + '.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); '
             oRequestHandler.addParameters('utmcc', sUtmccValue)
-	    #oRequestHandler.addParameters('aip', '1') # anonymizeIp
+            #oRequestHandler.addParameters('aip', '1') # anonymizeIp
 
             oRequestHandler.addParameters('utmcs', 'UTF-8')
             #oRequestHandler.addParameters('utmdt', 'Plugin Activity')
@@ -46,5 +47,5 @@ class cStatistic:
             oRequestHandler.addParameters('utmwv', '4.8.6')
 
             oRequestHandler.request()
-        except Exception, e:
+        except Exception:
             return
