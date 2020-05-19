@@ -79,8 +79,8 @@ class cPluginHandler:
                     if (bPlugin == 'true') or (force == True):
                         aPlugins.append(self.__createAvailablePluginsItem(sSiteName, sFileName, sSiteDesc))
                 else:
-                   # settings nicht gefunden, also schalten wir es trotzdem sichtbar
-                   aPlugins.append(self.__createAvailablePluginsItem(sSiteName, sFileName, sSiteDesc))
+                    # settings nicht gefunden, also schalten wir es trotzdem sichtbar
+                    aPlugins.append(self.__createAvailablePluginsItem(sSiteName, sFileName, sSiteDesc))
 
         return aPlugins
 
