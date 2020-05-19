@@ -1,16 +1,17 @@
-#-*- coding: utf-8 -*-
-#from resources.lib.config import cConfig
-
-from resources.lib.comaddon import addon, VSlog
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 import sys
 import xbmcvfs
+
+from resources.lib.comaddon import addon, VSlog
+
 
 class cPluginHandler:
 
     def getPluginHandle(self):
         try:
-            return int( sys.argv[ 1 ] )
+            return int(sys.argv[1])
         except:
             return 0
 
@@ -22,35 +23,21 @@ class cPluginHandler:
 
     def __getFileNamesFromFolder(self, sFolder):
         aNameList = []
-        #items = os.listdir(unicode(sFolder, 'utf-8'))
         folder, items = xbmcvfs.listdir(sFolder)
         items.sort()
         for sItemName in items:
-            
+
             if not sItemName.endswith(".py"):
                 continue
-            
 
-            #sFilePath = os.path.join(unicode(sFolder, 'utf-8'), sItemName)
             sFilePath = "/".join([sFolder, sItemName])
-            #size
-            # sSize = 0
-            # try:
-            #     file=open(sFilePath)
-            #     Content = file.read()
-            #     sSize = len(Content)
-            #     file.close()
-            # except: pass
 
             # xbox hack
             sFilePath = sFilePath.replace('\\', '/')
 
-            #cConfig().log("Load Plugin %s : Size %s" % (sItemName, sSize))
-            VSlog("Load Plugin %s" % (sItemName))
+            VSlog("Load Plugin %s" % sItemName)
 
-            #if (os.path.isdir(sFilePath) == False):
             if (xbmcvfs.exists(sFilePath) == True):
-                #if (str(sFilePath.lower()).endswith('py')):
                 if (sFilePath.lower().endswith('py')):
                     sItemName = sItemName.replace('.py', '')
                     aNameList.append(sItemName)
@@ -58,40 +45,20 @@ class cPluginHandler:
 
     def __importPlugin(self, sName):
         try:
-            exec "from resources.sites import " + sName
-            exec "sSiteName = " + sName + ".SITE_NAME"
-            exec "sSiteDesc = " + sName + ".SITE_DESC"
+            exec("from resources.sites import " + sName)
+            exec("sSiteName = " + sName + ".SITE_NAME")
+            exec("sSiteDesc = " + sName + ".SITE_DESC")
             sPluginSettingsName = 'plugin_' + sName
             return sSiteName, sPluginSettingsName, sSiteDesc
-        except Exception, e:
-            VSlog("Cant import plugin " + str(sName))
+        except Exception:
+            VSlog("Can't import plugin " + str(sName))
             return False, False
 
-    # def getRootFolder(self):
-    #     sRootFolder = cConfig().getAddonPath()
-    #     cConfig().log("Root Folder " + sRootFolder)
-    #     return sRootFolder
-
-    # def getRootArt(self):
-    #     oConfig = cConfig()
-
-    #     sFolder =  self.getRootFolder()
-    #     sFolder = os.path.join(sFolder, 'resources/art/').decode("utf-8")
-
-    #     sFolder = sFolder.replace('\\', '/')
-    #     return sFolder
-
-    def getAvailablePlugins(self,force = False):
-        #oConfig = cConfig()
+    def getAvailablePlugins(self, force=False):
         addons = addon()
 
-        #sFolder =  self.getRootFolder()
-        #sFolder = os.path.join(sFolder, 'resources/sites')
         sFolder = "special://home/addons/plugin.video.vstream/resources/sites"
-
-        # xbox hack
         sFolder = sFolder.replace('\\', '/')
-        #cConfig().log("Sites Folder " + sFolder)
         VSlog("Sites Folder " + sFolder)
 
         aFileNames = self.__getFileNamesFromFolder(sFolder)
@@ -117,18 +84,8 @@ class cPluginHandler:
 
         return aPlugins
 
-
     def getAllPlugins(self):
-        #oConfig = cConfig()
-
-        #sFolder =  self.getRootFolder()
-        #sFolder = os.path.join(sFolder, 'resources/sites')
-        #print sFolder
-        
-
         sFolder = "special://home/addons/plugin.video.vstream/resources/sites"
-
-        # xbox hack
         sFolder = sFolder.replace('\\', '/')
         VSlog("Sites Folder " + sFolder)
 
