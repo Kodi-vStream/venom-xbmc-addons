@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
-# Venom.
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 # vstream = xbmcaddon.Addon('plugin.video.vstream')
 # sLibrary = xbmc.translatePath(vstream.getAddonInfo("path")).decode("utf-8")
@@ -318,7 +317,7 @@ class cClear:
                     self.close()
 
                 # def onAction(self, action):
-                    # if action.getId() in (9, 10, 92, 216, 247, 257, 275, 61467, 61448, ):
+                    # if action.getId() in (9, 10, 92, 216, 247, 257, 275, 61467, 61448):
                         # self.close()
 
             # path = cConfig().getAddonPath()
@@ -409,10 +408,12 @@ class cClear:
     #         if clearNested and os.path.isdir(file_path):
     #             self.ClearDir(file_path, clearNested)
     #             try: os.rmdir(file_path)
-    #             except Exception, e: print str(e)
+    #             except Exception as e:
+    #                 print str(e)
     #         else:
     #             try:os.unlink(file_path)
-    #             except Exception, e: print str(e)
+    #             except Exception as e:
+    #                 print str(e)
 
     # def ClearDir2(self, dir, clearNested = False):
     #     try:
@@ -420,7 +421,8 @@ class cClear:
     #     except:
     #         pass
     #     try:os.unlink(dir)
-    #     except Exception, e: print str(e)
+    #     except Exception as e:
+    #         print str(e)
 
     def TextBoxes(self, heading, anounce):
         # activate the text viewer window
