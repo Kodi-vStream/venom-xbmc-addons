@@ -26,7 +26,6 @@ class cUtil:
         return count
 
     def CheckOccurence(self, str1, str2):
-
         Ignoreliste = ['du', 'la', 'le', 'les', 'de', 'un', 'une', 'des', 'the']
 
         str1 = str1.replace('+', ' ').replace('%20', ' ')
@@ -164,8 +163,7 @@ class cUtil:
         string = string.decode('utf-8')
 
         SXEX = ''
-        # m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))(?:$| [^a\u00E0])', string, re.UNICODE)
-        m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))', string, re.UNICODE)
+        m = re.search('(?i)(\wpisode ([0-9\.\-\_]+))', string, re.UNICODE)
         if m:
             # ok y a des episodes
             string = string.replace(m.group(1), '')
@@ -200,7 +198,6 @@ class cUtil:
             s = s.replace('!+[]', '1').replace('!![]', '1').replace('[]', '0')
             s = re.sub(r'(\([^()]+)\+\[\]\)', '(\\1)*10)',s)  # si le bloc fini par +[] >> *10
             s = re.sub(r'\[([^\]]+)\]', 'str(\\1)', s)
-            # s = s.replace('[', '(').replace(']', ')')
             if s[0] == '+':
                 s = s[1:]
             val = int(eval(s))
@@ -236,7 +233,7 @@ def QuotePlus(sUrl):
 
 
 def QuoteSafe(sUrl):
-    return urllib.quote(sUrl, safe = ':/')
+    return urllib.quote(sUrl, safe=':/')
 
 
 def urlEncode(sUrl):
