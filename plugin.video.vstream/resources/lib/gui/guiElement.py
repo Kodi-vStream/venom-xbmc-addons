@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Venom.
+import re
+import string
+
 from resources.lib.comaddon import addon, xbmc
 from resources.lib.db import cDb
 from resources.lib.util import QuoteSafe
-import re, string
 
-#rouge E26543
-#jaune F7D571
-#bleu clair 87CEEC  ou skyblue / hoster
-#vert 37BCB5
-#bleu foncer 08435A / non utiliser
+
+# rouge E26543
+# jaune F7D571
+# bleu clair 87CEEC  ou skyblue / hoster
+# vert 37BCB5
+# bleu foncer 08435A / non utiliser
 
 
 class cGuiElement:
@@ -68,7 +71,7 @@ class cGuiElement:
         self.__sCat = ''
         # cGuiElement.COUNT += 1
 
-    #def __len__(self): return self.__sCount
+    # def __len__(self): return self.__sCount
 
     # def getCount(self):
     #     return cGuiElement.COUNT
@@ -176,7 +179,7 @@ class cGuiElement:
     def TraiteTitre(self, sTitle):
 
         # Format Obligatoire a traiter via le fichier source
-        #-------------------------------------------------
+        # -------------------------------------------------
         # Episode 7 a 9 > Episode 7-9
         # Saison 1 à ? > Saison 1-?
         # Format de date > 11/22/3333 ou 11-22-3333
@@ -219,7 +222,6 @@ class cGuiElement:
 
         # Recherche saison et episode a faire pr serie uniquement
         if True:
-            # m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))', sTitle, re.UNICODE)
             m = re.search('(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', sTitle, re.UNICODE)
             if m:
                 # ok y a des episodes
@@ -365,11 +367,11 @@ class cGuiElement:
         self.__sIcon = QuoteSafe(self.__sIcon)
 
     def getIcon(self):
-        #if 'http' in self.__sIcon:
+        # if 'http' in self.__sIcon:
         #    return UnquotePlus(self.__sIcon)
         folder = 'special://home/addons/plugin.video.vstream/resources/art'
         path = '/'.join([folder, self.__sIcon])
-        #return os.path.join(unicode(self.__sRootArt, 'utf-8'), self.__sIcon)
+        # return os.path.join(unicode(self.__sRootArt, 'utf-8'), self.__sIcon)
         return path
 
     def addItemValues(self, sItemKey, mItemValue):
@@ -401,8 +403,8 @@ class cGuiElement:
         import unicodedata
         data = unicodedata.normalize('NFKD', data).encode('ascii', 'ignore')
         # cherche la saison et episode puis les balises [color]titre[/color]
-        #data, saison = self.getSaisonTitre(data)
-        #data, episode = self.getEpisodeTitre(data)
+        # data, saison = self.getSaisonTitre(data)
+        # data, episode = self.getEpisodeTitre(data)
         # supprimer les balises
         data = re.sub(r'\[.*\]|\(.*\)', r'', str(data))
         data = data.replace('VF', '').replace('VOSTFR', '').replace('FR', '')
@@ -642,10 +644,10 @@ class cGuiElement:
             self.addItemValues('year', self.getYear())
         if not self.getItemValue('genre') and self.getGenre():
             self.addItemValues('genre', self.getGenre())
-       # if not self.getItemValue('cover_url') and self.getThumbnail():
-           # self.addItemValues('cover_url', self.getThumbnail())
-       # if not self.getItemValue('backdrop_url') and self.getPoster():
-           # self.addItemValues('backdrop_url', self.getPoster())
+        # if not self.getItemValue('cover_url') and self.getThumbnail():
+            # self.addItemValues('cover_url', self.getThumbnail())
+        # if not self.getItemValue('backdrop_url') and self.getPoster():
+            # self.addItemValues('backdrop_url', self.getPoster())
         if not self.getItemValue('trailer') and self.getTrailerUrl():
             self.addItemValues('trailer', self.getTrailerUrl())
 
