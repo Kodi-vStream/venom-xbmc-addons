@@ -139,13 +139,13 @@ class cPremiumHandler:
                     response = urllib2.urlopen(req)
             except urllib2.URLError as e:
                 if getattr(e, "code", None) == 403:
-                # login denied
+                    # login denied
                     self.DIALOG.VSinfo('Authentification rate', self.__sDisplayName)
                 elif getattr(e, "code", None) == 502:
-                # login denied
+                    # login denied
                     self.DIALOG.VSinfo('Authentification rate', self.__sDisplayName)
                 elif getattr(e, "code", None) == 234:
-                # login denied
+                    # login denied
                     self.DIALOG.VSinfo('Authentification rate', self.__sDisplayName)
                 else:
                     VSlog("debug" + str(getattr(e, "code", None)))
@@ -221,13 +221,13 @@ class cPremiumHandler:
         cookies = GestionCookie().Readcookie(self.__sHosterIdentifier)
 
         # aucun ne marche sans cookies
-        if (cookies== '') and not (self.__LoginTry) and self.__Ispremium:
+        if (cookies == '') and not (self.__LoginTry) and self.__Ispremium:
             self.Authentificate()
             if not (self.isLogin):
                 return ''
             cookies = GestionCookie().Readcookie(self.__sHosterIdentifier)
 
-        sHtmlContent = self.GetHtmlwithcookies(url,data,cookies)
+        sHtmlContent = self.GetHtmlwithcookies(url, data, cookies)
 
         # Les cookies ne sont plus valables, mais on teste QUE si la personne n'a pas essaye de s'authentifier
         if not(self.Checklogged(sHtmlContent)) and not self.__LoginTry and self.__Ispremium:
