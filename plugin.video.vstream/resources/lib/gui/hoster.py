@@ -18,10 +18,9 @@ class cHosterGui:
     DIALOG = dialog()
 
     # step 1 - bGetRedirectUrl in ein extra optionsObject verpacken
-    def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail, bGetRedirectUrl = False):
+    def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail, bGetRedirectUrl=False):
 
         oInputParameterHandler = cInputParameterHandler()
-        # sMovieTitle = oInputParameterHandler.getValue('title')
 
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(self.SITE_NAME)
@@ -43,13 +42,10 @@ class cHosterGui:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
-        # oOutputParameterHandler.addParameter('sThumbnail', oGuiElement.getThumbnail())
-
         oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
         oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
         oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
         oOutputParameterHandler.addParameter('sTitleWatched', oGuiElement.getTitleWatched())
-
         oOutputParameterHandler.addParameter('sTitle', oHoster.getDisplayName())
         oOutputParameterHandler.addParameter('sId', 'cHosterGui')
         oOutputParameterHandler.addParameter('siteUrl', sMediaUrl)
@@ -116,7 +112,6 @@ class cHosterGui:
 
         # bug
         oGui.addHost(oGuiElement, oOutputParameterHandler)
-        # oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
     def checkHoster(self, sHosterUrl):
         # securite
@@ -136,7 +131,7 @@ class cHosterGui:
         # L'user a active l'url resolver ?
         if self.ADDON.getSetting('UserUrlResolver') == 'true':
             import urlresolver
-            hmf = urlresolver.HostedMediaFile(url = sHosterUrl)
+            hmf = urlresolver.HostedMediaFile(url=sHosterUrl)
             if hmf.valid_url():
                 tmp = self.getHoster('resolver')
                 RH = sHosterUrl.split('/')[2]
@@ -161,7 +156,7 @@ class cHosterGui:
             return self.getHoster('mixloads')
         if ('vidoza' in sHostName):
             return self.getHoster('vidoza')
-        if (('youtube' in sHostName) or ('youtu.be' in sHostName)):
+        if ('youtube' in sHostName) or ('youtu.be' in sHostName):
             return self.getHoster('youtube')
         if ('rutube' in sHostName):
             return self.getHoster('rutube')
@@ -191,7 +186,7 @@ class cHosterGui:
             return self.getHoster('filetrip')
         if ('uptostream' in sHostName):
             return self.getHoster('uptostream')
-        if (('dailymotion' in sHostName) or ('dai.ly' in sHostName)):
+        if ('dailymotion' in sHostName) or ('dai.ly' in sHostName):
             if 'stream' in sHosterUrl:
                 return self.getHoster('lien_direct')
             else:
@@ -200,7 +195,7 @@ class cHosterGui:
             return self.getHoster('lien_direct')
         if ('flashx' in sHostName):
             return self.getHoster('flashx')
-        if ('filez.' in sHostName):
+        if ('filez' in sHostName):
             return self.getHoster('flashx')
         if ('mystream' in sHostName) or ('mstream' in sHostName):
             return self.getHoster('mystream')
@@ -210,7 +205,7 @@ class cHosterGui:
             return self.getHoster('speedvideo')
         if ('speedvid' in sHostName):
             return self.getHoster('speedvid')
-        if (('netu' in sHostName) or ('hqq' in sHostName) or ('waaw' in sHostName) or ('vizplay' in sHostName)):
+        if ('netu' in sHostName) or ('hqq' in sHostName) or ('waaw' in sHostName) or ('vizplay' in sHostName):
             return self.getHoster('netu')
         if ('upstream' in sHostName):
             return self.getHoster('upstream')
@@ -226,15 +221,15 @@ class cHosterGui:
             return self.getHoster('googlevideo')
         if ('playreplay' in sHostName):
             return self.getHoster('playreplay')
-        if (('ok.ru' in sHostName) or ('odnoklassniki' in sHostName)):
+        if ('ok.ru' in sHostName) or ('odnoklassniki' in sHostName):
             return self.getHoster('ok_ru')
-        if ('vimeo.com' in sHostName):
+        if ('vimeo' in sHostName):
             return self.getHoster('vimeo')
         if ('prostream' in sHostName):
             return self.getHoster('prostream')
         if ('vidfast' in sHostName):
             return self.getHoster('vidfast')
-        if (('thevideo.' in sHostName) or ('video.tt' in sHostName) or ('vev.io' in sHostName)):
+        if ('thevideo' in sHostName) or ('video.tt' in sHostName) or ('vev.io' in sHostName):
             return self.getHoster('thevideo_me')
         if ('uqload' in sHostName):
             return self.getHoster('uqload')
@@ -246,7 +241,7 @@ class cHosterGui:
             return self.getHoster('filepup')
         if ('vimple.ru' in sHostName):
             return self.getHoster('vimple')
-        if ('wstream.' in sHostName):
+        if ('wstream' in sHostName):
             return self.getHoster('wstream')
         if ('watchvideo' in sHostName):
             return self.getHoster('watchvideo')
@@ -258,7 +253,7 @@ class cHosterGui:
             return self.getHoster('vidwatch')
         if ('up2stream' in sHostName):
             return self.getHoster('up2stream')
-        if ('vidbm.' in sHostName):
+        if ('vidbm' in sHostName):
             return self.getHoster('vidbm')
         if ('tune' in sHostName):
             return self.getHoster('tune')
@@ -274,7 +269,7 @@ class cHosterGui:
 
         if ('stagevu' in sHostName):
             return self.getHoster('stagevu')
-        if (('movshare' in sHostName) or ('wholecloud' in sHostName)):
+        if ('movshare' in sHostName) or ('wholecloud' in sHostName):
             return self.getHoster('wholecloud')
         if ('gorillavid' in sHostName):
             return self.getHoster('gorillavid')
@@ -306,7 +301,7 @@ class cHosterGui:
             return self.getHoster('iframe_secured')
         if ('iframe-secure' in sHostName):
             return self.getHoster('iframe_secure')
-        if ('goo.gl' in sHostName or 'bit.ly' in sHostName or 'streamcrypt.net' in sHostName or 'opsktp.com' in sHosterUrl):
+        if ('goo.gl' in sHostName) or ('bit.ly' in sHostName) or ('streamcrypt' in sHostName) or ('opsktp' in sHosterUrl):
             return self.getHoster('allow_redirects')
         if ('jawcloud' in sHostName):
             return self.getHoster('jawcloud')
@@ -326,13 +321,13 @@ class cHosterGui:
             return self.getHoster('hd_stream')
         if ('rapidstream' in sHostName):
             return self.getHoster('rapidstream')
-        if ('archive.' in sHostName):
+        if ('archive' in sHostName):
             return self.getHoster('archive')
         if ('jetload' in sHostName):
             return self.getHoster('jetload')
         if ('dustreaming' in sHostName):
             return self.getHoster('dustreaming')
-        #frenchvid et clone
+        # frenchvid et clone
         if ('french-vid' in sHostName) or ('yggseries' in sHostName):
             return self.getHoster('frenchvid')
         if ('fembed' in sHostName) or ('fem.tohds' in sHostName):
@@ -344,7 +339,7 @@ class cHosterGui:
 
         if ('flix555' in sHostName):
             return self.getHoster('flix555')
-        if ('onlystream' in sHostName or 'gotochus' in sHostName):
+        if ('onlystream' in sHostName) or ('gotochus' in sHostName):
             return self.getHoster('onlystream')
         if ('pstream' in sHostName):
             return self.getHoster('pstream')
@@ -364,15 +359,15 @@ class cHosterGui:
             return self.getHoster('onefichier')
         if ('uptobox' in sHostName):
             return self.getHoster('uptobox')
-        if ('uplea.com' in sHostName):
+        if ('uplea' in sHostName):
             return self.getHoster('uplea')
-        if ('uploaded' in sHostName or 'ul.to' in sHostName):
+        if ('uploaded' in sHostName) or ('ul.to' in sHostName):
             if('/file/forbidden' in sHosterUrl):
                 return False
             return self.getHoster('uploaded')
         if ('vidload' in sHostName):
             return self.getHoster('vidload')
-        if ('kaydo.ws' in sHostName):
+        if ('kaydo' in sHostName):
             return self.getHoster('lien_direct')
         if ('cloudhost' in sHostName):
             return self.getHoster('cloudhost')
@@ -387,7 +382,7 @@ class cHosterGui:
         return False
 
     def getHoster(self, sHosterFileName):
-        exec ('from resources.hosters.' + sHosterFileName + ' import cHoster')
+        exec('from resources.hosters.' + sHosterFileName + ' import cHoster')
         return cHoster()
 
     def play(self):
@@ -398,7 +393,6 @@ class cHosterGui:
         bGetRedirectUrl = oInputParameterHandler.getValue('bGetRedirectUrl')
         sFileName = oInputParameterHandler.getValue('sFileName')
         sTitle = oInputParameterHandler.getValue('title')
-        # sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
         if not sTitle:
             sTitle = sFileName
@@ -424,7 +418,6 @@ class cHosterGui:
                 oGuiElement.setSiteName(self.SITE_NAME)
                 oGuiElement.setMediaUrl(aLink[1])
                 oGuiElement.setTitle(sTitle)
-                # oGuiElement.setTitle(oHoster.getFileName())
                 oGuiElement.getInfoLabel()
 
                 oPlayer = cPlayer()
