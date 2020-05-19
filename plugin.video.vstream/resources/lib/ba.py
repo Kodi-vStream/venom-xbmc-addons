@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Venom.
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.gui.guiElement import cGuiElement
@@ -43,19 +43,17 @@ class cShowBA:
                 self.sTrailerUrl = 'http://www.youtube.com/watch?v=' + trailer_id
             except:
                 pass
-    
+
     def SetMetaType(self, metaType):
         self.metaType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'movie')
-    
+
     def SearchBA_old(self):
-
             url = 'https://www.googleapis.com/youtube/v3/search?part=id,snippet&q=%s&maxResults=1&relevanceLanguage=fr&key=%s' % (self.search, self.key)
-
             req = urllib2.Request(url)
 
             try:
                 gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-                response = urllib2.urlopen(req, context = gcontext)
+                response = urllib2.urlopen(req, context=gcontext)
             except:
                 response = urllib2.urlopen(req)
             sHtmlContent = response.read()
@@ -95,7 +93,7 @@ class cShowBA:
 
         # Le lien sur la BA est déjà connu
         urlTrailer = self.sTrailerUrl
-        
+
         # sinon
         if not urlTrailer:
             # si c'est un film, rcherche de la BA officielle dans TMDB
@@ -103,14 +101,14 @@ class cShowBA:
                 meta = cTMDb().get_meta(self.metaType, self.search, year=self.year)
                 if meta and 'trailer_url' in meta:
                     urlTrailer = meta['trailer_url']
-                        
+
             # sinon recherche dans youtube
             if not urlTrailer:
                 urlTrailer = 'https://www.youtube.com/results?q=' + QuotePlus(sTitle) + '&sp=EgIYAQ%253D%253D'
-                
+
                 oRequestHandler = cRequestHandler(urlTrailer)
                 sHtmlContent = oRequestHandler.request()
-        
+
                 listResult = re.findall('"url":"\/watch\?v=([^"]+)"', sHtmlContent)
                 if listResult:
                     # Premiere video trouvée
@@ -118,7 +116,7 @@ class cShowBA:
 
         # BA trouvée
         if urlTrailer:
-            exec 'from resources.hosters.youtube import cHoster'
+            exec('from resources.hosters.youtube import cHoster')
             hote = cHoster()
             hote.setUrl(urlTrailer)
             api_call = hote.getMediaLink()[1]
