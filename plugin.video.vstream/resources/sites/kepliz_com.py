@@ -369,7 +369,7 @@ def showHostersLink2():
                 oHoster = cHosterGui().getHoster('lien_direct')
                 #data = response.read()
 
-            except:
+            except urllib2.URLError as e:
                 sLink2 = e.geturl()
                 sHosterUrl = sLink2
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -462,7 +462,7 @@ def showHostersLink3():
                     oHoster = cHosterGui().getHoster('lien_direct')
                     #data = response.read()
 
-                except:
+                except urllib2.URLError as e:
                     sLink2 = e.geturl()
                     sHosterUrl = str(sLink2)
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
