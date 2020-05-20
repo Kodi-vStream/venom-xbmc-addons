@@ -14,19 +14,26 @@ SITE_DESC = 'Liste depuis pastebin'
 URL_MAIN = 'https://pastebin.com/raw/'
 PASTE_1 = URL_MAIN + 'n5P3Crbz'
 PASTE_2 = URL_MAIN + 'mbPxAFNm'
+PASTE_3 = URL_MAIN + 'SAjKPcBm'
+
 
 def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('media', 'film')
+    oOutputParameterHandler.addParameter('sMedia', 'film')
     oOutputParameterHandler.addParameter('siteUrl', PASTE_1)
     oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Films (Genres)', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('media', 'serie')
+    oOutputParameterHandler.addParameter('sMedia', 'serie')
     oOutputParameterHandler.addParameter('siteUrl', PASTE_2)
     oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Séries (Genres)', 'series.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('sMedia', 'film')
+    oOutputParameterHandler.addParameter('siteUrl', PASTE_3)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Les Simpson (Intégrale)', 'series.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
  
@@ -34,7 +41,7 @@ def showGenres():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMedia = oInputParameterHandler.getValue('media')
+    sMedia = oInputParameterHandler.getValue('sMedia')
  
     oRequestHandler = cRequestHandler(sUrl)
     sContent = oRequestHandler.request()
@@ -89,13 +96,13 @@ def showMovies():
             continue 
 
         genres = movie[4]
-        if genres:
+        if sGenre and genres:
             genres = eval(genres)
             if sGenre not in genres:
                 continue
-        sTmdbId = movie[1]
-        sTitle = movie[2]
-        year = movie[3]
+        sTmdbId = movie[1].strip()
+        sTitle = movie[2].strip()
+        year = movie[3].strip()
         if year :
             sTitle = '%s (%s)' % (sTitle, year)
         
@@ -120,6 +127,7 @@ def showHosters():
     sHoster = oInputParameterHandler.getValue('sHost')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sHoster = eval(sHoster)
+    
     
     for sHosterUrl in sHoster:
         oHoster = cHosterGui().checkHoster(sHosterUrl)
