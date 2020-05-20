@@ -7,8 +7,8 @@ from resources.lib.comaddon import dialog, xbmc
 
 import urllib2
 
-class cHoster(iHoster):
 
+class cHoster(iHoster):
     def __init__(self):
         self.__sDisplayName = 'Uplea'
         self.__sFileName = self.__sDisplayName
@@ -63,13 +63,13 @@ class cHoster(iHoster):
     def getMediaLink(self):
         import sys
         if 'site=cDownload&function' not in sys.argv[2]:
-            oDialog = dialog().VSok('ATTENTION, Pas de streaming sans premium\nPour voir le film passer par l\'option "Télécharger et Lire" du menu contextuel.')
+            oDialog = dialog().VSok("ATTENTION, Pas de streaming sans premium\nPour voir le film passer par l'option 'Télécharger et Lire' du menu contextuel.")
             return False,False
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
 
-        #http:///dl/12345XXYEEEEREERERE
+        # http:///dl/12345XXYEEEEREERERE
 
         UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
         headers = {'User-Agent': UA ,
@@ -88,14 +88,14 @@ class cHoster(iHoster):
 
         oParser = cParser()
 
-        #get step
+        # get step
         urlstep = ''
         sPattern =  '<a href="(\/step\/[^<>"]+)">'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             urlstep = aResult[1][0]
 
-        #get cookie
+        # get cookie
         cookies = ''
         if 'Set-Cookie' in head:
             cookies = head['Set-Cookie']
@@ -115,11 +115,11 @@ class cHoster(iHoster):
         head = response.headers
         response.close()
 
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
+        # fh = open('c:\\test.txt', "w")
+        # fh.write(sHtmlContent)
+        # fh.close()
 
-        #waiting time
+        # waiting time
         waitingtime = 20
         sPattern =  "ulCounter\({'timer':([0-9]+)}\);"
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -133,8 +133,8 @@ class cHoster(iHoster):
             dialog.VSinfo('Waiting time', self.__sDisplayName, waitingtime)
             xbmc.sleep(waitingtime*1000)
 
-            #print aResult[1][0]
+            # print(aResult[1][0])
 
-            return True, aResult[1][0] + '|User-Agent=' + UA# + '&Referer=' + self.__sUrl
+            return True, aResult[1][0] + '|User-Agent=' + UA  # + '&Referer=' + self.__sUrl
 
         return False, False
