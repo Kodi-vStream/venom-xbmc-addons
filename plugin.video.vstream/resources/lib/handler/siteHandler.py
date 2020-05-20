@@ -42,7 +42,7 @@ class cSiteHandler:
             sPluginSettingsName = 'plugin_' + sName
             return sSearch[0], sPluginSettingsName, sSearch[1], sSiteName
         except Exception:
-            VSlog("cant import plugin: " + str(sName))
+            VSlog("Cannot import plugin: " + str(sName))
             return False, False
 
     def getAvailablePlugins(self, sLabel):
