@@ -1,19 +1,19 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+import re
+import urllib2
+
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import VSlog, xbmcgui
-# from resources.lib.handler.requestHandler import cRequestHandler
-# from resources.lib.parser import cParser
-import urllib2, re
+
 
 class cHoster(iHoster):
-
     def __init__(self):
         self.__sDisplayName = 'GoogleVideo'
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -30,12 +30,13 @@ class cHoster(iHoster):
     def get_host_and_id(self, url):
         sPattern = 'http[s]*:\/\/(.*?(?:\.googlevideo|picasaweb\.google)\.com)\/(.*?(?:videoplayback\?|\?authkey|#|\/).+)'
         r = re.search(sPattern, url)
-        if r: return r.groups()
-        else: return False
+        if r:
+            return r.groups()
+        else:
+            return False
 
     def __modifyUrl(self, sUrl):
         return
-
 
     def getPluginIdentifier(self):
         return 'googlevideo'
@@ -62,7 +63,7 @@ class cHoster(iHoster):
 
         r = self.get_host_and_id(self.__sUrl)
 
-        #si lien deja decode
+        # si lien deja decode
         if (r == False):
             if 'https://lh3.googleusercontent.com' in self.__sUrl:
                 #Nouveaute, avec cookie now
@@ -88,7 +89,7 @@ class cHoster(iHoster):
                 VSlog(cookies)
 
                 return True, url + '|Cookie=' + cookies
-            #Peut etre un peu brutal, peut provoquer des bugs
+            # Peut etre un peu brutal, peut provoquer des bugs
             if 'lh3.googleusercontent.com' in self.__sUrl:
                 VSlog('Attention: lien sans cookies')
                 return True, self.__sUrl
@@ -107,15 +108,15 @@ class cHoster(iHoster):
 
                 try:
                     reponse = urllib2.urlopen(request)
-                except URLError, e:
-                    print e.read()
-                    print e.reason
+                except urllib2.URLError as e:
+                    print(e.read())
+                    print(e.reason)
 
                 resp = reponse.read()
 
-                #fh = open('c:\\test.txt', "w")
-                #fh.write(resp)
-                #fh.close()
+                # fh = open('c:\\test.txt', "w")
+                # fh.write(resp)
+                # fh.close()
 
                 vid_sel = ''
                 vid_id = re.search('.*?#(.+?)$', web_url)
@@ -124,7 +125,7 @@ class cHoster(iHoster):
                     vid_id = vid_id.group(1)
                     html = re.search('\["shared_group_' + re.escape(vid_id) + '"\](.+?),"ccOverride":"false"}', resp, re.DOTALL)
                 else:
-                    #Methode brute en test
+                    # Methode brute en test
                     html = re.search('(?:,|\[)"shared_group_[0-9]+"\](.+?),"ccOverride":"false"}', resp, re.DOTALL)
 
                 if html:
@@ -134,35 +135,40 @@ class cHoster(iHoster):
                     quality = 0
 
                     videos = re.compile(',{"url":"(https:\/\/redirector\.googlevideo\.com\/[^<>"]+?)","height":([0-9]+?),"width":([0-9]+?),"type":"video\/.+?"}').findall(html.group(1))
-
                     if not videos:
                         videos = re.compile(',{"url":"(https:\/\/lh3\.googleusercontent\.com\/[^<>"]+?)","height":([0-9]+?),"width":([0-9]+?),"type":"video\/.+?"}').findall(html.group(1))
 
                     if videos:
                         if len(videos) > 1:
                             for index, video in enumerate(videos):
-                                if int(video[1]) > quality: best = index
+                                if int(video[1]) > quality:
+                                    best = index
                                 quality = int(video[2])
                                 vid_list.extend(['GoogleVideo - %sp' % quality])
                                 url_list.extend([video[0]])
-                        if len(videos) == 1: vid_sel = videos[0][0]
+                        if len(videos) == 1:
+                            vid_sel = videos[0][0]
                         else:
                             result = xbmcgui.Dialog().select('Choose a link', vid_list)
-                            if result != -1: vid_sel = url_list[result]
-                            else: return self.unresolvable(0, 'No link selected')
+                            if result != -1:
+                                vid_sel = url_list[result]
+                            else:
+                                return self.unresolvable(0, 'No link selected')
 
             if vid_sel:
-                if 'googleusercontent' in vid_sel: stream_url = urllib2.urlopen(vid_sel).geturl()
-                elif 'redirector.' in vid_sel: stream_url = urllib2.urlopen(vid_sel).geturl()
-                elif 'google' in vid_sel: stream_url = vid_sel
+                if 'googleusercontent' in vid_sel:
+                    stream_url = urllib2.urlopen(vid_sel).geturl()
+                elif 'redirector.' in vid_sel:
+                    stream_url = urllib2.urlopen(vid_sel).geturl()
+                elif 'google' in vid_sel:
+                    stream_url = vid_sel
 
-
-        except urllib2.URLError, e:
+        except urllib2.URLError:
             stream_url = ''
 
         api_call = stream_url
 
-        if (api_call):
+        if api_call:
             return True, api_call
 
         return False, False
