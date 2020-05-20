@@ -82,7 +82,7 @@ class cRequestHandler:
             #    c = c + i + ', '
             c = self.__sResponseHeader.get('set-cookie')
 
-            c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,\/]+?);', c)
+            c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,]+?);', c)
             if c2:
                 cookies = ''
                 for cook in c2:
