@@ -23,7 +23,7 @@
 # https://nemisj.com/python-api-javascript/
 
 # UNICODE ERROR
-# print a.decode('utf-8').encode('ascii', 'replace')
+# print(a.decode('utf-8').encode('ascii', 'replace'))
 # true = 1 instead of true
 
 # phrase=raw_input()
@@ -172,9 +172,9 @@ def GetItemAlone(string, separator=' '):
         if ch.isspace():
             continue
 
-        if ch == '"' and not GetPrevchar(string,i) == '\\' and not c2:
+        if ch == '"' and not GetPrevchar(string, i) == '\\' and not c2:
             c1 = 1 - c1
-        if ch == "'" and not GetPrevchar(string,i) == '\\' and not c1:
+        if ch == "'" and not GetPrevchar(string, i) == '\\' and not c1:
             c2 = 1 - c2
 
         if not c1 and not c2:
@@ -263,9 +263,9 @@ class JSBuffer(object):
         self.opBuf = []
 
     def SetOp(self, op):
-        if (op == '&') and  (self.__op == '&'):
+        if (op == '&') and (self.__op == '&'):
             return
-        if (op == '|') and  (self.__op == '|'):
+        if (op == '|') and (self.__op == '|'):
             return
         else:
             self.__op = self.__op + op
@@ -285,7 +285,7 @@ class JSBuffer(object):
             return
 
         if not self.__op:
-            out( 'op ' + str(self.opBuf) + ' - buff ' + str(self.buf))
+            out('op ' + str(self.opBuf) + ' - buff ' + str(self.buf))
             raise Exception('Missing operator')
 
         self.Push(value, self.__op)
@@ -307,7 +307,7 @@ class JSBuffer(object):
 
         # check type
         if len(self.buf) > 1:
-            if not (self.type == CheckType(self.buf[len(self.buf) -1])):
+            if not (self.type == CheckType(self.buf[len(self.buf) - 1])):
                 # Type different mais juste operation logique
                 if self.opBuf[1] == '==':
                     self.type = 'Logic'
@@ -452,7 +452,7 @@ class JSBuffer(object):
             return 0
         str = str.replace('!', 'not ')
         # str = str.replace('=', '==')
-        # print '>>' + str
+        # print('>>' + str)
         return eval(str)
 
 
@@ -607,7 +607,7 @@ class JsParser(object):
     # Need to take care at chain var with " and '
     def ExtractFirstchain(self, string):
 
-        # print string.encode('ascii', 'replace')
+        # print(string.encode('ascii', 'replace'))
 
         if not len(string.strip()):
             return '', 0
@@ -796,8 +796,8 @@ class JsParser(object):
                 return fff, JScode
 
             elif isinstance(fe, types.MethodType):
-                # print fe.im_func.__name__ #parseint
-                # print fe.im_class.__name__ #Basic
+                # print(fe.im_func.__name__)  # parseint
+                # print(fe.im_class.__name__)  # Basic
                 function = fe.im_func.__name__
                 out("> function (native): " + function + ' arg=' + arg)
                 # and continu with native fonction
@@ -873,7 +873,7 @@ class JsParser(object):
 
                 r = getattr(cls, function)(arg)
 
-                # set new value if chnaged
+                # set new value if changed
                 if hasattr(lib, 'Get'):
                     NV = getattr(cls, 'Get')()
                     if not NV == s:
@@ -930,7 +930,7 @@ class JsParser(object):
             return r, JScode
 
         if not self.IsVar(vars, variable):
-            raise Exception("Can't find var " + str(variable))
+            raise Exception("Cannot find var " + str(variable))
 
         r = self.GetVar(vars, variable)
 
@@ -995,8 +995,8 @@ class JsParser(object):
         while len(JScode) > 0:
             c = JScode[0]
 
-            # print 'InterpretedCode > ' + InterpretedCode
-            out( 'JScode > ' + JScode.encode('ascii', 'replace') + '\n')
+            # print('InterpretedCode > ' + InterpretedCode)
+            out('JScode > ' + JScode.encode('ascii', 'replace') + '\n')
 
             # parentheses
             if c == '(':
@@ -1327,8 +1327,8 @@ class JsParser(object):
             out("Can't eval string :" + JScode)
             out('Last eval : ' + str(self.LastEval))
 
-            # print debug.encode('ascii', 'replace')
-            raise Exception(str(allow_recursion) + " : Can't Eval chain : " + JScode)
+            # print(debug.encode('ascii', 'replace'))
+            raise Exception(str(allow_recursion) + " : Cannot Eval chain : " + JScode)
 
         InterpretedCode2 = InterpretedCode.GetBuffer()
 
@@ -1400,22 +1400,10 @@ class JsParser(object):
             if j[0] == variable:
                 return j[1]
 
-        # search in fonction in lib, Hack again
-        # for lib in List_Lib:
-        #     if variable == str(lib.__name__):
-        #         return lib
-
         raise Exception('Variable not defined: ' + str(variable))
 
     def SetVar(self, var, variable, value, i=None):
-
-        # print 'Setvar Variable =' + variable + ' value=' + str(value) + ' index=' + str(i)
-
         variable = variable.strip()
-
-        # cleaning
-        # if variable[0] == '(':
-        #     variable = variable[1:-1]
 
         # Existing var ?
         for j in var:
@@ -1429,7 +1417,7 @@ class JsParser(object):
                     else:
                         var[var.index(j)] = (variable, value)
                 else:
-                # Array
+                    # Array
                     if type(var[var.index(j)][1]) in [list, tuple]:
 
                         Listvalue = var[var.index(j)][1]
@@ -1522,9 +1510,6 @@ class JsParser(object):
             index = m.group(2)
             index = self.evalJS(index, vars, allow_recursion)
 
-        # if name.startswith('('):
-        #     name = name[1:-1].strip()
-
         if value:
             if isinstance(value, (int, long, float)):
                 value = self.evalJS(value, vars, allow_recursion)
@@ -1555,7 +1540,6 @@ class JsParser(object):
                     for k in valueT:
                         l = k.split(':')
                         # WARNING : no eval here in JS
-                        # v2g = self.evalJS(l[0], vars, func, allow_recursion)
                         v2g = RemoveGuil(l[0])
                         v2d = self.evalJS(l[1], vars, allow_recursion)
                         v[v2g] = v2d
@@ -1673,8 +1657,6 @@ class JsParser(object):
         # Make this part only if needed
         if 'function' in JScode:
             posG = 0
-            Startoff = 0
-            Endoff = 0
 
             while True:
 
@@ -1972,8 +1954,8 @@ class JsParser(object):
                     member_list = self.GetVar(vars, arg)
 
                     out('> With fonction : exp=' + arg + ' values=' + str(member_list))
-                    # print 'Before: ' + f
-                    # print member_list
+                    # print('Before: ' + f)
+                    # print(member_list)
 
                     def sub(g):
                         g = g.group()
@@ -1987,7 +1969,7 @@ class JsParser(object):
                         for i in member_list:
                             f = re.sub(r'[^\w]' + i + '[^\w]', sub, f, re.DOTALL)
 
-                    # print 'after: ' + f
+                    # print('after: ' + f)
 
                     self.Parse(f[1:-1], vars, allow_recursion)
                     # JScode = f[1:-1] + ';' + JScode
@@ -2005,7 +1987,7 @@ class JsParser(object):
             # Non gere encore
             if not chain.endswith(';'):
                 print('> ' + JScode)
-                raise Exception('> ERROR : can t parse >' + chain)
+                raise Exception('> ERROR : Cannot parse >' + chain)
 
         return Parser_return
 
@@ -2013,7 +1995,6 @@ class JsParser(object):
         vars_return = []
 
         # unicode ?
-        # if isinstance(JScode, unicode):
         if False:
             out('Unicode convertion')
             JScode = unicode(JScode, 'utf-8')
