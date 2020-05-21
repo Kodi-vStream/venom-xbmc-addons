@@ -234,8 +234,8 @@ def WindowsBoxes(sTitle, sFileName, num, year=''):
             self.setFocusId(5200)
             # self.setFocus(self.getControl(5200))
 
-        def person(self, sid = ''):
-            grab = cTMDb(lang = 'en')
+        def person(self, sid=''):
+            grab = cTMDb(lang='en')
             sUrl = 'person/' + str(sid)
             meta = grab.getUrl(sUrl)
 
@@ -262,7 +262,7 @@ def WindowsBoxes(sTitle, sFileName, num, year=''):
                 pass
 
         def onClick(self, controlId):
-            print controlId
+            print(controlId)
             if controlId == 5:
                 self.getControl(400).setVisible(False)
                 self.getControl(50).setVisible(True)
@@ -288,7 +288,7 @@ def WindowsBoxes(sTitle, sFileName, num, year=''):
                 self.close()
                 return
             elif controlId == 50:
-                # print self.getControl(50).ListItem.Property('id')
+                # print(self.getControl(50).ListItem.Property('id'))
                 item = self.getControl(50).getSelectedItem()
                 sid = item.getProperty('id')
 
@@ -303,7 +303,7 @@ def WindowsBoxes(sTitle, sFileName, num, year=''):
                 # self.getControl(50).setVisible(True)
             # click sur similaire
             elif controlId == 9:
-                # print self.getControl(9000).ListItem.tmdb_id
+                # print(self.getControl(9000).ListItem.tmdb_id)
                 sid = window(10000).getProperty('ListItem.tmdb_id')
 
                 grab = cTMDb()
@@ -319,7 +319,7 @@ def WindowsBoxes(sTitle, sFileName, num, year=''):
                     return
             # click sur recommendations
             elif controlId == 13:
-                # print self.getControl(9000).ListItem.tmdb_id
+                # print(self.getControl(9000).ListItem.tmdb_id)
                 sid = window(10000).getProperty('ListItem.tmdb_id')
 
                 grab = cTMDb()
@@ -336,7 +336,7 @@ def WindowsBoxes(sTitle, sFileName, num, year=''):
                     return
 
             elif controlId == 5200:
-            # click sur un film acteur
+                # click sur un film acteur
                 import sys
                 from resources.lib.util import cUtil
                 item = self.getControl(5200).getSelectedItem()
@@ -349,7 +349,7 @@ def WindowsBoxes(sTitle, sFileName, num, year=''):
                     return
 
                 sTest = '%s?site=globalSearch&searchtext=%s&sCat=1' % (sys.argv[0], sTitle)
-                xbmc.executebuiltin('XBMC.Container.Update(%s)' % sTest )
+                xbmc.executebuiltin('XBMC.Container.Update(%s)' % sTest)
                 self.close()
                 return
 
@@ -357,7 +357,7 @@ def WindowsBoxes(sTitle, sFileName, num, year=''):
             # elif controlId == 5200:
             #     item = self.getControl(5200).getSelectedItem()
             #     sid = item.getLabel()
-            #     print sid
+            #     print(sid)
             #     return
 
         def onFocus(self, controlId):
@@ -386,9 +386,8 @@ def WindowsBoxes(sTitle, sFileName, num, year=''):
             if action.getId() in (9, 10, 11, 30, 92, 216, 247, 257, 275, 61467, 61448):
                 self.close()
 
-
     path = 'special://home/addons/plugin.video.vstream'
     # self.__oPath.decode('utf-8')
-    wd = XMLDialog('DialogInfo2.xml', path , 'default', '720p')
+    wd = XMLDialog('DialogInfo2.xml', path, 'default', '720p')
     wd.doModal()
     del wd
