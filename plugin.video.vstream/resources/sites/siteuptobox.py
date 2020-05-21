@@ -1,16 +1,20 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.gui.hoster import cHosterGui
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+import json
+
+import re
+import urllib2
+
+from resources.lib.comaddon import progress, dialog, addon, xbmc, xbmcgui
+from resources.lib.config import GestionCookie
 from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.parser import cParser
 from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import MPencode
-from resources.lib.config import GestionCookie
-from resources.lib.comaddon import progress, dialog, addon, xbmc, xbmcgui
-import urllib2, re, urllib
-import json
+from resources.lib.parser import cParser
+from resources.lib.util import Quote
 
 SITE_IDENTIFIER = 'siteuptobox'
 SITE_NAME = '[COLOR dodgerblue]' + 'CompteUptobox' + '[/COLOR]'
@@ -21,6 +25,7 @@ API_URL = 'https://uptobox.com/api/user/files?token=none&orderBy=file_created&di
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
 headers = {'User-Agent': UA}
+
 
 def load():
     oGui = cGui()
@@ -52,15 +57,17 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def opensetting():
     addon().openSettings()
+
 
 def showFile():
 
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    #VSlog('input   ' + str(sUrl))
+    # VSlog('input   ' + str(sUrl))
     oParser = cParser()
 
     sOffset = 0
@@ -78,14 +85,14 @@ def showFile():
     sFoldername = ''
     if (oInputParameterHandler.exist('sFoldername')):
         sFoldername = oInputParameterHandler.getValue('sFoldername')
-        sUrl = sUrl + urllib.quote(sFoldername).replace('//', '%2F%2F')
-        #VSlog('folder   ' +str(sUrl))
+        sUrl = sUrl + Quote(sFoldername).replace('//', '%2F%2F')
+        # VSlog('folder   ' +str(sUrl))
 
     sPath = ''
     if (oInputParameterHandler.exist('sPath')):
         sPath = oInputParameterHandler.getValue('sPath')
-        sUrl = sUrl + urllib.quote(sPath).replace('//', '%2F%2F')
-        #VSlog('sPath   ' + str(sUrl))
+        sUrl = sUrl + Quote(sPath).replace('//', '%2F%2F')
+        # VSlog('sPath   ' + str(sUrl))
 
     oPremiumHandler = cPremiumHandler('uptobox')
 
@@ -156,20 +163,22 @@ def showFile():
                     oOutputParameterHandler.addParameter('sPath', sPath)
                     oGui.addNext(SITE_IDENTIFIER, 'showFile', '[COLOR teal]Suite >>>[/COLOR]', oOutputParameterHandler)
 
-
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
+
 def getpath(content):
     for x in content:
         if x == 'path':
-            sPath = urllib.quote(content[x].encode('utf-8')).replace('//', '%2F%2F')
-            #VSlog(sPath)
+            sPath = Quote(content[x].encode('utf-8')).replace('//', '%2F%2F')
+            # VSlog(sPath)
             return sPath
+
 
 def AddmyAccount():
     UptomyAccount()
+
 
 def UptomyAccount():
     addons = addon()
@@ -199,13 +208,13 @@ def UptomyAccount():
         req.add_header('Cookie', cookies)
         req.add_header('Content-Length', len(mpartdata[1]))
 
-        #penible ce dialog auth
+        # penible ce dialog auth
         xbmc.executebuiltin('Dialog.Close(all,true)')
         xbmcgui.Dialog().notification('Requête envoyée', 'vous pouvez faire autre chose', xbmcgui.NOTIFICATION_INFO, 4000, False)
 
         try:
             rep = urllib2.urlopen(req)
-        except urllib2.URLError, e:
+        except urllib2.URLError as e:
             return ''
 
         sHtmlContent = rep.read()
@@ -228,11 +237,10 @@ def UptomyAccount():
             dialog.close()
 
         else:
-            #penible ce dialog auth
+            # penible ce dialog auth
             xbmc.executebuiltin('Dialog.Close(all,true)')
             xbmcgui.Dialog().notification('Info upload', 'Fichier introuvable', xbmcgui.NOTIFICATION_INFO, 2000, False)
     else:
-        #penible ce dialog auth
+        # penible ce dialog auth
         xbmc.executebuiltin('Dialog.Close(all,true)')
         xbmcgui.Dialog().notification('Info upload', 'Erreur pattern', xbmcgui.NOTIFICATION_ERROR, 2000, False)
-
