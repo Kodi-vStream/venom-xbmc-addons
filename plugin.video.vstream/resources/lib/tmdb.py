@@ -7,6 +7,7 @@ import re
 import json
 import urllib2
 import xbmcvfs
+import string
 
 from urllib import urlopen
 from resources.lib.util import QuotePlus
