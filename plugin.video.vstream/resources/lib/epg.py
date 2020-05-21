@@ -28,7 +28,7 @@ class cePg:
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             for aEntry in aResult[1]:
-                # print sTitle
+                # print(sTitle)
                 if sTitle.lower() in aEntry.lower():
                     return "http://www.programme-tv.net" + aEntry
         else:
@@ -109,7 +109,7 @@ class cePg:
 
     def TextBoxes(self, heading, anounce):
         # activate the text viewer window
-        xbmc.executebuiltin("ActivateWindow(%d)" % (10147))
+        xbmc.executebuiltin("ActivateWindow(%d)" % 10147)
         # get window
         win = window(10147)
         # win.show()
