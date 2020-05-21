@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -67,22 +67,22 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action', URL_MAIN + 'series/action/'] )
-    liste.append( ['Animation', URL_MAIN + 'series/animation/'] )
-    liste.append( ['Aventure', URL_MAIN + 'series/aventure/'] )
-    liste.append( ['Biopic', URL_MAIN + 'series/biopic/'] )
-    liste.append( ['Comédie', URL_MAIN + 'series/comedie/'] )
-    liste.append( ['Divers', URL_MAIN + 'series/divers/'] )
-    liste.append( ['Documentaire', URL_MAIN + 'series/documentaire/'] )
-    liste.append( ['Drame', URL_MAIN + 'series/drame/'] )
-    liste.append( ['Epouvante-Horreur', URL_MAIN + 'series/epouvante-horreur/'] )
-    liste.append( ['Famille', URL_MAIN + 'series/famille/'] )
-    liste.append( ['Fantastique', URL_MAIN + 'series/fantastique/'] )
-    liste.append( ['Guerre', URL_MAIN + 'series/guerre/'] )
-    liste.append( ['Policier', URL_MAIN + 'series/policier/'] )
-    liste.append( ['Romance', URL_MAIN + 'series/romance/'] )
-    liste.append( ['Science-fiction', URL_MAIN + 'series/science-fiction/'] )
-    liste.append( ['Thriller', URL_MAIN + 'series/thriller/'] )
+    liste.append(['Action', URL_MAIN + 'series/action/'])
+    liste.append(['Animation', URL_MAIN + 'series/animation/'])
+    liste.append(['Aventure', URL_MAIN + 'series/aventure/'])
+    liste.append(['Biopic', URL_MAIN + 'series/biopic/'])
+    liste.append(['Comédie', URL_MAIN + 'series/comedie/'])
+    liste.append(['Divers', URL_MAIN + 'series/divers/'])
+    liste.append(['Documentaire', URL_MAIN + 'series/documentaire/'])
+    liste.append(['Drame', URL_MAIN + 'series/drame/'])
+    liste.append(['Epouvante-Horreur', URL_MAIN + 'series/epouvante-horreur/'])
+    liste.append(['Famille', URL_MAIN + 'series/famille/'])
+    liste.append(['Fantastique', URL_MAIN + 'series/fantastique/'])
+    liste.append(['Guerre', URL_MAIN + 'series/guerre/'])
+    liste.append(['Policier', URL_MAIN + 'series/policier/'])
+    liste.append(['Romance', URL_MAIN + 'series/romance/'])
+    liste.append(['Science-fiction', URL_MAIN + 'series/science-fiction/'])
+    liste.append(['Thriller', URL_MAIN + 'series/thriller/'])
 
     for sTitle, sUrl in liste:
 
@@ -92,11 +92,12 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
+
 def showSerieYears():
-    #for i in itertools.chain(xrange(5, 7), [8, 9]): afficher dans l'ordre (pense bete ne pas effacer)
+    #for i in itertools.chain(range(5, 7), [8, 9]): afficher dans l'ordre (pense bete ne pas effacer)
     oGui = cGui()
     from itertools import chain
-    generator = chain([1983, 1990, 1994], xrange(1997, 2021))#desordre
+    generator = chain([1983, 1990, 1994], range(1997, 2021))#desordre
 
     for i in reversed(list(generator)):
         Year = str(i)
@@ -105,6 +106,7 @@ def showSerieYears():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def AlphaList():
     oGui = cGui()
@@ -128,6 +130,7 @@ def AlphaList():
     progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
+
 
 def showSeriesNews():
     oGui = cGui()
@@ -165,7 +168,8 @@ def showSeriesNews():
 
     oGui.setEndOfDirectory()
 
-def showMovies(sSearch = ''):
+
+def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
 
@@ -215,6 +219,7 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
+
 def __checkForNextPage(sHtmlContent):
     sPattern = 'href="([^"]+)"><i class="fa fa-angle-right">'
     oParser = cParser()
@@ -228,6 +233,7 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
+
 def ShowSaisons():
     oGui = cGui()
     oParser = cParser()
@@ -238,7 +244,7 @@ def ShowSaisons():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #récupération du Synopsis
+    # récupération du Synopsis
     sDesc = ''
     try:
         sPattern = 'class="fsynopsis"><p>(.+?)<\/p>'
@@ -276,6 +282,7 @@ def ShowSaisons():
 
     oGui.setEndOfDirectory()
 
+
 def showEpisodes():
     oGui = cGui()
     oParser = cParser()
@@ -308,6 +315,7 @@ def showEpisodes():
             oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def seriesHosters():
     oGui = cGui()
@@ -346,6 +354,7 @@ def seriesHosters():
             oGui.addLink(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showLinks():
     oGui = cGui()
