@@ -210,7 +210,7 @@ def showGenres():
 def showMovieYears():
     oGui = cGui()
 
-    for i in reversed(xrange(1913, 2021)):
+    for i in reversed(range(1913, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/annee-' + Year)
@@ -222,7 +222,7 @@ def showMovieYears():
 def showSerieYears():
     oGui = cGui()
 
-    for i in reversed(xrange(1936, 2021)):
+    for i in reversed(range(1936, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/annee-' + Year)
@@ -360,14 +360,14 @@ def showMovies(sSearch=''):
             if not 'http' in sThumb:
                 sThumb = URL_MAIN + sThumb
 
-            #not found better way
-            #sTitle = unicode(sTitle, errors='replace')
-            #sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
+            # not found better way
+            # sTitle = unicode(sTitle, errors='replace')
+            # sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
 
-            #Vstream don't work with unicode url for the moment
-            #sThumb = unicode(sThumb, 'UTF-8')
-            #sThumb = sThumb.encode('ascii', 'ignore').decode('ascii')
-            #sThumb=sThumb.decode('utf8')
+            # Vstream don't work with unicode url for the moment
+            # sThumb = unicode(sThumb, 'UTF-8')
+            # sThumb = sThumb.encode('ascii', 'ignore').decode('ascii')
+            # sThumb=sThumb.decode('utf8')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -413,7 +413,7 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    #patch for unicode url
+    # patch for unicode url
     sUrl = QuoteSafe(sUrl)
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -469,11 +469,10 @@ def serieHosters():
             if '-saison-' in sUrl or 'anime' in sUrl:
                 # Si plusieurs langues sont disponibles, une seule est affichée ici.
                 # Ne rien mettre, la langue sera ajoutée avec le host
-                # sLang = aEntry[0]
                 sUrl2 = aEntry[1]
                 sNM = aEntry[2].replace('<span>', ' ').replace('</span>', '')
                 sTitle = sMovieTitle + sNM
-                sDisplayTitle = sTitle #sMovieTitle + sNM + ' (' + sLang + ')'
+                sDisplayTitle = sTitle
             else:
                 sUrl2 = aEntry[0]
                 sTitle = re.sub('\d x ', 'E', aEntry[1])
@@ -529,9 +528,9 @@ def showHostersLink():
             redirection_target = response.headers['Location']
         response.close()
 
-        #VSlog('cod > ' + sHtmlContent)
+        # VSlog('cod > ' + sHtmlContent)
 
-    #VSlog('red > ' + redirection_target)
+    # VSlog('red > ' + redirection_target)
 
     # attention fake redirection
     sUrl = redirection_target
