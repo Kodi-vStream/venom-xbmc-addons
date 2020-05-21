@@ -30,7 +30,7 @@ class cGuiElement:
         self.__sType = 'Video'
         self.__sMeta = 0
         self.__sPlaycount = 0
-        self.__sTrailerUrl = ''
+        self.__sTrailer = ''
         self.__sMetaAddon = self.ADDON.getSetting('meta-view')
         self.__sImdb = ''
         self.__sTmdb = ''
@@ -110,11 +110,11 @@ class cGuiElement:
     def getMetaAddon(self):
         return self.__sMetaAddon
 
-    def setTrailerUrl(self, sTrailerUrl):
-        self.__sTrailerUrl = sTrailerUrl
+    def setTrailer(self, sTrailer):
+        self.__sTrailer = sTrailer
 
-    def getTrailerUrl(self):
-        return self.__sTrailerUrl
+    def getTrailer(self):
+        return self.__sTrailer
 
     def setTmdbId(self, data):
         self.__TmdbId = data
@@ -453,8 +453,8 @@ class cGuiElement:
             self.addItemProperties('fanart_image', meta['backdrop_url'])
             self.__sFanart = meta['backdrop_url']
         if 'trailer' in meta and meta['trailer']:
-           # meta['trailer'] = meta['trailer'].replace(u'\u200e', '').replace(u'\u200f', '')
-            self.__sTrailerUrl = meta['trailer']
+            # meta['trailer'] = meta['trailer'].replace(u'\u200e', '').replace(u'\u200f', '')
+            self.__sTrailer = meta['trailer']
         if 'cover_url' in meta and meta['cover_url']:
             self.__sThumbnail = meta['cover_url']
             self.__sPoster = meta['cover_url']
@@ -491,7 +491,7 @@ class cGuiElement:
             sTitle = sTitle.replace('hexalogie', '')
             sTitle = sTitle.replace('tetralogie', '')
 
-        sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'movie')
+        sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'movie').replace('4', 'anime')
 
         if sType:
             from resources.lib.tmdb import cTMDb
@@ -512,50 +512,6 @@ class cGuiElement:
 
         else:
             return
-
-        # Pour les films
-        # if self.getMeta() == 1:
-            # try:
-                # from metahandler import metahandlers
-                # grab = metahandlers.MetaData(preparezip=False, tmdb_api_key=cConfig().getSetting('api_tmdb'))
-                # args = ('movie', self.__sFileName)
-                # kwargs = {}
-                # if (self.__TmdbId) or (self.__Year):
-                    # if (self.__ImdbId):
-                        # kwargs['imdb_id'] = self.__ImdbId
-                    # if (self.__TmdbId):
-                        # kwargs['tmdb_id'] = self.__TmdbId
-                    # if (self.__Year):
-                        # kwargs['year'] =  self.__Year
-                # meta = grab.get_meta(*args, **kwargs)
-            # except:
-                # return
-
-        # Pour les series
-        # elif self.getMeta() == 2:
-            # try:
-                # from metahandler import metahandlers
-                # grab = metahandlers.MetaData(preparezip=False, tmdb_api_key=cConfig().getSetting('api_tmdb'))
-                # Nom a nettoyer ?
-                #attention l'annee peut mettre le bordel a cause des differences de sortie
-                # args = ('tvshow', self.__sFileName)
-                # kwargs = {}
-                # if (self.__TmdbId) or (self.__Year):
-                    # dict = {}
-                    # if (self.__ImdbId):
-                        # kwargs['imdb_id'] = self.__ImdbId
-                    # if (self.__TmdbId):
-                        # kwargs['tmdb_id'] = self.__TmdbId
-                    # if (self.__Year):
-                        # kwargs['year'] = self.__Year
-                # meta = grab.get_meta(*args, **kwargs)
-            # except:
-                # return
-        # else:
-            # return
-
-        # del meta['playcount']
-        # del meta['trailer']
 
         meta['title'] = self.getTitle()
 
@@ -580,7 +536,7 @@ class cGuiElement:
 
         if 'trailer' in meta and meta['trailer']:
             # meta['trailer'] = meta['trailer'].replace(u'\u200e', '').replace(u'\u200f', '')
-            self.__sTrailerUrl = meta['trailer']
+            self.__sTrailer = meta['trailer']
 
         # Pas de changement de cover pour les coffrets de films
         if metaType != 3:
@@ -648,8 +604,8 @@ class cGuiElement:
             # self.addItemValues('cover_url', self.getThumbnail())
         # if not self.getItemValue('backdrop_url') and self.getPoster():
             # self.addItemValues('backdrop_url', self.getPoster())
-        if not self.getItemValue('trailer') and self.getTrailerUrl():
-            self.addItemValues('trailer', self.getTrailerUrl())
+        if not self.getItemValue('trailer') and self.getTrailer():
+            self.addItemValues('trailer', self.getTrailer())
 
         # Used only if there is data in db, overwrite getMetadonne()
         w = self.getWatched()
