@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 import re
 
 SITE_IDENTIFIER = 'k_streaming'
@@ -196,7 +196,7 @@ def showAlpha():
 def showYears():
     oGui = cGui()
 
-    for i in reversed (xrange(1918, 2021)):
+    for i in reversed(range(1918, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/films/annee-' + Year)
@@ -207,7 +207,7 @@ def showYears():
 def showSeriesYears():
     oGui = cGui()
 
-    for i in reversed (xrange(1980, 2021)):
+    for i in reversed(range(1980, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/series/annee-' + Year)
@@ -215,7 +215,7 @@ def showSeriesYears():
 
     oGui.setEndOfDirectory()
 
-def showMovies(sSearch = ''):
+def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
 
