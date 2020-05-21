@@ -96,8 +96,31 @@ class cGui():
         except:
             pass
 
+    def addAnime(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
+        cGui.CONTENT = 'tvshows'
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName(sId)
+        oGuiElement.setFunction(sFunction)
+        oGuiElement.setTitle(sLabel)
+        oGuiElement.setIcon(sIcon)
+        oGuiElement.setThumbnail(sThumbnail)
+        oGuiElement.setPoster(sThumbnail)
+        oGuiElement.setMeta(4)  # Recherche des Métas spécifiques Animation
+        oGuiElement.setDescription(sDesc)
+        # oGuiElement.setTvFanart()
+        oGuiElement.setCat(2)
+
+        if oOutputParameterHandler.getValue('sMovieTitle'):
+            sTitle = oOutputParameterHandler.getValue('sMovieTitle')
+            oGuiElement.setFileName(sTitle)
+
+        try:
+            self.addFolder(oGuiElement, oOutputParameterHandler)
+        except:
+            pass
+
     def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
-        # cGui.CONTENT = 'movies'
+        cGui.CONTENT = 'movies'     # Mode d'affichage comme un film, avec la description fournie, mais il n'y a pas de recherche de Méta
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
@@ -403,7 +426,6 @@ class cGui():
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cFav', 'cFav', 'setBookmark', self.ADDON.VSlang(30210))
 
     def createContexMenuTrakt(self, oGuiElement, oOutputParameterHandler= ''):
-
         oOutputParameterHandler.addParameter('sImdbId', oGuiElement.getImdbId())
         oOutputParameterHandler.addParameter('sTmdbId', oGuiElement.getTmdbId())
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
@@ -413,7 +435,6 @@ class cGui():
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cTrakt', 'cTrakt', 'getAction', self.ADDON.VSlang(30214))
 
     def createContexMenuTMDB(self, oGuiElement, oOutputParameterHandler = ''):
-
         oOutputParameterHandler.addParameter('sImdbId', oGuiElement.getImdbId())
         oOutputParameterHandler.addParameter('sTmdbId', oGuiElement.getTmdbId())
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
@@ -421,7 +442,6 @@ class cGui():
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'themoviedb_org', 'themoviedb_org', 'getAction', 'TMDB')
 
     def createContexMenuDownload(self, oGuiElement, oOutputParameterHandler='', status='0'):
-
         if status == '0':
             self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'StartDownloadOneFile', self.ADDON.VSlang(30215))
 
@@ -438,7 +458,6 @@ class cGui():
 
     # Information
     def createContexMenuinfo(self, oGuiElement, oOutputParameterHandler=''):
-
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
@@ -449,19 +468,17 @@ class cGui():
 
     # Bande annonce
     def createContexMenuba(self, oGuiElement, oOutputParameterHandler=''):
-
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
         oOutputParameterHandler.addParameter('sYear', oGuiElement.getYear())
-        oOutputParameterHandler.addParameter('sTrailerUrl', oGuiElement.getTrailerUrl())
+        oOutputParameterHandler.addParameter('sTrailerUrl', oGuiElement.getTrailer())
         oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
 
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewBA', self.ADDON.VSlang(30212))
 
     # Recherche similaire
     def createContexMenuSimil(self, oGuiElement, oOutputParameterHandler=''):
-
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
         oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
@@ -532,7 +549,6 @@ class cGui():
         return oListItem
 
     def setEndOfDirectory(self, ForceViewMode=False):
-
         iHandler = cPluginHandler().getPluginHandle()
         # modif 22/06
         if not self.listing:
@@ -695,14 +711,14 @@ class cGui():
         # sMeta = 1 >> film sMeta = 2 >> serie
         sCleanTitle = cUtil().CleanName(sFileName)
 
-        # on vire saison et episode
-        if True:  # sMeta == 2:
+        # on vire saison et episode, si séries ou animes
+        if sMeta == 2 or sMeta == 4 :
             sCleanTitle = re.sub('(?i).pisode [0-9]+', '', sCleanTitle)
             sCleanTitle = re.sub('(?i)saison [0-9]+', '', sCleanTitle)
             sCleanTitle = re.sub('(?i)S[0-9]+E[0-9]+', '', sCleanTitle)
             sCleanTitle = re.sub('(?i)[S|E][0-9]+', '', sCleanTitle)
 
-        ui = WindowsBoxes(sTitle, sCleanTitle, sMeta, sYear)
+        WindowsBoxes(sTitle, sCleanTitle, sMeta, sYear)
 
     def __createItemUrl(self, oGuiElement, oOutputParameterHandler=''):
         if (oOutputParameterHandler == ''):
@@ -720,7 +736,6 @@ class cGui():
         else:
             sItemUrl = '%s?site=%s&function=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), oGuiElement.getFunction(), QuotePlus(oGuiElement.getCleanTitle()), sParams)
 
-        # print(sItemUrl)
         return sItemUrl
 
     def showKeyBoard(self, sDefaultText='', heading=''):

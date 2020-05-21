@@ -17,6 +17,7 @@ SITE_NAME = 'Gum-Gum-Streaming'
 SITE_DESC = 'Animés VF/VOSTFR'
 
 URL_MAIN = 'https://gum-gum-streaming.com/'
+#URL_MAIN = 'https://gum-gum-streaming.co/'  # sans pub
 
 ANIM_ANIMS = (True, 'load')
 ANIM_NEWS = (URL_MAIN, 'showNews')
@@ -130,7 +131,7 @@ def showAnimes():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addAnime(SITE_IDENTIFIER, 'showEpisodes', sTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
         progress_.VSclose(progress_)
     oGui.setEndOfDirectory()
 
