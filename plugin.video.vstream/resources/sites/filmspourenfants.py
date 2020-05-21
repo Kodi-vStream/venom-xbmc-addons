@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'filmspourenfants'
 SITE_NAME = 'Films pour Enfants'
@@ -35,7 +35,6 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', AGE_5ANS[0])
     oGui.addDir(SITE_IDENTIFIER, AGE_5ANS[1], 'A partir de  5 ans', 'enfants.png', oOutputParameterHandler)
 
-
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', AGE_7ANS[0])
     oGui.addDir(SITE_IDENTIFIER, AGE_7ANS[1], 'A partir de 7 ans', 'enfants.png', oOutputParameterHandler)
@@ -61,7 +60,7 @@ def load():
 def showThemes():
     oGui = cGui()
     oParser = cParser()
-    oRequestHandler = cRequestHandler(BY_THEMES[0])
+    oRequestHandler = cRequestHandler('siteUrl')
     sHtmlContent = oRequestHandler.request()
 
     sHtmlContent = oParser.abParse(sHtmlContent, '<lien1>Portail pour les familles</lien1><br>', '<lien1><i class=icon-circle>')
@@ -89,7 +88,6 @@ def showMovies():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    # sPattern = 'class=portfolio-image>.*?src=([^ ]+) itemprop.*?synopsis>([^<]+)<.*?href=.*?href=([^ ]+).*?<h3>([^<]+)<'
     sPattern = 'class=portfolio-image>.*?data-src="([^"]+)".*?synopsis>([^<]+)<.*?href=.*?href="([^"]+)".*?<h4>([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -111,38 +109,12 @@ def showMovies():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showFiche', sTitle, 'enfants.png', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'enfants.png', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
-def showFiche():
-    oGui = cGui()
-    oParser = cParser()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumb = oInputParameterHandler.getValue('sThumb')
-
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-    sHtmlContent = sHtmlContent.replace('<br>', ' ')
-    sPattern = '<a href=".+?" title=".*?" data-lightbox=iframe>.*?</h3><span>(.+?)</span>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-
-            sDesc = aEntry
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sMovieTitle, 'enfants.png', sThumb, sDesc, oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
 
 def showHosters():
     oGui = cGui()
@@ -159,9 +131,7 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        for aEntry in aResult[1]:
-            sHosterUrl = aEntry
-
+        for sHosterUrl in aResult[1]:
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
