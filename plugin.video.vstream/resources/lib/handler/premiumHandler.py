@@ -14,7 +14,7 @@ headers = {'User-Agent': UA}
 
 class NoRedirection(urllib2.HTTPErrorProcessor):
     def http_response(self, request, response):
-        code, msg, hdrs=response.code, response.msg, response.info()
+        code, msg, hdrs = response.code, response.msg, response.info()
 
         return response
 
@@ -55,7 +55,7 @@ class cPremiumHandler:
         cookies = GestionCookie().Readcookie(self.__sHosterIdentifier)
         return 'Cookie=' + cookies
 
-    def Checklogged(self,code):
+    def Checklogged(self, code):
         if 'uptobox' in self.__sHosterIdentifier:
             if '//uptobox.com/?op=logout&' in code or 'Success' in code:
                 return True
@@ -185,7 +185,7 @@ class cPremiumHandler:
             oParser = cParser()
             sPattern = '(?:^|,) *([^;,]+?)=([^;,\/]+?);'
             aResult = oParser.parse(str(head['Set-Cookie']), sPattern)
-            # print aResult
+            # print(aResult)
             if (aResult[0] == True):
                 for cook in aResult[1]:
                     if 'deleted' in cook[1]:
@@ -221,19 +221,19 @@ class cPremiumHandler:
         cookies = GestionCookie().Readcookie(self.__sHosterIdentifier)
 
         # aucun ne marche sans cookies
-        if (cookies == '') and not (self.__LoginTry) and self.__Ispremium:
+        if (cookies == '') and not self.__LoginTry and self.__Ispremium:
             self.Authentificate()
-            if not (self.isLogin):
+            if not self.isLogin:
                 return ''
             cookies = GestionCookie().Readcookie(self.__sHosterIdentifier)
 
         sHtmlContent = self.GetHtmlwithcookies(url, data, cookies)
 
         # Les cookies ne sont plus valables, mais on teste QUE si la personne n'a pas essaye de s'authentifier
-        if not(self.Checklogged(sHtmlContent)) and not self.__LoginTry and self.__Ispremium:
+        if not self.Checklogged(sHtmlContent) and not self.__LoginTry and self.__Ispremium:
             VSlog('Cookies non valables')
             self.Authentificate()
-            if (self.isLogin):
+            if self.isLogin:
                 cookies = GestionCookie().Readcookie(self.__sHosterIdentifier)
                 sHtmlContent = self.GetHtmlwithcookies(url, data, cookies)
             else:
