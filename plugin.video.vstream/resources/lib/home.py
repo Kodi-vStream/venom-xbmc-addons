@@ -15,7 +15,7 @@ from resources.lib.comaddon import addon, window
 SITE_IDENTIFIER = 'cHome'
 SITE_NAME = 'Home'
 
-#temp d'execution
+# temp d'execution
 # import time, random
 
 # l = range(100000)
@@ -122,7 +122,7 @@ class cHome:
         if sSearchText:
             self.showSearch(sSearchText)
             oGui.setEndOfDirectory()
-        else :
+        else:
             return False
 
     def showSearch(self, searchtext=cInputParameterHandler().getValue('searchtext')):
@@ -136,7 +136,7 @@ class cHome:
 
         oGui = cGui()
 
-        # print xbmc.getInfoLabel('ListItem.Property(Category)')
+        # print(xbmc.getInfoLabel('ListItem.Property(Category)'))
 
         oGui.addText('globalSearch', addons.VSlang(30077) % searchtext, 'none.png')
 
@@ -423,7 +423,6 @@ class cHome:
             type = addons.getSetting('search' + match[2][-1:] + '_type')
             if type:
                 oOutputParameterHandler.addParameter('type', type)
-                # xbmcgui.Window(10101).setProperty('search_type', type)
                 window(10101).setProperty('search_type', type)
 
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -442,7 +441,6 @@ class cHome:
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         if row:
-
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
             oGui.addDir(SITE_IDENTIFIER, 'delSearch', addons.VSlang(30413), 'search.png', oOutputParameterHandler)
@@ -476,7 +474,7 @@ class cHome:
 
     def showHostDirect(self):  # fonction de recherche
         oGui = cGui()
-        sUrl = oGui.showKeyBoard(heading = addons.VSlang(30045))
+        sUrl = oGui.showKeyBoard(heading=addons.VSlang(30045))
         if (sUrl != False):
 
             oHoster = cHosterGui().checkHoster(sUrl)
