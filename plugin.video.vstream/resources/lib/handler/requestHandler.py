@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
 import urllib
 import urllib2
 
-from urllib2 import HTTPError, URLError
+# from urllib2 import HTTPError, URLError
 from resources.lib.comaddon import addon, dialog, VSlog
+
 
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
@@ -55,7 +56,7 @@ class cRequestHandler:
     def addParametersLine(self, mParameterValue):
         self.__aParamatersLine = mParameterValue
 
-    #egg addMultipartFiled({'sess_id': sId, 'upload_type': 'url', 'srv_tmp_url': sTmp})
+    # egg addMultipartFiled({'sess_id': sId, 'upload_type': 'url', 'srv_tmp_url': sTmp})
     def addMultipartFiled(self, fields):
         mpartdata = MPencode(fields)
         self.__aParamatersLine = mpartdata[1]
@@ -76,10 +77,6 @@ class cRequestHandler:
         if 'Set-Cookie' in self.__sResponseHeader:
             import re
 
-            #cookie_string = self.__sResponseHeader.getheaders('set-cookie')
-            #c = ''
-            #for i in cookie_string:
-            #    c = c + i + ', '
             c = self.__sResponseHeader.get('set-cookie')
 
             c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,]+?);', c)
@@ -93,7 +90,7 @@ class cRequestHandler:
 
     def request(self):
         # Supprimee car deconne si url contient ' ' et '+' en meme temps
-        #self.__sUrl = self.__sUrl.replace(' ', '+')
+        # self.__sUrl = self.__sUrl.replace(' ', '+')
         return self.__callRequest()
 
     def getRequestUri(self):
@@ -140,9 +137,9 @@ class cRequestHandler:
                 VSlog('Retrying with SSL bug')
                 import ssl
                 gcontext = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
-                oResponse = urllib2.urlopen(oRequest, timeout = self.__timeout, context=gcontext)
+                oResponse = urllib2.urlopen(oRequest, timeout=self.__timeout, context=gcontext)
             else:
-                oResponse = urllib2.urlopen(oRequest, timeout = self.__timeout)
+                oResponse = urllib2.urlopen(oRequest, timeout=self.__timeout)
 
             sContent = oResponse.read()
 
@@ -151,7 +148,7 @@ class cRequestHandler:
             # compressed page ?
             if self.__sResponseHeader.get('Content-Encoding') == 'gzip':
                 import zlib
-                sContent = zlib.decompress(sContent, zlib.MAX_WBITS|16)
+                sContent = zlib.decompress(sContent, zlib.MAX_WBITS | 16)
 
             # https://bugs.python.org/issue4773
             self.__sRealUrl = oResponse.geturl()
@@ -159,7 +156,7 @@ class cRequestHandler:
 
             oResponse.close()
 
-        except urllib2.HTTPError, e:
+        except urllib2.HTTPError as e:
             if e.code == 503:
 
                 # Protected by cloudFlare ?
@@ -188,7 +185,7 @@ class cRequestHandler:
             if not sContent:
                 self.DIALOG.VSerror("%s (%d),%s" % (self.ADDON.VSlang(30205), e.code, self.__sUrl))
 
-        except urllib2.URLError, e:
+        except urllib2.URLError as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e.reason) and self.BUG_SSL == False:
                 self.BUG_SSL = True
                 return self.__callRequest()
@@ -226,16 +223,20 @@ class cRequestHandler:
 
     def new_getaddrinfo(self, *args):
         try:
-            import sys, xbmc
+            import xbmc
+            import sys
+            import dns.resolver
+
             path = xbmc.translatePath('special://home/addons/script.module.dnspython/lib/').decode('utf-8')
             if path not in sys.path:
                 sys.path.append(path)
-            import dns.resolver
             host = args[0]
             port = args[1]
             # Keep the domain only: http://example.com/foo/bar => example.com
-            if "//" in host: host = host[host.find("//"):]
-            if "/" in host: host = host[:host.find("/")]
+            if "//" in host:
+                host = host[host.find("//"):]
+            if "/" in host:
+                host = host[:host.find("/")]
             resolver = dns.resolver.Resolver(configure=False)
             # Résolveurs DNS ouverts: https://www.fdn.fr/actions/dns/
             resolver.nameservers = [ '80.67.169.12', '2001:910:800::12', '80.67.169.40', '2001:910:800::40' ]
