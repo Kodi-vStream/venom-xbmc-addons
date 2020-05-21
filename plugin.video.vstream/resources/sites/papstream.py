@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -8,7 +8,6 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-# import urllib2
 
 SITE_IDENTIFIER = 'papstream'
 SITE_NAME = 'PapStream'
@@ -87,6 +86,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
 
@@ -96,29 +96,30 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showGenres():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
-    liste.append( ['Action', sUrl + 'action/'] )
-    liste.append( ['Animation', sUrl + 'animation/'] )
-    liste.append( ['Aventure', sUrl + 'aventure/'] )
-    liste.append( ['Biopic', sUrl + 'biopic/'] )
-    liste.append( ['Comédie', sUrl +'comedie/'] )
-    liste.append( ['Comédie Dramatique', sUrl + 'comedie-dramatique/'] )
-    liste.append( ['Comédie Musicale', sUrl + 'comedie-musicale/'] )
-    liste.append( ['Documentaire', sUrl + 'documentaire/'] )
-    liste.append( ['Drame', sUrl + 'drame/'] )
-    liste.append( ['Epouvante Horreur', sUrl + 'epouvante-horreur/'] )
-    liste.append( ['Famille', sUrl + 'famille/'] )
-    liste.append( ['Fantastique', sUrl + 'fantastique/'] )
-    liste.append( ['Guerre', sUrl + 'guerre/'] )
-    liste.append( ['Policier', sUrl + 'policier/'] )
-    liste.append( ['Romance', sUrl +'romance/'] )
-    liste.append( ['Science Fiction', sUrl + 'science-fiction/'] )
-    liste.append( ['Thriller', sUrl + 'thriller/'] )
+    liste.append(['Action', sUrl + 'action/'])
+    liste.append(['Animation', sUrl + 'animation/'])
+    liste.append(['Aventure', sUrl + 'aventure/'])
+    liste.append(['Biopic', sUrl + 'biopic/'])
+    liste.append(['Comédie', sUrl +'comedie/'])
+    liste.append(['Comédie Dramatique', sUrl + 'comedie-dramatique/'])
+    liste.append(['Comédie Musicale', sUrl + 'comedie-musicale/'])
+    liste.append(['Documentaire', sUrl + 'documentaire/'])
+    liste.append(['Drame', sUrl + 'drame/'])
+    liste.append(['Epouvante Horreur', sUrl + 'epouvante-horreur/'])
+    liste.append(['Famille', sUrl + 'famille/'])
+    liste.append(['Fantastique', sUrl + 'fantastique/'])
+    liste.append(['Guerre', sUrl + 'guerre/'])
+    liste.append(['Policier', sUrl + 'policier/'])
+    liste.append(['Romance', sUrl +'romance/'])
+    liste.append(['Science Fiction', sUrl + 'science-fiction/'])
+    liste.append(['Thriller', sUrl + 'thriller/'])
 
     for sTitle, sUrl in liste:
 
@@ -128,10 +129,11 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
+
 def showMovieYears():
     oGui = cGui()
 
-    for i in reversed(xrange(1918, 2021)):
+    for i in reversed(range(1918, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/annee/' + Year + '.html')
@@ -139,10 +141,11 @@ def showMovieYears():
 
     oGui.setEndOfDirectory()
 
+
 def showSerieYears():
     oGui = cGui()
 
-    for i in reversed(xrange(1936, 2021)):
+    for i in reversed(range(1936, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/annee/' + Year + '.html')
@@ -150,10 +153,11 @@ def showSerieYears():
 
     oGui.setEndOfDirectory()
 
+
 def showAnimeYears():
     oGui = cGui()
 
-    for i in reversed(xrange(1965, 2021)):
+    for i in reversed(range(1965, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'animes/annee/' + Year + '.html')
@@ -161,7 +165,8 @@ def showAnimeYears():
 
     oGui.setEndOfDirectory()
 
-def showMovies(sSearch = ''):
+
+def showMovies(sSearch=''):
     oGui = cGui()
 
     if sSearch:
@@ -226,6 +231,7 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
+
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<div class="pages-numbers".+?<span>.+?</span><a href=["\']([^"\']+)'
@@ -235,6 +241,7 @@ def __checkForNextPage(sHtmlContent):
         return URL_MAIN[:-1] + aResult[1][0]
 
     return False
+
 
 def showSaisons():
     oGui = cGui()
@@ -253,7 +260,7 @@ def showSaisons():
     if ( aResult[0] == True ):
         sDesc = aResult[1][0]
 
-    #Decoupage pour cibler la partie des saisons
+    # Decoupage pour cibler la partie des saisons
     sPattern = '<div id="full-video">(.+?)<div class="fstory-info block-p">'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if ( aResult[0] == True ):
@@ -290,6 +297,7 @@ def showSaisons():
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
+
 
 def ShowEpisodes():
     oGui = cGui()
@@ -331,6 +339,7 @@ def ShowEpisodes():
 
     oGui.setEndOfDirectory()
 
+
 def showLink():
     oGui = cGui()
     oParser = cParser()
@@ -343,7 +352,7 @@ def showLink():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #récupération du synopsis pour les films
+    # récupération du synopsis pour les films
     if (not sDesc):
         sPattern = '</a> :</h2>(.+?)<div'
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -371,6 +380,7 @@ def showLink():
 
     oGui.setEndOfDirectory()
 
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -381,17 +391,17 @@ def showHosters():
 
     if sUrl.startswith('/'):
         sUrl = URL_MAIN[:-1] + sUrl
-    #headers = {'User-Agent': UA, 'Referer': refUrl}
+    # headers = {'User-Agent': UA, 'Referer': refUrl}
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('Referer', refUrl)
     oRequestHandler.request()
     vUrl = oRequestHandler.getRealUrl()
 
-    #request = urllib2.Request(sUrl, None, headers)
-    #reponse = urllib2.urlopen(request)
-    #vUrl = reponse.geturl()
-    #reponse.close()
+    # request = urllib2.Request(sUrl, None, headers)
+    # reponse = urllib2.urlopen(request)
+    # vUrl = reponse.geturl()
+    # reponse.close()
 
     if vUrl:
         sHosterUrl = vUrl
