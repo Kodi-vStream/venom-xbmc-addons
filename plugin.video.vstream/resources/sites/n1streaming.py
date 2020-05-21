@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -133,7 +133,7 @@ def showGenres():
 def showMovieYears():
     oGui = cGui()
 
-    for i in reversed (xrange(1921, 2021)):
+    for i in reversed(range(1921, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'filmsvf/annee/' + Year + '-1.html')
@@ -146,7 +146,7 @@ def showSerieYears():
     oGui = cGui()
 
     from itertools import chain
-    generator = chain([1936, 1940, 1941, 1944, 1946, 1950, 1952, 1954, 1955], xrange(1958, 2021))
+    generator = chain([1936, 1940, 1941, 1944, 1946, 1950, 1952, 1954, 1955], range(1958, 2021))
 
     for i in reversed(list(generator)):
         Year = str(i)
