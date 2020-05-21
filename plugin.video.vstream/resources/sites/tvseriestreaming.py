@@ -10,7 +10,6 @@ from resources.lib.parser import cParser
 from resources.lib.util import Unquote
 import re
 
-
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101 Firefox/60.0'
 
 SITE_IDENTIFIER = 'tvseriestreaming'
@@ -77,10 +76,10 @@ def showSearch():
 
 
 def showSerieYears():
-    # for i in itertools.chain(xrange(5, 7), [8, 9]): afficher dans l'ordre (pense bete ne pas effacer)
+    # for i in itertools.chain(range(5, 7), [8, 9]): afficher dans l'ordre (pense bete ne pas effacer)
     oGui = cGui()
     from itertools import chain
-    generator = chain([1936, 1940, 1941, 1950, 1955], xrange(1958, 2021))#desordre
+    generator = chain([1936, 1940, 1941, 1950, 1955], range(1958, 2021))
 
     for i in reversed(list(generator)):
         Year = str(i)
@@ -121,7 +120,6 @@ def AlphaDisplay():
 
     sPattern = '<a title="(' + sLetter + '.+?)" href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
 
     if aResult[0]:
         
@@ -171,38 +169,38 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action', URL_MAIN + 'category/action'] )
-    liste.append( ['Animation', URL_MAIN + 'category/animation'] )
-    liste.append( ['Anime', URL_MAIN + 'category/anime'] )
-    liste.append( ['Aventure', URL_MAIN + 'category/adventure'] )
-    liste.append( ['Biographie', URL_MAIN + 'category/biography'] )
-    liste.append( ['Comédie', URL_MAIN + 'category/comedy'] )
-    liste.append( ['Crime', URL_MAIN + 'category/crime'] )
-    liste.append( ['Documentaire', URL_MAIN + 'category/documentary'] )
-    liste.append( ['Drama', URL_MAIN + 'category/drama'] )
-    liste.append( ['Drame', URL_MAIN + 'category/drame'] )
-    liste.append( ['Enfants', URL_MAIN + 'category/children'] )
-    liste.append( ['Famille', URL_MAIN + 'category/family'] )
-    liste.append( ['Fantastique', URL_MAIN + 'category/fantasy'] )
-    liste.append( ['Guerre', URL_MAIN + 'category/war'] )
-    liste.append( ['Historique', URL_MAIN + 'category/history'] )
-    liste.append( ['Horreur', URL_MAIN + 'category/horror'] )
-    liste.append( ['Music', URL_MAIN + 'category/music'] )
-    liste.append( ['Musical', URL_MAIN + 'category/musical'] )
-    liste.append( ['Mystère', URL_MAIN + 'category/mystere'] )
-    liste.append( ['Policier', URL_MAIN + 'category/policier'] )
-    liste.append( ['Réalité', URL_MAIN + 'category/reality'] )
-    liste.append( ['Réalité-tv', URL_MAIN + 'category/reality-tv'] )
-    liste.append( ['Romance', URL_MAIN + 'category/romance'] )
-    liste.append( ['Sci-fi', URL_MAIN + 'category/sci-fi'] )
-    liste.append( ['Science-fiction', URL_MAIN + 'category/science-fiction'] )
-    liste.append( ['Soap', URL_MAIN + 'category/soap'] )
-    liste.append( ['Sport', URL_MAIN + 'category/sport'] )
-    liste.append( ['Super-hero', URL_MAIN + 'category/superhero'] )
-    liste.append( ['Suspense', URL_MAIN + 'category/suspense'] )
-    liste.append( ['Thriller', URL_MAIN + 'category/thriller'] )
-    liste.append( ['Western', URL_MAIN + 'category/western'] )
-    liste.append( ['Autre', URL_MAIN + 'category/na'] )
+    liste.append(['Action', URL_MAIN + 'category/action'])
+    liste.append(['Animation', URL_MAIN + 'category/animation'])
+    liste.append(['Anime', URL_MAIN + 'category/anime'])
+    liste.append(['Aventure', URL_MAIN + 'category/adventure'])
+    liste.append(['Biographie', URL_MAIN + 'category/biography'])
+    liste.append(['Comédie', URL_MAIN + 'category/comedy'])
+    liste.append(['Crime', URL_MAIN + 'category/crime'])
+    liste.append(['Documentaire', URL_MAIN + 'category/documentary'])
+    liste.append(['Drama', URL_MAIN + 'category/drama'])
+    liste.append(['Drame', URL_MAIN + 'category/drame'])
+    liste.append(['Enfants', URL_MAIN + 'category/children'])
+    liste.append(['Famille', URL_MAIN + 'category/family'])
+    liste.append(['Fantastique', URL_MAIN + 'category/fantasy'])
+    liste.append(['Guerre', URL_MAIN + 'category/war'])
+    liste.append(['Historique', URL_MAIN + 'category/history'])
+    liste.append(['Horreur', URL_MAIN + 'category/horror'])
+    liste.append(['Music', URL_MAIN + 'category/music'])
+    liste.append(['Musical', URL_MAIN + 'category/musical'])
+    liste.append(['Mystère', URL_MAIN + 'category/mystere'])
+    liste.append(['Policier', URL_MAIN + 'category/policier'])
+    liste.append(['Réalité', URL_MAIN + 'category/reality'])
+    liste.append(['Réalité-tv', URL_MAIN + 'category/reality-tv'])
+    liste.append(['Romance', URL_MAIN + 'category/romance'])
+    liste.append(['Sci-fi', URL_MAIN + 'category/sci-fi'])
+    liste.append(['Science-fiction', URL_MAIN + 'category/science-fiction'])
+    liste.append(['Soap', URL_MAIN + 'category/soap'])
+    liste.append(['Sport', URL_MAIN + 'category/sport'])
+    liste.append(['Super-hero', URL_MAIN + 'category/superhero'])
+    liste.append(['Suspense', URL_MAIN + 'category/suspense'])
+    liste.append(['Thriller', URL_MAIN + 'category/thriller'])
+    liste.append(['Western', URL_MAIN + 'category/western'])
+    liste.append(['Autre', URL_MAIN + 'category/na'])
 
     for sTitle, sUrl in liste:
 
