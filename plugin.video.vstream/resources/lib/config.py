@@ -69,9 +69,9 @@ class GestionCookie():
     def MixCookie(self,ancien_cookies, new_cookies):
         t1 = self.MakeListwithCookies(ancien_cookies)
         t2 = self.MakeListwithCookies(new_cookies)
+        #Les nouveaux doivent ecraser les anciens
         for i in t2:
-            if i not in t1:
-                t1[i] = t2[i]
+            t1[i] = t2[i]
                 
         cookies = ''
         for c in t1:
