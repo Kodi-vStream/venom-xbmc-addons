@@ -98,23 +98,23 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Football', SPORT_FOOT[0], 'match'] )
-    liste.append( ['Football (Emissions)', SPORT_FOOT[0], 'tv'] )
+    liste.append(['Football', SPORT_FOOT[0], 'match'])
+    liste.append(['Football (Emissions)', SPORT_FOOT[0], 'tv'])
 
-    liste.append( ['Rugby', SPORT_RUGBY[0], 'match'] )
-    liste.append( ['Rugby (Emissions)', SPORT_RUGBY[0], 'tv'] )
+    liste.append(['Rugby', SPORT_RUGBY[0], 'match'])
+    liste.append(['Rugby (Emissions)', SPORT_RUGBY[0], 'tv'])
 
-    liste.append( ['Basketball', SPORT_BASKET[0], 'match'] )
+    liste.append(['Basketball', SPORT_BASKET[0], 'match'])
 
-    liste.append( ['Sports Automobiles', SPORT_AUTO[0], 'match'] )
-    liste.append( ['sports Automobiles (Emissions)', SPORT_AUTO[0], 'tv'] )
+    liste.append(['Sports Automobiles', SPORT_AUTO[0], 'match'])
+    liste.append(['Sports Automobiles (Emissions)', SPORT_AUTO[0], 'tv'])
 
-    liste.append( ['Sports US', SPORT_US[0], 'match'] )
-    liste.append( ['sports US (Emissions)', SPORT_US[0], 'tv'] )
+    liste.append(['Sports US', SPORT_US[0], 'match'])
+    liste.append(['Sports US (Emissions)', SPORT_US[0], 'tv'])
 
-    liste.append( ['Tennis', SPORT_TENNIS[0], 'match'] )
+    liste.append(['Tennis', SPORT_TENNIS[0], 'match'])
 
-    liste.append( ['Handball', SPORT_HAND[0], 'match'] )
+    liste.append(['Handball', SPORT_HAND[0], 'match'])
 
     for sTitle, sUrl, sFiltre in liste:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -409,10 +409,6 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0] == True:
         sUrl = cUtil().urlDecode(aResult[1][0])
-
-    # fh = open('c:\\test.txt', "w")
-    # fh.write(sHtmlContent.replace('\n', ''))
-    # fh.close()
 
     # Et maintenant le ou les liens
 
