@@ -12,7 +12,7 @@ from resources.lib.multihost import cJheberg
 from resources.lib.multihost import cMultiup
 from resources.lib.packer import cPacker
 from resources.lib.comaddon import progress, VSlog
-import urllib#, re
+from resources.lib.util import Unquote
 
 SITE_IDENTIFIER = 'robindesdroits'
 SITE_NAME = 'Robin des Droits'
@@ -32,6 +32,7 @@ SPORT_DIVERS = (URL_MAIN + 'divers/', 'showMovies')
 SPORT_SPORTS = (True, 'showGenres')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+
 
 def load():
     oGui = cGui()
@@ -81,6 +82,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
 
@@ -90,6 +92,7 @@ def showSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
+
 
 def showGenres():
     oGui = cGui()
@@ -121,18 +124,19 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
+
 def showCat():
-    
+
     oGui = cGui()
     oParser = cParser()
 
     oInputParameterHandler = cInputParameterHandler()
     siteUrl = oInputParameterHandler.getValue('siteUrl')
     sFiltre = oInputParameterHandler.getValue('cat')
-    
+
     if 'match' in sFiltre:
         sPattern = '<li class=\'mega-menu-item mega-menu-item-type-post_type mega-menu-item-object-page mega-menu-item-([0-9]+)\' id=\'mega-menu-item-([0-9]+)\'>'
-    else:   #emission
+    else:  # emission
         sPattern = '<li class=\'mega-menu-item mega-menu-item-type-taxonomy mega-menu-item-object-category mega-menu-item-([0-9]+)\' id=\'mega-menu-item-([0-9]+)\'>'
     sPattern += '<a class="mega-menu-link" href="'+siteUrl+'([^"]+)">(.+?)</a>'
 
@@ -140,13 +144,13 @@ def showCat():
     sHtmlContent = oRequestHandler.request()
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #VSlog(aResult)
+    # VSlog(aResult)
 
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
-        
+
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -168,6 +172,7 @@ def showCat():
         oGui.addText(SITE_DESC)
 
     oGui.setEndOfDirectory()
+
 
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -220,6 +225,7 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
+
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<a class="next page-numbers" href="([^"]+)"'
@@ -229,6 +235,7 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
+
 def showLinkGenres():
     oGui = cGui()
     oParser = cParser()
@@ -237,7 +244,7 @@ def showLinkGenres():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    #VSlog(sHtmlContent)
+    # VSlog(sHtmlContent)
 
     sThumb = ''
     try:
@@ -248,7 +255,6 @@ def showLinkGenres():
     except:
         pass
 
-    #sHtmlContent = oParser.abParse(sHtmlContent, 'class="entry-title page-title">', '<span class="screen-reader-text">Rechercher')#Provoque un bug si je l'active
     sPattern = '<span style="font-family: Arial, Helvetica,.+?font-size:.+?pt;">([^<>]+)<\/span>|<li ><a href="([^"]+)" title=".+?">([^<>]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -267,7 +273,7 @@ def showLinkGenres():
             else:
                 sUrl = aEntry[1]
                 sTitle = aEntry[2]
-                
+
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -279,6 +285,7 @@ def showLinkGenres():
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
+
 
 def showLink():
     oGui = cGui()
@@ -311,6 +318,7 @@ def showLink():
 
     oGui.setEndOfDirectory()
 
+
 def AdflyDecoder(url):
     oRequestHandler = cRequestHandler(url)
     sHtmlContent = oRequestHandler.request()
@@ -336,7 +344,7 @@ def AdflyDecoder(url):
 
         code = A + B
 
-        #Second pass
+        # Second pass
         m = 0
         code = list(code)
         while m < len(code) :
@@ -362,6 +370,7 @@ def AdflyDecoder(url):
 
     return ''
 
+
 def showHosters():
     oGui = cGui()
     oParser = cParser()
@@ -372,17 +381,17 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
-    #D'abord on saute les redirections.
+
+    # D'abord on saute les redirections.
     if 'replay.robindesdroits' in sUrl:
         sPattern = 'content="0;URL=([^"]+)">'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult:
-            sUrl = aResult[1][0] 
+            sUrl = aResult[1][0]
             oRequestHandler = cRequestHandler(sUrl)
             sHtmlContent = oRequestHandler.request()
-            
-    #Ensuite les sites a la con
+
+    # Ensuite les sites a la con
     if (True):
         if 'AdF' in sHtmlContent:
             sUrl = AdflyDecoder(sUrl)
@@ -390,23 +399,22 @@ def showHosters():
                 sPattern = 'href=(.+?)&dp_lp'
                 aResult = oParser.parse(sUrl, sPattern)
                 if (aResult[0] == True):
-                    sUrl = urllib.unquote(''.join(aResult[1])).decode('utf8')
+                    sUrl = Unquote(''.join(aResult[1])).decode('utf8')
 
             oRequestHandler = cRequestHandler(sUrl)
             sHtmlContent = oRequestHandler.request()
-            
-    #clictune / mylink / ect ... 
+
+    # clictune / mylink / ect ...
     sPattern = '<b><a href=".+?redirect\/\?url\=(.+?)\&id.+?">'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0] == True:
         sUrl = cUtil().urlDecode(aResult[1][0])
-        sUrl = sUrl
-        
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent.replace('\n', ''))
-    #fh.close()
 
-    #Et maintenant le ou les liens
+    # fh = open('c:\\test.txt', "w")
+    # fh.write(sHtmlContent.replace('\n', ''))
+    # fh.close()
+
+    # Et maintenant le ou les liens
 
     if 'gounlimited' in sUrl:
         oRequestHandler = cRequestHandler(sUrl)
