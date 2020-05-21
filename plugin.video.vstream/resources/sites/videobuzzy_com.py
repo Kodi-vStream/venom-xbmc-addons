@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -16,11 +16,12 @@ SITE_DESC = 'Sélection des vidéos les plus populaires de Videobuzzy'
 URL_MAIN = 'https://www.videobuzzy.com/'
 
 NETS_NETS = ('http://', 'load')
-NETS_NEWS =  (URL_MAIN, 'showMovies')
+NETS_NEWS = (URL_MAIN, 'showMovies')
 NETS_GENRES = (True, 'showGenres')
 
-#URL_SEARCH = ('http://www.notre-ecole.net/?s=', 'showMovies')
-#FUNCTION_SEARCH = 'showMovies'
+# URL_SEARCH = ('http://www.notre-ecole.net/?s=', 'showMovies')
+# FUNCTION_SEARCH = 'showMovies'
+
 
 def load():
 
@@ -40,31 +41,33 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            sUrl = URL_MAIN + sSearchText
-            showMovies(sUrl)
-            oGui.setEndOfDirectory()
-            return
+        sUrl = URL_MAIN + sSearchText
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
+        return
+
 
 def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Galerie', URL_MAIN + 'galerie.htm'] )
-    liste.append( ['Football', URL_MAIN + 'football.htm'] )
-    liste.append( ['Humour', URL_MAIN + 'humour.htm'] )
-    liste.append( ['Animaux', URL_MAIN + 'animaux.htm'] )
-    liste.append( ['Insolite', URL_MAIN + 'insolite.htm'] )
-    liste.append( ['Télévision', URL_MAIN + 'television.htm'] )
-    liste.append( ['Musique', URL_MAIN + 'musique.htm'] )
-    liste.append( ['Sport', URL_MAIN + 'sport.htm'] )
-    liste.append( ['Cinéma', URL_MAIN + 'cinema.htm'] )
-    #liste.append( ['Bref.', URL_MAIN + 'BREF-tous-les-episodes-de-la-serie-de-canal-+-4902.news'] )
-    liste.append( ['Top Vidéo', URL_MAIN + 'top-video.php'] )
+    liste.append(['Galerie', URL_MAIN + 'galerie.htm'])
+    liste.append(['Football', URL_MAIN + 'football.htm'])
+    liste.append(['Humour', URL_MAIN + 'humour.htm'])
+    liste.append(['Animaux', URL_MAIN + 'animaux.htm'])
+    liste.append(['Insolite', URL_MAIN + 'insolite.htm'])
+    liste.append(['Télévision', URL_MAIN + 'television.htm'])
+    liste.append(['Musique', URL_MAIN + 'musique.htm'])
+    liste.append(['Sport', URL_MAIN + 'sport.htm'])
+    liste.append(['Cinéma', URL_MAIN + 'cinema.htm'])
+    # liste.append(['Bref.', URL_MAIN + 'BREF-tous-les-episodes-de-la-serie-de-canal-+-4902.news'])
+    liste.append(['Top Vidéo', URL_MAIN + 'top-video.php'])
 
     for sTitle, sUrl in liste:
 
@@ -74,7 +77,8 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
-def showMovies(sSearch = ''):
+
+def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
@@ -85,12 +89,12 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = "<a class='titre_news_index' href='(.+?)' title='(.+?)'>.+?<img class=\"thumbnail\" src='(.+?)'.+?>.+?<span class='corps_news_p2'>(.+?)</span>"
+    sPattern = "class='titre_news_index' href='(.+?)' title='(.+?)'.+?class=\"thumbnail\" src='(.+?)'.+?class='corps_news_p2'>(.+?)</span>"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
-    #print aResult
+    # print(aResult)
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
@@ -122,16 +126,18 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
+
 def __checkForNextPage(sHtmlContent):
     sPattern = '<span class="current">.+?</span><a href="(.+?)" title=\'.+?\'>.+?</a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        print aResult[1][0]
+        # print(aResult[1][0])
         return URL_MAIN + aResult[1][0]
 
     return False
+
 
 def showHosters():
     oGui = cGui()
@@ -147,7 +153,7 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    #print aResult
+    # print(aResult)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
