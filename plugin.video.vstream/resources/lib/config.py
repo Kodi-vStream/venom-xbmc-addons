@@ -15,6 +15,17 @@ import xbmcvfs
 
 class GestionCookie():
     PathCache = 'special://userdata/addon_data/plugin.video.vstream'
+    
+    def MakeListwithCookies(self,c):
+        t = {}
+        c = c.split(';')
+        for i in c:
+            j = i.split('=',1)
+            if len(j) > 1:
+                t[j[0]] = j[1]
+            
+        return t
+        
 
     def DeleteCookie(self, Domain):
         Name = '/'.join([self.PathCache, 'cookie_%s.txt']) % (Domain)
@@ -54,7 +65,19 @@ class GestionCookie():
     def AddCookies(self):
         cookies = self.Readcookie(self.__sHosterIdentifier)
         return 'Cookie=' + cookies
-
+        
+    def MixCookie(self,ancien_cookies, new_cookies):
+        t1 = self.MakeListwithCookies(ancien_cookies)
+        t2 = self.MakeListwithCookies(new_cookies)
+        for i in t2:
+            if i not in t1:
+                t1[i] = t2[i]
+                
+        cookies = ''
+        for c in t1:
+            cookies = cookies + c + '=' + t1[c] + ';'
+        cookies = cookies[:-1]
+        return cookies
 
 # -------------------------------
 #     Configuration gestion
