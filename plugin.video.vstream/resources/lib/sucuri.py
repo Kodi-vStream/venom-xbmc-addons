@@ -10,6 +10,8 @@ import urllib2
 import xbmc
 import xbmcaddon
 
+from resources.lib.comaddon import VSlog
+
 PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo('profile'))
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
@@ -29,7 +31,7 @@ class SucurieBypass(object):
         self.url = ''
 
     def DeleteCookie(self, Domain):
-        print('Effacement cookies')
+        VSlog('Effacement cookies')
         file = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt')
         os.remove(os.path.join(PathCache, file).decode('utf-8'))
 
@@ -66,13 +68,13 @@ class SucurieBypass(object):
             s = re.sub(r'document\.cookie', 'cookie', s)
             try:
                 cookie = ''
-                # print(s)
+                # VSlog(s)
                 exec(s)
                 match = re.match('([^=]+)=(.*)', cookie)
                 if match:
                     return match.group(1) + '=' + match.group(2)
             except:
-                print('Erreur décodage sucuri')
+                VSlog('Erreur decodage sucuri')
 
         return None
 
@@ -121,10 +123,10 @@ class SucurieBypass(object):
         # on cherche le nouveau cookie
         cookies = self.DecryptCookie(htmlcontent)
         if not cookies:
-            print('Erreur décodage sucuri')
+            VSlog('Erreur decodage sucuri')
             return ''
 
-        print('Protection Sucuri active')
+        VSlog('Protection Sucuri active')
 
         # on sauve le nouveau cookie
         self.SaveCookie(self.host.replace('.', '_'), cookies)
@@ -156,7 +158,7 @@ class SucurieBypass(object):
         response.close()
 
         if response.info().get('Content-Encoding') == 'gzip':
-            print('contenu zippe')
+            VSlog('contenu zippe')
             import gzip
             from StringIO import StringIO
             buf = StringIO(htmlcontent)
