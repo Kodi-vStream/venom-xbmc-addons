@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -25,6 +25,7 @@ URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
+
 def load():
     oGui = cGui()
 
@@ -46,6 +47,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
 
@@ -56,30 +58,31 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action', URL_MAIN + 'Categorie/action/'] )
-    liste.append( ['Animation', URL_MAIN + 'Categorie/animation/'] )
-    liste.append( ['Aventure', URL_MAIN + 'Categorie/aventure/'] )
-    liste.append( ['Biographie', URL_MAIN + 'Categorie/biography/'] )
-    liste.append( ['Comédie', URL_MAIN + 'Categorie/comedie/'] )
-    liste.append( ['Crime', URL_MAIN + 'Categorie/crime/'] )
-    liste.append( ['Drame', URL_MAIN + 'Categorie/drame/'] )
-    liste.append( ['Documentaire', URL_MAIN + 'Categorie/documentaire/'] )
-    liste.append( ['Famille', URL_MAIN + 'Categorie/famille/'] )
-    liste.append( ['Fantaisie', URL_MAIN + 'Categorie/fantaisie/'] )
-    # liste.append( ['Guerre', URL_MAIN + 'Categorie/guerre/'] )
-    liste.append( ['Histoire', URL_MAIN + 'Categorie/history/'] )
-    liste.append( ['Horreur', URL_MAIN + 'Categorie/horreur/'] )
-    liste.append( ['Musical', URL_MAIN + 'Categorie/musique/'] )
-    liste.append( ['Mystère', URL_MAIN + 'Categorie/mystere/'] )
-    liste.append( ['Romance', URL_MAIN + 'Categorie/romance/'] )
-    liste.append( ['Science-fiction', URL_MAIN + 'Categorie/science-fiction/'] ) # Pas de suffixe -films
-    liste.append( ['Sport', URL_MAIN + 'Categorie/sport/'] )
-    liste.append( ['Thriller', URL_MAIN + 'Categorie/thriller/'] )
-    liste.append( ['War', URL_MAIN + 'Categorie/war/'] )
+    liste.append(['Action', URL_MAIN + 'Categorie/action/'])
+    liste.append(['Animation', URL_MAIN + 'Categorie/animation/'])
+    liste.append(['Aventure', URL_MAIN + 'Categorie/aventure/'])
+    liste.append(['Biographie', URL_MAIN + 'Categorie/biography/'])
+    liste.append(['Comédie', URL_MAIN + 'Categorie/comedie/'])
+    liste.append(['Crime', URL_MAIN + 'Categorie/crime/'])
+    liste.append(['Drame', URL_MAIN + 'Categorie/drame/'])
+    liste.append(['Documentaire', URL_MAIN + 'Categorie/documentaire/'])
+    liste.append(['Famille', URL_MAIN + 'Categorie/famille/'])
+    liste.append(['Fantaisie', URL_MAIN + 'Categorie/fantaisie/'])
+    # liste.append(['Guerre', URL_MAIN + 'Categorie/guerre/'])
+    liste.append(['Histoire', URL_MAIN + 'Categorie/history/'])
+    liste.append(['Horreur', URL_MAIN + 'Categorie/horreur/'])
+    liste.append(['Musical', URL_MAIN + 'Categorie/musique/'])
+    liste.append(['Mystère', URL_MAIN + 'Categorie/mystere/'])
+    liste.append(['Romance', URL_MAIN + 'Categorie/romance/'])
+    liste.append(['Science-fiction', URL_MAIN + 'Categorie/science-fiction/'])
+    liste.append(['Sport', URL_MAIN + 'Categorie/sport/'])
+    liste.append(['Thriller', URL_MAIN + 'Categorie/thriller/'])
+    liste.append(['War', URL_MAIN + 'Categorie/war/'])
 
     for sTitle, sUrl in liste:
 
@@ -89,10 +92,11 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
+
 def showYears():
     oGui = cGui()
 
-    for i in reversed (xrange(2017, 2021)):
+    for i in reversed(range(2017, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'Categorie/' + Year + '-films/')
@@ -100,7 +104,7 @@ def showYears():
 
     oGui.setEndOfDirectory()
 
-def showMovies(sSearch = ''):
+def showMovies(sSearch=''):
     oGui = cGui()
     if sSearch:
         sSearch = Unquote(sSearch)
@@ -109,7 +113,6 @@ def showMovies(sSearch = ''):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    #sHtmlContent = SucurieBypass().GetHtml(sUrl)
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -137,9 +140,8 @@ def showMovies(sSearch = ''):
 
             sTitle = sTitle.replace(' VF Streaming', '')
 
-            
             sYear = None
-            if len(sTitle)>4 and sTitle[-4:].isdigit():
+            if len(sTitle) > 4 and sTitle[-4:].isdigit():
                 sYear = sTitle[-4:]
                 sTitle = sTitle[0:len(sTitle)-4] + '(' + sYear + ')'
 
@@ -163,6 +165,7 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
+
 def __checkForNextPage(sHtmlContent):
     sPattern = 'href="([^"]+?)" class="next">&raquo;'
     oParser = cParser()
@@ -172,6 +175,7 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
+
 def showHosters():
     oGui = cGui()
 
@@ -180,12 +184,9 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    # sHtmlContent = SucurieBypass().GetHtml(sUrl)
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
     sPattern = '<iframe.+?data-src="([^"]+)"'
-
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -201,7 +202,7 @@ def showHosters():
                 oRequestHandler.request()
                 sHosterUrl = oRequestHandler.getRealUrl()
 
-            #pour récuperer le lien Downpit
+            # pour récuperer le lien Downpit
             elif 'downpit' in aEntry:
                 oRequestHandler = cRequestHandler(aEntry)
                 sHtmlContent = oRequestHandler.request()
@@ -213,7 +214,7 @@ def showHosters():
 
             else:
                 sHosterUrl = aEntry
-                #Vire les bandes annonces
+                # Vire les bandes annonces
                 if 'youtube.com' in aEntry:
                     continue
 
