@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -60,6 +60,7 @@ SERIE_HD_EN_COURS_VOSTFR = (URL_MAIN + '1/categorie-Saisons+en+cours+VOST+HD/1.h
 SERIE_HD_TERMINE_VF = (URL_MAIN + '1/categorie-Saison+Terminée+VF+HD/1.html', 'showMovies')
 SERIE_HD_TERMINE_VOSTFR = (URL_MAIN + '1/categorie-Saison+Terminée+VOST+HD/1.html', 'showMovies')
 
+
 def load():
     oGui = cGui()
 
@@ -84,6 +85,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showMenuEmissionsTV', 'Emissions TV', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMenuFilms():
     oGui = cGui()
@@ -150,6 +152,7 @@ def showMenuFilms():
 
     oGui.setEndOfDirectory()
 
+
 def showMenuSeries():
     oGui = cGui()
 
@@ -191,6 +194,7 @@ def showMenuSeries():
 
     oGui.setEndOfDirectory()
 
+
 def showMenuMangas():
     oGui = cGui()
 
@@ -212,6 +216,7 @@ def showMenuMangas():
 
     oGui.setEndOfDirectory()
 
+
 def showMenuSpectacles():
     oGui = cGui()
 
@@ -224,6 +229,7 @@ def showMenuSpectacles():
     oGui.addDir(SITE_IDENTIFIER, SPECTACLES[1], 'Spectacles (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMenuEmissionsTV():
     oGui = cGui()
@@ -238,6 +244,7 @@ def showMenuEmissionsTV():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
@@ -250,16 +257,19 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showGenreMoviesSD():
     showGenre("films+dvdrip+et+bdrip/")
+
 
 def showGenreMoviesHD():
     showGenre("Films+BluRay+720p+et+1080p/")
 
+
 def showMovieYears():
     oGui = cGui()
 
-    for i in reversed (xrange(1950, 2019)):
+    for i in reversed(xrange(1950, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '1/annee/?rech_year=' + Year)
@@ -267,32 +277,33 @@ def showMovieYears():
 
     oGui.setEndOfDirectory()
 
+
 def showGenre(basePath):
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action', URL_MAIN + '1/genre-Action/' + basePath] )
-    liste.append( ['Animation', URL_MAIN + '1/genre-Animation/' + basePath] )
-    liste.append( ['Arts Martiaux', URL_MAIN + '1/genre-Arts%20Martiaux/' + basePath] )
-    liste.append( ['Aventure', URL_MAIN + '1/genre-Aventure/' + basePath] )
-    liste.append( ['Biographies', URL_MAIN + '1/genre-Biographies/' + basePath] )
-    liste.append( ['Comédie', URL_MAIN + '1/genre-Comedie/' + basePath] )
-    liste.append( ['Comédie dramatique', URL_MAIN + '1/genre-Comedie+Dramatique/' + basePath] )
-    liste.append( ['Comédie musicale', URL_MAIN + '1/genre-Comedie+Musicale/' + basePath] )
-    liste.append( ['Divers', URL_MAIN + '1/genre-Divers/' + basePath] )
-    liste.append( ['Drame', URL_MAIN + '1/genre-Drame/' + basePath] )
-    liste.append( ['Espionnage', URL_MAIN + '1/genre-Espionnage/' + basePath] )
-    liste.append( ['Famille', URL_MAIN + '1/genre-Famille/' + basePath] )
-    liste.append( ['Fantastique', URL_MAIN + '1/genre-Fantastique/' + basePath] )
-    liste.append( ['Guerre', URL_MAIN + '1/genre-Guerre/' + basePath] )
-    liste.append( ['Historique', URL_MAIN + '1/Historique/' + basePath] )
-    liste.append( ['Horreur', URL_MAIN + '1/genre-Horreur-Epouvante/' + basePath] )
-    liste.append( ['Péplum', URL_MAIN + '1/genre-Peplum/' + basePath] )
-    liste.append( ['Policier', URL_MAIN + '1/genre-Policiers/' + basePath] )
-    liste.append( ['Romance', URL_MAIN + '1/genre-Romance/' + basePath] )
-    liste.append( ['Science fiction', URL_MAIN + '1/genre-Science-Fiction/' + basePath] )
-    liste.append( ['Thriller', URL_MAIN + '1/genre-Thriller/' + basePath] )
-    liste.append( ['Western', URL_MAIN + '1/genre-Westerns/' + basePath] )
+    liste.append(['Action', URL_MAIN + '1/genre-Action/' + basePath])
+    liste.append(['Animation', URL_MAIN + '1/genre-Animation/' + basePath])
+    liste.append(['Arts Martiaux', URL_MAIN + '1/genre-Arts%20Martiaux/' + basePath])
+    liste.append(['Aventure', URL_MAIN + '1/genre-Aventure/' + basePath])
+    liste.append(['Biographies', URL_MAIN + '1/genre-Biographies/' + basePath])
+    liste.append(['Comédie', URL_MAIN + '1/genre-Comedie/' + basePath])
+    liste.append(['Comédie dramatique', URL_MAIN + '1/genre-Comedie+Dramatique/' + basePath])
+    liste.append(['Comédie musicale', URL_MAIN + '1/genre-Comedie+Musicale/' + basePath])
+    liste.append(['Divers', URL_MAIN + '1/genre-Divers/' + basePath])
+    liste.append(['Drame', URL_MAIN + '1/genre-Drame/' + basePath])
+    liste.append(['Espionnage', URL_MAIN + '1/genre-Espionnage/' + basePath])
+    liste.append(['Famille', URL_MAIN + '1/genre-Famille/' + basePath])
+    liste.append(['Fantastique', URL_MAIN + '1/genre-Fantastique/' + basePath])
+    liste.append(['Guerre', URL_MAIN + '1/genre-Guerre/' + basePath])
+    liste.append(['Historique', URL_MAIN + '1/Historique/' + basePath])
+    liste.append(['Horreur', URL_MAIN + '1/genre-Horreur-Epouvante/' + basePath])
+    liste.append(['Péplum', URL_MAIN + '1/genre-Peplum/' + basePath])
+    liste.append(['Policier', URL_MAIN + '1/genre-Policiers/' + basePath])
+    liste.append(['Romance', URL_MAIN + '1/genre-Romance/' + basePath])
+    liste.append(['Science fiction', URL_MAIN + '1/genre-Science-Fiction/' + basePath])
+    liste.append(['Thriller', URL_MAIN + '1/genre-Thriller/' + basePath])
+    liste.append(['Western', URL_MAIN + '1/genre-Westerns/' + basePath])
 
     for sTitle, sUrl in liste:
 
@@ -302,7 +313,8 @@ def showGenre(basePath):
 
     oGui.setEndOfDirectory()
 
-def showSearchResult(sSearch = ''):
+
+def showSearchResult(sSearch=''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
 
@@ -338,7 +350,7 @@ def showSearchResult(sSearch = ''):
                 if sSearch:
                     n = '[COLOR teal]Suite SD >>>[/COLOR]'
                 if loop == 2:
-                    n ='[COLOR teal]Suite HD >>>[/COLOR]'
+                    n = '[COLOR teal]Suite HD >>>[/COLOR]'
                 NextPage.append((n, sNextPage))
 
         loop = loop - 1
@@ -355,7 +367,7 @@ def showSearchResult(sSearch = ''):
         i = 0
         for aEntry in aResult:
 
-            #titre ?
+            # titre ?
             if i == SD:
                 oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Qualitee SD[/COLOR]')
             if i == HD:
@@ -397,6 +409,7 @@ def showSearchResult(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
+
 def showMovies():
     oGui = cGui()
     oParser = cParser()
@@ -405,9 +418,6 @@ def showMovies():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    sDesc = ''
-    sQual = ''
 
     sPattern = '<table style="float:left;padding-left:8px"> *<td> *<div align="left"> *<a href="([^"]+)" onmouseover="Tip\(\'<b>([^"]+?)<\/b>.+?Description :</b> <i>([^<]+?)<.+?<img src="([^"]+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -458,6 +468,7 @@ def showMovies():
 
     oGui.setEndOfDirectory()
 
+
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<span class="courante">[^<]+</span> <a href="(.+?)">'
@@ -467,6 +478,7 @@ def __checkForNextPage(sHtmlContent):
         return URL_MAIN + aResult[1][0]
 
     return False
+
 
 def showHosters():
     oGui = cGui()
@@ -480,20 +492,20 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #recuperation nom de la release
+    # recuperation nom de la release
     if 'elease :' in sHtmlContent:
         sPattern = 'elease :([^<]+)<'
     else:
         sPattern = '<br /> *([^<]+)</p></center>'
 
     aResult1 = oParser.parse(sHtmlContent, sPattern)
-    #print aResult1
+    # print(aResult1)
 
     if (aResult1[0] == True):
         if 'Forced' in aResult1[1][0]:
-            aResult1[1][0]=''
+            aResult1[1][0] = ''
 
-    #cut de la zone des liens
+    # cut de la zone des liens
     if 'Lien Premium' in sHtmlContent:
         sPattern = 'Lien Premium(.+?)</div>'
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -502,7 +514,7 @@ def showHosters():
         sHtmlContent = aResult[1][0]
 
         if 'Interchangeables' in sHtmlContent:
-            #cut de restes de liens non premiums
+            # cut de restes de liens non premiums
             sPattern = '--(.+?)Interchangeables'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if not aResult[0]:
@@ -523,7 +535,7 @@ def showHosters():
         sPattern = '<b>(.+?)<\/b>.+?<a href="link.php\?lien\=([^"]+)" target="_blank" *><b>Cliquer ici pour Télécharger'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #print aResult
+    # print(aResult)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
@@ -548,6 +560,7 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
+
 def showSeriesHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -561,11 +574,11 @@ def showSeriesHosters():
 
     oParser = cParser()
 
-    #recuperation nom de la release
+    # recuperation nom de la release
     sPattern = '</span> ([^<]+)</strong> :.'
     aResult1 = oParser.parse(sHtmlContent, sPattern)
 
-    #cut de la zone des liens
+    # cut de la zone des liens
     if 'Lien Premium' in sHtmlContent:
         sPattern = 'Lien Premium *--(.+?)</div>'
     else:
@@ -574,7 +587,7 @@ def showSeriesHosters():
     sHtmlContent = aResult[1][0]
     sHtmlContent = re.sub('<font color="[^"]+">', '', sHtmlContent)
     sHtmlContent = re.sub('</font>', '', sHtmlContent)
-    #sHtmlContent = re.sub('link.php\?lien\=', '', sHtmlContent)
+    # sHtmlContent = re.sub('link.php\?lien\=', '', sHtmlContent)
 
     if '-multi' in sHtmlContent:
         sPattern = '<a href="link.php\?lien\=([^"]+)"'
@@ -610,8 +623,9 @@ def showSeriesHosters():
 
     oGui.setEndOfDirectory()
 
+
 def Display_protected_link():
-    #print 'entering Display_protected_link'
+    # print('entering Display_protected_link')
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -619,12 +633,12 @@ def Display_protected_link():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    #Est ce un lien dl-protect ?
+    # Est ce un lien dl-protect ?
     if URL_PROTECT in sUrl:
         sHtmlContent = DecryptddlProtect(sUrl)
 
         if sHtmlContent:
-            #Si redirection
+            # Si redirection
             if sHtmlContent.startswith('http'):
                 aResult_dlprotect = (True, [sHtmlContent])
             else:
@@ -634,7 +648,7 @@ def Display_protected_link():
         else:
             dialog().VSok('Désolé, problème de captcha.')
             aResult_dlprotect = (False, False)
-    #Si lien normal
+    # Si lien normal
     else:
         if not sUrl.startswith('http'):
             sUrl = 'http://' + sUrl
@@ -654,16 +668,17 @@ def Display_protected_link():
 
     oGui.setEndOfDirectory()
 
+
 def DecryptddlProtect(url):
-    #print 'entering DecryptddlProtect'
+    # print('entering DecryptddlProtect')
     if not (url): return ''
 
-    #Get host
+    # Get host
     tmp = url.split('/')
     host = tmp[0] + '//' + tmp[2] + '/'
 
     dialogs = dialog()
-    #try to get previous cookie
+    # try to get previous cookie
     cookies = GestionCookie().Readcookie('liens_free-telechargement_org')
 
     oRequestHandler = cRequestHandler(url)
@@ -671,9 +686,9 @@ def DecryptddlProtect(url):
         oRequestHandler.addHeaderEntry('Cookie', cookies)
     sHtmlContent = oRequestHandler.request()
 
-    #A partir de la on a les bon cookies pr la protection cloudflare
+    # A partir de la on a les bon cookies pr la protection cloudflare
 
-    #Si ca demande le captcha
+    # Si ca demande le captcha
     if 'Veuillez recopier le captcha ci-dessus' in sHtmlContent:
         if cookies:
             GestionCookie().DeleteCookie('liens_free-telechargement_org')
@@ -686,7 +701,7 @@ def DecryptddlProtect(url):
         else:
             image = host + s[0]
 
-        captcha,cookies2 = get_response(image, cookies)
+        captcha, cookies2 = get_response(image, cookies)
         cookies = cookies + '; ' + cookies2
 
         oRequestHandler = cRequestHandler(url)
@@ -696,7 +711,6 @@ def DecryptddlProtect(url):
         oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
         oRequestHandler.addHeaderEntry('Cookie', cookies)
         oRequestHandler.addHeaderEntry('Referer', url)
-
         oRequestHandler.addParameters('do', 'contact')
         oRequestHandler.addParameters('ct_captcha', captcha)
 
@@ -710,29 +724,30 @@ def DecryptddlProtect(url):
             dialogs.VSinfo("Rattage")
             return 'rate'
 
-        #si captcha reussi
-        #save cookies
+        # si captcha reussi
+        # save cookies
         GestionCookie().SaveCookie('liens_free-telechargement_org', cookies)
 
     return sHtmlContent
 
-def get_response(img,cookie):
-    #on telecharge l'image
+
+def get_response(img, cookie):
+    # on telecharge l'image
     import xbmcvfs
 
     dialogs = dialog()
 
     filename = "special://home/userdata/addon_data/plugin.video.vstream/Captcha.raw"
-    #PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
-    #filename  = os.path.join(PathCache, 'Captcha.raw')
+    # PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
+    # filename  = os.path.join(PathCache, 'Captcha.raw')
 
-    #hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)', '\\1', img)
+    # hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)', '\\1', img)
     # host = re.sub(r'https*:\/\/', '', hostComplet)
     url = img
 
     oRequestHandler = cRequestHandler(url)
-    oRequestHandler.addHeaderEntry('User-Agent' , UA)
-    #oRequestHandler.addHeaderEntry('Referer', url)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    # oRequestHandler.addHeaderEntry('Referer', url)
     oRequestHandler.addHeaderEntry('Cookie', cookie)
 
     htmlcontent = oRequestHandler.request()
@@ -740,49 +755,49 @@ def get_response(img,cookie):
     NewCookie = oRequestHandler.GetCookies()
 
     downloaded_image = xbmcvfs.File(filename, 'wb')
-    #downloaded_image = file(filename, "wb")
+    # downloaded_image = file(filename, "wb")
     downloaded_image.write(htmlcontent)
     downloaded_image.close()
 
-#on affiche le dialogue
+    # on affiche le dialogue
     solution = ''
 
     if (True):
-        ####nouveau captcha
+        #### nouveau captcha
         try:
-            ##affichage du dialog perso
+            ## affichage du dialog perso
             class XMLDialog(xbmcgui.WindowXMLDialog):
-                #"""
-                #Dialog class for captcha
-                #"""
+                # """
+                # Dialog class for captcha
+                # """
                 def __init__(self, *args, **kwargs):
                     xbmcgui.WindowXMLDialog.__init__(self)
                     pass
 
                 def onInit(self):
-                    #image background captcha
+                    # image background captcha
                     self.getControl(1).setImage(filename.encode("utf-8"), False)
-                    #image petit captcha memory fail
+                    # image petit captcha memory fail
                     self.getControl(2).setImage(filename.encode("utf-8"), False)
                     self.getControl(2).setVisible(False)
-                    ##Focus clavier
+                    # Focus clavier
                     self.setFocus(self.getControl(21))
 
                 def onClick(self, controlId):
                     if controlId == 20:
-                        #button Valider
+                        # button Valider
                         solution = self.getControl(5000).getLabel()
                         xbmcgui.Window(10101).setProperty('captcha', solution)
                         self.close()
                         return
 
                     elif controlId == 30:
-                        #button fermer
+                        # button fermer
                         self.close()
                         return
 
                     elif controlId == 21:
-                        #button clavier
+                        # button clavier
                         self.getControl(2).setVisible(True)
                         kb = xbmc.Keyboard(self.getControl(5000).getLabel(), '', False)
                         kb.doModal()
@@ -800,12 +815,11 @@ def get_response(img,cookie):
                     self.close()
 
                 def onAction(self, action):
-                    #touche return 61448
+                    # touche return 61448
                     if action.getId() in (9, 10, 11, 30, 92, 216, 247, 257, 275, 61467, 61448):
                         self.close()
 
             path = "special://home/addons/plugin.video.vstream"
-            #path = cConfig().getAddonPath().decode("utf-8")
             wd = XMLDialog('DialogCaptcha.xml', path, 'default', '720p')
             wd.doModal()
             del wd
@@ -816,14 +830,14 @@ def get_response(img,cookie):
                 dialogs.VSinfo("Vous devez taper le captcha")
 
     else:
-        #ancien Captcha
+        # ancien Captcha
         try:
             img = xbmcgui.ControlImage(450, 0, 400, 130, filename.encode("utf-8"))
             wdlg = xbmcgui.WindowDialog()
             wdlg.addControl(img)
             wdlg.show()
-            #xbmc.sleep(3000)
-            kb = xbmc.Keyboard('', 'Tapez les Lettres/chiffres de l\'image', False)
+            # xbmc.sleep(3000)
+            kb = xbmc.Keyboard("", "Tapez les Lettres/chiffres de l'image", False)
             kb.doModal()
             if (kb.isConfirmed()):
                 solution = kb.getText()
