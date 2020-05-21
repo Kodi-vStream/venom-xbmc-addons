@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -7,7 +7,8 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, xbmc
-import urllib, re
+from resources.lib.util import Quote, QuoteSafe
+import re
 
 SITE_IDENTIFIER = 'otakufr_com'
 SITE_NAME = 'OtakuFR'
@@ -23,6 +24,7 @@ ANIM_VOSTFRS = (URL_MAIN + 'anime-list-all/', 'showAlpha')
 URL_SEARCH = (URL_MAIN + 'anime-list/search/', 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
+
 
 def load():
     oGui = cGui()
@@ -45,6 +47,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
@@ -54,7 +57,8 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
-def showMovies(sSearch = ''):
+
+def showMovies(sSearch=''):
     oGui = cGui()
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
@@ -67,9 +71,9 @@ def showMovies(sSearch = ''):
     oParser = cParser()
 
     if '/latest-episodes/' in sUrl:
-        sPattern = '<a href="([^"]+)" class="anm" title="([^"]+)">[^<]+<\/a>.+?<img src="([^"]+)" alt="(.+?)">'#news
+        sPattern = '<a href="([^"]+)" class="anm" title="([^"]+)">[^<]+</a>.+?<img src="([^"]+)" alt="(.+?)">'  # news
     else:
-        sPattern = '<h2><a href="([^<]+)">([^<]+)</a></h2>.+?<img src="(.+?)"'#populaire et search
+        sPattern = '<h2><a href="([^<]+)">([^<]+)</a></h2>.+?<img src="(.+?)"'  # populaire et search
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -85,8 +89,8 @@ def showMovies(sSearch = ''):
                 break
 
             sUrl = aEntry[0]
-            sThumb = aEntry[2]
-            sThumb = urllib.quote(sThumb, safe=':/')
+            # sThumb = aEntry[2]
+            sThumb = QuoteSafe(aEntry[2])
             sLang = ''
             if 'vostfr' in sUrl or 'Vostfr' in sUrl:
                 sLang = 'VOSTFR'
@@ -95,7 +99,7 @@ def showMovies(sSearch = ''):
             else:
                 sLang = 'VOSTFR'
 
-            sTitle =  aEntry[1] + ' (' + sLang + ')'
+            sTitle = aEntry[1] + ' (' + sLang + ')'
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -114,6 +118,7 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
+
 def showAlpha():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -123,7 +128,7 @@ def showAlpha():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<a href="([^<]+)">([A-Z#])<\/a>'
+    sPattern = '<a href="([^<]+)">([A-Z#])</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -139,6 +144,7 @@ def showAlpha():
 
     oGui.setEndOfDirectory()
 
+
 def showAZ():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -149,15 +155,15 @@ def showAZ():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<li><a href="([^<]+)" title="([^<]+)" rel="([^<]+)" class="anm_det_pop">([^<]+)<\/a><\/li>'
+    sPattern = '<li><a href="([^<]+)" title="([^<]+)" rel="([^<]+)" class="anm_det_pop">([^<]+)</a></li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True) :
+    if (aResult[0] == True):
         for aEntry in aResult[1]:
             if aEntry[1].upper()[0] == dAZ or aEntry[1][0].isdigit() and dAZ == '#':
 
                 sUrl = aEntry[0]
-                sTitle =  aEntry[1]
+                sTitle = aEntry[1]
                 sDisplayTitle = sTitle + ' (' + 'VOSTFR' + ')'
 
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -167,14 +173,16 @@ def showAZ():
 
     oGui.setEndOfDirectory()
 
+
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<li><a href="([^<]+)">Next<\/a><\/li>'
+    sPattern = '<li><a href="([^<]+)">Next</a></li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         return aResult[1][0]
 
     return False
+
 
 def showEpisodes():
     oGui = cGui()
@@ -187,11 +195,11 @@ def showEpisodes():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #thumb et syno
+    # thumb et syno
     sThumb = ''
     sDesc = ''
     try:
-        sPattern = '<img class="cvr" src="([^"]+)".+?<b>Synopsis</b>:<br */>([^<]+)<\/p>'
+        sPattern = '<img class="cvr" src="([^"]+)".+?<b>Synopsis</b>:<br */>([^<]+)</p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sThumb = aResult[1][0][0]
@@ -199,7 +207,8 @@ def showEpisodes():
     except:
         pass
 
-    sPattern = '<a class="lst" href="([^"]+)" title="([^"]+(?<!Episode Date)(?<!Episode News))"><b class="val">'#vire les non épisode
+    # vire les non épisode
+    sPattern = '<a class="lst" href="([^"]+)" title="([^"]+(?<!Episode Date)(?<!Episode News))"><b class="val">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -220,7 +229,7 @@ def showEpisodes():
                 if item in aEntry[1]:
                     sTitle = sTitle.replace(item, '')
 
-            sUrl  = aEntry[0]
+            sUrl = aEntry[0]
             sThumb = sThumb.replace(' ', '%20')
             sTitle = sTitle.replace('Episode SP', '[ Episode Spécial ] episode').replace(' + ', '-').replace('Episode New-', 'Episode')
             sTitle = sTitle.replace('Episode ONA', '[ Episode ONA ] episode').replace('Episode OVA', '[ Episode OVA ] episode').replace('Episode NC', 'Episode')
@@ -236,6 +245,7 @@ def showEpisodes():
 
     oGui.setEndOfDirectory()
 
+
 def showLinks():
     oGui = cGui()
     oParser = cParser()
@@ -245,12 +255,10 @@ def showLinks():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
 
-    #sUrl = urllib.quote(sUrl, safe=':/')
-
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = oParser.abParse(sHtmlContent, '<div class="nav_ver">', '<div class="vdo_wrp">')
-    sPattern = '<a href="([^"<>]+/[0-9]/)">([^"]+)<\/a>'
+    sPattern = '<a href="([^"<>]+/[0-9]/)">([^"]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -281,6 +289,7 @@ def showLinks():
 
     oGui.setEndOfDirectory()
 
+
 def showHosters():
     oGui = cGui()
     oParser = cParser()
@@ -294,7 +303,7 @@ def showHosters():
     sHtmlContent = sHtmlContent.replace('<iframe src="http://www.facebook.com', '')
     sHtmlContent = sHtmlContent.replace('<div class="vdo_wrp"><div style=', '<div class="vdo_wrp"><iframe ')
     sHtmlContent = sHtmlContent.replace('data-videoid="', 'src="https://embed.tune.pk/vid=')
-    #pour Tune en test
+    # pour Tune en test
 
     sPattern = '<div class="vdo_wrp"><iframe.+?src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -321,6 +330,7 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
+
 def unCap(sHosterUrl, sUrl):
 
     oRequest = cRequestHandler(sHosterUrl)
@@ -346,4 +356,3 @@ def unCap(sHosterUrl, sUrl):
     oRequest.addHeaderEntry('Connection', 'keep-alive')
     sHtmlContent = oRequest.request()
     return sHtmlContent
-
