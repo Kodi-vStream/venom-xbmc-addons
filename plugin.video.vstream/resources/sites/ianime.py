@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil, Unquote, QuotePlus, Noredirection
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress
 import re
 import unicodedata, random
 
@@ -488,13 +488,7 @@ def showEpisode():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sTitle = unicode(aEntry[2], 'iso-8859-1')
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')
             sTitle = sTitle.encode('ascii', 'ignore').decode('ascii').replace(' VF', '').replace(' VOSTFR', '')
@@ -513,9 +507,7 @@ def showEpisode():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+                oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -572,9 +564,6 @@ def showHosters():
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     sHtmlContent = oRequestHandler.request()
 
-    #VSlog(sUrl)
-
-
     if 'HTML/JavaScript Encoder' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
 
@@ -583,8 +572,6 @@ def showHosters():
 
     sPattern = '<iframe.+?src=\'([^<>"]+?)\''
     aResult = oParser.parse(sHtmlContent, sPattern)
-
-    #VSlog(aResult)
 
     if 'animedigitalnetwork.fr' in str(aResult[1]):
         oGui.addText(SITE_IDENTIFIER, "[COLOR red]Animés dispo gratuitement et legalement sur :[/COLOR][COLOR coral] anime digital network[/COLOR]")
@@ -607,13 +594,13 @@ def showHosters():
                 else:#directe en clair
                     sHosterUrl = str(aEntry)
 
-                #Ces liens sont tjours des liens
+                # Ces liens sont toujours des liens
                 if (not sHosterUrl.startswith('http')) and (len(sHosterUrl) > 2):
                     sHosterUrl = URL_MAIN + sHosterUrl
 
                 list_url.append(sHosterUrl)
 
-        #2 eme methode
+        # 2 eme methode
         sPattern = '<script>eval\(unescape\((.+?)\); eval\(unescape\((.+?)\);<\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
@@ -623,11 +610,10 @@ def showHosters():
                 sHosterUrl = sHosterUrl.replace('\\', '')
                 list_url.append(sHosterUrl)
 
-        #3 eme methode
+        # 3 eme methode
         sPattern = 'document\.write\(unescape\("(%3c%.+?)"\)\);'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            #VSlog("methode 3")
             for aEntry in aResult[1]:
                 tmp = Unquote(aEntry)
 
@@ -635,8 +621,6 @@ def showHosters():
                 aResult = re.findall(sPattern2, tmp)
                 if aResult:
                     list_url.append(aResult[0])
-
-        #VSlog(str(list_url))
 
         if len(list_url) > 0:
             for aEntry in list_url:
@@ -722,9 +706,6 @@ def showHosters():
                 sPattern = "(https*:\/\/www.ianime[^\/\\]+\/[^']+)"
                 aResult = oParser.parse(sHosterUrl, sPattern)
                 if aResult[0]:
-
-                    VSlog('>>' + sHosterUrl)
-
                     oRequestHandler = cRequestHandler(sHosterUrl)
                     oRequestHandler.addHeaderEntry('Referer', sUrl)
                     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -736,8 +717,6 @@ def showHosters():
                     sHosterUrl2 = ExtractLink(sHtmlContent)
 
                     if 'intern_player.png' in sHosterUrl2 or 'intern_player2.png' in sHosterUrl2:
-                        #VSlog('Fausse image : ' + sHosterUrl)
-
                         xx = str(random.randint(300, 350))#347
                         yy = str(random.randint(200, 255))#216
 
@@ -750,15 +729,12 @@ def showHosters():
                         #look for hidden params
                         p1 = re.search(r'name="valeur" value="([^"]+)"', sHtmlContent)
                         if p1:
-                            #VSlog('Hidden param')
                             oRequestHandler.addParameters('valeur', p1.group(1))
 
                         #Set headers
                         oRequestHandler.addHeaderEntry('Referer', sUrl)
                         oRequestHandler.addHeaderEntry('User-Agent', UA)
                         sHtmlContent = oRequestHandler.request()
-
-                        #VSlog("Img decode " + sHtmlContent)
 
                         sHosterUrl2 = ExtractLink(sHtmlContent)
 
@@ -808,10 +784,6 @@ def GetTinyUrl(url):
 
     #On va chercher le vrai lien
     else:
-
-        #VSlog('Decodage lien tinyurl : ' + str(url))
-
-
         headers9 = [('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'), ('Referer', URL_MAIN)]
 
         opener = Noredirection()
