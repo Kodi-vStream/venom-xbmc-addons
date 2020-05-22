@@ -425,8 +425,10 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if '?manga=' in sUrl2:
+            if 'drama.php' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
+            elif '?manga=' in sUrl2:
+                oGui.addAnime(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
             elif '?serie=' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             elif '?film=' in sUrl2:
@@ -692,7 +694,7 @@ def showHosters():
                 #test pr liens raccourcis
                 if 'http://goo.gl' in sHosterUrl:
                     try:
-                        oRequestHandler = cRequestHandler(RestUrl)
+                        oRequestHandler = cRequestHandler(sHosterUrl)
                         oRequestHandler.addHeaderEntry('User-Agent', "Mozilla 5.10")
                         oRequestHandler.addHeaderEntry('Host', "goo.gl")
                         oRequestHandler.addHeaderEntry('Connection', 'keep-alive')
