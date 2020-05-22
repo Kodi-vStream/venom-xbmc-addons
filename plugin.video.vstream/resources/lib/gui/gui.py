@@ -119,8 +119,15 @@ class cGui():
         except:
             pass
 
-    def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
-        cGui.CONTENT = 'movies'     # Mode d'affichage comme un film, avec la description fournie, mais il n'y a pas de recherche de Méta
+    # Affichage d'un épisode, sans recherche de Métadonnées, et menu adapté
+    def addEpisode(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
+        
+        # comportement proche de addMisc
+        self.addMisc(sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, sCat=2)
+
+
+    def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler='', sCat=5):
+        cGui.CONTENT = 'movies'     # Meme mode d'affichage qu'un film, avec la description si fournie, mais il n'y a pas de recherche des Métadonnées
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
@@ -131,7 +138,7 @@ class cGui():
         # oGuiElement.setPoster(sThumbnail)
         oGuiElement.setMeta(0)
         # oGuiElement.setDirFanart(sIcon)
-        oGuiElement.setCat(5)
+        oGuiElement.setCat(sCat)
 
         if oOutputParameterHandler.getValue('sMovieTitle'):
             sTitle = oOutputParameterHandler.getValue('sMovieTitle')
