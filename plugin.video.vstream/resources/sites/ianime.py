@@ -185,7 +185,7 @@ def load():
         
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_DRAMA[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_DRAMA[1], 'Animés (Drama)', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_DRAMA[1], 'Animés (Drama)', 'dramas.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
