@@ -34,6 +34,7 @@ ANIM_ANIMS = (URL_MAIN + 'animes.php?liste=' + RandomKey, 'ShowAlpha')
 ANIM_VFS = (URL_MAIN + 'listing_vf.php', 'ShowAlpha2')
 ANIM_VOSTFRS = (URL_MAIN + 'listing_vostfr.php', 'ShowAlpha2')
 ANIM_GENRES = (URL_MAIN + 'categorie.php?watch=' + RandomKey, 'showGenres')
+ANIM_DRAMA = (URL_MAIN + 'drama.php' , 'showMovies')
 
 URL_SEARCH_MOVIES = ('movies=', 'showMovies')
 URL_SEARCH_SERIES = ('tvshow=', 'showMovies')
@@ -181,6 +182,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
+        
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_DRAMA[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_DRAMA[1], 'Animés (Drama)', 'vf.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -358,7 +363,7 @@ def showMovies(sSearch = ''):
     if sHtmlContent.startswith('<script type="text/javascript">'):
         sHtmlContent = FullUnescape(sHtmlContent)
 
-    if sSearch or 'categorie.php' in sUrl or 'categorie_' in sUrl or 'listing3.php?' in sUrl:
+    if sSearch or 'categorie.php' in sUrl or 'categorie_' in sUrl or 'listing3.php?' in sUrl or 'drama.php' in sUrl:
         sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=["\']*(.+?)[\'"]* class=.button'
     else:
         sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?<a href="([^"]+)".+?alt="(.+?)"'
@@ -384,7 +389,7 @@ def showMovies(sSearch = ''):
             if not sThumb.startswith('http'):
                 sThumb = URL_MAIN + sThumb
 
-            if sSearch or 'categorie.php' in sUrl or 'categorie_' in sUrl or 'listing3.php?' in sUrl:
+            if sSearch or 'categorie.php' in sUrl or 'categorie_' in sUrl or 'listing3.php?' in sUrl or 'drama.php' in sUrl:
                 sTitle = aEntry[1]
                 sUrl2 = aEntry[2]
             else:
