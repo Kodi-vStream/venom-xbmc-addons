@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -14,7 +14,7 @@ SITE_DESC = 'Des films poétiques pour sensibiliser les enfants aux pratiques ar
 
 URL_MAIN = 'https://films-pour-enfants.com/'
 
-ANIM_ENFANTS = ('http://', 'load')
+ANIM_ENFANTS = (True, 'load')
 
 AGE_3ANS = (URL_MAIN + 'films-enfants-3-ans.html', 'showMovies')
 AGE_5ANS = (URL_MAIN + 'films-enfants-5-ans.html', 'showMovies')
@@ -23,6 +23,7 @@ AGE_9ANS = (URL_MAIN + 'films-enfants-9-ans.html', 'showMovies')
 AGE_11ANSETPLUS = (URL_MAIN + 'films-enfants-11-ans.html', 'showMovies')
 ALL_ALL = (URL_MAIN + 'tous-les-films-pour-enfants.html', 'showMovies')
 # BY_THEMES = (URL_MAIN + 'films-programmes-thematiques.html', 'showThemes')
+
 
 def load():
     oGui = cGui()
@@ -57,6 +58,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showThemes():
     oGui = cGui()
     oParser = cParser()
@@ -79,6 +81,7 @@ def showThemes():
 
     oGui.setEndOfDirectory()
 
+
 def showMovies():
     oGui = cGui()
     oParser = cParser()
@@ -88,7 +91,7 @@ def showMovies():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'class=portfolio-image>.*?data-src="([^"]+)".*?synopsis>([^<]+)<.*?href=.*?href="([^"]+)".*?<h4>([^<]+)<'
+    sPattern = 'class=portfolio-image>.+?src="*([^ ]+\.jpg).+?synopsis>([^<]+)<.+?href="(https[^"]+)".+?<h4>([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -102,14 +105,14 @@ def showMovies():
 
             sThumb = URL_MAIN + aEntry[0]
             sDesc = aEntry[1]
-            sUrl = URL_MAIN + aEntry[2]
+            sUrl = aEntry[2]
             sTitle = aEntry[3]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'enfants.png', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -124,18 +127,11 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-
-    sPattern = '<a href="([^"]+)" title=".*?" data-lightbox=iframe>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
-        for sHosterUrl in aResult[1]:
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    sHosterUrl = sUrl
+    oHoster = cHosterGui().checkHoster(sHosterUrl)
+    if (oHoster != False):
+        oHoster.setDisplayName(sMovieTitle)
+        oHoster.setFileName(sMovieTitle)
+        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
