@@ -3,7 +3,6 @@
 # Arias800
 import base64
 import os
-# import random
 import re
 import xbmcaddon
 import xbmcvfs
@@ -16,10 +15,10 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
+from resources.lib.util import Noredirection, urlEncode
 
 ADDON = addon()
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
-__addon__ = xbmcaddon.Addon('plugin.video.vstream')
 
 SITE_IDENTIFIER = 'time2watch'
 SITE_NAME = '[COLOR violet]Time2Watch[/COLOR]'
@@ -54,7 +53,7 @@ SERIE_NOTES = (URL_MAIN + 'serie/loved/', 'showMovies')
 SERIE_GENRES = (URL_MAIN + 'serie/genre/', 'showGenre')
 SERIE_ANNEES = (URL_MAIN + 'serie/date/', 'showYears')
 
-ANIM_ANIMS = (True, 'showMenuAnimes')
+ANIM_ANIMS = (True, 'showMenuMangas')
 ANIM_NEWS = (URL_MAIN + 'anime/last/', 'showMovies')
 ANIM_POPULAR = (URL_MAIN + "anime/popular/", 'showMovies')
 ANIM_HD1080 = (URL_MAIN + 'anime/bluray/', 'showMovies')
@@ -66,7 +65,6 @@ ANIM_ANNEES = (URL_MAIN + 'anime/date/', 'showYears')
 
 DOC_NEWS = (URL_MAIN + 'documentaires/', 'showMovies')
 SPECTACLE_NEWS = (URL_MAIN + 'theatre/', 'showMovies')
-
 
 def load():
     oGui = cGui()
@@ -100,7 +98,6 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showMenuAutre', 'Autres', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def showMenuFilms():
     oGui = cGui()
@@ -139,7 +136,6 @@ def showMenuFilms():
 
     oGui.setEndOfDirectory()
 
-
 def showMenuSeries():
     oGui = cGui()
 
@@ -176,7 +172,6 @@ def showMenuSeries():
     oGui.addDir(SITE_IDENTIFIER, SERIE_NOTES[1], 'Series (Les mieux notées)', 'notes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def showMenuMangas():
     oGui = cGui()
@@ -215,7 +210,6 @@ def showMenuMangas():
 
     oGui.setEndOfDirectory()
 
-
 def showDetail():
     dialog().VStextView(desc="""Explication du Captcha:
 Pour passer le Captcha il suffit de choisir le bon titre parmi les 5 propositions.
@@ -227,7 +221,6 @@ Le site est limité en nombre de passage pour les personnes qui n'ont pas de com
 Avoir un compte permet aussi de ne pas avoir le Captcha qui apparait à chaque fois.
 Vous pouvez activer la connexion au compte dans les paramètres de vStream.""", title="Fonctionnement du site")
 
-
 def showSearch():
     oGui = cGui()
 
@@ -237,7 +230,6 @@ def showSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
-
 
 def showGenre():
     oGui = cGui()
@@ -260,7 +252,6 @@ def showGenre():
 
     oGui.setEndOfDirectory()
 
-
 def showYears():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -281,7 +272,6 @@ def showYears():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Years[1], 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def showMovies(sSearch=''):
     oGui = cGui()
@@ -304,29 +294,32 @@ def showMovies(sSearch=''):
     if not 'Déconnexion' in sHtmlContent and ADDON.getSetting('hoster_time2watch_premium') == "true":
         VSlog("Connection")
 
-        import requests
-        s = requests.Session()
-
-        headers = {"Host": "time2watch.io",
-                   "User-Agent": UA,
-                   "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-                   "Accept-Language": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3",
-                   "Accept-Encoding": "gzip, deflate",
-                   "Origin": "https://time2watch.io",
-                   "DNT": "1",
-                   "Connection": "keep-alive",
-                   "Referer": sUrl,
-                   "Upgrade-Insecure-Requests": "1",
-                   "TE": "Trailers"}
-
         data = {'username': ADDON.getSetting('hoster_time2watch_username'), 'pwd': ADDON.getSetting('hoster_time2watch_password')}
 
-        headers["Content-Type"] = "application/x-www-form-urlencoded"
-        headers["Content-Length"] = str(len(data))
-        headers["Referer"] = "https://time2watch.io/login/"
+        data = urlEncode(data)
 
-        r = s.post("https://time2watch.io/login/", data=data, headers=headers, allow_redirects=False)
-        Cookie = "; ".join([str(x) + "=" + str(y) for x, y in s.cookies.get_dict().items()])
+        opener = Noredirection()
+
+        opener.addheaders = [('User-Agent', UA)]
+        opener.addheaders.append(('Content-Type', 'application/x-www-form-urlencoded'))
+        opener.addheaders.append(('Accept-Encoding', 'gzip, deflate'))
+        opener.addheaders.append(('Content-Length', str(len(data))))
+
+        response = opener.open("https://time2watch.io/login/", data)
+        head = response.info()
+
+        # get cookie
+        Cookie = ''
+        if 'Set-Cookie' in head:
+            oParser = cParser()
+            sPattern = '(?:^|,) *([^;,]+?)=([^;,\/]+?);'
+            aResult = oParser.parse(str(head['Set-Cookie']), sPattern)
+            # print(aResult)
+            if (aResult[0] == True):
+                for cook in aResult[1]:
+                    if 'deleted' in cook[1]:
+                        continue
+                    Cookie = Cookie + cook[0] + '=' + cook[1] + ';'
 
         GestionCookie().SaveCookie('time2watch', Cookie)
 
@@ -352,9 +345,7 @@ def showMovies(sSearch=''):
             sUrl2 = URL_MAIN + aEntry[0]
             sThumb = URL_MAIN + aEntry[1]
             sTitle = aEntry[2]
-            #sLang = aEntry[3]
             sQual = aEntry[3].replace(' ', '')
-            #sHoster = aEntry[5]
             sDesc = aEntry[4]
 
             sTitle = sTitle.replace('En streaming', '')
@@ -384,7 +375,6 @@ def showMovies(sSearch=''):
 
         oGui.setEndOfDirectory()
 
-
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<a class="light_pagination" href="([^"]+)" aria-label="Next">'
@@ -394,7 +384,6 @@ def __checkForNextPage(sHtmlContent):
         return URL_MAIN + aResult[1][0]
 
     return False
-
 
 def showMoviesLink():
     oGui = cGui()
@@ -439,7 +428,6 @@ def showMoviesLink():
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
-
 
 def showSaisonEpisodes():
     oGui = cGui()
@@ -492,7 +480,6 @@ def showSaisonEpisodes():
 
     oGui.setEndOfDirectory()
 
-
 def getLinkHtml(sHtmlContent):
     if not "Limite atteinte" in sHtmlContent:
         oParser = cParser()
@@ -500,7 +487,6 @@ def getLinkHtml(sHtmlContent):
         aResult = oParser.parse(sHtmlContent, sPattern)
         return aResult[1][0]
     return False
-
 
 def decryptTime():
     oGui = cGui()
@@ -582,7 +568,6 @@ def decryptTime():
 
     oGui.setEndOfDirectory()
 
-
 class cInputWindow(xbmcgui.WindowDialog):
     def __init__(self, *args, **kwargs):
         self.cptloc = kwargs.get('captcha')
@@ -590,8 +575,8 @@ class cInputWindow(xbmcgui.WindowDialog):
         u = 0
         pos = []
 
-        bg_image = os.path.join(__addon__.getAddonInfo('path'), 'resources/art/') + 'background.png'
-        check_image = os.path.join(__addon__.getAddonInfo('path'), 'resources/art/') + 'trans_checked.png'
+        bg_image = 'special://home/addons/plugin.video.vstream/resources/art/background.png'
+        check_image = 'special://home/addons/plugin.video.vstream/resources/art/trans_checked.png'
 
         self.ctrlBackground = xbmcgui.ControlImage(0, 0, 1280, 720, bg_image)
         self.cancelled = False
