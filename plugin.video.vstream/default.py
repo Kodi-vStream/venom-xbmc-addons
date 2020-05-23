@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 # from resources.lib.statistic import cStatistic
 from resources.lib.gui.hoster import cHosterGui
@@ -169,7 +169,7 @@ class main:
                 if len(aPlugins) == 0:
                     addons = addon()
                     addons.openSettings()
-                    xbmc.executebuiltin('Container.Refresh')
+                    oGui.updateDirectory()
                 else:
                     for aPlugin in aPlugins:
                         oOutputParameterHandler = cOutputParameterHandler()
