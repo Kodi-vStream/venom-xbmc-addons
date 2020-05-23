@@ -14,9 +14,7 @@ SITE_IDENTIFIER = 'libertyland_tv'
 SITE_NAME = 'Libertyland'
 SITE_DESC = 'Les films et séries récentes en streaming et en téléchargement'
 
-# URL_MAIN = 'https://ww2.libertyvf.ch/'
-# Modif du 26/08
-URL_MAIN = 'https://libertyland.am/'
+URL_MAIN = 'https://www.libertyvf.in/'
 
 URL_SEARCH = (URL_MAIN + 'v2/recherche/', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + 'v2/recherche/categorie=films&mot_search=', 'showMovies')
@@ -231,7 +229,7 @@ def showMovies(sSearch=''):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
         if '/series' in sUrl:
-            sPattern = '<div class="divtelecha.+?href="([^"]+)"><strong>([^<]+)<\/strong>.+?<img class="img-responsive".+?src="([^"]+)"'
+            sPattern = '<div class="divtelecha.+?href="([^"]+)"><strong>([^<]+)<\/strong>.+?<img class="img-responsive".+?src="([^"]+)".+?serie de (\d{4})<.+?Synopsis : ([^<]+)<'
         else:  # films
             sPattern = '<h2 class="heading"> *<a href="[^"]+">([^<]+)<.+?<img class="img-responsive" *src="([^"]+)" *alt.+?(?:<font color="#.+?">([^<]+)<\/font>.+?).+?>film de (\d{4})<.+?Synopsis : ([^<]+)<.+?<div class="divtelecha.+?href="([^"]+)"'
 
@@ -264,6 +262,9 @@ def showMovies(sSearch=''):
                 sUrl2 = URL_MAIN[:-1] + aEntry[0]
                 sTitle = aEntry[1].replace('Regarder ', '').replace('en Streaming', '')
                 sThumb = URL_MAIN[:-1] + aEntry[2]
+                sYear = aEntry[3]
+                sDesc = aEntry[4].decode('utf-8')
+                sDesc = cUtil().unescape(sDesc).encode('utf-8')
             else:
                 sTitle = aEntry[0]
                 sThumb = URL_MAIN[:-1] + aEntry[1]
@@ -287,6 +288,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sYear', sYear)
 
             if '/series/' in sUrl or '/series/' in sUrl2 or '/series_co/' in sThumb:
@@ -338,9 +340,10 @@ def showSaisonsEpisodes():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
+    sYear = oInputParameterHandler.getValue('sYear')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -352,13 +355,7 @@ def showSaisonsEpisodes():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
             else:
@@ -370,9 +367,8 @@ def showSaisonsEpisodes():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+                oOutputParameterHandler.addParameter('sYear', sYear)  # utilisé par le skin
+                oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
