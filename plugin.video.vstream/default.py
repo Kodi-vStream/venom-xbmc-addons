@@ -29,37 +29,18 @@ DEBUG = False  # Mettre True pour activer le debug
 
 if DEBUG:
 
-####################
-#
-# Version WINDOWS
-#
-####################
+    import sys  # pydevd module need to be copied in Kodi\system\python\Lib\pysrc
+    sys.path.append('H:\Program Files\Kodi\system\Python\Lib\pysrc')
 
-    # append pydev remote debugger
-    import sys
-    sys.path.append('C:\Program Files (x86)\Kodi\system\Python\Lib\pysrc')
-
-    # Make pydev debugger works for auto reload.
-    # Note pydevd module need to be copied in XBMC\system\python\Lib\pysrc
     try:
-        import pysrc.pydevd as pydevd # with the addon script.module.pydevd, only use `import pydevd`
-        pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True)
+        import pysrc.pydevd as pydevd
+        pydevd.settrace('localhost', stdoutToServer = True, stderrToServer = True)
     except ImportError:
-        sys.stderr.write("Error: " + "You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
-
-####################
-#
-# Version LINUX
-#
-####################
-
-    # Make pydev debugger works for auto reload.
-    # Note pydevd module need to be copied in XBMC\system\python\Lib\pysrc
-#     try:
-#         import pydevd
-#         pydevd.settrace('localhost', stdoutToServer = True, stderrToServer = True)
-#     except ImportError:
-#         sys.stderr.write("Error: " + "You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
+        try:
+            import pydevd    # with the addon script.module.pydevd, only use `import pydevd`
+            pydevd.settrace('localhost', stdoutToServer = True, stderrToServer = True)
+        except ImportError:
+            sys.stderr.write("Error: " + "You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
 
 
 class main:
