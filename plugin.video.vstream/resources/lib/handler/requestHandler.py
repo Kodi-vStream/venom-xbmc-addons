@@ -43,6 +43,18 @@ class cRequestHandler:
     def setTimeout(self, valeur):
         self.__timeout = valeur
 
+    def disableRedirection(self):
+        class NoRedirection(urllib2.HTTPErrorProcessor):
+            def http_response(self, request, response):
+                code, msg, hdrs = response.code, response.msg, response.info()
+
+                return response
+            
+            https_response = http_response
+
+        opener = urllib2.build_opener(NoRedirection)
+        urllib2.install_opener(opener)
+
     def addHeaderEntry(self, sHeaderKey, sHeaderValue):
         for sublist in self.__aHeaderEntries:
             if sHeaderKey in sublist:
