@@ -319,13 +319,7 @@ def showMovies(sSearch=''):
                    "Upgrade-Insecure-Requests": "1",
                    "TE": "Trailers"}
 
-        r = s.get("https://time2watch.io/login/", headers=headers)
-        sHtmlContent = r.content
-
-        sPattern = '<input type="hidden" name="token" id="token" value="(.+?)">.+?<script>.+?\(\'co_js\'\).+?= (.+?);</script>'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-
-        data = {'username': ADDON.getSetting('hoster_time2watch_username'), 'pwd': ADDON.getSetting('hoster_time2watch_password'), 'hidden': aResult[1][0][1], "token": aResult[1][0][0]}
+        data = {'username': ADDON.getSetting('hoster_time2watch_username'), 'pwd': ADDON.getSetting('hoster_time2watch_password')}
 
         headers["Content-Type"] = "application/x-www-form-urlencoded"
         headers["Content-Length"] = str(len(data))
