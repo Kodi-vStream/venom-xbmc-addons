@@ -66,6 +66,7 @@ ANIM_ANNEES = (URL_MAIN + 'anime/date/', 'showYears')
 DOC_NEWS = (URL_MAIN + 'documentaires/', 'showMovies')
 SPECTACLE_NEWS = (URL_MAIN + 'theatre/', 'showMovies')
 
+
 def load():
     oGui = cGui()
 
@@ -98,6 +99,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showMenuAutre', 'Autres', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMenuFilms():
     oGui = cGui()
@@ -136,6 +138,7 @@ def showMenuFilms():
 
     oGui.setEndOfDirectory()
 
+
 def showMenuSeries():
     oGui = cGui()
 
@@ -172,6 +175,7 @@ def showMenuSeries():
     oGui.addDir(SITE_IDENTIFIER, SERIE_NOTES[1], 'Series (Les mieux notées)', 'notes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMenuMangas():
     oGui = cGui()
@@ -210,6 +214,7 @@ def showMenuMangas():
 
     oGui.setEndOfDirectory()
 
+
 def showDetail():
     dialog().VStextView(desc="""Explication du Captcha:
 Pour passer le Captcha il suffit de choisir le bon titre parmi les 5 propositions.
@@ -221,6 +226,7 @@ Le site est limité en nombre de passage pour les personnes qui n'ont pas de com
 Avoir un compte permet aussi de ne pas avoir le Captcha qui apparait à chaque fois.
 Vous pouvez activer la connexion au compte dans les paramètres de vStream.""", title="Fonctionnement du site")
 
+
 def showSearch():
     oGui = cGui()
 
@@ -230,6 +236,7 @@ def showSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
+
 
 def showGenre():
     oGui = cGui()
@@ -252,6 +259,7 @@ def showGenre():
 
     oGui.setEndOfDirectory()
 
+
 def showYears():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -273,6 +281,7 @@ def showYears():
 
     oGui.setEndOfDirectory()
 
+
 def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
@@ -290,7 +299,7 @@ def showMovies(sSearch=''):
         oRequestHandler.addHeaderEntry('Cookie', Cookie)
     sHtmlContent = oRequestHandler.request()
 
-    #Connection pour passer la limite
+    # Connection pour passer la limite
     if not 'Déconnexion' in sHtmlContent and ADDON.getSetting('hoster_time2watch_premium') == "true":
         VSlog("Connection")
 
@@ -371,9 +380,11 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -384,6 +395,7 @@ def __checkForNextPage(sHtmlContent):
         return URL_MAIN + aResult[1][0]
 
     return False
+
 
 def showMoviesLink():
     oGui = cGui()
@@ -428,6 +440,7 @@ def showMoviesLink():
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
+
 
 def showSaisonEpisodes():
     oGui = cGui()
@@ -480,6 +493,7 @@ def showSaisonEpisodes():
 
     oGui.setEndOfDirectory()
 
+
 def getLinkHtml(sHtmlContent):
     if not "Limite atteinte" in sHtmlContent:
         oParser = cParser()
@@ -487,6 +501,7 @@ def getLinkHtml(sHtmlContent):
         aResult = oParser.parse(sHtmlContent, sPattern)
         return aResult[1][0]
     return False
+
 
 def decryptTime():
     oGui = cGui()
@@ -567,6 +582,7 @@ def decryptTime():
                 cHosterGui().showHoster(oGui, oHoster, aEntry, sThumb)
 
     oGui.setEndOfDirectory()
+
 
 class cInputWindow(xbmcgui.WindowDialog):
     def __init__(self, *args, **kwargs):
