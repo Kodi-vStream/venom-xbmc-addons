@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -170,10 +172,10 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sStart = '<!-- END HEADER -->'
-    sEnd = '<!-- END CONTENT -->'
     oParser = cParser()
-    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
+    # sStart = '<!-- END HEADER -->'
+    # sEnd = '<!-- END CONTENT -->'
+    # sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
 
     sPattern = 'class="th-in" href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)".+?(?:|<span><span>([^<]+)<.+?)<span class="ribbon'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -214,13 +216,14 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('/page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<div class="navigation">.*?<span>\d+</span>\s*<a href="([^"]+?)"'
+    sPattern = 'class="navigation">.*?<span>\d+</span>\s*<a href="([^"]+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
