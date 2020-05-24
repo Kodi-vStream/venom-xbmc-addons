@@ -1,12 +1,12 @@
-#-*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress
 from resources.lib.multihost import cMultiup
 import re
 
@@ -29,6 +29,7 @@ MOVIE_LIST = (URL_MAIN + 'films-asiatiques-vostfr-affichage-alphanumerique/', 's
 DRAMA_DRAMAS = (URL_MAIN + 'liste-des-dramas-vostfr-ddl/', 'showMovies')
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
+
 
 def load():
     oGui = cGui()
@@ -59,6 +60,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
 
@@ -68,6 +70,7 @@ def showSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
+
 
 def showGenres():
     oGui = cGui()
@@ -118,6 +121,7 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
+
 def showYears():
     oGui = cGui()
 
@@ -132,6 +136,7 @@ def showYears():
 
     oGui.setEndOfDirectory()
 
+
 def showAlpha():
     oGui = cGui()
     oParser = cParser()
@@ -141,7 +146,7 @@ def showAlpha():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'front">.+?src="(http[^"]+).+?field-title"><a href="([^"]+)">([^.]+)d{2}.+?.+?field-desc"><p>([^<]+)'
+    sPattern = 'front">.+?src="(http[^"]+).+?field-title"><a href="([^"]+)">([^<]+)d{2}.+?.+?field-desc"><p>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -166,7 +171,7 @@ def showAlpha():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if '/dramas/' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'ShowSerieEpisodes', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
@@ -186,6 +191,7 @@ def showAlpha():
 
         oGui.setEndOfDirectory()
 
+
 def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
@@ -204,29 +210,30 @@ def showMovies(sSearch = ''):
         oRequestHandler = cRequestHandler(URL_SEARCH[0])
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
-        oRequestHandler.addHeaderEntry('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
-        oRequestHandler.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-        oRequestHandler.addHeaderEntry('Accept-Encoding','gzip, deflate')
+        oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
+        oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+        oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
         oRequestHandler.addHeaderEntry('Referer', "https://www.asia-insane.biz/recherche-avancee-asia-insane/")
-        oRequestHandler.addHeaderEntry('Content-Type','application/x-www-form-urlencoded')
+        oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
 
-        oRequestHandler.addParameters('action',"ajaxsearchpro_search")
-        oRequestHandler.addParameters('asid',"1")
-        oRequestHandler.addParameters('aspp',sSearch)
+        oRequestHandler.addParameters('action', "ajaxsearchpro_search")
+        oRequestHandler.addParameters('asid', "1")
+        oRequestHandler.addParameters('aspp', sSearch)
         oRequestHandler.addParameters('asp_inst_id', "1_1")
-        oRequestHandler.addParameters('options',"current_page_id=413&qtranslate_lang=0&asp_gen%5B%5D=title&customset%5B%5D=amy_movie&customset%5B%5D=amy_tvshow&termset%5Bamy_director%5D%5B%5D=-1&termset%5Bamy_actor%5D%5B%5D=-1")
+        oRequestHandler.addParameters('options', "current_page_id=413&qtranslate_lang=0&asp_gen%5B%5D=title&customset%5B%5D=amy_movie&customset%5B%5D=amy_tvshow&termset%5Bamy_director%5D%5B%5D=-1&termset%5Bamy_actor%5D%5B%5D=-1")
         sHtmlContent = oRequestHandler.request()
 
     elif '/amy_genre/' in sUrl or '/date/' in sUrl:
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-        sPattern = 'entry-item clearfix">.+?src="(http[^"]+).+?entry-title"><a href="([^"]+)">([^.]+)d{2}.+?'
+        sPattern = 'entry-item clearfix">.+?src="(http[^"]+).+?entry-title"><a href="([^"]+)">([^<]+)d{2}'
 
     else:
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-        sPattern = 'class="attachment.+?noscript.+?src="([^"]+).+?class="amy-movie-field-title".+?href="([^"]+)">([^.]+)d{2}.+?class="amy-movie-field-desc"><p>([^<]+).+?Date.+?\/date\/([^\/]+)'
-        
+        # sPattern = 'class="attachment.+?noscript.+?src="([^"]+).+?field-title".+?href="([^"]+)">([^.]+)d{2}.+?field-desc"><p>([^<]+).+?/date/([^/]+)'
+        sPattern = 'front">.+?src="(http[^"]+).+?field-title"><a href="([^"]+)">([^<]+)d{2}.+?field-desc"><p>([^<]+).+?(?:|/version/([^/]+).+?)(?:|/date/([^/]+).+?)Genre:'
+
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -262,9 +269,10 @@ def showMovies(sSearch = ''):
                 sThumb = aEntry[0]
                 sTitle = aEntry[2]
                 sDesc = aEntry[3]
-                sYear = aEntry[4]
+                sQual = aEntry[4].upper()
+                sYear = aEntry[5]
 
-                sDisplayTitle = ('%s ([COLOR coral]%s[/COLOR])') % (sTitle, sYear)
+                sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sYear)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -272,7 +280,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if '/dramas/' in sUrl2:
-                oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'ShowSerieEpisodes', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -288,18 +296,19 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
+
 def __checkForNextPage(sHtmlContent):
     sPattern = '<a class="next page-numbers" href="([^"]+)">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     page = ''
     if (aResult[0] == True):
-        VSlog(aResult)
         return aResult[1][0]
 
     return False
 
-def ShowSerieSaisonEpisodes():
+
+def ShowSerieEpisodes():
     oGui = cGui()
     oParser = cParser()
 
@@ -314,7 +323,7 @@ def ShowSerieSaisonEpisodes():
     sEnd = '<div class="entry-comment">'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
 
-    sPattern = '<a href="([^"]+)">([^"]+)</a>'
+    sPattern = '<a href="([^"]+)">([^<]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -347,6 +356,7 @@ def ShowSerieSaisonEpisodes():
 
     oGui.setEndOfDirectory()
 
+
 def showHosters():
     oGui = cGui()
     oParser = cParser()
@@ -370,7 +380,7 @@ def showHosters():
                         oHoster.setDisplayName(sMovieTitle)
                         oHoster.setFileName(sMovieTitle)
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-        
+
         else:
             sHosterUrl = sUrl2
 
@@ -381,7 +391,6 @@ def showHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     else:
-
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
