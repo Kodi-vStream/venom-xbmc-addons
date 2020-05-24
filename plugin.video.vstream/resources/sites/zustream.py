@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
-#
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -163,6 +162,7 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
+
 def showYears():
     oGui = cGui()
 
@@ -173,6 +173,7 @@ def showYears():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showYearsSeries():
     oGui = cGui()
@@ -269,7 +270,8 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('/page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -427,9 +429,9 @@ def showHosters():
                 aResult2 = oParser.parse(sHtmlContent2, sPattern)
                 aResult = re.findall(sPattern2, sHtmlContent2)
 
-                if (aResult2[0] == True):#Gounlimited
+                if (aResult2[0] == True):  # Gounlimited
                     sHtmlContent = cPacker().unpack(aResult2[1][0])
-                    #VSlog(sHtmlContent)
+                    # VSlog(sHtmlContent)
                     sPattern = 'src:"([^"]+)"'
                     aResult3 = oParser.parse(sHtmlContent, sPattern)
                     if (aResult3[0] == True):
