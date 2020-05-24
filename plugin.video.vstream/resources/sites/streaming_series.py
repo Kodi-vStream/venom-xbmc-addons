@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -42,6 +45,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSerieSearch():
     oGui = cGui()
 
@@ -52,31 +56,32 @@ def showSerieSearch():
             oGui.setEndOfDirectory()
             return
 
+
 def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action', URL_MAIN + 'category/series/action/'] )
-    liste.append( ['Animation', URL_MAIN + 'category/series/animation/'] )
-    liste.append( ['Aventure', URL_MAIN + 'category/series/aventure/'] )
-    liste.append( ['Comédie', URL_MAIN + 'category/series/comedie/'] )
-    liste.append( ['Documentaire', URL_MAIN + 'category/series/documentaire/'] )
-    liste.append( ['Drame', URL_MAIN + 'category/series/drame/'] )
-    liste.append( ['Epouvante Horreur', URL_MAIN + 'category/series/epouvante-horreur/'] )
-    liste.append( ['Espionnage', URL_MAIN + 'category/series/espionnage/'] )
-    liste.append( ['Famille', URL_MAIN + 'category/series/famille/'] )
-    liste.append( ['Fantastique', URL_MAIN + 'category/series/fantastique/'] )
-    liste.append( ['Guerre', URL_MAIN + 'category/series/guerre/'] )
-    liste.append( ['Historique', URL_MAIN + 'category/series/historique/'] )
-    liste.append( ['Judiciaire', URL_MAIN + 'category/series/judiciaire/'] )
-    liste.append( ['Medical', URL_MAIN + 'category/series/medical/'] )
-    liste.append( ['Musical', URL_MAIN + 'category/series/musical/'] )
-    liste.append( ['Policier', URL_MAIN + 'category/series/policier/'] )
-    liste.append( ['Romance', URL_MAIN + 'category/series/romance/'] )
-    liste.append( ['Science Fiction', URL_MAIN + 'category/series/science-fiction/'] )
-    liste.append( ['Soap', URL_MAIN + 'category/series/soap/'] )
-    liste.append( ['Thriller', URL_MAIN + 'category/series/thriller/'] )
-    liste.append( ['Western', URL_MAIN + 'category/series/western/'] )
+    liste.append(['Action', URL_MAIN + 'category/series/action/'])
+    liste.append(['Animation', URL_MAIN + 'category/series/animation/'])
+    liste.append(['Aventure', URL_MAIN + 'category/series/aventure/'])
+    liste.append(['Comédie', URL_MAIN + 'category/series/comedie/'])
+    liste.append(['Documentaire', URL_MAIN + 'category/series/documentaire/'])
+    liste.append(['Drame', URL_MAIN + 'category/series/drame/'])
+    liste.append(['Epouvante Horreur', URL_MAIN + 'category/series/epouvante-horreur/'])
+    liste.append(['Espionnage', URL_MAIN + 'category/series/espionnage/'])
+    liste.append(['Famille', URL_MAIN + 'category/series/famille/'])
+    liste.append(['Fantastique', URL_MAIN + 'category/series/fantastique/'])
+    liste.append(['Guerre', URL_MAIN + 'category/series/guerre/'])
+    liste.append(['Historique', URL_MAIN + 'category/series/historique/'])
+    liste.append(['Judiciaire', URL_MAIN + 'category/series/judiciaire/'])
+    liste.append(['Medical', URL_MAIN + 'category/series/medical/'])
+    liste.append(['Musical', URL_MAIN + 'category/series/musical/'])
+    liste.append(['Policier', URL_MAIN + 'category/series/policier/'])
+    liste.append(['Romance', URL_MAIN + 'category/series/romance/'])
+    liste.append(['Science Fiction', URL_MAIN + 'category/series/science-fiction/'])
+    liste.append(['Soap', URL_MAIN + 'category/series/soap/'])
+    liste.append(['Thriller', URL_MAIN + 'category/series/thriller/'])
+    liste.append(['Western', URL_MAIN + 'category/series/western/'])
 
     for sTitle, sUrl in liste:
 
@@ -86,7 +91,8 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
-def showMovies(sSearch = ''):
+
+def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
@@ -134,9 +140,11 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('/page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -146,6 +154,7 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
+
 
 def showEpisodes():
     oGui = cGui()
@@ -196,6 +205,7 @@ def showEpisodes():
 
     oGui.setEndOfDirectory()
 
+
 def showLinks():
     oGui = cGui()
 
@@ -232,6 +242,7 @@ def showLinks():
 
     oGui.setEndOfDirectory()
 
+
 def showHosters():
     oGui = cGui()
 
@@ -250,6 +261,7 @@ def showHosters():
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
 
 def ProtectstreamBypass(url):
 
