@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
 from resources.lib.gui.hoster import cHosterGui
 # from resources.lib.handler.hosterHandler import cHosterHandler
@@ -27,9 +27,10 @@ MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'tendance/', 'showMovies')
 MOVIE_NOTES = (URL_MAIN + 'evaluations/', 'showMovies')
-#MOVIE_LIST = (True, 'showList')
+# MOVIE_LIST = (True, 'showList')
 MOVIE_ANNEES = (True, 'showYears')
 MOVIE_GENRES = (True, 'showGenres')
+
 
 def load():
     oGui = cGui()
@@ -54,10 +55,10 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'notes.png', oOutputParameterHandler)
 
-    #ne fonctionne plus sur le site
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
-    #oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Liste)', 'az.png', oOutputParameterHandler)
+    # ne fonctionne plus sur le site
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
+    # oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Liste)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
@@ -69,6 +70,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
 
@@ -79,19 +81,25 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showGenres():
     oGui = cGui()
     oParser = cParser()
 
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
+    sStart = 'class=genres><h2>Catégories</h2>'
+    sEnd = 'class=copy>'
+    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
 
-    sPattern = '<li class="cat-item cat-item-.+?"><a href="([^<]+)">([^<]+)</a> <i>([^<]+)</i>'
+    sPattern = '(http[^ >]+) >([^<]+)</a> <i>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sTitle = aEntry[1] + ' (' + aEntry[2] + ')'
+
             sUrl = aEntry[0]
+            sTitle = aEntry[1] + ' (' + aEntry[2] + ')'
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -99,37 +107,38 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
+
 def showList():
     oGui = cGui()
 
     liste = []
-    liste.append( ['09', URL_MAIN + '?letter=true&s=title-09'] )
-    liste.append( ['A', URL_MAIN + '?letter=true&s=title-a'] )
-    liste.append( ['B', URL_MAIN + '?letter=true&s=title-b'] )
-    liste.append( ['C', URL_MAIN + '?letter=true&s=title-c'] )
-    liste.append( ['D', URL_MAIN + '?letter=true&s=title-d'] )
-    liste.append( ['E', URL_MAIN + '?letter=true&s=title-e'] )
-    liste.append( ['F', URL_MAIN + '?letter=true&s=title-f'] )
-    liste.append( ['G', URL_MAIN + '?letter=true&s=title-g'] )
-    liste.append( ['H', URL_MAIN + '?letter=true&s=title-h'] )
-    liste.append( ['I', URL_MAIN + '?letter=true&s=title-i'] )
-    liste.append( ['J', URL_MAIN + '?letter=true&s=title-j'] )
-    liste.append( ['K', URL_MAIN + '?letter=true&s=title-k'] )
-    liste.append( ['L', URL_MAIN + '?letter=true&s=title-l'] )
-    liste.append( ['M', URL_MAIN + '?letter=true&s=title-m'] )
-    liste.append( ['N', URL_MAIN + '?letter=true&s=title-n'] )
-    liste.append( ['O', URL_MAIN + '?letter=true&s=title-o'] )
-    liste.append( ['P', URL_MAIN + '?letter=true&s=title-p'] )
-    liste.append( ['Q', URL_MAIN + '?letter=true&s=title-q'] )
-    liste.append( ['R', URL_MAIN + '?letter=true&s=title-r'] )
-    liste.append( ['S', URL_MAIN + '?letter=true&s=title-s'] )
-    liste.append( ['T', URL_MAIN + '?letter=true&s=title-t'] )
-    liste.append( ['U', URL_MAIN + '?letter=true&s=title-u'] )
-    liste.append( ['V', URL_MAIN + '?letter=true&s=title-v'] )
-    liste.append( ['W', URL_MAIN + '?letter=true&s=title-w'] )
-    liste.append( ['X', URL_MAIN + '?letter=true&s=title-x'] )
-    liste.append( ['Y', URL_MAIN + '?letter=true&s=title-y'] )
-    liste.append( ['Z', URL_MAIN + '?letter=true&s=title-z'] )
+    liste.append(['09', URL_MAIN + '?letter=true&s=title-09'])
+    liste.append(['A', URL_MAIN + '?letter=true&s=title-a'])
+    liste.append(['B', URL_MAIN + '?letter=true&s=title-b'])
+    liste.append(['C', URL_MAIN + '?letter=true&s=title-c'])
+    liste.append(['D', URL_MAIN + '?letter=true&s=title-d'])
+    liste.append(['E', URL_MAIN + '?letter=true&s=title-e'])
+    liste.append(['F', URL_MAIN + '?letter=true&s=title-f'])
+    liste.append(['G', URL_MAIN + '?letter=true&s=title-g'])
+    liste.append(['H', URL_MAIN + '?letter=true&s=title-h'])
+    liste.append(['I', URL_MAIN + '?letter=true&s=title-i'])
+    liste.append(['J', URL_MAIN + '?letter=true&s=title-j'])
+    liste.append(['K', URL_MAIN + '?letter=true&s=title-k'])
+    liste.append(['L', URL_MAIN + '?letter=true&s=title-l'])
+    liste.append(['M', URL_MAIN + '?letter=true&s=title-m'])
+    liste.append(['N', URL_MAIN + '?letter=true&s=title-n'])
+    liste.append(['O', URL_MAIN + '?letter=true&s=title-o'])
+    liste.append(['P', URL_MAIN + '?letter=true&s=title-p'])
+    liste.append(['Q', URL_MAIN + '?letter=true&s=title-q'])
+    liste.append(['R', URL_MAIN + '?letter=true&s=title-r'])
+    liste.append(['S', URL_MAIN + '?letter=true&s=title-s'])
+    liste.append(['T', URL_MAIN + '?letter=true&s=title-t'])
+    liste.append(['U', URL_MAIN + '?letter=true&s=title-u'])
+    liste.append(['V', URL_MAIN + '?letter=true&s=title-v'])
+    liste.append(['W', URL_MAIN + '?letter=true&s=title-w'])
+    liste.append(['X', URL_MAIN + '?letter=true&s=title-x'])
+    liste.append(['Y', URL_MAIN + '?letter=true&s=title-y'])
+    liste.append(['Z', URL_MAIN + '?letter=true&s=title-z'])
 
     for sTitle, sUrl in liste:
 
@@ -139,17 +148,18 @@ def showList():
 
     oGui.setEndOfDirectory()
 
+
 def showYears():
     oGui = cGui()
     oParser = cParser()
-    oRequestHandler = cRequestHandler(URL_MAIN)
 
-    sStart = '<ul class="releases scrolling">'
-    sEnd = '</div>  <div class="content">'
+    oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
+    sStart = 'class=releases><h2>Année<'
+    sEnd = 'class=genres><h2>Catégories</h2><ul'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
 
-    sPattern = '<li><a href="([^"]+)">([^<]+)</a>'
+    sPattern = '(http[^ >]+) >([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -164,22 +174,23 @@ def showYears():
 
     oGui.setEndOfDirectory()
 
+
 def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
 
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
-        sPattern = '<div class="result-item">.+?<img src="([^"]+)" alt="([^"]+)".+?<a href="([^"]+)".+?<p>(.+?)<\/p>'
+        sPattern = 'class="result-item">.+?src="([^"]+)" alt="([^"]+)".+?<a href="([^"]+)".+?<p>(.+?)<\/p>'
 
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
         if '/films/' in sUrl or '/annee/' in sUrl or '/genre/' in sUrl:
-            sPattern = '<div class="poster".+?src="([^"]+)" alt="([^"]+)".+?quality">([^<]+)<.+?<a href="([^"]+)".+?<div class="texto">([^<]+)<'
-        else:#qualite pas tjrs presente et pas de description
-            sPattern = '<div class="poster".+?src="([^"]+)" alt="([^"]+)".+?(?:|quality">([^<]+)<.+?)<a href="([^"]+)"'
+            sPattern = 'class=poster.+?src=([^ ]+jpg) alt="*([^">]+).+?(?:|quality>([^<]+).+?)href=([^" >]+).+?texto>([^<]+)'
+        else:  # qualite pas tjrs presente et pas de description
+            sPattern = 'class="item.+?src=([^ ]+)"* alt="*([^">]+).+?(?:|quality>([^<]+)<.+?)href=([^ >]+)'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -217,7 +228,7 @@ def showMovies(sSearch = ''):
                 sDesc = ''
                 sDisplayTitle = sTitle + ' [' + sQual + ']'
 
-            #Si recherche et trop de resultat, on nettoye
+            # Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
                     continue
@@ -236,19 +247,22 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('/page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
+
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<span class="current">.+?</span><a href=\'(.+?)\''
+    sPattern = 'href=([^ ]+) ><spanclass=icon-chevron-right>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         return aResult[1][0]
 
     return False
+
 
 def showLink():
     oGui = cGui()
