@@ -8,10 +8,13 @@ import json
 import urllib2
 import xbmcvfs
 import string
+import unicodedata
+import webbrowser
 
 from urllib import urlopen
 from resources.lib.util import QuotePlus
 from resources.lib.comaddon import addon, dialog, VSlog, xbmc
+from resources.lib.handler.requestHandler import cRequestHandler
 
 try:
     from sqlite3 import dbapi2 as sqlite
@@ -19,8 +22,6 @@ try:
 except:
     from pysqlite2 import dbapi2 as sqlite
     VSlog('SQLITE 2 as DB engine')
-
-        
 
 class cTMDb:
 
@@ -57,8 +58,7 @@ class cTMDb:
         10770: 'Téléfilm'
     }
 
-       
-    URL = 'http://api.themoviedb.org/3/'
+    URL = 'https://api.themoviedb.org/3/'
     URL_TRAILER = 'plugin://plugin.video.youtube/play/?video_id=%s' # ancien : 'plugin://plugin.video.youtube/?action=play_video&videoid=%s'
     CACHE = 'special://userdata/addon_data/plugin.video.vstream/video_cache.db'
 
@@ -203,6 +203,12 @@ class cTMDb:
 
         if (total > 0):
             url = 'https://www.themoviedb.org/authenticate/'
+            try:
+                #Si possible on ouvre la page automatiquement dans un navigateur internet.
+                webbrowser.open(url + result['request_token'])
+            except:
+                pass
+
             sText = (self.ADDON.VSlang(30421)) % (url, result['request_token'])
 
             oDialog = self.DIALOG.VSyesno(sText)
@@ -742,8 +748,21 @@ class cTMDb:
 
     def _call(self, action, append_to_response):
         url = '%s%s?api_key=%s&%s&language=%s' % (self.URL, action, self.api_key, append_to_response, self.lang)
-        response = urlopen(url)
-        data = json.loads(response.read())
+        oRequestHandler = cRequestHandler(url)
+
+        #Permets de régler les problemes d'accents.
+        name = oRequestHandler.request()
+
+        if '/lists' in action:
+            try:
+                name = unicode(name, 'utf-8')
+            except:
+                pass
+
+            name = unicodedata.normalize('NFD', name).encode('ascii', 'ignore').decode('unicode_escape')
+            name = name.encode('utf-8')
+
+        data = json.loads(name)
         return data
 
     def getPostUrl(self, action, post):
