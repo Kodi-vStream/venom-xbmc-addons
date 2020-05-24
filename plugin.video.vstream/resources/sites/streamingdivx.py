@@ -1,5 +1,8 @@
-#-*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -7,7 +10,6 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, addon
-import re
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
 sColor = addon().getSetting("deco_color")
@@ -26,6 +28,7 @@ SERIE_NEWS = (URL_MAIN + 'series.html', 'showMovies')
 URL_SEARCH = (URL_MAIN + 'recherche?q=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + 'recherche?q=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
+
 
 def load():
     oGui = cGui()
@@ -48,6 +51,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
 
@@ -58,30 +62,31 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showGenres():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
-    liste.append( ['Action', sUrl + 'action'] )
-    liste.append( ['Animation', sUrl + 'animation'] )
-    liste.append( ['Aventure', sUrl + 'aventure'] )
-    liste.append( ['Biopic', sUrl + 'biopic'] )
-    liste.append( ['Comédie', sUrl + 'comedie'] )
-    liste.append( ['Comédie-dramatique', sUrl + 'comedie-dramatique'] )
-    liste.append( ['Comédie-musicale', sUrl + 'comedie-musicale'] )
-    liste.append( ['Documentaire', sUrl + 'documentaire'] )
-    liste.append( ['Drame', sUrl + 'drame'] )
-    liste.append( ['Epouvante Horreur', sUrl + 'epouvante-horreur'] )
-    liste.append( ['Famille', sUrl + 'famille'] )
-    liste.append( ['Fantastique', sUrl + 'fantastique'] )
-    liste.append( ['Guerre', sUrl + 'guerre'] )
-    liste.append( ['Opera', sUrl + 'opera'] )
-    liste.append( ['Policier', sUrl + 'policier'] )
-    liste.append( ['Romance', sUrl + 'romance'] )
-    liste.append( ['Science-fiction', sUrl + 'science-fiction'] )
-    liste.append( ['Thriller', sUrl + 'thriller'] )
+    liste.append(['Action', sUrl + 'action'])
+    liste.append(['Animation', sUrl + 'animation'])
+    liste.append(['Aventure', sUrl + 'aventure'])
+    liste.append(['Biopic', sUrl + 'biopic'])
+    liste.append(['Comédie', sUrl + 'comedie'])
+    liste.append(['Comédie-dramatique', sUrl + 'comedie-dramatique'])
+    liste.append(['Comédie-musicale', sUrl + 'comedie-musicale'])
+    liste.append(['Documentaire', sUrl + 'documentaire'])
+    liste.append(['Drame', sUrl + 'drame'])
+    liste.append(['Epouvante Horreur', sUrl + 'epouvante-horreur'])
+    liste.append(['Famille', sUrl + 'famille'])
+    liste.append(['Fantastique', sUrl + 'fantastique'])
+    liste.append(['Guerre', sUrl + 'guerre'])
+    liste.append(['Opera', sUrl + 'opera'])
+    liste.append(['Policier', sUrl + 'policier'])
+    liste.append(['Romance', sUrl + 'romance'])
+    liste.append(['Science-fiction', sUrl + 'science-fiction'])
+    liste.append(['Thriller', sUrl + 'thriller'])
 
     for sTitle, sUrl in liste:
 
@@ -91,7 +96,8 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
-def showMovies(sSearch = ''):
+
+def showMovies(sSearch=''):
     oGui = cGui()
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
@@ -124,7 +130,6 @@ def showMovies(sSearch = ''):
                 sThumb = URL_MAIN[:-1] + sThumb
             sThumb = sThumb.replace('wwww.', 'www.')    # pb d'url sur les images lors des recherches
 
-
             sQual = ''
             if aEntry[3]:
                 sQual = aEntry[3]
@@ -145,15 +150,16 @@ def showMovies(sSearch = ''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
-        if not sSearch: # une seule page par recherche
-            sNextPage = __checkForNextPage(sHtmlContent)
-            if (sNextPage != False):
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+    if not sSearch: # une seule page par recherche
+        sNextPage = __checkForNextPage(sHtmlContent)
+        if (sNextPage != False):
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+            number = re.search('page-([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -168,17 +174,18 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
+
 def showSaisons():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    # sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    #syno
+
+    # syno
     sDesc = ''
     try:
         sPattern = '<div class="f*synopsis"><p>(.+?)</p></div>'
@@ -211,6 +218,7 @@ def showSaisons():
             oGui.addTV(SITE_IDENTIFIER, 'showEp', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showEp():
     oGui = cGui()
@@ -248,8 +256,9 @@ def showEp():
 
     oGui.setEndOfDirectory()
 
+
 def showLinks():
-    #streamer.php?p=169&c=V1RJeGMxcHVSbmhhUnpGMFltNU9kMWxYVW5sWlVUMDk=
+    # streamer.php?p=169&c=V1RJeGMxcHVSbmhhUnpGMFltNU9kMWxYVW5sWlVUMDk=
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -260,7 +269,7 @@ def showLinks():
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
 
-    #syno
+    # syno
     sDesc = ''
     try:
         sPattern = '<div class="f*synopsis"><p>(.+?)</p></div>'
@@ -297,6 +306,7 @@ def showLinks():
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showHosters():
     oGui = cGui()
