@@ -6,6 +6,7 @@ import urllib2
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import VSlog, xbmcgui
 
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:62.0) Gecko/20100101 Firefox/62.0'
 
 class cHoster(iHoster):
     def __init__(self):
@@ -65,15 +66,23 @@ class cHoster(iHoster):
 
         # si lien deja decode
         if (r == False):
-            if 'https://lh3.googleusercontent.com' in self.__sUrl:
+            if '//lh3.googleusercontent.com' in self.__sUrl:
                 #Nouveaute, avec cookie now
 
                 VSlog(self.__sUrl)
 
                 import requests
-                r = requests.get(self.__sUrl, allow_redirects=False)
+                h = {'User-Agent': UA}
+                r = requests.get(self.__sUrl, headers=h,allow_redirects=False)
                 url = r.headers['Location']
-                cookies = r.headers['set-cookie']
+                #VSlog(url)
+                
+                url = url + '|User-Agent=' + UA
+                
+                if 'set-cookie' in r.headers:
+                    cookies = r.headers['set-cookie']
+                    url = url + '&Cookie=' + cookies
+                    #VSlog(cookies)
 
                 # Impossible a faire fonctionner, si quelqu'un y arrive .....
                 #class NoRedirect(urllib2.HTTPRedirectHandler):
@@ -83,12 +92,8 @@ class cHoster(iHoster):
                 #HttpReponse = opener.open(self.__sUrl)
                 #htmlcontent = HttpReponse.read()
                 #head = HttpReponse.headers
-                #VSlog(str(head))
 
-                VSlog(url)
-                VSlog(cookies)
-
-                return True, url + '|Cookie=' + cookies
+                return True, url
             # Peut etre un peu brutal, peut provoquer des bugs
             if 'lh3.googleusercontent.com' in self.__sUrl:
                 VSlog('Attention: lien sans cookies')
