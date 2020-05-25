@@ -16,12 +16,15 @@ except:
     from pysqlite2 import dbapi2 as sqlite
     VSlog('SQLITE 2 as DB engine')
 
-
 class cDb:
 
     DB = 'special://userdata/addon_data/plugin.video.vstream/vstream.db'
     # important seul xbmcvfs peux lire le special
-    REALDB = xbmc.translatePath(DB).decode('utf-8')
+    try:
+        REALDB = xbmc.translatePath(DB).decode('utf-8')
+    except AttributeError:
+         REALDB = xbmc.translatePath(DB)
+                
     DIALOG = dialog()
     ADDON = addon()
 
@@ -121,7 +124,10 @@ class cDb:
     def str_conv(self, data):
         if isinstance(data, str):
             # Must be encoded in UTF-8
-            data = data.decode('utf8')
+            try:
+                data = data.decode('utf8')
+            except AttributeError:
+                pass
 
         import unicodedata
         data = unicodedata.normalize('NFKD', data).encode('ascii', 'ignore')
