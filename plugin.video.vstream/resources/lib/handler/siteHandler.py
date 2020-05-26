@@ -36,9 +36,9 @@ class cSiteHandler:
 
     def __importPlugin(self, sName, sLabel):
         try:
-            exec("from resources.sites import " + sName)
-            exec("sSearch = " + sName + "." + sLabel)
-            exec("sSiteName = " + sName + ".SITE_NAME")
+            exec ("from resources.sites import " + sName, globals())
+            exec ("sSearch = " + sName + "." + sLabel, globals())
+            exec ("sSiteName = " + sName + ".SITE_NAME", globals())
             sPluginSettingsName = 'plugin_' + sName
             return sSearch[0], sPluginSettingsName, sSearch[1], sSiteName
         except Exception:
