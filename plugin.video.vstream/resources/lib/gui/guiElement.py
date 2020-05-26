@@ -287,8 +287,11 @@ class cGuiElement:
         if self.__Year:
             sTitle2 = '%s [COLOR %s](%s)[/COLOR]' % (sTitle2, self.__sDecoColor, self.__Year)
 
-        # on repasse en utf-8
-        return sTitle2.encode('utf-8')
+        #on repasse en utf-8
+        try:
+            return sTitle2.encode('utf-8')
+        except AttributeError:
+            return sTitle2
 
     def getEpisodeTitre(self, sTitle):
 
@@ -398,7 +401,10 @@ class cGuiElement:
     def str_conv(self, data):
         if isinstance(data, str):
             # Must be encoded in UTF-8
-            data = data.decode('utf8')
+            try:
+                data = data.decode('utf8')
+            except AttributeError:
+                pass
 
         import unicodedata
         data = unicodedata.normalize('NFKD', data).encode('ascii', 'ignore')
