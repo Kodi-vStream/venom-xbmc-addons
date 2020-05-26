@@ -8,7 +8,6 @@ from requests.adapters import HTTPAdapter
 from collections import OrderedDict
 import re, ssl, requests  #, os, time, json, random
 from requests.sessions import Session
-from jsunfuck import JSUnfuck
 
 try:
     from urlparse import urlparse
@@ -138,26 +137,16 @@ def checkpart(s, end='+'):
 
     return s[:pos]
 
-
-def parseInt(s):
-    v = JSUnfuck(s).decode(False)
-    v = re.sub('([^\(\)])\++', '\\1', v)
-    v = eval(v)
-    return v
-
-
 def CheckIfActive(data):
     if 'Checking your browser before accessing' in str(data):
         return True
     return False
-
 
 def showInfo(sTitle, sDescription, iSeconds=0):
     if (iSeconds == 0):
         iSeconds = 1000
     else:
         iSeconds = iSeconds * 1000
-
 
 class CloudflareBypass(object):
     def __init__(self):
