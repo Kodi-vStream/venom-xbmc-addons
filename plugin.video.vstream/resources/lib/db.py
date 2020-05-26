@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
-# Venom.
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+import xbmcvfs
+
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.util import QuotePlus, Unquote
 from resources.lib.comaddon import dialog, addon, VSlog, xbmc
-import xbmcvfs
 
 SITE_IDENTIFIER = 'cDb'
 SITE_NAME = 'DB'
@@ -16,6 +17,7 @@ except:
     from pysqlite2 import dbapi2 as sqlite
     VSlog('SQLITE 2 as DB engine')
 
+
 class cDb:
 
     DB = 'special://userdata/addon_data/plugin.video.vstream/vstream.db'
@@ -24,7 +26,7 @@ class cDb:
         REALDB = xbmc.translatePath(DB).decode('utf-8')
     except AttributeError:
          REALDB = xbmc.translatePath(DB)
-                
+
     DIALOG = dialog()
     ADDON = addon()
 
@@ -128,7 +130,6 @@ class cDb:
                 data = data.decode('utf8')
             except AttributeError:
                 pass
-
         import unicodedata
         data = unicodedata.normalize('NFKD', data).encode('ascii', 'ignore')
         data = data.decode('string-escape')  # ATTENTION: provoque des bugs pour les chemins a cause du caractere '/'
@@ -173,7 +174,8 @@ class cDb:
             return None
 
     def del_history(self):
-
+        from resources.lib.gui.gui import cGui
+        oGui = cGui()
         oInputParameterHandler = cInputParameterHandler()
         if oInputParameterHandler.exist('searchtext'):
             sql_delete = "DELETE FROM history WHERE title = '%s'" % (oInputParameterHandler.getValue('searchtext'))
@@ -184,7 +186,7 @@ class cDb:
             self.dbcur.execute(sql_delete)
             self.db.commit()
             self.DIALOG.VSinfo(self.ADDON.VSlang(30041))
-            xbmc.executebuiltin('Container.Refresh')
+            oGui.updateDirectory()
             return False, False
         except Exception:
             VSlog('SQL ERROR DELETE')
@@ -334,7 +336,8 @@ class cDb:
             return None
 
     def del_bookmark(self):
-
+        from resources.lib.gui.gui import cGui
+        oGui = cGui()
         oInputParameterHandler = cInputParameterHandler()
 
         if oInputParameterHandler.exist('sCat'):
@@ -356,7 +359,7 @@ class cDb:
             self.dbcur.execute(sql_delete)
             self.db.commit()
             self.DIALOG.VSinfo(self.ADDON.VSlang(30044))
-            xbmc.executebuiltin('Container.Refresh')
+            oGui.updateDirectory()
             return False, False
         except Exception:
             VSlog('SQL ERROR EXECUTE')
