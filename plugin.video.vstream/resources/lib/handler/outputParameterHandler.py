@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-
-import urllib
-from resources.lib.util import Unquote
-
+from resources.lib.util import urlEncode, Unquote
 
 class cOutputParameterHandler:
 
@@ -18,7 +15,7 @@ class cOutputParameterHandler:
 
     def getParameterAsUri(self):
         if len(self.__aParams) > 0:
-            return urllib.urlencode(self.__aParams)
+            return urlEncode(self.__aParams)
 
         return 'params=0'
 
