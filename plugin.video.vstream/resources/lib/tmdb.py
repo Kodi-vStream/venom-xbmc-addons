@@ -5,16 +5,20 @@
 
 import re
 import json
-import urllib2
+
 import xbmcvfs
 import string
 import unicodedata
 import webbrowser
 
-from urllib import urlopen
 from resources.lib.util import QuotePlus
 from resources.lib.comaddon import addon, dialog, VSlog, xbmc
 from resources.lib.handler.requestHandler import cRequestHandler
+
+try:
+    import urllib2
+except ImportError:
+    import urllib.request as urllib2 
 
 try:
     from sqlite3 import dbapi2 as sqlite
@@ -63,7 +67,10 @@ class cTMDb:
     CACHE = 'special://userdata/addon_data/plugin.video.vstream/video_cache.db'
 
     # important seul xbmcvfs peux lire le special
-    REALCACHE = xbmc.translatePath(CACHE).decode('utf-8')
+    try:
+        REALCACHE = xbmc.translatePath(CACHE).decode('utf-8')
+    except AttributeError:
+        REALCACHE = xbmc.translatePath(CACHE)
 
     ADDON = addon()
     DIALOG = dialog()
