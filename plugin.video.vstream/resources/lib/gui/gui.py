@@ -14,7 +14,7 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil, QuotePlus
 
 
-class cGui():
+class cGui:
 
     SITE_NAME = 'cGui'
     CONTENT = 'files'
@@ -125,9 +125,9 @@ class cGui():
         # comportement proche de addMisc
         self.addMisc(sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, sCat=2)
 
-
+    # Meme mode d'affichage qu'un film, avec la description si fournie, mais il n'y a pas de recherche des Métadonnées
     def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler='', sCat=5):
-        cGui.CONTENT = 'movies'     # Meme mode d'affichage qu'un film, avec la description si fournie, mais il n'y a pas de recherche des Métadonnées
+        cGui.CONTENT = 'movies'
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
@@ -280,7 +280,7 @@ class cGui():
     def addFolder(self, oGuiElement, oOutputParameterHandler = '', _isFolder=True):
 
         # recherche append les reponses
-        if  window(10101).getProperty('search') == 'true':
+        if window(10101).getProperty('search') == 'true':
             import copy
             cGui.searchResults.append({'guiElement': oGuiElement, 'params': copy.deepcopy(oOutputParameterHandler)})
             return
@@ -506,7 +506,7 @@ class cGui():
     def createContexMenuDelFav(self, oGuiElement, oOutputParameterHandler=''):
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cFav', 'cFav', 'delBookmarksMenu', self.ADDON.VSlang(30209))
 
-    def createContexMenuSettings(self, oGuiElement, oOutputParameterHandler = ''):
+    def createContexMenuSettings(self, oGuiElement, oOutputParameterHandler=''):
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'globalParametre', 'globalParametre', 'opensetting', self.ADDON.VSlang(30023))
 
     def __createContextMenu(self, oGuiElement, oListItem):
@@ -699,11 +699,10 @@ class cGui():
     def selectpage2(self):
         sPluginPath = cPluginHandler().getPluginPath()
         oInputParameterHandler = cInputParameterHandler()
+        # sParams = oInputParameterHandler.getAllParameter()
         sId = oInputParameterHandler.getValue('sId')
         sFunction = oInputParameterHandler.getValue('OldFunction')
         siteUrl = oInputParameterHandler.getValue('siteUrl')
-
-        # sParams = oInputParameterHandler.getAllParameter()
 
         selpage = self.showNumBoard()
 
