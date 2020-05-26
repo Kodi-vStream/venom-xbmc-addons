@@ -6,7 +6,6 @@ import xbmcvfs
 
 from resources.lib.comaddon import addon, VSlog
 
-
 class cPluginHandler:
 
     def getPluginHandle(self):
@@ -45,12 +44,12 @@ class cPluginHandler:
 
     def __importPlugin(self, sName):
         try:
-            exec("from resources.sites import " + sName)
-            exec("sSiteName = " + sName + ".SITE_NAME")
-            exec("sSiteDesc = " + sName + ".SITE_DESC")
+            exec("from resources.sites import " + sName, globals())
+            exec("sSiteName = " + sName + ".SITE_NAME", globals())
+            exec("sSiteDesc = " + sName + ".SITE_DESC", globals())
             sPluginSettingsName = 'plugin_' + sName
             return sSiteName, sPluginSettingsName, sSiteDesc
-        except Exception:
+        except Exception as e:
             VSlog("Cannot import plugin " + str(sName))
             return False, False
 
