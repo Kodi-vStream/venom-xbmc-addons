@@ -208,8 +208,8 @@ class cGui():
         # oGuiElement.setDirFanart('next.png')
         oGuiElement.setCat(5)
 
-#         self.createContexMenuPageSelect(oGuiElement, oOutputParameterHandler)
-#         self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+        # self.createContexMenuPageSelect(oGuiElement, oOutputParameterHandler)
+        # self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
@@ -352,24 +352,6 @@ class cGui():
         # xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=_isFolder)
         self.listing.append((sItemUrl, oListItem, _isFolder))
 
-    def createListItem(self, oGuiElement):
-
-        oListItem = listitem(oGuiElement.getTitle())
-
-        # voir : https://kodi.wiki/view/InfoLabels
-        oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
-        # oListItem.setThumbnailImage(oGuiElement.getThumbnail())
-        # oListItem.setIconImage(oGuiElement.getIcon())
-
-        # krypton et sont comportement
-        oListItem.setArt({'poster': oGuiElement.getPoster(), 'thumb': oGuiElement.getThumbnail(), 'icon': oGuiElement.getIcon(), 'fanart': oGuiElement.getFanart()})
-
-        aProperties = oGuiElement.getItemProperties()
-        for sPropertyKey in aProperties.keys():
-            oListItem.setProperty(sPropertyKey, aProperties[sPropertyKey])
-
-        return oListItem
-
     # affiche les liens playable
     def addHost(self, oGuiElement, oOutputParameterHandler=''):
 
@@ -392,11 +374,29 @@ class cGui():
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
 
-#        sPluginHandle = cPluginHandler().getPluginHandle()
+        # sPluginHandle = cPluginHandler().getPluginHandle()
 
         # modif 13/09
         # xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=False)
         self.listing.append((sItemUrl, oListItem, False))
+
+    def createListItem(self, oGuiElement):
+
+        oListItem = listitem(oGuiElement.getTitle())
+
+        # voir : https://kodi.wiki/view/InfoLabels
+        oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
+        # oListItem.setThumbnailImage(oGuiElement.getThumbnail())
+        # oListItem.setIconImage(oGuiElement.getIcon())
+
+        # krypton et sont comportement
+        oListItem.setArt({'poster': oGuiElement.getPoster(), 'thumb': oGuiElement.getThumbnail(), 'icon': oGuiElement.getIcon(), 'fanart': oGuiElement.getFanart()})
+
+        aProperties = oGuiElement.getItemProperties()
+        for sPropertyKey in aProperties.keys():
+            oListItem.setProperty(sPropertyKey, aProperties[sPropertyKey])
+
+        return oListItem
 
     # Marquer vu/Non vu
     def createContexMenuWatch(self, oGuiElement, oOutputParameterHandler=''):
@@ -555,6 +555,24 @@ class cGui():
 
         return oListItem
 
+    def __createItemUrl(self, oGuiElement, oOutputParameterHandler=''):
+        if (oOutputParameterHandler == ''):
+            oOutputParameterHandler = cOutputParameterHandler()
+
+        sParams = oOutputParameterHandler.getParameterAsUri()
+        # cree une id unique
+        # if oGuiElement.getSiteUrl():
+            # print(str(hash(oGuiElement.getSiteUrl())))
+
+        sPluginPath = cPluginHandler().getPluginPath()
+
+        if (len(oGuiElement.getFunction()) == 0):
+            sItemUrl = '%s?site=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), QuotePlus(oGuiElement.getCleanTitle()), sParams)
+        else:
+            sItemUrl = '%s?site=%s&function=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), oGuiElement.getFunction(), QuotePlus(oGuiElement.getCleanTitle()), sParams)
+
+        return sItemUrl
+
     def setEndOfDirectory(self, ForceViewMode=False):
         iHandler = cPluginHandler().getPluginHandle()
         # modif 22/06
@@ -584,8 +602,23 @@ class cGui():
         # bug affichage Kodi 18
         del self.listing [:]
 
-    def updateDirectory(self):
+    def updateDirectory(self):  # refresh the content
         xbmc.executebuiltin('Container.Refresh')
+
+    def viewBA(self):
+        oInputParameterHandler = cInputParameterHandler()
+        sFileName = oInputParameterHandler.getValue('sFileName')
+        sYear = oInputParameterHandler.getValue('sYear')
+        sTrailerUrl = oInputParameterHandler.getValue('sTrailerUrl')
+        sMeta = oInputParameterHandler.getValue('sMeta')
+
+        from resources.lib.ba import cShowBA
+        cBA = cShowBA()
+        cBA.SetSearch(sFileName)
+        cBA.SetYear(sYear)
+        cBA.SetTrailerUrl(sTrailerUrl)
+        cBA.SetMetaType(sMeta)
+        cBA.SearchBA()
 
     def viewback(self):
         sPluginPath = cPluginHandler().getPluginPath()
@@ -595,6 +628,29 @@ class cGui():
 
         sTest = '%s?site=%s' % (sPluginPath, sId)
         xbmc.executebuiltin('XBMC.Container.Update(%s, replace)' % sTest)
+
+    def viewinfo(self):
+        from resources.lib.config import WindowsBoxes
+
+        # oGuiElement = cGuiElement()
+        oInputParameterHandler = cInputParameterHandler()
+        sTitle = oInputParameterHandler.getValue('sTitle')
+        # sId = oInputParameterHandler.getValue('sId')
+        sFileName = oInputParameterHandler.getValue('sFileName')
+        sMeta = oInputParameterHandler.getValue('sMeta')
+        sYear = oInputParameterHandler.getValue('sYear')
+
+        # sMeta = 1 >> film sMeta = 2 >> serie
+        sCleanTitle = cUtil().CleanName(sFileName)
+
+        # on vire saison et episode, si séries ou animes
+        if sMeta == 2 or sMeta == 4 :
+            sCleanTitle = re.sub('(?i).pisode [0-9]+', '', sCleanTitle)
+            sCleanTitle = re.sub('(?i)saison [0-9]+', '', sCleanTitle)
+            sCleanTitle = re.sub('(?i)S[0-9]+E[0-9]+', '', sCleanTitle)
+            sCleanTitle = re.sub('(?i)[S|E][0-9]+', '', sCleanTitle)
+
+        WindowsBoxes(sTitle, sCleanTitle, sMeta, sYear)
 
     def viewsimil(self):
         sPluginPath = cPluginHandler().getPluginPath()
@@ -688,62 +744,6 @@ class cGui():
 
         # Not usefull ?
         # xbmc.executebuiltin('Container.Refresh')
-
-    def viewBA(self):
-        oInputParameterHandler = cInputParameterHandler()
-        sFileName = oInputParameterHandler.getValue('sFileName')
-        sYear = oInputParameterHandler.getValue('sYear')
-        sTrailerUrl = oInputParameterHandler.getValue('sTrailerUrl')
-        sMeta = oInputParameterHandler.getValue('sMeta')
-
-        from resources.lib.ba import cShowBA
-        cBA = cShowBA()
-        cBA.SetSearch(sFileName)
-        cBA.SetYear(sYear)
-        cBA.SetTrailerUrl(sTrailerUrl)
-        cBA.SetMetaType(sMeta)
-        cBA.SearchBA()
-
-    def viewinfo(self):
-        from resources.lib.config import WindowsBoxes
-
-        # oGuiElement = cGuiElement()
-        oInputParameterHandler = cInputParameterHandler()
-        sTitle = oInputParameterHandler.getValue('sTitle')
-        # sId = oInputParameterHandler.getValue('sId')
-        sFileName = oInputParameterHandler.getValue('sFileName')
-        sMeta = oInputParameterHandler.getValue('sMeta')
-        sYear = oInputParameterHandler.getValue('sYear')
-
-        # sMeta = 1 >> film sMeta = 2 >> serie
-        sCleanTitle = cUtil().CleanName(sFileName)
-
-        # on vire saison et episode, si séries ou animes
-        if sMeta == 2 or sMeta == 4 :
-            sCleanTitle = re.sub('(?i).pisode [0-9]+', '', sCleanTitle)
-            sCleanTitle = re.sub('(?i)saison [0-9]+', '', sCleanTitle)
-            sCleanTitle = re.sub('(?i)S[0-9]+E[0-9]+', '', sCleanTitle)
-            sCleanTitle = re.sub('(?i)[S|E][0-9]+', '', sCleanTitle)
-
-        WindowsBoxes(sTitle, sCleanTitle, sMeta, sYear)
-
-    def __createItemUrl(self, oGuiElement, oOutputParameterHandler=''):
-        if (oOutputParameterHandler == ''):
-            oOutputParameterHandler = cOutputParameterHandler()
-
-        sParams = oOutputParameterHandler.getParameterAsUri()
-        # cree une id unique
-        # if oGuiElement.getSiteUrl():
-            # print(str(hash(oGuiElement.getSiteUrl())))
-
-        sPluginPath = cPluginHandler().getPluginPath()
-
-        if (len(oGuiElement.getFunction()) == 0):
-            sItemUrl = '%s?site=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), QuotePlus(oGuiElement.getCleanTitle()), sParams)
-        else:
-            sItemUrl = '%s?site=%s&function=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), oGuiElement.getFunction(), QuotePlus(oGuiElement.getCleanTitle()), sParams)
-
-        return sItemUrl
 
     def showKeyBoard(self, sDefaultText='', heading=''):
         keyboard = xbmc.Keyboard(sDefaultText)
