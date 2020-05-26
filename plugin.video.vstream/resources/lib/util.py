@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-import htmlentitydefs
-import re
-import unicodedata
-import urllib
-import urllib2
-# function util n'utilise pas xbmc, xbmcgui, xbmcaddon ect...
+try:
+    import htmlentitydefs
+    import urllib
+    import urllib2
 
+except ImportError:
+    import html.entities as htmlentitydefs
+    import urllib.parse as urllib
+    import urllib.request as urllib2
+
+import unicodedata
+import re
+# function util n'utilise pas xbmc, xbmcgui, xbmcaddon ect...
 
 class cUtil:
     # reste a transformer la class en fonction distante.
@@ -205,7 +211,6 @@ class cUtil:
         except:
             return 0
 
-
 """
 # ***********************
 # Fonctions lights
@@ -215,30 +220,23 @@ class cUtil:
 # puis util.VSlog('test')
 """
 
-
 def Unquote(sUrl):
     return urllib.unquote(sUrl)
-
 
 def Quote(sUrl):
     return urllib.quote(sUrl)
 
-
 def UnquotePlus(sUrl):
     return urllib.unquote_plus(sUrl)
-
 
 def QuotePlus(sUrl):
     return urllib.quote_plus(sUrl)
 
-
 def QuoteSafe(sUrl):
     return urllib.quote(sUrl, safe=':/')
 
-
 def urlEncode(sUrl):
     return urllib.urlencode(sUrl)
-
 
 def Noredirection():
     class NoRedirection(urllib2.HTTPErrorProcessor):
@@ -249,7 +247,6 @@ def Noredirection():
 
     opener = urllib2.build_opener(NoRedirection)
     return opener
-
 
 # deprecier utiliser comaddon dialog()
 # def updateDialogSearch(dialog, total, site):
@@ -275,7 +272,6 @@ def GetGooglUrl(url):
         except:
             pass
     return url
-
 
 def GetTinyUrl(url):
     if not 'tinyurl' in url:
