@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-import urllib
-import urllib2
+try:
+    import urllib2
+    from urllib2 import HTTPError, URLError as UrlError
 
-# from urllib2 import HTTPError, URLError
+except ImportError:
+    import urllib.request as urllib2
+    import urllib.error as UrlError
+
+from resources.lib.util import urlEncode
 from resources.lib.comaddon import addon, dialog, VSlog
-
 
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
@@ -44,7 +48,7 @@ class cRequestHandler:
         self.__timeout = valeur
 
     def disableRedirection(self):
-        class NoRedirection(urllib2.HTTPErrorProcessor):
+        class NoRedirection(UrlError.HTTPErrorProcessor):
             def http_response(self, request, response):
                 code, msg, hdrs = response.code, response.msg, response.info()
 
@@ -106,7 +110,7 @@ class cRequestHandler:
         return self.__callRequest()
 
     def getRequestUri(self):
-        return self.__sUrl + '?' + urllib.urlencode(self.__aParamaters)
+        return self.__sUrl + '?' + urlEncode(self.__aParamaters)
 
     def __setDefaultHeader(self):
         self.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0')
@@ -122,7 +126,7 @@ class cRequestHandler:
         if self.__aParamatersLine:
             sParameters = self.__aParamatersLine
         else:
-            sParameters = urllib.urlencode(self.__aParamaters)
+            sParameters = urlEncode(self.__aParamaters)
 
         if (self.__cType == cRequestHandler.REQUEST_TYPE_GET):
             if (len(sParameters) > 0):
@@ -168,7 +172,7 @@ class cRequestHandler:
 
             oResponse.close()
 
-        except urllib2.HTTPError as e:
+        except UrlError.HTTPError as e:
             if e.code == 503:
 
                 # Protected by cloudFlare ?
@@ -197,7 +201,7 @@ class cRequestHandler:
             if not sContent:
                 self.DIALOG.VSerror("%s (%d),%s" % (self.ADDON.VSlang(30205), e.code, self.__sUrl))
 
-        except urllib2.URLError as e:
+        except UrlError.URLError as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e.reason) and self.BUG_SSL == False:
                 self.BUG_SSL = True
                 return self.__callRequest()
@@ -229,8 +233,8 @@ class cRequestHandler:
 
         return sContent
 
-    def getHeaderLocationUrl(self):
-        opened = urllib.urlopen(self.__sUrl)
+    def getHeaderLocationUrl(self):        
+        opened = urllib2.urlopen(self.__sUrl)
         return opened.geturl()
 
     def new_getaddrinfo(self, *args):
