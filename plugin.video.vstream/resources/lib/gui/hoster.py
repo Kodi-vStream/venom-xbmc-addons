@@ -382,7 +382,7 @@ class cHosterGui:
         return False
 
     def getHoster(self, sHosterFileName):
-        exec('from resources.hosters.' + sHosterFileName + ' import cHoster')
+        exec ("from resources.hosters." + sHosterFileName + " import cHoster", globals())
         return cHoster()
 
     def play(self):
