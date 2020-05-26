@@ -293,10 +293,17 @@ class cGui:
             'sYear': oGuiElement.setYear,
         }
 
-        for sParam, callback in params.iteritems():
-            value = oOutputParameterHandler.getValue(sParam)
-            if value:
-                callback(value)
+        try:
+            for sParam, callback in params.iteritems():
+                value = oOutputParameterHandler.getValue(sParam)
+                if value:
+                    callback(value)
+
+        except AttributeError:
+            for sParam, callback in params.items():
+                value = oOutputParameterHandler.getValue(sParam)
+                if value:
+                    callback(value)
 
         oListItem = self.createListItem(oGuiElement)
         oListItem.setProperty('IsPlayable', 'false')
