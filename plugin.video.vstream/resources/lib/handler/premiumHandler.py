@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
-import urllib
-import urllib2
+try:  # Python 2
+    import urllib2
+    from urllib2 import URLError as UrlError
+
+except ImportError:  # Python 3
+    import urllib.request as urllib2
+    import urllib.error as UrlError
 
 from resources.lib.comaddon import addon, dialog, VSlog
 from resources.lib.config import GestionCookie
 from resources.lib.parser import cParser
+from resources.lib.util import urlEncode
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 headers = {'User-Agent': UA}
@@ -115,7 +121,7 @@ class cPremiumHandler:
                 self.__ssl = False
 
         if 'uptobox' in self.__sHosterIdentifier:
-            data = urllib.urlencode(post_data)
+            data = urlEncode(post_data)
 
             opener = urllib2.build_opener(NoRedirection)
 
@@ -127,17 +133,17 @@ class cPremiumHandler:
             try:
                 response = opener.open(url, data)
                 head = response.info()
-            except urllib2.URLError:
+            except UrlError:
                 return ''
         else:
-            req = urllib2.Request(url, urllib.urlencode(post_data), headers)
+            req = urllib2.Request(url, urlEncode(post_data), headers)
 
             try:
                 if (self.__ssl):
                     response = urllib2.urlopen(req, context=context)
                 else:
                     response = urllib2.urlopen(req)
-            except urllib2.URLError as e:
+            except UrlError as e:
                 if getattr(e, "code", None) == 403:
                     # login denied
                     self.DIALOG.VSinfo('Authentification rate', self.__sDisplayName)
@@ -210,7 +216,7 @@ class cPremiumHandler:
 
         try:
             response = urllib2.urlopen(req)
-        except urllib2.URLError:
+        except UrlError:
             return ''
 
         sHtmlContent = response.read()
