@@ -1,8 +1,16 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
+
+try:  # Python 2
+    import urllib2
+    from urllib2 import URLError as UrlError
+
+except ImportError:  # Python 3
+    import urllib.request as urllib2
+    import urllib.error as UrlError
+
 import re
-import urllib2
 
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog, VSlog
@@ -162,7 +170,7 @@ def LoadLinks(htmlcode):
             sCode = reponse.read()
             reponse.close()
             # VSlog('Worked ' + sUrl)
-        except urllib2.HTTPError as e:
+        except UrlError.HTTPError as e:
             if not e.geturl() == sUrl:
                 try:
                     headers9 = {
@@ -170,13 +178,13 @@ def LoadLinks(htmlcode):
                         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                         'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
                         'Accept-Encoding': 'gzip, deflate, br'
-                    }
+                        }
                     request = urllib2.Request(e.geturl().replace('https', 'http'), None, headers9)
                     reponse = urllib2.urlopen(request)
                     sCode = reponse.read()
                     reponse.close()
                     # VSlog('Worked ' + sUrl)
-                except urllib2.HTTPError as e:
+                except UrlError.HTTPError as e:
                     VSlog(str(e.code))
                     # VSlog(e.read())
                     VSlog('Redirection Blocked ' + sUrl + ' Red ' + e.geturl())
@@ -260,7 +268,7 @@ class cHoster(iHoster):
                     redirection_target = reponse.geturl()
                 else:
                     break
-            except urllib2.URLError as e:
+            except UrlError.URLError as e:
                 if (e.code == 301) or (e.code == 302):
                     redirection_target = e.headers['Location']
                 else:
@@ -312,12 +320,12 @@ class cHoster(iHoster):
 
         # VSlog('test de ' + url)
         headers = {'User-Agent': UA
-            # 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            # 'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
-            # 'Accept-Encoding': 'gzip, deflate, br',
-            # 'Host': 'openload.co',
-            # 'Referer': referer
-            }
+                   # 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                   # 'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
+                   # 'Accept-Encoding': 'gzip, deflate, br',
+                   # 'Host': 'openload.co',
+                   # 'Referer': referer
+                   }
 
         req = urllib2.Request(url)
         res = urllib2.urlopen(req)
@@ -424,7 +432,6 @@ class cHoster(iHoster):
             if not aResult:
                 return False, False
             sRefresh = aResult[0]
-
 
             # on recupere le script de debloquage
             sPattern = "<script type='text/javascript' src='([^']+)'><\/script>"
