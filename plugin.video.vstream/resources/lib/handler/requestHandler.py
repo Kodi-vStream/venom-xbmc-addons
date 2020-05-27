@@ -50,7 +50,7 @@ class cRequestHandler:
         self.__timeout = valeur
 
     def disableRedirection(self):
-        class NoRedirection(UrlError.HTTPErrorProcessor):
+        class NoRedirection(urllib2.HTTPErrorProcessor):
             def http_response(self, request, response):
                 code, msg, hdrs = response.code, response.msg, response.info()
 
@@ -159,7 +159,7 @@ class cRequestHandler:
             else:
                 oResponse = urllib2.urlopen(oRequest, timeout=self.__timeout)
 
-            #En python 3 on doit décoder la reponse
+            # En python 3 on doit décoder la reponse
             if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
                 sContent = oResponse.read().decode('utf-8')
             else:
@@ -260,7 +260,7 @@ class cRequestHandler:
                 host = host[:host.find("/")]
             resolver = dns.resolver.Resolver(configure=False)
             # Résolveurs DNS ouverts: https://www.fdn.fr/actions/dns/
-            resolver.nameservers = [ '80.67.169.12', '2001:910:800::12', '80.67.169.40', '2001:910:800::40' ]
+            resolver.nameservers = ['80.67.169.12', '2001:910:800::12', '80.67.169.40', '2001:910:800::40']
             answer = resolver.query(host, 'a')
             host_found = str(answer[0])
             VSlog("new_getaddrinfo found host %s" % host_found)
