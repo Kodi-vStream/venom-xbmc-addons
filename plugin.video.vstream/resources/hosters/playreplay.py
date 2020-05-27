@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
+try:  # Python 2
+    import urllib2
+    from urllib2 import URLError as UrlError
+
+except ImportError:  # Python 3
+    import urllib.request as urllib2
+    import urllib.error as UrlError
+
 import re
-import urllib
-import urllib2
 
 from resources.hosters.hoster import iHoster
+from resources.lib.util import urlEncode
 
 
 class cHoster(iHoster):
@@ -70,14 +77,14 @@ class cHoster(iHoster):
 
         query_args = {'r': '["tVL0gjqo5",["preview/flv_image",{"uid":"' + sId + '"}],["preview/flv_link",{"uid":"' + sId + '"}]]'}
 
-        data = urllib.urlencode(query_args)
+        data = urlEncode(query_args)
         headers = {'User-Agent': 'Mozilla 5.10'}
         url = 'http://api.letitbit.net'
         request = urllib2.Request(url, data, headers)
 
         try:
             reponse = urllib2.urlopen(request)
-        except urllib2.URLError as e:
+        except UrlError as e:
             print(e.read())
             print(e.reason)
 
