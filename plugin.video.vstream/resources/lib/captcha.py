@@ -5,14 +5,24 @@
 # from resources.lib.captcha import Captcha_Get_Reponse
 #
 
-from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui
+try:
+    import urllib2
+
+except ImportError:
+    import urllib.request as urllib2
+
 import xbmcvfs
-import urllib2
+import xbmc
+import xbmcgui
+
+from resources.lib.comaddon import dialog
 
 NewMethod = True
+dialogs = dialog()
 
 
 def Captcha_Get_Reponse(img, cookie):
+
     # on telecharge l'image
     # PathCache = xbmc.translatePath(xbmcaddon.Addon("plugin.video.vstream").getAddonInfo("profile"))
     # filename  = os.path.join(PathCache, "Captcha.raw").decode("utf-8")
