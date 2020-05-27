@@ -119,10 +119,15 @@ class cUtil:
             name = unicode(name, 'utf-8')  # converti en unicode pour aider aux convertions
         except:
             pass
-        name = unicodedata.normalize('NFD', name).encode('ascii', 'ignore').decode('unicode_escape')
-        name = name.encode('utf-8')  # on repasse en utf-8
+        
+        try:
+            name = unicodedata.normalize('NFD', name).encode('ascii', 'ignore').decode('unicode_escape')
+            name = name.encode('utf-8') #on repasse en utf-8
+        except TypeError:
+            name = unicodedata.normalize('NFKD', name.decode("utf-8")).encode('ASCII', 'ignore')
+            name = name.decode("utf-8") #on repasse en utf-8
 
-        # on cherche l'annee
+        #on cherche l'annee
         annee = ''
         m = re.search('(\([0-9]{4}\))', name)
         if m:
@@ -166,7 +171,10 @@ class cUtil:
             string = string[1:]
 
         # convertion unicode
-        string = string.decode('utf-8')
+        try:
+            string = string.decode('utf-8')
+        except AttributeError:
+            pass
 
         SXEX = ''
         m = re.search('(?i)(\wpisode ([0-9\.\-\_]+))', string, re.UNICODE)
