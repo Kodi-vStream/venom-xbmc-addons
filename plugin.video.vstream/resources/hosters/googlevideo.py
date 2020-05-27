@@ -1,12 +1,22 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+try:  # Python 2
+    import urllib2
+    from urllib2 import URLError as UrlError
+
+except ImportError:  # Python 3
+    import urllib.request as urllib2
+    import urllib.error as UrlError
+
 import re
-import urllib2
+import xbmcgui
 
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import VSlog, xbmcgui
+from resources.lib.comaddon import VSlog
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:62.0) Gecko/20100101 Firefox/62.0'
+
 
 class cHoster(iHoster):
     def __init__(self):
@@ -67,31 +77,31 @@ class cHoster(iHoster):
         # si lien deja decode
         if (r == False):
             if '//lh3.googleusercontent.com' in self.__sUrl:
-                #Nouveaute, avec cookie now
+                # Nouveaute, avec cookie now
 
                 VSlog(self.__sUrl)
 
                 import requests
                 h = {'User-Agent': UA}
-                r = requests.get(self.__sUrl, headers=h,allow_redirects=False)
+                r = requests.get(self.__sUrl, headers=h, allow_redirects=False)
                 url = r.headers['Location']
-                #VSlog(url)
-                
+                # VSlog(url)
+
                 url = url + '|User-Agent=' + UA
-                
+
                 if 'set-cookie' in r.headers:
                     cookies = r.headers['set-cookie']
                     url = url + '&Cookie=' + cookies
-                    #VSlog(cookies)
+                    # VSlog(cookies)
 
                 # Impossible a faire fonctionner, si quelqu'un y arrive .....
-                #class NoRedirect(urllib2.HTTPRedirectHandler):
-                #    def redirect_request(self, req, fp, code, msg, hdrs, newurl):
-                #        return newurl
-                #opener = urllib2.build_opener(NoRedirect)
-                #HttpReponse = opener.open(self.__sUrl)
-                #htmlcontent = HttpReponse.read()
-                #head = HttpReponse.headers
+                # class NoRedirect(UrlError.HTTPRedirectHandler):
+                    # def redirect_request(self, req, fp, code, msg, hdrs, newurl):
+                        # return newurl
+                # opener = urllib2.build_opener(NoRedirect)
+                # HttpReponse = opener.open(self.__sUrl)
+                # htmlcontent = HttpReponse.read()
+                # head = HttpReponse.headers
 
                 return True, url
             # Peut etre un peu brutal, peut provoquer des bugs
@@ -113,7 +123,7 @@ class cHoster(iHoster):
 
                 try:
                     reponse = urllib2.urlopen(request)
-                except urllib2.URLError as e:
+                except UrlError.URLError as e:
                     print(e.read())
                     print(e.reason)
 
@@ -168,7 +178,7 @@ class cHoster(iHoster):
                 elif 'google' in vid_sel:
                     stream_url = vid_sel
 
-        except urllib2.URLError:
+        except UrlError.URLError:
             stream_url = ''
 
         api_call = stream_url
