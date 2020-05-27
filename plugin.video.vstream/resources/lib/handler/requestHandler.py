@@ -12,6 +12,8 @@ except ImportError:
 from resources.lib.util import urlEncode
 from resources.lib.comaddon import addon, dialog, VSlog
 
+import xbmc
+
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
     REQUEST_TYPE_POST = 1
@@ -157,7 +159,11 @@ class cRequestHandler:
             else:
                 oResponse = urllib2.urlopen(oRequest, timeout=self.__timeout)
 
-            sContent = oResponse.read()
+            #En python 3 on doit décoder la reponse
+            if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+                sContent = oResponse.read().decode('utf-8')
+            else:
+                sContent = oResponse.read()
 
             self.__sResponseHeader = oResponse.info()
 
@@ -239,7 +245,6 @@ class cRequestHandler:
 
     def new_getaddrinfo(self, *args):
         try:
-            import xbmc
             import sys
             import dns.resolver
 
