@@ -1,10 +1,17 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# from resources.lib.handler.requestHandler import cRequestHandler
+
+try:  # Python 2
+    import urllib2
+    from urllib2 import URLError as UrlError
+
+except ImportError:  # Python 3
+    import urllib.request as urllib2
+    import urllib.error as UrlError
+
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 from resources.lib.comaddon import dialog
-import urllib2
 
 
 class cHoster(iHoster):
@@ -14,7 +21,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -80,7 +87,7 @@ class cHoster(iHoster):
 
         try:
             response = urllib2.urlopen(req)
-        except urllib2.URLError as e:
+        except UrlError as e:
             print(e.read())
             print(e.reason)
 
