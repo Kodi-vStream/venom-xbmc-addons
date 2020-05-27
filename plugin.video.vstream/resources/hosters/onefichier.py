@@ -1,14 +1,22 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
+
+try:  # Python 2
+    import urllib2
+    from urllib2 import URLError as UrlError
+
+except ImportError:  # Python 3
+    import urllib.request as urllib2
+    import urllib.error as UrlError
+
 import re
-import urllib
-import urllib2
 
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
 from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.parser import cParser
+from resources.lib.util import urlEncode
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
 
@@ -21,7 +29,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR violet]' + self.__sDisplayName + '[/COLOR]'
@@ -89,12 +97,14 @@ class cHoster(iHoster):
             return False, False
 
         url = 'https://1fichier.com/?' + self.__getIdFromUrl(self.__sUrl)
+
         '''
         La partie ci-dessous permet d'utiliser l'option "Forcer l'affichage du menu pour les téléchargements" permettant
         notamment de choisir depuis l'interface web de télécharger ou d'ajouter un fichier.
         Pour cela, on va ajouter le paramètre e=1 (cf. https://1fichier.com/hlp.html#dev ) à la requête permettant
         d'obtenir le lien direct
         '''
+
         sHtmlContent = self.oPremiumHandler.GetHtml('%s' % url + '&e=1')
         if (sHtmlContent):
             # L'option est désactivée : la réponse sera de type "text/plain; charset=utf-8", exemple :
@@ -109,20 +119,19 @@ class cHoster(iHoster):
                     'submit': 'download'
                 }
                 # Seul le Cookie est nécessaire, néanmoins autant rendre les headers cohérents
-                headers = {
-                    'User-Agent': UA,
-                    'Host': '1fichier.com',
-                    'Referer': url,
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                    'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
-                    'Cookie': cookie,
-                    'Content-Length': '15',
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-                request = urllib2.Request(url, urllib.urlencode(data), headers)
+                headers = {'User-Agent': UA,
+                           'Host': '1fichier.com',
+                           'Referer': url,
+                           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                           'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
+                           'Cookie': cookie,
+                           'Content-Length': '15',
+                           'Content-Type': 'application/x-www-form-urlencoded'
+                           }
+                request = urllib2.Request(url, urlEncode(data), headers)
                 try:
                     response = urllib2.urlopen(request)
-                except urllib2.URLError as e:
+                except UrlError as e:
                     print(e.read())
                     print(e.reason)
                 # Par défaut on suit la redirection (code: 302 + entête 'Location') dans la réponse
@@ -132,23 +141,23 @@ class cHoster(iHoster):
         else:
             return False, False
 
-        #Mode = ''
-        #Mode = {'dl_no_ssl': 'on' , 'dlinline': 'on'}
-        #Mode = {'dl_no_ssl': 'on' }
-        #postdata = urllib.urlencode(Mode)
+        # Mode = ''
+        # Mode = {'dl_no_ssl': 'on' , 'dlinline': 'on'}
+        # Mode = {'dl_no_ssl': 'on'}
+        # postdata = urlEncode(Mode)
 
-        #Pas de page html mais lien direct
-        #sHtmlContent = self.oPremiumHandler.GetHtml(url, postdata)
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
+        # Pas de page html mais lien direct
+        # sHtmlContent = self.oPremiumHandler.GetHtml(url, postdata)
+        # fh = open('c:\\test.txt', "w")
+        # fh.write(sHtmlContent)
+        # fh.close()
 
-        #mode inline
-        #url = url + '&inline'
+        # mode inline
+        # url = url + '&inline'
 
         api_call = url + '|' + self.oPremiumHandler.AddCookies()
 
-        #VSlog( api_call )
+        # VSlog(api_call)
 
         if (api_call):
             return True, api_call
@@ -160,9 +169,9 @@ class cHoster(iHoster):
         api_call = False
         url = 'https://1fichier.com/?' + self.__getIdFromUrl(self.__sUrl)
 
-        headers = {'User-Agent': UA ,
+        headers = {'User-Agent': UA,
                    'Host': '1fichier.com',
-                   'Referer': self.__sUrl ,
+                   'Referer': self.__sUrl,
                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                    'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3'
                    # 'Content-Type': 'application/x-www-form-urlencoded'
@@ -171,9 +180,9 @@ class cHoster(iHoster):
         adcode = random.uniform(000.000000000, 999.999999999)
 
         Mode = ''
-        #Mode = {'dl_no_ssl': 'on', 'dlinline': 'on'}
+        # Mode = {'dl_no_ssl': 'on', 'dlinline': 'on'}
         Mode = {'dl_no_ssl': 'on', 'adzone': adcode}
-        postdata = urllib.urlencode(Mode)
+        postdata = urlEncode(Mode)
 
         req = urllib2.Request(url, postdata, headers)
 
@@ -182,7 +191,7 @@ class cHoster(iHoster):
             # context = ssl._create_unverified_context()
             # response = urllib2.urlopen(req, context=context)
             response = urllib2.urlopen(req)
-        except urllib2.URLError as e:
+        except UrlError as e:
             print(e.read())
             print(e.reason)
 
