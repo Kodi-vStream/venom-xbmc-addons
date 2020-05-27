@@ -58,7 +58,13 @@ class cClear:
                 sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/changelog.txt'
                 oRequest = urllib2.Request(sUrl)
                 oResponse = urllib2.urlopen(oRequest)
-                sContent = oResponse.read()
+
+                # En python 3 on doit décoder la reponse
+                if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+                    sContent = oResponse.read().decode('utf-8')
+                else:
+                    sContent = oResponse.read()
+
                 self.TextBoxes('vStream Changelog', sContent)
             except:
                 self.DIALOG.VSerror("%s, %s" % (self.ADDON.VSlang(30205), sUrl))
@@ -83,7 +89,13 @@ class cClear:
                     sUrl = 'https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/commits'
                     oRequest = urllib2.Request(sUrl)
                     oResponse = urllib2.urlopen(oRequest)
-                    sContent = oResponse.read()
+
+                    # En python 3 on doit décoder la reponse
+                    if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+                        sContent = oResponse.read().decode('utf-8')
+                    else:
+                        sContent = oResponse.read()
+
                     result = json.loads(sContent)
                     listitems = []
 
@@ -126,7 +138,13 @@ class cClear:
                 sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/soutient.txt'
                 oRequest = urllib2.Request(sUrl)
                 oResponse = urllib2.urlopen(oRequest)
-                sContent = oResponse.read()
+
+                # En python 3 on doit décoder la reponse
+                if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+                    sContent = oResponse.read().decode('utf-8')
+                else:
+                    sContent = oResponse.read()
+
                 self.TextBoxes('vStream Soutient', sContent)
             except:
                 self.DIALOG.VSerror("%s, %s" % (self.ADDON.VSlang(30205), sUrl))
