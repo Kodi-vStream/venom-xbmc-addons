@@ -5,11 +5,19 @@
 # sLibrary = xbmc.translatePath(vstream.getAddonInfo("path")).decode("utf-8")
 # sys.path.append (sLibrary)
 
-from resources.lib.comaddon import addon, dialog, VSlog, xbmc, xbmcgui, window
+try:  # Python 2
+    import urllib2
+
+except ImportError:  # Python 3
+    import urllib.request as urllib2
+
 import xbmcvfs
 import sys
-import urllib
-import urllib2
+import xbmc
+import xbmcgui
+
+from resources.lib.comaddon import addon, dialog, VSlog, window
+from resources.lib.util import urlEncode
 
 try:
     from sqlite3 import dbapi2 as sqlite
@@ -207,7 +215,7 @@ class cClear:
                     post_data['permissions'] = 1  # private
                     post_data['expire'] = 259200  # 3j
                     post_data['submit'] = 'Submit+Paste'
-                    request = urllib2.Request(cUrl, urllib.urlencode(post_data), headers)
+                    request = urllib2.Request(cUrl, urlEncode(post_data), headers)
                     reponse = urllib2.urlopen(request)
                     code = reponse.geturl().replace('http://slexy.org/view/', '')
                     reponse.close()
@@ -245,7 +253,9 @@ class cClear:
                         bPlugin = self.ADDON.getSetting(sPluginSettingsName)
 
                         icon = "special://home/addons/plugin.video.vstream/resources/art/sites/%s.png" % aPlugin[1]
-                        stitle = aPlugin[0].replace('[COLOR violet]', '').replace('[COLOR orange]', '').replace('[/COLOR]', '').replace('[COLOR dodgerblue]', '').replace('[COLOR coral]', '')
+                        stitle = aPlugin[0].replace('[COLOR violet]', '').replace('[COLOR orange]', '')\
+                                           .replace('[/COLOR]', '').replace('[COLOR dodgerblue]', '')\
+                                           .replace('[COLOR coral]', '')
                         if (bPlugin == 'true'):
                             stitle = ('%s %s') % (stitle, valid)
                         listitem = xbmcgui.ListItem(label=stitle, label2=aPlugin[2])
