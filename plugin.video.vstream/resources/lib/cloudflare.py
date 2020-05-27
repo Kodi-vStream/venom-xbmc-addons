@@ -8,10 +8,11 @@ from requests.adapters import HTTPAdapter
 from collections import OrderedDict
 import re, ssl, requests  #, os, time, json, random
 from requests.sessions import Session
+from resources.lib.util import urlEncode
 
-try:
+try:  # Python 2
     from urlparse import urlparse
-except ImportError:
+except ImportError:  # Python 3
     from urllib.parse import urlparse
 
 # old version
@@ -28,14 +29,14 @@ from requests.packages.urllib3.util.ssl_ import create_urllib3_context
 
 class CipherSuiteAdapter(HTTPAdapter):
 
-    def __init__(self, cipherSuite = None, **kwargs):
+    def __init__(self, cipherSuite=None, **kwargs):
         self.cipherSuite = cipherSuite
 
         if hasattr(ssl, 'PROTOCOL_TLS'):
             self.ssl_context = create_urllib3_context(
-                ssl_version = getattr(ssl, 'PROTOCOL_TLSv1_3', ssl.PROTOCOL_TLSv1_2),
-                ciphers = self.cipherSuite
-            )
+                    ssl_version=getattr(ssl, 'PROTOCOL_TLSv1_3', ssl.PROTOCOL_TLSv1_2),
+                    ciphers=self.cipherSuite
+                    )
         else:
             self.ssl_context = create_urllib3_context(ssl_version=ssl.PROTOCOL_TLSv1)
 
@@ -50,6 +51,7 @@ class CipherSuiteAdapter(HTTPAdapter):
         return super(CipherSuiteAdapter, self).proxy_manager_for(*args, **kwargs)
 
 #######################################################################################################################
+
 
 Mode_Debug = True
 
@@ -108,46 +110,6 @@ if (False):
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0'
 
 
-def checklowerkey(key, dict):
-    for i in dict:
-        if str(i.lower()) == str(key.lower()):
-            return i
-    return False
-
-
-def checkpart(s, end='+'):
-    p = 0
-    pos = 0
-
-    try:
-        while (1):
-            c = s[pos]
-
-            if (c == '('):
-                p = p + 1
-            if (c == ')'):
-                p = p - 1
-
-            pos = pos + 1
-
-            if (c == end) and (p == 0) and (pos > 1):
-                break
-    except:
-        pass
-
-    return s[:pos]
-
-def CheckIfActive(data):
-    if 'Checking your browser before accessing' in str(data):
-        return True
-    return False
-
-def showInfo(sTitle, sDescription, iSeconds=0):
-    if (iSeconds == 0):
-        iSeconds = 1000
-    else:
-        iSeconds = iSeconds * 1000
-
 class CloudflareBypass(object):
     def __init__(self):
         self.state = False
@@ -159,14 +121,13 @@ class CloudflareBypass(object):
         self.RedirectionUrl = None
 
     # Return param for head
-    def GetHeadercookie(self,url):
+    def GetHeadercookie(self, url):
         Domain = re.sub(r'https*:\/\/([^/]+)(\/*.*)', '\\1', url)
         cook = GestionCookie().Readcookie(Domain.replace('.', '_'))
         if cook == '':
             return ''
 
-        return '|' + urllib.urlencode({'User-Agent': UA, 'Cookie': cook})
-
+        return '|' + urlEncode({'User-Agent': UA, 'Cookie': cook})
 
     def ParseCookies(self, data):
         list = {}
@@ -185,14 +146,13 @@ class CloudflareBypass(object):
 
         return list
 
-
     def SetHeader(self):
         head = OrderedDict()
         # Need to use correct order
         h = ['User-Agent', 'Accept', 'Accept-Language', 'Accept-Encoding', 'Connection', 'Upgrade-Insecure-Requests']
         v = [UA, 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'en-US,en;q=0.5', 'gzip, deflate', 'close', '1']
         for i in enumerate(h):
-            k = checklowerkey(i[1],self.Memorised_Headers)
+            k = checklowerkey(i[1], self.Memorised_Headers)
             if k:
                 head[i[1]] = self.Memorised_Headers[k]
             else:
@@ -209,16 +169,14 @@ class CloudflareBypass(object):
             head2 = dict(head)
             for key in head2:
                 if not key in Headers and key.lower() in Headers_l:
-                    p  = Headers_l.index(key.lower())
+                    p = Headers_l.index(key.lower())
                     head[Headers[p]] = head[key]
                     del head[key]
 
         return head
 
-
     def GetReponseInfo(self):
         return self.RedirectionUrl, self.Header
-
 
     def GetHtml(self, url, htmlcontent='', cookies='', postdata=None, Gived_headers=''):
 
@@ -280,7 +238,7 @@ class CloudflareBypass(object):
 
         s = cloudscrape.create_scraper(browser={'custom': 'ScraperBot/1.0'})
 
-        r = s.request(method,url, headers=self.SetHeader(), cookies=self.ParseCookies(cookies), data=data)
+        r = s.request(method, url, headers=self.SetHeader(), cookies=self.ParseCookies(cookies), data=data)
         # r = s.request(method, url)
         MemCookie = r.cookies.get_dict()
 
@@ -311,6 +269,49 @@ class CloudflareBypass(object):
             # Write them
             GestionCookie().SaveCookie(self.host.replace('.', '_'), c)
             if Mode_Debug:
-                VSlog('Sauvegarde cookies: ' + str(c) )
+                VSlog('Sauvegarde cookies: ' + str(c))
 
         return sContent
+
+
+def checklowerkey(key, dict):
+    for i in dict:
+        if str(i.lower()) == str(key.lower()):
+            return i
+    return False
+
+
+def checkpart(s, end='+'):
+    p = 0
+    pos = 0
+
+    try:
+        while (1):
+            c = s[pos]
+
+            if (c == '('):
+                p = p + 1
+            if (c == ')'):
+                p = p - 1
+
+            pos = pos + 1
+
+            if (c == end) and (p == 0) and (pos > 1):
+                break
+    except:
+        pass
+
+    return s[:pos]
+
+
+def CheckIfActive(data):
+    if 'Checking your browser before accessing' in str(data):
+        return True
+    return False
+
+
+def showInfo(sTitle, sDescription, iSeconds=0):
+    if (iSeconds == 0):
+        iSeconds = 1000
+    else:
+        iSeconds = iSeconds * 1000
