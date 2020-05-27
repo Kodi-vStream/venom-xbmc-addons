@@ -4,13 +4,21 @@
 # and https://github.com/OpenMediaVault-Plugin-Developers/openmediavault-pyload/blob/master/usr/share/pyload/module/plugins/captcha/ReCaptcha.py
 # and https://gitlab.com/iptvplayer-for-e2/iptvplayer-for-e2
 # *************************************************************************************************************************
+
+try:  # Python 2
+    import urllib2
+    from urllib2 import URLError as UrlError
+
+except ImportError:  # Python 3
+    import urllib.request as urllib2
+    import urllib.error as UrlError
+
 import base64
 import cookielib
 import os
 import random
 import re
 import time
-import urllib2
 import xbmcaddon
 import xbmcvfs
 import xbmcgui
@@ -18,7 +26,7 @@ import xbmc
 
 from resources.lib.comaddon import dialog, VSlog
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.util import urlEncode
+from resources.lib.util import urlEncode, Noredirection
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
 __addon__ = xbmcaddon.Addon('plugin.video.vstream')
@@ -250,7 +258,7 @@ def getUrl(url, cookieJar=None, post=None, timeout=20, headers=None, noredir=Fal
     cookie_handler = urllib2.HTTPCookieProcessor(cookieJar)
 
     if noredir:
-        opener = urllib2.build_opener(NoRedirection, cookie_handler, urllib2.HTTPBasicAuthHandler(), urllib2.HTTPHandler())
+        opener = urllib2.build_opener(Noredirection, cookie_handler, urllib2.HTTPBasicAuthHandler(), urllib2.HTTPHandler())
     else:
         opener = urllib2.build_opener(cookie_handler, urllib2.HTTPBasicAuthHandler(), urllib2.HTTPHandler())
     # opener = urllib2.install_opener(opener)
