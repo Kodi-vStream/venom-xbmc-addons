@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-try:
+try:  # Python 2
     import urllib2
-    from urllib2 import HTTPError, URLError as UrlError
+    from urllib2 import URLError as UrlError
+    from urllib2 import HTTPError as HttpError
 
-except ImportError:
+except ImportError:  # Python 3
     import urllib.request as urllib2
     import urllib.error as UrlError
+    from urllib.error import HTTPError as HttpError
+
+import xbmc
 
 from resources.lib.util import urlEncode
 from resources.lib.comaddon import addon, dialog, VSlog
 
-import xbmc
 
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
@@ -178,7 +181,7 @@ class cRequestHandler:
 
             oResponse.close()
 
-        except UrlError.HTTPError as e:
+        except HttpError as e:
             if e.code == 503:
 
                 # Protected by cloudFlare ?
