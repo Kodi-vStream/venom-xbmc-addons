@@ -47,7 +47,7 @@ class cHoster(iHoster):
         return ''
 
     def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
+        self.__sUrl = str(sUrl).replace('+', '%20') # un lien direct n'est pas forcement urlEncoded
 
     def gethost(self, sUrl):
         sPattern = 'https*:\/\/(.+?)\/.+?'

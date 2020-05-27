@@ -102,6 +102,9 @@ class dialog(xbmcgui.Dialog):
     def VSerror(self, e):
         return self.notification('vStream', 'Erreur: ' + str(e), xbmcgui.NOTIFICATION_ERROR, 2000), VSlog('Erreur: ' + str(e))
 
+    def VStextView(self, desc, title = "vStream"):
+        dialog = self.textviewer(title, desc)
+        return dialog
 """
 from resources.lib.comaddon import progress
 
@@ -154,7 +157,7 @@ class progress(xbmcgui.DialogProgress):
         global COUNT
         COUNT += 1
         iPercent = int(float(COUNT * 100) / total)
-        dialog.update(iPercent, 'Loading: ' + str(COUNT) + '/' + str(total), text)
+        dialog.update(iPercent, 'Loading: ' + str(COUNT) + '/' + str(total) + " " + text)
 
 
     def VSclose(self, dialog = ''):
@@ -207,7 +210,10 @@ def VSlog(e, level = xbmc.LOGDEBUG):
     #rapelle l'ID de l'addon pour être appelé hors addon
     if (addon('plugin.video.vstream').getSetting('debug') == 'true'):
         level = xbmc.LOGNOTICE
-    return xbmc.log('\t[PLUGIN] vStream: ' + str(e), level)
+    try:
+        xbmc.log('\t[PLUGIN] vStream: ' + str(e), level)
+    except:
+        pass
 
 def VSupdate():
     return xbmc.executebuiltin('Container.Refresh')

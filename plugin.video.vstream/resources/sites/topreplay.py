@@ -23,6 +23,7 @@ REPLAYTV_GENRES = (True, 'showGenre')
 REPLAYTV_NEWS = (URL_MAIN , 'showMovies')
 REPLAYTV_REPLAYTV = ('http://' , 'load')
 
+
 def load():
     oGui = cGui()
 
@@ -40,6 +41,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
 
@@ -50,10 +52,11 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showGenre():
     oGui = cGui()
     oParser = cParser()
-    
+
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
     reducesHtmlContent = oParser.abParse(sHtmlContent, 'class="main-menu menu bsm-pure clearfix">','<span class="menu-handler">')
@@ -94,7 +97,7 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     sPattern = 'data-src="([^"]+)".+?class="title"> *<a href="([^"]+)".+?class="post-title post-url">([^<]+)<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -109,12 +112,12 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sThumb = aEntry[0] 
+            sThumb = aEntry[0]
             sUrl = aEntry[1]
             sTitle = aEntry[2]
             if 'Générateur compte' in sTitle:
                 continue
-                
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -127,10 +130,12 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('/page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -140,6 +145,7 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
+
 
 def showHosters():
     oGui = cGui()
@@ -153,7 +159,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     aResult = []
- 
+
     #1 netu
     sPattern = '<div id="([^"]+)" style='
     aResult1 = re.search(sPattern, sHtmlContent)
@@ -164,19 +170,19 @@ def showHosters():
     aResult2 = re.search(sPattern, sHtmlContent)
     if aResult2:
         aResult.append(aResult2.group(1))
-    #3       
+    #3
     sPattern = '<p style=.+?<a href="(https://uptobox.com/.+?)"'
     aResult3 = re.search(sPattern, sHtmlContent)
     if aResult3:
         aResult.append(aResult3.group(1))
-        
+
     if (aResult):
         for aEntry in aResult:
             if not 'http' in aEntry:
                 sHosterUrl = decodeUN(aEntry)
             else:
                 sHosterUrl = aEntry
-                
+
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
@@ -184,7 +190,8 @@ def showHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
-    
+
+
 def decodeUN(a):
     s2 = ''
 

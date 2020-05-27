@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
-#
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress  # , VSlog
 from resources.lib.parser import cParser
+from resources.lib.packer import cPacker
 from resources.lib.util import cUtil
 import re
+import requests
 
 SITE_IDENTIFIER = 'zustream'
 SITE_NAME = 'ZuStream'
@@ -18,10 +19,12 @@ SITE_DESC = 'Retrouvez un énorme répertoire de films, de séries et de mangas 
 
 URL_MAIN = 'https://www.zustream.biz/'
 
+MOVIE_MOVIE = (True, 'showMenuFilms')
 MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
 MOVIE_GENRES = ('?post_types=movies', 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
 
+SERIE_SERIES = (True, 'showMenuSeries')
 SERIE_NEWS = (URL_MAIN + 'serie/', 'showMovies')
 SERIE_GENRES = ('?post_types=tvshows', 'showGenres')
 SERIE_MANGAS = (URL_MAIN + 'genre/mangas/', 'showMovies')
@@ -38,6 +41,7 @@ URL_SEARCH_MOVIES = (URL_MAIN + '?post_types=movies&s=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + '?post_types=tvshows&s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
+
 def load():
     oGui = cGui()
 
@@ -50,6 +54,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showMenuSeries', 'Séries', 'series.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMenuFilms():
     oGui = cGui()
@@ -71,6 +76,7 @@ def showMenuFilms():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMenuSeries():
     oGui = cGui()
@@ -128,25 +134,25 @@ def showGenres():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
-    liste.append( ['Action', URL_MAIN + 'genre/action/' + sUrl] )
-    liste.append( ['Animation', URL_MAIN + 'genre/animation/' + sUrl] )
-    liste.append( ['Aventure', URL_MAIN + 'genre/aventure/' + sUrl] )
-    liste.append( ['Biopic', URL_MAIN + 'genre/biographie/' + sUrl] )
-    liste.append( ['Comédie', URL_MAIN + 'genre/comedie/' + sUrl] )
-    liste.append( ['Comédie musicale', URL_MAIN + 'genre/musique/' + sUrl] )
-    liste.append( ['Comédie romantique', URL_MAIN + 'genre/romance/' + sUrl] )
-    liste.append( ['Documentaire', URL_MAIN + 'genre/documentaire/' + sUrl] )
-    liste.append( ['Drame', URL_MAIN + 'genre/drame/' + sUrl] )
-    liste.append( ['Guerre', URL_MAIN + 'genre/guerre/' + sUrl] )
-    liste.append( ['Famille', URL_MAIN + 'genre/familial/' + sUrl] )
-    liste.append( ['Fantastique', URL_MAIN + 'genre/fantastique/' + sUrl] )
-    liste.append( ['Horreur', URL_MAIN + 'genre/horreur/' + sUrl] )
-    liste.append( ['Historique', URL_MAIN + 'genre/histoire/' + sUrl] )
-    liste.append( ['Mystere', URL_MAIN + 'genre/mystere/' + sUrl] )
-    liste.append( ['Noël', URL_MAIN + 'genre/noel/' + sUrl] )
-    liste.append( ['Science Fiction', URL_MAIN + 'genre/science-fiction/' + sUrl] )
-    liste.append( ['Thriller', URL_MAIN + 'genre/thriller/' + sUrl] )
-    liste.append( ['Western', URL_MAIN + 'genre/western/' + sUrl] )
+    liste.append(['Action', URL_MAIN + 'genre/action/' + sUrl])
+    liste.append(['Animation', URL_MAIN + 'genre/animation/' + sUrl])
+    liste.append(['Aventure', URL_MAIN + 'genre/aventure/' + sUrl])
+    liste.append(['Biopic', URL_MAIN + 'genre/biographie/' + sUrl])
+    liste.append(['Comédie', URL_MAIN + 'genre/comedie/' + sUrl])
+    liste.append(['Comédie musicale', URL_MAIN + 'genre/musique/' + sUrl])
+    liste.append(['Comédie romantique', URL_MAIN + 'genre/romance/' + sUrl])
+    liste.append(['Documentaire', URL_MAIN + 'genre/documentaire/' + sUrl])
+    liste.append(['Drame', URL_MAIN + 'genre/drame/' + sUrl])
+    liste.append(['Guerre', URL_MAIN + 'genre/guerre/' + sUrl])
+    liste.append(['Famille', URL_MAIN + 'genre/familial/' + sUrl])
+    liste.append(['Fantastique', URL_MAIN + 'genre/fantastique/' + sUrl])
+    liste.append(['Horreur', URL_MAIN + 'genre/horreur/' + sUrl])
+    liste.append(['Historique', URL_MAIN + 'genre/histoire/' + sUrl])
+    liste.append(['Mystere', URL_MAIN + 'genre/mystere/' + sUrl])
+    liste.append(['Noël', URL_MAIN + 'genre/noel/' + sUrl])
+    liste.append(['Science Fiction', URL_MAIN + 'genre/science-fiction/' + sUrl])
+    liste.append(['Thriller', URL_MAIN + 'genre/thriller/' + sUrl])
+    liste.append(['Western', URL_MAIN + 'genre/western/' + sUrl])
 
     for sTitle, sUrl in liste:
 
@@ -156,10 +162,11 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
+
 def showYears():
     oGui = cGui()
 
-    for i in reversed(xrange(1995, 2021)):
+    for i in reversed(range(1995, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'sortie/' + Year + '/?post_types=movies')
@@ -167,16 +174,18 @@ def showYears():
 
     oGui.setEndOfDirectory()
 
+
 def showYearsSeries():
     oGui = cGui()
 
-    for i in reversed (xrange(1997, 2021)):
+    for i in reversed(range(1997, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'sortie/' + Year + '/?post_types=tvshows')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showSearch():
     oGui = cGui()
@@ -189,6 +198,7 @@ def showSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
+
 
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -238,8 +248,8 @@ def showMovies(sSearch = ''):
                 if aEntry[5]:
                     sDesc = aEntry[5]
 
-            sDesc = unicode(sDesc, 'utf-8') # converti en unicode
-            sDesc = utils.unescape(sDesc)   # retire les balises HTML
+            sDesc = unicode(sDesc, 'utf-8')  # converti en unicode
+            sDesc = utils.unescape(sDesc)    # retire les balises HTML
 
             sDisplayTitle = ('%s (%s) (%s)') % (sTitle, sLang, sYear)
 
@@ -260,9 +270,11 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('/page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -272,6 +284,7 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
+
 
 def showSxE():
     oGui = cGui()
@@ -315,6 +328,7 @@ def showSxE():
 
     oGui.setEndOfDirectory()
 
+
 def showLink():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -329,7 +343,9 @@ def showLink():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        sortedList = sorted(aResult[1], key = getSortedKey)
+
+        # trie par numéro de serveur
+        sortedList = sorted(aResult[1], key = lambda item:item[2])
         for aEntry in sortedList:
 
             sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
@@ -355,8 +371,6 @@ def showLink():
 
     oGui.setEndOfDirectory()
 
-def getSortedKey(item):
-    return item[2]
 
 def showHosters():
     oGui = cGui()
@@ -380,17 +394,21 @@ def showHosters():
     oRequest.addParametersLine(pdata)
 
     sHtmlContent = oRequest.request()
+    oParser = cParser()
 
-    #1
+    # 1
     sPattern = '(?:<iframe|<IFRAME).+?(?:src|SRC)=(?:\'|")(.+?)(?:\'|")'
     aResult1 = re.findall(sPattern, sHtmlContent)
+    # VSlog(aResult1)
 
-    #2
+    # 2
     sPattern = '<a href="([^"]+)">'
     aResult2 = re.findall(sPattern, sHtmlContent)
+    # VSlog(aResult2)
 
-    #fusion
+    # fusion
     aResult = aResult1 + aResult2
+    # VSlog(aResult)
 
     if (aResult):
         for aEntry in aResult:
@@ -399,10 +417,37 @@ def showHosters():
             if 'zustreamv2/viplayer' in sHosterUrl:
                 return
 
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+            if 're.zu-lien.com' in sHosterUrl:
+                UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
+                oRequestHandler = cRequestHandler(sHosterUrl)
+                oRequestHandler.addHeaderEntry('User-Agent', UA)
+                oRequestHandler.addHeaderEntry('Referer', 'https://re.zu-lien.com')
+                sHtmlContent2 = oRequestHandler.request()
+                sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
+                sPattern2 = '<div id="videolink".+?>\/\/([^<>]+)'
+
+                aResult2 = oParser.parse(sHtmlContent2, sPattern)
+                aResult = re.findall(sPattern2, sHtmlContent2)
+
+                if (aResult2[0] == True):  # Gounlimited
+                    sHtmlContent = cPacker().unpack(aResult2[1][0])
+                    # VSlog(sHtmlContent)
+                    sPattern = 'src:"([^"]+)"'
+                    aResult3 = oParser.parse(sHtmlContent, sPattern)
+                    if (aResult3[0] == True):
+                        sHosterUrl = aResult3[1][0]
+
+                if aResult:  # streamtape
+                    redi = "https://" + aResult[0]
+                    # VSlog(redi)
+                    session = requests.Session()  # so connections are recycled
+                    resp = session.head(redi, allow_redirects = True)
+                    sHosterUrl = resp.url
+
+        oHoster = cHosterGui().checkHoster(sHosterUrl)
+        if (oHoster != False):
+            oHoster.setDisplayName(sMovieTitle)
+            oHoster.setFileName(sMovieTitle)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()

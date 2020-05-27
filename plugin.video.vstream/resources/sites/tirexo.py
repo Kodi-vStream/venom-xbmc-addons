@@ -16,7 +16,7 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/5
 SITE_IDENTIFIER = 'tirexo'
 SITE_NAME = '[COLOR violet]Tirexo (ZT lol)[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
-URL_HOST = 'https://www.zone-warez.com/'
+URL_HOST = 'https://www.tirexo.com/'
 
 def getURL():
     oParser = cParser()
@@ -70,13 +70,15 @@ def GetURL_MAIN():
             VSlog("Tirexo pas besoin d'url")
             return ADDON.getSetting('Tirexo')
 
-URL_MAIN = "https://www2.zone-warez.org/"
+#Teste pour le moment avec une url fixe.
+URL_MAIN = "https://www2.tirexo.com/"
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=2&story=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=15&story=', 'showMovies')
 URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=32&story=', 'showMovies')
 URL_SEARCH_MISC = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=39&story=', 'showMovies')
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
+MOVIE_COLLECTION = (URL_MAIN + 'collections/', 'showMovies')
 MOVIE_EXCLUS = (URL_MAIN + 'exclus/', 'showMovies')
 MOVIE_3D = (URL_MAIN + 'films-bluray-3d/', 'showMovies')
 MOVIE_SD = (URL_MAIN + 'films-bluray-hd/', 'showMovies')
@@ -158,6 +160,10 @@ def showMenuMovies():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Derniers ajouts', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_COLLECTION[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_COLLECTION[1], 'Les collections', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_EXCLUS[0])
@@ -391,6 +397,8 @@ def showMovies(sSearch = ''):
 
     if sSearch or "index" in sUrl: # en mode recherche
         sPattern = '<a class="mov-t nowrap" href="([^"]+)" title="[^"]+"> *<div data-toggle=.+?data-content="([^"]+)".+?<img src="([^"]+)".+?alt="([^"]+)".+?<a href="([^"]+)">(.+?)<'
+    elif 'collections/' in sUrl:
+        sPattern = '<a class="mov-t nowrap" href="([^"]+)"> *<div data-toggle=.+?title="<h5.+?>([^<]+).+?<img src="([^"]+)"'
     else:
         sPattern = '<a class="mov-t nowrap" href="([^"]+)"> *<div data-toggle=.+?data-content="([^"]+)".+?<img src="([^"]+)".+?title="([^"]+)".+?(> *<\/a>|annee-de-sortie\/(.+?)\/)'
 
@@ -409,19 +417,27 @@ def showMovies(sSearch = ''):
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
+                
+            if 'collections/' in sUrl:
+                sUrl2 = aEntry[0]
+                sDesc = ""
+                sTitle = aEntry[1]
+                sThumb = aEntry[2]
+                sYear = "0000"
 
-            sUrl2 = aEntry[0]
-            sDesc = aEntry[1]
-            sThumb = aEntry[2]
-            sTitle = aEntry[3]
-            sYear = aEntry[5]
+            else:
+                sUrl2 = aEntry[0]
+                sDesc = aEntry[1]
+                sThumb = aEntry[2]
+                sTitle = aEntry[3]
+                sYear = aEntry[5]
 
-            # Enlever les films en doublons (même titre et même année)
-            # il s'agit du même film dans une autre qualité qu'on retrouvera au moment du choix de la qualité
-            key = sTitle + "-" + sYear
-            if key in titles :
-                continue;
-            titles.add(key)
+                # Enlever les films en doublons (même titre et même année)
+                # il s'agit du même film dans une autre qualité qu'on retrouvera au moment du choix de la qualité
+                key = sTitle + "-" + sYear
+                if key in titles :
+                    continue;
+                titles.add(key)
 
             sDesc = re.sub('<[^<]+?>', '', sDesc)
             sDisplayTitle = sTitle
@@ -441,8 +457,8 @@ def showMovies(sSearch = ''):
 
             if 'series' in sUrl2 or 'animes' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
-            elif 'collection' in sUrl2 or 'integrale' in sUrl2:
-                oGui.addMoviePack(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            elif 'collections/' in sUrl:
+                oGui.addMoviePack(SITE_IDENTIFIER, 'showCollec', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -475,6 +491,69 @@ def __checkForNextPage(sHtmlContent):
             nextPage = URL_MAIN[:-1] + nextPage
         return nextPage
     return False
+
+def showCollec():
+    oGui = cGui()
+    oParser = cParser()
+    oInputParameterHandler = cInputParameterHandler()
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
+    sYear = oInputParameterHandler.getValue('sYear')
+
+    sPattern = '<a class="mov-t nowrap" href="([^"]+)"> *<div data-toggle=.+?data-content="([^"]+)".+?<img src="([^"]+)".+?title="([^"]+)".+?(> *<\/a>|annee-de-sortie\/(.+?)\/)'
+
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    sHtmlContent = oRequestHandler.request()
+
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    titles = set()
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        progress_ = progress().VScreate(SITE_NAME)
+        for aEntry in aResult[1]:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
+                
+            sUrl2 = aEntry[0]
+            sDesc = aEntry[1]
+            sThumb = aEntry[2]
+            sTitle = aEntry[3]
+            sYear = aEntry[5]
+
+            # Enlever les films en doublons (même titre et même année)
+            # il s'agit du même film dans une autre qualité qu'on retrouvera au moment du choix de la qualité
+            key = sTitle + "-" + sYear
+            if key in titles :
+                continue;
+            titles.add(key)
+
+            sDesc = re.sub('<[^<]+?>', '', sDesc)
+            sDisplayTitle = sTitle
+
+            if not sThumb.startswith('http'):
+                sThumb = URL_MAIN[:-1] + sThumb
+
+            if not sUrl2.startswith('http'):
+                sUrl2 = URL_MAIN[:-1] + sUrl2
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('sYear', sYear)
+
+            oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+
+        progress_.VSclose(progress_)
+
+    oGui.setEndOfDirectory()
 
 def showMoviesLinks():
     oGui = cGui()
@@ -742,6 +821,11 @@ def showHosters():
             if aEntry[0]:
                 sHoster = re.sub('\.\w+', '', aEntry[0])
                 continue;
+            
+            # filtrer les hosts connus
+            oHoster = cHosterGui().checkHoster(sHoster)
+            if not oHoster:
+                continue
 
             sUrl2 = URL_MAIN[:-1] + aEntry[1]
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHoster)

@@ -7,6 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 #from resources.lib.util import cUtil
+from resources.lib.util import Noredirection
 from resources.lib.comaddon import progress, VSlog
 
 import re, urllib2
@@ -16,6 +17,7 @@ SITE_NAME = 'Gum-Gum-Streaming'
 SITE_DESC = 'Animés VF/VOSTFR'
 
 URL_MAIN = 'https://gum-gum-streaming.com/'
+#URL_MAIN = 'https://gum-gum-streaming.co/'  # sans pub
 
 ANIM_ANIMS = (True, 'load')
 ANIM_NEWS = (URL_MAIN, 'showNews')
@@ -129,7 +131,7 @@ def showAnimes():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addAnime(SITE_IDENTIFIER, 'showEpisodes', sTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
         progress_.VSclose(progress_)
     oGui.setEndOfDirectory()
 
@@ -360,14 +362,9 @@ def GetTinyUrl(url):
 
         #VSlog('Decodage lien tinyurl : ' + str(url))
 
-        class NoRedirection(urllib2.HTTPErrorProcessor):
-            def http_response(self, request, response):
-                return response
-            https_response = http_response
-
         headers9 = [('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'), ('Referer', URL_MAIN)]
 
-        opener = urllib2.build_opener(NoRedirection)
+        opener = Noredirection()
         opener.addheaders = headers9
         reponse = opener.open(url, None, 5)
 

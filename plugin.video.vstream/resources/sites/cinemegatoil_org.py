@@ -1,6 +1,9 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-#17/12/18
+
+#07/05/20 mise en place recaptcha
+#return False
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -176,9 +179,7 @@ def showHosters():
     #Vire les bandes annonces
     sHtmlContent = sHtmlContent.replace('src="https://www.youtube.com/', '')
 
-    #sHtmlContent = oParser.abParse(sHtmlContent, '<div class="tcontainer video-box">', '<div class="tcontainer video-box" id=')
-
-    sPattern = '<b>([^"]+)</b><tr> <br>|(?:<a class="" rel="noreferrer" href="([^"]+)".+?<img src="/templates/Flymix/images/(.+?).png" /> *</a>|<a href="([^"]+)" >([^"]+)</a>)'
+    sPattern = '<div class="tabs_header">.+?<a.+?>([^<]+)</b><tr>|(?:<a class="" rel="noreferrer" href="([^"]+)".+?<img src="/templates/Flymix/images/(.+?).png" /> *</a>|<a href="([^"]+)" >([^"]+)</a>)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -192,7 +193,7 @@ def showHosters():
                 break
 
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0].replace("&nbsp", "") + '[/COLOR]')
             else:
                 if aEntry[3]:
                     try:
@@ -257,7 +258,17 @@ def Display_protected_link():
             aResult_dlprotect = (False, False)
 
     elif 'keeplinks' in sUrl:
-        oDialog = dialog().VSinfo('Keeplinks non pris en charge', 'cinemegatoil', 10)
+        sHosterUrl = DecryptKeeplinks(sUrl)
+        if (sHosterUrl):
+            sTitle = sMovieTitle
+
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sTitle)
+                oHoster.setFileName(sTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+        oGui.setEndOfDirectory()
     #Si lien normal
     else:
         if not sUrl.startswith('http'):
@@ -463,6 +474,33 @@ def get_response(img,cookie):
             wdlg.close()
 
     return solution, NewCookie
+
+def DecryptKeeplinks(sUrl):
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    Cookie = oRequestHandler.GetCookies()
+
+    key = re.search('<div class="g-recaptcha" data-sitekey="(.+?)"></div>', str(sHtmlContent)).group(1)
+    hiddenAction = re.search('<input type="hidden" name=".+?" id="hiddenaction" value="([^"]+)"/>', str(sHtmlContent)).group(1)
+
+    gToken = ResolveCaptcha(key, sUrl)
+
+    data = "myhiddenpwd=&hiddenaction="+hiddenAction+"+&captchatype=Re&hiddencaptcha=1&hiddenpwd=&g-recaptcha-response="+gToken
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.setRequestType(1)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+    oRequestHandler.addHeaderEntry('Accept-Language', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    oRequestHandler.addHeaderEntry('Referer', sUrl)
+    oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+    oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
+    oRequestHandler.addHeaderEntry('Cookie', 'flag['+sUrl.split('/')[4]+']=1;')
+    oRequestHandler.addParametersLine(data)
+    sHtmlContent = oRequestHandler.request()
+
+    sUrl = re.search('class="selecttext live">([^<]+)</a>', str(sHtmlContent)).group(1)
+    return sUrl
 
 def DecryptOuo(sUrl):
     urlOuo = sUrl

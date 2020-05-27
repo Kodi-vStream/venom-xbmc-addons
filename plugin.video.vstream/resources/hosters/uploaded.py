@@ -1,21 +1,19 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#from resources.lib.handler.requestHandler import cRequestHandler
-#from resources.lib.parser import cParser
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
 from resources.lib.handler.premiumHandler import cPremiumHandler
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
 
-class cHoster(iHoster):
 
+class cHoster(iHoster):
     def __init__(self):
         self.__sDisplayName = 'Uploaded'
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR violet]' + self.__sDisplayName + '[/COLOR]'
@@ -38,7 +36,7 @@ class cHoster(iHoster):
     def getPattern(self):
         return ''
 
-    def __getIdFromUrl(self,url):
+    def __getIdFromUrl(self, url):
         return ''
 
     def __modifyUrl(self, sUrl):
@@ -59,7 +57,7 @@ class cHoster(iHoster):
     def getMediaLink(self):
 
         self.oPremiumHandler = cPremiumHandler(self.getPluginIdentifier())
-        print self.oPremiumHandler.isPremiumModeAvailable()
+        print(self.oPremiumHandler.isPremiumModeAvailable())
 
         if (not self.oPremiumHandler.isPremiumModeAvailable()):
             oDialog = dialog().VSok('ATTENTION, Pas de streaming sans premium.')
@@ -77,7 +75,7 @@ class cHoster(iHoster):
 
         api_call = url + '|' + self.oPremiumHandler.AddCookies()
 
-        #print api_call
+        # print(api_call)
 
         if (api_call):
             return True, api_call

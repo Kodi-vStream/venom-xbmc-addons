@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -42,6 +45,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSerieSearch():
     oGui = cGui()
 
@@ -52,31 +56,32 @@ def showSerieSearch():
             oGui.setEndOfDirectory()
             return
 
+
 def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action', URL_MAIN + 'category/series/action/'] )
-    liste.append( ['Animation', URL_MAIN + 'category/series/animation/'] )
-    liste.append( ['Aventure', URL_MAIN + 'category/series/aventure/'] )
-    liste.append( ['Comédie', URL_MAIN + 'category/series/comedie/'] )
-    liste.append( ['Documentaire', URL_MAIN + 'category/series/documentaire/'] )
-    liste.append( ['Drame', URL_MAIN + 'category/series/drame/'] )
-    liste.append( ['Epouvante Horreur', URL_MAIN + 'category/series/epouvante-horreur/'] )
-    liste.append( ['Espionnage', URL_MAIN + 'category/series/espionnage/'] )
-    liste.append( ['Famille', URL_MAIN + 'category/series/famille/'] )
-    liste.append( ['Fantastique', URL_MAIN + 'category/series/fantastique/'] )
-    liste.append( ['Guerre', URL_MAIN + 'category/series/guerre/'] )
-    liste.append( ['Historique', URL_MAIN + 'category/series/historique/'] )
-    liste.append( ['Judiciaire', URL_MAIN + 'category/series/judiciaire/'] )
-    liste.append( ['Medical', URL_MAIN + 'category/series/medical/'] )
-    liste.append( ['Musical', URL_MAIN + 'category/series/musical/'] )
-    liste.append( ['Policier', URL_MAIN + 'category/series/policier/'] )
-    liste.append( ['Romance', URL_MAIN + 'category/series/romance/'] )
-    liste.append( ['Science Fiction', URL_MAIN + 'category/series/science-fiction/'] )
-    liste.append( ['Soap', URL_MAIN + 'category/series/soap/'] )
-    liste.append( ['Thriller', URL_MAIN + 'category/series/thriller/'] )
-    liste.append( ['Western', URL_MAIN + 'category/series/western/'] )
+    liste.append(['Action', URL_MAIN + 'category/series/action/'])
+    liste.append(['Animation', URL_MAIN + 'category/series/animation/'])
+    liste.append(['Aventure', URL_MAIN + 'category/series/aventure/'])
+    liste.append(['Comédie', URL_MAIN + 'category/series/comedie/'])
+    liste.append(['Documentaire', URL_MAIN + 'category/series/documentaire/'])
+    liste.append(['Drame', URL_MAIN + 'category/series/drame/'])
+    liste.append(['Epouvante Horreur', URL_MAIN + 'category/series/epouvante-horreur/'])
+    liste.append(['Espionnage', URL_MAIN + 'category/series/espionnage/'])
+    liste.append(['Famille', URL_MAIN + 'category/series/famille/'])
+    liste.append(['Fantastique', URL_MAIN + 'category/series/fantastique/'])
+    liste.append(['Guerre', URL_MAIN + 'category/series/guerre/'])
+    liste.append(['Historique', URL_MAIN + 'category/series/historique/'])
+    liste.append(['Judiciaire', URL_MAIN + 'category/series/judiciaire/'])
+    liste.append(['Medical', URL_MAIN + 'category/series/medical/'])
+    liste.append(['Musical', URL_MAIN + 'category/series/musical/'])
+    liste.append(['Policier', URL_MAIN + 'category/series/policier/'])
+    liste.append(['Romance', URL_MAIN + 'category/series/romance/'])
+    liste.append(['Science Fiction', URL_MAIN + 'category/series/science-fiction/'])
+    liste.append(['Soap', URL_MAIN + 'category/series/soap/'])
+    liste.append(['Thriller', URL_MAIN + 'category/series/thriller/'])
+    liste.append(['Western', URL_MAIN + 'category/series/western/'])
 
     for sTitle, sUrl in liste:
 
@@ -86,7 +91,8 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
-def showMovies(sSearch = ''):
+
+def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
@@ -115,7 +121,7 @@ def showMovies(sSearch = ''):
             sThumb = aEntry[2]
             sTitle = aEntry[1]
 
-            #Si recherche et trop de resultat, on nettoye
+            # Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
                     continue
@@ -129,14 +135,16 @@ def showMovies(sSearch = ''):
 
         progress_.VSclose(progress_)
 
+    if not sSearch: # une seule page par recherche
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('/page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -146,6 +154,7 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
+
 
 def showEpisodes():
     oGui = cGui()
@@ -196,6 +205,7 @@ def showEpisodes():
 
     oGui.setEndOfDirectory()
 
+
 def showLinks():
     oGui = cGui()
 
@@ -214,10 +224,10 @@ def showLinks():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            #langue
+            # langue
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
-            #hote
+            # hote
             else:
                 sHost = aEntry[1]
                 sUrl = URL_MAIN[:-1] + aEntry[2]
@@ -231,6 +241,7 @@ def showLinks():
                 oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showHosters():
     oGui = cGui()
@@ -251,9 +262,10 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
+
 def ProtectstreamBypass(url):
 
-    #lien commencant par VID_
+    # lien commencant par VID_
     Codedurl = url
     oRequestHandler = cRequestHandler(Codedurl)
     sHtmlContent = oRequestHandler.request()
@@ -273,26 +285,26 @@ def ProtectstreamBypass(url):
         oRequest = cRequestHandler(URL_MAIN + 'embed_secur.php')
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
-        #oRequest.addHeaderEntry('Host', 'www.protect-stream.com')
+        # oRequest.addHeaderEntry('Host', 'www.protect-stream.com')
         oRequest.addHeaderEntry('Referer', Codedurl)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
         oRequest.addParametersLine(postdata)
         sHtmlContent = oRequest.request()
 
-        #Test de fonctionnement
+        # Test de fonctionnement
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             dialog().VSinfo('Lien encore protégé', "Erreur", 5)
             return ''
 
-        #recherche du lien embed
+        # recherche du lien embed
         sPattern = '<iframe src=["\']([^<>"\']+?)["\']'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             return aResult[1][0]
 
-        #recherche d'un lien redirige
+        # recherche d'un lien redirige
         sPattern = '<a class=.button. href=["\']([^<>"\']+?)["\'] target=._blank.>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):

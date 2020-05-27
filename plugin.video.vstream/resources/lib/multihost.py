@@ -1,38 +1,11 @@
-#-*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
-#Venom.
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
 from resources.lib.handler.requestHandler import cRequestHandler
-import re#, urllib
-# from resources.lib.comaddon import VSlog
+import re
+
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
-#modif cloudflare
-def GetHtml(url, postdata = None):
 
-    if 'download.jheberg.net/redirect' in url:
-        oRequest = cRequestHandler(url)
-        sHtmlContent = oRequest.request()
-        url = oRequest.getRealUrl()
-        return url
-    else:
-        sHtmlContent = ''
-        oRequest = cRequestHandler(url)
-        oRequest.setRequestType(1)
-        oRequest.addHeaderEntry('User-Agent', UA)
-
-        if postdata != None:
-            oRequest.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
-            oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
-            oRequest.addHeaderEntry('Referer', 'https://download.jheberg.net/redirect/xxxxxx/yyyyyy/')
-
-        elif 'download.jheberg.net' in url:
-            oRequest.addHeaderEntry('Host', 'download.jheberg.net')
-            oRequest.addHeaderEntry('Referer', url)
-
-        oRequest.addParametersLine(postdata)
-
-        sHtmlContent = oRequest.request()
-
-        return sHtmlContent
 
 class cMultiup:
     def __init__(self):
@@ -41,11 +14,13 @@ class cMultiup:
 
     def GetUrls(self, url):
         sHtmlContent = GetHtml(url)
-        sPattern = '<form action="(.+?)" method="post">'
+        sPattern = '<form action="(.+?)" method="post"'
         result = re.findall(sPattern, sHtmlContent)
         url = 'https://multiup.org' + ''.join(result[0])
 
-        NewUrl = url.replace('http://www.multiup.org/fr/download', 'http://www.multiup.eu/fr/mirror').replace('http://www.multiup.eu/fr/download', 'http://www.multiup.eu/fr/mirror').replace('http://www.multiup.org/download', 'http://www.multiup.eu/fr/mirror')
+        NewUrl = url.replace('http://www.multiup.org/fr/download', 'http://www.multiup.eu/fr/mirror')\
+                    .replace('http://www.multiup.eu/fr/download', 'http://www.multiup.eu/fr/mirror')\
+                    .replace('http://www.multiup.org/download', 'http://www.multiup.eu/fr/mirror')
 
         sHtmlContent = GetHtml(NewUrl)
 
@@ -61,6 +36,7 @@ class cMultiup:
                 self.list.append(item[1])
 
         return self.list
+
 
 class cJheberg:
     def __init__(self):
@@ -91,3 +67,33 @@ class cJheberg:
                     pass
 
         return self.list
+
+
+# modif cloudflare
+def GetHtml(url, postdata=None):
+
+    if 'download.jheberg.net/redirect' in url:
+        oRequest = cRequestHandler(url)
+        sHtmlContent = oRequest.request()
+        url = oRequest.getRealUrl()
+        return url
+    else:
+        sHtmlContent = ''
+        oRequest = cRequestHandler(url)
+        oRequest.setRequestType(1)
+        oRequest.addHeaderEntry('User-Agent', UA)
+
+        if postdata != None:
+            oRequest.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
+            oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+            oRequest.addHeaderEntry('Referer', 'https://download.jheberg.net/redirect/xxxxxx/yyyyyy/')
+
+        elif 'download.jheberg.net' in url:
+            oRequest.addHeaderEntry('Host', 'download.jheberg.net')
+            oRequest.addHeaderEntry('Referer', url)
+
+        oRequest.addParametersLine(postdata)
+
+        sHtmlContent = oRequest.request()
+
+        return sHtmlContent

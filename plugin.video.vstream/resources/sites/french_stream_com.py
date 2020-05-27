@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -8,7 +8,8 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.comaddon import progress
-import re, base64
+import re
+import base64
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -18,26 +19,26 @@ SITE_DESC = 'Films, Séries & Mangas en streaming'
 
 URL_MAIN = 'https://www8.french-streaming.com/'
 
-# URL_SEARCH_MOVIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=9&story=', 'showMovies')
-# URL_SEARCH_SERIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=10&story=', 'showSeries')
+# URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=9&story=', 'showMovies')
+# URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=10&story=', 'showSeries')
 URL_SEARCH_MOVIES = (URL_MAIN + 'search/', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'search/', 'showSeries')
 FUNCTION_SEARCH = 'showMovies'
 
-MOVIE_NEWS = (URL_MAIN + 'films-streaming/', 'showMovies')
 MOVIE_MOVIE = (True, 'showMoviesMenu')
+MOVIE_NEWS = (URL_MAIN + 'films-streaming/', 'showMovies')
 # MOVIE_VF = (URL_MAIN + 'films/vf/', 'showMovies')
 MOVIE_VOSTFR = (URL_MAIN + 'film/VOSTFR/', 'showMovies')
 MOVIE_HD = (URL_MAIN + 'qualit/HDLight/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 
-SERIE_NEWS = (URL_MAIN + 'serie-tv-streaming', 'showSeries')
 SERIE_SERIES = (True, 'showSeriesMenu')
+SERIE_NEWS = (URL_MAIN + 'serie-tv-streaming', 'showSeries')
 SERIE_VFS = (URL_MAIN + 'serie/VF/', 'showSeries')
 SERIE_VOSTFRS = (URL_MAIN + 'serie/VOSTFR/', 'showSeries')
 SERIE_GENRES = (True, 'showSerieGenres')
 
-ANIM_ANIMS = (URL_MAIN + 'mangas/', 'showMangasMenu')
+ANIM_ANIMS = (True, 'showMangasMenu')
 ANIM_NEWS = (URL_MAIN + 'mangas/', 'showSeries')
 
 def decode_url_Serie(url, sId, tmp = ''):
@@ -119,7 +120,6 @@ def ResolveUrl(url):
         hAsh = re.search(pat, url, re.DOTALL).group(2)
         hAsh = base64.b64decode(base64.b64decode(hAsh))
  
-
         if sId == '2':
             url2 = 'https://oload.stream/embed/'
         elif sId == '3':
@@ -146,15 +146,15 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films (Menu)', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries (Menu)', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés (Menu)', 'animes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -349,7 +349,7 @@ def showMovies(sSearch = ''):
 
             sUrl2 = URL_MAIN[:-1] + aEntry[0]       
             sThumb = aEntry[1]
-            if sThumb.startswith ('/'):
+            if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
                 
             sTitle = aEntry[2]
@@ -357,11 +357,11 @@ def showMovies(sSearch = ''):
             if (sSearch and ' - Saison ' in sTitle):  # La recherche retourne aussi des séries
                 continue
             
-            #on recupere le titre dans le poster le site ne l'affiche pas toujours
+            # on recupere le titre dans le poster le site ne l'affiche pas toujours
             if (aEntry[2] == ' '):
                 sTitle = aEntry[1].replace('/static/poster/', '').replace('-', ' ').replace('.jpg', '').title()
 
-            #Si recherche et trop de resultat, on nettoye
+            # Si recherche et trop de resultat, on nettoye
             if sSearch and total > 3:
                 if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH_MOVIES[0], ''), sTitle) == 0:
                     continue
@@ -415,20 +415,20 @@ def showSeries(sSearch = ''):
 
             sUrl2 = URL_MAIN[:-1] + aEntry[0]
             sThumb = aEntry[1]
-            if sThumb.startswith ('/'):
+            if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
             sTitle = aEntry[2]
 
             if (sSearch and not ' - Saison ' in sTitle):  # La recherche retourne aussi des films
                 continue
              
-            #filtre pour réorienter les mangas
+            # filtre pour réorienter les mangas
             # if '/manga' in sUrl:
                 # sType = 'mangas'
             # else:
                 # sType = 'autre'
 
-            #Si recherche et trop de resultat, on nettoye
+            # Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
                 if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH_SERIES[0], ''), sTitle) == 0:
                     continue
@@ -497,7 +497,7 @@ def showEpisode():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    #sType = oInputParameterHandler.getValue('sType')
+    # sType = oInputParameterHandler.getValue('sType')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -511,7 +511,7 @@ def showEpisode():
     except:
         pass
 
-    sPattern = '<\/i> *(VF|VOSTFR) *<\/div>|<a id="([^"]+)".+?target="seriePlayer".+?"([^"]+)" data-rel="([^"]+)"'
+    sPattern = '</i> *(VF|VOSTFR) *</div>|<a id="([^"]+)".+?target="seriePlayer".+?"([^"]+)" data-rel="([^"]+)"'
     aResult = re.findall(sPattern, sHtmlContent)
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
@@ -577,7 +577,7 @@ def serieHosters():
                     sHosterUrl = url
                 else:
                     url2 = decode_url_Serie(url, aEntry[0], tmp)
-                    #second convertion
+                    # second convertion
                     sHosterUrl = ResolveUrl(url2)
 
             else:
@@ -603,7 +603,7 @@ def mangaHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<\/i> *(VF|VOSTFR) *<\/div>|<a style="padding:5px 0;" id=".+?" *cid="([^"]+)".+?</i>([^<]+)</a>'
+    sPattern = '</i> *(VF|VOSTFR) *</div>|<a style="padding:5px 0;" id=".+?" *cid="([^"]+)".+?</i>([^<]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -622,7 +622,7 @@ def mangaHosters():
                     oHoster.setFileName(sTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
-    #redirection en cas d'absence de résultat
+    # redirection en cas d'absence de résultat
     if (aResult[0] == False):
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)

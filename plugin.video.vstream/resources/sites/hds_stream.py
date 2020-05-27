@@ -7,14 +7,13 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-import re
 #from resources.lib.util import cUtil #outils pouvant etre utiles
 
 SITE_IDENTIFIER = 'hds_stream'
 SITE_NAME = 'Hds-stream'
 SITE_DESC = 'Film streaming HD complet en vf. Des films et séries pour les fan de streaming hds.'
 
-URL_MAIN = 'https://ww6.hds-stream.to/'
+URL_MAIN = 'https://wwv.hds-stream.to/'
 
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
@@ -72,7 +71,6 @@ def showGenres():
     oParser = cParser()
     oRequestHandler = cRequestHandler(MOVIE_NEWS[0])
     sHtmlContent = oRequestHandler.request()
-
     sHtmlContent = oParser.abParse(sHtmlContent, '<h2>Films Par Genres</h2>', '<footer class="main">')
 
     sPattern = 'href="([^"]+)">([^<]+)</a> <i>([^<]+)<'
@@ -118,8 +116,8 @@ def showMovies(sSearch = ''):
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     if sSearch:
-      sUrl = sSearch
-      sPattern = '<div class="result-item">.*?<a href="([^"]+)"><img src="([^"]+)".*?<div class="title"><a.*?>([^"]+)</a.*?class="year">([^"]+)</span>.*?<div class="contenido"><p>([^"]+)</p>'
+        sUrl = sSearch
+        sPattern = '<div class="result-item">.*?<a href="([^"]+)"><img src="([^"]+)".*?<div class="title"><a.*?>([^"]+)</a.*?class="year">([^"]+)</span>.*?<div class="contenido"><p>([^"]+)</p>'
     elif 'tendance/' in sUrl:
         sPattern = 'id="post-[0-9].+?<img src="([^"]+)".+?class="data".+?href="([^"]+)">([^<]+).*?, ([^"]+)</span>'
     else:
@@ -187,7 +185,7 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = 'class="current".+?a href="([^"]+)"'
+    sPattern = 'class="current".+?a href="([^"]+/page/\d)/" class="inactive"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -204,7 +202,7 @@ def showSxE():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<span class=\'title\'>([^<]+)|class=\'numerando\'>\d - ([^<]+).+?class=\'episodiotitle\'><a href="([^"]+)">([^<]+)'
+    sPattern = '<span class=\'title\'>([^<]+)|class=\'numerando\'>\d - ([^<]+).+?class=\'episodiotitle\'><a href=\'([^\']+)\'>([^<]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -232,7 +230,7 @@ def showSxE():
                 oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
-
+    
     oGui.setEndOfDirectory()
 
 def showLinks():
@@ -321,7 +319,7 @@ def ShowSerieSaisonEpisodes():
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
 
-    sPattern = "id='player-option-.+?data-type='([^']+)'.+?data-post='([^']+)'.+?data-nume='([^']+)'.+?'server'>([^.]+)"
+    sPattern = "id='player-option-.+?data-type='([^']+)'.+?data-post='([^']+)'.+?data-nume='([^']+)'.+?'server'>([^.|^<]+)"
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
@@ -373,9 +371,9 @@ def seriesHosters():
 
     sHtmlContent = oRequest.request()
 
-    sPattern = sPattern = '(?:<iframe|<IFRAME).+?(?:src|SRC)=(?:\'|")(.+?)(?:\'|")'
+    sPattern = '(?:<iframe|<IFRAME).+?(?:src|SRC)=(?:\'|")(.+?)(?:\'|")'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sHosterUrl = aEntry

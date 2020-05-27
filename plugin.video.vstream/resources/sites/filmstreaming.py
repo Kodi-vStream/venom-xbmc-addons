@@ -1,18 +1,20 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.gui.hoster import cHosterGui
+import base64
+import re
+
+from resources.lib.comaddon import progress  # , VSlog
 from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, dialog#, VSlog
 from resources.lib.util import cUtil, Unquote
-import base64, re
 
-SITE_IDENTIFIER = 'streamay_bz'
-SITE_NAME = 'Streamay'
-SITE_DESC = 'Films, Séries & Mangas en streaming'
+SITE_IDENTIFIER = 'filmstreaming'
+SITE_NAME = 'Film Streaming'
+SITE_DESC = 'Films en streaming'
 URL_MAIN = 'https://www.filmstreamingvf.watch/'
 
 MOVIE_MOVIE = ('http://', 'load')
@@ -21,10 +23,10 @@ MOVIE_VIEWS = (URL_MAIN + '?v_sortby=views&v_orderby=desc', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_LIST = (URL_MAIN, 'AlphaSearch')
 
-#la recherche ne fonctionne pas
-# FUNCTION_SEARCH = 'showMovies'
-# URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-# URL_SEARCH_MOVIES = ('', 'showSearchMovies')
+# la recherche global ne fonctionne pas
+FUNCTION_SEARCH = 'showSearchMovies'
+URL_SEARCH = ('', 'showSearchMovies')
+URL_SEARCH_MOVIES = ('', 'showSearchMovies')
 
 
 def load():
@@ -46,12 +48,12 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
-    #30/10 Ne marche pas le site ne renvoi rien
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Liste) ', 'listes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Ordre alphabétique)', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showSearch():
     oGui = cGui()
@@ -62,26 +64,23 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showSearchMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
 
         sSearch = Unquote(sSearch)
-
         sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
-
-        pdata = 'nonce=7a700d2f1b&action=tr_livearch&trsearch=' + sSearch #voir si nonce change
+        pdata = 'nonce=3293a1b68c&action=tr_livearch&trsearch=' + sSearch #la valeur nonce change
 
         oRequest = cRequestHandler(sUrl2)
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0")
         oRequest.addParameters('Referer', URL_MAIN)
-
         oRequest.addParametersLine(pdata)
+
         sHtmlContent = oRequest.request()
-
         sPattern = '<div class="TPost B">.+?<a href="([^"]+)">.+?<img src="([^"]+)".+?<div class="Title">([^<]+)</div>'
-
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -93,11 +92,11 @@ def showSearchMovies(sSearch = ''):
                 if progress_.iscanceled():
                     break
 
-                sTitle = aEntry[2]
                 sUrl = aEntry[0]
                 sThumb = re.sub('/w\d+', '/w342', aEntry[1], 1)
                 if sThumb.startswith('/'):
-                    sThumb = 'http:' + sThumb
+                    sThumb = 'https:' + sThumb
+                sTitle = aEntry[2]
 
                 #tris search
                 if sSearch and total > 3:
@@ -113,10 +112,11 @@ def showSearchMovies(sSearch = ''):
 
             progress_.VSclose(progress_)
 
+
 def AlphaSearch():
     oGui = cGui()
 
-    for i in range(0, 27) :
+    for i in range(0, 27):
 
         if (i < 1):
             sLetter = '0-9'
@@ -130,6 +130,7 @@ def AlphaSearch():
         oGui.addDir(SITE_IDENTIFIER, 'showMovieslist', 'Lettre [COLOR coral]' + sLetter + '[/COLOR]', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showGenres():
     oGui = cGui()
@@ -152,6 +153,7 @@ def showGenres():
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMovieslist():
     oGui = cGui()
@@ -203,7 +205,8 @@ def showMovieslist():
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovieslist', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
-        oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory()
+
 
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -229,18 +232,13 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrl = aEntry[1]
-            sTitle = aEntry[2]
             sThumb = re.sub('/w\d+', '/w342', aEntry[0], 1)
             if sThumb.startswith('/'):
-                sThumb = 'http:' + sThumb
+                sThumb = 'https:' + sThumb
 
+            sUrl = aEntry[1]
+            sTitle = aEntry[2]
             sDesc = aEntry[3]
-
-            #tris search
-            # if sSearch and total > 3:
-                # if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
-                    # continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -259,8 +257,8 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     sPattern = 'href="*([^">]+)"*>Next'
@@ -270,6 +268,7 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
+
 
 def showHosters():
     oGui = cGui()
@@ -283,7 +282,7 @@ def showHosters():
 
     oParser = cParser()
 
-    sPattern = '<p class=AAIco-language>([^<]+)</p><p class=AAIco-dns>.+?<p class=AAIco-equalizer>([^<]+)</p>' #lang,qual
+    sPattern = '<p class=AAIco-language>([^<]+)</p><p class=AAIco-dns>.+?<p class=AAIco-equalizer>([^<]+)</p>'  # qual, lang
     aResult1 = re.findall(sPattern, sHtmlContent, re.DOTALL)
     # VSlog(str(aResult1)) #Commenter ou supprimer cette ligne une fois fini
 

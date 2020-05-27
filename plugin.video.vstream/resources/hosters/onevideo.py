@@ -1,9 +1,10 @@
-#-*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-import urllib
+from resources.lib.util import Unquote
+
 
 class cHoster(iHoster):
 
@@ -93,7 +94,7 @@ class cHoster(iHoster):
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            stream_url = urllib.unquote(aResult[1][0])
+            stream_url = Unquote(aResult[1][0])
             return True, stream_url
         else:
             return False, False

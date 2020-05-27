@@ -1,11 +1,12 @@
-#-*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 
 import urllib2
 
-#http://player.vimple.ru/iframe/XXXXXXXXXXXXXXXXXXXXX
+# http://player.vimple.ru/iframe/XXXXXXXXXXXXXXXXXXXXX
+
 
 class cHoster(iHoster):
 
@@ -15,7 +16,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + ' [/COLOR]'
@@ -74,10 +75,10 @@ class cHoster(iHoster):
         if 'Set-Cookie' in head:
             sPattern = '(?:^|,) *([^;,]+?)=([^;,\/]+?);'
             aResult = oParser.parse(str(head['Set-Cookie']), sPattern)
-            #print aResult
+            # print(aResult)
             if (aResult[0] == True):
                 for cook in aResult[1]:
-                    cookies = cookies + cook[0] + '=' + cook[1]+ ';'
+                    cookies = cookies + cook[0] + '=' + cook[1] + ';'
         #Get link
         sPattern = '"video":\[{"default":true,"url":"([^"]+?)"}]'
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -86,7 +87,7 @@ class cHoster(iHoster):
             url = aResult[1][0]
             url = url.replace('\/', '/')
 
-            api_call = url + '|Cookie='+ cookies
+            api_call = url + '|Cookie=' + cookies
 
             return True, api_call
 

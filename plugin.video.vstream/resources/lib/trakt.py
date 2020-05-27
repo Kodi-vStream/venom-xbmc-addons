@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
-# Venom.
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 import datetime
 import re
@@ -31,7 +30,7 @@ API_KEY = '7139b7dace25c7bdf0bd79acf46fb02bd63310548b1f671d88832f75a4ac3dd6'
 API_SECRET = 'bb02b2b0267b045590bc25c21dac21b1c47446a62b792091b3275e9c4a943e74'
 API_VERS = '2'
 
-maxResult = 10
+MAXRESULT = 10
 
 
 class cTrakt:
@@ -123,7 +122,7 @@ class cTrakt:
             oOutputParameterHandler.addParameter('type', 'movie')
             oGui.addDir(SITE_IDENTIFIER, 'getToken()', self.ADDON.VSlang(30305), 'trakt.png', oOutputParameterHandler)
         else:
-            # nom de luser
+            # nom de l'user
             headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS,
                        'Authorization': 'Bearer %s' % self.ADDON.getSetting('bstoken')}
 
@@ -169,7 +168,7 @@ class cTrakt:
                 oGui.addDir(SITE_IDENTIFIER, 'getLists', self.ADDON.VSlang(30360), 'trakt.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', URL_API + 'users/me/history?page=1&limit=' + str(maxResult))
+            oOutputParameterHandler.addParameter('siteUrl', URL_API + 'users/me/history?page=1&limit=' + str(MAXRESULT))
             oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30308), 'trakt.png', oOutputParameterHandler)
 
             # oOutputParameterHandler = cOutputParameterHandler()
@@ -186,17 +185,6 @@ class cTrakt:
 
         oGui.setEndOfDirectory()
 
-    # def search(self):
-        # oGui = cGui()
-        # sSearchText = oGui.showKeyBoard()
-        # if (sSearchText != False):
-            # oInputParameterHandler = cInputParameterHandler()
-            # sType = oInputParameterHandler.getValue('type')
-            # sUrl = URL_API + 'search/' + sType + '?query=' + QuotePlus(sSearchText)
-            # self.getTrakt(sUrl)
-            # return
-        # oGui.setEndOfDirectory()
-
     def getCalendrier(self):
         oGui = cGui()
 
@@ -204,10 +192,10 @@ class cTrakt:
 
         # DANGER ca rame, freeze
         liste = []
-        liste.append( ['Mes sorties sur les 7 jours à venir', URL_API + 'calendars/my/shows/' + today_date + '/7'] )
-        liste.append( ['Mes sorties sur les 30 jours à venir', URL_API + 'calendars/my/shows/' + today_date + '/30'] )
-        liste.append( ['Nouveautées sur 7 jours', URL_API + 'calendars/all/shows/new/' + today_date + '/7'] )
-        # liste.append( ['Freeze - Nouveautées sur la journée à venir', URL_API + 'calendars/all/shows/' + today_date + '/1'] )
+        liste.append(['Mes sorties sur les 7 jours à venir', URL_API + 'calendars/my/shows/' + today_date + '/7'])
+        liste.append(['Mes sorties sur les 30 jours à venir', URL_API + 'calendars/my/shows/' + today_date + '/30'])
+        liste.append(['Nouveautées sur 7 jours', URL_API + 'calendars/all/shows/new/' + today_date + '/7'])
+        # liste.append(['Freeze - Nouveautées sur la journée à venir', URL_API + 'calendars/all/shows/' + today_date + '/1'])
 
         for sTitle, sUrl in liste:
 
@@ -236,70 +224,70 @@ class cTrakt:
 
         liste = []
         if sType == 'movie':
-            liste.append( ['%s (%s)' % (self.ADDON.VSlang(30310), result2['movies']['collected'] ), URL_API + 'users/me/collection/movies?page=1&limit=' + str(maxResult)] )
+            liste.append(['%s (%s)' % (self.ADDON.VSlang(30310), result2['movies']['collected']), URL_API + 'users/me/collection/movies?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_movies_show_watchlist') == 'true':
-                liste.append( [self.ADDON.VSlang(30311), URL_API + 'users/me/watchlist/movies?page=1&limit=' + str(maxResult) ] )
+                liste.append([self.ADDON.VSlang(30311), URL_API + 'users/me/watchlist/movies?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_movies_show_watched') == 'true':
-                liste.append( ['%s (%s)' % (self.ADDON.VSlang(30312), result2['movies']['watched'] ), URL_API + 'users/me/watched/movies?page=1&limit=' + str(maxResult)] )
+                liste.append(['%s (%s)' % (self.ADDON.VSlang(30312), result2['movies']['watched']), URL_API + 'users/me/watched/movies?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_movies_show_recommended') == 'true':
-                liste.append( [self.ADDON.VSlang(30313), URL_API + 'recommendations/movies'] )
+                liste.append([self.ADDON.VSlang(30313), URL_API + 'recommendations/movies'])
 
             if self.ADDON.getSetting('trakt_movies_show_boxoffice') == 'true':
-                liste.append( [self.ADDON.VSlang(30314), URL_API + 'movies/boxoffice'] )
+                liste.append([self.ADDON.VSlang(30314), URL_API + 'movies/boxoffice'])
 
             if self.ADDON.getSetting('trakt_movies_show_popular') == 'true':
-                liste.append( [self.ADDON.VSlang(30315), URL_API + 'movies/popular?page=1&limit=' + str(maxResult)] )
+                liste.append([self.ADDON.VSlang(30315), URL_API + 'movies/popular?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_movies_show_most_weekly') == 'true':
-                liste.append( [self.ADDON.VSlang(30316), URL_API + 'movies/played/weekly?page=1&limit=' + str(maxResult)] )
+                liste.append([self.ADDON.VSlang(30316), URL_API + 'movies/played/weekly?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_movies_show_most_monthly') == 'true':
-                liste.append( [self.ADDON.VSlang(30317), URL_API + 'movies/played/monthly?page=1&limit=' + str(maxResult)] )
+                liste.append([self.ADDON.VSlang(30317), URL_API + 'movies/played/monthly?page=1&limit=' + str(MAXRESULT)])
 
-            # liste.append( ['historique de Films', URL_API + 'users/me/history/movies'] )
+            # liste.append(['historique de Films', URL_API + 'users/me/history/movies'])
 
         elif sType == 'show':
-            liste.append( ['%s (%s)' % (self.ADDON.VSlang(30310), result2['shows']['collected'] ), URL_API + 'users/me/collection/shows?page=1&limit=' + str(maxResult)] )
+            liste.append(['%s (%s)' % (self.ADDON.VSlang(30310), result2['shows']['collected']), URL_API + 'users/me/collection/shows?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_tvshows_show_watchlist') == 'true':
-                liste.append( [self.ADDON.VSlang(30311), URL_API + 'users/me/watchlist/shows?page=1&limit=' + str(maxResult) ] )
+                liste.append([self.ADDON.VSlang(30311), URL_API + 'users/me/watchlist/shows?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_tvshows_show_watchlist_seasons') == 'true':
-                liste.append( [self.ADDON.VSlang(30318), URL_API + 'users/me/watchlist/seasons?page=1&limit=' + str(maxResult)] )
+                liste.append([self.ADDON.VSlang(30318), URL_API + 'users/me/watchlist/seasons?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_tvshows_show_watchlist_episodes') == 'true':
-                liste.append( [self.ADDON.VSlang(30319), URL_API + 'users/me/watchlist/episodes?page=1&limit=' + str(maxResult)] )
+                liste.append([self.ADDON.VSlang(30319), URL_API + 'users/me/watchlist/episodes?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_tvshows_show_watched') == 'true':
-                liste.append( ['%s (%s)' % (self.ADDON.VSlang(30312), result2['movies']['watched']), URL_API + 'users/me/watched/shows?page=1&limit=' + str(maxResult)] )
+                liste.append(['%s (%s)' % (self.ADDON.VSlang(30312), result2['movies']['watched']), URL_API + 'users/me/watched/shows?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_tvshows_show_recommended') == 'true':
-                liste.append( [self.ADDON.VSlang(30313), URL_API + 'recommendations/shows'] )
+                liste.append([self.ADDON.VSlang(30313), URL_API + 'recommendations/shows'])
 
             if self.ADDON.getSetting('trakt_tvshows_show_popular') == 'true':
-                liste.append( [self.ADDON.VSlang(30315), URL_API + 'shows/popular?page=1&limit=' + str(maxResult)] )
+                liste.append([self.ADDON.VSlang(30315), URL_API + 'shows/popular?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_tvshows_show_most_weekly') == 'true':
-                liste.append( [self.ADDON.VSlang(30316), URL_API + 'shows/played/weekly?page=1&limit=' + str(maxResult)] )
+                liste.append([self.ADDON.VSlang(30316), URL_API + 'shows/played/weekly?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_tvshows_show_most_monthly') == 'true':
-                liste.append( [self.ADDON.VSlang(30317), URL_API + 'shows/played/monthly?page=1&limit=' + str(maxResult)] )
+                liste.append([self.ADDON.VSlang(30317), URL_API + 'shows/played/monthly?page=1&limit=' + str(MAXRESULT)])
 
-            # liste.append( ['Historique de séries', URL_API + 'users/me/history/shows'] )
+            # liste.append(['Historique de séries', URL_API + 'users/me/history/shows'])
 
         elif sType == 'custom-lists':
-            request = urllib2.Request(URL_API + 'users/me/lists', headers = headers)
+            request = urllib2.Request(URL_API + 'users/me/lists', headers=headers)
             response_lists = urllib2.urlopen(request).read()
             json_lists = json.loads(response_lists)
 
             for List in json_lists:
-                url  = URL_API + 'users/me/lists/' + List['ids']['slug'] + '/items'
-                liste.append( [(List['name'] + ' (' + str(List['item_count']) + ')').encode('utf-8'), url] )
+                url = URL_API + 'users/me/lists/' + List['ids']['slug'] + '/items'
+                liste.append([(List['name'] + ' (' + str(List['item_count']) + ')').encode('utf-8'), url])
 
-        for sTitle,sUrl in liste:
+        for sTitle, sUrl in liste:
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -333,7 +321,7 @@ class cTrakt:
 
         return
 
-    def getTrakt(self, url2 = None):
+    def getTrakt(self, url2=None):
         oGui = cGui()
 
         oInputParameterHandler = cInputParameterHandler()
@@ -430,7 +418,6 @@ class cTrakt:
                     sFile = ('%s - (%s)') % (sTitle.encode('utf-8'), sExtra)
                     sTitle = ('[COLOR gold]%s %s [/COLOR]- %s %s') % (sType, 'vu', sTitle, sExtra)
 
-
                 elif 'watchlist' in sUrl:
                     # commun
                     sFunction = 'showSearch'
@@ -460,11 +447,10 @@ class cTrakt:
                     sTitle.encode('utf-8')
                     searchtext = ('%s') % (sTitle.encode('utf-8'))
                     sFile = ('%s %s') % (sTitle.encode('utf-8'), sExtra)
-                    sTitle = ('%s %s') % (sTitle, sExtra )
-
+                    sTitle = ('%s %s') % (sTitle, sExtra)
 
                 elif 'watched' in sUrl:
-                # commun
+                    # commun
                     sLast_watched_at, sPlays = i['last_watched_at'], i['plays']
                     # 2016-11-16T09:21:18.000Z
                     # sDate = datetime.datetime(*(time.strptime(sLast_watched_at, '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y %H:%M')
@@ -486,7 +472,7 @@ class cTrakt:
                     sTitle.encode('utf-8')
                     searchtext = ('%s') % (sTitle.encode('utf-8'))
                     sFile = ('%s - %s') % (sTitle.encode('utf-8'), sYear)
-                    sTitle = ('%s Lectures - %s (%s)') % (sPlays, sTitle, sYear )
+                    sTitle = ('%s Lectures - %s (%s)') % (sPlays, sTitle, sYear)
 
                 elif 'played' in sUrl:
                     # commun
@@ -508,13 +494,11 @@ class cTrakt:
                     sTitle = ('%s - (%s)') % (sTitle.encode('utf-8'), int(sYear))
 
                 elif 'calendars' in sUrl:
-                    # sRajout = ''
                     if 'show' in i:
                         show = i['show']
                         sTitle = self.getLocalizedTitle(show, 'shows')
                         sTrakt, sImdb, sTmdb, sYear, sFirst_aired = show['ids']['trakt'], show['ids']['imdb'], show['ids']['tmdb'], show['year'], i['first_aired']
                         sSaison, sEpisode = i['episode']['season'], i['episode']['number']
-                        # sRajout = ' S' + str(sSaison) + 'E' + str(sEpisode)
                         cTrakt.CONTENT = '2'
                     else:
                         movie = i['movie']
@@ -586,7 +570,7 @@ class cTrakt:
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
 
-                    if  'show' in i:
+                    if 'show' in i:
                         show = i['show']
                         sTitle = self.getLocalizedTitle(show, 'shows')
                         sTrakt, sImdb, sTmdb, sYear = show['ids']['trakt'], show['ids']['imdb'], show['ids']['tmdb'], show['year']
@@ -609,7 +593,7 @@ class cTrakt:
                     sTitle.encode('utf-8')
                     searchtext = ('%s') % (sTitle.encode('utf-8'))
                     sFile = ('%s %s') % (sTitle.encode('utf-8'), sExtra)
-                    sTitle = ('%s %s') % (sTitle, sExtra )
+                    sTitle = ('%s %s') % (sTitle, sExtra)
 
                 else:
                     return
@@ -676,7 +660,7 @@ class cTrakt:
                 oOutputParameterHandler.addParameter('file', sFile)
                 oOutputParameterHandler.addParameter('title', sTitle2)
                 oOutputParameterHandler.addParameter('searchtext', searchtext)
-                self.getFolder(oGui, SITE_IDENTIFIER, sTitle2, sFile, 'getBepisodes', '','' , oOutputParameterHandler)
+                self.getFolder(oGui, SITE_IDENTIFIER, sTitle2, sFile, 'getBepisodes', '', '', oOutputParameterHandler)
                 sNum += 1
 
         oGui.setEndOfDirectory()
@@ -880,11 +864,11 @@ class cTrakt:
             if not sTMDB:
                 sTMDB = int(self.getTmdbID(oInputParameterHandler.getValue('sMovieTitle'), sType))
 
-            sPost = {sType: [ {'ids': {'tmdb': sTMDB}} ]}
+            sPost = {sType: [{'ids': {'tmdb': sTMDB}}]}
             if sSeason:
-                sPost = {sType: [ {'ids': {'tmdb': sTMDB}, 'seasons': [ { 'number': int(sSeason) }] } ]}
+                sPost = {sType: [{'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason)}]}]}
             if sEpisode:
-                sPost = {sType: [ {'ids': {'tmdb': sTMDB}, 'seasons': [ { 'number': int(sSeason), 'episodes': [ { 'number': int(sEpisode) } ] } ] } ]}
+                sPost = {sType: [{'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason), 'episodes': [{'number': int(sEpisode)}]}]}]}
         else:
             sPost = {sType: [{'ids': {'imdb': sImdb}}]}
 
@@ -957,9 +941,9 @@ class cTrakt:
 
             sPost = {sCat_trakt: [{'ids': {'tmdb': sTMDB}}]}
             if sSeason:
-                sPost = {sCat_trakt: [{'ids': {'tmdb': sTMDB}, 'seasons': [{ 'number': int(sSeason)}]}]}
+                sPost = {sCat_trakt: [{'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason)}]}]}
             if sEpisode:
-                sPost = {sCat_trakt: [{'ids': {'tmdb': sTMDB}, 'seasons': [{ 'number': int(sSeason), 'episodes': [{ 'number': int(sEpisode)}]}]}]}
+                sPost = {sCat_trakt: [{'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason), 'episodes': [{'number': int(sEpisode)}]}]}]}
         else:
             sPost = {sCat_trakt: [{'ids': {'imdb': sImdb}}]}
 
@@ -1004,15 +988,15 @@ class cTrakt:
 
         return
 
-    def createContexTrakt(self, oGui, oGuiElement, oOutputParameterHandler = ''):
+    def createContexTrakt(self, oGui, oGuiElement, oOutputParameterHandler=''):
 
         liste = []
-        liste.append( ['[COLOR teal]' + self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30310) + '[/COLOR]', URL_API + 'sync/collection'] )
-        liste.append( ['[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30310) + '[/COLOR]', URL_API + 'sync/collection/remove'] )
-        liste.append( ['[COLOR teal]' + self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30311) + '[/COLOR]', URL_API + 'sync/watchlist'] )
-        liste.append( ['[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30311) + '[/COLOR]', URL_API + 'sync/watchlist/remove'] )
-        liste.append( ['[COLOR teal]' + self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30312) + '[/COLOR]', URL_API + 'sync/history'] )
-        liste.append( ['[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30312) + '[/COLOR]', URL_API + 'sync/history/remove'] )
+        liste.append(['[COLOR teal]' + self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30310) + '[/COLOR]', URL_API + 'sync/collection'])
+        liste.append(['[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30310) + '[/COLOR]', URL_API + 'sync/collection/remove'])
+        liste.append(['[COLOR teal]' + self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30311) + '[/COLOR]', URL_API + 'sync/watchlist'])
+        liste.append(['[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30311) + '[/COLOR]', URL_API + 'sync/watchlist/remove'])
+        liste.append(['[COLOR teal]' + self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30312) + '[/COLOR]', URL_API + 'sync/history'])
+        liste.append(['[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30312) + '[/COLOR]', URL_API + 'sync/history/remove'])
 
         for sTitle,sUrl in liste:
             oOutputParameterHandler = cOutputParameterHandler()
@@ -1035,8 +1019,8 @@ class cTrakt:
         sMovieTitle = oInputParameterHandler.getValue('file')
         # sThumbnail = oInputParameterHandler.getValue('sThumbnail')
         # ancien decodage
-        sMovieTitle = unicode(sMovieTitle, 'utf-8')#converti en unicode pour aider aux convertions
-        sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'replace').decode('unicode_escape')#vire accent et '\'
+        sMovieTitle = unicode(sMovieTitle, 'utf-8')  # converti en unicode pour aider aux convertions
+        sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'replace').decode('unicode_escape')  # vire accent et '\'
         sMovieTitle = sMovieTitle.encode('utf-8').lower()  # on repasse en utf-8
         sMovieTitle = Quote(sMovieTitle)
         sMovieTitle = re.sub('\(.+?\)', ' ', sMovieTitle)  # vire les tags entre parentheses
@@ -1046,14 +1030,14 @@ class cTrakt:
 
         sMovieTitle = re.sub('( |^)(le|la|les|du|au|a|l)( |$)', ' ', sMovieTitle)  # vire les articles
 
-        sMovieTitle = re.sub(' +', ' ', sMovieTitle)  # vire les espaces multiples et on laisse les espaces sans modifs car certains codent avec %20 d'autres avec +
+        # vire les espaces multiples et on laisse les espaces sans modifs car certains codent avec %20 d'autres avec +
+        sMovieTitle = re.sub(' +', ' ', sMovieTitle)
 
         ret = self.DIALOG.select('Sélectionner un Moteur de Recherche', ['vStream (Fiable mais plus complexe)', 'Alluc (Simple mais resultats non garantis)'])
 
         if ret == 0:
             self.vStreamSearch(sMovieTitle)
         elif ret == 1:
-            # AllucSearch(sMovieTitle + sExtraTitle)
             # modif test préfére les accent supprimer é = e
             sMovieTitle = sMovieTitle.replace('%C3%A9', 'e').replace('%C3%A0', 'a')
             self.AllucSearch(sMovieTitle)
@@ -1073,10 +1057,10 @@ class cTrakt:
     def AllucSearch(self, sMovieTitle):
         oGui = cGui()
 
-        exec 'from resources.sites import alluc_ee as search'
+        exec('from resources.sites import alluc_ee as search')
         sUrl = 'http://www.alluc.ee/stream/lang%3Afr+' + sMovieTitle
         searchUrl = "search.%s('%s')" % ('showMovies', sUrl)
-        exec searchUrl
+        exec(searchUrl)
 
         oGui.setEndOfDirectory()
 

@@ -15,9 +15,9 @@
 
 """Unpacker for Dean Edward's p.a.c.k.e.r"""
 
-import re, urllib2
-import string
-#import xbmc
+import re
+import urllib2
+
 
 class cPacker():
     def detect(self, source):
@@ -28,7 +28,7 @@ class cPacker():
         """Unpacks P.A.C.K.E.R. packed js code."""
         payload, symtab, radix, count = self._filterargs(source)
 
-        #correction pour eviter bypass
+        # correction pour eviter bypass
         if (len(symtab) > count) and (count > 0):
             del symtab[count:]
         if (len(symtab) < count) and (count > 0):
@@ -44,7 +44,7 @@ class cPacker():
 
         def lookup(match):
             """Look up symbols in the synthetic symtab."""
-            word  = match.group(0)
+            word = match.group(0)
             return symtab[unbase(word)] or word
 
         source = re.sub(r'\b\w+\b', lookup, payload)
@@ -115,10 +115,10 @@ class cPacker():
             return source[startpoint:]
         return source
 
+
 def UnpackingError(Exception):
-    #Badly packed source or general error.#
-    #xbmc.log(str(Exception))
-    print Exception
+    # Badly packed source or general error.#
+    print(Exception)
     pass
 
 
@@ -134,8 +134,8 @@ class Unbaser(object):
     def __init__(self, base):
         self.base = base
 
-        #Error not possible, use 36 by defaut
-        if base == 0 :
+        # Error not possible, use 36 by defaut
+        if base == 0:
             base = 36
 
         # If base can be handled by int() builtin, let it do it for us

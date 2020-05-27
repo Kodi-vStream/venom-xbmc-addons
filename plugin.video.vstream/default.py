@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 # from resources.lib.statistic import cStatistic
 from resources.lib.gui.hoster import cHosterGui
@@ -21,7 +21,7 @@ from resources.lib.util import Quote
 #  Permet de debuguer avec Eclipse
 #
 # Tuto ici :
-# https://github.com/Kodi-vStream/venom-xbmc-addons/issues/2739
+# https://github.com/Kodi-vStream/venom-xbmc-addons/wiki
 #
 ####################
 
@@ -29,37 +29,18 @@ DEBUG = False  # Mettre True pour activer le debug
 
 if DEBUG:
 
-####################
-#
-# Version WINDOWS
-#
-####################
+    import sys  # pydevd module need to be copied in Kodi\system\python\Lib\pysrc
+    sys.path.append('H:\Program Files\Kodi\system\Python\Lib\pysrc')
 
-    # append pydev remote debugger
-    import sys
-    sys.path.append('C:\Program Files (x86)\Kodi\system\Python\Lib\pysrc')
-
-    # Make pydev debugger works for auto reload.
-    # Note pydevd module need to be copied in XBMC\system\python\Lib\pysrc
     try:
-        import pysrc.pydevd as pydevd # with the addon script.module.pydevd, only use `import pydevd`
+        import pysrc.pydevd as pydevd
         pydevd.settrace('localhost', stdoutToServer = True, stderrToServer = True)
     except ImportError:
-        sys.stderr.write("Error: " + "You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
-
-####################
-#
-# Version LINUX
-#
-####################
-
-    # Make pydev debugger works for auto reload.
-    # Note pydevd module need to be copied in XBMC\system\python\Lib\pysrc
-#     try:
-#         import pydevd
-#         pydevd.settrace('localhost', stdoutToServer = True, stderrToServer = True)
-#     except ImportError:
-#         sys.stderr.write("Error: " + "You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
+        try:
+            import pydevd    # with the addon script.module.pydevd, only use `import pydevd`
+            pydevd.settrace('localhost', stdoutToServer = True, stderrToServer = True)
+        except ImportError:
+            sys.stderr.write("Error: " + "You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
 
 
 class main:
@@ -108,24 +89,24 @@ class main:
             try:
                 # from resources.lib.about import cAbout
                 # cAbout().getUpdate()
-                plugins = __import__('resources.lib.about', fromlist = ['about']).cAbout()
+                plugins = __import__('resources.lib.about', fromlist=['about']).cAbout()
                 function = getattr(plugins, 'getUpdate')
                 function()
             except:
                 pass
 
             # charge home
-            plugins = __import__('resources.lib.home', fromlist = ['home']).cHome()
+            plugins = __import__('resources.lib.home', fromlist=['home']).cHome()
             function = getattr(plugins, 'load')
             function()
             return
 
         if oInputParameterHandler.exist('site'):
             sSiteName = oInputParameterHandler.getValue('site')
-            #if oInputParameterHandler.exist('title'):
-                #sTitle = oInputParameterHandler.getValue('title')
-            #else:
-                #sTitle = 'none'
+            # if oInputParameterHandler.exist('title'):
+                # sTitle = oInputParameterHandler.getValue('title')
+            # else:
+                # sTitle = 'none'
 
             VSlog('load site ' + sSiteName + ' and call function ' + sFunction)
             # cStatistic().callStartPlugin(sSiteName, sTitle)
@@ -156,7 +137,7 @@ class main:
                 return
 
             if sSiteName == 'globalRun':
-                __import__('resources.lib.runscript', fromlist = ['runscript'])
+                __import__('resources.lib.runscript', fromlist=['runscript'])
                 # function = getattr(plugins, sFunction)
                 # function()
                 return
@@ -169,7 +150,7 @@ class main:
                 if len(aPlugins) == 0:
                     addons = addon()
                     addons.openSettings()
-                    xbmc.executebuiltin('Container.Refresh')
+                    oGui.updateDirectory()
                 else:
                     for aPlugin in aPlugins:
                         oOutputParameterHandler = cOutputParameterHandler()
@@ -190,13 +171,13 @@ class main:
 
             # charge sites
             try:
-            # exec "from resources.sites import " + sSiteName + " as plugin"
-            # exec "plugin." + sFunction + "()"
-                plugins = __import__('resources.sites.%s' % sSiteName, fromlist = [sSiteName])
+                # exec("from resources.sites import " + sSiteName + " as plugin")
+                # exec("plugin." + sFunction + "()")
+                plugins = __import__('resources.sites.%s' % sSiteName, fromlist=[sSiteName])
                 function = getattr(plugins, sFunction)
                 function()
             except Exception as e:
-                progress().VSclose() # Referme le dialogue en cas d'exception, sinon blocage de Kodi
+                progress().VSclose()  # Referme le dialogue en cas d'exception, sinon blocage de Kodi
                 VSlog('could not load site: ' + sSiteName + ' error: ' + str(e))
                 import traceback
                 traceback.print_exc()
@@ -218,7 +199,7 @@ def setSetting(plugin_id, value):
 def isHosterGui(sSiteName, sFunction):
     if sSiteName == 'cHosterGui':
         oHosterGui = cHosterGui()
-        exec ("oHosterGui." + sFunction + "()")
+        exec("oHosterGui." + sFunction + "()")
         return True
     return False
 
@@ -226,7 +207,7 @@ def isHosterGui(sSiteName, sFunction):
 def isGui(sSiteName, sFunction):
     if sSiteName == 'cGui':
         oGui = cGui()
-        exec ("oGui." + sFunction + "()")
+        exec("oGui." + sFunction + "()")
         return True
     return False
 
@@ -235,7 +216,7 @@ def isFav(sSiteName, sFunction):
     if sSiteName == 'cFav':
         from resources.lib.bookmark import cFav
         oFav = cFav()
-        exec ("oFav." + sFunction + "()")
+        exec("oFav." + sFunction + "()")
         return True
     return False
 
@@ -244,7 +225,7 @@ def isLibrary(sSiteName, sFunction):
     if sSiteName == 'cLibrary':
         from resources.lib.library import cLibrary
         oLibrary = cLibrary()
-        exec ("oLibrary." + sFunction + "()")
+        exec("oLibrary." + sFunction + "()")
         return True
     return False
 
@@ -253,7 +234,7 @@ def isDl(sSiteName, sFunction):
     if sSiteName == 'cDownload':
         from resources.lib.download import cDownload
         oDownload = cDownload()
-        exec ("oDownload." + sFunction + "()")
+        exec("oDownload." + sFunction + "()")
         return True
     return False
 
@@ -261,7 +242,7 @@ def isDl(sSiteName, sFunction):
 def isHome(sSiteName, sFunction):
     if sSiteName == 'cHome':
         oHome = cHome()
-        exec ("oHome." + sFunction + "()")
+        exec("oHome." + sFunction + "()")
         return True
     return False
 
@@ -270,7 +251,7 @@ def isTrakt(sSiteName, sFunction):
     if sSiteName == 'cTrakt':
         from resources.lib.trakt import cTrakt
         oTrakt = cTrakt()
-        exec ("oTrakt." + sFunction + "()")
+        exec("oTrakt." + sFunction + "()")
         return True
     return False
 
@@ -313,7 +294,7 @@ def searchGlobal():
         oGui.searchResults[:] = []  # vider le tableau de résultats pour les récupérer par source
         _pluginSearch(plugin, sSearchText)
 
-        if len(oGui.searchResults) > 0: # Au moins un résultat
+        if len(oGui.searchResults) > 0:  # Au moins un résultat
             count += 1
 
             # nom du site
@@ -322,7 +303,7 @@ def searchGlobal():
                 oGui.addFolder(result['guiElement'], result['params'])
  
     if not count:   # aucune source ne retourne de résultats
-        oGui.addText('globalSearch') # "Aucune information"
+        oGui.addText('globalSearch')  # "Aucune information"
 
     progress_.VSclose(progress_)
 
@@ -336,7 +317,7 @@ def _pluginSearch(plugin, sSearchText):
     window(10101).setProperty('search', 'true')
     
     try:
-        plugins = __import__('resources.sites.%s' % plugin['identifier'], fromlist = [plugin['identifier']])
+        plugins = __import__('resources.sites.%s' % plugin['identifier'], fromlist=[plugin['identifier']])
         function = getattr(plugins, plugin['search'][1])
         sUrl = plugin['search'][0] + str(sSearchText)
         

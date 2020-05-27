@@ -164,9 +164,9 @@ def showList():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
             if '/anime/' in sUrl:
-                oGui.addDir(SITE_IDENTIFIER, 'showEpisode', sTitle, 'animes.png', oOutputParameterHandler)
+                oGui.addAnime(SITE_IDENTIFIER, 'showEpisode', sTitle, 'animes.png', '', '', oOutputParameterHandler)
             else:
-                oGui.addDir(SITE_IDENTIFIER, 'showEpisode', sTitle, 'series.png', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, 'series.png', '', '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -240,7 +240,7 @@ def showMovies(sSearch = ''):
             if 't=1' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, 'series.png', '', '', oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, 'animes.png', '', '', oOutputParameterHandler)
+                oGui.addAnime(SITE_IDENTIFIER, 'showEpisode', sTitle, 'animes.png', '', '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -303,7 +303,7 @@ def showEpisode():
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                    oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplayTitle , 'series.png', sThumb, sDesc, oOutputParameterHandler)
+                    oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sDisplayTitle , 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
             progress_.VSclose(progress_)
 

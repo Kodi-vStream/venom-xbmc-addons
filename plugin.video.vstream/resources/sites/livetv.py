@@ -1,16 +1,15 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Ovni-crea
-from resources.lib.gui.hoster import cHosterGui #systeme de recherche pour l'hote
-from resources.lib.gui.gui import cGui #systeme d'affichage pour xbmc
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler #entree des parametres
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler #sortie des parametres
-from resources.lib.handler.requestHandler import cRequestHandler #requete url
-from resources.lib.parser import cParser #recherche de code
+from resources.lib.gui.hoster import cHosterGui
+from resources.lib.gui.gui import cGui
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, VSlog, dialog
-from resources.lib.util import cUtil #import du plugin cUtil
-import re, urllib, urllib2
-import base64
+from resources.lib.util import cUtil, Unquote
+import re, base64
 
 from resources.lib.packer import cPacker
 
@@ -428,7 +427,7 @@ def showHosters(): #affiche les videos disponible du live
 
                 oRequestHandler = cRequestHandler(url2)
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
-                sHtmlContent3 = urllib2.unquote(oRequestHandler.request())
+                sHtmlContent3 = Unquote(oRequestHandler.request())
 
                 sPattern3 = 'hlsManifestUrl":"(.+?)"'
                 aResult = re.findall(sPattern3, sHtmlContent3)
@@ -446,7 +445,7 @@ def showHosters(): #affiche les videos disponible du live
                 #VSlog(sHosterUrl2)
                 oRequestHandler = cRequestHandler(sHosterUrl2)
                 sHtmlContent3 = oRequestHandler.request()
-                sHtmlContent3 = urllib.unquote(sHtmlContent3)
+                sHtmlContent3 = Unquote(sHtmlContent3)
                 #VSlog(sHtmlContent3)
                 sPattern3 = 'src: "\/\/(.+?)"'
                 aResult = re.findall(sPattern3, sHtmlContent3)
@@ -701,7 +700,7 @@ def showHosters(): #affiche les videos disponible du live
             if 'hdsportslive' in url or 'cricfree' in url:
                 sPattern2 = 'document.write\(unescape\(\'(.+?)\'\)\)'
                 aResult = re.findall(sPattern2, sHtmlContent2)
-                unQuote = urllib2.unquote(aResult[0])
+                unQuote = Unquote(aResult[0])
 
                 sPattern2 = '<iframe.+?src="(.+?)"'
                 aResult = re.findall(sPattern2, unQuote)

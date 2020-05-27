@@ -1,8 +1,6 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#Venom.
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+# Venom.
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import dialog, xbmc, window
@@ -18,7 +16,6 @@ date = d.strftime("%d-%m-%Y")
 
 class cePg:
 
-
     def get_url(self, sTitle):
 
         oRequestHandler = cRequestHandler(url_index)
@@ -31,21 +28,20 @@ class cePg:
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             for aEntry in aResult[1]:
-                #print sTitle
+                # print(sTitle)
                 if sTitle.lower() in aEntry.lower():
                     return "http://www.programme-tv.net" + aEntry
         else:
             return False
 
     def get_epg(self, sTitle, sTime):
-        #ce soir
+        # ce soir
         if sTime == 'direct':
             sUrl = 'http://playtv.fr/programmes-tv/en-direct/canalsat/'
         elif sTime == 'soir':
             sUrl = 'http://playtv.fr/programmes-tv/' + date + '/20h-23h/'
-        else :
+        else:
             sUrl = 'http://playtv.fr/programmes-tv/' + date + '/20h-23h/'
-
 
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
@@ -53,29 +49,26 @@ class cePg:
 
         sPattern = '<a class="channel-img".+?<img.+?alt="(.+?)".+?|<span class="start" title="(.+?)">(.+?)</span>.+?<span class="program-gender small">.+?<span>(.+?)</span>.+?<a href=".+?" title=".+?">(.+?)</a>'
 
-
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             for aEntry in aResult[1]:
-                #chaine
+                # chaine
                 if aEntry[0]:
                     text += "[COLOR red]" + aEntry[0] + "[/COLOR]\r"
-                #heure
+                # heure
                 if aEntry[2]:
                     text += "[B]" + aEntry[2] + "[/B] -"
-                #duréé
+                # durée
                 if aEntry[1]:
                     text += aEntry[1] + " : "
-                #type
+                # type
                 if aEntry[3]:
                     text += "(" + aEntry[3] + ") "
-
-                #title
+                # title
                 if aEntry[4]:
                     text += "     [COLOR khaki][UPPERCASE]" + aEntry[4] + "[/UPPERCASE][/COLOR] "
-
-                #retour line
+                # retour line
                 text += "\r\n"
 
             self.TextBoxes(sTitle, text)
@@ -99,29 +92,27 @@ class cePg:
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             for aEntry in aResult[1]:
-                #hour
+                # hour
                 text += "[B]" + aEntry[0] + "[/B] : "
-                #type
+                # type
                 text += "[I]" + aEntry[3] + "[/I] - "
-                #title
+                # title
                 text += "[COLOR khaki][UPPERCASE]" + aEntry[1] + "[/UPPERCASE][/COLOR] "
-                #subtitle
+                # subtitle
                 text += aEntry[2]
-
-                #retour line
+                # retour line
                 text += "\r\n"
 
             return text
         else:
             return ''
 
-
     def TextBoxes(self, heading, anounce):
         # activate the text viewer window
-        xbmc.executebuiltin("ActivateWindow(%d)" % ( 10147))
+        xbmc.executebuiltin("ActivateWindow(%d)" % 10147)
         # get window
         win = window(10147)
-        #win.show()
+        # win.show()
         # give window time to initialize
         xbmc.sleep(100)
         # set heading

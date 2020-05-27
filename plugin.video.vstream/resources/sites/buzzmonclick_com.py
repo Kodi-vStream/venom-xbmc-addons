@@ -8,7 +8,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.packer import cPacker
-from resources.lib.comaddon import progress#, VSlog
+from resources.lib.comaddon import progress, VSlog
 #from resources.lib.util import cUtil
 import re, unicodedata
 
@@ -161,18 +161,19 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<a href="([^"]+)" target="_blank" rel="noreferrer noopener">'
+    sPattern = '<noscript><iframe.+?src="([^"]+)".+?</iframe>'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    #VSlog(aResult)
+    
+    #if (aResult[0] == False):
+        #sPattern = 'iframe src="([^"]+)"'
+        #aResult = oParser.parse(sHtmlContent, sPattern)
+    #else:
+        #oRequestHandler = cRequestHandler(''.join(aResult[1]))
+        #sHtmlContent = oRequestHandler.request()
 
-    if (aResult[0] == False):
-        sPattern = 'iframe src="([^"]+)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-    else:
-        oRequestHandler = cRequestHandler(''.join(aResult[1]))
-        sHtmlContent = oRequestHandler.request()
-
-        sPattern = '<a href="([^"]+)" target="_blank" class="link link--external" rel="nofollow '
-        aResult = oParser.parse(sHtmlContent, sPattern)
+        #sPattern = '<a href="([^"]+)" target="_blank" class="link link--external" rel="nofollow '
+        #aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:

@@ -297,16 +297,22 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl2) #sortie de l'url
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle) #sortie du titre
             oOutputParameterHandler.addParameter('sThumb', sThumb) #sortie du poster
-
+            oOutputParameterHandler.addParameter('sDesc', sDesc) #sortie de la description
+            oOutputParameterHandler.addParameter('referer', sUrl) # URL d'origine, parfois utile comme référence
+            
             if '/series' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
                 #addTV pour sortir les series tv (identifiant, function, titre, icon, poster, description, sortie parametre)
+            elif '/animes' in sUrl:
+                oGui.addAnime(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                #addAnime pour sortir les series animés (mangas) (identifiant, function, titre, icon, poster, description, sortie parametre)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
                 #addMovies pour sortir les films (identifiant, function, titre, icon, poster, description, sortie parametre)
 
-            #il existe aussi addMisc(identifiant, function, titre, icon, poster, description, sortie parametre)
-            #la difference et pour les metadonner serie, films ou sans
+            # Il existe aussi addMisc(identifiant, function, titre, icon, poster, description, sortie parametre)
+            # A utiliser pour les autres types, tels que : documentaires, spectacles, etc.
+            # qui ne nécessitent pas de metadonnées (recherches de la description, de la bande annonces, des acteurs, etc.)
 
         progress_.VSclose(progress_) #fin du dialog
 
@@ -315,7 +321,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
             #Ajoute une entree pour le lien Next | pas de addMisc pas de poster et de description inutile donc
 
         oGui.setEndOfDirectory() #ferme l'affichage
@@ -338,9 +344,11 @@ def showHosters(): #recherche et affiche les hotes
     sUrl = oInputParameterHandler.getValue('siteUrl') #apelle siteUrl
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle') #appelle le titre
     sThumb = oInputParameterHandler.getValue('sThumb') #appelle le poster
-
-    oRequestHandler = cRequestHandler(sUrl) #requete sur l'url
-    sHtmlContent = oRequestHandler.request() #requete sur l'url
+    referer = oInputParameterHandler.getValue('referer') # récupere l'URL appelante
+    
+    oRequestHandler = cRequestHandler(sUrl) # requete sur l'url
+    oRequestHandler.addHeaderEntry('Referer', referer) # parametre pour passer l'URL appelante (n'est pas forcement necessaire)
+    sHtmlContent = oRequestHandler.request() # requete sur l'url
 
     oParser = cParser()
     sPattern = '<iframe.+?src="([^"]+)"'
@@ -349,7 +357,7 @@ def showHosters(): #recherche et affiche les hotes
     aResult = oParser.parse(sHtmlContent, sPattern)
     #pensez a faire un VSlog(str(aResult)) pour verifier
 
-    #si un lien ne s'affiche pas peux etre que l'hote n'est pas supporte par l'addon
+    # si un lien ne s'affiche pas, peut etre que l'hote n'est pas supporte par l'addon
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
@@ -363,7 +371,7 @@ def showHosters(): #recherche et affiche les hotes
 
     oGui.setEndOfDirectory() #fin
 
-#Pour les series, il y a generalement une etape en plus pour la selection des episodes ou saisons.
+# Pour les series, il y a generalement une etape en plus pour la selection des episodes ou saisons.
 def ShowSerieSaisonEpisodes():
     oGui = cGui()
 
@@ -371,10 +379,12 @@ def ShowSerieSaisonEpisodes():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sDesc = oInputParameterHandler.getValue('sDesc')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
+    #Pattern servant à retrouver les éléments dans la page
     sPattern = '?????????????????????'
 
     oParser = cParser()
@@ -398,7 +408,7 @@ def ShowSerieSaisonEpisodes():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'seriesHosters', sTitle , 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -413,8 +423,10 @@ def seriesHosters(): #cherche les episodes de series
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
+    
+    # Exemple de pattern à changer
     sPattern = '<dd><a href="([^<]+)" class="zoombox.+?" title="(.+?)"><button class="btn">.+?</button></a></dd>'
+    
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):

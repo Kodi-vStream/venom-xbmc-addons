@@ -1,42 +1,49 @@
-#-*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.comaddon import addon, dialog, window, listitem, xbmc, xbmcgui
 from resources.lib.tmdb import cTMDb
 
-#import os
-#import xbmcaddon
+# import os
+# import xbmcaddon
 import unicodedata
 import xbmcvfs
 
-#-----------------------
+# -----------------------
 #     Cookies gestion
-#------------------------
+# ------------------------
+
 
 class GestionCookie():
-    #PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo('profile')).decode('utf-8')
     PathCache = 'special://userdata/addon_data/plugin.video.vstream'
+    
+    def MakeListwithCookies(self,c):
+        t = {}
+        c = c.split(';')
+        for i in c:
+            j = i.split('=',1)
+            if len(j) > 1:
+                t[j[0]] = j[1]
+            
+        return t
+        
 
     def DeleteCookie(self, Domain):
-        #file = os.path.join(self.PathCache, 'Cookie_' + str(Domain) + '.txt')
         Name = '/'.join([self.PathCache, 'cookie_%s.txt']) % (Domain)
-        #os.remove(os.path.join(self.PathCache, file))
         xbmcvfs.delete(Name)
 
     def SaveCookie(self, Domain, data):
-        #Name = os.path.join(self.PathCache, 'Cookie_' + str(Domain) + '.txt')
         Name = '/'.join([self.PathCache, 'cookie_%s.txt']) % (Domain)
 
-        #save it
-        #file = open(Name, 'w')
-        #file.write(data)
-        #file.close()
+        # save it
+        # file = open(Name, 'w')
+        # file.write(data)
+        # file.close()
 
         f = xbmcvfs.File(Name, 'w')
         f.write(data)
         f.close()
 
     def Readcookie(self, Domain):
-        #Name = os.path.join(self.PathCache, 'Cookie_' + str(Domain) + '.txt')
         Name = '/'.join([self.PathCache, 'cookie_%s.txt']) % (Domain)
 
         # try:
@@ -58,11 +65,23 @@ class GestionCookie():
     def AddCookies(self):
         cookies = self.Readcookie(self.__sHosterIdentifier)
         return 'Cookie=' + cookies
+        
+    def MixCookie(self,ancien_cookies, new_cookies):
+        t1 = self.MakeListwithCookies(ancien_cookies)
+        t2 = self.MakeListwithCookies(new_cookies)
+        #Les nouveaux doivent ecraser les anciens
+        for i in t2:
+            t1[i] = t2[i]
+                
+        cookies = ''
+        for c in t1:
+            cookies = cookies + c + '=' + t1[c] + ';'
+        cookies = cookies[:-1]
+        return cookies
 
-
-#-------------------------------
+# -------------------------------
 #     Configuration gestion
-#-------------------------------
+# -------------------------------
 
 class cConfig():
 
@@ -84,7 +103,6 @@ class cConfig():
         # self.__sFileFav = os.path.join(self.__oCache,'favourite.db').decode('utf-8')
         # self.__sFileDB = os.path.join(self.__oCache,'vstream.db').decode('utf-8')
         # self.__sFileCache = os.path.join(self.__oCache,'video_cache.db').decode('utf-8')
-
 
     def isDharma(self):
         return self.__bIsDharma
@@ -108,13 +126,12 @@ class cConfig():
         return False
 
 
-
-def WindowsBoxes(sTitle, sFileName, num, year = ''):
+def WindowsBoxes(sTitle, sFileName, num, year=''):
 
     ADDON = addon()
     DIALOG = dialog()
 
-    #Presence de l'addon ExtendedInfo?
+    # Presence de l'addon ExtendedInfo?
     try:
         if (addon('script.extendedinfo') and ADDON.getSetting('extendedinfo-view') == 'true'):
             if num == '2':
@@ -128,7 +145,7 @@ def WindowsBoxes(sTitle, sFileName, num, year = ''):
     except:
         pass
 
-    #Sinon on gere par vStream via la lib TMDB
+    # Sinon on gere par vStream via la lib TMDB
     if num == '1':
         try:
             grab = cTMDb()
@@ -142,16 +159,16 @@ def WindowsBoxes(sTitle, sFileName, num, year = ''):
         except:
             pass
 
-    #si rien ne marche
+    # si rien ne marche
     if (not meta['imdb_id'] and not ['tmdb_id'] and not ['tvdb_id']):
-        #dialog par defaut
-        #xbmc.executebuiltin('Action(Info)')
-        #fenetre d'erreur
+        # dialog par defaut
+        # xbmc.executebuiltin('Action(Info)')
+        # fenetre d'erreur
         DIALOG.VSinfo(ADDON.VSlang(30204))
 
         return
 
-    #affichage du dialog perso
+    # affichage du dialog perso
     class XMLDialog(xbmcgui.WindowXMLDialog):
 
         ADDON = addon()
@@ -171,23 +188,22 @@ def WindowsBoxes(sTitle, sFileName, num, year = ''):
             # self.close()
 
         def onInit(self):
-            #par default le resumer#
+            # par default le resumer#
             color = ADDON.getSetting('deco_color')
             window(10000).setProperty('color', color)
 
             self.getControl(50).setVisible(False)
             self.getControl(5200).setVisible(False)
-            #synopsis_first
+            # synopsis_first
             self.setFocusId(36)
 
-            #self.getControl(50).reset()
+            # self.getControl(50).reset()
             listitems = []
             cast = []
 
             try:
                 for slabel, slabel2, sicon, sid in meta['cast']:
-                    listitem_ = listitem(label = slabel, label2 = slabel2, iconImage = sicon)
-                #listitem.setInfo('video', {'Title': 'test', 'RatingAndVotes':'6.8'})
+                    listitem_ = listitem(label=slabel, label2=slabel2, iconImage=sicon)
                     listitem_.setProperty('id', str(sid))
                     listitems.append(listitem_)
                     cast.append(slabel.encode('ascii', 'ignore'))
@@ -195,13 +211,13 @@ def WindowsBoxes(sTitle, sFileName, num, year = ''):
                 window(10000).setProperty('ListItem.casting', str(cast))
             except:
                 pass
-            #title
-            #self.getControl(1).setLabel(meta['title'])
+            # title
+            # self.getControl(1).setLabel(meta['title'])
             meta['title'] = sTitle
 
-            #self.getControl(49).setVisible(True)
-            #self.getControl(2).setImage(meta['cover_url'])
-            #self.getControl(3).setLabel(meta['rating'])
+            # self.getControl(49).setVisible(True)
+            # self.getControl(2).setImage(meta['cover_url'])
+            # self.getControl(3).setLabel(meta['rating'])
 
             for e in meta:
                 property = 'ListItem.%s' % (e)
@@ -210,7 +226,7 @@ def WindowsBoxes(sTitle, sFileName, num, year = ''):
                 else:
                     window(10000).setProperty(property, str(meta[e]))
 
-        def credit(self, meta = ''):
+        def credit(self, meta=''):
             self.getControl(5200).reset()
             listitems = []
 
@@ -218,20 +234,20 @@ def WindowsBoxes(sTitle, sFileName, num, year = ''):
                 for i in meta:
                     try:
                         sTitle = unicodedata.normalize('NFKD', i['title']).encode('ascii', 'ignore')
-                    except: sTitle = 'Aucune information'
+                    except:
+                        sTitle = 'Aucune information'
                     try:
                         sThumbnail = 'https://image.tmdb.org/t/p/w342' + i['poster_path']
                     except:
                         sThumbnail = ''
                     sId = i['id']
 
-                    listitem_ = listitem(label = sTitle, iconImage = sThumbnail)
+                    listitem_ = listitem(label=sTitle, iconImage=sThumbnail)
                     try:
                         listitem_.setInfo('video', {'rating': i['vote_average'].encode('utf-8') })
                     except:
                         listitem_.setInfo('video', {'rating': str(i['vote_average'])})
 
-                    #listitem.setProperty('id', str(sId))
                     listitems.append(listitem_)
                 self.getControl(5200).addItems(listitems)
 
@@ -239,45 +255,37 @@ def WindowsBoxes(sTitle, sFileName, num, year = ''):
                 pass
             self.getControl(5200).setVisible(True)
             self.setFocusId(5200)
-            #self.setFocus(self.getControl(5200))
+            # self.setFocus(self.getControl(5200))
 
-        def person(self, sid = ''):
-            grab = cTMDb(lang = 'en')
+        def person(self, sid=''):
+            grab = cTMDb(lang='en')
             sUrl = 'person/' + str(sid)
             meta = grab.getUrl(sUrl)
-
-            listitems = []
 
             try:
                 try:
                     sTitle = unicodedata.normalize('NFKD', meta['name']).encode('ascii', 'ignore')
-                except: sTitle = 'Aucune information'
-                #xbmcgui.Window(10000).setProperty('person_name', sTitle)
+                except:
+                    sTitle = 'Aucune information'
                 try:
                     sThumbnail = 'https://image.tmdb.org/t/p/w396' + meta['profile_path']
                 except:
                     sThumbnail = ''
 
                 sId = meta['id']
-                bio = meta['biography'].replace('\n\n', '[CR]').replace('\n', '[CR]')
+                # bio = meta['biography'].replace('\n\n', '[CR]').replace('\n', '[CR]')
 
-                #self.getControl(5300).setLabel('[COLOR gold]test[/COLOR]')
+                # self.getControl(5300).setLabel('[COLOR gold]test[/COLOR]')
 
-                #window(10000).setProperty('biography', bio)
+                # window(10000).setProperty('biography', bio)
                 window(10000).setProperty('birthday', meta['birthday'])
                 window(10000).setProperty('place_of_birth', meta['place_of_birth'])
                 window(10000).setProperty('deathday', meta['deathday'])
-
-                #self.getControl(20).setVisible(True)
             except:
                 pass
 
-
-            #description
-            #self.getControl(400).setText(meta['plot'])
-
         def onClick(self, controlId):
-            print controlId
+            print(controlId)
             if controlId == 5:
                 self.getControl(400).setVisible(False)
                 self.getControl(50).setVisible(True)
@@ -303,7 +311,7 @@ def WindowsBoxes(sTitle, sFileName, num, year = ''):
                 self.close()
                 return
             elif controlId == 50:
-                #print self.getControl(50).ListItem.Property('id')
+                # print(self.getControl(50).ListItem.Property('id'))
                 item = self.getControl(50).getSelectedItem()
                 sid = item.getProperty('id')
 
@@ -315,10 +323,10 @@ def WindowsBoxes(sTitle, sFileName, num, year = ''):
                     self.credit(meta)
                 except:
                     return
-                #self.getControl(50).setVisible(True)
-            #click sur similaire
+                # self.getControl(50).setVisible(True)
+            # click sur similaire
             elif controlId == 9:
-                #print self.getControl(9000).ListItem.tmdb_id
+                # print(self.getControl(9000).ListItem.tmdb_id)
                 sid = window(10000).getProperty('ListItem.tmdb_id')
 
                 grab = cTMDb()
@@ -332,9 +340,9 @@ def WindowsBoxes(sTitle, sFileName, num, year = ''):
                         self.getControl(9).setLabel('Aucune Information')
                 except:
                     return
-            #click sur recommendations
+            # click sur recommendations
             elif controlId == 13:
-                #print self.getControl(9000).ListItem.tmdb_id
+                # print(self.getControl(9000).ListItem.tmdb_id)
                 sid = window(10000).getProperty('ListItem.tmdb_id')
 
                 grab = cTMDb()
@@ -351,7 +359,7 @@ def WindowsBoxes(sTitle, sFileName, num, year = ''):
                     return
 
             elif controlId == 5200:
-            #click sur un film acteur
+                # click sur un film acteur
                 import sys
                 from resources.lib.util import cUtil
                 item = self.getControl(5200).getSelectedItem()
@@ -364,28 +372,28 @@ def WindowsBoxes(sTitle, sFileName, num, year = ''):
                     return
 
                 sTest = '%s?site=globalSearch&searchtext=%s&sCat=1' % (sys.argv[0], sTitle)
-                xbmc.executebuiltin('XBMC.Container.Update(%s)' % sTest )
+                xbmc.executebuiltin('XBMC.Container.Update(%s)' % sTest)
                 self.close()
                 return
 
-            #dans le futur permet de retourne le texte du film
+            # dans le futur permet de retourne le texte du film
             # elif controlId == 5200:
             #     item = self.getControl(5200).getSelectedItem()
             #     sid = item.getLabel()
-            #     print sid
+            #     print(sid)
             #     return
 
         def onFocus(self, controlId):
             self.controlId = controlId
             if controlId != 5200:
-                #self.getControl(5500).reset()
+                # self.getControl(5500).reset()
                 self.getControl(5200).setVisible(False)
             if controlId != 50:
                 self.getControl(50).setVisible(False)
-            #if controlId == 50:
-                #item = self.getControl(50).getSelectedItem()
-                #sid = item.getProperty('id')
-                #self.person(sid)
+            # if controlId == 50:
+                # item = self.getControl(50).getSelectedItem()
+                # sid = item.getProperty('id')
+                # self.person(sid)
 
         def _close_dialog(self):
             self.close()
@@ -401,10 +409,8 @@ def WindowsBoxes(sTitle, sFileName, num, year = ''):
             if action.getId() in (9, 10, 11, 30, 92, 216, 247, 257, 275, 61467, 61448):
                 self.close()
 
-
-    #path = xbmc.translatePath('special://home/addons/plugin.video.vstream').decode('utf-8')
     path = 'special://home/addons/plugin.video.vstream'
-    #self.__oPath.decode('utf-8')
-    wd = XMLDialog('DialogInfo2.xml', path , 'default', '720p')
+    # self.__oPath.decode('utf-8')
+    wd = XMLDialog('DialogInfo2.xml', path, 'default', '720p')
     wd.doModal()
     del wd

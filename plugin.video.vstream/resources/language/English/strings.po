@@ -449,7 +449,7 @@ msgid "Database to be delete"
 msgstr ""
 
 msgctxt "#30111"
-msgid ""
+msgid "List"
 msgstr ""
 
 msgctxt "#30112"
@@ -1050,4 +1050,8 @@ msgstr ""
 
 msgctxt "#30469"
 msgid "Hoster Direct"
+msgstr ""
+
+msgctxt "#30470"
+msgid "Addon dnspython missing"
 msgstr ""

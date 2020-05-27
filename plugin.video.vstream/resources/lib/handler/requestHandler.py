@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-import urllib
-import urllib2
+try:
+    import urllib2
+    from urllib2 import HTTPError, URLError as UrlError
 
-from urllib2 import HTTPError, URLError
+except ImportError:
+    import urllib.request as urllib2
+    import urllib.error as UrlError
+
+from resources.lib.util import urlEncode
 from resources.lib.comaddon import addon, dialog, VSlog
-
 
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
@@ -29,6 +33,7 @@ class cRequestHandler:
         self.__bRemoveBreakLines = False
         self.__sResponseHeader = ''
         self.BUG_SSL = False
+        self.__enableDNS = False
 
     def removeNewLines(self, bRemoveNewLines):
         self.__bRemoveNewLines = bRemoveNewLines
@@ -41,6 +46,18 @@ class cRequestHandler:
 
     def setTimeout(self, valeur):
         self.__timeout = valeur
+
+    def disableRedirection(self):
+        class NoRedirection(UrlError.HTTPErrorProcessor):
+            def http_response(self, request, response):
+                code, msg, hdrs = response.code, response.msg, response.info()
+
+                return response
+            
+            https_response = http_response
+
+        opener = urllib2.build_opener(NoRedirection)
+        urllib2.install_opener(opener)
 
     def addHeaderEntry(self, sHeaderKey, sHeaderValue):
         for sublist in self.__aHeaderEntries:
@@ -55,7 +72,7 @@ class cRequestHandler:
     def addParametersLine(self, mParameterValue):
         self.__aParamatersLine = mParameterValue
 
-    #egg addMultipartFiled({'sess_id': sId, 'upload_type': 'url', 'srv_tmp_url': sTmp})
+    # egg addMultipartFiled({'sess_id': sId, 'upload_type': 'url', 'srv_tmp_url': sTmp})
     def addMultipartFiled(self, fields):
         mpartdata = MPencode(fields)
         self.__aParamatersLine = mpartdata[1]
@@ -76,13 +93,9 @@ class cRequestHandler:
         if 'Set-Cookie' in self.__sResponseHeader:
             import re
 
-            #cookie_string = self.__sResponseHeader.getheaders('set-cookie')
-            #c = ''
-            #for i in cookie_string:
-            #    c = c + i + ', '
             c = self.__sResponseHeader.get('set-cookie')
 
-            c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,\/]+?);', c)
+            c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,]+?);', c)
             if c2:
                 cookies = ''
                 for cook in c2:
@@ -93,11 +106,11 @@ class cRequestHandler:
 
     def request(self):
         # Supprimee car deconne si url contient ' ' et '+' en meme temps
-        #self.__sUrl = self.__sUrl.replace(' ', '+')
+        # self.__sUrl = self.__sUrl.replace(' ', '+')
         return self.__callRequest()
 
     def getRequestUri(self):
-        return self.__sUrl + '?' + urllib.urlencode(self.__aParamaters)
+        return self.__sUrl + '?' + urlEncode(self.__aParamaters)
 
     def __setDefaultHeader(self):
         self.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0')
@@ -105,10 +118,15 @@ class cRequestHandler:
         self.addHeaderEntry('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.7')
 
     def __callRequest(self):
+        if self.__enableDNS:
+            import socket
+            self.save_getaddrinfo = socket.getaddrinfo
+            socket.getaddrinfo = self.new_getaddrinfo
+
         if self.__aParamatersLine:
             sParameters = self.__aParamatersLine
         else:
-            sParameters = urllib.urlencode(self.__aParamaters)
+            sParameters = urlEncode(self.__aParamaters)
 
         if (self.__cType == cRequestHandler.REQUEST_TYPE_GET):
             if (len(sParameters) > 0):
@@ -135,9 +153,9 @@ class cRequestHandler:
                 VSlog('Retrying with SSL bug')
                 import ssl
                 gcontext = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
-                oResponse = urllib2.urlopen(oRequest, timeout = self.__timeout, context=gcontext)
+                oResponse = urllib2.urlopen(oRequest, timeout=self.__timeout, context=gcontext)
             else:
-                oResponse = urllib2.urlopen(oRequest, timeout = self.__timeout)
+                oResponse = urllib2.urlopen(oRequest, timeout=self.__timeout)
 
             sContent = oResponse.read()
 
@@ -146,7 +164,7 @@ class cRequestHandler:
             # compressed page ?
             if self.__sResponseHeader.get('Content-Encoding') == 'gzip':
                 import zlib
-                sContent = zlib.decompress(sContent, zlib.MAX_WBITS|16)
+                sContent = zlib.decompress(sContent, zlib.MAX_WBITS | 16)
 
             # https://bugs.python.org/issue4773
             self.__sRealUrl = oResponse.geturl()
@@ -154,7 +172,7 @@ class cRequestHandler:
 
             oResponse.close()
 
-        except urllib2.HTTPError, e:
+        except UrlError.HTTPError as e:
             if e.code == 503:
 
                 # Protected by cloudFlare ?
@@ -182,28 +200,70 @@ class cRequestHandler:
 
             if not sContent:
                 self.DIALOG.VSerror("%s (%d),%s" % (self.ADDON.VSlang(30205), e.code, self.__sUrl))
-                return ''
 
-        except urllib2.URLError, e:
+        except UrlError.URLError as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e.reason) and self.BUG_SSL == False:
                 self.BUG_SSL = True
                 return self.__callRequest()
+            elif 'getaddrinfo failed' in str(e.reason) and self.__enableDNS == False:
+                # Retry with DNS only if addon is present
+                import xbmcvfs
+                if xbmcvfs.exists('special://home/addons/script.module.dnspython/'):
+                    self.__enableDNS = True
+                    return self.__callRequest()
+                else:
+                    error_msg = self.ADDON.VSlang(30470)
+            else:
+                error_msg = "%s (%s),%s" % (self.ADDON.VSlang(30205), e.reason, self.__sUrl)
 
-            self.DIALOG.VSerror("%s (%s),%s" % (self.ADDON.VSlang(30205), e.reason, self.__sUrl))
-            return ''
+            self.DIALOG.VSerror(error_msg)
+            sContent = ''
 
-        if (self.__bRemoveNewLines == True):
-            sContent = sContent.replace("\n", "")
-            sContent = sContent.replace("\r\t", "")
+        if sContent:
+            if (self.__bRemoveNewLines == True):
+                sContent = sContent.replace("\n", "")
+                sContent = sContent.replace("\r\t", "")
 
-        if (self.__bRemoveBreakLines == True):
-            sContent = sContent.replace("&nbsp;", "")
+            if (self.__bRemoveBreakLines == True):
+                sContent = sContent.replace("&nbsp;", "")
+
+        if self.__enableDNS:
+            socket.getaddrinfo = self.save_getaddrinfo
+            self.__enableDNS = False
 
         return sContent
 
-    def getHeaderLocationUrl(self):
-        opened = urllib.urlopen(self.__sUrl)
+    def getHeaderLocationUrl(self):        
+        opened = urllib2.urlopen(self.__sUrl)
         return opened.geturl()
+
+    def new_getaddrinfo(self, *args):
+        try:
+            import xbmc
+            import sys
+            import dns.resolver
+
+            path = xbmc.translatePath('special://home/addons/script.module.dnspython/lib/').decode('utf-8')
+            if path not in sys.path:
+                sys.path.append(path)
+            host = args[0]
+            port = args[1]
+            # Keep the domain only: http://example.com/foo/bar => example.com
+            if "//" in host:
+                host = host[host.find("//"):]
+            if "/" in host:
+                host = host[:host.find("/")]
+            resolver = dns.resolver.Resolver(configure=False)
+            # Résolveurs DNS ouverts: https://www.fdn.fr/actions/dns/
+            resolver.nameservers = [ '80.67.169.12', '2001:910:800::12', '80.67.169.40', '2001:910:800::40' ]
+            answer = resolver.query(host, 'a')
+            host_found = str(answer[0])
+            VSlog("new_getaddrinfo found host %s" % host_found)
+            # Keep same return schema as socket.getaddrinfo (family, type, proto, canonname, sockaddr)
+            return [(2, 1, 0, '', (host_found, port)), (2, 1, 0, '', (host_found, port))]
+        except Exception as e:
+            VSlog("new_getaddrinfo ERROR: {0}".format(e))
+            return self.save_getaddrinfo(*args)
 
 # ******************************************************************************
 # from https://github.com/eliellis/mpart.py

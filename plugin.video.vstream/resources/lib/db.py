@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
-# Venom.
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+import xbmcvfs
+
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.util import QuotePlus, Unquote
 from resources.lib.comaddon import dialog, addon, VSlog, xbmc
-import xbmcvfs
 
 SITE_IDENTIFIER = 'cDb'
 SITE_NAME = 'DB'
@@ -21,7 +22,11 @@ class cDb:
 
     DB = 'special://userdata/addon_data/plugin.video.vstream/vstream.db'
     # important seul xbmcvfs peux lire le special
-    REALDB = xbmc.translatePath(DB).decode('utf-8')
+    try:
+        REALDB = xbmc.translatePath(DB).decode('utf-8')
+    except AttributeError:
+         REALDB = xbmc.translatePath(DB)
+
     DIALOG = dialog()
     ADDON = addon()
 
@@ -51,30 +56,68 @@ class cDb:
         try:
             self.dbcur.close()
             self.db.close()
-        except Exception, e:
+        except Exception:
             pass
 
     def _create_tables(self):
 
-        sql_create2 = 'DROP TABLE history'
+        # sql_create2 = 'DROP TABLE history'
 
         ''' Create table '''
-        sql_create = "CREATE TABLE IF NOT EXISTS history ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""disp TEXT, ""icone TEXT, ""isfolder TEXT, ""level TEXT, ""lastwatched TIMESTAMP "", ""UNIQUE(title)"");"
+        sql_create = "CREATE TABLE IF NOT EXISTS history ("\
+                        "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
+                        "title TEXT, "\
+                        "disp TEXT, "\
+                        "icone TEXT, "\
+                        "isfolder TEXT, "\
+                        "level TEXT, "\
+                        "lastwatched TIMESTAMP "", "\
+                        "UNIQUE(title)"\
+                        ");"
         self.dbcur.execute(sql_create)
 
-        sql_create = "CREATE TABLE IF NOT EXISTS resume ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""hoster TEXT, ""point TEXT, ""UNIQUE(title, hoster)"");"
+        sql_create = "CREATE TABLE IF NOT EXISTS resume ("\
+                        "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
+                        "title TEXT, "\
+                        "hoster TEXT, "\
+                        "point TEXT, "\
+                        "UNIQUE(title, hoster)"\
+                        ");"
         self.dbcur.execute(sql_create)
 
-        sql_create = "CREATE TABLE IF NOT EXISTS watched ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""site TEXT, ""UNIQUE(title, site)"");"
+        sql_create = "CREATE TABLE IF NOT EXISTS watched ("\
+                        "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
+                        "title TEXT, "\
+                        "site TEXT, "\
+                        "UNIQUE(title, site)"\
+                        ");"
         self.dbcur.execute(sql_create)
 
-        sql_create = "CREATE TABLE IF NOT EXISTS favorite ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""siteurl TEXT, ""site TEXT, ""fav TEXT, ""cat TEXT, ""icon TEXT, ""fanart TEXT, ""UNIQUE(title, site)"");"
+        sql_create = "CREATE TABLE IF NOT EXISTS favorite ("\
+                        "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
+                        "title TEXT, "\
+                        "siteurl TEXT, "\
+                        "site TEXT, "\
+                        "fav TEXT, "\
+                        "cat TEXT, "\
+                        "icon TEXT, "\
+                        "fanart TEXT, "\
+                        "UNIQUE(title, site)"\
+                        ");"
         self.dbcur.execute(sql_create)
 
-        #sql_create = "DROP TABLE download"
-        #self.dbcur.execute(sql_create)
-
-        sql_create = "CREATE TABLE IF NOT EXISTS download ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""url TEXT, ""path TEXT, ""cat TEXT, ""icon TEXT, ""size TEXT,""totalsize TEXT, ""status TEXT, ""UNIQUE(title, path)"");"
+        sql_create = "CREATE TABLE IF NOT EXISTS download ("\
+                        "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
+                        "title TEXT, "\
+                        "url TEXT, "\
+                        "path TEXT, "\
+                        "cat TEXT, "\
+                        "icon TEXT, "\
+                        "size TEXT,"\
+                        "totalsize TEXT, "\
+                        "status TEXT, "\
+                        "UNIQUE(title, path)"\
+                        ");"
         self.dbcur.execute(sql_create)
 
         VSlog('Table initialized')
@@ -83,8 +126,10 @@ class cDb:
     def str_conv(self, data):
         if isinstance(data, str):
             # Must be encoded in UTF-8
-            data = data.decode('utf8')
-
+            try:
+                data = data.decode('utf8')
+            except AttributeError:
+                pass
         import unicodedata
         data = unicodedata.normalize('NFKD', data).encode('ascii', 'ignore')
         data = data.decode('string-escape')  # ATTENTION: provoque des bugs pour les chemins a cause du caractere '/'
@@ -107,7 +152,7 @@ class cDb:
             self.dbcur.execute(ex, (title, disp, icon))
             self.db.commit()
             VSlog('SQL INSERT history Successfully')
-        except Exception, e:
+        except Exception as e:
             if 'UNIQUE constraint failed' in e.message:
                 ex = "UPDATE history set title = '%s', disp = '%s', icone= '%s' WHERE title = '%s'" % (title, disp, icon, title)
                 self.dbcur.execute(ex)
@@ -124,12 +169,13 @@ class cDb:
             # matchedrow = self.dbcur.fetchone()
             matchedrow = self.dbcur.fetchall()
             return matchedrow
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return None
 
     def del_history(self):
-
+        from resources.lib.gui.gui import cGui
+        oGui = cGui()
         oInputParameterHandler = cInputParameterHandler()
         if oInputParameterHandler.exist('searchtext'):
             sql_delete = "DELETE FROM history WHERE title = '%s'" % (oInputParameterHandler.getValue('searchtext'))
@@ -140,9 +186,9 @@ class cDb:
             self.dbcur.execute(sql_delete)
             self.db.commit()
             self.DIALOG.VSinfo(self.ADDON.VSlang(30041))
-            xbmc.executebuiltin('Container.Refresh')
+            oGui.updateDirectory()
             return False, False
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR DELETE')
             return False, False
 
@@ -161,8 +207,7 @@ class cDb:
         try:
             self.db.commit()
             VSlog('SQL INSERT watched Successfully')
-        except Exception, e:
-            # print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
+        except Exception:
             VSlog('SQL ERROR INSERT')
             pass
 
@@ -181,7 +226,7 @@ class cDb:
             if matchedrow:
                 return 1
             return 0
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return None
 
@@ -195,7 +240,7 @@ class cDb:
             self.dbcur.execute(sql_select)
             self.db.commit()
             return False, False
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return False, False
 
@@ -216,13 +261,12 @@ class cDb:
         try:
             self.db.commit()
             VSlog('SQL INSERT resume Successfully')
-        except Exception, e:
-            # print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
+        except Exception:
             VSlog('SQL ERROR INSERT')
             pass
 
     def get_resume(self, meta):
-        title = self.str_conv(meta['title'])
+        # title = self.str_conv(meta['title'])
         site = QuotePlus(meta['site'])
 
         sql_select = "SELECT * FROM resume WHERE hoster = '%s'" % site
@@ -232,7 +276,7 @@ class cDb:
             # matchedrow = self.dbcur.fetchone()
             matchedrow = self.dbcur.fetchall()
             return matchedrow
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return None
 
@@ -245,7 +289,7 @@ class cDb:
             self.dbcur.execute(sql_select)
             self.db.commit()
             return False, False
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return False, False
 
@@ -264,7 +308,6 @@ class cDb:
         except:
             sIcon = meta['icon']
 
-
         try:
             ex = 'INSERT INTO favorite (title, siteurl, site, fav, cat, icon, fanart) VALUES (?, ?, ?, ?, ?, ?, ?)'
             self.dbcur.execute(ex, (title, siteurl, meta['site'], meta['fav'], meta['cat'], sIcon, meta['fanart']))
@@ -273,7 +316,7 @@ class cDb:
 
             self.DIALOG.VSinfo(self.ADDON.VSlang(30042), meta['title'])
             VSlog('SQL INSERT favorite Successfully')
-        except Exception, e:
+        except Exception as e:
             if 'UNIQUE constraint failed' in e.message:
                 self.DIALOG.VSinfo(self.ADDON.VSlang(30043), meta['title'])
             VSlog('SQL ERROR INSERT')
@@ -288,12 +331,13 @@ class cDb:
             # matchedrow = self.dbcur.fetchone()
             matchedrow = self.dbcur.fetchall()
             return matchedrow
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return None
 
     def del_bookmark(self):
-
+        from resources.lib.gui.gui import cGui
+        oGui = cGui()
         oInputParameterHandler = cInputParameterHandler()
 
         if oInputParameterHandler.exist('sCat'):
@@ -315,9 +359,9 @@ class cDb:
             self.dbcur.execute(sql_delete)
             self.db.commit()
             self.DIALOG.VSinfo(self.ADDON.VSlang(30044))
-            xbmc.executebuiltin('Container.Refresh')
+            oGui.updateDirectory()
             return False, False
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return False, False
 
@@ -339,8 +383,7 @@ class cDb:
             self.db.commit()
             VSlog('SQL INSERT download Successfully')
             self.DIALOG.VSinfo(self.ADDON.VSlang(30042), meta['title'])
-        except Exception, e:
-            # print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
+        except Exception:
             VSlog('SQL ERROR INSERT')
             pass
 
@@ -356,7 +399,7 @@ class cDb:
             self.dbcur.execute(sql_select)
             matchedrow = self.dbcur.fetchall()
             return matchedrow
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return None
 
@@ -368,7 +411,7 @@ class cDb:
             self.dbcur.execute(sql_select)
             self.db.commit()
             return False, False
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return False, False
 
@@ -381,7 +424,7 @@ class cDb:
             self.dbcur.execute(sql_select)
             self.db.commit()
             return False, False
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return False, False
 
@@ -400,7 +443,7 @@ class cDb:
             self.dbcur.execute(sql_select)
             self.db.commit()
             return False, False
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return False, False
 
@@ -410,7 +453,7 @@ class cDb:
             self.dbcur.execute(sql_select)
             self.db.commit()
             return False, False
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return False, False
 
@@ -427,6 +470,6 @@ class cDb:
             self.dbcur.execute(sql_select)
             self.db.commit()
             return False, False
-        except Exception, e:
+        except Exception:
             VSlog('SQL ERROR EXECUTE')
             return False, False
