@@ -1,22 +1,28 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
+try:  # Python 2
+    import urllib2
+    from urllib2 import URLError as UrlError
+
+except ImportError:  # Python 3
+    import urllib.request as urllib2
+    import urllib.error as UrlError
+
 import base64
 import os
 import re
-
-import urllib
-import urllib2
 import xbmc
 import xbmcaddon
 
 from resources.lib.comaddon import VSlog
+from resources.lib.util import urlEncode
 
 PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo('profile'))
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
 
-class NoRedirection(urllib2.HTTPErrorProcessor):
+class NoRedirection(UrlError.HTTPErrorProcessor):
     def http_response(self, request, response):
         return response
     https_response = http_response
@@ -85,7 +91,7 @@ class SucurieBypass(object):
         if cook == '':
             return ''
 
-        return '|' + urllib.urlencode({'User-Agent': UA, 'Cookie': cook})
+        return '|' + urlEncode({'User-Agent': UA, 'Cookie': cook})
 
     def CheckIfActive(self, html):
         if 'sucuri_cloudproxy_js' in html:
@@ -102,7 +108,7 @@ class SucurieBypass(object):
         head.append(('Accept-Encodinge', 'identity'))
         return head
 
-    def GetHtml(self, url, data = None):
+    def GetHtml(self, url, data=None):
         self.hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)', '\\1', url)
         self.host = re.sub(r'https*:\/\/', '', self.hostComplet)
         self.url = url
@@ -136,7 +142,7 @@ class SucurieBypass(object):
 
         return htmlcontent
 
-    def htmlrequest(self, url, cookies, data, Block_redirection = True):
+    def htmlrequest(self, url, cookies, data, Block_redirection=True):
 
         if Block_redirection:
             opener = urllib2.build_opener(NoRedirection)
