@@ -3,11 +3,9 @@
 
 try:  # Python 2
     import urllib2
-    from urllib2 import URLError as UrlError
 
 except ImportError:  # Python 3
     import urllib.request as urllib2
-    import urllib.error as UrlError
 
 import base64
 import os
@@ -22,7 +20,7 @@ PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonI
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
 
-class NoRedirection(UrlError.HTTPErrorProcessor):
+class NoRedirection(urllib2.HTTPErrorProcessor):
     def http_response(self, request, response):
         return response
     https_response = http_response
