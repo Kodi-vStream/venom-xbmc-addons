@@ -8,13 +8,11 @@ from resources.lib.comaddon import addon, xbmc
 from resources.lib.db import cDb
 from resources.lib.util import QuoteSafe
 
-
 # rouge E26543
 # jaune F7D571
 # bleu clair 87CEEC  ou skyblue / hoster
 # vert 37BCB5
 # bleu foncer 08435A / non utiliser
-
 
 class cGuiElement:
 
@@ -307,6 +305,11 @@ class cGuiElement:
 
     def setTitle(self, sTitle):
         self.__sCleanTitle = sTitle
+        try:
+            sTitle = sTitle.decode('utf-8')
+        except:
+            pass
+
         if not sTitle.startswith('[COLOR'):
             self.__sTitle = self.TraiteTitre(sTitle)
         else:
@@ -399,12 +402,18 @@ class cGuiElement:
         return data
 
     def str_conv(self, data):
+        #Pas d'autre solution pour le moment que de faire comme ca.
         if isinstance(data, str):
             # Must be encoded in UTF-8
             try:
                 data = data.decode('utf8')
             except AttributeError:
                 pass
+
+        try:
+            data = data.decode('utf8')
+        except (AttributeError, UnicodeEncodeError):
+            pass
 
         import unicodedata
         data = unicodedata.normalize('NFKD', data).encode('ascii', 'ignore')
