@@ -83,7 +83,7 @@ def showIptvSite():
     #test f4mTester
     sPath = 'special://home/addons/plugin.video.f4mTester/default.py'
 
-    if not xbmcvfs.exists(sPath):
+    if not xbmcvfs.exists(sPath) and not xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
         oGui.addText(SITE_IDENTIFIER, "[COLOR red]plugin.video.f4mTester: L'addon n'est pas présent[/COLOR]")
 
     liste = []
@@ -161,6 +161,12 @@ def parseM3U(sUrl=None, infile=None):#Traite les m3u local
     ValidEntry = False
 
     for line in inf:
+        if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+            try:
+                line = line.decode('utf-8')
+            except AttributeError:
+                pass
+
         line = line.strip()
         if line.startswith('#EXTINF:'):
             length, title = line.split('#EXTINF:')[1].split(',', 1)
@@ -193,6 +199,7 @@ def showWeb(infile = None):#Code qui s'occupe de liens TV du Web
 
     if infile == None:
         sUrl = oInputParameterHandler.getValue('siteUrl')
+
         playlist = parseM3U(sUrl=sUrl)
     else:
         playlist = parseM3U(infile=infile)
@@ -222,8 +229,9 @@ def showWeb(infile = None):#Code qui s'occupe de liens TV du Web
 
             #les + ne peuvent pas passer
             url2 = track.path.replace('+', 'P_L_U_S')
-            if not '[' in url2 and not ']' in url2 and not '.m3u8' in url2 and not 'dailymotion' in url2:
-                url2 = 'plugin://plugin.video.f4mTester/?url=' + QuotePlus(url2) + '&amp;streamtype=TSDOWNLOADER&name=' + Quote(track.title)
+            if not xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+                if not '[' in url2 and not ']' in url2 and not '.m3u8' in url2 and not 'dailymotion' in url2:
+                    url2 = 'plugin://plugin.video.f4mTester/?url=' + QuotePlus(url2) + '&amp;streamtype=TSDOWNLOADER&name=' + Quote(track.title)
 
             thumb = '/'.join([sRootArt, sThumb])
 
@@ -390,7 +398,7 @@ def play__():#Lancer les liens
     #Special url with tag
     if '[' in sUrl and ']' in sUrl:
         sUrl = GetRealUrl(sUrl)
-    else:
+    elif not xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
         stype = ''
         if '.ts' in sUrl:
             stype = 'TSDOWNLOADER'
