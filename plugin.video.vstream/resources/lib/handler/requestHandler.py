@@ -8,7 +8,7 @@ try:  # Python 2
 
 except ImportError:  # Python 3
     import urllib.request as urllib2
-    import urllib.error as UrlError
+    from urllib.error import URLError as UrlError
     from urllib.error import HTTPError as HttpError
 
 import xbmc
@@ -223,7 +223,7 @@ class cRequestHandler:
             if not sContent:
                 self.DIALOG.VSerror("%s (%d),%s" % (self.ADDON.VSlang(30205), e.code, self.__sUrl))
 
-        except UrlError.URLError as e:
+        except UrlError as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e.reason) and self.BUG_SSL == False:
                 self.BUG_SSL = True
                 return self.__callRequest()
