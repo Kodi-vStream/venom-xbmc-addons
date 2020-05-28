@@ -7,7 +7,7 @@ try:  # Python 2
 
 except ImportError:  # Python 3
     import urllib.request as urllib2
-    import urllib.error as UrlError
+    from urllib.error import URLError as UrlError
 
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
