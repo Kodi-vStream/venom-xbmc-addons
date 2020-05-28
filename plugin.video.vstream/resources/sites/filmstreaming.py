@@ -299,7 +299,11 @@ def showHosters():
             # VSlog(sHtmlContent)
 
             sHosterUrl = ''
-            sUrl = re.search('src="([^"]+)"', sHtmlContent)
+            #Pour Python 3, besoin de repasser en str.
+            try:
+                sUrl = re.search('src="([^"]+)"', sHtmlContent)
+            except TypeError:
+                sUrl = re.search('src="([^"]+)"', sHtmlContent.decode())
             sHosterUrl = sUrl.group(1)
 
             oRequestHandler = cRequestHandler(sHosterUrl)
