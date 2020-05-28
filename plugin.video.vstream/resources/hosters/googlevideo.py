@@ -7,7 +7,7 @@ try:  # Python 2
 
 except ImportError:  # Python 3
     import urllib.request as urllib2
-    import urllib.error as UrlError
+    from urllib.error import URLError as UrlError
 
 import re
 import xbmcgui
@@ -95,7 +95,7 @@ class cHoster(iHoster):
                     # VSlog(cookies)
 
                 # Impossible a faire fonctionner, si quelqu'un y arrive .....
-                # class NoRedirect(UrlError.HTTPRedirectHandler):
+                # class NoRedirect(urllib2.HTTPRedirectHandler):
                     # def redirect_request(self, req, fp, code, msg, hdrs, newurl):
                         # return newurl
                 # opener = urllib2.build_opener(NoRedirect)
@@ -123,7 +123,7 @@ class cHoster(iHoster):
 
                 try:
                     reponse = urllib2.urlopen(request)
-                except UrlError.URLError as e:
+                except UrlError as e:
                     print(e.read())
                     print(e.reason)
 
@@ -178,7 +178,7 @@ class cHoster(iHoster):
                 elif 'google' in vid_sel:
                     stream_url = vid_sel
 
-        except UrlError.URLError:
+        except UrlError:
             stream_url = ''
 
         api_call = stream_url
