@@ -9,7 +9,7 @@ try:  # Python 2
 
 except ImportError:  # Python 3
     import urllib.request as urllib2
-    import urllib.error as UrlError
+    from urllib.error import URLError as UrlError
     from urllib.error import HTTPError as HttpError
 
 import re
@@ -269,7 +269,7 @@ class cHoster(iHoster):
                     redirection_target = reponse.geturl()
                 else:
                     break
-            except UrlError.URLError as e:
+            except UrlError as e:
                 if (e.code == 301) or (e.code == 302):
                     redirection_target = e.headers['Location']
                 else:
