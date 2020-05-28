@@ -170,8 +170,8 @@ class cRequestHandler:
 
             #En python 3 on doit décoder la reponse
             if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-                #Si c'est une image on ne le decode pas
-                image_formats = ("image/png", "image/jpeg", "image/jpg")
+                #Si c'est une image ou autre element en bytes, on ne le decode pas
+                image_formats = ("image/png", "image/jpeg", "image/jpg", "application/download")
                 if not self.__sResponseHeader.get('Content-Type') in image_formats:
                     try:
                         sContent = oResponse.read().decode('utf-8')
