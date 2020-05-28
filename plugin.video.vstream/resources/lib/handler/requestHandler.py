@@ -130,6 +130,10 @@ class cRequestHandler:
 
         if self.__aParamatersLine:
             sParameters = self.__aParamatersLine
+            if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+                sParameters = self.__aParamatersLine.encode("utf-8")
+            else:
+                sParameters = self.__aParamatersLine                
         else:
             sParameters = urlEncode(self.__aParamaters)
 
@@ -162,13 +166,22 @@ class cRequestHandler:
             else:
                 oResponse = urllib2.urlopen(oRequest, timeout=self.__timeout)
 
-            # En python 3 on doit décoder la reponse
+            self.__sResponseHeader = oResponse.info()
+
+            #En python 3 on doit décoder la reponse
             if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-                sContent = oResponse.read().decode('utf-8')
+                #Si c'est une image on ne le decode pas
+                image_formats = ("image/png", "image/jpeg", "image/jpg")
+                if not self.__sResponseHeader.get('Content-Type') in image_formats:
+                    try:
+                        sContent = oResponse.read().decode('utf-8')
+                    except UnicodeDecodeError:
+                        sContent = oResponse.read()
+                else:
+                    sContent = oResponse.read()
+
             else:
                 sContent = oResponse.read()
-
-            self.__sResponseHeader = oResponse.info()
 
             # compressed page ?
             if self.__sResponseHeader.get('Content-Encoding') == 'gzip':
