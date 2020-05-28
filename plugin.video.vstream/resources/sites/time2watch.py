@@ -537,14 +537,14 @@ def decryptTime():
         sHtmlContent = oRequestHandler.request()
 
         downloaded_image = xbmcvfs.File("special://home/userdata/addon_data/plugin.video.vstream/challenge.png", 'wb')
-        downloaded_image.write(sHtmlContent)
+        downloaded_image.write(bytearray(sHtmlContent))
         downloaded_image.close()
 
         for base64_string in aResult[1]:
             imgdata = base64.b64decode(base64_string[1])
 
             downloaded_image = xbmcvfs.File("special://home/userdata/addon_data/plugin.video.vstream/test" + str(i) + ".png", 'wb')
-            downloaded_image.write(imgdata)
+            downloaded_image.write(bytearray(imgdata))
             downloaded_image.close()
             Filename.append("special://home/userdata/addon_data/plugin.video.vstream/test" + str(i) + ".png")
             i = i + 1
@@ -674,12 +674,14 @@ class cInputWindow(xbmcgui.WindowDialog):
         return False
 
     def onControl(self, control):
-        if control == self.okbutton:
+        if str(control.getLabel()) == "OK":
             if self.anythingChecked():
                 self.close()
-        elif control == self.cancelbutton:
+
+        elif str(control.getLabel()) == "Cancel":
             self.cancelled = True
             self.close()
+
         try:
             if 'xbmcgui.ControlButton' in repr(type(control)):
                 index = control.getLabel()
