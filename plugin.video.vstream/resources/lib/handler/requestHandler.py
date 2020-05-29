@@ -169,7 +169,7 @@ class cRequestHandler:
             self.__sResponseHeader = oResponse.info()
 
             #En python 3 on doit décoder la reponse
-            if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+            if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19' and not self.__sResponseHeader.get('Content-Encoding') == 'gzip':
                 #Si c'est une image ou autre element en bytes, on ne le decode pas
                 image_formats = ("image/png", "image/jpeg", "image/jpg", "application/download")
                 if not self.__sResponseHeader.get('Content-Type') in image_formats:
@@ -186,9 +186,7 @@ class cRequestHandler:
             # compressed page ?
             if self.__sResponseHeader.get('Content-Encoding') == 'gzip':
                 import zlib
-                #decompressobj permets d'éviter des erreurs lors de la décompression
-                zobj = zlib.decompressobj()
-                sContent = zobj.decompress(sContent, zlib.MAX_WBITS | 16)
+                sContent = zlib.decompress(sContent, zlib.MAX_WBITS | 16)
 
             # https://bugs.python.org/issue4773
             self.__sRealUrl = oResponse.geturl()
