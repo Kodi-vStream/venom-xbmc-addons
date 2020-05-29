@@ -33,7 +33,6 @@ URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-
 def load():
     oGui = cGui()
 
@@ -59,7 +58,6 @@ def load():
 
     oGui.setEndOfDirectory()
 
-
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
@@ -68,7 +66,6 @@ def showSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
-
 
 def showGenres():
     oGui = cGui()
@@ -104,7 +101,6 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
-
 def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
@@ -132,10 +128,14 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            # encode/decode pour affichage des accents
-            sTitle = unicode(aEntry[1], 'utf-8')
-            sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode('unicode_escape')
-            sTitle = sTitle.encode('latin-1')
+            try:
+                # encode/decode pour affichage des accents en python 2
+                sTitle = unicode(aEntry[1], 'utf-8')
+                sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode('unicode_escape')
+                sTitle = sTitle.encode('latin-1')
+            except NameError:
+                sTitle = aEntry[1]
+
             # Nettoyage du titre
             sTitle = sTitle.replace(' en streaming', '')
             if sTitle.startswith('Film'):
@@ -170,7 +170,6 @@ def showMovies(sSearch=''):
 
         oGui.setEndOfDirectory()
 
-
 def __checkForNextPage(sHtmlContent):
     sPattern = 'href="([^"]+)">>><'
     oParser = cParser()
@@ -179,7 +178,6 @@ def __checkForNextPage(sHtmlContent):
         return URL_MAIN[:-1] + aResult[1][0]
 
     return False
-
 
 def showSeriesNews():
     oGui = cGui()
@@ -215,7 +213,6 @@ def showSeriesNews():
 
     oGui.setEndOfDirectory()
 
-
 def showSeriesList():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -250,7 +247,6 @@ def showSeriesList():
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
-
 
 def showSeries():
     oGui = cGui()
@@ -308,7 +304,6 @@ def showSeries():
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
-
 
 def showLinks():
     oGui = cGui()
@@ -369,7 +364,6 @@ def showLinks():
 
     oGui.setEndOfDirectory()
 
-
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -403,7 +397,6 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
-
 def showSeriesHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -434,7 +427,6 @@ def showSeriesHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
-
 
 def showHostersOld():
     oGui = cGui()
@@ -488,7 +480,6 @@ def showHostersOld():
 
     oGui.setEndOfDirectory()
 
-
 def getcookie(head):
     # get cookie
     cookies = ''
@@ -500,7 +491,6 @@ def getcookie(head):
             for cook in aResult[1]:
                 cookies = cookies + cook[0] + '=' + cook[1] + ';'
             return cookies
-
 
 # author @NizarAlaoui
 def decode_js(k, i, s, e):
