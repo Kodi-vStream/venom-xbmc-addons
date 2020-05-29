@@ -29,7 +29,6 @@ URL_SEARCH = ('https://buzzmonclick.net/?s=', 'showMovies')
 URL_SEARCH_MISC = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-
 def load():
     oGui = cGui()
 
@@ -111,10 +110,13 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sTitle = unicode(aEntry[1], 'utf-8')#converti en unicode
-            sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')#vire accent
-            #sTitle = unescape(str(sTitle))
-            sTitle = sTitle.encode( "utf-8")
+            try:
+                sTitle = unicode(aEntry[1], 'utf-8')#converti en unicode
+                sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')#vire accent
+                #sTitle = unescape(str(sTitle))
+                sTitle = sTitle.encode( "utf-8")
+            except NameError:
+                sTitle = aEntry[1]
 
             #mise en page
             sTitle = sTitle.replace('Permalien pour', '').replace('&prime;', '\'')
