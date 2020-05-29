@@ -52,6 +52,14 @@ class cUtil:
         str2 = unicodedata.normalize('NFKD', str2).encode('ASCII', 'ignore')
 
         i = 0
+        
+        #Pour Python 3, transforme la variable en str
+        try:
+            str1 = str1.decode()
+            str2 = str2.decode()
+        except:
+            pass
+
         for part in str1.split(' '):
             if (part in str2) and (part not in Ignoreliste):
                 i += 1
