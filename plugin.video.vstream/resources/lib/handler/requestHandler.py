@@ -186,7 +186,9 @@ class cRequestHandler:
             # compressed page ?
             if self.__sResponseHeader.get('Content-Encoding') == 'gzip':
                 import zlib
-                sContent = zlib.decompress(sContent, zlib.MAX_WBITS | 16)
+                #decompressobj permets d'éviter des erreurs lors de la décompression
+                zobj = zlib.decompressobj()
+                sContent = zobj.decompress(sContent, zlib.MAX_WBITS | 16)
 
             # https://bugs.python.org/issue4773
             self.__sRealUrl = oResponse.geturl()
