@@ -18,12 +18,12 @@ URL_MAIN = 'https://www.adkami.com/'
 ANIM_ANIMS = ('http://', 'load')
 ANIM_NEWS = (URL_MAIN + 'anime', 'showMovies')
 ANIM_VIEWS = (URL_MAIN + 'video?search=&t=0&order=3', 'showMovies')
-ANIM_LIST = (URL_MAIN + 'anime', 'showAZ')
+ANIM_LIST = (URL_MAIN + 'video?search=&n=&g=&s=&v=&t=0&p=&order=&d1=&d2=&e=&m=&q=&l=', 'showAZ')
 
 SERIE_SERIES = ('http://', 'load')
 SERIE_NEWS = (URL_MAIN + 'serie', 'showMovies')
 SERIE_VIEWS = (URL_MAIN + 'video?search=&t=1&order=3', 'showMovies')
-SERIE_LIST = (URL_MAIN + 'serie', 'showAZ')
+SERIE_LIST = (URL_MAIN + 'video?search=&n=&g=&s=&v=&t=1&p=&order=&d1=&d2=&e=&m=&q=&l=', 'showAZ')
 
 URL_SEARCH = (URL_MAIN + 'video?search=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -112,63 +112,15 @@ def showAZ():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    for i in range(0, 27):
+    import string
 
-        if (i < 1):
-            sTitle = '123'
-        else:
-            sTitle = chr(64 + i)
+    for i in string.ascii_lowercase:
+
+        sUrl2 = sUrl + str(i)
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oOutputParameterHandler.addParameter('sLetter', sTitle)
-        oGui.addDir(SITE_IDENTIFIER, 'showList', '[COLOR teal] Lettre [COLOR red]' + sTitle + '[/COLOR][/COLOR]', 'az.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
-def showList():
-    oGui = cGui()
-    oParser = cParser()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sLetter = oInputParameterHandler.getValue('sLetter')
-
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-
-    #Decoupage pour cibler une partie Film
-    sPattern = 'class="video-item-list-days"><h5>Lettre ' + sLetter + '</h5></div>(.+?)<(div id=|div class="col-12 col-l-3")'
-    sHtmlContent = oParser.parse(sHtmlContent, sPattern)
-
-    #regex pour listage films sur la partie decoupée
-    sPattern = '<span class="top"><a href="([^"]+)"><span class="title">([^<>]+)<\/span>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == False):
-        oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
-        for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
-            sUrl = aEntry[0]
-            sTitle = aEntry[1].decode("unicode_escape").encode("latin-1")
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-
-            if '/anime/' in sUrl:
-                oGui.addAnime(SITE_IDENTIFIER, 'showEpisode', sTitle, 'animes.png', '', '', oOutputParameterHandler)
-            else:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, 'series.png', '', '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] Lettre [COLOR red]' + str(i) + '[/COLOR][/COLOR]', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -215,7 +167,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<span class="top"><a href="([^"]+)"><span class="title">([^<>]+)<\/span>'
+    sPattern = '<span class="top">.+?<a href="([^"]+)">.+?<span class="title">([^<>]+)</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
