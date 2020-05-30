@@ -200,7 +200,10 @@ def showMovies(sSearch = ''):
                 sDesc = aEntry[3]
 
             if sDesc:
-                sDesc = cUtil().unescape(sDesc.decode('utf8'))
+                try:
+                    sDesc = cUtil().unescape(sDesc.decode('utf8'))
+                except AttributeError:
+                    sDesc = cUtil().unescape(sDesc)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
