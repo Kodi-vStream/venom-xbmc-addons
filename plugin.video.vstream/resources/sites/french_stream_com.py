@@ -7,9 +7,15 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, xbmc, VSlog
 import re
 import base64
+
+#Detecte si c'est Kodi 19 ou plus
+if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+    isPython3 = True
+else:
+    isPython3 = False
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -42,72 +48,103 @@ ANIM_ANIMS = (True, 'showMangasMenu')
 ANIM_NEWS = (URL_MAIN + 'mangas/', 'showSeries')
 
 def decode_url_Serie(url, sId, tmp = ''):
-
+    
     v = url
 
     if 'singh' in sId:
         # sId2 = sId[6:]
         fields = url.split('nbsp')
         try:
-            t = base64.b64encode(base64.b64encode(fields[1]))
+            if isPython3:
+                t = base64.b64encode(base64.b64encode(fields[1].encode()))
+            else:
+                t = base64.b64encode(base64.b64encode(fields[1]))
         except IndexError:
-            t = base64.b64encode(base64.b64encode(fields[0]))
+            if isPython3:
+                t = base64.b64encode(base64.b64encode(fields[0].encode()))
+            else:
+                t = base64.b64encode(base64.b64encode(fields[0]))
         else:
             return
-        v = "/s.php?p_id=1&&c_id=" + t
+        v = "/s.php?p_id=1&&c_id=" + str(t)
 
     if sId == 'honey':
         # sId2 = sId[6:]
         fields = url.split('nbsp')
-        t = base64.b64encode(base64.b64encode(fields[1]))
-        v = "/s.php?p_id=1&&c_id=" + t
+        if isPython3:
+            t = base64.b64encode(base64.b64encode(fields[1].encode()))
+        else:
+            t = base64.b64encode(base64.b64encode(fields[1]))
+        v = "/s.php?p_id=1&&c_id=" + str(t)
 
     if sId == 'yoyo':
         # sId2 = sId[5:]
         fields = url.split('nbsp')
-        t = base64.b64encode(base64.b64encode(fields[1]))
-        v = "/s.php?p_id=1&&c_id=" + t
+        if isPython3:
+            t = base64.b64encode(base64.b64encode(fields[1].encode()))
+        else:
+            t = base64.b64encode(base64.b64encode(fields[1]))
+        v = "/s.php?p_id=1&&c_id=" + str(t)
 
     if sId == 'seriePlayer':
         fields = url.split('nbsp')
-        t = base64.b64encode(base64.b64encode(fields[1]))
-        v = "/s.php?p_id=1&&c_id=" + t
+        if isPython3:
+            t = base64.b64encode(base64.b64encode(fields[1].encode()))
+        else:
+            t = base64.b64encode(base64.b64encode(fields[1]))
+        v = "/s.php?p_id=1&&c_id=" + str(t)
 
     return v
 
 def decode_url(url, sId, tmp = ''):
 
-    v = url
-
     if sId == 'seriePlayer':
         fields = tmp.split('sig=705&&')
-        t = base64.b64encode(base64.b64encode(fields[1]))
-        v = '/f.php?p_id=1&&c_id=' + t
+        if isPython3:
+            t = base64.b64encode(base64.b64encode(fields[1].encode()))
+        else:
+            t = base64.b64encode(base64.b64encode(fields[1]))
+        v = '/f.php?p_id=1&&c_id=' + str(t)
 
     if sId == 'gGotop1':
         fields = tmp.split('sig=705&&')
-        t = base64.b64encode(base64.b64encode(fields[1]))
-        v = '/f.php?p_id=1&&c_id=' + t
+        if isPython3:
+            t = base64.b64encode(base64.b64encode(fields[1].encode()))
+        else:
+            t = base64.b64encode(base64.b64encode(fields[1]))
+        v = '/f.php?p_id=1&&c_id=' + str(t)
 
     if sId == 'gGotop2':
         fields = url.split('nbsp')
-        t = base64.b64encode(base64.b64encode(fields[1]))
-        v = "/f.php?p_id=2&&c_id=" + t
+        if isPython3:
+            t = base64.b64encode(base64.b64encode(fields[1].encode()))
+        else:
+            t = base64.b64encode(base64.b64encode(fields[1]))
+        v = "/f.php?p_id=2&&c_id=" + str(t)
 
     if sId == 'gGotop3':
         fields = url.split('nbsq')
-        t = base64.b64encode(base64.b64encode(fields[1]))
-        v = "/f.php?p_id=3&&c_id=" + t
+        if isPython3:
+            t = base64.b64encode(base64.b64encode(fields[1].encode()))
+        else:
+            t = base64.b64encode(base64.b64encode(fields[1]))
+        v = "/f.php?p_id=3&&c_id=" + str(t)
 
     if sId == 'gGotop4':
         fields = url.split('nbsr')
-        t = base64.b64encode(base64.b64encode(fields[1]))
-        v = "/f.php?p_id=4&&c_id=" + t
+        if isPython3:
+            t = base64.b64encode(base64.b64encode(fields[1].encode()))
+        else:
+            t = base64.b64encode(base64.b64encode(fields[1]))
+        v = "/f.php?p_id=4&&c_id=" + str(t)
 
     if sId == 'gGotop5':
         fields = url.split('nbss')
-        t = base64.b64encode(base64.b64encode(fields[1]))
-        v = "/dl.php?p_id=5&&c_id=" + t
+        if isPython3:
+            t = base64.b64encode(base64.b64encode(fields[1].encode()))
+        else:
+            t = base64.b64encode(base64.b64encode(fields[1]))
+        v = "/dl.php?p_id=5&&c_id=" + str(t)
 
     return v
 
@@ -331,6 +368,7 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+
     sPattern = 'film-ripz".+?href="([^"]+)" title="[^"]+"><img src="([^"]+)".+?class="short-titl.+?>([^<]+)<'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
