@@ -112,12 +112,20 @@ class cUtil:
                         return unichr(int(text[2:-1]))
                 except ValueError:
                     pass
+                except NameError:
+                    if text[:3] == '&#x':
+                        return chr(int(text[3:-1], 16))
+                    else:
+                        return chr(int(text[2:-1]))
             else:
                 # named entity
                 try:
                     text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
                 except KeyError:
                     pass
+                except NameError:
+                    text = chr(htmlentitydefs.name2codepoint[text[1:-1]])   
+                                     
             return text  # leave as is
         return re.sub('&#?\w+;', fixup, text)
 
