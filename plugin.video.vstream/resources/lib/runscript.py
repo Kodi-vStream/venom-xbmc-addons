@@ -150,15 +150,25 @@ class cClear:
                 self.DIALOG.VSerror("%s, %s" % (self.ADDON.VSlang(30205), sUrl))
             return
 
-        elif (env == 'addon'):
+        elif (env == 'addon'): # Vider le cache des métadonnées
             if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
                 cached_Cache = "special://home/userdata/addon_data/plugin.video.vstream/video_cache.db"
+                # important seul xbmcvfs peux lire le special
+                cached_Cache = xbmc.translatePath(cached_Cache).decode("utf-8")
+                
                 try:
-                    xbmcvfs.delete(cached_Cache)
-                    self.DIALOG.VSinfo(self.ADDON.VSlang(30089))
+                    db = sqlite.connect(cached_Cache)
+                    dbcur = db.cursor()
+                    dbcur.execute('DELETE FROM movie')
+                    dbcur.execute('DELETE FROM tvshow')
+                    dbcur.execute('DELETE FROM season')
+                    dbcur.execute('DELETE FROM episode')
+                    db.commit()
+                    dbcur.close()
+                    db.close()
+                    self.DIALOG.VSinfo(self.ADDON.VSlang(30090))
                 except:
-                    self.DIALOG.VSerror(self.ADDON.VSlang(30087))
-
+                    self.DIALOG.VSerror(self.ADDON.VSlang(30091))
             return
 
         elif (env == 'clean'):
@@ -173,15 +183,15 @@ class cClear:
             if ret > -1:
 
                 if ret == 0:
-                    sql_drop = "DROP TABLE history"
+                    sql_drop = 'DELETE FROM history'
                 elif ret == 1:
-                    sql_drop = "DROP TABLE resume"
+                    sql_drop = 'DELETE FROM resume'
                 elif ret == 2:
-                    sql_drop = "DROP TABLE watched"
+                    sql_drop = 'DELETE FROM watched'
                 elif ret == 3:
-                    sql_drop = "DROP TABLE favorite"
+                    sql_drop = 'DELETE FROM favorite'
                 elif ret == 4:
-                    sql_drop = "DROP TABLE download"
+                    sql_drop = 'DELETE FROM download'
 
                 try:
                     db = sqlite.connect(cached_DB)
@@ -193,7 +203,6 @@ class cClear:
                     self.DIALOG.VSok(self.ADDON.VSlang(30090))
                 except:
                     self.DIALOG.VSerror(self.ADDON.VSlang(30091))
-
             return
 
         elif (env == 'xbmc'):

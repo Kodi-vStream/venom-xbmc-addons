@@ -30,7 +30,7 @@ DEBUG = False  # Mettre True pour activer le debug
 if DEBUG:
 
     import sys  # pydevd module need to be copied in Kodi\system\python\Lib\pysrc
-    sys.path.append('H:\Program Files\Kodi\system\Python\Lib\pysrc')
+    sys.path.append('C:\Program Files\Kodi\system\Python\Lib\pysrc')
 
     try:
         import pysrc.pydevd as pydevd
@@ -47,9 +47,12 @@ class main:
 
     def __init__(self):
         self.parseUrl()
-        # Ne pas desactiver la ligne d'en dessous, car sinon ca genere
-        # des probleme de Db sous Android.
-        cDb()._create_tables()
+        # Ne pas desactiver la ligne d'en dessous, car sinon ca genere des probleme de Db sous Android.
+
+        # PROBLEME réglé le 31/05/20 !!
+        # Dans runScript."clean" on supprimait les tables pour vider le cache, il fallait donc les recréer.
+        # Maintenant on vide les tables sans les supprimer. 
+        # cDb()._create_tables()
 
     def parseUrl(self):
 
