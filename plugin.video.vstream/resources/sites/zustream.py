@@ -249,7 +249,7 @@ def showMovies(sSearch = ''):
                     sDesc = aEntry[5]
 
             sDesc = unicode(sDesc, 'utf-8')  # converti en unicode
-            sDesc = utils.unescape(sDesc)    # retire les balises HTML
+            sDesc = utils.unescape(sDesc).encode('utf-8')    # retire les balises HTML
 
             sDisplayTitle = ('%s (%s) (%s)') % (sTitle, sLang, sYear)
 
