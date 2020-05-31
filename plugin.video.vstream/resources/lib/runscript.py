@@ -154,7 +154,10 @@ class cClear:
             if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
                 cached_Cache = "special://home/userdata/addon_data/plugin.video.vstream/video_cache.db"
                 # important seul xbmcvfs peux lire le special
-                cached_Cache = xbmc.translatePath(cached_Cache).decode("utf-8")
+                try:
+                    cached_Cache = xbmc.translatePath(cached_Cache).decode("utf-8")
+                except AttributeError:
+                    cached_Cache = xbmc.translatePath(cached_Cache)
                 
                 try:
                     db = sqlite.connect(cached_Cache)
@@ -176,7 +179,10 @@ class cClear:
             ret = self.DIALOG.select(self.ADDON.VSlang(30110), liste)
             cached_DB = "special://home/userdata/addon_data/plugin.video.vstream/vstream.db"
             # important seul xbmcvfs peux lire le special
-            cached_DB = xbmc.translatePath(cached_DB).decode("utf-8")
+            try:
+                cached_DB = xbmc.translatePath(cached_DB).decode("utf-8")
+            except AttributeError:
+                cached_DB = xbmc.translatePath(cached_DB)
 
             sql_drop = ""
 

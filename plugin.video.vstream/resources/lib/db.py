@@ -20,7 +20,7 @@ except:
 
 class cDb:
 
-    DB = 'special://userdata/addon_data/plugin.video.vstream/vstream.db'
+    DB = 'special://home/userdata/addon_data/plugin.video.vstream/vstream.db'
     # important seul xbmcvfs peux lire le special
     try:
         REALDB = xbmc.translatePath(DB).decode('utf-8')
