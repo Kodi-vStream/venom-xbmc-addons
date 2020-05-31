@@ -7,9 +7,9 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil, QuotePlus, Noredirection
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 from resources.lib.sucuri import SucurieBypass
-import re
+import re, unicodedata
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 
@@ -149,7 +149,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = SucurieBypass().GetHtml(sUrl)
 
     oParser = cParser()
-    sPattern = 'class="item"> *<a href="([^<]+)">.+?<img[^<>]+src="([^<>"]+?)" alt="([^"]+?)".+?<span class="calidad2">([^<]+)<\/span>'
+    sPattern = 'class="item">.+?<a href="([^<]+)">.+?<img[^<>]+src="([^<>"]+?)" alt="([^"]+?)".+?<span class="calidad2">([^<]+)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -166,8 +166,14 @@ def showMovies(sSearch = ''):
 
             sTitle = aEntry[2].replace(' Streaming Ultra-HD', '').replace(' Streaming Full-HD', '')
             sTitle = sTitle.replace(' en Streaming HD', '').replace(' Streaming HD', '').replace(' streaming', '').replace('HD', '')
-            sTitle = sTitle.decode('utf8')
+
+            try:
+                sTitle = sTitle.decode('utf8')
+            except:
+                pass
+                
             sTitle = cUtil().unescape(sTitle)
+
             try:
                 sTitle = sTitle.encode("utf-8")
             except:
@@ -191,7 +197,10 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if re.match('.+?saison [0-9]+', sTitle, re.IGNORECASE):
+            sPattern1 = '.+?saison [0-9]+'
+            aResult1 = oParser.parse(sTitle, sPattern1)
+
+            if aResult1[0]:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
@@ -229,9 +238,13 @@ def showHosters():
 
     sHtmlContent = SucurieBypass().GetHtml(sUrl)
 
+    try:
+        sHtmlContent = sHtmlContent.decode()
+    except:
+        pass
+
     #Vire les bandes annonces
     sHtmlContent = sHtmlContent.replace('src="//www.youtube.com/', '')
-
 
     sPattern = '<iframe.+?src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -289,6 +302,11 @@ def showSaisons():
 
     sHtmlContent = SucurieBypass().GetHtml(sUrl)
 
+    try:
+        sHtmlContent = sHtmlContent.decode()
+    except:
+        pass
+        
     sHtmlContent = sHtmlContent.replace('<iframe width="420" height="315" src="https://www.youtube.com/', '')
     sPattern = '<iframe.+?src="(http.+?)".+?>'
 
