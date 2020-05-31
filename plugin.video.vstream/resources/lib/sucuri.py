@@ -12,6 +12,7 @@ import os
 import re
 import xbmc
 import xbmcaddon
+import unicodedata
 
 from resources.lib.comaddon import VSlog
 from resources.lib.util import urlEncode
@@ -37,17 +38,27 @@ class SucurieBypass(object):
     def DeleteCookie(self, Domain):
         VSlog('Effacement cookies')
         file = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt')
-        os.remove(os.path.join(PathCache, file).decode('utf-8'))
+        try:
+            os.remove(os.path.join(PathCache, file).decode('utf-8'))
+        except:
+            os.remove(os.path.join(PathCache, file))
 
     def SaveCookie(self, Domain, data):
-        Name = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt').decode('utf-8')
+        try:
+            Name = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt').decode('utf-8')
+        except:
+            Name = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt')
+
         # save it
         file = open(Name, 'w')
         file.write(data)
         file.close()
 
     def Readcookie(self, Domain):
-        Name = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt').decode('utf-8')
+        try:
+            Name = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt').decode('utf-8')
+        except:
+            Name = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt')
 
         try:
             file = open(Name, 'r')
@@ -92,6 +103,11 @@ class SucurieBypass(object):
         return '|' + urlEncode({'User-Agent': UA, 'Cookie': cook})
 
     def CheckIfActive(self, html):
+        try:
+            html = html.decode("utf-8")
+        except:
+            pass
+
         if 'sucuri_cloudproxy_js' in html:
             return True
         return False
@@ -168,5 +184,12 @@ class SucurieBypass(object):
             buf = StringIO(htmlcontent)
             f = gzip.GzipFile(fileobj=buf)
             htmlcontent = f.read()
+
+        #Decodage obligatoire pour python 3
+        try:
+            htmlcontent = unicodedata.normalize('NFD', htmlcontent.decode()).encode('ascii', 'ignore').decode('unicode_escape')
+            htmlcontent = htmlcontent.encode()
+        except:
+            pass
 
         return htmlcontent, redirecturl
