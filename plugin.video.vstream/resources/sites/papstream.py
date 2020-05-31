@@ -207,16 +207,18 @@ def showMovies(sSearch=''):
                 break
 
             sThumb = URL_MAIN[:-1] + aEntry[0]
-            sUrl = URL_MAIN[:-1] + aEntry[1].replace('/animes/films/', '/films/').replace('/animes/series/', '/series/')
+            sUrl2 = URL_MAIN[:-1] + aEntry[1].replace('/animes/films/', '/films/').replace('/animes/series/', '/series/')
             sTitle = aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if '/series/' in sUrl or '/animes/' in sUrl:
+            if '/series/' in sUrl2 or '/animes/' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
+            elif '/documentaire/' in sUrl:
+                oGui.addMisc(SITE_IDENTIFIER, 'showLink', sTitle, 'doc.png', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLink', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
