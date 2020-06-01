@@ -136,6 +136,8 @@ class cRequestHandler:
                 sParameters = self.__aParamatersLine                
         else:
             sParameters = urlEncode(self.__aParamaters)
+            if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+                sParameters = sParameters.encode()
 
         if (self.__cType == cRequestHandler.REQUEST_TYPE_GET):
             if (len(sParameters) > 0):
@@ -167,16 +169,30 @@ class cRequestHandler:
                 oResponse = urllib2.urlopen(oRequest, timeout=self.__timeout)
 
             self.__sResponseHeader = oResponse.info()
-
             #En python 3 on doit décoder la reponse
             if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19' and not self.__sResponseHeader.get('Content-Encoding') == 'gzip':
                 #Si c'est une image ou autre element en bytes, on ne le decode pas
                 image_formats = ("image/png", "image/jpeg", "image/jpg", "application/download")
                 if not self.__sResponseHeader.get('Content-Type') in image_formats:
+                    sContent = oResponse.read()
+
+                    if self.__sResponseHeader.get_content_charset():
+                        encoding = self.__sResponseHeader.get_content_charset()
+                    else:
+                        encoding = 'utf-8'
                     try:
-                        sContent = oResponse.read().decode('utf-8')
-                    except UnicodeDecodeError:
-                        sContent = oResponse.read()
+
+                        try:
+                            sContent = sContent.decode()
+                        except:
+                            pass
+
+                        sContent = str(sContent, encoding)
+                    except:
+                        sContent = str(sContent)
+                    else:
+                        pass
+
                 else:
                     sContent = oResponse.read()
 
