@@ -1,5 +1,8 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
 import re
+
 
 class cParser:
 
@@ -11,9 +14,13 @@ class cParser:
         return False, aMatches
 
     def __replaceSpecialCharacters(self, sString):
-        return sString.replace('\\/', '/').replace('&amp;', '&').replace('\xc9', 'E').replace('&#8211;', '-').replace('&#038;', '&').replace('&rsquo;', '\'').replace('\r', '').replace('\n', '').replace('\t', '').replace('&#039;', "'").replace('&quot;', '"').replace('&gt;', '>').replace('&lt;', '<').replace('&nbsp;', '')
+        """ /!\ pas les mêmes tirets, tiret moyen et cadratin. Puis on supprimme le tiret pour les séries """
+        return sString.replace('\r', '').replace('\n', '').replace('\t', '').replace('\\/', '/').replace('&amp;', '&')\
+                      .replace('&#039;', "'").replace('&#8211;', '-').replace('&#038;', '&').replace('&rsquo;', '\'')\
+                      .replace('\xc9', 'E').replace('&quot;', '"').replace('&gt;', '>').replace('&lt;', '<')\
+                      .replace('&nbsp;', '').replace('–', '-').replace('—', '-').replace(' - Saison', ' Saison')
 
-    def parse(self, sHtmlContent, sPattern, iMinFoundValue = 1):
+    def parse(self, sHtmlContent, sPattern, iMinFoundValue=1):
         sHtmlContent = self.__replaceSpecialCharacters(str(sHtmlContent))
         aMatches = re.compile(sPattern, re.IGNORECASE).findall(sHtmlContent)
         if (len(aMatches) >= iMinFoundValue):
@@ -42,11 +49,11 @@ class cParser:
         except:
             return {'title': sHtmlContent}
 
-    def abParse(self, sHtmlContent, start, end, startoffset = ''):
-        #usage oParser.abParse(sHtmlContent, 'start', 'end')
-        #startoffset (int) décale le début pour ne pas prendre en compte start dans le résultat final si besoin
-        #usage2 oParser.abParse(sHtmlContent, 'start', 'end', 6)
-        #ex youtube.py
+    def abParse(self, sHtmlContent, start, end, startoffset=''):
+        # usage oParser.abParse(sHtmlContent, 'start', 'end')
+        # startoffset (int) décale le début pour ne pas prendre en compte start dans le résultat final si besoin
+        # usage2 oParser.abParse(sHtmlContent, 'start', 'end', 6)
+        # ex youtube.py
         if startoffset:
             return sHtmlContent[startoffset + sHtmlContent.find(start):sHtmlContent.find(end)]
         else:
