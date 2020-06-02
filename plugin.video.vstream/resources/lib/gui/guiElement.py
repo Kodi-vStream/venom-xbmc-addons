@@ -7,6 +7,7 @@ import string
 from resources.lib.comaddon import addon, xbmc
 from resources.lib.db import cDb
 from resources.lib.util import QuoteSafe
+from resources.lib.tmdb import cTMDb
 
 # rouge E26543
 # jaune F7D571
@@ -20,6 +21,7 @@ class cGuiElement:
     # COUNT = 0
     ADDON = addon()
     DB = cDb()
+    TMDb = cTMDb()
 
     def __init__(self):
 
@@ -468,7 +470,6 @@ class cGuiElement:
             self.addItemProperties('fanart_image', meta['backdrop_url'])
             self.__sFanart = meta['backdrop_url']
         if 'trailer' in meta and meta['trailer']:
-            # meta['trailer'] = meta['trailer'].replace(u'\u200e', '').replace(u'\u200f', '')
             self.__sTrailer = meta['trailer']
         if 'cover_url' in meta and meta['cover_url']:
             self.__sThumbnail = meta['cover_url']
@@ -509,8 +510,6 @@ class cGuiElement:
         sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'movie').replace('4', 'anime')
 
         if sType:
-            from resources.lib.tmdb import cTMDb
-            grab = cTMDb()
             args = (sType, sTitle)
             kwargs = {}
             if (self.__ImdbId):
@@ -523,7 +522,7 @@ class cGuiElement:
                 kwargs['season'] = self.__Season
             if (self.__Episode):
                 kwargs['episode'] = self.__Episode
-            meta = grab.get_meta(*args, **kwargs)
+            meta = self.TMDb.get_meta(*args, **kwargs)
 
         else:
             return
@@ -550,8 +549,9 @@ class cGuiElement:
             self.addItemProperties('fanart_image', '')
 
         if 'trailer' in meta and meta['trailer']:
-            # meta['trailer'] = meta['trailer'].replace(u'\u200e', '').replace(u'\u200f', '')
             self.__sTrailer = meta['trailer']
+        else:
+            self.__sTrailer = self.TMDb.getDefaultTrailer()
 
         # Pas de changement de cover pour les coffrets de films
         if metaType != 3:

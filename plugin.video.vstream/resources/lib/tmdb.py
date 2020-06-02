@@ -10,6 +10,7 @@ import xbmcvfs
 import string
 import unicodedata
 import webbrowser
+import random
 
 from resources.lib.util import QuotePlus
 from resources.lib.comaddon import addon, dialog, VSlog, xbmc
@@ -64,7 +65,7 @@ class cTMDb:
 
     URL = 'https://api.themoviedb.org/3/'
     URL_TRAILER = 'plugin://plugin.video.youtube/play/?video_id=%s' # ancien : 'plugin://plugin.video.youtube/?action=play_video&videoid=%s'
-    CACHE = 'special://userdata/addon_data/plugin.video.vstream/video_cache.db'
+    CACHE = 'special://home/userdata/addon_data/plugin.video.vstream/video_cache.db'
 
     # important seul xbmcvfs peux lire le special
     try:
@@ -73,7 +74,6 @@ class cTMDb:
         REALCACHE = xbmc.translatePath(CACHE)
 
     ADDON = addon()
-    DIALOG = dialog()
 
     def __init__(self, api_key='', debug=False, lang='fr'):
 
@@ -218,7 +218,8 @@ class cTMDb:
 
             sText = (self.ADDON.VSlang(30421)) % (url, result['request_token'])
 
-            oDialog = self.DIALOG.VSyesno(sText)
+            DIALOG = dialog()
+            oDialog = DIALOG.VSyesno(sText)
             if (oDialog == 0):
                 return False
 
@@ -227,10 +228,10 @@ class cTMDb:
 
                 if 'success' in result and result['success']:
                     self.ADDON.setSetting('tmdb_session', str(result['session_id']))
-                    self.DIALOG.VSinfo(self.ADDON.VSlang(30000))
+                    DIALOG.VSinfo(self.ADDON.VSlang(30000))
                     return
                 else:
-                    self.DIALOG.VSerror('Erreur' + self.ADDON.VSlang(30000))
+                    DIALOG.VSerror('Erreur' + self.ADDON.VSlang(30000))
                     return
 
             # xbmc.executebuiltin('Container.Refresh')
@@ -477,7 +478,8 @@ class cTMDb:
             elif 'episode_run_time' in meta and meta['episode_run_time']:
                 duration = int(meta['episode_run_time'][0])
             
-            duration *= 60  # Convertir les minutes TMDB en secondes pour KODI
+            if duration < 300 : # en minutes
+                duration *= 60  # Convertir les minutes TMDB en secondes pour KODI
             _meta['duration'] = duration
         except:
             _meta['duration'] = 0
@@ -517,11 +519,11 @@ class cTMDb:
                 else:
                     _meta['genre'] += ' / ' + genre
 
-        if 'trailer' in meta:   # Lecture du cache
+        trailer_id = ''
+        if 'trailer' in meta and meta['trailer']:   # Lecture du cache
             _meta['trailer'] = meta['trailer']
-        elif 'trailers' in meta:    # Un film reconnu par TMDB
+        elif 'trailers' in meta:    # Trailer d'un film retourné par TMDB
             try:    # Recherche de la BA en français
-                trailer_id = ''
                 trailers = meta['trailers']['youtube']
                 for trailer in trailers:
                     if trailer['type'] == 'Trailer':
@@ -534,17 +536,17 @@ class cTMDb:
                 _meta['trailer'] = self.URL_TRAILER % trailer_id
             except:
                 pass
-        elif 'videos' in meta and meta['videos']:   # Une série TMDB
+        elif 'videos' in meta and meta['videos']:   # Trailer d'une série retourné par TMDB
             try:    # Recherche de la BA en français
-                trailer_id = ''
                 trailers = meta['videos']
                 if len(trailers['results']) >0:
                     for trailer in trailers['results']:
                         if trailer['type'] == 'Trailer' and trailer['site'] == 'YouTube':
+                            trailer_id = trailer['key'] # Au moins c'est un trailer, pas forcement français
                             if 'fr' in trailer['iso_639_1']:
                                 trailer_id = trailer['key']
                                 break
-                    # pas de trailer français, on prend le premier
+                    # pas de trailer, on prend la premiere vidéo disponible
                     if not trailer_id:
                         trailer_id = meta['videos'][0]['key']
                     _meta['trailer'] = self.URL_TRAILER % trailer_id
@@ -650,13 +652,18 @@ class cTMDb:
             self._cache_save_season(meta, season)
             del meta['seasons']
 
+        # sauvegarde de la durée en minutes, pour le retrouver en minutes comme le fait TMDB
+        runtime = 0
+        if 'duration' in meta and meta['duration']:
+            runtime = int(meta['duration'])/60
+            
         # ecrit movie et tvshow dans la BDD
         # year n'est pas forcement l'année du film mais l'année utilisée pour la recherche
         try:
             sql = 'INSERT INTO %s (imdb_id, tmdb_id, title, year, credits, vote_average, vote_count, runtime, ' \
                   'overview, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path, playcount) ' \
                   'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' % media_type
-            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['rating'], meta['votes'], meta['duration'], meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], 0))
+            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['rating'], meta['votes'], runtime, meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], 0))
             self.db.commit()
             VSlog('SQL INSERT Successfully')
         except Exception:
@@ -731,10 +738,10 @@ class cTMDb:
             elif name:
                 meta = self.search_tvshow_name(name, year, genre = 16)
 
-        # transforme les metas si trouvé
+        # Mise en forme des metas si trouvé
         if meta and 'tmdb_id' in meta:
             meta = self._format(meta, name)
-            # sauvegarde
+            # sauvegarde dans un cache
             self._cache_save(meta, self._clean_title(name), media_type, season, year)
         else:   # initialise un meta vide
             meta = self._format(meta, name)
@@ -795,3 +802,17 @@ class cTMDb:
             if genre:
                 sGenres.append(genre)
         return sGenres
+
+    # Des vidéos pour remplacer des bandes annnonces manquantes
+    def getDefaultTrailer(self):
+        trailers = [
+            'WWkYjM3ZXxU',
+            'LpvKI7I5rF4',
+            'svTVRDgI08Y',
+            'DUpVqwceQaA',
+            'mnsMnskJ3cQ',
+            'M0_vxs6FPbQ',
+            ]
+
+        trailer_id = random.choice(trailers)
+        return self.URL_TRAILER % trailer_id
