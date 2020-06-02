@@ -324,7 +324,9 @@ def showSeries(sLoop=False):
     sHtmlContent = sHtmlContent.replace('<b> </b>', ' ')
     sHtmlContent = sHtmlContent.replace('<b></b>', ' ')
     sHtmlContent = sHtmlContent.replace('<span class="su-lightbox" data-mfp-src', '<a href')
-    sHtmlContent = sHtmlContent.replace('https://cut-urls.com/st?api=d6e46f2fcd4bfed906a9f3ecbbb6830e862b3afb&amp;url=', '')
+    # Enleve le debut de l'url du hoster, si présent
+    sHtmlContent = re.sub('https://cut-urls.com/st\?api=[\w|\d|&|#|;]+=', '', sHtmlContent)
+
 
     # récupération du Synopsis
     sDesc = ''
