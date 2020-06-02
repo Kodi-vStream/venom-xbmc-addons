@@ -369,6 +369,9 @@ def showSeries(sLoop=False):
                     # on vire le double affichage des saisons
                     sTitle = re.sub(' - Saison \d+', '', sMovieTitle) + ' ' + SXXEX.group(1)
                     if HOST:
+                        # Fake
+                        if 'stream20' in HOST or 'azerstreaming' in HOST:
+                            continue
                         HOST = HOST.group(1).split('/')[0]
                         sDisplayTitle = sTitle + ' [COLOR coral]' + HOST.capitalize() + '[/COLOR]'
                 else:
