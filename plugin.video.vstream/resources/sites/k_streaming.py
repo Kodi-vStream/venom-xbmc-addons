@@ -36,6 +36,7 @@ SERIE_GENRES = (SERIE_NEWS[0], 'showGenres')
 SERIE_ANNEES = (True, 'showSeriesYears')
 SERIE_LIST = (URL_MAIN + '/series/', 'showAlpha')
 
+
 def load():
     oGui = cGui()
 
@@ -52,6 +53,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showMenuSeries', 'Séries', 'series.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMenuMovies():
     oGui = cGui()
@@ -74,6 +76,7 @@ def showMenuMovies():
 
     oGui.setEndOfDirectory()
 
+
 def showMenuSeries():
     oGui = cGui()
 
@@ -95,6 +98,7 @@ def showMenuSeries():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
 
@@ -105,34 +109,35 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showGenres():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
-    liste.append( ['Action', sUrl + '/action_1'] )
-    liste.append( ['Animation', sUrl + '/animation_1'] )
-    liste.append( ['Arts Martiaux', sUrl + '/arts-martiaux_1'] )
-    liste.append( ['Aventure', sUrl + '/aventure_1'] )
-    liste.append( ['Comédie', sUrl + '/comedie_1'] )
-    liste.append( ['Documentaire', sUrl + '/documentaire_1'] )
-    liste.append( ['Biopic', sUrl + '/biopic_1'] )
-    liste.append( ['Drame', sUrl + '/drame_1'] )
-    liste.append( ['Epouvante Horreur', sUrl + '/epouvante-horreur_1'] )
-    liste.append( ['Erotique', sUrl + '/erotique_1'] )
-    liste.append( ['Espionnage', sUrl + '/espionnage_1'] )
-    liste.append( ['Famille', sUrl + '/famille_1'] )
-    liste.append( ['Fantastique', sUrl + '/fantastique_1'] )
-    liste.append( ['Guerre', sUrl + '/guerre_1'] )
-    liste.append( ['Historique', sUrl + '/historique_1'] )
-    liste.append( ['Musical', sUrl + '/musical_1'] )
-    liste.append( ['Policier', sUrl + '/policier_1'] )
-    liste.append( ['Romance', sUrl + '/romance_1'] )
-    liste.append( ['Science Fiction', sUrl + '/science-fiction_1'] )
-    liste.append( ['Spectacle', sUrl + '/spectacles_1'] )
-    liste.append( ['Thriller', sUrl + '/thriller_1'] )
-    liste.append( ['Comédie Dramatique', sUrl + '/comedie-dramatique_1'] )
+    liste.append(['Action', sUrl + '/action_1'])
+    liste.append(['Animation', sUrl + '/animation_1'])
+    liste.append(['Arts Martiaux', sUrl + '/arts-martiaux_1'])
+    liste.append(['Aventure', sUrl + '/aventure_1'])
+    liste.append(['Comédie', sUrl + '/comedie_1'])
+    liste.append(['Documentaire', sUrl + '/documentaire_1'])
+    liste.append(['Biopic', sUrl + '/biopic_1'])
+    liste.append(['Drame', sUrl + '/drame_1'])
+    liste.append(['Epouvante Horreur', sUrl + '/epouvante-horreur_1'])
+    liste.append(['Erotique', sUrl + '/erotique_1'])
+    liste.append(['Espionnage', sUrl + '/espionnage_1'])
+    liste.append(['Famille', sUrl + '/famille_1'])
+    liste.append(['Fantastique', sUrl + '/fantastique_1'])
+    liste.append(['Guerre', sUrl + '/guerre_1'])
+    liste.append(['Historique', sUrl + '/historique_1'])
+    liste.append(['Musical', sUrl + '/musical_1'])
+    liste.append(['Policier', sUrl + '/policier_1'])
+    liste.append(['Romance', sUrl + '/romance_1'])
+    liste.append(['Science Fiction', sUrl + '/science-fiction_1'])
+    liste.append(['Spectacle', sUrl + '/spectacles_1'])
+    liste.append(['Thriller', sUrl + '/thriller_1'])
+    liste.append(['Comédie Dramatique', sUrl + '/comedie-dramatique_1'])
 
     for sTitle, sUrl in liste:
 
@@ -142,48 +147,49 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
+
 def showAlpha():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
-    liste.append( ['0', sUrl + '/alphabet/0'] )
-    liste.append( ['1', sUrl + '/alphabet/1'] )
-    liste.append( ['2', sUrl + '/alphabet/2'] )
-    liste.append( ['3', sUrl + '/alphabet/3'] )
-    liste.append( ['4', sUrl + '/alphabet/4'] )
-    liste.append( ['5', sUrl + '/alphabet/5'] )
-    liste.append( ['6', sUrl + '/alphabet/6'] )
-    liste.append( ['7', sUrl + '/alphabet/7'] )
-    liste.append( ['8', sUrl + '/alphabet/8'] )
-    liste.append( ['9', sUrl + '/alphabet/9'] )
-    liste.append( ['A', sUrl + '/alphabet/A'] )
-    liste.append( ['B', sUrl + '/alphabet/B'] )
-    liste.append( ['C', sUrl + '/alphabet/C'] )
-    liste.append( ['D', sUrl + '/alphabet/D'] )
-    liste.append( ['E', sUrl + '/alphabet/E'] )
-    liste.append( ['F', sUrl + '/alphabet/F'] )
-    liste.append( ['G', sUrl + '/alphabet/G'] )
-    liste.append( ['H', sUrl + '/alphabet/H'] )
-    liste.append( ['I', sUrl + '/alphabet/I'] )
-    liste.append( ['J', sUrl + '/alphabet/J'] )
-    liste.append( ['K', sUrl + '/alphabet/K'] )
-    liste.append( ['L', sUrl + '/alphabet/L'] )
-    liste.append( ['M', sUrl + '/alphabet/M'] )
-    liste.append( ['N', sUrl + '/alphabet/N'] )
-    liste.append( ['O', sUrl + '/alphabet/O'] )
-    liste.append( ['P', sUrl + '/alphabet/P'] )
-    liste.append( ['Q', sUrl + '/alphabet/Q'] )
-    liste.append( ['R', sUrl + '/alphabet/R'] )
-    liste.append( ['S', sUrl + '/alphabet/S'] )
-    liste.append( ['T', sUrl + '/alphabet/T'] )
-    liste.append( ['U', sUrl + '/alphabet/U'] )
-    liste.append( ['V', sUrl + '/alphabet/V'] )
-    liste.append( ['W', sUrl + '/alphabet/W'] )
-    liste.append( ['X', sUrl + '/alphabet/X'] )
-    liste.append( ['Y', sUrl + '/alphabet/Y'] )
-    liste.append( ['Z', sUrl + '/alphabet/Z'] )
+    liste.append(['0', sUrl + '/alphabet/0'])
+    liste.append(['1', sUrl + '/alphabet/1'])
+    liste.append(['2', sUrl + '/alphabet/2'])
+    liste.append(['3', sUrl + '/alphabet/3'])
+    liste.append(['4', sUrl + '/alphabet/4'])
+    liste.append(['5', sUrl + '/alphabet/5'])
+    liste.append(['6', sUrl + '/alphabet/6'])
+    liste.append(['7', sUrl + '/alphabet/7'])
+    liste.append(['8', sUrl + '/alphabet/8'])
+    liste.append(['9', sUrl + '/alphabet/9'])
+    liste.append(['A', sUrl + '/alphabet/A'])
+    liste.append(['B', sUrl + '/alphabet/B'])
+    liste.append(['C', sUrl + '/alphabet/C'])
+    liste.append(['D', sUrl + '/alphabet/D'])
+    liste.append(['E', sUrl + '/alphabet/E'])
+    liste.append(['F', sUrl + '/alphabet/F'])
+    liste.append(['G', sUrl + '/alphabet/G'])
+    liste.append(['H', sUrl + '/alphabet/H'])
+    liste.append(['I', sUrl + '/alphabet/I'])
+    liste.append(['J', sUrl + '/alphabet/J'])
+    liste.append(['K', sUrl + '/alphabet/K'])
+    liste.append(['L', sUrl + '/alphabet/L'])
+    liste.append(['M', sUrl + '/alphabet/M'])
+    liste.append(['N', sUrl + '/alphabet/N'])
+    liste.append(['O', sUrl + '/alphabet/O'])
+    liste.append(['P', sUrl + '/alphabet/P'])
+    liste.append(['Q', sUrl + '/alphabet/Q'])
+    liste.append(['R', sUrl + '/alphabet/R'])
+    liste.append(['S', sUrl + '/alphabet/S'])
+    liste.append(['T', sUrl + '/alphabet/T'])
+    liste.append(['U', sUrl + '/alphabet/U'])
+    liste.append(['V', sUrl + '/alphabet/V'])
+    liste.append(['W', sUrl + '/alphabet/W'])
+    liste.append(['X', sUrl + '/alphabet/X'])
+    liste.append(['Y', sUrl + '/alphabet/Y'])
+    liste.append(['Z', sUrl + '/alphabet/Z'])
 
     for sTitle, sUrl in liste:
 
@@ -192,6 +198,7 @@ def showAlpha():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showYears():
     oGui = cGui()
@@ -204,6 +211,7 @@ def showYears():
 
     oGui.setEndOfDirectory()
 
+
 def showSeriesYears():
     oGui = cGui()
 
@@ -214,6 +222,7 @@ def showSeriesYears():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMovies(sSearch=''):
     oGui = cGui()
@@ -227,7 +236,7 @@ def showMovies(sSearch=''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    #la qualité est une option pour la recherche
+    # la qualité est une option pour la recherche
     sPattern = '<div class="imagefilm">\s*<a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)".+?(?:|<span class="([^"]+)".+?)<\/div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -244,14 +253,14 @@ def showMovies(sSearch=''):
                 break
 
             sUrl2 = aEntry[0]
-            if not sUrl2.startswith('http'):
+            if sUrl2.startswith('/'):
                 sUrl2 = URL_MAIN + sUrl2
 
             sThumb = aEntry[1]
-            if not sThumb.startswith('http'):
+            if sThumb.startswith('/'):
                 sThumb = URL_MAIN + sThumb
 
-            sTitle = aEntry[2].replace('Streaming', '')
+            sTitle = aEntry[2].replace('Streaming', '').replace('Sasion', 'Saison')
             sQual = aEntry[3].replace('qualite ', '')
             sDisplayTitle = sTitle + ' [' + sQual + ']'
 
@@ -273,10 +282,12 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -287,6 +298,7 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
+
 def showSaisons():
     # Uniquement saison a chaque fois
     oGui = cGui()
@@ -296,8 +308,20 @@ def showSaisons():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<div class="unepetitesaisons">\s*<a href="([^"]+)" title="([^"]+)"'
     oParser = cParser()
+
+    # récupération du Synopsis
+    sDesc = ''
+    try:
+        sPattern = 'Synopsis et détails:.+?treaming :([^<]+)<'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sDesc = aResult[1][0]
+            # sDesc = sDesc.replace('&#8217;', '\'').replace('&#8230;', '...')
+    except:
+        pass
+
+    sPattern = '<div class="unepetitesaisons">\s*<a href="([^"]+)" title="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -305,19 +329,21 @@ def showSaisons():
         for aEntry in aResult[1]:
 
             sUrl = aEntry[0]
-            sTitle = aEntry[1]
-            sTitle = re.sub(' - Saison \d+', '', sTitle)  # double affichage de la saison
-
-            if not sUrl.startswith('http'):
+            if sUrl.startswith('/'):
                 sUrl = URL_MAIN + sUrl
+
+            sTitle = aEntry[1]
+            sTitle = re.sub(' Saison \d+', '', sTitle)  # double affichage de la saison
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showEpisodes():
     oGui = cGui()
@@ -325,6 +351,7 @@ def showEpisodes():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -337,20 +364,22 @@ def showEpisodes():
 
         for aEntry in aResult[1]:
 
-            sTitle = aEntry[0].replace(' , VOSTFR , ', '')#Systematiquement affiché en vostfr
-            sTitle = re.sub(' - Saison \d+', '', sTitle)#double affichage de la saison
+            sTitle = aEntry[0].replace(' , VOSTFR , ', '')  # Systematiquement affiché en vostfr
+            sTitle = re.sub(' Saison \d+', '', sTitle)  # double affichage de la saison
             sUrl = aEntry[1]
-            if not sUrl.startswith('http'):
+            if sUrl.startswith('/'):
                 sUrl = URL_MAIN + sUrl
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showHosters():
     oGui = cGui()
