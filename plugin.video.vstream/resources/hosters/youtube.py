@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # type
 # https://www.youtube.com/embed/etc....
 # https://www.youtube.com/watch?v=etc...
@@ -14,6 +14,7 @@ from resources.lib.util import Unquote, Quote
 
 URL_MAIN = 'https://www.youtube.com/get_video_info?video_id='
 
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -22,7 +23,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -55,6 +56,8 @@ class cHoster(iHoster):
         self.__sUrl = sUrl
         self.__sUrl = self.__sUrl.rsplit('/', 1)[1]
         self.__sUrl = self.__sUrl.replace('watch?v=', '')
+        self.__sUrl = self.__sUrl.replace('?rel=0', '')
+        self.__sUrl = self.__sUrl.replace('&cc_load_policy=1', '')
         self.__sUrl = self.__sUrl.replace('?', '').replace('&', '')
         self.__sUrl = self.__sUrl.replace('feature=oembed', '')
         self.__sUrl = self.__sUrl.replace('autoplay=1', '')
@@ -85,8 +88,8 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0] == True):
-            url=[]
-            qua=[]
+            url = []
+            qua = [] 
             for aEntry in aResult[1]:
                 url.append(aEntry[0].replace('\u0026', '&'))
                 qua.append(aEntry[1])
@@ -107,7 +110,7 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler('https://ytoffline.net/fr/validate/')
         oRequest.setRequestType(1)
-        oRequest.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
+        oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
         oRequest.addHeaderEntry('Referer', 'https://ytoffline.net/fr/download/?url=https://www.youtube.com/embed/' + self.__sUrl)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
@@ -120,15 +123,15 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent1, sPattern)
 
         if (aResult[0] == True):
-            #initialisation des tableaux
-            url=[]
-            qua=[]
-            #Remplissage des tableaux
+            # initialisation des tableaux
+            url = []
+            qua = []
+            # Remplissage des tableaux
             for i in aResult[1]:
                 url.append(str(i[1]))
                 qua.append(str(i[0]))
 
-            #dialogue qualité
+            # dialogue qualité
             api_call = dialog().VSselectqual(qua, url)
 
         if (api_call):
