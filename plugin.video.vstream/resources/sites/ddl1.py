@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+import re
+import requests
+import base64
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -7,10 +12,8 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-# from resources.lib.config import GestionCookie
 from resources.lib.util import Unquote
 
-import re, requests, base64
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -26,13 +29,13 @@ URL_SEARCH_ANIMS = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_MISC = (URL_SEARCH[0], 'showMovies')
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
-MOVIE_NEWS  = (URL_MAIN + 'films/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_EXCLUS = (URL_MAIN + 'films/exclue/', 'showMovies')
 MOVIE_BDRIP = (URL_MAIN + 'films/dvdrip/', 'showMovies')
 MOVIE_MKV = (URL_MAIN + 'films/dvdrip-mkv-x264/', 'showMovies')
-MOVIE_VOSTFR = (URL_MAIN + 'films/films-vostfr/', 'showMovies') # films VOSTFR
-MOVIE_VOSTFR_MKV = (URL_MAIN + 'films/films-vostfr-mkv-x264/', 'showMovies') # films VOSTFR
-MOVIE_CAM = (URL_MAIN + 'r5-scr-ts-cam/', 'showMovies') # films VOSTFR
+MOVIE_VOSTFR = (URL_MAIN + 'films/films-vostfr/', 'showMovies')  # films VOSTFR
+MOVIE_VOSTFR_MKV = (URL_MAIN + 'films/films-vostfr-mkv-x264/', 'showMovies')  # films VOSTFR
+MOVIE_CAM = (URL_MAIN + 'r5-scr-ts-cam/', 'showMovies')  # films VOSTFR
 MOVIE_HD = (URL_MAIN + 'bluray-1080p-720p.html', 'showMovies')
 MOVIE_WEBDL = (URL_MAIN + 'web-1080p-720p.html/', 'showMovies')
 MOVIE_HDLIGHT = (URL_MAIN + 'films-hdlight/', 'showMovies')
@@ -59,10 +62,10 @@ SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
 SERIE_VF = (URL_MAIN + 'series/series-vf/', 'showMovies')
 SERIE_VF_720 = (URL_MAIN + 'series/series-vf-720p/','showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'series/series-vostfr/', 'showMovies')
-SERIE_VOSTFRS_720 = (URL_MAIN + 'series/series-vostfr-720p/','showMovies')
+SERIE_VOSTFRS_720 = (URL_MAIN + 'series/series-vostfr-720p/', 'showMovies')
 PACK_SERIE_VOSTFRS = (URL_MAIN + 'series/pack-sries-vf-sd/', 'showMovies')
-PACK_SERIE_VOSTFRS_720 = (URL_MAIN + 'series/pack-sries-vf-hd-720p/','showMovies')
-PACK_SERIE_VOSTFRS_1080 = (URL_MAIN + 'series/pack-sries-vf-hd-1080p/','showMovies')
+PACK_SERIE_VOSTFRS_720 = (URL_MAIN + 'series/pack-sries-vf-hd-720p/', 'showMovies')
+PACK_SERIE_VOSTFRS_1080 = (URL_MAIN + 'series/pack-sries-vf-hd-1080p/', 'showMovies')
 
 ANIM_ANIMS = (True, 'showMenuMangas')
 ANIM_VFS = (URL_MAIN + 'dessin-anime-mangas/animes-vf/', 'showMovies')
@@ -73,6 +76,7 @@ DOC_NEWS = (URL_MAIN + 'documentaires/', 'showMovies')
 TV_NEWS = (URL_MAIN + 'emissions-tv/', 'showMovies')
 SPECT_NEWS = (URL_MAIN + 'spectacles/', 'showMovies')
 CONCERT_NEWS = (URL_MAIN + 'concerts/', 'showMovies')
+
 
 def load():
     oGui = cGui()
@@ -94,6 +98,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showMenuAutres', 'Autres', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMenuMovies():
     oGui = cGui()
@@ -168,6 +173,7 @@ def showMenuMovies():
 
     oGui.setEndOfDirectory()
 
+
 def showMenuSeries():
     oGui = cGui()
 
@@ -209,6 +215,7 @@ def showMenuSeries():
 
     oGui.setEndOfDirectory()
 
+
 def showMenuMangas():
     oGui = cGui()
 
@@ -229,6 +236,7 @@ def showMenuMangas():
     oGui.addDir(SITE_IDENTIFIER, FILM_ANIM[1], 'Films d\'animes ', 'animes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMenuAutres():
     oGui = cGui()
@@ -255,6 +263,7 @@ def showMenuAutres():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -267,10 +276,9 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showGenre():
     oGui = cGui()
-    # oInputParameterHandler = cInputParameterHandler()
-    # sUrl = oInputParameterHandler.getValue('siteUrl')
 
     listeGenres = ['action', 'animation', 'arts-martiaux', 'aventure', 'biopic', 'comédie-dramatique',
                    'comédie-musicale', 'comédie', 'divers', 'documentaire', 'drame', 'epouvante-horreur', 'espionnage',
@@ -278,10 +286,11 @@ def showGenre():
                    'policier', 'romance', 'science-fiction', 'thriller', 'western']
     for genre in listeGenres:
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + genre.replace(' ', '%20')+ '.html')
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + genre.replace(' ', '%20') + '.html')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', genre.capitalize(), 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showYears():
     oGui = cGui()
@@ -320,7 +329,8 @@ def showYears():
 
     oGui.setEndOfDirectory()
 
-def showMovies(sSearch = ''):
+
+def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -385,20 +395,22 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
 
+
 def __checkForNextPage(sUrl, sHtmlContent):
-    #Récupeartion de la page actuel dans l'url
+    # Récuperation de la page actuel dans l'url
     try:
-        pageNext = int(re.search('page/([0-9]+)',sUrl).group(1)) + 1
+        pageNext = int(re.search('page/([0-9]+)', sUrl).group(1)) + 1
     except AttributeError:
         pageNext = 2
 
     try:
-        extractPageList = re.search('<div class="navigation">(.+?)</div>', sHtmlContent, re.MULTILINE|re.DOTALL).group(1)
+        extractPageList = re.search('<div class="navigation">(.+?)</div>', sHtmlContent, re.MULTILINE | re.DOTALL).group(1)
 
         oParser = cParser()
         sPattern = '<a href="([^"]+)">' + str(pageNext) + '</a>'
@@ -413,6 +425,7 @@ def __checkForNextPage(sUrl, sHtmlContent):
 
     except AttributeError:
         return False
+
 
 def showMoviesLinks():
     oGui = cGui()
@@ -429,10 +442,10 @@ def showMoviesLinks():
     oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
     sHtmlContent = oRequestHandler.request()
 
-    #Affichage du texte
+    # Affichage du texte
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles pour ce film:[/COLOR]')
 
-    #récupération du Synopsis
+    # récupération du Synopsis
     sPattern = '<span style="color: #aaa;">([^<]+)</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
@@ -442,7 +455,7 @@ def showMoviesLinks():
         sDesc = sDesc.replace('<i>', '').replace('</i>', '')
         sDesc = sDesc.replace('<br>', '').replace('<br />', '')
 
-    #on recherche d'abord la qualité courante
+    # on recherche d'abord la qualité courante
     sPattern = '<span><h2 style="font-size: 16px;font-weight: lighter;">([^"]+)</h2></span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -461,7 +474,7 @@ def showMoviesLinks():
 
     oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-    #on regarde si dispo dans d'autres qualités
+    # on regarde si dispo dans d'autres qualités
     sPattern = '<a href="([^"]+)"><span class="ffas js-guest icon-left" title="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -488,6 +501,7 @@ def showMoviesLinks():
 
     oGui.setEndOfDirectory()
 
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -507,7 +521,7 @@ def showHosters():
     sPattern = '<i class="fas fa-cloud-download-alt".+?</i>([^<]+)</div>.+?<a href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    #Le site dipose de plusieurs paterne.
+    # Le site dipose de plusieurs paterne.
     if (aResult[0] == False):
         sPattern = '<a href="([^"]+)".+?rel="noopener external noreferrer">(?!Partie)([^<]+)</a>'
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -557,6 +571,7 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
+
 def showSeriesHosters():
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -601,6 +616,7 @@ def showSeriesHosters():
     else:   # certains films mals classés apparaissent dans les séries
         showHosters()
 
+
 def Display_protected_link():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -608,8 +624,8 @@ def Display_protected_link():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    #Passage avec requests car la protection a tendance a ne pas fonctionner correctement
-    #Solution pas encore touver
+    # Passage avec requests car la protection a tendance a ne pas fonctionner correctement
+    # Solution pas encore touver
 
     payload = "folder=Continuer"
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0',
@@ -633,6 +649,7 @@ def Display_protected_link():
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
 
 def GetLink(sHtmlContent):
     oParser = cParser()
