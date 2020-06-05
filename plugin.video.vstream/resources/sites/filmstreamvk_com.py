@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -8,7 +11,6 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.comaddon import progress
-import re
 
 SITE_IDENTIFIER = 'filmstreamvk_com'
 SITE_NAME = 'Filmstreamvk'
@@ -54,6 +56,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showMenuFilms():
     oGui = cGui()
 
@@ -71,6 +74,7 @@ def showMenuFilms():
 
     oGui.setEndOfDirectory()
 
+
 def showMenuSeries():
     oGui = cGui()
 
@@ -78,10 +82,10 @@ def showMenuSeries():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-#     Inutilisable
-#     oOutputParameterHandler = cOutputParameterHandler()
-#     oOutputParameterHandler.addParameter('siteUrl', SERIE_EPISODES[0])
-#     oGui.addDir(SITE_IDENTIFIER, SERIE_EPISODES[1], 'Séries (Episodes)', 'series.png', oOutputParameterHandler)
+    # Inutilisable
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', SERIE_EPISODES[0])
+    # oGui.addDir(SITE_IDENTIFIER, SERIE_EPISODES[1], 'Séries (Episodes)', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NETFLIX[0])
@@ -109,6 +113,7 @@ def showMenuSeries():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
 
@@ -119,25 +124,26 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action', URL_MAIN + 'genre/action'] )
-    liste.append( ['Animation', URL_MAIN + 'genre/animation'] )
-    liste.append( ['Aventure', URL_MAIN + 'genre/aventure'] )
-    liste.append( ['Comédie', URL_MAIN + 'genre/comedie'] )
-    liste.append( ['Crime', URL_MAIN + 'genre/crime'] )
-    liste.append( ['Drame', URL_MAIN + 'genre/drame'] )
-    liste.append( ['Familial', URL_MAIN + 'genre/familial'] )
-    liste.append( ['Fantastique', URL_MAIN + 'genre/fantastique'] )
-    liste.append( ['Guerre', URL_MAIN + 'genre/guerre'] )
-    liste.append( ['Horreur', URL_MAIN + 'genre/horreur'] )
-    liste.append( ['Histoire', URL_MAIN + 'genre/histoire'] )
-    liste.append( ['Romance', URL_MAIN + 'genre/romance'] )
-    liste.append( ['Thriller', URL_MAIN + 'genre/thriller'] )
-    liste.append( ['Science-Fiction', URL_MAIN + 'genre/science-fiction'] )
-    liste.append( ['Western', URL_MAIN + 'genre/western'] )
+    liste.append(['Action', URL_MAIN + 'genre/action'])
+    liste.append(['Animation', URL_MAIN + 'genre/animation'])
+    liste.append(['Aventure', URL_MAIN + 'genre/aventure'])
+    liste.append(['Comédie', URL_MAIN + 'genre/comedie'])
+    liste.append(['Crime', URL_MAIN + 'genre/crime'])
+    liste.append(['Drame', URL_MAIN + 'genre/drame'])
+    liste.append(['Familial', URL_MAIN + 'genre/familial'])
+    liste.append(['Fantastique', URL_MAIN + 'genre/fantastique'])
+    liste.append(['Guerre', URL_MAIN + 'genre/guerre'])
+    liste.append(['Horreur', URL_MAIN + 'genre/horreur'])
+    liste.append(['Histoire', URL_MAIN + 'genre/histoire'])
+    liste.append(['Romance', URL_MAIN + 'genre/romance'])
+    liste.append(['Thriller', URL_MAIN + 'genre/thriller'])
+    liste.append(['Science-Fiction', URL_MAIN + 'genre/science-fiction'])
+    liste.append(['Western', URL_MAIN + 'genre/western'])
 
     for sTitle, sUrl in liste:
 
@@ -147,7 +153,8 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
-def showMovies(sSearch = ''):
+
+def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -155,11 +162,11 @@ def showMovies(sSearch = ''):
 
     if sSearch:
         sUrl = sSearch
-        sPattern = '<div class="image">.*?<a href="([^"]+)">\s*<img src="([^"]+)" alt="([^"]+)".+?<p>(.+?)<'
+        sPattern = 'class="image">.*?<a href="([^"]+)">\s*<img src="([^"]+)" alt="([^"]+)".+?<p>(.+?)<'
     elif 'episodes' in sUrl:
-        sPattern = '<div class="poster">.*?<img src="([^"]+)" alt="(.+?)".+?<a href="([^"]+)">'
+        sPattern = 'class="poster">.*?<img src="([^"]+)" alt="(.+?)".+?<a href="([^"]+)">'
     else:
-        sPattern = '<div class="poster"> *<img src="([^"]+)".+?<a href="([^"]+)" *title="([^"]+)".+?class="texto">([^<]+)'
+        sPattern = 'class="poster"> *<img src="([^"]+)".+?<a href="([^"]+)" *title="([^"]+)".+?class="texto">([^<]+)'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -178,7 +185,7 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            #Si recherche et trop de resultat, on nettoye
+            # Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[2]) == 0:
                     continue
@@ -213,7 +220,7 @@ def showMovies(sSearch = ''):
             if 'series' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSxE', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             elif 'episodes' in sUrl:
-                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -224,10 +231,12 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     sPattern = '\'arrow_pag\' *href="([^"]+)"><i id=\'nextpagination\''
@@ -238,6 +247,7 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
+
 def showSxE():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -247,7 +257,7 @@ def showSxE():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<span class="title">(.+?)<|<div class="numerando">([^"]+)</div><div class="episodiotitle"><a href="([^"]+)">'
+    sPattern = '<span class="title">(.+?)<|class="numerando">([^"]+)</div><div class="episodiotitle"><a href="([^"]+)">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -276,10 +286,10 @@ def showSxE():
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplaytitle, '', sThumb, '', oOutputParameterHandler)
 
-
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
+
 
 def showLinks():
     oGui = cGui()
@@ -311,7 +321,7 @@ def showLinks():
             dnum = aEntry[1]
             sHoster = aEntry[2].capitalize()
             
-            #trie des hosters
+            # trie des hosters
             oHoster = cHosterGui().checkHoster(sHoster)
             if not oHoster:
                 continue
@@ -329,6 +339,7 @@ def showLinks():
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplaytitle, sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showHosters():
     oGui = cGui()
@@ -365,4 +376,3 @@ def showHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
-
