@@ -122,6 +122,8 @@
 
         <setting visible="false" id="plugin_kepliz_com" type="bool" label="Kepliz" default="true"/>
 
+        <setting visible="false" id="plugin_kstreamingfilm" type="bool" label="K streaming Film" default="true"/>
+
         <setting visible="false" id="plugin_les_debiles" type="bool" label="Les Débiles" default="true"/>
 
         <setting visible="false" id="plugin_les_docus" type="bool" label="Les docus" default="true"/>
@@ -191,7 +193,7 @@
         <setting visible="false" id="plugin_tirexo" type="bool" label="Tirexo" default="true"/>
 
         <setting visible="false" id="plugin_topreplay" type="bool" label="TopReplay" default="true"/>
-        
+
         <setting visible="false" id="plugin_toro" type="bool" label="Toro" default="true"/>
 
         <setting visible="false" id="plugin_tvrex_net" type="bool" label="Tvrex" default="true"/>
@@ -208,10 +210,12 @@
 
         <setting visible="false" id="plugin_youtitou_com" type="bool" label="YouTitou (Animés)" default="true"/>
 
+        <setting visible="false" id="plugin_zone_streaming" type="bool" label="Zone Streaming" default="true"/>
+
         <setting visible="false" id="plugin_zone_telechargement_ws" type="bool" label="Zone Téléchargement.ws" default="true"/>
 
         <setting visible="false" id="plugin_zonefilms" type="bool" label="Zone Films" default="true"/>
-        
+
         <setting visible="false" id="plugin_zt_stream" type="bool" label="Zone Téléchargement Stream" default="true"/>
 
         <setting visible="false" id="plugin_zustream" type="bool" label="ZuStream" default="true"/>
