@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -7,8 +10,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress#, VSlog
-import re
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'libertyland_tv'
 SITE_NAME = 'Libertyland'
@@ -248,7 +250,7 @@ def showMovies(sSearch=''):
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
-            
+
             sDesc = ''
             sYear = ''
             if sSearch:
@@ -291,7 +293,8 @@ def showMovies(sSearch=''):
                     except AttributeError:
                         pass
 
-                    sQual = sQual.replace(u' qualit\u00E9', '').replace('et ', '/').replace(' ', '').replace('Haute', 'HD').replace('Bonne', 'DVD').replace('Mauvaise', 'SD').encode("utf-8")
+                    sQual = sQual.replace(u' qualit\u00E9', '').replace('et ', '/').replace('Haute', 'HD')\
+                                 .replace(' ', '').replace('Bonne', 'DVD').replace('Mauvaise', 'SD').encode("utf-8")
 
             sUrl2 = sUrl2.replace('telecharger', 'streaming')
 
@@ -302,11 +305,11 @@ def showMovies(sSearch=''):
 
             sTitle = sTitle.replace(u'T\u00E9l\u00E9charger ', '').encode("utf-8")
 
-            #Remplace tout les decodage en python 3
+            # Remplace tout les decodage en python 3
             try:
-                sTitle = str(sTitle,'utf-8')
-                sQual = str(sQual,'utf-8')
-                sDesc = str(sDesc,'utf-8')
+                sTitle = str(sTitle, 'utf-8')
+                sQual = str(sQual, 'utf-8')
+                sDesc = str(sDesc, 'utf-8')
             except:
                 pass
 
@@ -326,11 +329,12 @@ def showMovies(sSearch=''):
 
         progress_.VSclose(progress_)
 
-    sNextPage = __checkForNextPage(sHtmlContent)
-    if (sNextPage != False):
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-        oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+        sNextPage = __checkForNextPage(sHtmlContent)
+        if (sNextPage != False):
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+            number = re.search('page-([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
