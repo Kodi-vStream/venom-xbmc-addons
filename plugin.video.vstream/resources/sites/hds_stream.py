@@ -1,5 +1,8 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -7,7 +10,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-#from resources.lib.util import cUtil #outils pouvant etre utiles
+# from resources.lib.util import cUtil #outils pouvant etre utiles
 
 SITE_IDENTIFIER = 'hds_stream'
 SITE_NAME = 'Hds-stream'
@@ -26,6 +29,7 @@ URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
+
 
 def load():
     oGui = cGui()
@@ -56,6 +60,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
 
@@ -65,6 +70,7 @@ def showSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
+
 
 def showGenres():
     oGui = cGui()
@@ -86,6 +92,7 @@ def showGenres():
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMovieYears():
     oGui = cGui()
@@ -109,7 +116,8 @@ def showMovieYears():
 
     oGui.setEndOfDirectory()
 
-def showMovies(sSearch = ''):
+
+def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -128,13 +136,13 @@ def showMovies(sSearch = ''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    #affiche une information si aucun resulat
+    # affiche une information si aucun resulat
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        #dialog barre de progression
+        # dialog barre de progression
         progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
@@ -153,7 +161,7 @@ def showMovies(sSearch = ''):
                 if sThumb.startswith('//'):
                     sThumb = 'https:' + sThumb
                 if 'tendance/' in sUrl:
-                    sDesc =''
+                    sDesc = ''
                 else:
                     sDesc = aEntry[4]
                 sUrl2 = aEntry[1]
@@ -179,9 +187,11 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('/page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -192,6 +202,7 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
+
 
 def showSxE():
     oGui = cGui()
@@ -233,6 +244,7 @@ def showSxE():
     
     oGui.setEndOfDirectory()
 
+
 def showLinks():
     oGui = cGui()
     oParser = cParser()
@@ -267,8 +279,8 @@ def showLinks():
             oOutputParameterHandler.addParameter('dNum', dNum)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
 
-
     oGui.setEndOfDirectory()
+
 
 def showHosters():
     oGui = cGui()
@@ -307,6 +319,7 @@ def showHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
 
 def ShowSerieSaisonEpisodes():
     oGui = cGui()
@@ -347,6 +360,7 @@ def ShowSerieSaisonEpisodes():
 
     oGui.setEndOfDirectory()
 
+
 def seriesHosters():
     oGui = cGui()
     oParser = cParser()
@@ -384,4 +398,3 @@ def seriesHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
-
