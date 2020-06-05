@@ -1,13 +1,14 @@
-#-*- coding: utf-8 -*-
-#vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+import re
+
 from resources.lib.gui.gui import cGui
-# from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.parser import cParser
 from resources.sites.freebox import getHtml, showWeb, play__, decodeEmail
-from resources.lib.comaddon import progress#, VSlog
-import re
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'iptv'
 SITE_NAME = 'Iptv'
@@ -15,6 +16,7 @@ SITE_DESC = 'Regarder la télévision'
 
 URL_MAIN = 'https://www.extinf.com/'
 FREE_M3U = URL_MAIN + 'home-passion-for-iptv-free-m3u-links-working-and-updated/'
+
 
 def load():
     oGui = cGui()
@@ -28,6 +30,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showPays', 'Choix du pays', 'lang.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showPays():
     oGui = cGui()
@@ -63,6 +66,7 @@ def showPays():
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
+
 
 def showDailyList():
     oGui = cGui()
@@ -103,9 +107,11 @@ def showDailyList():
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showDailyList', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('/page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showDailyList', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -116,6 +122,7 @@ def __checkForNextPage(sHtmlContent):
         return  aResult[1][0]
 
     return False
+
 
 def showDailyIptvList():
     oGui = cGui()
