@@ -1,5 +1,8 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -9,7 +12,6 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil, QuotePlus, Noredirection
 from resources.lib.comaddon import progress, VSlog
 from resources.lib.sucuri import SucurieBypass
-import re, unicodedata
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 
@@ -21,7 +23,7 @@ URL_MAIN = 'https://www.official-film-illimite.to/'
 # URL_SERIES = 'https://www.official-serie-illimite.com/'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
-MOVIE_MOVIE = ( URL_MAIN + 'films/', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_HD = (URL_MAIN + 'films/streaming-720p-streaming-1080p/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
@@ -34,6 +36,7 @@ URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 # URL_SEARCH_SERIES = (URL_SERIES + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
+
 
 def load():
     oGui = cGui()
@@ -64,6 +67,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
 
@@ -74,38 +78,39 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Ultra-HD', URL_MAIN + 'ultra-hd/'] )
-    liste.append( ['720p/1080p', URL_MAIN + 'films/streaming-720p-streaming-1080p/'] )
-    liste.append( ['Action/Aventure', URL_MAIN + 'films/action-aventure/'] )
-    liste.append( ['Animation', URL_MAIN + 'films/animation/'] )
-    liste.append( ['Arts Martiaux', URL_MAIN + 'films/arts-martiaux/'] )
-    liste.append( ['Biographie', URL_MAIN + 'films/biographique/'] )
-    liste.append( ['Comédie', URL_MAIN + 'films/comedie/'] )
-    liste.append( ['Crime/Gangster', URL_MAIN + 'films/crimegangster/'] )
-    liste.append( ['Documentaire', URL_MAIN + 'films/documentaire/'] )
-    liste.append( ['Drame', URL_MAIN + 'films/drame/'] )
-    liste.append( ['Epouvante Horreur', URL_MAIN + 'films/epouvante-horreur/'] )
-    liste.append( ['Etranger', URL_MAIN + 'films/etranger/'] )
-    liste.append( ['Famille', URL_MAIN + 'films/famille/'] )
-    liste.append( ['Fantastique', URL_MAIN + 'films/fantastique/'] )
-    liste.append( ['Guerre', URL_MAIN + 'films/guerre/'] )
-    liste.append( ['Histoire', URL_MAIN + 'films/histoire/'] )
-    liste.append( ['Musique/Danse', URL_MAIN + 'films/musiquedanse/'] )
-    liste.append( ['Mystère', URL_MAIN + 'films/mystere/'] )
-    liste.append( ['Policier', URL_MAIN + 'films/policier/'] )
-    liste.append( ['Romance', URL_MAIN + 'films/romance/'] )
-    liste.append( ['Science-fiction', URL_MAIN + 'films/science-fiction/'] )
-    liste.append( ['Spectacle (FR)', URL_MAIN + 'spectacle/francais-spectacle/'] )
-    liste.append( ['Spectacle (VOSTFR)', URL_MAIN + 'spectacle/vostfr-spectacle/'] )
-    liste.append( ['Sport', URL_MAIN + 'films/sport/'] )
-    liste.append( ['Suspense/Thriller', URL_MAIN + 'films/thrillersuspense/'] )
-    liste.append( ['Téléfilm', URL_MAIN + 'films/telefilm/'] )
-    liste.append( ['VOSTFR', URL_MAIN + 'films/vostfr/'] )
-    liste.append( ['Western', URL_MAIN + 'films/western/'] )
+    liste.append(['Ultra-HD', URL_MAIN + 'ultra-hd/'])
+    liste.append(['720p/1080p', URL_MAIN + 'films/streaming-720p-streaming-1080p/'])
+    liste.append(['Action/Aventure', URL_MAIN + 'films/action-aventure/'])
+    liste.append(['Animation', URL_MAIN + 'films/animation/'])
+    liste.append(['Arts Martiaux', URL_MAIN + 'films/arts-martiaux/'])
+    liste.append(['Biographie', URL_MAIN + 'films/biographique/'])
+    liste.append(['Comédie', URL_MAIN + 'films/comedie/'])
+    liste.append(['Crime/Gangster', URL_MAIN + 'films/crimegangster/'])
+    liste.append(['Documentaire', URL_MAIN + 'films/documentaire/'])
+    liste.append(['Drame', URL_MAIN + 'films/drame/'])
+    liste.append(['Epouvante Horreur', URL_MAIN + 'films/epouvante-horreur/'])
+    liste.append(['Etranger', URL_MAIN + 'films/etranger/'])
+    liste.append(['Famille', URL_MAIN + 'films/famille/'])
+    liste.append(['Fantastique', URL_MAIN + 'films/fantastique/'])
+    liste.append(['Guerre', URL_MAIN + 'films/guerre/'])
+    liste.append(['Histoire', URL_MAIN + 'films/histoire/'])
+    liste.append(['Musique/Danse', URL_MAIN + 'films/musiquedanse/'])
+    liste.append(['Mystère', URL_MAIN + 'films/mystere/'])
+    liste.append(['Policier', URL_MAIN + 'films/policier/'])
+    liste.append(['Romance', URL_MAIN + 'films/romance/'])
+    liste.append(['Science-fiction', URL_MAIN + 'films/science-fiction/'])
+    liste.append(['Spectacle (FR)', URL_MAIN + 'spectacle/francais-spectacle/'])
+    liste.append(['Spectacle (VOSTFR)', URL_MAIN + 'spectacle/vostfr-spectacle/'])
+    liste.append(['Sport', URL_MAIN + 'films/sport/'])
+    liste.append(['Suspense/Thriller', URL_MAIN + 'films/thrillersuspense/'])
+    liste.append(['Téléfilm', URL_MAIN + 'films/telefilm/'])
+    liste.append(['VOSTFR', URL_MAIN + 'films/vostfr/'])
+    liste.append(['Western', URL_MAIN + 'films/western/'])
 
     for sTitle, sUrl in liste:
 
@@ -114,6 +119,7 @@ def showGenres():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showYears():
     oGui = cGui()
@@ -138,7 +144,8 @@ def showYears():
 
     oGui.setEndOfDirectory()
 
-def showMovies(sSearch = ''):
+
+def showMovies(sSearch=''):
     oGui = cGui()
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
@@ -164,14 +171,15 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sTitle = aEntry[2].replace(' Streaming Ultra-HD', '').replace(' Streaming Full-HD', '')
-            sTitle = sTitle.replace(' en Streaming HD', '').replace(' Streaming HD', '').replace(' streaming', '').replace('HD', '')
+            sTitle = aEntry[2].replace(' Streaming Ultra-HD', '').replace(' Streaming Full-HD', '')\
+                              .replace(' en Streaming HD', '').replace(' Streaming HD', '')\
+                              .replace(' streaming', '').replace('HD', '')
 
             try:
                 sTitle = sTitle.decode('utf8')
             except:
                 pass
-                
+
             sTitle = cUtil().unescape(sTitle)
 
             try:
@@ -187,7 +195,7 @@ def showMovies(sSearch = ''):
 
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
 
-            #Si recherche et trop de resultat, on nettoye
+            # Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
                     continue
@@ -207,15 +215,16 @@ def showMovies(sSearch = ''):
 
         progress_.VSclose(progress_)
 
-        if not sSearch:
-            sNextPage = __checkForNextPage(sHtmlContent)
-            if (sNextPage != False):
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
-
     if not sSearch:
+        sNextPage = __checkForNextPage(sHtmlContent)
+        if (sNextPage != False):
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+            number = re.search('page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     sPattern = "<a class=\'current.+?href=\'([^']+)\'"
@@ -226,6 +235,7 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
+
 
 def showHosters():
     oGui = cGui()
@@ -243,7 +253,7 @@ def showHosters():
     except:
         pass
 
-    #Vire les bandes annonces
+    # Vire les bandes annonces
     sHtmlContent = sHtmlContent.replace('src="//www.youtube.com/', '')
 
     sPattern = '<iframe.+?src="([^"]+)"'
@@ -261,8 +271,8 @@ def showHosters():
                     url8 = sHosterUrl.replace('https', 'http')
 
                     opener = Noredirection()
-                    opener.addheaders.append (('User-Agent', UA))
-                    opener.addheaders.append (('Connection', 'keep-alive'))
+                    opener.addheaders.append(('User-Agent', UA))
+                    opener.addheaders.append(('Connection', 'keep-alive'))
 
                     HttpReponse = opener.open(url8)
                     sHosterUrl = HttpReponse.headers['Location']
@@ -293,6 +303,7 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
+
 def showSaisons():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -306,7 +317,7 @@ def showSaisons():
         sHtmlContent = sHtmlContent.decode()
     except:
         pass
-        
+
     sHtmlContent = sHtmlContent.replace('<iframe width="420" height="315" src="https://www.youtube.com/', '')
     sPattern = '<iframe.+?src="(http.+?)".+?>'
 
@@ -333,6 +344,7 @@ def showSaisons():
 
     oGui.setEndOfDirectory()
 
+
 def ShowSpecialHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -348,7 +360,7 @@ def ShowSpecialHosters():
         oRequest = cRequestHandler('http://fr-land.me/Htplugins/Loader.php')
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
-        #oRequest.addHeaderEntry('Host', 'official-film-illimite.net')
+        # oRequest.addHeaderEntry('Host', 'official-film-illimite.net')
         oRequest.addHeaderEntry('Referer', sUrl)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
@@ -358,9 +370,9 @@ def ShowSpecialHosters():
         sHtmlContent = oRequest.request()
         sHtmlContent = sHtmlContent.replace('\\', '')
 
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
+        # fh = open('c:\\test.txt', "w")
+        # fh.write(sHtmlContent)
+        # fh.close()
 
         sPattern = '\[(.+?)\]'
 
@@ -384,7 +396,7 @@ def ShowSpecialHosters():
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
-    else :
+    else:
 
         oHoster = cHosterGui().checkHoster(sUrl)
         if (oHoster != False):
