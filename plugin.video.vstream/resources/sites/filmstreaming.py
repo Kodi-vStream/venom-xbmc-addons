@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
 import base64
 import re
 
@@ -65,17 +66,18 @@ def showSearch():
         return
 
 
-def showSearchMovies(sSearch = ''):
+def showSearchMovies(sSearch=''):
     oGui = cGui()
     if sSearch:
 
         sSearch = Unquote(sSearch)
         sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
-        pdata = 'nonce=3293a1b68c&action=tr_livearch&trsearch=' + sSearch #la valeur nonce change
+        UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0"
+        pdata = 'nonce=3293a1b68c&action=tr_livearch&trsearch=' + sSearch  # la valeur nonce change
 
         oRequest = cRequestHandler(sUrl2)
         oRequest.setRequestType(1)
-        oRequest.addHeaderEntry('User-Agent', "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0")
+        oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addParameters('Referer', URL_MAIN)
         oRequest.addParametersLine(pdata)
 
@@ -98,7 +100,7 @@ def showSearchMovies(sSearch = ''):
                     sThumb = 'https:' + sThumb
                 sTitle = aEntry[2]
 
-                #tris search
+                # tris search
                 if sSearch and total > 3:
                     if cUtil().CheckOccurence(sSearch, sTitle) == 0:
                         continue
@@ -208,7 +210,7 @@ def showMovieslist():
     oGui.setEndOfDirectory()
 
 
-def showMovies(sSearch = ''):
+def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
 
@@ -255,7 +257,8 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -280,9 +283,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    oParser = cParser()
-
-    sPattern = '<p class=AAIco-language>([^<]+)</p><p class=AAIco-dns>.+?<p class=AAIco-equalizer>([^<]+)</p>'  # qual, lang
+    sPattern = 'class=AAIco-language>([^<]+)</p><p class=AAIco-dns>.+?<p class=AAIco-equalizer>([^<]+)<'  # qual, lang
     aResult1 = re.findall(sPattern, sHtmlContent, re.DOTALL)
     # VSlog(str(aResult1)) #Commenter ou supprimer cette ligne une fois fini
 
@@ -299,7 +300,7 @@ def showHosters():
             # VSlog(sHtmlContent)
 
             sHosterUrl = ''
-            #Pour Python 3, besoin de repasser en str.
+            # Pour Python 3, besoin de repasser en str.
             try:
                 sUrl = re.search('src="([^"]+)"', sHtmlContent)
             except TypeError:
