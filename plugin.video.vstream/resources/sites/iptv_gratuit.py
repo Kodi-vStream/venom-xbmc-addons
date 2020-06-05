@@ -1,14 +1,14 @@
-#-*- coding: utf-8 -*-
-#vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+import re
+
 from resources.lib.gui.gui import cGui
-# from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.parser import cParser
 from resources.sites.freebox import getHtml, showWeb, play__
 from resources.lib.comaddon import progress, VSlog
-# from resources.lib.util import cUtil
-# import re, unicodedata, urllib, urllib2
 
 SITE_IDENTIFIER = 'iptv_gratuit'
 SITE_NAME = 'IptvGratuit'
@@ -37,6 +37,7 @@ IPTV_TURK = URL_MAIN + 'iptv-turk/'
 IPTV_USA = URL_MAIN + 'iptv-usa/'
 IPTV_SPORT = URL_MAIN + 'iptv-sport/'
 IPTV_VOD = URL_MAIN + 'iptv-vod/'
+
 
 def load():
     oGui = cGui()
@@ -131,6 +132,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showDailyList():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -165,9 +167,11 @@ def showDailyList():
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showDailyList', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('pages/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showDailyList', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -175,11 +179,12 @@ def __checkForNextPage(sHtmlContent):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        return  aResult[1][0]
+        return aResult[1][0]
 
     return False
 
-def showAllPlaylist():#On recupere les differentes playlist si il y en a
+
+def showAllPlaylist():  # On recupere les differentes playlist si il y en a
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
@@ -219,7 +224,8 @@ def showAllPlaylist():#On recupere les differentes playlist si il y en a
 
     oGui.setEndOfDirectory()
 
-def showAllPlaylist2():#On recupere les differentes playlist si il y en a
+
+def showAllPlaylist2():  # On recupere les differentes playlist si il y en a
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
