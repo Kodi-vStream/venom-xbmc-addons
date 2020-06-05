@@ -1,6 +1,9 @@
-#-*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
-#
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+import re
+import unicodedata
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -9,8 +12,6 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.packer import cPacker
 from resources.lib.comaddon import progress, VSlog
-#from resources.lib.util import cUtil
-import re, unicodedata
 
 SITE_IDENTIFIER = 'buzzmonclick_com'
 SITE_NAME = 'BuzzMonClick'
@@ -28,6 +29,7 @@ DOC_NEWS = (URL_MAIN + 'documentaires/', 'showMovies')
 URL_SEARCH = ('https://buzzmonclick.net/?s=', 'showMovies')
 URL_SEARCH_MISC = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
+
 
 def load():
     oGui = cGui()
@@ -58,6 +60,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showMoviesSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
@@ -67,14 +70,15 @@ def showMoviesSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Documentaires', URL_MAIN + 'documentaires/'] )
-    liste.append( ['Divertissement', URL_MAIN + 'divertissement/'] )
-    liste.append( ['Infos/Magazines', URL_MAIN + 'infos-magazine/'] )
-    liste.append( ['Télé-Réalité', URL_MAIN + 'tele-realite/'] )
+    liste.append(['Documentaires', URL_MAIN + 'documentaires/'])
+    liste.append(['Divertissement', URL_MAIN + 'divertissement/'])
+    liste.append(['Infos/Magazines', URL_MAIN + 'infos-magazine/'])
+    liste.append(['Télé-Réalité', URL_MAIN + 'tele-realite/'])
 
     for sTitle, sUrl in liste:
 
@@ -84,7 +88,8 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
-def showMovies(sSearch = ''):
+
+def showMovies(sSearch=''):
     oGui = cGui()
     if sSearch:
         sUrl = sSearch
@@ -95,7 +100,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern ='<div id="(post-[0-9]+)".+?<a class="clip-link".+?title="([^"]+)" href="([^"]+)".+?img src="([^"]+)"'
+    sPattern = '<div id="(post-[0-9]+)".+?<a class="clip-link".+?title="([^"]+)" href="([^"]+)".+?img src="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -111,14 +116,14 @@ def showMovies(sSearch = ''):
                 break
 
             try:
-                sTitle = unicode(aEntry[1], 'utf-8')#converti en unicode
-                sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')#vire accent
-                #sTitle = unescape(str(sTitle))
-                sTitle = sTitle.encode( "utf-8")
+                sTitle = unicode(aEntry[1], 'utf-8')  # converti en unicode
+                sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')  # vire accent
+                # sTitle = unescape(str(sTitle))
+                sTitle = sTitle.encode("utf-8")
             except NameError:
                 sTitle = aEntry[1]
 
-            #mise en page
+            # mise en page
             sTitle = sTitle.replace('Permalien pour', '').replace('&prime;', '\'')
             sTitle = re.sub('(?:,)* (?:Replay |Video )*du ([0-9]+ [a-zA-z]+ [0-9]+)', ' (\\1)', sTitle)
             sTitle = re.sub(', (?:Replay|Video)$', '', sTitle)
@@ -138,10 +143,12 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('/page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     sPattern = 'class="nextpostslink" rel="next" href="([^"]+)"'
@@ -151,6 +158,7 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
+
 
 def showHosters():
     oGui = cGui()
@@ -165,17 +173,16 @@ def showHosters():
     oParser = cParser()
     sPattern = '<noscript><iframe.+?src="([^"]+)".+?</iframe>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #VSlog(aResult)
+    # VSlog(aResult)
     
-    #if (aResult[0] == False):
-        #sPattern = 'iframe src="([^"]+)"'
-        #aResult = oParser.parse(sHtmlContent, sPattern)
-    #else:
-        #oRequestHandler = cRequestHandler(''.join(aResult[1]))
-        #sHtmlContent = oRequestHandler.request()
-
-        #sPattern = '<a href="([^"]+)" target="_blank" class="link link--external" rel="nofollow '
-        #aResult = oParser.parse(sHtmlContent, sPattern)
+    # if (aResult[0] == False):
+        # sPattern = 'iframe src="([^"]+)"'
+        # aResult = oParser.parse(sHtmlContent, sPattern)
+    # else:
+        # oRequestHandler = cRequestHandler(''.join(aResult[1]))
+        # sHtmlContent = oRequestHandler.request()
+        # sPattern = '<a href="([^"]+)" target="_blank" class="link link--external" rel="nofollow '
+        # aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
