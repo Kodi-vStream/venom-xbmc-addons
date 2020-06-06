@@ -1,11 +1,19 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import json
-
 import re
-import urllib2
+import xbmc
+import xbmcgui
 
-from resources.lib.comaddon import progress, dialog, addon, xbmc, xbmcgui
+try:  # Python 2
+    import urllib2
+    from urllib2 import URLError as UrlError
+
+except ImportError:  # Python 3
+    import urllib.request as urllib2
+    from urllib.error import URLError as UrlError
+
+from resources.lib.comaddon import progress, dialog, addon
 from resources.lib.config import GestionCookie
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
@@ -53,7 +61,6 @@ def load():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
             oGui.addDir(SITE_IDENTIFIER, 'showFile', 'Mes Fichiers et Dossiers', 'genres.png', oOutputParameterHandler)
-
 
     oGui.setEndOfDirectory()
 
@@ -214,7 +221,7 @@ def UptomyAccount():
 
         try:
             rep = urllib2.urlopen(req)
-        except urllib2.URLError as e:
+        except UrlError:
             return ''
 
         sHtmlContent = rep.read()
