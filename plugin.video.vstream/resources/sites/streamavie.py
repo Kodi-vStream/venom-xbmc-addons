@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-#
+import re
+
 from resources.lib.gui.hoster import cHosterGui
-# from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
@@ -11,7 +11,6 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.comaddon import progress
 
-import re
 
 SITE_IDENTIFIER = 'streamavie'
 SITE_NAME = 'Streamavie'
@@ -175,13 +174,13 @@ def showYears():
     oGui.setEndOfDirectory()
 
 
-def showMovies(sSearch = ''):
+def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
 
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
-        sPattern = 'class="result-item">.+?src="([^"]+)" alt="([^"]+)".+?<a href="([^"]+)".+?<p>(.+?)<\/p>'
+        sPattern = 'class="result-item">.+?src="([^"]+)" alt="([^"]+)".+?<a href="([^"]+)".+?<p>(.+?)</p>'
 
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -275,7 +274,7 @@ def showLink():
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
 
-    sPattern = "data-type='([^']+)' data-post='(\d+)' data-nume='(\d+)'>.+?class='server'>([^<]+)<"
+    sPattern = "data-type=(\w+) data-post=(\d+) data-nume=(\d+)>.+?class=server>([^<]+)<"
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
@@ -299,6 +298,7 @@ def showLink():
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showHosters():
     oGui = cGui()
@@ -324,11 +324,11 @@ def showHosters():
 
     sHtmlContent = oRequest.request()
 
-    #sPattern = '<IFRAME SRC="([^"]+)"'
-    #aResult = oParser.parse(sHtmlContent, sPattern)
+    # sPattern = '<IFRAME SRC="([^"]+)"'
+    # aResult = oParser.parse(sHtmlContent, sPattern)
 
-    #if (aResult[0] == False):
-    sPattern = "src='([^']+)'"
+    # if (aResult[0] == False):
+    sPattern = 'src=["|\']([^"|\']+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
