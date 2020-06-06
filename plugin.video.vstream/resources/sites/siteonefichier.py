@@ -1,14 +1,16 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.gui.hoster import cHosterGui
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+import xbmc
+import xbmcgui
+
+from resources.lib.comaddon import progress, addon
+from resources.lib.config import GestionCookie
 from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.parser import cParser
 from resources.lib.handler.premiumHandler import cPremiumHandler
-from resources.lib.config import GestionCookie
-from resources.lib.comaddon import progress, dialog, addon
-import xbmc, xbmcgui
+from resources.lib.parser import cParser
 
 sColor = addon().getSetting('deco_color')
 
@@ -20,6 +22,7 @@ URL_MAIN = 'https://1fichier.com/'
 URL_FILE = URL_MAIN + 'console/files.pl'
 URL_REMOTE = URL_MAIN + 'console/remote.pl'
 URL_VERIF = URL_MAIN + 'check_links.pl?links[]='
+
 
 def load():
     addons = addon()
@@ -47,13 +50,15 @@ def load():
             else:
                 showFile(URL_FILE)
 
+
 def opensetting():
     addon().openSettings()
 
-def showFile(sFileTree = ''):
+
+def showFile(sFileTree=''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    #sUrl = oInputParameterHandler.getValue('siteUrl')
+    # sUrl = oInputParameterHandler.getValue('siteUrl')
     if (oInputParameterHandler.exist('siteUrl')):
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -65,7 +70,7 @@ def showFile(sFileTree = ''):
     sHtmlContent = oPremiumHandler.GetHtml(sUrl)
 
     oParser = cParser()
-    sPattern = '((?:|directory")) *rel="([^"]+)"><div class="dF"><a href="#" onclick="return false">(.+?)<\/a>'
+    sPattern = '((?:|directory")) *rel="([^"]+)"><div class="dF"><a href="#" onclick="return false">(.+?)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -93,6 +98,7 @@ def showFile(sFileTree = ''):
 
     oGui.setEndOfDirectory()
 
+
 def showHosters():
     oGui = cGui()
     oParser = cParser()
@@ -118,17 +124,18 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
+
 def UptomyAccount():
     oInputParameterHandler = cInputParameterHandler()
     sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
 
     oPremiumHandler = cPremiumHandler('onefichier')
-    #verif du lien
+    # verif du lien
     sHtmlContent = oPremiumHandler.GetHtml('%s' % (URL_VERIF + sMediaUrl))
     if (sHtmlContent):
         sCheck = sHtmlContent.find('NOT FOUND')
         if sCheck != -1:
-            #penible ce dialog auth
+            # penible ce dialog auth
             xbmc.executebuiltin('Dialog.Close(all,true)')
             xbmcgui.Dialog().notification('Info upload', 'Fichier introuvable', xbmcgui.NOTIFICATION_INFO, 2000, False)
 
