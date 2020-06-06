@@ -33,7 +33,7 @@ def load():
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-        oGui.addDir(SITE_IDENTIFIER,'opensetting', addons.VSlang(30023), 'none.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'opensetting', addons.VSlang(30023), 'none.png', oOutputParameterHandler)
         oGui.setEndOfDirectory()
     else:
         if (GestionCookie().Readcookie('onefichier') != ''):
@@ -145,6 +145,6 @@ def UptomyAccount():
             if (sHtmlContent):
                 sCheck = sHtmlContent.find('1 liens')
                 if sCheck != -1:
-                    #penible ce dialog auth
+                    # penible ce dialog auth
                     xbmc.executebuiltin('Dialog.Close(all,true)')
                     xbmcgui.Dialog().notification('Info upload', 'Ajouter à votre compte', xbmcgui.NOTIFICATION_INFO, 2000, False)
