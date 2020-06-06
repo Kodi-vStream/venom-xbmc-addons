@@ -18,7 +18,8 @@ SITE_IDENTIFIER = 'streamingdivx'
 SITE_NAME = 'Streamingdivx'
 SITE_DESC = 'Films VF en streaming.'
 
-URL_MAIN = 'https://www.streamingdivx.ws/'
+# URL_MAIN = 'https://www.streamingdivx.ws/'  # Cloudflare
+URL_MAIN = 'https://www1.streamingdivx.ch/'
 
 MOVIE_NEWS = (URL_MAIN + 'films.html', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenres')
@@ -150,7 +151,7 @@ def showMovies(sSearch=''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
-    if not sSearch: # une seule page par recherche
+    if not sSearch:  # une seule page par recherche
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -164,7 +165,7 @@ def showMovies(sSearch=''):
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = "pages-next\"><a href=['\"]([^'\"]+)['\"]"
-    
+
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         if aResult[1][0].startswith('/'):
@@ -179,7 +180,6 @@ def showSaisons():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
@@ -209,7 +209,8 @@ def showSaisons():
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
 
-            sTitle = aEntry[2].replace('Streaming', '').replace('streaming', '').replace('Voir la série', '').replace('en  VF et VOSTFR', '')
+            sTitle = aEntry[2].replace('Streaming', '').replace('streaming', '')\
+                              .replace('Voir la série', '').replace('en  VF et VOSTFR', '')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -233,7 +234,7 @@ def showEp():
 
     sHtmlContent = oParser.abParse(sHtmlContent, '<div class="episode-list">', 'Series similaires')
 
-    sPattern = '<div class="sai.+?<a href="([^"]+)".+?<span>(.+?)<\/span>'
+    sPattern = '<div class="sai.+?<a href="([^"]+)".+?<span>(.+?)</span>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -279,7 +280,7 @@ def showLinks():
     except:
         pass
 
-    sPattern2 = '<li class="stream.*?">.+?data-num="([^"]+)" data-code="([^"]+)" .+?<i class="([^"]+)">.+?<img *src="([^"]+)"'
+    sPattern2 = 'class="stream.*?">.+?data-num="([^"]+)" data-code="([^"]+)".+?<i class="([^"]+)".+?src="([^"]+)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern2)
 
@@ -298,8 +299,8 @@ def showLinks():
             sDisplayTitle = ('%s (%s) [COLOR %s]%s[/COLOR]') % (sMovieTitle, sLang.upper(), sColor, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('datacode', aEntry[1])
             oOutputParameterHandler.addParameter('datanum', aEntry[0])
+            oOutputParameterHandler.addParameter('datacode', aEntry[1])
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -314,17 +315,17 @@ def showHosters():
     sReferer = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    datacode = oInputParameterHandler.getValue('datacode')
     datanum = oInputParameterHandler.getValue('datanum')
+    datacode = oInputParameterHandler.getValue('datacode')
 
-    sUrl = URL_MAIN +'streamer.php?p=' + datanum + '&c=' + datacode
+    sUrl = URL_MAIN + 'streamer.php?p=' + datanum + '&c=' + datacode
 
     oRequest = cRequestHandler(sUrl)
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('User-Agent', UA)
     oRequest.addHeaderEntry('Referer', sReferer)
     oRequest.request()
-    
+
     sHosterUrl = oRequest.getRealUrl()
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
