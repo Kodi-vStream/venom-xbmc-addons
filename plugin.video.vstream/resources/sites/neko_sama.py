@@ -1,6 +1,10 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Arias800
+
+import json
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -9,7 +13,6 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress#, VSlog
 
-import json
 
 SITE_IDENTIFIER = 'neko_sama'
 SITE_NAME = 'Neko Sama'
@@ -24,6 +27,7 @@ FUNCTION_SEARCH = 'showSearchResult'
 ANIM_ANIMS = ('http://', 'load')
 ANIM_POPULAR = (URL_MAIN + 'anime/', 'showMovies')
 
+
 def load():
     oGui = cGui()
 
@@ -37,6 +41,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
@@ -45,36 +50,37 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action', URL_MAIN + 'action/'] )
-    liste.append( ['Animation', URL_MAIN + 'animation/'] )
-    liste.append( ['Arts Martiaux', URL_MAIN + 'arts-martiaux/'] )
-    liste.append( ['Aventure', URL_MAIN + 'aventure/'] )
-    liste.append( ['Biopic', URL_MAIN + 'biopic/'] )
-    liste.append( ['Comédie', URL_MAIN + 'comedie/'] )
-    liste.append( ['Comédie Dramatique', URL_MAIN + 'comedie-dramatique/'] )
-    liste.append( ['Comédie Musicale', URL_MAIN + 'comedie-musicale/'] )
-    liste.append( ['Documentaire', URL_MAIN + 'documentaire/'] )
-    liste.append( ['Drame', URL_MAIN + 'drame/'] )
-    liste.append( ['Epouvante Horreur', URL_MAIN + 'epouvante-horreur/'] )
-    liste.append( ['Erotique', URL_MAIN + 'erotique'] )
-    liste.append( ['Espionnage', URL_MAIN + 'espionnage/'] )
-    liste.append( ['Famille', URL_MAIN + 'famille/'] )
-    liste.append( ['Fantastique', URL_MAIN + 'fantastique/'] )
-    liste.append( ['Guerre', URL_MAIN + 'guerre/'] )
-    liste.append( ['Historique', URL_MAIN + 'historique/'] )
-    liste.append( ['Musical', URL_MAIN + 'musical/'] )
-    liste.append( ['Policier', URL_MAIN + 'policier/'] )
-    liste.append( ['Péplum', URL_MAIN + 'peplum/'] )
-    liste.append( ['Romance', URL_MAIN + 'romance/'] )
-    liste.append( ['Science Fiction', URL_MAIN + 'science-fiction/'] )
-    liste.append( ['Spectacle', URL_MAIN + 'spectacle/'] )
-    liste.append( ['Thriller', URL_MAIN + 'thriller/'] )
-    liste.append( ['Western', URL_MAIN + 'western/'] )
-    liste.append( ['Divers', URL_MAIN + 'divers/'] )
+    liste.append(['Action', URL_MAIN + 'action/'])
+    liste.append(['Animation', URL_MAIN + 'animation/'])
+    liste.append(['Arts Martiaux', URL_MAIN + 'arts-martiaux/'])
+    liste.append(['Aventure', URL_MAIN + 'aventure/'])
+    liste.append(['Biopic', URL_MAIN + 'biopic/'])
+    liste.append(['Comédie', URL_MAIN + 'comedie/'])
+    liste.append(['Comédie Dramatique', URL_MAIN + 'comedie-dramatique/'])
+    liste.append(['Comédie Musicale', URL_MAIN + 'comedie-musicale/'])
+    liste.append(['Documentaire', URL_MAIN + 'documentaire/'])
+    liste.append(['Drame', URL_MAIN + 'drame/'])
+    liste.append(['Epouvante Horreur', URL_MAIN + 'epouvante-horreur/'])
+    liste.append(['Erotique', URL_MAIN + 'erotique'])
+    liste.append(['Espionnage', URL_MAIN + 'espionnage/'])
+    liste.append(['Famille', URL_MAIN + 'famille/'])
+    liste.append(['Fantastique', URL_MAIN + 'fantastique/'])
+    liste.append(['Guerre', URL_MAIN + 'guerre/'])
+    liste.append(['Historique', URL_MAIN + 'historique/'])
+    liste.append(['Musical', URL_MAIN + 'musical/'])
+    liste.append(['Policier', URL_MAIN + 'policier/'])
+    liste.append(['Péplum', URL_MAIN + 'peplum/'])
+    liste.append(['Romance', URL_MAIN + 'romance/'])
+    liste.append(['Science Fiction', URL_MAIN + 'science-fiction/'])
+    liste.append(['Spectacle', URL_MAIN + 'spectacle/'])
+    liste.append(['Thriller', URL_MAIN + 'thriller/'])
+    liste.append(['Western', URL_MAIN + 'western/'])
+    liste.append(['Divers', URL_MAIN + 'divers/'])
 
     for sTitle, sUrl in liste:
 
@@ -84,8 +90,9 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
+
 def parseJson(json_object, sSearch):
-    #Parse le json pour recuperer les elements qui contiennent sSearch dans leurs titre
+    # Parse le json pour recuperer les elements qui contiennent sSearch dans leurs titre
     Title = []
     Url = []
     Thumb = []
@@ -97,6 +104,7 @@ def parseJson(json_object, sSearch):
             Thumb.append(dicts['url_image'])
 
     return Title, Url, Thumb
+
 
 def showSearchResult(sSearch):
     oGui = cGui()
@@ -129,6 +137,7 @@ def showSearchResult(sSearch):
 
     if not sSearch:
         oGui.setEndOfDirectory()
+
 
 def showMovies():
     oGui = cGui()
@@ -172,9 +181,11 @@ def showMovies():
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -185,6 +196,7 @@ def __checkForNextPage(sHtmlContent):
         return URL_MAIN + str(aResult[1][0])
 
     return False
+
 
 def ShowSerieSaisonEpisodes():
     oGui = cGui()
@@ -234,6 +246,7 @@ def ShowSerieSaisonEpisodes():
 
     oGui.setEndOfDirectory()
 
+
 def seriesHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -252,7 +265,7 @@ def seriesHosters():
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
-            #Enleve les faux liens
+            # Enleve les faux liens
             if 'openload' in aEntry and not '.mp4' in aEntry:
                 continue
 
