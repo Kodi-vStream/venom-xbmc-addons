@@ -1,19 +1,22 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Ovni-crea
+
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress#, VSlog
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'lsdb'
 SITE_NAME = 'Liveset Database (bêta)'
 SITE_DESC = 'liveset podcast et autre de musique électronique'
 
-URL_MAIN = 'https://lsdb.eu' #Pas de / car peut poser probleme
+URL_MAIN = 'https://lsdb.eu'  # Pas de / car peut poser probleme
 
 URL_SEARCH = (URL_MAIN + '/search?q=', 'showMovies')
 URL_SEARCH_MISC = (URL_SEARCH[0], 'showMovies')
@@ -25,6 +28,7 @@ NETS_EVENTS = (URL_MAIN + '/events/index/1', 'showEvents')
 NETS_SHOWS = (URL_MAIN + '/events/index/2', 'showShows')
 NETS_PODCAST = (URL_MAIN + '/events/index/3', 'showPodcast')
 NETS_PROMO = (URL_MAIN + '/events/index/4', 'showPromo')
+
 
 def load():
     oGui = cGui()
@@ -59,6 +63,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
 
@@ -69,34 +74,35 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Acid', URL_MAIN + '/genre/acid/'] )
-    liste.append( ['Crossbreed', URL_MAIN + '/genre/crossbreed/'] )
-    liste.append( ['Darkstep', URL_MAIN + '/genre/darkstep/'] )
-    liste.append( ['Drum and bass', URL_MAIN + '/genre/drumnbass/'] )
-    liste.append( ['Dubstep', URL_MAIN + '/genre/dubstep/'] )
-    liste.append( ['Early hardcore', URL_MAIN + '/genre/earlyhardcore /'] )
-    liste.append( ['Early hardstyle', URL_MAIN + '/genre/earlyhardstyle/'] )
-    liste.append( ['Early terror', URL_MAIN + '/genre/earlyterror/'] )
-    liste.append( ['Happy hardcore', URL_MAIN + '/genre/happyhardcore/'] )
-    liste.append( ['Hardcore', URL_MAIN + '/genre/hardcore/'] )
-    liste.append( ['Hardstyle', URL_MAIN + '/genre/hardstyle/'] )
-    liste.append( ['Hardtek', URL_MAIN + '/genre/hardtek'] )
-    liste.append( ['Industrial hardcore', URL_MAIN + '/genre/industrialhardcore/'] )
-    liste.append( ['Jump', URL_MAIN + '/genre/jump/'] )
-    liste.append( ['Oldschool', URL_MAIN + '/genre/oldschool/'] )
-    liste.append( ['Speedcore', URL_MAIN + '/genre/speedcore/'] )
-    liste.append( ['Tek', URL_MAIN + '/genre/tek/'] )
-    liste.append( ['Terror', URL_MAIN + '/genre/terror/'] )
-    liste.append( ['Trance', URL_MAIN + '/genre/trance/'] )
-    liste.append( ['UK Happy hardcore', URL_MAIN + '/genre/ukhappyhardcore/'] )
-    liste.append( ['UK Hardcore', URL_MAIN + '/genre/ukhardcore/'] )
-    liste.append( ['Classic hardstyle', URL_MAIN + '/tag/classic-hardstyle/'] )
-    liste.append( ['Euphoric hardstyle', URL_MAIN + '/tag/euphoric-hardstyle/'] )
-    liste.append( ['Raw Hardstyle', URL_MAIN + '/tag/raw-hardstyle/'] )
+    liste.append(['Acid', URL_MAIN + '/genre/acid/'])
+    liste.append(['Crossbreed', URL_MAIN + '/genre/crossbreed/'])
+    liste.append(['Darkstep', URL_MAIN + '/genre/darkstep/'])
+    liste.append(['Drum and bass', URL_MAIN + '/genre/drumnbass/'])
+    liste.append(['Dubstep', URL_MAIN + '/genre/dubstep/'])
+    liste.append(['Early hardcore', URL_MAIN + '/genre/earlyhardcore /'])
+    liste.append(['Early hardstyle', URL_MAIN + '/genre/earlyhardstyle/'])
+    liste.append(['Early terror', URL_MAIN + '/genre/earlyterror/'])
+    liste.append(['Happy hardcore', URL_MAIN + '/genre/happyhardcore/'])
+    liste.append(['Hardcore', URL_MAIN + '/genre/hardcore/'])
+    liste.append(['Hardstyle', URL_MAIN + '/genre/hardstyle/'])
+    liste.append(['Hardtek', URL_MAIN + '/genre/hardtek'])
+    liste.append(['Industrial hardcore', URL_MAIN + '/genre/industrialhardcore/'])
+    liste.append(['Jump', URL_MAIN + '/genre/jump/'])
+    liste.append(['Oldschool', URL_MAIN + '/genre/oldschool/'])
+    liste.append(['Speedcore', URL_MAIN + '/genre/speedcore/'])
+    liste.append(['Tek', URL_MAIN + '/genre/tek/'])
+    liste.append(['Terror', URL_MAIN + '/genre/terror/'])
+    liste.append(['Trance', URL_MAIN + '/genre/trance/'])
+    liste.append(['UK Happy hardcore', URL_MAIN + '/genre/ukhappyhardcore/'])
+    liste.append(['UK Hardcore', URL_MAIN + '/genre/ukhardcore/'])
+    liste.append(['Classic hardstyle', URL_MAIN + '/tag/classic-hardstyle/'])
+    liste.append(['Euphoric hardstyle', URL_MAIN + '/tag/euphoric-hardstyle/'])
+    liste.append(['Raw Hardstyle', URL_MAIN + '/tag/raw-hardstyle/'])
 
     for sTitle, sUrl in liste:
 
@@ -106,7 +112,8 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
-def showMovies(sSearch = ''):
+
+def showMovies(sSearch=''):
     oGui = cGui()
     if sSearch:
         sUrl = sSearch
@@ -120,7 +127,7 @@ def showMovies(sSearch = ''):
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #VSlog(str(aResult)) #Commenter ou supprimer cette ligne une fois fini
+    # VSlog(str(aResult)) #Commenter ou supprimer cette ligne une fois fini
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -145,19 +152,18 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('page=([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
 
-def showIsdb(sSearch = ''):
+
+def showIsdb():
     oGui = cGui()
-    if sSearch:
-        sUrl = sSearch
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
-        sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    oInputParameterHandler = cInputParameterHandler()
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -165,7 +171,7 @@ def showIsdb(sSearch = ''):
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #VSlog(str(aResult)) #Commenter ou supprimer cette ligne une fois fini
+    # VSlog(str(aResult)) #Commenter ou supprimer cette ligne une fois fini
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -190,16 +196,13 @@ def showIsdb(sSearch = ''):
 
         progress_.VSclose(progress_)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
 
-def showEvents(sSearch = ''):
+
+def showEvents():
     oGui = cGui()
-    if sSearch:
-        sUrl = sSearch
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -207,7 +210,7 @@ def showEvents(sSearch = ''):
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #VSlog(str(aResult))
+    # VSlog(str(aResult))
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
@@ -235,18 +238,16 @@ def showEvents(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showEvents', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('page=([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
 
-def showShows(sSearch = ''):
+
+def showShows():
     oGui = cGui()
-    if sSearch:
-        sUrl = sSearch
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -254,7 +255,7 @@ def showShows(sSearch = ''):
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #VSlog(str(aResult))
+    # VSlog(str(aResult))
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
@@ -282,18 +283,16 @@ def showShows(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showShows', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('page=([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
 
-def showPodcast(sSearch = ''):
+
+def showPodcast():
     oGui = cGui()
-    if sSearch:
-        sUrl = sSearch
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -301,7 +300,7 @@ def showPodcast(sSearch = ''):
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #VSlog(str(aResult))
+    # VSlog(str(aResult))
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
@@ -329,18 +328,16 @@ def showPodcast(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showPodcast', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('page=([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
 
-def showPromo(sSearch = ''):
+
+def showPromo():
     oGui = cGui()
-    if sSearch:
-        sUrl = sSearch
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -348,7 +345,7 @@ def showPromo(sSearch = ''):
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #VSlog(str(aResult))
+    # VSlog(str(aResult))
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
@@ -376,10 +373,11 @@ def showPromo(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showPromo', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('page=([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -390,6 +388,7 @@ def __checkForNextPage(sHtmlContent):
         return URL_MAIN + aResult[1][0]
 
     return False
+
 
 def showHosters():
     oGui = cGui()
@@ -405,7 +404,7 @@ def showHosters():
     sPattern = '<br />\s*<a href="([^"]+)">.+?</a>.+?<br />'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #VSlog(str(aResult))
+    # VSlog(str(aResult))
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
