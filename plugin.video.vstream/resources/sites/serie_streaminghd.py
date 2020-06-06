@@ -1,5 +1,8 @@
-#-*- coding: utf-8 -*-
-#https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -7,7 +10,6 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-#from resources.lib.util import cUtil
 
 
 SITE_IDENTIFIER = 'serie_streaminghd'
@@ -16,15 +18,16 @@ SITE_DESC = 'Séries en streaming vf, vostfr'
 
 URL_MAIN = 'https://www.serie-streaminghd.org/'
 
-SERIE_NEWS = (URL_MAIN, 'showMovies')
-SERIE_SERIES = (URL_MAIN, 'showMovies')
-SERIE_HD = (URL_MAIN + 'saison-complete/', 'showMovies')
-SERIE_VFS = (URL_MAIN + 'regarder-series/vf-hd/', 'showMovies')
-SERIE_VOSTFRS = (URL_MAIN + 'regarder-series/vostfr-hd/', 'showMovies')
+SERIE_SERIES = (True, 'load')
+SERIE_NEWS = (URL_MAIN, 'showSeries')
+SERIE_HD = (URL_MAIN + 'saison-complete/', 'showSeries')
+SERIE_VFS = (URL_MAIN + 'regarder-series/vf-hd/', 'showSeries')
+SERIE_VOSTFRS = (URL_MAIN + 'regarder-series/vostfr-hd/', 'showSeries')
 
-URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&story=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&story=', 'showMovies')
-FUNCTION_SEARCH = 'showMovies'
+URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&story=', 'showSeries')
+URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&story=', 'showSeries')
+FUNCTION_SEARCH = 'showSeries'
+
 
 def load():
     oGui = cGui()
@@ -51,17 +54,19 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH[0] + sSearchText
-        showMovies(sUrl)
+        showSeries(sUrl)
         oGui.setEndOfDirectory()
         return
 
-def showMovies(sSearch = ''):
+
+def showSeries(sSearch=''):
     oGui = cGui()
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
@@ -73,9 +78,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-
-    sPattern = '<div class="fullstream fullstreaming"><img src="([^"]+)".+?alt="([^"]+)".+?<h3 class="mov-title"><a href="([^"]+)'
-
+    sPattern = 'fullstream fullstreaming"><img src="([^"]+)".+?alt="([^"]+)".+?<h3 class="mov-title"><a href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -109,10 +112,12 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('/page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -123,6 +128,7 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
+
 
 def showHosters():
     oGui = cGui()
@@ -136,17 +142,17 @@ def showHosters():
 
     oParser = cParser()
 
-    #On separe liens vostfr - vf
+    # On separe liens vostfr - vf
     sPattern = '<div class="VOSTFR-tab">(.+?)<div class="VF-tab">'
     sPattern2 ='<div class="VF-tab">(.+?)<div id="fsElementsContainer">'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     aResult2 = oParser.parse(sHtmlContent, sPattern2)
 
-    #pour total3 si pas liens vostfr
+    # pour total3 si pas liens vostfr
     total = 0
 
-    #Liens VOSTFR
+    # Liens VOSTFR
     if (aResult[0] == True):
 
         sPattern = '<a href="([^"]+)".+?<\/i> EPS ([0-9]+)'
@@ -172,7 +178,7 @@ def showHosters():
                     oHoster.setFileName(sMovieTitle2)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
-    #Liens VF
+    # Liens VF
     if (aResult2[0] == True):
 
         sPattern = '<a href="([^"]+)".+?<\/i> EPS ([0-9]+)'
@@ -180,7 +186,7 @@ def showHosters():
 
         if (aResult[0] == True):
                 total2 = len(aResult[1])
-                #update total dialog si liens vostfr puis vf
+                # update total dialog si liens vostfr puis vf
                 total3 = total + total2
                 progress_ = progress().VScreate(SITE_NAME)
 
