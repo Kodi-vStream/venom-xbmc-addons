@@ -355,7 +355,13 @@ def showMovies(sSearch=''):
 
             sTitle = sTitle.replace('film ', '')  # genre
             sTitle = sTitle.replace(' streaming', '')  # genre
-            sDisplayTitle = '%s [%s] (%s)' % (sTitle, sQual, sYear)
+            
+            sLang = ''
+            if 'Vostfr' in sTitle:
+                sTitle = sTitle.replace('Vostfr', '')
+                sLang = 'VOSTFR'
+                
+            sDisplayTitle = '%s [%s] (%s) (%s)' % (sTitle, sQual, sLang, sYear)
 
             if not 'http' in sThumb:
                 sThumb = URL_MAIN + sThumb
@@ -374,21 +380,23 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if '/serie' in sUrl or 'anime' in sUrl:
+            if '/serie' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, sThumb, sThumb, '', oOutputParameterHandler)
+            elif 'anime' in sUrl:
+                oGui.addAnime(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, sThumb, sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
+    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/page/([0-9]+)', sNextPage).group(1)
+            number = re.findall('([0-9]+)', sNextPage)[-1]
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
 
 
@@ -457,7 +465,7 @@ def serieHosters():
 
     # sHtmlContent = sHtmlContent.replace("\r\t", "")
     if '-saison-' in sUrl or 'anime' in sUrl:
-        sPattern = '<a class="n_episode2" title=".+?, *([A-Z]+) *,.+?" *href="([^"]+)">([^<]+)<\/a><\/li>'
+        sPattern = '<a class="n_episode2" title=".+?, *([A-Z]+) *,.+?" *href="([^"]+)">(.+?)<\/a><\/li>'
     else:
         sPattern = '<div class="unepetitesaisons">[^<>]*?<a href="([^"]+)" title="([^"]+)">'
 
@@ -465,11 +473,16 @@ def serieHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        for aEntry in aResult[1]:
+        for aEntry in aResult[1][::-1]:
 
-            if '-saison-' in sUrl or 'anime' in sUrl:
-                # Si plusieurs langues sont disponibles, une seule est affichée ici.
-                # Ne rien mettre, la langue sera ajoutée avec le host
+            # Si plusieurs langues sont disponibles, une seule est affichée ici.
+            # Ne rien mettre, la langue sera ajoutée avec le host
+            if 'anime' in sUrl:
+                sUrl2 = aEntry[1]
+                sNM = aEntry[2].replace('<span>', '').replace('</span>', '')
+                sTitle = sMovieTitle + ' E'+sNM
+                sDisplayTitle = sTitle
+            elif '-saison-' in sUrl:
                 sUrl2 = aEntry[1]
                 sNM = aEntry[2].replace('<span>', ' ').replace('</span>', '')
                 sTitle = sMovieTitle + sNM
@@ -489,9 +502,9 @@ def serieHosters():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if '-episode-' in sUrl2 or '/anime' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addEpisode(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
