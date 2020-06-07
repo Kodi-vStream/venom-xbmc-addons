@@ -92,6 +92,7 @@ def showIptvSite():
     liste.append( ['Iptv4Sat', 'iptv_four_sat'] )
     liste.append( ['Daily Iptv List', 'daily_iptv_list'])
     liste.append( ['Extinf', 'iptv'])
+    liste.append( ['ChannelStream', 'channelstream'])
 
     for sTitle, Fname in liste:
 
@@ -429,9 +430,6 @@ def play__():#Lancer les liens
         oPlayer = cPlayer()
         oPlayer.clearPlayList()
         oPlayer.addItemToPlaylist(oGuiElement)
-        #tout repetter
-        #xbmc.executebuiltin('xbmc.playercontrol(RepeatAll)')
-        #active le mode repeat pour tous les liens dans vstream
         oPlayer.startPlayer()
         return
 
