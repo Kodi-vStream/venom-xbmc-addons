@@ -10,7 +10,6 @@ import xbmcvfs
 import string
 import unicodedata
 import webbrowser
-import random
 
 from resources.lib.util import QuotePlus
 from resources.lib.comaddon import addon, dialog, VSlog, xbmc
@@ -408,11 +407,14 @@ class cTMDb:
         _meta['premiered'] = ''
         _meta['year'] = ''
         _meta['trailer'] = ''
+        _meta['tagline'] = ''
         _meta['genre'] = ''
         _meta['studio'] = ''
         _meta['status'] = ''
         _meta['credits'] = ''
         _meta['cast'] = []
+        _meta['director'] = ''
+        _meta['writer'] = ''
         _meta['poster_path'] = ''
         _meta['cover_url'] = ''
         _meta['backdrop_path'] = ''
@@ -439,7 +441,7 @@ class cTMDb:
             _meta['media_type'] = meta['media_type']
 
         if 'release_date' in meta:
-            _meta['release_date'] = meta['release_date']
+            _meta['premiered'] = meta['release_date']
         if 'premiered' in meta and meta['premiered']:
             _meta['premiered'] = meta['premiered']
         elif 's_premiered' in meta and meta['s_premiered']:
@@ -451,9 +453,7 @@ class cTMDb:
             _meta['year'] = meta['s_year']
         else:
             try:
-                if 'release_date' in _meta and _meta['release_date']:
-                    _meta['year'] = int(_meta['release_date'][:4])
-                elif 'premiered' in _meta and _meta['premiered']:
+                if 'premiered' in _meta and _meta['premiered']:
                     _meta['year'] = int(_meta['premiered'][:4])
                 elif 'first_air_date' in meta and meta['first_air_date']:
                     _meta['year'] = int(meta['first_air_date'][:4])
@@ -571,31 +571,45 @@ class cTMDb:
         else:
             _meta['playcount'] = 0
 
-        if 'tagline' in meta:
+        if 'tagline' in meta and meta['tagline']:
             _meta['tagline'] = meta['tagline']
 
         if 'status' in meta:
             _meta['status'] = meta['status']
 
-        # if 'cast' in meta:
-            # _meta['cast'] = json.loads(_meta['cast'])
-        if 'credits' in meta and meta['credits']:
-            listCredits = eval(str(meta['credits']))
-            # _meta['credits'] = str(meta['credits']).strip('[]')
-            licast = []
-            for cast in listCredits['cast']:
-                licast.append((cast['name'], cast['character'], self.poster + str(cast['profile_path']), str(cast['id'])))
-            _meta['cast'] = licast
+        if 'writer' in meta and meta['writer']:
+            _meta['writer'] = meta['writer']
 
-            _meta['writer'] = ''
-            for crew in listCredits['crew']:
-                if crew['job'] == 'Director':
-                    _meta['director'] = crew['name']
-                else:
-                    if _meta['writer'] == '':
+        if 'director' in meta and meta['director']:
+            _meta['director'] = meta['director']
+
+        if 'credits' in meta and meta['credits']:
+            
+            # Transformation compatible pour lecture depuis le cache et retour de TMDB
+            strmeta = str(meta['credits'])  
+            listCredits = eval(strmeta)
+
+            casts = listCredits['cast']
+            if len(casts) > 0:
+                licast = []
+                _meta['credits'] = "{u'cast': " + str(casts) + '}'
+#                 _meta['credits'] = 'u\'cast\': ' + str(casts) + ''
+                for cast in casts:
+                    licast.append((cast['name'], cast['character'], self.poster + str(cast['profile_path']), str(cast['id'])))
+                _meta['cast'] = licast
+
+            if 'crew' in listCredits:
+                for crew in listCredits['crew']:
+                    if crew['job'] == 'Director':
+                        _meta['director'] = crew['name']
+                    elif crew['department'] == 'Writing':
+                        if _meta['writer'] != '':
+                            _meta['writer'] += ' / '
                         _meta['writer'] += '%s (%s)' % (crew['job'], crew['name'])
-                    else:
-                        _meta['writer'] += ' / %s (%s)' % (crew['job'], crew['name'])
+                    elif crew['department'] == 'Production' and 'Producer' in crew['job']:
+                        if _meta['writer'] != '':
+                            _meta['writer'] += ' / '
+                        _meta['writer'] += '%s (%s)' % (crew['job'], crew['name'])
 
         return _meta
 
@@ -647,6 +661,30 @@ class cTMDb:
 
     def _cache_save(self, meta, name, media_type, season, year):
 
+        if media_type == 'tvshow' or media_type == 'anime':
+            return self._cache_save_tvshow(meta, name, 'tvshow', season, year)
+
+        # sauvegarde de la durée en minutes, pour le retrouver en minutes comme le fait TMDB
+        runtime = 0
+        if 'duration' in meta and meta['duration']:
+            runtime = int(meta['duration'])/60
+            
+        # sauvegarde movie dans la BDD
+        # year n'est pas forcement l'année du film mais l'année utilisée pour la recherche
+        try:
+            sql = 'INSERT INTO %s (imdb_id, tmdb_id, title, year, credits, writer, director, tagline, vote_average, vote_count, runtime, ' \
+                  'overview, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path, playcount) ' \
+                  'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' % media_type
+            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], runtime, meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], 0))
+            self.db.commit()
+            VSlog('SQL INSERT Successfully')
+        except Exception as e:
+            VSlog('SQL ERROR INSERT')
+            pass
+
+    # Cache pour les séries (et animes)
+    def _cache_save_tvshow(self, meta, name, media_type, season, year):
+
         # ecrit les saisons dans la BDD
         if 'seasons' in meta:
             self._cache_save_season(meta, season)
@@ -657,16 +695,15 @@ class cTMDb:
         if 'duration' in meta and meta['duration']:
             runtime = int(meta['duration'])/60
             
-        # ecrit movie et tvshow dans la BDD
-        # year n'est pas forcement l'année du film mais l'année utilisée pour la recherche
+        # sauvegarde tvshow dans la BDD
         try:
-            sql = 'INSERT INTO %s (imdb_id, tmdb_id, title, year, credits, vote_average, vote_count, runtime, ' \
+            sql = 'INSERT INTO %s (imdb_id, tmdb_id, title, year, credits, writer, director, vote_average, vote_count, runtime, ' \
                   'overview, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path, playcount) ' \
-                  'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' % media_type
-            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['rating'], meta['votes'], runtime, meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], 0))
+                  'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' % media_type
+            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['rating'], meta['votes'], runtime, meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], 0))
             self.db.commit()
             VSlog('SQL INSERT Successfully')
-        except Exception:
+        except Exception as e:
             VSlog('SQL ERROR INSERT')
             pass
 
@@ -803,16 +840,3 @@ class cTMDb:
                 sGenres.append(genre)
         return sGenres
 
-    # Des vidéos pour remplacer des bandes annnonces manquantes
-    def getDefaultTrailer(self):
-        trailers = [
-            'WWkYjM3ZXxU',
-            'LpvKI7I5rF4',
-            'svTVRDgI08Y',
-            'DUpVqwceQaA',
-            'mnsMnskJ3cQ',
-            'M0_vxs6FPbQ',
-            ]
-
-        trailer_id = random.choice(trailers)
-        return self.URL_TRAILER % trailer_id

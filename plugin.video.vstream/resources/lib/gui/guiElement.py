@@ -8,6 +8,7 @@ from resources.lib.comaddon import addon, xbmc
 from resources.lib.db import cDb
 from resources.lib.util import QuoteSafe
 from resources.lib.tmdb import cTMDb
+import random
 
 # rouge E26543
 # jaune F7D571
@@ -21,7 +22,6 @@ class cGuiElement:
     # COUNT = 0
     ADDON = addon()
     DB = cDb()
-    TMDb = cTMDb()
 
     def __init__(self):
 
@@ -478,11 +478,12 @@ class cGuiElement:
         return
 
     def getMetadonne(self):
-
         metaType = self.getMeta()
         if metaType == 0:  # non media -> on sort, et on enleve le fanart
             self.addItemProperties('fanart_image', '')
             return
+
+        TMDb = cTMDb()
 
         sTitle = self.__sFileName
 
@@ -509,6 +510,7 @@ class cGuiElement:
 
         sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'movie').replace('4', 'anime')
 
+        meta = {}
         if sType:
             args = (sType, sTitle)
             kwargs = {}
@@ -522,7 +524,11 @@ class cGuiElement:
                 kwargs['season'] = self.__Season
             if (self.__Episode):
                 kwargs['episode'] = self.__Episode
-            meta = self.TMDb.get_meta(*args, **kwargs)
+
+            try:
+                meta = TMDb.get_meta(*args, **kwargs)
+            except:
+                pass
 
         else:
             return
@@ -550,8 +556,6 @@ class cGuiElement:
 
         if 'trailer' in meta and meta['trailer']:
             self.__sTrailer = meta['trailer']
-        else:
-            self.__sTrailer = self.TMDb.getDefaultTrailer()
 
         # Pas de changement de cover pour les coffrets de films
         if metaType != 3:
@@ -562,6 +566,8 @@ class cGuiElement:
 
     def getItemValues(self):
         self.addItemValues('Title', self.getTitle())
+
+        # https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#ga0b71166869bda87ad744942888fb5f14
 
         # - Video Values:
         # - genre : string (Comedy)
@@ -619,8 +625,11 @@ class cGuiElement:
             # self.addItemValues('cover_url', self.getThumbnail())
         # if not self.getItemValue('backdrop_url') and self.getPoster():
             # self.addItemValues('backdrop_url', self.getPoster())
-        if not self.getItemValue('trailer') and self.getTrailer():
-            self.addItemValues('trailer', self.getTrailer())
+        if not self.getItemValue('trailer'):
+            if self.getTrailer():
+                self.addItemValues('trailer', self.getTrailer())
+            else:
+                self.addItemValues('trailer', self.getDefaultTrailer())
 
         # Used only if there is data in db, overwrite getMetadonne()
         w = self.getWatched()
@@ -640,3 +649,18 @@ class cGuiElement:
 
     def getContextItems(self):
         return self.__aContextElements
+    
+    # Des vidéos pour remplacer des bandes annnonces manquantes
+    def getDefaultTrailer(self):
+        trailers = [
+            'WWkYjM3ZXxU',
+            'LpvKI7I5rF4',
+            'svTVRDgI08Y',
+            'DUpVqwceQaA',
+            'mnsMnskJ3cQ',
+            'M0_vxs6FPbQ',
+            ]
+
+        trailer_id = random.choice(trailers)
+        return cTMDb.URL_TRAILER % trailer_id
+
