@@ -63,16 +63,17 @@ def showMovies():
             if progress_.iscanceled():
                 break
 
-            sTitle = aEntry[2]
-            sUrl2 = URL_MAIN + aEntry[0]
-            sThumb = URL_MAIN + '/' + aEntry[1]
+            if not str(aEntry[2]) == "Dorcel TV":
+                sTitle = aEntry[2]
+                sUrl2 = URL_MAIN + aEntry[0]
+                sThumb = URL_MAIN + '/' + aEntry[1]
 
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            
-            oGui.addDir(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, oOutputParameterHandler)
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                
+                oGui.addDir(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
