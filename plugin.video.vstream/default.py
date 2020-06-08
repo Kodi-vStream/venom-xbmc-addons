@@ -9,7 +9,6 @@ from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.handler.rechercheHandler import cRechercheHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.db import cDb
 from resources.lib.comaddon import progress, VSlog, addon, window, xbmc
 from resources.lib.util import Quote
 # http://kodi.wiki/view/InfoLabels
@@ -83,6 +82,10 @@ class main:
             setSetting(plugin_id, value)
             return
 
+        if sFunction == 'setSettings':
+            setSettings(oInputParameterHandler)
+            return
+            
         if sFunction == 'DoNothing':
             return
 
@@ -191,14 +194,37 @@ def setSetting(plugin_id, value):
     addons = addon()
     setting = addons.getSetting(plugin_id)
 
-    # Si le parametre existe, on autorise la modification
+    # la modification est possible seulement si le parametre existe
     if setting != '' and setting != value:
         addons.setSetting(plugin_id, value)
         return True
 
     return False
 
-
+# Permet la modification des settings depuis un raccouci dans le skin (jusqu'à 50 paramètres).
+# Supporte les retours à la ligne seulement derrière le paramètre, exemple :
+# RunAddon(plugin.video.vstream,function=setSettings&id1=plugin_cinemay_com&value1=true
+# &id2=plugin_cinemegatoil_org&value2=false
+# &id3=hoster_uploaded_premium&value3=true
+# &id4=hoster_uploaded_username&value4=MyName
+# &id5=hoster_uploaded_password&value5=MyPass)
+def setSettings(oInputParameterHandler):
+    addons = addon()
+    
+    for i in range(1,50):
+        plugin_id = oInputParameterHandler.getValue('id'+str(i))
+        if plugin_id:
+            value = oInputParameterHandler.getValue('value'+str(i))
+            value = value.replace('\n', '')
+            if value:
+                setting = addons.getSetting(plugin_id)
+            
+                # la modification est possible seulement si le parametre existe
+                if setting != '' and setting != value:
+                    addons.setSetting(plugin_id, value)
+    return True
+            
+    
 def isHosterGui(sSiteName, sFunction):
     if sSiteName == 'cHosterGui':
         oHosterGui = cHosterGui()
