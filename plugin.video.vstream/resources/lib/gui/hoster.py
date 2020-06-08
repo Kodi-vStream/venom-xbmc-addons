@@ -353,6 +353,8 @@ class cHosterGui:
             return self.getHoster('dood')
         if ('vidia' in sHostName):
             return self.getHoster('vidia')
+        if ('streamtape' in sHostName):
+            return self.getHoster('streamtape')
 
         # Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
