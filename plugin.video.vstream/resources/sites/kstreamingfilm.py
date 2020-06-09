@@ -121,7 +121,7 @@ def showMovies(sSearch=''):
         sEnd = 'Film streaming les plus populaires'
         sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
 
-    sPattern = 'center-icons".+?src="([^"]+)" alt="([^"]+).+?href="([^"]+).+?movie-release">([^<]*).+?(?:|story\'>([^<]+))movie-cast'
+    sPattern = 'center-icons".+?src="([^"]+)" alt="([^"]+).+?href="([^"]+).+?movie-release">([^<]*).+?(?:|story\'>([^<]+).+?)movie-cast'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
