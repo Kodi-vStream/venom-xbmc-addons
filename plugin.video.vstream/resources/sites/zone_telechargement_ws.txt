@@ -1,0 +1,6 @@
+# Netscape HTTP Cookie File
+# https://curl.haxx.se/rfc/cookie_spec.html
+# This is a generated file! Do not edit.
+
+wwvw.zone-annuaire.com	FALSE	/	FALSE	1591812955	swp_token	1591812953:6da57af03b0f0b10b37b2067c66669c2:940704b40751e836254f445cb3f7b6af
+#HttpOnly_wwvw.zone-annuaire.com	FALSE	/	TRUE	0	PHPSESSID	1f58f2f53478e79c4a3e73ee0c1082a8
