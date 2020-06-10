@@ -1,0 +1,11 @@
+# Netscape HTTP Cookie File
+# https://curl.haxx.se/rfc/cookie_spec.html
+# This is a generated file! Do not edit.
+
+www2.tirexo.com	FALSE	/	FALSE	1591734675	cf_ob_info	524:5a0d9a497adfb79f:CDG
+www2.tirexo.com	FALSE	/	FALSE	1591734675	cf_use_ob	0
+#HttpOnly_.tirexo.com	TRUE	/	TRUE	1591899845	cf_clearance	0a8a0d2559380a7bd3808dbadfa34e22bf86a44e-1591809845-0-150
+#HttpOnly_.tirexo.com	TRUE	/	TRUE	1594401907	__cfduid	de2ae1f247310e12d1cd3562505340b781591809907
+www2.tirexo.com	FALSE	/	FALSE	1591854722	dle_pkv2	1
+#HttpOnly_.tirexo.com	TRUE	/	TRUE	0	PHPSESSID	75c1cfd981a871300fdfda6c3591791b
+#HttpOnly_.tirexo.com	TRUE	/	TRUE	1623347529	dle_cache	yes
