@@ -80,6 +80,8 @@
 
         <setting visible="false" id="plugin_buzzmonclick_com" type="bool" label="BuzzMonClick" default="true"/>
 
+        <setting visible="false" id="plugin_channelstream" type="bool" label="Channel Stream" default="true"/>
+
         <setting visible="false" id="plugin_cinemay_com" type="bool" label="Cinemay" default="true"/>
 
         <setting visible="false" id="plugin_cinemegatoil_org" type="bool" label="Cinemegatoil" default="true"/>
@@ -214,7 +216,7 @@
 
         <setting visible="false" id="plugin_zone_telechargement_ws" type="bool" label="Zone Téléchargement.ws" default="true"/>
 
-        <setting visible="false" id="plugin_zonefilms" type="bool" label="Zone Films" default="true"/>
+        <setting visible="false" id="plugin_zonefilms" type="bool" label="Zone Films" default="false"/>
 
         <setting visible="false" id="plugin_zt_stream" type="bool" label="Zone Téléchargement Stream" default="true"/>
 
