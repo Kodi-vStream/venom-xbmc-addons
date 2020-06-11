@@ -126,6 +126,8 @@
 
         <setting visible="false" id="plugin_kstreamingfilm" type="bool" label="K streaming Film" default="true"/>
 
+        <setting visible="false" id="plugin_kstreamingserie" type="bool" label="K streaming Série" default="true"/>
+
         <setting visible="false" id="plugin_les_debiles" type="bool" label="Les Débiles" default="true"/>
 
         <setting visible="false" id="plugin_les_docus" type="bool" label="Les docus" default="true"/>
