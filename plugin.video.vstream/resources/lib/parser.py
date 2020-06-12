@@ -16,10 +16,13 @@ class cParser:
     def __replaceSpecialCharacters(self, sString):
         """ /!\ pas les mêmes tirets, tiret moyen et cadratin."""
         return sString.replace('\r', '').replace('\n', '').replace('\t', '').replace('\\/', '/').replace('&amp;', '&')\
-                      .replace('&#039;', "'").replace('&#8211;', '-').replace('&#8212;', '-').replace('&#038;', '&')\
+                      .replace('&#039;', "'").replace('&#8211;', '-').replace('&#8212;', '-').replace('&eacute;', 'é')\
+                      .replace('&acirc;', 'â').replace('&ecirc;', 'ê').replace('&icirc;', 'î').replace('&ocirc;', 'ô')\
+                      .replace('&hellip;', '...').replace('&quot;', '"').replace('&gt;', '>').replace('&egrave;', 'è')\
                       .replace('&rsquo;', "'").replace('&laquo;', '<<').replace('&raquo;', '>>').replace('\xc9', 'E')\
-                      .replace('&hellip;', '...').replace('&quot;', '"').replace('&gt;', '>').replace('&lt;', '<')\
-                      .replace('&nbsp;', '').replace('–', '-').replace('—', '-').replace('&#8217;', "'")
+                      .replace('&ndash;', '-').replace('&eacute;', 'é').replace('&agrave;', 'à').replace('&lt;', '<')\
+                      .replace('&ccedil;', 'ç').replace('&#038;', '&').replace('&nbsp;', '').replace('&#8217;', "'")\
+                      .replace('–', '-').replace('—', '-')
 
     def parse(self, sHtmlContent, sPattern, iMinFoundValue=1):
         sHtmlContent = self.__replaceSpecialCharacters(str(sHtmlContent))
