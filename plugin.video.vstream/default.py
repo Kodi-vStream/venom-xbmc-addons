@@ -33,11 +33,11 @@ if DEBUG:
 
     try:
         import pysrc.pydevd as pydevd
-        pydevd.settrace('localhost', stdoutToServer = True, stderrToServer = True)
+        pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True)
     except ImportError:
         try:
-            import pydevd    # with the addon script.module.pydevd, only use `import pydevd`
-            pydevd.settrace('localhost', stdoutToServer = True, stderrToServer = True)
+            import pydevd  # with the addon script.module.pydevd, only use `import pydevd`
+            pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True)
         except ImportError:
             sys.stderr.write("Error: " + "You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
 
@@ -201,7 +201,8 @@ def setSetting(plugin_id, value):
 
     return False
 
-# Permet la modification des settings depuis un raccouci dans le skin (jusqu'à 50 paramètres).
+
+# Permet la modification des settings depuis un raccourci dans le skin (jusqu'à 50 paramètres).
 # Supporte les retours à la ligne seulement derrière le paramètre, exemple :
 # RunAddon(plugin.video.vstream,function=setSettings&id1=plugin_cinemay_com&value1=true
 # &id2=plugin_cinemegatoil_org&value2=false
@@ -211,10 +212,10 @@ def setSetting(plugin_id, value):
 def setSettings(oInputParameterHandler):
     addons = addon()
     
-    for i in range(1,50):
-        plugin_id = oInputParameterHandler.getValue('id'+str(i))
+    for i in range(1, 50):
+        plugin_id = oInputParameterHandler.getValue('id' + str(i))
         if plugin_id:
-            value = oInputParameterHandler.getValue('value'+str(i))
+            value = oInputParameterHandler.getValue('value' + str(i))
             value = value.replace('\n', '')
             if value:
                 setting = addons.getSetting(plugin_id)
