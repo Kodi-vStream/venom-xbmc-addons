@@ -1,13 +1,14 @@
-#-*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress#, VSlog
-import re
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'adkami_com'
 SITE_NAME = 'ADKami'
@@ -26,9 +27,9 @@ SERIE_VIEWS = (URL_MAIN + 'video?search=&t=1&order=3', 'showMovies')
 SERIE_LIST = (URL_MAIN + 'video?search=&n=&g=&s=&v=&t=1&p=&order=&d1=&d2=&e=&m=&q=&l=', 'showAZ')
 
 URL_SEARCH = (URL_MAIN + 'video?search=', 'showMovies')
+URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-URL_SEARCH_SERIES = (URL_MAIN + 'video?search=', 'showMovies')
 
 def load():
     oGui = cGui()
@@ -55,6 +56,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
 
@@ -65,39 +67,40 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showGenre():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sType2 = oInputParameterHandler.getValue('type2')
 
     liste = []
-    liste.append( ['Action', URL_MAIN + 'video?recherche=&genre3=1&type2=' + sType2] )
-    liste.append( ['Aventure', URL_MAIN + 'video?recherche=&genre3=2&type2=' + sType2] )
-    liste.append( ['Amour & Amitié', URL_MAIN + 'video?recherche=&genre3=3&type2=' + sType2] )
-    liste.append( ['Combat', URL_MAIN + 'video?recherche=&genre3=4&type2=' + sType2] )
-    liste.append( ['Comédie', URL_MAIN + 'video?recherche=&genre3=5&type2=' + sType2] )
-    liste.append( ['Contes & Récits', URL_MAIN + 'video?recherche=&genre3=6&type2=' + sType2] )
-    liste.append( ['Cyber & Mecha', URL_MAIN + 'video?recherche=&genre3=7&type2=' + sType2] )
-    liste.append( ['Dark Fantasy', URL_MAIN + 'video?recherche=&genre3=8&type2=' + sType2] )
-    liste.append( ['Drame', URL_MAIN + 'video?recherche=&genre3=9&type2=' + sType2] )
-    liste.append( ['Ecchi', URL_MAIN + 'video?recherche=&genre3=10&type2=' + sType2] )
-    liste.append( ['Éducatif', URL_MAIN + 'video?recherche=&genre3=11&type2=' + sType2] )
-    liste.append( ['Énigme & Policier', URL_MAIN + 'video?recherche=&genre3=12&type2=' + sType2] )
-    liste.append( ['Épique & Héroique', URL_MAIN + 'video?recherche=&genre3=13&type2=' + sType2] )
-    liste.append( ['Espace & Sci-Fiction', URL_MAIN + 'video?recherche=&genre3=14&type2=' + sType2] )
-    liste.append( ['Familial & Jeunesse', URL_MAIN + 'video?recherche=&genre3=15&type2=' + sType2] )
-    liste.append( ['Fantastique & Mythe', URL_MAIN + 'video?recherche=&genre3=16&type2=' + sType2] )
-    liste.append( ['Hentai', URL_MAIN + 'video?recherche=&genre3=17&type2=' + sType2] )
-    liste.append( ['Historique', URL_MAIN + 'video?recherche=&genre3=18&type2=' + sType2] )
-    liste.append( ['Horreur', URL_MAIN + 'video?recherche=&genre3=19&type2=' + sType2] )
-    liste.append( ['Magical Girl', URL_MAIN + 'video?recherche=&genre3=20&type2=' + sType2] )
-    liste.append( ['Musical', URL_MAIN + 'video?recherche=&genre3=21&type2=' + sType2] )
-    liste.append( ['Psychologique', URL_MAIN + 'video?recherche=&genre3=22&type2=' + sType2] )
-    liste.append( ['Sport', URL_MAIN + 'video?recherche=&genre3=23&type2=' + sType2] )
-    liste.append( ['Tranche de vie', URL_MAIN + 'video?recherche=&genre3=24&type2=' + sType2] )
-    liste.append( ['Shôjo-Ai', URL_MAIN + 'video?recherche=&genre3=25&type2=' + sType2] )
-    liste.append( ['Shônen-Ai', URL_MAIN + 'video?recherche=&genre3=26&type2=' + sType2] )
-    liste.append( ['Yaoi/BL', URL_MAIN + 'video?recherche=&genre3=27&type2=' + sType2] )
+    liste.append(['Action', URL_MAIN + 'video?recherche=&genre3=1&type2=' + sType2])
+    liste.append(['Aventure', URL_MAIN + 'video?recherche=&genre3=2&type2=' + sType2])
+    liste.append(['Amour & Amitié', URL_MAIN + 'video?recherche=&genre3=3&type2=' + sType2])
+    liste.append(['Combat', URL_MAIN + 'video?recherche=&genre3=4&type2=' + sType2])
+    liste.append(['Comédie', URL_MAIN + 'video?recherche=&genre3=5&type2=' + sType2])
+    liste.append(['Contes & Récits', URL_MAIN + 'video?recherche=&genre3=6&type2=' + sType2])
+    liste.append(['Cyber & Mecha', URL_MAIN + 'video?recherche=&genre3=7&type2=' + sType2])
+    liste.append(['Dark Fantasy', URL_MAIN + 'video?recherche=&genre3=8&type2=' + sType2])
+    liste.append(['Drame', URL_MAIN + 'video?recherche=&genre3=9&type2=' + sType2])
+    liste.append(['Ecchi', URL_MAIN + 'video?recherche=&genre3=10&type2=' + sType2])
+    liste.append(['Éducatif', URL_MAIN + 'video?recherche=&genre3=11&type2=' + sType2])
+    liste.append(['Énigme & Policier', URL_MAIN + 'video?recherche=&genre3=12&type2=' + sType2])
+    liste.append(['Épique & Héroique', URL_MAIN + 'video?recherche=&genre3=13&type2=' + sType2])
+    liste.append(['Espace & Sci-Fiction', URL_MAIN + 'video?recherche=&genre3=14&type2=' + sType2])
+    liste.append(['Familial & Jeunesse', URL_MAIN + 'video?recherche=&genre3=15&type2=' + sType2])
+    liste.append(['Fantastique & Mythe', URL_MAIN + 'video?recherche=&genre3=16&type2=' + sType2])
+    liste.append(['Hentai', URL_MAIN + 'video?recherche=&genre3=17&type2=' + sType2])
+    liste.append(['Historique', URL_MAIN + 'video?recherche=&genre3=18&type2=' + sType2])
+    liste.append(['Horreur', URL_MAIN + 'video?recherche=&genre3=19&type2=' + sType2])
+    liste.append(['Magical Girl', URL_MAIN + 'video?recherche=&genre3=20&type2=' + sType2])
+    liste.append(['Musical', URL_MAIN + 'video?recherche=&genre3=21&type2=' + sType2])
+    liste.append(['Psychologique', URL_MAIN + 'video?recherche=&genre3=22&type2=' + sType2])
+    liste.append(['Sport', URL_MAIN + 'video?recherche=&genre3=23&type2=' + sType2])
+    liste.append(['Tranche de vie', URL_MAIN + 'video?recherche=&genre3=24&type2=' + sType2])
+    liste.append(['Shôjo-Ai', URL_MAIN + 'video?recherche=&genre3=25&type2=' + sType2])
+    liste.append(['Shônen-Ai', URL_MAIN + 'video?recherche=&genre3=26&type2=' + sType2])
+    liste.append(['Yaoi/BL', URL_MAIN + 'video?recherche=&genre3=27&type2=' + sType2])
 
     for sTitle, sUrl in liste:
 
@@ -106,6 +109,7 @@ def showGenre():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showAZ():
     oGui = cGui()
@@ -124,7 +128,8 @@ def showAZ():
 
     oGui.setEndOfDirectory()
 
-#n'exite plus, plus de films
+
+# n'exite plus, plus de films
 # def showMoviesAZ():
 #     oGui = cGui()
 #     oInputParameterHandler = cInputParameterHandler()
@@ -155,7 +160,8 @@ def showAZ():
 
 #     oGui.setEndOfDirectory()
 
-def showMovies(sSearch = ''):
+
+def showMovies(sSearch=''):
     oGui = cGui()
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
@@ -199,6 +205,7 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
+
 def showEpisode():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -208,7 +215,7 @@ def showEpisode():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #info anime et serie
+    # info anime et serie
     sThumb = ''
     sDesc = ''
     try:
@@ -248,18 +255,19 @@ def showEpisode():
                 else:
                     sUrl = aEntry[1]
                     sTitle = sMovieTitle + ' ' + aEntry[2]
-                    sTitle = re.sub(' vf',' (VF)', sTitle, re.IGNORECASE)
-                    sDisplayTitle = re.sub(' vostfr',' (VOSTFR)', sTitle, re.IGNORECASE)
+                    sTitle = re.sub(' vf', ' (VF)', sTitle, re.IGNORECASE)
+                    sDisplayTitle = re.sub(' vostfr', ' (VOSTFR)', sTitle, re.IGNORECASE)
                     sTitle = sDisplayTitle.replace(' (VF)', '').replace(' (VOSTFR)', '')
 
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                    oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sDisplayTitle , 'series.png', sThumb, sDesc, oOutputParameterHandler)
+                    oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
             progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
+
 
 def showLinks():
     oGui = cGui()
@@ -310,15 +318,16 @@ def showLinks():
 
     oGui.setEndOfDirectory()
 
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
-    #bidouille facile
+    # bidouille facile
     sUrl = sUrl.replace('plus', '+')
-    sHosterUrl  = sUrl
+    sHosterUrl = sUrl
 
     if (sHosterUrl):
         oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -328,6 +337,7 @@ def showHosters():
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
 
     oGui.setEndOfDirectory()
+
 
 def decodex(x):
     from itertools import chain
