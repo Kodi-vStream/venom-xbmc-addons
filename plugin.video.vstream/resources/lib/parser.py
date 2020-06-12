@@ -14,13 +14,12 @@ class cParser:
         return False, aMatches
 
     def __replaceSpecialCharacters(self, sString):
-        """ /!\ pas les mêmes tirets, tiret moyen et cadratin. Puis on supprimme le tiret pour les séries """
+        """ /!\ pas les mêmes tirets, tiret moyen et cadratin."""
         return sString.replace('\r', '').replace('\n', '').replace('\t', '').replace('\\/', '/').replace('&amp;', '&')\
                       .replace('&#039;', "'").replace('&#8211;', '-').replace('&#8212;', '-').replace('&#038;', '&')\
                       .replace('&rsquo;', "'").replace('&laquo;', '<<').replace('&raquo;', '>>').replace('\xc9', 'E')\
                       .replace('&hellip;', '...').replace('&quot;', '"').replace('&gt;', '>').replace('&lt;', '<')\
-                      .replace('&nbsp;', '').replace('–', '-').replace('—', '-').replace(' - Saison', ' Saison')\
-                      .replace('&#8217;', "'")
+                      .replace('&nbsp;', '').replace('–', '-').replace('—', '-').replace('&#8217;', "'")
 
     def parse(self, sHtmlContent, sPattern, iMinFoundValue=1):
         sHtmlContent = self.__replaceSpecialCharacters(str(sHtmlContent))
