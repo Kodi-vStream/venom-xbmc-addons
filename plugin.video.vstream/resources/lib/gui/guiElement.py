@@ -3,8 +3,9 @@
 # Venom.
 import re
 import string
+import xbmc
 
-from resources.lib.comaddon import addon, xbmc
+from resources.lib.comaddon import addon
 from resources.lib.db import cDb
 from resources.lib.util import QuoteSafe
 from resources.lib.tmdb import cTMDb
@@ -15,6 +16,7 @@ import random
 # bleu clair 87CEEC  ou skyblue / hoster
 # vert 37BCB5
 # bleu foncer 08435A / non utiliser
+
 
 class cGuiElement:
 
@@ -187,8 +189,7 @@ class cGuiElement:
         # convertion unicode ne fonctionne pas avec les accents
 
         try:
-            # traitement du titre pour les caracteres speciaux
-            sTitle = sTitle.replace('&#884;', '\'').replace('&#8212;', '-').replace('&#8217;', '\'').replace('&#8230;', '...').replace('&#8242;', '\'').replace('&lsquo;', '\'')
+            # traitement du titre pour les caracteres spéciaux déplacé dans parser plus global
             # traitement du titre pour retirer le - quand c'est une Saison. Tiret, tiret moyen et cadratin
             sTitle = sTitle.replace(' - Saison', ' Saison').replace(' – Saison', ' Saison').replace(' — Saison', ' Saison')
 
@@ -243,7 +244,7 @@ class cGuiElement:
                     self.addItemValues('Season', self.__Season)
 
             else:
-                # pas d'episode mais y a t il des saisons?
+                # pas d'episode mais y a t il des saisons ?
                 m = re.search('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle, re.UNICODE)
                 if m:
                     sTitle = sTitle.replace(m.group(1), '')
@@ -287,7 +288,7 @@ class cGuiElement:
         if self.__Year:
             sTitle2 = '%s [COLOR %s](%s)[/COLOR]' % (sTitle2, self.__sDecoColor, self.__Year)
 
-        #on repasse en utf-8
+        # on repasse en utf-8
         try:
             return sTitle2.encode('utf-8')
         except AttributeError:
@@ -404,7 +405,7 @@ class cGuiElement:
         return data
 
     def str_conv(self, data):
-        #Pas d'autre solution pour le moment que de faire comme ca.
+        # Pas d'autre solution pour le moment que de faire comme ca.
         if isinstance(data, str):
             # Must be encoded in UTF-8
             try:
@@ -652,15 +653,12 @@ class cGuiElement:
     
     # Des vidéos pour remplacer des bandes annnonces manquantes
     def getDefaultTrailer(self):
-        trailers = [
-            'WWkYjM3ZXxU',
-            'LpvKI7I5rF4',
-            'svTVRDgI08Y',
-            'DUpVqwceQaA',
-            'mnsMnskJ3cQ',
-            'M0_vxs6FPbQ',
-            ]
+        trailers = ['WWkYjM3ZXxU',
+                    'LpvKI7I5rF4',
+                    'svTVRDgI08Y',
+                    'DUpVqwceQaA',
+                    'mnsMnskJ3cQ',
+                    'M0_vxs6FPbQ']
 
         trailer_id = random.choice(trailers)
         return cTMDb.URL_TRAILER % trailer_id
-
