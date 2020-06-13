@@ -141,7 +141,7 @@ def showMovies(sSearch=''):
                 sTitle = aEntry[1]
 
             # Nettoyage du titre
-            sTitle = sTitle.replace(' en streaming', '').replace('Sasion', 'Saison')
+            sTitle = sTitle.replace(' en streaming', '').replace('- Sasion', ' Saison')
             if sTitle.startswith('Film'):
                 sTitle = sTitle.replace('Film ', '')
 
@@ -277,11 +277,11 @@ def showSeries():
         sPattern = '<p>Résumé.+?treaming : (.+?)</p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
-            sDesc = aResult[1][0].replace('&#8217;', '\'').replace('&#8230;', '...')
+            sDesc = aResult[1][0]
     except:
         pass
 
-    sPattern = '<ul class="episodios" style="([^"]+)">|<div class="numerando" style="margin: 0">([^<]+)<.+?data-target="([^"]+)"'
+    sPattern = 'class="episodios" style="([^"]+)">|class="numerando" style="margin: 0">([^<]+)<.+?data-target="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -299,7 +299,7 @@ def showSeries():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + aEntry[0] + '[/COLOR]')
             else:
                 # on vire le double affichage de la saison
-                sMovieTitle = re.sub(' Saison \d+', '', sMovieTitle)
+                sMovieTitle = re.sub('- Saison \d+', '', sMovieTitle)
                 sTitle = sMovieTitle + ' ' + aEntry[1].replace(' x ', '').replace(' ', '')
                 sData = aEntry[2]
 
@@ -331,7 +331,7 @@ def showLinks():
         sPattern = '<p>([^<>"]+)</p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
-            sDesc = aResult[1][0].replace('&#8217;', '\'').replace('&#8230;', '...')
+            sDesc = aResult[1][0]
     except:
         pass
 
@@ -348,7 +348,7 @@ def showLinks():
         head = oRequestHandler.getResponseHeader()
         cookies = getcookie(head)
 
-    sPattern = '<input type="hidden" name="videov" id="videov" value="([^"]+)">.+?<\/b>([^<]+)<span class="dt_flag">.+?\/flags\/(.+?)\.'
+    sPattern = 'hidden" name="videov" id="videov" value="([^"]+).+?</b>([^<]+)<span class="dt_flag">.+?/flags/(.+?)\.'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
