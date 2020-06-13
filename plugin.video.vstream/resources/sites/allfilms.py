@@ -83,7 +83,7 @@ def showGenres():
     liste.append(['Biopic', URL_MAIN + 'recherche-Biopic-1.html'])
     liste.append(['Comédie', URL_MAIN +'recherche-Comedie-1.html'])
     liste.append(['Comédie Dramatique', URL_MAIN + 'recherche-Comedie-dramatique-1.html'])
-    liste.append(['Comédie Musicale', URL_MAIN + 'recherche-CSomedie-musicale-1.html'])
+    liste.append(['Comédie Musicale', URL_MAIN + 'recherche-Comedie-musicale.html'])
     liste.append(['Divers', URL_MAIN + 'recherche-Divers-1.html'])
     liste.append(['Documentaire', URL_MAIN + 'recherche-Documentaire-1.html'])
     liste.append(['Drame', URL_MAIN + 'recherche-Drame-1.html'])
