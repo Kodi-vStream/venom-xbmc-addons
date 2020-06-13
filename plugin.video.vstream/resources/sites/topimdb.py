@@ -2,11 +2,6 @@
 # Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Venom.mino60.TmpName
 
-try:  # python 2
-    import htmlentitydefs
-except ImportError:  # Python 3
-    import html.entities as htmlentitydefs
-
 import re
 import unicodedata
 
@@ -50,6 +45,11 @@ MOVIE_TOP2010 = (URL_MAIN + 'search/title?year=2010,2010&title_type=feature&expl
 
 
 def unescape(text):
+    try:  # python 2
+        import htmlentitydefs
+    except ImportError:  # Python 3
+        import html.entities as htmlentitydefs
+
     def fixup(m):
         text = m.group(0)
         if text[:2] == "&#":
