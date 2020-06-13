@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+import re
+import xbmc
+import xbmcgui
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -8,9 +12,8 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil, Quote
 from resources.lib.config import GestionCookie
-from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui
+from resources.lib.comaddon import progress, dialog
 
-import re
 
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
@@ -19,7 +22,7 @@ SITE_NAME = '[COLOR violet]Free-Téléchargement[/COLOR]'
 SITE_DESC = 'Fichiers en DDL, HD, Films, Séries, Mangas Etc...'
 
 URL_MAIN = 'http://www.free-telecharger.com/'
-URL_PROTECT = 'liens.free-telechargements'
+URL_PROTECT = 'liens.free-telecharg'  # ne pas mettre 'er' ou 'ement' à la fin, perte de hosters
 
 FUNCTION_SEARCH = 'showSearchResult'
 URL_SEARCH = (URL_MAIN + '1/recherche/1.html?rech_fiche=', FUNCTION_SEARCH)
@@ -43,6 +46,15 @@ MOVIE_GENRES_HD = (True, 'showGenreMoviesHD')
 MOVIE_ANNEES = (True, 'showMovieYears')
 MOVIE_SAGA = (URL_MAIN + '1/categorie-Sagas+Films/1.html', 'showMovies')
 
+SERIE_SD_EN_COURS_VF = (URL_MAIN + '1/categorie-Saisons+en+cours+VF+/1.html', 'showMovies')
+SERIE_SD_EN_COURS_VOSTFR = (URL_MAIN + '1/categorie-Saisons+en+cours+VOST/1.html', 'showMovies')
+SERIE_SD_TERMINE_VF = (URL_MAIN + '1/categorie-Saison+Termin%E9e+VF/1.html', 'showMovies')
+SERIE_SD_TERMINE_VOSTFR = (URL_MAIN + '1/categorie-Saison+Termin%E9e+VOST/1.html', 'showMovies')
+SERIE_HD_EN_COURS_VF = (URL_MAIN + '1/categorie-Saisons+en+cours+VF+HD/1.html', 'showMovies')
+SERIE_HD_EN_COURS_VOSTFR = (URL_MAIN + '1/categorie-Saisons+en+cours+VOST+HD/1.html', 'showMovies')
+SERIE_HD_TERMINE_VF = (URL_MAIN + '1/categorie-Saison+Termin%E9e+VF+HD/1.html', 'showMovies')
+SERIE_HD_TERMINE_VOSTFR = (URL_MAIN + '1/categorie-Saison+Termin%E9e+VOST+HD/1.html', 'showMovies')
+
 ANIM_ANIMS = (URL_MAIN + '1/animations/1', 'showMovies')
 ANIM_VFS = (URL_MAIN + '1/categorie-Mangas+VF/1.html', 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + '1/categorie-Mangas+VOST/1.html', 'showMovies')
@@ -50,15 +62,6 @@ ANIM_VOSTFRS = (URL_MAIN + '1/categorie-Mangas+VOST/1.html', 'showMovies')
 EMISSIONS_TV = (URL_MAIN + '1/categorie-Emissions/1.html', 'showMovies')
 
 SPECTACLES = (URL_MAIN + '1/categorie-Spectacles/1.html', 'showMovies')
-
-SERIE_SD_EN_COURS_VF = (URL_MAIN + '1/categorie-Saisons+en+cours+VF+/1.html', 'showMovies')
-SERIE_SD_EN_COURS_VOSTFR = (URL_MAIN + '1/categorie-Saisons+en+cours+VOST/1.html', 'showMovies')
-SERIE_SD_TERMINE_VF = (URL_MAIN + '1/categorie-Saison+Terminée+VF/1.html', 'showMovies')
-SERIE_SD_TERMINE_VOSTFR = (URL_MAIN + '1/categorie-Saison+Terminée+VOST/1.html', 'showMovies')
-SERIE_HD_EN_COURS_VF = (URL_MAIN + '1/categorie-Saisons+en+cours+VF+HD/1.html', 'showMovies')
-SERIE_HD_EN_COURS_VOSTFR = (URL_MAIN + '1/categorie-Saisons+en+cours+VOST+HD/1.html', 'showMovies')
-SERIE_HD_TERMINE_VF = (URL_MAIN + '1/categorie-Saison+Terminée+VF+HD/1.html', 'showMovies')
-SERIE_HD_TERMINE_VOSTFR = (URL_MAIN + '1/categorie-Saison+Terminée+VOST+HD/1.html', 'showMovies')
 
 
 def load():
@@ -346,11 +349,11 @@ def showSearchResult(sSearch=''):
 
             sNextPage = __checkForNextPage(sHtmlContent)
             if (sNextPage != False):
-                n = '[COLOR teal]Suite >>>[/COLOR]'
+                n = '[COLOR teal] >>>[/COLOR]'
                 if sSearch:
-                    n = '[COLOR teal]Suite SD >>>[/COLOR]'
+                    n = '[COLOR teal] SD >>>[/COLOR]'
                 if loop == 2:
-                    n = '[COLOR teal]Suite HD >>>[/COLOR]'
+                    n = '[COLOR teal] HD >>>[/COLOR]'
                 NextPage.append((n, sNextPage))
 
         loop = loop - 1
@@ -369,9 +372,9 @@ def showSearchResult(sSearch=''):
 
             # titre ?
             if i == SD:
-                oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Qualitee SD[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Qualitée SD[/COLOR]')
             if i == HD:
-                oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Qualitee HD[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Qualitée HD[/COLOR]')
             i = i + 1
 
             sQual = 'SD'
@@ -380,12 +383,12 @@ def showSearchResult(sSearch=''):
             if '-3d/' in aEntry[0]:
                 sQual = '3D'
 
-            sTitle = str(aEntry[1])
+            sTitle = str(aEntry[1]).replace(' - Saison', ' Saison').replace(' - saison', ' Saison')
             sTitle = cUtil().removeHtmlTags(sTitle)
             sUrl2 = URL_MAIN + aEntry[0]
 
             sDesc = aEntry[3]
-            sDesc = re.sub('<[^<]+?>', '', sDesc) # retrait des balises html
+            sDesc = re.sub('<[^<]+?>', '', sDesc)  # retrait des balises html
             sThumb = aEntry[2]
 
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
@@ -404,7 +407,9 @@ def showSearchResult(sSearch=''):
         for n, u in NextPage:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', u)
-            oGui.addNext(SITE_IDENTIFIER, 'showSearchResult', n, oOutputParameterHandler)
+            number = re.search('/([0-9]+)/', u).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showSearchResult', '[COLOR teal]Page ' + number + ' ' + n + '[/COLOR]', oOutputParameterHandler)
+            # oGui.addNext(SITE_IDENTIFIER, 'showSearchResult', n, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -438,7 +443,7 @@ def showMovies():
                 sQual = '3D'
 
             sUrl2 = URL_MAIN + aEntry[0]
-            sTitle = aEntry[1].replace(' - Saison', ' Saison').replace(' - saison', ' saison')
+            sTitle = aEntry[1].replace(' - Saison', ' Saison').replace(' - saison', ' Saison')
             sDesc = aEntry[2]
             sDesc = sDesc.decode("unicode_escape").encode("latin-1")
             sThumb = aEntry[3]
@@ -453,6 +458,8 @@ def showMovies():
 
             if 'series-' in sUrl or '-Saison' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            elif '/mangas' in sUrl:
+                oGui.addAnime(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             elif '-Sagas' in sUrl:
                 oGui.addMoviePack(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
@@ -464,7 +471,8 @@ def showMovies():
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suite >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('/([0-9]+)/', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -491,6 +499,8 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    # parfois présent, plus sure que de réduire la regex
+    sHtmlContent = re.sub('</font>', '', sHtmlContent)
 
     # recuperation nom de la release
     if 'elease :' in sHtmlContent:
@@ -499,7 +509,7 @@ def showHosters():
         sPattern = '<br /> *([^<]+)</p></center>'
 
     aResult1 = oParser.parse(sHtmlContent, sPattern)
-    # print(aResult1)
+    # VSlog(aResult1)
 
     if (aResult1[0] == True):
         if 'Forced' in aResult1[1][0]:
@@ -530,24 +540,41 @@ def showHosters():
         sHtmlContent = sHtmlContent.replace('&nbsp;', '')
 
     if '-multi' in sHtmlContent:
-        sPattern = '<a href="link.php\?lien\=([^"]+)"'
+        sPattern = 'target="_blank" href="([^"]+)"'
     else:
-        sPattern = '<b>(.+?)<\/b>.+?<a href="link.php\?lien\=([^"]+)" target="_blank" *><b>Cliquer ici pour Télécharger'
+        sPattern = '<b> *([^<]+)</b> </br> <a href="([^"]+)" target="_blank" *><b><font color="#00aeef">Cliquer ici'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    # print(aResult)
+    # VSlog(aResult)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
+
             if '-multi' in aEntry:
                 sHostName = 'Liens Multi'
             else:
+                if 'nitroflare' in aEntry[1] or 'turbo' in aEntry[1] or 'q.gs' in aEntry[1]:  # hosters non géré
+                    continue
+                if 'hitfile' in aEntry[1] or 'hil.to' in aEntry[1]:  # hosters non géré
+                    continue
+                if 'uplooad' in aEntry[1] or 'rapidgator' in aEntry[1]:  # hoster non géré
+                    continue
+
                 sHostName = aEntry[0]
+                # on récupère le nom du hoster dans l'url
+                # Sinon les hosters sont souvent affiché en temps que Free-telechargements
+                if 'uptobox' in aEntry[1]:
+                    sHostName = 'UpToBox'
+                if 'uploaded' in aEntry[1]:
+                    sHostName = 'Uploaded'
+                if '1fichier' in aEntry[1]:
+                    sHostName = '1Fichier'
+
                 sHostName = cUtil().removeHtmlTags(sHostName)
 
             oOutputParameterHandler = cOutputParameterHandler()
-            sTitle = '[COLOR skyblue]' + sHostName + '[/COLOR]'
+            sTitle = '[COLOR coral]' + sHostName + '[/COLOR]'
             if '-multi' in aEntry:
                 oOutputParameterHandler.addParameter('siteUrl', aEntry)
             else:
@@ -571,6 +598,8 @@ def showSeriesHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    # parfois présent, plus sure que de réduire la regex
+    sHtmlContent = re.sub('</font>', '', sHtmlContent)
 
     oParser = cParser()
 
@@ -590,9 +619,9 @@ def showSeriesHosters():
     # sHtmlContent = re.sub('link.php\?lien\=', '', sHtmlContent)
 
     if '-multi' in sHtmlContent:
-        sPattern = '<a href="link.php\?lien\=([^"]+)"'
+        sPattern = 'target="_blank" href="([^"]+)"'
     else:
-        sPattern = '<b>(.+?)</b> </br> <a href="link.php\?lien\=([^"]+)" target="_blank" ><b>Cliquer ici pour Télécharger</b></a>'
+        sPattern = '<b> *([^<]+)</b> </br> <a href="([^"]+)" target="_blank" *><b><font color="#00aeef">Cliquer ici'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -608,10 +637,10 @@ def showSeriesHosters():
 
                 oOutputParameterHandler = cOutputParameterHandler()
             if total == 1:
-                sTitle = '[COLOR skyblue]' + 'Liens Premium' + '[/COLOR]'
+                sTitle = '[COLOR coral]' + 'Liens Premium' + '[/COLOR]'
                 oOutputParameterHandler.addParameter('siteUrl', aEntry)
             else:
-                sTitle = '[COLOR skyblue]' + aEntry[0] + '[/COLOR]'
+                sTitle = '[COLOR coral]' + aEntry[0] + '[/COLOR]'
                 oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
 
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -625,7 +654,7 @@ def showSeriesHosters():
 
 
 def Display_protected_link():
-    # print('entering Display_protected_link')
+    # VSlog('entering Display_protected_link')
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -670,7 +699,7 @@ def Display_protected_link():
 
 
 def DecryptddlProtect(url):
-    # print('entering DecryptddlProtect')
+    # VSlog('entering DecryptddlProtect')
     if not (url):
         return ''
 
@@ -764,9 +793,9 @@ def get_response(img, cookie):
     solution = ''
 
     if (True):
-        #### nouveau captcha
+        # nouveau captcha
         try:
-            ## affichage du dialog perso
+            # affichage du dialog perso
             class XMLDialog(xbmcgui.WindowXMLDialog):
                 # """
                 # Dialog class for captcha
