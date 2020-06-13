@@ -19,10 +19,11 @@ class cParser:
                       .replace('&#039;', "'").replace('&#8211;', '-').replace('&#8212;', '-').replace('&eacute;', 'é')\
                       .replace('&acirc;', 'â').replace('&ecirc;', 'ê').replace('&icirc;', 'î').replace('&ocirc;', 'ô')\
                       .replace('&hellip;', '...').replace('&quot;', '"').replace('&gt;', '>').replace('&egrave;', 'è')\
-                      .replace('&rsquo;', "'").replace('&laquo;', '<<').replace('&raquo;', '>>').replace('\xc9', 'E')\
+                      .replace('&ccedil;', 'ç').replace('&laquo;', '<<').replace('&raquo;', '>>').replace('\xc9', 'E')\
                       .replace('&ndash;', '-').replace('&eacute;', 'é').replace('&agrave;', 'à').replace('&lt;', '<')\
-                      .replace('&ccedil;', 'ç').replace('&#038;', '&').replace('&nbsp;', '').replace('&#8217;', "'")\
-                      .replace('–', '-').replace('—', '-')
+                      .replace('&rsquo;', "'").replace('&lsquo;', '\'').replace('&nbsp;', '').replace('&#8217;', "'")\
+                      .replace('&#8230;', '...').replace('&#8242;', "'").replace('&#884;', '\'')\
+                      .replace('&#038;', '&').replace('–', '-').replace('—', '-')
 
     def parse(self, sHtmlContent, sPattern, iMinFoundValue=1):
         sHtmlContent = self.__replaceSpecialCharacters(str(sHtmlContent))
