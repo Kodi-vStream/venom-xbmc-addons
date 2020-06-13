@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 # Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Venom.mino60.TmpName
+
+try:  # python 2
+    import htmlentitydefs
+except ImportError:  # Python 3
+    import html.entities as htmlentitydefs
+
 import re
 import unicodedata
 
@@ -146,7 +152,7 @@ def load():
     oGui.setEndOfDirectory()
 
 
-def showMovies(sSearch = '', page = 1):
+def showMovies(sSearch='', page=1):
     oGui = cGui()
     oParser = cParser()
     bGlobal_Search = False
@@ -163,7 +169,7 @@ def showMovies(sSearch = '', page = 1):
     oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'class="lister-item-image.+?<img\salt="([^"]+)".+?loadlate="([^"]+)".+?class="lister-item-index.+?>([^<]+)</span>.+?class="lister-item-year.+?>([^<]+)</span.+?title="Users rated this(.+?)\s'
+    sPattern = 'lister-item-image.+?alt="([^"]+)".+?loadlate="([^"]+)".+?lister-item-index.+?>([^<]+)<.+?lister-item-year.+?>([^<]+).+?(?:|Users rated this(.+?)\s.+?)text-muted">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -179,11 +185,13 @@ def showMovies(sSearch = '', page = 1):
             # sTitle = unescape(str(aEntry[1]))
             # sTitle = sTitle.encode( "utf-8")
 
-            sTitle = ('%s %s %s [COLOR fuchsia]%s[/COLOR]') % (aEntry[2], aEntry[0], aEntry[3], aEntry[4])
-            sMovieTitle=re.sub('(\[.*\])', '', sTitle)
+            sTitle = ('%s %s [COLOR fuchsia]%s[/COLOR]') % (aEntry[2], aEntry[0], aEntry[4])
+            sMovieTitle = re.sub('(\[.*\])', '', sTitle)
             sMovieTitle = re.sub(r'[^a-z -]', ' ', sMovieTitle)
-            # sTitle2=re.sub('(.*)(\[.*\])','\\1 [COLOR orange]\\2[/COLOR]', sTitle)
+            # sTitle2 = re.sub('(.*)(\[.*\])','\\1 [COLOR orange]\\2[/COLOR]', sTitle)
             sThumb = aEntry[1].replace('UX67', 'UX328').replace('UY98', 'UY492').replace('67', '0').replace('98', '0')
+            sYear = re.search('([0-9]{4})', aEntry[3]).group(1)
+            sDesc = aEntry[5]
 
             # sCom = unicode(aEntry[3], 'utf-8')#converti en unicode
             # sCom = unicodedata.normalize('NFD', sCom).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
@@ -192,10 +200,9 @@ def showMovies(sSearch = '', page = 1):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', ('none'))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[0]))
-            # oOutputParameterHandler.addParameter('sThumb', str(aEntry[1]))
-            # oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sYear', sYear)
             oOutputParameterHandler.addParameter('searchtext', showTitle(str(aEntry[0]), str('none')))
-            oGui.addMovie('globalSearch', 'showSearch', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie('globalSearch', 'showSearch', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -238,7 +245,6 @@ def showTitle(sMovieTitle, sUrl):
     sMovieTitle = sMovieTitle.encode("utf-8").lower()  # on repasse en utf-8
 
     sMovieTitle = Quote(sMovieTitle)
-
     sMovieTitle = re.sub('\(.+?\)', ' ', sMovieTitle)  # vire les tags entre parentheses
 
     # modif venom si le titre comporte un - il doit le chercher
