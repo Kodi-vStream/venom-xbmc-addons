@@ -386,7 +386,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'film-ripz".+?href="([^"]+)" title="[^"]+"><img src="([^"]+)".+?class="short-titl.+?>([^<]+)<'
+    sPattern = 'film-ripz".+?href="([^"]+)" title="[^"]+"><img src="([^"]+)".+?class="short-titl.+?>([^<]+)<(\/div|br>(.+?)<)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -412,24 +412,31 @@ def showMovies(sSearch=''):
             if (sSearch and ' - Saison ' in sTitle):  # La recherche retourne aussi des séries
                 continue
             
-            # on recupere le titre dans le poster le site ne l'affiche pas toujours
-            if (aEntry[2] == ' '):
+            # on recupere le titre dans le poster car le site ne l'affiche pas toujours
+            if (sTitle == ' '):
                 sTitle = aEntry[1].replace('/static/poster/', '').replace('-', ' ').replace('.jpg', '').title()
 
-            # Si recherche et trop de resultat, on nettoye
+            # Si recherche et trop de resultat, on filtre
             if sSearch and total > 3:
                 if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH_MOVIES[0], ''), sTitle) == 0:
                     continue
+
+            # Année parfois
+            sYear = ''
+            if len(aEntry)>4:
+                sYear = aEntry[4]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sYear', sYear)
 
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
+    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -437,7 +444,6 @@ def showMovies(sSearch=''):
             number = re.search('/([0-9]+)', sNextPage).group(1)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
 
 
