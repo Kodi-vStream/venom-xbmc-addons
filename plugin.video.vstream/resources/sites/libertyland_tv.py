@@ -329,14 +329,14 @@ def showMovies(sSearch=''):
 
         progress_.VSclose(progress_)
 
+    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('page-([0-9]+)', sNextPage).group(1)
+            number = re.findall('([0-9]+)', sNextPage)[-1]
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
 
 
