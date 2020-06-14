@@ -236,8 +236,8 @@ def showMovies(sSearch=''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    # la qualité est une option pour la recherche
-    sPattern = '<div class="imagefilm">\s*<a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)".+?(?:|<span class="([^"]+)".+?)<\/div>'
+    # parfois pas d'image et la qualité est une option pour la recherche
+    sPattern = 'class="imagefilm">\s*<a href="([^"]+)".+?src="([^"]*)" alt="([^"]+)".+?(?:|<span class="([^"]+)".+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -278,7 +278,6 @@ def showMovies(sSearch=''):
 
         progress_.VSclose(progress_)
 
-    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -286,6 +285,7 @@ def showMovies(sSearch=''):
             number = re.findall('([0-9]+)', sNextPage)[-1]
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
+    if not sSearch:  # Le moteur de recherche du site est correct pour laisser le nextPage même en globalSearch
         oGui.setEndOfDirectory()
 
 
@@ -317,7 +317,6 @@ def showSaisons():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
-            # sDesc = sDesc.replace('&#8217;', '\'').replace('&#8230;', '...')
     except:
         pass
 
@@ -333,7 +332,7 @@ def showSaisons():
                 sUrl = URL_MAIN + sUrl
 
             sTitle = aEntry[1]
-            sTitle = re.sub(' Saison \d+', '', sTitle)  # double affichage de la saison
+            sTitle = re.sub('- Saison \d+', '', sTitle)  # double affichage de la saison
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -365,7 +364,7 @@ def showEpisodes():
         for aEntry in aResult[1]:
 
             sTitle = aEntry[0].replace(' , VOSTFR , ', '')  # Systematiquement affiché en vostfr
-            sTitle = re.sub(' Saison \d+', '', sTitle)  # double affichage de la saison
+            sTitle = re.sub('- Saison \d+', '', sTitle)  # double affichage de la saison
             sUrl = aEntry[1]
             if sUrl.startswith('/'):
                 sUrl = URL_MAIN + sUrl
@@ -376,7 +375,7 @@ def showEpisodes():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -390,7 +389,7 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'data-src="([^"]+)" target="filmPlayer"'
+    sPattern = 'data-src="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
