@@ -78,7 +78,7 @@ def showMoviesMenu():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'views.png', oOutputParameterHandler)
@@ -223,7 +223,7 @@ def showMovies(sSearch=''):
     sHtmlContent = sHtmlContent.replace('quelle-est-votre-serie-preferee', '<>')
     sHtmlContent = sHtmlContent.replace('top-series-du-moment', '<>')
     sHtmlContent = sHtmlContent.replace('listes-des-series-annulees-et-renouvelees', '<>')
-    sPattern = '<div class="post-thumbnail".+?<a href="([^"]+)".+?(?:src="([^"]+(?:png|jpeg|jpg)|)").+?alt="([^"]+)".+?<p>([^<]+)</p>'
+    sPattern = 'class="post-thumbnail.+?href="([^"]+)".+?(?:src="([^"]+(?:png|jpeg|jpg)|)").+?alt="([^"]+).+?<p>([^<]+)'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -241,11 +241,6 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            # Si recherche et trop de resultat, on nettoye
-            if sSearch and total > 2:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[2]) == 0:
-                    continue
-
             sUrl1 = aEntry[0]
             sTitle = aEntry[2].replace('Saiosn', 'Saison')
             if 'Brouillon' in sTitle:
@@ -259,10 +254,13 @@ def showMovies(sSearch=''):
             # on retire la qualité
             sTitle = re.sub('\[\w+]', '', sTitle)
             sTitle = re.sub('\[\w+ \w+]', '', sTitle)
-
             sThumb = aEntry[1]
+            sDesc = aEntry[3].replace('[&hellip;]', '')
 
-            sDesc = aEntry[3].replace('[&hellip;]', '').replace('&hellip;', '...').replace('&rsquo;', '\'').replace('&#8217;', '\'').replace('&#8230;', '...')
+            # Si recherche et trop de resultat, on filtre
+            if sSearch and total > 2:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
+                    continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl1)
@@ -297,7 +295,6 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<a class="next page-numbers" href="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         return aResult[1][0]
 
@@ -327,7 +324,6 @@ def showSeries(sLoop=False):
     # Enleve le debut de l'url du hoster, si présent
     sHtmlContent = re.sub('https://cut-urls.com/st\?api=[\w|\d|&|#|;]+=', '', sHtmlContent)
 
-
     # récupération du Synopsis
     sDesc = ''
     try:
@@ -335,7 +331,6 @@ def showSeries(sLoop=False):
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
-            sDesc = sDesc.replace('&#8217;', '\'').replace('&#8230;', '...')
     except:
         pass
 
