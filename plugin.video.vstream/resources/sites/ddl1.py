@@ -603,7 +603,8 @@ def showSeriesHosters():
 
             else:
                 sUrl2 = aEntry[1]
-                sTitle = sMovieTitle + ' ' + aEntry[2].replace('pisode ', '').replace('FINAL ', '')
+                sEpisode = aEntry[2].replace('pisode ', '').replace('FINAL ', '').replace('Télécharger', '')
+                sTitle = sMovieTitle + ' ' + sEpisode
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
