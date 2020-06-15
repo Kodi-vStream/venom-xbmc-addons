@@ -14,11 +14,10 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 from resources.lib.util import Unquote
 
-
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
 SITE_IDENTIFIER = 'ddl1'
-SITE_NAME = '[COLOR violet]DDL1[/COLOR]'
+SITE_NAME = '[COLOR violet]DDL[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
 
 URL_MAIN = "https://www.ddl1.best/"
@@ -342,7 +341,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<a class="th-in" href="([^"]+)".+?src="([^"]+)" alt="([^"]+)".+?<div class="th-tip-meta.+?<span>([^\D]+).+?style="color: #aaa;">([^<]+)<'
+    sPattern = 'th-in" href="([^"]+).+?src="([^"]+)" alt="([^"]+).+?th-tip-meta.+?(?:|<span>([^\D]+).+?)#aaa;">([^<]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -367,8 +366,8 @@ def showMovies(sSearch=''):
             sYear = aEntry[3]
             sDesc = aEntry[4]
 
-            # Enlever les films en doublons (même titre et même année)
-            # il s'agit du même film dans une autre qualité qu'on retrouvera au moment du choix de la qualité
+            # On enleve les résultats en doublons (même titre et même année)
+            # il s'agit du même dans une autre qualité ils seront proposé à l'étape suivante de nouveau
             key = sTitle + "-" + sYear
             if key in titles:
                 continue
@@ -386,6 +385,8 @@ def showMovies(sSearch=''):
 
             if '/series/' in sUrl or ('animes' in sUrl and not 'films' in sUrl) or 'emissions-tv' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            elif '-saison-' in sUrl2:
+                oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -398,7 +399,7 @@ def showMovies(sSearch=''):
             number = re.search('/([0-9]+)', sNextPage).group(1)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
+    if not sSearch:  # Le moteur de recherche du site est correct, laisser le nextPage même en globalSearch
         oGui.setEndOfDirectory()
 
 
@@ -471,7 +472,6 @@ def showMoviesLinks():
     oOutputParameterHandler.addParameter('sThumb', sThumb)
     oOutputParameterHandler.addParameter('sDesc', sDesc)
     oOutputParameterHandler.addParameter('sYear', sYear)
-
     oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     # on regarde si dispo dans d'autres qualités
@@ -585,7 +585,7 @@ def showSeriesHosters():
     sHtmlContent = GetLink(oRequestHandler.request())
 
     oParser = cParser()
-    sPattern = '<i class="fas fa-cloud-download-alt" style="margin-right: 10px;"></i>([^<]+)</div></b>|<a href="([^"]+)".+?rel="noopener external noreferrer">([^<]+)</a>'
+    sPattern = 'download-alt" style="margin-right: 10px;"></i>([^<]+)|href="([^"]+)".+?external noreferrer">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -606,7 +606,7 @@ def showSeriesHosters():
                 sTitle = sMovieTitle + ' ' + aEntry[2].replace('pisode ', '').replace('FINAL ', '')
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oGui.addTV(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -635,12 +635,15 @@ def Display_protected_link():
     r = requests.post(sUrl.replace('http', 'https'), headers=headers, data=payload)
     sHtmlContent = r.content
 
-    oParser = cParser()
-    sPattern = '<h4>Vos liens prot&eacute;g&eacute;es</h4></center>.+?<a href="([^"]+)"'
-    aResult = oParser.parse(sHtmlContent, sPattern)
+    # fh = open('c:\\test.txt', "w")
+    # fh.write(sHtmlContent)
+    # fh.close()
 
+    oParser = cParser()
+    sPattern = '<h4>Vos liens prot.+?<a href="([^"]+)"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
     sHosterUrl = base64.b64decode(Unquote(aResult[1][0].split('?url=')[1]))
-    sTitle = sMovieTitle
+    sTitle = sMovieTitle.replace('- Saison ', ' S')
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
     if (oHoster != False):
