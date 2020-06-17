@@ -25,9 +25,9 @@ MOVIE_GENRES = (True, 'showGenres')
 MOVIE_LIST = (URL_MAIN, 'AlphaSearch')
 
 # la recherche global ne fonctionne pas
-FUNCTION_SEARCH = 'showSearchMovies'
-URL_SEARCH = ('', 'showSearchMovies')
-URL_SEARCH_MOVIES = ('', 'showSearchMovies')
+FUNCTION_SEARCH = 'showMovies'
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 
 
 def load():
@@ -57,6 +57,17 @@ def load():
 
 
 def showSearch():
+    oGui = cGui()
+
+    sSearchText = oGui.showKeyBoard()
+    if (sSearchText != False):
+        sSearch = URL_SEARCH[0] + sSearchText.replace(' ', '+')
+        showMovies(sSearch)
+        oGui.setEndOfDirectory()
+        return
+
+
+def showSearchOld():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
@@ -100,7 +111,7 @@ def showSearchMovies(sSearch=''):
                     sThumb = 'https:' + sThumb
                 sTitle = aEntry[2]
 
-                # tris search
+                # filtre search
                 if sSearch and total > 3:
                     if cUtil().CheckOccurence(sSearch, sTitle) == 0:
                         continue
@@ -241,6 +252,11 @@ def showMovies(sSearch=''):
             sUrl = aEntry[1]
             sTitle = aEntry[2]
             sDesc = aEntry[3]
+
+            # filtre search
+            if sSearch and total > 5:
+                if cUtil().CheckOccurence(sSearch, sTitle) == 0:
+                    continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
