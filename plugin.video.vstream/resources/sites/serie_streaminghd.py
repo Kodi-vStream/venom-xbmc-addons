@@ -78,7 +78,7 @@ def showSeries(sSearch=''):
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = 'fullstream fullstreaming"><img src="([^"]+)".+?alt="([^"]+)".+?<h3 class="mov-title"><a href="([^"]+)'
+    sPattern = 'fullstream fullstreaming"><img src="([^"]+)".+?alt="([^"]+)".+?class="mov-title"><a href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -96,7 +96,7 @@ def showSeries(sSearch=''):
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
 
-            sTitle = aEntry[1]
+            sTitle = re.sub('- Saison', 'Saison', aEntry[1])
             siteUrl = aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -121,7 +121,7 @@ def showSeries(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<a href="([^<>"]+)">Suivant &#8594;<\/a>'
+    sPattern = '<a href="([^"]+)">Suivant &#8594;'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -144,30 +144,22 @@ def showHosters():
 
     # On separe liens vostfr - vf
     sPattern = '<div class="VOSTFR-tab">(.+?)<div class="VF-tab">'
-    sPattern2 ='<div class="VF-tab">(.+?)<div id="fsElementsContainer">'
+    sPattern2 = '<div class="VF-tab">(.+?)<div id="fsElementsContainer">'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     aResult2 = oParser.parse(sHtmlContent, sPattern2)
 
-    # pour total3 si pas liens vostfr
-    total = 0
-
     # Liens VOSTFR
     if (aResult[0] == True):
 
-        sPattern = '<a href="([^"]+)".+?<\/i> EPS ([0-9]+)'
+        sPattern = '<a href="([^"]+)".+?</i> EPS ([0-9]+)'
         aResult = oParser.parse(aResult[1][0], sPattern)
 
         if (aResult[0] == True):
-            total = len(aResult[1])
-            progress_ = progress().VScreate(SITE_NAME)
 
             oGui.addText(SITE_IDENTIFIER, '[COLOR red]Langue VOSTFR[/COLOR]')
 
             for aEntry in aResult[1]:
-                progress_.VSupdate(progress_, total)
-                if progress_.iscanceled():
-                    break
 
                 sHosterUrl = aEntry[0]
                 sMovieTitle2 = sMovieTitle + 'episode ' + aEntry[1]
@@ -181,32 +173,22 @@ def showHosters():
     # Liens VF
     if (aResult2[0] == True):
 
-        sPattern = '<a href="([^"]+)".+?<\/i> EPS ([0-9]+)'
+        sPattern = '<a href="([^"]+)".+?</i> EPS ([0-9]+)'
         aResult = oParser.parse(aResult2[1][0], sPattern)
 
         if (aResult[0] == True):
-                total2 = len(aResult[1])
-                # update total dialog si liens vostfr puis vf
-                total3 = total + total2
-                progress_ = progress().VScreate(SITE_NAME)
 
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]Langue VF[/COLOR]')
+            oGui.addText(SITE_IDENTIFIER, '[COLOR red]Langue VF[/COLOR]')
 
-                for aEntry in aResult[1]:
-                    progress_.VSupdate(progress_, total3)
-                    if progress_.iscanceled():
-                        break
+            for aEntry in aResult[1]:
 
-                    sHosterUrl = aEntry[0]
-                    sMovieTitle2 = sMovieTitle + 'episode ' + aEntry[1]
+                sHosterUrl = aEntry[0]
+                sMovieTitle2 = sMovieTitle + 'episode ' + aEntry[1]
 
-                    oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    if (oHoster != False):
-                        oHoster.setDisplayName(sMovieTitle2)
-                        oHoster.setFileName(sMovieTitle2)
-                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
-
-    progress_.VSclose(progress_)
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle2)
+                    oHoster.setFileName(sMovieTitle2)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
