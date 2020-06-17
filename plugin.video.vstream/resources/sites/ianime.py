@@ -263,7 +263,7 @@ def showGenres():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sTitle = aEntry[1]
-            sTitle = str(cUtil().unescape(sTitle).encode("utf-8"))
+            sTitle = str(cUtil().unescape(sTitle))
             # on filtre les genres
             if 'Ecchi' in sTitle:
                 continue
