@@ -129,21 +129,21 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append(['Action', URL_MAIN + 'genre/action'])
-    liste.append(['Animation', URL_MAIN + 'genre/animation'])
-    liste.append(['Aventure', URL_MAIN + 'genre/aventure'])
-    liste.append(['Comédie', URL_MAIN + 'genre/comedie'])
-    liste.append(['Crime', URL_MAIN + 'genre/crime'])
-    liste.append(['Drame', URL_MAIN + 'genre/drame'])
-    liste.append(['Familial', URL_MAIN + 'genre/familial'])
-    liste.append(['Fantastique', URL_MAIN + 'genre/fantastique'])
-    liste.append(['Guerre', URL_MAIN + 'genre/guerre'])
-    liste.append(['Horreur', URL_MAIN + 'genre/horreur'])
-    liste.append(['Histoire', URL_MAIN + 'genre/histoire'])
-    liste.append(['Romance', URL_MAIN + 'genre/romance'])
-    liste.append(['Thriller', URL_MAIN + 'genre/thriller'])
-    liste.append(['Science-Fiction', URL_MAIN + 'genre/science-fiction'])
-    liste.append(['Western', URL_MAIN + 'genre/western'])
+    liste.append(['Action', URL_MAIN + 'genre/action/'])
+    liste.append(['Animation', URL_MAIN + 'genre/animation/'])
+    liste.append(['Aventure', URL_MAIN + 'genre/aventure/'])
+    liste.append(['Comédie', URL_MAIN + 'genre/comedie/'])
+    liste.append(['Crime', URL_MAIN + 'genre/crime/'])
+    liste.append(['Drame', URL_MAIN + 'genre/drame/'])
+    liste.append(['Familial', URL_MAIN + 'genre/familial/'])
+    liste.append(['Fantastique', URL_MAIN + 'genre/fantastique/'])
+    liste.append(['Guerre', URL_MAIN + 'genre/guerre/'])
+    liste.append(['Horreur', URL_MAIN + 'genre/horreur/'])
+    liste.append(['Histoire', URL_MAIN + 'genre/histoire/'])
+    liste.append(['Romance', URL_MAIN + 'genre/romance/'])
+    liste.append(['Thriller', URL_MAIN + 'genre/thriller/'])
+    liste.append(['Science-Fiction', URL_MAIN + 'genre/science-fiction/'])
+    liste.append(['Western', URL_MAIN + 'genre/western/'])
 
     for sTitle, sUrl in liste:
 
@@ -162,11 +162,11 @@ def showMovies(sSearch=''):
 
     if sSearch:
         sUrl = sSearch
-        sPattern = 'class="image">.*?<a href="([^"]+)">\s*<img src="([^"]+)" alt="([^"]+)".+?<p>(.+?)<'
+        sPattern = 'class="image">.*?<a href="([^"]+)">\s*<img src="([^"]+)" alt="([^"]+)".+?<p>([^<]*)'
     elif 'episodes' in sUrl:
-        sPattern = 'class="poster">.*?<img src="([^"]+)" alt="(.+?)".+?<a href="([^"]+)">'
+        sPattern = 'class="poster">.*?<img src="([^"]+)" alt="([^"]+)".+?<a href="([^"]+)'
     else:
-        sPattern = 'class="poster"> *<img src="([^"]+)".+?<a href="([^"]+)" *title="([^"]+)".+?class="texto">([^<]+)'
+        sPattern = 'class="poster"> *<img src="([^"]+)".+?<a href="([^"]+)" *title="([^"]+)".+?class="texto">([^<]*)'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -185,12 +185,11 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            # Si recherche et trop de resultat, on nettoye
-            if sSearch and total > 2:
+            # Si recherche et trop de resultat, on filtre
+            if sSearch and total > 5:
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[2]) == 0:
                     continue
 
-            sDesc = ''
             if sSearch:
                 sUrl = aEntry[0]
                 sThumb = aEntry[1]
@@ -200,27 +199,30 @@ def showMovies(sSearch=''):
                 sThumb = aEntry[0]
                 sTitle = aEntry[1]
                 sUrl = aEntry[2]
+                sDesc = ''
             else:
                 sThumb = aEntry[0]
                 sUrl = aEntry[1]
                 sTitle = aEntry[2].replace('streaming', ' ')
                 sDesc = aEntry[3]
 
-            if sDesc:
-                try:
-                    sDesc = cUtil().unescape(sDesc.decode('utf8'))
-                except AttributeError:
-                    sDesc = cUtil().unescape(sDesc)
+            # si utile il faut retirer oOutputParameterHandler.addParameter(sDesc)
+            # if sDesc:  # désactivé le 17/06/2020, 
+                # try:
+                    # sDesc = cUtil().unescape(sDesc.decode('utf8'))
+                # except AttributeError:
+                    # sDesc = cUtil().unescape(sDesc)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
 
             if 'series' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSxE', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             elif 'episodes' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -254,6 +256,7 @@ def showSxE():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sDesc = oInputParameterHandler.getValue('sDesc')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -284,7 +287,8 @@ def showSxE():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplaytitle, '', sThumb, '', oOutputParameterHandler)
+                oOutputParameterHandler.addParameter('sDesc', sDesc)
+                oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplaytitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -297,6 +301,7 @@ def showLinks():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
 
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
@@ -319,6 +324,8 @@ def showLinks():
                 dtype = 'movie'
             dpost = aEntry[0]
             dnum = aEntry[1]
+            pdata = 'action=doo_player_ajax&post=' + dpost + '&nume=' + dnum + '&type=' + dtype
+
             sHoster = aEntry[2].capitalize()
             
             # trie des hosters
@@ -333,10 +340,9 @@ def showLinks():
             oOutputParameterHandler.addParameter('referer', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('data1', dtype)
-            oOutputParameterHandler.addParameter('data2', dpost)
-            oOutputParameterHandler.addParameter('data3', dnum)
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplaytitle, sThumb, '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('pdata', pdata)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplaytitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -348,11 +354,8 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     referer = oInputParameterHandler.getValue('referer')
-    dtype = oInputParameterHandler.getValue('data1')
-    dpost = oInputParameterHandler.getValue('data2')
-    dnum = oInputParameterHandler.getValue('data3')
+    pdata = oInputParameterHandler.getValue('pdata')
 
-    pdata = 'action=doo_player_ajax&post=' + dpost + '&nume=' + dnum + '&type=' + dtype
     oRequest = cRequestHandler(sUrl)
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
