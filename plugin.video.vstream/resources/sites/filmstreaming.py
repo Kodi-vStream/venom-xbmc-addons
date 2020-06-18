@@ -170,7 +170,6 @@ def showList():
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    VSlog(str(sUrl)) #Commenter ou supprimer cette ligne une fois fini
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
