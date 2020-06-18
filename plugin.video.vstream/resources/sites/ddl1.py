@@ -641,10 +641,16 @@ def Display_protected_link():
     # fh.close()
 
     oParser = cParser()
-    sPattern = '<h4>Vos liens prot.+?<a href="([^"]+)"'
+    sPattern = '<li style="list-style-type.+?<a href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     sHosterUrl = base64.b64decode(Unquote(aResult[1][0].split('?url=')[1]))
     sTitle = sMovieTitle.replace('- Saison ', ' S')
+
+    try:
+    	sHosterUrl = sHosterUrl.decode('utf-8')
+    except:
+    	pass
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
     if (oHoster != False):
@@ -653,7 +659,6 @@ def Display_protected_link():
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
-
 
 def GetLink(sHtmlContent):
     oParser = cParser()
