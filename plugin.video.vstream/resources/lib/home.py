@@ -297,7 +297,7 @@ class cHome:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'SERIE_DRAMAS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (addons.VSlang(30121), 'Dramas'), 'vostfr.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (addons.VSlang(30121), 'Dramas'), 'dramas.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'SERIE_SERIES')
