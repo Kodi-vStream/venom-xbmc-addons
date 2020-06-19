@@ -33,7 +33,7 @@ class cUtil:
 
     def CheckOccurence(self, str1, str2):
         ignoreListe = ['la', 'le', 'les', 'un', 'une', 'de', 'des', 'du', 'en', 'au', 'aux', 'the', 'in', 'mais', 'ou',
-                       'et', 'donc', 'or', 'ni', 'ne', 'pas', 'car' 'est']
+                       'et', 'donc', 'or', 'ni', 'ne', 'pas', 'car', 'on']
 
         str1 = str1.replace('+', ' ').replace('%20', ' ')
         str1 = str1.lower()
