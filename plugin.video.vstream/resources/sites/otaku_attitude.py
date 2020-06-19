@@ -11,6 +11,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
+from resources.lib.util import cUtil
 
 
 SITE_IDENTIFIER = 'otaku_attitude'
@@ -27,7 +28,7 @@ FUNCTION_SEARCH = 'showAnimes'
 ANIM_ANIMS = ('http://', 'load')
 ANIM_VOSTFRS = (URL_MAIN + 'liste-dl-animes.php', 'showAnimes')
 
-SERIE_SERIES = ('http://', 'load')
+SERIE_SERIES = (URL_MAIN + 'liste-dl-dramas.php', 'showAnimes')
 DRAMAS = (URL_MAIN + 'liste-dl-dramas.php', 'showAnimes')
 
 OST_ANIME =(True, 'showGenres')
@@ -133,6 +134,11 @@ def showAnimes(sSearch=''):
             sThumb = aEntry[1]
             sTitle = aEntry[2].replace('-...', '').replace('...', '').replace('!', ' !')
             sDesc = aEntry[3]
+
+            # filtre search
+            if sSearch and total > 5:
+                if cUtil().CheckOccurence(sSearch, sTitle) == 0:
+                    continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
