@@ -28,8 +28,7 @@ FUNCTION_SEARCH = 'showAnimes'
 ANIM_ANIMS = ('http://', 'load')
 ANIM_VOSTFRS = (URL_MAIN + 'liste-dl-animes.php', 'showAnimes')
 
-SERIE_SERIES = (URL_MAIN + 'liste-dl-dramas.php', 'showAnimes')
-DRAMAS = (URL_MAIN + 'liste-dl-dramas.php', 'showAnimes')
+SERIE_DRAMAS = (URL_MAIN + 'liste-dl-dramas.php', 'showAnimes')
 
 OST_ANIME =(True, 'showGenres')
 
@@ -50,8 +49,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS [1], 'Animés (VOSTFR)', 'animes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', DRAMAS[0])
-    oGui.addDir(SITE_IDENTIFIER, DRAMAS[1], 'Dramas (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_DRAMAS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_DRAMAS[1], 'Dramas (VOSTFR)', 'dramas.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', OST_ANIME[0])
