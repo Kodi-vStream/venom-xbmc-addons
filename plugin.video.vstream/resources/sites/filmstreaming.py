@@ -149,16 +149,13 @@ def AlphaSearch():
     oGui = cGui()
 
     for i in range(0, 27):
-
-        if (i < 1):
+        if (i == 0):
             sLetter = '0-9'
-            sUrl = URL_MAIN + 'letters/0-9/page/1/'
         else:
             sLetter = chr(64 + i)
-            sUrl = URL_MAIN + 'letters/' + sLetter + '/page/1/'
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'letters/' + sLetter + '/page/1/')
         oGui.addDir(SITE_IDENTIFIER, 'showList', 'Lettre [COLOR coral]' + sLetter + '[/COLOR]', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
