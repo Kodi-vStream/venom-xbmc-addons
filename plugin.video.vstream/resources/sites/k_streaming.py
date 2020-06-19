@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress
 import re
 
 SITE_IDENTIFIER = 'k_streaming'
@@ -34,7 +34,7 @@ SERIE_SERIES = ('http://', 'showMenuSeries')
 SERIE_NEWS = (URL_MAIN + '/series/', 'showMovies')
 SERIE_GENRES = (SERIE_NEWS[0], 'showGenres')
 SERIE_ANNEES = (True, 'showSeriesYears')
-SERIE_LIST = (URL_MAIN + '/series/', 'showAlpha')
+SERIE_LIST = (URL_MAIN + '/series', 'showAlpha')
 
 
 def load():
@@ -154,42 +154,43 @@ def showAlpha():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
-    liste.append(['0', sUrl + '/alphabet/0'])
-    liste.append(['1', sUrl + '/alphabet/1'])
-    liste.append(['2', sUrl + '/alphabet/2'])
-    liste.append(['3', sUrl + '/alphabet/3'])
-    liste.append(['4', sUrl + '/alphabet/4'])
-    liste.append(['5', sUrl + '/alphabet/5'])
-    liste.append(['6', sUrl + '/alphabet/6'])
-    liste.append(['7', sUrl + '/alphabet/7'])
-    liste.append(['8', sUrl + '/alphabet/8'])
-    liste.append(['9', sUrl + '/alphabet/9'])
-    liste.append(['A', sUrl + '/alphabet/A'])
-    liste.append(['B', sUrl + '/alphabet/B'])
-    liste.append(['C', sUrl + '/alphabet/C'])
-    liste.append(['D', sUrl + '/alphabet/D'])
-    liste.append(['E', sUrl + '/alphabet/E'])
-    liste.append(['F', sUrl + '/alphabet/F'])
-    liste.append(['G', sUrl + '/alphabet/G'])
-    liste.append(['H', sUrl + '/alphabet/H'])
-    liste.append(['I', sUrl + '/alphabet/I'])
-    liste.append(['J', sUrl + '/alphabet/J'])
-    liste.append(['K', sUrl + '/alphabet/K'])
-    liste.append(['L', sUrl + '/alphabet/L'])
-    liste.append(['M', sUrl + '/alphabet/M'])
-    liste.append(['N', sUrl + '/alphabet/N'])
-    liste.append(['O', sUrl + '/alphabet/O'])
-    liste.append(['P', sUrl + '/alphabet/P'])
-    liste.append(['Q', sUrl + '/alphabet/Q'])
-    liste.append(['R', sUrl + '/alphabet/R'])
-    liste.append(['S', sUrl + '/alphabet/S'])
-    liste.append(['T', sUrl + '/alphabet/T'])
-    liste.append(['U', sUrl + '/alphabet/U'])
-    liste.append(['V', sUrl + '/alphabet/V'])
-    liste.append(['W', sUrl + '/alphabet/W'])
-    liste.append(['X', sUrl + '/alphabet/X'])
-    liste.append(['Y', sUrl + '/alphabet/Y'])
-    liste.append(['Z', sUrl + '/alphabet/Z'])
+    # on impose le /1 en bout d'url, pb de nextPage
+    liste.append(['0', sUrl + '/alphabet/0/1'])
+    liste.append(['1', sUrl + '/alphabet/1/1'])
+    liste.append(['2', sUrl + '/alphabet/2/1'])
+    liste.append(['3', sUrl + '/alphabet/3/1'])
+    liste.append(['4', sUrl + '/alphabet/4/1'])
+    liste.append(['5', sUrl + '/alphabet/5/1'])
+    liste.append(['6', sUrl + '/alphabet/6/1'])
+    liste.append(['7', sUrl + '/alphabet/7/1'])
+    liste.append(['8', sUrl + '/alphabet/8/1'])
+    liste.append(['9', sUrl + '/alphabet/9/1'])
+    liste.append(['A', sUrl + '/alphabet/A/1'])
+    liste.append(['B', sUrl + '/alphabet/B/1'])
+    liste.append(['C', sUrl + '/alphabet/C/1'])
+    liste.append(['D', sUrl + '/alphabet/D/1'])
+    liste.append(['E', sUrl + '/alphabet/E/1'])
+    liste.append(['F', sUrl + '/alphabet/F/1'])
+    liste.append(['G', sUrl + '/alphabet/G/1'])
+    liste.append(['H', sUrl + '/alphabet/H/1'])
+    liste.append(['I', sUrl + '/alphabet/I/1'])
+    liste.append(['J', sUrl + '/alphabet/J/1'])
+    liste.append(['K', sUrl + '/alphabet/K/1'])
+    liste.append(['L', sUrl + '/alphabet/L/1'])
+    liste.append(['M', sUrl + '/alphabet/M/1'])
+    liste.append(['N', sUrl + '/alphabet/N/1'])
+    liste.append(['O', sUrl + '/alphabet/O/1'])
+    liste.append(['P', sUrl + '/alphabet/P/1'])
+    liste.append(['Q', sUrl + '/alphabet/Q/1'])
+    liste.append(['R', sUrl + '/alphabet/R/1'])
+    liste.append(['S', sUrl + '/alphabet/S/1'])
+    liste.append(['T', sUrl + '/alphabet/T/1'])
+    liste.append(['U', sUrl + '/alphabet/U/1'])
+    liste.append(['V', sUrl + '/alphabet/V/1'])
+    liste.append(['W', sUrl + '/alphabet/W/1'])
+    liste.append(['X', sUrl + '/alphabet/X/1'])
+    liste.append(['Y', sUrl + '/alphabet/Y/1'])
+    liste.append(['Z', sUrl + '/alphabet/Z/1'])
 
     for sTitle, sUrl in liste:
 
@@ -230,7 +231,6 @@ def showMovies(sSearch=''):
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-
     if sSearch:
         sUrl = sSearch.replace(' ', '%20')
 
@@ -280,6 +280,7 @@ def showMovies(sSearch=''):
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.findall('([0-9]+)', sNextPage)[-1]
