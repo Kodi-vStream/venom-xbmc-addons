@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
-import unicodedata
+# import unicodedata
 
 from resources.lib.comaddon import progress
 from resources.lib.gui.gui import cGui
@@ -132,24 +132,24 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            try:
-                # encode/decode pour affichage des accents en python 2
-                sTitle = unicode(aEntry[1], 'utf-8')
-                sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode('unicode_escape')
-                sTitle = sTitle.encode('latin-1')
-            except NameError:
-                sTitle = aEntry[1]
+            # Pas sure que ce soit utile, fonctionne sans...
+            # try:  # encode/decode pour affichage des accents en python 2
+                # sTitle = unicode(aEntry[1], 'utf-8')
+                # sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode('unicode_escape')
+                # sTitle = sTitle.encode('latin-1')
+            # except NameError:
+                # sTitle = aEntry[1]
 
             # Nettoyage du titre
-            sTitle = sTitle.replace(' en streaming', '').replace('- Sasion', ' Saison')
+            sTitle = aEntry[1].replace(' en streaming', '').replace('- Sasion', ' Saison')
             if sTitle.startswith('Film'):
                 sTitle = sTitle.replace('Film ', '')
 
             sUrl = URL_MAIN[:-1] + aEntry[0]
             sThumb = URL_MAIN[:-1] + aEntry[2]
 
-            # tris search
-            if sSearch and total > 3:
+            # filtre search
+            if sSearch and total > 5:
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
                     continue
 
