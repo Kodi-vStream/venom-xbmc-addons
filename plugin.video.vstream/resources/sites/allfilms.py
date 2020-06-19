@@ -16,13 +16,14 @@ SITE_NAME = 'All Films'
 SITE_DESC = 'Films'
 
 URL_MAIN = 'https://www.allfilms.net/'
+# URL_MAIN = 'https://voir.allfilms.co/'  # clone
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + 'recherche-', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 
-MOVIE_MOVIE = (True, 'showMoviesMenu')
+MOVIE_MOVIE = (True, 'load')
 MOVIE_NEWS = (URL_MAIN + 'films-1.html', 'showMovies')
 MOVIE_GENRES = (URL_MAIN , 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
@@ -34,16 +35,6 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
-
-def showMoviesMenu():
-    oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
@@ -175,7 +166,6 @@ def showMovies(sSearch=''):
                 number = int(aResult[1][0]) + 1
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', re.sub('-(\d+).html', '-' + str(number) + '.html', sUrl))
-                oOutputParameterHandler.addParameter('number', number)
 
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(number) + ' >>>[/COLOR]', oOutputParameterHandler)
 
