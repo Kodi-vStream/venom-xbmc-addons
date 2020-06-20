@@ -12,10 +12,8 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.parser import cParser
 
-sColor = addon().getSetting('deco_color')
-
 SITE_IDENTIFIER = 'siteonefichier'
-SITE_NAME = '[COLOR %s]%s[/COLOR] [COLOR %s](%s)[/COLOR]' % ('dodgerblue', 'Compte1fichier', sColor, 'beta')
+SITE_NAME = '[COLOR %s]%s[/COLOR]' % ('dodgerblue', 'Compte1fichier')
 
 SITE_DESC = 'Fichiers sur compte 1Fichier'
 URL_MAIN = 'https://1fichier.com/'
@@ -108,9 +106,9 @@ def showHosters():
     sCode = oInputParameterHandler.getValue('sCode')
 
     oPremiumHandler = cPremiumHandler('onefichier')
-    sHtmlContent = oPremiumHandler.GetHtml(sUrl,'selected%5B%5D=' + sCode)
+    sHtmlContent = oPremiumHandler.GetHtml(sUrl, 'selected%5B%5D=' + sCode)
 
-    sPattern = '<a href="([^"]+)">(.+?)<\/a><\/td>'
+    sPattern = '<a href="([^"]+)">(.+?)</a></td>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sHosterUrl = aResult[1][0][0]
