@@ -220,9 +220,9 @@
 
         <setting visible="false" id="plugin_zone_telechargement_ws" type="bool" label="Zone Téléchargement.ws" default="true"/>
 
-        <setting visible="false" id="plugin_zonefilms" type="bool" label="Zone Films" default="false"/>
+        <setting visible="false" id="plugin_zonefilms" type="bool" label="Zone Films" default="true"/>
 
-        <setting visible="false" id="plugin_zonefilms_co" type="bool" label="Zone Films.co" default="false"/>
+        <setting visible="false" id="plugin_zonefilms_co" type="bool" label="Zone Films.co" default="true"/>
 
         <setting visible="false" id="plugin_zt_stream" type="bool" label="Zone Téléchargement Stream" default="true"/>
 
