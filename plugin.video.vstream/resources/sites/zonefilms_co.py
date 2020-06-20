@@ -8,9 +8,7 @@ from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.multihost import cJheberg
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'zonefilms_co'
 SITE_NAME = 'Zone Films.co'
@@ -125,29 +123,6 @@ def showGenres():
     oGui.setEndOfDirectory()
 
 
-def showList():
-    oGui = cGui()
-
-    liste = []
-    liste.append(['0-9', URL_MAIN + 'category/series-tv/0-9/'])
-    liste.append(['A-B-C', URL_MAIN + 'category/series-tv/a-b-c/'])
-    liste.append(['D-E-F', URL_MAIN + 'category/series-tv/d-e-f/'])
-    liste.append(['G-H-I', URL_MAIN + 'category/series-tv/g-h-i/'])
-    liste.append(['J-K-L', URL_MAIN + 'category/series-tv/j-k-l/'])
-    liste.append(['M-N-O', URL_MAIN + 'category/series-tv/m-n-o/'])
-    liste.append(['P-Q-R', URL_MAIN + 'category/series-tv/p-q-r/'])
-    liste.append(['S-T-U', URL_MAIN + 'category/series-tv/s-t-u/'])
-    liste.append(['V-W-X-Y-Z', URL_MAIN + 'category/series-tv/v-w-x-y-z/'])
-
-    for sTitle, sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettres [COLOR coral]' + sTitle + '[/COLOR]', 'az.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
-
 def showMovies(sSearch=''):
     oGui = cGui()
     if sSearch:
@@ -177,11 +152,6 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            # Si recherche et trop de resultat, on filtre
-            if sSearch and total > 5:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[1]) == 0:
-                    continue
-
             sThumb = aEntry[0]
             sTitle = aEntry[1]
             sUrl1 = aEntry[2]
@@ -189,9 +159,6 @@ def showMovies(sSearch=''):
             sLang = aEntry[4]
 
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
-            # on retire la qualité
-            # sTitle = re.sub('\[\w+]', '', sTitle)
-            # sTitle = re.sub('\[\w+ \w+]', '', sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl1)
@@ -237,7 +204,7 @@ def showSaisons():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    # récupération du Synopsis plus complet que dans showmovies
+    # récupération du Synopsis
     sDesc = ''
     try:
         sPattern = '<p id="Synopsisi">(.+?)</p>'
