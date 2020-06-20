@@ -162,9 +162,8 @@ def showFile():
                     oOutputParameterHandler = cOutputParameterHandler()
 
                     sOffset = int(sOffset) + 100
-                    API_URL = API_URL.replace('none', sToken).replace('offset=0', 'offset=' + str(sOffset))
 
-                    oOutputParameterHandler.addParameter('siteUrl', API_URL)
+                    oOutputParameterHandler.addParameter('siteUrl', API_URL.replace('none', sToken).replace('offset=0', 'offset=' + str(sOffset)))
                     oOutputParameterHandler.addParameter('sToken', sToken)
                     oOutputParameterHandler.addParameter('sNext', sNext)
                     oOutputParameterHandler.addParameter('sOffset', sOffset)
