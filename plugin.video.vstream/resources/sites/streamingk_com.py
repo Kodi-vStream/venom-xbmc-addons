@@ -3,13 +3,14 @@
 import re
 import unicodedata
 
-from resources.lib.comaddon import progress  # , VSlog
+from resources.lib.comaddon import progress
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.multihost import cJheberg
+from resources.lib.multihost import cMultiup
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
@@ -247,10 +248,11 @@ def showMovies(sSearch=''):
                 sTitle = sUrl1.rsplit('/', 2)[1]
                 sTitle = sTitle.replace('-streaming-telecharger', '').replace('-', ' ')
 
-            sTitle = sTitle.replace(' [Streaming]', '')
+            sTitle = sTitle.replace(' - Saison', ' Saison').replace(' [Streaming]', '')
             sTitle = sTitle.replace(' [Telecharger]', '').replace(' [Telechargement]', '')
 
             sDisplayTitle = sTitle
+
             # on retire la qualité
             sTitle = re.sub('\[\w+]', '', sTitle)
             sTitle = re.sub('\[\w+ \w+]', '', sTitle)
@@ -362,12 +364,12 @@ def showSeries(sLoop=False):
                 HOST = re.search('a href="https*:\/\/([^.]+)', sUrl)
                 if SXXEX:
                     # on vire le double affichage des saisons
-                    sTitle = re.sub(' - Saison \d+', '', sMovieTitle) + ' ' + SXXEX.group(1)
+                    sTitle = re.sub(' Saison \d+', '', sMovieTitle) + ' ' + SXXEX.group(1)
                     if HOST:
+                        HOST = HOST.group(1).split('/')[0]
                         # Fake
                         if 'stream20' in HOST or 'azerstreaming' in HOST:
                             continue
-                        HOST = HOST.group(1).split('/')[0]
                         sDisplayTitle = sTitle + ' [COLOR coral]' + HOST.capitalize() + '[/COLOR]'
                 else:
                     sTitle = sMovieTitle + ' ' + aEntry[1].replace(' New', '')
@@ -428,7 +430,6 @@ def showHosters(sLoop=False):
                     if (aResult[0] == True):
                         for aEntry in aResult[1]:
                             sHosterUrl = aEntry
-
                             oHoster = cHosterGui().checkHoster(sHosterUrl)
                             if (oHoster != False):
                                 oHoster.setDisplayName(sMovieTitle)
@@ -441,7 +442,6 @@ def showHosters(sLoop=False):
                     if aResult:
                         for aEntry in aResult:
                             sHosterUrl = aEntry
-
                             oHoster = cHosterGui().checkHoster(sHosterUrl)
                             if (oHoster != False):
                                 oHoster.setDisplayName(sMovieTitle)
@@ -486,7 +486,18 @@ def serieHosters():
                 if (aResult[0] == True):
                     for aEntry in aResult[1]:
                         sHosterUrl = aEntry
+                        oHoster = cHosterGui().checkHoster(sHosterUrl)
+                        if (oHoster != False):
+                            oHoster.setDisplayName(sMovieTitle)
+                            oHoster.setFileName(sMovieTitle)
+                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
+            # pour récuperer les liens multiup
+            elif 'multiup' in sHosterUrl:
+                aResult = cMultiup().GetUrls(sHosterUrl)
+                if aResult:
+                    for aEntry in aResult:
+                        sHosterUrl = aEntry
                         oHoster = cHosterGui().checkHoster(sHosterUrl)
                         if (oHoster != False):
                             oHoster.setDisplayName(sMovieTitle)
