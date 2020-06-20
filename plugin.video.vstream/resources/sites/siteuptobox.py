@@ -25,8 +25,8 @@ from resources.lib.parser import cParser
 from resources.lib.util import Quote
 
 SITE_IDENTIFIER = 'siteuptobox'
-SITE_NAME = '[COLOR dodgerblue]' + 'CompteUptobox' + '[/COLOR]'
-SITE_DESC = 'Fichiers sur compte Uptobox'
+SITE_NAME = '[COLOR dodgerblue]Compte UpToBox[/COLOR]'
+SITE_DESC = 'Fichiers sur compte UpToBox'
 URL_MAIN = 'https://uptobox.com/'
 BURL = URL_MAIN + '?op=my_files'
 API_URL = 'https://uptobox.com/api/user/files?token=none&orderBy=file_created&dir=desc&offset=0&limit=100&path='
@@ -207,7 +207,7 @@ def UptomyAccount():
         if UPurl.startswith('//'):
             UPurl = 'https:' + UPurl
 
-        fields = {'urls':'["' + sMediaUrl + '"]'}
+        fields = {'urls': '["' + sMediaUrl + '"]'}
         mpartdata = MPencode(fields)
 
         req = urllib2.Request(UPurl, mpartdata[1], headers)
