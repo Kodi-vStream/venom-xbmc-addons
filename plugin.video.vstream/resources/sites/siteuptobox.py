@@ -93,7 +93,7 @@ def showFile():
     if (oInputParameterHandler.exist('sFoldername')):
         sFoldername = oInputParameterHandler.getValue('sFoldername')
         sUrl = sUrl + Quote(sFoldername).replace('//', '%2F%2F')
-        # VSlog('folder   ' +str(sUrl))
+        # VSlog('folder   ' + str(sUrl))
 
     sPath = ''
     if (oInputParameterHandler.exist('sPath')):
@@ -162,8 +162,9 @@ def showFile():
                     oOutputParameterHandler = cOutputParameterHandler()
 
                     sOffset = int(sOffset) + 100
+                    API_URL = API_URL.replace('none', sToken).replace('offset=0', 'offset=' + str(sOffset))
 
-                    oOutputParameterHandler.addParameter('siteUrl', API_URL.replace('none', sToken).replace('offset=0', 'offset=' + str(sOffset)))
+                    oOutputParameterHandler.addParameter('siteUrl', API_URL)
                     oOutputParameterHandler.addParameter('sToken', sToken)
                     oOutputParameterHandler.addParameter('sNext', sNext)
                     oOutputParameterHandler.addParameter('sOffset', sOffset)
@@ -202,15 +203,15 @@ def UptomyAccount():
 
     aResult = re.search('<form id="fileupload" action="([^"]+)"', sHtmlContent, re.DOTALL)
     if (aResult):
-        UPurl = aResult.group(1).replace('upload?', 'remote?')
+        upUrl = aResult.group(1).replace('upload?', 'remote?')
 
-        if UPurl.startswith('//'):
-            UPurl = 'https:' + UPurl
+        if upUrl.startswith('//'):
+            upUrl = 'https:' + upUrl
 
         fields = {'urls': '["' + sMediaUrl + '"]'}
         mpartdata = MPencode(fields)
 
-        req = urllib2.Request(UPurl, mpartdata[1], headers)
+        req = urllib2.Request(upUrl, mpartdata[1], headers)
         req.add_header('Content-Type', mpartdata[0].replace(',', ';'))
         req.add_header('Cookie', cookies)
         req.add_header('Content-Length', len(mpartdata[1]))
