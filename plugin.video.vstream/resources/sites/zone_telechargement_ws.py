@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.gui.hoster import cHosterGui
+import random
+import re
+import string
+
+from resources.lib.comaddon import progress, dialog, VSlog, addon
 from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, dialog, VSlog, addon
-
 # Fonction de vStream qui remplace urllib.quote, pour simplifier le passage en python 3
 from resources.lib.util import Quote, cUtil
-
-import re, string, random
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 headers = {'User-Agent': UA}
@@ -54,7 +55,7 @@ def GetURL_MAIN():
         # si pas de zt dans settings on récup l'url une fois dans le site
         if not ADDON.getSetting('ZT') and not (Sources == 'callpluging' or Sources == 'globalSources' or Sources == 'search'):
             oRequestHandler = cRequestHandler(URL_HOST)
-            sHtmlContent = oRequestHandler.request()
+            # sHtmlContent = oRequestHandler.request()
             MemorisedHost = oRequestHandler.getRealUrl()
             if MemorisedHost is not None and MemorisedHost != '':
                 if not 'cf_chl_jschl_tk' in MemorisedHost:
@@ -62,7 +63,7 @@ def GetURL_MAIN():
                     VSlog("ZT url vide  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('ZT'))
             else:
                 ADDON.setSetting('ZT', URL_HOST)
-                VSlog("Url non changer car egal a None le site peux etre surchager utilisation de >> ADDON.getSetting('ZT')")
+                VSlog("Url non changer car egal a None le site peux etre surcharger utilisation de >> ADDON.getSetting('ZT')")
 
             return ADDON.getSetting('ZT')
         else:
@@ -74,7 +75,7 @@ URL_MAIN = GetURL_MAIN()
 
 URL_SEARCH = (URL_MAIN + 'engine/ajax/controller.php?mod=filter&q=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + 'engine/ajax/controller.php?mod=filter&q=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN  + 'engine/ajax/controller.php?mod=filter&q=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'engine/ajax/controller.php?mod=filter&q=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN + 'top-films/', 'showMovies')  # films (derniers ajouts)
@@ -91,7 +92,7 @@ MOVIE_TS_CAM = (URL_MAIN + 'tscam-films-2020/', 'showMovies')
 MOVIE_VFSTFR = (URL_MAIN + 'film-vfstfr/', 'showMovies')
 MOVIE_MKV = (URL_MAIN + 'film-mkv/', 'showMovies')
 MOVIE_VO = (URL_MAIN + 'films-vo/', 'showMovies')
-MOVIE_INTEGRAL = (URL_MAIN + 'collections-films-integrale/','showMovies')
+MOVIE_INTEGRAL = (URL_MAIN + 'collections-films-integrale/', 'showMovies')
 
 SERIE_SERIES = ('http://', 'showMenuSeries')
 SERIE_VFS = (URL_MAIN + 'serie-vf/', 'showMovies')
@@ -439,14 +440,16 @@ def showMovies(sSearch=''):
             if (aResult[0] == True):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', re.sub('cstart=(\d+)', 'cstart=' + str(aResult[1][0]), sUrl))
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+                number = re.search('([0-9]+)', aResult[1][0]).group(1)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
         else:
             sNextPage = __checkForNextPage(sHtmlContent)
             if (sNextPage != False):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+                number = re.search('/page/([0-9]+)', sNextPage).group(1)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -488,7 +491,7 @@ def showMoviesLinks():
     sDesc = ''
     sYear = ''
     try:
-        sPattern = '(<u>Date de .+<\/u>.+(\d{4}(-| *<))|<u>Critiques.+?<\/u>).+synopsis.+?>(.+?)<\/div>'
+        sPattern = '(<u>Date de .+</u>.+(\d{4}(-| *<))|<u>Critiques.+?</u>).+synopsis.+?>(.+?)</div>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             aEntry = aResult[1][0]
@@ -507,7 +510,7 @@ def showMoviesLinks():
     oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     # on regarde si dispo dans d'autres qualités
-    sPattern = '<a href="([^"]+)"><span class="otherquality"><span style="color:#.{6}"><b>([^<]+)<\/b><\/span><span style="color:#.{6}"><b>([^<]+)<\/b><\/span>'
+    sPattern = '<a href="([^"]+)"><span class="otherquality"><span style="color:#.{6}"><b>([^<]+)</b></span><span style="color:#.{6}"><b>([^<]+)</b></span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -557,7 +560,7 @@ def showSeriesLinks():
     # récupération du Synopsis
     sDesc = sMovieTitle   # Ne pas laisser vide sinon un texte automatique faux va être calculé
     try:
-        sPattern = 'synopsis.+(alt="">|<!--dle_image_end-->)(.+?)<\/div>'
+        sPattern = 'synopsis.+(alt="">|<!--dle_image_end-->)(.+?)</div>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = cUtil().removeHtmlTags(aResult[1][0][1])
@@ -586,7 +589,7 @@ def showSeriesLinks():
 
     # on regarde si dispo dans d'autres qualités
     sHtmlContent1 = CutQual(sHtmlContent)
-    sPattern1 = '<a href="([^"]+)"><span class="otherquality"><span style="color:#.{6}"><b>([^<]+)<\/b><\/span><span style="color:#.{6}"><b>([^<]+)<\/b><\/span>'
+    sPattern1 = 'href="([^"]+)"><span class="otherquality"><span style="color:#.{6}"><b>([^<]+)</b></span><span style="color:#.{6}"><b>([^<]+)'
     aResult1 = oParser.parse(sHtmlContent1, sPattern1)
 
     if (aResult1[0] == True):
@@ -618,7 +621,7 @@ def showSeriesLinks():
     # Une ligne par saison, pas besoin d'afficher les qualités ici
     saisons = []
     sHtmlContent2 = CutSais(sHtmlContent)
-    sPattern2 = '<a href="([^"]+)"><span class="otherquality">([^<]+)<b>([^<]+)<span style="color:#.{6}">([^<]+)<\/span><span style="color:#.{6}">([^<]+)<\/b><\/span>'
+    sPattern2 = 'href="([^"]+)"><span class="otherquality">([^<]+)<b>([^<]+)<span style="color:#.{6}">([^<]+)</span><span style="color:#.{6}">([^<]+)'
     aResult2 = oParser.parse(sHtmlContent2, sPattern2)
 
     # Affichage du texte
@@ -668,7 +671,7 @@ def showHosters():
 
     oParser = cParser()
 
-    sPattern = '<font color=red>([^<]+?)<\/font>|<b><div style=".+?">([^<]+)<\/div>.+?<a class="btnToLink".+?href="([^"]+)">([^<]+)<\/a><\/b>'
+    sPattern = '<font color=red>([^<]+?)</font>|<b><div style=".+?">([^<]+)</div>.+?class="btnToLink".+?href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -759,20 +762,18 @@ def Display_protected_link():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    baseUrl = oInputParameterHandler.getValue('baseUrl')
+    # baseUrl = oInputParameterHandler.getValue('baseUrl')
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     # Ne marche pas
     if (False):
-        code = {
-                '123455600123455602123455610123455615': 'http://uptobox.com/',
+        code = {'123455600123455602123455610123455615': 'http://uptobox.com/',
                 '1234556001234556071234556111234556153': 'http://turbobit.net/',
                 '123455600123455605123455615': 'http://ul.to/',
                 '123455600123455608123455610123455615': 'http://nitroflare.com/',
                 '123455601123455603123455610123455615123455617': 'https://1fichier.com/?',
-                '123455600123455606123455611123455615': 'http://rapidgator.net/'
-                }
+                '123455600123455606123455611123455615': 'http://rapidgator.net/'}
 
         for k in code:
             match = re.search(k + '(.+)$', sUrl)
@@ -797,7 +798,7 @@ def Display_protected_link():
             if sHtmlContent.startswith('http'):
                 aResult_dlprotecte = (True, [sHtmlContent])
             else:
-                sPattern_dlprotecte = '<div class="alert alert-primary".+?\s*<a href="(.+?)">'
+                sPattern_dlprotecte = '<div class="alert alert-primary".+?href="(.+?)"'
                 aResult_dlprotecte = oParser.parse(sHtmlContent, sPattern_dlprotecte)
 
         else:
@@ -885,7 +886,7 @@ def DecryptDlProtecte(url):
     # Cookie = oRequestHandler.GetCookies()
 
     oParser = cParser()
-    sPattern = '<form action="(.+?)".+?<input type="hidden" name="_token" value="(.+?)">.+?<input type="hidden" value="(.+?)".+?>'
+    sPattern = '<form action="(.+?)".+?type="hidden" name="_token" value="(.+?)">.+?<input type="hidden" value="(.+?)"'
     result = oParser.parse(sHtmlContent, sPattern)
 
     if (result[0]):
