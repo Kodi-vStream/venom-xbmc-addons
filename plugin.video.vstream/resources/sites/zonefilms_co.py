@@ -24,8 +24,8 @@ SERIE_SERIES = (True, 'showSeriesMenu')
 SERIE_NEWS = (URL_MAIN + 'liste-series', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + 'rechercher/', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 
