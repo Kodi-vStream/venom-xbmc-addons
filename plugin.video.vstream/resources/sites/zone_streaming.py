@@ -2,6 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 import re
+import json
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -9,7 +10,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress  # , VSlog
 
 SITE_IDENTIFIER = 'zone_streaming'
 SITE_NAME = 'Zone Streaming'
@@ -300,12 +301,44 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = aEntry
+            if 'videoseries?list=' in aEntry:
 
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                idList = aEntry.replace('https://www.youtube-nocookie.com/embed/videoseries?list=', '')\
+                               .replace('&cc_load_policy=1', '')
+
+                sUrl = 'https://www.youtube-nocookie.com/list_ajax?style=json&action_get_list=1&list=' + idList
+                oRequestHandler = cRequestHandler(sUrl)
+                sHtmlContent = oRequestHandler.request()
+
+                fh = open('c:\\test.txt', "w")
+                fh.write(sHtmlContent)
+                fh.close()
+
+                page = json.loads(sHtmlContent)
+                List_video = page["video"]
+                for i in List_video:
+                    # VSlog(i["encrypted_id"])
+                    # VSlog(i["thumbnail"])
+                    # VSlog(i["title"])
+
+                    sUrl = 'https://www.youtube.com/watch?v='
+                    sHosterUrl = sUrl + i["encrypted_id"]
+                    sThumb = i["thumbnail"]
+                    sTitle = i["title"].encode('utf-8').replace('EP.', 'E').replace('Ep. ', 'E').replace('Ep ', 'E')
+                    sTitle = sTitle.replace('|', '-')
+
+                    oHoster = cHosterGui().checkHoster(sHosterUrl)
+                    if (oHoster != False):
+                        oHoster.setDisplayName(sTitle)
+                        oHoster.setFileName(sTitle)
+                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+            else:
+                sHosterUrl = aEntry
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
