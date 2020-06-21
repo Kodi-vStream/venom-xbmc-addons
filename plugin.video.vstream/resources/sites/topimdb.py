@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Venom.mino60.TmpName
 
 import re
@@ -23,10 +23,6 @@ POSTER_URL = 'https://ia.media-imdb.com/images/m/'
 FANART_URL = 'https://ia.media-.imdb.com/images/m/'
 # FANART_URL = 'https://image.tmdb.org/t/p/w780/'
 # FANART_URL = 'https://image.tmdb.org/t/p/original/'
-
-# URL_SEARCH = (URL_MAIN + '/find?ref_=nv_sr_fn&s=all&q=', 'showMovies')
-# URL_SEARCH = (URL_MAIN + '/find?ref_=nv_sr_fn&q=&s=tt', 'showMovies')
-# FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_WORLD = (URL_MAIN + 'search/title?groups=top_1000&sort=user_rating,desc&start=1', 'showMovies')
 MOVIE_TOP250 = (URL_MAIN + 'search/title?count=100&groups=top_250', 'showMovies')
@@ -71,27 +67,8 @@ def unescape(text):
     return re.sub("&#?\w+;", fixup, text)
 
 
-# def showSearch():
-    # oGui = cGui()
-
-    # sSearchText = oGui.showKeyBoard()
-    # if (sSearchText != False):
-        # sSearchText = cUtil().urlEncode(sSearchText)
-        # sUrl = URL_MAIN + 'search/title?groups=top_1000&sort=user_rating,desc&start=%s' + sSearchText
-        # sUrl = URL_SEARCH[0] + sSearchText
-
-        # showMovies(sUrl)
-        # oGui.setEndOfDirectory()
-        # return
-
-
 def load():
     oGui = cGui()
-
-    # inutile
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    # oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Film', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_WORLD[0])
@@ -152,10 +129,10 @@ def load():
     oGui.setEndOfDirectory()
 
 
-def showMovies(sSearch='', page=1):
+def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
-    bGlobal_Search = False
+    # bGlobal_Search = False
 
     oInputParameterHandler = cInputParameterHandler()
     if sSearch:
@@ -169,7 +146,7 @@ def showMovies(sSearch='', page=1):
     oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'lister-item-image.+?alt="([^"]+)".+?loadlate="([^"]+)".+?lister-item-index.+?>([^<]+)<.+?lister-item-year.+?>([^<]+).+?(?:|Users rated this(.+?)\s.+?)text-muted">([^<]+)'
+    sPattern = 'item-image.+?alt="([^"]+).+?loadlate="([^"]+).+?index.+?>([^<]+).+?year.+?>([^<]+).+?(?:|rated this(.+?)\s.+?)muted">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -180,25 +157,18 @@ def showMovies(sSearch='', page=1):
             if progress_.iscanceled():
                 break
 
-            sTitle = unicode(aEntry[0], 'utf-8')  # converti en unicode
-            sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')  # vire accent
+            # sTitle = unicode(aEntry[0], 'utf-8')  # converti en unicode
+            # sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')  # vire accent
             # sTitle = unescape(str(aEntry[1]))
             # sTitle = sTitle.encode( "utf-8")
 
             sTitle = ('%s %s [COLOR fuchsia]%s[/COLOR]') % (aEntry[2], aEntry[0], aEntry[4])
-            sMovieTitle = re.sub('(\[.*\])', '', sTitle)
-            sMovieTitle = re.sub(r'[^a-z -]', ' ', sMovieTitle)
-            # sTitle2 = re.sub('(.*)(\[.*\])','\\1 [COLOR orange]\\2[/COLOR]', sTitle)
             sThumb = aEntry[1].replace('UX67', 'UX328').replace('UY98', 'UY492').replace('67', '0').replace('98', '0')
             sYear = re.search('([0-9]{4})', aEntry[3]).group(1)
             sDesc = aEntry[5]
 
-            # sCom = unicode(aEntry[3], 'utf-8')#converti en unicode
-            # sCom = unicodedata.normalize('NFD', sCom).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
-            # sCom = unescape(sCom)
-
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', ('none'))
+            oOutputParameterHandler.addParameter('siteUrl', 'none')
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sYear', sYear)
             oOutputParameterHandler.addParameter('searchtext', showTitle(str(aEntry[0]), str('none')))
@@ -218,7 +188,7 @@ def showMovies(sSearch='', page=1):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<a\shref="([^"]+?)"class="lister-page-next'
+    sPattern = 'href="([^"]+?)"class="lister-page-next'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -236,9 +206,6 @@ def showTitle(sMovieTitle, sUrl):
         sExtraTitle = sUrl.split('|')[1]
         sMovieTitle = sUrl.split('|')[0]
 
-    # nettoyage du nom pr la recherche
-    # print 'avant ' + sMovieTitle
-
     # ancien decodage
     sMovieTitle = unicode(sMovieTitle, 'utf-8')  # converti en unicode pour aider aux convertions
     sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'ignore').decode("unicode_escape")  # vire accent et '\'
@@ -249,11 +216,10 @@ def showTitle(sMovieTitle, sUrl):
 
     # modif venom si le titre comporte un - il doit le chercher
     sMovieTitle = re.sub(r'[^a-z -]', ' ', sMovieTitle)  # vire les caracteres a la con qui peuvent trainer
-
     # sMovieTitle = re.sub('( |^)(le|la|les|du|au|a|l)( |$)', ' ', sMovieTitle)  # vire les articles
 
-    sMovieTitle = re.sub(' +', ' ', sMovieTitle)  # vire les espaces multiples et on laisse les espaces sans modifs car certains codent avec %20 d'autres avec +
-    # print 'apres ' + sMovieTitle
+    # vire les espaces multiples et on laisse les espaces sans modifs car certains codent avec %20 d'autres avec +
+    sMovieTitle = re.sub(' +', ' ', sMovieTitle)
     # modif ici
     if sExtraTitle:
         sMovieTitle = sMovieTitle.replace('%C3%A9', 'e').replace('%C3%A0', 'a')
