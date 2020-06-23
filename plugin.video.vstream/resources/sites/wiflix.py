@@ -114,7 +114,7 @@ def showGenres():
     oGui.setEndOfDirectory()
 
 
-def showMovies(sSearch = ''):
+def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
 
@@ -124,7 +124,7 @@ def showMovies(sSearch = ''):
         pdata = 'do=search&subaction=search&story=' + sUrl + '&titleonly=3&all_word_seach=1&catlist[]=1'
         
         oRequest = cRequestHandler(URL_SEARCH[0])
-        #oRequest.setRequestType(1)
+        # oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Referer', URL_MAIN)
         oRequest.addHeaderEntry('Origin', URL_MAIN)
@@ -135,9 +135,9 @@ def showMovies(sSearch = ''):
 
         sHtmlContent = oRequest.request()
         
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
+        # fh = open('c:\\test.txt', "w")
+        # fh.write(sHtmlContent)
+        # fh.close()
 
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -145,8 +145,8 @@ def showMovies(sSearch = ''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="mov clearfix">.+?<img *src="([^"]+)" *alt="([^"]+)".+?data-link="([^"]+)".+?class="nbloc1">([^<]+)<\/span.+?class="nbloc2">([^<]+)*<\/span'
-    sPattern += '.+?"ml-label">Date de sortie:</div> <div class="ml-desc"> (.+?)</div>.+?"ml-label">Synopsis:</div> <div class="ml-desc">(.+?)</div>'
+    sPattern = 'mov clearfix.+?src="([^"]+)" *alt="([^"]+).+?data-link="([^"]+).+?nbloc1">([^<]+).+?nbloc2">([^<]*)'
+    sPattern += '.+?ml-desc"> (.+?)</div.+?Synopsis:.+?ml-desc">(.+?)</div'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -163,7 +163,7 @@ def showMovies(sSearch = ''):
 
             sThumb = aEntry[0]
             sTitle = aEntry[1].replace(' wiflix', '')
-            sUrl =  aEntry[2]
+            sUrl = aEntry[2]
             sLang = aEntry[3]
             Squal = aEntry[4]
             sYear = aEntry[5]
@@ -173,18 +173,18 @@ def showMovies(sSearch = ''):
             # Nettoyage du titre
             sDesc = str(aEntry[6])
             sDesc = sDesc.replace('en streaming ', '')
-            sDesc = sDesc.replace('Regarder film ' + sTitle +';', '')
-            sDesc = sDesc.replace('Regarder film ' + sTitle +':', '')
-            sDesc = sDesc.replace('Voir film ' + sTitle +';', '')
-            sDesc = sDesc.replace('Voir film ' + sTitle +':', '')
-            sDesc = sDesc.replace('Voir Film ' + sTitle +':', '')
-            sDesc = sDesc.replace('Voir film ' + sTitle +' :', '')
-            sDesc = sDesc.replace('Regarder ' + sTitle +';', '')
-            sDesc = sDesc.replace('Regarder ' + sTitle +' :', '')
-            sDesc = sDesc.replace('Regarder ' + sTitle +':', '')
-            sDesc = sDesc.replace('voir ' + sTitle +';', '')
-            sDesc = sDesc.replace('voir ' + sTitle +':', '')
-            sDesc = sDesc.replace('Voir ' + sTitle +':', '')
+            sDesc = sDesc.replace('Regarder film ' + sTitle + ';', '')
+            sDesc = sDesc.replace('Regarder film ' + sTitle + ':', '')
+            sDesc = sDesc.replace('Voir film ' + sTitle + ';', '')
+            sDesc = sDesc.replace('Voir film ' + sTitle + ':', '')
+            sDesc = sDesc.replace('Voir Film ' + sTitle + ':', '')
+            sDesc = sDesc.replace('Voir film ' + sTitle + ' :', '')
+            sDesc = sDesc.replace('Regarder ' + sTitle + ';', '')
+            sDesc = sDesc.replace('Regarder ' + sTitle + ' :', '')
+            sDesc = sDesc.replace('Regarder ' + sTitle + ':', '')
+            sDesc = sDesc.replace('voir ' + sTitle + ';', '')
+            sDesc = sDesc.replace('voir ' + sTitle + ':', '')
+            sDesc = sDesc.replace('Voir ' + sTitle + ':', '')
             sDesc = sDesc.replace('Regarder film ', '')
             sDesc = sDesc.strip()
 
@@ -221,7 +221,7 @@ def __checkForNextPage(sHtmlContent):
     return False
 
 
-def showSeries(sSearch = ''):
+def showSeries(sSearch=''):
     oGui = cGui()
     oParser = cParser()
 
@@ -231,7 +231,7 @@ def showSeries(sSearch = ''):
         pdata = 'do=search&subaction=search&story=' + sUrl + '&titleonly=3&all_word_seach=1&catlist[]=31'
 
         oRequest = cRequestHandler(URL_SEARCH[0])
-        #oRequest.setRequestType(1)
+        # oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Referer', URL_MAIN)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
@@ -247,7 +247,7 @@ def showSeries(sSearch = ''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="mov clearfix">.+?<img *src="([^"]+)" *alt="([^"]+)".+?data-link="([^"]+)".+?<span class="block-sai">([^<]+)</span>.+?div class="ml-label">Synopsis.+?<div class="ml-desc">(.+?)<\/div>'
+    sPattern = 'mov clearfix.+?src="([^"]+)" *alt="([^"]+).+?data-link="([^"]+).+?block-sai">([^<]+).+?ml-desc">(.+?)</div>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -263,10 +263,10 @@ def showSeries(sSearch = ''):
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + aEntry[0]
 
-            sTitle = aEntry[1].replace(' wiflix', '')
+            sTitle = aEntry[1].replace('- Saison', 'Saison').replace(' wiflix', '')
             sLang = re.sub('Saison \d+', '', aEntry[3]).replace(' ', '')
             sDisplaytitle = '%s (%s)' % (sTitle, sLang)
-            sUrl =  aEntry[2]
+            sUrl = aEntry[2]
             sDesc = aEntry[4]
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -339,7 +339,7 @@ def showHosters():
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<a href="([^"]+)" *target="x_player_wfx"><span>.+?<\/span>'
+    sPattern = '<a href="([^"]+)" *target="x_player_wfx"><span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
