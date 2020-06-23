@@ -40,7 +40,7 @@ def GetURL_MAIN():
     # quand l'url ne contient pas celle déjà enregistrer dans settings et que c'est pas dlprotect on active.
     if not (Sources == 'callpluging' or Sources == 'globalSources' or Sources == 'search') and not ADDON.getSetting('ZT')[6:] in sUrl and not 'dl-protect1.' in sUrl and not 'zt-protect.' in sUrl:
         oRequestHandler = cRequestHandler(URL_HOST)
-        sHtmlContent = oRequestHandler.request()
+        oRequestHandler.request()
         MemorisedHost = oRequestHandler.getRealUrl()
         if MemorisedHost is not None and MemorisedHost != '':
             if not 'cf_chl_jschl_tk' in MemorisedHost:
@@ -55,7 +55,7 @@ def GetURL_MAIN():
         # si pas de zt dans settings on récup l'url une fois dans le site
         if not ADDON.getSetting('ZT') and not (Sources == 'callpluging' or Sources == 'globalSources' or Sources == 'search'):
             oRequestHandler = cRequestHandler(URL_HOST)
-            # sHtmlContent = oRequestHandler.request()
+            oRequestHandler.request()
             MemorisedHost = oRequestHandler.getRealUrl()
             if MemorisedHost is not None and MemorisedHost != '':
                 if not 'cf_chl_jschl_tk' in MemorisedHost:
