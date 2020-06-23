@@ -146,7 +146,7 @@ def showMovies(sSearch=''):
     oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'item-image.+?alt="([^"]+).+?loadlate="([^"]+).+?index.+?>([^<]+).+?year.+?>([^<]+).+?(?:|rated this(.+?)\s.+?)muted">([^<]+)'
+    sPattern = 'img alt="([^"]+).+?loadlate="([^"]+).+?primary">([^<]+).+?unbold">([^<]+).+?(?:|rated this(.+?)\s.+?)muted">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
