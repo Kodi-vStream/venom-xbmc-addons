@@ -327,7 +327,7 @@ def showMovies(sSearch=''):
     oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'class="mainimg.+?src="([^"]+)"(?:.|\s)+?<a href="([^"]+)">([^<]+)<.+?<span class=".+?<b>([^<]+)</span>.+?">([^<]+)</span>'
+    sPattern = 'class="mainimg.+?src="([^"]+).+?href="([^"]+)">([^<]+).+?class=.+?<b>([^<]+)</span.+?">([^<]+)</span'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -447,7 +447,7 @@ def showMoviesLinks():
     sDesc = ''
     sYear = ''
     try:
-        sPattern = '(<u>Date de .+<\/u>.+(\d{4}(-| *<))|<u>Critiques.+?<\/u>).+synopsis.+?>(.+?)<\/div>'
+        sPattern = '(<u>Date de .+</u>.+(\d{4}(-| *<))|<u>Critiques.+?</u>).+synopsis.+?>(.+?)</div>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             aEntry = aResult[1][0]
@@ -466,7 +466,7 @@ def showMoviesLinks():
     oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     # On regarde si dispo dans d'autres qualités
-    sPattern = '<a href="([^"]+)"><span class="otherquality"><span style="color:#.{6}"><b>([^<]+)<\/b><\/span><span style="color:#.{6}"><b>([^<]+)<\/b><\/span>'
+    sPattern = 'href="([^"]+)"><span class="otherquality"><span style="color:#.{6}"><b>([^<]+)</b></span><span style="color:#.{6}"><b>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -507,7 +507,7 @@ def showSeriesLinks():
     # Récupération du Synopsis
     sDesc = sMovieTitle   # Ne pas laisser vide sinon un texte faux venant du cache va etre utilisé
     try:
-        sPattern = 'synopsis.+(alt="">|<!--dle_image_end-->)(.+?)<\/div>'
+        sPattern = 'synopsis.+(alt="">|<!--dle_image_end-->)(.+?)</div>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = cUtil().removeHtmlTags(aResult[1][0][1])
@@ -536,7 +536,7 @@ def showSeriesLinks():
 
     # On regarde si dispo dans d'autres qualités
     sHtmlContent1 = CutQual(sHtmlContent)
-    sPattern1 = '<a href="([^"]+)"><span class="otherquality"><span style="color:#.{6}"><b>([^<]+)<\/b><\/span><span style="color:#.{6}"><b>([^<]+)<\/b><\/span>'
+    sPattern1 = 'href="([^"]+)"><span class="otherquality"><span style="color:#.{6}"><b>([^<]+)</b></span><span style="color:#.{6}"><b>([^<]+)'
     aResult1 = oParser.parse(sHtmlContent1, sPattern1)
 
     if (aResult1[0] == True):
@@ -561,7 +561,7 @@ def showSeriesLinks():
     # Une ligne par saison, pas besoin d'afficher les qualités ici
     saisons = []
     sHtmlContent2 = CutSais(sHtmlContent)
-    sPattern2 = '<a href="([^"]+)"><span class="otherquality">([^<]+)<b>([^<]+)<span style="color:#.{6}">([^<]+)<\/span><span style="color:#.{6}">([^<]+)<\/b><\/span>'
+    sPattern2 = 'href="([^"]+)"><span class="otherquality">([^<]+)<b>([^<]+)<span style="color:#.{6}">([^<]+)</span><span style="color:#.{6}">([^<]+)'
     aResult2 = oParser.parse(sHtmlContent2, sPattern2)
 
     # Affichage du texte
@@ -716,32 +716,32 @@ def DecryptDlProtecte(url):
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<form action="(.+?)".+?<input type="hidden" name="_token" value="(.+?)">.+?<input type="hidden" value="(.+?)".+?>'
+    sPattern = 'form action="([^"]+).+?type="hidden" name="_token" value="([^"]+).+?input type="hidden" value="([^"]+)'
     result = oParser.parse(sHtmlContent, sPattern)
 
     if (result[0]):
-        RestUrl = str(result[1][0][0])
+        restUrl = str(result[1][0][0])
         token = str(result[1][0][1])
         # urlData = str(result[1][0][2])
 
     else:
-        sPattern = '<(.+?)action="([^"]+)" method="([^"]+)">.+?hidden".+?value="([^"]+)"'
+        sPattern = '<(.+?)action="([^"]+)" method="([^"]+).+?hidden".+?value="([^"]+)'
         result = oParser.parse(sHtmlContent, sPattern)
 
         if (result[0]):
             if not "<!-----" in (str(result[1][0][0])):
-                RestUrl = str(result[1][0][0])
+                restUrl = str(result[1][0][0])
                 method = str(result[1][0][1])
                 token = str(result[1][0][2])
             else:
-                RestUrl = str(result[1][1][1]).replace("}", '%7D')
+                restUrl = str(result[1][1][1]).replace("}", '%7D')
                 method = str(result[1][1][2])
                 token = str(result[1][1][3])
 
-            if RestUrl.startswith('/'):
-                RestUrl = 'https://' + url.split('/')[2] + RestUrl
+            if restUrl.startswith('/'):
+                restUrl = 'https://' + url.split('/')[2] + restUrl
 
-    oRequestHandler = cRequestHandler(RestUrl)
+    oRequestHandler = cRequestHandler(restUrl)
     if method == "post":
         oRequestHandler.setRequestType(1)
     oRequestHandler.addParameters("_token", token)
