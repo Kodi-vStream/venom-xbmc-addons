@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-# Votre nom ou pseudo
+
 from resources.lib.gui.hoster import cHosterGui #systeme de recherche pour l'hote
 from resources.lib.gui.gui import cGui #systeme d'affichage pour xbmc
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler #entree des parametres
@@ -11,16 +11,16 @@ from resources.lib.comaddon import progress, VSlog #import du dialog progress
 
 #from resources.lib.util import cUtil #outils pouvant etre utiles
 
-#Si vous créez une source et la deposez dans le dossier "sites" elle sera directement visible sous xbmc
+#Si vous créez une source et la deposez dans le dossier "sites" elle sera directement visible sous KODI
 
 SITE_IDENTIFIER = 'ajouter_une_source' #identifant (nom de votre fichier) remplacez les espaces et les . par _ AUCUN CARACTERE SPECIAL
-SITE_NAME = 'ajouter_une_source' #nom que xbmc affiche
-SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent' #description courte de votre source
+SITE_NAME = 'ajouter_une_source' #nom que KODI affiche
+SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent' # description courte de votre source
 
-URL_MAIN = 'http://le_site.org/' #url de votre source
+URL_MAIN = 'http://le_site.org/' # url de la source
 
-#definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle sera affichee.
-#LA RECHERCHE GLOBAL N'UTILE PAS showSearch MAIS DIRECTEMENT LA FONCTION INSCRITE DANS LA VARIABLE URL_SEARCH_*
+# definit les url pour les catégories principale, ceci est automatique, si la definition est présente elle sera affichee.
+# LA RECHERCHE GLOBAL N'UTILISE PAS showSearch MAIS DIRECTEMENT LA FONCTION INSCRITE DANS LA VARIABLE URL_SEARCH_*
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 #recherche global films
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
@@ -79,7 +79,7 @@ REPLAYTV_REPLAYTV = ('http://', 'load') #Replay load
 REPLAYTV_NEWS = (URL_MAIN, 'showMovies') #Replay trie par date
 REPLAYTV_GENRES = (True, 'showGenres') #Replay Genre
 
-def load(): #fonction chargee automatiquement par l'addon l'index de votre navigation.
+def load(): # fonction chargée automatiquement par l'addon, acceuil de la source.
     oGui = cGui() #ouvre l'affichage
 
     oOutputParameterHandler = cOutputParameterHandler() #appelle la fonction pour sortir un parametre
@@ -168,39 +168,39 @@ def showGenres(): #affiche les genres
 
     #juste a entrer les categories et les liens qui vont bien
     liste = []
-    liste.append( ['Action', URL_MAIN + 'action/'] )
-    liste.append( ['Animation', URL_MAIN + 'animation/'] )
-    liste.append( ['Arts Martiaux', URL_MAIN + 'arts-martiaux/'] )
-    liste.append( ['Aventure', URL_MAIN + 'aventure/'] )
-    liste.append( ['Biopic', URL_MAIN + 'biopic/'] )
-    liste.append( ['Comédie', URL_MAIN + 'comedie/'] )
-    liste.append( ['Comédie Dramatique', URL_MAIN + 'comedie-dramatique/'] )
-    liste.append( ['Comédie Musicale', URL_MAIN + 'comedie-musicale/'] )
-    liste.append( ['Documentaire', URL_MAIN + 'documentaire/'] )
-    liste.append( ['Drame', URL_MAIN + 'drame/'] )
-    liste.append( ['Epouvante Horreur', URL_MAIN + 'epouvante-horreur/'] )
-    liste.append( ['Erotique', URL_MAIN + 'erotique'] )
-    liste.append( ['Espionnage', URL_MAIN + 'espionnage/'] )
-    liste.append( ['Famille', URL_MAIN + 'famille/'] )
-    liste.append( ['Fantastique', URL_MAIN + 'fantastique/'] )
-    liste.append( ['Guerre', URL_MAIN + 'guerre/'] )
-    liste.append( ['Historique', URL_MAIN + 'historique/'] )
-    liste.append( ['Musical', URL_MAIN + 'musical/'] )
-    liste.append( ['Policier', URL_MAIN + 'policier/'] )
-    liste.append( ['Péplum', URL_MAIN + 'peplum/'] )
-    liste.append( ['Romance', URL_MAIN + 'romance/'] )
-    liste.append( ['Science Fiction', URL_MAIN + 'science-fiction/'] )
-    liste.append( ['Spectacle', URL_MAIN + 'spectacle/'] )
-    liste.append( ['Thriller', URL_MAIN + 'thriller/'] )
-    liste.append( ['Western', URL_MAIN + 'western/'] )
-    liste.append( ['Divers', URL_MAIN + 'divers/'] )
+    liste.append(['Action', URL_MAIN + 'action/'])
+    liste.append(['Animation', URL_MAIN + 'animation/'])
+    liste.append(['Arts Martiaux', URL_MAIN + 'arts-martiaux/'])
+    liste.append(['Aventure', URL_MAIN + 'aventure/'])
+    liste.append(['Biopic', URL_MAIN + 'biopic/'])
+    liste.append(['Comédie', URL_MAIN + 'comedie/'])
+    liste.append(['Comédie Dramatique', URL_MAIN + 'comedie-dramatique/'])
+    liste.append(['Comédie Musicale', URL_MAIN + 'comedie-musicale/'])
+    liste.append(['Documentaire', URL_MAIN + 'documentaire/'])
+    liste.append(['Drame', URL_MAIN + 'drame/'])
+    liste.append(['Epouvante Horreur', URL_MAIN + 'epouvante-horreur/'])
+    liste.append(['Erotique', URL_MAIN + 'erotique'])
+    liste.append(['Espionnage', URL_MAIN + 'espionnage/'])
+    liste.append(['Famille', URL_MAIN + 'famille/'])
+    liste.append(['Fantastique', URL_MAIN + 'fantastique/'])
+    liste.append(['Guerre', URL_MAIN + 'guerre/'])
+    liste.append(['Historique', URL_MAIN + 'historique/'])
+    liste.append(['Musical', URL_MAIN + 'musical/'])
+    liste.append(['Policier', URL_MAIN + 'policier/'])
+    liste.append(['Péplum', URL_MAIN + 'peplum/'])
+    liste.append(['Romance', URL_MAIN + 'romance/'])
+    liste.append(['Science Fiction', URL_MAIN + 'science-fiction/'])
+    liste.append(['Spectacle', URL_MAIN + 'spectacle/'])
+    liste.append(['Thriller', URL_MAIN + 'thriller/'])
+    liste.append(['Western', URL_MAIN + 'western/'])
+    liste.append(['Divers', URL_MAIN + 'divers/'])
 
     for sTitle, sUrl in liste: #boucle
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl) #sortie de l'url en parametre
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-        #ajouter un dossier vers la fonction showMovies avec le titre de chaque categorie.
+        # ajouter un dossier vers la fonction showMovies avec le titre de chaque categorie.
 
     oGui.setEndOfDirectory()
 
@@ -208,7 +208,7 @@ def showGenres(): #affiche les genres
 def showMovieYears():#creer une liste inversée d'annees
     oGui = cGui()
 
-    for i in reversed (xrange(1913, 2019)):
+    for i in reversed (xrange(1913, 2020)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/annee-' + Year)
@@ -302,13 +302,13 @@ def showMovies(sSearch = ''):
             
             if '/series' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-                #addTV pour sortir les series tv (identifiant, function, titre, icon, poster, description, sortie parametre)
+                #addTV pour sortir les series tv (identifiant, fonction, titre, icon, poster, description, sortie parametre)
             elif '/animes' in sUrl:
                 oGui.addAnime(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-                #addAnime pour sortir les series animés (mangas) (identifiant, function, titre, icon, poster, description, sortie parametre)
+                #addAnime pour sortir les series animés (mangas) (identifiant, fonction, titre, icon, poster, description, sortie parametre)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-                #addMovies pour sortir les films (identifiant, function, titre, icon, poster, description, sortie parametre)
+                #addMovies pour sortir les films (identifiant, fonction, titre, icon, poster, description, sortie parametre)
 
             # Il existe aussi addMisc(identifiant, function, titre, icon, poster, description, sortie parametre)
             # A utiliser pour les autres types, tels que : documentaires, spectacles, etc.
@@ -441,4 +441,4 @@ def seriesHosters(): #cherche les episodes de series
 
     oGui.setEndOfDirectory()
 
-#Voila c'est un peux brouillon mais ça devrait aider un peu, n'hesitez pas a poser vos questions et meme a partager vos sources.
+# n'hesitez pas a poser vos questions et meme a partager vos sources.
