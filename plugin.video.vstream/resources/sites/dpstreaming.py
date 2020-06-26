@@ -18,7 +18,7 @@ SITE_IDENTIFIER = 'dpstreaming'
 SITE_NAME = 'DP Streaming'
 SITE_DESC = 'Séries en Streaming'
 
-URL_MAIN = 'https://dpstreaming.to/'
+URL_MAIN = 'https://series.dpstreaming.to/'
 
 SERIE_SERIES = (URL_MAIN + 'serie-category/series/', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'serie-category/series/', 'showMovies')
