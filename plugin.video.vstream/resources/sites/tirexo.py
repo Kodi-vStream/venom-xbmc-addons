@@ -9,16 +9,20 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, dialog, VSlog, addon
 from resources.lib.config import GestionCookie
 import time
-from selenium import webdriver
-from selenium.webdriver.common.driver_utils import get_driver_path
-from selenium.webdriver import Chrome
-#from selenium.webdriver import Firefox
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.options import Options
-#from selenium.webdriver.firefox.options import Options
 import xbmcvfs
+try:#en cas que selenium n'est pas présent sinon il pourrait jamais voir l'explication
+    import time
+    from selenium import webdriver
+    from selenium.webdriver.common.driver_utils import get_driver_path
+    from selenium.webdriver import Chrome
+    #from selenium.webdriver import Firefox
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
+    from selenium.webdriver.chrome.options import Options
+    #from selenium.webdriver.firefox.options import Options
+except:
+    pass
 
 
 import re, random
@@ -545,7 +549,7 @@ def showMovies(sSearch = ''):
         
     sHtmlContent = cloudflare(sUrl)
     aResult = oParser.parse(sHtmlContent, sPattern)
-    VSlog(aResult)
+    #VSlog(aResult)
 
     titles = set()
     if (aResult[0] == True):
@@ -945,7 +949,7 @@ def showHosters():
     # Retire les resultats proposés en plusieurs parties (ce sont des .rar)
     sPattern = '<th scope="col" class="no-sort"><img src=.+?>([^><]+)</th>|class=\'download\'.+?href=\'([^\']+)\'>Télécharger <'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    VSlog(aResult)
+    #VSlog(aResult)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -1098,7 +1102,7 @@ def Display_protected_link():
 
     if "dl-protect" in sUrl:
         sHtmlContent = DecryptDlProtecte(sUrl)
-        VSlog(sHtmlContent)
+        #VSlog(sHtmlContent)
 
         if sHtmlContent:
             #Si redirection
@@ -1204,7 +1208,7 @@ def DecryptDlProtecte(url):#Passe par selenium
     page_source = (browser.page_source).encode('utf-8', errors='replace')
     browser.close()
     print(page_source)
-    VSlog(page_source)
+    #VSlog(page_source)
     return page_source
     
 
