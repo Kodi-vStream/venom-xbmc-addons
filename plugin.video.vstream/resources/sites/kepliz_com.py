@@ -15,7 +15,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil, urlEncode
+from resources.lib.util import cUtil
 from resources.lib.comaddon import progress
 
 # On garde le nom kepliz pour pas perturber
@@ -34,8 +34,6 @@ MOVIE_MOVIE = (URL_MAIN + 'index.php?option=com_content&view=category&id=29&Item
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_HD = (URL_MAIN, 'showMovies')
 
-ANIM_NEWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=2&Itemid=2', 'showMovies')
-ANIM_ANIMS = (URL_MAIN + 'index.php?option=com_content&view=category&id=2&Itemid=19', 'showMovies')
 DOC_NEWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=26', 'showMovies')
 SHOW_SHOWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=3', 'showMovies')  # Spectacle
 
@@ -63,10 +61,6 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
@@ -249,7 +243,7 @@ def showHosters():
             oOutputParameterHandler.addParameter('sPostUrl', sPostUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', sMovieTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHostersLink', sMovieTitle, sThumb, sDesc, oOutputParameterHandler)
 
     # Format rare
     if not sLink:
@@ -268,7 +262,7 @@ def showHosters():
             oOutputParameterHandler.addParameter('sLink', sLink)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink2', sMovieTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHostersLink2', sMovieTitle, sThumb, sDesc, oOutputParameterHandler)
 
     # news Format
     if not sLink:
@@ -287,7 +281,7 @@ def showHosters():
             oOutputParameterHandler.addParameter('sLink', sLink)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink3', sMovieTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHostersLink3', sMovieTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -301,16 +295,16 @@ def showHostersLink():
     sPostUrl = oInputParameterHandler.getValue('sPostUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
-    oRequestHandler = cRequestHandler(RestUrl)
-    oRequestHandler.setRequestType(1)
+    oRequestHandler = cRequestHandler(sPostUrl)
+    oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
     oRequestHandler.addHeaderEntry('User-Agent', "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0")
-    oRequestHandler.addHeaderEntry('Host', url.split('/')[2])
+    oRequestHandler.addHeaderEntry('Host', sUrl.split('/')[2])
     oRequestHandler.addHeaderEntry('Referer', sUrl)
     oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
     oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
     oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
     oRequestHandler.addHeaderEntry('Content-Type',  "application/x-www-form-urlencoded; charset=UTF-8'")
-    oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
+#     oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
     oRequestHandler.addParameters('link', sLink)
     data = oRequestHandler.request()
 
@@ -342,17 +336,6 @@ def showHostersLink2():
     # sUrl = oInputParameterHandler.getValue('siteUrl')
     sLink = oInputParameterHandler.getValue('sLink')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-
-    UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0'
-    headers = {'User-Agent': UA,
-               # 'Host': 'grudal.com',
-               'Referer': sLink,
-               'Accept': 'video/webm,video/ogg,video/*;q=0.9,application/ogg;q=0.7,audio/*;q=0.6,*/*;q=0.5',
-               'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
-               'Range': 'bytes=0-'
-               # 'Accept-Encoding': 'gzip, deflate',
-               # 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-               }
 
     oRequestHandler = cRequestHandler(sLink)
     data = oRequestHandler.request()
@@ -403,19 +386,6 @@ def showHostersLink3():
     # sUrl = oInputParameterHandler.getValue('siteUrl')
     sLink = oInputParameterHandler.getValue('sLink')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-
-    UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0'
-    headers = {'User-Agent': UA,
-               # 'Host': 'grudal.com',
-               'Referer': sLink,
-               'Accept': 'video/webm,video/ogg,video/*;q=0.9,application/ogg;q=0.7,audio/*;q=0.6,*/*;q=0.5',
-               'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
-               'Range': 'bytes=0-'
-               # 'Accept-Encoding': 'gzip, deflate',
-               # 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-               }
-
-    # VSlog(sLink)
 
     oRequestHandler = cRequestHandler(sLink)
     data = oRequestHandler.request()
