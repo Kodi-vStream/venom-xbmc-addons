@@ -124,7 +124,7 @@ def showAZ():
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] Lettre [COLOR red]' + str(i) + '[/COLOR][/COLOR]', 'az.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] Lettre [COLOR red]' + str(i).upper() + '[/COLOR]', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -215,11 +215,11 @@ def showEpisode():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
+    oParser = cParser()
     # info anime et serie
     sThumb = ''
     sDesc = ''
     try:
-        oParser = cParser()
         sPattern = '<img itemprop="image".+?src="([^<]+)">.+?<strong>(.+?)</strong>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
@@ -229,16 +229,14 @@ def showEpisode():
     except:
         pass
 
-    oParser = cParser()
     sPattern = 'line-height:200px;font-size:26px;text-align:center;">L.anime est licencié<.p>'
-
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]Animé licencié[/COLOR]')
 
     else:
-        sPattern = '<li class="saison">([^<>]+)</li>|<a href="(https:\/\/www\.adkami\.com[^"]+)"[^<>]+>([^<>]+)<\/a><\/li>'
+        sPattern = '<li class="saison">([^<]+)</li>|<a href="(https://www\.adkami\.com[^"]+)"[^<>]+>([^<>]+)</a></li>'
 
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
