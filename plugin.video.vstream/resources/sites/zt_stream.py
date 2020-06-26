@@ -366,10 +366,10 @@ def showMovies(sSearch=''):
             sDisplayTitle = ('%s [%s] %s') % (sTitle, sQual, sLang)
 
             if not sThumb.startswith('https'):
-                sThumb = URL_MAIN + sThumb
+                sThumb = URL_MAIN[:-1] + sThumb
 
             if not sUrl2.startswith('https'):
-                sUrl2 = URL_MAIN + sUrl2
+                sUrl2 = URL_MAIN[:-1] + sUrl2
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -419,7 +419,7 @@ def __checkForNextPage(sHtmlContent):
     if (aResult[0] == True):
         nextPage = aResult[1][0]
         if not nextPage.startswith('https'):
-            nextPage = URL_MAIN + nextPage
+            nextPage = URL_MAIN[:-1] + nextPage
         return nextPage
     return False
 
