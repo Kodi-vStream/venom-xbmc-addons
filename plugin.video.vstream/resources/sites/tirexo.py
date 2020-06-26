@@ -9,8 +9,10 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, dialog, VSlog, addon
 from resources.lib.config import GestionCookie
 import time
+import xbmc
 import xbmcvfs
-try:#en cas que selenium n'est pas présent sinon il pourrait jamais voir l'explication
+import xbmcplugin
+try:
     import time
     from selenium import webdriver
     from selenium.webdriver.common.driver_utils import get_driver_path
@@ -237,6 +239,9 @@ def cloudflare(url):#Bypass cloudflare avec selenium
 
     print(page_source)
     return page_source
+
+def showInstall():
+    xbmc.executebuiltin('InstallAddon(script.module.selenium)')
     
 def load():
     oGui = cGui()
@@ -244,6 +249,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showDetail', '[COLOR red]Explication pour le site[/COLOR]', 'films.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showInstall', '[COLOR blue]Cliquer ici pour installer selenium[/COLOR]', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -549,7 +558,7 @@ def showMovies(sSearch = ''):
         
     sHtmlContent = cloudflare(sUrl)
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #VSlog(aResult)
+    VSlog(aResult)
 
     titles = set()
     if (aResult[0] == True):
@@ -949,7 +958,7 @@ def showHosters():
     # Retire les resultats proposés en plusieurs parties (ce sont des .rar)
     sPattern = '<th scope="col" class="no-sort"><img src=.+?>([^><]+)</th>|class=\'download\'.+?href=\'([^\']+)\'>Télécharger <'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #VSlog(aResult)
+    VSlog(aResult)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -1102,7 +1111,7 @@ def Display_protected_link():
 
     if "dl-protect" in sUrl:
         sHtmlContent = DecryptDlProtecte(sUrl)
-        #VSlog(sHtmlContent)
+        VSlog(sHtmlContent)
 
         if sHtmlContent:
             #Si redirection
@@ -1208,7 +1217,7 @@ def DecryptDlProtecte(url):#Passe par selenium
     page_source = (browser.page_source).encode('utf-8', errors='replace')
     browser.close()
     print(page_source)
-    #VSlog(page_source)
+    VSlog(page_source)
     return page_source
     
 
