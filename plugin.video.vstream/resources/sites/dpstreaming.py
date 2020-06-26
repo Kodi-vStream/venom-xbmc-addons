@@ -18,7 +18,7 @@ SITE_IDENTIFIER = 'dpstreaming'
 SITE_NAME = 'DP Streaming'
 SITE_DESC = 'Séries en Streaming'
 
-URL_MAIN = 'https://dpstreaming.to/'
+URL_MAIN = 'https://series.dpstreaming.to/'
 
 SERIE_SERIES = (URL_MAIN + 'serie-category/series/', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'serie-category/series/', 'showMovies')
@@ -40,8 +40,7 @@ def ProtectstreamBypass(url):
     session = requests.Session()
     session.headers.update({'User-Agent': UA,
                             'Referer': URL_MAIN,
-                            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-                            })
+                            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'})
 
     try:
         response = session.get(url, timeout=5)
