@@ -34,7 +34,7 @@ import re, random
 #from test.test_socket import try_address
 
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
+UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
 
 SITE_IDENTIFIER = 'tirexo'
 SITE_NAME = '[COLOR violet]Tirexo (ZT lol) [Selenium] [/COLOR]'
@@ -179,19 +179,21 @@ def redi(url):#Pour la redirection avec /link
     print(current_url)
     return current_url
 
-def resolvenocloudflare(url):#Méthode classique 
+def resolvenocloudflare(url,cookie):#Méthode classique 
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    oRequestHandler.addHeaderEntry('Cookie', cookie)
+    #oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
     sHtmlContent = oRequestHandler.request()
-    print(sHtmlContent)
     return sHtmlContent
 
 def cloudflare(url):#Bypass cloudflare avec selenium
 
     if url:#On passe par la méthode classique en cas que cloudflare n'est pas présent 
         try:
-            sHtmlContent = resolvenocloudflare(url)
+            c = GestionCookie().Readcookie('tirexo_com')
+            sHtmlContent = resolvenocloudflare(url,c)
+            VSlog("cookies encore valables")
             return sHtmlContent
         except:
             pass
