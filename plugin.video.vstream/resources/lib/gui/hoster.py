@@ -136,7 +136,7 @@ class cHosterGui:
                 tmp = self.getHoster('resolver')
                 RH = sHosterUrl.split('/')[2]
                 RH = RH.replace('www.', '')
-                tmp.setRealHost(RH[:3].upper())
+                tmp.setRealHost(RH.split('.')[0].upper())
                 return tmp
 
         # Gestion classique
