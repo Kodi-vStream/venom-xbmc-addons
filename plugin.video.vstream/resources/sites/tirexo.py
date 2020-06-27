@@ -23,6 +23,9 @@ try:
     from selenium.webdriver.support import expected_conditions as EC
     from selenium.webdriver.chrome.options import Options
     #from selenium.webdriver.firefox.options import Options
+    
+    VSlog("Chargement Selenium ok")
+    
 except:
     pass
 
@@ -185,21 +188,26 @@ def resolvenocloudflare(url):#Méthode classique
     return sHtmlContent
 
 def cloudflare(url):#Bypass cloudflare avec selenium
+
     if url:#On passe par la méthode classique en cas que cloudflare n'est pas présent 
         try:
             sHtmlContent = resolvenocloudflare(url)
             return sHtmlContent
         except:
             pass
+
     CloudflarePassed = False
-    driverPath = get_driver_path('chromedriver')
-    #path = "C:/Users/quent/AppData/Roaming/Kodi/addons/script.module.selenium/bin/geckodriver/win32/geckodriver/geckodriver.exe"
-    #path sert pour firefox
-    options = Options()
-    options.headless = True
-    browser = webdriver.Chrome(driverPath, options=options)
-    #browser = webdriver.Firefox(executable_path=path, options=options, log_path="")
-    #cette ligne sert aussi pour firefox par défaut il est désactivé
+    
+    if True:
+        driverPath = get_driver_path('chromedriver')
+        options = Options()
+        options.headless = False
+        browser = webdriver.Chrome(driverPath, options=options)
+    else:
+        path = r"C:\Users\XXXX\AppData\Roaming\Kodi\addons\script.module.selenium\bin\geckodriver\win32\geckodriver\geckodriver.exe"
+        #path sert pour firefox
+        browser = webdriver.Firefox(executable_path = path)
+    
     browser.get(url)
     
     #On boucle si Cloudflare n'est pas résolu.
@@ -214,30 +222,39 @@ def cloudflare(url):#Bypass cloudflare avec selenium
         if "cf_clearance" in str(Cookies):
             break
         
+        #Si pas de protection CF
+        if 'Checking your browser before accessing' not in browser.page_source:
+            break
         
         #On récupere le timeout de maniere dynamique
-    try:
-        time.sleep(float(
-                    re.search(
-                        r'submit\(\);\r?\n\s*},\s*([0-9]+)',
-                        browser.page_source
-                    ).group(1)
-                ) / float(1000) + 1)
+        try:
+            time.sleep(float(
+                        re.search(
+                            r'submit\(\);\r?\n\s*},\s*([0-9]+)',
+                            browser.page_source
+                        ).group(1)
+                    ) / float(1000) + 1)
 
-    except:
-        #Sauf sur la nouvelle version où il n'est pas présent
-        time.sleep(6)
+        except:
+            #Sauf sur la nouvelle version où il n'est pas présent
+            time.sleep(6)
 
-    loop = loop + 1
+        loop = loop + 1
     
-    print("""Cloudflare Passed, Cookie : """ + str({cookie['name']:cookie['value'] for cookie in browser.get_cookies()})
+    VSlog("""Cloudflare Passed, Cookie : """ + str({cookie['name']:cookie['value'] for cookie in browser.get_cookies()})
     + """\n User Agent : """ + browser.execute_script("return navigator.userAgent"))
     
+    #Sauvegarde des cookies
+    c = ""
+    for cookie in browser.get_cookies():
+        c = c + cookie['name'] + '=' + cookie['value'] + ';'
+    c = str(c[:-1])
+    
+    GestionCookie().SaveCookie('tirexo_com', c)
         
     page_source = (browser.page_source).encode('utf-8', errors='replace')
     browser.close()
 
-    print(page_source)
     return page_source
 
 def showInstall():
@@ -558,7 +575,7 @@ def showMovies(sSearch = ''):
         
     sHtmlContent = cloudflare(sUrl)
     aResult = oParser.parse(sHtmlContent, sPattern)
-    VSlog(aResult)
+    #VSlog(aResult)
 
     titles = set()
     if (aResult[0] == True):
