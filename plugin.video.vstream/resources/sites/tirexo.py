@@ -12,23 +12,6 @@ import time
 import xbmc
 import xbmcvfs
 import xbmcplugin
-try:
-    import time
-    from selenium import webdriver
-    from selenium.webdriver.common.driver_utils import get_driver_path
-    from selenium.webdriver import Chrome
-    #from selenium.webdriver import Firefox
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.support.ui import WebDriverWait
-    from selenium.webdriver.support import expected_conditions as EC
-    from selenium.webdriver.chrome.options import Options
-    #from selenium.webdriver.firefox.options import Options
-    
-    VSlog("Chargement Selenium ok")
-    
-except:
-    pass
-
 
 import re, random
 #from test.test_socket import try_address
@@ -197,7 +180,26 @@ def cloudflare(url):#Bypass cloudflare avec selenium
             return sHtmlContent
         except:
             pass
+            
+    try:
+        from selenium import webdriver
+        from selenium.webdriver.common.driver_utils import get_driver_path
+        from selenium.webdriver.support.ui import WebDriverWait
+        
+        from selenium.webdriver import Chrome
+        from selenium.webdriver.chrome.options import Options
 
+        #from selenium.webdriver.firefox.options import Options
+        #from selenium.webdriver import Firefox
+
+        #from selenium.webdriver.common.by import By
+        #from selenium.webdriver.support import expected_conditions as EC
+        
+        VSlog("Chargement Selenium ok")
+        
+    except:
+        pass
+    
     CloudflarePassed = False
     
     if True:
@@ -208,7 +210,7 @@ def cloudflare(url):#Bypass cloudflare avec selenium
     else:
         path = r"C:\Users\XXXX\AppData\Roaming\Kodi\addons\script.module.selenium\bin\geckodriver\win32\geckodriver\geckodriver.exe"
         #path sert pour firefox
-        browser = webdriver.Firefox(executable_path = path)
+        browser = webdriver.Firefox(executable_path=path, options=options, log_path="")
     
     browser.get(url)
     
@@ -240,6 +242,8 @@ def cloudflare(url):#Bypass cloudflare avec selenium
         except:
             #Sauf sur la nouvelle version où il n'est pas présent
             time.sleep(6)
+            
+        VSlog("loop : " + str(loop))
 
         loop = loop + 1
     
