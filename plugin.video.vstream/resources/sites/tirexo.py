@@ -80,7 +80,8 @@ SITE_DESC = 'Films/Séries/Reportages/Concerts'
             #return ADDON.getSetting('Tirexo')
 
 #Teste pour le moment avec une url fixe.
-URL_MAIN = "https://www2.tirexo.com/"
+URL_MAIN = "https://tirexo.com/"
+#URL_MAIN = "https://tirexo.net/" #Les regex sont différent mais il y a pas cloudflare 
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=2&story=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=15&story=', 'showMovies')
 URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=32&story=', 'showMovies')
@@ -143,6 +144,24 @@ CONCERT_NEWS = (URL_MAIN + 'musiques-mp3-gratuite/souscat_music-Concerts/', 'sho
 #bypass cloudflare avec selenium
 
 def redi(url):#Pour la redirection avec /link
+    try:
+        from selenium import webdriver
+        from selenium.webdriver.common.driver_utils import get_driver_path
+        from selenium.webdriver.support.ui import WebDriverWait
+        
+        from selenium.webdriver import Chrome
+        from selenium.webdriver.chrome.options import Options
+
+        #from selenium.webdriver.firefox.options import Options
+        #from selenium.webdriver import Firefox
+
+        #from selenium.webdriver.common.by import By
+        #from selenium.webdriver.support import expected_conditions as EC
+        
+        VSlog("Chargement Selenium ok")
+        
+    except:
+        pass
     driverPath = get_driver_path('chromedriver')
     options = Options()
     options.headless = True
@@ -218,7 +237,6 @@ def cloudflare(url):#Bypass cloudflare avec selenium
         capabilities['acceptInsecureCerts'] = True
 
         browser = webdriver.Chrome(driverPath, options=options,desired_capabilities=capabilities)
-
     else:
         path = r"C:\Users\XXXX\AppData\Roaming\Kodi\addons\script.module.selenium\bin\geckodriver\win32\geckodriver\geckodriver.exe"
         #path sert pour firefox
@@ -585,11 +603,11 @@ def showMovies(sSearch = ''):
     
 
     if sSearch or "index" in sUrl: # en mode recherche
-        sPattern = '<a class="mov-t nowrap" href="(https://www.tirexo.com/films.+?|https://www.tirexo.com/telecharger-series.+?|https://www.tirexo.com/animes.+?|https://www.tirexo.com/emissions-tv-documentaires.+?)" title="([^"]+)".+?data-content="([^"]+)".+?<img src="\/([^"]+)".+?<div style="height: 51px" class="mov-c nowrap">'
+        sPattern = '<a class="mov-t nowrap" href="\/(films.+?|telecharger-series.+?|animes.+?|emissions-tv-documentaires.+?)" title="([^"]+)".+?data-content="([^"]+)".+?<img src="\/([^"]+)".+?<div style="height: 51px" class="mov-c nowrap">'
     elif 'collections/' in sUrl:
-        sPattern = '<a class="mov-t nowrap" href=".+?".+?<img src="\/([^"]+)" width="200px" height="320px" title="([^"]+)".+?data-link="([^"]+)"'
+        sPattern = '<a class="mov-t nowrap" href=".+?".+?<img src="\/([^"]+)" width="200px" height="320px" title="([^"]+)".+?data-link="\/([^"]+)"'
     else:
-        sPattern = '<a class="mov-t nowrap" href="([^"]+)">.+?data-content="([^"]+)".+?<img src="\/([^"]+)".+?title="([^"]+)"'
+        sPattern = '<a class="mov-t nowrap" href="\/([^"]+)">  </a>.+?data-content="([^"]+)".+?<img src="\/([^"]+)".+?title="([^"]+)"'
         
     sHtmlContent = cloudflare(sUrl)
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -607,18 +625,18 @@ def showMovies(sSearch = ''):
                 
                 
             if 'collections/' in sUrl:
-                sUrl2 = aEntry[2]
+                sUrl2 = URL_MAIN + aEntry[2]
                 sDesc = ""
                 sTitle = aEntry[1]
                 sThumb = aEntry[0]
                 sYear = "0000"
             elif sSearch or "index" in sUrl:
-                sUrl2 = aEntry[0]
+                sUrl2 = URL_MAIN + aEntry[0]
                 sDesc = aEntry[2]
                 sTitle = aEntry[1]
                 sThumb = URL_MAIN + aEntry[3]
             else:
-                sUrl2 = aEntry[0]
+                sUrl2 = URL_MAIN + aEntry[0]
                 sDesc = aEntry[1]
                 sTitle = aEntry[3]
                 sThumb = URL_MAIN + aEntry[2]
@@ -691,10 +709,7 @@ def showCollec():
 
     sPattern = '<a class="mov-t nowrap" href="([^"]+)">.+?data-content="([^"]+)".+?<img src="\/([^"]+)".+?title="([^"]+)"'
 
-    oRequestHandler = cRequestHandler(sUrl)
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-    sHtmlContent = oRequestHandler.request()
+    sHtmlContent = cloudflare(sUrl)
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -790,7 +805,7 @@ def showMoviesLinks():
     oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     #on regarde si dispo dans d'autres qualités
-    sPattern = '<a href="([^"]+)"><span class="otherquality">.+?<b>([^"]+)<\/b>.+?<b>([^"]+)<\/b>'
+    sPattern = '<a href="\/([^"]+)"><span class="otherquality">.+?<b>([^"]+)<\/b>.+?<b>([^"]+)<\/b>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -801,7 +816,7 @@ def showMoviesLinks():
             if progress_.iscanceled():
                 break
 
-            sUrl = aEntry[0]
+            sUrl = URL_MAIN + aEntry[0]
             sQual = aEntry[1]
             sLang = aEntry[2]
             sTitle = ('%s [%s] %s') % (sMovieTitle, sQual, sLang)
@@ -907,7 +922,7 @@ def showSeriesLinks():
 
     #on regarde si dispo dans d'autres qualités
     sHtmlContent1 = CutQual(sHtmlContent)
-    sPattern1 = '<a href="([^"]+)"><span class="otherquality">.+?<b>([^"]+)<\/b>.+?<b>([^"]+)<\/b>.+?<b> (.+?)<'
+    sPattern1 = '<a href="\/([^"]+)"><span class="otherquality">.+?<b>([^"]+)<\/b>.+?<b>([^"]+)<\/b>.+?<b> (.+?)<'
     aResult1 = oParser.parse(sHtmlContent1, sPattern1)
 
     otherSaison = False
@@ -930,7 +945,7 @@ def showSeriesLinks():
             sLang = aEntry[3]
             sDisplayTitle = ('%s [%s] %s') % (sTitle, sQual, sLang)
 
-            sUrl = aEntry[0]
+            sUrl = URL_MAIN + aEntry[0]
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -957,7 +972,7 @@ def showSeriesLinks():
             sSaison = 'Saison ' + sSaison
             sDisplayTitle = ('%s %s') % (sMovieTitle, sSaison)
 
-            sUrl = aEntry[0]
+            sUrl = URL_MAIN + aEntry[0]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -985,15 +1000,16 @@ def showHosters():
     #oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
     #sHtmlContent = oRequestHandler.request()
     sHtmlContent = cloudflare(sUrl)
+    #VSlog(sHtmlContent)
 
     oParser = cParser()
 
     # Ajout des liens DL
     # Gere si un Hoster propose plusieurs liens
     # Retire les resultats proposés en plusieurs parties (ce sont des .rar)
-    sPattern = '<th scope="col" class="no-sort"><img src=.+?>([^><]+)</th>|class=\'download\'.+?href=\'([^\']+)\'>Télécharger <'
+    sPattern = '<th scope="col" class="no-sort"><img src=.+?>([^><]+)</th>|class="download".+?href="([^"]+)">Télécharger <'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    VSlog(aResult)
+    #VSlog(aResult)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -1071,7 +1087,7 @@ def showSeriesHosters():
     sHtmlContent = cloudflare(sUrl)
 
     oParser = cParser()
-    sPattern = '<th scope="col" class="no-sort"><img alt=.+?>(.+?)<\/th>|href=\'([^>]+?)\'>Episode ([^>]+)<'
+    sPattern = '<th scope="col" class="no-sort"><img alt=.+?>(.+?)<\/th>|href="([^"]+?)">Episode ([^>]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -1146,7 +1162,7 @@ def Display_protected_link():
 
     if "dl-protect" in sUrl:
         sHtmlContent = DecryptDlProtecte(sUrl)
-        VSlog(sHtmlContent)
+        #VSlog(sHtmlContent)
 
         if sHtmlContent:
             #Si redirection
@@ -1211,48 +1227,65 @@ def DecryptDlProtecte(url):#Passe par selenium
 
     if not (url):
         return ''
-    
+    try:
+        from selenium import webdriver
+        from selenium.webdriver.common.driver_utils import get_driver_path
+        from selenium.webdriver.support.ui import WebDriverWait
+        
+        from selenium.webdriver import Chrome
+        from selenium.webdriver.chrome.options import Options
+
+        #from selenium.webdriver.firefox.options import Options
+        #from selenium.webdriver import Firefox
+
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as EC
+        
+        VSlog("Chargement Selenium ok")
+        
+    except:
+        pass
     CloudflarePassed = False
     driverPath = get_driver_path('chromedriver')
     options = Options()
-    options.headless = False #Faut le laisser comme ça sinon ça ne fonctionne pas 
+    options.headless = True #Faut le laisser comme ça sinon ça ne fonctionne pas 
     browser = webdriver.Chrome(driverPath, options=options)
     browser.get(url)
     
     #On boucle si Cloudflare n'est pas résolu.
     #On loop que 3 fois maxi.
-    loop = 0
-    while CloudflarePassed == False:
-        if loop > 3:
-            break
+    #loop = 0
+    #while CloudflarePassed == False:
+        #if loop > 3:
+            #break
         
         #On se sert du cookie pour voir si Cloudflare est résolu
-        Cookies = browser.get_cookies()
-        if "cf_clearance" in str(Cookies):
-            break
+        #Cookies = browser.get_cookies()
+        #if "cf_clearance" in str(Cookies):
+            #break
         
         
         #On récupere le timeout de maniere dynamique
-    try:
-        time.sleep(float(
-                    re.search(
-                        r'submit\(\);\r?\n\s*},\s*([0-9]+)',
-                        browser.page_source
-                    ).group(1)
-                ) / float(1000) + 1)
+    #try:
+        #time.sleep(float(
+                    #re.search(
+                        #r'submit\(\);\r?\n\s*},\s*([0-9]+)',
+                        #browser.page_source
+                    #).group(1)
+                #) / float(1000) + 1)
 
-    except:
+    #except:
         #Sauf sur la nouvelle version où il n'est pas présent
-        time.sleep(6)
+        #time.sleep(6)
 
-    loop = loop + 1
+    #loop = loop + 1
     
     
     browser.find_element(By.NAME, "submit").click()
     page_source = (browser.page_source).encode('utf-8', errors='replace')
     browser.close()
     print(page_source)
-    VSlog(page_source)
+    #VSlog(page_source)
     return page_source
     
 
