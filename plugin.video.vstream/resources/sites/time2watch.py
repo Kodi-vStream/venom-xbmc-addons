@@ -685,8 +685,8 @@ class cInputWindow(xbmcgui.WindowDialog):
         for obj in self.chkbutton:
             self.addControl(obj)
 
-        self.cancelbutton = xbmcgui.ControlButton(450 + 260 - 70, 620, 140, 50, 'Cancel', alignment=2)
-        self.okbutton = xbmcgui.ControlButton(450 + 520 - 50, 620, 100, 50, 'OK', alignment=2)
+        self.cancelbutton = xbmcgui.ControlButton(250 + 260 - 70, 620, 140, 50, 'Cancel', alignment=2)
+        self.okbutton = xbmcgui.ControlButton(250 + 520 - 50, 620, 100, 50, 'OK', alignment=2)
         self.addControl(self.okbutton)
         self.addControl(self.cancelbutton)
 
@@ -726,10 +726,11 @@ class cInputWindow(xbmcgui.WindowDialog):
         self.close()
         if not self.cancelled:
             retval = ""
-            for objn in range(5):
+            for objn in range(9):
                 if self.chkstate[objn]:
                     retval += ("" if retval == "" else ",") + str(objn)
             return retval
+
         else:
             return ""
 
@@ -740,20 +741,19 @@ class cInputWindow(xbmcgui.WindowDialog):
         return False
 
     def onControl(self, control):
-        if str(control.getLabel()) == "OK":
+        if control == self.okbutton:
             if self.anythingChecked():
                 self.close()
-
-        elif str(control.getLabel()) == "Cancel":
+        elif control == self.cancelbutton:
             self.cancelled = True
             self.close()
-
         try:
             if 'xbmcgui.ControlButton' in repr(type(control)):
                 index = control.getLabel()
                 if index.isnumeric():
                     self.chkstate[int(index)-1] = not self.chkstate[int(index)-1]
                     self.chk[int(index)-1].setVisible(self.chkstate[int(index)-1])
+
         except:
             pass
 
