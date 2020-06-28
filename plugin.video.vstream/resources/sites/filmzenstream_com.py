@@ -10,7 +10,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import Unquote
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 
 SITE_IDENTIFIER = 'filmzenstream_com'
 SITE_NAME = 'Filmzenstream'
@@ -187,10 +187,12 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    
+    VSlog(sUrl)
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<iframe.+?data-src="([^"]+)"'
+    sPattern = '<iframe[^<>]+?(?:data-)*src="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
