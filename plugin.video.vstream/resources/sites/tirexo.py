@@ -165,14 +165,15 @@ def redi(url):#Pour la redirection avec /link
 def resolvenocloudflare(url,cookie):#Méthode classique 
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Cookie', cookie)
+    if cookie:
+        oRequestHandler.addHeaderEntry('Cookie', cookie)
     #oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
     sHtmlContent = oRequestHandler.request()
     return sHtmlContent
 
 def cloudflare(url):#Bypass cloudflare avec selenium
 
-    if url:#On passe par la méthode classique en cas que cloudflare n'est pas présent 
+    if url:#On passe par la méthode classique en cas ou cloudflare n'est pas présent 
         try:
             c = GestionCookie().Readcookie('tirexo_com')
             sHtmlContent = resolvenocloudflare(url,c)
@@ -188,6 +189,7 @@ def cloudflare(url):#Bypass cloudflare avec selenium
         
         from selenium.webdriver import Chrome
         from selenium.webdriver.chrome.options import Options
+        from selenium.webdriver import DesiredCapabilities
 
         #from selenium.webdriver.firefox.options import Options
         #from selenium.webdriver import Firefox
@@ -205,8 +207,18 @@ def cloudflare(url):#Bypass cloudflare avec selenium
     if True:
         driverPath = get_driver_path('chromedriver')
         options = Options()
-        options.headless = False
-        browser = webdriver.Chrome(driverPath, options=options)
+        
+        #options.add_argument("headless")
+        #options.add_argument("window-size=1920,1080")
+        options.add_argument("'user-agent={}".format(UA))
+        #options.add_argument("disable-gpu")
+        
+        capabilities = DesiredCapabilities.CHROME.copy()
+        capabilities['acceptSslCerts'] = True 
+        capabilities['acceptInsecureCerts'] = True
+
+        browser = webdriver.Chrome(driverPath, options=options,desired_capabilities=capabilities)
+
     else:
         path = r"C:\Users\XXXX\AppData\Roaming\Kodi\addons\script.module.selenium\bin\geckodriver\win32\geckodriver\geckodriver.exe"
         #path sert pour firefox
