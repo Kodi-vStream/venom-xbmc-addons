@@ -10,13 +10,13 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-# from resources.lib.util import cUtil #outils pouvant etre utiles
+# from resources.lib.util import cUtil  # outils pouvant etre utiles
 
 SITE_IDENTIFIER = 'hds_stream'
 SITE_NAME = 'Hds-stream'
 SITE_DESC = 'Film streaming HD complet en vf. Des films et séries pour les fan de streaming hds.'
 
-URL_MAIN = 'https://wwv.hds-stream.to/'
+URL_MAIN = 'https://vwv.hds-stream.to/'
 
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
@@ -125,7 +125,7 @@ def showMovies(sSearch=''):
 
     if sSearch:
         sUrl = sSearch
-        sPattern = '<div class="result-item">.*?<a href="([^"]+)"><img src="([^"]+)".*?<div class="title"><a.*?>([^"]+)</a.*?class="year">([^"]+)</span>.*?<div class="contenido"><p>([^"]+)</p>'
+        sPattern = 'class="result-item">.*?href="([^"]+)"><img src="([^"]+).*?class="title"><a.*?>([^<]+).*?class="year">([^<]+).*?class="contenido"><p>([^"]+)</p>'
     elif 'tendance/' in sUrl:
         sPattern = 'id="post-[0-9].+?<img src="([^"]+)".+?class="data".+?href="([^"]+)">([^<]+).*?, ([^"]+)</span>'
     else:
@@ -265,6 +265,7 @@ def showLinks():
             dType = aEntry[0]
             dPost = aEntry[1]
             dNum = aEntry[2]
+            pdata = 'action=doo_player_ajax&post=' + dPost + '&nume=' + dNum + '&type=' + dType
             sHost = 'Serveur' + dNum
 
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
@@ -274,9 +275,7 @@ def showLinks():
             oOutputParameterHandler.addParameter('referer', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('dType', dType)
-            oOutputParameterHandler.addParameter('dPost', dPost)
-            oOutputParameterHandler.addParameter('dNum', dNum)
+            oOutputParameterHandler.addParameter('pdata', pdata)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -290,23 +289,19 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     referer = oInputParameterHandler.getValue('referer')
-    dPost = oInputParameterHandler.getValue('dPost')
-    dNum = oInputParameterHandler.getValue('dNum')
-    dType = oInputParameterHandler.getValue('dType')
+    pdata = oInputParameterHandler.getValue('pdata')
 
-    pdata = 'action=doo_player_ajax&post=' + dPost + '&nume=' + dNum + '&type=' + dType
     oRequest = cRequestHandler(sUrl)
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
     oRequest.addHeaderEntry('Referer', referer)
     oRequest.addHeaderEntry('Accept', '*/*')
-    oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    oRequest.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7')
     oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
     oRequest.addParametersLine(pdata)
+    sHtmlContent = oRequest.request().replace('\\', '')
 
-    sHtmlContent = oRequest.request()
-
-    sPattern = '<iframe.+?src="([^"]+)"'
+    sPattern = '(http[^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -341,6 +336,7 @@ def ShowSerieSaisonEpisodes():
             dType = aEntry[0]
             dPost = aEntry[1]
             dNum = aEntry[2]
+            pdata = 'action=doo_player_ajax&post=' + dPost + '&nume=' + dNum + '&type=' + dType
             if (aEntry[3]).startswith('Unknown'):
                 sHost = 'Serveur' + dNum
             else:      
@@ -353,9 +349,7 @@ def ShowSerieSaisonEpisodes():
             oOutputParameterHandler.addParameter('referer', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('dType', dType)
-            oOutputParameterHandler.addParameter('dPost', dPost)
-            oOutputParameterHandler.addParameter('dNum', dNum)
+            oOutputParameterHandler.addParameter('pdata', pdata)
             oGui.addLink(SITE_IDENTIFIER, 'seriesHosters', sTitle, sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -369,23 +363,19 @@ def seriesHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     referer = oInputParameterHandler.getValue('referer')
-    dPost = oInputParameterHandler.getValue('dPost')
-    dNum = oInputParameterHandler.getValue('dNum')
-    dType = oInputParameterHandler.getValue('dType')
+    pdata = oInputParameterHandler.getValue('pdata')
 
-    pdata = 'action=doo_player_ajax&post=' + dPost + '&nume=' + dNum + '&type=' + dType
     oRequest = cRequestHandler(sUrl)
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
     oRequest.addHeaderEntry('Referer', referer)
     oRequest.addHeaderEntry('Accept', '*/*')
-    oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    oRequest.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7')
     oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
     oRequest.addParametersLine(pdata)
 
-    sHtmlContent = oRequest.request()
-
-    sPattern = '(?:<iframe|<IFRAME).+?(?:src|SRC)=(?:\'|")(.+?)(?:\'|")'
+    sHtmlContent = oRequest.request().replace('\\', '')
+    sPattern = '(http[^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
