@@ -18,8 +18,7 @@ SITE_IDENTIFIER = 'streamingdivx'
 SITE_NAME = 'Streamingdivx'
 SITE_DESC = 'Films VF en streaming.'
 
-# URL_MAIN = 'https://www.streamingdivx.ws/'  # Cloudflare
-URL_MAIN = 'https://www1.streamingdivx.ch/'
+URL_MAIN = 'https://ww1.streamingdivx.ws/'
 
 MOVIE_NEWS = (URL_MAIN + 'films.html', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenres')
@@ -269,6 +268,8 @@ def showLinks():
     oParser = cParser()
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
+    
+    sUrl = oRequest.getRealUrl()
 
     # syno
     sDesc = ''
@@ -321,7 +322,7 @@ def showHosters():
     sUrl = URL_MAIN + 'streamer.php?p=' + datanum + '&c=' + datacode
 
     oRequest = cRequestHandler(sUrl)
-    oRequest.setRequestType(1)
+    #oRequest.setRequestType(1)
     oRequest.addHeaderEntry('User-Agent', UA)
     oRequest.addHeaderEntry('Referer', sReferer)
     oRequest.request()
