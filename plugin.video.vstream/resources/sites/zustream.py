@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'zustream'
 SITE_NAME = 'ZuStream'
 SITE_DESC = 'Retrouvez un énorme répertoire de films, de séries et de mangas en streaming VF et VOSTFR complets'
 
-URL_MAIN = 'https://www.zustream.biz/'
+URL_MAIN = 'https://www.zustream.eu/'
 
 MOVIE_MOVIE = (True, 'showMenuFilms')
 MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
@@ -200,12 +200,12 @@ def showSearch():
         return
 
 
-def showMovies(sSearch = ''):
+def showMovies(sSearch=''):
     oGui = cGui()
 
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
-        sPattern = '<div class="image">.+?<a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)".+?<p>(.+?)<\/p>'
+        sPattern = '<div class="image">.+?<a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)".+?<p>(.+?)</p>'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -297,7 +297,7 @@ def showSxE():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = "<span class='title'>(.+?)<i>|<div class='numerando'>(.+?)</div><div class='episodiotitle'><a href='([^']+)'>"
+    sPattern = "<span class='title'>(.+?)<i>|class='numerando'>(.+?)</div><div class='episodiotitle'><a href='([^']+)'"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -341,16 +341,17 @@ def showLink():
     if (aResult[0] == True):
 
         # trie par numéro de serveur
-        sortedList = sorted(aResult[1], key = lambda item:item[2])
+        sortedList = sorted(aResult[1], key=lambda item: item[2])
         for aEntry in sortedList:
 
             sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
-            dtype = 'movie'# fonctionne pour Film ou Série (pour info : série -> dtype = 'tv')
+            dtype = 'movie'  # fonctionne pour Film ou Série (pour info : série -> dtype = 'tv')
             dpost = aEntry[0]
             dnum = aEntry[1]
+            pdata = 'action=doo_player_ajax&post=' + dpost + '&nume=' + dnum + '&type=' + dtype
             sTitle = aEntry[2].replace('Serveur', '').replace('Télécharger', '').replace('(', '').replace(')', '')
 
-            if ('VIP - ' in sTitle):# Les liens VIP ne fonctionnent pas
+            if ('VIP - ' in sTitle):  # Les liens VIP ne fonctionnent pas
                 continue
 
             sTitle = ('%s [%s]') % (sMovieTitle, sTitle)
@@ -360,9 +361,7 @@ def showLink():
             oOutputParameterHandler.addParameter('referer', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('data1', dtype)
-            oOutputParameterHandler.addParameter('data2', dpost)
-            oOutputParameterHandler.addParameter('data3', dnum)
+            oOutputParameterHandler.addParameter('pdata', pdata)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -375,11 +374,8 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     referer = oInputParameterHandler.getValue('referer')
-    dtype = oInputParameterHandler.getValue('data1')
-    dpost = oInputParameterHandler.getValue('data2')
-    dnum = oInputParameterHandler.getValue('data3')
+    pdata = oInputParameterHandler.getValue('pdata')
 
-    pdata = 'action=doo_player_ajax&post=' + dpost + '&nume=' + dnum + '&type=' + dtype
     oRequest = cRequestHandler(sUrl)
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
@@ -437,7 +433,7 @@ def showHosters():
                     redi = "https://" + aResult[0]
                     # VSlog(redi)
                     session = requests.Session()  # so connections are recycled
-                    resp = session.head(redi, allow_redirects = True)
+                    resp = session.head(redi, allow_redirects=True)
                     sHosterUrl = resp.url
 
         oHoster = cHosterGui().checkHoster(sHosterUrl)
