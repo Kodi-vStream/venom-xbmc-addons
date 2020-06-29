@@ -350,30 +350,30 @@ def showMovies(sSearch=''):
                 sQual = aEntry[5]
 
             sUrl = aEntry[0]
-            if not 'http' in sUrl:
+            if 'http' not in sUrl:
                 sUrl = URL_MAIN[:-1] + sUrl
 
             sTitle = sTitle.replace('film ', '')  # genre
             sTitle = sTitle.replace(' streaming', '')  # genre
-            
+
             sLang = ''
             if 'Vostfr' in sTitle:
                 sTitle = sTitle.replace('Vostfr', '')
                 sLang = 'VOSTFR'
-                
+
             sDisplayTitle = '%s [%s] (%s) (%s)' % (sTitle, sQual, sLang, sYear)
 
-            if not 'http' in sThumb:
+            if 'http' not in sThumb:
                 sThumb = URL_MAIN + sThumb
 
             # not found better way
             # sTitle = unicode(sTitle, errors='replace')
             # sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
 
-            # Vstream don't work with unicode url for the moment
+            # vStream don't work with unicode url for the moment
             # sThumb = unicode(sThumb, 'UTF-8')
             # sThumb = sThumb.encode('ascii', 'ignore').decode('ascii')
-            # sThumb=sThumb.decode('utf8')
+            # sThumb = sThumb.decode('utf8')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -401,7 +401,7 @@ def showMovies(sSearch=''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sHtmlContent = re.sub(" rel='nofollow'", "", sHtmlContent) #  next genre
+    sHtmlContent = re.sub(" rel='nofollow'", "", sHtmlContent)  # next genre
     sPattern = "href='([^']+)'>suiv »"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -428,7 +428,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern='data-src="([^"]+)" target="filmPlayer".+?span class="([^"]+)"><\/span>.+?class="([^"]+)"><\/span>'
+    sPattern = 'data-src="([^"]+)" target="filmPlayer".+?span class="([^"]+)"></span>.+?class="([^"]+)"></span>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -465,7 +465,7 @@ def serieHosters():
 
     # sHtmlContent = sHtmlContent.replace("\r\t", "")
     if '-saison-' in sUrl or 'anime' in sUrl:
-        sPattern = '<a class="n_episode2" title=".+?, *([A-Z]+) *,.+?" *href="([^"]+)">(.+?)<\/a><\/li>'
+        sPattern = '<a class="n_episode2" title=".+?, *([A-Z]+) *,.+?" *href="([^"]+)">(.+?)</a></li>'
     else:
         sPattern = '<div class="unepetitesaisons">[^<>]*?<a href="([^"]+)" title="([^"]+)">'
 
@@ -480,7 +480,7 @@ def serieHosters():
             if 'anime' in sUrl:
                 sUrl2 = aEntry[1]
                 sNM = aEntry[2].replace('<span>', '').replace('</span>', '')
-                sTitle = sMovieTitle + ' E'+sNM
+                sTitle = sMovieTitle + ' E' + sNM
                 sDisplayTitle = sTitle
             elif '-saison-' in sUrl:
                 sUrl2 = aEntry[1]
