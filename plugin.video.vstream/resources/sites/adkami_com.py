@@ -26,6 +26,10 @@ SERIE_NEWS = (URL_MAIN + 'serie', 'showMovies')
 SERIE_LIST = (URL_MAIN + 'video?search=&n=&g=&s=&v=&t=1&p=&order=&d1=&d2=&e=&m=&q=&l=', 'showAZ')
 SERIE_VIEWS = (URL_MAIN + 'video?search=&t=1&order=3', 'showMovies')
 
+SERIE_DRAMAS = (URL_MAIN + 'drama', 'showMovies')
+DRAMA_LIST = (URL_MAIN + 'video?search=&n=&g=&s=&v=&t=5&p=&order=&d1=&d2=&e=&m=&q=&l=', 'showAZ')
+DRAMA_VIEWS = (URL_MAIN + 'video?search=&t=5&order=3', 'showMovies')
+
 URL_SEARCH = (URL_MAIN + 'video?search=', 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -53,6 +57,14 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Les plus vues)', 'views.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_LIST[1], 'Dramas (Liste)', 'az.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_VIEWS[1], 'Dramas (Les plus vues)', 'dramas.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -116,8 +128,12 @@ def showAZ():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    import string
+    # pas d'url pour les non alpha, on utilise l'ancienne méthode épurée.
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
+    oGui.addDir(SITE_IDENTIFIER, 'showNoAlpha', '[COLOR teal] Lettre [COLOR red]123[/COLOR]', 'az.png', oOutputParameterHandler)
 
+    import string
     for i in string.ascii_lowercase:
 
         sUrl2 = sUrl + str(i)
@@ -125,6 +141,47 @@ def showAZ():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] Lettre [COLOR red]' + str(i).upper() + '[/COLOR]', 'az.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showNoAlpha():
+    oGui = cGui()
+    oParser = cParser()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    # Decoupage pour cibler la partie non alpha
+    sPattern = 'class="video-item-list-days"><h5>Lettre 123</h5>(.+?)<div id="A"'
+    sHtmlContent = oParser.parse(sHtmlContent, sPattern)
+
+    # regex pour listage sur la partie decoupée
+    sPattern = '<span class="top"><a href="([^"]+)"><span class="title">([^<]+)</span>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
+
+    if (aResult[0] == True):
+
+        for aEntry in aResult[1]:
+
+            sUrl2 = aEntry[0]
+            sTitle = aEntry[1]  # .decode("unicode_escape").encode("latin-1")
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+
+            if 't=1' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, 'series.png', '', '', oOutputParameterHandler)
+            elif 't=5' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, 'dramas.png', '', '', oOutputParameterHandler)
+            else:
+                oGui.addAnime(SITE_IDENTIFIER, 'showEpisode', sTitle, 'animes.png', '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -156,15 +213,17 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            sUrl = aEntry[0]
+            sUrl2 = aEntry[0]
             sTitle = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
             if 't=1' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, 'series.png', '', '', oOutputParameterHandler)
+            elif 't=5' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, 'dramas.png', '', '', oOutputParameterHandler)
             else:
                 oGui.addAnime(SITE_IDENTIFIER, 'showEpisode', sTitle, 'animes.png', '', '', oOutputParameterHandler)
 
