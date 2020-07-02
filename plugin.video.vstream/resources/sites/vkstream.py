@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# ressource https://wvv.vkstream.org/icon/logo.png
 
 import re
 from resources.lib.gui.hoster import cHosterGui
@@ -141,20 +140,17 @@ def showSeries(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            sTitle = aEntry[1]
             sUrl2 = aEntry[0]
+            sTitle = aEntry[1]
             sThumb = aEntry[2]
-            if sThumb.startswith('/storage'):
+            if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
-            sDesc = ''
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
-            # oOutputParameterHandler.addParameter('referer', sUrl) # URL d'origine, parfois utile comme référence
-            oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -163,7 +159,7 @@ def showSeries(sSearch=''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Page ' + str(number) + ' >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -182,29 +178,27 @@ def showSaisons():
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')  # ex:
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sDesc = oInputParameterHandler.getValue('sDesc')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     # description
-    sPattern = 'colo_cont">.+?>([^>]*)</p>'  # 3ms
+    sPattern = 'colo_cont">.+?>([^<]*)</p>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         sDesc = aResult[1][0]
-        sDesc = ('[COLOR coral]%s[/COLOR] %s') % (' SYNOPSIS : \r\n\r\n', sDesc)  # '\r\n' ? voir sur autre os retour de ligne
+        sDesc = ('[COLOR coral]%s[/COLOR] %s') % (' SYNOPSIS : \r\n\r\n', sDesc)
     else:
         sDesc = ''
 
-    sPattern = '<div class="item".+?"([^"]+)".+?"([^"]+)".+?<img src="([^"]+)".+?<h2>([^"]+)<.h2>'  # 3ms
+    sPattern = 'class="item">.+?href="([^"]+)".+?<h2>([^<]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    # g1 urls  g2 titre(no use)   g3 thumb   g4 saison
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -214,8 +208,8 @@ def showSaisons():
             if progress_.iscanceled():
                 break
 
-            sTitle = sMovieTitle + ' ' + aEntry[3]  # sTitle = aEntry[1] + '-' + aEntry[3]  # attention mettre espace
             sUrl2 = aEntry[0]
+            sTitle = sMovieTitle + ' ' + aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -241,7 +235,7 @@ def showEpisodes():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '"" href="([^"]*)".+?>([^>]*)<.+?ep_ar.+?span>([^<]*)<'
+    sPattern = '"" href="([^"]*)".+?ep_ar.+?span>([^<]*)<'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -252,10 +246,10 @@ def showEpisodes():
         for aEntry in aResult[1]:
 
             sUrl = aEntry[0]
-            sTitle =  sMovieTitle + ' ' + aEntry[1] + aEntry[2]
+            sTitle =  sMovieTitle + ' E' + aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)  # modife1
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
@@ -275,7 +269,7 @@ def seriesHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'class="p-1 a_server.+?href=..([^>]*)\'.+?alt="([^"]*)".+?icon.([^"]*).png'
+    sPattern = 'href=\'([^"]*)\'.+?alt="([^"]*)".+?icon.([^"]*).png'
     # g1 url g2 host g3 vostfr vf
 
     oParser = cParser()
@@ -285,17 +279,19 @@ def seriesHosters():
 
         for aEntry in aResult[1]:
 
-            if (str(aEntry[0]).find('streaming-video.html') >= 0):  # utilise parfois deux fois qload
+            if (str(aEntry[0]).find('streaming-video.html') >= 0):  # Fake
                 continue
 
-            sHosterUrl = URL_MAIN + aEntry[0]
+            sHosterUrl = URL_MAIN[:-1] + aEntry[0]
+            oRequestHandler = cRequestHandler(sHosterUrl)
+            oRequestHandler.request()
+            sHosterUrl = oRequestHandler.getRealUrl()
             sHosterName = aEntry[1]
             sLang = str(aEntry[2]).upper()
+            sDisplayTitle = ('%s (%s)') % (sMovieTitle, sLang)
 
             oHoster = cHosterGui().checkHoster(sHosterName)
             if (oHoster != False):
-                # sHosterName = sHosterName.lower()
-                sDisplayTitle = ('%s (%s)') % (sMovieTitle, sLang)
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
