@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+import re
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -258,7 +259,7 @@ def showHoster():
             if not oHoster:
                 continue
 
-            sTitle = ('%s  [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
+            sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
             lien = URL_MAIN + 'Players.php?PPl=' + sDataUrl + '&CData=' + sDataCode
 
             oOutputParameterHandler = cOutputParameterHandler()
