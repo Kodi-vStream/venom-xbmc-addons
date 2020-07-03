@@ -9,7 +9,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, dialog
+from resources.lib.comaddon import dialog
 
 SITE_IDENTIFIER = 'spion_com'
 SITE_NAME = 'Spi0n'
@@ -99,7 +99,6 @@ def showGenres():
         liste.append(['Trash (+18)', URL_MAIN + 'category/trash-gore/'])
 
     for sTitle, sUrl in liste:
-
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
@@ -129,14 +128,7 @@ def showMovies(sSearch=''):
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sPoster = aEntry[1]
             sUrlp = aEntry[2]
             sTitle = aEntry[3]
@@ -155,13 +147,11 @@ def showMovies(sSearch=''):
                 if (SPION_CENSURE == True):
                     if (sCat == 'NSFW') or (sCat == 'Trash'):
                         sPoster = LOGO_CSA
-                        oGui.addMovie(SITE_IDENTIFIER, 'showCensure', sTitle, '', sPoster,'', oOutputParameterHandler)
+                        oGui.addMisc(SITE_IDENTIFIER, 'showCensure', sTitle, '', sPoster,'', oOutputParameterHandler)
                     else:
-                        oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sPoster,'', oOutputParameterHandler)
+                        oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', sPoster,'', oOutputParameterHandler)
                 else:
-                    oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sPoster,'', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+                    oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', sPoster,'', oOutputParameterHandler)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
