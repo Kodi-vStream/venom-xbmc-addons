@@ -14,7 +14,7 @@ from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'planet_streaming'
 SITE_NAME = 'Planet Streaming'
-SITE_DESC = 'Films en Streaming complet  VF HD'
+SITE_DESC = 'Films en Streaming complet VF HD'
 
 URL_MAIN = 'https://www.streaming-planet.net/'
 
@@ -22,7 +22,7 @@ MOVIE_MOVIE = (True, 'load')
 MOVIE_NEWS = (URL_MAIN + 'regarder-film/', 'showMovies')
 MOVIE_TOP = (URL_MAIN + 'exclu/', 'showMovies')
 MOVIE_HD = (URL_MAIN + 'xfsearch/hd/', 'showMovies')
-MOVIE_GENRES = (True, 'showGenres')
+MOVIE_GENRES = (URL_MAIN, 'showGenres')
 
 URL_SEARCH = (URL_MAIN + 'index.php?do=search', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
@@ -69,37 +69,35 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
-    liste.append(['HD/HQ', URL_MAIN + 'xfsearch/hd/'])
-    liste.append(['Action', URL_MAIN + 'action/'])
-    liste.append(['Animation', URL_MAIN + 'animation/'])
-    liste.append(['Arts Martiaux', URL_MAIN + 'arts-martiaux/'])
-    liste.append(['Aventure', URL_MAIN + 'aventure/'])
-    liste.append(['Biopic', URL_MAIN + 'biopic/'])
-    liste.append(['Comédie', URL_MAIN + 'comedie/'])
-    liste.append(['Comédie Dramatique', URL_MAIN + 'comedie-dramatique/'])
-    liste.append(['Comédie Musicale', URL_MAIN + 'comedie-musicale/'])
-    liste.append(['Documentaire', URL_MAIN + 'documentaire/'])
-    liste.append(['Drame', URL_MAIN + 'drame/'])
-    liste.append(['Epouvante Horreur', URL_MAIN + 'epouvante-horreur/'])
-    liste.append(['Famille', URL_MAIN + 'famille/'])
-    liste.append(['Fantastique', URL_MAIN + 'fantastique/'])
-    liste.append(['Guerre', URL_MAIN + 'guerre/'])
-    liste.append(['Historique', URL_MAIN + 'historique/'])
-    liste.append(['Musical', URL_MAIN + 'musical/'])
-    liste.append(['Policier', URL_MAIN + 'policier/'])
-    liste.append(['Romance', URL_MAIN + 'romance/'])
-    liste.append(['Science Fiction', URL_MAIN + 'science-fiction/'])
-    liste.append(['Thriller', URL_MAIN + 'thriller/'])
-    liste.append(['Western', URL_MAIN + 'western/'])
-    # la suite fonctionne mais pas de menu sur le site
-    liste.append(['Espionnage', URL_MAIN + 'espionnage/'])
-    liste.append(['Péplum', URL_MAIN + 'peplum/'])
-    liste.append(['Divers', URL_MAIN + 'divers/'])
+    liste.append(['Action', sUrl + 'action/'])
+    liste.append(['Animation', sUrl + 'animation/'])
+    liste.append(['Arts Martiaux', sUrl + 'arts-martiaux/'])
+    liste.append(['Aventure', sUrl + 'aventure/'])
+    liste.append(['Biopic', sUrl + 'biopic/'])
+    liste.append(['Comédie', sUrl + 'comedie/'])
+    liste.append(['Comédie Dramatique', sUrl + 'comedie-dramatique/'])
+    liste.append(['Comédie Musicale', sUrl + 'comedie-musicale/'])
+    liste.append(['Documentaire', sUrl + 'documentaire/'])
+    liste.append(['Drame', sUrl + 'drame/'])
+    liste.append(['Epouvante Horreur', sUrl + 'epouvante-horreur/'])
+    liste.append(['Espionnage', sUrl + 'espionnage/'])
+    liste.append(['Famille', sUrl + 'famille/'])
+    liste.append(['Fantastique', sUrl + 'fantastique/'])
+    liste.append(['Guerre', sUrl + 'guerre/'])
+    liste.append(['Historique', sUrl + 'historique/'])
+    liste.append(['Musical', sUrl + 'musical/'])
+    liste.append(['Péplum', sUrl + 'peplum/'])
+    liste.append(['Policier', sUrl + 'policier/'])
+    liste.append(['Romance', sUrl + 'romance/'])
+    liste.append(['Science Fiction', sUrl + 'science-fiction/'])
+    liste.append(['Thriller', sUrl + 'thriller/'])
+    liste.append(['Western', sUrl + 'western/'])
 
     for sTitle, sUrl in liste:
-
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
@@ -114,18 +112,13 @@ def showMovies(sSearch=''):
     Nextpagesearch = oInputParameterHandler.getValue('Nextpagesearch')
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    bGlobal_Search = False
-
     if Nextpagesearch:
         sSearch = sUrl
 
     if sSearch:
 
         if URL_SEARCH[0] in sSearch:
-            bGlobal_Search = True
             sSearch = sSearch.replace(URL_SEARCH[0], '')
-
-        # sType = oInputParameterHandler.getValue('type')
 
         if Nextpagesearch:
             query_args = (('do', 'search'), ('subaction', 'search'), ('search_start', Nextpagesearch), ('story', sSearch))
@@ -140,14 +133,7 @@ def showMovies(sSearch=''):
         oRequestHandler.addParameters('User-Agent', UA)
         sHtmlContent = oRequestHandler.request()
 
-        # if (sType):
-           # if sType == 'serie':
-               # oRequestHandler.addParameters('catlist[]', '30')
-           # elif sType == 'film':
-               # oRequestHandler.addParameters('catlist[]', '3')
-
         sHtmlContent = oRequestHandler.request()
-
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -245,7 +231,7 @@ def showHosters():
 
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
-                # continue
+                continue
 
             sHosterUrl = aEntry[1]
 
