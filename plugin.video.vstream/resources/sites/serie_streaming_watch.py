@@ -22,10 +22,7 @@ URL_MAIN = 'https://ww1.series-en-streaming.xyz/'
 
 SERIE_SERIES = ('http://', 'load')
 SERIE_NEWS = (URL_MAIN + 'category/series/?orderby=date', 'showMovies')
-# SERIE_LIST = (URL_MAIN + 'category/series/', 'showMovies')
-SERIE_GENRES = (True, 'showGenres')
-
-ANIM_ENFANTS = (URL_MAIN + 'category/series/dessin-anime/', 'showMovies')
+SERIE_GENRES = (URL_MAIN, 'showGenres')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
@@ -42,11 +39,6 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-
-    # pas vraiment une liste
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
-    # oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Series (Liste)', 'listes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
@@ -67,43 +59,43 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
-    liste.append(['Action', URL_MAIN + 'category/series/action/'])
-    liste.append(['Animation', URL_MAIN + 'category/series/animation/'])
-    liste.append(['Arts Martiaux', URL_MAIN + 'category/series/arts-martiaux/'])
-    liste.append(['Aventure', URL_MAIN + 'category/series/aventure/'])
-    liste.append(['Biopic', URL_MAIN + 'category/series/biopic/'])
-    liste.append(['Classique', URL_MAIN + 'category/series/classique/'])
-    liste.append(['Comédie', URL_MAIN + 'category/series/comedie/'])
-    liste.append(['Comédie dramatique', URL_MAIN + 'category/series/comedie-dramatique/'])
-    liste.append(['Comédie musicale', URL_MAIN + 'category/series/comedie-musicale/'])
-    liste.append(['Dessin animés', URL_MAIN + 'category/series/dessin-anime/'])
-    liste.append(['Divers', URL_MAIN + 'category/series/divers/'])
-    liste.append(['Documentaire', URL_MAIN + 'category/series/documentaire/'])
-    liste.append(['Drama', URL_MAIN + 'category/series/drama/'])
-    liste.append(['Drame', URL_MAIN + 'category/series/drame/'])
-    liste.append(['Epouvante-Horreur', URL_MAIN + 'category/series/epouvante-horreur/'])
-    liste.append(['Espionnage', URL_MAIN + 'category/series/espionnage/'])
-    liste.append(['Famille', URL_MAIN + 'category/series/famille/'])
-    liste.append(['Fantastique', URL_MAIN + 'category/series/fantastique/'])
-    liste.append(['Guerre', URL_MAIN + 'category/series/guerre/'])
-    liste.append(['Historique', URL_MAIN + 'category/series/historique/'])
-    liste.append(['Judiciaire', URL_MAIN + 'category/series/judiciaire/'])
-    liste.append(['Médical', URL_MAIN + 'category/series/medical/'])
-    liste.append(['Musical', URL_MAIN + 'category/series/musical/'])
-    liste.append(['Péplum', URL_MAIN + 'category/series/peplum/'])
-    liste.append(['Policier', URL_MAIN + 'category/series/policier/'])
-    liste.append(['Romance', URL_MAIN + 'category/series/romance/'])
-    liste.append(['Science-fiction', URL_MAIN + 'category/series/science-fiction/'])
-    # liste.append(['Séries', URL_MAIN + 'category/series/'])
-    liste.append(['Soap', URL_MAIN + 'category/series/soap/'])
-    liste.append(['Thriller', URL_MAIN + 'category/series/thriller/'])
-    liste.append(['Webséries', URL_MAIN + 'category/series/webserie/'])
-    liste.append(['Western', URL_MAIN + 'category/series/western/'])
+    liste.append(['Action', sUrl + 'category/series/action/'])
+    liste.append(['Animation', sUrl + 'category/series/animation/'])
+    liste.append(['Arts Martiaux', sUrl + 'category/series/arts-martiaux/'])
+    liste.append(['Aventure', sUrl + 'category/series/aventure/'])
+    liste.append(['Biopic', sUrl + 'category/series/biopic/'])
+    liste.append(['Classique', sUrl + 'category/series/classique/'])
+    liste.append(['Comédie', sUrl + 'category/series/comedie/'])
+    liste.append(['Comédie dramatique', sUrl + 'category/series/comedie-dramatique/'])
+    liste.append(['Comédie musicale', sUrl + 'category/series/comedie-musicale/'])
+    liste.append(['Dessin animés', sUrl + 'category/series/dessin-anime/'])
+    liste.append(['Divers', sUrl + 'category/series/divers/'])
+    liste.append(['Documentaire', sUrl + 'category/series/documentaire/'])
+    liste.append(['Drama', sUrl + 'category/series/drama/'])
+    liste.append(['Drame', sUrl + 'category/series/drame/'])
+    liste.append(['Epouvante-Horreur', sUrl + 'category/series/epouvante-horreur/'])
+    liste.append(['Espionnage', sUrl + 'category/series/espionnage/'])
+    liste.append(['Famille', sUrl + 'category/series/famille/'])
+    liste.append(['Fantastique', sUrl + 'category/series/fantastique/'])
+    liste.append(['Guerre', sUrl + 'category/series/guerre/'])
+    liste.append(['Historique', sUrl + 'category/series/historique/'])
+    liste.append(['Judiciaire', sUrl + 'category/series/judiciaire/'])
+    liste.append(['Médical', sUrl + 'category/series/medical/'])
+    liste.append(['Musical', sUrl + 'category/series/musical/'])
+    liste.append(['Péplum', sUrl + 'category/series/peplum/'])
+    liste.append(['Policier', sUrl + 'category/series/policier/'])
+    liste.append(['Romance', sUrl + 'category/series/romance/'])
+    liste.append(['Science-fiction', sUrl + 'category/series/science-fiction/'])
+    liste.append(['Soap', sUrl + 'category/series/soap/'])
+    liste.append(['Thriller', sUrl + 'category/series/thriller/'])
+    liste.append(['Webséries', sUrl + 'category/series/webserie/'])
+    liste.append(['Western', sUrl + 'category/series/western/'])
 
     for sTitle, sUrl in liste:
-
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
@@ -216,12 +208,12 @@ def ShowEpisode():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def showHosters():
+def showLinks():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -253,12 +245,12 @@ def showHosters():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addEpisode(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def serieHosters():
+def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -317,7 +309,7 @@ def ProtectstreamBypass(url):
         if (aResult[0] == True):
             return aResult[1][0]
 
-        # recherche d'un lien redirigee
+        # recherche d'un lien redirigé
         sPattern = '<a class=.button. href=["\']([^<>"\']+?)["\'] target=._blank.>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
