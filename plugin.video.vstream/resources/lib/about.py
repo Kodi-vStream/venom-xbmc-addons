@@ -73,7 +73,10 @@ class cAbout:
             # delay mise a jour
             time_sleep = datetime.timedelta(hours = 72)
             time_now = datetime.datetime.now()
-            time_service = self.__strptime(service_time, '%Y-%m-%d %H:%M:%S.%f')
+            if len(service_time) > 19:
+                time_service = self.__strptime(service_time, '%Y-%m-%d %H:%M:%S.%f')
+            else:
+                time_service = self.__strptime(service_time, '%Y-%m-%d %H:%M:%S')
             # pour test
             # if (time_sleep):
             if time_now - time_service > time_sleep:
