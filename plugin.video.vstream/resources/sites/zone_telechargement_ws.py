@@ -13,23 +13,140 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 # Fonction de vStream qui remplace urllib.quote, pour simplifier le passage en python 3
 from resources.lib.util import Quote, cUtil
+from resources.lib.config import GestionCookie
+import time
+import xbmcvfs
+import xbmcplugin
+import xbmc
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 headers = {'User-Agent': UA}
 
 SITE_IDENTIFIER = 'zone_telechargement_ws'
-SITE_NAME = '[COLOR violet]Zone-Telechargement[/COLOR]'
+SITE_NAME = '[COLOR violet]Zone-Telechargement [Selenium][/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
-URL_HOST = 'https://wwvw.zone-annuaire.com/'
+URL_HOST = 'https://www.zt-za.com/'
 
+def resolvenocloudflare(url,cookie):#Méthode classique 
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    if cookie:
+        oRequestHandler.addHeaderEntry('Cookie', cookie)
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    sHtmlContent = oRequestHandler.request()
+    return sHtmlContent
 
-def GetURL_MAIN():
-    ADDON = addon()
-    MemorisedHost = ''
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    Sources = oInputParameterHandler.getValue('function')
+def cloudflare(url):#Bypass cloudflare avec selenium
+
+    if url:#On passe par la méthode classique en cas ou cloudflare n'est pas présent 
+        try:
+            c = GestionCookie().Readcookie('tirexo_com')
+            sHtmlContent = resolvenocloudflare(url,c)
+            VSlog("cookies encore valables")
+            return sHtmlContent
+        except:
+            pass
+            
+    try:
+        from selenium import webdriver
+        from selenium.webdriver.common.driver_utils import get_driver_path
+        from selenium.webdriver.support.ui import WebDriverWait
+        
+        from selenium.webdriver import Chrome
+        from selenium.webdriver.chrome.options import Options
+        from selenium.webdriver import DesiredCapabilities
+
+        #from selenium.webdriver.firefox.options import Options
+        #from selenium.webdriver import Firefox
+
+        #from selenium.webdriver.common.by import By
+        #from selenium.webdriver.support import expected_conditions as EC
+        
+        VSlog("Chargement Selenium ok")
+        
+    except:
+        pass
+    
+    CloudflarePassed = False
+    
+    if True:
+        driverPath = get_driver_path('chromedriver')
+        options = Options()
+        options.headless = True
+        
+        #options.add_argument("headless")
+        #options.add_argument("window-size=1920,1080")
+        options.add_argument("'user-agent={}".format(UA))
+        #options.add_argument("disable-gpu")
+        
+        capabilities = DesiredCapabilities.CHROME.copy()
+        capabilities['acceptSslCerts'] = True 
+        capabilities['acceptInsecureCerts'] = True
+
+        browser = webdriver.Chrome(driverPath, options=options,desired_capabilities=capabilities)
+    else:
+        path = r"C:\Users\XXXX\AppData\Roaming\Kodi\addons\script.module.selenium\bin\geckodriver\win32\geckodriver\geckodriver.exe"
+        #path sert pour firefox
+        browser = webdriver.Firefox(executable_path=path, options=options, log_path="")
+    
+    browser.get(url)
+    
+    #On boucle si Cloudflare n'est pas résolu.
+    #On loop que 3 fois maxi.
+    loop = 0
+    while CloudflarePassed == False:
+        if loop > 3:
+            break
+        
+        #On se sert du cookie pour voir si Cloudflare est résolu
+        Cookies = browser.get_cookies()
+        if "cf_clearance" in str(Cookies):
+            break
+        
+        #Si pas de protection CF
+        if 'Checking your browser before accessing' not in browser.page_source:
+            break
+        
+        #On récupere le timeout de maniere dynamique
+        try:
+            time.sleep(float(
+                        re.search(
+                            r'submit\(\);\r?\n\s*},\s*([0-9]+)',
+                            browser.page_source
+                        ).group(1)
+                    ) / float(1000) + 1)
+
+        except:
+            #Sauf sur la nouvelle version où il n'est pas présent
+            time.sleep(6)
+            
+        VSlog("loop : " + str(loop))
+
+        loop = loop + 1
+    
+    VSlog("""Cloudflare Passed, Cookie : """ + str({cookie['name']:cookie['value'] for cookie in browser.get_cookies()})
+    + """\n User Agent : """ + browser.execute_script("return navigator.userAgent"))
+    
+    #Sauvegarde des cookies
+    c = ""
+    for cookie in browser.get_cookies():
+        c = c + cookie['name'] + '=' + cookie['value'] + ';'
+    c = str(c[:-1])
+    
+    GestionCookie().SaveCookie('zone_telechargement_ws', c)
+        
+    page_source = (browser.page_source).encode('utf-8', errors='replace')
+    browser.close()
+
+    return page_source
+
+#def GetURL_MAIN():
+    #ADDON = addon()
+    #MemorisedHost = ''
+    #oInputParameterHandler = cInputParameterHandler()
+    #sUrl = oInputParameterHandler.getValue('siteUrl')
+    #Sources = oInputParameterHandler.getValue('function')
 
     # z = oInputParameterHandler.getAllParameter()
     # VSlog(z)
@@ -38,40 +155,40 @@ def GetURL_MAIN():
     # quand vstream load a partir du menu home on passe >> callplugin
     # quand vstream fabrique une liste de plugin pour menu(load site globalRun and call function search) >> search
     # quand l'url ne contient pas celle déjà enregistrer dans settings et que c'est pas dlprotect on active.
-    if not (Sources == 'callpluging' or Sources == 'globalSources' or Sources == 'search') and not ADDON.getSetting('ZT')[6:] in sUrl and not 'dl-protect1.' in sUrl and not 'zt-protect.' in sUrl:
-        oRequestHandler = cRequestHandler(URL_HOST)
-        oRequestHandler.request()
-        MemorisedHost = oRequestHandler.getRealUrl()
-        if MemorisedHost is not None and MemorisedHost != '':
-            if not 'cf_chl_jschl_tk' in MemorisedHost:
-                ADDON.setSetting('ZT', MemorisedHost)
-                VSlog("ZT url  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('ZT'))
-        else:
-            ADDON.setSetting('ZT', URL_HOST)
-            VSlog("Url non changer car egal a None le site peux etre surchager utilisation de >> ADDON.getSetting('ZT')")
+    #if not (Sources == 'callpluging' or Sources == 'globalSources' or Sources == 'search') and not ADDON.getSetting('ZT')[6:] in sUrl and not 'dl-protect1.' in sUrl and not 'zt-protect.' in sUrl:
+        #oRequestHandler = cRequestHandler(URL_HOST)
+        #sHtmlContent = oRequestHandler.request()
+        #MemorisedHost = oRequestHandler.getRealUrl()
+        #if MemorisedHost is not None and MemorisedHost != '':
+            #if not 'cf_chl_jschl_tk' in MemorisedHost:
+                #ADDON.setSetting('ZT', MemorisedHost)
+                #VSlog("ZT url  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('ZT'))
+        #else:
+            #ADDON.setSetting('ZT', URL_HOST)
+            #VSlog("Url non changer car egal a None le site peux etre surchager utilisation de >> ADDON.getSetting('ZT')")
 
-        return ADDON.getSetting('ZT')
-    else:
+        #return ADDON.getSetting('ZT')
+    #else:
         # si pas de zt dans settings on récup l'url une fois dans le site
-        if not ADDON.getSetting('ZT') and not (Sources == 'callpluging' or Sources == 'globalSources' or Sources == 'search'):
-            oRequestHandler = cRequestHandler(URL_HOST)
-            oRequestHandler.request()
-            MemorisedHost = oRequestHandler.getRealUrl()
-            if MemorisedHost is not None and MemorisedHost != '':
-                if not 'cf_chl_jschl_tk' in MemorisedHost:
-                    ADDON.setSetting('ZT', MemorisedHost)
-                    VSlog("ZT url vide  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('ZT'))
-            else:
-                ADDON.setSetting('ZT', URL_HOST)
-                VSlog("Url non changer car egal a None le site peux etre surcharger utilisation de >> ADDON.getSetting('ZT')")
+        #if not ADDON.getSetting('ZT') and not (Sources == 'callpluging' or Sources == 'globalSources' or Sources == 'search'):
+            #oRequestHandler = cRequestHandler(URL_HOST)
+            # sHtmlContent = oRequestHandler.request()
+            #MemorisedHost = oRequestHandler.getRealUrl()
+            #if MemorisedHost is not None and MemorisedHost != '':
+                #if not 'cf_chl_jschl_tk' in MemorisedHost:
+                    #ADDON.setSetting('ZT', MemorisedHost)
+                    #VSlog("ZT url vide  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('ZT'))
+            #else:
+                #ADDON.setSetting('ZT', URL_HOST)
+                #VSlog("Url non changer car egal a None le site peux etre surcharger utilisation de >> ADDON.getSetting('ZT')")
 
-            return ADDON.getSetting('ZT')
-        else:
-            VSlog("ZT pas besoin d'url")
-            return ADDON.getSetting('ZT')
+            #return ADDON.getSetting('ZT')
+        #else:
+            #VSlog("ZT pas besoin d'url")
+            #return ADDON.getSetting('ZT')
 
 
-URL_MAIN = GetURL_MAIN()
+URL_MAIN = 'https://www.zt-za.com/'
 
 URL_SEARCH = (URL_MAIN + 'engine/ajax/controller.php?mod=filter&q=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + 'engine/ajax/controller.php?mod=filter&q=', 'showMovies')
@@ -124,9 +241,49 @@ SPECT_NEWS = (URL_MAIN + 'spectacles/', 'showMovies')  # derniers spectacles
 CONCERT_NEWS = (URL_MAIN + 'concert/', 'showMovies')  # derniers concerts
 AUTOFORM_VID = (URL_MAIN + 'autoformations-videos/', 'showMovies')
 
+def showInstall():
+    xbmc.executebuiltin('InstallAddon(script.module.selenium)')
+    
+def showDetail():
+    dialog().VStextView(desc="""Explication pour le changement:
+Nous avons remarqué que ces derniers temps nous avons beaucoup de problèmes avec cloudflare.
+C'est pourquoi nous avons changé de méthode pour passer la protection.
+Nous utiliserons votre navigateur afin de récupérer le bon contenu du site et non cloudflare
+En aucun cas nous utiliseront vos données confidentielles.
+
+
+Pour avoir plus d'information rendez vous sur notre github officiel:
+https://github.com/Kodi-vStream/venom-xbmc-addons.
+Pour l'installation et le fonctionnement de selenium:
+https://github.com/Kodi-vStream/venom-xbmc-addons/issues/2948.
+
+
+Le fonctionnement:
+Une fenêtre va s'ouvrir pour ouvrir un serveur local(et aussi le navigateur de temps en temps) et récupérer le contenu du site.
+Veuillez ne pas le(s) fermer(s) il(s) se fermera(ont) automatiquement.
+Pour le navigateur nous passons par Google Chrome car c'est le plus simple à configurer malheureusement.
+Si vous n'avez pas Google Chrome alors ça ne fonctionnera pas donc je vous conseille de l'installer à jour important !!!
+Veuillez noter que nous réfléchissons à une solution pour utiliser les autres navigateurs
+
+
+PS:
+Si Jamais de temps en temps ça ne passe pas retentez une deuxième fois.
+Veuillez noter aussi qu'il vous faut un ordinateur Windows ou linux (Mac est incompatible pour l'instant).
+Pour les appareils de types Android,Ios,Libreelec,Xbox,et autres ne sont pas compatible avec selenium et c'est impossible de résoudre ce problème désolé
+
+                                        Merci d'avoir lu notre explication
+                                        Vive Vstream !!!!""", title="Fonctionnement du site")
 
 def load():
     oGui = cGui()
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showDetail', '[COLOR red]Explication pour le site[/COLOR]', 'films.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showInstall', '[COLOR blue]Cliquer ici pour installer selenium[/COLOR]', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -368,10 +525,11 @@ def showMovies(sSearch=''):
     if sSearch:
         sUrl = sSearch
 
-    oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-    sHtmlContent = oRequestHandler.request()
+    #oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
+    #oRequestHandler.addHeaderEntry('User-Agent', UA)
+    #oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    #sHtmlContent = oRequestHandler.request()
+    sHtmlContent = cloudflare(sUrl)
 
     sPattern = '<img class="mainimg.+?src="([^"]+)"(?:.|\s)+?<a href="([^"]+)">([^"]+)</a>.+?<span class=".+?<b>([^"]+)</span>.+?">([^<]+)</span>'
 
@@ -479,10 +637,11 @@ def showMoviesLinks():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-    sHtmlContent = oRequestHandler.request()
+    #oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
+    #oRequestHandler.addHeaderEntry('User-Agent', UA)
+    #oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    #sHtmlContent = oRequestHandler.request()
+    sHtmlContent = cloudflare(sUrl)
     
     # Affichage du texte
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles :[/COLOR]')
@@ -549,10 +708,11 @@ def showSeriesLinks():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-    sHtmlContent = oRequestHandler.request()
+    #oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
+    #oRequestHandler.addHeaderEntry('User-Agent', UA)
+    #oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    #sHtmlContent = oRequestHandler.request()
+    sHtmlContent = cloudflare(sUrl)
 
     # Affichage du texte
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles :[/COLOR]')
@@ -660,10 +820,11 @@ def showHosters():
     sDesc = oInputParameterHandler.getValue('sDesc')
     sYear = oInputParameterHandler.getValue('sYear')
 
-    oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-    sHtmlContent = oRequestHandler.request()
+    #oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
+    #oRequestHandler.addHeaderEntry('User-Agent', UA)
+    #oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    #sHtmlContent = oRequestHandler.request()
+    sHtmlContent = cloudflare(sUrl)
 
     # Si ca ressemble aux lien premiums on vire les liens non premium
     if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent:
@@ -671,8 +832,10 @@ def showHosters():
 
     oParser = cParser()
 
-    sPattern = '<font color=red>([^<]+?)</font>|<b><div style=".+?">([^<]+)</div>.+?class="btnToLink".+?href="([^"]+)">([^<]+)'
+    #sPattern = '<font color=red>([^<]+?)</font>|<b><div style=".+?">([^<]+)</div>.+?class="btnToLink".+?href="([^"]+)">([^<]+)'
+    sPattern = '<font color="red".+?</span>([^><]+)</font>|<b><div style=".+?"><span class=".+?" rel=".+?"></span>([^><]+)</div>.+?class="btnToLink".+?href="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    VSlog(aResult)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -711,16 +874,17 @@ def showSeriesHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
 
-    oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-    sHtmlContent = oRequestHandler.request()
+    #oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
+    #oRequestHandler.addHeaderEntry('User-Agent', UA)
+    #oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    #sHtmlContent = oRequestHandler.request()
+    sHtmlContent = cloudflare(sUrl)
 
     # Pour les series on fait l'inverse des films on vire les liens premiums
     if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent or 'premium' in sHtmlContent:
         sHtmlContent = CutPremiumlinks(sHtmlContent)
 
-    sPattern = '<div style="font-weight:bold;color:.+?">(.+?)</div>|<a class="btnToLink".+?href="(.+?)">(.+?)</a></b>'
+    sPattern = '<div style="font-weight:bold;color.+?".+?</span>([^><]+)|<a class="btnToLink".+?href="([^"]+)".+?([^><]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -733,6 +897,7 @@ def showSeriesHosters():
                 break
 
             if aEntry[0]:
+                #oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
                 if 'Télécharger' in aEntry[0]:
                     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]' + aEntry[0] + '[/COLOR]')
                 else:
