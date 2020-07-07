@@ -8,6 +8,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 from resources.lib.util import Quote, cUtil
+return false
 
 import re
 
