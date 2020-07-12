@@ -22,7 +22,7 @@ URL_MAIN = 'https://ww1.series-en-streaming.xyz/'
 
 SERIE_SERIES = ('http://', 'load')
 SERIE_NEWS = (URL_MAIN + 'category/series/?orderby=date', 'showMovies')
-SERIE_GENRES = (URL_MAIN, 'showGenres')
+SERIE_GENRES = (True, 'showGenres')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
@@ -59,8 +59,7 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sUrl = URL_MAIN
 
     liste = []
     liste.append(['Action', sUrl + 'category/series/action/'])
