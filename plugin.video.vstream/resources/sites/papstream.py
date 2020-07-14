@@ -34,7 +34,7 @@ SERIE_ANNEES = (True, 'showSerieYears')
 
 ANIM_ANIMS = (URL_MAIN + 'animes.html', 'showAnimesMenu')
 ANIM_NEWS = (URL_MAIN + 'animes.html', 'showMovies')
-ANIM_GENRES = (URL_MAIN + 'animes/', 'showGenres')
+#ANIM_GENRES = (URL_MAIN + 'animes/', 'showGenres')
 ANIM_ANNEES = (True, 'showAnimeYears')
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0'
@@ -105,9 +105,9 @@ def showAnimesMenu():
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genres)', 'genres.png', oOutputParameterHandler)
+#     oOutputParameterHandler = cOutputParameterHandler()
+#     oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
+#     oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANNEES[0])
@@ -244,7 +244,9 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if '/series/' in sUrl2 or '/animes/' in sUrl2:
+            if '/animes/' in sUrl2:
+                oGui.addAnime(SITE_IDENTIFIER, 'showSaisons', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
+            elif '/series/' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLink', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)
@@ -255,7 +257,7 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('page-([0-9]+)', sNextPage).group(1)
+            number = re.search('-([0-9]+).html', sNextPage).group(1)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
@@ -303,14 +305,7 @@ def showSaisons():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
         for aEntry in reversed(aResult[1]):
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sUrl2 = aEntry[0]
             if sUrl2.startswith('/'):
                 sUrl2 = URL_MAIN[:-1] + sUrl2
@@ -322,9 +317,7 @@ def showSaisons():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            oGui.addTV(SITE_IDENTIFIER, 'ShowEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+            oGui.addEpisode(SITE_IDENTIFIER, 'ShowEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -346,14 +339,7 @@ def ShowEpisodes():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sTitle = aEntry[0]
             sUrl2 = URL_MAIN[:-1] + aEntry[1]
 
@@ -363,9 +349,7 @@ def ShowEpisodes():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            oGui.addTV(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -421,17 +405,11 @@ def showHosters():
 
     if sUrl.startswith('/'):
         sUrl = URL_MAIN[:-1] + sUrl
-    # headers = {'User-Agent': UA, 'Referer': refUrl}
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('Referer', refUrl)
     oRequestHandler.request()
     vUrl = oRequestHandler.getRealUrl()
-
-    # request = urllib2.Request(sUrl, None, headers)
-    # reponse = urllib2.urlopen(request)
-    # vUrl = reponse.geturl()
-    # reponse.close()
 
     if vUrl:
         sHosterUrl = vUrl

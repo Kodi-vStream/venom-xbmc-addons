@@ -301,7 +301,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDateReplay', sDateReplay)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters4', sTitle, '', sThumb, sUrl2, oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters4', sTitle, '', sThumb, sUrl2, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 

@@ -204,7 +204,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
             oGui.addMovie(SITE_IDENTIFIER, 'showHoster', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
         progress_.VSclose(progress_)
 
@@ -236,6 +236,7 @@ def showHoster():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sDesc = oInputParameterHandler.getValue('sDesc')
 
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
@@ -252,7 +253,6 @@ def showHoster():
             sDataUrl = aEntry[0]
             sDataCode = aEntry[1]
             sHost = aEntry[2].capitalize()
-            sDesc = ''
 
             # filtrage des hosters
             oHoster = cHosterGui().checkHoster(sHost)

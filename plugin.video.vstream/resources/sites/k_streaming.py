@@ -340,7 +340,7 @@ def showSaisons():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -362,7 +362,7 @@ def showEpisodes():
 
     if (aResult[0] == True):
 
-        for aEntry in aResult[1]:
+        for aEntry in reversed(aResult[1]):
 
             sTitle = aEntry[0].replace(' , VOSTFR , ', '')  # Systematiquement affiché en vostfr
             sTitle = re.sub('- Saison \d+', '', sTitle)  # double affichage de la saison

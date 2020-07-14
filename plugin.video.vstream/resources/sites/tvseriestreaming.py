@@ -7,6 +7,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
+from resources.lib.comaddon import progress
 from resources.lib.util import Unquote
 import re
 
@@ -133,12 +134,21 @@ def AlphaDisplay():
         # Trie des séries par ordre alphabétique
         series = sorted(series, key=lambda serie: serie[0])
         
+        total = len(series)
+        progress_ = progress().VScreate(SITE_NAME)
+
         for sTitle, sUrl in series:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oGui.addDir(SITE_IDENTIFIER, 'showS_E', sTitle, 'series.png', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showS_E', sTitle, '', '', '', oOutputParameterHandler)
 
+        progress_.VSclose(progress_)
+        
     oGui.setEndOfDirectory()
 
 
@@ -223,7 +233,8 @@ def showMovies(sSearch=''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    #news
+    
+    # derniers épisodes
     if 'derniere-et-meilleures-serie-en-streaming' in sUrl:
         sPattern = '<a href="([^"]+)" class="list-group-item.+?>(.+?)<b>(.+?)</b>'
         sHtmlContent = oParser.abParse(sHtmlContent, "<h4>Les derniers episodes", "les plus vues")
@@ -235,20 +246,20 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    titles = set()
     if (aResult[0] == True):
+        total = len(aResult[1])
+        progress_ = progress().VScreate(SITE_NAME)
+
         for aEntry in aResult[1]:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
+            
+            # Derniers épisodes
             if 'derniere-et-meilleures-serie-en-streaming' in sUrl:
                 sUrl2 = aEntry[0]
-                sTitle = aEntry[1].replace(' - ', '')
+                sTitle = aEntry[1].replace(' - ', ' ') + aEntry[2].replace(' ','')
                 sThumb = 'news.png'
-
-                # Remove duplicate series (same title)
-                key = sTitle
-                if key in titles:
-                    continue
-                titles.add(key)
-
             else:
                 sTitle = aEntry[0].replace('Streaming', '')
                 sUrl2 = aEntry[1]
@@ -263,6 +274,8 @@ def showMovies(sSearch=''):
                 oGui.addDir(SITE_IDENTIFIER, 'showLink', sTitle, sThumb, oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showS_E', sTitle, '', sThumb, '', oOutputParameterHandler)
+
+        progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -313,7 +326,7 @@ def showS_E():
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                    oGui.addTV(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, '', oOutputParameterHandler)
+                    oGui.addEpisode(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, '', oOutputParameterHandler)
 
             else:#saison
                 if aEntry[0]:
@@ -327,7 +340,7 @@ def showS_E():
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
-                    oGui.addTV(SITE_IDENTIFIER, 'showS_E', sTitle, '', sThumb, '', oOutputParameterHandler)
+                    oGui.addEpisode(SITE_IDENTIFIER, 'showS_E', sTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -371,7 +384,7 @@ def showLink():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

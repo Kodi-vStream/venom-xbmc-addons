@@ -420,14 +420,7 @@ def showMoviesLink():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
         for aEntry, VAR in zip(aResult[1], var):
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sUrl2 = URL_MAIN + url.replace("'+nhash+'", VAR)
             sTitle = ('%s [%s]') % (sMovieTitle, aEntry)
 
@@ -437,9 +430,7 @@ def showMoviesLink():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sCookie', Cookie)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'decryptTime', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+            oGui.addLink(SITE_IDENTIFIER, 'decryptTime', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -464,14 +455,7 @@ def showSaisonEpisodes():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             if aEntry[0]:
                 ses = aEntry[0]
 
@@ -489,9 +473,7 @@ def showSaisonEpisodes():
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oOutputParameterHandler.addParameter('sCookie', Cookie)
 
-                oGui.addTV(SITE_IDENTIFIER, 'decryptTime', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+                oGui.addEpisode(SITE_IDENTIFIER, 'decryptTime', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -529,7 +511,6 @@ def decryptTime():
         sPattern = ' <img onclick="choose\(\'([^\']+)\'\).+?src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        dialogs = dialog()
         Filename = []
         i = 0
 

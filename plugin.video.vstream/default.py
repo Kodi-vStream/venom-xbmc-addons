@@ -310,7 +310,7 @@ def searchGlobal():
     except:
         pass
 
-    oGui.addText('globalSearch', addons.VSlang(30081) % sSearchText, 'none.png')
+    oGui.addText('globalSearch', addons.VSlang(30081) % sSearchText, 'search.png')
     sSearchText = Quote(sSearchText)
 
     count = 0
@@ -336,6 +336,8 @@ def searchGlobal():
         oGui.addText('globalSearch')  # "Aucune information"
 
     progress_.VSclose(progress_)
+
+    cGui.CONTENT = 'files'
 
     oGui.setEndOfDirectory()
     return True

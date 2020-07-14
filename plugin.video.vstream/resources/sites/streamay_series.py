@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'streamay_series'
 SITE_NAME = 'StreamAy Séries'
 SITE_DESC = 'Séries en Streaming'
 
-URL_MAIN = 'https://wvv.streamay.site/'
+URL_MAIN = 'https://wvw.streamay.site/'
 
 SERIE_SERIES = (URL_MAIN + 'series.html', 'showMovies')
 SERIE_NEWS = (URL_MAIN, 'showSeriesNews')
@@ -90,7 +90,6 @@ def showGenres():
     liste.append(['Thriller', URL_MAIN + 'series/thriller/'])
 
     for sTitle, sUrl in liste:
-
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
@@ -116,12 +115,7 @@ def showSerieYears():
 def AlphaList():
     oGui = cGui()
 
-    progress_ = progress().VScreate(SITE_NAME)
     for i in range(0, 36):
-        progress_.VSupdate(progress_, 36)
-        if progress_.iscanceled():
-            break
-
         if (i < 10):
             sTitle = chr(48 + i)
         else:
@@ -131,8 +125,6 @@ def AlphaList():
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/alphabet/' + sTitle.lower())
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] Lettre [COLOR red]' + sTitle + '[/COLOR][/COLOR]', 'listes.png', oOutputParameterHandler)
-
-    progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -264,13 +256,7 @@ def ShowSaisons():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sUrl = aEntry[0]
             sThumb = aEntry[1]
             if sThumb.startswith('/'):
@@ -282,9 +268,7 @@ def ShowSaisons():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -309,7 +293,6 @@ def showEpisodes():
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-
             sUrl = aEntry[0]
             sTitle =  sMovieTitle + ' ' + aEntry[1]
 
@@ -317,18 +300,19 @@ def showEpisodes():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-
-            oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def seriesHosters():
+def showLinks():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
 
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
@@ -340,7 +324,6 @@ def seriesHosters():
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-
             sUrl = aEntry[0]
             sHost = aEntry[1].capitalize()
             if 'Lecteur hd vip' in sHost:
@@ -357,12 +340,12 @@ def seriesHosters():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addLink(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, sThumb, '', oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def showLinks():
+def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')

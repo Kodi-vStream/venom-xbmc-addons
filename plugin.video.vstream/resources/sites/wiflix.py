@@ -302,14 +302,7 @@ def sHowEpisodes():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             if aEntry[0]:
                 if 'epblocks' in aEntry[0]:
                     continue
@@ -323,8 +316,6 @@ def sHowEpisodes():
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
-        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 

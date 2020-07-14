@@ -238,14 +238,7 @@ def showEpisodes():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
         for aEntry in sorted(aResult[1], key=lambda aResult: aResult[1]):
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sQual = aEntry[2]
             # Changemement de formats ...x... -> ....P
             if '1920×' in sQual or '1440×' in sQual or '1904×' in sQual:
@@ -271,9 +264,7 @@ def showEpisodes():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('serieID',serieID)
             oOutputParameterHandler.addParameter('idEpisode', idEpisode)
-            oGui.addAnime(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -294,14 +285,7 @@ def showMusic():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sTitle = aEntry[2] + ' ' + aEntry[1]
             mp3Url = aEntry[0]
 
@@ -309,9 +293,7 @@ def showMusic():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('mp3Url', mp3Url)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'showMp3', sTitle, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showMp3', sTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -323,8 +305,8 @@ def showMp3():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    if 'mp3' in mp3Url:
-        sHosterUrl = mp3Url
+#     if 'mp3' in mp3Url:
+#         sHosterUrl = mp3Url
 
     oHoster = cHosterGui().checkHoster('m3u8')
     if (oHoster != False):

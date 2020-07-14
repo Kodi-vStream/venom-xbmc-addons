@@ -284,14 +284,7 @@ def showEpisode():
 
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            total = len(aResult[1])
-
-            progress_ = progress().VScreate(SITE_NAME)
             for aEntry in aResult[1]:
-                progress_.VSupdate(progress_, total)
-                if progress_.iscanceled():
-                    break
-
                 if aEntry[0]:
                     oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0].capitalize() + '[/COLOR]')
                 else:
@@ -308,8 +301,6 @@ def showEpisode():
                     oOutputParameterHandler.addParameter('sDesc', sDesc)
 
                     oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
-
-            progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 

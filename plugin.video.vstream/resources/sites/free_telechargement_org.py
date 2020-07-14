@@ -399,8 +399,12 @@ def showSearchResult(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            if 'series-' in sUrl or '-Saison' in sUrl:
+            if '/mangas' in sUrl:
+                oGui.addAnime(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            elif 'series-' in sUrl or '-Saison' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            elif '-Sagas' in sUrl:
+                oGui.addMoviePack(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -456,10 +460,10 @@ def showMovies():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            if 'series-' in sUrl or '-Saison' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
-            elif '/mangas' in sUrl:
+            if '/mangas' in sUrl:
                 oGui.addAnime(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            elif 'series-' in sUrl or '-Saison' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             elif '-Sagas' in sUrl:
                 oGui.addMoviePack(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
@@ -627,15 +631,10 @@ def showSeriesHosters():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oGui.addText(SITE_IDENTIFIER, sMovieTitle + aResult1[1][0])
 
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
-                oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler = cOutputParameterHandler()
             if total == 1:
                 sTitle = '[COLOR coral]' + 'Liens Premium' + '[/COLOR]'
                 oOutputParameterHandler.addParameter('siteUrl', aEntry)
@@ -647,8 +646,6 @@ def showSeriesHosters():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sTitle, sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 

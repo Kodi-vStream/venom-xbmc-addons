@@ -66,7 +66,7 @@ def showGenres():
     liste.append(['Action', URL_MAIN + 'action/'])
     liste.append(['Afro', URL_MAIN + 'afro/'])
     liste.append(['Animation', URL_MAIN + 'animation/'])
-    liste.append(['Arts Martiaux', URL_MAIN + 'arts-martiaux/'])
+    liste.append(['Arts Martiaux', URL_MAIN + 'art-martiaux/'])
     liste.append(['Aventure', URL_MAIN + 'aventure/'])
     liste.append(['Biographique', URL_MAIN + 'biographique/'])
     liste.append(['Biopic', URL_MAIN + 'biopic/'])
@@ -94,8 +94,8 @@ def showGenres():
     liste.append(['Romance', URL_MAIN + 'romance/'])
     liste.append(['Science fiction', URL_MAIN + 'science-fiction/'])
     liste.append(['Slasher', URL_MAIN + 'slasher/'])
-    liste.append(['Sport event', URL_MAIN + 'sport-event/'])
-    liste.append(['Terreur', URL_MAIN + 'terreur/'])
+    liste.append(['Sport', URL_MAIN + 'sport-event/'])
+    liste.append(['Terreur', URL_MAIN + 'thriller/terreur/'])
     liste.append(['Thriller', URL_MAIN + 'thriller/'])
     liste.append(['Western', URL_MAIN + 'western/'])
 
@@ -225,13 +225,7 @@ def showSaisons():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-        for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
+        for aEntry in reversed(aResult[1]):
             sUrl = aEntry[0]
             sThumb = aEntry[1]
             sTitle = aEntry[2].replace(' Streaming', '')
@@ -240,9 +234,7 @@ def showSaisons():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -281,13 +273,7 @@ def showEpisodes():
     ListeUrl = ListeUrl + aResult[1]
 
     if (aResult[0] == True):
-        total = len(ListeUrl)
-        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in ListeUrl:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sUrl = aEntry[0]
             sTitle = sMovieTitle + ' Episode' + aEntry[1]
 
@@ -297,8 +283,6 @@ def showEpisodes():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
     # si un seul episode
     else:

@@ -173,13 +173,7 @@ def showLinks():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sUrl = URL_MAIN[:-1] + aEntry[0]
             sDisplayName = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, aEntry[1])
 
@@ -188,9 +182,7 @@ def showLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sYear', sYear)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayName, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayName, sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
