@@ -399,6 +399,7 @@ def showSaisonsEpisodes():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oOutputParameterHandler.addParameter('sYear', sYear)  # utilisé par le skin
                 oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -412,6 +413,7 @@ def showLinks():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
 
     # refomatage url
     sUrl = ReformatUrl(sUrl)
@@ -451,7 +453,7 @@ def showLinks():
             oOutputParameterHandler.addParameter('sType', sType)
             oOutputParameterHandler.addParameter('idMov', idMov)
             oOutputParameterHandler.addParameter('idHeb', idHeb)
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
