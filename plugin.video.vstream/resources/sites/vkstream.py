@@ -18,7 +18,6 @@ URL_MAIN = 'https://wvv.vkstream.org/'
 
 SERIE_SERIES = (URL_MAIN + 'series/page/1', 'showSeries')
 SERIE_GENRES = (True, 'showGenres')
-SERIE_NEWS = (URL_MAIN, 'showSeries')  # sur la page correspond à =' dernieres series en streaming'  ; ne contient pas les derniers episodes vf et vost du site
 SERIE_VIEWS = (URL_MAIN + 'top-series/page/1', 'showSeries')
 SERIE_ANNEES = (True, 'showYears')
 
@@ -41,10 +40,6 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
@@ -154,14 +149,14 @@ def showSeries(sSearch=''):
 
         progress_.VSclose(progress_)
 
+    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/page/([0-9]+)', sNextPage).group(1)
+            number = re.search('([0-9]+)$', sNextPage).group(1)
             oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Page ' + str(number) + ' >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
 
 
