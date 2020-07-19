@@ -629,8 +629,8 @@ class cGuiElement:
         if not self.getItemValue('trailer'):
             if self.getTrailer():
                 self.addItemValues('trailer', self.getTrailer())
-            else:
-                self.addItemValues('trailer', self.getDefaultTrailer())
+            # else:
+                # self.addItemValues('trailer', self.getDefaultTrailer())
 
         # Used only if there is data in db, overwrite getMetadonne()
         w = self.getWatched()
