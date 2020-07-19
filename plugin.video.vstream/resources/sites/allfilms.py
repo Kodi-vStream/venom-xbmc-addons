@@ -15,8 +15,7 @@ SITE_IDENTIFIER = 'allfilms'
 SITE_NAME = 'All Films'
 SITE_DESC = 'Films'
 
-URL_MAIN = 'https://www.allfilms.net/'
-# URL_MAIN = 'https://voir.allfilms.co/'  # clone
+URL_MAIN = 'https://wvvw.allfilms.co/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + 'recherche-', 'showMovies')
