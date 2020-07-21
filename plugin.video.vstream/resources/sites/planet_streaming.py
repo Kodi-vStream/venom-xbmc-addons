@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'planet_streaming'
 SITE_NAME = 'Planet Streaming'
 SITE_DESC = 'Films en Streaming complet VF HD'
 
-URL_MAIN = 'https://www.streaming-planet.net/'
+URL_MAIN = 'https://streaming-planet.net/'
 
 MOVIE_MOVIE = (True, 'load')
 MOVIE_NEWS = (URL_MAIN + 'regarder-film/', 'showMovies')
@@ -159,7 +159,7 @@ def showMovies(sSearch=''):
                 sThumb = URL_MAIN[:-1] + sThumb
 
             sTitle = aEntry[1]
-            siteUrl = aEntry[2]
+            siteUrl = re.sub('www\.', '', aEntry[2])
             sQual = cUtil().removeHtmlTags(aEntry[3])
             sQual = sQual.replace(':', '').replace(' ', '').replace(',', '/')
             sYear = re.search('(\d{4})', aEntry[4]).group(1)
@@ -207,7 +207,7 @@ def __checkForNextPage(sHtmlContent):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        return aResult[1][0]
+        return re.sub('www\.', '', aResult[1][0])
 
     return False
 
