@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'hds_stream'
 SITE_NAME = 'Hds-stream'
 SITE_DESC = 'Film streaming HD complet en vf. Des films et séries pour les fan de streaming hds.'
 
-URL_MAIN = 'https://wvv.hds-stream.to/'
+URL_MAIN = 'https://waw.hds-stream.to/'
 
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_GENRES = (URL_MAIN, 'showGenres')
