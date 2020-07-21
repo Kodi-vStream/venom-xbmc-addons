@@ -13,7 +13,7 @@ import xbmc
 import xbmcvfs
 import xbmcplugin
 
-import re, random
+import re, random, requests
 #from test.test_socket import try_address
 
 
@@ -80,9 +80,9 @@ SITE_DESC = 'Films/Séries/Reportages/Concerts'
             #return ADDON.getSetting('Tirexo')
 
 #Teste pour le moment avec une url fixe.
-URL_MAIN = "https://tirexo.com/"
+URL_MAIN = "https://www.tirexo.pro/"
 #URL_MAIN = "https://tirexo.net/" #Les regex sont différent mais il y a pas cloudflare 
-URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=2&story=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=1&result_from=1&story=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=15&story=', 'showMovies')
 URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=32&story=', 'showMovies')
 URL_SEARCH_MISC = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=39&story=', 'showMovies')
@@ -144,6 +144,21 @@ CONCERT_NEWS = (URL_MAIN + 'musiques-mp3-gratuite/souscat_music-Concerts/', 'sho
 #bypass cloudflare avec selenium
 
 def redi(url):#Pour la redirection avec /link
+    if url:
+        try:#On passe par la méthode request quand cloudflare n'est pas présent
+            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0',
+                       'Content-Type': 'text/html; charset=UTF-8',
+                       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                       'Accept-encoding': 'gzip, deflate, br',
+                       'Accept-language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7,nl;q=0.6,it;q=0.5,es;q=0.4,de;q=0.3'}
+            r = requests.get(url, allow_redirects=False, headers=headers)
+            r.status_code
+            r.url
+            result = r.headers['location']
+            return result
+        except:
+            pass
+            
     try:
         from selenium import webdriver
         from selenium.webdriver.common.driver_utils import get_driver_path
@@ -570,7 +585,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = sUrl + sSearchText + '&search_start=1'
+        sUrl = sUrl + sSearchText# + '&search_start=0'
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -603,15 +618,15 @@ def showMovies(sSearch = ''):
     
 
     if sSearch or "index" in sUrl: # en mode recherche
-        sPattern = '<a class="mov-t nowrap" href="\/(films.+?|telecharger-series.+?|animes.+?|emissions-tv-documentaires.+?)" title="([^"]+)".+?data-content="([^"]+)".+?<img src="\/([^"]+)".+?<div style="height: 51px" class="mov-c nowrap">'
+        sPattern = '<a class="mov-t nowrap" href="(https://www.tirexo.pro/films.+?|https://www.tirexo.pro/telecharger-series.+?|https://www.tirexo.pro/animes.+?|https://www.tirexo.pro/emissions-tv-documentaires.+?)" title="([^"]+)".+?data-content="([^"]+)".+?<img src="\/([^"]+)".+?<div style="height: 51px" class="mov-c nowrap">'
     elif 'collections/' in sUrl:
-        sPattern = '<a class="mov-t nowrap" href=".+?".+?<img src="\/([^"]+)" width="200px" height="320px" title="([^"]+)".+?data-link="\/([^"]+)"'
+        sPattern = '<a class="mov-t nowrap" href=".+?".+?<img src="\/([^"]+)" width="200px" height="320px" title="([^"]+)".+?data-link="([^"]+)"'
     else:
-        sPattern = '<a class="mov-t nowrap" href="\/([^"]+)">  </a>.+?data-content="([^"]+)".+?<img src="\/([^"]+)".+?title="([^"]+)"'
+        sPattern = '<a class="mov-t nowrap" href="([^"]+)">.+?data-content="([^"]+)".+?<img src="\/([^"]+)".+?title="([^"]+)"'
         
     sHtmlContent = cloudflare(sUrl)
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #VSlog(aResult)
+    VSlog(aResult)
 
     titles = set()
     if (aResult[0] == True):
@@ -623,18 +638,18 @@ def showMovies(sSearch = ''):
                 break
             
             if 'collections/' in sUrl:
-                sUrl2 = URL_MAIN + aEntry[2]
+                sUrl2 = aEntry[2]
                 sDesc = ""
                 sTitle = aEntry[1]
                 sThumb = aEntry[0]
                 sYear = "0000"
             elif sSearch or "index" in sUrl:
-                sUrl2 = URL_MAIN + aEntry[0]
+                sUrl2 = aEntry[0]
                 sDesc = aEntry[2]
                 sTitle = aEntry[1]
                 sThumb = URL_MAIN + aEntry[3]
             else:
-                sUrl2 = URL_MAIN + aEntry[0]
+                sUrl2 = aEntry[0]
                 sDesc = aEntry[1]
                 sTitle = aEntry[3]
                 sThumb = URL_MAIN + aEntry[2]
@@ -803,8 +818,9 @@ def showMoviesLinks():
     oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     #on regarde si dispo dans d'autres qualités
-    sPattern = '<a href="\/([^"]+)"><span class="otherquality">.+?<b>([^"]+)<\/b>.+?<b>([^"]+)<\/b>'
+    sPattern = '<a href="([^"]+)"><span class="otherquality">.+?<b>([^<>]+)</b>.+?<b>([^<>]+)</b>'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    VSlog(aResult)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
@@ -980,7 +996,7 @@ def showHosters():
     # Ajout des liens DL
     # Gere si un Hoster propose plusieurs liens
     # Retire les resultats proposés en plusieurs parties (ce sont des .rar)
-    sPattern = '<th scope="col" class="no-sort"><img src=.+?>([^><]+)</th>|class="download".+?href="([^"]+)">Télécharger <'
+    sPattern = '<th scope="col" class="no-sort"><img src=.+?>([^><]+)</th>|class=\'download\'.+?href=\'([^\']+)\'>Télécharger <'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #VSlog(aResult)
 
@@ -1109,10 +1125,18 @@ def Display_protected_link():
 
     if 'link' in sUrl:
         #Temporairement car la flemme de se battre avec les redirections
-        oRequestHandler = cRequestHandler(sUrl)
-        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        #headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0',
+                   #'Content-Type': 'text/html; charset=UTF-8',
+                   #'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                   #'Accept-encoding': 'gzip, deflate, br',
+                   #'Accept-language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7,nl;q=0.6,it;q=0.5,es;q=0.4,de;q=0.3'}
+        #r = requests.get(sUrl, allow_redirects=False, headers=headers)
+        #r.status_code
+        #r.url
+        #result = r.headers['location']
+        #sUrl = result
         sUrl = redi(sUrl)
-        VSlog(sUrl)
+        #VSlog(sUrl)
         
         
 
@@ -1201,12 +1225,21 @@ def DecryptDlProtecte(url):#Passe par selenium
         
     except:
         pass
-    CloudflarePassed = False
-    driverPath = get_driver_path('chromedriver')
-    options = Options()
-    options.headless = True #Faut le laisser comme ça sinon ça ne fonctionne pas 
-    browser = webdriver.Chrome(driverPath, options=options)
-    browser.get(url)
+    
+    
+    #Selenium est désactivé car dl protect ne l'utilise plus mais laissé le code quand même 
+    
+    
+    
+    
+    
+    
+    #CloudflarePassed = False
+    #driverPath = get_driver_path('chromedriver')
+    #options = Options()
+    #options.headless = True #Faut le laisser comme ça sinon ça ne fonctionne pas 
+    #browser = webdriver.Chrome(driverPath, options=options)
+    #browser.get(url)
     
     #On boucle si Cloudflare n'est pas résolu.
     #On loop que 3 fois maxi.
@@ -1237,46 +1270,36 @@ def DecryptDlProtecte(url):#Passe par selenium
     #loop = loop + 1
     
     
-    browser.find_element(By.NAME, "submit").click()
-    page_source = (browser.page_source).encode('utf-8', errors='replace')
-    browser.close()
-    print(page_source)
+    #browser.find_element(By.NAME, "submit").click()
+    #page_source = (browser.page_source).encode('utf-8', errors='replace')
+    #browser.close()
+    #print(page_source)
     #VSlog(page_source)
-    return page_source
+    #return page_source
     
+    
+    #Nouvelle méthode pour dl protect qui passe par requests 
+    oRequestHandler = cRequestHandler(url)
+    sHtmlContent = oRequestHandler.request()
+    sPattern = '<input.+?name="lien" value="([^"]+)">'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        value = aResult
+        #VSlog(value)
+    s=requests.Session()
+    payload_data = {'lien': value}
+    response = s.post(url, data=payload_data)
+    result = response.content
+    sHtmlContent = result
 
-    #passe = 0
+    return sHtmlContent
 
-    # 1ere Requete on tente de voir si ca passe du 1er coup
-    #cookies = GestionCookie().Readcookie('www_dl-protect1_co')
-    #sHtmlContent = exectProtect(cookies, url)
-    #sHtmlContent = cloudflare(url)
-
-    #while (re.search('<input type="submit" class="continuer" name="submit" value="Continuer" />', sHtmlContent)):
-        #if passe == 0:
-            #cookies = GestionCookie().Readcookie('www_dl-protect1_co')
-            #passe = passe + 1
-
-        #elif passe <= 3:
-            #On brute force pour voir
-            #sHtmlContent = exectProtect(cookies, url)
-            #passe = passe + 1
-
-        #else:
-            #break
-
-    #fh = open('d:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
-
-    #return sHtmlContent
-
-def exectProtect(cookies, url):
+def exectProtect(cookies, url): #Ne sert plus 
     #Tout ca a virer et utiliser oRequestHandler.addMultipartFiled('sess_id': sId, 'upload_type': 'url', 'srv_tmp_url': sTmp) quand ca marchera
     import string
     _BOUNDARY_CHARS = string.digits
     boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(30))
-    multipart_form_data = {'submit': 'continuer', 'submit': 'Continuer'}
+    multipart_form_data = {'hidden': 'continuer', 'hidden': 'Continuer'}
     data, headersMulti = encode_multipart(multipart_form_data, {}, boundary)
 
     #2 eme requete pour avoir le lien
