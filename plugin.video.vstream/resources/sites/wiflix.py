@@ -122,7 +122,7 @@ def showMovies(sSearch=''):
         sUrl = sSearch.replace(' ', '+')
 
         pdata = 'do=search&subaction=search&story=' + sUrl + '&titleonly=3&all_word_seach=1&catlist[]=1'
-        
+
         oRequest = cRequestHandler(URL_SEARCH[0])
         # oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
@@ -134,7 +134,7 @@ def showMovies(sSearch=''):
         oRequest.addParametersLine(pdata)
 
         sHtmlContent = oRequest.request()
-        
+
         # fh = open('c:\\test.txt', "w")
         # fh.write(sHtmlContent)
         # fh.close()
@@ -311,6 +311,11 @@ def sHowEpisodes():
 
             if aEntry[1]:
                 sHosterUrl = aEntry[1].replace('/vd.php?u=', '')
+                if 'players.wiflix.net' in sHosterUrl:
+                    oRequestHandler = cRequestHandler(sHosterUrl)
+                    oRequestHandler.request()
+                    sHosterUrl = oRequestHandler.getRealUrl()
+
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     oHoster.setDisplayName(sMovieTitle)
@@ -337,6 +342,11 @@ def showHosters():
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry.replace('/vd.php?u=', '')
+            if 'players.wiflix.net' in sHosterUrl:
+                oRequestHandler = cRequestHandler(sHosterUrl)
+                oRequestHandler.request()
+                sHosterUrl = oRequestHandler.getRealUrl()
+
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
