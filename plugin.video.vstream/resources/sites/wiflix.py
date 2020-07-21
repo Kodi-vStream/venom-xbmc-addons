@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'wiflix'
 SITE_NAME = 'Wiflix'
 SITE_DESC = 'Films & Séries en streaming'
 
-URL_MAIN = 'https://wuw.wiflix.net/'
+URL_MAIN = 'https://ww7.wiflix.net/'
 
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'film-en-streaming/', 'showMovies')
@@ -310,7 +310,7 @@ def sHowEpisodes():
                     oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0].replace('ep', 'Episode ').replace('vs', ' Vostfr').replace('vf', ' VF') + '[/COLOR]')
 
             if aEntry[1]:
-                sHosterUrl = aEntry[1]
+                sHosterUrl = aEntry[1].replace('/vd.php?u=', '')
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     oHoster.setDisplayName(sMovieTitle)
@@ -336,7 +336,7 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = aEntry
+            sHosterUrl = aEntry.replace('/vd.php?u=', '')
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
