@@ -16,13 +16,13 @@ SITE_IDENTIFIER = 'serie_streaminghd'
 SITE_NAME = 'Série-StreamingHD'
 SITE_DESC = 'Séries en streaming vf, vostfr'
 
-URL_MAIN = 'https://www.streaminghd-serie.com/'
+URL_MAIN = 'http://series-streaminghd.com/'
 
 SERIE_SERIES = (True, 'load')
 SERIE_NEWS = (URL_MAIN, 'showSeries')
-SERIE_HD = (URL_MAIN + 'saison-complete/', 'showSeries')
-SERIE_VFS = (URL_MAIN + 'regarder-series/vf-hd/', 'showSeries')
-SERIE_VOSTFRS = (URL_MAIN + 'regarder-series/vostfr-hd/', 'showSeries')
+SERIE_TOP = (URL_MAIN + 'top-serie/', 'showSeries')
+SERIE_VFS = (URL_MAIN + 'series-vf/', 'showSeries')
+SERIE_VOSTFRS = (URL_MAIN + 'series-vostfr/', 'showSeries')
 
 URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&story=', 'showSeries')
 URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&story=', 'showSeries')
@@ -41,8 +41,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_HD[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_HD[1], 'Séries (Saisons Complète)', 'series.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_TOP[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_TOP[1], 'Séries (Populaire)', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
@@ -78,8 +78,9 @@ def showSeries(sSearch=''):
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = 'fullstream fullstreaming"><img src="([^"]+)".+?alt="([^"]+)".+?class="mov-title"><a href="([^"]+)'
+    sPattern = 'fullstream fullstreaming"><img src="([^"]+)".+?alt="([^"]+)".+?"xqualitytaftaf"><strong>(.+?)<.+?<a href="([^"]+)" *>(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
@@ -96,15 +97,29 @@ def showSeries(sSearch=''):
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
 
-            sTitle = re.sub('- Saison', 'Saison', aEntry[1])
-            siteUrl = aEntry[2]
+            sTitle = aEntry[1]
+            saison = aEntry[2]
+            siteUrl = aEntry[3]
+            sLang = aEntry[4]
+
+            if '{title}' in sTitle:
+                sTitle = sLang
+                sLang = ''
+            elif 'VF - VOSTFR' in sLang:
+                sLang = 'VF/VOSTFR'
+            elif 'VF' in sLang:
+                sLang = 'VF'
+            elif 'VOSTFR' in sLang:
+                sLang = 'VOSTFR'
+
+            sDisplayTitle = ('%s %s [%s]') % (sTitle, saison, sLang)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'series.png', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -142,27 +157,18 @@ def showHosters():
 
     oParser = cParser()
 
-    # On separe liens vostfr - vf
-    sPattern = '<div class="VOSTFR-tab">(.+?)<div class="VF-tab">'
-    sPattern2 = '<div class="VF-tab">(.+?)<div id="fsElementsContainer">'
-
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    aResult2 = oParser.parse(sHtmlContent, sPattern2)
-
-    # Liens VOSTFR
-    if (aResult[0] == True):
-
-        sPattern = '<a href="([^"]+)".+?</i> EPS ([0-9]+)'
-        aResult = oParser.parse(aResult[1][0], sPattern)
+    # Liens VF
+    sHtmlTab = oParser.abParse(sHtmlContent, '<div class="VF-tab">', '<div id="fsElementsContainer">')
+    if sHtmlTab:
+        sPattern = '<a href="([^"]+)".+?</i> Episode *([0-9]+)'
+        aResult = oParser.parse(sHtmlTab, sPattern)
 
         if (aResult[0] == True):
-
-            oGui.addText(SITE_IDENTIFIER, '[COLOR red]Langue VOSTFR[/COLOR]')
+            oGui.addText(SITE_IDENTIFIER, '[COLOR red]Langue VF[/COLOR]')
 
             for aEntry in aResult[1]:
-
                 sHosterUrl = aEntry[0]
-                sMovieTitle2 = sMovieTitle + 'episode ' + aEntry[1]
+                sMovieTitle2 = sMovieTitle + ' episode ' + aEntry[1]
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
@@ -170,20 +176,20 @@ def showHosters():
                     oHoster.setFileName(sMovieTitle2)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
-    # Liens VF
-    if (aResult2[0] == True):
+    # Liens VOSTFR
+    sHtmlTab = oParser.abParse(sHtmlContent, '<div class="VOSTFR-tab">', '</div class="VF-tab">')
+    if sHtmlTab:
 
-        sPattern = '<a href="([^"]+)".+?</i> EPS ([0-9]+)'
-        aResult = oParser.parse(aResult2[1][0], sPattern)
+        sPattern = '<a href="([^"]+)".+?</i> Ep *([0-9]+)'
+        aResult = oParser.parse(sHtmlTab, sPattern)
 
         if (aResult[0] == True):
 
-            oGui.addText(SITE_IDENTIFIER, '[COLOR red]Langue VF[/COLOR]')
+            oGui.addText(SITE_IDENTIFIER, '[COLOR red]Langue VOSTFR[/COLOR]')
 
             for aEntry in aResult[1]:
-
                 sHosterUrl = aEntry[0]
-                sMovieTitle2 = sMovieTitle + 'episode ' + aEntry[1]
+                sMovieTitle2 = sMovieTitle + ' episode ' + aEntry[1]
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
