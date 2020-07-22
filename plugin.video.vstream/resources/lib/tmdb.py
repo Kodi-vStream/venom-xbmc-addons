@@ -64,7 +64,7 @@ class cTMDb:
 
     URL = 'https://api.themoviedb.org/3/'
     URL_TRAILER = 'plugin://plugin.video.youtube/play/?video_id=%s' # ancien : 'plugin://plugin.video.youtube/?action=play_video&videoid=%s'
-    CACHE = 'special://userdata/addon_data/plugin.video.vstream/video_cache.db'
+    CACHE = 'special://home/userdata/addon_data/plugin.video.vstream/video_cache.db'
 
     # important seul xbmcvfs peux lire le special
     try:
@@ -73,7 +73,6 @@ class cTMDb:
         REALCACHE = xbmc.translatePath(CACHE)
 
     ADDON = addon()
-    DIALOG = dialog()
 
     def __init__(self, api_key='', debug=False, lang='fr'):
 
@@ -218,7 +217,8 @@ class cTMDb:
 
             sText = (self.ADDON.VSlang(30421)) % (url, result['request_token'])
 
-            oDialog = self.DIALOG.VSyesno(sText)
+            DIALOG = dialog()
+            oDialog = DIALOG.VSyesno(sText)
             if (oDialog == 0):
                 return False
 
@@ -227,10 +227,10 @@ class cTMDb:
 
                 if 'success' in result and result['success']:
                     self.ADDON.setSetting('tmdb_session', str(result['session_id']))
-                    self.DIALOG.VSinfo(self.ADDON.VSlang(30000))
+                    DIALOG.VSinfo(self.ADDON.VSlang(30000))
                     return
                 else:
-                    self.DIALOG.VSerror('Erreur' + self.ADDON.VSlang(30000))
+                    DIALOG.VSerror('Erreur' + self.ADDON.VSlang(30000))
                     return
 
             # xbmc.executebuiltin('Container.Refresh')
@@ -407,11 +407,14 @@ class cTMDb:
         _meta['premiered'] = ''
         _meta['year'] = ''
         _meta['trailer'] = ''
+        _meta['tagline'] = ''
         _meta['genre'] = ''
         _meta['studio'] = ''
         _meta['status'] = ''
         _meta['credits'] = ''
         _meta['cast'] = []
+        _meta['director'] = ''
+        _meta['writer'] = ''
         _meta['poster_path'] = ''
         _meta['cover_url'] = ''
         _meta['backdrop_path'] = ''
@@ -438,7 +441,7 @@ class cTMDb:
             _meta['media_type'] = meta['media_type']
 
         if 'release_date' in meta:
-            _meta['release_date'] = meta['release_date']
+            _meta['premiered'] = meta['release_date']
         if 'premiered' in meta and meta['premiered']:
             _meta['premiered'] = meta['premiered']
         elif 's_premiered' in meta and meta['s_premiered']:
@@ -450,9 +453,7 @@ class cTMDb:
             _meta['year'] = meta['s_year']
         else:
             try:
-                if 'release_date' in _meta and _meta['release_date']:
-                    _meta['year'] = int(_meta['release_date'][:4])
-                elif 'premiered' in _meta and _meta['premiered']:
+                if 'premiered' in _meta and _meta['premiered']:
                     _meta['year'] = int(_meta['premiered'][:4])
                 elif 'first_air_date' in meta and meta['first_air_date']:
                     _meta['year'] = int(meta['first_air_date'][:4])
@@ -477,7 +478,8 @@ class cTMDb:
             elif 'episode_run_time' in meta and meta['episode_run_time']:
                 duration = int(meta['episode_run_time'][0])
             
-            duration *= 60  # Convertir les minutes TMDB en secondes pour KODI
+            if duration < 300 : # en minutes
+                duration *= 60  # Convertir les minutes TMDB en secondes pour KODI
             _meta['duration'] = duration
         except:
             _meta['duration'] = 0
@@ -517,11 +519,11 @@ class cTMDb:
                 else:
                     _meta['genre'] += ' / ' + genre
 
-        if 'trailer' in meta:   # Lecture du cache
+        trailer_id = ''
+        if 'trailer' in meta and meta['trailer']:   # Lecture du cache
             _meta['trailer'] = meta['trailer']
-        elif 'trailers' in meta:    # Un film reconnu par TMDB
+        elif 'trailers' in meta:    # Trailer d'un film retourné par TMDB
             try:    # Recherche de la BA en français
-                trailer_id = ''
                 trailers = meta['trailers']['youtube']
                 for trailer in trailers:
                     if trailer['type'] == 'Trailer':
@@ -534,17 +536,17 @@ class cTMDb:
                 _meta['trailer'] = self.URL_TRAILER % trailer_id
             except:
                 pass
-        elif 'videos' in meta and meta['videos']:   # Une série TMDB
+        elif 'videos' in meta and meta['videos']:   # Trailer d'une série retourné par TMDB
             try:    # Recherche de la BA en français
-                trailer_id = ''
                 trailers = meta['videos']
                 if len(trailers['results']) >0:
                     for trailer in trailers['results']:
                         if trailer['type'] == 'Trailer' and trailer['site'] == 'YouTube':
+                            trailer_id = trailer['key'] # Au moins c'est un trailer, pas forcement français
                             if 'fr' in trailer['iso_639_1']:
                                 trailer_id = trailer['key']
                                 break
-                    # pas de trailer français, on prend le premier
+                    # pas de trailer, on prend la premiere vidéo disponible
                     if not trailer_id:
                         trailer_id = meta['videos'][0]['key']
                     _meta['trailer'] = self.URL_TRAILER % trailer_id
@@ -569,31 +571,45 @@ class cTMDb:
         else:
             _meta['playcount'] = 0
 
-        if 'tagline' in meta:
+        if 'tagline' in meta and meta['tagline']:
             _meta['tagline'] = meta['tagline']
 
         if 'status' in meta:
             _meta['status'] = meta['status']
 
-        # if 'cast' in meta:
-            # _meta['cast'] = json.loads(_meta['cast'])
-        if 'credits' in meta and meta['credits']:
-            listCredits = eval(str(meta['credits']))
-            # _meta['credits'] = str(meta['credits']).strip('[]')
-            licast = []
-            for cast in listCredits['cast']:
-                licast.append((cast['name'], cast['character'], self.poster + str(cast['profile_path']), str(cast['id'])))
-            _meta['cast'] = licast
+        if 'writer' in meta and meta['writer']:
+            _meta['writer'] = meta['writer']
 
-            _meta['writer'] = ''
-            for crew in listCredits['crew']:
-                if crew['job'] == 'Director':
-                    _meta['director'] = crew['name']
-                else:
-                    if _meta['writer'] == '':
+        if 'director' in meta and meta['director']:
+            _meta['director'] = meta['director']
+
+        if 'credits' in meta and meta['credits']:
+            
+            # Transformation compatible pour lecture depuis le cache et retour de TMDB
+            strmeta = str(meta['credits'])  
+            listCredits = eval(strmeta)
+
+            casts = listCredits['cast']
+            if len(casts) > 0:
+                licast = []
+                _meta['credits'] = "{u'cast': " + str(casts) + '}'
+#                 _meta['credits'] = 'u\'cast\': ' + str(casts) + ''
+                for cast in casts:
+                    licast.append((cast['name'], cast['character'], self.poster + str(cast['profile_path']), str(cast['id'])))
+                _meta['cast'] = licast
+
+            if 'crew' in listCredits:
+                for crew in listCredits['crew']:
+                    if crew['job'] == 'Director':
+                        _meta['director'] = crew['name']
+                    elif crew['department'] == 'Writing':
+                        if _meta['writer'] != '':
+                            _meta['writer'] += ' / '
                         _meta['writer'] += '%s (%s)' % (crew['job'], crew['name'])
-                    else:
-                        _meta['writer'] += ' / %s (%s)' % (crew['job'], crew['name'])
+                    elif crew['department'] == 'Production' and 'Producer' in crew['job']:
+                        if _meta['writer'] != '':
+                            _meta['writer'] += ' / '
+                        _meta['writer'] += '%s (%s)' % (crew['job'], crew['name'])
 
         return _meta
 
@@ -645,21 +661,49 @@ class cTMDb:
 
     def _cache_save(self, meta, name, media_type, season, year):
 
+        if media_type == 'tvshow' or media_type == 'anime':
+            return self._cache_save_tvshow(meta, name, 'tvshow', season, year)
+
+        # sauvegarde de la durée en minutes, pour le retrouver en minutes comme le fait TMDB
+        runtime = 0
+        if 'duration' in meta and meta['duration']:
+            runtime = int(meta['duration'])/60
+            
+        # sauvegarde movie dans la BDD
+        # year n'est pas forcement l'année du film mais l'année utilisée pour la recherche
+        try:
+            sql = 'INSERT INTO %s (imdb_id, tmdb_id, title, year, credits, writer, director, tagline, vote_average, vote_count, runtime, ' \
+                  'overview, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path, playcount) ' \
+                  'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' % media_type
+            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], runtime, meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], 0))
+            self.db.commit()
+            VSlog('SQL INSERT Successfully')
+        except Exception as e:
+            VSlog('SQL ERROR INSERT')
+            pass
+
+    # Cache pour les séries (et animes)
+    def _cache_save_tvshow(self, meta, name, media_type, season, year):
+
         # ecrit les saisons dans la BDD
         if 'seasons' in meta:
             self._cache_save_season(meta, season)
             del meta['seasons']
 
-        # ecrit movie et tvshow dans la BDD
-        # year n'est pas forcement l'année du film mais l'année utilisée pour la recherche
+        # sauvegarde de la durée en minutes, pour le retrouver en minutes comme le fait TMDB
+        runtime = 0
+        if 'duration' in meta and meta['duration']:
+            runtime = int(meta['duration'])/60
+            
+        # sauvegarde tvshow dans la BDD
         try:
-            sql = 'INSERT INTO %s (imdb_id, tmdb_id, title, year, credits, vote_average, vote_count, runtime, ' \
+            sql = 'INSERT INTO %s (imdb_id, tmdb_id, title, year, credits, writer, director, vote_average, vote_count, runtime, ' \
                   'overview, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path, playcount) ' \
-                  'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' % media_type
-            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['rating'], meta['votes'], meta['duration'], meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], 0))
+                  'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' % media_type
+            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['rating'], meta['votes'], runtime, meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], 0))
             self.db.commit()
             VSlog('SQL INSERT Successfully')
-        except Exception:
+        except Exception as e:
             VSlog('SQL ERROR INSERT')
             pass
 
@@ -731,10 +775,10 @@ class cTMDb:
             elif name:
                 meta = self.search_tvshow_name(name, year, genre = 16)
 
-        # transforme les metas si trouvé
+        # Mise en forme des metas si trouvé
         if meta and 'tmdb_id' in meta:
             meta = self._format(meta, name)
-            # sauvegarde
+            # sauvegarde dans un cache
             self._cache_save(meta, self._clean_title(name), media_type, season, year)
         else:   # initialise un meta vide
             meta = self._format(meta, name)
@@ -795,3 +839,4 @@ class cTMDb:
             if genre:
                 sGenres.append(genre)
         return sGenres
+

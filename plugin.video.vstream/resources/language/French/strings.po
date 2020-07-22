@@ -361,12 +361,12 @@ msgid "Visual search"
 msgstr "Recherche visuelle"
 
 msgctxt "#30089"
-msgid "Clear vStream Cache, Successful[CR](Important relaunch vStream)"
-msgstr "Nettoyage du cache vStream, Réussi[CR](Important relancer vStream)"
+msgid "Clear vStream Cache, Successful"
+msgstr "Nettoyage du cache vStream, Réussi"
 
 msgctxt "#30090"
-msgid "Suppression Database, Successful[CR] (Important relaunch vStream)"
-msgstr "Suppression BDD, Réussi[CR] (Important relancer vStream)"
+msgid "Suppression Database, Successful"
+msgstr "Suppression BDD, Réussi"
 
 msgctxt "#30091"
 msgid "Suppression Database, Error"

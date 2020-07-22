@@ -361,11 +361,11 @@ msgid "Visual search"
 msgstr ""
 
 msgctxt "#30089"
-msgid "Clear vStream Cache, Successful[CR](Important relaunch vStream)"
+msgid "Clear vStream Cache, Successful"
 msgstr ""
 
 msgctxt "#30090"
-msgid "Suppression Database, Successful[CR] (Important relaunch vStream)"
+msgid "Suppression Database, Successful"
 msgstr ""
 
 msgctxt "#30091"

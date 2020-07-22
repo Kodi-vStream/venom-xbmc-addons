@@ -1,11 +1,19 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import json
-
 import re
-import urllib2
+import xbmc
+import xbmcgui
 
-from resources.lib.comaddon import progress, dialog, addon, xbmc, xbmcgui
+try:  # Python 2
+    import urllib2
+    from urllib2 import URLError as UrlError
+
+except ImportError:  # Python 3
+    import urllib.request as urllib2
+    from urllib.error import URLError as UrlError
+
+from resources.lib.comaddon import progress, dialog, addon
 from resources.lib.config import GestionCookie
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
@@ -17,8 +25,8 @@ from resources.lib.parser import cParser
 from resources.lib.util import Quote
 
 SITE_IDENTIFIER = 'siteuptobox'
-SITE_NAME = '[COLOR dodgerblue]' + 'CompteUptobox' + '[/COLOR]'
-SITE_DESC = 'Fichiers sur compte Uptobox'
+SITE_NAME = '[COLOR dodgerblue]Compte UpToBox[/COLOR]'
+SITE_DESC = 'Fichiers sur compte UpToBox'
 URL_MAIN = 'https://uptobox.com/'
 BURL = URL_MAIN + '?op=my_files'
 API_URL = 'https://uptobox.com/api/user/files?token=none&orderBy=file_created&dir=desc&offset=0&limit=100&path='
@@ -54,7 +62,6 @@ def load():
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
             oGui.addDir(SITE_IDENTIFIER, 'showFile', 'Mes Fichiers et Dossiers', 'genres.png', oOutputParameterHandler)
 
-
     oGui.setEndOfDirectory()
 
 
@@ -86,7 +93,7 @@ def showFile():
     if (oInputParameterHandler.exist('sFoldername')):
         sFoldername = oInputParameterHandler.getValue('sFoldername')
         sUrl = sUrl + Quote(sFoldername).replace('//', '%2F%2F')
-        # VSlog('folder   ' +str(sUrl))
+        # VSlog('folder   ' + str(sUrl))
 
     sPath = ''
     if (oInputParameterHandler.exist('sPath')):
@@ -195,15 +202,15 @@ def UptomyAccount():
 
     aResult = re.search('<form id="fileupload" action="([^"]+)"', sHtmlContent, re.DOTALL)
     if (aResult):
-        UPurl = aResult.group(1).replace('upload?', 'remote?')
+        upUrl = aResult.group(1).replace('upload?', 'remote?')
 
-        if UPurl.startswith('//'):
-            UPurl = 'https:' + UPurl
+        if upUrl.startswith('//'):
+            upUrl = 'https:' + upUrl
 
-        fields = {'urls':'["' + sMediaUrl + '"]'}
+        fields = {'urls': '["' + sMediaUrl + '"]'}
         mpartdata = MPencode(fields)
 
-        req = urllib2.Request(UPurl, mpartdata[1], headers)
+        req = urllib2.Request(upUrl, mpartdata[1], headers)
         req.add_header('Content-Type', mpartdata[0].replace(',', ';'))
         req.add_header('Cookie', cookies)
         req.add_header('Content-Length', len(mpartdata[1]))
@@ -214,7 +221,7 @@ def UptomyAccount():
 
         try:
             rep = urllib2.urlopen(req)
-        except urllib2.URLError as e:
+        except UrlError:
             return ''
 
         sHtmlContent = rep.read()

@@ -58,7 +58,13 @@ class cClear:
                 sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/changelog.txt'
                 oRequest = urllib2.Request(sUrl)
                 oResponse = urllib2.urlopen(oRequest)
-                sContent = oResponse.read()
+
+                # En python 3 on doit décoder la reponse
+                if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+                    sContent = oResponse.read().decode('utf-8')
+                else:
+                    sContent = oResponse.read()
+
                 self.TextBoxes('vStream Changelog', sContent)
             except:
                 self.DIALOG.VSerror("%s, %s" % (self.ADDON.VSlang(30205), sUrl))
@@ -83,7 +89,13 @@ class cClear:
                     sUrl = 'https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/commits'
                     oRequest = urllib2.Request(sUrl)
                     oResponse = urllib2.urlopen(oRequest)
-                    sContent = oResponse.read()
+
+                    # En python 3 on doit décoder la reponse
+                    if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+                        sContent = oResponse.read().decode('utf-8')
+                    else:
+                        sContent = oResponse.read()
+
                     result = json.loads(sContent)
                     listitems = []
 
@@ -126,21 +138,40 @@ class cClear:
                 sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/soutient.txt'
                 oRequest = urllib2.Request(sUrl)
                 oResponse = urllib2.urlopen(oRequest)
-                sContent = oResponse.read()
+
+                # En python 3 on doit décoder la reponse
+                if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+                    sContent = oResponse.read().decode('utf-8')
+                else:
+                    sContent = oResponse.read()
+
                 self.TextBoxes('vStream Soutient', sContent)
             except:
                 self.DIALOG.VSerror("%s, %s" % (self.ADDON.VSlang(30205), sUrl))
             return
 
-        elif (env == 'addon'):
+        elif (env == 'addon'): # Vider le cache des métadonnées
             if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
                 cached_Cache = "special://home/userdata/addon_data/plugin.video.vstream/video_cache.db"
+                # important seul xbmcvfs peux lire le special
                 try:
-                    xbmcvfs.delete(cached_Cache)
-                    self.DIALOG.VSinfo(self.ADDON.VSlang(30089))
+                    cached_Cache = xbmc.translatePath(cached_Cache).decode("utf-8")
+                except AttributeError:
+                    cached_Cache = xbmc.translatePath(cached_Cache)
+                
+                try:
+                    db = sqlite.connect(cached_Cache)
+                    dbcur = db.cursor()
+                    dbcur.execute('DELETE FROM movie')
+                    dbcur.execute('DELETE FROM tvshow')
+                    dbcur.execute('DELETE FROM season')
+                    dbcur.execute('DELETE FROM episode')
+                    db.commit()
+                    dbcur.close()
+                    db.close()
+                    self.DIALOG.VSinfo(self.ADDON.VSlang(30090))
                 except:
-                    self.DIALOG.VSerror(self.ADDON.VSlang(30087))
-
+                    self.DIALOG.VSerror(self.ADDON.VSlang(30091))
             return
 
         elif (env == 'clean'):
@@ -148,22 +179,25 @@ class cClear:
             ret = self.DIALOG.select(self.ADDON.VSlang(30110), liste)
             cached_DB = "special://home/userdata/addon_data/plugin.video.vstream/vstream.db"
             # important seul xbmcvfs peux lire le special
-            cached_DB = xbmc.translatePath(cached_DB).decode("utf-8")
+            try:
+                cached_DB = xbmc.translatePath(cached_DB).decode("utf-8")
+            except AttributeError:
+                cached_DB = xbmc.translatePath(cached_DB)
 
             sql_drop = ""
 
             if ret > -1:
 
                 if ret == 0:
-                    sql_drop = "DROP TABLE history"
+                    sql_drop = 'DELETE FROM history'
                 elif ret == 1:
-                    sql_drop = "DROP TABLE resume"
+                    sql_drop = 'DELETE FROM resume'
                 elif ret == 2:
-                    sql_drop = "DROP TABLE watched"
+                    sql_drop = 'DELETE FROM watched'
                 elif ret == 3:
-                    sql_drop = "DROP TABLE favorite"
+                    sql_drop = 'DELETE FROM favorite'
                 elif ret == 4:
-                    sql_drop = "DROP TABLE download"
+                    sql_drop = 'DELETE FROM download'
 
                 try:
                     db = sqlite.connect(cached_DB)
@@ -175,7 +209,6 @@ class cClear:
                     self.DIALOG.VSok(self.ADDON.VSlang(30090))
                 except:
                     self.DIALOG.VSerror(self.ADDON.VSlang(30091))
-
             return
 
         elif (env == 'xbmc'):

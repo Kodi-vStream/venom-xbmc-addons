@@ -3,17 +3,16 @@
 
 try:  # Python 2
     import urllib2
-    from urllib2 import URLError as UrlError
 
 except ImportError:  # Python 3
     import urllib.request as urllib2
-    import urllib.error as UrlError
 
 import base64
 import os
 import re
 import xbmc
 import xbmcaddon
+import unicodedata
 
 from resources.lib.comaddon import VSlog
 from resources.lib.util import urlEncode
@@ -22,7 +21,7 @@ PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonI
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
 
-class NoRedirection(UrlError.HTTPErrorProcessor):
+class NoRedirection(urllib2.HTTPErrorProcessor):
     def http_response(self, request, response):
         return response
     https_response = http_response
@@ -39,17 +38,27 @@ class SucurieBypass(object):
     def DeleteCookie(self, Domain):
         VSlog('Effacement cookies')
         file = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt')
-        os.remove(os.path.join(PathCache, file).decode('utf-8'))
+        try:
+            os.remove(os.path.join(PathCache, file).decode('utf-8'))
+        except:
+            os.remove(os.path.join(PathCache, file))
 
     def SaveCookie(self, Domain, data):
-        Name = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt').decode('utf-8')
+        try:
+            Name = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt').decode('utf-8')
+        except:
+            Name = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt')
+
         # save it
         file = open(Name, 'w')
         file.write(data)
         file.close()
 
     def Readcookie(self, Domain):
-        Name = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt').decode('utf-8')
+        try:
+            Name = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt').decode('utf-8')
+        except:
+            Name = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt')
 
         try:
             file = open(Name, 'r')
@@ -94,6 +103,11 @@ class SucurieBypass(object):
         return '|' + urlEncode({'User-Agent': UA, 'Cookie': cook})
 
     def CheckIfActive(self, html):
+        try:
+            html = html.decode("utf-8")
+        except:
+            pass
+
         if 'sucuri_cloudproxy_js' in html:
             return True
         return False
@@ -170,5 +184,12 @@ class SucurieBypass(object):
             buf = StringIO(htmlcontent)
             f = gzip.GzipFile(fileobj=buf)
             htmlcontent = f.read()
+
+        #Decodage obligatoire pour python 3
+        try:
+            htmlcontent = unicodedata.normalize('NFD', htmlcontent.decode()).encode('ascii', 'ignore').decode('unicode_escape')
+            htmlcontent = htmlcontent.encode()
+        except:
+            pass
 
         return htmlcontent, redirecturl

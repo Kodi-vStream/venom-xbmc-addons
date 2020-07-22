@@ -3,13 +3,14 @@
 import re
 import unicodedata
 
-from resources.lib.comaddon import progress  # , VSlog
+from resources.lib.comaddon import progress
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.multihost import cJheberg
+from resources.lib.multihost import cMultiup
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
@@ -78,7 +79,7 @@ def showMoviesMenu():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'views.png', oOutputParameterHandler)
@@ -223,7 +224,7 @@ def showMovies(sSearch=''):
     sHtmlContent = sHtmlContent.replace('quelle-est-votre-serie-preferee', '<>')
     sHtmlContent = sHtmlContent.replace('top-series-du-moment', '<>')
     sHtmlContent = sHtmlContent.replace('listes-des-series-annulees-et-renouvelees', '<>')
-    sPattern = '<div class="post-thumbnail".+?<a href="([^"]+)".+?(?:src="([^"]+(?:png|jpeg|jpg)|)").+?alt="([^"]+)".+?<p>([^<]+)</p>'
+    sPattern = 'class="post-thumbnail.+?href="([^"]+)".+?(?:src="([^"]+(?:png|jpeg|jpg)|)").+?alt="([^"]+).+?<p>([^<]+)'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -241,28 +242,27 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            # Si recherche et trop de resultat, on nettoye
-            if sSearch and total > 2:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[2]) == 0:
-                    continue
-
             sUrl1 = aEntry[0]
             sTitle = aEntry[2].replace('Saiosn', 'Saison')
             if 'Brouillon' in sTitle:
                 sTitle = sUrl1.rsplit('/', 2)[1]
                 sTitle = sTitle.replace('-streaming-telecharger', '').replace('-', ' ')
 
-            sTitle = sTitle.replace(' [Streaming]', '')
+            sTitle = sTitle.replace(' - Saison', ' Saison').replace(' [Streaming]', '')
             sTitle = sTitle.replace(' [Telecharger]', '').replace(' [Telechargement]', '')
 
             sDisplayTitle = sTitle
+
             # on retire la qualité
             sTitle = re.sub('\[\w+]', '', sTitle)
             sTitle = re.sub('\[\w+ \w+]', '', sTitle)
-
             sThumb = aEntry[1]
+            sDesc = aEntry[3].replace('[&hellip;]', '')
 
-            sDesc = aEntry[3].replace('[&hellip;]', '').replace('&hellip;', '...').replace('&rsquo;', '\'').replace('&#8217;', '\'').replace('&#8230;', '...')
+            # Si recherche et trop de resultat, on filtre
+            if sSearch and total > 2:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
+                    continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl1)
@@ -273,6 +273,10 @@ def showMovies(sSearch=''):
                 pass
             elif 'quelle-est-votre-serie-preferee' in aEntry[1]:
                 pass
+            elif '/emissions-tv/' in sUrl:
+                oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            elif '/documentaire/' in sUrl:
+                oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             elif 'series' in sUrl1 or re.match('.+?saison [0-9]+', sTitle, re.IGNORECASE):
                 oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             elif 'mangas' in sUrl:
@@ -297,7 +301,6 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<a class="next page-numbers" href="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         return aResult[1][0]
 
@@ -324,7 +327,8 @@ def showSeries(sLoop=False):
     sHtmlContent = sHtmlContent.replace('<b> </b>', ' ')
     sHtmlContent = sHtmlContent.replace('<b></b>', ' ')
     sHtmlContent = sHtmlContent.replace('<span class="su-lightbox" data-mfp-src', '<a href')
-    sHtmlContent = sHtmlContent.replace('https://cut-urls.com/st?api=d6e46f2fcd4bfed906a9f3ecbbb6830e862b3afb&amp;url=', '')
+    # Enleve le debut de l'url du hoster, si présent
+    sHtmlContent = re.sub('https://cut-urls.com/st\?api=[\w|\d|&|#|;]+=', '', sHtmlContent)
 
     # récupération du Synopsis
     sDesc = ''
@@ -333,7 +337,6 @@ def showSeries(sLoop=False):
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
-            sDesc = sDesc.replace('&#8217;', '\'').replace('&#8230;', '...')
     except:
         pass
 
@@ -347,14 +350,7 @@ def showSeries(sLoop=False):
     #    return
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             if aEntry[0]:  # stream ou telechargement
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
 
@@ -365,9 +361,12 @@ def showSeries(sLoop=False):
                 HOST = re.search('a href="https*:\/\/([^.]+)', sUrl)
                 if SXXEX:
                     # on vire le double affichage des saisons
-                    sTitle = re.sub(' - Saison \d+', '', sMovieTitle) + ' ' + SXXEX.group(1)
+                    sTitle = re.sub(' Saison \d+', '', sMovieTitle) + ' ' + SXXEX.group(1)
                     if HOST:
                         HOST = HOST.group(1).split('/')[0]
+                        # Fake
+                        if 'stream20' in HOST or 'azerstreaming' in HOST:
+                            continue
                         sDisplayTitle = sTitle + ' [COLOR coral]' + HOST.capitalize() + '[/COLOR]'
                 else:
                     sTitle = sMovieTitle + ' ' + aEntry[1].replace(' New', '')
@@ -377,9 +376,7 @@ def showSeries(sLoop=False):
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+                oGui.addEpisode(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -428,7 +425,6 @@ def showHosters(sLoop=False):
                     if (aResult[0] == True):
                         for aEntry in aResult[1]:
                             sHosterUrl = aEntry
-
                             oHoster = cHosterGui().checkHoster(sHosterUrl)
                             if (oHoster != False):
                                 oHoster.setDisplayName(sMovieTitle)
@@ -441,7 +437,6 @@ def showHosters(sLoop=False):
                     if aResult:
                         for aEntry in aResult:
                             sHosterUrl = aEntry
-
                             oHoster = cHosterGui().checkHoster(sHosterUrl)
                             if (oHoster != False):
                                 oHoster.setDisplayName(sMovieTitle)
@@ -486,7 +481,18 @@ def serieHosters():
                 if (aResult[0] == True):
                     for aEntry in aResult[1]:
                         sHosterUrl = aEntry
+                        oHoster = cHosterGui().checkHoster(sHosterUrl)
+                        if (oHoster != False):
+                            oHoster.setDisplayName(sMovieTitle)
+                            oHoster.setFileName(sMovieTitle)
+                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
+            # pour récuperer les liens multiup
+            elif 'multiup' in sHosterUrl:
+                aResult = cMultiup().GetUrls(sHosterUrl)
+                if aResult:
+                    for aEntry in aResult:
+                        sHosterUrl = aEntry
                         oHoster = cHosterGui().checkHoster(sHosterUrl)
                         if (oHoster != False):
                             oHoster.setDisplayName(sMovieTitle)

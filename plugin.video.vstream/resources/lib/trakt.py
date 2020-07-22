@@ -1,13 +1,19 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
+try:  # Python 2
+    import urllib2
+
+except ImportError:  # Python 3
+    import urllib.request as urllib2
+
 import datetime
 import re
 import time
 import unicodedata
-import urllib2
+import xbmc
 
-from resources.lib.comaddon import addon, dialog, progress, VSlog, xbmc
+from resources.lib.comaddon import addon, dialog, progress, VSlog
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler

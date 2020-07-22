@@ -7,7 +7,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog, dialog
+from resources.lib.comaddon import progress, VSlog
 from resources.lib.util import cUtil, Unquote
 import re, base64
 
@@ -227,7 +227,8 @@ def showMovies3(): #affiche les videos disponible du live
             #sDesc = ''
 
             sTitle = ('%s') % (sMovieTitle2)
-            sUrl4 = "http:" + sUrl4
+            if (not sUrl4.startswith("http")):
+                sUrl4 = "http:" + sUrl4
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl4', sUrl4)
@@ -266,6 +267,13 @@ def showHosters(): #affiche les videos disponible du live
 
         VSlog(url)
 
+        if 'espn-live.stream' in url:
+            oRequestHandler = cRequestHandler(url)
+            sHtmlContent2 = oRequestHandler.request()
+            aResult = re.findall(sPattern, sHtmlContent2)
+            if aResult:
+                url = aResult[0]  # redirection vers un autre site
+            
         if 'footballreal.xyz' in url:
             oRequestHandler = cRequestHandler(url)
             sHtmlContent2 = oRequestHandler.request()
@@ -413,7 +421,6 @@ def showHosters(): #affiche les videos disponible du live
                 sHosterUrl = 'http://91.192.80.210/edge0/xrecord/' + str(gameId) + '/prog_index.m3u8'
 
         if 'youtube' in url:#Je sais pas
-            #dialog().VSinfo('Youtube peut ne pas marcher c\'est de la faute de Kodi', "Livetv", 15)
             sPattern2 = 'youtube.com/embed/(.+?)[?]autoplay=1'
             aResult = re.findall(sPattern2, url)
 
@@ -521,8 +528,8 @@ def showHosters(): #affiche les videos disponible du live
 
                 oRequestHandler = cRequestHandler(url)
                 sHtmlContent1 = oRequestHandler.request()
-                sPattern = '<script>fid="(.+?)"'
-                aResult = re.findall(sPattern, sHtmlContent1)
+                sPattern2 = '<script>fid="(.+?)"'
+                aResult = re.findall(sPattern2, sHtmlContent1)
 
                 if aResult:
                     url2 = 'http://wlive.tv/embedra.php?player=desktop&live=' + aResult[0] + '&vw=700&vh=440'

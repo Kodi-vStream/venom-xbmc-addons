@@ -1,6 +1,8 @@
-#-*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
-#
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -11,7 +13,7 @@ from resources.lib.util import cUtil
 from resources.lib.multihost import cJheberg
 from resources.lib.multihost import cMultiup
 from resources.lib.packer import cPacker
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress
 from resources.lib.util import Unquote
 
 SITE_IDENTIFIER = 'robindesdroits'
@@ -144,7 +146,6 @@ def showCat():
     sHtmlContent = oRequestHandler.request()
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    # VSlog(aResult)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -174,7 +175,7 @@ def showCat():
     oGui.setEndOfDirectory()
 
 
-def showMovies(sSearch = ''):
+def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
 
@@ -220,7 +221,8 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suite >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('/page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -244,7 +246,6 @@ def showLinkGenres():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    # VSlog(sHtmlContent)
 
     sThumb = ''
     try:
@@ -335,7 +336,7 @@ def AdflyDecoder(url):
 
         A = ''
         B = ''
-        #First pass
+        # First pass
         for num in enumerate(code):
             if num % 2 == 0:
                 A += code[num]
@@ -347,11 +348,11 @@ def AdflyDecoder(url):
         # Second pass
         m = 0
         code = list(code)
-        while m < len(code) :
-            if code[m].isdigit() :
+        while m < len(code):
+            if code[m].isdigit():
                 R = m + 1
                 while R < len(code):
-                    if code[R].isdigit() :
+                    if code[R].isdigit():
                         S = int(code[m]) ^ int(code[R])
                         if (S < 10):
                             code[m] = str(S)
@@ -362,7 +363,6 @@ def AdflyDecoder(url):
 
         code = ''.join(code)
         code = b64decode(code)
-
         code = code[16:]
         code = code[:-16]
 

@@ -4,7 +4,7 @@ import random
 import re
 import unicodedata
 
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, xbmc
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -19,6 +19,10 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/5
 s = 'azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN'
 RandomKey = ''.join(random.choice(s) for i in range(32))
 
+if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+    isPython3 = True
+else:
+    isPython3 = False
 
 SITE_IDENTIFIER = 'ianime'
 SITE_NAME = 'I anime'
@@ -259,7 +263,7 @@ def showGenres():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sTitle = aEntry[1]
-            sTitle = str(cUtil().unescape(sTitle).encode("utf-8"))
+            sTitle = str(cUtil().unescape(sTitle))
             # on filtre les genres
             if 'Ecchi' in sTitle:
                 continue
@@ -425,6 +429,10 @@ def showMovies(sSearch=''):
             sTitle = sTitle.replace('Visionnez ', '').replace('[Streaming] - ', '').replace('gratuitement maintenant', '')
             if ' - Episode' in sTitle:
                 sTitle = sTitle.replace(' -', '')
+
+            if isPython3:
+                sTitle = sTitle.encode()
+
             sTitle = cUtil().CleanName(sTitle).capitalize()
 
             sDisplayTitle = ('%s (%s)') % (sTitle, sLang)
@@ -499,9 +507,13 @@ def showEpisode():
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sTitle = unicode(aEntry[2], 'iso-8859-1')
-            sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')
-            sTitle = sTitle.encode('ascii', 'ignore').decode('ascii').replace(' VF', '').replace(' VOSTFR', '')
+
+            if not isPython3:
+                sTitle = unicode(aEntry[2], 'iso-8859-1')
+                sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')
+                sTitle = sTitle.encode('ascii', 'ignore').decode('ascii').replace(' VF', '').replace(' VOSTFR', '')
+            else:
+                sTitle = aEntry[2]
 
             sTitle = cUtil().unescape(sTitle)
 

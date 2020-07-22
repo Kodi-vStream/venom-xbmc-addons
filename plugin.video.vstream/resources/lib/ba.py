@@ -1,15 +1,21 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# Venom.
+
+try:  # Python 2
+    import urllib2
+
+except ImportError:  # Python 3
+    import urllib.request as urllib2
+
+import ssl
+import re
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.player import cPlayer
 from resources.lib.comaddon import addon, dialog
 from resources.lib.tmdb import cTMDb
 from resources.lib.util import QuotePlus
-import urllib2
-import ssl
-import re
 
 try:
     import json
@@ -48,44 +54,44 @@ class cShowBA:
         self.metaType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'movie').replace('4', 'tvshow')
 
     def SearchBA_old(self):
-            url = 'https://www.googleapis.com/youtube/v3/search?part=id,snippet&q=%s&maxResults=1&relevanceLanguage=fr&key=%s' % (self.search, self.key)
-            req = urllib2.Request(url)
+        url = 'https://www.googleapis.com/youtube/v3/search?part=id,snippet&q=%s&maxResults=1&relevanceLanguage=fr&key=%s' % (self.search, self.key)
+        req = urllib2.Request(url)
 
-            try:
-                gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-                response = urllib2.urlopen(req, context=gcontext)
-            except:
-                response = urllib2.urlopen(req)
-            sHtmlContent = response.read()
-            result = json.loads(sHtmlContent)
-            response.close()
+        try:
+            gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+            response = urllib2.urlopen(req, context=gcontext)
+        except:
+            response = urllib2.urlopen(req)
+        sHtmlContent = response.read()
+        result = json.loads(sHtmlContent)
+        response.close()
 
-            try:
-                ids = result['items'][0]['id']['videoId']
+        try:
+            ids = result['items'][0]['id']['videoId']
 
-                url = 'http://www.youtube.com/watch?v=%s' % ids
-                from resources.hosters.youtube import cHoster
-                hote = cHoster()
-                hote.setUrl(url)
-                api_call = hote.getMediaLink()[1]
-                if not api_call:
-                    return
-
-                oGuiElement = cGuiElement()
-                oGuiElement.setSiteName(SITE_IDENTIFIER)
-                oGuiElement.setTitle(self.search.replace('+', ' '))
-                oGuiElement.setMediaUrl(api_call)
-                oGuiElement.setThumbnail(oGuiElement.getIcon())
-
-                oPlayer = cPlayer()
-                oPlayer.clearPlayList()
-                oPlayer.addItemToPlaylist(oGuiElement)
-                oPlayer.startPlayer()
-
-            except:
-                dialog().VSinfo(addon().VSlang(30204))
+            url = 'http://www.youtube.com/watch?v=%s' % ids
+            from resources.hosters.youtube import cHoster
+            hote = cHoster()
+            hote.setUrl(url)
+            api_call = hote.getMediaLink()[1]
+            if not api_call:
                 return
+
+            oGuiElement = cGuiElement()
+            oGuiElement.setSiteName(SITE_IDENTIFIER)
+            oGuiElement.setTitle(self.search.replace('+', ' '))
+            oGuiElement.setMediaUrl(api_call)
+            oGuiElement.setThumbnail(oGuiElement.getIcon())
+
+            oPlayer = cPlayer()
+            oPlayer.clearPlayList()
+            oPlayer.addItemToPlaylist(oGuiElement)
+            oPlayer.startPlayer()
+
+        except:
+            dialog().VSinfo(addon().VSlang(30204))
             return
+        return
 
     def SearchBA(self):
 

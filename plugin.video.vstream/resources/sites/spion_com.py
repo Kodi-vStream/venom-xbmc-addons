@@ -1,13 +1,15 @@
-#-*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
-#Par jojotango
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+# Par jojotango
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, dialog
+from resources.lib.comaddon import dialog
 
 SITE_IDENTIFIER = 'spion_com'
 SITE_NAME = 'Spi0n'
@@ -26,13 +28,15 @@ NETS_GENRES = (True, 'showGenres')
 # True : Contenu Censuré | False : Contenu Non Censuré
 SPION_CENSURE = True
 
-#logo censure -18ans
+# logo censure -18ans
 LOGO_CSA = 'http://a398.idata.over-blog.com/1/40/34/11/archives/0/16588469.jpg'
+
 
 def showCensure():
 
     content = 'Pour activer le contenu (+18) mettre: \n[COLOR coral]SPION_CENSURE = False[/COLOR]\ndans le fichier:\n[COLOR coral]plugin.video.vstream/resources/sites/spion_com.py[/COLOR]'
     dialog().VSok(content)
+
 
 def load():
     oGui = cGui()
@@ -51,6 +55,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
 
@@ -61,46 +66,47 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Actualité', URL_MAIN + 'category/actualite/'] )
-    liste.append( ['Animaux', URL_MAIN + 'category/animaux/'] )
-    liste.append( ['Art', URL_MAIN + 'category/art-technique/'] )
-    liste.append( ['Danse', URL_MAIN + 'category/danse/'] )
-    liste.append( ['Expérience', URL_MAIN + 'category/experiences/'] )
-    liste.append( ['Fake', URL_MAIN + 'category/fake-trucage/'] )
-    liste.append( ['Guerre', URL_MAIN + 'category/guerre-militaire/'] )
-    liste.append( ['Humour', URL_MAIN + 'category/humour-comedie/'] )
-    liste.append( ['Internet', URL_MAIN + 'category/siteweb-internet/'] )
-    liste.append( ['Jeux Vidéo', URL_MAIN + 'category/jeuxvideo-consoles/'] )
-    liste.append( ['Musique', URL_MAIN + 'category/musique/'] )
-    liste.append( ['Non Classé', URL_MAIN + 'category/non-classe/'] )
-    liste.append( ['Owned', URL_MAIN + 'category/owned/'] )
-    liste.append( ['Pub', URL_MAIN + 'category/publicite-marque/'] )
-    liste.append( ['Rewind', URL_MAIN + 'category/rewind/'] )
-    liste.append( ['Santé', URL_MAIN + 'category/sante-corps/'] )
-    liste.append( ['Sport', URL_MAIN + 'category/sport/'] )
-    liste.append( ['Technologie', URL_MAIN + 'category/technologie-innovations/'] )
-    liste.append( ['Transport', URL_MAIN + 'category/auto-transport/'] )
-    liste.append( ['TV & Cinéma', URL_MAIN + 'category/tv-cinema/'] )
-    liste.append( ['WTF?!', URL_MAIN + 'category/wtf/'] )
-    liste.append( ['Zapping', URL_MAIN + 'category/zapping-web/'] )
+    liste.append(['Actualité', URL_MAIN + 'category/actualite/'])
+    liste.append(['Animaux', URL_MAIN + 'category/animaux/'])
+    liste.append(['Art', URL_MAIN + 'category/art-technique/'])
+    liste.append(['Danse', URL_MAIN + 'category/danse/'])
+    liste.append(['Expérience', URL_MAIN + 'category/experiences/'])
+    liste.append(['Fake', URL_MAIN + 'category/fake-trucage/'])
+    liste.append(['Guerre', URL_MAIN + 'category/guerre-militaire/'])
+    liste.append(['Humour', URL_MAIN + 'category/humour-comedie/'])
+    liste.append(['Internet', URL_MAIN + 'category/siteweb-internet/'])
+    liste.append(['Jeux Vidéo', URL_MAIN + 'category/jeuxvideo-consoles/'])
+    liste.append(['Musique', URL_MAIN + 'category/musique/'])
+    liste.append(['Non Classé', URL_MAIN + 'category/non-classe/'])
+    liste.append(['Owned', URL_MAIN + 'category/owned/'])
+    liste.append(['Pub', URL_MAIN + 'category/publicite-marque/'])
+    liste.append(['Rewind', URL_MAIN + 'category/rewind/'])
+    liste.append(['Santé', URL_MAIN + 'category/sante-corps/'])
+    liste.append(['Sport', URL_MAIN + 'category/sport/'])
+    liste.append(['Technologie', URL_MAIN + 'category/technologie-innovations/'])
+    liste.append(['Transport', URL_MAIN + 'category/auto-transport/'])
+    liste.append(['TV & Cinéma', URL_MAIN + 'category/tv-cinema/'])
+    liste.append(['WTF?!', URL_MAIN + 'category/wtf/'])
+    liste.append(['Zapping', URL_MAIN + 'category/zapping-web/'])
 
     if (SPION_CENSURE == False):
-        liste.append( ['NSFW (+18)', URL_MAIN + 'nsfw/'] )
-        liste.append( ['Trash (+18)', URL_MAIN + 'category/trash-gore/'] )
+        liste.append(['NSFW (+18)', URL_MAIN + 'nsfw/'])
+        liste.append(['Trash (+18)', URL_MAIN + 'category/trash-gore/'])
 
     for sTitle, sUrl in liste:
-
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
-def showMovies(sSearch = ''):
+
+def showMovies(sSearch=''):
     oGui = cGui()
 
     if sSearch:
@@ -113,7 +119,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '')
 
-    sPattern = '<article id="(post-[0-9]+)".+?<img src="([^<>"]+?)".+?<a href="([^<>"]+?)" rel="bookmark" title="([^"<>]+?)">.+?title="(.+?)"'
+    sPattern = 'id="(post-[0-9]+)".+?src="([^"]+?)".+?href="([^"]+?)" rel="bookmark" title="([^"]+?)".+?title="([^"]+)'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -122,24 +128,15 @@ def showMovies(sSearch = ''):
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
-            sUrlp   = aEntry[2]
-            sTitle  = aEntry[3]
             sPoster = aEntry[1]
+            sUrlp = aEntry[2]
+            sTitle = aEntry[3]
 
-            #categorie video
+            # categorie video
             sCat = aEntry[4]
 
-            sDisplayTitle = ('%s') % (sTitle)
-
-            #vire lien categorie image
+            # vire lien categorie image
             if (sCat != 'Image'):
 
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -150,22 +147,22 @@ def showMovies(sSearch = ''):
                 if (SPION_CENSURE == True):
                     if (sCat == 'NSFW') or (sCat == 'Trash'):
                         sPoster = LOGO_CSA
-                        oGui.addMovie(SITE_IDENTIFIER, 'showCensure', sDisplayTitle, '', sPoster,'', oOutputParameterHandler)
+                        oGui.addMisc(SITE_IDENTIFIER, 'showCensure', sTitle, '', sPoster,'', oOutputParameterHandler)
                     else:
-                        oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sPoster,'', oOutputParameterHandler)
+                        oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', sPoster,'', oOutputParameterHandler)
                 else:
-                    oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sPoster,'', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+                    oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', sPoster,'', oOutputParameterHandler)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('/page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -175,6 +172,7 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
+
 
 def showHosters():
     oGui = cGui()
@@ -191,7 +189,7 @@ def showHosters():
                                .replace('youtu.be/', 'www.youtube.com/watch?v=')
     oParser = cParser()
 
-    #prise en compte lien direct mp4
+    # prise en compte lien direct mp4
     sPattern = '<iframe.+?src="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 

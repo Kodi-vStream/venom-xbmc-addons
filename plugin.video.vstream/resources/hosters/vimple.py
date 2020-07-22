@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+# http://player.vimple.ru/iframe/XXXXXXXXXXXXXXXXXXXXX
+
+try:  # Python 2
+    import urllib2
+
+except ImportError:  # Python 3
+    import urllib.request as urllib2
+
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 
-import urllib2
-
-# http://player.vimple.ru/iframe/XXXXXXXXXXXXXXXXXXXXX
-
 
 class cHoster(iHoster):
-
     def __init__(self):
         self.__sDisplayName = 'Vimple'
         self.__sFileName = self.__sDisplayName
@@ -75,11 +78,10 @@ class cHoster(iHoster):
         if 'Set-Cookie' in head:
             sPattern = '(?:^|,) *([^;,]+?)=([^;,\/]+?);'
             aResult = oParser.parse(str(head['Set-Cookie']), sPattern)
-            # print(aResult)
             if (aResult[0] == True):
                 for cook in aResult[1]:
                     cookies = cookies + cook[0] + '=' + cook[1] + ';'
-        #Get link
+        # Get link
         sPattern = '"video":\[{"default":true,"url":"([^"]+?)"}]'
         aResult = oParser.parse(sHtmlContent, sPattern)
 

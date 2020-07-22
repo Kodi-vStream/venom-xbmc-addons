@@ -168,6 +168,16 @@ def WindowsBoxes(sTitle, sFileName, num, year=''):
 
         return
 
+    # convertion de la durée en secondes -> heure:minutes
+    if 'duration' in meta and meta['duration']:
+        duration = meta['duration']/60  # En minutes
+        durationH = duration/60 # Nombre d'heures
+        meta['durationH'] = durationH
+        meta['durationM'] = duration - 60*durationH
+    else:
+        meta['durationH'] = 0
+        meta['durationM'] = 0
+
     # affichage du dialog perso
     class XMLDialog(xbmcgui.WindowXMLDialog):
 

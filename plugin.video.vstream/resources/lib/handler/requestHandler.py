@@ -1,16 +1,21 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-try:
+try:  # Python 2
     import urllib2
-    from urllib2 import HTTPError, URLError as UrlError
+    from urllib2 import URLError as UrlError
+    from urllib2 import HTTPError as HttpError
 
-except ImportError:
+except ImportError:  # Python 3
     import urllib.request as urllib2
-    import urllib.error as UrlError
+    from urllib.error import URLError as UrlError
+    from urllib.error import HTTPError as HttpError
+
+import xbmc
 
 from resources.lib.util import urlEncode
 from resources.lib.comaddon import addon, dialog, VSlog
+
 
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
@@ -48,7 +53,7 @@ class cRequestHandler:
         self.__timeout = valeur
 
     def disableRedirection(self):
-        class NoRedirection(UrlError.HTTPErrorProcessor):
+        class NoRedirection(urllib2.HTTPErrorProcessor):
             def http_response(self, request, response):
                 code, msg, hdrs = response.code, response.msg, response.info()
 
@@ -125,8 +130,14 @@ class cRequestHandler:
 
         if self.__aParamatersLine:
             sParameters = self.__aParamatersLine
+            if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+                sParameters = self.__aParamatersLine.encode("utf-8")
+            else:
+                sParameters = self.__aParamatersLine                
         else:
             sParameters = urlEncode(self.__aParamaters)
+            if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+                sParameters = sParameters.encode()
 
         if (self.__cType == cRequestHandler.REQUEST_TYPE_GET):
             if (len(sParameters) > 0):
@@ -157,9 +168,36 @@ class cRequestHandler:
             else:
                 oResponse = urllib2.urlopen(oRequest, timeout=self.__timeout)
 
-            sContent = oResponse.read()
-
             self.__sResponseHeader = oResponse.info()
+            #En python 3 on doit décoder la reponse
+            if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19' and not self.__sResponseHeader.get('Content-Encoding') == 'gzip':
+                #Si c'est une image ou autre element en bytes, on ne le decode pas
+                image_formats = ("image/png", "image/jpeg", "image/jpg", "application/download")
+                if not self.__sResponseHeader.get('Content-Type') in image_formats:
+                    sContent = oResponse.read()
+
+                    if self.__sResponseHeader.get_content_charset():
+                        encoding = self.__sResponseHeader.get_content_charset()
+                    else:
+                        encoding = 'utf-8'
+                    try:
+
+                        try:
+                            sContent = sContent.decode()
+                        except:
+                            pass
+
+                        sContent = str(sContent, encoding)
+                    except:
+                        sContent = str(sContent)
+                    else:
+                        pass
+
+                else:
+                    sContent = oResponse.read()
+
+            else:
+                sContent = oResponse.read()
 
             # compressed page ?
             if self.__sResponseHeader.get('Content-Encoding') == 'gzip':
@@ -172,7 +210,7 @@ class cRequestHandler:
 
             oResponse.close()
 
-        except UrlError.HTTPError as e:
+        except HttpError as e:
             if e.code == 503:
 
                 # Protected by cloudFlare ?
@@ -201,7 +239,7 @@ class cRequestHandler:
             if not sContent:
                 self.DIALOG.VSerror("%s (%d),%s" % (self.ADDON.VSlang(30205), e.code, self.__sUrl))
 
-        except UrlError.URLError as e:
+        except UrlError as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e.reason) and self.BUG_SSL == False:
                 self.BUG_SSL = True
                 return self.__callRequest()
@@ -239,7 +277,6 @@ class cRequestHandler:
 
     def new_getaddrinfo(self, *args):
         try:
-            import xbmc
             import sys
             import dns.resolver
 
@@ -255,7 +292,7 @@ class cRequestHandler:
                 host = host[:host.find("/")]
             resolver = dns.resolver.Resolver(configure=False)
             # Résolveurs DNS ouverts: https://www.fdn.fr/actions/dns/
-            resolver.nameservers = [ '80.67.169.12', '2001:910:800::12', '80.67.169.40', '2001:910:800::40' ]
+            resolver.nameservers = ['80.67.169.12', '2001:910:800::12', '80.67.169.40', '2001:910:800::40']
             answer = resolver.query(host, 'a')
             host_found = str(answer[0])
             VSlog("new_getaddrinfo found host %s" % host_found)

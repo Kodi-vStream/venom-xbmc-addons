@@ -5,10 +5,12 @@
 try:  # Python 2
     import urllib2
     from urllib2 import URLError as UrlError
+    from urllib2 import HTTPError as HttpError
 
 except ImportError:  # Python 3
     import urllib.request as urllib2
-    import urllib.error as UrlError
+    from urllib.error import URLError as UrlError
+    from urllib.error import HTTPError as HttpError
 
 import re
 
@@ -159,10 +161,9 @@ def LoadLinks(htmlcode):
         # if 'flashx' in sUrl:
             # continue
 
-        headers8 = {
-            'User-Agent': UA,
-            'Referer': 'https://www.flashx.tv/dl?playthis'
-        }
+        headers8 = {'User-Agent': UA,
+                    'Referer': 'https://www.flashx.tv/dl?playthis'
+                    }
 
         try:
             request = urllib2.Request(sUrl, None, headers8)
@@ -170,7 +171,7 @@ def LoadLinks(htmlcode):
             sCode = reponse.read()
             reponse.close()
             # VSlog('Worked ' + sUrl)
-        except UrlError.HTTPError as e:
+        except HttpError as e:
             if not e.geturl() == sUrl:
                 try:
                     headers9 = {
@@ -184,7 +185,7 @@ def LoadLinks(htmlcode):
                     sCode = reponse.read()
                     reponse.close()
                     # VSlog('Worked ' + sUrl)
-                except UrlError.HTTPError as e:
+                except HttpError as e:
                     VSlog(str(e.code))
                     # VSlog(e.read())
                     VSlog('Redirection Blocked ' + sUrl + ' Red ' + e.geturl())
@@ -268,7 +269,7 @@ class cHoster(iHoster):
                     redirection_target = reponse.geturl()
                 else:
                     break
-            except UrlError.URLError as e:
+            except UrlError as e:
                 if (e.code == 301) or (e.code == 302):
                     redirection_target = e.headers['Location']
                 else:

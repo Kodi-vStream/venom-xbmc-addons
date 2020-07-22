@@ -1,5 +1,8 @@
-#-*- coding: utf-8 -*-
-#vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -23,6 +26,7 @@ NETS_NEWS = (URL_MAIN, 'showMovies')
 NETS_GENRES = (True, 'showGenre')
 NETS_CATS = (True, 'showGenres')
 
+
 def load():
     oGui = cGui()
 
@@ -44,6 +48,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
 
@@ -54,16 +59,17 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showGenre():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Nouveautés', URL_MAIN + 'videos-s0-1.html'] )
-    liste.append( ['Top Vues', URL_MAIN + 'videos-s1-1.html'] )
-    liste.append( ['Top Vote', URL_MAIN + 'videos-s2-1.html'] )
-    liste.append( ['Hit Parade', URL_MAIN + 'videos-s5-1.html'] )
-    liste.append( ['Fatality', URL_MAIN + 'videos-s7-1.html'] )
-    liste.append( ['Vidéos Longues', URL_MAIN + 'videos-s3-1.html'] )
+    liste.append(['Nouveautés', URL_MAIN + 'videos-s0-1.html'])
+    liste.append(['Top Vues', URL_MAIN + 'videos-s1-1.html'])
+    liste.append(['Top Vote', URL_MAIN + 'videos-s2-1.html'])
+    liste.append(['Hit Parade', URL_MAIN + 'videos-s5-1.html'])
+    liste.append(['Fatality', URL_MAIN + 'videos-s7-1.html'])
+    liste.append(['Vidéos Longues', URL_MAIN + 'videos-s3-1.html'])
 
     for sTitle, sUrl in liste:
 
@@ -72,6 +78,7 @@ def showGenre():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showGenres():
     oGui = cGui()
@@ -94,13 +101,14 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
-def showMovies(sSearch = ''):
+
+def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
 
     if sSearch:
-      idx = sSearch.rfind("/") + 1
-      sUrl = sSearch[:idx] + "".join([i for i in sSearch[idx:] if i.isalpha() or i in [" ", "/"]]).replace(" ", "-") + '-s0-r1.html'.replace(' ','+')
+        idx = sSearch.rfind("/") + 1
+        sUrl = sSearch[:idx] + "".join([i for i in sSearch[idx:] if i.isalpha() or i in [" ", "/"]]).replace(" ", "-") + '-s0-r1.html'.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -109,7 +117,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('&gt;&gt;' , 'suivante')
 
-    sPattern = '<div class="blockthumb">.+?<img class="imageitem" src="([^"]+)".+?<h2 class="titleitem"><a href="([^"]+)">(.+?)</a>'
+    sPattern = 'class="blockthumb">.+?class="imageitem" src="([^"]+)".+?class="titleitem"><a href="([^"]+)">(.+?)</a>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -141,20 +149,22 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('-([0-9]+).html', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<a href="([^"]+)">suivante</a></li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         return aResult[1][0]
 
     return False
+
 
 def showHosters():
     oGui = cGui()
@@ -167,11 +177,11 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #lien direct mp4
+    # lien direct mp4
     sPattern = "<source src='([^']+)' type='video/mp4'"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-     #lien dailymotion
+     # lien dailymotion
     if (aResult[0] == False):
         sPattern = 'src="([^"]+)\?.+?" allowfullscreen></iframe>'
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -190,7 +200,7 @@ def showHosters():
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
     else:
-        #play premium vid
+        # play premium vid
         vidpremium = sHtmlContent.find('alt="Video Premium"')
         if vidpremium != -1:
             sPattern = "window.location.href = '([^']+)';"

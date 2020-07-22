@@ -217,7 +217,9 @@ def showMenuMangas():
 
 def showDetail():
     dialog().VStextView(desc="""Explication du Captcha:
-Pour passer le Captcha il suffit de choisir le bon titre parmi les 5 propositions.
+Pour passer le Captcha il suffit de choisir l'image qui corresponds la plus a celle de gauche.
+Il se peut que la couleur ou l'orientation de l'image sous différente.
+Mais le pictogramme lui sera le meme.
 Attention vous avez 20 secondes pour valider votre réponse.
 Si jamais vous vous trompez il suffit de recharger la page.
 
@@ -418,14 +420,7 @@ def showMoviesLink():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
         for aEntry, VAR in zip(aResult[1], var):
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sUrl2 = URL_MAIN + url.replace("'+nhash+'", VAR)
             sTitle = ('%s [%s]') % (sMovieTitle, aEntry)
 
@@ -435,9 +430,7 @@ def showMoviesLink():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sCookie', Cookie)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'decryptTime', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+            oGui.addLink(SITE_IDENTIFIER, 'decryptTime', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -462,14 +455,7 @@ def showSaisonEpisodes():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             if aEntry[0]:
                 ses = aEntry[0]
 
@@ -487,9 +473,7 @@ def showSaisonEpisodes():
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oOutputParameterHandler.addParameter('sCookie', Cookie)
 
-                oGui.addTV(SITE_IDENTIFIER, 'decryptTime', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+                oGui.addEpisode(SITE_IDENTIFIER, 'decryptTime', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -519,15 +503,14 @@ def decryptTime():
     sHtmlContent = oRequestHandler.request()
 
     if "Test de sécurité !" in sHtmlContent:
-        sPattern = '</p>.+?<img src="([^"]+)" style=".+?<input type="hidden" name="challenge" value="([^"]+)">'
+        sPattern = '<img style="margin: auto; display: block; width: 120px; height: 120px;" src="([^"]+)"/>.+?name="challenge" value="([^"]+)"'
         result = oParser.parse(sHtmlContent, sPattern)
         challenge = result[1][0][0]
         challengeTok = result[1][0][1]
 
-        sPattern = '<label for="(.+?)".+?onclick="ie_click.+?<img src=".+?base64,(.+?)"'
+        sPattern = ' <img onclick="choose\(\'([^\']+)\'\).+?src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        dialogs = dialog()
         Filename = []
         i = 0
 
@@ -537,14 +520,17 @@ def decryptTime():
         sHtmlContent = oRequestHandler.request()
 
         downloaded_image = xbmcvfs.File("special://home/userdata/addon_data/plugin.video.vstream/challenge.png", 'wb')
-        downloaded_image.write(sHtmlContent)
+        downloaded_image.write(bytearray(sHtmlContent))
         downloaded_image.close()
 
-        for base64_string in aResult[1]:
-            imgdata = base64.b64decode(base64_string[1])
+        for imgURL in aResult[1]:
+            oRequestHandler = cRequestHandler(imgURL[1])
+            if Cookie:
+                oRequestHandler.addHeaderEntry('Cookie', Cookie)
+            imgdata = oRequestHandler.request()
 
             downloaded_image = xbmcvfs.File("special://home/userdata/addon_data/plugin.video.vstream/test" + str(i) + ".png", 'wb')
-            downloaded_image.write(imgdata)
+            downloaded_image.write(bytearray(imgdata))
             downloaded_image.close()
             Filename.append("special://home/userdata/addon_data/plugin.video.vstream/test" + str(i) + ".png")
             i = i + 1
@@ -583,7 +569,6 @@ def decryptTime():
 
     oGui.setEndOfDirectory()
 
-
 class cInputWindow(xbmcgui.WindowDialog):
     def __init__(self, *args, **kwargs):
         self.cptloc = kwargs.get('captcha')
@@ -598,32 +583,82 @@ class cInputWindow(xbmcgui.WindowDialog):
         self.cancelled = False
         self.addControl (self.ctrlBackground)
 
-        self.img = [0]*6
-        for img in self.cptloc:
-            self.img[i] = xbmcgui.ControlImage(u, 400, 250, 200, img)
-            self.addControl(self.img[i])
-            i = i + 1
-            pos.append(u)
-            u = u + 250
+        self.img = [0]*10
 
-        self.img[5] = xbmcgui.ControlImage(500, 0, 300, 400, kwargs.get('challenge'))
+        self.strActionInfo = xbmcgui.ControlLabel(250, 20, 724, 400, 'Veuillez sélectionnez l\'image qui ressemble le plus \n a l\'image qui se trouve le plus a gauche.', 'font40', '0xFFFF00FF')
+        self.addControl(self.strActionInfo)
+
+        self.img[0] = xbmcgui.ControlImage(450, 110, 260, 166, self.cptloc[0])
+        self.addControl(self.img[0])
+
+        self.img[1] = xbmcgui.ControlImage(450 + 260, 110, 260, 166, self.cptloc[1])
+        self.addControl(self.img[1])
+
+        self.img[2] = xbmcgui.ControlImage(450 + 520, 110, 260, 166, self.cptloc[2])
+        self.addControl(self.img[2])
+        
+        self.img[3] = xbmcgui.ControlImage(450, 110 + 166, 260, 166, self.cptloc[3])
+        self.addControl(self.img[3])
+
+        self.img[4] = xbmcgui.ControlImage(450 + 260, 110 + 166, 260, 166, self.cptloc[4])
+        self.addControl(self.img[4])
+
+        self.img[5] = xbmcgui.ControlImage(450 + 520, 110 + 166, 260, 166, self.cptloc[5])
         self.addControl(self.img[5])
 
-        self.chk = [0]*5
-        self.chkbutton = [0]*5
-        self.chkstate = [False]*5
+        self.img[6] = xbmcgui.ControlImage(450, 110 + 332, 260, 166,self.cptloc[6])
+        self.addControl(self.img[6])
 
-        i = 0
-        while i < 5:
-            if 1 == 2:
-                self.chk[i] = xbmcgui.ControlCheckMark(pos[i], 400, 250, 200, str(i + 1), font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
+        self.img[7] = xbmcgui.ControlImage(450 + 260, 110 + 332, 260, 166, self.cptloc[7])
+        self.addControl(self.img[7])
 
-            else:
-                self.chk[i] = xbmcgui.ControlImage(pos[i], 400, 250, 200, check_image)
+        self.img[8] = xbmcgui.ControlImage(450 + 520, 110 + 332, 260, 166, self.cptloc[8])
+        self.addControl(self.img[8])
 
-                self.chkbutton[i] = xbmcgui.ControlButton(pos[i], 400, 250, 200, str(i + 1), font='font1')
+        self.img[9] = xbmcgui.ControlImage(100, 80, 260, 166, kwargs.get('challenge'))
+        self.addControl(self.img[9])
 
-            i = i + 1
+        self.chk = [0]*9
+        self.chkbutton = [0]*9
+        self.chkstate = [False]*9
+
+        if 1 == 2:
+            self.chk[0] = xbmcgui.ControlCheckMark(450, 110, 260, 166, '1', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
+            self.chk[1] = xbmcgui.ControlCheckMark(450 + 260, 110, 260, 166, '2', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
+            self.chk[2] = xbmcgui.ControlCheckMark(450 + 520, 110, 260, 166, '3', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
+
+            self.chk[3] = xbmcgui.ControlCheckMark(450, 110 + 166, 260, 166, '4', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
+            self.chk[4] = xbmcgui.ControlCheckMark(450 + 260, 110 + 166, 260, 166, '5', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
+            self.chk[5] = xbmcgui.ControlCheckMark(450 + 520, 110 + 166, 260, 166, '6', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
+
+            self.chk[6] = xbmcgui.ControlCheckMark(450, 110 + 332, 260, 166, '7', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
+            self.chk[7] = xbmcgui.ControlCheckMark(450 + 260, 110 + 332, 260, 166, '8', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
+            self.chk[8] = xbmcgui.ControlCheckMark(450 + 520, 110 + 332, 260, 166, '9', font='font14', focusTexture=check_image, checkWidth=260, checkHeight=166)
+
+        else:
+            self.chk[0] = xbmcgui.ControlImage(450, 110, 260, 166, check_image)
+            self.chk[1] = xbmcgui.ControlImage(450 + 260, 110, 260, 166, check_image)
+            self.chk[2] = xbmcgui.ControlImage(450 + 520, 110, 260, 166, check_image)
+
+            self.chk[3] = xbmcgui.ControlImage(450, 110 + 166, 260, 166, check_image)
+            self.chk[4] = xbmcgui.ControlImage(450 + 260, 110 + 166, 260, 166, check_image)
+            self.chk[5] = xbmcgui.ControlImage(450 + 520, 110 + 166, 260, 166, check_image)
+
+            self.chk[6] = xbmcgui.ControlImage(450, 110 + 332, 260, 166, check_image)
+            self.chk[7] = xbmcgui.ControlImage(450 + 260, 110 + 332, 260, 166, check_image)
+            self.chk[8] = xbmcgui.ControlImage(450 + 520, 110 + 332, 260, 166, check_image)
+
+            self.chkbutton[0] = xbmcgui.ControlButton(450, 110, 260, 166, '1', font='font1')
+            self.chkbutton[1] = xbmcgui.ControlButton(450 + 260, 110, 260, 166, '2', font='font1')
+            self.chkbutton[2] = xbmcgui.ControlButton(450 + 520, 110, 260, 166, '3', font='font1')
+
+            self.chkbutton[3] = xbmcgui.ControlButton(450, 110 + 166, 260, 166, '4', font='font1')
+            self.chkbutton[4] = xbmcgui.ControlButton(450 + 260, 110 + 166, 260, 166, '5', font='font1')
+            self.chkbutton[5] = xbmcgui.ControlButton(450 + 520, 110 + 166, 260, 166, '6', font='font1')
+
+            self.chkbutton[6] = xbmcgui.ControlButton(450, 110 + 332, 260, 166, '7', font='font1')
+            self.chkbutton[7] = xbmcgui.ControlButton(450 + 260, 110 + 332, 260, 166, '8', font='font1')
+            self.chkbutton[8] = xbmcgui.ControlButton(450 + 520, 110 + 332, 260, 166, '9', font='font1')
 
         for obj in self.chk:
             self.addControl(obj)
@@ -636,34 +671,47 @@ class cInputWindow(xbmcgui.WindowDialog):
         self.addControl(self.okbutton)
         self.addControl(self.cancelbutton)
 
-        self.chkbutton[0].controlDown(self.cancelbutton);   self.cancelbutton.controlUp(self.chkbutton[0])
-        self.chkbutton[1].controlDown(self.cancelbutton);   self.okbutton.controlUp(self.chkbutton[4])
-        self.chkbutton[2].controlDown(self.okbutton);
-        self.chkbutton[3].controlDown(self.okbutton);
-        self.chkbutton[4].controlDown(self.okbutton);
+        self.chkbutton[6].controlDown(self.cancelbutton);  self.chkbutton[6].controlUp(self.chkbutton[3])
+        self.chkbutton[7].controlDown(self.cancelbutton);  self.chkbutton[7].controlUp(self.chkbutton[4])
+        self.chkbutton[8].controlDown(self.okbutton);      self.chkbutton[8].controlUp(self.chkbutton[5])
 
-        self.chkbutton[0].controlLeft(self.chkbutton[4]);   self.chkbutton[0].controlRight(self.chkbutton[1]);
-        self.chkbutton[1].controlLeft(self.chkbutton[0]);   self.chkbutton[1].controlRight(self.chkbutton[2]);
-        self.chkbutton[2].controlLeft(self.chkbutton[1]);   self.chkbutton[2].controlRight(self.chkbutton[3]);
-        self.chkbutton[3].controlLeft(self.chkbutton[2]);   self.chkbutton[3].controlRight(self.chkbutton[4]);
-        self.chkbutton[4].controlLeft(self.chkbutton[3]);   self.chkbutton[4].controlRight(self.chkbutton[0]);
+        self.chkbutton[6].controlLeft(self.chkbutton[8]);  self.chkbutton[6].controlRight(self.chkbutton[7]);
+        self.chkbutton[7].controlLeft(self.chkbutton[6]);  self.chkbutton[7].controlRight(self.chkbutton[8]);
+        self.chkbutton[8].controlLeft(self.chkbutton[7]);  self.chkbutton[8].controlRight(self.chkbutton[6]);
+
+        self.chkbutton[3].controlDown(self.chkbutton[6]);  self.chkbutton[3].controlUp(self.chkbutton[0])
+        self.chkbutton[4].controlDown(self.chkbutton[7]);  self.chkbutton[4].controlUp(self.chkbutton[1])
+        self.chkbutton[5].controlDown(self.chkbutton[8]);  self.chkbutton[5].controlUp(self.chkbutton[2])
+
+        self.chkbutton[3].controlLeft(self.chkbutton[5]);  self.chkbutton[3].controlRight(self.chkbutton[4]);
+        self.chkbutton[4].controlLeft(self.chkbutton[3]);  self.chkbutton[4].controlRight(self.chkbutton[5]);
+        self.chkbutton[5].controlLeft(self.chkbutton[4]);  self.chkbutton[5].controlRight(self.chkbutton[3]);
+
+        self.chkbutton[0].controlDown(self.chkbutton[3]);  self.chkbutton[0].controlUp(self.cancelbutton)
+        self.chkbutton[1].controlDown(self.chkbutton[4]);  self.chkbutton[1].controlUp(self.cancelbutton)
+        self.chkbutton[2].controlDown(self.chkbutton[5]);  self.chkbutton[2].controlUp(self.okbutton)
+
+        self.chkbutton[0].controlLeft(self.chkbutton[2]);  self.chkbutton[0].controlRight(self.chkbutton[1]);
+        self.chkbutton[1].controlLeft(self.chkbutton[0]);  self.chkbutton[1].controlRight(self.chkbutton[2]);
+        self.chkbutton[2].controlLeft(self.chkbutton[1]);  self.chkbutton[2].controlRight(self.chkbutton[0]);
 
         self.cancelled = False
         self.setFocus(self.okbutton)
-        self.okbutton.controlLeft(self.cancelbutton);       self.okbutton.controlRight(self.cancelbutton);
-        self.cancelbutton.controlLeft(self.okbutton);       self.cancelbutton.controlRight(self.okbutton);
-        self.okbutton.controlDown(self.chkbutton[4]);       self.okbutton.controlUp(self.chkbutton[4]);
-        self.cancelbutton.controlDown(self.chkbutton[0]);   self.cancelbutton.controlUp(self.chkbutton[0]);
+        self.okbutton.controlLeft(self.cancelbutton);      self.okbutton.controlRight(self.cancelbutton);
+        self.cancelbutton.controlLeft(self.okbutton);      self.cancelbutton.controlRight(self.okbutton);
+        self.okbutton.controlDown(self.chkbutton[2]);      self.okbutton.controlUp(self.chkbutton[8]);
+        self.cancelbutton.controlDown(self.chkbutton[0]);  self.cancelbutton.controlUp(self.chkbutton[6]);
 
     def get(self):
         self.doModal()
         self.close()
         if not self.cancelled:
             retval = ""
-            for objn in range(5):
+            for objn in range(9):
                 if self.chkstate[objn]:
                     retval += ("" if retval == "" else ",") + str(objn)
             return retval
+
         else:
             return ""
 
@@ -686,6 +734,7 @@ class cInputWindow(xbmcgui.WindowDialog):
                 if index.isnumeric():
                     self.chkstate[int(index)-1] = not self.chkstate[int(index)-1]
                     self.chk[int(index)-1].setVisible(self.chkstate[int(index)-1])
+
         except:
             pass
 

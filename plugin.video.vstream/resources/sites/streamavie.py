@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-#
+import re
+
 from resources.lib.gui.hoster import cHosterGui
-# from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
@@ -11,13 +11,12 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.comaddon import progress
 
-import re
 
 SITE_IDENTIFIER = 'streamavie'
 SITE_NAME = 'Streamavie'
 SITE_DESC = 'Films VF & VOSTFR en streaming.'
 
-URL_MAIN = 'http://streamavie.com/'
+URL_MAIN = 'https://streamavie.com/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
@@ -175,13 +174,13 @@ def showYears():
     oGui.setEndOfDirectory()
 
 
-def showMovies(sSearch = ''):
+def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
 
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
-        sPattern = 'class="result-item">.+?src="([^"]+)" alt="([^"]+)".+?<a href="([^"]+)".+?<p>(.+?)<\/p>'
+        sPattern = 'class="result-item">.+?src="([^"]+)" alt="([^"]+)".+?<a href="([^"]+)".+?<p>(.+?)</p>'
 
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -237,7 +236,8 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+            
             oGui.addMovie(SITE_IDENTIFIER, 'showLink', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -271,11 +271,12 @@ def showLink():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
 
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
 
-    sPattern = "data-type='([^']+)' data-post='(\d+)' data-nume='(\d+)'>.+?class='server'>([^<]+)<"
+    sPattern = "data-type=(\w+) data-post=(\d+) data-nume=(\d+)>.+?class=server>([^<]+)<"
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
@@ -285,6 +286,7 @@ def showLink():
             dPost = aEntry[1]
             dNum = aEntry[2]
             sHost = re.sub('\.\w+', '', aEntry[3]).capitalize()
+            pdata = 'action=doo_player_ajax&post=' + dPost + '&nume=' + dNum + '&type=' + dType
 
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
@@ -293,12 +295,11 @@ def showLink():
             oOutputParameterHandler.addParameter('referer', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('dType', dType)
-            oOutputParameterHandler.addParameter('dPost', dPost)
-            oOutputParameterHandler.addParameter('dNum', dNum)
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('pdata', pdata)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showHosters():
     oGui = cGui()
@@ -308,27 +309,19 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     referer = oInputParameterHandler.getValue('referer')
-    dPost = oInputParameterHandler.getValue('dPost')
-    dNum = oInputParameterHandler.getValue('dNum')
-    dType = oInputParameterHandler.getValue('dType')
+    pdata = oInputParameterHandler.getValue('pdata')
 
-    pdata = 'action=doo_player_ajax&post=' + dPost + '&nume=' + dNum + '&type=' + dType
     oRequest = cRequestHandler(sUrl)
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
     oRequest.addHeaderEntry('Referer', referer)
-    oRequest.addHeaderEntry('Accept', '*/*')
-    oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+    # oRequest.addHeaderEntry('Accept', '*/*')
+    # oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    # oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
     oRequest.addParametersLine(pdata)
-
     sHtmlContent = oRequest.request()
 
-    #sPattern = '<IFRAME SRC="([^"]+)"'
-    #aResult = oParser.parse(sHtmlContent, sPattern)
-
-    #if (aResult[0] == False):
-    sPattern = "src='([^']+)'"
+    sPattern = 'src=["|\']([^"|\']+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):

@@ -172,9 +172,10 @@ class cFav:
     def setBookmark(self):
         oInputParameterHandler = cInputParameterHandler()
 
-        if oInputParameterHandler.getValue('sId') == 'kepliz_com':
-            self.DIALOG.VSinfo('Error', self.ADDON.VSlang(30037))
-            return
+#         Pour quelle raison ? A expliquer en commentaire si cela est toujours vrai
+#         if oInputParameterHandler.getValue('sId') == 'kepliz_com':
+#             self.DIALOG.VSinfo('Error', self.ADDON.VSlang(30037))
+#             return
 
         if int(oInputParameterHandler.getValue('sCat')) < 1:
             self.DIALOG.VSinfo('Error', self.ADDON.VSlang(30038))

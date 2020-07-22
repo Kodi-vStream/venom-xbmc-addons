@@ -7,11 +7,9 @@
 
 try:  # Python 2
     import urllib2
-    from urllib2 import URLError as UrlError
 
 except ImportError:  # Python 3
     import urllib.request as urllib2
-    import urllib.error as UrlError
 
 import base64
 import cookielib

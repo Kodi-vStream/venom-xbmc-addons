@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
 #
 # Modified version From https://github.com/Kodi-vStream/venom-xbmc-addons
 #
@@ -16,7 +19,8 @@
 """Unpacker for Dean Edward's p.a.c.k.e.r"""
 
 import re
-import urllib2
+
+from resources.lib.util import Unquote
 
 
 class cPacker():
@@ -63,11 +67,11 @@ class cPacker():
                     return chr(b if (90 if c <= "Z" else 122) >= b else b - 26)
 
                 str = re.sub(r"[a-zA-Z]", openload_re, a[0])
-                str = urllib2.unquote(str)
+                str = Unquote(str)
 
         elif str.find("decodeURIComponent") == 0:
             str = re.sub(r"(^decodeURIComponent\s*\(\s*('|\"))|(('|\")\s*\)$)", "", str)
-            str = urllib2.unquote(str)
+            str = Unquote(str)
         elif str.find("\"") == 0:
             str = re.sub(r"(^\")|(\"$)|(\".*?\")", "", str)
         elif str.find("'") == 0:

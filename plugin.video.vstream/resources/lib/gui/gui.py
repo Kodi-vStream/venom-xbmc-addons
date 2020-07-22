@@ -124,6 +124,7 @@ class cGui:
         
         # comportement proche de addMisc
         self.addMisc(sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, sCat=2)
+        cGui.CONTENT = 'files'
 
     # Meme mode d'affichage qu'un film, avec la description si fournie, mais il n'y a pas de recherche des Métadonnées
     def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler='', sCat=5):
@@ -208,8 +209,8 @@ class cGui:
         # oGuiElement.setDirFanart('next.png')
         oGuiElement.setCat(5)
 
-        # self.createContexMenuPageSelect(oGuiElement, oOutputParameterHandler)
-        # self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+        self.createContexMenuPageSelect(oGuiElement, oOutputParameterHandler)
+        # self.createContexMenuViewBack(oGuiElement, oOutputParameterHandler)
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
@@ -362,8 +363,7 @@ class cGui:
     # affiche les liens playable
     def addHost(self, oGuiElement, oOutputParameterHandler=''):
 
-        if isKrypton():
-            cGui.CONTENT = 'movies'
+        cGui.CONTENT = 'files'
 
         if oOutputParameterHandler.getValue('siteUrl'):
             sSiteUrl = oOutputParameterHandler.getValue('siteUrl')
@@ -410,8 +410,6 @@ class cGui:
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'setWatched', self.ADDON.VSlang(30206))
 
     def createContexMenuPageSelect(self, oGuiElement, oOutputParameterHandler):
-        # sSiteUrl = oGuiElement.getSiteName()
-
         oContext = cContextElement()
         oContext.setFile('cGui')
         oContext.setSiteName('cGui')
@@ -422,6 +420,7 @@ class cGui:
         oContext.setOutputParameterHandler(oOutputParameterHandler)
         oGuiElement.addContextItem(oContext)
 
+    def createContexMenuViewBack(self, oGuiElement, oOutputParameterHandler):
         oContext = cContextElement()
         oContext.setFile('cGui')
         oContext.setSiteName('cGui')
@@ -706,7 +705,6 @@ class cGui:
     def selectpage2(self):
         sPluginPath = cPluginHandler().getPluginPath()
         oInputParameterHandler = cInputParameterHandler()
-        # sParams = oInputParameterHandler.getAllParameter()
         sId = oInputParameterHandler.getValue('sId')
         sFunction = oInputParameterHandler.getValue('OldFunction')
         siteUrl = oInputParameterHandler.getValue('siteUrl')

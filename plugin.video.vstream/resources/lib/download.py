@@ -1,14 +1,20 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-import re
-# import sys
-import threading
-import urllib2
 
+try:
+    import urllib2
+
+except ImportError:
+    import urllib.request as urllib2
+
+import re
+import threading
 import xbmcplugin
 import xbmcvfs
+import xbmcgui
+import xbmc
 
-from resources.lib.comaddon import addon, dialog, progress, VSlog, VSupdate, xbmc, xbmcgui
+from resources.lib.comaddon import addon, dialog, progress, VSlog, VSupdate
 from resources.lib.db import cDb
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement

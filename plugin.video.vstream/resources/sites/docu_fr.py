@@ -1,5 +1,8 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -7,7 +10,6 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-import re
 
 SITE_IDENTIFIER = 'docu_fr'
 SITE_NAME = 'Docu Fr'
@@ -21,6 +23,7 @@ DOC_GENRES = (True, 'showGenres')
 
 URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
+
 
 def load():
     oGui = cGui()
@@ -39,6 +42,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
 
@@ -49,23 +53,24 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Animaux', URL_MAIN + 'animaux/'] )
-    liste.append( ['Civilisations anciennes', URL_MAIN + 'civilisations-anciennes/'] )
-    liste.append( ['Consommation', URL_MAIN + 'consommation/'] )
-    liste.append( ['Environnement', URL_MAIN + 'environnement/'] )
-    liste.append( ['Grands conflits', URL_MAIN + 'grands-conflits/'] )
-    liste.append( ['Histoire', URL_MAIN + 'histoire/'] )
-    liste.append( ['Politique', URL_MAIN + 'politique/'] )
-    liste.append( ['Portraits', URL_MAIN + 'portraits'] )
-    liste.append( ['Santé', URL_MAIN + 'sante/'] )
-    liste.append( ['Science et technologie', URL_MAIN + 'science-et-technologie/'] )
-    liste.append( ['Société', URL_MAIN + 'societe/'] )
-    liste.append( ['Sport', URL_MAIN + 'sport/'] )
-    liste.append( ['Voyage', URL_MAIN + 'voyage/'] )
+    liste.append(['Animaux', URL_MAIN + 'animaux/'])
+    liste.append(['Civilisations anciennes', URL_MAIN + 'civilisations-anciennes/'])
+    liste.append(['Consommation', URL_MAIN + 'consommation/'])
+    liste.append(['Environnement', URL_MAIN + 'environnement/'])
+    liste.append(['Grands conflits', URL_MAIN + 'grands-conflits/'])
+    liste.append(['Histoire', URL_MAIN + 'histoire/'])
+    liste.append(['Politique', URL_MAIN + 'politique/'])
+    liste.append(['Portraits', URL_MAIN + 'portraits'])
+    liste.append(['Santé', URL_MAIN + 'sante/'])
+    liste.append(['Science et technologie', URL_MAIN + 'science-et-technologie/'])
+    liste.append(['Société', URL_MAIN + 'societe/'])
+    liste.append(['Sport', URL_MAIN + 'sport/'])
+    liste.append(['Voyage', URL_MAIN + 'voyage/'])
 
     for sTitle, sUrl in liste:
 
@@ -75,7 +80,8 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
-def showMovies(sSearch = ''):
+
+def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
@@ -87,9 +93,9 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#8217;', '\'').replace('&#8212;', '-').replace('&laquo;', '<<').replace('&raquo;', '>>').replace('&nbsp;', '').replace('&hellip;','...').replace('&#39;', '\'')
+    sHtmlContent = sHtmlContent.replace('&nbsp;', '').replace('&#39;', '\'')
 
-    #if 'category' in sUrl or sSearch:
+    # if 'category' in sUrl or sSearch:
     sPattern = 'article id=".+?data-background="([^"]+)">.+?<div class="read-title">.+?<a href="([^"]+)">(.+?)<\/a>'
 
     oParser = cParser()
@@ -107,10 +113,9 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-
             sUrl2 = aEntry[1]
             # if 'private-video' in sUrl2:
-                # continue 
+                # continue
             sTitle = aEntry[2]
             sThumb = aEntry[0]
 
@@ -126,13 +131,15 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
 
+
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a class="next page-numbers" href="([^"]+)">Next<\/a>'
+    sPattern = '<a class="next page-numbers" href="([^"]+)">Next<'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -140,7 +147,8 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
-def showHosters(): #YT pas vu un autre hébergeur
+
+def showHosters():  # YT pas vu un autre hébergeur
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -156,7 +164,7 @@ def showHosters(): #YT pas vu un autre hébergeur
 
     if (aResult[0] == True):
         for aEntry in list(set(aResult[1])):
-            sHosterUrl = str(aEntry).replace('?&rel=0','')
+            sHosterUrl = str(aEntry).replace('?&rel=0', '')
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):

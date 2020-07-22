@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+import re
+import xbmc
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, xbmc
-from resources.lib.util import Quote, QuoteSafe
-import re
+from resources.lib.comaddon import progress
+from resources.lib.util import QuoteSafe
 
 SITE_IDENTIFIER = 'otakufr_com'
 SITE_NAME = 'OtakuFR'
@@ -89,9 +92,7 @@ def showMovies(sSearch=''):
                 break
 
             sUrl = aEntry[0]
-            # sThumb = aEntry[2]
             sThumb = QuoteSafe(aEntry[2])
-            sLang = ''
             if 'vostfr' in sUrl or 'Vostfr' in sUrl:
                 sLang = 'VOSTFR'
             elif 'VF' in sUrl or 'vf' in sUrl:
@@ -103,9 +104,9 @@ def showMovies(sSearch=''):
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            # oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            # oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addAnime(SITE_IDENTIFIER, 'showEpisodes', sTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -113,7 +114,8 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -168,7 +170,7 @@ def showAZ():
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                # oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oGui.addDir(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, 'animes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -212,13 +214,7 @@ def showEpisodes():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-        for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
+        for aEntry in reversed(aResult[1]):
             p = re.search(r'(\d+)[ +](\d+)', aEntry[1])
             if p:
                 sTitle = re.sub(r'(\d+)[ +](\d+)', p.group(1) + '-' + p.group(2), aEntry[1])
@@ -231,17 +227,16 @@ def showEpisodes():
 
             sUrl = aEntry[0]
             sThumb = sThumb.replace(' ', '%20')
-            sTitle = sTitle.replace('Episode SP', '[ Episode Spécial ] episode').replace(' + ', '-').replace('Episode New-', 'Episode')
-            sTitle = sTitle.replace('Episode ONA', '[ Episode ONA ] episode').replace('Episode OVA', '[ Episode OVA ] episode').replace('Episode NC', 'Episode')
+            sTitle = sTitle.replace('Episode SP', '[ Episode Spécial ] episode').replace(' + ', '-')\
+                           .replace('Episode New-', 'Episode').replace('Episode ONA', '[ Episode ONA ] episode')\
+                           .replace('Episode OVA', '[ Episode OVA ] episode').replace('Episode NC', 'Episode')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -262,14 +257,7 @@ def showLinks():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sFilter = aEntry[1].lower()
             if 'brightcove' in sFilter or 'purevid' in sFilter or 'videomega' in sFilter:
                 continue
@@ -283,9 +271,7 @@ def showLinks():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -338,7 +324,7 @@ def unCap(sHosterUrl, sUrl):
     oRequest.addHeaderEntry('Referer', sUrl)
     oRequest.addHeaderEntry('Accept', '*/*')
     oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    
+
     # Requete pour récupérer le cookie
     oRequest.request()
     Cookie = oRequest.GetCookies()

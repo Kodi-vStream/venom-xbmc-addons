@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -7,8 +10,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress#, VSlog
-import re
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'libertyland_tv'
 SITE_NAME = 'Libertyland'
@@ -248,7 +250,7 @@ def showMovies(sSearch=''):
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
-            
+
             sDesc = ''
             sYear = ''
             if sSearch:
@@ -263,24 +265,53 @@ def showMovies(sSearch=''):
                 sTitle = aEntry[1].replace('Regarder ', '').replace('en Streaming', '')
                 sThumb = URL_MAIN[:-1] + aEntry[2]
                 sYear = aEntry[3]
-                sDesc = aEntry[4].decode('utf-8')
+
+                try:
+                    sDesc = aEntry[4].decode('utf-8')
+                except AttributeError:
+                    pass
+
                 sDesc = cUtil().unescape(sDesc).encode('utf-8')
             else:
                 sTitle = aEntry[0]
                 sThumb = URL_MAIN[:-1] + aEntry[1]
                 sYear = aEntry[3]
-                sDesc = aEntry[4].decode('utf-8')
+
+                try:
+                    sDesc = aEntry[4].decode('utf-8')
+                except AttributeError:
+                    pass
+
                 sDesc = cUtil().unescape(sDesc).encode('utf-8')
                 sUrl2 = URL_MAIN[:-1] + aEntry[5]
 
                 sQual = aEntry[2]
                 if sQual:
-                    sQual = sQual.decode("utf-8").replace(u' qualit\u00E9', '').replace('et ', '/').replace(' ', '')
-                    sQual = sQual.replace('Haute', 'HD').replace('Bonne', 'DVD').replace('Mauvaise', 'SD').encode("utf-8")
+
+                    try:
+                        sQual = sQual.decode("utf-8")
+                    except AttributeError:
+                        pass
+
+                    sQual = sQual.replace(u' qualit\u00E9', '').replace('et ', '/').replace('Haute', 'HD')\
+                                 .replace(' ', '').replace('Bonne', 'DVD').replace('Mauvaise', 'SD').encode("utf-8")
 
             sUrl2 = sUrl2.replace('telecharger', 'streaming')
-            sTitle = sTitle.decode("utf-8").replace(u'T\u00E9l\u00E9charger ', '')
-            sTitle = sTitle.encode("utf-8")
+
+            try:
+                sTitle = sTitle.decode("utf-8")
+            except AttributeError:
+                pass
+
+            sTitle = sTitle.replace(u'T\u00E9l\u00E9charger ', '').encode("utf-8")
+
+            # Remplace tout les decodage en python 3
+            try:
+                sTitle = str(sTitle, 'utf-8')
+                sQual = str(sQual, 'utf-8')
+                sDesc = str(sDesc, 'utf-8')
+            except:
+                pass
 
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sYear)
 
@@ -298,13 +329,14 @@ def showMovies(sSearch=''):
 
         progress_.VSclose(progress_)
 
-    sNextPage = __checkForNextPage(sHtmlContent)
-    if (sNextPage != False):
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-        oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
-
     if not sSearch:
+        sNextPage = __checkForNextPage(sHtmlContent)
+        if (sNextPage != False):
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+            number = re.findall('([0-9]+)', sNextPage)[-1]
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+
         oGui.setEndOfDirectory()
 
 
@@ -367,6 +399,7 @@ def showSaisonsEpisodes():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oOutputParameterHandler.addParameter('sYear', sYear)  # utilisé par le skin
                 oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -380,6 +413,7 @@ def showLinks():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
 
     # refomatage url
     sUrl = ReformatUrl(sUrl)
@@ -419,7 +453,7 @@ def showLinks():
             oOutputParameterHandler.addParameter('sType', sType)
             oOutputParameterHandler.addParameter('idMov', idMov)
             oOutputParameterHandler.addParameter('idHeb', idHeb)
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

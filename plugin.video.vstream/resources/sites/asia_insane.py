@@ -25,8 +25,8 @@ MOVIE_MOVIE = (True, 'load')
 MOVIE_NEWS = (URL_MAIN + 'films-asiatiques-affichage-grid/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
-MOVIE_LIST = (URL_MAIN + 'films-asiatiques-vostfr-affichage-alphanumerique/', 'showAlpha')
-DRAMA_DRAMAS = (URL_MAIN + 'liste-des-dramas-vostfr-ddl/', 'showMovies')
+MOVIE_LIST = (True, 'showAlpha')
+SERIE_DRAMAS = (URL_MAIN + 'liste-des-dramas-vostfr-ddl/', 'showMovies')
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -43,10 +43,6 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', DRAMA_DRAMAS[0])
-    oGui.addDir(SITE_IDENTIFIER, DRAMA_DRAMAS[1], 'Séries (Dramas)', 'genres.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
@@ -57,6 +53,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Ordre alphabétique)', 'listes.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_DRAMAS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_DRAMAS[1], 'Séries (Dramas)', 'dramas.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -74,7 +74,6 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
     sUrl = URL_MAIN + 'amy_genre/'
 
     liste = []
@@ -136,8 +135,7 @@ def showAlpha():
     oGui = cGui()
     oParser = cParser()
 
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sUrl = URL_MAIN + 'films-asiatiques-vostfr-affichage-alphanumerique/'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -193,11 +191,9 @@ def showMovies(sSearch = ''):
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    bGlobal_Search = False
 
     if sSearch:
         if URL_SEARCH[0] in sSearch:
-            bGlobal_Search = True
             sSearch=sSearch.replace(URL_SEARCH[0], '')
 
         sPattern = '<a class=\'asp_res_image_url\' href=\'([^>]+)\'.+?url\("([^"]+)"\).+?\'>([^.]+)d{2}.+?<span.+?<div class="asp_res_text">([^<]+)<'
@@ -296,7 +292,6 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<a class="next page-numbers" href="([^"]+)">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    page = ''
     if (aResult[0] == True):
         return aResult[1][0]
 
@@ -325,14 +320,8 @@ def ShowSerieEpisodes():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sTitle = sMovieTitle + "E" + aEntry[1]
             sUrl2 = aEntry[0]
 
@@ -345,9 +334,7 @@ def ShowSerieEpisodes():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

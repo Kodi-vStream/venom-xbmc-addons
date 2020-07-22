@@ -3,11 +3,13 @@
 # Venom.
 import re
 import string
+import xbmc
 
-from resources.lib.comaddon import addon, xbmc
+from resources.lib.comaddon import addon
 from resources.lib.db import cDb
 from resources.lib.util import QuoteSafe
-
+from resources.lib.tmdb import cTMDb
+import random
 
 # rouge E26543
 # jaune F7D571
@@ -187,8 +189,7 @@ class cGuiElement:
         # convertion unicode ne fonctionne pas avec les accents
 
         try:
-            # traitement du titre pour les caracteres speciaux
-            sTitle = sTitle.replace('&#884;', '\'').replace('&#8212;', '-').replace('&#8217;', '\'').replace('&#8230;', '...').replace('&#8242;', '\'').replace('&lsquo;', '\'')
+            # traitement du titre pour les caracteres spéciaux déplacé dans parser plus global
             # traitement du titre pour retirer le - quand c'est une Saison. Tiret, tiret moyen et cadratin
             sTitle = sTitle.replace(' - Saison', ' Saison').replace(' – Saison', ' Saison').replace(' — Saison', ' Saison')
 
@@ -243,7 +244,7 @@ class cGuiElement:
                     self.addItemValues('Season', self.__Season)
 
             else:
-                # pas d'episode mais y a t il des saisons?
+                # pas d'episode mais y a t il des saisons ?
                 m = re.search('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle, re.UNICODE)
                 if m:
                     sTitle = sTitle.replace(m.group(1), '')
@@ -287,7 +288,7 @@ class cGuiElement:
         if self.__Year:
             sTitle2 = '%s [COLOR %s](%s)[/COLOR]' % (sTitle2, self.__sDecoColor, self.__Year)
 
-        #on repasse en utf-8
+        # on repasse en utf-8
         try:
             return sTitle2.encode('utf-8')
         except AttributeError:
@@ -307,6 +308,11 @@ class cGuiElement:
 
     def setTitle(self, sTitle):
         self.__sCleanTitle = sTitle
+        try:
+            sTitle = sTitle.decode('utf-8')
+        except:
+            pass
+
         if not sTitle.startswith('[COLOR'):
             self.__sTitle = self.TraiteTitre(sTitle)
         else:
@@ -399,12 +405,18 @@ class cGuiElement:
         return data
 
     def str_conv(self, data):
+        # Pas d'autre solution pour le moment que de faire comme ca.
         if isinstance(data, str):
             # Must be encoded in UTF-8
             try:
                 data = data.decode('utf8')
             except AttributeError:
                 pass
+
+        try:
+            data = data.decode('utf8')
+        except (AttributeError, UnicodeEncodeError):
+            pass
 
         import unicodedata
         data = unicodedata.normalize('NFKD', data).encode('ascii', 'ignore')
@@ -459,7 +471,6 @@ class cGuiElement:
             self.addItemProperties('fanart_image', meta['backdrop_url'])
             self.__sFanart = meta['backdrop_url']
         if 'trailer' in meta and meta['trailer']:
-            # meta['trailer'] = meta['trailer'].replace(u'\u200e', '').replace(u'\u200f', '')
             self.__sTrailer = meta['trailer']
         if 'cover_url' in meta and meta['cover_url']:
             self.__sThumbnail = meta['cover_url']
@@ -468,11 +479,12 @@ class cGuiElement:
         return
 
     def getMetadonne(self):
-
         metaType = self.getMeta()
         if metaType == 0:  # non media -> on sort, et on enleve le fanart
             self.addItemProperties('fanart_image', '')
             return
+
+        TMDb = cTMDb()
 
         sTitle = self.__sFileName
 
@@ -499,9 +511,8 @@ class cGuiElement:
 
         sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'movie').replace('4', 'anime')
 
+        meta = {}
         if sType:
-            from resources.lib.tmdb import cTMDb
-            grab = cTMDb()
             args = (sType, sTitle)
             kwargs = {}
             if (self.__ImdbId):
@@ -514,7 +525,11 @@ class cGuiElement:
                 kwargs['season'] = self.__Season
             if (self.__Episode):
                 kwargs['episode'] = self.__Episode
-            meta = grab.get_meta(*args, **kwargs)
+
+            try:
+                meta = TMDb.get_meta(*args, **kwargs)
+            except:
+                pass
 
         else:
             return
@@ -541,7 +556,6 @@ class cGuiElement:
             self.addItemProperties('fanart_image', '')
 
         if 'trailer' in meta and meta['trailer']:
-            # meta['trailer'] = meta['trailer'].replace(u'\u200e', '').replace(u'\u200f', '')
             self.__sTrailer = meta['trailer']
 
         # Pas de changement de cover pour les coffrets de films
@@ -553,6 +567,8 @@ class cGuiElement:
 
     def getItemValues(self):
         self.addItemValues('Title', self.getTitle())
+
+        # https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#ga0b71166869bda87ad744942888fb5f14
 
         # - Video Values:
         # - genre : string (Comedy)
@@ -610,8 +626,11 @@ class cGuiElement:
             # self.addItemValues('cover_url', self.getThumbnail())
         # if not self.getItemValue('backdrop_url') and self.getPoster():
             # self.addItemValues('backdrop_url', self.getPoster())
-        if not self.getItemValue('trailer') and self.getTrailer():
-            self.addItemValues('trailer', self.getTrailer())
+        if not self.getItemValue('trailer'):
+            if self.getTrailer():
+                self.addItemValues('trailer', self.getTrailer())
+            # else:
+                # self.addItemValues('trailer', self.getDefaultTrailer())
 
         # Used only if there is data in db, overwrite getMetadonne()
         w = self.getWatched()
@@ -631,3 +650,15 @@ class cGuiElement:
 
     def getContextItems(self):
         return self.__aContextElements
+    
+    # Des vidéos pour remplacer des bandes annnonces manquantes
+    def getDefaultTrailer(self):
+        trailers = ['WWkYjM3ZXxU',
+                    'LpvKI7I5rF4',
+                    'svTVRDgI08Y',
+                    'DUpVqwceQaA',
+                    'mnsMnskJ3cQ',
+                    'M0_vxs6FPbQ']
+
+        trailer_id = random.choice(trailers)
+        return cTMDb.URL_TRAILER % trailer_id

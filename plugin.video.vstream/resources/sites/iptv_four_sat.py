@@ -1,14 +1,14 @@
-#-*- coding: utf-8 -*-
-#vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+import re
+
 from resources.lib.gui.gui import cGui
-# from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.parser import cParser
-
 from resources.sites.freebox import getHtml, showWeb, play__
-from resources.lib.comaddon import progress#, VSlog
-import re
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'iptv_four_sat'
 SITE_NAME = 'Iptv4Sat'
@@ -30,6 +30,7 @@ IPTV_PORTUGAl = URL_MAIN + 'category/european/portugal-iptv-m3u/'
 IPTV_ROUMANIE = URL_MAIN + 'category/european/iptv-romania/'
 IPTV_TURC = URL_MAIN + 'category/european/m3u-turkey-iptv/'
 # IPTV_AUTRE = URL_MAIN + 'category/other-list/'
+
 
 def load():
     oGui = cGui()
@@ -55,6 +56,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'listePerContry', 'Liste par Pays', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def listePerContry():
     oGui = cGui()
@@ -105,6 +107,7 @@ def listePerContry():
 
     oGui.setEndOfDirectory()
 
+
 def showDailyList():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -139,9 +142,11 @@ def showDailyList():
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showDailyList', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('/page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showDailyList', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -149,11 +154,12 @@ def __checkForNextPage(sHtmlContent):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        return  aResult[1][0]
+        return aResult[1][0]
 
     return False
 
-def showAllPlaylist():#On recupere les differentes playlist si il y en a
+
+def showAllPlaylist():  # On recupere les differentes playlist si il y en a
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
