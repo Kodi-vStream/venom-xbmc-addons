@@ -823,13 +823,13 @@ def showMoviesLinks():
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sUrl = URL_MAIN + aEntry[0]
+            sUrl2 = aEntry[0]
             sQual = aEntry[1]
             sLang = aEntry[2]
             sTitle = ('%s [%s] %s') % (sMovieTitle, sQual, sLang)
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
