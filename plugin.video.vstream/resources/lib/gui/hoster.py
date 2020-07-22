@@ -116,6 +116,9 @@ class cHosterGui:
 
         # bug
         oGui.addHost(oGuiElement, oOutputParameterHandler)
+        
+            
+        
 
     def checkHoster(self, sHosterUrl):
         # securite
@@ -140,8 +143,15 @@ class cHosterGui:
                 tmp = self.getHoster('resolver')
                 RH = sHosterUrl.split('/')[2]
                 RH = RH.replace('www.', '')
-                tmp.setRealHost(RH[:3].upper())
+                tmp.setRealHost(RH.split('.')[0].upper())
                 return tmp
+            
+        # L'user a active alldebrid ?
+            
+        if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
+            return self.getHoster('alldebrid')
+            
+                
 
         # Gestion classique
         if ('streamz' in sHostName):
@@ -149,39 +159,21 @@ class cHosterGui:
         if ('streamax' in sHostName):
             return self.getHoster('streamax')
         if ('gounlimited' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('gounlimited')
+            return self.getHoster('gounlimited')
         if ('xdrive' in sHostName):
             return self.getHoster('xdrive')
         if ('facebook' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('facebook')
+            return self.getHoster('facebook')
         if ('mixdrop' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('mixdrop')
+            return self.getHoster('mixdrop')
         if ('mixloads' in sHostName):
             return self.getHoster('mixloads')
         if ('vidoza' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('vidoza')
+            return self.getHoster('vidoza')
         if ('youtube' in sHostName) or ('youtu.be' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('youtube')
+            return self.getHoster('youtube')
         if ('rutube' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('rutube')
+            return self.getHoster('rutube')
         if ('vk.com' in sHostName):
             return self.getHoster('vk')
         if ('vkontakte' in sHostName):
@@ -194,10 +186,7 @@ class cHosterGui:
             return self.getHoster('vidto')
         # vidtodo et clone
         if ('vidtodo' in sHostName) or ('vixtodo' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('vidtodo')
+            return self.getHoster('vidtodo')
         if ('viddoto' in sHostName):
             return self.getHoster('vidtodo')
         if ('vidstodo' in sHostName):
@@ -210,19 +199,9 @@ class cHosterGui:
         if ('filetrip' in sHostName):
             return self.getHoster('filetrip')
         if ('uptostream' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('uptostream')
+            return self.getHoster('uptostream')
         if ('dailymotion' in sHostName) or ('dai.ly' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                try:
-                    if 'stream' in sHosterUrl:
-                        return self.getHoster('lien_direct')
-                except:
-                    return self.getHoster('dailymotion')
+            return self.getHoster('dailymotion')
         if ('livestream' in sHostName):
             return self.getHoster('lien_direct')
         if ('flashx' in sHostName):
@@ -246,44 +225,29 @@ class cHosterGui:
         if ('onevideo' in sHostName):
             return self.getHoster('onevideo')
         if ('googlevideo' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('googlevideo')
+            return self.getHoster('googlevideo')
         if ('picasaweb' in sHostName):
             return self.getHoster('googlevideo')
         if ('googleusercontent' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('googlevideo')
+            return self.getHoster('googlevideo')
         if ('playreplay' in sHostName):
             return self.getHoster('playreplay')
         if ('ok.ru' in sHostName) or ('odnoklassniki' in sHostName):
             return self.getHoster('ok_ru')
         if ('vimeo' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('vimeo')
+            return self.getHoster('vimeo')
         if ('prostream' in sHostName):
             return self.getHoster('prostream')
         if ('vidfast' in sHostName):
             return self.getHoster('vidfast')
         if ('thevideo' in sHostName) or ('video.tt' in sHostName) or ('vev.io' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('thevideo_me')
+            return self.getHoster('thevideo_me')
         if ('uqload' in sHostName):
             return self.getHoster('uqload')
         if ('letwatch' in sHostName):
             return self.getHoster('letwatch')
         if ('letsupload' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('letsupload')
+            return self.getHoster('letsupload')
         if ('filepup' in sHostName):
             return self.getHoster('filepup')
         if ('vimple.ru' in sHostName):
@@ -293,15 +257,9 @@ class cHosterGui:
         if ('watchvideo' in sHostName):
             return self.getHoster('watchvideo')
         if ('drive.google.com' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('googledrive')
+            return self.getHoster('googledrive')
         if ('docs.google.com' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('googledrive')
+            return self.getHoster('googledrive')
         if ('vidwatch' in sHostName):
             return self.getHoster('vidwatch')
         if ('up2stream' in sHostName):
@@ -316,15 +274,9 @@ class cHosterGui:
             return self.getHoster('vidbull')
         # vidlox et clone
         if ('vidlox' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('vidlox')
+            return self.getHoster('vidlox')
         if ('videobin' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('videobin')
+            return self.getHoster('videobin')
 
         if ('stagevu' in sHostName):
             return self.getHoster('stagevu')
@@ -349,10 +301,7 @@ class cHosterGui:
         if ('cloudvid' in sHostName):
             return self.getHoster('cloudvid')
         if ('clipwatching' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('clipwatching')
+            return self.getHoster('clipwatching')
         if ('megadrive' in sHostName):
             return self.getHoster('megadrive')
         if ('downace' in sHostName):
@@ -370,17 +319,11 @@ class cHosterGui:
         if ('kvid' in sHostName):
             return self.getHoster('kvid')
         if ('soundcloud' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('soundcloud')
+            return self.getHoster('soundcloud')
         if ('mixcloud' in sHostName):
             return self.getHoster('mixcloud')
         if ('ddlfr' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('ddlfr')
+            return self.getHoster('ddlfr')
         if ('pdj' in sHostName):
             return self.getHoster('pdj')
         if ('vidzstore' in sHostName):
@@ -390,10 +333,7 @@ class cHosterGui:
         if ('rapidstream' in sHostName):
             return self.getHoster('rapidstream')
         if ('archive' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('archive')
+            return self.getHoster('archive')
         if ('jetload' in sHostName):
             return self.getHoster('jetload')
         if ('dustreaming' in sHostName):
@@ -429,24 +369,15 @@ class cHosterGui:
 
         # Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('onefichier')
+            return self.getHoster('onefichier')
         if ('uptobox' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return self.getHoster('uptobox')
+            return self.getHoster('uptobox')
         if ('uplea' in sHostName):
             return self.getHoster('uplea')
         if ('uploaded' in sHostName) or ('ul.to' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                if('/file/forbidden' in sHosterUrl):
-                    return False
-                return self.getHoster('uploaded')
+            if('/file/forbidden' in sHosterUrl):
+                return False
+            return self.getHoster('uploaded')
         if ('vidload' in sHostName):
             return self.getHoster('vidload')
         if ('kaydo' in sHostName):
@@ -454,25 +385,18 @@ class cHosterGui:
         if ('cloudhost' in sHostName):
             return self.getHoster('cloudhost')
         if ('rapidgator' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return False
+            return False
         if ('turbobit' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return False
+            return False
         if ('mega.nz' in sHostName) or ('mega.co.nz' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return False
+            return False
         if ('hitfile' in sHostName):
-            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-                return self.getHoster('alldebrid')
-            else:
-                return False
+            return False
+        if ('myfiles.alldebrid.com' in sHostName):
+            return self.getHoster('lien_direct')
+        if ('dl.free.fr' in sHostName):
+            return False
+            
 
         # Si aucun hebergeur connu on teste les liens directs
         if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8.webm'):
