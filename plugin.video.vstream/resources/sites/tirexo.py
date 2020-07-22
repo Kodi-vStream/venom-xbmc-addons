@@ -837,23 +837,20 @@ def showMoviesLinks():
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     #  Qualité STREAMING
-    sPattern = '<th .+?<img src=.+?>([^>]+?)<\/th>.+?class=\'streaming\' href=\'#\' data-text=.+? data-lien=\'([^>]+?)\' data-id=\'([^>]+?)\''
+    sPattern = '<a rel=\'nofollow\' class=\'streaming\' href="([^"]+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        for aEntry in aResult[1]:
-            data_lien = aEntry[1]
-            data_id = aEntry[2]
-            sUrl2 = URL_MAIN + "?do=streaming&id_lien="+data_id+"&lien="+data_lien
-            sTitle = ('%s [STREAMING]') % (sMovieTitle)
+        sUrl2 = URL_MAIN + aResult[1][0]
+        sTitle = ('%s [STREAMING]') % (sMovieTitle)
 
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oOutputParameterHandler.addParameter('sYear', sYear)
-            oGui.addLink(SITE_IDENTIFIER, 'showHostersLink', sTitle, sThumb, sDesc, oOutputParameterHandler)
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+        oOutputParameterHandler.addParameter('sThumb', sThumb)
+        oOutputParameterHandler.addParameter('sDesc', sDesc)
+        oOutputParameterHandler.addParameter('sYear', sYear)
+        oGui.addLink(SITE_IDENTIFIER, 'showHostersLink', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
