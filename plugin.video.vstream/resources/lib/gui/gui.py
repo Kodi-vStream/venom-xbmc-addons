@@ -210,8 +210,7 @@ class cGui:
         oGuiElement.setCat(5)
 
         self.createContexMenuPageSelect(oGuiElement, oOutputParameterHandler)
-        # self.createContexMenuViewBack(oGuiElement, oOutputParameterHandler)
-
+        self.createContexMenuViewBack(oGuiElement, oOutputParameterHandler)
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
     # utiliser oGui.addText(SITE_IDENTIFIER)
