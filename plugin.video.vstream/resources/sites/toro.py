@@ -17,7 +17,7 @@ SITE_DESC = 'Regarder Films et Séries en Streaming gratuit'
 URL_MAIN = 'https://vf.torostreaming.com/'
 
 FUNCTION_SEARCH = 'showMovies'
-URL_SEARCH = (URL_MAIN + '/?s=', 'showMovies')
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 
