@@ -29,7 +29,7 @@ MOVIE_LIST = (True, 'showAlpha')
 SERIE_SERIES = (True, 'showMenuSeries')
 SERIE_NEWS = (URL_MAIN + 'series-streaming/', 'showMovies')
 SERIE_GENRES = (SERIE_NEWS[0], 'showGenres')
-SERIE_LAST = (URL_MAIN + 'dernieres-saisons-streaming/', 'showMovies')
+SERIE_LAST = (URL_MAIN + 'dernieres-saisons/', 'showMovies')
 
 
 def load():
