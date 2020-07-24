@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -7,16 +9,15 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-import re
 
 SITE_IDENTIFIER = 'toro'
 SITE_NAME = 'Toro'
 SITE_DESC = 'Regarder Films et Séries en Streaming gratuit'
 
-URL_MAIN = 'https://dpstream.torostreaming.com/'
+URL_MAIN = 'https://vf.torostreaming.com/'
 
 FUNCTION_SEARCH = 'showMovies'
-URL_SEARCH = (URL_MAIN + '/?s=', 'showMovies')
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 
@@ -26,9 +27,9 @@ MOVIE_GENRES = (URL_MAIN + 'genre/', 'showGenres')
 MOVIE_LIST = (True, 'showAlpha')
 
 SERIE_SERIES = (True, 'showMenuSeries')
-SERIE_NEWS = (URL_MAIN + '/series-streaming/', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'series-streaming/', 'showMovies')
 SERIE_GENRES = (SERIE_NEWS[0], 'showGenres')
-SERIE_LAST = (URL_MAIN + 'dernieres-saisons-streaming/', 'showMovies')
+SERIE_LAST = (URL_MAIN + 'dernieres-saisons/', 'showMovies')
 
 
 def load():
@@ -268,12 +269,8 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            sPattern = 'next page-numbers".+?page\/(\d{1,3})'
-            aResult = oParser.parse(sHtmlContent, sPattern)
-            page = ''
-            if (aResult[0] == True):
-                page = aResult[1][0]
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + page + ' >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('page/([0-9]+)/', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
