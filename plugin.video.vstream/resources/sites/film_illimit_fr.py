@@ -144,9 +144,10 @@ def showMovies(sSearch=''):
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sHtmlContent = SucurieBypass().GetHtml(sUrl)
+    sHtmlContent = sHtmlContent.replace('en illimité', 'en illimite')
 
     oParser = cParser()
-    sPattern = 'class="item">.+?href="([^"]+).+?src="([^"]+)" alt="([^"]+)".+?class="calidad2">([^<]+)'
+    sPattern = 'class="item">.+?href="([^"]+).+?src="([^"]+)" alt="([^"]+).+?ttx">([^<]+).+?(?:|class="year">([^<]+).+?)class="calidad2'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -181,9 +182,8 @@ def showMovies(sSearch=''):
             sThumb = re.sub('/w\d+', '/w342', aEntry[1])
             if sThumb.startswith('//'):
                 sThumb = 'http:' + sThumb
-            sQual = aEntry[3]
-
-            sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
+            sDesc = aEntry[3].split('en illimite')[1].replace('&#160;', '')
+            sYear = aEntry[4]
 
             # Si recherche et trop de resultat, on filtre
             if sSearch and total > 2:
@@ -194,14 +194,16 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('sYear', sYear)
 
             sPattern1 = '.+?saison [0-9]+'
             aResult1 = oParser.parse(sTitle, sPattern1)
 
             if aResult1[0]:
-                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -270,21 +272,6 @@ def showHosters():
                 except:
                     pass
 
-            # if 'official-film-illimite' in sHosterUrl and not 'vcstream' in sHosterUrl and not 'hd-stream.xyz' in sHosterUrl and not 'oload' in sHosterUrl:
-
-            #     #La vostfr n'existe que pour ce hoster
-            #     if '.srt' in sHosterUrl or 'VOSTFR' in sHosterUrl:
-            #         sDisplayTitle = sMovieTitle + ' [VOSTFR]'
-            #     else:
-            #         sDisplayTitle = sMovieTitle
-
-            #     sDisplayTitle = sDisplayTitle + ' [COLOR coral]Google[/COLOR]'
-            #     oOutputParameterHandler = cOutputParameterHandler()
-            #     oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
-            #     oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            #     oOutputParameterHandler.addParameter('sThumb', sThumb)
-            #     oGui.addLink(SITE_IDENTIFIER, 'ShowSpecialHosters', sDisplayTitle, sThumb, '', oOutputParameterHandler)
-            # else:
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
@@ -300,6 +287,7 @@ def showSaisons():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
 
     sHtmlContent = SucurieBypass().GetHtml(sUrl)
 
@@ -322,7 +310,7 @@ def showSaisons():
         for aEntry in aResult[1]:
 
             sUrl = aEntry
-            sTitle = '%s episode %s' % (sMovieTitle, i)
+            sTitle = '%s episode %s' % (sMovieTitle.replace(' - Saison', ' Saison'), i)
 
             i = i + 1
 
@@ -330,7 +318,7 @@ def showSaisons():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addEpisode(SITE_IDENTIFIER, 'ShowSpecialHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'ShowSpecialHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
