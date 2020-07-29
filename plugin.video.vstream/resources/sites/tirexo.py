@@ -209,12 +209,12 @@ def cloudflare(url):#Bypass cloudflare avec selenium
 
     if url:#On passe par la méthode classique en cas ou cloudflare n'est pas présent 
         try:
-            c = GestionCookie().Readcookie('tirexo_com')
-            sHtmlContent = resolvenocloudflare(url,c)
-            VSlog("cookies encore valables")
-            return sHtmlContent
-        except:
-            pass
+            c = GestionCookie().Readcookie('tirexo_com')# On lie le cookie enregistré
+            sHtmlContent = resolvenocloudflare(url,c)#On passe par la fonction resolvenocloudflare avec l'url et le cookie 
+            VSlog("cookies encore valables")#Un log en cas que le cookie est valide
+            return sHtmlContent#On renvoie le contenu html de l'url qui a été validé 
+        except:#En cas d'exception /ou erreur
+            pass#On ignore et on passe le code précédent si le cookie n'est plus valide 
             
     try:
         from selenium import webdriver
