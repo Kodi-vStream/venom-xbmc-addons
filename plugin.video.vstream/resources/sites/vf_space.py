@@ -170,6 +170,7 @@ def showMovies(sSearch=''):
 
         progress_.VSclose(progress_)
 
+    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             if numPage:
@@ -179,7 +180,6 @@ def showMovies(sSearch=''):
             number = re.search('page/([0-9]+)', sNextPage).group(1)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
 
 
