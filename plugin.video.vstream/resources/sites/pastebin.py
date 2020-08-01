@@ -28,14 +28,19 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Films (Genres)', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('sMedia', 'film')
+    oOutputParameterHandler.addParameter('siteUrl', PASTE_1)
+    oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Films (Années)', 'annees.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('sMedia', 'serie')
     oOutputParameterHandler.addParameter('siteUrl', PASTE_2)
     oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Séries (Genres)', 'series.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('sMedia', 'film')
-    oOutputParameterHandler.addParameter('siteUrl', PASTE_3)
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Les Simpson (Intégrale)', 'series.png', oOutputParameterHandler)
+#     oOutputParameterHandler = cOutputParameterHandler()
+#     oOutputParameterHandler.addParameter('sMedia', 'film')
+#     oOutputParameterHandler.addParameter('siteUrl', PASTE_3)
+#     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Les Simpson (Intégrale)', 'series.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
  
@@ -73,12 +78,45 @@ def showGenres():
     oGui.setEndOfDirectory()
 
  
+def showYears():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMedia = oInputParameterHandler.getValue('sMedia')
+ 
+    oRequestHandler = cRequestHandler(sUrl)
+    sContent = oRequestHandler.request()
+ 
+    lines = sContent.splitlines()
+
+    years = set()     
+    for line in lines:
+        movie = line.split(';')
+     
+        if sMedia not in movie[0]:
+            continue 
+
+        year = movie[3].strip()
+        years.add(year)
+                
+    for sYear in sorted(years, reverse=True):
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('sYear', sYear)
+        oOutputParameterHandler.addParameter('sMedia', sMedia)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'years.png', oOutputParameterHandler)
+ 
+ 
+    oGui.setEndOfDirectory()
+
+ 
 def showMovies():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMedia = oInputParameterHandler.getValue('sMedia')
     sGenre = oInputParameterHandler.getValue('sGenre')
+    sYear = oInputParameterHandler.getValue('sYear')
     numItem = oInputParameterHandler.getValue('numItem')
     numPage = oInputParameterHandler.getValue('numPage')
     if not numItem:
@@ -114,17 +152,23 @@ def showMovies():
             if sGenre not in genres:
                 continue
             
+        sTmdbId = movie[1].strip()
+        sTitle = movie[2].strip()
+        year = movie[3].strip()
+
+        # Filtrage par années
+        if sYear :
+            if not year or sYear != year:
+                continue
+
+        if year :
+            sTitle = '%s (%s)' % (sTitle, year)
+            
         nbItem += 1
         progress_.VSupdate(progress_, ITEM_PAR_PAGE)
         if progress_.iscanceled():
             break
  
-        sTmdbId = movie[1].strip()
-        sTitle = movie[2].strip()
-        year = movie[3].strip()
-        if year :
-            sTitle = '%s (%s)' % (sTitle, year)
-        
         sHost = movie[5]
         
         oOutputParameterHandler = cOutputParameterHandler()
@@ -142,6 +186,7 @@ def showMovies():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMedia', sMedia)
             oOutputParameterHandler.addParameter('sGenre', sGenre)
+            oOutputParameterHandler.addParameter('sYear', sYear)
             oOutputParameterHandler.addParameter('numPage', numPage)
             oOutputParameterHandler.addParameter('numItem', numItem)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(numPage) + ' >>>[/COLOR]', oOutputParameterHandler)
