@@ -12,10 +12,12 @@ SITE_NAME = 'pastebin'
 SITE_DESC = 'Liste depuis pastebin'
 
 URL_MAIN = 'https://pastebin.com/raw/'
-PASTE_1 = URL_MAIN + 'n5P3Crbz'
+PASTE_1 = URL_MAIN + 'c6ptULGc'
 PASTE_2 = URL_MAIN + 'mbPxAFNm'
 PASTE_3 = URL_MAIN + 'SAjKPcBm'
 
+
+ITEM_PAR_PAGE = 20
 
 def load():
     oGui = cGui()
@@ -77,19 +79,30 @@ def showMovies():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMedia = oInputParameterHandler.getValue('sMedia')
     sGenre = oInputParameterHandler.getValue('sGenre')
+    numItem = oInputParameterHandler.getValue('numItem')
+    numPage = oInputParameterHandler.getValue('numPage')
+    if not numItem:
+        numItem = 0
+        numPage = 1
+    numItem = int(numItem)
+    numPage = int(numPage)
  
     oRequestHandler = cRequestHandler(sUrl)
     sContent = oRequestHandler.request()
  
     lines = sContent.splitlines()
-
-    total = len(lines)
+    
+    nbItem = 0
+    index = 0
     progress_ = progress().VScreate(SITE_NAME)
     for line in lines:
-        progress_.VSupdate(progress_, total)
-        if progress_.iscanceled():
-            break
- 
+        
+        # Pagination, on se repositionne
+        index +=1
+        if index<=numItem:
+            continue
+        numItem +=1
+        
         movie = line.split(';')
      
         if sMedia not in movie[0]:
@@ -100,6 +113,12 @@ def showMovies():
             genres = eval(genres)
             if sGenre not in genres:
                 continue
+            
+        nbItem += 1
+        progress_.VSupdate(progress_, ITEM_PAR_PAGE)
+        if progress_.iscanceled():
+            break
+ 
         sTmdbId = movie[1].strip()
         sTitle = movie[2].strip()
         year = movie[3].strip()
@@ -115,6 +134,19 @@ def showMovies():
             oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
         
         oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', '', '', oOutputParameterHandler)
+        
+        # Gestion de la pagination
+        if nbItem % ITEM_PAR_PAGE == 0:
+            numPage += 1
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMedia', sMedia)
+            oOutputParameterHandler.addParameter('sGenre', sGenre)
+            oOutputParameterHandler.addParameter('numPage', numPage)
+            oOutputParameterHandler.addParameter('numItem', numItem)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(numPage) + ' >>>[/COLOR]', oOutputParameterHandler)
+            break
+
             
     progress_.VSclose(progress_)
  
