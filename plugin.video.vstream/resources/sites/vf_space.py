@@ -110,17 +110,15 @@ def showMovies(sSearch=''):
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    numPage = 1
+    nextPageSearch = oInputParameterHandler.getValue('nextPageSearch')
+
+    if nextPageSearch:
+        sSearch = sUrl
 
     if sSearch or 'do=search' in sUrl:
         if sSearch:
             sUrl = sSearch
-        numPage = oInputParameterHandler.getValue('numPage')
-        if numPage:
-            numPage = eval(numPage) + 1
-        else:
-            numPage = 1
-        oRequest = cRequestHandler(sUrl + '&search_start=' + str(numPage))
+        oRequest = cRequestHandler(sUrl + '&search_start=' + str(nextPageSearch))
         sHtmlContent = oRequest.request()
     else:
         oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
@@ -130,7 +128,7 @@ def showMovies(sSearch=''):
     sHtmlContent = re.sub('<li class="red">\d+</li>', '', sHtmlContent)
     sHtmlContent = sHtmlContent.replace(' class="red"', '')
 
-    sPattern = 'class="short-poster" href="([^"]+)" title="([^"]+).+?(?:|<li>([^<]*)</li.+?)class="white">([^<]*)<.+?data-src="([^"]+)'
+    sPattern = 'short-poster" href="([^"]+)" title="([^"]+).+?(?:|<li>([^<]*)</li.+?)class="white">([^<]*)<.+?data-src="([^"]*)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -161,25 +159,38 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sYear', sYear)    # A descendre dans l'arborescence
+            oOutputParameterHandler.addParameter('sYear', sYear)
 
-            if 'serie' in sUrl2 or 'saison' in sUrl2:
+            # on test aussi sUrl car parfois Saion au lieu de Saison dans sUrl2
+            if '/series/' in sUrl or 'serie' in sUrl2 or 'saison' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLink', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
-    if not sSearch:
-        sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
-            if numPage:
-                oOutputParameterHandler.addParameter('numPage', numPage)
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+        if sSearch:
+            sPattern = '<a name="nextlink" id="nextlink" onclick="javascript:list_submit\(([0-9]+)\);'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sSearch)
+                oOutputParameterHandler.addParameter('nextPageSearch', aResult[1][0])
+                number = re.search('([0-9]+)', aResult[1][0]).group(1)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
+        else:
+            sNextPage = __checkForNextPage(sHtmlContent)
+            if (sNextPage != False):
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+                number = re.search('page/([0-9]+)', sNextPage).group(1)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+
+    if nextPageSearch:
+        oGui.setEndOfDirectory()
+
+    if not sSearch:
         oGui.setEndOfDirectory()
 
 
@@ -270,7 +281,7 @@ def showLink():
                 sUrl2 = URL_MAIN[:-1] + aEntry[1]  # ou a voir https://4kvfsplayer.xyz
 
             # On ne propose que les hosts qu'on sait décoder
-            sHost = aEntry[2].replace(' ', '')
+            sHost = aEntry[2].replace(' ', '').capitalize()
             oHoster = cHosterGui().checkHoster(sHost)
             if not oHoster:
                 continue
