@@ -12,8 +12,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil, Quote
 from resources.lib.config import GestionCookie
-from resources.lib.comaddon import progress, dialog
-
+from resources.lib.comaddon import progress, dialog, VSlog
 
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
@@ -21,7 +20,7 @@ SITE_IDENTIFIER = 'free_telechargement_org'
 SITE_NAME = '[COLOR violet]Free-Téléchargement[/COLOR]'
 SITE_DESC = 'Fichiers en DDL, HD, Films, Séries, Mangas Etc...'
 
-URL_MAIN = 'http://www.free-telecharger.com/'
+URL_MAIN = 'http://www.free-telecharger.org/'
 URL_PROTECT = 'liens.free-telecharg'  # ne pas mettre 'er' ou 'ement' à la fin, perte de hosters
 
 FUNCTION_SEARCH = 'showSearchResult'
@@ -651,7 +650,6 @@ def showSeriesHosters():
 
 
 def Display_protected_link():
-    # VSlog('entering Display_protected_link')
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -661,6 +659,8 @@ def Display_protected_link():
 
     # Est ce un lien dl-protect ?
     if URL_PROTECT in sUrl:
+    	if "lien=" in sUrl:
+    		sUrl = sUrl.split('lien=')[1]
         sHtmlContent = DecryptddlProtect(sUrl)
 
         if sHtmlContent:

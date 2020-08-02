@@ -10,7 +10,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil, QuotePlus, Noredirection
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress
 from resources.lib.sucuri import SucurieBypass
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
@@ -20,7 +20,6 @@ SITE_NAME = 'Film illimité'
 SITE_DESC = 'Films, Séries HD en streaming'
 
 URL_MAIN = 'https://www.official-film-illimite.to/'
-# URL_SERIES = 'https://www.official-serie-illimite.com/'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
@@ -28,13 +27,8 @@ MOVIE_HD = (URL_MAIN + 'films/streaming-720p-streaming-1080p/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
 
-# SERIE_NEWS = (URL_SERIES + 'serie-tv/', 'showMovies')
-# SERIE_SERIES = (URL_SERIES + 'serie-tv/', 'showMovies')
-# SERIE_HD = (URL_SERIES + 'serie-tv/', 'showMovies')
-
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
-# URL_SEARCH_SERIES = (URL_SERIES + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 
@@ -60,10 +54,6 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
-
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    # oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -131,7 +121,7 @@ def showYears():
     sEnd = '<div class="filter-slide filter-slide-down">'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
 
-    sPattern = '<a href="([^"]+)">(.+?)</a>'
+    sPattern = '<a href="([^"]+)">([^<]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
@@ -154,9 +144,10 @@ def showMovies(sSearch=''):
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sHtmlContent = SucurieBypass().GetHtml(sUrl)
+    sHtmlContent = sHtmlContent.replace('en illimité', 'en illimite')
 
     oParser = cParser()
-    sPattern = 'class="item">.+?<a href="([^<]+)">.+?<img[^<>]+src="([^<>"]+?)" alt="([^"]+?)".+?<span class="calidad2">([^<]+)<\/span>'
+    sPattern = 'class="item">.+?href="([^"]+).+?src="([^"]+)" alt="([^"]+).+?ttx">([^<]+).+?(?:|class="year">([^<]+).+?)class="calidad2'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -188,14 +179,13 @@ def showMovies(sSearch=''):
                 pass
 
             sUrl2 = aEntry[0]
-            sThumb = aEntry[1]
+            sThumb = re.sub('/w\d+', '/w342', aEntry[1])
             if sThumb.startswith('//'):
                 sThumb = 'http:' + sThumb
-            sQual = aEntry[3]
+            sDesc = aEntry[3].split('en illimite')[1].replace('&#160;', '')
+            sYear = aEntry[4]
 
-            sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
-
-            # Si recherche et trop de resultat, on nettoye
+            # Si recherche et trop de resultat, on filtre
             if sSearch and total > 2:
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
                     continue
@@ -204,14 +194,16 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('sYear', sYear)
 
             sPattern1 = '.+?saison [0-9]+'
             aResult1 = oParser.parse(sTitle, sPattern1)
 
             if aResult1[0]:
-                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -280,21 +272,6 @@ def showHosters():
                 except:
                     pass
 
-            # if 'official-film-illimite' in sHosterUrl and not 'vcstream' in sHosterUrl and not 'hd-stream.xyz' in sHosterUrl and not 'oload' in sHosterUrl:
-
-            #     #La vostfr n'existe que pour ce hoster
-            #     if '.srt' in sHosterUrl or 'VOSTFR' in sHosterUrl:
-            #         sDisplayTitle = sMovieTitle + ' [VOSTFR]'
-            #     else:
-            #         sDisplayTitle = sMovieTitle
-
-            #     sDisplayTitle = sDisplayTitle + ' [COLOR coral]Google[/COLOR]'
-            #     oOutputParameterHandler = cOutputParameterHandler()
-            #     oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
-            #     oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            #     oOutputParameterHandler.addParameter('sThumb', sThumb)
-            #     oGui.addLink(SITE_IDENTIFIER, 'ShowSpecialHosters', sDisplayTitle, sThumb, '', oOutputParameterHandler)
-            # else:
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
@@ -310,6 +287,7 @@ def showSaisons():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
 
     sHtmlContent = SucurieBypass().GetHtml(sUrl)
 
@@ -332,7 +310,7 @@ def showSaisons():
         for aEntry in aResult[1]:
 
             sUrl = aEntry
-            sTitle = '%s episode %s' % (sMovieTitle, i)
+            sTitle = '%s episode %s' % (sMovieTitle.replace(' - Saison', ' Saison'), i)
 
             i = i + 1
 
@@ -340,7 +318,7 @@ def showSaisons():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addEpisode(SITE_IDENTIFIER, 'ShowSpecialHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'ShowSpecialHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -360,7 +338,7 @@ def ShowSpecialHosters():
         oRequest = cRequestHandler('http://fr-land.me/Htplugins/Loader.php')
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
-        # oRequest.addHeaderEntry('Host', 'official-film-illimite.net')
+        # oRequest.addHeaderEntry('Host', 'official-film-illimite.to')
         oRequest.addHeaderEntry('Referer', sUrl)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')

@@ -209,12 +209,12 @@ def cloudflare(url):#Bypass cloudflare avec selenium
 
     if url:#On passe par la méthode classique en cas ou cloudflare n'est pas présent 
         try:
-            c = GestionCookie().Readcookie('tirexo_com')
-            sHtmlContent = resolvenocloudflare(url,c)
-            VSlog("cookies encore valables")
-            return sHtmlContent
-        except:
-            pass
+            c = GestionCookie().Readcookie('tirexo_com')# On lie le cookie enregistré
+            sHtmlContent = resolvenocloudflare(url,c)#On passe par la fonction resolvenocloudflare avec l'url et le cookie 
+            VSlog("cookies encore valables")#Un log en cas que le cookie est valide
+            return sHtmlContent#On renvoie le contenu html de l'url qui a été validé 
+        except:#En cas d'exception /ou erreur
+            pass#On ignore et on passe le code précédent si le cookie n'est plus valide 
             
     try:
         from selenium import webdriver
@@ -915,7 +915,7 @@ def showSeriesLinks():
 
     #on regarde si dispo dans d'autres qualités
     sHtmlContent1 = CutQual(sHtmlContent)
-    sPattern1 = '<a href="\/([^"]+)"><span class="otherquality">.+?<b>([^"]+)<\/b>.+?<b>([^"]+)<\/b>.+?<b> (.+?)<'
+    sPattern1 = '<a href="([^"]+)"><span class="otherquality">.+?<b>([^"]+)<\/b>.+?<b>([^"]+)<\/b>.+?<b> (.+?)<'
     aResult1 = oParser.parse(sHtmlContent1, sPattern1)
 
     otherSaison = False
@@ -932,7 +932,7 @@ def showSeriesLinks():
             sLang = aEntry[3]
             sDisplayTitle = ('%s [%s] %s') % (sTitle, sQual, sLang)
 
-            sUrl = URL_MAIN + aEntry[0]
+            sUrl = aEntry[0]
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -957,7 +957,7 @@ def showSeriesLinks():
             sSaison = 'Saison ' + sSaison
             sDisplayTitle = ('%s %s') % (sMovieTitle, sSaison)
 
-            sUrl = URL_MAIN + aEntry[0]
+            sUrl = aEntry[0]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -1063,7 +1063,7 @@ def showSeriesHosters():
     sHtmlContent = cloudflare(sUrl)
 
     oParser = cParser()
-    sPattern = '<th scope="col" class="no-sort"><img alt=.+?>(.+?)<\/th>|href="([^"]+?)">Episode ([^>]+)<'
+    sPattern = '<th scope="col" class="no-sort"><img alt=.+?>([^<>]+)</th>|href=\'([^\']+?)\'>Episode ([^>]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
