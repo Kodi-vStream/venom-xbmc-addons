@@ -354,8 +354,10 @@ class cHosterGui:
 
         if ('flix555' in sHostName):
             return self.getHoster('flix555')
-        if ('onlystream' in sHostName) or ('gotochus' in sHostName):
+        if ('onlystream' in sHostName):
             return self.getHoster('onlystream')
+        if ('gotochus' in sHostName):
+            return self.getHoster('gotochus')
         if ('pstream' in sHostName):
             return self.getHoster('pstream')
         if ('vudeo' in sHostName):
@@ -400,6 +402,8 @@ class cHosterGui:
             return self.getHoster('lien_direct')
         if ('dl.free.fr' in sHostName):
             return False
+        if ('easyload.io' in sHostName):
+            return self.getHoster('easyload')
             
 
         # Si aucun hebergeur connu on teste les liens directs
