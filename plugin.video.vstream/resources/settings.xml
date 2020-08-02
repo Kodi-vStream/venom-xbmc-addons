@@ -333,6 +333,8 @@
         <setting id="hoster_alldebrid_premium" type="bool" label="30403" default="false"/>
         <setting type="text" label="30998" default=""/>
         <setting id="token_alldebrid" type="text" label="30999" default=""/>
+		<setting type="text" label="31000" default=""/>
+		<setting id="urlmain_alldebrid" type="text" label="31101" default=""/>
         
         <setting label="Uptobox" type="lsep"/>
         <setting type="sep"/>
