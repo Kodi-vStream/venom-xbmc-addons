@@ -9,7 +9,6 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'papstream'
 SITE_NAME = 'PapStream'
@@ -19,8 +18,12 @@ URL_MAIN = 'https://wvw.papstream.cc/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + 'rechercher', 'showMovies')
-URL_SEARCH_MOVIES = ('', 'showMovies')
-URL_SEARCH_SERIES = ('', 'showMovies')
+
+#recherche globale MOVIE/TVSHOWS
+key_search_movies='#searchsomemovies'
+key_search_series='#searchsomeseries'
+URL_SEARCH_MOVIES = (key_search_movies, 'showMovies')
+URL_SEARCH_SERIES = (key_search_series, 'showMovies')
 
 MOVIE_MOVIE = (URL_MAIN + 'films.html', 'showMoviesMenu')
 MOVIE_NEWS = (URL_MAIN + 'dernier-films.html', 'showMovies')
@@ -125,7 +128,6 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
-
 def showGenres():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -197,26 +199,28 @@ def showAnimeYears():
 
 def showMovies(sSearch=''):
     oGui = cGui()
-
+    
+    bSearchMovie=False
+    bSearchSerie=False 
     if sSearch:
+        KeySearch = sSearch
+        if key_search_movies in KeySearch  :
+            KeySearch =str(KeySearch ).replace( key_search_movies , '')
+            bSearchMovie=True
+        if key_search_series in KeySearch  :
+            KeySearch =str(KeySearch ).replace( key_search_series , '')
+            bSearchSerie=True
         sUrl = URL_SEARCH[0]
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+        oRequestHandler.addParametersLine('story=' + KeySearch ) 
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    oRequestHandler = cRequestHandler(sUrl)
-
-    if sSearch:
-
-        oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
-        oRequestHandler.addHeaderEntry('User-Agent', UA)
-        # oRequestHandler.addHeaderEntry('Host', 'wwv.papstream.cc')
-        # oRequestHandler.addHeaderEntry('Origin', URL_MAIN)
-        oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-        # oRequestHandler.addParametersLine('do=search')
-        # oRequestHandler.addParametersLine('subaction=search')
-        oRequestHandler.addParametersLine('story=' + sSearch)
+        oRequestHandler = cRequestHandler(sUrl)
 
     sHtmlContent = oRequestHandler.request()
     sPattern = 'class="short-images-link".+?img src="([^"]+)".+?short-link"><a href="([^"]+)".+?>([^<]+)</a>'
@@ -227,31 +231,32 @@ def showMovies(sSearch=''):
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
 
             sThumb = URL_MAIN[:-1] + aEntry[0]
             sUrl2 = URL_MAIN[:-1] + aEntry[1].replace('/animes/films/', '/films/').replace('/animes/series/', '/series/')
             sTitle = aEntry[2]
 
+            #
+            if bSearchMovie :
+                if '/series/' in sUrl2 :
+                    continue  
+            if bSearchSerie :
+                if '/films/' in sUrl2 :
+                    continue
+            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-
+            
             if '/animes/' in sUrl2:
                 oGui.addAnime(SITE_IDENTIFIER, 'showSaisons', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             elif '/series/' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLink', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
