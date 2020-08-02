@@ -32,38 +32,23 @@ class cUtil:
         return count
 
     def CheckOccurence(self, str1, str2):
-        ignoreListe = ['la', 'le', 'les', 'un', 'une', 'de', 'des', 'du', 'en', 'au', 'aux', 'the', 'in', 'mais', 'ou',
-                       'et', 'donc', 'or', 'ni', 'ne', 'pas', 'car', 'on']
+        ignoreListe = ['3d', 'la', 'le', 'les', 'un', 'une', 'de', 'des', 'du', 'en', 'a', 'au', 'aux', 'the', 'in', 'mais', 'ou', 'no', 'dr', 'contre', 'qui',
+                       'et', 'donc', 'or', 'ni', 'ne', 'pas', 'car', 'je', 'tu', 'il', 'elle', 'on', 'nous', 'vous', 'ils', 'elles', 'i', 'you', 'he', 'she', 'we', 'they']
 
-        str1 = str1.replace('+', ' ').replace('%20', ' ')
-        str1 = str1.lower()
-        str2 = str2.lower()
-
-        try:
-            str1 = unicode(str1, 'utf-8')
-        except:
-            pass
-
-        try:
-            str2 = unicode(str2, 'utf-8')
-        except:
-            pass
-
-        str1 = unicodedata.normalize('NFKD', str1).encode('ASCII', 'ignore')
-        str2 = unicodedata.normalize('NFKD', str2).encode('ASCII', 'ignore')
+        str1 = str1.replace('+', ' ').replace('%20', ' ').replace(':', ' ').replace('-', ' ')
+        str2 = str2.replace(':', ' ').replace('-', ' ')
+        str1 = self.CleanName(str1)
+        str2 = self.CleanName(str2)
 
         i = 0
-
-        # Pour Python 3, transforme la variable en str
-        try:
-            str1 = str1.decode()
-            str2 = str2.decode()
-        except:
-            pass
-
+        list2 = str2.split(' ')     # Comparaison mot à mot
         for part in str1.split(' '):
-            if (part in str2) and (part not in ignoreListe):
-                i += 1
+            if part in ignoreListe: # Mots à ignorer
+                continue
+            if len(part) == 1:      # Ignorer une seule lettre
+                continue
+            if part in list2:
+                i += 1              # Nombre de mots correspondants
         return i
 
     def removeHtmlTags(self, sValue, sReplace=''):
