@@ -29,6 +29,8 @@ ALL_ALL = (URL_HOST + 'links/', 'showLiens')
 ALL_MAGNETS = (URL_HOST + 'magnets/', 'showMagnets')
 ALL_INFORMATION = ('https://alldebrid.fr', 'showInfo')
 
+ITEM_PAR_PAGE = 20
+
 def load():
     oGui = cGui()
 
@@ -51,33 +53,47 @@ def showLiens(sSearch=''):
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    numItem = oInputParameterHandler.getValue('numItem')
+    numPage = oInputParameterHandler.getValue('numPage')
+    if not numItem:
+        numItem = 0
+        numPage = 1
+    numItem = int(numItem)
+    numPage = int(numPage)
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('</h1><hr><pre><a href="../">../</a>', '')
-    VSlog(sHtmlContent)
 
     sPattern = '<a href="(.+?)">([^<>]+)</a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    VSlog(aResult)
+    
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
+        #total = len(aResult[1])
+        nbItem = 0
+        index = 0
         progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
+            
+            index += 1
+            if index <= numItem:
+                continue
+            numItem += 1
+            
+            nbItem += 1
+            progress_.VSupdate(progress_, ITEM_PAR_PAGE)
             if progress_.iscanceled():
                 break
 
             sTitle = aEntry[1]
             sUrl2 = sUrl + aEntry[0]
-            VSlog(sUrl2)
             sThumb = ''
             #sLang = aEntry[3]
             #sQual = aEntry[4]
@@ -91,16 +107,20 @@ def showLiens(sSearch=''):
             oOutputParameterHandler.addParameter('referer', sUrl)  
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle , '', sThumb, sDesc, oOutputParameterHandler)
+            progress_.VSclose(progress_)
 
-        progress_.VSclose(progress_)  
+          
 
-    if not sSearch:
-        sNextPage = __checkForNextPage(sHtmlContent)  # cherche la page suivante
-        if (sNextPage != False):
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showLiens', '[COLOR teal]Page ' + str(number) + ' >>>[/COLOR]', oOutputParameterHandler)
+            if not sSearch:
+                if nbItem % ITEM_PAR_PAGE == 0:  # cherche la page suivante
+                    numPage += 1
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                    oOutputParameterHandler.addParameter('numItem', numItem)
+                    oGui.addNext(SITE_IDENTIFIER, 'showLiens', '[COLOR teal]Page ' + str(numPage) + ' >>>[/COLOR]', oOutputParameterHandler)
+                    break
+            
+        
 
         oGui.setEndOfDirectory()  
 
@@ -115,7 +135,7 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
-def showMagnets():
+def showMagnets(sSearch=''):
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
@@ -123,11 +143,17 @@ def showMagnets():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sDesc = oInputParameterHandler.getValue('sDesc')
+    numItem = oInputParameterHandler.getValue('numItem')
+    numPage = oInputParameterHandler.getValue('numPage')
+    if not numItem:
+        numItem = 0
+        numPage = 1
+    numItem = int(numItem)
+    numPage = int(numPage)
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('</h1><hr><pre><a href="../">../</a>', '')
-    VSlog(sHtmlContent)
 
     # Pattern servant à retrouver les éléments dans la page
     sPattern = '<a href="(.+?)">([^<>]+)</a>'
@@ -136,28 +162,46 @@ def showMagnets():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
+        #total = len(aResult[1])
+        nbItem = 0
+        index = 0
 
         progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
+            
+            index += 1
+            if index <= numItem:
+                continue
+            numItem += 1
+            
+            nbItem += 1
+            progress_.VSupdate(progress_, ITEM_PAR_PAGE)
             if progress_.iscanceled():
                 break
 
             sTitle = aEntry[0]
             sUrl2 = sUrl + aEntry[1]
-            #VSlog(sUrl2)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             
-            if 'mp4' and 'avi' and 'mkv' in sUrl2:
+            if not sSearch:
+                if nbItem % ITEM_PAR_PAGE == 0:  # cherche la page suivante
+                    numPage += 1
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                    oOutputParameterHandler.addParameter('numItem', numItem)
+                    oGui.addNext(SITE_IDENTIFIER, 'showLiens', '[COLOR teal]Page ' + str(numPage) + ' >>>[/COLOR]', oOutputParameterHandler)
+                    break
+            
+            if 'mp4'in sUrl2 or 'avi' in sUrl2 or 'mkv' in sUrl2:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle , 'series.png', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showseriesHoster', sTitle , 'movies.png', sThumb, sDesc, oOutputParameterHandler)
+                
 
         progress_.VSclose(progress_)
 
@@ -168,33 +212,62 @@ def showseriesHoster(sSearch=''):
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    numItem = oInputParameterHandler.getValue('numItem')
+    numPage = oInputParameterHandler.getValue('numPage')
+    if not numItem:
+        numItem = 0
+        numPage = 1
+    numItem = int(numItem)
+    numPage = int(numPage)
+    
+    try:#En cas que le mot mp4/avi/mkv n'est pas présent quand c'est un seul fichier
+        s=requests.Session()
+        resp=s.head(sUrl)
+        result = resp.headers['location']
+        sHosterUrl = result
+        oHoster = cHosterGui().checkHoster(sHosterUrl)
+        if (oHoster != False):
+            oHoster.setDisplayName(sMovieTitle)
+            oHoster.setFileName(sMovieTitle)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sMovieTitle)
+            oGui.setEndOfDirectory()
+    except:
+        pass
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('</h1><hr><pre><a href="../">../</a>', '')
-    VSlog(sHtmlContent)
 
     sPattern = '<a href="(.+?)">([^<>]+)</a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    VSlog(aResult)
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
+        #total = len(aResult[1])
+        nbItem = 0
+        index = 0
         progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
+            
+            index += 1
+            if index <= numItem:
+                continue
+            numItem += 1
+            
+            
+            nbItem += 1
+            progress_.VSupdate(progress_, ITEM_PAR_PAGE)
             if progress_.iscanceled():
                 break
 
             sTitle = aEntry[1]
             sUrl2 = sUrl + aEntry[0]
-            VSlog(sUrl2)
             sThumb = ''
             #sLang = aEntry[3]
             #sQual = aEntry[4]
@@ -208,18 +281,19 @@ def showseriesHoster(sSearch=''):
             oOutputParameterHandler.addParameter('referer', sUrl)  
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle , '', sThumb, sDesc, oOutputParameterHandler)
+            
+            if not sSearch:
+                if nbItem % ITEM_PAR_PAGE == 0:  # cherche la page suivante
+                    numPage += 1
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                    oOutputParameterHandler.addParameter('numItem', numItem)
+                    oGui.addNext(SITE_IDENTIFIER, 'showLiens', '[COLOR teal]Page ' + str(numPage) + ' >>>[/COLOR]', oOutputParameterHandler)
+                    break
+            
+            progress_.VSclose(progress_)  
 
-        progress_.VSclose(progress_)  
-
-    if not sSearch:
-        sNextPage = __checkForNextPage(sHtmlContent)  # cherche la page suivante
-        if (sNextPage != False):
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showseriesHoster', '[COLOR teal]Page ' + str(number) + ' >>>[/COLOR]', oOutputParameterHandler)
-
-        oGui.setEndOfDirectory() 
+    oGui.setEndOfDirectory() 
 
 
 def showHosters():  
@@ -231,7 +305,6 @@ def showHosters():
     #referer = oInputParameterHandler.getValue('referer')
                     
     sHosterUrl = sUrl
-    VSlog(sHosterUrl)
     oHoster = cHosterGui().checkHoster(sHosterUrl)
     if (oHoster != False):
         oHoster.setDisplayName(sMovieTitle)
@@ -248,13 +321,11 @@ def showInfo(sSearch=''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    #VSlog(sHtmlContent)
 
     sPattern = '<li class="([^"]+)">.+?<i alt=".+?" title="([^"]+)".+?</li>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    VSlog(aResult)
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
@@ -282,4 +353,3 @@ def showInfo(sSearch=''):
         progress_.VSclose(progress_)  
 
         oGui.setEndOfDirectory()  
-
