@@ -63,8 +63,6 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
     liste.append(['Action', URL_MAIN + 'recherche-Action-1.html'])
@@ -116,7 +114,7 @@ def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
-        sUrl = sSearch + '.html'
+        sUrl = sSearch.replace(' ', '-') + '.html'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
