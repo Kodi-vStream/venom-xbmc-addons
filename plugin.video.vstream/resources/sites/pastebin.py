@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.comaddon import progress
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
@@ -22,8 +22,8 @@ URL_SEARCH = (PASTE_1 + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (PASTE_1 + '?type=film&s=', 'showMovies')
 URL_SEARCH_SERIES = (PASTE_1 + '?type=serie&s=', 'showMovies')
 
-
 ITEM_PAR_PAGE = 20
+
 
 def load():
     oGui = cGui()
@@ -50,7 +50,6 @@ def load():
     oGui.setEndOfDirectory()
 
 
- 
 def showSearch():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -69,67 +68,65 @@ def showGenres():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMedia = oInputParameterHandler.getValue('sMedia')
- 
+
     oRequestHandler = cRequestHandler(sUrl)
     sContent = oRequestHandler.request()
- 
+
     lines = sContent.splitlines()
 
-    genres = set()     
+    genres = set()
     for line in lines:
         movie = line.split(';')
-     
+
         if sMedia not in movie[0]:
-            continue 
+            continue
 
         genre = movie[4]
         genre = eval(genre)
         if genre:
             genres = genres.union(genre)
-                
+
     for sGenre in sorted(genres):
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sGenre', sGenre)
         oOutputParameterHandler.addParameter('sMedia', sMedia)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sGenre, 'genres.png', oOutputParameterHandler)
- 
- 
+
     oGui.setEndOfDirectory()
 
- 
+
 def showYears():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMedia = oInputParameterHandler.getValue('sMedia')
- 
+
     oRequestHandler = cRequestHandler(sUrl)
     sContent = oRequestHandler.request()
- 
+
     lines = sContent.splitlines()
 
-    years = set()     
+    years = set()
     for line in lines:
         movie = line.split(';')
-     
+
         if sMedia not in movie[0]:
-            continue 
+            continue
 
         year = movie[3].strip()
         years.add(year)
-                
+
     for sYear in sorted(years, reverse=True):
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sYear', sYear)
         oOutputParameterHandler.addParameter('sMedia', sMedia)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'years.png', oOutputParameterHandler)
- 
- 
+
     oGui.setEndOfDirectory()
 
- 
+
 def showMovies(sSearch=''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -144,7 +141,7 @@ def showMovies(sSearch=''):
         numPage = 1
     numItem = int(numItem)
     numPage = int(numPage)
- 
+
     sSearchTitle = ''
     if sSearch:
         oParser = cParser()
@@ -157,29 +154,28 @@ def showMovies(sSearch=''):
         else:
             sMedia = 'film'
 
-
     oRequestHandler = cRequestHandler(sUrl)
     sContent = oRequestHandler.request()
- 
+
     lines = sContent.splitlines()
-    
+
     nbItem = 0
     index = 0
     progress_ = progress().VScreate(SITE_NAME)
     for line in lines:
-        
+
         # Pagination, on se repositionne
-        index +=1
-        if index<=numItem:
+        index += 1
+        if index <= numItem:
             continue
-        numItem +=1
-        
+        numItem += 1
+
         # Infos d'une ligne
         movie = line.split(';')
-     
+
         # Filtrage par média (film/série)
         if sMedia not in movie[0]:
-            continue 
+            continue
 
         # Filtrage par genre
         genres = movie[4]
@@ -187,7 +183,7 @@ def showMovies(sSearch=''):
             genres = eval(genres)
             if sGenre not in genres:
                 continue
-            
+
         # l'ID TMDB
         sTmdbId = movie[1].strip()
 
@@ -196,30 +192,30 @@ def showMovies(sSearch=''):
         if sSearchTitle:
             if cUtil().CheckOccurence(sSearchTitle, sTitle) == 0:
                 continue
-        
+
         # Filtrage par années
         year = movie[3].strip()
-        if sYear :
+        if sYear:
             if not year or sYear != year:
                 continue
-        if year :
+        if year:
             sTitle = '%s (%s)' % (sTitle, year)
-            
+
         nbItem += 1
         progress_.VSupdate(progress_, ITEM_PAR_PAGE)
         if progress_.iscanceled():
             break
- 
+
         sHost = movie[5]
-        
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oOutputParameterHandler.addParameter('sHost', sHost)
         if sTmdbId:
             oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
-        
+
         oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', '', '', oOutputParameterHandler)
-        
+
         # Gestion de la pagination
         if not sSearch:
             if nbItem % ITEM_PAR_PAGE == 0:
@@ -234,9 +230,8 @@ def showMovies(sSearch=''):
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(numPage) + ' >>>[/COLOR]', oOutputParameterHandler)
                 break
 
-            
     progress_.VSclose(progress_)
- 
+
     oGui.setEndOfDirectory()
 
 
@@ -246,13 +241,12 @@ def showHosters():
     sHoster = oInputParameterHandler.getValue('sHost')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sHoster = eval(sHoster)
-    
-    
+
     for sHosterUrl in sHoster:
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
- 
+
     oGui.setEndOfDirectory()
