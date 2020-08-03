@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, addon, dialog 
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -15,37 +15,80 @@ SITE_NAME = 'pastebin'
 SITE_DESC = 'Liste depuis pastebin'
 
 URL_MAIN = 'https://pastebin.com/raw/'
-PASTE_1 = URL_MAIN + 'c6ptULGc'
-# PASTE_2 = URL_MAIN + 'mbPxAFNm'
 
-URL_SEARCH = (PASTE_1 + '?s=', 'showMovies')
-URL_SEARCH_MOVIES = (PASTE_1 + '?type=film&s=', 'showMovies')
-URL_SEARCH_SERIES = (PASTE_1 + '?type=serie&s=', 'showMovies')
+KEY_PASTE_ID = 'PASTE_ID'
+SETTING_PASTE_ID = 'pastebin_id_'
+SETTING_PASTE_LABEL = 'pastebin_label_'
+
+URL_SEARCH_MOVIES = (URL_MAIN + KEY_PASTE_ID + '?type=film&s=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + KEY_PASTE_ID + '?type=serie&s=', 'showMovies')
+
 
 ITEM_PAR_PAGE = 20
 
 
 def load():
+    addons = addon()
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MOVIES[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'addPasteID', 'Ajouter un lien PasteBin privé', 'listes.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('sMedia', 'film')
-    oOutputParameterHandler.addParameter('siteUrl', PASTE_1)
-    oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Films (Genres)', 'films.png', oOutputParameterHandler)
+    numID = 0
+    pasteListe = {}
+    
+#     # WIP - Ajout des listes publiques
+#     publicIDs = set()
+#     while True:
+#         numID += 1
+#         pasteLabel = addons.getSetting(SETTING_PASTE_LABEL + str(numID))
+#         if pasteLabel == '':
+#             break
+# 
+#         pasteID = addons.getSetting(SETTING_PASTE_ID + str(numID))
+#         if pasteID:
+#             pasteListe[pasteLabel] = pasteID
+#             publicIDs.add(pasteID)
+    
+    
+    # Recherche des listes privées
+    while True:
+        numID += 1
+        pasteLabel = addons.getSetting(SETTING_PASTE_LABEL + str(numID))
+        if pasteLabel == '':
+            break
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('sMedia', 'film')
-    oOutputParameterHandler.addParameter('siteUrl', PASTE_1)
-    oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Films (Années)', 'annees.png', oOutputParameterHandler)
+        pasteID = addons.getSetting(SETTING_PASTE_ID + str(numID))
+        if pasteID:
+            pasteListe[pasteLabel] = pasteID
+    
+    # Trie des listes par label 
+    pasteListe = sorted(pasteListe.items(), key=lambda paste: paste[0])
 
-#     oOutputParameterHandler = cOutputParameterHandler()
-#     oOutputParameterHandler.addParameter('sMedia', 'serie')
-#     oOutputParameterHandler.addParameter('siteUrl', PASTE_2)
-#     oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Séries (Genres)', 'series.png', oOutputParameterHandler)
+
+    for pasteBin in pasteListe:
+        pasteLabel = pasteBin[0]
+        pasteID = pasteBin[1]
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('pasteID', pasteID)
+        oGui.addDir(SITE_IDENTIFIER, 'deletePaste', '[COLOR red]' + pasteLabel + '[/COLOR]', 'mark.png', oOutputParameterHandler)
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        sUrl = URL_SEARCH_MOVIES[0].replace(KEY_PASTE_ID, pasteID)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+    
+        oOutputParameterHandler = cOutputParameterHandler()
+        sUrl = URL_MAIN + pasteID
+        oOutputParameterHandler.addParameter('sMedia', 'film')
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+    
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sMedia', 'film')
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Films (Années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -250,3 +293,79 @@ def showHosters():
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
 
     oGui.setEndOfDirectory()
+
+
+# Ajout d'un lien pastebin
+def addPasteID():
+    oGui = cGui()
+    addons = addon()
+
+    # Recherche d'un setting de libre
+    names = set()
+    numID = 0
+    newID = 1
+    while True:
+        numID += 1
+        pasteLabel = addons.getSetting(SETTING_PASTE_LABEL + str(numID))
+        if pasteLabel == '':
+            break
+
+        pasteID = addons.getSetting(SETTING_PASTE_ID + str(numID))
+        if pasteID == '':
+            newID = numID
+        else:
+            names.add(pasteLabel)   # Labels déjà utilisés
+    
+    settingID = SETTING_PASTE_ID + str(newID)
+    settingLabel = SETTING_PASTE_LABEL + str(newID)
+    
+    
+    # Demande du label et controle si déjà existant
+    sLabel = oGui.showKeyBoard('', "Saisir un titre")
+    if sLabel == False:
+        return
+    if sLabel in names:
+        dialog().VSok(addons.VSlang(30082))
+        return
+
+
+    # Demande de l'id PasteBin
+    sID = oGui.showKeyBoard('', "Saisir l'ID")
+    if sID == False:
+        return
+
+
+    # Enregistrer Label/id dans les settings    
+    addons.setSetting(settingLabel, sLabel)
+    addons.setSetting(settingID, sID)
+
+
+# Retirer un lien PasteBin
+def deletePaste():
+
+    addons = addon()
+    if not dialog().VSyesno(addons.VSlang(30412)):
+        return
+    
+    oInputParameterHandler = cInputParameterHandler()
+    pasteID = oInputParameterHandler.getValue('pasteID')
+
+# Ne pas effacer le label, car un label renseigné sans id veut dire que le setting peut être recyclé
+#     labelSetting = SETTING_PASTE_LABEL + pasteID
+#     addons.setSetting(labelSetting, '')
+
+    # Recherche d'un setting de libre
+    numID = 0
+    while True:
+        numID += 1
+        pasteLabel = addons.getSetting(SETTING_PASTE_LABEL + str(numID))
+        if pasteLabel == '':
+            break   # plus de setting disponible
+
+        idSetting = SETTING_PASTE_ID + str(numID)
+        settingID = addons.getSetting(idSetting)
+        if settingID == pasteID:
+            addons.setSetting(idSetting, '')
+            break
+    
+
