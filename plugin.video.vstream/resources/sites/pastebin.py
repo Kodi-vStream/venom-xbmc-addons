@@ -27,7 +27,7 @@ URL_SEARCH_SERIES = (URL_MAIN + KEY_PASTE_ID + '?type=serie&s=', 'showMovies')
 ITEM_PAR_PAGE = 20
 
 class idxInFile:
-    CAT = 0     # Catégorie 'film' ou 'serie'
+    CAT = 0     # Catégorie 'film', 'serie', 'anime'
     TMDB = 1    # Id TMDB (optionnel)
     TITLE = 2   # Titre du film / épisodes
     SAGA = 3    # Saga (ex 'Mission impossible') (optionnel)
@@ -109,6 +109,12 @@ def load():
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Films (Années)', 'annees.png', oOutputParameterHandler)
 
+        oOutputParameterHandler = cOutputParameterHandler()
+        sUrl = URL_MAIN + pasteID
+        oOutputParameterHandler.addParameter('sMedia', 'serie')
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
+    
     oGui.setEndOfDirectory()
 
 
@@ -307,12 +313,18 @@ def showMovies(sSearch=''):
         sHost = movie[idxInFile.URLS]
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+        oOutputParameterHandler.addParameter('sTitle', sTitle)
         oOutputParameterHandler.addParameter('sHost', sHost)
         if sTmdbId:
             oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
 
-        oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', '', '', oOutputParameterHandler)
+        if sMedia == 'serie':
+            sDisplayTitle = sTitle + ' ' + movie[idxInFile.SAISON].strip()
+            oGui.addTV(SITE_IDENTIFIER, 'showSerieLinks', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
+        elif sMedia == 'anime':
+            oGui.addAnime(SITE_IDENTIFIER, 'showSerieLinks', sTitle, 'series.png', '', '', oOutputParameterHandler)
+        else:
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', '', '', oOutputParameterHandler)
 
         # Gestion de la pagination
         if not sSearch:
@@ -334,18 +346,38 @@ def showMovies(sSearch=''):
     oGui.setEndOfDirectory()
 
 
+def showSerieLinks():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sHoster = oInputParameterHandler.getValue('sHost')
+    sTitle = oInputParameterHandler.getValue('sTitle')
+    
+    sHoster = eval(sHoster)
+
+    for episode, links in sHoster.items():
+        
+        sDisplayTitle = sTitle + ' ' + episode
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sTitle', sTitle)
+        oOutputParameterHandler.addParameter('sHost', links)
+        oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sHoster = oInputParameterHandler.getValue('sHost')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sTitle = oInputParameterHandler.getValue('sTitle')
     sHoster = eval(sHoster)
 
     for sHosterUrl in sHoster:
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
-            oHoster.setDisplayName(sMovieTitle)
-            oHoster.setFileName(sMovieTitle)
+            oHoster.setDisplayName(sTitle)
+            oHoster.setFileName(sTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
 
     oGui.setEndOfDirectory()
