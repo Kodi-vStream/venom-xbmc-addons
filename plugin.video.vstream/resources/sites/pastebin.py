@@ -2,6 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.comaddon import progress, addon, dialog 
 from resources.lib.gui.gui import cGui
+from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
@@ -83,38 +84,56 @@ def load():
         pasteLabel = pasteBin[0]
         pasteID = pasteBin[1]
         
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('pasteID', pasteID)
-        oGui.addDir(SITE_IDENTIFIER, 'deletePaste', '[COLOR red]' + pasteLabel + '[/COLOR]', 'mark.png', oOutputParameterHandler)
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName(SITE_IDENTIFIER)
+        oGuiElement.setFunction('showMenu')
+        oGuiElement.setTitle(pasteLabel)
+        oGuiElement.setIcon("mark.png")
+        oGuiElement.setMeta(0)
         
         oOutputParameterHandler = cOutputParameterHandler()
-        sUrl = URL_SEARCH_MOVIES[0].replace(KEY_PASTE_ID, pasteID)
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('pasteID', pasteID)
+        oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'deletePaste', addons.VSlang(30412))
+        oGui.addFolder(oGuiElement, oOutputParameterHandler)
     
-        oOutputParameterHandler = cOutputParameterHandler()
-        sUrl = URL_MAIN + pasteID
-        oOutputParameterHandler.addParameter('sMedia', 'film')
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Films (Genres)', 'genres.png', oOutputParameterHandler)
-    
-        oOutputParameterHandler = cOutputParameterHandler()
-        sUrl = URL_MAIN + pasteID
-        oOutputParameterHandler.addParameter('sMedia', 'film')
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showSaga', 'Films (Saga)', 'genres.png', oOutputParameterHandler)
-    
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sMedia', 'film')
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Films (Années)', 'annees.png', oOutputParameterHandler)
+    oGui.setEndOfDirectory()
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        sUrl = URL_MAIN + pasteID
-        oOutputParameterHandler.addParameter('sMedia', 'serie')
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
+
+def showMenu():
     
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    pasteID = oInputParameterHandler.getValue('pasteID')
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    sUrl = URL_SEARCH_MOVIES[0].replace(KEY_PASTE_ID, pasteID)
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    sUrl = URL_MAIN + pasteID
+    oOutputParameterHandler.addParameter('sMedia', 'film')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    sUrl = URL_MAIN + pasteID
+    oOutputParameterHandler.addParameter('sMedia', 'film')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
+    oGui.addDir(SITE_IDENTIFIER, 'showSaga', 'Films (Saga)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('sMedia', 'film')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
+    oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Films (Années)', 'annees.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    sUrl = URL_MAIN + pasteID
+    oOutputParameterHandler.addParameter('sMedia', 'serie')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
 
 
@@ -434,7 +453,7 @@ def addPasteID():
 def deletePaste():
 
     addons = addon()
-    if not dialog().VSyesno(addons.VSlang(30412)):
+    if not dialog().VSyesno(addons.VSlang(30456)):
         return
     
     oInputParameterHandler = cInputParameterHandler()
