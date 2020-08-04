@@ -391,11 +391,13 @@ def addPasteID():
     # Recherche d'un setting de libre
     names = set()
     numID = 0
-    newID = 1
+    newID = 0
     while True:
         numID += 1
         pasteLabel = addons.getSetting(SETTING_PASTE_LABEL + str(numID))
         if pasteLabel == '':
+            if newID == 0:
+                newID = numID
             break
 
         pasteID = addons.getSetting(SETTING_PASTE_ID + str(numID))
