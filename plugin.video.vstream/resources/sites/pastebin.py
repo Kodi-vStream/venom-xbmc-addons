@@ -35,10 +35,11 @@ class idxInFile:
     SAISON = 3  # Saison (ex 'Saison 3') (optionnel)
     YEAR = 4    # Année (Optionnel)
     GENRES = 5  # Liste des genres (optionnel)
-    URLS = 6    # Liste des liens
+    URLS = 6    # Liste des liens, avec épisodes pour les séries
 
 # Exemples
 # film;714;Demain ne meurt jamais;James BOND;1997;['Action', 'Aventure', 'Thriller'];['https://uptobox.com/nwxxxx','https://uptobox.com/nwYYzz']
+# serie;48866;Les 100;Saison 2; 2014; ['Fantastique', 'Aventure']; {'S02E01':['lien1', 'lien2'], 'S02E02':['lien1']}
 
 
 def load():
@@ -100,39 +101,67 @@ def load():
 
 
 def showMenu():
-    
-    oGui = cGui()
-
     oInputParameterHandler = cInputParameterHandler()
     pasteID = oInputParameterHandler.getValue('pasteID')
     
-    oOutputParameterHandler = cOutputParameterHandler()
-    sUrl = URL_SEARCH_MOVIES[0].replace(KEY_PASTE_ID, pasteID)
-    oOutputParameterHandler.addParameter('siteUrl', sUrl)
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
+    # Etablir les menus en fonction du contenu
     sUrl = URL_MAIN + pasteID
-    oOutputParameterHandler.addParameter('sMedia', 'film')
-    oOutputParameterHandler.addParameter('siteUrl', sUrl)
-    oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+    oRequestHandler = cRequestHandler(sUrl)
+    sContent = oRequestHandler.request()
+    lines = sContent.splitlines()
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    sUrl = URL_MAIN + pasteID
-    oOutputParameterHandler.addParameter('sMedia', 'film')
-    oOutputParameterHandler.addParameter('siteUrl', sUrl)
-    oGui.addDir(SITE_IDENTIFIER, 'showSaga', 'Films (Saga)', 'genres.png', oOutputParameterHandler)
+    containFilms = False
+    containFilmGenres = False
+    containFilmSaga = False
+    containFilmYear = False
+    containSeries = False
+    
+    for line in lines:
+        movie = line.split(';')
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('sMedia', 'film')
-    oOutputParameterHandler.addParameter('siteUrl', sUrl)
-    oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Films (Années)', 'annees.png', oOutputParameterHandler)
+        if 'film' in movie[idxInFile.CAT]:
+            containFilms = True
+            if len(movie[idxInFile.GENRES].strip())>0:
+                containFilmGenres = True
+            if len(movie[idxInFile.YEAR].strip())>0:
+                containFilmYear = True
+            if len(movie[idxInFile.SAGA].strip())>0:
+                containFilmSaga = True
+        if 'serie' in movie[idxInFile.CAT]:
+            containSeries = True
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    sUrl = URL_MAIN + pasteID
-    oOutputParameterHandler.addParameter('sMedia', 'serie')
-    oOutputParameterHandler.addParameter('siteUrl', sUrl)
-    oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
+    
+    oGui = cGui()
+
+    if containFilms:
+        oOutputParameterHandler = cOutputParameterHandler()
+        searchUrl = URL_SEARCH_MOVIES[0].replace(KEY_PASTE_ID, pasteID)
+        oOutputParameterHandler.addParameter('siteUrl', searchUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Films)', 'search.png', oOutputParameterHandler)
+
+    if containFilmGenres:
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sMedia', 'film')
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+
+    if containFilmSaga:
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sMedia', 'film')
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showSaga', 'Films (Saga)', 'genres.png', oOutputParameterHandler)
+
+    if containFilmYear:
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sMedia', 'film')
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Films (Années)', 'annees.png', oOutputParameterHandler)
+
+    if containSeries:
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sMedia', 'serie')
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
