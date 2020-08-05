@@ -351,7 +351,8 @@ class cHosterGui:
             return self.getHoster('frenchvid')
         if ('core1player' in sHostName) or ('vfsplayer' in sHostName):
             return self.getHoster('frenchvid')
-
+        if ('viki' in sHostName):
+            return self.getHoster('viki')
         if ('flix555' in sHostName):
             return self.getHoster('flix555')
         if ('onlystream' in sHostName):
