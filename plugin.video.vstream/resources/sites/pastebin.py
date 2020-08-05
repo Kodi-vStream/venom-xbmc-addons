@@ -307,6 +307,7 @@ def showMovies(sSearch=''):
 
     lines = sContent.splitlines()
 
+    serieTitles = set()
     nbItem = 0
     index = 0
     progress_ = progress().VScreate(SITE_NAME)
@@ -341,17 +342,28 @@ def showMovies(sSearch=''):
 
         # Filtrage par titre
         sTitle = movie[idxInFile.TITLE].strip()
+        
+        # Titre recherché
         if sSearchTitle:
             if cUtil().CheckOccurence(sSearchTitle, sTitle) == 0:
                 continue
+
+        # Une série ne doit apparaitre qu'une seule fois, les saisons sont gérées plus tard
+        if sMedia == 'serie':
+            if sTitle in serieTitles:
+                continue
+            serieTitles.add(sTitle)
 
         # Filtrage par années
         year = movie[idxInFile.YEAR].strip()
         if sYear:
             if not year or sYear != year:
                 continue
+            
+            
+        sDisplayTitle = sTitle
         if year:
-            sTitle = '%s (%s)' % (sTitle, year)
+            sDisplayTitle = '%s (%s)' % (sTitle, year)
 
         nbItem += 1
         progress_.VSupdate(progress_, ITEM_PAR_PAGE)
@@ -361,18 +373,18 @@ def showMovies(sSearch=''):
         sHost = movie[idxInFile.URLS]
 
         oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sTitle', sTitle)
         oOutputParameterHandler.addParameter('sHost', sHost)
         if sTmdbId:
             oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
 
         if sMedia == 'serie':
-            sDisplayTitle = sTitle + ' ' + movie[idxInFile.SAISON].strip()
-            oGui.addTV(SITE_IDENTIFIER, 'showSerieLinks', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showSerieSaisons', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
         elif sMedia == 'anime':
-            oGui.addAnime(SITE_IDENTIFIER, 'showSerieLinks', sTitle, 'series.png', '', '', oOutputParameterHandler)
+            oGui.addAnime(SITE_IDENTIFIER, 'showSerieSaisons', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
         else:
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', '', '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', '', '', oOutputParameterHandler)
 
         # Gestion de la pagination
         if not sSearch:
@@ -394,6 +406,43 @@ def showMovies(sSearch=''):
     oGui.setEndOfDirectory()
 
 
+def showSerieSaisons():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sTitle = oInputParameterHandler.getValue('sTitle')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sContent = oRequestHandler.request()
+    lines = sContent.splitlines()
+
+    saisons = {}
+
+    # Recherche les saisons de la série    
+    for line in lines:
+        movie = line.split(';')
+        title = movie[idxInFile.TITLE].strip()
+        if title != sTitle:
+            continue
+        saisons[movie[idxInFile.SAISON].strip()] = movie[idxInFile.URLS]
+
+    # Une seule saison, directement les épisodes
+    if len(saisons) == 1:
+        showSerieLinks()
+        return
+
+    # Proposer les différentes saisons
+    numSaisons = saisons.keys()
+    for sSaison in sorted(numSaisons):
+        links = saisons[sSaison]
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sTitle', sTitle)
+        oOutputParameterHandler.addParameter('sHost', links)
+        oGui.addEpisode(SITE_IDENTIFIER, 'showSerieLinks', sSaison, 'series.png', '', '', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
 def showSerieLinks():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -402,12 +451,16 @@ def showSerieLinks():
     
     sHoster = eval(sHoster)
 
-    for episode, links in sHoster.items():
+    # Trie des épisodes 
+    episodes = sHoster.keys()
+
+    for episode in sorted(episodes):
+        links = sHoster[episode]
         
         sDisplayTitle = sTitle + ' ' + episode
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sTitle', sTitle)
+        oOutputParameterHandler.addParameter('sTitle', sDisplayTitle)
         oOutputParameterHandler.addParameter('sHost', links)
         oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
 
