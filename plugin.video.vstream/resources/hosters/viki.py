@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # ==>vikki
-from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
-#from resources.lib.comaddon import VSlog
-from resources.lib.comaddon import dialog
+# from resources.lib.comaddon import VSlog
 import xbmcgui
 
 
@@ -53,98 +51,91 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self, api_call=None):
-        
+
         sUrl = self.__sUrl
-        #srtsubs_path = xbmc.translatePath('special://temp/vikir.English.srt')
+        # srtsubs_path = xbmc.translatePath('special://temp/vikir.English.srt')
         # Methode 1 on recoit une liste sUrl=[ urlstream,sub,q1,q2...urlq1,urlq2
-        #if false sub=french
+        # if false sub=french
         bSelectSub=True
-       
-        #https://manifest-viki.viki.io/v1/1159945v/limelight/domain_4/mpd/normal/viki/high/mpd_mob/ww/na/manifest.mpd?
-        bsupportedMdp=False #manifest.mpd
-        
-        url=[]
-        qual=[]
-        pathsub=[]
-        namesub=['French','English']
-        
+
+        # https://manifest-viki.viki.io/v1/1159945v/limelight/domain_4/mpd/normal/viki/high/mpd_mob/ww/na/manifest.mpd?
+        bsupportedMdp = False  # manifest.mpd
+
+        url = []
+        qual = []
+        pathsub = []
+        namesub = ['French', 'English']
+
         oParser = cParser()
         sPattern = ".'([^']*)"
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
-            sub1=aResult[1][0]
-            sub2=aResult[1][1]
+            sub1 = aResult[1][0]
+            sub2 = aResult[1][1]
             pathsub.append(sub1)
             pathsub.append(sub2)
-            
-            offset=2
-            numberQ=(len(aResult[1])-offset)/2
-            for i in range(offset,offset+numberQ):
-                if 'mpd' in aResult[1][i] :
-                    if bsupportedMdp :
-                        qual.append(aResult[1][i]+' !')
+
+            offset = 2
+            numberQ = (len(aResult[1])-offset)/2
+            for i in range(offset, offset + numberQ):
+                if 'mpd' in aResult[1][i]:
+                    if bsupportedMdp:
+                        qual.append(aResult[1][i] + ' !')
                     continue
-   
+
                 qual.append(aResult[1][i])
-            for i in range(offset+numberQ,len(aResult[1])):
-                if 'manifest.mpd' in aResult[1][i] :
-                    if bsupportedMdp :
-                        url.append(aResult[1][i])  
+            for i in range(offset + numberQ, len(aResult[1])):
+                if 'manifest.mpd' in aResult[1][i]:
+                    if bsupportedMdp:
+                        url.append(aResult[1][i])
                     continue
                 url.append(aResult[1][i])
 
-            sub=sub1
+            sub = sub1
             if bSelectSub:
                 pathsub.append('')
                 namesub.append('None')
-                sub=self.mydialog().VSselect(namesub,pathsub,'Viki Select subtile :')
-           
-            
-            api_call=self.mydialog().VSselect(qual,url,'Viki Select quality :')
-            #api_call = self.VSselectsub(qual, url)
- 
+                sub = self.mydialog().VSselect(namesub, pathsub, 'Viki Select subtile :')
+
+            api_call = self.mydialog().VSselect(qual, url, 'Viki Select quality :')
+            # api_call = self.VSselectsub(qual, url)
+
             if api_call:
                 if sub:
                     return True,api_call, sub
-                else :
+                else:
                     return True, api_call
-                    
-            
-            else:#user canceled !# file not found
+
+            else:  # user canceled !# file not found
                 return False, False
-        
-        
+
         # Methode 2 on recoit une chaine sUrl=urlstream + ';' urlsub
-        if ';' in sUrl :
+        if ';' in sUrl:
             sUrl, sub = sUrl.split(';')
-            api_call=sUrl
+            api_call = sUrl
             if api_call:
-                return True, api_call,sub
-        else : 
-            
-            #VSlog('hoster vikki no find sub : use ";" to split url and sub')
-            api_call=sUrl
+                return True, api_call, sub
+        else:
+
+            # VSlog('hoster vikki no find sub : use ";" to split url and sub')
+            api_call = sUrl
             if api_call:
                 return True, api_call
-        
-        #api_call ="https://cloudfront.viki.net/1133753v/dash/1133753v_dash_high_480p_2d3e72_1809180448_track1_dashinit.mp4"
-        
-        #jamais atteint
+
+        # api_call = "https://cloudfront.viki.net/1133753v/dash/1133753v_dash_high_480p_2d3e72_1809180448_track1_dashinit.mp4"
+
+        # jamais atteint
         return False, False
-    
+
     class mydialog(xbmcgui.Dialog):
-        def VSselect(self, list_alias, list_toreturn,sTitle):
-    
+        def VSselect(self, list_alias, list_toreturn, sTitle):
+
             if len(list_toreturn) == 0:
                 return ''
             if len(list_toreturn) == 1:
                 return list_toreturn[0]
-    
+
             ret = self.select(sTitle, list_alias)
             if ret > -1:
                 return list_toreturn[ret]
             return ''
-    
-    
-    
-
