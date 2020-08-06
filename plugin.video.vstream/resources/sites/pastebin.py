@@ -139,6 +139,11 @@ def showMenu():
         oOutputParameterHandler.addParameter('siteUrl', searchUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Films)', 'search.png', oOutputParameterHandler)
 
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sMedia', 'film')
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Derniers ajouts)', 'search.png', oOutputParameterHandler)
+
     if containFilmGenres:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMedia', 'film')
@@ -158,6 +163,11 @@ def showMenu():
         oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Films (Années)', 'annees.png', oOutputParameterHandler)
 
     if containSeries:
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sMedia', 'serie')
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Derniers ajouts)', 'search.png', oOutputParameterHandler)
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMedia', 'serie')
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -382,7 +392,7 @@ def showMovies(sSearch=''):
         if sMedia == 'serie':
             oGui.addTV(SITE_IDENTIFIER, 'showSerieSaisons', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
         elif sMedia == 'anime':
-            oGui.addAnime(SITE_IDENTIFIER, 'showSerieSaisons', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
+            oGui.addAnime(SITE_IDENTIFIER, 'showSerieLinks', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
         else:
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', '', '', oOutputParameterHandler)
 
