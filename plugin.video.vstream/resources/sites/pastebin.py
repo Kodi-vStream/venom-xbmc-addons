@@ -12,7 +12,7 @@ from resources.lib.util import Quote, cUtil, Unquote
 
 
 SITE_IDENTIFIER = 'pastebin'
-SITE_NAME = 'pastebin'
+SITE_NAME = 'PasteBin'
 SITE_DESC = 'Liste depuis pastebin'
 
 URL_MAIN = 'https://pastebin.com/raw/'
@@ -163,6 +163,11 @@ def showMenu():
         oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Films (Années)', 'annees.png', oOutputParameterHandler)
 
     if containSeries:
+        oOutputParameterHandler = cOutputParameterHandler()
+        searchUrl = URL_SEARCH_SERIES[0].replace(KEY_PASTE_ID, pasteID)
+        oOutputParameterHandler.addParameter('siteUrl', searchUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Séries)', 'search.png', oOutputParameterHandler)
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMedia', 'serie')
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
