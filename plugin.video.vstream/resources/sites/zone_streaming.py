@@ -310,9 +310,9 @@ def showHosters():
                 oRequestHandler = cRequestHandler(sUrl)
                 sHtmlContent = oRequestHandler.request()
 
-                fh = open('c:\\test.txt', "w")
-                fh.write(sHtmlContent)
-                fh.close()
+                #fh = open('c:\\test.txt', "w")
+                #fh.write(sHtmlContent)
+                #fh.close()
 
                 page = json.loads(sHtmlContent)
                 List_video = page["video"]
