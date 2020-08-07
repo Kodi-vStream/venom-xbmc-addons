@@ -77,7 +77,7 @@ def load():
         if pasteID:
             pasteListe[pasteLabel] = pasteID
     
-    # Trie des listes par label 
+    # Trie des listes par label
     pasteListe = sorted(pasteListe.items(), key=lambda paste: paste[0])
 
 
@@ -142,7 +142,12 @@ def showMenu():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMedia', 'film')
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Derniers ajouts)', 'search.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sMedia', 'film')
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Films (Liste)', 'listes.png', oOutputParameterHandler)
 
     if containFilmGenres:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -171,12 +176,17 @@ def showMenu():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMedia', 'serie')
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Derniers ajouts)', 'search.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMedia', 'serie')
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sMedia', 'serie')
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Séries (Liste)', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -289,6 +299,28 @@ def showYears():
     oGui.setEndOfDirectory()
 
 
+def AlphaList():
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMedia = oInputParameterHandler.getValue('sMedia')
+
+    for i in range(0, 36):
+        if (i < 10):
+            sLetter = chr(48 + i)
+        else:
+            sLetter = chr(65 + i -10)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('sMedia', sMedia)
+        oOutputParameterHandler.addParameter('sAlpha', sLetter)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] Lettre [COLOR red]' + sLetter + '[/COLOR][/COLOR]', 'listes.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
 def showMovies(sSearch=''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -297,6 +329,7 @@ def showMovies(sSearch=''):
     sGenre = oInputParameterHandler.getValue('sGenre')
     sSaga = oInputParameterHandler.getValue('sSaga')
     sYear = oInputParameterHandler.getValue('sYear')
+    sAlpha = oInputParameterHandler.getValue('sAlpha')
     numItem = oInputParameterHandler.getValue('numItem')
     numPage = oInputParameterHandler.getValue('numPage')
     if not numItem:
@@ -326,16 +359,22 @@ def showMovies(sSearch=''):
     nbItem = 0
     index = 0
     progress_ = progress().VScreate(SITE_NAME)
-    for line in lines:
+
+    # création d'un tableau
+    movies = [k.split(";") for k in lines]
+    
+    # Recherche par ordre alphabetique => le tableau doit être trié
+    if sAlpha:
+        movies = sorted(movies, key=lambda line: line[idxInFile.TITLE])
+        
+        
+    for movie in movies:
 
         # Pagination, on se repositionne
         index += 1
         if index <= numItem:
             continue
         numItem += 1
-
-        # Infos d'une ligne
-        movie = line.split(';')
 
         # Filtrage par média (film/série)
         if sMedia not in movie[idxInFile.CAT]:
@@ -361,6 +400,11 @@ def showMovies(sSearch=''):
         # Titre recherché
         if sSearchTitle:
             if cUtil().CheckOccurence(sSearchTitle, sTitle) == 0:
+                continue
+
+        # recherche alphabétique
+        if sAlpha:
+            if sTitle[0] != sAlpha:
                 continue
 
         # Une série ne doit apparaitre qu'une seule fois, les saisons sont gérées plus tard
@@ -411,6 +455,7 @@ def showMovies(sSearch=''):
                 oOutputParameterHandler.addParameter('sGenre', sGenre)
                 oOutputParameterHandler.addParameter('sSaga', sSaga)
                 oOutputParameterHandler.addParameter('sYear', sYear)
+                oOutputParameterHandler.addParameter('sAlpha', sAlpha)
                 oOutputParameterHandler.addParameter('numPage', numPage)
                 oOutputParameterHandler.addParameter('numItem', numItem)
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(numPage) + ' >>>[/COLOR]', oOutputParameterHandler)
