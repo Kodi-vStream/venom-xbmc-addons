@@ -11,6 +11,10 @@ from resources.lib.parser import cParser
 from resources.lib.util import Quote, cUtil, Unquote
 
 
+# TODO
+# recherche globale
+
+
 SITE_IDENTIFIER = 'pastebin'
 SITE_NAME = 'PasteBin'
 SITE_DESC = 'Liste depuis pastebin'
@@ -21,8 +25,9 @@ KEY_PASTE_ID = 'PASTE_ID'
 SETTING_PASTE_ID = 'pastebin_id_'
 SETTING_PASTE_LABEL = 'pastebin_label_'
 
-URL_SEARCH_MOVIES = (URL_MAIN + KEY_PASTE_ID + '?type=film&s=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + KEY_PASTE_ID + '?type=serie&s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + KEY_PASTE_ID + '?type=film&s=', 'showSearchGlobal')
+URL_SEARCH_SERIES = (URL_MAIN + KEY_PASTE_ID + '?type=serie&s=', 'showSearchGlobal')
+FUNCTION_SEARCH = 'showSearchGlobal'
 
 
 ITEM_PAR_PAGE = 20
@@ -36,6 +41,15 @@ class idxInFile:
     YEAR = 4    # Année (Optionnel)
     GENRES = 5  # Liste des genres (optionnel)
     URLS = 6    # Liste des liens, avec épisodes pour les séries
+#     CAT = 0     # Catégorie 'film', 'serie', 'anime'
+#     TMDB = 1    # Id TMDB (optionnel)
+#     TITLE = 2   # Titre du film / épisodes
+#     SAGA = 3    # Saga (ex 'Mission impossible') (optionnel)
+#     SAISON = 3  # Saison (ex 'Saison 3') (optionnel)
+#     GROUPE = 4  # Groupe tel que NETFLIX, HBO, MARVEL, DISNEY, etc..
+#     YEAR = 5    # Année (Optionnel)
+#     GENRES = 6  # Liste des genres (optionnel)
+#     URLS = 7    # Liste des liens, avec épisodes pour les séries
 
 # Exemples
 # film;714;Demain ne meurt jamais;James BOND;1997;['Action', 'Aventure', 'Thriller'];['https://uptobox.com/nwxxxx','https://uptobox.com/nwYYzz']
@@ -47,7 +61,7 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oGui.addDir(SITE_IDENTIFIER, 'addPasteID', 'Ajouter un lien PasteBin privé', 'listes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'addPasteID', 'Ajouter un lien PasteBin', 'listes.png', oOutputParameterHandler)
 
     numID = 0
     pasteListe = {}
@@ -201,7 +215,28 @@ def showSearch():
         sUrl += Quote(sSearchText)
         showMovies(sUrl)
         oGui.setEndOfDirectory()
-        return
+
+
+def showSearchGlobal(sSearch=''):
+    addons = addon()
+
+    sUrl = sSearch
+
+    # Parcourir la liste des PasteBin
+    numID = 0
+    while True:
+        numID += 1
+        pasteLabel = addons.getSetting(SETTING_PASTE_LABEL + str(numID))
+        if pasteLabel == '':
+            break # Fin de la liste
+
+        pasteID = addons.getSetting(SETTING_PASTE_ID + str(numID))
+        if pasteID:
+            searchUrl = sUrl.replace(KEY_PASTE_ID, pasteID)
+            try:
+                showMovies(searchUrl)
+            except:
+                pass
 
 
 def showGenres():
@@ -351,6 +386,7 @@ def showMovies(sSearch=''):
             sMedia = 'film'
 
     oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.setTimeout(4)
     sContent = oRequestHandler.request()
 
     lines = sContent.splitlines()
@@ -366,6 +402,10 @@ def showMovies(sSearch=''):
     # Recherche par ordre alphabetique => le tableau doit être trié
     if sAlpha:
         movies = sorted(movies, key=lambda line: line[idxInFile.TITLE])
+        
+    # Recherche par saga => trie par années
+    if sSaga:
+        movies = sorted(movies, key=lambda line: line[idxInFile.YEAR])
         
         
     for movie in movies:
@@ -463,7 +503,8 @@ def showMovies(sSearch=''):
 
     progress_.VSclose(progress_)
 
-    oGui.setEndOfDirectory()
+    if not sSearch:
+        oGui.setEndOfDirectory()
 
 
 def showSerieSaisons():
@@ -551,6 +592,7 @@ def addPasteID():
 
     # Recherche d'un setting de libre
     names = set()
+    IDs = set()
     numID = 0
     newID = 0
     while True:
@@ -565,25 +607,29 @@ def addPasteID():
         if pasteID == '':
             newID = numID
         else:
+            IDs.add(pasteID)        # IDs déjà renseignés
             names.add(pasteLabel)   # Labels déjà utilisés
     
     settingID = SETTING_PASTE_ID + str(newID)
     settingLabel = SETTING_PASTE_LABEL + str(newID)
     
     
+    # Demande de l'id PasteBin
+    sID = oGui.showKeyBoard('', "Saisir l'ID du PasteBin")
+    if sID == False:
+        return
+    if sID in IDs:
+        dialog().VSok(addons.VSlang(30082))
+        return
+
     # Demande du label et controle si déjà existant
-    sLabel = oGui.showKeyBoard('', "Saisir un titre")
+    sLabel = oGui.showKeyBoard('', "Saisir un nom")
     if sLabel == False:
         return
     if sLabel in names:
         dialog().VSok(addons.VSlang(30082))
         return
 
-
-    # Demande de l'id PasteBin
-    sID = oGui.showKeyBoard('', "Saisir l'ID")
-    if sID == False:
-        return
 
 
     # Enregistrer Label/id dans les settings    

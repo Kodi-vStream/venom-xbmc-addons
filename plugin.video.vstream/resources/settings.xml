@@ -156,6 +156,8 @@
 
         <setting visible="false" id="plugin_otakufr_com" type="bool" label="OtakuFR" default="true"/>
 
+        <setting visible="false" id="plugin_pastebin" type="bool" label="PasteBin" default="true"/>
+
         <setting visible="false" id="plugin_papstream" type="bool" label="PapStream" default="true"/>
 
         <setting visible="false" id="plugin_planet_streaming" type="bool" label="Planet Streaming" default="true"/>
