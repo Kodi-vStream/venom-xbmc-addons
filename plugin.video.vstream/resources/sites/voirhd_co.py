@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# 9
+# S09 update 07/08/2020
 
 import re
 from resources.lib.gui.hoster import cHosterGui
@@ -9,65 +9,45 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
-from resources.lib.comaddon import VSlog
 
-from resources.lib.config import GestionCookie
-
-bVSlog = True
 SITE_IDENTIFIER = 'voirhd_co'
-SITE_NAME = 'Voir HD'
-SITE_DESC = 'Les Derniers Films et Series en Streaming HD'
+SITE_NAME = 'Voir HD' 
+SITE_DESC = 'Films et Series en streaming hd'
 
 URL_MAIN = 'https://voirhd.co/'
-MOVIE_MOVIE = (URL_MAIN + 'films-1.html', 'showMovies')  # use -1.html instead of .html
+MOVIE_MOVIE = (URL_MAIN + 'films-1.html', 'showMovies')  #use -1.html instead of .html 
 
-# add tags in  URL_MAIN (home page site)
-tbox = '#box'
-tmoviestend = '#moviestend'
-tlastmovie = '#lastmovie'
-tseriestend = '#seriestend'
-tlastvf = '#lastvf'
-tlastvost = '#lastvost'
-
+# add tags in URL_MAIN       : Home page site :
+tbox = '#box'                # Film Box Office
+tmoviestend = '#moviestend'  # Tendance Films
+tlastmovie = '#lastmovie'    # Dernier Films ajoutés
+tseriestend = '#seriestend'  # Tendance Series
+tlastvf = '#lastvf'          # Derniers episodes vf Ajouté # épisode pas de desc : normal
+tlastvost = '#lastvost'      # Derniers episodes VOSTFR Ajoute  # 
+# recherche : key pour différencier le type de recherche
 key_search_movies = '#search_movies_#'
 key_search_series = '#search_series_#'
-# globale
-
+# recherche globale
 URL_SEARCH = (URL_MAIN + 'rechercher-', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0] + key_search_movies, 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0] + key_search_series, 'showMovies')
-FUNCTION_SEARCH = 'showMovies'
+# recherche interne 
+MY_SEARCH_MOVIES = (True, 'MyshowSearchMovie')
+MY_SEARCH_SERIES = (True, 'MyshowSearchSerie')
+# genre : movies et series (pas de difference) on indique film ou serie dans le resultat
+MOVIE_GENRES = (True, 'showGenres')
 
 MOVIE_TOP = (URL_MAIN + tbox, 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + tmoviestend, 'showMovies')
 MOVIE_NEWS = (URL_MAIN + tlastmovie, 'showMovies')
 
 SERIE_VIEWS = (URL_MAIN + tseriestend, 'showMovies')
+SERIE_SERIES = (URL_MAIN + 'serie-1.html', 'showMovies')  # or https://voirhd.co/serie
+SERIE_NEWS_EPISODE_VF = (URL_MAIN + tlastvf,'showMovies')
+SERIE_NEWS_EPISODE_VOST = (URL_MAIN + tlastvost,'showMovies')
 
-# SERIE_NOTES = (URL_MAIN + tseriestend, 'showMovies')
-MOVIE_NOTES = (URL_MAIN + tseriestend, 'showMovies')
-
-# Tendance Series #tends
-# Derniers episodes vf Ajoute #vf
-# Derniers episodes VOSTFR Ajoute #vost
-
-SERIE_SERIES = (URL_MAIN + 'serie-1.html', 'showMovies')
-# https://voirhd.co/serie
-
-
-SERIE_NEWS_EPISODE_VF=(URL_MAIN + tlastvf, 'showMovies')
-SERIE_NEWS_EPISODE_VOST=(URL_MAIN + tlastvost, 'showMovies')
 URL_IMAGE_VF = 'https://voirhd.co/image/vf.png'
 URL_IMAGE_VOST = 'https://voirhd.co/image/vostfr.png'
-
-
-# movies et series
-MOVIE_GENRES = (True, 'showGenres')
-# SERIE_GENRES = (URL_MAIN + 'series/', 'showGenres')
-
-UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0'
-
 
 def load():
     oGui = cGui()
@@ -77,12 +57,29 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films & Series (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMoviesMenu', 'Films', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showSeriesMenu', 'Séries', 'series.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showMoviesMenu():
+    oGui = cGui()
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_MOVIES[0])
+    oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_MOVIES[1], 'Recherche Films ', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP[0])
@@ -95,6 +92,15 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showSeriesMenu():
+    oGui = cGui()
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_SERIES[1], 'Recherche Series ', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
@@ -111,75 +117,57 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS_EPISODE_VOST[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS_EPISODE_VOST[1], 'Séries ( Derniers Episodes VOST)', 'series.png', oOutputParameterHandler)
-
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    # oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
-
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
-    # oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
-
     oGui.setEndOfDirectory()
 
-
-def showMoviesMenu():
+def MyshowSearchSerie():
     oGui = cGui()
-    oGui.setEndOfDirectory()
+    sSearchText = oGui.showKeyBoard()
+    if (sSearchText != False):
+        # sSearchText.replace(' ', '-') recherche plus précise mais plus risquée
+        sUrl = URL_SEARCH[0] + key_search_series + sSearchText
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
+        return
 
-
-def showSeriesMenu():
+def MyshowSearchMovie():
     oGui = cGui()
-    oGui.setEndOfDirectory()
-
+    sSearchText = oGui.showKeyBoard()
+    if (sSearchText != False):
+        sUrl = URL_SEARCH[0] + key_search_movies + sSearchText
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
+        return
 
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        # showMovies(sSearchText)
-        # ne sert car compliqué a refaire
-        sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
+        sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
-
         oGui.setEndOfDirectory()
         return
 
-
 def showGenres():
     oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    """
-    bug sur le site:les options genres ne marchent pas sur le site
-    le resultat correpondra seulement a la derniere recherche effectuée
-    par exemple recherche 'indien' donnera :un idien ds la ville
-    retour  menu : genre : epouvante-horreur donneras = un indien ds la ville !!!!
-
-    on fait une recheche par mot clef genre en créant une url bidon pour la recherche
-    car celle ci n'as besoin que de 2 parametres en post avec url = 'https://voirhd.co/lien.php'
-    addParameters('Search',search) et des cookies qui peuvent etres factices
-    réels cookies='_ga=GA1.2.15150117.1595311931; PHPSESSID=620726de603749aa430029aab71d2932; _gid=GA1.2.1226256096.1595849685'
-    suffisant cookies='PHPSESSID=1'
-
-    par contre il faut respecter la requete pour les page de resultat
-    https://voirhd.co/recherche-comedie.html ou -1.html
-    https://voirhd.co/recherche-comedie-2.html
-    on n'a aucun indice sur le next page seulement le max page
-    """
-
+    # bug sur le site:les options genres ne marchent pas
+    # on fait une recheche par mot clef genre  pour la recherche
+    # URL_MAIN+'recherche-'+ mot_saisie_ds_recherche_site + '-0.html'
+    # ** url2g :'-0' pour valider la premiere requete  RequestHandlerGenre 
+    # result RequestHandlerGenre : '-1' neccessaire apres pour le next page
+    
     liste = []
-
     listegenre = ['Action', 'Animation', 'aventure', 'Biopic', 'Comedie', 'Comedie-musicale',
-                  'Documentaire', 'Drame', 'Epouvante-horreur', 'Famille', 'Fantastique', 'Guerre',
-                  'Opera', 'Policier', 'Romance', 'Science-fiction', 'Thriller']
+                'Documentaire', 'Drame', 'Epouvante-horreur', 'Famille', 'Fantastique', 'Guerre',
+               'Policier', 'Romance', 'Science-fiction', 'Thriller']
 
     url1g = URL_MAIN + 'recherche-'
-    url2g = '-0.html'
-    # URL_MAIN + 'recherche-' + mot_saisie_ds_recherche_site + '.html' #
+    url2g = '-0.html'  # **
 
     for igenre in listegenre:
         liste.append([igenre, url1g + igenre + url2g])
-        # liste.append([igenre, url1g + igenre])
 
     for sTitle, sUrl in liste:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -193,42 +181,32 @@ def RequestHandlerSearch(searchs):
     oParser = cParser()
     sPattern = 'voirhd.co.rechercher-([^ ]*)'
     aResult = oParser.parse(searchs, sPattern)
-
+    sHtmlContent = ''
     if (aResult[0] == True):
         ssearch= aResult[1][0]
     else:
-        ifVSlog('cannnot parse ')
-        ifVSlog('sPattern ' + sPattern)
-        return False, 'none'
+        return False, sHtmlContent, 'Erreur'
 
-    scookies = 'PHPSESSID=fakecookies'  # marche
-    scookies = 'PHPSESSID=620726de603749aa430029aab71d2932'
-    scookies = 'PHPSESSID=1'
+    scookies= 'PHPSESSID=1'
     req2 = 'https://voirhd.co/lien.php'
-
-    # req3 = 'https://voirhd.co.bidon/films.html'  # marche
     oRequestHandler = cRequestHandler(req2)
     oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
     oRequestHandler.addParameters('Search', ssearch)
-    # oRequestHandler.addHeaderEntry('Referer', req1)
-    oRequestHandler.addHeaderEntry('Content-Type','application/x-www-form-urlencoded')
+    oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
     oRequestHandler.addHeaderEntry('Cookie', scookies)
     sHtmlContent = oRequestHandler.request()
+    
+    if not sHtmlContent:
+        return False,sHtmlContent, 'Erreur de requete'
 
-    if ssearch in sHtmlContent:  # on degrossi en  gros pour eviter de parser des resultats douteux de la page
-        return True, sHtmlContent
-        # ifVSlog('Find')
+    if ssearch in sHtmlContent: #  on degrossi en  gros pour eviter de parser des resultats
+        return True, sHtmlContent, ' Requete ok'
     else:
-        return False, 'none'
+        return False,sHtmlContent, 'Recherche : Aucun resultat'
     return
-
 
 def RequestHandlerGenre(searchs):
 
-    ifVSlog('#')
-    ifVSlog('RequestHandlerGenre ')
-    ifVSlog('url' + searchs)
-    # search = re.search('recherche-([^-]*)', searchs).group(1)
     oParser = cParser()
     sPattern = 'recherche-([^-]*)'
     aResult = oParser.parse(searchs, sPattern)
@@ -236,249 +214,117 @@ def RequestHandlerGenre(searchs):
     if (aResult[0] == True):
         ssearch = aResult[1][0]
     else:
-        ifVSlog('cannnot parse ')
-        ifVSlog('sPattern ' + sPattern)
-        return False, 'none'
+        return False,'none'
 
-    ifVSlog('result parese' + ssearch)
-
-    scookies = 'PHPSESSID=620726de603749aa430029aab71d2932'
     scookies = 'PHPSESSID=1'
     req2 = 'https://voirhd.co/lien.php'
-    # req3 = 'https://voirhd.co.bidon/films.html'  # marche
     oRequestHandler = cRequestHandler(req2)
     oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
     oRequestHandler.addParameters('Search', ssearch)
-    # oRequestHandler.addHeaderEntry('Referer', req1)
     oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
     oRequestHandler.addHeaderEntry('Cookie', scookies)
     sHtmlContent = oRequestHandler.request()
     return True, sHtmlContent
 
-
-def RequestHandlerSearch2(searchs):
-    # requete pour recupere les vrais cookie au cas ou
-    # voir class GestionCookie() pour sauvegarder
-    ifVSlog('#')
-    ifVSlog('TestSearch')
-    ifVSlog(searchs)
-    oParser = cParser()
-    sPattern='voirhd.co.rechercher-([^ ]*)'
-    aResult = oParser.parse(searchs, sPattern)
-
-    if (aResult[0] == True):
-        ssearch= aResult[1][0]
-    else:
-        ifVSlog('cannnot parse ')
-        ifVSlog('sPattern ' + sPattern)
-        return False, 'none'
-
-    # req 1 juste pour recupere cookie
-    req1 = 'https://voirhd.co/'  # ou autre url valide
-
-    # scookies='_ga=GA1.2.15150117.1595311931; PHPSESSID=620726de603749aa430029aab71d2932; _gid=GA1.2.1226256096.1595849685'
-
-    scookies = ''
-
-    ifVSlog('request1 =' + req1)
-    oRequestHandler = cRequestHandler(req1)
-    oRequestHandler.request()
-    sHeader1 = oRequestHandler.getResponseHeader()
-    # cookies = getcookie(sHeader)
-    bfindcookie = False
-    cookiesfind = ''
-    for iheader in sHeader1:
-        ifVSlog(str(iheader))
-        if iheader == 'set-cookie':
-            scook = sHeader1.getheader('set-cookie')
-            # GestionCookie().SaveCookie('voirhd_co', scook)
-            ifVSlog('cook = ' + scook)
-            scook = scook.split(';')
-            scook1 = scook[0]
-            cookiesfind = scook1
-            # ifVSlog('cook1 = ' + scook1)
-            # scook2 =scook[1]
-            # ifVSlog('cook2 = ' + scook2)
-            bfindcookie = True
-            break
-
-    # ifVSlog('bfind'+str(bfindcookie))
-
-    if bfindcookie:
-        scookies = cookiesfind
-    else:
-        return False, 'none'
-
-    req2 = 'https://voirhd.co/lien.php'
-    # req3 = 'https://voirhd.co.bidon/films.html'
-    oRequestHandler = cRequestHandler(req2)
-    oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-    oRequestHandler.addParameters('Search', ssearch)
-    # oRequestHandler.addHeaderEntry('Referer', req1)
-    oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-    oRequestHandler.addHeaderEntry('Cookie', scookies)
-    sHtmlContent = oRequestHandler.request()
-
-    if ssearch in sHtmlContent:  # on degrossi en gros pour eviter de parser des resultats douteux de la page
-        return True, sHtmlContent
-        # ifVSlog('Find')
-    else:
-        return False, 'none'
-    return
-
-
-def showMovies(sSearch=''):
+def showMovies(sSearch = ''):
     oGui = cGui()
-
-    # bVSlog('search'+ str(sSearch))
-    # oGui.setEndOfDirectory()
-    # return
 
     bSearchMovie = False
     bSearchSerie = False
-
     if sSearch:
         sUrl = sSearch
-        ifVSlog('Control url if key in sSearch :' + sUrl)
-
         if key_search_movies in sUrl:
             sUrl = str(sUrl).replace(key_search_movies, '')
-            # ifVSlog('Globale Search movies:' + sUrl)
             bSearchMovie = True
 
         if key_search_series in sUrl:
-            sUrl=str(sUrl).replace(key_search_series, '')
-            # ifVSlog('Globale Search serie:' + sUrl)
+            sUrl = str(sUrl).replace(key_search_series, '')
             bSearchSerie = True
-
-        ifVSlog('sSearch=' + sUrl + '; SearchMovie?=' + str(bSearchMovie) + '; SearchSerie?=' + str(bSearchSerie))
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-    # scookies='PHPSESSID=620726de603749aa430029aab71d2932'
-
-    # oRequestHandler.addHeaderEntry('Content-Type','application/x-www-form-urlencoded')  #
-    # oRequestHandler.addHeaderEntry('Cookie', scookies)
-    # oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
-    # oRequestHandler.addHeaderEntry('Accept', '*/*')
-    # oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    # oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
 
     sPattern = 'class="short-images-link".+?img src="([^"]+)".+?short-link"><a href="([^"]+)".+?>([^<]+)</a>'
-
-    ifVSlog('#')
-    ifVSlog('start showMovies () : Url request = ' + sUrl)
-
-    # pattern home page #
-    if sUrl == URL_MAIN + tbox:  # 1 etape
-        sPattern = 'Film Box Office.*?Tendance Films'
-    if sUrl == URL_MAIN + tmoviestend:  # 1 etape
-        sPattern='Tendance Films.+?Dernier Films ajout'
+    # pattern home page 
+    # 2 etapes /ou utiliser s=s[s.find(sStart):s.find(sEnd))
+    if sUrl == URL_MAIN + tbox:  # etape 1/2
+        sPattern = 'Film Box Office.*?Tendance Films'  # < 5ms regex101
+    if sUrl == URL_MAIN + tmoviestend:  # etape 1/2 
+        sPattern = 'Tendance Films.+?Dernier Films ajout' 
+    if sUrl == URL_MAIN + tseriestend:  # etape 1/2
+        sPattern = 'Tendance Series.+?start jaded serie'
+    # normale ; 1 etape
     if sUrl == URL_MAIN + tlastmovie:  # url  thumb title
-        sPattern='<li class="TPostMv">.+?ref="([^"]*).+?src="([^"]*).+?alt="([^"]+)'
-    if sUrl == URL_MAIN + tseriestend:  # 1 etape
-        sPattern='Tendance Series.+?start jaded serie'
-    if sUrl == URL_MAIN + tlastvf:  # url title ex 'max s1s2' thumb flag https://voirhd.co/image/vf.png
-        sPattern='<a  href="([^"]*)".+?<span >([^<]*)<.+?src="image.vf.png'
-    if sUrl == URL_MAIN + tlastvost:
+        sPattern = '<li class="TPostMv">.+?ref="([^"]*).+?src="([^"]*).+?alt="([^"]+)'
+    if sUrl == URL_MAIN+ tlastvf:  # url title ex 'max s1s2'  thumb flag https://voirhd.co/image/vf.png
+        sPattern = '<a  href="([^"]*)".+?<span >([^<]*)<.+?src="image.vf.png'
+    if sUrl == URL_MAIN+ tlastvost:
         sPattern = '<a  href="([^"]*)".+?<span >([^<]*)<.+?src="image.vostfr.png'
-
+    # else home page
     if URL_MAIN + 'films' in sUrl:
-        # url quality  lang  thumb  title.replace('  ','')
+        # url quality  lang  thumb  title.replace('  ', '')
         sPattern = 'class="TPostMv.+?ref="([^"]*).+?Qlty">([^<]*).+?Langhds.([^"]*).+?src="([^"]*).+?alt="([^"]*)'
     if URL_MAIN + 'serie' in sUrl:
-        # url nbredesaison thumb title
+        # url   nbredesaison thumb title
         sPattern = 'class="TPostMv.+?ref="([^"]*).+?Qlty">([^<]*).+?src="([^"]*).+?alt="([^"]*)'
-
     if URL_MAIN + 'recherche' in sUrl:  # meme que serie mais a tester
         # url   nbredesaison thumb title
         sPattern = 'class="TPostMv.+?ref="([^"]*).+?Qlty">([^<]*).+?src="([^"]*).+?alt="([^"]*)'
 
-    # ifVSlog('select 3 choice for html')
     if sSearch:
-        ifVSlog('01 if sSearch')
-    # if  URL_MAIN + 'recherche' in sUrl:
-        sbool, sHtmlContent = RequestHandlerSearch(sUrl)
+        sbool, sHtmlContent, mes=RequestHandlerSearch(sUrl)
         if sbool == False:
-            ifVSlog('error sSearch')
+            oGui.addText(SITE_IDENTIFIER, mes)
             oGui.setEndOfDirectory()
             return
 
-    elif URL_MAIN + 'recherche' in sUrl:  # 1 seule recherche pour genre if  genre-0.html
-
+    elif URL_MAIN + 'recherche' in sUrl:  # 1 seule RequestHandlerGenre() if  genre-0.html 
         surl = str(sUrl).replace('.html', '')
         snumber = re.search('([0-9]+)$', surl).group(1)
-
-        ifVSlog('snumber ' + snumber)
-        if snumber == '0':
-            ifVSlog('02 if recherhe in url and snum=0')
-            ifVSlog('snumber ' + snumber)
+        if snumber =='0':
             sbool, sHtmlContent = RequestHandlerGenre(sUrl)
-
-            sUrl=surl.replace('0', '1.html')  # genre-0.html / genre-1.html l : same result req need for next page
-            ifVSlog(sUrl)
+            sUrl = surl.replace('0', '1.html')  # genre-0.html / genre-1.html l : '-1' need for next page
         else:
-            ifVSlog('03 if recherhe in url and snum!=0')
-            ifVSlog(sUrl)
             oRequestHandler = cRequestHandler(sUrl)
-            # oParser = cParser()
             sHtmlContent = oRequestHandler.request()
-
     else:
-        ifVSlog('04 else')
         oRequestHandler = cRequestHandler(sUrl)
-        # oParser = cParser()
         sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == False):
-        oGui.addText(SITE_IDENTIFIER)
-
-        ifVSlog('')
-        ifVSlog('Failed Pattern with url = ' + sUrl)
-        ifVSlog(sPattern )
+        if ( URL_MAIN + 'rechercher' in sUrl ) and '<div class="divrecher">' in sHtmlContent:
+            oGui.addText(SITE_IDENTIFIER,'Recherche :  Aucun resultat')
+        #erreur interne qui peu etre cause par mauvais liens du site mais aussi le programme
+        elif '<title>404 Not Found</title>' in sHtmlContent:
+            oGui.addText(SITE_IDENTIFIER,' request failed : ')
+        else:
+            oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-
         for aEntry in aResult[1]:
-
             sQual = ''
             sLang = ''
-            # a enlever
             sUrl2 = ''
-            sTitle = ''
-            sThumb = ''
-
-            # parse home page
-            if sUrl == URL_MAIN + tbox or sUrl == URL_MAIN + tmoviestend or sUrl == URL_MAIN + tseriestend:
-                ifVSlog('Home Page')
-                ifVSlog('aEntry = ' + aEntry)
+            sTitle = '' 
+            sThumb = '' 
+            # parse home page 
+            # etape 2/2 
+            if sUrl == URL_MAIN + tbox  or sUrl == URL_MAIN + tmoviestend or sUrl == URL_MAIN + tseriestend:
                 shtml = str(aEntry)
-                # url2 thumb title
-                sPattern1 = '<div class=.item.>.+?ref=.([^"]*).+?src=.([^"]*).+?alt=.([^"]+)'
+                sPattern1 = '<div class=.item.>.+?ref=.([^"]*).+?src=.([^"]*).+?alt=.([^"]+)'  ##url2 thumb title
                 oParser2 = cParser()
-                aResult2 = oParser2.parse(shtml,sPattern1)
-                ifVSlog(' result aEntry2  =' + str(aResult2))
+                aResult2 = oParser2.parse(shtml,sPattern1 )
                 if (aResult2[0] == False):
                     oGui.addText(SITE_IDENTIFIER)
-                    ifVSlog('Failed Pattern with url = ' + sUrl)
-                    ifVSlog(sPattern1)
                 if (aResult2[0] == True):
-                    ifVSlog('result' + str(len(aResult2[1])))
                     for aEntry in aResult2[1]:
                         sUrl2 = aEntry[0]
                         sThumb = aEntry[1]
                         sTitle = aEntry[2]
-
                         if sThumb.startswith('poster'):
                             sThumb = URL_MAIN + sThumb
-                        ifVSlog('aEntry' + str(aEntry))
-                        ifVSlog('sUrl2 =' + sUrl2)
-                        ifVSlog('sThumb =' + sThumb)
-                        ifVSlog('sTitle =' + sTitle)
 
                         oOutputParameterHandler = cOutputParameterHandler()
                         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -490,45 +336,43 @@ def showMovies(sSearch=''):
                             oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
                         else:
                             oGui.addMovie(SITE_IDENTIFIER, 'showLink', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)
-
+                
                 oGui.setEndOfDirectory()
-                return
+                return       
 
-            # else no home page
             if sUrl == URL_MAIN + tlastmovie:  # url  thumb title
                 sUrl2 = aEntry[0]
                 sThumb = aEntry[1]
                 sTitle = aEntry[2]
-                sdisplayTitle = sTitle
+                sdisplayTitle = sTitle 
 
-            if sUrl == URL_MAIN + tlastvf:  # url title ex 'the lost S1E1' thumb flag https://voirhd.co/image/vf.png
+            if sUrl == URL_MAIN + tlastvf:  # url title ex 'the lost S1E1'  thumb flag https://voirhd.co/image/vf.png
                 sUrl2 = aEntry[0]
                 sThumb = URL_IMAGE_VF
-                sTitle = str(aEntry[1]).replace('  ', '') + ' (VF)'
+                sTitle = str(aEntry[1]).replace('  ', '') + ' ( VF )'
                 sdisplayTitle = sTitle
-
+ 
             if sUrl == URL_MAIN + tlastvost:
                 sUrl2 = aEntry[0]
                 sThumb = URL_IMAGE_VOST
-                sTitle = str(aEntry[1]).replace('  ', '') + ' (VOST)'
+                sTitle = str(aEntry[1]).replace('  ', '') +  ' ( VOST )'
                 sdisplayTitle = sTitle
 
-            if URL_MAIN + 'films' in sUrl:  # url quality  lang  thumb  title.replace('  ', '')
+            # else no home page
+            if URL_MAIN + 'films' in sUrl:  # url quality  lang  thumb  title.replace('  ','')
                 sUrl2 = aEntry[0]
-                sTitle = str(aEntry[4]).replace('  ', '')
+                sTitle = str(aEntry[4]).replace(' ', '')
                 sThumb = aEntry[3]
-                sQual = aEntry[1]
-                sLang = aEntry[2]
-                sdisplayTitle = sTitle
+                sQual  = aEntry[1]
+                sLang= aEntry[2]
+                sdisplayTitle = sTitle 
 
-            if URL_MAIN + 'serie' in sUrl:  # url  nbredesaison thumb title
-
+            if URL_MAIN + 'serie' in sUrl:  # url   nbredesaison thumb title
                 tagsaison = aEntry[1]
                 if '1' in tagsaison:
-                    tagsaison = tagsaison.replace('Saisons', 'Saison')
-
+                    tagsaison = tagsaison.replace('Saisons', 'Saison')  
                 sUrl2 = aEntry[0]
-                sTitle = aEntry[3]
+                sTitle = aEntry[3] 
                 sThumb = aEntry[2]
                 sdisplayTitle = sTitle + ' [' + tagsaison + ']'
 
@@ -536,17 +380,18 @@ def showMovies(sSearch=''):
                 sUrl2 = aEntry[0]
                 sTitle = aEntry[3]
                 sThumb = aEntry[2]
-                sdisplayTitle = sTitle + ' [' + aEntry[1] + ']'
+                sdisplayTitle = sTitle + ' ['+ aEntry[1] +']'
                 if 'serie' in sUrl2:
                     sdisplayTitle = sTitle + ' : Serie ' + '[' + aEntry[1] + ']'
                 else:
-                    sdisplayTitle = sTitle + ' : Film ' + '[' + aEntry[1] + ']'
+                    sdisplayTitle = sTitle + ' : Film ' + '['+ aEntry[1] + ']'
 
             if bSearchMovie:
                 if 'serie' in sUrl2:
                     continue
                 else:
                     sdisplayTitle = sdisplayTitle.replace(': Film ', '')
+
             if bSearchSerie:
                 if 'films' in sUrl2:
                     continue
@@ -556,11 +401,6 @@ def showMovies(sSearch=''):
             if sThumb.startswith('poster'):
                 sThumb = URL_MAIN + sThumb
 
-            ifVSlog('aEntry' + str(aEntry))
-            ifVSlog('sUrl2 =' + sUrl2)
-            ifVSlog('sThumb =' + sThumb)
-            ifVSlog('sTitle =' + sTitle)
-
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -568,99 +408,69 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sLang', sLang)
             oOutputParameterHandler.addParameter('sQual', sQual)
 
-            if (URL_MAIN + 'serie' in sUrl2) and sUrl != URL_MAIN + tlastvf and sUrl != URL_MAIN + tlastvost:
-                ifVSlog('ADDTV; showSaisons' + sUrl2)
+            if (URL_MAIN + 'serie' in sUrl2 ) and sUrl != URL_MAIN + tlastvf and sUrl != URL_MAIN + tlastvost:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sdisplayTitle, 'series.png', sThumb, '', oOutputParameterHandler)
-
-            elif sUrl == URL_MAIN + tlastvf or sUrl == URL_MAIN+ tlastvost:
-                ifVSlog('ADDTV ; showLink' + sUrl2)
+            elif sUrl == URL_MAIN + tlastvf or sUrl == URL_MAIN + tlastvost:
                 oGui.addTV(SITE_IDENTIFIER, 'showLink', sdisplayTitle, 'serie.png', sThumb, '', oOutputParameterHandler)
             else:
-                ifVSlog('ADDMOVIE ; showLink' + sUrl2)
                 oGui.addMovie(SITE_IDENTIFIER, 'showLink', sdisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
-
+        
     if not sSearch:
-
         bNextPage, urlnext, number, numbermax = __checkForNextPage(sHtmlContent,sUrl)
         if (bNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', urlnext)
-
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + '/' + numbermax + ' >>>[/COLOR]', oOutputParameterHandler)
-
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent, sUrl):
 
-    # difficile de trouver en parsant la page max ,et  l'url next qui changent à chaque
-    # ou qui n'est pas mises en evidence dans la page
-    # méthode  bourrin ;
-    # on cherche toutes les occurances de page qui index
-    # puis on augmente  l'indice de la page
-
-    ifVSlog('checkForNextPage')
-    ifVSlog(sUrl)
     inumbermax = 0
     if URL_MAIN + 'films' in sUrl:
         sPattern = 'voirhd.co.films-([\d]*).html'
     elif URL_MAIN + 'serie' in sUrl:
-        sPattern = 'voirhd.co.serie-([\d]*).html'
+        sPattern = 'voirhd.co.serie-([\d]*).html'          
     elif URL_MAIN + 'recherche' in sUrl:
-        sPattern = 'voirhd.co.recherche-.+?-([\d]*).html'
+        sPattern = 'voirhd.co.recherche-.+?-([\d]*).html' 
     elif '#' in sUrl:
-        return False, 'none', 'none', 'none'  # normal sUrl == URL_MAIN + #tag pas besoin de page suivante
+        return False, 'none', 'none', 'none'  # normal sUrl == URL_MAIN+ #tag pas besoin de page suivante
     else:
-        ifVSlog(' select pattern failed ')
-        return False, 'none', 'none', 'none'
+        return False, 'none', 'none', 'none' 
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == False):
-        ifVSlog('Failed Pattern with url = ' + sUrl)
-        ifVSlog(sPattern)
         return False, 'none', 'none', 'none'
     if (aResult[0] == True):
-        ifVSlog('result = ' + str(len(aResult[1])))
-        ifVSlog('spattern = ' + sPattern)
         for aEntry in aResult[1]:
-            VSlog(str(aEntry))
             snumber = str(aEntry)
             try:
                 intnumber = int(snumber)
                 if intnumber > inumbermax:
                     inumbermax = intnumber
             except:
-                ifVSlog('error parse to int' + snumber)
                 pass
-            # ifVSlog(snumber)
-        snumbermax = str(inumbermax)  # ok deja parsé
-        ifVSlog('max=' + str(inumbermax))
-
+        snumbermax = str(inumbermax)    
+ 
     surl = str(sUrl).replace('.html', '')
-    snumber = re.search('([0-9]+)$', surl).group(1)
-    ifVSlog('#snumber =' + snumber)
+    snumber = re.search('([0-9]+)$', surl).group(1)   
+
     if snumber != '0':
         inumber = int(snumber)
         inewnumber = inumber + 1
-        ifVSlog(' new number ' + str(inewnumber))
-        if inewnumber > inumbermax:
-            ifVSlog(' newnumber > find max :    newnumber =' + str(inewnumber))
-            return False, 'none', 'none', 'none'
+        if inewnumber > inumbermax:  
+            return False, 'none', 'none', 'none' 
         snewnumber = str(inewnumber)
         snewnumber_html = snewnumber + '.html'
         sUrlnext = surl.replace(snumber, snewnumber_html)  # genre-0.html / genre-1.html l : same result req need for next page
-        ifVSlog(' find next url:' + str(sUrlnext))
+        return True, sUrlnext , snewnumber, snumbermax
 
-        return True, sUrlnext, snewnumber, snumbermax
-
-    else:
-        ifVSlog(' snumber == 0')
-
-    return False, 'none', 'none', 'none'
+    return False, 'none', 'none', 'none' 
 
 
 def showSaisons():
+    
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -671,13 +481,12 @@ def showSaisons():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sDesc = ''
-    sPattern = 'fsynopsis"><p>([^<]*)'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0]:
-        sDesc = str(aResult[1][0]).replace('  ', '')
-
-    # url  saisontitle ex   href="serie+ (-Norsemen-saison-3-1598.html)    (Norsemen saison 3)
+    sDesc=''
+    sQual=''
+    sYear=''
+    sDesc, sQual, sYear = GetHtmlInfo(sDesc, sQual, sYear, sHtmlContent)
+    
+    # url  saisontitle ex   href="serie + (-Norsemen-saison-3-1598.html)    (Norsemen saison 3)
     sPattern = 'div class="col-sm-3.+?href="serie([^"]*).+?<div class="serietitre">.*?<span>([^<]*)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -685,17 +494,25 @@ def showSaisons():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-
         for aEntry in reversed(aResult[1]):
             sUrl2 = URL_MAIN + 'serie' + aEntry[0]
+            # c'est tjrs le meme titre 
             sTitle = aEntry[1]
+            sTitleDisplay = sTitle
+
+            if sQual:
+                sTitleDisplay = sTitleDisplay + ' [' + sQual + ' ]'
+            if sYear and not sYear in sTitle:  # doublon (2020)
+                sTitleDisplay = sTitleDisplay + ' (' + sYear + ' )'
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle )
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addEpisode(SITE_IDENTIFIER, 'ShowEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sQual', sQual)
+            oOutputParameterHandler.addParameter('sYear', sYear)
+            oGui.addEpisode(SITE_IDENTIFIER, 'ShowEpisodes', sTitleDisplay, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -706,11 +523,12 @@ def ShowEpisodes():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sDesc = oInputParameterHandler.getValue('sDesc')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sQual = oInputParameterHandler.getValue('sQual')
+    sYear = oInputParameterHandler.getValue('sYear')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')  # contient num saison
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
     # url numeroEpisode
     sPattern = 'streaming" href=".([^"]*).*?right"><.span>([^<]*)'
     oParser = cParser()
@@ -720,32 +538,26 @@ def ShowEpisodes():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sUrl2 = aEntry[0]
-            sTitle = sMovieTitle + ' Episode' + aEntry[1]  # saison en ordre decroissant
-
-            ifVSlog('ADD episode' + sUrl2)
-
+            sTitleDisplay = sMovieTitle + ' Episode' + aEntry[1]  # saison en odre drecroissant
+            if sQual:
+                sTitleDisplay = sTitleDisplay + ' [' + sQual + ' ]'
+            if sYear and not sYear in sMovieTitle:
+                sTitleDisplay = sTitleDisplay + ' (' + sYear + ' )'
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle )
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
-
+            oOutputParameterHandler.addParameter('sQual', sQual)
+            oOutputParameterHandler.addParameter('sYear', sYear )
+            oGui.addEpisode(SITE_IDENTIFIER, 'showLink', sTitleDisplay, '', sThumb, sDesc, oOutputParameterHandler)
     oGui.setEndOfDirectory()
 
 
 def showLink():
+
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -755,6 +567,7 @@ def showLink():
     sDesc = oInputParameterHandler.getValue('sDesc')
     sLang= oInputParameterHandler.getValue('sLang')
     sQual= oInputParameterHandler.getValue('sQual')
+    sYear= oInputParameterHandler.getValue('sYear')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -762,57 +575,86 @@ def showLink():
     if (sThumb):
         if sThumb == URL_IMAGE_VF or sThumb == URL_IMAGE_VOST:
             try:
-                sThumb = URL_MAIN + re.search('class="postere.+?.+?src="([^"]*)', sHtmlContent ).group(1)
+                sThumb = URL_MAIN + re.search('class="postere.+?.+?src="([^"]*)', sHtmlContent).group(1)
             except:
-                pass
-    # desc films
-    if (not sDesc):
-        sPattern = 'fsynopsis"><p>([^<]*)'
-        # resources.sites.a_voirhd_co.showLink
-        # aResult = oParser.parseSingleResult(sHtmlContent, sPattern)
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0]:
-            sDesc = str(aResult[1][0]).replace('  ', '')
+                pass  
+
+    sDesc, sQual, sYear = GetHtmlInfo(sDesc, sQual, sYear, sHtmlContent)
+    
+    b_ADD_MENU_VF = True
+    b_ADD_MENU_VOSTFR = True
+    b_ADD_MENU_DL = True
+    
+    iposVF = str(sHtmlContent).find('class="typevf">VF </h3>')
+    if iposVF > 0:
+        b_ADD_MENU_VF = False
+        
+    iposVOSTFR = str(sHtmlContent).find('class="typevf">VOSTFR')
+    if iposVOSTFR > 0:
+        b_ADD_MENU_VOSTFR = False
+
+    iposDL = str(sHtmlContent).find('liens telechargement</a>')
+    if iposDL > 0:
+        b_ADD_MENU_DL = False
 
     sPattern = '<button.+?lectt.+?src="([^"]*)"style="'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == False):
-        oGui.addText(SITE_IDENTIFIER)
-        ifVSlog(sHtmlContent)
-        ifVSlog('')
-        ifVSlog('Failed Pattern with url = ' + sUrl)
-        ifVSlog(sPattern)
+        if '<title>404 Not Found</title>' in sHtmlContent:  # erreur interne du site sur lien donnée par hd.co
+            oGui.addText(SITE_IDENTIFIER,' request failed : voirhd.co no update is database')
+        elif iposVF == -1 or iposVOSTFR == -1:  # index DL tjrs trouvé
+            oGui.addText(SITE_IDENTIFIER,'Aucun lien trouvé pour ' + sMovieTitle)
+        else:
+            oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        ifVSlog('total host' + str(len(aResult[1])))
-
         for aEntry in aResult[1]:
-            # https:..([^.]*)
-            ifVSlog(aEntry)
-            sUrl2 = aEntry.replace('.html.html', '.html')
-            shosturl = sUrl2.replace('www.', '')  # https://www.flashx.pw/
-            try:  # http and hhtps
+            url = str(aEntry)
 
+            if 'rapidgator.net' in url or 'filerio' in url:  # pas de hoster premium
+                continue
+
+            sUrl2 = url.replace('.html.html', '.html')
+            shosturl = sUrl2.replace('www.', '')  # https://www.flashx.pw/
+            try:  # http and https
                 sHost = re.search('http.*?\/\/([^.]*)', shosturl).group(1)
+                sHost = sHost.upper()
             except:
                 sHost = sUrl2
                 pass
 
-            # sHost = aEntry[1].capitalize()
-            # sLang = aEntry[2].replace('/images/', '').replace('.png', '')
-            # sQual = aEntry[3].replace('(', '').replace(')', '')
-            sTitle = sMovieTitle
-            if sQual:  # or film #always with sLang.
-                sTitle = '%s [%s] (%s) [COLOR coral]%s[/COLOR]' % (sMovieTitle, sQual, sLang.upper(), sHost)
-            else:  # serie
-                sTitle = '%s  [COLOR coral]%s[/COLOR]' % (sMovieTitle, sHost)
+            sTitleDisplay = sMovieTitle
+            if sQual: 
+                sTitleDisplay = sTitleDisplay + ' [' + sQual + ' ]'
+            if sLang: 
+                sTitleDisplay = sTitleDisplay + ' (' + sLang.upper()  + ' )'
+            if sYear and not sYear in sMovieTitle:
+                sTitleDisplay = sTitleDisplay + ' (' + sYear + ' )'
+            sTitleDisplay = '%s  [COLOR coral]%s[/COLOR]' % (sTitleDisplay, sHost)
+
+            iposurl = str(sHtmlContent).find(sUrl2 .replace('.html', '') )
+            if iposurl == -1:
+                pass
+            if not b_ADD_MENU_VF:
+                if iposurl > iposVF:
+                    oGui.addText(SITE_IDENTIFIER, '[COLOR skyblue]STREAMING VF : [/COLOR]')
+                    b_ADD_MENU_VF = True
+            if not b_ADD_MENU_VOSTFR:
+                if iposurl > iposVOSTFR:
+                    oGui.addText(SITE_IDENTIFIER, '[COLOR skyblue]STREAMING VOSTFR : [/COLOR]')
+                    b_ADD_MENU_VOSTFR = True
+            if not b_ADD_MENU_DL:
+                if iposurl > iposDL:
+                    oGui.addText(SITE_IDENTIFIER, '[COLOR skyblue]LIENS DE TELECHARGEMENT : [/COLOR]')
+                    b_ADD_MENU_DL = True
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('refUrl', sUrl)
             oOutputParameterHandler.addParameter('sUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitleDisplay, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -820,25 +662,39 @@ def showLink():
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    refUrl = oInputParameterHandler.getValue('refUrl')
     sUrl = oInputParameterHandler.getValue('sUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    sHosterUrl = sUrl
-
-    oHoster = cHosterGui().checkHoster(sHosterUrl)
+    oHoster = cHosterGui().checkHoster(sUrl)
     if (oHoster != False):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
-        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
+        cHosterGui().showHoster(oGui, oHoster, sUrl, sThumb)
+    #else:
+        #oGui.addText(SITE_IDENTIFIER,'Host inconnu ' + sUrl)
     oGui.setEndOfDirectory()
-
-
-def ifVSlog(log):
-    if bVSlog:
-        try:  # si no import VSlog from resources.lib.comaddon
-            VSlog(str(log))
-        except:
-            pass
+    
+def GetHtmlInfo(sDesc, sQual, sYear, sHtmlContent):
+    oParser = cParser()
+    
+    if (not sDesc):
+        sDesc = '' # ne sert a rien ? mais on est sure pas d'erreur return
+        sPattern = 'fsynopsis.+?<p>([^<]*)<.p>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sDesc = str(aResult[1][0]).replace('  ', '')
+    if (not sQual):
+        sQual = ''
+        sPattern = 'Qualité.*?title.+?">([^<]*)<.a'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sQual = str(aResult[1][0])
+    if (not sYear):
+        sYear = ''
+        sPattern = 'Année.+?voirhd.co.recherche-([\d]*)'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sYear = str(aResult[1][0])
+    
+    return sDesc, sQual, sYear
