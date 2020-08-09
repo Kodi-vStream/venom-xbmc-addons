@@ -10,7 +10,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 
 # copie du site http://www.kaydo.ws/
 # copie du site https://www.hds.to/
@@ -36,6 +36,7 @@ URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'sHowResultSearch'
 
+UA = 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0'
 
 def Decode(chain):
     try:
@@ -282,7 +283,6 @@ def ShowSaisonEpisodes():
 
     oGui.setEndOfDirectory()
 
-
 def showHosters():
     # UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0'
     oGui = cGui()
@@ -307,6 +307,9 @@ def showHosters():
         for aEntry in aResult[1]:
 
             site = URL_MAIN + "?trembed=" + aEntry[0] + "&trid=" + aEntry[1] + "&trtype=" + aEntry[2]
+            #Marche plus ?
+            site = site.replace("trembed=1","trembed=0")
+            
             oRequestHandler = cRequestHandler(site)
             sHtmlContent = oRequestHandler.request()
 
@@ -318,10 +321,12 @@ def showHosters():
             oRequestHandler = cRequestHandler(Url)
             sHtmlContent = oRequestHandler.request()
 
-
             # Recuperation de l'id
             sPattern1 = "var id.+?'(.+?)'"
             aResult = oParser.parse(sHtmlContent, sPattern1)
+            
+            #VSlog(site)
+            #VSlog(aResult)
 
             sPost = decode(aResult[1][0])
 
@@ -331,9 +336,12 @@ def showHosters():
 
                 oRequestHandler = cRequestHandler(sUrl1)
                 oRequestHandler.addHeaderEntry('Referer', Url)
+                oRequestHandler.addHeaderEntry('User-Agent', UA)
                 sHtmlContent = oRequestHandler.request()
 
                 sHosterUrl = oRequestHandler.getRealUrl()
+                
+                VSlog(sHosterUrl)
 
                 # https://lb.hdsto.me/hls/xxx.playlist.m3u8
                 # https://lb.hdsto.me/public/dist/index.html?id=xxx
@@ -346,6 +354,8 @@ def showHosters():
                     sHtmlContent = oRequestHandler.request()
 
                     sHosterUrl = oRequestHandler.getRealUrl()
+
+                VSlog(sHosterUrl)
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
