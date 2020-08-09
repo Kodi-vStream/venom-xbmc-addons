@@ -11,10 +11,6 @@ from resources.lib.parser import cParser
 from resources.lib.util import Quote, cUtil, Unquote
 
 
-# TODO
-# recherche globale
-
-
 SITE_IDENTIFIER = 'pastebin'
 SITE_NAME = 'PasteBin'
 SITE_DESC = 'Liste depuis pastebin'
@@ -375,9 +371,10 @@ def showMovies(sSearch=''):
 
     sSearchTitle = ''
     if sSearch:
+        sUrl = sSearch.split('?')[0]
+
         oParser = cParser()
-        sUrl = sSearch
-        sTypeSearch = oParser.parse(sUrl, '\?type=(.+?)&s=(.+)')
+        sTypeSearch = oParser.parse(sSearch, '\?type=(.+?)&s=(.+)')
         if sTypeSearch[0]:
             sMedia = sTypeSearch[1][0][0]
             sSearchTitle = sTypeSearch[1][0][1]
