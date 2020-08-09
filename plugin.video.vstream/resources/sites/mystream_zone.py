@@ -1,36 +1,17 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# source 08 update 02/08/2020
+# source 08 update 09/08/2020
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import VSlog
 import re
 import string
 import json
-import time
-from threading import Thread
 
-
-# oResponse = urllib2.urlopen(oRequest, timeout=self.__timeout, context=gcontext)
-try:  # Python 2
-    import urllib2
-    from urllib2 import URLError as UrlError
-    from urllib2 import HTTPError as HttpError
-
-except ImportError:  # Python 3
-    import urllib.request as urllib2
-    from urllib.error import URLError as UrlError
-    from urllib.error import HTTPError as HttpError
-
-
-# selection bVSlog = True ou bVSlog = False
-# bVSlog = True
-bVSlog = False
-
+TimeOut = 10  # requetes avec time out utilisées seulement dans show movies : on attends plus 30s
 SITE_IDENTIFIER = 'mystream_zone'
 SITE_NAME = 'My Streamzone'
 SITE_DESC = 'Films et Series en Streaming'
@@ -42,7 +23,6 @@ URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 
 key_search_movies='#searchsomemovies'
 key_search_series='#searchsomeseries'
-
 imdmovies = '#movies'  # tag request
 imdseries = '#series'
 
@@ -51,34 +31,28 @@ URL_SEARCH_MOVIES = (URL_SEARCH[0] + key_search_movies, 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0] + key_search_series, 'showMovies')
 
 MOVIE_NEWS = (URL_MAIN + 'movies/', 'showMovies')
-
 # serie&movie a revoir
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
+
 MOVIE_NOTES = (URL_MAIN + 'imdb/' + imdmovies, 'showMovies')
-
-# globale MENU Serie(Top Rated):if  add   cf: home.py def showSeries(self):
-# ... ,addons.VSlang(30121) addons.VSlang(30104)),
 SERIE_NOTES = (URL_MAIN + 'imdb/' + imdseries, 'showMovies')
-
-
+MOVIE_ALPHA = (True, 'showAlphaMovies')
+SERIE_ALPHA = (True, 'showAlphaSeries')
+#
 # variables internes
 MY_SEARCH_MOVIES = (True, 'MyshowSearchMovie')
 MY_SEARCH_SERIES = (True, 'MyshowSearchSerie')
 
 MOVIE_TENDANCE =(URL_MAIN + 'tendance/', 'showMovies')
-MOVIE_MOVIES = (URL_MAIN + 'movies/', 'showMovies')  # = MOVIE_NEWS
+MOVIE_MOVIES = (URL_MAIN + 'movies/', 'showMovies')  # = globale MOVIE_NEWS
 MOVIE_FEATURED = (URL_MAIN, 'showMovies')
-
-MOVIE_TOP_IMD = (URL_MAIN + 'imdb/' + imdmovies, 'showMovies')
-MOVIE_ALPHA = (True, 'showAlphaMovies')
+MOVIE_TOP_IMD = (URL_MAIN + 'imdb/' + imdmovies, 'showMovies')  # = globale MOVIE_NOTES
 
 SERIE_SERIES = (URL_MAIN+'tvshows/', 'showMovies')  # = SERIE_NEWS
-
 SERIE_TOP_IMD =(URL_MAIN + 'imdb/' + imdseries, 'showMovies')
 SERIE_NEWS_SAISONS = (URL_MAIN + 'seasons/', 'showMovies')
 SERIE_NEWS_EPISODES = (URL_MAIN + 'episodes/', 'showMovies')
-SERIE_ALPHA = (True, 'showAlphaSeries')
 
 
 def load():
@@ -100,22 +74,22 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films & Series (Par années)', 'annees.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    # oGui.addDir(SITE_IDENTIFIER, 'showMenuMovies', 'Films', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuMovies', 'Films', 'films.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    # oGui.addDir(SITE_IDENTIFIER, 'showMenuSeries', 'Séries', 'series.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuSeries', 'Séries', 'series.png', oOutputParameterHandler)
 
-    # menu movies
+    oGui.setEndOfDirectory()
+
+
+def showMenuMovies():
+    oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_MOVIES[0])
     oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_MOVIES[1], 'Recherche Films ', 'search.png', oOutputParameterHandler)
-    # URL_SEARCH_MOVIES
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MOVIES[0])
-    # oGui.addDir(SITE_IDENTIFIER, URL_SEARCH_MOVIES[1], 'Recherche Films ', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIES[0])
@@ -132,8 +106,12 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ALPHA[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_ALPHA[1], 'Films (Ordre alphabétique)', 'listes.png', oOutputParameterHandler)
+    oGui.setEndOfDirectory()
 
-    # menu series
+
+def showMenuSeries():
+    oGui = cGui()
+   
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_SERIES[1], 'Recherche Series ', 'search.png', oOutputParameterHandler)
@@ -162,18 +140,6 @@ def load():
     oGui.setEndOfDirectory()
 
 
-def showMenuMovies():
-    oGui = cGui()
-    # menu movies
-    oGui.setEndOfDirectory()
-
-
-def showMenuSeries():
-    oGui = cGui()
-    # menu series
-    oGui.setEndOfDirectory()
-
-
 def showSearch():
     oGui = cGui()
 
@@ -187,7 +153,6 @@ def showSearch():
 
 def MyshowSearchSerie():
     oGui = cGui()
-    # ifVSlog('MyshowSearchSerie')
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH[0] + key_search_series + sSearchText.replace(' ', '%20')
@@ -198,7 +163,6 @@ def MyshowSearchSerie():
 
 def MyshowSearchMovie():
     oGui = cGui()
-    # ifVSlog('MyshowSearchMovie')
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH[0]+ key_search_movies + sSearchText.replace(' ', '%20')
@@ -305,50 +269,20 @@ def showYears():
     oGui.setEndOfDirectory()
 
 
-def Testurllib():
-    # response = urllib2.urlopen('https://www.python.org/',timeout=10)
-    # html = response.read()#https://mystream.zone/
-    code = ''
-    # req = urllib2.Request('http://www.python.org/fish.html')
-    req = urllib2.Request('https://www.python.org/')
-    # req = urllib2.Request('https://mystream.zone/')
-    try:
-        resp = urllib2.urlopen(req, timeout=5)
-    except urllib2.HTTPError as e:
-        if e.code == 404:
-            return False, 'Page introuvable'
-        elif e.code == 403:
-            return False, 'Forbidden '
-
-    except urllib2.URLError as e:
-        return False, 'URLError'
-    else:
-        code = resp.getcode()
-        if code == 200:
-            return True, 'code 200 ok'
-        else:
-            return False, str(code)
-
-
-def showMovies(sSearch=''):
+def showMovies(sSearch = ''):
     oGui = cGui()
-    ifVSlog('#')
-    ifVSlog('showMovies')
-
+    
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sMenu = ''  # bricolage à revoir pour imdb image lows res
 
-    #
     bSearchMovie = False
     bSearchSerie = False
 
     if sSearch:
-
         sUrl = sSearch.replace(' ', '%20')
-        ifVSlog('url request before =' + sUrl)
         if key_search_movies in sUrl:
             sUrl = str(sUrl).replace( key_search_movies, '')
             # ifVSlog('Globale Search movies:' + sUrl)
@@ -359,19 +293,27 @@ def showMovies(sSearch=''):
             # ifVSlog('Globale Search serie:' + sUrl)
             bSearchSerie = True
 
-    ifVSlog('url request =' + sUrl)
-
     if 'wp-json' in sUrl and not sSearch:
-        oRequestHandler = cRequestHandler(sUrl)
-        sJsonContent = oRequestHandler.request()
+        try:
+            oRequestHandler = cRequestHandler(sUrl)
+            oRequestHandler.setTimeout(TimeOut)
+            sJsonContent = oRequestHandler.request()   
+        except Exception, e:
+            if str(e) == "('The read operation timed out',)" :
+                oGui.addText(SITE_IDENTIFIER, 'site Inaccessible')
+                oGui.setEndOfDirectory()
+                return
+            else:
+                oGui.addText(SITE_IDENTIFIER, 'Request Failed')
+                oGui.setEndOfDirectory()
+                return  
+        
         jsonrsp = json.loads(sJsonContent)
-        ifVSlog(str(jsonrsp))
         for i, idict in jsonrsp.items():
             sTitle = str(jsonrsp[i]['title'].encode('utf-8', 'ignore'))  # I Know This Much Is True mystream
             sUrl2 = str(jsonrsp[i]['url'])
             sThumb = str(jsonrsp[i]['img'])
             sYears = str(jsonrsp[i]['year'])
-            # VSlog('response url2 '+ sUrl2)
             sDisplayTitle = sTitle + ' (' + sYears + ')'
             sDesc = ''
             oOutputParameterHandler = cOutputParameterHandler()
@@ -415,30 +357,36 @@ def showMovies(sSearch=''):
         sMenu = 'imdb'
 
     else:
-        ifVSlog('requete inconnue '+sUrl)
-        # sPattern ='class="item.+?src="([^"]*).+?class="mepo">.+?class="data".+?href="([^"]*).>([^<]*).+?span>.+?,.([^<]*).+?texto">([^<]*)'
+        oGui.addText(SITE_IDENTIFIER,'Requete inconnue')
         oGui.setEndOfDirectory()
         return
 
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
+    
+    try:
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.setTimeout(TimeOut)
+        sHtmlContent = oRequestHandler.request()     
+    
+    # à eviter : prendre toutes les exceptions
+    # mais pas catché l'erreur avec UrlError HttpError socket...peu etre i/o operation ?
+    except Exception, e:
+        if str(e) == "('The read operation timed out',)" :
+            oGui.addText(SITE_IDENTIFIER, 'site Inaccessible')
+            oGui.setEndOfDirectory()
+            return
+        else:
+            oGui.addText(SITE_IDENTIFIER, 'Request Failed')
+            oGui.setEndOfDirectory()
+            return
+    
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
-        ifVSlog(sHtmlContent)
-        ifVSlog('')
-        ifVSlog('Failed Pattern with url = ' + sUrl)
-        ifVSlog('Selected Pattern = ' + sPattern)
 
     if (aResult[0] == True):
         sDesc = ''
         sYear = ''
-        ifVSlog('Selected Pattern = ' + sPattern)
-        ifVSlog('Total Result :' + str(len(aResult[1])))
         for aEntry in aResult[1]:
-            ifVSlog('item Result :')
-
             if 'https://mystream.zone/tendance/' in sUrl:  # image url title years
                 sUrl2 =aEntry[1]
                 sTitle = aEntry[2]
@@ -472,7 +420,6 @@ def showMovies(sSearch=''):
                 sYear= aEntry[3]
                 sDisplayTitle = sTitle + ' (' + sYear + ' )'
 
-            # elif 'genre' in sUrl or 'tvshows' in sUrl  or 'movies'in sUrl or 'release' in sUrl: #pb image
             elif 'genre' in sUrl or 'release' in sUrl:
                 sUrl2 = aEntry[1]
                 sTitle = str(aEntry[2]).replace(' mystream', '')
@@ -502,14 +449,10 @@ def showMovies(sSearch=''):
                 shtml = str(aEntry)
                 oParser2 = cParser()
                 aResult2 = oParser2.parse(shtml, sPattern1)
-                ifVSlog('Selected Pattern 2 = ' + sPattern1)
-                ifVSlog('result 2 =' + str(aResult2))
+
                 if (aResult2[0] == False):
                     oGui.addText(SITE_IDENTIFIER)
-                    ifVSlog('Failed Pattern with url = ' + sUrl)
-                    ifVSlog(sPattern1)
                 if (aResult2[0] == True):
-                    ifVSlog('Total Result2 = ' + str(len(aResult2[1])))
                     for aEntry in aResult2[1]:
                         sUrl2 = aEntry[1]
                         sTitle = str(aEntry[2]).replace(' mystream', '')
@@ -525,31 +468,23 @@ def showMovies(sSearch=''):
                         oOutputParameterHandler.addParameter('sYear', sYear)
                         oOutputParameterHandler.addParameter('sMenu', sMenu)
                         if 'mystream.zone/tvshows' in sUrl2:
-                            ifVSlog('ADD TV ; showSaisons')
                             oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
                         else:
-                            ifVSlog('ADD Movie ; showHosters')
+
                             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-            else:  # en théorie jamais atteint
-                ifVSlog('Error')
+            else:  # en théorie jamais atteint : a revoir
                 sUrl2 = aEntry[1]
                 sTitle = str(aEntry[2]).replace(' mystream', '')
                 sThumb = aEntry[0]
                 sDesc = aEntry[4]
                 sYear = aEntry[3]
                 sDisplayTitle = sTitle + ' (' + sYear + ' )'
-            # inutile mais capte genere erreur si url2=''
+            # inutile mais capte genere erreur si url2='' : a revoir
             if sUrl2.startswith('/'):
                 sUrl2 = URL_MAIN + sUrl2
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN + sThumb
-
-            # ifVSlog('name= '+ sTitle)
-            # ifVSlog('url= ' + sUrl2 )
-            # ifVSlog('sThumb= ' + sThumb )
-            # ifVSlog('desc= ' + sDesc )
-            # ifVSlog('syears= ' + sYear)
 
             if sSearch or 'mystream.zone/release/' in sUrl or 'mystream.zone/genre/' in sUrl or 'mystream.zone/tendance/' in sUrl:
                 # ifVSlog('Try ADD tag Film or serie ')
@@ -557,8 +492,7 @@ def showMovies(sSearch=''):
                     sDisplayTitle = sTitle + ' (Film)'
                 if 'tvshows' in sUrl2:
                     sDisplayTitle = sTitle + ' (Serie)'
-
-            #
+                    
             if bSearchMovie:
                 if 'tvshows' in sUrl2:
                     continue
@@ -569,7 +503,6 @@ def showMovies(sSearch=''):
                     continue
                 else:
                     sDisplayTitle = sTitle
-            ##
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -580,15 +513,11 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMenu', sMenu)
 
             if 'mystream.zone/tvshows' in sUrl2:  # inutile mais ne pas enlever resoudre regex
-                ifVSlog('ADD TV ; showSaisons')
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
             elif 'mystream.zone/seasons' in sUrl2:
-                ifVSlog('ADD TV ; showEpisodes')
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
             else:
-                ifVSlog('ADD Movie ; showHosters')
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         if not sSearch:
@@ -637,16 +566,11 @@ def __checkForNextPage(sHtmlContent):
             pagination = pagination + '/' + NumberMax + ' '
         return True, urlNextpage, pagination
     else:
-        ifVSlog('no find next page')
         return False, urlNextpage, 'nothing'
 
 
 def showSaisons():
-    # parent https://mystream.zone/tvshows/
-    # parent https://mystream.zone/tendance/
     oGui = cGui()
-    # ifVSlog('#')
-    ifVSlog('showSaisons()')
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -657,14 +581,10 @@ def showSaisons():
 
     sMenu= oInputParameterHandler.getValue('sMenu')
     # probleme temps de la requete aleatoire normale, lent, ou tps de connexion > max autorisé
-    # timestart= int(time.time())
-
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    # timestop= int(time.time())
-    # timespan=timestop-timestart
-    # ifVSlog('time request-response : '+str(timespan)) # temps qui peu depasser 10 secondes parfois
+    # temps qui peu depasser 10 secondes parfois
 
     # on  passe ts les liens  des épisodes dans chaque dossier saisons créés ds un liste
     # car pas de liens existants ds la page pour acceder aux pages de chaque saison
@@ -675,7 +595,6 @@ def showSaisons():
             if aResult[0]:
                 sDesc = aResult[1][0]
         except:
-            # ifVSlog('Try exception ')
             pass
 
     if sMenu == 'imdb':  # on remplace l'image de faible resolution
@@ -685,7 +604,6 @@ def showSaisons():
             if aResult[0]:
                 sThumb = aResult[1][0]
         except:
-            # ifVSlog('Try exception ')
             pass
     # '2 - 11'   href   title
     # class='numerando'>([^<]*).+?href='([^']*).>([^<]*) #
@@ -696,9 +614,7 @@ def showSaisons():
         ListNumeroSaison = []
         listeUrlEpisode = []
         listeStitle = []
-        titlesaison = ''
         icurrentsaison = 0
-        # timestart= int(time.time())
         for aEntry in aResult[1]:
             # ifVSlog(aEntry[0])  # debug si pb episode
             iSaison = re.search('([0-9]+)', aEntry[0]).group(1)
@@ -710,8 +626,6 @@ def showSaisons():
                     sTitleDisplay = sTitleDisplay + ' (' + sYear + ')'
 
                 if len(listeUrlEpisode) > 0:
-                    # ifVSlog('ADD list Episodes to Saison' + str(icurrentsaison))
-                    ifVSlog('ADD Episode,ListEpisodes'+str(listeStitle))
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -731,11 +645,6 @@ def showSaisons():
             if sYear:
                 sTitleDisplay = sTitleDisplay + ' (' + sYear + ')'
 
-        # timestop= int(time.time())
-        # timespan=timestop-timestart
-        # ifVSlog('End showSaisons():Totaltime  :' + str(timespan))  # temps <1s
-        # ifVSlog('ADD list Episodes to Saison'+ str(iSaison))
-        ifVSlog('ADD showEpisodes' + str(listeStitle))
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -751,8 +660,6 @@ def showSaisons():
 def showListEpisodes():
     # parent https://mystream.zone/tvshows
     oGui = cGui()
-    # ifVSlog('#')
-    ifVSlog('showListEpisodes()')
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -798,8 +705,6 @@ def showListEpisodes():
 def showEpisodes():
     # parents https://mystream.zone/saisons/    # SERIE_NEWS_SAISONS
     oGui = cGui()
-    # ifVSlog('#')
-    ifVSlog('showEpisodes()')
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -819,7 +724,6 @@ def showEpisodes():
             if aResult[0]:
                 sDesc = aResult[1][0]
         except:
-            # ifVSlog('Try exception ')
             pass
     # thumb '2 - 11'   url
     sPattern = "class='imagen'.+?src='([^']*).*?class='numerando'>([^<]*).+?href='([^']*)"
@@ -848,10 +752,8 @@ def showEpisodes():
 
 
 def showHosters():
-    # parents:all
+    
     oGui = cGui()
-    # ifVSlog('#')
-    ifVSlog('showHosters()')
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -882,9 +784,7 @@ def showHosters():
                 if aResult[0]:
                     sThumb = aResult[1][0]
     except:
-        ifVSlog('exception sMenu ')
         pass
-
     sPattern = "data-type='([^']*).*?post='([^']*).*?nume='([^']*).*?title'>([^<]*)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -895,7 +795,6 @@ def showHosters():
             datanum = aEntry[2]
             sUrl2 = 'https://mystream.zone/wp-admin/admin-ajax.php'
             pdata = 'action=doo_player_ajax&post=' + datapost + '&nume=' + datanum + '&type=' + datatype
-            ifVSlog(' pdata = ' + pdata )
             if sYear:
                 sdisplayTitle = sTitle + ' (' + sYear + ')'
             else:
@@ -913,11 +812,7 @@ def showHosters():
 
 
 def Hosterslink ():
-    # parents:all
     oGui = cGui()
-    # ifVSlog('#')
-    ifVSlog('Hosterslink ()')
-
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -944,18 +839,9 @@ def Hosterslink ():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sHosterUrl = aEntry
-            ifVSlog('sHosterUrl=' + str(sHosterUrl))
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
     oGui.setEndOfDirectory()
-
-
-def ifVSlog(log):
-    if bVSlog:
-        try:  # si no import VSlog from resources.lib.comaddon
-            VSlog(str(log))
-        except:
-            pass
