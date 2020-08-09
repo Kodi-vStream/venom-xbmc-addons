@@ -71,7 +71,7 @@ class cHoster(iHoster):
 
         api_call = self.__sUrl
 
-        if 'hds.' in api_call:
+        if ('hds.' in api_call) or ('bidzen' in api_call):
             UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
             api_call = api_call + '|User-Agent=' + UA + '&referer=' + self.__sUrl
 
