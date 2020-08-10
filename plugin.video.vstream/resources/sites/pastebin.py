@@ -20,6 +20,7 @@ URL_MAIN = 'https://pastebin.com/raw/'
 KEY_PASTE_ID = 'PASTE_ID'
 SETTING_PASTE_ID = 'pastebin_id_'
 SETTING_PASTE_LABEL = 'pastebin_label_'
+UNCLASSIFIED_GENRE = '_NON CLASSÉ_'
 
 URL_SEARCH_MOVIES = (URL_MAIN + KEY_PASTE_ID + '?type=film&s=', 'showSearchGlobal')
 URL_SEARCH_SERIES = (URL_MAIN + KEY_PASTE_ID + '?type=serie&s=', 'showSearchGlobal')
@@ -253,7 +254,11 @@ def showGenres():
         if sMedia not in movie[idxInFile.CAT]:
             continue
 
-        genre = movie[idxInFile.GENRES]
+        genre = movie[idxInFile.GENRES].strip()
+        if not genre or genre == '':
+            genre = "['"+UNCLASSIFIED_GENRE+"']"
+        elif "''" in genre:
+            genre = genre.replace("''", "'"+UNCLASSIFIED_GENRE+"'")
         genre = eval(genre)
         if genre:
             genres = genres.union(genre)
@@ -422,8 +427,11 @@ def showMovies(sSearch=''):
             continue
 
         # Filtrage par genre
-        genres = movie[idxInFile.GENRES]
-        if sGenre and genres:
+        genres = movie[idxInFile.GENRES].strip()
+        if not genres or genres == '' or "''" in genres:
+            if sGenre != UNCLASSIFIED_GENRE:
+                continue
+        elif sGenre and genres:
             genres = eval(genres)
             if sGenre not in genres:
                 continue
