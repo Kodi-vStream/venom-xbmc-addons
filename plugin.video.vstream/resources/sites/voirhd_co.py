@@ -109,15 +109,15 @@ def showSeriesMenu():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries ( Les plus populaires) ', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Les plus populaires)', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS_EPISODE_VF[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS_EPISODE_VF[1], 'Séries ( Derniers Episodes VF)', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS_EPISODE_VF[1], 'Séries (Derniers Episodes VF)', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS_EPISODE_VOST[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS_EPISODE_VOST[1], 'Séries ( Derniers Episodes VOST)', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS_EPISODE_VOST[1], 'Séries (Derniers Episodes VOST)', 'series.png', oOutputParameterHandler)
     oGui.setEndOfDirectory()
 
 
