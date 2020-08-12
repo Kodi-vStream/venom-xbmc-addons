@@ -21,8 +21,8 @@ URL_MAIN = 'https://mystream.zone/'
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 
-key_search_movies='#searchsomemovies'
-key_search_series='#searchsomeseries'
+key_search_movies = '#searchsomemovies'
+key_search_series = '#searchsomeseries'
 imdmovies = '#movies'  # tag request
 imdseries = '#series'
 
@@ -44,13 +44,13 @@ SERIE_ALPHA = (True, 'showAlphaSeries')
 MY_SEARCH_MOVIES = (True, 'MyshowSearchMovie')
 MY_SEARCH_SERIES = (True, 'MyshowSearchSerie')
 
-MOVIE_TENDANCE =(URL_MAIN + 'tendance/', 'showMovies')
+MOVIE_TENDANCE = (URL_MAIN + 'tendance/', 'showMovies')
 MOVIE_MOVIES = (URL_MAIN + 'movies/', 'showMovies')  # = globale MOVIE_NEWS
 MOVIE_FEATURED = (URL_MAIN, 'showMovies')
 MOVIE_TOP_IMD = (URL_MAIN + 'imdb/' + imdmovies, 'showMovies')  # = globale MOVIE_NOTES
 
 SERIE_SERIES = (URL_MAIN+'tvshows/', 'showMovies')  # = SERIE_NEWS
-SERIE_TOP_IMD =(URL_MAIN + 'imdb/' + imdseries, 'showMovies')
+SERIE_TOP_IMD = (URL_MAIN + 'imdb/' + imdseries, 'showMovies')
 SERIE_NEWS_SAISONS = (URL_MAIN + 'seasons/', 'showMovies')
 SERIE_NEWS_EPISODES = (URL_MAIN + 'episodes/', 'showMovies')
 
@@ -111,7 +111,7 @@ def showMenuMovies():
 
 def showMenuSeries():
     oGui = cGui()
-   
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_SERIES[1], 'Recherche Series ', 'search.png', oOutputParameterHandler)
@@ -142,7 +142,6 @@ def showMenuSeries():
 
 def showSearch():
     oGui = cGui()
-
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '%20')
@@ -165,7 +164,7 @@ def MyshowSearchMovie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0]+ key_search_movies + sSearchText.replace(' ', '%20')
+        sUrl = URL_SEARCH[0] + key_search_movies + sSearchText.replace(' ', '%20')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -173,49 +172,48 @@ def MyshowSearchMovie():
 
 def showGenres():
     oGui = cGui()
-    sUrl = URL_MAIN
     # https://mystream.zone/genre/action/    /genre//
     liste = []
-    liste.append(['Action', sUrl + 'genre/action/'])
-    liste.append(['Action & Adventure', sUrl + 'genre/action-adventure/'])
-    liste.append(['Adventure', sUrl + 'genre/adventure/'])
-    liste.append(['Aventure', sUrl + 'genre/aventure/'])
-    liste.append(['Animation', sUrl + 'genre/animation/'])
-    liste.append(['Aventure', sUrl + 'genre/aventure/'])
-    liste.append(['Comedie', sUrl + 'genre/comedie/'])
-    liste.append(['Comedy', sUrl + 'genre/comedie/'])
-    liste.append(['Crime', sUrl + 'genre/crime/'])
-    liste.append(['Documentaire', sUrl + 'genre/documentaire/'])
-    liste.append(['Documentary', sUrl + 'genre/documentary/'])
-    liste.append(['Drama', sUrl + 'genre/drama/'])
-    liste.append(['Drame', sUrl + 'genre/drame/'])
-    liste.append(['Familial', sUrl + 'genre/familial/'])
-    liste.append(['Family', sUrl + 'genre/family/'])
-    liste.append(['Fantastique', sUrl + 'genre/fantastique/'])
-    liste.append(['Fantasy', sUrl + 'genre/fantasy/'])
-    liste.append(['Guerre', sUrl + 'genre/guerre/'])
-    liste.append(['Histoire', sUrl + 'genre/histoire/'])
-    liste.append(['History', sUrl + 'genre/history/'])
-    liste.append(['Horreur', sUrl + 'genre/horreur/'])
-    liste.append(['Horror', sUrl + 'genre/horror/'])
-    liste.append(['Kids', sUrl + 'genre/kids/'])
-    liste.append(['Music', sUrl + 'genre/music/'])
-    liste.append(['Musique', sUrl + 'genre/musique/'])
-    liste.append(['Mystère', sUrl + 'genre/mystere/'])
-    liste.append(['Mystery', sUrl + 'genre/mystery/'])
-    liste.append(['Reality', sUrl + 'genre/reality/'])
-    liste.append(['Romance', sUrl + 'genre/romance/'])
-    liste.append(['Sci-Fi & Fantasy', sUrl + 'genre/sci-fi-fantasy/'])
-    liste.append(['Sci-Fi', sUrl + 'genre/science-fiction/'])
-    liste.append(['Sci-Fi & Fantastique' , sUrl + 'genre/science-fiction-fantastique/'])
-    liste.append(['Soap', sUrl + 'genre/soap/'])
-    liste.append(['Talk', sUrl + 'genre/talk/'])
-    liste.append(['Telefilm', sUrl + 'genre/telefilm/'])
-    liste.append(['Thriller', sUrl + 'genre/thriller/'])
-    liste.append(['Tv Movie', sUrl + 'genre/tv-movie/'])
-    liste.append(['Guerre', sUrl + 'genre/war/'])
-    liste.append(['Guerre & politique', sUrl + 'genre/war-politics/'])
-    liste.append(['Western', sUrl + 'genre/western/'])
+    liste.append(['Action', URL_MAIN + 'genre/action/'])
+    liste.append(['Action & Adventure', URL_MAIN + 'genre/action-adventure/'])
+    liste.append(['Adventure', URL_MAIN + 'genre/adventure/'])
+    liste.append(['Aventure', URL_MAIN + 'genre/aventure/'])
+    liste.append(['Animation', URL_MAIN + 'genre/animation/'])
+    liste.append(['Aventure', URL_MAIN + 'genre/aventure/'])
+    liste.append(['Comedie', URL_MAIN + 'genre/comedie/'])
+    liste.append(['Comedy', URL_MAIN + 'genre/comedie/'])
+    liste.append(['Crime', URL_MAIN + 'genre/crime/'])
+    liste.append(['Documentaire', URL_MAIN + 'genre/documentaire/'])
+    liste.append(['Documentary', URL_MAIN + 'genre/documentary/'])
+    liste.append(['Drama', URL_MAIN + 'genre/drama/'])
+    liste.append(['Drame', URL_MAIN + 'genre/drame/'])
+    liste.append(['Familial', URL_MAIN + 'genre/familial/'])
+    liste.append(['Family', URL_MAIN + 'genre/family/'])
+    liste.append(['Fantastique', URL_MAIN + 'genre/fantastique/'])
+    liste.append(['Fantasy', URL_MAIN + 'genre/fantasy/'])
+    liste.append(['Guerre', URL_MAIN + 'genre/guerre/'])
+    liste.append(['Histoire', URL_MAIN + 'genre/histoire/'])
+    liste.append(['History', URL_MAIN + 'genre/history/'])
+    liste.append(['Horreur', URL_MAIN + 'genre/horreur/'])
+    liste.append(['Horror', URL_MAIN + 'genre/horror/'])
+    liste.append(['Kids', URL_MAIN + 'genre/kids/'])
+    liste.append(['Music', URL_MAIN + 'genre/music/'])
+    liste.append(['Musique', URL_MAIN + 'genre/musique/'])
+    liste.append(['Mystère', URL_MAIN + 'genre/mystere/'])
+    liste.append(['Mystery', URL_MAIN + 'genre/mystery/'])
+    liste.append(['Reality', URL_MAIN + 'genre/reality/'])
+    liste.append(['Romance', URL_MAIN + 'genre/romance/'])
+    liste.append(['Sci-Fi & Fantasy', URL_MAIN + 'genre/sci-fi-fantasy/'])
+    liste.append(['Sci-Fi', URL_MAIN + 'genre/science-fiction/'])
+    liste.append(['Sci-Fi & Fantastique' , URL_MAIN + 'genre/science-fiction-fantastique/'])
+    liste.append(['Soap', URL_MAIN + 'genre/soap/'])
+    liste.append(['Talk', URL_MAIN + 'genre/talk/'])
+    liste.append(['Telefilm', URL_MAIN + 'genre/telefilm/'])
+    liste.append(['Thriller', URL_MAIN + 'genre/thriller/'])
+    liste.append(['Tv Movie', URL_MAIN + 'genre/tv-movie/'])
+    liste.append(['Guerre', URL_MAIN + 'genre/war/'])
+    liste.append(['Guerre & politique', URL_MAIN + 'genre/war-politics/'])
+    liste.append(['Western', URL_MAIN + 'genre/western/'])
 
     for sTitle, sUrlgenre in liste:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -246,8 +244,8 @@ def showAlpha(stype):
     sAlpha = string.ascii_lowercase
     listalpha = list(sAlpha)
     liste = []
-    for alpha in listalpha :
-        liste.append([str(alpha).upper(),url1+str(alpha) + url2 + snonce + url3 + stype])
+    for alpha in listalpha:
+        liste.append([str(alpha).upper(), url1 + str(alpha) + url2 + snonce + url3 + stype])
 
     for sTitle, sUrl in liste:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -269,9 +267,9 @@ def showYears():
     oGui.setEndOfDirectory()
 
 
-def showMovies(sSearch = ''):
+def showMovies(sSearch=''):
     oGui = cGui()
-    
+
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -284,12 +282,12 @@ def showMovies(sSearch = ''):
     if sSearch:
         sUrl = sSearch.replace(' ', '%20')
         if key_search_movies in sUrl:
-            sUrl = str(sUrl).replace( key_search_movies, '')
+            sUrl = str(sUrl).replace(key_search_movies, '')
             # ifVSlog('Globale Search movies:' + sUrl)
             bSearchMovie = True
 
         if key_search_series in sUrl:
-            sUrl = str(sUrl).replace( key_search_series, '')
+            sUrl = str(sUrl).replace(key_search_series, '')
             # ifVSlog('Globale Search serie:' + sUrl)
             bSearchSerie = True
 
@@ -297,17 +295,17 @@ def showMovies(sSearch = ''):
         try:
             oRequestHandler = cRequestHandler(sUrl)
             oRequestHandler.setTimeout(TimeOut)
-            sJsonContent = oRequestHandler.request()   
-        except Exception, e:
-            if str(e) == "('The read operation timed out',)" :
+            sJsonContent = oRequestHandler.request()
+        except Exception as e:
+            if str(e) == "('The read operation timed out',)":
                 oGui.addText(SITE_IDENTIFIER, 'site Inaccessible')
                 oGui.setEndOfDirectory()
                 return
             else:
                 oGui.addText(SITE_IDENTIFIER, 'Request Failed')
                 oGui.setEndOfDirectory()
-                return  
-        
+                return
+
         jsonrsp = json.loads(sJsonContent)
         for i, idict in jsonrsp.items():
             sTitle = str(jsonrsp[i]['title'].encode('utf-8', 'ignore'))  # I Know This Much Is True mystream
@@ -348,29 +346,28 @@ def showMovies(sSearch = ''):
 
     # elif 'genre' in sUrl or 'tvshows' in sUrl  or 'movies'in sUrl or 'release' in sUrl:
     elif 'genre' in sUrl  or 'release' in sUrl:
-        sPattern ='class="item.+?src="([^"]*).+?class="mepo">.+?class="data".+?href="([^"]*).>([^<]*).+?span>.+?,.([^<]*).+?texto">([^<]*)'
+        sPattern = 'class="item.+?src="([^"]*).+?class="mepo">.+?class="data".+?href="([^"]*).>([^<]*).+?span>.+?,.([^<]*).+?texto">([^<]*)'
     elif 'mystream.zone/tvshows' in sUrl or 'mystream.zone/movies' in sUrl:
-        sPattern = '<h1>.+?<\/html>'
+        sPattern = '<h1>.+?</html>'
 
     elif 'mystream.zone/imdb/' in sUrl:  # url thumb title rate
         sPattern = "class=.poster.+?ref=.([^']*).><img src=.([^']*).+?alt=.([^']*).+?class='rating'>([^<]*)"
         sMenu = 'imdb'
 
     else:
-        oGui.addText(SITE_IDENTIFIER,'Requete inconnue')
+        oGui.addText(SITE_IDENTIFIER, 'Requete inconnue')
         oGui.setEndOfDirectory()
         return
 
-    
     try:
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.setTimeout(TimeOut)
-        sHtmlContent = oRequestHandler.request()     
-    
+        sHtmlContent = oRequestHandler.request()
+
     # à eviter : prendre toutes les exceptions
     # mais pas catché l'erreur avec UrlError HttpError socket...peu etre i/o operation ?
-    except Exception, e:
-        if str(e) == "('The read operation timed out',)" :
+    except Exception as e:
+        if str(e) == "('The read operation timed out',)":
             oGui.addText(SITE_IDENTIFIER, 'site Inaccessible')
             oGui.setEndOfDirectory()
             return
@@ -378,7 +375,7 @@ def showMovies(sSearch = ''):
             oGui.addText(SITE_IDENTIFIER, 'Request Failed')
             oGui.setEndOfDirectory()
             return
-    
+
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
@@ -388,7 +385,7 @@ def showMovies(sSearch = ''):
         sYear = ''
         for aEntry in aResult[1]:
             if 'https://mystream.zone/tendance/' in sUrl:  # image url title years
-                sUrl2 =aEntry[1]
+                sUrl2 = aEntry[1]
                 sTitle = aEntry[2]
                 sThumb = aEntry[0]
                 sDisplayTitle = sTitle + '(' + aEntry[3] + ')'
@@ -426,7 +423,7 @@ def showMovies(sSearch = ''):
                 sThumb = aEntry[0]
                 sDesc = aEntry[4]
                 sYear = aEntry[3]
-                sDisplayTitle = sTitle + ' (' + sYear + ' )'
+                sDisplayTitle = sTitle + ' (' + sYear + ')'
 
             # a revoir
             elif 'mystream.zone/imdb/' in sUrl:  # url thumb title rate
@@ -470,7 +467,6 @@ def showMovies(sSearch = ''):
                         if 'mystream.zone/tvshows' in sUrl2:
                             oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
                         else:
-
                             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
             else:  # en théorie jamais atteint : a revoir
@@ -479,8 +475,8 @@ def showMovies(sSearch = ''):
                 sThumb = aEntry[0]
                 sDesc = aEntry[4]
                 sYear = aEntry[3]
-                sDisplayTitle = sTitle + ' (' + sYear + ' )'
-            # inutile mais capte genere erreur si url2='' : a revoir
+                sDisplayTitle = sTitle + ' (' + sYear + ')'
+            # inutile mais capte genere erreur si url2 = '': a revoir
             if sUrl2.startswith('/'):
                 sUrl2 = URL_MAIN + sUrl2
             if sThumb.startswith('/'):
@@ -492,7 +488,7 @@ def showMovies(sSearch = ''):
                     sDisplayTitle = sTitle + ' (Film)'
                 if 'tvshows' in sUrl2:
                     sDisplayTitle = sTitle + ' (Serie)'
-                    
+
             if bSearchMovie:
                 if 'tvshows' in sUrl2:
                     continue
@@ -579,7 +575,7 @@ def showSaisons():
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sYear = oInputParameterHandler.getValue('sYear')
 
-    sMenu= oInputParameterHandler.getValue('sMenu')
+    sMenu = oInputParameterHandler.getValue('sMenu')
     # probleme temps de la requete aleatoire normale, lent, ou tps de connexion > max autorisé
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
@@ -621,18 +617,17 @@ def showSaisons():
             iEpisode = re.search('([0-9]+)$', aEntry[0]).group(1)
             if not str(iSaison) in ListNumeroSaison:
                 ListNumeroSaison.append(str(iSaison))
-                sTitleDisplay=sTitle + ' ' + 'Saison' + ' ' + str(icurrentsaison)
+                sTitleDisplay = sTitle + ' ' + 'Saison' + ' ' + str(icurrentsaison)
                 if sYear:
                     sTitleDisplay = sTitleDisplay + ' (' + sYear + ')'
 
                 if len(listeUrlEpisode) > 0:
                     oOutputParameterHandler = cOutputParameterHandler()
-                    oOutputParameterHandler.addParameter('siteUrl', sUrl)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
                     oOutputParameterHandler.addParameter('sDesc', sDesc)
+                    oOutputParameterHandler.addParameter('sYear', sYear)
                     oOutputParameterHandler.addParameter('listeUrlEpisode', listeUrlEpisode)
                     oOutputParameterHandler.addParameter('listeStitle', listeStitle)
-                    oOutputParameterHandler.addParameter('sYear', sYear)
                     oGui.addEpisode(SITE_IDENTIFIER, 'showListEpisodes', sTitleDisplay, '', sThumb, sDesc, oOutputParameterHandler)
                     listeUrlEpisode = []
                     listeStitle = []
@@ -646,12 +641,11 @@ def showSaisons():
                 sTitleDisplay = sTitleDisplay + ' (' + sYear + ')'
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sThumb', sThumb)
         oOutputParameterHandler.addParameter('sDesc', sDesc)
+        oOutputParameterHandler.addParameter('sYear', sYear)
         oOutputParameterHandler.addParameter('listeUrlEpisode', listeUrlEpisode)
         oOutputParameterHandler.addParameter('listeStitle', listeStitle)
-        oOutputParameterHandler.addParameter('sYear', sYear)
         oGui.addEpisode(SITE_IDENTIFIER, 'showListEpisodes', sTitleDisplay, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -662,7 +656,6 @@ def showListEpisodes():
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
     sYear = oInputParameterHandler.getValue('sYear')
@@ -687,10 +680,10 @@ def showListEpisodes():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             listeStitle2.append(aEntry)
-    i=0
+    i = 0
     for itemurl in listeUrlEpisode2:
         sTitle = listeStitle2[i]
-        i = i+1
+        i = i + 1
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', itemurl)
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -739,7 +732,7 @@ def showEpisodes():
             sUrl = aEntry[2]
             sTitleDisplay = sMovieTitle + ' ' + ' Saison ' + str(iSaison) + ' Episode ' + str(iEpisode)
             if sYear:
-                sTitleDisplay= sTitleDisplay + ' (' + sYear + ')'
+                sTitleDisplay = sTitleDisplay + ' (' + sYear + ')'
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitleDisplay)
@@ -752,7 +745,6 @@ def showEpisodes():
 
 
 def showHosters():
-    
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
@@ -811,7 +803,7 @@ def showHosters():
     oGui.setEndOfDirectory()
 
 
-def Hosterslink ():
+def Hosterslink():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
