@@ -840,3 +840,10 @@ class cTMDb:
                 sGenres.append(genre)
         return sGenres
 
+    # Retourne le genre en Texte, à partir d'un ID
+    def getGenreFromID(self, genreID):
+        genre = self.TMDB_GENRES.get(genreID)
+        if genre:
+            return genre
+        return genreID
+
