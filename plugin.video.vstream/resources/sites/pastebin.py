@@ -82,9 +82,6 @@ def load():
     addons = addon()
     oGui = cGui()
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oGui.addDir(SITE_IDENTIFIER, 'addPasteID', 'Ajouter un lien PasteBin', 'listes.png', oOutputParameterHandler)
-
     numID = 0
     pasteListe = {}
     
@@ -102,6 +99,17 @@ def load():
     # Trie des listes par label
     pasteListe = sorted(pasteListe.items(), key=lambda paste: paste[0])
 
+    if len(pasteListe)>0:
+        oOutputParameterHandler = cOutputParameterHandler()
+        searchUrl = URL_SEARCH_MOVIES[0]
+        oOutputParameterHandler.addParameter('siteUrl', searchUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Films)', 'search.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        searchUrl = URL_SEARCH_SERIES[0]
+        oOutputParameterHandler.addParameter('siteUrl', searchUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Séries)', 'search.png', oOutputParameterHandler)
+    
 
     for pasteBin in pasteListe:
         pasteLabel = pasteBin[0]
@@ -119,6 +127,12 @@ def load():
         oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'deletePaste', addons.VSlang(30412))
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
     
+
+    # Menu pour ajouter un lien
+    oOutputParameterHandler = cOutputParameterHandler()
+    oGui.addDir(SITE_IDENTIFIER, 'addPasteID', '[COLOR coral]Ajouter un lien PasteBin[/COLOR]', 'listes.png', oOutputParameterHandler)
+
+
     oGui.setEndOfDirectory()
 
 
@@ -161,7 +175,6 @@ def showMenu():
             if pbContent.GROUPES>-1 and len(movie[pbContent.GROUPES].strip())>0:
                 containSerieGroupes = True
 
-    
     if containFilms or not containSeries:
         oOutputParameterHandler = cOutputParameterHandler()
         searchUrl = URL_SEARCH_MOVIES[0].replace(KEY_PASTE_ID, pasteID)
@@ -173,34 +186,35 @@ def showMenu():
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
+        if containFilmGenres:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('sMedia', 'film')
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+    
+        if containFilmGroupes:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('sMedia', 'film')
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Films (Dossiers)', 'genres.png', oOutputParameterHandler)
+    
+        if containFilmSaga:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('sMedia', 'film')
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'showSaga', 'Films (Saga)', 'genres.png', oOutputParameterHandler)
+    
+        if containFilmYear:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('sMedia', 'film')
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Films (Années)', 'annees.png', oOutputParameterHandler)
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMedia', 'film')
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Films (Liste)', 'listes.png', oOutputParameterHandler)
 
-    if containFilmGenres:
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sMedia', 'film')
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Films (Genres)', 'genres.png', oOutputParameterHandler)
-
-    if containFilmSaga:
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sMedia', 'film')
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showSaga', 'Films (Saga)', 'genres.png', oOutputParameterHandler)
-
-    if containFilmGroupes:
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sMedia', 'film')
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Films (Groupes)', 'genres.png', oOutputParameterHandler)
-
-    if containFilmYear:
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sMedia', 'film')
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Films (Années)', 'annees.png', oOutputParameterHandler)
 
     if containSeries:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -222,7 +236,7 @@ def showMenu():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sMedia', 'serie')
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Séries (Groupes)', 'genres.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Séries (Dossiers)', 'genres.png', oOutputParameterHandler)
     
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMedia', 'serie')
@@ -240,7 +254,12 @@ def showSearch():
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl += Quote(sSearchText)
-        showMovies(sUrl)
+        
+        # Recherche globale si le pastebin n'est pas mentionné
+        if KEY_PASTE_ID in sUrl:
+            showSearchGlobal(sUrl)
+        else:
+            showMovies(sUrl)
         oGui.setEndOfDirectory()
 
 
