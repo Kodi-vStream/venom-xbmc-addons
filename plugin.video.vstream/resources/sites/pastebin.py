@@ -8,6 +8,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
+from resources.lib.tmdb import cTMDb
 from resources.lib.util import Quote, cUtil, Unquote
 
 
@@ -29,29 +30,53 @@ FUNCTION_SEARCH = 'showSearchGlobal'
 
 ITEM_PAR_PAGE = 20
 
-class idxInFile:
-    CAT = 0     # Catégorie 'film', 'serie', 'anime'
-    TMDB = 1    # Id TMDB (optionnel)
-    TITLE = 2   # Titre du film / épisodes
-    SAGA = 3    # Saga (ex 'Mission impossible') (optionnel)
-    SAISON = 3  # Saison (ex 'Saison 3') (optionnel)
-    YEAR = 4    # Année (Optionnel)
-    GENRES = 5  # Liste des genres (optionnel)
-    URLS = 6    # Liste des liens, avec épisodes pour les séries
-#     CAT = 0     # Catégorie 'film', 'serie', 'anime'
-#     TMDB = 1    # Id TMDB (optionnel)
-#     TITLE = 2   # Titre du film / épisodes
-#     SAGA = 3    # Saga (ex 'Mission impossible') (optionnel)
-#     SAISON = 3  # Saison (ex 'Saison 3') (optionnel)
-#     GROUPE = 4  # Groupe tel que NETFLIX, HBO, MARVEL, DISNEY, etc..
-#     YEAR = 5    # Année (Optionnel)
-#     GENRES = 6  # Liste des genres (optionnel)
-#     URLS = 7    # Liste des liens, avec épisodes pour les séries
-
-# Exemples
-# film;714;Demain ne meurt jamais;James BOND;1997;['Action', 'Aventure', 'Thriller'];['https://uptobox.com/nwxxxx','https://uptobox.com/nwYYzz']
+# Exemple
+# CAT; TMDB; TITLE; SAISON; YEAR; GENRES; URLS=https://uptobox.com/
+# film;714;Demain ne meurt jamais;James BOND;1997;['Action', 'Aventure', 'Thriller'];['nwxxxx','nwYYzz']
 # serie;48866;Les 100;Saison 2; 2014; ['Fantastique', 'Aventure']; {'S02E01':['lien1', 'lien2'], 'S02E02':['lien1']}
 
+# Exemple minimum
+# TITLE; URLS
+# Demain ne meurt jamais;['https://uptobox.com/nwxxxx']
+
+class PasteBinContent:
+    CAT = -1     # (Optionnel) - Catégorie 'film', 'serie' (Film par défaut)
+    TMDB = -1    # (optionnel) - Id TMDB
+    TITLE = -1   # Titre du film / épisodes
+    SAISON = -1  # (optionnel) - Saison pour les séries (ex 'Saison 03' ou 'S03' ou '03') OU Saga pour les films (ex 'Mission impossible')
+    GROUPES = -1  # (optionnel) - Groupes tel que NETFLIX, HBO, MARVEL, DISNEY, Films enfants, ...
+    YEAR = -1    # (optionnel) - Année
+    GENRES = -1  # (optionnel) - Liste des genres
+    URLS = -1    # Liste des liens, avec épisodes pour les séries
+    HEBERGEUR = '' # (optionnel) - URL de l'hebergeur, pour éviter de le mettre dans chaque URL, ex : 'https://uptobox.com/'  
+
+    def getLines(self, sContent):
+        lines = sContent.splitlines()
+
+        # Vérifie si la ligne d'entete existe avec les champs obligatoires
+        entete = lines[0].replace(' ','').split(";")
+        if 'TITLE' not in entete and 'URLS' not in entete:
+            return []
+
+        # Calcul des index de chaque champ
+        idx = 0
+        for champ in entete:
+            champ = champ.strip()
+            
+            if 'URLS' in champ:
+                hebergeur = champ.split('=')
+                champ = 'URLS'
+                if len(hebergeur)>1:
+                    self.HEBERGEUR = hebergeur[1].replace(' ','').replace('"','').replace('\'','')
+                
+            if champ in dir(self):
+                setattr(self, champ, idx)
+            idx +=1        
+
+        lines = [k.split(";") for k in lines[1:]]
+
+        return lines
+    
 
 def load():
     addons = addon()
@@ -63,21 +88,7 @@ def load():
     numID = 0
     pasteListe = {}
     
-#     # WIP - Ajout des listes publiques
-#     publicIDs = set()
-#     while True:
-#         numID += 1
-#         pasteLabel = addons.getSetting(SETTING_PASTE_LABEL + str(numID))
-#         if pasteLabel == '':
-#             break
-# 
-#         pasteID = addons.getSetting(SETTING_PASTE_ID + str(numID))
-#         if pasteID:
-#             pasteListe[pasteLabel] = pasteID
-#             publicIDs.add(pasteID)
-    
-    
-    # Recherche des listes privées
+    # Recherche des listes déclarées
     while True:
         numID += 1
         pasteLabel = addons.getSetting(SETTING_PASTE_LABEL + str(numID))
@@ -112,6 +123,8 @@ def load():
 
 
 def showMenu():
+    oGui = cGui()
+
     oInputParameterHandler = cInputParameterHandler()
     pasteID = oInputParameterHandler.getValue('pasteID')
     
@@ -119,32 +132,37 @@ def showMenu():
     sUrl = URL_MAIN + pasteID
     oRequestHandler = cRequestHandler(sUrl)
     sContent = oRequestHandler.request()
-    lines = sContent.splitlines()
 
+    pbContent = PasteBinContent()
+    movies = pbContent.getLines(sContent)
+
+    # Calculer les menus
     containFilms = False
     containFilmGenres = False
+    containFilmGroupes = False
     containFilmSaga = False
     containFilmYear = False
     containSeries = False
+    containSerieGroupes = False
     
-    for line in lines:
-        movie = line.split(';')
-
-        if 'film' in movie[idxInFile.CAT]:
+    for movie in movies:
+        if 'film' in movie[pbContent.CAT]:
             containFilms = True
-            if len(movie[idxInFile.GENRES].strip())>0:
+            if pbContent.GENRES>-1 and len(movie[pbContent.GENRES].strip())>0:
                 containFilmGenres = True
-            if len(movie[idxInFile.YEAR].strip())>0:
+            if pbContent.GROUPES>-1 and len(movie[pbContent.GROUPES].strip())>0:
+                containFilmGroupes = True
+            if pbContent.YEAR>1 and len(movie[pbContent.YEAR].strip())>0:
                 containFilmYear = True
-            if len(movie[idxInFile.SAGA].strip())>0:
+            if pbContent.SAISON>-1 and len(movie[pbContent.SAISON].strip())>0:
                 containFilmSaga = True
-        if 'serie' in movie[idxInFile.CAT]:
+        if 'serie' in movie[pbContent.CAT]:
             containSeries = True
+            if pbContent.GROUPES>-1 and len(movie[pbContent.GROUPES].strip())>0:
+                containSerieGroupes = True
 
     
-    oGui = cGui()
-
-    if containFilms:
+    if containFilms or not containSeries:
         oOutputParameterHandler = cOutputParameterHandler()
         searchUrl = URL_SEARCH_MOVIES[0].replace(KEY_PASTE_ID, pasteID)
         oOutputParameterHandler.addParameter('siteUrl', searchUrl)
@@ -172,6 +190,12 @@ def showMenu():
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showSaga', 'Films (Saga)', 'genres.png', oOutputParameterHandler)
 
+    if containFilmGroupes:
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sMedia', 'film')
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Films (Groupes)', 'genres.png', oOutputParameterHandler)
+
     if containFilmYear:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMedia', 'film')
@@ -194,6 +218,12 @@ def showMenu():
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
+        if containSerieGroupes:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('sMedia', 'serie')
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Séries (Groupes)', 'genres.png', oOutputParameterHandler)
+    
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMedia', 'serie')
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -237,6 +267,7 @@ def showSearchGlobal(sSearch=''):
 
 
 def showGenres():
+    tmdb = cTMDb()
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -245,16 +276,15 @@ def showGenres():
     oRequestHandler = cRequestHandler(sUrl)
     sContent = oRequestHandler.request()
 
-    lines = sContent.splitlines()
+    pbContent = PasteBinContent()
+    movies = pbContent.getLines(sContent)
 
     genres = set()
-    for line in lines:
-        movie = line.split(';')
-
-        if sMedia not in movie[idxInFile.CAT]:
+    for movie in movies:
+        if pbContent.CAT >=0 and sMedia not in movie[pbContent.CAT]:
             continue
 
-        genre = movie[idxInFile.GENRES].strip()
+        genre = movie[pbContent.GENRES].strip()
         if not genre or genre == '':
             genre = "['"+UNCLASSIFIED_GENRE+"']"
         elif "''" in genre:
@@ -263,12 +293,46 @@ def showGenres():
         if genre:
             genres = genres.union(genre)
 
-    for sGenre in sorted(genres):
+    for genre in sorted(genres):
+        sGenre = genre
+        if str(genre).isdigit():
+            sGenre = tmdb.getGenreFromID(genre)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oOutputParameterHandler.addParameter('sGenre', sGenre)
+        oOutputParameterHandler.addParameter('sGenre', str(genre))
         oOutputParameterHandler.addParameter('sMedia', sMedia)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sGenre, 'genres.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+def showGroupes():
+    oGui = cGui()
+    
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMedia = oInputParameterHandler.getValue('sMedia')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sContent = oRequestHandler.request()
+
+    pbContent = PasteBinContent()
+    movies = pbContent.getLines(sContent)
+
+    groupes = set()
+    for movie in movies:
+        groupe = movie[pbContent.GROUPES].strip().replace("''",'')
+        if groupe:
+            groupe = eval(groupe)
+            if groupe:
+                groupes = groupes.union(groupe)
+
+    # Si les groupes sont les ID TMDB, il faut les retrouver les libellés        
+    for sGroupe in sorted(groupes):
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('sGroupe', sGroupe)
+        oOutputParameterHandler.addParameter('sMedia', sMedia)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sGroupe, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -280,17 +344,15 @@ def showSaga():
 
     oRequestHandler = cRequestHandler(sUrl)
     sContent = oRequestHandler.request()
-
-    lines = sContent.splitlines()
+    pbContent = PasteBinContent()
+    movies = pbContent.getLines(sContent)
 
     sagas = set()
-    for line in lines:
-        movie = line.split(';')
-
-        if sMedia not in movie[idxInFile.CAT]:
+    for movie in movies:
+        if pbContent.CAT >=0 and sMedia not in movie[pbContent.CAT]:
             continue
 
-        saga = movie[idxInFile.SAGA].strip()
+        saga = movie[pbContent.SAISON].strip()
         if saga <> '':
             sagas.add(saga)
             
@@ -312,17 +374,15 @@ def showYears():
 
     oRequestHandler = cRequestHandler(sUrl)
     sContent = oRequestHandler.request()
-
-    lines = sContent.splitlines()
+    pbContent = PasteBinContent()
+    movies = pbContent.getLines(sContent)
 
     years = set()
-    for line in lines:
-        movie = line.split(';')
-
-        if sMedia not in movie[idxInFile.CAT]:
+    for line in movies:
+        if pbContent.CAT >=0 and sMedia not in line[pbContent.CAT]:
             continue
 
-        year = movie[idxInFile.YEAR].strip()
+        year = line[pbContent.YEAR].strip()
         years.add(year)
 
     for sYear in sorted(years, reverse=True):
@@ -364,6 +424,7 @@ def showMovies(sSearch=''):
     sMedia = oInputParameterHandler.getValue('sMedia')
     sGenre = oInputParameterHandler.getValue('sGenre')
     sSaga = oInputParameterHandler.getValue('sSaga')
+    sGroupe = oInputParameterHandler.getValue('sGroupe')
     sYear = oInputParameterHandler.getValue('sYear')
     sAlpha = oInputParameterHandler.getValue('sAlpha')
     numItem = oInputParameterHandler.getValue('numItem')
@@ -390,24 +451,21 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.setTimeout(4)
     sContent = oRequestHandler.request()
-
-    lines = sContent.splitlines()
+    pbContent = PasteBinContent()
+    movies = pbContent.getLines(sContent)
 
     serieTitles = set()
     nbItem = 0
     index = 0
     progress_ = progress().VScreate(SITE_NAME)
 
-    # création d'un tableau
-    movies = [k.split(";") for k in lines]
-    
     # Recherche par ordre alphabetique => le tableau doit être trié
     if sAlpha:
-        movies = sorted(movies, key=lambda line: line[idxInFile.TITLE])
+        movies = sorted(movies, key=lambda line: line[pbContent.TITLE])
         
     # Recherche par saga => trie par années
-    if sSaga:
-        movies = sorted(movies, key=lambda line: line[idxInFile.YEAR])
+    if sSaga and pbContent.YEAR>-1:
+        movies = sorted(movies, key=lambda line: line[pbContent.YEAR])
         
         
     for movie in movies:
@@ -418,38 +476,46 @@ def showMovies(sSearch=''):
             continue
         numItem += 1
 
-        # Filtrage par média (film/série)
-        if sMedia not in movie[idxInFile.CAT]:
+        # Filtrage par média (film/série), "film" par défaut si pas précisé 
+        if pbContent.CAT >=0 and sMedia not in movie[pbContent.CAT]:
             continue
 
         # Filtrage par saga
-        if sSaga and sSaga != movie[idxInFile.SAGA].strip():
+        if sSaga and sSaga != movie[pbContent.SAISON].strip():
             continue
 
         # Filtrage par genre
-        genres = movie[idxInFile.GENRES].strip()
+        genres = movie[pbContent.GENRES].strip()
         if not genres or genres == '' or "''" in genres:
             if sGenre != UNCLASSIFIED_GENRE:
                 continue
         elif sGenre and genres:
             genres = eval(genres)
+            genres = [str(g) for g in genres]
             if sGenre not in genres:
                 continue
 
+        # Filtrage par groupe
+        groupes = movie[pbContent.GROUPES].strip()
+        if sGroupe and groupes:
+            groupes = eval(groupes)
+            if sGroupe not in groupes:
+                continue
+
         # l'ID TMDB
-        sTmdbId = movie[idxInFile.TMDB].strip()
+        sTmdbId = movie[pbContent.TMDB].strip()
 
         # Filtrage par titre
-        sTitle = movie[idxInFile.TITLE].strip()
+        sTitle = movie[pbContent.TITLE].strip()
         
         # Titre recherché
         if sSearchTitle:
             if cUtil().CheckOccurence(sSearchTitle, sTitle) == 0:
                 continue
 
-        # recherche alphabétique
+        # Recherche alphabétique
         if sAlpha:
-            if sTitle[0] != sAlpha:
+            if sTitle[0].upper() != sAlpha:
                 continue
 
         # Une série ne doit apparaitre qu'une seule fois, les saisons sont gérées plus tard
@@ -459,10 +525,11 @@ def showMovies(sSearch=''):
             serieTitles.add(sTitle)
 
         # Filtrage par années
-        year = movie[idxInFile.YEAR].strip()
-        if sYear:
-            if not year or sYear != year:
-                continue
+        if pbContent.YEAR>-1:
+            year = movie[pbContent.YEAR].strip()
+            if sYear:
+                if not year or sYear != year:
+                    continue
             
             
         sDisplayTitle = sTitle
@@ -474,12 +541,13 @@ def showMovies(sSearch=''):
         if progress_.iscanceled():
             break
 
-        sHost = movie[idxInFile.URLS]
+        sHost = movie[pbContent.URLS]
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sTitle', sTitle)
         oOutputParameterHandler.addParameter('sHost', sHost)
+        oOutputParameterHandler.addParameter('sHerbergeur', pbContent.HEBERGEUR)
         if sTmdbId:
             oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
 
@@ -520,17 +588,17 @@ def showSerieSaisons():
 
     oRequestHandler = cRequestHandler(sUrl)
     sContent = oRequestHandler.request()
-    lines = sContent.splitlines()
+    pbContent = PasteBinContent()
+    movies = pbContent.getLines(sContent)
 
     saisons = {}
 
     # Recherche les saisons de la série    
-    for line in lines:
-        movie = line.split(';')
-        title = movie[idxInFile.TITLE].strip()
+    for line in movies:
+        title = line[pbContent.TITLE].strip()
         if title != sTitle:
             continue
-        saisons[movie[idxInFile.SAISON].strip()] = movie[idxInFile.URLS]
+        saisons[line[pbContent.SAISON].strip()] = line[pbContent.URLS]
 
     # Une seule saison, directement les épisodes
     if len(saisons) == 1:
@@ -540,10 +608,15 @@ def showSerieSaisons():
     # Proposer les différentes saisons
     numSaisons = saisons.keys()
     for sSaison in sorted(numSaisons):
+        
         links = saisons[sSaison]
+        if sSaison.isdigit():
+            sSaison = "Saison " + sSaison
+        
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sTitle', sTitle)
         oOutputParameterHandler.addParameter('sHost', links)
+        oOutputParameterHandler.addParameter('sHerbergeur', pbContent.HEBERGEUR)
         oGui.addEpisode(SITE_IDENTIFIER, 'showSerieLinks', sSaison, 'series.png', '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -554,6 +627,7 @@ def showSerieLinks():
     oInputParameterHandler = cInputParameterHandler()
     sHoster = oInputParameterHandler.getValue('sHost')
     sTitle = oInputParameterHandler.getValue('sTitle')
+    sHerbergeur = oInputParameterHandler.getValue('sHerbergeur')
     
     sHoster = eval(sHoster)
 
@@ -567,6 +641,7 @@ def showSerieLinks():
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sTitle', sDisplayTitle)
+        oOutputParameterHandler.addParameter('sHerbergeur', sHerbergeur)
         oOutputParameterHandler.addParameter('sHost', links)
         oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
 
@@ -576,11 +651,13 @@ def showSerieLinks():
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    sHoster = oInputParameterHandler.getValue('sHost')
     sTitle = oInputParameterHandler.getValue('sTitle')
+    sHerbergeur = oInputParameterHandler.getValue('sHerbergeur')
+    sHoster = oInputParameterHandler.getValue('sHost')
     sHoster = eval(sHoster)
 
     for sHosterUrl in sHoster:
+        sHosterUrl = sHerbergeur + sHosterUrl
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
             oHoster.setDisplayName(sTitle)
