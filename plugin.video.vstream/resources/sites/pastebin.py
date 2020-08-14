@@ -564,7 +564,7 @@ def showMovies(sSearch=''):
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oOutputParameterHandler.addParameter('sTitle', sTitle)
+        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oOutputParameterHandler.addParameter('sHost', sHost)
         oOutputParameterHandler.addParameter('sHerbergeur', pbContent.HEBERGEUR)
         if sTmdbId:
@@ -604,7 +604,7 @@ def showSerieSaisons():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sTitle = oInputParameterHandler.getValue('sTitle')
+    sTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     oRequestHandler = cRequestHandler(sUrl)
     sContent = oRequestHandler.request()
@@ -634,7 +634,7 @@ def showSerieSaisons():
             sSaison = "Saison " + sSaison
         
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sTitle', sTitle)
+        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oOutputParameterHandler.addParameter('sHost', links)
         oOutputParameterHandler.addParameter('sHerbergeur', pbContent.HEBERGEUR)
         oGui.addEpisode(SITE_IDENTIFIER, 'showSerieLinks', sSaison, 'series.png', '', '', oOutputParameterHandler)
@@ -646,7 +646,7 @@ def showSerieLinks():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sHoster = oInputParameterHandler.getValue('sHost')
-    sTitle = oInputParameterHandler.getValue('sTitle')
+    sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sHerbergeur = oInputParameterHandler.getValue('sHerbergeur')
     
     sHoster = eval(sHoster)
@@ -660,7 +660,7 @@ def showSerieLinks():
         sDisplayTitle = sTitle + ' ' + episode
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sTitle', sDisplayTitle)
+        oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
         oOutputParameterHandler.addParameter('sHerbergeur', sHerbergeur)
         oOutputParameterHandler.addParameter('sHost', links)
         oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
@@ -671,7 +671,7 @@ def showSerieLinks():
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    sTitle = oInputParameterHandler.getValue('sTitle')
+    sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sHerbergeur = oInputParameterHandler.getValue('sHerbergeur')
     sHoster = oInputParameterHandler.getValue('sHost')
     sHoster = eval(sHoster)
