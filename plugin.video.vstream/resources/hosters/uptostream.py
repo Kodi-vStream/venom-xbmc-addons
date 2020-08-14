@@ -162,7 +162,9 @@ def decodeur1(Html):
             if test2:
                 url = ''
                 movieID = ''
-                qua_list = []
+                qua_list = set()
+                lang_list = set()
+                supportedLang = ['eng', 'eng2', 'English', 'fr', 'fre', 'French']
 
                 for page in test2:
                     tableau = {}
@@ -211,9 +213,12 @@ def decodeur1(Html):
                                     Html = Html[1:]
 
                         if tableau:
-                            langFre = True  # langue par défaut si pas précisée
-                            qual = ''
+
                             for i, j in tableau.items():
+                                
+                                if not j:
+                                    continue
+                                
                                 if j.startswith('http') and j.endswith('com'):  # url
                                     url = tableau[i] if not tableau[i] in url else url
                                     continue
@@ -223,21 +228,30 @@ def decodeur1(Html):
                                     continue
 
                                 if len(test2) > 1:  # s'il y a plusieurs flux
-                                    if j == 'eng':  # on ne gere pas plusieurs langues car on sait pas l'associer à la bonne qualité
-                                        langFre = False
+                                    if j in supportedLang:
+                                        lang_list.add(j)
+                                        continue
 
                                 if j == '360' or j == '480' or j == '720' or j == '1080':
-                                    qual = j
+                                    qua_list.add(j)
+                                elif j == '360p' or j == '480p' or j == '720p' or j == '1080p':
+                                    qua_list.add(j[:-1])
 
-                            if langFre and qual and qual not in qua_list:
-                                qua_list.append(qual)
-
-                qua_list.sort()
+                if len(lang_list) == 0:
+                    lang_list.add('NONE')
                 url_list = []
-                for qual in qua_list:
-                    url_list.append("{}/{}/{}/0/video.mp4".format(url, movieID, qual))
+                ql_list = []
+                for qual in sorted(qua_list):
+                    idxLang = 0
+                    for lang in sorted(lang_list):
+                        url_list.append("{}/{}/{}/{}/video.mp4".format(url, movieID, qual, idxLang))
+                        ql = qual
+                        if not 'NONE' in lang:
+                            ql += ' [' + lang[:2].upper() + ']'
+                        ql_list.append(ql) 
+                        idxLang += 1
 
-                return qua_list, url_list
+                return ql_list, url_list
 
 
 def decoder(data, fn):
