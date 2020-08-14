@@ -586,6 +586,7 @@ def showMovies(sSearch=''):
                 oOutputParameterHandler.addParameter('sMedia', sMedia)
                 oOutputParameterHandler.addParameter('sGenre', sGenre)
                 oOutputParameterHandler.addParameter('sSaga', sSaga)
+                oOutputParameterHandler.addParameter('sGroupe', sGroupe)
                 oOutputParameterHandler.addParameter('sYear', sYear)
                 oOutputParameterHandler.addParameter('sAlpha', sAlpha)
                 oOutputParameterHandler.addParameter('numPage', numPage)
