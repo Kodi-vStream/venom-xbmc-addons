@@ -93,7 +93,7 @@ class cShowBA:
             return
         return
 
-    def SearchBA(self):
+    def SearchBA(self, window=False):
 
         sTitle = self.search + ' - Bande Annonce'
 
@@ -136,6 +136,6 @@ class cShowBA:
             oPlayer = cPlayer()
             oPlayer.clearPlayList()
             oPlayer.addItemToPlaylist(oGuiElement)
-            oPlayer.startPlayer()
+            oPlayer.startPlayer(window)
 
         return

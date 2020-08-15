@@ -153,9 +153,9 @@ class cPlayer(xbmc.Player):
         VSlog('Closing player')
 
     #fonction light servant par exmple pour visualiser les DL ou les chaines de TV
-    def startPlayer(self):
+    def startPlayer(self, window=False):
         oPlayList = self.__getPlayList()
-        self.play(oPlayList)
+        self.play(oPlayList, windowed=window)
 
     def onPlayBackEnded(self):
         self.onPlayBackStopped()

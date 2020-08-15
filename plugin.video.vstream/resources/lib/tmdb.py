@@ -590,16 +590,20 @@ class cTMDb:
             listCredits = eval(strmeta)
 
             casts = listCredits['cast']
+            crews = listCredits['crew']
+            
             if len(casts) > 0:
-                licast = []
-                _meta['credits'] = "{u'cast': " + str(casts) + '}'
+                #licast = []
+                #_meta['credits'] = "{u'cast': " + str(casts) + '}'
+                _meta['credits'] = "{u'cast': " + str(casts) + ", u'crew': "+str(crews) + "}"
 #                 _meta['credits'] = 'u\'cast\': ' + str(casts) + ''
-                for cast in casts:
-                    licast.append((cast['name'], cast['character'], self.poster + str(cast['profile_path']), str(cast['id'])))
-                _meta['cast'] = licast
+                #for cast in casts:
+                #    licast.append((cast['name'], cast['character'], self.poster + str(cast['profile_path']), str(cast['id'])))
+                #_meta['cast'] = licast
 
-            if 'crew' in listCredits:
-                for crew in listCredits['crew']:
+            #if 'crew' in listCredits:
+            if len(crews) > 0:
+                for crew in crews:
                     if crew['job'] == 'Director':
                         _meta['director'] = crew['name']
                     elif crew['department'] == 'Writing':
@@ -669,6 +673,9 @@ class cTMDb:
         if 'duration' in meta and meta['duration']:
             runtime = int(meta['duration'])/60
             
+        if not year and 'year' in meta:
+            year = meta['year']
+            
         # sauvegarde movie dans la BDD
         # year n'est pas forcement l'année du film mais l'année utilisée pour la recherche
         try:
@@ -689,6 +696,9 @@ class cTMDb:
         if 'seasons' in meta:
             self._cache_save_season(meta, season)
             del meta['seasons']
+            
+        if not year and 'year' in meta:
+            year = meta['year']
 
         # sauvegarde de la durée en minutes, pour le retrouver en minutes comme le fait TMDB
         runtime = 0
