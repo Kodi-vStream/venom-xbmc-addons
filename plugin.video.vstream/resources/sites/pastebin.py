@@ -692,7 +692,8 @@ def showHosters():
         listHoster.add(sHoster)
 
     for sHosterUrl in listHoster:
-        sHosterUrl = sHerbergeur + sHosterUrl
+        if sHerbergeur:
+            sHosterUrl = sHerbergeur + sHosterUrl
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
             oHoster.setDisplayName(sTitle)
