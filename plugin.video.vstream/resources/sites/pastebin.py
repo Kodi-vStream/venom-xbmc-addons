@@ -63,7 +63,7 @@ class PasteBinContent:
         for champ in entete:
             champ = champ.strip()
             
-            if 'URLS' in champ:
+            if 'URL' in champ: # supporte URL ou URLS
                 hebergeur = champ.split('=')
                 champ = 'URLS'
                 if len(hebergeur)>1:
@@ -71,7 +71,7 @@ class PasteBinContent:
                 
             if champ in dir(self):
                 setattr(self, champ, idx)
-            idx +=1        
+            idx +=1
 
         lines = [k.split(";") for k in lines[1:]]
 
@@ -162,17 +162,17 @@ def showMenu():
     for movie in movies:
         if 'film' in movie[pbContent.CAT]:
             containFilms = True
-            if pbContent.GENRES>-1 and len(movie[pbContent.GENRES].strip())>0:
+            if pbContent.GENRES>=0 and len(movie[pbContent.GENRES].strip())>0:
                 containFilmGenres = True
-            if pbContent.GROUPES>-1 and len(movie[pbContent.GROUPES].strip())>0:
+            if pbContent.GROUPES>=0 and len(movie[pbContent.GROUPES].strip())>0:
                 containFilmGroupes = True
-            if pbContent.YEAR>1 and len(movie[pbContent.YEAR].strip())>0:
+            if pbContent.YEAR>=0 and len(movie[pbContent.YEAR].strip())>0:
                 containFilmYear = True
-            if pbContent.SAISON>-1 and len(movie[pbContent.SAISON].strip())>0:
+            if pbContent.SAISON>=0 and len(movie[pbContent.SAISON].strip())>0:
                 containFilmSaga = True
         if 'serie' in movie[pbContent.CAT]:
             containSeries = True
-            if pbContent.GROUPES>-1 and len(movie[pbContent.GROUPES].strip())>0:
+            if pbContent.GROUPES>=0 and len(movie[pbContent.GROUPES].strip())>0:
                 containSerieGroupes = True
 
     if containFilms or not containSeries:
@@ -483,7 +483,7 @@ def showMovies(sSearch=''):
         movies = sorted(movies, key=lambda line: line[pbContent.TITLE])
         
     # Recherche par saga => trie par années
-    if sSaga and pbContent.YEAR>-1:
+    if sSaga and pbContent.YEAR>=0:
         movies = sorted(movies, key=lambda line: line[pbContent.YEAR])
         
         
@@ -504,25 +504,30 @@ def showMovies(sSearch=''):
             continue
 
         # Filtrage par genre
-        genres = movie[pbContent.GENRES].strip()
-        if not genres or genres == '' or "''" in genres:
-            if sGenre != UNCLASSIFIED_GENRE:
-                continue
-        elif sGenre and genres:
-            genres = eval(genres)
-            genres = [str(g) for g in genres]
-            if sGenre not in genres:
-                continue
+        if sGenre and pbContent.GENRES >=0 :
+            genres = movie[pbContent.GENRES].strip()
+            if not genres or genres == '' or "''" in genres:
+                if sGenre != UNCLASSIFIED_GENRE:
+                    continue
+            elif genres:
+                genres = eval(genres)
+                genres = [str(g) for g in genres]
+                if sGenre not in genres:
+                    continue
 
         # Filtrage par groupe
-        groupes = movie[pbContent.GROUPES].strip()
-        if sGroupe and groupes:
-            groupes = eval(groupes)
-            if sGroupe not in groupes:
-                continue
+        if sGroupe and pbContent.GROUPES >=0:
+            groupes = movie[pbContent.GROUPES].strip()
+            if groupes:
+                groupes = eval(groupes)
+                if sGroupe not in groupes:
+                    continue
 
         # l'ID TMDB
-        sTmdbId = movie[pbContent.TMDB].strip()
+        sTmdbId = None
+        if pbContent.TMDB >=0:
+            sTmdbId = movie[pbContent.TMDB].strip()
+        
 
         # Filtrage par titre
         sTitle = movie[pbContent.TITLE].strip()
@@ -543,17 +548,15 @@ def showMovies(sSearch=''):
                 continue
             serieTitles.add(sTitle)
 
+        sDisplayTitle = sTitle
+
         # Filtrage par années
-        if pbContent.YEAR>-1:
+        if pbContent.YEAR>=0:
             year = movie[pbContent.YEAR].strip()
             if sYear:
                 if not year or sYear != year:
                     continue
-            
-            
-        sDisplayTitle = sTitle
-        if year:
-            sDisplayTitle = '%s (%s)' % (sTitle, year)
+                sDisplayTitle = '%s (%s)' % (sTitle, year)
 
         nbItem += 1
         progress_.VSupdate(progress_, ITEM_PAR_PAGE)
@@ -681,9 +684,14 @@ def showHosters():
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sHerbergeur = oInputParameterHandler.getValue('sHerbergeur')
     sHoster = oInputParameterHandler.getValue('sHost')
-    sHoster = eval(sHoster)
 
-    for sHosterUrl in sHoster:
+    if "[" in sHoster:
+        listHoster = eval(sHoster)
+    else:
+        listHoster = []   
+        listHoster.add(sHoster)
+
+    for sHosterUrl in listHoster:
         sHosterUrl = sHerbergeur + sHosterUrl
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
