@@ -631,13 +631,16 @@ def showSerieSaisons():
         
         links = saisons[sSaison]
         if sSaison.isdigit():
-            sSaison = "Saison " + sSaison
+            sSaison = 'S{:02d}'.format(int(sSaison))
         
+        sDisplayTitle = sTitle + ' ' + sSaison
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oOutputParameterHandler.addParameter('sHost', links)
+        oOutputParameterHandler.addParameter('sSaison', sSaison)
         oOutputParameterHandler.addParameter('sHerbergeur', pbContent.HEBERGEUR)
-        oGui.addEpisode(SITE_IDENTIFIER, 'showSerieLinks', sSaison, 'series.png', '', '', oOutputParameterHandler)
+        oGui.addEpisode(SITE_IDENTIFIER, 'showSerieLinks', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -647,6 +650,7 @@ def showSerieLinks():
     oInputParameterHandler = cInputParameterHandler()
     sHoster = oInputParameterHandler.getValue('sHost')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sSaison = oInputParameterHandler.getValue('sSaison')
     sHerbergeur = oInputParameterHandler.getValue('sHerbergeur')
     
     sHoster = eval(sHoster)
@@ -657,6 +661,9 @@ def showSerieLinks():
     for episode in sorted(episodes):
         links = sHoster[episode]
         
+        if episode.isdigit():
+            episode = '{}E{:02d}'.format(sSaison, int(episode))
+
         sDisplayTitle = sTitle + ' ' + episode
 
         oOutputParameterHandler = cOutputParameterHandler()
