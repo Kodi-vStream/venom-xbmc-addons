@@ -340,8 +340,6 @@ def showHosters():
                 sHtmlContent = oRequestHandler.request()
 
                 sHosterUrl = oRequestHandler.getRealUrl()
-                
-                VSlog(sHosterUrl)
 
                 # https://lb.hdsto.me/hls/xxx.playlist.m3u8
                 # https://lb.hdsto.me/public/dist/index.html?id=xxx
@@ -354,8 +352,6 @@ def showHosters():
                     sHtmlContent = oRequestHandler.request()
 
                     sHosterUrl = oRequestHandler.getRealUrl()
-
-                VSlog(sHosterUrl)
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
