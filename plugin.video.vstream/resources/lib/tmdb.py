@@ -590,12 +590,17 @@ class cTMDb:
             listCredits = eval(strmeta)
 
             casts = listCredits['cast']
-            crews = listCredits['crew']
+            crews = []
             
             if len(casts) > 0:
                 #licast = []
-                #_meta['credits'] = "{u'cast': " + str(casts) + '}'
-                _meta['credits'] = "{u'cast': " + str(casts) + ", u'crew': "+str(crews) + "}"
+                if 'crew' in listCredits:
+                    crews = listCredits['crew']
+                if len(crews)>0:
+                    _meta['credits'] = "{u'cast': " + str(casts) + ", u'crew': "+str(crews) + "}"
+                else:
+                    _meta['credits'] = "{u'cast': " + str(casts) + '}'
+#                 _meta['credits'] = "{u'cast': " + str(casts) + ", u'crew': "+str(crews) + "}"
 #                 _meta['credits'] = 'u\'cast\': ' + str(casts) + ''
                 #for cast in casts:
                 #    licast.append((cast['name'], cast['character'], self.poster + str(cast['profile_path']), str(cast['id'])))
