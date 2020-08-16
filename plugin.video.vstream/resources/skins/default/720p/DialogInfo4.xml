@@ -40,9 +40,9 @@
 				<texture>nofocus.png</texture>
 			</control>
 
-			<!--<control type="image">
+			<control type="image">
 				<texture>special://home/addons/plugin.video.vstream/resources/extra/debuggrid1080.png</texture>		
-			</control>-->
+			</control>
 
 
 			<!-- left page -->
@@ -63,7 +63,8 @@
                 	</control>
 
 					<control type="image">
-                        <bottom>5</bottom>
+    
+						<top>705</top>
                         <left>5</left>
                         <height>10</height>
 						<width>100</width>
@@ -72,7 +73,9 @@
 
 					<control type="image">
 						<width>24</width>
-						<right>0</right>
+						<!-- <right>0</right> -->
+						<left>444</left>
+						<top>0</top>
 						<texture flipx="false">shadow-line.png</texture>
                 	</control>
 
@@ -116,7 +119,8 @@
 							<left>14</left>
 							<top>-75</top>
 							<bottom>-20</bottom>
-							<textcolor>white</textcolor>
+							<textcolor>FFFFFFFF</textcolor>
+							<focusedcolor>FFFFFFFF</focusedcolor>
 							<texturenofocus colordiffuse="D0FFFFFF">linefocus.png</texturenofocus>
 							<texturefocus colordiffuse=$INFO[Window(Home).Property(color)]>linefocus.png</texturefocus>
 							<animation reversible="false" center="auto" easing="inout" effect="zoom" end="100" start="90" time="400" tween="back">Focus</animation>
@@ -127,11 +131,11 @@
 
 						<control type="image">
 							<left>-5</left>
-							<right>-5</right>
-							<bottom>-5</bottom>
 							<top>-5</top>
+							<height>578</height>
+							<width>400</width>
 							<bordersize>20</bordersize>
-							<bordertexture border="30" colordiffuse="Shadow">shadow-20.png</bordertexture>
+							<bordertexture border="30" colordiffuse="55ffffff">shadow-20.png</bordertexture>
 							<texture border="30" colordiffuse="D0000000">box.png</texture>
 						</control>
 
@@ -238,11 +242,11 @@
 
 				<control type="image">
 					<left>-5</left>
-					<right>-5</right>
-					<bottom>-5</bottom>
 					<top>-5</top>
+					<height>578</height>
+					<width>747</width>
 					<bordersize>20</bordersize>
-					<bordertexture border="30" colordiffuse="Shadow">shadow-20.png</bordertexture>
+					<bordertexture border="30" colordiffuse="55ffffff">shadow-20.png</bordertexture>
 					<texture border="30" colordiffuse="FF000000">box.png</texture>
 				</control>
 				<!--<control type="image">
@@ -357,7 +361,9 @@
 
 						<itemlayout width="1200" height="32">
 							<control type="label">
+								<left>0</left>
 								<height>20</height>
+								<width>200</width>
 								<font>font10</font>
 								<align>left</align>
 								<aligny>center</aligny>
@@ -380,7 +386,9 @@
 						</itemlayout>
 						<focusedlayout width="1200" height="32">
 							<control type="label">
+								<left>0</left>
 								<height>20</height>
+								<width>200</width>
 								<font>font10</font>
 								<align>left</align>
 								<aligny>center</aligny>
@@ -543,11 +551,11 @@
 
 							<control type="image">
 								<left>-5</left>
-								<right>-5</right>
-								<bottom>-5</bottom>
 								<top>-5</top>
+								<height>240</height>
+								<width>163</width>
 								<bordersize>20</bordersize>
-								<bordertexture border="30" colordiffuse="Shadow">shadow-20.png</bordertexture>
+								<bordertexture border="30" colordiffuse="55ffffff">shadow-20.png</bordertexture>
 								<texture border="30" colordiffuse=$INFO[Window(Home).Property(color)]>box.png</texture>
 							</control>
 
@@ -596,19 +604,19 @@
 
 							<control type="image">
 								<left>-5</left>
-								<right>-5</right>
-								<bottom>-5</bottom>
 								<top>-5</top>
+								<height>240</height>
+								<width>163</width>
 								<bordersize>20</bordersize>
-								<bordertexture border="30" colordiffuse="Shadow">shadow-20.png</bordertexture>
+								<bordertexture border="30" colordiffuse="55ffffff">shadow-20.png</bordertexture>
 								<texture border="30" colordiffuse=$INFO[Window(Home).Property(color)]>box.png</texture>
 							</control>
 
 							<control type="image">
 								<left>-9</left>
-								<right>-9</right>
-								<bottom>-9</bottom>
 								<top>-9</top>
+								<height>248</height>
+								<width>171</width>
 								<bordersize>20</bordersize>
 								<texture border="30" colordiffuse=$INFO[Window(Home).Property(color)]>box.png</texture>
 								<animation center="auto" easing="inout" effect="zoom" end="100" start="80" time="400" tween="back">Focus</animation>
@@ -723,11 +731,11 @@
 
 							<control type="image">
 								<left>-5</left>
-								<right>-5</right>
-								<bottom>-5</bottom>
 								<top>-5</top>
+								<height>240</height>
+								<width>163</width>
 								<bordersize>20</bordersize>
-								<bordertexture border="30" colordiffuse="Shadow">shadow-20.png</bordertexture>
+								<bordertexture border="30" colordiffuse="55ffffff">shadow-20.png</bordertexture>
 								<texture border="30" colordiffuse=$INFO[Window(Home).Property(color)]>box.png</texture>
 							</control>
 
@@ -774,20 +782,20 @@
 
 							<control type="image">
 								<left>-5</left>
-								<right>-5</right>
-								<bottom>-5</bottom>
+								<height>240</height>
+								<width>163</width>
 								<top>-5</top>
 								<bordersize>20</bordersize>
-								<bordertexture border="30" colordiffuse="Shadow">shadow-20.png</bordertexture>
+								<bordertexture border="30" colordiffuse="55ffffff">shadow-20.png</bordertexture>
 								<texture border="30" colordiffuse=$INFO[Window(Home).Property(color)]>box.png</texture>
 		
 							</control>
 
 							<control type="image">
 								<left>-9</left>
-								<right>-9</right>
-								<bottom>-9</bottom>
 								<top>-9</top>
+								<height>248</height>
+								<width>171</width>
 								<bordersize>20</bordersize>
 								<texture border="30" colordiffuse=$INFO[Window(Home).Property(color)]>box.png</texture>
 								<animation center="auto" easing="inout" effect="zoom" end="100" start="80" time="400" tween="back">Focus</animation>
@@ -865,11 +873,11 @@
 
 							<control type="image">
 								<left>-5</left>
-								<right>-5</right>
-								<bottom>-5</bottom>
 								<top>-5</top>
+								<height>240</height>
+								<width>163</width>
 								<bordersize>20</bordersize>
-								<bordertexture border="30" colordiffuse="Shadow">shadow-20.png</bordertexture>
+								<bordertexture border="30" colordiffuse="55ffffff">shadow-20.png</bordertexture>
 								<texture border="30" colordiffuse=$INFO[Window(Home).Property(color)]>box.png</texture>
 							</control>
 
@@ -918,19 +926,19 @@
 
 							<control type="image">
 								<left>-5</left>
-								<right>-5</right>
-								<bottom>-5</bottom>
 								<top>-5</top>
+								<height>240</height>
+								<width>163</width>
 								<bordersize>20</bordersize>
-								<bordertexture border="30" colordiffuse="Shadow">shadow-20.png</bordertexture>
+								<bordertexture border="30" colordiffuse="55ffffff">shadow-20.png</bordertexture>
 								<texture border="30" colordiffuse=$INFO[Window(Home).Property(color)]>box.png</texture>
 							</control>
 
 							<control type="image">
 								<left>-9</left>
-								<right>-9</right>
-								<bottom>-9</bottom>
 								<top>-9</top>
+								<height>248</height>
+								<width>171</width>
 								<bordersize>20</bordersize>
 								<texture border="30" colordiffuse=$INFO[Window(Home).Property(color)]>box.png</texture>
 								<animation center="auto" easing="inout" effect="zoom" end="100" start="80" time="400" tween="back">Focus</animation>
@@ -1041,11 +1049,11 @@
 
 							<control type="image">
 								<left>-5</left>
-								<right>-5</right>
-								<bottom>-5</bottom>
 								<top>-5</top>
+								<height>240</height>
+								<width>163</width>
 								<bordersize>20</bordersize>
-								<bordertexture border="30" colordiffuse="Shadow">shadow-20.png</bordertexture>
+								<bordertexture border="30" colordiffuse="55ffffff">shadow-20.png</bordertexture>
 								<texture border="30" colordiffuse=$INFO[Window(Home).Property(color)]>box.png</texture>
 							</control>
 
@@ -1094,19 +1102,19 @@
 
 							<control type="image">
 								<left>-5</left>
-								<right>-5</right>
-								<bottom>-5</bottom>
 								<top>-5</top>
+								<height>240</height>
+								<width>163</width>
 								<bordersize>20</bordersize>
-								<bordertexture border="30" colordiffuse="Shadow">shadow-20.png</bordertexture>
+								<bordertexture border="30" colordiffuse="55ffffff">shadow-20.png</bordertexture>
 								<texture border="30" colordiffuse=$INFO[Window(Home).Property(color)]>box.png</texture>
 							</control>
 
 							<control type="image">
 								<left>-9</left>
-								<right>-9</right>
-								<bottom>-9</bottom>
 								<top>-9</top>
+								<height>248</height>
+								<width>171</width>
 								<bordersize>20</bordersize>
 								<texture border="30" colordiffuse=$INFO[Window(Home).Property(color)]>box.png</texture>
 								<animation center="auto" easing="inout" effect="zoom" end="100" start="80" time="400" tween="back">Focus</animation>
@@ -1184,11 +1192,11 @@
 
 							<control type="image">
 								<left>-5</left>
-								<right>-5</right>
-								<bottom>-5</bottom>
 								<top>-5</top>
+								<height>240</height>
+								<width>163</width>
 								<bordersize>20</bordersize>
-								<bordertexture border="30" colordiffuse="Shadow">shadow-20.png</bordertexture>
+								<bordertexture border="30" colordiffuse="55ffffff">shadow-20.png</bordertexture>
 								<texture border="30" colordiffuse=$INFO[Window(Home).Property(color)]>box.png</texture>
 							</control>
 
@@ -1237,19 +1245,19 @@
 
 							<control type="image">
 								<left>-5</left>
-								<right>-5</right>
-								<bottom>-5</bottom>
 								<top>-5</top>
+								<height>240</height>
+								<width>163</width>
 								<bordersize>20</bordersize>
-								<bordertexture border="30" colordiffuse="Shadow">shadow-20.png</bordertexture>
+								<bordertexture border="30" colordiffuse="55ffffff">shadow-20.png</bordertexture>
 								<texture border="30" colordiffuse=$INFO[Window(Home).Property(color)]>box.png</texture>
 							</control>
 
 							<control type="image">
 								<left>-9</left>
-								<right>-9</right>
-								<bottom>-9</bottom>
 								<top>-9</top>
+								<height>248</height>
+								<width>171</width>
 								<bordersize>20</bordersize>
 								<texture border="30" colordiffuse=$INFO[Window(Home).Property(color)]>box.png</texture>
 								<animation center="auto" easing="inout" effect="zoom" end="100" start="80" time="400" tween="back">Focus</animation>
@@ -1343,7 +1351,8 @@
 					<height>40</height>
 					<width>auto</width>
 					<label>Résumé</label>
-					<textcolor>white</textcolor>
+					<textcolor>FFFFFFFF</textcolor>
+					<focusedcolor>FFFFFFFF</focusedcolor>
 					<texturenofocus border="10" diffuse="box.png" colordiffuse="D0FFFFFF">focus.png</texturenofocus>
 					<texturefocus border="10" diffuse="box.png" colordiffuse=$INFO[Window(Home).Property(color)]>focus.png</texturefocus>
 					<onclick>SetProperty(vstream_menu,Home)</onclick>
@@ -1361,7 +1370,8 @@
 					<height>40</height>
 					<width>auto</width>
 					<label>Synopsis</label>
-					<textcolor>white</textcolor>
+					<textcolor>FFFFFFFF</textcolor>
+					<focusedcolor>FFFFFFFF</focusedcolor>
 					<texturenofocus border="10" diffuse="box.png" colordiffuse="D0FFFFFF">focus.png</texturenofocus>
 					<texturefocus border="10" diffuse="box.png" colordiffuse=$INFO[Window(Home).Property(color)]>focus.png</texturefocus>
 					<onclick>SetProperty(vstream_menu,Syno)</onclick>
@@ -1379,7 +1389,8 @@
 					<height>40</height>
 					<width>auto</width>
 					<label>$ADDON[plugin.video.vstream 30460]</label>
-					<textcolor>white</textcolor>
+					<textcolor>FFFFFFFF</textcolor>
+					<focusedcolor>FFFFFFFF</focusedcolor>
 					<texturenofocus border="10" diffuse="box.png" colordiffuse="D0FFFFFF">focus.png</texturenofocus>
 					<texturefocus border="10" diffuse="box.png" colordiffuse=$INFO[Window(Home).Property(color)]>focus.png</texturefocus>
 					<animation reversible="false" center="auto" easing="inout" effect="zoom" end="100" start="90" time="400" tween="back">Focus</animation>					
@@ -1396,7 +1407,8 @@
 					<height>40</height>
 					<width>auto</width>
 					<label>Similaire</label>
-					<textcolor>white</textcolor>
+					<textcolor>FFFFFFFF</textcolor>
+					<focusedcolor>FFFFFFFF</focusedcolor>
 					<texturenofocus border="10" diffuse="box.png" colordiffuse="D0FFFFFF">focus.png</texturenofocus>
 					<texturefocus border="10" diffuse="box.png" colordiffuse=$INFO[Window(Home).Property(color)]>focus.png</texturefocus>
 					<animation reversible="false" center="auto" easing="inout" effect="zoom" end="100" start="90" time="400" tween="back">Focus</animation>					
@@ -1414,7 +1426,8 @@
 					<height>40</height>
 					<width>auto</width>
 					<label>20410</label>
-					<textcolor>white</textcolor>
+					<textcolor>FFFFFFFF</textcolor>
+					<focusedcolor>FFFFFFFF</focusedcolor>
 					<texturenofocus border="10" diffuse="box.png" colordiffuse="D0FFFFFF">focus.png</texturenofocus>
 					<texturefocus border="10" diffuse="box.png" colordiffuse=$INFO[Window(Home).Property(color)]>focus.png</texturefocus>
 					<animation reversible="false" center="auto" easing="inout" effect="zoom" end="100" start="90" time="400" tween="back">Focus</animation>
@@ -1424,17 +1437,20 @@
 				<control type="button" id="12">
 					<animation reversible="false" center="auto" easing="inout" effect="zoom" end="100" start="90" time="400" tween="back">Focus</animation>
 					<description>stop</description>
-					<textoffsetx>20</textoffsetx>
+					<textoffsetx>0</textoffsetx>
 					<left>20</left>
 					<align>center</align>
 					<aligny>center</aligny>
 					<font>font12</font>
 					<height>40</height>
-					<width>auto</width>
+					<width>100</width>
 
 					<textcolor>FFFFFFFF</textcolor>
 					<focusedcolor>$INFO[Window(Home).Property(color)]</focusedcolor>
 					<label>Arrêter</label>
+
+					<texturenofocus />
+					<texturefocus />
 
 					<onclick>PlayerControl(stop)</onclick>
 					<visible>Player.HasMedia</visible>
@@ -1443,16 +1459,20 @@
 				<control type="button" id="13">
 					<animation reversible="false" center="auto" easing="inout" effect="zoom" end="100" start="90" time="400" tween="back">Focus</animation>
 					<description>Trailer</description>
-					<textoffsetx>-10</textoffsetx>
+					<textoffsetx>0</textoffsetx>
 					<align>center</align>
 					<aligny>center</aligny>
+					<left>20</left>
 					<font>font12</font>
 					<height>40</height>
-					<width>auto</width>
+					<width>100</width>
 					
 					<textcolor>FFFFFFFF</textcolor>
 					<focusedcolor>$INFO[Window(Home).Property(color)]</focusedcolor>
 					<label>Plein écran</label>
+
+					<texturenofocus />
+					<texturefocus />
 					
 					<onclick>SetFocus(40)</onclick>
 					<visible>Player.HasMedia</visible>
