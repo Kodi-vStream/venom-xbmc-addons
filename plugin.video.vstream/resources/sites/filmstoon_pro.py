@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # TODO : resources/art/sites  https://www.filmstoon.pro/templates/filmstoon/images/logo.webp
-# source 03
-
-# update 30/07/2020
-# add MOVIE_ANNEES;add MOVIE_VIEWS;update search; updateshowHosters()sPattern;
+# source 03 update 16/08/2020
 
 import re
 
@@ -15,9 +12,9 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import xbmc
-from resources.lib.comaddon import VSlog
+from resources.lib.comaddon import progress, VSlog
 
-# liens not found pour 3 raisons connues assez peu nombreux mais presents
+# liens not found pour 3 raisons connues assez peu nombreuses mais presentes
 # courant:
 # notification des liens register dans le hoster.displaytitle
 # rares:
@@ -161,14 +158,17 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
         # ifVSlog(sHtmlContent)
-        ifVSlog('')
-        ifVSlog('Failed Pattern with url = ' + sUrl)
-        ifVSlog('Selected Pattern = ' + sPattern)
+        ifVSlog('showMovies : Failed Pattern with url = ' + sUrl)
 
     if (aResult[0] == True):
         total = len(aResult[1])
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
+
             sUrl = aEntry[0]
             sDesc = aEntry[3]
             if sSearch:
@@ -178,15 +178,15 @@ def showMovies(sSearch=''):
                 sTitle = aEntry[1]
                 sThumb = aEntry[2]
             # ifVSlog('sUrl2 =' + sUrl)
-            # ifVSlog('sThumb =' + sThumb)
             # ifVSlog('sTitle =' + sTitle)
-            # ifVSlog('sDesc =' + sDesc )
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+
+        progress_.VSclose(progress_)
 
     if not sSearch:
         NextPage = __checkForNextPage(sHtmlContent)
@@ -197,8 +197,8 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sUrlNextPage)
             number = re.search('/page/([0-9]+)', sUrlNextPage ).group(1)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + '/' + sNumLastPage + ' >>>[/COLOR]', oOutputParameterHandler)
-        else:
-            ifVSlog('NextPage false')
+        #else:
+            #ifVSlog('NextPage false')
 
         oGui.setEndOfDirectory()
 
@@ -226,7 +226,8 @@ def showHosters():
     ifVSlog('surl = ' + sUrl)
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
+    
+    # marche ; prévoir un add link pour les titres
     # sPattern='<div class="st-line"> Année:([^<]*)<.div>.+?line"> Durée:([^<]*)'
     # oParser = cParser()
     # aResult = oParser.parse(sHtmlContent, sPattern)
@@ -235,12 +236,6 @@ def showHosters():
             # aEntry = aResult[1][0]
             # sDesc= aEntry[0] +' ' +aEntry[1] + sDesc
 
-    # html qui a changé spaterne hs
-    # sPattern = 'iframe src="data:image.+?show.filmstoon.pro.+?php.([^"]*)&'
-
-    # valides pattern
-    # sPattern = 'data:image.+?data-src=".+?filmstoon.pw.playfst.php.([^"]*).p=http'  # temps trop long 200 ms
-    # sPattern = 'data-src.+?filmstoon.pw.playfst.php.([^"]*).p=https' # 50 ms
     sPattern = 'data-src.+?playfst.php.([^"]*).p=https'  # 50
 
     # exemple
@@ -258,7 +253,6 @@ def showHosters():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
         # ifVSlog(sHtmlContent)
-        # ifVSlog('')
         ifVSlog('Failed Pattern with url = ' + sUrl)
         ifVSlog('Selected Pattern = ' + sPattern)
         # Your IP-address or subnet have been blocked
@@ -266,11 +260,10 @@ def showHosters():
             xbmc.executebuiltin('Notification(%s, %s, %d)' % ('Filmstoon Plugin ', 'You have been blocked : Try change your IP-address ', 5000))
 
     if (aResult[0] == True):
-
         for aEntry in aResult[1]:
             req = 'https://easyplayer.cc/player.php?' + str(aEntry)
             requestlist.append(req)
-    # i=0
+
     for irequest in requestlist:
         # url du host dans l'entete de la réponse
         urlreq = irequest
@@ -302,7 +295,7 @@ def showHosters():
                     bDoublon = True
                 break
 
-        if not bDoublon:  # a activer pour filtrer
+        if not bDoublon:  # à activer pour filtrer
         # if True:
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             sDisplayTitle = sremarque + sMovieTitle
