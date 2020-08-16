@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# source 08 update 09/08/2020
+# source 08 update 16/08/2020
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
+from resources.lib.comaddon import progress
 import re
 import string
 import json
@@ -381,9 +383,17 @@ def showMovies(sSearch=''):
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        total = len(aResult[1])
+        progress_1 = progress().VScreate(SITE_NAME)
+        bclosedprogress_1 = False
         sDesc = ''
         sYear = ''
+        
         for aEntry in aResult[1]:
+            progress_1.VSupdate(progress_1, total)
+            if progress_1.iscanceled():
+                break
+            
             if 'https://mystream.zone/tendance/' in sUrl:  # image url title years
                 sUrl2 = aEntry[1]
                 sTitle = aEntry[2]
@@ -441,16 +451,24 @@ def showMovies(sSearch=''):
                     continue
 
             elif 'tvshows' in sUrl or 'movies':
+                progress_1.VSclose(progress_1)
+                bclosedprogress_1= True
                 # revoir pattern si simplification avec 'genre' or 'release' (pb image decalage)
                 sPattern1 = 'class="item.+?src="([^"]*).+?class="mepo">.+?class="data".+?href="([^"]*).>([^<]*).+?span>.+?,.([^<]*).+?texto">([^<]*)'
                 shtml = str(aEntry)
                 oParser2 = cParser()
                 aResult2 = oParser2.parse(shtml, sPattern1)
-
                 if (aResult2[0] == False):
                     oGui.addText(SITE_IDENTIFIER)
                 if (aResult2[0] == True):
+                    total = len(aResult2[1])
+                    progress_2 = progress().VScreate(SITE_NAME)
+                    
                     for aEntry in aResult2[1]:
+                        progress_2.VSupdate(progress_2, total)
+                        if progress_2.iscanceled():
+                            break
+                        
                         sUrl2 = aEntry[1]
                         sTitle = str(aEntry[2]).replace(' mystream', '')
                         sThumb = aEntry[0]
@@ -468,6 +486,8 @@ def showMovies(sSearch=''):
                             oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
                         else:
                             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+        
+                    progress_2.VSclose(progress_2)
 
             else:  # en théorie jamais atteint : a revoir
                 sUrl2 = aEntry[1]
@@ -516,6 +536,9 @@ def showMovies(sSearch=''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
+        if not bclosedprogress_1:
+            progress_1.VSclose(progress_1)
+                   
         if not sSearch:
             bNextPage, urlNextpage, pagination = __checkForNextPage(sHtmlContent)
             if (bNextPage):
