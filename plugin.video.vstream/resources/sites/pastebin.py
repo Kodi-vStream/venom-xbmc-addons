@@ -656,6 +656,9 @@ def showSerieLinks():
     sSaison = oInputParameterHandler.getValue('sSaison')
     sHerbergeur = oInputParameterHandler.getValue('sHerbergeur')
     
+    if not sSaison:
+        sSaison = ''
+    
     sHoster = eval(sHoster)
 
     # Trie des épisodes 
@@ -664,7 +667,7 @@ def showSerieLinks():
     for episode in sorted(episodes):
         links = sHoster[episode]
         
-        if episode.isdigit():
+        if str(episode).isdigit():
             episode = '{}E{:02d}'.format(sSaison, int(episode))
 
         sDisplayTitle = sTitle + ' ' + episode
@@ -689,7 +692,7 @@ def showHosters():
         listHoster = eval(sHoster)
     else:
         listHoster = []   
-        listHoster.add(sHoster)
+        listHoster.append(sHoster)
 
     for sHosterUrl in listHoster:
         if sHerbergeur:
