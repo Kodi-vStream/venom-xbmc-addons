@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# S09 update 07/08/2020
+# S09 update 16/08/2020
 
 import re
 from resources.lib.gui.hoster import cHosterGui
@@ -9,6 +9,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'voirhd_co'
 SITE_NAME = 'Voir HD'
@@ -310,7 +311,15 @@ def showMovies(sSearch=''):
             oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        total = len(aResult[1])
+        progress_1 = progress().VScreate(SITE_NAME)
+        bclosedprogress_1 = False
+
         for aEntry in aResult[1]:
+            progress_1.VSupdate(progress_1, total)
+            if progress_1.iscanceled():
+                break
+
             sQual = ''
             sLang = ''
             sUrl2 = ''
@@ -319,14 +328,24 @@ def showMovies(sSearch=''):
             # parse home page
             # etape 2/2
             if sUrl == URL_MAIN + tbox or sUrl == URL_MAIN + tmoviestend or sUrl == URL_MAIN + tseriestend:
+                progress_1.VSclose(progress_1)
+                bclosedprogress_1= True
                 shtml = str(aEntry)
                 sPattern1 = '<div class=.item.>.+?ref=.([^"]*).+?src=.([^"]*).+?alt=.([^"]+)'  # url2 thumb title
                 oParser2 = cParser()
                 aResult2 = oParser2.parse(shtml, sPattern1)
                 if (aResult2[0] == False):
                     oGui.addText(SITE_IDENTIFIER)
+
                 if (aResult2[0] == True):
+                    total = len(aResult2[1])
+                    progress_2 = progress().VScreate(SITE_NAME)
+
                     for aEntry in aResult2[1]:
+                        progress_2.VSupdate(progress_2, total)
+                        if progress_2.iscanceled():
+                            break
+
                         sUrl2 = aEntry[0]
                         sThumb = aEntry[1]
                         sTitle = aEntry[2]
@@ -343,6 +362,8 @@ def showMovies(sSearch=''):
                             oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
                         else:
                             oGui.addMovie(SITE_IDENTIFIER, 'showLink', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)
+
+                    progress_2.VSclose(progress_2)
 
                 oGui.setEndOfDirectory()
                 return
@@ -421,6 +442,9 @@ def showMovies(sSearch=''):
                 oGui.addTV(SITE_IDENTIFIER, 'showLink', sdisplayTitle, 'serie.png', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLink', sdisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
+
+        if not bclosedprogress_1:
+            progress_1.VSclose(progress_1)
 
     if not sSearch:
         bNextPage, urlnext, number, numbermax = __checkForNextPage(sHtmlContent, sUrl)
