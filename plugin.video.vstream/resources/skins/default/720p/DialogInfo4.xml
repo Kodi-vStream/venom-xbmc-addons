@@ -40,9 +40,9 @@
 				<texture>nofocus.png</texture>
 			</control>
 
-			<control type="image">
+			<!--<control type="image">
 				<texture>special://home/addons/plugin.video.vstream/resources/extra/debuggrid1080.png</texture>		
-			</control>
+			</control>-->
 
 
 			<!-- left page -->
