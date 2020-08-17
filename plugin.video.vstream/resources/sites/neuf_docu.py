@@ -197,7 +197,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<span class="(?:14|15)"><a href="([^"]+)"'
+    sPattern = '<a href="([^"]+)" title=".+?".+?</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
