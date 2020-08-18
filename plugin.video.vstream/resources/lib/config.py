@@ -184,7 +184,7 @@ def WindowsBoxes(sTitle, sFileName, num, year=''):
         duration = meta['duration']/60  # En minutes
         durationH = duration/60 # Nombre d'heures
         meta['durationH'] = durationH
-        meta['durationM'] = duration - 60*durationH
+        meta['durationM'] = '{:02d}'.format(duration - 60*durationH)
     else:
         meta['durationH'] = 0
         meta['durationM'] = 0
