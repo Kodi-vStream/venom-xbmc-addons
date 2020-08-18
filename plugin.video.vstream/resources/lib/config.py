@@ -4,11 +4,8 @@ from resources.lib.comaddon import addon, dialog, window, listitem, xbmc, xbmcgu
 from resources.lib.tmdb import cTMDb
 from datetime import date, datetime
 
-# import os
-# import xbmcaddon
 import unicodedata
 import xbmcvfs
-import json
 import time
 
 
@@ -177,7 +174,8 @@ def WindowsBoxes(sTitle, sFileName, num, year=''):
 
     # convertion de la date au format JJ/MM/AAAA
     if 'premiered' in meta and meta['premiered']:
-        meta['releaseDate'] = datetime.strptime(meta['premiered'], "%Y-%m-%d").strftime("%d/%m/%Y")
+        releaseDate = datetime(*(time.strptime(meta['premiered'], '%Y-%m-%d')[0:6]))
+        meta['releaseDate'] = releaseDate.strftime('%d/%m/%Y')
 
     # convertion de la durée en secondes -> heure:minutes
     if 'duration' in meta and meta['duration']:
