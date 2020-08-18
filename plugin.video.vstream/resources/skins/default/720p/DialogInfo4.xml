@@ -260,7 +260,7 @@
 				</control>
 			</control>
 		
-			<!--synopssy-->
+			<!--synopsis-->
 			<control type="group">
 				<animation center="auto" easing="inout" effect="fade" end="100" start="0" time="400" tween="sine">Visible</animation>
 				<animation center="auto" easing="inout" effect="fade" end="0" start="100" time="400" tween="sine">Hidden</animation>
@@ -283,7 +283,7 @@
 					<top>30</top>
 					<height>20</height>
 					<font>font10</font>
-					<label>$INFO[Window(Home).Property(ListItem.year),, •]$INFO[Window(Home).Property(ListItem.durationH), , Hr ]$INFO[Window(Home).Property(ListItem.durationM),, mins •] $INFO[Window(Home).Property(ListItem.rating)]</label>
+					<label>$INFO[Window(Home).Property(ListItem.year),, •]$INFO[Window(Home).Property(ListItem.durationH), ,h]$INFO[Window(Home).Property(ListItem.durationM),, •] $INFO[Window(Home).Property(ListItem.rating)]</label>
 					<shadowcolor>black</shadowcolor>
 					<textcolor>white</textcolor>
 				</control>
@@ -328,7 +328,7 @@
 					<top>30</top>
 					<height>20</height>
 					<font>font10</font>
-					<label>$INFO[Window(Home).Property(ListItem.year),, •]$INFO[Window(Home).Property(ListItem.durationH), , Hr ]$INFO[Window(Home).Property(ListItem.durationM),, mins •] $INFO[Window(Home).Property(ListItem.rating)]</label>
+					<label>$INFO[Window(Home).Property(ListItem.year),, •]$INFO[Window(Home).Property(ListItem.durationH), ,h]$INFO[Window(Home).Property(ListItem.durationM),, •] $INFO[Window(Home).Property(ListItem.rating)]</label>
 					<shadowcolor>black</shadowcolor>
 					<textcolor>white</textcolor>
 				</control>
@@ -374,7 +374,8 @@
 							</control>
 							<control type="label">
 								<height>20</height>
-								<left>240</left>
+								<left>200</left>
+								<width>500</width>
 								<font>font10</font>
 								<align>left</align>
 								<aligny>center</aligny>
@@ -398,7 +399,8 @@
 							</control>
 							<control type="label">
 								<height>20</height>
-								<left>240</left>
+								<left>200</left>
+								<width>500</width>
 								<font>font10</font>
 								<align>left</align>
 								<aligny>center</aligny>
@@ -438,8 +440,8 @@
 								<onclick>noop</onclick>
 							</item>
 							<item>
-								<label>[B]Premiére[/B]</label>
-								<label2>$INFO[Window(Home).Property(ListItem.premiered)]</label2>
+								<label>[B]Première[/B]</label>
+								<label2>$INFO[Window(Home).Property(ListItem.releaseDate)]</label2>
 								<onclick>noop</onclick>
 							</item>
 							<item>
@@ -988,7 +990,7 @@
 			</control>
 
 
-<!-- similaire & recommender -->
+<!-- similaire & recommandé -->
 			<control type="group" id="52200">
 				<animation center="auto" easing="inout" effect="fade" end="100" start="0" time="400" tween="sine">Visible</animation>
 				<animation center="auto" easing="inout" effect="fade" end="0" start="100" time="400" tween="sine">Hidden</animation>

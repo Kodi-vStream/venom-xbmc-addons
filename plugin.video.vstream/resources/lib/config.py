@@ -175,6 +175,10 @@ def WindowsBoxes(sTitle, sFileName, num, year=''):
         DIALOG.VSinfo(ADDON.VSlang(30204))
         return
 
+    # convertion de la date au format JJ/MM/AAAA
+    if 'premiered' in meta and meta['premiered']:
+        meta['releaseDate'] = datetime.strptime(meta['premiered'], "%Y-%m-%d").strftime("%d/%m/%Y")
+
     # convertion de la durée en secondes -> heure:minutes
     if 'duration' in meta and meta['duration']:
         duration = meta['duration']/60  # En minutes
@@ -365,7 +369,7 @@ def WindowsBoxes(sTitle, sFileName, num, year=''):
                             age = today.year - birthday.year - ((today.month, today.day) < (birthday.month, birthday.day))
                             age = '%s Ans' % age
                         except:
-                         age = ''
+                            age = ''
                     else:
                         age = meta['deathday']
                         
@@ -437,7 +441,7 @@ def WindowsBoxes(sTitle, sFileName, num, year=''):
                     
             #if controlId != 5200:
                 # self.getControl(5500).reset()
-              #  self.getControl(5200).setVisible(False)
+            #  self.getControl(5200).setVisible(False)
             # if controlId == 50:
                 # item = self.getControl(50).getSelectedItem()
                 # sid = item.getProperty('id')
