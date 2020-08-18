@@ -48,7 +48,8 @@ class PasteBinContent:
     GENRES = -1  # (optionnel) - Liste des genres
     URLS = -1    # Liste des liens, avec épisodes pour les séries
     HEBERGEUR = '' # (optionnel) - URL de l'hebergeur, pour éviter de le mettre dans chaque URL, ex : 'https://uptobox.com/'  
-
+    listeGroupe = {} # (optionnel) - Liste de groupes nommés
+    
     def getLines(self, sContent):
         lines = sContent.splitlines()
 
@@ -68,6 +69,12 @@ class PasteBinContent:
                 if len(hebergeur)>1:
                     self.HEBERGEUR = hebergeur[1].replace(' ','').replace('"','').replace('\'','')
                 
+            if 'GROUPE' in champ:  # supporte GROUPE ou GROUPES
+                groupes = champ.split('=')
+                champ = 'GROUPES'
+                if '{' in groupes[1]:  # GROUPES = {"R": ["Réalisateur"], "D": ["Diffuseur"]}
+                    self.listeGroupe = eval(groupes[1])
+                
             if champ in dir(self):
                 setattr(self, champ, idx)
             idx +=1
@@ -76,6 +83,12 @@ class PasteBinContent:
 
         return lines
     
+    
+    def getGroupeName(self, groupeID):
+        groupe = self.listeGroupe.get(groupeID)
+        if groupe:
+            return groupe
+        return groupeID
 
 def load():
     addons = addon()
@@ -325,9 +338,9 @@ def showGroupes():
     oGui = cGui()
     
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    siteUrl = oInputParameterHandler.getValue('siteUrl')
 
-    sUrl, params = sUrl.split('&',1)
+    sUrl, params = siteUrl.split('&',1)
     aParams = dict(param.split('=') for param in params.split('&'))
     if 'sMedia' in aParams:
         sMedia = aParams['sMedia']
@@ -340,19 +353,73 @@ def showGroupes():
     pbContent = PasteBinContent()
     movies = pbContent.getLines(sContent)
 
+    groupesSys = set()
+    groupesPerso = set()
+    for movie in movies:
+        if pbContent.CAT >=0 and sMedia not in movie[pbContent.CAT]:
+            continue
+        groupe = movie[pbContent.GROUPES].strip().replace("''",'')
+        if groupe:
+            groupe = eval(groupe)
+            if groupe:
+                for gr in groupe:
+                    if ':' in gr:
+                        grID = gr.split(':')[0]
+                        if grID in groupesSys:
+                            continue
+                        groupesSys.add(grID)
+                        grLabel = pbContent.getGroupeName(grID)
+                        siteUrl = sUrl + '&sMedia=' + sMedia +'&sGroupe=' + grID #+ ':' + sGroupe 
+                        oOutputParameterHandler = cOutputParameterHandler()
+                        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+                        oGui.addDir(SITE_IDENTIFIER, 'showGroupeDetails', grLabel, 'genres.png', oOutputParameterHandler)
+                    else:
+                        groupesPerso.add(gr)
+
+    for sGroupe in sorted(groupesPerso):
+        siteUrl = sUrl + '&sMedia=' + sMedia +'&sGroupe=' + sGroupe 
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sGroupe, 'genres.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+def showGroupeDetails():
+    oGui = cGui()
+    
+    oInputParameterHandler = cInputParameterHandler()
+    siteUrl = oInputParameterHandler.getValue('siteUrl')
+
+    sUrl, params = siteUrl.split('&',1)
+    aParams = dict(param.split('=') for param in params.split('&'))
+    if 'sGroupe' in aParams:
+        sGroupe = aParams['sGroupe'] + ':'
+    if 'sMedia' in aParams:
+        sMedia = aParams['sMedia']
+    else:
+        sMedia = 'film'
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sContent = oRequestHandler.request()
+    pbContent = PasteBinContent()
+    movies = pbContent.getLines(sContent)
+
     groupes = set()
     for movie in movies:
         groupe = movie[pbContent.GROUPES].strip().replace("''",'')
         if groupe:
             groupe = eval(groupe)
             if groupe:
-                groupes = groupes.union(groupe)
+                for gr in groupe:
+                    if gr.startswith(sGroupe):
+                        groupes.add(gr)
 
     for sGroupe in sorted(groupes):
         siteUrl = sUrl + '&sMedia=' + sMedia +'&sGroupe=' + sGroupe 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', siteUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sGroupe, 'genres.png', oOutputParameterHandler)
+        sDisplayGroupe = sGroupe.split(':')[1]
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sDisplayGroupe, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
