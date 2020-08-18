@@ -7,7 +7,6 @@ from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
 from resources.lib.tmdb import cTMDb
 from resources.lib.util import Quote, cUtil, Unquote
 
@@ -23,8 +22,8 @@ SETTING_PASTE_ID = 'pastebin_id_'
 SETTING_PASTE_LABEL = 'pastebin_label_'
 UNCLASSIFIED_GENRE = '_NON CLASSÉ_'
 
-URL_SEARCH_MOVIES = (URL_MAIN + KEY_PASTE_ID + '?type=film&s=', 'showSearchGlobal')
-URL_SEARCH_SERIES = (URL_MAIN + KEY_PASTE_ID + '?type=serie&s=', 'showSearchGlobal')
+URL_SEARCH_MOVIES = (URL_MAIN + KEY_PASTE_ID + '&sMedia=film&sSearch=', 'showSearchGlobal')
+URL_SEARCH_SERIES = (URL_MAIN + KEY_PASTE_ID + '&sMedia=serie&sSearch=', 'showSearchGlobal')
 FUNCTION_SEARCH = 'showSearchGlobal'
 
 
@@ -182,37 +181,31 @@ def showMenu():
         oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Films)', 'search.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sMedia', 'film')
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
         if containFilmGenres:
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('sMedia', 'film')
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film')
             oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Films (Genres)', 'genres.png', oOutputParameterHandler)
     
         if containFilmGroupes:
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('sMedia', 'film')
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film')
             oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Films (Dossiers)', 'genres.png', oOutputParameterHandler)
     
         if containFilmSaga:
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('sMedia', 'film')
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film')
             oGui.addDir(SITE_IDENTIFIER, 'showSaga', 'Films (Saga)', 'genres.png', oOutputParameterHandler)
     
         if containFilmYear:
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('sMedia', 'film')
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film')
             oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Films (Années)', 'annees.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sMedia', 'film')
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film')
         oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Films (Liste)', 'listes.png', oOutputParameterHandler)
 
 
@@ -223,24 +216,20 @@ def showMenu():
         oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Séries)', 'search.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sMedia', 'serie')
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sMedia', 'serie')
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie')
         oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
         if containSerieGroupes:
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('sMedia', 'serie')
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie')
             oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Séries (Dossiers)', 'genres.png', oOutputParameterHandler)
     
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sMedia', 'serie')
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie')
         oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Séries (Liste)', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -290,7 +279,13 @@ def showGenres():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMedia = oInputParameterHandler.getValue('sMedia')
+
+    sUrl, params = sUrl.split('&',1)
+    aParams = dict(param.split('=') for param in params.split('&'))
+    if 'sMedia' in aParams:
+        sMedia = aParams['sMedia']
+    else:
+        sMedia = 'film'
 
     oRequestHandler = cRequestHandler(sUrl)
     sContent = oRequestHandler.request()
@@ -298,7 +293,7 @@ def showGenres():
     pbContent = PasteBinContent()
     movies = pbContent.getLines(sContent)
 
-    genres = set()
+    genres = {}
     for movie in movies:
         if pbContent.CAT >=0 and sMedia not in movie[pbContent.CAT]:
             continue
@@ -310,17 +305,19 @@ def showGenres():
             genre = genre.replace("''", "'"+UNCLASSIFIED_GENRE+"'")
         genre = eval(genre)
         if genre:
-            genres = genres.union(genre)
+            for g in genre:
+                sDisplayGenre = g
+                if str(g).isdigit():
+                    sDisplayGenre = tmdb.getGenreFromID(g)
+                genres[sDisplayGenre] = g
 
-    for genre in sorted(genres):
-        sGenre = genre
-        if str(genre).isdigit():
-            sGenre = tmdb.getGenreFromID(genre)
+    genreKeys = genres.keys()
+    for sDisplayGenre in sorted(genreKeys):
+        genre = genres.get(sDisplayGenre)
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oOutputParameterHandler.addParameter('sGenre', str(genre))
-        oOutputParameterHandler.addParameter('sMedia', sMedia)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sGenre, 'genres.png', oOutputParameterHandler)
+        siteUrl = sUrl + '&sMedia=' + sMedia +'&sGenre=' + str(genre) 
+        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sDisplayGenre, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -329,7 +326,13 @@ def showGroupes():
     
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMedia = oInputParameterHandler.getValue('sMedia')
+
+    sUrl, params = sUrl.split('&',1)
+    aParams = dict(param.split('=') for param in params.split('&'))
+    if 'sMedia' in aParams:
+        sMedia = aParams['sMedia']
+    else:
+        sMedia = 'film'
 
     oRequestHandler = cRequestHandler(sUrl)
     sContent = oRequestHandler.request()
@@ -345,12 +348,10 @@ def showGroupes():
             if groupe:
                 groupes = groupes.union(groupe)
 
-    # Si les groupes sont les ID TMDB, il faut les retrouver les libellés        
     for sGroupe in sorted(groupes):
+        siteUrl = sUrl + '&sMedia=' + sMedia +'&sGroupe=' + sGroupe 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oOutputParameterHandler.addParameter('sGroupe', sGroupe)
-        oOutputParameterHandler.addParameter('sMedia', sMedia)
+        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sGroupe, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -359,7 +360,13 @@ def showSaga():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMedia = oInputParameterHandler.getValue('sMedia')
+
+    sUrl, params = sUrl.split('&',1)
+    aParams = dict(param.split('=') for param in params.split('&'))
+    if 'sMedia' in aParams:
+        sMedia = aParams['sMedia']
+    else:
+        sMedia = 'film'
 
     oRequestHandler = cRequestHandler(sUrl)
     sContent = oRequestHandler.request()
@@ -376,10 +383,9 @@ def showSaga():
             sagas.add(saga)
             
     for sSaga in sorted(sagas):
+        siteUrl = sUrl + '&sMedia=' + sMedia +'&sSaga=' + sSaga 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oOutputParameterHandler.addParameter('sSaga', sSaga)
-        oOutputParameterHandler.addParameter('sMedia', sMedia)
+        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sSaga, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -389,7 +395,13 @@ def showYears():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMedia = oInputParameterHandler.getValue('sMedia')
+
+    sUrl, params = sUrl.split('&',1)
+    aParams = dict(param.split('=') for param in params.split('&'))
+    if 'sMedia' in aParams:
+        sMedia = aParams['sMedia']
+    else:
+        sMedia = 'film'
 
     oRequestHandler = cRequestHandler(sUrl)
     sContent = oRequestHandler.request()
@@ -405,10 +417,9 @@ def showYears():
         years.add(year)
 
     for sYear in sorted(years, reverse=True):
+        siteUrl = sUrl + '&sMedia=' + sMedia +'&sYear=' + sYear 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oOutputParameterHandler.addParameter('sYear', sYear)
-        oOutputParameterHandler.addParameter('sMedia', sMedia)
+        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'years.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -419,7 +430,13 @@ def AlphaList():
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMedia = oInputParameterHandler.getValue('sMedia')
+
+    sUrl, params = sUrl.split('&',1)
+    aParams = dict(param.split('=') for param in params.split('&'))
+    if 'sMedia' in aParams:
+        sMedia = aParams['sMedia']
+    else:
+        sMedia = 'film'
 
     for i in range(0, 36):
         if (i < 10):
@@ -427,10 +444,10 @@ def AlphaList():
         else:
             sLetter = chr(65 + i -10)
 
+        siteUrl = sUrl + '&sMedia=' + sMedia +'&sAlpha=' + sLetter
+
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oOutputParameterHandler.addParameter('sMedia', sMedia)
-        oOutputParameterHandler.addParameter('sAlpha', sLetter)
+        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] Lettre [COLOR red]' + sLetter + '[/COLOR][/COLOR]', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -440,14 +457,14 @@ def showMovies(sSearch=''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMedia = oInputParameterHandler.getValue('sMedia')
-    sGenre = oInputParameterHandler.getValue('sGenre')
-    sSaga = oInputParameterHandler.getValue('sSaga')
-    sGroupe = oInputParameterHandler.getValue('sGroupe')
-    sYear = oInputParameterHandler.getValue('sYear')
-    sAlpha = oInputParameterHandler.getValue('sAlpha')
     numItem = oInputParameterHandler.getValue('numItem')
     numPage = oInputParameterHandler.getValue('numPage')
+    sMedia = 'film' # Par défaut
+    sGenre = sSaga = sGroupe = sYear = sAlpha = None
+
+    if sSearch:
+        sUrl = sSearch
+
     if not numItem:
         numItem = 0
         numPage = 1
@@ -455,17 +472,16 @@ def showMovies(sSearch=''):
     numPage = int(numPage)
 
     sSearchTitle = ''
-    if sSearch:
-        sUrl = sSearch.split('?')[0]
+    sUrl, params = sUrl.split('&',1)
+    aParams = dict(param.split('=') for param in params.split('&'))
 
-        oParser = cParser()
-        sTypeSearch = oParser.parse(sSearch, '\?type=(.+?)&s=(.+)')
-        if sTypeSearch[0]:
-            sMedia = sTypeSearch[1][0][0]
-            sSearchTitle = sTypeSearch[1][0][1]
-            sSearchTitle = Unquote(sSearchTitle)
-        else:
-            sMedia = 'film'
+    if 'sSearch' in aParams: sSearchTitle = Unquote(aParams['sSearch'])
+    if 'sGenre' in aParams: sGenre = aParams['sGenre']
+    if 'sMedia' in aParams: sMedia = aParams['sMedia']
+    if 'sSaga' in aParams: sSaga = aParams['sSaga']
+    if 'sGroupe' in aParams: sGroupe = aParams['sGroupe']
+    if 'sYear' in aParams: sYear = aParams['sYear']
+    if 'sAlpha' in aParams: sAlpha = aParams['sAlpha']
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.setTimeout(4)
@@ -563,13 +579,11 @@ def showMovies(sSearch=''):
         if progress_.iscanceled():
             break
 
-        sHost = movie[pbContent.URLS]
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-        oOutputParameterHandler.addParameter('sHost', sHost)
-        oOutputParameterHandler.addParameter('sHerbergeur', pbContent.HEBERGEUR)
         if sTmdbId:
             oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
 
@@ -578,20 +592,37 @@ def showMovies(sSearch=''):
         elif sMedia == 'anime':
             oGui.addAnime(SITE_IDENTIFIER, 'showSerieLinks', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
         else:
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', '', '', oOutputParameterHandler)
+            sHost = movie[pbContent.URLS]
+            if len(sHost.replace('[', '').replace(']', '').replace('"', '').replace('\'', '').strip()) > 0:
+                
+                # Reconstruire les liens
+                if pbContent.HEBERGEUR:
+                    if "[" in sHost:
+                        sHost = eval(sHost)
+                        siteUrl = [(pbContent.HEBERGEUR + link) for link in sHost]  
+                    else:
+                        siteUrl = pbContent.HEBERGEUR + sHost
+                else:
+                    siteUrl = sHost
+
+                oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', '', '', oOutputParameterHandler)
 
         # Gestion de la pagination
         if not sSearch:
             if nbItem % ITEM_PAR_PAGE == 0:
                 numPage += 1
+                
+                siteUrl = sUrl
+                if sMedia : siteUrl += '&sMedia=' + sMedia
+                if sGenre : siteUrl += '&sGenre=' + sGenre
+                if sSaga : siteUrl += '&sSaga=' + sSaga
+                if sGroupe : siteUrl += '&sGroupe=' + sGroupe
+                if sYear : siteUrl += '&sYear=' + sYear
+                if sAlpha : siteUrl += '&sAlpha=' + sAlpha
+                
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sMedia', sMedia)
-                oOutputParameterHandler.addParameter('sGenre', sGenre)
-                oOutputParameterHandler.addParameter('sSaga', sSaga)
-                oOutputParameterHandler.addParameter('sGroupe', sGroupe)
-                oOutputParameterHandler.addParameter('sYear', sYear)
-                oOutputParameterHandler.addParameter('sAlpha', sAlpha)
+                oOutputParameterHandler.addParameter('siteUrl', siteUrl)
                 oOutputParameterHandler.addParameter('numPage', numPage)
                 oOutputParameterHandler.addParameter('numItem', numItem)
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(numPage) + ' >>>[/COLOR]', oOutputParameterHandler)
@@ -614,53 +645,78 @@ def showSerieSaisons():
     pbContent = PasteBinContent()
     movies = pbContent.getLines(sContent)
 
-    saisons = {}
+    saisons = []
 
-    # Recherche les saisons de la série    
+    # Recherche les saisons de la série
     for line in movies:
         title = line[pbContent.TITLE].strip()
         if title != sTitle:
             continue
-        saisons[line[pbContent.SAISON].strip()] = line[pbContent.URLS]
+        saisons.append(line[pbContent.SAISON].strip())
 
     # Une seule saison, directement les épisodes
     if len(saisons) == 1:
-        showSerieLinks()
+        saison = saisons[0]
+        showSerieLinks(saison)
         return
 
     # Proposer les différentes saisons
-    numSaisons = saisons.keys()
-    for sSaison in sorted(numSaisons):
-        
-        links = saisons[sSaison]
+    for sSaison in sorted(saisons):
+        siteUrl = sUrl + '&sSaison=' + sSaison
+
         if sSaison.isdigit():
             sSaison = 'S{:02d}'.format(int(sSaison))
         
         sDisplayTitle = sTitle + ' ' + sSaison
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-        oOutputParameterHandler.addParameter('sHost', links)
-        oOutputParameterHandler.addParameter('sSaison', sSaison)
-        oOutputParameterHandler.addParameter('sHerbergeur', pbContent.HEBERGEUR)
+        oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle) # on ne passe pas le sTitre afin de pouvoir mettre la saison en marque-page
+        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
         oGui.addEpisode(SITE_IDENTIFIER, 'showSerieLinks', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def showSerieLinks():
+def showSerieLinks(sSaison=None):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    sHoster = oInputParameterHandler.getValue('sHost')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sSaison = oInputParameterHandler.getValue('sSaison')
-    sHerbergeur = oInputParameterHandler.getValue('sHerbergeur')
     
     if not sSaison:
-        sSaison = ''
-    
-    sHoster = eval(sHoster)
+        sTitle = sTitle[:-4]
+        sUrl, params = sUrl.split('&',1)
+        aParams = dict(param.split('=') for param in params.split('&'))
+        if 'sSaison' in aParams:
+            sSaison = aParams['sSaison']
+            
+    if not sSaison:
+        oGui.setEndOfDirectory()
+        return
 
+    oRequestHandler = cRequestHandler(sUrl)
+    sContent = oRequestHandler.request()
+    pbContent = PasteBinContent()
+    movies = pbContent.getLines(sContent)
+
+    # Recherche la saison
+    links = None
+    for line in movies:
+        if line[pbContent.TITLE].strip() != sTitle:
+            continue
+        if line[pbContent.SAISON].strip() == sSaison:
+            links = line[pbContent.URLS]
+            break
+
+    if str(sSaison).isdigit():
+        sSaison = 'S{:02d}'.format(int(sSaison))
+ 
+    if not links:
+        oGui.setEndOfDirectory()
+        return
+
+    sHoster = eval(links)
+        
     # Trie des épisodes 
     episodes = sHoster.keys()
 
@@ -669,13 +725,23 @@ def showSerieLinks():
         
         if str(episode).isdigit():
             episode = '{}E{:02d}'.format(sSaison, int(episode))
-
+        elif episode[0] == 'E': 
+            episode = '{}{}'.format(sSaison, episode)
         sDisplayTitle = sTitle + ' ' + episode
 
+        # Reconstruire les liens
+        if pbContent.HEBERGEUR:
+            if isinstance(links, list):
+                siteUrl = [(pbContent.HEBERGEUR + link) for link in links]  
+            else:
+                siteUrl = pbContent.HEBERGEUR + links
+        else:
+            siteUrl = links
+        
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
-        oOutputParameterHandler.addParameter('sHerbergeur', sHerbergeur)
-        oOutputParameterHandler.addParameter('sHost', links)
+        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+
         oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -685,8 +751,7 @@ def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sHerbergeur = oInputParameterHandler.getValue('sHerbergeur')
-    sHoster = oInputParameterHandler.getValue('sHost')
+    sHoster = oInputParameterHandler.getValue('siteUrl')
 
     if "[" in sHoster:
         listHoster = eval(sHoster)
@@ -695,8 +760,6 @@ def showHosters():
         listHoster.append(sHoster)
 
     for sHosterUrl in listHoster:
-        if sHerbergeur:
-            sHosterUrl = sHerbergeur + sHosterUrl
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
             oHoster.setDisplayName(sTitle)
@@ -750,8 +813,6 @@ def addPasteID():
     if sLabel in names:
         dialog().VSok(addons.VSlang(30082))
         return
-
-
 
     # Enregistrer Label/id dans les settings    
     addons.setSetting(settingLabel, sLabel)
