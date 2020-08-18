@@ -73,7 +73,7 @@ def showMovies(sSearch = ''):
     if sSearch:
         sPattern = '<h1 class="title"><a href="([^"]+)" title="([^"]+)">.+?<p>.+?Synopsis :([^"]+)</p>'
     else:
-        sPattern = '<h1 class="title"><a href="([^"]+)" title="([^"]+)".+?<img class="alignleft".+?src="([^"]+)".+?Synopsis :(.+?)<\/p>'
+        sPattern = '<h1 class="title"><a href="([^"]+)" title="([^"]+)".+?<img.+?class="alignleft".+?src="([^"]+)".+?Synopsis :(.+?)<\/p>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
