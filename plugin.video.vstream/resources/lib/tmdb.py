@@ -857,6 +857,9 @@ class cTMDb:
 
     # Retourne le genre en Texte, à partir d'un ID
     def getGenreFromID(self, genreID):
+        if not str(genreID).isdigit():
+            return genreID
+            
         genre = self.TMDB_GENRES.get(genreID)
         if genre:
             return genre
