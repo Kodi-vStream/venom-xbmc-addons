@@ -61,7 +61,7 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  'vsuri = \'([^"]+)\';'
+        sPattern =  'vsuri = \'([^\']+)\';'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         oRequest = cRequestHandler(aResult[1][0])
