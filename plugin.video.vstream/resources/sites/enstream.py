@@ -27,6 +27,7 @@ MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
 MOVIE_LIST = (True, 'showAlpha')
 
+
 def load():
     oGui = cGui()
 
@@ -52,6 +53,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
 
@@ -60,6 +62,7 @@ def showSearch():
         showMovies(sSearchText)
         oGui.setEndOfDirectory()
         return
+
 
 def showGenres():
     oGui = cGui()
@@ -96,6 +99,7 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
+
 def showYears():
     oGui = cGui()
 
@@ -106,6 +110,7 @@ def showYears():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showAlpha():
     oGui = cGui()
@@ -148,6 +153,7 @@ def showAlpha():
 
     oGui.setEndOfDirectory()
 
+
 def showMovies(sSearch=''):
     oGui = cGui()
 
@@ -167,9 +173,9 @@ def showMovies(sSearch=''):
     if sSearch:
         sPattern = '<a href="([^"]+)".+?url\((.+?)\).+?<div class="title"> (.+?) </div>'
     elif 'Annee/' in sUrl or '/ABC' in sUrl:
-        sPattern = '<div class="table-movies-content"><a href="([^"]+)".+?url\((.+?)\).+?</i> ([^<]+) <'
+        sPattern = '<div class="table-movies-content.+?href="([^"]+)".+?url\((.+?)\).+?<.i>.([^<]+)'
     elif 'genre/' in sUrl:
-        sPattern = 'film-uno"><a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)"'
+        sPattern = 'film-uno.+?href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)'
     else:
         sPattern = 'film-uno">.+?<a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)".+?short-story">([^<]+)'
 
@@ -207,10 +213,11 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('page-([0-9]+)', sNextPage).group(1)
+            number = re.search('(page|genre).*?[-=\/]([0-9]+)', sNextPage).group(2)  # ou replace'.html',''; '([0-9]+)$'
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -220,6 +227,7 @@ def __checkForNextPage(sHtmlContent):
         return URL_MAIN[:-1] + aResult[1][0]
 
     return False
+
 
 def showHoster():
     oGui = cGui()
@@ -262,8 +270,7 @@ def showHoster():
 
             oGui.addLink(SITE_IDENTIFIER, 'showHostersLinks', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
-    #Pour les liens de téléchargement qui fonctionne différament.
-    sPattern = '<li class="download "><a href=\'([^\']+)\'.+?mobile">([^<]+)'
+    sPattern = "class=.download.+?href='/([^']*).+?mobile.>([^<]+)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -272,16 +279,13 @@ def showHoster():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sDataUrl = aEntry[0]
+            lien = URL_MAIN + aEntry[0]
             sHost = aEntry[1].capitalize()
-
-            # filtrage des hosters
             oHoster = cHosterGui().checkHoster(sHost)
             if not oHoster:
                 continue
 
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
-            lien = URL_MAIN + sDataUrl
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -292,6 +296,7 @@ def showHoster():
             oGui.addLink(SITE_IDENTIFIER, 'showHostersLinks', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showHostersLinks():
     oGui = cGui()
