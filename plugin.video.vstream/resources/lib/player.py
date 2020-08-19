@@ -114,6 +114,9 @@ class cPlayer(xbmc.Player):
             VSlog('Player use setResolvedUrl() method')
 
         #Attend que le lecteur demarre, avec un max de 20s
+        if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+            xrange = range
+
         for _ in xrange(20):
             if self.playBackEventReceived:
                 break
