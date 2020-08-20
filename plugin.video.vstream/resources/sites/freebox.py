@@ -11,7 +11,7 @@ from resources.lib.gui.hoster import cHosterGui
 from resources.lib.util import Unquote, Quote, QuotePlus
 from resources.lib.enregistrement import cEnregistremement
 from resources.lib.epg import cePg
-from resources.lib.comaddon import progress, addon, xbmc, dialog#, VSlog
+from resources.lib.comaddon import progress, addon, xbmc, dialog, VSlog
 
 from zipfile import ZipFile
 import re, sys, string, json, io
@@ -419,6 +419,7 @@ def play__():#Lancer les liens
     if 'f4mTester' in sUrl:
         xbmc.executebuiltin('XBMC.RunPlugin(' + sUrl + ')')
         return
+
     else:
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(SITE_IDENTIFIER)
@@ -431,7 +432,6 @@ def play__():#Lancer les liens
         oPlayer.clearPlayList()
         oPlayer.addItemToPlaylist(oGuiElement)
         oPlayer.startPlayer()
-        return
 
 #############################################################################
 #Fonction diverse :
@@ -453,9 +453,7 @@ def GetRealUrl(chain):
 
     r = re.search('\[[BRIGHTCOVEKEY]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
     if (r):
-        access_token = getBrightcoveKey(r.group(1))
-    else:
-        access_token = ''
+        url = getBrightcoveKey(r.group(1))
 
     r = re.search('\[[REGEX]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
     if (r):
@@ -478,17 +476,10 @@ def GetRealUrl(chain):
         oRequestHandler.addHeaderEntry('Accept-Encoding', 'identity')
         oRequestHandler.addParametersLine(param)
         sHtmlContent = oRequestHandler.request()
+
     else:
-        if access_token != '':
-            oRequestHandler = cRequestHandler(url)
-            oRequestHandler.addHeaderEntry('Accept', 'application/json;pk=' + access_token)
-            sHtmlContent = oRequestHandler.request()
-
-        elif (url):
-            oRequestHandler = cRequestHandler(url)
-            sHtmlContent = oRequestHandler.request()
-
-    #VSlog(sHtmlContent)
+        oRequestHandler = cRequestHandler(url)
+        sHtmlContent = oRequestHandler.request()
 
     if regex:
         aResult2 = oParser.parse(sHtmlContent, regex)
@@ -496,7 +487,6 @@ def GetRealUrl(chain):
             url = aResult2[1][0]
 
     #VSlog('Url recuperee : ' + url)
-
     url = url + '|User-Agent=' + UA2
 
     return url
@@ -577,13 +567,24 @@ def getBrightcoveKey(sUrl):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    result = re.search('data-account="(.+?)" data-player="(.+?)"', sHtmlContent)
+    if "rmcdecouverte" in sUrl:
+    	result = re.search('data-account="(.+?)" data-player="(.+?)".+?data-video-id="(.+?)"', sHtmlContent)
+    else:
+    	result = re.search('<div class="video_block" id="video_player_.+?" accountid="([^"]+)" playerid="([^"]+)" videoid="([^"]+)"', sHtmlContent)
+
     account = result.group(1)
     player = result.group(2)
+    video = result.group(3)
 
     url = 'http://players.brightcove.net/%s/%s_default/index.min.js' % (account, player)
 
     oRequestHandler = cRequestHandler(url)
     sHtmlContent = oRequestHandler.request()
-    token = re.search('policyKey:"(.+?)"', sHtmlContent).group(1)
-    return(token)
+    policyKey = re.search('policyKey:"(.+?)"', sHtmlContent).group(1)
+
+    url = "https://edge.api.brightcove.com/playback/v1/accounts/" + account + "/videos/" + video
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.addHeaderEntry('Accept', "application/json;pk=" + policyKey)
+    sHtmlContent = oRequestHandler.request()
+    url = re.search('"sources":.+?src":"([^"]+)"', sHtmlContent).group(1)
+    return url
