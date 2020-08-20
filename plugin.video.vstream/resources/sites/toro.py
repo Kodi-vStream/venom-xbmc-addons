@@ -834,7 +834,7 @@ def showHosters2():
     oRequestHandler = cRequestHandler(sUrl2)
     sHtmlContent = oRequestHandler.request()
     RealUrl = oRequestHandler.getRealUrl()
-    if  not URL_MAIN in RealUrl:
+    if  not 'torostreaming' in RealUrl:
         bvalide , hostname = ValideUrl(RealUrl)
         if not bvalide:
             oGui.addText(SITE_IDENTIFIER,'Security : ' + hostname + ' is disabled')
@@ -884,7 +884,7 @@ def FindHost(sUrl): #  req2
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent2 = oRequestHandler.request()
     RealUrl = oRequestHandler.getRealUrl()
-    if  not URL_MAIN in RealUrl:
+    if  not 'torostreaming' in RealUrl:
         bvalide, hostname = ValideUrl(RealUrl)
         if not bvalide:
             mes = '[COLOR salmon]Invalide Host[/COLOR]'
