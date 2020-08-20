@@ -60,7 +60,7 @@ https://www.dailymotion.com/player/metadata/video/xji3qy
 https://www.dailymotion.com/player/metadata/video/xgepjr
 
 #EXTINF:-1 tvg-logo="bfm.png" ,BFM TV
-https://bfmtvalive1-a.akamaihd.net/9824d8182ef7475abb5cb41f0d2b71d0/eu-central-1/876450610001/dd257bd6bff64eccb0a29b54cc705a07/playlist_ssaiM.m3u8
+[REGEX]"src":"(.+?)"[URL]https://edge.api.brightcove.com/playback/v1/accounts/876450610001/videos/5615950982001[BRIGHTCOVEKEY]https://www.bfmtv.com/en-direct/
 
 #EXTINF:-1 tvg-logo="bfmbus.png" ,BFM Buisness
 https://bfmbusisecure-i.akamaihd.net/hls/live/265375/876450612001/BFMBusinessS/playlist.m3u8
