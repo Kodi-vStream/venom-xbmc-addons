@@ -10,7 +10,8 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress #, VSlog
+
 
 # copie du site http://www.kaydo.ws/
 # copie du site https://www.hds.to/
@@ -180,7 +181,10 @@ def showMovies(sSearch=''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sPattern = 'class="TPost C">.+?href="([^"]+)".+?img src="([^"]+)".+?Title">([^<]+).+?Year">([^<]+).+?Qlty">([^<]+).+?Description"><p>([^<]+)'
+        if URL_MAIN + 'letters/' in sUrl:
+            sPattern = '<td class="MvTbImg">.+?href="([^"]+).+?src="([^"]+).+?class="MvTbTtl.+?<strong>([^<]*).+?<td>([^<]*).+?Qlty">([^<]+).+?<td>([^<]*)'
+        else:
+            sPattern = 'class="TPost C">.+?href="([^"]+)".+?img src="([^"]+)".+?Title">([^<]+).+?Year">([^<]+).+?Qlty">([^<]+).+?Description"><p>([^<]+)'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -213,7 +217,11 @@ def showMovies(sSearch=''):
             sYear = aEntry[3]
             sQual = aEntry[4]
             sDesc = aEntry[5]
-
+            if sYear.lower() == 'unknown':
+                sYear=''
+            if sQual.lower() == 'unknown':
+                sQual ='' 
+ 
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sYear)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -279,7 +287,7 @@ def ShowSaisonEpisodes():
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-                oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
+                oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -304,12 +312,18 @@ def showHosters():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        list_site_film = []
         for aEntry in aResult[1]:
 
             site = URL_MAIN + "?trembed=" + aEntry[0] + "&trid=" + aEntry[1] + "&trtype=" + aEntry[2]
-            #Marche plus ?
-            site = site.replace("trembed=1","trembed=0")
-            
+            #Marche plus ?........constaté : ne marche pas toujours avec les series...affaire à suivre
+            if aEntry[2] == '1':
+                site = site.replace("trembed=1","trembed=0")
+                if not site in list_site_film:
+                    list_site_film.append(site)
+                else:
+                    continue  # inutile de faire des requetes identiques pour les films
+
             oRequestHandler = cRequestHandler(site)
             sHtmlContent = oRequestHandler.request()
 
