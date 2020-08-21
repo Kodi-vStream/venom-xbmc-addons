@@ -9,27 +9,22 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress #,VSlog
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'toro'
 SITE_NAME = 'Toro'
 SITE_DESC = 'Films et Séries en Streaming'
 
-URL_MAIN = 'https://ww2.torostreaming.com/' #  URL_MAIN = 'https://vf.torostreaming.com/'
+URL_MAIN = 'https://w2.torostreaming.com/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-key_search_movies ='#searchsomemovies'
-key_search_series ='#searchsomeseries'
+key_search_movies = '#searchsomemovies'
+key_search_series = '#searchsomeseries'
 URL_SEARCH_MOVIES = (URL_SEARCH[0] + key_search_movies, 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0] + key_search_series, 'showMovies')
 
-MOVIE_GENRES = (URL_MAIN + 'genre/', 'showGenres')
-SERIE_GENRES = (URL_MAIN + 'genre/', 'showGenres')
 # home page
-MOVIE_VIEWS=('reqmovies', 'showViews')
-SERIE_VIEWS=('reqseries', 'showViews')
-#EPISODE_VIEWS = (URL_MAIN, 'showViews')
 
 # recherche variables internes
 MY_SEARCH_MOVIES = (True, 'MyshowSearchMovie')
@@ -37,19 +32,24 @@ MY_SEARCH_SERIES = (True, 'MyshowSearchSerie')
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_NEWS = (URL_MAIN + 'films-streaming/', 'showMovies')
-
+MOVIE_GENRES = (URL_MAIN + 'genre/', 'showGenres')
 MOVIE_LIST = (True, 'showAlpha')  # voir pour global
+MOVIE_VIEWS = ('reqmovies', 'showViews')
 
 SERIE_SERIES = (True, 'showMenuSeries')
 SERIE_NEWS = (URL_MAIN + 'series-streaming/', 'showMovies')
+SERIE_GENRES = (URL_MAIN + 'genre/', 'showGenres')
+SERIE_VIEWS = ('reqseries', 'showViews')
+# EPISODE_VIEWS = (URL_MAIN, 'showViews')
 
 # old code ; pas compris; : SERIE_NEWS[0] avec fct showGenres ?
-#SERIE_GENRES = (SERIE_NEWS[0], 'showGenres')
+# SERIE_GENRES = (SERIE_NEWS[0], 'showGenres')
 
-# on active/ ou non la recherche des hostes pour l'affichage des noms
-# si le hoste n'est pas précisé (serveur)..on en profite pour filtré
+# on active ou non la recherche des hosters pour l'affichage des noms
+# si le hoster n'est pas précisé (serveur)..on en profite pour filtré
 # les hosts rejeté par vstream
 bFindLinkServer = True
+
 
 def load():
     oGui = cGui()
@@ -86,12 +86,12 @@ def showMenuMovies():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Tous les films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (les  plus vus)', 'views.png', oOutputParameterHandler)
-    
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (les plus vus)', 'views.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
 
 
@@ -111,9 +111,9 @@ def showMenuSeries():
     oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (les plus vues)', 'views.png', oOutputParameterHandler)
 
     # old code SERIE_GENRES[1] non mis dans le menu
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
-    #oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Films & Séries (Genres)', 'genres.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
+    # oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Films & Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -127,6 +127,7 @@ def showSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
+
 
 def MyshowSearchSerie():
     oGui = cGui()
@@ -152,7 +153,6 @@ def showGenres():
     oGui = cGui()
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
-    #sPattern = '<li class="cat-item cat-item-.+?href="([^"]+)">([^<]+)</a>([^<]+)<'  # old ne marche plus
     sPattern = 'class="cat-item.+?ref="([^"]*)">([^<]*)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -172,7 +172,7 @@ def showAlpha():
     oGui = cGui()
     listalpha = list(string.ascii_lowercase)
     liste = []
-    url= URL_MAIN + 'lettre/'
+    url = URL_MAIN + 'lettre/'
 
     liste.append(['0-9', URL_MAIN + 'lettre/0-9/'])
     for s in listalpha:
@@ -185,18 +185,19 @@ def showAlpha():
 
     oGui.setEndOfDirectory()
 
+
 def ShowList():
     oGui = cGui()
-    
+
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     dic_sdesc = {}
-    sPattern ='class="Num">.+?<strong>([^<]+).+?>.+?Dur">([^<]*).+?href=".+?">([^<]*)'  # title durée genre
+    sPattern = 'class="Num">.+?<strong>([^<]+).+?>.+?Dur">([^<]*).+?href=".+?">([^<]*)'  # title durée genre
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
@@ -207,12 +208,10 @@ def ShowList():
             aEntry2 = aEntry[2].replace(' ', '').replace('&amp;', '&').replace('&', ' & ')
             if aEntry2:
                 sgenre = '[COLOR skyblue]Genre :[/COLOR] ' + aEntry2
-            dic_sdesc[aEntry[0]] =  sgenre + sdur
+            dic_sdesc[aEntry[0]] = sgenre + sdur
 
-    #sPattern = 'class="Num">.+?href="([^"]+)".+?src="([^"]+)".+?<strong>([^<]+)<.+?<td>([^<]+)' # old hs
     sPattern = 'class="Num">.+?href="([^"]+)".+?src="([^"]+)".+?<strong>([^<]+).+?>([\d]+)<'  # url thumb title year
 
-    
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -268,7 +267,7 @@ def showViews():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    # VSlog(' showViews() '+ sUrl)
+    # VSlog(' showViews() ' + sUrl)
 
     req = URL_MAIN + 'wp-admin/admin-ajax.php'
     pdata = 'action=action_changue_post_by&type=%23Views&posttype='
@@ -285,7 +284,7 @@ def showViews():
 
     # descriptions écourtées
     dic_sdesc = {}
-    sPattern = '<.div>\s*<h2 class="Title">([^<]*).+?class="Descr.+?<p([^<]*)<.p'  # <p([^<]*) / need <p not<p> 
+    sPattern = '<.div>\s*<h2 class="Title">([^<]*).+?class="Descr.+?<p([^<]*)<.p'  # <p([^<]*) / need <p not<p>
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
@@ -295,7 +294,7 @@ def showViews():
             aentry1 = aentry1.replace('>', '')  # <p'>desc..'
             dic_sdesc[aEntry[0]] = aentry1 + ' ...'
 
-    sPattern = 'class="TPost .+?href="([^"]+)".+?data-src="([^"]+)".+?title">([^<]+).+?Date">([^<]+)' # old pattern changement  year
+    sPattern = 'class="TPost .+?href="([^"]+)".+?data-src="([^"]+)".+?title">([^<]+).+?Date">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -369,7 +368,7 @@ def showMovies(sSearch=''):
             aentry1 = aEntry[1]
             if 'class=' in aentry1:
                 aentry1 = ''
-            aentry1 = aentry1.replace('>', '') 
+            aentry1 = aentry1.replace('>', '')
             dic_sdesc[aEntry[0]] = aentry1 + ' ...'
 
     # url title thumb year
@@ -409,7 +408,7 @@ def showMovies(sSearch=''):
                     s = s + ' [Serie] '
                 else:
                     s = s + ' [Film] '
-                    
+
             sDisplayTitle = s + ' (' + sYear + ')'
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -452,7 +451,7 @@ def __checkForNextPage(sHtmlContent):
             ipagenext = re.search('page/([0-9]+)/', urlnext).group(1)
         except:
             spagination = 'Next '
-            return True, urlnext, spagination # on tente comme meme
+            return True, urlnext, spagination  # on tente comme meme
             pass
     else:
         return False, bad, bad
@@ -461,7 +460,7 @@ def __checkForNextPage(sHtmlContent):
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             ipagemax = aResult[1][0]
-    else: 
+    else:
         sPattern = '<a class="page-link.+?page.+?">([\d]+)<.a>\s*<a href="([^"]*)"><i class="fa-arrow-right'  # case 123...14
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
@@ -471,7 +470,7 @@ def __checkForNextPage(sHtmlContent):
         if ipagemax:
             spagination = spagination + '/' + str(ipagemax)
     if urlnext:
-            return True, urlnext, spagination
+        return True, urlnext, spagination
     return False, bad, bad
 
 
@@ -483,8 +482,8 @@ def showSaisons():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sYear = oInputParameterHandler.getValue('sYear')
-    sDesc= oInputParameterHandler.getValue('sDesc')
-    
+    sDesc = oInputParameterHandler.getValue('sDesc')
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -509,7 +508,7 @@ def showSaisons():
         for aEntry in reversed(aResult[1]):
             sUrl2 = aEntry[0]
             sSaison = 'Saison ' + aEntry[1]
-            sTitle = ("%s %s %s") % (sMovieTitle, ' (' + sYear + ')' , sSaison)
+            sTitle = ("%s %s %s") % (sMovieTitle, ' (' + sYear + ')', sSaison)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -535,18 +534,18 @@ def ShowEpisodes():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    numbersaison = ''
+    numsaison = ''
     try:
-        numbersaison = re.search('saison.+?([\d]+)', sUrl ).group(1)
+        numsaison = re.search('saison.+?([\d]+)', sUrl).group(1)
     except:
         pass
 
     if not sDesc:
-            sDesc = ''
+        sDesc = ''
 
     # en cas d'erreur on prevoit un deuxieme pattern (meme si pas encore vu d'erreur)
     # numepisode url thumb title
-    sPattern = 'class="Viewed">.*?class="Num">([^<]*).+?ref="([^"]*).+?src="([^"]*).*?episode.*?">([^<]*)'  # ok mais rique sipas d'info
+    sPattern = 'class="Viewed">.*?class="Num">([^<]*).+?ref="([^"]*).+?src="([^"]*).*?episode.*?">([^<]*)'  # ok mais rique si pas d'info
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == False):
         # oGui.addText(SITE_IDENTIFIER)
@@ -555,18 +554,18 @@ def ShowEpisodes():
     if (aResult[0] == True):
         savesDesc = sDesc
         for aEntry in aResult[1]:
-            snum = aEntry[0]
-            sUrl2 =  aEntry[1]
+            sNum = aEntry[0]
+            sUrl2 = aEntry[1]
             sThumb = re.sub('/w\d+', '/w342', aEntry[2])  # meilleur resolution pour les thumbs venant de tmdb
             if sThumb.startswith('/'):
                 sThumb = 'https:' + sThumb
-            if not 'Épisode' in aEntry[3]:
-                sDesc = '[COLOR skyblue]' + 'Episode ' + snum + ' : ' + aEntry[3] + '[/COLOR]'  + '\r\n' + savesDesc
+            if 'Épisode' not in aEntry[3]:
+                sDesc = '[COLOR skyblue]' + 'Episode ' + sNum + ' : ' + aEntry[3] + '[/COLOR]' + '\r\n' + savesDesc
             else:
                 sDesc = '[COLOR skyblue]' + aEntry[3].replace('É', 'E' ) + ' : [/COLOR]' + '\r\n' + savesDesc
 
-            sDisplaytitle =  sMovieTitle + ' Saison ' + numbersaison + ' Episode ' + snum + ' (' + sYear + ')'
-            
+            sDisplaytitle = sMovieTitle + ' Saison ' + numsaison + ' Episode ' + sNum + ' (' + sYear + ')'
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -576,8 +575,8 @@ def ShowEpisodes():
 
         oGui.setEndOfDirectory()
         return
-    
-    sPattern = 'class="Viewed">.*?class="Num">([^<]*).+?ref="([^"]*)'  #numepisode url
+
+    sPattern = 'class="Viewed">.*?class="Num">([^<]*).+?ref="([^"]*)'  # numepisode url
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -585,10 +584,10 @@ def ShowEpisodes():
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            snum = aEntry[0]
-            sUrl2 =  aEntry[1]
+            sNum = aEntry[0]
+            sUrl2 = aEntry[1]
 
-            sDisplaytitle =  sMovieTitle + ' Saison ' + numbersaison + ' Episode ' + snum + ' (' + sYear + ')' 
+            sDisplaytitle = sMovieTitle + ' Saison ' + numsaison + ' Episode ' + sNum + ' (' + sYear + ')'
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -609,12 +608,11 @@ def showLinks():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sYear = oInputParameterHandler.getValue('sYear')
     sDesc = oInputParameterHandler.getValue('sDesc')
-    #VSlog('showLinks() url = ' + sUrl)
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    SaveDesc=''
+    SaveDesc = ''
     if sDesc != False or sDesc != '':
         SaveDesc = sDesc
     if '/film/' in sUrl:  # pour les films desc incomplete
@@ -627,7 +625,7 @@ def showLinks():
         else:
             sDesc = SaveDesc
 
-    #  parametres movie et serie pour les deux types de requete
+    # parametres movie et serie pour les deux types de requete
     trtype = '&trtype=1'
     ajaxtyp = '&typ=movie'
     if 'serie' in sUrl:
@@ -663,8 +661,8 @@ def showLinks():
         progressmes = ''
         for aEntry in aResult[1]:
             if bcreatedPogress:
-                pr= progressmes + ' :  ' + sHost
-                progress_.VSupdate(progress_, total, '    ' + pr )
+                pr = progressmes + ' :  ' + sHost
+                progress_.VSupdate(progress_, total, '    ' + pr)
                 if progress_.iscanceled():
                     break
             i = i + 1
@@ -675,15 +673,15 @@ def showLinks():
                 sHost = 'Serveur : ' + str(i)
             # ne donne pas tjrs le vrai lien
             # https://ww2.torostreaming.com/?trembed=0&trid=98210&trtype=2
-            sUrl3 = URL_MAIN + '?trembed=' + sTrembedKey + '&trid=' + sId  + trtype
+            sUrl3 = URL_MAIN + '?trembed=' + sTrembedKey + '&trid=' + sId + trtype
 
             # il faut faire une requete admin-ajax.php ( 2 requetes ds le hoster)
             # ex post : action=action_player_change&id=40497&key=0&typ=movie
-            pData = 'action=action_player_change&id=' + sId  + '&key=' + sTrembedKey + ajaxtyp
+            pData = 'action=action_player_change&id=' + sId + '&key=' + sTrembedKey + ajaxtyp
             sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
 
             # bFindLinkServer=True : on veut connaitre les hosts des serveur  inconnus
-            if ( 'Serveur' in sHost ) and bFindLinkServer:
+            if ('Serveur' in sHost) and bFindLinkServer:
                 # req1
                 oRequestHandler = cRequestHandler(sUrl2)
                 oRequestHandler.setRequestType(1)
@@ -723,7 +721,6 @@ def showLinks():
                 oOutputParameterHandler.addParameter('pData', pData)
                 oGui.addLink(SITE_IDENTIFIER, 'showHosters2', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
-
     if (aResult2[0] == False):
 
         if bcreatedPogress:
@@ -731,9 +728,9 @@ def showLinks():
         # fonctionnement normal: pas de hoster dl
         # on presume que le mots 'liens' existe uniquement pour le texte lié
         # à la présentation des hosters de telechargement ( pas tjrs vrai )
-        if  'liens' in sHtmlContent:
+        if 'liens' in sHtmlContent:
             oGui.addText(SITE_IDENTIFIER)
-            #VSlog('error pattern dl') # on a du faire une erreur de pattern
+            # VSlog('error pattern dl') # on a du faire une erreur de pattern
         # VSlog('pas de liens dl')
     if (aResult2[0] == True):
         if not bcreatedPogress:
@@ -743,7 +740,7 @@ def showLinks():
         for aEntry in aResult2[1]:
             if bcreatedPogress:
                 pr = progressmes + ' :  ' + sHost
-                progress_.VSupdate(progress_, total, '    ' + pr )
+                progress_.VSupdate(progress_, total, '    ' + pr)
                 if progress_.iscanceled():
                     break
             i = i + 1
@@ -754,14 +751,13 @@ def showLinks():
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
             sUrl3 = sUrl2  # pas de  req1 admin-ajax.php (voir cas rare où on a un lien stream : req2 donne t'il alors chaque fois le bon hst ? )
 
-            if ('Serveur' in sHost ) and bFindLinkServer:
+            if ('Serveur' in sHost) and bFindLinkServer:
                 bresult, progressmes, sHosterUrl, sHost = FindHost(sUrl3)
                 if not bresult:
-                    oGui.addText(SITE_IDENTIFIER, progressmes )  # on met une indication juste pour les dl
-                    #pass
+                    oGui.addText(SITE_IDENTIFIER, progressmes)  # on met une indication juste pour les dl
                     continue
 
-                sHost=str(sHost).capitalize()
+                sHost = str(sHost).capitalize()
                 sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -781,7 +777,7 @@ def showLinks():
                 oGui.addLink(SITE_IDENTIFIER, 'showHosters2', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
         pr = progressmes + ' : ' + sHost
-        progress_.VSupdate(progress_, total , '    ' + pr )
+        progress_.VSupdate(progress_, total, '    ' + pr)
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
@@ -803,6 +799,7 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
+
 def showHosters2():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -813,7 +810,7 @@ def showHosters2():
     sUrlReferer = oInputParameterHandler.getValue('Referer')
     pData = oInputParameterHandler.getValue('pData')
     # req1
-    if 'admin-ajax.php' in sUrl:  
+    if 'admin-ajax.php' in sUrl:
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.setRequestType(1)
         oRequestHandler.addParametersLine(pData)
@@ -823,24 +820,24 @@ def showHosters2():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             sUrl2 = aResult[1][0]
-        else:
-            sUrl2 = siteUrldefault  # on échoue, à default on fait une requete qui sera valide vers un host (souvent upbox)
+        else:  # si on échoue, par default on fait une requete qui sera valide vers un host (souvent uptobox)
+            sUrl2 = siteUrldefault
     else:
-        #VSlog('no admin-ajax.php siteUrldefault = ' + siteUrldefault)
-        sUrl2 = siteUrldefault  #  pour les liens tel siteUrldefault=siteUrl
-    
-    # req2 :  on recupere en meme temps real url pour les liens DL
+        # VSlog('no admin-ajax.php siteUrldefault = ' + siteUrldefault)
+        sUrl2 = siteUrldefault  # pour les liens tel siteUrldefault=siteUrl
+
+    # req2 : on recupere en meme temps real url pour les liens DL
     # le fichier sHtmlContent peu etre vide mais pas getrealurl , à reverifier
     oRequestHandler = cRequestHandler(sUrl2)
     sHtmlContent = oRequestHandler.request()
     RealUrl = oRequestHandler.getRealUrl()
-    if  not URL_MAIN in RealUrl:
-        bvalide , hostname = ValideUrl(RealUrl)
+    if URL_MAIN not in RealUrl:
+        bvalide, hostname = ValideUrl(RealUrl)
         if not bvalide:
-            oGui.addText(SITE_IDENTIFIER,'Security : ' + hostname + ' is disabled')
+            oGui.addText(SITE_IDENTIFIER, 'Security : ' + hostname + ' is disabled')
             oGui.setEndOfDirectory()
             return
-        
+
         oHoster = cHosterGui().checkHoster(RealUrl)
         if (oHoster != False):
             oHoster.setDisplayName(sMovieTitle)
@@ -851,17 +848,17 @@ def showHosters2():
     else:
         pass
 
-    if  not sHtmlContent:
+    if not sHtmlContent:
         oGui.addText(SITE_IDENTIFIER, 'Toro Link : Blank Page')
         oGui.setEndOfDirectory()
         return
-    
+
     sPattern = 'src="([^"]+)"'  # liens stream
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sHosterUrl = aResult[1][0]
-        bvalide , hostname = ValideUrl(sHosterUrl)
+        bvalide, hostname = ValideUrl(sHosterUrl)
         if not bvalide:
             oGui.addText(SITE_IDENTIFIER,'Security : ' + hostname + ' is disabled')
             oGui.setEndOfDirectory()
@@ -879,12 +876,12 @@ def showHosters2():
     oGui.setEndOfDirectory()
 
 
-def FindHost(sUrl): #  req2
+def FindHost(sUrl):  # req2
     mes = ''
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent2 = oRequestHandler.request()
     RealUrl = oRequestHandler.getRealUrl()
-    if  not URL_MAIN in RealUrl:
+    if URL_MAIN not in RealUrl:
         bvalide, hostname = ValideUrl(RealUrl)
         if not bvalide:
             mes = '[COLOR salmon]Invalide Host[/COLOR]'
@@ -894,9 +891,9 @@ def FindHost(sUrl): #  req2
     else:
         pass
 
-    if  not sHtmlContent2:
+    if not sHtmlContent2:
         mes = '[COLOR salmon]Link refer to blank Page [/COLOR]'
-        return False, mes, sUrl, sUrl 
+        return False, mes, sUrl, sUrl
     else:
         # liens stream
         sPattern = 'src="([^"]+)"'
@@ -906,10 +903,10 @@ def FindHost(sUrl): #  req2
             sHosterUrl = aResult[1][0]
         else:
             mes = '[COLOR salmon]NO FOUND     [/COLOR] '
-            return False, mes ,sUrl ,sUrl
-        bvalide , hostname = ValideUrl(sHosterUrl)
+            return False, mes, sUrl, sUrl
+        bvalide, hostname = ValideUrl(sHosterUrl)
         if not bvalide:
-            mes ='[COLOR salmon]Invalide Host[/COLOR]'
+            mes = '[COLOR salmon]Invalide Host[/COLOR]'
             return False, mes, sHosterUrl, hostname
         mes = 'Valide Host  '
         return True, mes, sHosterUrl, hostname
@@ -929,7 +926,7 @@ def ValideUrl(Url):
         sHost = re.search('http.*?\/\/([^.]*)', Url).group(1)
         sHost = str(sHost).lower()
     except:
-        #VSlog('ValideUrl : exception on url : ' + Url)
+        # VSlog('ValideUrl : exception on url : ' + Url)
         return True, Url  # à revoir sinon
 
     if sHost in list_blackhoster:
