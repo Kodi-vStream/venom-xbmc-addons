@@ -169,32 +169,10 @@ class cRequestHandler:
                 oResponse = urllib2.urlopen(oRequest, timeout=self.__timeout)
 
             self.__sResponseHeader = oResponse.info()
+
             #En python 3 on doit décoder la reponse
             if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19' and not self.__sResponseHeader.get('Content-Encoding') == 'gzip':
-                #Si c'est une image ou autre element en bytes, on ne le decode pas
-                image_formats = ("image/png", "image/jpeg", "image/jpg", "application/download")
-                if not self.__sResponseHeader.get('Content-Type') in image_formats:
-                    sContent = oResponse.read()
-
-                    if self.__sResponseHeader.get_content_charset():
-                        encoding = self.__sResponseHeader.get_content_charset()
-                    else:
-                        encoding = 'utf-8'
-                    try:
-
-                        try:
-                            sContent = sContent.decode()
-                        except:
-                            pass
-
-                        sContent = str(sContent, encoding)
-                    except:
-                        sContent = str(sContent)
-                    else:
-                        pass
-
-                else:
-                    sContent = oResponse.read()
+                sContent = decodeHTML(oResponse, self.__sResponseHeader, zlibMode = False)
 
             else:
                 sContent = oResponse.read()
@@ -203,6 +181,7 @@ class cRequestHandler:
             if self.__sResponseHeader.get('Content-Encoding') == 'gzip':
                 import zlib
                 sContent = zlib.decompress(sContent, zlib.MAX_WBITS | 16)
+                sContent = decodeHTML(sContent, self.__sResponseHeader, zlibMode = True)
 
             # https://bugs.python.org/issue4773
             self.__sRealUrl = oResponse.geturl()
@@ -302,11 +281,51 @@ class cRequestHandler:
             VSlog("new_getaddrinfo ERROR: {0}".format(e))
             return self.save_getaddrinfo(*args)
 
+#Decode le contenu de la page html sous Python 3
+def decodeHTML(oResponse, ResponseHeader, zlibMode=False):
+    image_formats = ("image/png", "image/jpeg", "image/jpg", "application/download")
+
+    #Ne pas décoder les contenu en bytes.
+    if not ResponseHeader.get('Content-Type') in image_formats:
+        if zlibMode == False:
+            sContent = oResponse.read()
+
+        else:
+            #Unique maniere de formatter la page apres le passage de zlib.
+            sContent = str(oResponse, encoding="utf8", errors='ignore').encode("utf-8").decode('unicode-escape')
+            return sContent
+
+        #Corrige l'affichage des accentes, malheureusement il n'y a pas de solution unique.
+        if ResponseHeader.get_content_charset():
+            encoding = ResponseHeader.get_content_charset()
+
+        else:
+            encoding = 'utf-8'
+        try:
+            try:
+                sContent = sContent.decode()
+            except:
+                pass
+            sContent = str(sContent, encoding)
+        except:
+            sContent = str(sContent)
+        else:
+            pass
+
+        #Formatter correctement le contenu de la page.
+        try:
+            sContent = sContent.encode().decode('unicode-escape')
+        except:
+            pass
+
+    else:
+        sContent = oResponse.read()
+
+    return sContent
+
 # ******************************************************************************
 # from https://github.com/eliellis/mpart.py
 # ******************************************************************************
-
-
 def MPencode(fields):
     import mimetypes
     random_boundary = __randy_boundary()
