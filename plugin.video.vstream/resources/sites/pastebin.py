@@ -24,6 +24,7 @@ UNCLASSIFIED_GENRE = '_NON CLASSÉ_'
 
 URL_SEARCH_MOVIES = (URL_MAIN + KEY_PASTE_ID + '&sMedia=film&sSearch=', 'showSearchGlobal')
 URL_SEARCH_SERIES = (URL_MAIN + KEY_PASTE_ID + '&sMedia=serie&sSearch=', 'showSearchGlobal')
+URL_SEARCH_ANIMS = (URL_MAIN + KEY_PASTE_ID + '&sMedia=anime&sSearch=', 'showSearchGlobal')
 FUNCTION_SEARCH = 'showSearchGlobal'
 
 
@@ -39,7 +40,7 @@ ITEM_PAR_PAGE = 20
 # Demain ne meurt jamais;['https://uptobox.com/nwxxxx']
 
 class PasteBinContent:
-    CAT = -1     # (Optionnel) - Catégorie 'film', 'serie' (Film par défaut)
+    CAT = -1     # (Optionnel) - Catégorie 'film', 'serie' 'anime' (Film par défaut)
     TMDB = -1    # (optionnel) - Id TMDB
     TITLE = -1   # Titre du film / épisodes
     SAISON = -1  # (optionnel) - Saison pour les séries (ex 'Saison 03' ou 'S03' ou '03') OU Saga pour les films (ex 'Mission impossible')
@@ -170,7 +171,9 @@ def showMenu():
     containFilmYear = False
     containSeries = False
     containSerieGroupes = False
-    
+    containAnimes = False
+    containAnimeGroupes = False
+
     for movie in movies:
         if 'film' in movie[pbContent.CAT]:
             containFilms = True
@@ -186,6 +189,11 @@ def showMenu():
             containSeries = True
             if pbContent.GROUPES>=0 and len(movie[pbContent.GROUPES].strip())>0:
                 containSerieGroupes = True
+
+        if 'anime' in movie[pbContent.CAT]:
+            containAnimes = True
+            if pbContent.GROUPES>=0 and len(movie[pbContent.GROUPES].strip())>0:
+                containAnimeGroupes = True
 
     if containFilms or not containSeries:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -244,6 +252,30 @@ def showMenu():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie')
         oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Séries (Liste)', 'listes.png', oOutputParameterHandler)
+
+
+    if containAnimes:
+        oOutputParameterHandler = cOutputParameterHandler()
+        searchUrl = URL_SEARCH_ANIMS[0].replace(KEY_PASTE_ID, pasteID)
+        oOutputParameterHandler.addParameter('siteUrl', searchUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Animes)', 'search.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime')
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Animes (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime')
+        oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Animes (Genres)', 'genres.png', oOutputParameterHandler)
+
+        if containAnimeGroupes:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime')
+            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Animes (Dossiers)', 'genres.png', oOutputParameterHandler)
+    
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime')
+        oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Animes (Liste)', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -539,14 +571,18 @@ def showMovies(sSearch=''):
     numPage = int(numPage)
 
     sSearchTitle = ''
+    
+    # support de l'utilisation du caractere '&' alors qu'il est réservé
+    sUrl = sUrl.replace(' & ', ' | ')
+    
     sUrl, params = sUrl.split('&',1)
     aParams = dict(param.split('=') for param in params.split('&'))
 
-    if 'sSearch' in aParams: sSearchTitle = Unquote(aParams['sSearch'])
-    if 'sGenre' in aParams: sGenre = aParams['sGenre']
     if 'sMedia' in aParams: sMedia = aParams['sMedia']
-    if 'sSaga' in aParams: sSaga = aParams['sSaga']
-    if 'sGroupe' in aParams: sGroupe = aParams['sGroupe']
+    if 'sSearch' in aParams: sSearchTitle = Unquote(aParams['sSearch']).replace(' | ', ' & ')
+    if 'sGenre' in aParams: sGenre = aParams['sGenre'].replace(' | ', ' & ')
+    if 'sSaga' in aParams: sSaga = aParams['sSaga'].replace(' | ', ' & ')
+    if 'sGroupe' in aParams: sGroupe = aParams['sGroupe'].replace(' | ', ' & ')
     if 'sYear' in aParams: sYear = aParams['sYear']
     if 'sAlpha' in aParams: sAlpha = aParams['sAlpha']
 
@@ -657,7 +693,7 @@ def showMovies(sSearch=''):
         if sMedia == 'serie':
             oGui.addTV(SITE_IDENTIFIER, 'showSerieSaisons', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
         elif sMedia == 'anime':
-            oGui.addAnime(SITE_IDENTIFIER, 'showSerieLinks', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
+            oGui.addAnime(SITE_IDENTIFIER, 'showSerieSaisons', sDisplayTitle, 'animes.png', '', '', oOutputParameterHandler)
         else:
             sHost = movie[pbContent.URLS]
             if len(sHost.replace('[', '').replace(']', '').replace('"', '').replace('\'', '').strip()) > 0:
