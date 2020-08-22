@@ -3,6 +3,7 @@
 import random
 import re
 import string
+import unicodedata
 
 from resources.lib.comaddon import progress, dialog, VSlog, addon
 from resources.lib.gui.gui import cGui
@@ -399,8 +400,13 @@ def showMovies(sSearch=''):
                 sTitle = sTitle.replace('COMPLETE', '[Complete]')
 
             # nettoyage du titre
-            sDisplayTitle = sTitle.replace('Complete', 'Complète')
+            sTitle = sTitle.replace('Complete', 'Complète')
             sTitle = re.sub('\[\w+]', '', sTitle)
+
+            try:
+                sTitle = str(sTitle.encode('latin-1'), encoding="utf-8")
+            except:
+                pass
 
             # Enlever les films en doublons (même titre et même pochette)
             # il s'agit du même film dans une autre qualité qu'on retrouvera au moment du choix de la qualité
@@ -468,7 +474,6 @@ def __checkForNextPage(sHtmlContent):
         return nextPage
     return False
 
-
 def showMoviesLinks():
     # VSlog('mode film')
     oGui = cGui()
@@ -499,6 +504,11 @@ def showMoviesLinks():
             aEntry = aResult[1][0]
             sYear = aEntry[1]
             sDesc = cUtil().removeHtmlTags(aEntry[3])
+    except:
+        pass
+
+    try:
+        sDesc = sDesc.encode('latin-1')
     except:
         pass
 
@@ -558,6 +568,11 @@ def showSeriesLinks():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = cUtil().removeHtmlTags(aResult[1][0][1])
+    except:
+        pass
+
+    try:
+        sDesc = sDesc.encode('latin-1')
     except:
         pass
 
@@ -634,7 +649,6 @@ def showSeriesLinks():
 
     oGui.setEndOfDirectory()
 
-
 def showHosters():
     # VSlog('showHosters')
     oGui = cGui()
@@ -645,6 +659,12 @@ def showHosters():
     sDesc = oInputParameterHandler.getValue('sDesc')
     sYear = oInputParameterHandler.getValue('sYear')
 
+    try:
+        sDesc = unicodedata.normalize('NFD', sDesc).encode('ascii', 'ignore').decode('unicode_escape')
+        sDesc = sDesc.encode('latin-1')
+    except:
+        pass
+        
     oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
@@ -676,7 +696,6 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
-
 def showSeriesHosters():
     # VSlog('showSeriesHosters')
     oGui = cGui()
@@ -686,6 +705,12 @@ def showSeriesHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
+
+    try:
+        sDesc = unicodedata.normalize('NFD', sDesc).encode('ascii', 'ignore').decode('unicode_escape')
+        sDesc = sDesc.encode('latin-1')
+    except:
+        pass
 
     oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
