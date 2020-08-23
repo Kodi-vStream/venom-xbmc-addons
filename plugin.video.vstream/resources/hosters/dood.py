@@ -79,6 +79,11 @@ class cHoster(iHoster):
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
+    def __getHost(self):
+        parts = self.__sUrl.split('//', 1)
+        host = parts[0] + '//' + parts[1].split('/', 1)[0]
+        return host        
+
     def __getMediaLinkForGuest(self):
         api_call = False
 
@@ -95,18 +100,26 @@ class cHoster(iHoster):
         
         sPattern = 'return a\+"(\?token=[^"]+)"'
         d = oParser.parse(sHtmlContent, sPattern)[1][0]
+        
         fin_url = fin_url + d + str(int(1000*time.time()))
         
-        sPattern =  "\$\.get\('([^']+)',"
+        sPattern = "\$\.get\('(\/pass_md5[^']+)"
         aResult = oParser.parse(sHtmlContent, sPattern)
         url2 = 'https://' + urlDonwload.split('/')[2] + aResult[1][0]
+        
+        #VSlog(url2)
         
         oRequest = cRequestHandler(url2)
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Referer', urlDonwload)
         sHtmlContent = oRequest.request()
         
-        api_call = compute(sHtmlContent) + fin_url
+        #VSlog(sHtmlContent)
+        
+        #api_call = compute(sHtmlContent) + fin_url
+        api_call = sHtmlContent + fin_url
+        
+        #VSlog(api_call)
 
         if (api_call):
             api_call = api_call + '|Referer=' + urlDonwload
