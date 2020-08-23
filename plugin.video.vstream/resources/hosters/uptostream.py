@@ -164,7 +164,7 @@ def decodeur1(Html):
                 movieID = ''
                 qua_list = set()
                 lang_list = list()
-                supportedLang = ['eng', 'eng2', 'English', 'fr', 'fre', 'French', 'jap', 'jpn', 'Japanese', 'chi', 'Chinese', 'rus', 'Russian']
+                supportedLang = ['eng', 'eng2', 'English', 'fr', 'fre', 'French', 'jap', 'jpn', 'Japanese', 'chi', 'Chinese', 'rus', 'Russian', 'spa', 'Spanish']
 
                 for page in test2:
                     tableau = {}
@@ -236,9 +236,9 @@ def decodeur1(Html):
                                         langFound = True
                                         continue
 
-                                if j == '360' or j == '480' or j == '720' or j == '1080':
+                                if j == '360' or j == '480' or j == '720' or j == '1080' or j == '2160':
                                     qua_list.add(j)
-                                elif j == '360p' or j == '480p' or j == '720p' or j == '1080p':
+                                elif j == '360p' or j == '480p' or j == '720p' or j == '1080p' or j == '2160p':
                                     qua_list.add(j[:-1])
 
                 if len(lang_list) == 0:
