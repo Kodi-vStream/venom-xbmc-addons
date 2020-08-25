@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -15,8 +15,8 @@ SITE_IDENTIFIER = 'tfarjo'
 SITE_NAME = 'Tfarjo'
 SITE_DESC = 'Films & Séries en streaming VO | VF | VOSTFR'
 
-#URL_MAIN = 'https://www5.tfarjo.ws/'
-#URL_MAIN = 'https://www.filmz.cc/'
+# URL_MAIN = 'https://www5.tfarjo.ws/'
+# URL_MAIN = 'https://www.filmz.cc/'
 URL_MAIN = 'https://www.tfarjo.cc/'
 
 MOVIE_NEWS = (URL_MAIN + 'films', 'showMovies')
@@ -25,15 +25,15 @@ MOVIE_GENRES = (URL_MAIN, 'showGenres')
 
 SERIE_NEWS = (URL_MAIN + 'series', 'showSeries')
 SERIE_SERIES = (URL_MAIN + 'series', 'showSeries')
-#SERIE_VFS = (URL_MAIN + 'series/vf', 'showSeries')
-#SERIE_VOSTFRS = (URL_MAIN + 'series/vostfr', 'showSeries') #pas fiable et pareil que dernier ajouts
+# SERIE_VFS = (URL_MAIN + 'series/vf', 'showSeries')
+# SERIE_VOSTFRS = (URL_MAIN + 'series/vostfr', 'showSeries')  # pas fiable et pareil que dernier ajouts
 
 URL_SEARCH_MOVIES = ('', 'showMovies')
 URL_SEARCH_SERIES = ('', 'showMovies')
-
 FUNCTION_SEARCH = 'showMovies'
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101 Firefox/60.0'
+
 
 def load():
     oGui = cGui()
@@ -62,8 +62,8 @@ def load():
     # oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
     # oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
-
     oGui.setEndOfDirectory()
+
 
 def showSearch():
     oGui = cGui()
@@ -75,37 +75,38 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action', URL_MAIN + 'films/genre/action'] )
-    liste.append( ['Animation', URL_MAIN +'films/genre/animation'] )
-    liste.append( ['Arts Martiaux', URL_MAIN + 'films/genre/arts-Martiaux'] )
-    liste.append( ['Aventure', URL_MAIN + 'films/genre/aventure'] )
-    liste.append( ['Biopic', URL_MAIN + 'films/genre/biopic'] )
-    liste.append( ['Comédie', URL_MAIN + 'films/genre/comédie'] )
-    liste.append( ['Comédie Dramatique', URL_MAIN + 'films/genre/comédie-dramatique'] )
-    liste.append( ['Comédie Musicale', URL_MAIN + 'films/genre/comédie-musicale'] )
-    liste.append( ['Spectacle', URL_MAIN + 'films/genre/crime'] )
-    liste.append( ['Spectacle', URL_MAIN + 'films/genre/dance'] )
-    liste.append( ['Documentaire', URL_MAIN + 'films/genre/documentaire'] )
-    liste.append( ['Drame', URL_MAIN + 'films/genre/drame'] )
-    liste.append( ['Epouvante Horreur', URL_MAIN + 'films/genre/epouvante-horreur'] )
-    liste.append( ['Erotique', URL_MAIN + 'films/genre/erotique'] )
-    liste.append( ['Espionnage', URL_MAIN + 'films/genre/espionnage'] )
-    liste.append( ['Famille', URL_MAIN + 'films/genre/famille'] )
-    liste.append( ['Fantastique', URL_MAIN + 'films/genre/fantastique'] )
-    liste.append( ['Guerre', URL_MAIN + 'films/genre/guerre'] )
-    liste.append( ['Historique', URL_MAIN + 'films/genre/historique'] )
-    liste.append( ['Musical', URL_MAIN + 'films/genre/musical'] )
-    liste.append( ['Spectacle', URL_MAIN + 'films/genre/mystere'] )
-    liste.append( ['Policier', URL_MAIN + 'films/genre/policier'] )
-    liste.append( ['Romance', URL_MAIN + 'films/genre/romance/'] )
-    liste.append( ['Science Fiction', URL_MAIN + 'films/genre/science-fiction'] )
-    liste.append( ['Divers', URL_MAIN + 'films/genre/sport'] )
-    liste.append( ['Thriller', URL_MAIN + 'films/genre/thriller'] )
-    liste.append( ['Western', URL_MAIN + 'films/genre/western'] )
+    liste.append(['Action', URL_MAIN + 'films/genre/action'])
+    liste.append(['Animation', URL_MAIN +'films/genre/animation'])
+    liste.append(['Arts Martiaux', URL_MAIN + 'films/genre/arts-Martiaux'])
+    liste.append(['Aventure', URL_MAIN + 'films/genre/aventure'])
+    liste.append(['Biopic', URL_MAIN + 'films/genre/biopic'])
+    liste.append(['Comédie', URL_MAIN + 'films/genre/comédie'])
+    liste.append(['Comédie Dramatique', URL_MAIN + 'films/genre/comédie-dramatique'])
+    liste.append(['Comédie Musicale', URL_MAIN + 'films/genre/comédie-musicale'])
+    liste.append(['Spectacle', URL_MAIN + 'films/genre/crime'])
+    liste.append(['Spectacle', URL_MAIN + 'films/genre/dance'])
+    liste.append(['Documentaire', URL_MAIN + 'films/genre/documentaire'])
+    liste.append(['Drame', URL_MAIN + 'films/genre/drame'])
+    liste.append(['Epouvante Horreur', URL_MAIN + 'films/genre/epouvante-horreur'])
+    liste.append(['Erotique', URL_MAIN + 'films/genre/erotique'])
+    liste.append(['Espionnage', URL_MAIN + 'films/genre/espionnage'])
+    liste.append(['Famille', URL_MAIN + 'films/genre/famille'])
+    liste.append(['Fantastique', URL_MAIN + 'films/genre/fantastique'])
+    liste.append(['Guerre', URL_MAIN + 'films/genre/guerre'])
+    liste.append(['Historique', URL_MAIN + 'films/genre/historique'])
+    liste.append(['Musical', URL_MAIN + 'films/genre/musical'])
+    liste.append(['Spectacle', URL_MAIN + 'films/genre/mystere'])
+    liste.append(['Policier', URL_MAIN + 'films/genre/policier'])
+    liste.append(['Romance', URL_MAIN + 'films/genre/romance/'])
+    liste.append(['Science Fiction', URL_MAIN + 'films/genre/science-fiction'])
+    liste.append(['Divers', URL_MAIN + 'films/genre/sport'])
+    liste.append(['Thriller', URL_MAIN + 'films/genre/thriller'])
+    liste.append(['Western', URL_MAIN + 'films/genre/western'])
 
     for sTitle, sUrl in liste:
 
@@ -115,6 +116,7 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
+
 def getcode(sHtmlContent):
     sPattern1 = '<input type="hidden" name="csrf_test_name" id="csrf_test_name" value="([^"]+)">'
     sCode = re.search(sPattern1, sHtmlContent)
@@ -123,7 +125,8 @@ def getcode(sHtmlContent):
     else:
         return ''
 
-def showMovies(sSearch = ''):
+
+def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
 
@@ -201,6 +204,7 @@ def showMovies(sSearch = ''):
 
         oGui.setEndOfDirectory()
 
+
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<span class="active">\d+</span>.+?<a href="([^"]+)" data-ci'
@@ -209,6 +213,7 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
+
 
 def showSeries():
     oGui = cGui()
@@ -239,7 +244,6 @@ def showSeries():
             sThumb = aEntry[1]
             sTitle = aEntry[2]
 
-
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -254,8 +258,8 @@ def showSeries():
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
-
     oGui.setEndOfDirectory()
+
 
 def showSaisons():
     oGui = cGui()
@@ -268,8 +272,8 @@ def showSaisons():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #sHtmlContent = oParser.abParse(sHtmlContent, 'begin seasons', 'end seasons')
-    #pas encore d'épisode >> timer avant sortie
+    # sHtmlContent = oParser.abParse(sHtmlContent, 'begin seasons', 'end seasons')
+    # pas encore d'épisode >> timer avant sortie
     sHtmlContent = re.sub('<kbd><span', '<kbd>nothing</span>', sHtmlContent)
 
     sPattern = '<h3 class="panel-title"><a href=".+?">(saison *\d+)<\/a>|<div class="panel-body">.+?href="([^"]+)">.+?<\/span>([^"]+)</a>'
@@ -293,6 +297,7 @@ def showSaisons():
                 oGui.addEpisode(SITE_IDENTIFIER, 'showLink', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showLink():
     oGui = cGui()
@@ -330,6 +335,7 @@ def showLink():
 
     oGui.setEndOfDirectory()
 
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -342,8 +348,8 @@ def showHosters():
 
     oParser = cParser()
 
-    #VSlog(URL_MAIN + 'getlinke')
-    #VSlog(sCook)
+    # VSlog(URL_MAIN + 'getlinke')
+    # VSlog(sCook)
 
     if '/serie' in sUrl:
         oRequest = cRequestHandler(URL_MAIN + 'getlinke')
@@ -359,10 +365,6 @@ def showHosters():
 
     sHtmlContent = oRequest.request()
     sHtmlContent = sHtmlContent.replace('\\', '')
-
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
 
     sPattern = '<iframe.+?src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
