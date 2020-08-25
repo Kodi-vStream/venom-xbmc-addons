@@ -1,7 +1,7 @@
 return False # Désactivé le 08/04/2020
 
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -29,6 +29,7 @@ URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&fu
 URL_SEARCH_MISC = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
+
 def load():
     oGui = cGui()
 
@@ -50,6 +51,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
@@ -61,16 +63,17 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Emissions et Magazines', URL_MAIN + 'emission-magazine'] )
-    liste.append( ['Documentaires', URL_MAIN + 'documentaire'] )
-    liste.append( ['Spectacles', URL_MAIN + 'spectacle'] )
-    liste.append( ['Sports', URL_MAIN + 'sport'] )
-    liste.append( ['Téléfilms Fiction', URL_MAIN + 'telefilm-fiction'] )
-    liste.append( ['Films', URL_MAIN + 'film'] )
+    liste.append(['Emissions et Magazines', URL_MAIN + 'emission-magazine'])
+    liste.append(['Documentaires', URL_MAIN + 'documentaire'])
+    liste.append(['Spectacles', URL_MAIN + 'spectacle'])
+    liste.append(['Sports', URL_MAIN + 'sport'])
+    liste.append(['Téléfilms Fiction', URL_MAIN + 'telefilm-fiction'])
+    liste.append(['Films', URL_MAIN + 'film'])
 
     for sTitle, sUrl in liste:
 
@@ -80,7 +83,8 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
-def showMovies(sSearch = ''):
+
+def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
@@ -140,6 +144,7 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
+
 def __checkForNextPage(sHtmlContent):
     sPattern = '<span class="pnext"><a href="([^"]+)">SUIVANT<\/a>'
     oParser = cParser()
@@ -149,14 +154,16 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
+
 def showLinks(page, video):
     sUrl = 'http://replaytvstreaming.com/engine/ajax/re_video_part.php?block=video&page=' + page + '&id=' + video
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    url  = sHtmlContent
+    url = sHtmlContent
     return url
+
 
 def showHosters():
     oGui = cGui()
