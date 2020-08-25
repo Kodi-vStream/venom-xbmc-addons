@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 # le 04/03/20
 return False
@@ -35,6 +35,7 @@ URL_SEARCH = (URL_MAIN + 'search?Search=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 
+
 def load():
     oGui = cGui()
 
@@ -52,6 +53,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+    
 def showMenuMovies():
     oGui = cGui()
 
@@ -73,6 +75,7 @@ def showMenuMovies():
 
     oGui.setEndOfDirectory()
 
+    
 def showMenuSeries():
     oGui = cGui()
 
