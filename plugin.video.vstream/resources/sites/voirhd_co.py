@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# S09 update 16/08/2020
+# S09 update 25/08/2020
 
 import re
 from resources.lib.gui.hoster import cHosterGui
@@ -193,17 +193,17 @@ def RequestHandlerSearch(searchs):
     else:
         return False, sHtmlContent, 'Erreur'
 
-    scookies = 'PHPSESSID=1'
+    sCookies = 'PHPSESSID=1'
     req2 = 'https://voirhd.co/lien.php'
     oRequestHandler = cRequestHandler(req2)
     oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
     oRequestHandler.addParameters('Search', ssearch)
     oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-    oRequestHandler.addHeaderEntry('Cookie', scookies)
+    oRequestHandler.addHeaderEntry('Cookie', sCookies)
     sHtmlContent = oRequestHandler.request()
 
     if not sHtmlContent:
-        return False,sHtmlContent, 'Erreur de requete'
+        return False, sHtmlContent, 'Erreur de requete'
 
     if ssearch in sHtmlContent:  # on degrossi en  gros pour eviter de parser des resultats
         return True, sHtmlContent, ' Requete ok'
@@ -223,13 +223,13 @@ def RequestHandlerGenre(searchs):
     else:
         return False, 'none'
 
-    scookies = 'PHPSESSID=1'
+    sCookies = 'PHPSESSID=1'
     req2 = 'https://voirhd.co/lien.php'
     oRequestHandler = cRequestHandler(req2)
     oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
     oRequestHandler.addParameters('Search', ssearch)
     oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-    oRequestHandler.addHeaderEntry('Cookie', scookies)
+    oRequestHandler.addHeaderEntry('Cookie', sCookies)
     sHtmlContent = oRequestHandler.request()
     return True, sHtmlContent
 
@@ -306,7 +306,7 @@ def showMovies(sSearch=''):
             oGui.addText(SITE_IDENTIFIER, 'Recherche : Aucun resultat')
         # erreur interne qui peu etre cause par mauvais liens du site mais aussi le programme
         elif '<title>404 Not Found</title>' in sHtmlContent:
-            oGui.addText(SITE_IDENTIFIER,' request failed : ')
+            oGui.addText(SITE_IDENTIFIER, ' request failed : ')
         else:
             oGui.addText(SITE_IDENTIFIER)
 
@@ -329,7 +329,7 @@ def showMovies(sSearch=''):
             # etape 2/2
             if sUrl == URL_MAIN + tbox or sUrl == URL_MAIN + tmoviestend or sUrl == URL_MAIN + tseriestend:
                 progress_1.VSclose(progress_1)
-                bclosedprogress_1= True
+                bclosedprogress_1 = True
                 shtml = str(aEntry)
                 sPattern1 = '<div class=.item.>.+?ref=.([^"]*).+?src=.([^"]*).+?alt=.([^"]+)'  # url2 thumb title
                 oParser2 = cParser()
@@ -372,19 +372,19 @@ def showMovies(sSearch=''):
                 sUrl2 = aEntry[0]
                 sThumb = aEntry[1]
                 sTitle = aEntry[2]
-                sdisplayTitle = sTitle
+                sDisplayTitle = sTitle
 
             if sUrl == URL_MAIN + tlastvf:  # url title ex 'the lost S1E1'  thumb flag https://voirhd.co/image/vf.png
                 sUrl2 = aEntry[0]
                 sThumb = URL_IMAGE_VF
                 sTitle = str(aEntry[1]).replace('  ', '') + ' (VF)'
-                sdisplayTitle = sTitle
+                sDisplayTitle = sTitle
 
             if sUrl == URL_MAIN + tlastvost:
                 sUrl2 = aEntry[0]
                 sThumb = URL_IMAGE_VOST
                 sTitle = str(aEntry[1]).replace('  ', '') + ' (VOST)'
-                sdisplayTitle = sTitle
+                sDisplayTitle = sTitle
 
             # else no home page
             if URL_MAIN + 'films' in sUrl:  # url quality  lang  thumb  title.replace('  ', '')
@@ -393,7 +393,7 @@ def showMovies(sSearch=''):
                 sThumb = aEntry[3]
                 sQual = aEntry[1]
                 sLang = aEntry[2]
-                sdisplayTitle = sTitle
+                sDisplayTitle = sTitle
 
             if URL_MAIN + 'serie' in sUrl:  # url   nbredesaison thumb title
                 tagsaison = aEntry[1]
@@ -402,29 +402,29 @@ def showMovies(sSearch=''):
                 sUrl2 = aEntry[0]
                 sTitle = aEntry[3]
                 sThumb = aEntry[2]
-                sdisplayTitle = sTitle + ' [' + tagsaison + ']'
+                sDisplayTitle = sTitle + ' [' + tagsaison + ']'
 
             if URL_MAIN + 'recherche' in sUrl:  # url   qualit thumb title
                 sUrl2 = aEntry[0]
                 sTitle = aEntry[3]
                 sThumb = aEntry[2]
-                # sdisplayTitle = sTitle + ' [' + aEntry[1] + ']' non use
+                # sDisplayTitle = sTitle + ' [' + aEntry[1] + ']' non use
                 if 'serie' in sUrl2:
-                    sdisplayTitle = sTitle + ' : Serie ' + '[' + aEntry[1] + ']'
+                    sDisplayTitle = sTitle + ' : Serie ' + '[' + aEntry[1] + ']'
                 else:
-                    sdisplayTitle = sTitle + ' : Film ' + '[' + aEntry[1] + ']'
+                    sDisplayTitle = sTitle + ' : Film ' + '[' + aEntry[1] + ']'
 
             if bSearchMovie:
                 if 'serie' in sUrl2:
                     continue
                 else:
-                    sdisplayTitle = sdisplayTitle.replace(': Film ', '')
+                    sDisplayTitle = sDisplayTitle.replace(': Film ', '')
 
             if bSearchSerie:
                 if 'films' in sUrl2:
                     continue
                 else:
-                    sdisplayTitle = sdisplayTitle.replace(': Serie ', '')
+                    sDisplayTitle = sDisplayTitle.replace(': Serie ', '')
 
             if sThumb.startswith('poster'):
                 sThumb = URL_MAIN + sThumb
@@ -437,11 +437,11 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sQual', sQual)
 
             if (URL_MAIN + 'serie' in sUrl2) and sUrl != URL_MAIN + tlastvf and sUrl != URL_MAIN + tlastvost:
-                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sdisplayTitle, 'series.png', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             elif sUrl == URL_MAIN + tlastvf or sUrl == URL_MAIN + tlastvost:
-                oGui.addTV(SITE_IDENTIFIER, 'showLink', sdisplayTitle, 'serie.png', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showLink', sDisplayTitle, 'serie.png', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showLink', sdisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showLink', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
         if not bclosedprogress_1:
             progress_1.VSclose(progress_1)
@@ -632,9 +632,9 @@ def showLink():
 
     if (aResult[0] == False):
         if '<title>404 Not Found</title>' in sHtmlContent:  # erreur interne du site sur lien donnée par hd.co
-            oGui.addText(SITE_IDENTIFIER,' request failed : voirhd.co no update is database')
+            oGui.addText(SITE_IDENTIFIER, ' request failed : voirhd.co no update is database')
         elif iposVF == -1 or iposVOSTFR == -1:  # index DL tjrs trouvé
-            oGui.addText(SITE_IDENTIFIER,'Aucun lien trouvé pour ' + sMovieTitle)
+            oGui.addText(SITE_IDENTIFIER, 'Aucun lien trouvé pour ' + sMovieTitle)
         else:
             oGui.addText(SITE_IDENTIFIER)
 
