@@ -216,7 +216,7 @@
 
         <setting visible="false" id="plugin_voirfilms_org" type="bool" label="VoirFilms" default="true"/>
 
-        <setting visible="false" id="plugin_voirhd" type="bool" label="Voir HD" default="true"/>
+        <setting visible="false" id="plugin_voirhd_co" type="bool" label="Voir HD" default="true"/>
 
         <setting visible="false" id="plugin_wiflix" type="bool" label="WiFlix" default="true"/>
 
