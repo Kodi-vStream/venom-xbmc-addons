@@ -76,6 +76,8 @@
         <!--activation invisible des sources -->
         <setting visible="false" id="plugin_adkami_com" type="bool" label="ADKami" default="true"/>
 
+        <setting visible="false" id="plugin_alldebrid" type="bool" label="AllDebrid" default="true"/>
+
         <setting visible="false" id="plugin_allfilms" type="bool" label="All Films" default="true"/>
 
         <setting visible="false" id="plugin_asia_insane" type="bool" label="Asia Insane" default="true"/>
@@ -101,6 +103,8 @@
         <setting visible="false" id="plugin_film_illimit_fr" type="bool" label="Film Illimité" default="true"/>
 
         <setting visible="false" id="plugin_filmspourenfants" type="bool" label="Films pour Enfants" default="true"/>
+
+        <setting visible="false" id="plugin_filmstoon_pro" type="bool" label="Films Toon" default="true"/>
 
         <setting visible="false" id="plugin_filmstreaming" type="bool" label="Film Streaming" default="true"/>
 
@@ -146,6 +150,8 @@
 
         <setting visible="false" id="plugin_mesfilms" type="bool" label="Mes Films" default="true"/>
 
+        <setting visible="false" id="plugin_mystream_zone" type="bool" label="My Stream" default="true"/>
+
         <setting visible="false" id="plugin_n1streaming" type="bool" label="N1 Streaming" default="true"/>
 
         <setting visible="false" id="plugin_neko_sama" type="bool" label="Neko Sama" default="true"/>
@@ -162,8 +168,6 @@
 
         <setting visible="false" id="plugin_planet_streaming" type="bool" label="Planet Streaming" default="true"/>
 
-        <setting visible="false" id="plugin_replaytvstreaming_com" type="bool" label="ReplayTVstreaming" default="true"/>
-
         <setting visible="false" id="plugin_robindesdroits" type="bool" label="Robin Des Droits" default="true"/>
 
         <setting visible="false" id="plugin_serie_streaming_watch" type="bool" label="SerieStreaming.watch" default="true"/>
@@ -171,8 +175,6 @@
         <setting visible="false" id="plugin_serie_streaminghd" type="bool" label="Série-StreamingHD" default="true"/>
 
         <setting visible="false" id="plugin_seriestreamings_org" type="bool" label="Série Streaming" default="true"/>
-
-        <setting visible="false" id="plugin_skstream_co" type="bool" label="Skstream" default="true"/>
 
         <setting visible="false" id="plugin_spion_com" type="bool" label="Spion" default="true"/>
 
@@ -194,8 +196,6 @@
 
         <setting visible="false" id="plugin_telecharger_streaming" type="bool" label="Télécharger-streaming" default="true"/>
 
-        <setting visible="false" id="plugin_tfarjo" type="bool" label="Tfarjo" default="true"/>
-
         <setting visible="false" id="plugin_time2watch" type="bool" label="Time2Watch" default="true"/>
 
         <setting visible="false" id="plugin_tirexo" type="bool" label="Tirexo" default="true"/>
@@ -212,7 +212,11 @@
 
         <setting visible="false" id="plugin_videobuzzy_com" type="bool" label="Videobuzzy" default="true"/>
 
+        <setting visible="false" id="plugin_vkstream" type="bool" label="Vkstream" default="true"/>
+
         <setting visible="false" id="plugin_voirfilms_org" type="bool" label="VoirFilms" default="true"/>
+
+        <setting visible="false" id="plugin_voirhd" type="bool" label="Voir HD" default="true"/>
 
         <setting visible="false" id="plugin_wiflix" type="bool" label="WiFlix" default="true"/>
 
@@ -335,9 +339,9 @@
         <setting id="hoster_alldebrid_premium" type="bool" label="30403" default="false"/>
         <setting type="text" label="30998" default=""/>
         <setting id="token_alldebrid" type="text" label="30999" default=""/>
-	<setting type="text" label="31000" default=""/>
-	<setting id="urlmain_alldebrid" type="text" label="31101" default=""/>
-        
+        <setting type="text" label="31000" default=""/>
+        <setting id="urlmain_alldebrid" type="text" label="31101" default=""/>
+
         <setting label="Uptobox" type="lsep"/>
         <setting type="sep"/>
         <setting id="hoster_uptobox_premium" type="bool" label="30403" default="false"/>
