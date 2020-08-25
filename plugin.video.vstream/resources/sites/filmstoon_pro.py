@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# TODO : resources/art/sites  https://www.filmstoon.pro/templates/filmstoon/images/logo.webp
-# source 03 update 16/08/2020
+# source 03 update 25/08/2020
 
 import re
+import xbmc
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -11,7 +11,6 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import xbmc
 from resources.lib.comaddon import progress, VSlog
 
 # liens not found pour 3 raisons connues assez peu nombreuses mais presentes
@@ -19,15 +18,14 @@ from resources.lib.comaddon import progress, VSlog
 # notification des liens register dans le hoster.displaytitle
 # rares:
 # xbmc notification: acces aux liens en changeant juste l'ip ;
-# autre cas connu: cloudfare ( non traité )
+# autre cas connu: cloudfare (non traité)
 
 bVSlog = False
 
 SITE_IDENTIFIER = 'filmstoon_pro'
-SITE_NAME = 'Filmstoon pro'
-SITE_DESC = ' films en streaming'
+SITE_NAME = 'Films toon'
+SITE_DESC = 'Films en streaming'
 
-# URL_MAIN = 'https://www.filmstoon.pro/'
 URL_MAIN = 'https://www.filmstoon.pw/'
 
 # globales
@@ -38,7 +36,7 @@ MOVIE_VIEWS = (URL_MAIN + 'film/populaire/', 'showMovies')
 MOVIE_MOVIE = (True, 'load')
 
 # https://www.filmstoon.pw/film/populaire/
-# https://www.filmstoon.pro/?s=blood
+# https://www.filmstoon.pw/?s=blood
 
 URL_SEARCH = (URL_MAIN, 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
@@ -66,7 +64,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER,MOVIE_ANNEES[1], 'Films (Par années)', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -195,7 +193,7 @@ def showMovies(sSearch=''):
             sUrlNextPage = NextPage[1]
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrlNextPage)
-            number = re.search('/page/([0-9]+)', sUrlNextPage ).group(1)
+            number = re.search('/page/([0-9]+)', sUrlNextPage).group(1)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + '/' + sNumLastPage + ' >>>[/COLOR]', oOutputParameterHandler)
         #else:
             #ifVSlog('NextPage false')
@@ -219,7 +217,7 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    sDesc = oInputParameterHandler.getValue('sDesc')  # faire un addlink  juste pour desc ?
+    # sDesc = oInputParameterHandler.getValue('sDesc')  # faire un addlink  juste pour desc ?
 
     ifVSlog('#')
     ifVSlog('showHosters')
@@ -234,7 +232,7 @@ def showHosters():
     # if (aResult[0] == True):
         # if len(aResult[1]) == 1:
             # aEntry = aResult[1][0]
-            # sDesc= aEntry[0] +' ' +aEntry[1] + sDesc
+            # sDesc = aEntry[0] + ' ' + aEntry[1] + sDesc
 
     sPattern = 'data-src.+?playfst.php.([^"]*).p=https'  # 50
 
@@ -282,12 +280,12 @@ def showHosters():
                 sHosterUrl = sHosterUrl.replace('url=', '')
 
                 # ne marche pas
-                # url=https://filmstreaming1.red/registred.php?
+                # url = https://filmstreaming1.red/registred.php?
                 if 'registred' in sHosterUrl:
                     sremarque = '[ Find register link !  ] '
 
                 ifVSlog('header url=' + sHosterUrl)
-                if not sHosterUrl in sHosterUrllist:
+                if sHosterUrl not in sHosterUrllist:
                     bDoublon = False
                     sHosterUrllist.append(sHosterUrl)
                     # i = i+1
