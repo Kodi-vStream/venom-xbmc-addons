@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# source 08 update 16/08/2020
+# source 08 update 25/08/2020
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -15,7 +15,7 @@ import json
 
 TimeOut = 10  # requetes avec time out utilisées seulement dans show movies : on attends plus 30s
 SITE_IDENTIFIER = 'mystream_zone'
-SITE_NAME = 'My Streamzone'
+SITE_NAME = 'My Stream'
 SITE_DESC = 'Films et Series en Streaming'
 
 URL_MAIN = 'https://mystream.zone/'
@@ -207,7 +207,7 @@ def showGenres():
     liste.append(['Romance', URL_MAIN + 'genre/romance/'])
     liste.append(['Sci-Fi & Fantasy', URL_MAIN + 'genre/sci-fi-fantasy/'])
     liste.append(['Sci-Fi', URL_MAIN + 'genre/science-fiction/'])
-    liste.append(['Sci-Fi & Fantastique' , URL_MAIN + 'genre/science-fiction-fantastique/'])
+    liste.append(['Sci-Fi & Fantastique', URL_MAIN + 'genre/science-fiction-fantastique/'])
     liste.append(['Soap', URL_MAIN + 'genre/soap/'])
     liste.append(['Talk', URL_MAIN + 'genre/talk/'])
     liste.append(['Telefilm', URL_MAIN + 'genre/telefilm/'])
@@ -234,8 +234,6 @@ def showAlphaSeries():
 
 def showAlpha(stype):
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
     # requete json 20 resultat max
     # https://mystream.zone/wp-json/dooplay/glossary/?term=g&nonce=2132c17353&type=tvshows
     url1 = 'https://mystream.zone/wp-json/dooplay/glossary/?term='
@@ -331,7 +329,7 @@ def showMovies(sSearch=''):
         return
 
     if 'https://mystream.zone/tendance/' in sUrl:  # url name years image
-        sPattern = 'class="mepo">.+?class=.data.+?href="([^"]*)".+?([^<]*).+?span>.+?,.([^<]*).+?src="([^"]*)'
+        # sPattern = 'class="mepo">.+?class=.data.+?href="([^"]*)".+?([^<]*).+?span>.+?,.([^<]*).+?src="([^"]*)'
         sPattern = 'img src="([^"]*).*?class="mepo">.+?class=.data.+?href="([^"]*)".+?([^<]*).+?span>.+?,.([^<]*)'
 
     elif sUrl == 'https://mystream.zone/':  # url image title
@@ -346,8 +344,8 @@ def showMovies(sSearch=''):
     elif 'https://mystream.zone/?s=' in sUrl:  # thumb url title years desc
         sPattern = 'animation-2.+?img src="([^"]*).+?class="title.+?ref="([^"]*)".([^<]*).+?year">([^<]*).*?contenido.><p>([^<]*)'
 
-    # elif 'genre' in sUrl or 'tvshows' in sUrl  or 'movies'in sUrl or 'release' in sUrl:
-    elif 'genre' in sUrl  or 'release' in sUrl:
+    # elif 'genre' in sUrl or 'tvshows' in sUrl or 'movies' in sUrl or 'release' in sUrl:
+    elif 'genre' in sUrl or 'release' in sUrl:
         sPattern = 'class="item.+?src="([^"]*).+?class="mepo">.+?class="data".+?href="([^"]*).>([^<]*).+?span>.+?,.([^<]*).+?texto">([^<]*)'
     elif 'mystream.zone/tvshows' in sUrl or 'mystream.zone/movies' in sUrl:
         sPattern = '<h1>.+?</html>'
@@ -423,8 +421,8 @@ def showMovies(sSearch=''):
                 sUrl2 = aEntry[1]
                 sTitle = str(aEntry[2]).replace(' mystream', '')
                 sThumb = aEntry[0]
-                sDesc= aEntry[4]
-                sYear= aEntry[3]
+                sDesc = aEntry[4]
+                sYear = aEntry[3]
                 sDisplayTitle = sTitle + ' (' + sYear + ' )'
 
             elif 'genre' in sUrl or 'release' in sUrl:
@@ -452,7 +450,7 @@ def showMovies(sSearch=''):
 
             elif 'tvshows' in sUrl or 'movies':
                 progress_1.VSclose(progress_1)
-                bclosedprogress_1= True
+                bclosedprogress_1 = True
                 # revoir pattern si simplification avec 'genre' or 'release' (pb image decalage)
                 sPattern1 = 'class="item.+?src="([^"]*).+?class="mepo">.+?class="data".+?href="([^"]*).>([^<]*).+?span>.+?,.([^<]*).+?texto">([^<]*)'
                 shtml = str(aEntry)
@@ -502,7 +500,7 @@ def showMovies(sSearch=''):
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN + sThumb
 
-            if sSearch or 'mystream.zone/release/' in sUrl or 'mystream.zone/genre/' in sUrl or 'mystream.zone/tendance/' in sUrl:
+            if sSearch or '/release/' in sUrl or '/genre/' in sUrl or '/tendance/' in sUrl:
                 # ifVSlog('Try ADD tag Film or serie ')
                 if 'movies' in sUrl2:
                     sDisplayTitle = sTitle + ' (Film)'
@@ -640,9 +638,9 @@ def showSaisons():
             iEpisode = re.search('([0-9]+)$', aEntry[0]).group(1)
             if not str(iSaison) in ListNumeroSaison:
                 ListNumeroSaison.append(str(iSaison))
-                sTitleDisplay = sTitle + ' ' + 'Saison' + ' ' + str(icurrentsaison)
+                sDisplayTitle = sTitle + ' ' + 'Saison' + ' ' + str(icurrentsaison)
                 if sYear:
-                    sTitleDisplay = sTitleDisplay + ' (' + sYear + ')'
+                    sDisplayTitle = sDisplayTitle + ' (' + sYear + ')'
 
                 if len(listeUrlEpisode) > 0:
                     oOutputParameterHandler = cOutputParameterHandler()
@@ -651,7 +649,7 @@ def showSaisons():
                     oOutputParameterHandler.addParameter('sYear', sYear)
                     oOutputParameterHandler.addParameter('listeUrlEpisode', listeUrlEpisode)
                     oOutputParameterHandler.addParameter('listeStitle', listeStitle)
-                    oGui.addEpisode(SITE_IDENTIFIER, 'showListEpisodes', sTitleDisplay, '', sThumb, sDesc, oOutputParameterHandler)
+                    oGui.addEpisode(SITE_IDENTIFIER, 'showListEpisodes', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
                     listeUrlEpisode = []
                     listeStitle = []
                 icurrentsaison = iSaison
@@ -659,9 +657,9 @@ def showSaisons():
             listeUrlEpisode.append(str(aEntry[1]))
             sTitleEp = sTitle + ' ' + ' Saison ' + str(iSaison) + ' Episode ' + str(iEpisode)
             listeStitle.append(sTitleEp)
-            sTitleDisplay = sTitle + ' ' + 'Saison' + ' ' + str(iSaison)
+            sDisplayTitle = sTitle + ' ' + 'Saison' + ' ' + str(iSaison)
             if sYear:
-                sTitleDisplay = sTitleDisplay + ' (' + sYear + ')'
+                sDisplayTitle = sDisplayTitle + ' (' + sYear + ')'
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -669,7 +667,7 @@ def showSaisons():
         oOutputParameterHandler.addParameter('sYear', sYear)
         oOutputParameterHandler.addParameter('listeUrlEpisode', listeUrlEpisode)
         oOutputParameterHandler.addParameter('listeStitle', listeStitle)
-        oGui.addEpisode(SITE_IDENTIFIER, 'showListEpisodes', sTitleDisplay, '', sThumb, sDesc, oOutputParameterHandler)
+        oGui.addEpisode(SITE_IDENTIFIER, 'showListEpisodes', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -753,16 +751,16 @@ def showEpisodes():
             iSaison = re.search('([0-9]+)', aEntry[1]).group(1)
             iEpisode = re.search('([0-9]+)$', aEntry[1]).group(1)
             sUrl = aEntry[2]
-            sTitleDisplay = sMovieTitle + ' ' + ' Saison ' + str(iSaison) + ' Episode ' + str(iEpisode)
+            sDisplayTitle = sMovieTitle + ' ' + ' Saison ' + str(iSaison) + ' Episode ' + str(iEpisode)
             if sYear:
-                sTitleDisplay = sTitleDisplay + ' (' + sYear + ')'
+                sDisplayTitle = sDisplayTitle + ' (' + sYear + ')'
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitleDisplay)
+            oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sYear', sYear)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitleDisplay, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -811,9 +809,9 @@ def showHosters():
             sUrl2 = 'https://mystream.zone/wp-admin/admin-ajax.php'
             pdata = 'action=doo_player_ajax&post=' + datapost + '&nume=' + datanum + '&type=' + datatype
             if sYear:
-                sdisplayTitle = sTitle + ' (' + sYear + ')'
+                sDisplayTitle = sTitle + ' (' + sYear + ')'
             else:
-                sdisplayTitle = sTitle
+                sDisplayTitle = sTitle
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('referer', sUrl)
@@ -821,7 +819,7 @@ def showHosters():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sYear', sYear)
             oOutputParameterHandler.addParameter('pdata', pdata)
-            oGui.addLink(SITE_IDENTIFIER, 'Hosterslink', sdisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'Hosterslink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
