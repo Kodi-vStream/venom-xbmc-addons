@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# source 03 update 25/08/2020
+# source 03 update 26/08/2020
 
 import re
 import xbmc
@@ -13,12 +13,12 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, VSlog
 
-# liens not found pour 3 raisons connues assez peu nombreuses mais presentes
-# courant:
-# notification des liens register dans le hoster.displaytitle
-# rares:
-# xbmc notification: acces aux liens en changeant juste l'ip ;
-# autre cas connu: cloudfare (non traité)
+# Liens 'not found' pour 3 raisons connues
+# Courants:
+# 1 Liens register ;notification dans le hoster.displaytitle
+# 2 Erreur 521, CF n'as pas réussi à se connecter au site (addtext)
+# Rares:
+# 3 Blocked :il faut essayer de changer son ip : xbmc notification:  ;
 
 bVSlog = False
 
@@ -74,7 +74,6 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        # sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         sUrl = sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -131,7 +130,6 @@ def showMovies(sSearch=''):
     oGui = cGui()
 
     if sSearch:
-        # '?s='
         pdata = 'do=search&subaction=search&story=' + sSearch
         sUrl = URL_MAIN + '?s=' + sSearch
         oRequest = cRequestHandler(sUrl)
@@ -148,7 +146,7 @@ def showMovies(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
         # url  title thumb desc
-        sPattern = '<h2> <span>Film Streaming.+?href="(.+?)">(.+?)<.+?data-src="(.+?)".+?st-desc">(.+?)<.div'
+        sPattern = '<div class="s-top fx-row">.+?ref="([^"]+)">(.+?)<.+?data-src="([^"]+).+?st-desc">(.+?)<.div'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -175,6 +173,9 @@ def showMovies(sSearch=''):
             else:
                 sTitle = aEntry[1]
                 sThumb = aEntry[2]
+            if 'https:' not in sThumb:
+                sThumb = 'https:' + sThumb
+
             # ifVSlog('sUrl2 =' + sUrl)
             # ifVSlog('sTitle =' + sTitle)
             oOutputParameterHandler = cOutputParameterHandler()
@@ -191,12 +192,12 @@ def showMovies(sSearch=''):
         if (NextPage != False):
             sNumLastPage = NextPage[0]
             sUrlNextPage = NextPage[1]
+            if URL_MAIN not in sUrlNextPage:
+                sUrlNextPage = URL_MAIN[:-1] + sUrlNextPage
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrlNextPage)
             number = re.search('/page/([0-9]+)', sUrlNextPage).group(1)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + '/' + sNumLastPage + ' >>>[/COLOR]', oOutputParameterHandler)
-        #else:
-            #ifVSlog('NextPage false')
 
         oGui.setEndOfDirectory()
 
@@ -217,91 +218,67 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    # sDesc = oInputParameterHandler.getValue('sDesc')  # faire un addlink  juste pour desc ?
 
-    ifVSlog('#')
-    ifVSlog('showHosters')
-    ifVSlog('surl = ' + sUrl)
+    ifVSlog('showHosters : sUrl = ' + sUrl)
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
-    # marche ; prévoir un add link pour les titres
-    # sPattern='<div class="st-line"> Année:([^<]*)<.div>.+?line"> Durée:([^<]*)'
-    # oParser = cParser()
-    # aResult = oParser.parse(sHtmlContent, sPattern)
-    # if (aResult[0] == True):
-        # if len(aResult[1]) == 1:
-            # aEntry = aResult[1][0]
-            # sDesc = aEntry[0] + ' ' + aEntry[1] + sDesc
 
-    sPattern = 'data-src.+?playfst.php.([^"]*).p=https'  # 50
+    sPattern = 'playfst.php.([^"]*).p='
 
     # exemple
     # tl=Jumbo&yr=2020&im=tt6818118&butm=f8amdzps8q1k&sv=ms&sr=fst&ni=259782&fc=37290a4f2d42347bce34d609e8e0e01f
-
     # g1: parametres de la requete que l'on va copier et echanger
-    # avec celle genérée normalement par https://easyplayer.cc/player.php?
-    # c'est quasiment la meme
+    # avec celle genérée normalement par https://easyplayer.cc/player.php? c'est quasiment la meme
 
-    requestlist = []
     sHosterUrllist = []
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-        oGui.addText(SITE_IDENTIFIER)
         # ifVSlog(sHtmlContent)
         ifVSlog('Failed Pattern with url = ' + sUrl)
-        ifVSlog('Selected Pattern = ' + sPattern)
-        # Your IP-address or subnet have been blocked
+        # ifVSlog('Selected Pattern = ' + sPattern)
         if 'Your IP-address or subnet have been blocked' in sHtmlContent:
             xbmc.executebuiltin('Notification(%s, %s, %d)' % ('Filmstoon Plugin ', 'You have been blocked : Try change your IP-address ', 5000))
+        if '521 Origin Down' in sHtmlContent:
+            oGui.addText(SITE_IDENTIFIER,' Connexion au serveur impossible')
+        else:
+            oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             req = 'https://easyplayer.cc/player.php?' + str(aEntry)
-            requestlist.append(req)
+            ifVSlog(req)
+            oRequestHandler = cRequestHandler(req)
+            oRequestHandler.request()
+            sHeader = oRequestHandler.getResponseHeader()
+            bDoublon = False  # on verifie si url embed en double (mystrem)
+            sremarque = ''
 
-    for irequest in requestlist:
-        # url du host dans l'entete de la réponse
-        urlreq = irequest
-        ifVSlog(urlreq)
-        oRequestHandler = cRequestHandler(urlreq)
-        oRequestHandler.request()
-        sHeader = oRequestHandler.getResponseHeader()
-        bDoublon = False  # on verifie si url embed en double (mystrem)
-        sremarque = ''
-        for iheader in sHeader:
-            if iheader == 'refresh':
+            if 'refresh' in sHeader:
                 sHosterUrl = sHeader.getheader('refresh')
                 ifVSlog('header ' + sHosterUrl)
                 sHosterUrl = sHosterUrl.split(';')
                 sHosterUrl = sHosterUrl[1]
                 sHosterUrl = sHosterUrl.replace('url=', '')
 
-                # ne marche pas
-                # url = https://filmstreaming1.red/registred.php?
+                # ne marche pas : url = https://filmstreaming1.red/registred.php?
                 if 'registred' in sHosterUrl:
                     sremarque = '[ Find register link !  ] '
 
                 ifVSlog('header url=' + sHosterUrl)
                 if sHosterUrl not in sHosterUrllist:
-                    bDoublon = False
                     sHosterUrllist.append(sHosterUrl)
-                    # i = i+1
                 else:
                     bDoublon = True
-                break
 
-        if not bDoublon:  # à activer pour filtrer
-        # if True:
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            sDisplayTitle = sremarque + sMovieTitle
-            if (oHoster != False):
-                # oHoster.setDisplayName(sMovieTitle)
-                oHoster.setDisplayName(sDisplayTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+            if not bDoublon:
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                sDisplayTitle = sremarque + sMovieTitle
+                if (oHoster != False):
+                    oHoster.setDisplayName(sDisplayTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
