@@ -497,6 +497,7 @@ class cGuiElement:
 
         # Integrale de films, on nettoie le titre pour la recherche
         if metaType == 3:
+            sTitle = sTitle.replace('integrales', '')
             sTitle = sTitle.replace('integrale', '')
             sTitle = sTitle.replace('2 films', '')
             sTitle = sTitle.replace('6 films', '')
@@ -508,8 +509,14 @@ class cGuiElement:
             sTitle = sTitle.replace('octalogie', '')
             sTitle = sTitle.replace('hexalogie', '')
             sTitle = sTitle.replace('tetralogie', '')
+            sTitle = sTitle.strip()
+            if sTitle.endswith(' les'):
+                sTitle = sTitle[:-4]
+            if sTitle.endswith(' la') or sTitle.endswith(' l') :
+                sTitle = sTitle[:-3]
+            sTitle = sTitle.strip()
 
-        sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'movie').replace('4', 'anime')
+        sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'collection').replace('4', 'anime')
 
         meta = {}
         if sType:
@@ -558,11 +565,10 @@ class cGuiElement:
         if 'trailer' in meta and meta['trailer']:
             self.__sTrailer = meta['trailer']
 
-        # Pas de changement de cover pour les coffrets de films
-        if metaType != 3:
-            if 'cover_url' in meta and meta['cover_url']:
-                self.__sThumbnail = meta['cover_url']
-                self.__sPoster = meta['cover_url']
+        if 'cover_url' in meta and meta['cover_url']:
+            self.__sThumbnail = meta['cover_url']
+            self.__sPoster = meta['cover_url']
+            
         return
 
     def getItemValues(self):
