@@ -503,6 +503,8 @@ class cTMDb:
 
         if 'release_date' in meta:
             _meta['premiered'] = meta['release_date']
+        if 'first_air_date' in meta:
+            _meta['premiered'] = meta['first_air_date']
         if 'premiered' in meta and meta['premiered']:
             _meta['premiered'] = meta['premiered']
         elif 's_premiered' in meta and meta['s_premiered']:
