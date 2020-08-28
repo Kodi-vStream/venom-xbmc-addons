@@ -459,6 +459,8 @@ def showSaga():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    numItem = oInputParameterHandler.getValue('numItem')
+    numPage = oInputParameterHandler.getValue('numPage')
 
     sUrl, params = sUrl.split('&',1)
     aParams = dict(param.split('=') for param in params.split('&'))
@@ -467,25 +469,78 @@ def showSaga():
     else:
         sMedia = 'film'
 
+    if not numItem:
+        numItem = 0
+        numPage = 1
+    numItem = int(numItem)
+    numPage = int(numPage)
+
     oRequestHandler = cRequestHandler(sUrl)
     sContent = oRequestHandler.request()
     pbContent = PasteBinContent()
     movies = pbContent.getLines(sContent)
 
-    sagas = set()
+    sagas = {}
     for movie in movies:
         if pbContent.CAT >=0 and sMedia not in movie[pbContent.CAT]:
             continue
 
         saga = movie[pbContent.SAISON].strip()
         if saga <> '':
-            sagas.add(saga)
+            sTmdbId = name = saga
+            idName = saga.split(':', 1)
+            if len(idName)>1:
+                sTmdbId = idName[0]
+                name = idName[1]
+            if sTmdbId.isdigit():
+                sagas[name] = sTmdbId
+            else:
+                sagas[saga] = saga
             
-    for sSaga in sorted(sagas):
-        siteUrl = sUrl + '&sMedia=' + sMedia +'&sSaga=' + sSaga 
+    nbItem = 0
+    index = 0
+    progress_ = progress().VScreate(SITE_NAME)
+    names = sagas.keys()
+    for sSagaName in sorted(names):
+        
+        # Pagination, on se repositionne
+        index += 1
+        if index <= numItem:
+            continue
+        numItem += 1
+        
+        progress_.VSupdate(progress_, ITEM_PAR_PAGE)
+        if progress_.iscanceled():
+            break
+
+        sTmdbId = sagas[sSagaName]
+
+        siteUrl = sUrl + '&sMedia=' + sMedia + '&sSaga=' + sSagaName 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', siteUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sSaga, 'genres.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('sMovieTitle', sSagaName)
+        if sTmdbId.isdigit():
+            oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
+        else:
+            oOutputParameterHandler.addParameter('sMovieTitle', sSagaName)
+        oGui.addMoviePack(SITE_IDENTIFIER, 'showMovies', sSagaName, 'genres.png', '', '', oOutputParameterHandler)
+
+        nbItem += 1
+        if nbItem % ITEM_PAR_PAGE == 0:
+            numPage += 1
+            
+            siteUrl = sUrl
+            if sMedia : siteUrl += '&sMedia=' + sMedia
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+            oOutputParameterHandler.addParameter('numPage', numPage)
+            oOutputParameterHandler.addParameter('numItem', numItem)
+            oGui.addNext(SITE_IDENTIFIER, 'showSaga', '[COLOR teal]Page ' + str(numPage) + ' >>>[/COLOR]', oOutputParameterHandler)
+            break
+
+
+    progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -556,6 +611,7 @@ def showMovies(sSearch=''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    sTmdbId = oInputParameterHandler.getValue('sTmdbId')
     numItem = oInputParameterHandler.getValue('numItem')
     numPage = oInputParameterHandler.getValue('numPage')
     sMedia = 'film' # Par défaut
@@ -572,7 +628,7 @@ def showMovies(sSearch=''):
 
     sSearchTitle = ''
     
-    # support de l'utilisation du caractere '&' alors qu'il est réservé
+    # Pour supporter le caractere '&' dans les noms alors qu'il est réservé
     sUrl = sUrl.replace(' & ', ' | ')
     
     sUrl, params = sUrl.split('&',1)
@@ -581,7 +637,10 @@ def showMovies(sSearch=''):
     if 'sMedia' in aParams: sMedia = aParams['sMedia']
     if 'sSearch' in aParams: sSearchTitle = Unquote(aParams['sSearch']).replace(' | ', ' & ')
     if 'sGenre' in aParams: sGenre = aParams['sGenre'].replace(' | ', ' & ')
-    if 'sSaga' in aParams: sSaga = aParams['sSaga'].replace(' | ', ' & ')
+    if 'sSaga' in aParams:
+        if sTmdbId:
+            sSaga = sTmdbId + ':'
+        sSaga += aParams['sSaga'].replace(' | ', ' & ')
     if 'sGroupe' in aParams: sGroupe = aParams['sGroupe'].replace(' | ', ' & ')
     if 'sYear' in aParams: sYear = aParams['sYear']
     if 'sAlpha' in aParams: sAlpha = aParams['sAlpha']
