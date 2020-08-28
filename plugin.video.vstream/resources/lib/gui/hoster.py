@@ -109,7 +109,7 @@ class cHosterGui:
                 oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'siteonefichier', 'siteonefichier', 'UptomyAccount', '1fichier')
 
         # context FAV menu
-        oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+        oGui.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
 
         # context Library menu
         oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cLibrary', 'cLibrary', 'setLibrary', self.ADDON.VSlang(30324))
