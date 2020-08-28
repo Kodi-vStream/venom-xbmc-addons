@@ -32,12 +32,20 @@
               	<aspectratio align="center" aligny="center" scalediffuse="false">scale</aspectratio>
 			</control>
 
-			<control type="image">
+			<!-- <control type="image">
 				<left>0</left>
 				<right>0</right>
 				<top>0</top>
 				<bottom>0</bottom>
 				<texture>nofocus.png</texture>
+			</control> -->
+
+			<control type="image">
+				<left>0</left>
+				<right>0</right>
+				<top>0</top>
+				<bottom>0</bottom>
+				<texture colordiffuse="FF000a12">bg.png</texture>
 			</control>
 
 			<!--<control type="image">
