@@ -147,7 +147,7 @@ class cGui:
 
         self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
         # self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
-        self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+        self.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
 
         try:
             self.addFolder(oGuiElement, oOutputParameterHandler)
@@ -330,7 +330,7 @@ class cGui:
         if oGuiElement.getMeta() > 0:
             if cGui.CONTENT == 'movies':
                 self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+                self.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuba(oGuiElement, oOutputParameterHandler)
 
@@ -342,7 +342,7 @@ class cGui:
 
             elif cGui.CONTENT == 'tvshows':
                 self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+                self.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuba(oGuiElement, oOutputParameterHandler)
 
@@ -430,7 +430,7 @@ class cGui:
         oGuiElement.addContextItem(oContext)
 
     # marque page
-    def createContexMenuFav(self, oGuiElement, oOutputParameterHandler = ''):
+    def createContexMenuBookmark(self, oGuiElement, oOutputParameterHandler = ''):
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
         oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
@@ -605,7 +605,7 @@ class cGui:
                     xbmc.executebuiltin('Container.SetViewMode(%s)' % self.ADDON.getSetting('default-view'))
 
         # bug affichage Kodi 18
-        del self.listing [:]
+        del self.listing[:]
 
     def updateDirectory(self):  # refresh the content
         xbmc.executebuiltin('Container.Refresh')
@@ -649,7 +649,7 @@ class cGui:
         sCleanTitle = cUtil().CleanName(sFileName)
 
         # on vire saison et episode, si séries ou animes
-        if sMeta == 2 or sMeta == 4 :
+        if sMeta == 2 or sMeta == 4:
             sCleanTitle = re.sub('(?i).pisode [0-9]+', '', sCleanTitle)
             sCleanTitle = re.sub('(?i)saison [0-9]+', '', sCleanTitle)
             sCleanTitle = re.sub('(?i)S[0-9]+E[0-9]+', '', sCleanTitle)
