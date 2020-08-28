@@ -1,21 +1,28 @@
-#-*- coding: utf-8 -*-
-#vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+import io
+import json
+import re
+import string
+import sys
+from zipfile import ZipFile
+
+import xbmc
+import xbmcplugin
+import xbmcvfs
+
+from resources.lib.comaddon import progress, addon, dialog
+from resources.lib.enregistrement import cEnregistremement
+from resources.lib.epg import cePg
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
+from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.player import cPlayer
-from resources.lib.gui.hoster import cHosterGui
 from resources.lib.util import Unquote, Quote, QuotePlus
-from resources.lib.enregistrement import cEnregistremement
-from resources.lib.epg import cePg
-from resources.lib.comaddon import progress, addon, xbmc, dialog, VSlog
-
-from zipfile import ZipFile
-import re, sys, string, json, io
-import xbmcplugin, xbmcvfs
 
 SITE_IDENTIFIER = 'freebox'
 SITE_NAME = '[COLOR orange]Télévision Direct/Stream[/COLOR]'
@@ -29,23 +36,23 @@ MOVIE_IPTVSITE = (True, 'showIptvSite')
 
 UA = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
 
-headers = {'User-Agent': UA,
-           'Accept': '*/*',
-           'Connection': 'keep-alive'}
+headers = {'User-Agent': UA, 'Accept': '*/*', 'Connection': 'keep-alive'}
 
 icon = 'tv.png'
-#/home/lordvenom/.kodi/
-#sRootArt = cConfig().getRootArt()
+# /home/lordvenom/.kodi/
+# sRootArt = cConfig().getRootArt()
 sRootArt = 'special://home/addons/plugin.video.vstream/resources/art/tv'
 ADDON = addon()
 
+
 class track():
-    def __init__(self, length, title, path, icon, data = ''):
+    def __init__(self, length, title, path, icon, data=''):
         self.length = length
         self.title = title
         self.path = path
         self.icon = icon
         self.data = data
+
 
 def load():
     oGui = cGui()
@@ -77,48 +84,50 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showIptvSite():
     oGui = cGui()
 
-    #test f4mTester
+    # test f4mTester
     sPath = 'special://home/addons/plugin.video.f4mTester/default.py'
 
     if not xbmcvfs.exists(sPath) and not xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
         oGui.addText(SITE_IDENTIFIER, "[COLOR red]plugin.video.f4mTester: L'addon n'est pas présent[/COLOR]")
 
     liste = []
-    liste.append( ['IptvGratuit', 'iptv_gratuit'] )
-    liste.append( ['IptvSource', 'iptv_source'] )
-    liste.append( ['Iptv4Sat', 'iptv_four_sat'] )
-    liste.append( ['Daily Iptv List', 'daily_iptv_list'])
-    liste.append( ['Extinf', 'iptv'])
-    liste.append( ['ChannelStream', 'channelstream'])
+    liste.append(['IptvGratuit', 'iptv_gratuit'])
+    liste.append(['IptvSource', 'iptv_source'])
+    liste.append(['Iptv4Sat', 'iptv_four_sat'])
+    liste.append(['Daily Iptv List', 'daily_iptv_list'])
+    liste.append(['Extinf', 'iptv'])
+    liste.append(['ChannelStream', 'channelstream'])
 
-    for sTitle, Fname in liste:
+    for sTitle, fName in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(Fname, 'load', sTitle, 'tv.png', oOutputParameterHandler)
+        oGui.addDir(fName, 'load', sTitle, 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
-def getHtml(sUrl, data = None):#S'occupe des requetes
+
+def getHtml(sUrl, data=None):  # S'occupe des requetes
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
 
-    if not data is None and 'watch' in sUrl:
+    if data is None and 'watch' not in sUrl:
         data = r.text
     else:
         data = oRequestHandler.request()
-    #VSlog(data)
     return data
 
-def parseM3U(sUrl=None, infile=None):#Traite les m3u local
+
+def parseM3U(sUrl=None, infile=None):  # Traite les m3u local
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    if infile == None:
+    if infile is None:
         if 'iptv4sat' in sUrl or '.zip' in sUrl:
             sHtmlContent = getHtml(sUrl)
             zip_files = ZipFile(io.BytesIO(sHtmlContent))
@@ -134,7 +143,7 @@ def parseM3U(sUrl=None, infile=None):#Traite les m3u local
             oGui.setEndOfDirectory()
             return
 
-        elif not '#EXTM3U' in sUrl:
+        elif '#EXTM3U' not in sUrl:
             site = infile
             headers = {'User-Agent': UA}
 
@@ -154,7 +163,7 @@ def parseM3U(sUrl=None, infile=None):#Traite les m3u local
 
     try:
         line = inf.readline()
-    except:
+    finally:
         pass
 
     playlist = []
@@ -184,33 +193,33 @@ def parseM3U(sUrl=None, infile=None):#Traite les m3u local
                 ValidEntry = False
                 song.path = line
                 playlist.append(song)
-                #VSlog(playlist)
-                song=track(None, None, None, None)
+                song = track(None, None, None, None)
 
     try:
         inf.close()
-    except:
+    finally:
         pass
 
     return playlist
 
-def showWeb(infile = None):#Code qui s'occupe de liens TV du Web
+
+def showWeb(infile=None):  # Code qui s'occupe de liens TV du Web
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
 
-    if infile == None:
+    if infile is None:
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
         playlist = parseM3U(sUrl=sUrl)
     else:
         playlist = parseM3U(infile=infile)
 
-    if (oInputParameterHandler.exist('AZ')):
+    if oInputParameterHandler.exist('AZ'):
         sAZ = oInputParameterHandler.getValue('AZ')
         string = filter(lambda t: t.title.strip().capitalize().startswith(sAZ), playlist)
-        playlist = sorted(string, key = lambda t: t.title.strip().capitalize())
-    else :
-        playlist = sorted(playlist, key = lambda t: t.title.strip().capitalize())
+        playlist = sorted(string, key=lambda t: t.title.strip().capitalize())
+    else:
+        playlist = sorted(playlist, key=lambda t: t.title.strip().capitalize())
 
     if not playlist:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -228,7 +237,7 @@ def showWeb(infile = None):#Code qui s'occupe de liens TV du Web
             if not sThumb:
                 sThumb = 'tv.png'
 
-            #les + ne peuvent pas passer
+            # les + ne peuvent pas passer
             url2 = track.path.replace('+', 'P_L_U_S')
             if not xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
                 if not '[' in url2 and not ']' in url2 and not '.m3u8' in url2 and not 'dailymotion' in url2:
@@ -240,8 +249,6 @@ def showWeb(infile = None):#Code qui s'occupe de liens TV du Web
             oOutputParameterHandler.addParameter('siteUrl', url2)
             oOutputParameterHandler.addParameter('sMovieTitle', track.title)
             oOutputParameterHandler.addParameter('sThumbnail', thumb)
-
-            #oGui.addDirectTV(SITE_IDENTIFIER, 'play__', track.title, 'tv.png' , sRootArt + '/tv/' + sThumb, oOutputParameterHandler)
 
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName(SITE_IDENTIFIER)
@@ -257,27 +264,30 @@ def showWeb(infile = None):#Code qui s'occupe de liens TV du Web
             oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
             oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
             oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'enregistrement', 'Enregistrement')
-            oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+            oGui.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
-def direct_epg():#Code qui gerent l'epg
+
+def direct_epg():  # Code qui gerent l'epg
     # oGuiElement = cGuiElement()
     oInputParameterHandler = cInputParameterHandler()
-    #aParams = oInputParameterHandler.getAllParameter()
+    # aParams = oInputParameterHandler.getAllParameter()
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sCom = cePg().get_epg(sTitle, 'direct')
 
-def soir_epg():#Code qui gerent l'epg
+
+def soir_epg():  # Code qui gerent l'epg
     # oGuiElement = cGuiElement()
     oInputParameterHandler = cInputParameterHandler()
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sCom = cePg().get_epg(sTitle, 'soir')
 
-def enregistrement():#Code qui gerent l'epg
+
+def enregistrement():  # Code qui gerent l'epg
     # oGuiElement = cGuiElement()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl').replace('P_L_U_S', '+')
@@ -294,6 +304,7 @@ def enregistrement():#Code qui gerent l'epg
         url = re.findall('url=(.+?)&amp', ''.join(sUrl))
         sUrl = Unquote(url[0])
     shebdule = cEnregistremement().programmation_enregistrement(sUrl)
+
 
 def showAZ():
     oGui = cGui()
@@ -314,6 +325,7 @@ def showAZ():
 
     oGui.setEndOfDirectory()
 
+
 def showAZRadio():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -333,6 +345,7 @@ def showAZRadio():
 
     oGui.setEndOfDirectory()
 
+
 def showTV():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -342,19 +355,18 @@ def showTV():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    #sPattern = '<url>([^<>]+?)</url><title>([^<>]+?)</title><order>' + sOrder + '</order><icon>(.+?)</icon>'
     sPattern = '<title>(.+?)</title><link>(.+?)</link>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         progress_ = progress().VScreate(SITE_NAME)
 
-        #affiche par
-        if (oInputParameterHandler.exist('AZ')):
+        # affiche par
+        if oInputParameterHandler.exist('AZ'):
             sAZ = oInputParameterHandler.getValue('AZ')
             string = filter(lambda t: t[0].strip().capitalize().startswith(sAZ), aResult[1])
             string = sorted(string, key=lambda t: t[0].strip().capitalize())
-        else :
+        else:
             string = sorted(aResult[1], key=lambda t: t[0].strip().capitalize())
 
         total = len(string)
@@ -375,28 +387,29 @@ def showTV():
             oGuiElement.setFileName(aEntry[0])
             oGuiElement.setIcon('tv.png')
             oGuiElement.setMeta(0)
-            #oGuiElement.setThumbnail('tv.png')
+            # oGuiElement.setThumbnail('tv.png')
             oGuiElement.setDirectTvFanart()
             oGuiElement.setCat(6)
 
             oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
             oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
             oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'enregistrement', 'Enregistrement')
-            oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+            oGui.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
-def play__():#Lancer les liens
+
+def play__():  # Lancer les liens
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl').replace('P_L_U_S', '+')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
-    #Special url with tag
+    # Special url with tag
     if '[' in sUrl and ']' in sUrl:
         sUrl = GetRealUrl(sUrl)
     elif not xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
@@ -408,8 +421,10 @@ def play__():#Lancer les liens
         if stype:
             from F4mProxy import f4mProxyHelper
             f4mp = f4mProxyHelper()
-            xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc = True)
-            f4mp.playF4mLink(sUrl, sTitle, proxy = None, use_proxy_for_chunks = False, maxbitrate = 0, simpleDownloader = True, auth = None, streamtype = stype, setResolved = True, swf = None, callbackpath = '', callbackparam = '', iconImage = sThumbnail)
+            xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=True)
+            f4mp.playF4mLink(sUrl, sTitle, proxy=None, use_proxy_for_chunks=False, maxbitrate=0, simpleDownloader=True
+                                 , auth=None, streamtype=stype, setResolved=True, swf=None, callbackpath=''
+                                 , callbackparam='', iconImage=sThumbnail)
             return
 
     if 'dailymotion' in sUrl:
@@ -433,15 +448,17 @@ def play__():#Lancer les liens
         oPlayer.addItemToPlaylist(oGuiElement)
         oPlayer.startPlayer()
 
-#############################################################################
-#Fonction diverse :
+
+"""
+Fonction diverse:
 #   - GetRealUrl = Regex pour Iptv(Officiel)
 #   - DecodeEmail = Decode les email coder par Cloudflare pour extinf
 #   - unZip = Extrait les un fichier specific dans une archive zip
 #   - unGoogleDrive = Recupere le fichier video quand il est heberger sur GoogleDrive
 #   - showDailymotionStream = Lis les liens de streaming de Daylimotion qui sont speciaux
 #   - getBrightcoveKey = Recupere le token pour les liens proteger par Brightcove (RMC Decouvert par exemple)
-#############################################################################
+"""
+
 
 def GetRealUrl(chain):
     oParser = cParser()
@@ -467,7 +484,7 @@ def GetRealUrl(chain):
     if (r):
         url = r.group(1)
 
-    #post metehod ?
+    # post metehod ?
     r = re.search('\[[POSTFORM]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
     if (r):
         param = r.group(1)
@@ -483,17 +500,18 @@ def GetRealUrl(chain):
 
     if regex:
         aResult2 = oParser.parse(sHtmlContent, regex)
-        if (aResult2):
+        if aResult2:
             url = aResult2[1][0]
 
-    #VSlog('Url recuperee : ' + url)
     url = url + '|User-Agent=' + UA2
 
     return url
 
+
 def openwindows():
-    xbmc.executebuiltin('ActivateWindow(%d, return)' % ( 10601))
+    xbmc.executebuiltin('ActivateWindow(%d, return)' % 10601)
     return
+
 
 def decodeEmail(e):
     head, e = e.split('a href=')
@@ -503,9 +521,10 @@ def decodeEmail(e):
     k = int(e[:2], 16)
 
     for i in range(2, len(e)-1, 2):
-        de += chr(int(e[i:i+2], 16)^k)
+        de += chr(int(e[i:i+2], 16) ^ k)
 
     return head + str(de) + rest
+
 
 def unZip():
     oInputParameterHandler = cInputParameterHandler()
@@ -523,11 +542,13 @@ def unZip():
         inf = sHtmlContent
     showWeb(inf)
 
+
 def unGoogleDrive (infile):
     ids = re.findall('<a href="https://drive.google.com/file/d/([^"]+)/view', infile)[0]
     url = 'https://drive.google.com/uc?id=' + ids + '&export=download'
     inf = getHtml(url)
     return inf
+
 
 def showDailymotionStream(sUrl, sTitle, sThumbnail):
     oGui = cGui()
@@ -541,7 +562,7 @@ def showDailymotionStream(sUrl, sTitle, sThumbnail):
     oRequestHandler.addHeaderEntry('User-Agent', 'Android')
     mb = oRequestHandler.request()
     mb = re.findall('NAME="([^"]+)"\n(.+)', mb)
-    mb = sorted(mb,reverse=True)
+    mb = sorted(mb, reverse=True)
     for entry in mb:
         if not entry[1].startswith('http'):
             sHosterUrl = sUrl
@@ -563,14 +584,15 @@ def showDailymotionStream(sUrl, sTitle, sThumbnail):
     oGui.setEndOfDirectory()
     return
 
+
 def getBrightcoveKey(sUrl):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     if "rmcdecouverte" in sUrl:
-    	result = re.search('data-account="(.+?)" data-player="(.+?)".+?data-video-id="(.+?)"', sHtmlContent)
+        result = re.search('data-account="(.+?)" data-player="(.+?)".+?data-video-id="(.+?)"', sHtmlContent)
     else:
-    	result = re.search('<div class="video_block" id="video_player_.+?" accountid="([^"]+)" playerid="([^"]+)" videoid="([^"]+)"', sHtmlContent)
+        result = re.search('<div class="video_block" id="video_player_.+?" accountid="([^"]+)" playerid="([^"]+)" videoid="([^"]+)"', sHtmlContent)
 
     account = result.group(1)
     player = result.group(2)

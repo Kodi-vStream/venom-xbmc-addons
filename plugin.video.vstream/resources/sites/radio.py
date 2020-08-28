@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Venom
+import re
+import string
+import xbmc
+import xbmcvfs
+
+from resources.lib.comaddon import addon
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -8,10 +14,6 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.player import cPlayer
-from resources.lib.comaddon import addon, xbmc
-import xbmcvfs
-import string
-import re
 
 SITE_IDENTIFIER = 'radio'
 SITE_NAME = '[COLOR orange]Radio[/COLOR]'
@@ -20,9 +22,7 @@ SITE_DESC = 'Radio'
 UA = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
 
 USER_AGENT = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
-headers = {'User-Agent': USER_AGENT,
-           'Accept': '*/*',
-           'Connection': 'keep-alive'}
+headers = {'User-Agent': USER_AGENT, 'Accept': '*/*', 'Connection': 'keep-alive'}
 
 icon = 'tv.png'
 # /home/lordvenom/.kodi/
@@ -30,7 +30,7 @@ icon = 'tv.png'
 sRootArt = 'special://home/addons/plugin.video.vstream/resources/art/tv'
 
 
-class track():
+class track:
     def __init__(self, location, title, image, ident):
         self.location = location
         self.title = title
@@ -61,25 +61,25 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['70', '70'] )
-    liste.append( ['80', '80'] )
-    liste.append( ['90', '90'] )
-    liste.append( ['Classic', 'Classic'] )
-    liste.append( ['Clubbing', 'Clubbing'] )
-    liste.append( ['Dance', 'Dance'] )
-    liste.append( ['Electronic', 'Electronic'] )
-    liste.append( ['Funk', 'Funk'] )
-    liste.append( ['Hip-Hop', 'Hip-Hop'] )
-    liste.append( ['Hits', 'Hits'] )
-    liste.append( ['Jazz', 'Jazz'] )
-    liste.append( ['Lounge', 'Lounge'] )
-    liste.append( ['Love', 'Love'] )
-    liste.append( ['Metal', 'Metal'] )
-    liste.append( ['News', 'News'] )
-    liste.append( ['Pop', 'Pop'] )
-    liste.append( ['Rock', 'Rock'] )
-    liste.append( ['Slow', 'Slow'] )
-    liste.append( ['Trance', 'Trance'] )
+    liste.append(['70', '70'])
+    liste.append(['80', '80'])
+    liste.append(['90', '90'])
+    liste.append(['Classic', 'Classic'])
+    liste.append(['Clubbing', 'Clubbing'])
+    liste.append(['Dance', 'Dance'])
+    liste.append(['Electronic', 'Electronic'])
+    liste.append(['Funk', 'Funk'])
+    liste.append(['Hip-Hop', 'Hip-Hop'])
+    liste.append(['Hits', 'Hits'])
+    liste.append(['Jazz', 'Jazz'])
+    liste.append(['Lounge', 'Lounge'])
+    liste.append(['Love', 'Love'])
+    liste.append(['Metal', 'Metal'])
+    liste.append(['News', 'News'])
+    liste.append(['Pop', 'Pop'])
+    liste.append(['Rock', 'Rock'])
+    liste.append(['Slow', 'Slow'])
+    liste.append(['Trance', 'Trance'])
 
     for sTitle, sIdent in liste:
 
@@ -160,7 +160,7 @@ def showWeb():  # Code qui s'occupe de liens TV du Web
             oGuiElement.setDirectTvFanart()
             oGuiElement.setCat(6)
 
-            oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+            oGui.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
