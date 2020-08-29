@@ -132,7 +132,7 @@ class cTMDb:
         try:
             self.dbcur.execute(sql_create)
         except:
-            VSlog('Error: Cannot create table')
+            VSlog('Error: Cannot create table movie')
 
         sql_create = "CREATE TABLE IF NOT EXISTS tvshow ("\
                      "imdb_id TEXT, "\
@@ -191,7 +191,7 @@ class cTMDb:
                      ");"
 
         self.dbcur.execute(sql_create)
-        VSlog('table creee')
+        VSlog('table movie creee')
 
     def __del__(self):
         """ Cleanup db when object destroyed """
@@ -763,10 +763,10 @@ class cTMDb:
             return None
 
         if matchedrow:
-            VSlog('Found meta information by name in cache table')
+#             VSlog('Found meta information by name in cache table')
             return dict(matchedrow)
         else:
-            VSlog('No match in local DB')
+#             VSlog('No match in local DB')
             return None
 
     def _cache_save(self, meta, name, media_type, season, year):
@@ -795,9 +795,9 @@ class cTMDb:
                   'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' % media_type
             self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(runtime), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], 0))
             self.db.commit()
-            VSlog('SQL INSERT Successfully')
+#             VSlog('SQL INSERT Successfully')
         except Exception as e:
-            VSlog('SQL ERROR INSERT')
+            VSlog('SQL ERROR INSERT into table ' + media_type)
             pass
 
     # Cache pour les séries (et animes)
@@ -823,9 +823,9 @@ class cTMDb:
                   'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' % media_type
             self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['rating'], meta['votes'], runtime, meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], 0))
             self.db.commit()
-            VSlog('SQL INSERT Successfully')
+#             VSlog('SQL INSERT Successfully')
         except Exception as e:
-            VSlog('SQL ERROR INSERT')
+            VSlog('SQL ERROR INSERT into table ' + media_type)
             pass
 
     def _cache_save_season(self, meta, season):
@@ -842,9 +842,9 @@ class cTMDb:
                 self.dbcur.execute(sql, (meta['imdb_id'], s['id'], s['season_number'], s['air_date'], s['air_date'], s['poster_path'], 6))
 
                 self.db.commit()
-                VSlog('SQL INSERT Successfully')
+#                 VSlog('SQL INSERT Successfully')
             except Exception:
-                VSlog('SQL ERROR INSERT')
+                VSlog('SQL ERROR INSERT into table season')
                 pass
 
     def get_meta(self, media_type, name, imdb_id='', tmdb_id='', year='', season='', episode='', update=False):
@@ -869,7 +869,7 @@ class cTMDb:
 
         name = re.sub(" +", " ", name)  # nettoyage du titre
 
-        VSlog('Attempting to retrieve meta data for %s: %s %s %s %s' % (media_type, name, year, imdb_id, tmdb_id))
+#         VSlog('Attempting to retrieve meta data for %s: %s %s %s %s' % (media_type, name, year, imdb_id, tmdb_id))
 
         # recherche dans la base de données
         if not update:
@@ -924,7 +924,7 @@ class cTMDb:
         return result
 
     def _call(self, action, append_to_response=''):
-        url = '%s%s?api_key=%s&language=%s' % (self.URL, action, self.api_key, self.lang)
+        url = '%s%s?language=%s&api_key=%s' % (self.URL, action, self.lang, self.api_key)
         if append_to_response:
             url += '&%s' % append_to_response
 
