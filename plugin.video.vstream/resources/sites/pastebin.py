@@ -409,7 +409,7 @@ def showGroupes():
                         groupesPerso.add(gr)
 
     for sGroupe in sorted(groupesPerso):
-        siteUrl = sUrl + '&sMedia=' + sMedia +'&sGroupe=' + sGroupe 
+        siteUrl = sUrl + '&sMedia=' + sMedia +'&sGroupe=' + sGroupe
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', siteUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sGroupe, 'genres.png', oOutputParameterHandler)
@@ -447,7 +447,7 @@ def showGroupeDetails():
                         groupes.add(gr)
 
     for sGroupe in sorted(groupes):
-        siteUrl = sUrl + '&sMedia=' + sMedia +'&sGroupe=' + sGroupe 
+        siteUrl = sUrl + '&sMedia=' + sMedia +'&sGroupe=' + sGroupe.replace('+', '|')
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', siteUrl)
         sDisplayGroupe = sGroupe.split(':')[1]
@@ -515,14 +515,20 @@ def showSaga():
 
         sTmdbId = sagas[sSagaName]
 
-        siteUrl = sUrl + '&sMedia=' + sMedia + '&sSaga=' + sSagaName 
+        siteUrl = sUrl + '&sMedia=' + sMedia
+
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
-        oOutputParameterHandler.addParameter('sMovieTitle', sSagaName)
         if sTmdbId.isdigit():
-            oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
+            oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)    # Utilisé par TMDB
+            siteUrl += '&sSaga=' + sTmdbId + ':' + sSagaName
         else:
+            siteUrl += '&sSaga=' + sSagaName
+
+        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+        if sSagaName.lower().endswith('saga'):
             oOutputParameterHandler.addParameter('sMovieTitle', sSagaName)
+        else:
+            oOutputParameterHandler.addParameter('sMovieTitle', sSagaName + " Saga")
         oGui.addMoviePack(SITE_IDENTIFIER, 'showMovies', sSagaName, 'genres.png', '', '', oOutputParameterHandler)
 
         nbItem += 1
@@ -611,7 +617,6 @@ def showMovies(sSearch=''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sTmdbId = oInputParameterHandler.getValue('sTmdbId')
     numItem = oInputParameterHandler.getValue('numItem')
     numPage = oInputParameterHandler.getValue('numPage')
     sMedia = 'film' # Par défaut
@@ -628,8 +633,8 @@ def showMovies(sSearch=''):
 
     sSearchTitle = ''
     
-    # Pour supporter le caractere '&' dans les noms alors qu'il est réservé
-    sUrl = sUrl.replace(' & ', ' | ')
+    # Pour supporter les caracteres '&' et '+' dans les noms alors qu'il sontréservé
+    sUrl = sUrl.replace('+', ' ').replace('|', '+').replace(' & ', ' | ')
     
     sUrl, params = sUrl.split('&',1)
     aParams = dict(param.split('=') for param in params.split('&'))
@@ -638,9 +643,7 @@ def showMovies(sSearch=''):
     if 'sSearch' in aParams: sSearchTitle = Unquote(aParams['sSearch']).replace(' | ', ' & ')
     if 'sGenre' in aParams: sGenre = aParams['sGenre'].replace(' | ', ' & ')
     if 'sSaga' in aParams:
-        if sTmdbId:
-            sSaga = sTmdbId + ':'
-        sSaga += aParams['sSaga'].replace(' | ', ' & ')
+        sSaga = aParams['sSaga'].replace(' | ', ' & ')
     if 'sGroupe' in aParams: sGroupe = aParams['sGroupe'].replace(' | ', ' & ')
     if 'sYear' in aParams: sYear = aParams['sYear']
     if 'sAlpha' in aParams: sAlpha = aParams['sAlpha']

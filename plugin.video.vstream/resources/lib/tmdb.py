@@ -352,7 +352,7 @@ class cTMDb:
                         if cleanTitleTMDB == cleanTitleSearch:
                             collection = searchCollec
                             break
-                        elif (cleanTitleSearch + ' saga')== cleanTitleTMDB:
+                        elif (cleanTitleSearch + 'saga')== cleanTitleTMDB:
                             collection = searchCollec
                             break
                     # sinon, le premier qui n'est pas du genre animation
@@ -734,8 +734,8 @@ class cTMDb:
             if tmdb_id:
                 sql_select = sql_select + ' WHERE tmdb_id = \'%s\'' % tmdb_id
             else:
-                if not name.endswith(' saga'):
-                    name += ' saga'
+                if not name.endswith('saga'):
+                    name += 'saga'
                 sql_select = sql_select + ' WHERE title = \'%s\'' % name
 
         elif media_type == 'tvshow' or media_type == 'anime':
@@ -776,8 +776,8 @@ class cTMDb:
 
         if media_type == 'collection':
             media_type = 'movie'    # On utilise la même table que pour les films
-            if not name.endswith(' saga'):
-                name += ' saga'
+            if not name.endswith('saga'):
+                name += 'saga'
                 
         # sauvegarde de la durée en minutes, pour le retrouver en minutes comme le fait TMDB
         runtime = 0
