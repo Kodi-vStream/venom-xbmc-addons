@@ -26,7 +26,7 @@ SITE_IDENTIFIER = 'filmstoon_pro'
 SITE_NAME = 'Films toon'
 SITE_DESC = 'Films en streaming'
 
-URL_MAIN = 'https://www.filmstoon.pw/'
+URL_MAIN = 'https://www.filmstoon.icu/'
 
 # globales
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -84,6 +84,7 @@ def showGenres():
     oGui = cGui()
 
     liste = []
+    #liste.append(['Action', URL_MAIN + '/action/'])  # marche aussi
     liste.append(['Action', URL_MAIN + 'film/action/'])
     liste.append(['Animation', URL_MAIN + 'film/anime/'])
     liste.append(['Arts Martiaux', URL_MAIN + 'film/arts-martiaux/'])
@@ -91,19 +92,19 @@ def showGenres():
     liste.append(['Biopic', URL_MAIN + 'film/biopic/'])
     liste.append(['Comédie', URL_MAIN + 'film/comedie/'])
     liste.append(['Comédie dramatique', URL_MAIN + 'comedie-dramatique/'])
-    #liste.append(['Documentaire', URL_MAIN + 'film/documentaire/'])
+    liste.append(['Documentaire', URL_MAIN + 'film/documentaire/'])
     liste.append(['Drame', URL_MAIN + 'film/drame/'])
     liste.append(['Epouvante-horreur', URL_MAIN + 'film/epouvante-horreur/'])
     liste.append(['Espionnage', URL_MAIN + 'film/espionnage'])
     liste.append(['Famille', URL_MAIN + 'film/famille/'])
     liste.append(['Fantastique', URL_MAIN + 'film/fantastique/'])
     liste.append(['Guerre', URL_MAIN + 'film/guerre/'])
-    #liste.append(['Historique', URL_MAIN + 'film/historique/'])
+    liste.append(['Historique', URL_MAIN + 'film/historique/'])
     liste.append(['Musical', URL_MAIN + 'film/musical/'])
     liste.append(['Policier', URL_MAIN + 'film/policier/'])
     liste.append(['Romance', URL_MAIN + 'film/romance/'])
     liste.append(['Science fiction', URL_MAIN + 'film/science-fiction/'])
-    #liste.append(['Thriller', URL_MAIN + 'film/thriller/'])
+    liste.append(['Thriller', URL_MAIN + 'film/thriller/'])
     liste.append(['Western', URL_MAIN + 'film/western/'])
 
     for sTitle, sUrl in liste:
@@ -192,7 +193,7 @@ def showMovies(sSearch=''):
         if (NextPage != False):
             sNumLastPage = NextPage[0]
             sUrlNextPage = NextPage[1]
-            if URL_MAIN not in sUrlNextPage:
+            if 'http' not in sUrlNextPage:
                 sUrlNextPage = URL_MAIN[:-1] + sUrlNextPage
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrlNextPage)
