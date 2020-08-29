@@ -668,7 +668,11 @@ def showMovies(sSearch=''):
     # Recherche par saga => trie par années
     if sSaga and pbContent.YEAR>=0:
         movies = sorted(movies, key=lambda line: line[pbContent.YEAR])
-        
+
+    # Dans un dossier => trie par années inversées (du plus récent)
+    if sGroupe:
+        movies = reversed(sorted(movies, key=lambda line: line[pbContent.YEAR]))
+
         
     for movie in movies:
 
