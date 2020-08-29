@@ -523,13 +523,15 @@ def showSaga():
             siteUrl += '&sSaga=' + sTmdbId + ':' + sSagaName
         else:
             siteUrl += '&sSaga=' + sSagaName
-
         oOutputParameterHandler.addParameter('siteUrl', siteUrl)
-        if sSagaName.lower().endswith('saga'):
-            oOutputParameterHandler.addParameter('sMovieTitle', sSagaName)
-        else:
-            oOutputParameterHandler.addParameter('sMovieTitle', sSagaName + " Saga")
-        oGui.addMoviePack(SITE_IDENTIFIER, 'showMovies', sSagaName, 'genres.png', '', '', oOutputParameterHandler)
+        
+        sDisplaySaga = sSagaName
+        sSagaName = sSagaName.replace('[', '').replace(']', '')   # Exemple pour le film [REC], les crochets sont génant pour certaines fonctions
+        if not sSagaName.lower().endswith('saga'):
+            sSagaName = sSagaName + " Saga"
+        oOutputParameterHandler.addParameter('sMovieTitle', sSagaName)
+        
+        oGui.addMoviePack(SITE_IDENTIFIER, 'showMovies', sDisplaySaga, 'genres.png', '', '', oOutputParameterHandler)
 
         nbItem += 1
         if nbItem % ITEM_PAR_PAGE == 0:
@@ -748,6 +750,7 @@ def showMovies(sSearch=''):
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         
+        sTitle = sTitle.replace('[', '').replace(']', '')   # Exemple pour le film [REC], les crochets sont génant pour certaines fonctions
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         if sTmdbId:
             oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
