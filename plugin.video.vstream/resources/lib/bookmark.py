@@ -108,7 +108,11 @@ class cFav:
                 thumbnail = data[6]
 
             try:
-                siteurl = UnquotePlus(data[2])
+                try:
+                    siteurl = data[2].encode('utf-8')
+                except:
+                    siteurl = data[2]
+                siteurl = UnquotePlus(siteurl)
                 site = data[3]
                 function = data[4]
                 cat = data[5]
