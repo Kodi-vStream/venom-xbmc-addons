@@ -1,19 +1,21 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#Venom.
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+# Venom.
+return false  # désactivé le 29/08/2020
 
-#tester le 30/10 ne fonctionne pas
-from resources.lib.gui.hoster import cHosterGui
+import base64
+import re
+import urllib2
+
+# from resources.lib.config import GestionCookie
+from resources.lib.comaddon import progress
 from resources.lib.gui.gui import cGui
+# tester le 30/10 ne fonctionne pas
+from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-#from resources.lib.config import GestionCookie
-from resources.lib.comaddon import progress#, VSlog
-
-import re, urllib2
-import base64
 
 SITE_IDENTIFIER = 'tvrex_net'
 SITE_NAME = 'Tvrex'
@@ -31,13 +33,14 @@ SPORT_SPORTS = ('http://', 'load')
 Logo_Reddit = 'aHR0cHM6Ly9iLnRodW1icy5yZWRkaXRtZWRpYS5jb20va1c5ZFNqRFlzUDhGbEJYeUUyemJaaEFCaXM5eS0zVHViSWtic0JfUDlBay5wbmc='
 Logo_Nba = 'aHR0cDovL3d3dy5vZmZpY2lhbHBzZHMuY29tL2ltYWdlcy90aHVtYnMvSS1sb3ZlLXRoaXMtZ2FtZS1uYmEtbG9nby1wc2Q2MDQwNy5wbmc='
 
+
 def TimeET():
     sUrl = 'http://www.worldtimeserver.com/current_time_in_CA-ON.aspx'
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-    oParser = cParser()
 
+    sHtmlContent = oRequestHandler.request()
     sPattern = '<span id="theTime" class="fontTS">\s*(.+?)\s*</span>'
+    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -79,9 +82,7 @@ def load():
 
 
 def showSearch():
-
     oGui = cGui()
-
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH[0] + sSearchText
@@ -91,7 +92,6 @@ def showSearch():
 
 
 def showFinals():
-
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -132,36 +132,36 @@ def showFinals():
 def showGenres():
     oGui = cGui()
     liste = []
-    liste.append( ['Atlanta (Hawks)', URL_MAIN + 'category/nba/atlanta-hawks/'] )
-    liste.append( ['Boston (Celtics)', URL_MAIN + 'category/nba/boston-celtics/'] )
-    liste.append( ['Brooklyn (Nets)', URL_MAIN + 'category/nba/brooklyn-nets/'] )
-    liste.append( ['Charlotte (Hornets)', URL_MAIN + 'category/nba/charlotte-hornets/'] )
-    liste.append( ['Chicago (Bulls)', URL_MAIN + 'category/nba/chicago-bulls/'] )
-    liste.append( ['Cleveland (Cavaliers)', URL_MAIN + 'category/nba/cleveland-cavaliers/'] )
-    liste.append( ['Dallas (Mavericks)', URL_MAIN + 'category/nba/dallas-mavericks/'] )
-    liste.append( ['Denver (Nuggets)', URL_MAIN + 'category/nba/denver-nuggets/'] )
-    liste.append( ['Détroit (Pistons)', URL_MAIN + 'category/nba/detroit-pistons/'] )
-    liste.append( ['Golden-state (Warriors)', URL_MAIN + 'category/nba/golden-state-warriors/'] )
-    liste.append( ['Houston (Rockets)', URL_MAIN + 'category/nba/houston-rockets/'] )
-    liste.append( ['Indiana (Pacers)', URL_MAIN + 'category/nba/indiana-pacers/'] )
-    liste.append( ['Los Angeles (Clippers)', URL_MAIN + 'category/nba/los-angeles-clippers/'] )
-    liste.append( ['Los Angeles (Lakers)', URL_MAIN + 'category/nba/los-angeles-lakers/'] )
-    liste.append( ['Memphis (Grizzlies)', URL_MAIN + 'category/nba/memphis-grizzlies/'] )
-    liste.append( ['Miami (Heat)', URL_MAIN + 'category/nba/miami-heat/'] )
-    liste.append( ['Milwaukee (Bucks)', URL_MAIN + 'category/nba/milwaukee-bucks/'] )
-    liste.append( ['Minnesota (Timberwolves)', URL_MAIN + 'category/nba/minnesota-timberwolves/'] )
-    liste.append( ['New-Orléans (Pelicans)', URL_MAIN + 'category/nba/new-orleans-pelicans/'] )
-    liste.append( ['New-York (Knicks)', URL_MAIN + 'category/nba/new-york-knicks/'] )
-    liste.append( ['Oklahoma City (Thunder)', URL_MAIN + 'category/nba/oklahoma-city-thunder/'] )
-    liste.append( ['Orlando (Magic)', URL_MAIN + 'category/nba/orlando-magic/'] )
-    liste.append( ['Philadelphia (79ers)', URL_MAIN + 'category/nba/philadelphia-76ers/'] )
-    liste.append( ['Phoenix (Suns)', URL_MAIN + 'category/nba/phoenix-suns/'] )
-    liste.append( ['Portland (Blazers)', URL_MAIN + 'category/nba/portland-trail-blazers/'] )
-    liste.append( ['Sacramento (Kings)', URL_MAIN + 'category/nba/sacramento-kings/'] )
-    liste.append( ['San Antonio (Spurs)', URL_MAIN + 'category/nba/san-antonio-spurs/'] )
-    liste.append( ['Toronto (Raptors)', URL_MAIN + 'category/nba/toronto-raptors/'] )
-    liste.append( ['Utah (Jazz)', URL_MAIN + 'category/nba/utah-jazz/'] )
-    liste.append( ['Washington (Wizards)', URL_MAIN + 'category/nba/washington-wizards/'] )
+    liste.append(['Atlanta (Hawks)', URL_MAIN + 'category/nba/atlanta-hawks/'])
+    liste.append(['Boston (Celtics)', URL_MAIN + 'category/nba/boston-celtics/'])
+    liste.append(['Brooklyn (Nets)', URL_MAIN + 'category/nba/brooklyn-nets/'])
+    liste.append(['Charlotte (Hornets)', URL_MAIN + 'category/nba/charlotte-hornets/'])
+    liste.append(['Chicago (Bulls)', URL_MAIN + 'category/nba/chicago-bulls/'])
+    liste.append(['Cleveland (Cavaliers)', URL_MAIN + 'category/nba/cleveland-cavaliers/'])
+    liste.append(['Dallas (Mavericks)', URL_MAIN + 'category/nba/dallas-mavericks/'])
+    liste.append(['Denver (Nuggets)', URL_MAIN + 'category/nba/denver-nuggets/'])
+    liste.append(['Détroit (Pistons)', URL_MAIN + 'category/nba/detroit-pistons/'])
+    liste.append(['Golden-state (Warriors)', URL_MAIN + 'category/nba/golden-state-warriors/'])
+    liste.append(['Houston (Rockets)', URL_MAIN + 'category/nba/houston-rockets/'])
+    liste.append(['Indiana (Pacers)', URL_MAIN + 'category/nba/indiana-pacers/'])
+    liste.append(['Los Angeles (Clippers)', URL_MAIN + 'category/nba/los-angeles-clippers/'])
+    liste.append(['Los Angeles (Lakers)', URL_MAIN + 'category/nba/los-angeles-lakers/'])
+    liste.append(['Memphis (Grizzlies)', URL_MAIN + 'category/nba/memphis-grizzlies/'])
+    liste.append(['Miami (Heat)', URL_MAIN + 'category/nba/miami-heat/'])
+    liste.append(['Milwaukee (Bucks)', URL_MAIN + 'category/nba/milwaukee-bucks/'])
+    liste.append(['Minnesota (Timberwolves)', URL_MAIN + 'category/nba/minnesota-timberwolves/'])
+    liste.append(['New-Orléans (Pelicans)', URL_MAIN + 'category/nba/new-orleans-pelicans/'])
+    liste.append(['New-York (Knicks)', URL_MAIN + 'category/nba/new-york-knicks/'])
+    liste.append(['Oklahoma City (Thunder)', URL_MAIN + 'category/nba/oklahoma-city-thunder/'])
+    liste.append(['Orlando (Magic)', URL_MAIN + 'category/nba/orlando-magic/'])
+    liste.append(['Philadelphia (79ers)', URL_MAIN + 'category/nba/philadelphia-76ers/'])
+    liste.append(['Phoenix (Suns)', URL_MAIN + 'category/nba/phoenix-suns/'])
+    liste.append(['Portland (Blazers)', URL_MAIN + 'category/nba/portland-trail-blazers/'])
+    liste.append(['Sacramento (Kings)', URL_MAIN + 'category/nba/sacramento-kings/'])
+    liste.append(['San Antonio (Spurs)', URL_MAIN + 'category/nba/san-antonio-spurs/'])
+    liste.append(['Toronto (Raptors)', URL_MAIN + 'category/nba/toronto-raptors/'])
+    liste.append(['Utah (Jazz)', URL_MAIN + 'category/nba/utah-jazz/'])
+    liste.append(['Washington (Wizards)', URL_MAIN + 'category/nba/washington-wizards/'])
 
     for sTitle, sUrl in liste:
 
@@ -172,15 +172,13 @@ def showGenres():
     oGui.setEndOfDirectory()
 
 
-def showMovies(sSearch = ''):
-
+def showMovies(sSearch=''):
     oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     if sSearch:
         sUrl = sSearch
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -188,7 +186,7 @@ def showMovies(sSearch = ''):
     if 'reddit' in sUrl:
         TimeUTC = TimeET()
         sPattern = 'utm_name=nbastreams".+?>Game Thread:(.+?)</a>.+?<ul class=".+?"><li class=".+?"><a href="(.+?)"'
-        oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Live NBA Game (@Reddit)[/COLOR]' + '[COLOR gray]' + '  [ Heure Locale ET : ' + '[/COLOR]' + TimeUTC + '[COLOR gray]' + ' ]' + '[/COLOR]')
+        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Live NBA Game (@Reddit)[/COLOR]' + '[COLOR gray]' + ' [ Heure Locale ET : ' + '[/COLOR]' + TimeUTC + '[COLOR gray]' + ']' + '[/COLOR]')
 
     elif 'category/20' in sUrl:
         sPattern = '<a href="([^"]+)">([^<]+)</a></h2>'
@@ -216,28 +214,28 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            #listage game thread via reddit
+            # listage game thread via reddit
             if 'reddit' in sUrl:
                 try:
                     sUrl2 = aEntry[1]
                     sTitle = aEntry[0]
                     sThumb = base64.b64decode(Logo_Reddit)
-                    sTitle2= sTitle.split('(')
+                    sTitle2 = sTitle.split('(')
                     sTitle = sTitle2[0]
                     sTimeLive = sTitle2[1]
                     sTimeLive = sTimeLive.replace(')', '')
                     sTitle = '[COLOR teal]' + sTimeLive + '[/COLOR]' + sTitle
 
-                except:
-                    #erreur parse
+                finally:
+                    # erreur parse
                     sThumb = ' '
                     sTitle = 'Erreur parse'
                     sUrl2 = ''
 
-            #listage replay&search
+            # listage replay&search
             else:
 
-                if ('category/20' in sUrl):
+                if 'category/20' in sUrl:
 
                     sUrl2 = aEntry[0]
                     sTitle = aEntry[1]
@@ -256,13 +254,13 @@ def showMovies(sSearch = ''):
 
                     sTitle2 = sTitle.split(' – ')
                     sTitle = sTitle2[0]
-                    sDateReplay =  sTitle2[1]
+                    sDateReplay = sTitle2[1]
 
                     if (sDate != sDateReplay):
-                        oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Replay[/COLOR]' + '[COLOR teal]' + ' / ' + sDateReplay + '[/COLOR]')
+                        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Replay[/COLOR]' + '[COLOR teal]' + ' / ' + sDateReplay + '[/COLOR]')
                         sDate = sDateReplay
 
-            except:
+            finally:
                 pass
 
             try:
@@ -286,7 +284,7 @@ def showMovies(sSearch = ''):
 
                     sTitle = '[COLOR olive]' + sGame + '[/COLOR]' + sTeam + '[COLOR teal]' + '/' + sDatePlayoff + '[/COLOR]'
 
-            except:
+            finally:
                 pass
 
             try:
@@ -312,17 +310,16 @@ def showMovies(sSearch = ''):
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
 
     else:
-        if  'reddit' in sUrl:
+        if 'reddit' in sUrl:
             oGui.addText(SITE_IDENTIFIER, '(Aucun Match disponible via Reddit pour le moment)')
         else:
-            oGui.addText(SITE_IDENTIFIER, '(Erreur -Replay non disponible)')
+            oGui.addText(SITE_IDENTIFIER, '(Erreur - Replay non disponible)')
 
     if not sSearch:
         oGui.setEndOfDirectory()
 
 
-def __checkForNextPage(sHtmlContent,sUrl):
-
+def __checkForNextPage(sHtmlContent, sUrl):
     oParser = cParser()
     if '?s=' in sUrl:
         sPattern = '<span class=\'current\'>.+?</span><a href=\'(.+?)\''
@@ -336,7 +333,6 @@ def __checkForNextPage(sHtmlContent,sUrl):
 
 
 def showHosters():
-
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -345,16 +341,15 @@ def showHosters():
     sDateReplay = oInputParameterHandler.getValue('sDateReplay')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace(' rel="nofollow"', '')
-
 
     if sDateReplay:
         sMovieTitle = sMovieTitle + '[COLOR teal]' + ' / ' + sDateReplay + '[/COLOR]'
 
     sLink = []
 
-    if 'reddit' in sUrl: #Live
+    if 'reddit' in sUrl:  # Live
 
         sPattern = '(?:<td>|)<a href="(http.+?(?:nbastreams|eplstream|yoursportsinhd|247hd).+?)">(?:<strong>.+?</strong>|)([^<]+)</a>(?:.+?Chrome.+?|)</td>'
 
@@ -362,7 +357,7 @@ def showHosters():
 
         sDisplay = '[COLOR olive]Streaming disponibles:[/COLOR]'
 
-    else: #Replay
+    else:  # Replay
 
         sPattern = '<a href="(https?://(?:wstream|youwa|openlo)[^"]+)" target="_blank">(?:([^<]+)</a>|)'
         sPattern2 = '(?:data\-lazy\-src|src)="(http.+?(?:openload|raptu)\.co[^"]+)"'
@@ -371,11 +366,11 @@ def showHosters():
         aResult2 = re.findall(sPattern2, sHtmlContent)
         sLink = aResult1 + aResult2
 
-        #Test si lien video non embed (raptu/openload)
+        # Test si lien video non embed (raptu/openload)
         sPattern3 = 'document.getElementById\(\'frame\'\).src=\'([^"]+)\'">(.+?)<span'
         aResult3 = re.findall(sPattern3, sHtmlContent)
 
-        #recup lien video non embed
+        # recup lien video non embed
         if (aResult3):
 
             for aEntry in aResult3:
@@ -394,12 +389,12 @@ def showHosters():
     oGui.addText(SITE_IDENTIFIER, sMovieTitle)
     oGui.addText(SITE_IDENTIFIER, sDisplay)
 
-    #affichage final des liens
+    # affichage final des liens
     if (sLink):
 
         for aEntry in sLink:
 
-            if 'reddit' in sUrl: #Live
+            if 'reddit' in sUrl:  # Live
 
                 sThumb = base64.b64decode(Logo_Nba)
                 sHosterUrl = aEntry[0].replace('&amp;', '&')
@@ -420,7 +415,7 @@ def showHosters():
 
                 oGui.addMovie(SITE_IDENTIFIER, 'showLiveHosters', sTitle, '', sThumb, sHosterUrl, oOutputParameterHandler)
 
-            else: #Replay
+            else:  # Replay
 
                 if aEntry[0]:
                     sHosterUrl = aEntry[0]
@@ -442,7 +437,6 @@ def showHosters():
                 else:
                     sTitle = ('[%s]') % (aEntry[1])
 
-
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     oHoster.setDisplayName(sTitle)
@@ -454,9 +448,9 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
-#Live 24/24 chaine nbatv
-def showLiveNbatv():
 
+# Live 24/24 chaine nbatv
+def showLiveNbatv():
     oGui = cGui()
 
     sThumb = base64.b64decode(Logo_Nba)
@@ -479,21 +473,20 @@ def showLiveNbatv():
 
     oGui.setEndOfDirectory()
 
-#recuperation lecture m3u8 nba livestream - ok sauf si geoIP (USA) ou lien secu ou regex a maj
-def showLiveHosters():
 
+# recuperation lecture m3u8 nba livestream - ok sauf si geoIP (USA) ou lien secu ou regex a maj
+def showLiveHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    UA='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36'
+    UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36'
 
     try:
         request = urllib2.Request(sUrl)
         request.add_header('User-agent', UA)
-
         response = urllib2.urlopen(request)
         sHtmlContent = response.read()
         response.close()
@@ -507,14 +500,14 @@ def showLiveHosters():
     if (aResult):
         for aEntry in aResult:
 
-            #si streamer utilise chrome extension
+            # si streamer utilise chrome extension
             if '#http' in aEntry:
                 sUrl2 = aEntry.split('#')
                 sHosterUrl = sUrl2[1]
             else:
                 sHosterUrl = aEntry
 
-            #live ok avec UA ipad sauf si geoIP usa
+            # live ok avec UA ipad sauf si geoIP usa
             sHosterUrl = sHosterUrl + '|User-Agent=Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B367 Safari/531.21.1'
 
             oHoster = cHosterGui().checkHoster('m3u8')
@@ -527,15 +520,14 @@ def showLiveHosters():
 
     oGui.setEndOfDirectory()
 
+
 def showHosters4():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    oParser = cParser()
 
-    aResult = []
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -546,7 +538,7 @@ def showHosters4():
     aResult2 = re.findall(sPattern2, sHtmlContent)
     aResult = aResult1 + aResult2
 
-    if (aResult):
+    if aResult:
         for aEntry in aResult:
             sHosterUrl = aEntry
             if not sHosterUrl.startswith('http'):
@@ -555,7 +547,7 @@ def showHosters4():
             if 'fembed' in sHosterUrl:
                 videoID = re.findall('v/([^"]+)', sHosterUrl)
                 oRequestHandler = cRequestHandler(sUrl)
-                sHtmlContent = oRequestHandler.request()
+                oRequestHandler.request()
                 cookies = oRequestHandler.GetCookies()
 
                 apiUrl = 'https://www.fembed.com/api/source/' + videoID[0]
@@ -570,16 +562,15 @@ def showHosters4():
 
                 aResult = re.findall('"file":"(.+?)"', sHtmlContent)
                 if (aResult):
-                    for aEntry in aResult:
-                        sHosterUrl = aEntry.replace('\/', '\\')
-                        if not sHosterUrl.startswith('http'):
-                            sHosterUrl = 'https://www.fembed.com' + sHosterUrl
+                    sHosterUrl = aEntry.replace('\/', '\\')
+                    if not sHosterUrl.startswith('http'):
+                        sHosterUrl = 'https://www.fembed.com' + sHosterUrl
 
-                        oHoster = cHosterGui().checkHoster(sHosterUrl)
-                        if (oHoster != False):
-                            oHoster.setDisplayName(sMovieTitle)
-                            oHoster.setFileName(sMovieTitle)
-                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                    oHoster = cHosterGui().checkHoster(sHosterUrl)
+                    if (oHoster != False):
+                        oHoster.setDisplayName(sMovieTitle)
+                        oHoster.setFileName(sMovieTitle)
+                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
             else:
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
