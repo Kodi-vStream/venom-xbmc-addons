@@ -21,6 +21,7 @@ KEY_PASTE_ID = 'PASTE_ID'
 SETTING_PASTE_ID = 'pastebin_id_'
 SETTING_PASTE_LABEL = 'pastebin_label_'
 UNCLASSIFIED_GENRE = '_NON CLASSÉ_'
+UNCLASSIFIED_RESOLUTION = 'Indéterminé'
 
 URL_SEARCH_MOVIES = (URL_MAIN + KEY_PASTE_ID + '&sMedia=film&sSearch=', 'showSearchGlobal')
 URL_SEARCH_SERIES = (URL_MAIN + KEY_PASTE_ID + '&sMedia=serie&sSearch=', 'showSearchGlobal')
@@ -47,6 +48,7 @@ class PasteBinContent:
     GROUPES = -1  # (optionnel) - Groupes tel que NETFLIX, HBO, MARVEL, DISNEY, Films enfants, ...
     YEAR = -1    # (optionnel) - Année
     GENRES = -1  # (optionnel) - Liste des genres
+    RES = -1     # (optionnel) - Résolution (720p, 1080p, 4K, ...)
     URLS = -1    # Liste des liens, avec épisodes pour les séries
     HEBERGEUR = '' # (optionnel) - URL de l'hebergeur, pour éviter de le mettre dans chaque URL, ex : 'https://uptobox.com/'  
     listeGroupe = {} # (optionnel) - Liste de groupes nommés
@@ -169,6 +171,7 @@ def showMenu():
     containFilmGroupes = False
     containFilmSaga = False
     containFilmYear = False
+    containFilmRes = False
     containSeries = False
     containSerieGroupes = False
     containAnimes = False
@@ -183,6 +186,8 @@ def showMenu():
                 containFilmGroupes = True
             if pbContent.YEAR>=0 and len(movie[pbContent.YEAR].strip())>0:
                 containFilmYear = True
+            if pbContent.RES>=0 and len(movie[pbContent.RES].strip())>0:
+                containFilmRes = True
             if pbContent.SAISON>=0 and len(movie[pbContent.SAISON].strip())>0:
                 containFilmSaga = True
         if 'serie' in movie[pbContent.CAT]:
@@ -224,6 +229,11 @@ def showMenu():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film')
             oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Films (Années)', 'annees.png', oOutputParameterHandler)
+
+        if containFilmRes:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film')
+            oGui.addDir(SITE_IDENTIFIER, 'showResolution', 'Films (Résolutions)', 'hd.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film')
@@ -587,6 +597,42 @@ def showYears():
     oGui.setEndOfDirectory()
 
 
+def showResolution():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    sUrl, params = sUrl.split('&',1)
+    aParams = dict(param.split('=') for param in params.split('&'))
+    if 'sMedia' in aParams:
+        sMedia = aParams['sMedia']
+    else:
+        sMedia = 'film'
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sContent = oRequestHandler.request()
+    pbContent = PasteBinContent()
+    movies = pbContent.getLines(sContent)
+
+    resolutions = set()
+    for line in movies:
+        if pbContent.CAT >=0 and sMedia not in line[pbContent.CAT]:
+            continue
+
+        res = line[pbContent.RES].strip()
+        if not res: res = UNCLASSIFIED_RESOLUTION
+        
+        resolutions.add(res)
+
+    for sRes in sorted(resolutions):
+        siteUrl = sUrl + '&sMedia=' + sMedia +'&sRes=' + sRes 
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sRes, 'hd.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
 def AlphaList():
     oGui = cGui()
 
@@ -622,7 +668,7 @@ def showMovies(sSearch=''):
     numItem = oInputParameterHandler.getValue('numItem')
     numPage = oInputParameterHandler.getValue('numPage')
     sMedia = 'film' # Par défaut
-    sGenre = sSaga = sGroupe = sYear = sAlpha = None
+    sGenre = sSaga = sGroupe = sYear = sRes = sAlpha = None
 
     if sSearch:
         sUrl = sSearch
@@ -648,6 +694,7 @@ def showMovies(sSearch=''):
         sSaga = aParams['sSaga'].replace(' | ', ' & ')
     if 'sGroupe' in aParams: sGroupe = aParams['sGroupe'].replace(' | ', ' & ')
     if 'sYear' in aParams: sYear = aParams['sYear']
+    if 'sRes' in aParams: sRes = aParams['sRes']
     if 'sAlpha' in aParams: sAlpha = aParams['sAlpha']
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -671,7 +718,7 @@ def showMovies(sSearch=''):
 
     # Dans un dossier => trie par années inversées (du plus récent)
     if sGroupe:
-        movies = reversed(sorted(movies, key=lambda line: line[pbContent.YEAR]))
+        movies = sorted(movies, key=lambda line: line[pbContent.YEAR], reverse=True)
 
         
     for movie in movies:
@@ -745,6 +792,14 @@ def showMovies(sSearch=''):
                     continue
                 sDisplayTitle = '%s (%s)' % (sTitle, year)
 
+        if sRes:
+            if pbContent.RES>=0:
+                res = movie[pbContent.RES].strip()
+                if not res and sRes != UNCLASSIFIED_RESOLUTION:
+                    continue
+                if res and sRes != res:
+                    continue
+
         nbItem += 1
         progress_.VSupdate(progress_, ITEM_PAR_PAGE)
         if progress_.iscanceled():
@@ -791,6 +846,7 @@ def showMovies(sSearch=''):
                 if sSaga : siteUrl += '&sSaga=' + sSaga
                 if sGroupe : siteUrl += '&sGroupe=' + sGroupe
                 if sYear : siteUrl += '&sYear=' + sYear
+                if sRes : siteUrl += '&sRes=' + sRes
                 if sAlpha : siteUrl += '&sAlpha=' + sAlpha
                 
                 oOutputParameterHandler = cOutputParameterHandler()
