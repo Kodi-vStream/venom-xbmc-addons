@@ -10,6 +10,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.tmdb import cTMDb
 from resources.lib.util import Quote, cUtil, Unquote
 
+import random
 
 SITE_IDENTIFIER = 'pastebin'
 SITE_NAME = 'PasteBin'
@@ -238,6 +239,10 @@ def showMenu():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film')
         oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Films (Liste)', 'listes.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&bRandom=True')
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Aléatoires)', 'news.png', oOutputParameterHandler)
 
 
     if containSeries:
@@ -669,7 +674,8 @@ def showMovies(sSearch=''):
     numPage = oInputParameterHandler.getValue('numPage')
     sMedia = 'film' # Par défaut
     sGenre = sSaga = sGroupe = sYear = sRes = sAlpha = None
-
+    bRandom = False
+    
     if sSearch:
         sUrl = sSearch
 
@@ -696,6 +702,7 @@ def showMovies(sSearch=''):
     if 'sYear' in aParams: sYear = aParams['sYear']
     if 'sRes' in aParams: sRes = aParams['sRes']
     if 'sAlpha' in aParams: sAlpha = aParams['sAlpha']
+    if 'bRandom' in aParams: bRandom = aParams['bRandom']
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.setTimeout(4)
@@ -720,8 +727,15 @@ def showMovies(sSearch=''):
     if sGroupe:
         movies = sorted(movies, key=lambda line: line[pbContent.YEAR], reverse=True)
 
-        
+    if bRandom:
+        numItem = 0
+        randoms = [random.randint(0, len(movies)) for r in range(ITEM_PAR_PAGE)]
+    
     for movie in movies:
+
+        if bRandom and index not in randoms:
+            index += 1
+            continue
 
         # Pagination, on se repositionne
         index += 1
@@ -848,6 +862,7 @@ def showMovies(sSearch=''):
                 if sYear : siteUrl += '&sYear=' + sYear
                 if sRes : siteUrl += '&sRes=' + sRes
                 if sAlpha : siteUrl += '&sAlpha=' + sAlpha
+                if bRandom : siteUrl += '&bRandom=True'
                 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', siteUrl)
