@@ -503,12 +503,14 @@ class cTMDb:
 
         if 'release_date' in meta:
             _meta['premiered'] = meta['release_date']
-        if 'first_air_date' in meta:
+        elif 'first_air_date' in meta:
             _meta['premiered'] = meta['first_air_date']
-        if 'premiered' in meta and meta['premiered']:
+        elif 'premiered' in meta and meta['premiered']:
             _meta['premiered'] = meta['premiered']
         elif 's_premiered' in meta and meta['s_premiered']:
             _meta['premiered'] = meta['s_premiered']
+        elif 'air_date' in meta and meta['air_date']:
+            _meta['premiered'] = meta['air_date']
 
         if 'year' in meta:
             _meta['year'] = meta['year']
@@ -518,10 +520,6 @@ class cTMDb:
             try:
                 if 'premiered' in _meta and _meta['premiered']:
                     _meta['year'] = int(_meta['premiered'][:4])
-                elif 'first_air_date' in meta and meta['first_air_date']:
-                    _meta['year'] = int(meta['first_air_date'][:4])
-                elif 'air_date' in meta and meta['air_date']:
-                    _meta['year'] = int(meta['air_date'][:4])
             except:
                 pass
 
