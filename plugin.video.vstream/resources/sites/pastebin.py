@@ -188,7 +188,8 @@ def showMenu():
             if pbContent.YEAR>=0 and len(movie[pbContent.YEAR].strip())>0:
                 containFilmYear = True
             if pbContent.RES>=0 and len(movie[pbContent.RES].strip())>0:
-                containFilmRes = True
+                if movie[pbContent.RES].strip() != '[]':
+                    containFilmRes = True
             if pbContent.SAISON>=0 and len(movie[pbContent.SAISON].strip())>0:
                 containFilmSaga = True
         if 'serie' in movie[pbContent.CAT]:
@@ -625,9 +626,15 @@ def showResolution():
             continue
 
         res = line[pbContent.RES].strip()
-        if not res: res = UNCLASSIFIED_RESOLUTION
-        
-        resolutions.add(res)
+
+        if '[' in res:
+            if res != '[]':
+                res = eval(res)
+                resolutions = resolutions.union(res)
+        else:
+            resolutions.add(res)
+
+        if not res or res == '[]': resolutions.add(UNCLASSIFIED_RESOLUTION)
 
     for sRes in sorted(resolutions):
         siteUrl = sUrl + '&sMedia=' + sMedia +'&sRes=' + sRes 
@@ -806,13 +813,23 @@ def showMovies(sSearch=''):
                     continue
                 sDisplayTitle = '%s (%s)' % (sTitle, year)
 
+        # Filtrage par résolutions vidéos
         if sRes:
             if pbContent.RES>=0:
                 res = movie[pbContent.RES].strip()
-                if not res and sRes != UNCLASSIFIED_RESOLUTION:
-                    continue
-                if res and sRes != res:
-                    continue
+
+                if sRes == UNCLASSIFIED_RESOLUTION:
+                    if res and res != '[]':
+                        continue
+                elif res:
+                    if res == '[]':
+                        continue
+                    if '[' in res:
+                        res = eval(res)
+                        if sRes not in res:
+                            continue
+                    elif sRes != res:
+                        continue
 
         nbItem += 1
         progress_.VSupdate(progress_, ITEM_PAR_PAGE)
@@ -1060,7 +1077,8 @@ def addPasteID():
     # Enregistrer Label/id dans les settings    
     addons.setSetting(settingLabel, sLabel)
     addons.setSetting(settingID, sID)
-
+    
+    oGui.updateDirectory()
 
 # Retirer un lien PasteBin
 def deletePaste():
@@ -1090,4 +1108,4 @@ def deletePaste():
             addons.setSetting(idSetting, '')
             break
     
-
+    cGui().updateDirectory()
