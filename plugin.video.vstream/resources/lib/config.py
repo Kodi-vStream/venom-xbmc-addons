@@ -298,13 +298,18 @@ def WindowsBoxes(sTitle, sFileName, num, year=''):
             # self.getControl(49).setVisible(True)
             # self.getControl(2).setImage(meta['cover_url'])
             # self.getControl(3).setLabel(meta['rating'])
-
+            
+            if 'rating' not in meta or meta['rating'] == 0:
+                meta['rating'] = '-'
+            if 'votes' not in meta or meta['votes'] == '0':
+                meta['votes'] = '-'
+ 
             for e in meta:
-                property = 'ListItem.%s' % (e)
+                prop = 'ListItem.%s' % (e)
                 if isinstance(meta[e], unicode):
-                    window(10000).setProperty(property, meta[e].encode('utf-8'))
+                    window(10000).setProperty(prop, meta[e].encode('utf-8'))
                 else:
-                    window(10000).setProperty(property, str(meta[e]))
+                    window(10000).setProperty(prop, str(meta[e]))
 
         def credit(self, meta='', control=''):
             #self.getControl(control).reset()
