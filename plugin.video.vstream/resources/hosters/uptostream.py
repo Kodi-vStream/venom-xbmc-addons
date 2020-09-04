@@ -164,9 +164,9 @@ def decodeur1(Html):
                 movieID = ''
                 qua_list = set()
                 lang_list = list()
-                supportedLang = ['eng', 'eng2', 'English', 'fr', 'fre', 'French',
+                supportedLang = ['eng', 'eng2', 'English', 'fr', 'fre', 'fre2', 'French',
                                  'jap', 'jpn', 'Japanese', 'chi', 'Chinese', 'rus',
-                                 'Russian', 'spa', 'Spanish', 'ger', 'ger1', 'German']
+                                 'Russian', 'spa', 'Spanish', 'ger', 'ger2', 'German']
 
                 for page in test2:
                     tableau = {}
@@ -220,7 +220,7 @@ def decodeur1(Html):
 
                             for i, j in tableau.items():
                                 
-                                if not j:
+                                if j == 'null':
                                     continue
                                 
                                 if j.startswith('http') and j.endswith('com'):  # url
