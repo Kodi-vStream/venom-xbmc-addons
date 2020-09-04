@@ -631,16 +631,24 @@ def showResolution():
             if res != '[]':
                 res = eval(res)
                 resolutions = resolutions.union(res)
+                if '' in res or len(res) == 0:
+                    resolutions.add(UNCLASSIFIED_RESOLUTION)
         else:
             resolutions.add(res)
 
-        if not res or res == '[]': resolutions.add(UNCLASSIFIED_RESOLUTION)
+        if not res or res == '[]' : resolutions.add(UNCLASSIFIED_RESOLUTION)
 
     for sRes in sorted(resolutions):
+        if sRes == '': continue
+
+        sDisplayRes = sRes
+        if sDisplayRes.isdigit(): sDisplayRes += 'p'
+        sDisplayRes = sDisplayRes.replace('P', 'p').replace('1080p', 'HD [1080p]').replace('720p', 'SD [720p]').replace('4K', '2160p').replace('2160p', '4K [2160p]')
+
         siteUrl = sUrl + '&sMedia=' + sMedia +'&sRes=' + sRes 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', siteUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sRes, 'hd.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sDisplayRes, 'hd.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -814,23 +822,24 @@ def showMovies(sSearch=''):
                 sDisplayTitle = '%s (%s)' % (sTitle, year)
 
         # Filtrage par résolutions vidéos
+        listRes = None
+        if pbContent.RES>=0:
+            res = movie[pbContent.RES].strip()
+            listRes = []
+            if '[' in res:
+                listRes.extend(eval(res))
+            else:
+                listRes.append(res)
+            if len(listRes) == 0:
+                listRes.append('')
+                    
         if sRes:
-            if pbContent.RES>=0:
-                res = movie[pbContent.RES].strip()
-
-                if sRes == UNCLASSIFIED_RESOLUTION:
-                    if res and res != '[]':
-                        continue
-                elif res:
-                    if res == '[]':
-                        continue
-                    if '[' in res:
-                        res = eval(res)
-                        if sRes not in res:
-                            continue
-                    elif sRes != res:
-                        continue
-
+            if sRes == UNCLASSIFIED_RESOLUTION:
+                if '' not in listRes:
+                    continue
+            elif sRes not in listRes:
+                continue
+        
         nbItem += 1
         progress_.VSupdate(progress_, ITEM_PAR_PAGE)
         if progress_.iscanceled():
@@ -864,6 +873,8 @@ def showMovies(sSearch=''):
                     siteUrl = sHost
 
                 oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+                if listRes:
+                    oOutputParameterHandler.addParameter('listRes', listRes)
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', '', '', oOutputParameterHandler)
 
         # Gestion de la pagination
@@ -1012,6 +1023,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sHoster = oInputParameterHandler.getValue('siteUrl')
+    listRes = oInputParameterHandler.getValue('listRes')
 
     if "[" in sHoster:
         listHoster = eval(sHoster)
@@ -1019,10 +1031,28 @@ def showHosters():
         listHoster = []   
         listHoster.append(sHoster)
 
+    # La liste des résolutions doit avoir la même taille que la liste des host,
+    # sinon on affiche pas la résolution de chaque flux
+    if listRes:
+        listRes = eval(listRes)
+        if len(listRes) != len (listHoster):
+            listRes = None
+
+    resIdx = 0
     for sHosterUrl in listHoster:
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
-            oHoster.setDisplayName(sTitle)
+            
+            if listRes:
+                res = listRes[resIdx]
+                if res.isdigit(): res += 'p'
+                res = res.replace('P', 'p').replace('1080p', 'HD').replace('720p', 'SD').replace('2160p', '4K')
+                sDisplayName = '%s [%s]' %(sTitle, res)
+                resIdx += 1
+            else:
+                sDisplayName = sTitle
+
+            oHoster.setDisplayName(sDisplayName)
             oHoster.setFileName(sTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
 
