@@ -126,6 +126,11 @@ def load():
         oOutputParameterHandler.addParameter('siteUrl', searchUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Séries)', 'search.png', oOutputParameterHandler)
     
+        oOutputParameterHandler = cOutputParameterHandler()
+        searchUrl = URL_SEARCH_ANIMS[0]
+        oOutputParameterHandler.addParameter('siteUrl', searchUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Animes)', 'search.png', oOutputParameterHandler)
+    
 
     for pasteBin in pasteListe:
         pasteLabel = pasteBin[0]
@@ -179,7 +184,7 @@ def showMenu():
     containAnimeGroupes = False
 
     for movie in movies:
-        if 'film' in movie[pbContent.CAT]:
+        if pbContent.CAT == -1 or 'film' in movie[pbContent.CAT]:
             containFilms = True
             if pbContent.GENRES>=0 and len(movie[pbContent.GENRES].strip())>0:
                 containFilmGenres = True
@@ -192,17 +197,18 @@ def showMenu():
                     containFilmRes = True
             if pbContent.SAISON>=0 and len(movie[pbContent.SAISON].strip())>0:
                 containFilmSaga = True
-        if 'serie' in movie[pbContent.CAT]:
+
+        elif 'serie' in movie[pbContent.CAT]:
             containSeries = True
             if pbContent.GROUPES>=0 and len(movie[pbContent.GROUPES].strip())>0:
                 containSerieGroupes = True
 
-        if 'anime' in movie[pbContent.CAT]:
+        elif 'anime' in movie[pbContent.CAT]:
             containAnimes = True
             if pbContent.GROUPES>=0 and len(movie[pbContent.GROUPES].strip())>0:
                 containAnimeGroupes = True
 
-    if containFilms or not containSeries:
+    if containFilms:
         oOutputParameterHandler = cOutputParameterHandler()
         searchUrl = URL_SEARCH_MOVIES[0].replace(KEY_PASTE_ID, pasteID)
         oOutputParameterHandler.addParameter('siteUrl', searchUrl)
@@ -806,7 +812,7 @@ def showMovies(sSearch=''):
                 continue
 
         # Une série ne doit apparaitre qu'une seule fois, les saisons sont gérées plus tard
-        if sMedia == 'serie':
+        if sMedia in ('serie', 'anime'):
             if sTitle in serieTitles:
                 continue
             serieTitles.add(sTitle)
@@ -938,7 +944,7 @@ def showSerieSaisons():
         if sSaison.isdigit():
             sSaison = 'S{:02d}'.format(int(sSaison))
         
-        sDisplayTitle = sTitle + ' ' + sSaison
+        sDisplayTitle = sTitle + ' - ' + sSaison
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle) # on ne passe pas le sTitre afin de pouvoir mettre la saison en marque-page
@@ -955,12 +961,12 @@ def showSerieLinks(sSaison=None):
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     
     if not sSaison:
-        sTitle = sTitle[:-4]
         sUrl, params = sUrl.split('&',1)
         aParams = dict(param.split('=') for param in params.split('&'))
         if 'sSaison' in aParams:
             sSaison = aParams['sSaison']
-            
+        sTitle = sTitle[:sTitle.rindex(' - ')]
+    
     if not sSaison:
         oGui.setEndOfDirectory()
         return
@@ -998,7 +1004,7 @@ def showSerieLinks(sSaison=None):
             episode = '{}E{:02d}'.format(sSaison, int(episode))
         elif episode[0] == 'E': 
             episode = '{}{}'.format(sSaison, episode)
-        sDisplayTitle = sTitle + ' ' + episode
+        sDisplayTitle = sTitle + ' - ' + episode
 
         # Reconstruire les liens
         if pbContent.HEBERGEUR:
