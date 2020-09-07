@@ -216,7 +216,7 @@ class cGuiElement:
         #~ for cle in index:
             #~ sTitle = sTitle.replace(cle.upper(), index[cle]).replace(cle, index[cle]).replace('(%s)' % (cle), index[cle])
 
-        #~ #recherche Qualiter
+        #~ #recherche Qualité
         #~ index = {'1080i': '(1080)', '1080p': '(1080)', '1080I': '(1080)', '1080P': '(1080)', '720i': '(720)', '720p': '(720)', '720I': '(720)', '720P': '(720)'}
         #~ for cle in index:
             #~ sTitle = sTitle.replace(cle, index[cle]).replace('[%s]' % (cle), index[cle])
@@ -642,6 +642,11 @@ class cGuiElement:
         w = self.getWatched()
         if w == 1:
             self.addItemValues('playcount', w)
+
+        self.addItemProperties('siteUrl', self.getSiteUrl())
+        self.addItemProperties('sId', self.getSiteName())
+        self.addItemProperties('sFav', self.getFunction())
+        self.addItemProperties('sCat', str(self.getCat()))
 
         return self.__aItemValues
 

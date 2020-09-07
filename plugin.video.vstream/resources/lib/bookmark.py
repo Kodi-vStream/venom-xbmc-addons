@@ -176,20 +176,21 @@ class cFav:
     def setBookmark(self):
         oInputParameterHandler = cInputParameterHandler()
 
-#         Pour quelle raison ? A expliquer en commentaire si cela est toujours vrai
-#         if oInputParameterHandler.getValue('sId') == 'kepliz_com':
-#             self.DIALOG.VSinfo('Error', self.ADDON.VSlang(30037))
-#             return
-
-        if int(oInputParameterHandler.getValue('sCat')) < 1:
+        sCat = oInputParameterHandler.getValue('sCat') if oInputParameterHandler.exist('sCat') else xbmc.getInfoLabel('ListItem.Property(sCat)')
+        if int(sCat) not in (1, 2, 5):
             self.DIALOG.VSinfo('Error', self.ADDON.VSlang(30038))
             return
 
         meta = {}
-        meta['siteurl'] = oInputParameterHandler.getValue('siteUrl')
-        meta['site'] = oInputParameterHandler.getValue('sId')
-        meta['fav'] = oInputParameterHandler.getValue('sFav')
-        meta['cat'] = oInputParameterHandler.getValue('sCat')
+        
+        sSiteUrl = oInputParameterHandler.getValue('siteUrl') if oInputParameterHandler.exist('siteUrl') else xbmc.getInfoLabel('ListItem.Property(siteUrl)')
+        sSite = oInputParameterHandler.getValue('sId') if oInputParameterHandler.exist('sId') else xbmc.getInfoLabel('ListItem.Property(sId)')
+        sFav = oInputParameterHandler.getValue('sFav') if oInputParameterHandler.exist('sFav') else xbmc.getInfoLabel('ListItem.Property(sFav)')
+        
+        meta['siteurl'] = sSiteUrl
+        meta['site'] = sSite
+        meta['fav'] = sFav
+        meta['cat'] = sCat
 
         # ListItem.title contient des code de couleurs, sMovieTitle le titre en plus "propre"
         # Inutile a la prochaine version, car plus de couleurs a la base.

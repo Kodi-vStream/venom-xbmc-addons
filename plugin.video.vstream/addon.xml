@@ -25,6 +25,16 @@
     <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>video</provides>
     </extension>
+ 
+    <extension point="kodi.context.item">
+        <menu id="kodi.core.main">
+            <item library="resources/lib/gui/addToBookmark.py">
+                <label>Marque-page</label>
+                <visible>Window.IsVisible(home) + [Integer.IsEqual(ListItem.Property(sCat), 1) | Integer.IsEqual(ListItem.Property(sCat), 2)]</visible>
+            </item>
+        </menu>
+    </extension>
+
     <extension point="xbmc.service" library="service.py"/>
     <extension point="xbmc.addon.metadata">
         <summary lang="fr_FR">vStream par Venom, TmpName, Arias800, Razorex, Sizanic, Yodidon.</summary>
