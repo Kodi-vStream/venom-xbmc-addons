@@ -545,15 +545,26 @@ def showHosters():
         for aEntry in aResult[1]:
             sHoster = aEntry[0]
             sUrl2 = aEntry[1]
-            sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHoster)
+            sTitle = sMovieTitle
 
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oOutputParameterHandler.addParameter('sYear', sYear)
-            oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sTitle, sThumb, sDesc, oOutputParameterHandler)
+            if not "protect" in sUrl2:
+                oHoster = cHosterGui().checkHoster(sUrl2)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sTitle)
+                    oHoster.setFileName(sTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sUrl2, sThumb)
+
+            else:
+
+                sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHoster)
+
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('sDesc', sDesc)
+                oOutputParameterHandler.addParameter('sYear', sYear)
+                oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -585,16 +596,24 @@ def showSeriesHosters():
                 sUrl2 = aEntry[1]
                 sEpisode = aEntry[2].replace('pisode ', '').replace('FINAL ', '').replace('Télécharger', '')
                 sTitle = sMovieTitle + ' ' + sEpisode
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addEpisode(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+
+                if not "protect" in sUrl2:
+                    oHoster = cHosterGui().checkHoster(sUrl2)
+                    if (oHoster != False):
+                        oHoster.setDisplayName(sTitle)
+                        oHoster.setFileName(sTitle)
+                        cHosterGui().showHoster(oGui, oHoster, sUrl2, sThumb)
+
+                else:
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+                    oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                    oOutputParameterHandler.addParameter('sThumb', sThumb)
+                    oGui.addEpisode(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
     else:   # certains films mals classés apparaissent dans les séries
         showHosters()
-
 
 def Display_protected_link():
     oGui = cGui()
