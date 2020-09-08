@@ -28,6 +28,7 @@ class cGuiElement:
     def __init__(self):
 
         # self.__sRootArt = cConfig().getRootArt()
+        self.__sFunctionName = ''
         self.__sRootArt = 'special://home/addons/plugin.video.vstream/resources/art/'
         self.__sType = 'Video'
         self.__sMeta = 0
