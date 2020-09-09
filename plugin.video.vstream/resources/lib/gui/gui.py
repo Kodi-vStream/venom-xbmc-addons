@@ -190,8 +190,8 @@ class cGui:
         oOutputParameterHandler.addParameter('sFav', sFunction)
 
         # context parametre
-        if isKrypton():
-            self.createContexMenuSettings(oGuiElement, oOutputParameterHandler)
+#        if isKrypton():
+#            self.createContexMenuSettings(oGuiElement, oOutputParameterHandler)
 
         try:
             self.addFolder(oGuiElement, oOutputParameterHandler)
@@ -328,29 +328,17 @@ class cGui:
 
         # new context prend en charge les metas
         if oGuiElement.getMeta() > 0:
-            if cGui.CONTENT == 'movies':
-                self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
+            if cGui.CONTENT in ('movies', 'tvshows'):
                 self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuba(oGuiElement, oOutputParameterHandler)
+                self.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
 
                 if self.ADDON.getSetting('bstoken') != '':
                     self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
                 if self.ADDON.getSetting('tmdb_account') != '':
                     self.createContexMenuTMDB(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
-
-            elif cGui.CONTENT == 'tvshows':
                 self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuba(oGuiElement, oOutputParameterHandler)
-
-                if self.ADDON.getSetting('bstoken') != '':
-                    self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
-                if self.ADDON.getSetting('tmdb_account') != '':
-                    self.createContexMenuTMDB(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
 
@@ -475,6 +463,7 @@ class cGui:
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
+        oOutputParameterHandler.addParameter('sYear', oGuiElement.getYear())
 
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewinfo', self.ADDON.VSlang(30208))
 
@@ -637,25 +626,12 @@ class cGui:
     def viewinfo(self):
         from resources.lib.config import WindowsBoxes
 
-        # oGuiElement = cGuiElement()
         oInputParameterHandler = cInputParameterHandler()
-        sTitle = oInputParameterHandler.getValue('sTitle')
-        # sId = oInputParameterHandler.getValue('sId')
-        sFileName = oInputParameterHandler.getValue('sFileName')
-        sMeta = oInputParameterHandler.getValue('sMeta')
-        sYear = oInputParameterHandler.getValue('sYear')
+        sCleanTitle = oInputParameterHandler.getValue('sFileName') if oInputParameterHandler.exist('sFileName') else xbmc.getInfoLabel('ListItem.Property(sFileName)')
+        sMeta = oInputParameterHandler.getValue('sMeta') if oInputParameterHandler.exist('sMeta') else xbmc.getInfoLabel('ListItem.Property(sMeta)')
+        sYear = oInputParameterHandler.getValue('sYear') if oInputParameterHandler.exist('sYear') else xbmc.getInfoLabel('ListItem.Year')
 
-        # sMeta = 1 >> film sMeta = 2 >> serie
-        sCleanTitle = cUtil().CleanName(sFileName)
-
-        # on vire saison et episode, si séries ou animes
-        if sMeta == 2 or sMeta == 4:
-            sCleanTitle = re.sub('(?i).pisode [0-9]+', '', sCleanTitle)
-            sCleanTitle = re.sub('(?i)saison [0-9]+', '', sCleanTitle)
-            sCleanTitle = re.sub('(?i)S[0-9]+E[0-9]+', '', sCleanTitle)
-            sCleanTitle = re.sub('(?i)[S|E][0-9]+', '', sCleanTitle)
-
-        WindowsBoxes(sTitle, sCleanTitle, sMeta, sYear)
+        WindowsBoxes(sCleanTitle, sCleanTitle, sMeta, sYear)
 
     def viewsimil(self):
         sPluginPath = cPluginHandler().getPluginPath()
