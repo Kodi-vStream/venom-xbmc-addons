@@ -28,7 +28,11 @@
  
     <extension point="kodi.context.item">
         <menu id="kodi.core.main">
-            <item library="resources/lib/gui/addToBookmark.py">
+            <item library="resources/lib/gui/menuInformation.py">
+                <label>Information</label>
+                <visible>Window.IsVisible(home) + [Integer.IsEqual(ListItem.Property(sMeta), 1) | Integer.IsEqual(ListItem.Property(sMeta), 2) | Integer.IsEqual(ListItem.Property(sMeta), 3) | Integer.IsEqual(ListItem.Property(sMeta), 4)]</visible>
+            </item>
+            <item library="resources/lib/gui/menuAddBookmark.py">
                 <label>Marque-page</label>
                 <visible>Window.IsVisible(home) + [Integer.IsEqual(ListItem.Property(sCat), 1) | Integer.IsEqual(ListItem.Property(sCat), 2)]</visible>
             </item>
