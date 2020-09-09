@@ -103,9 +103,10 @@ class cShowBA:
         # Sinon recherche de la BA officielle dans TMDB
         if not urlTrailer:
             meta = cTMDb().get_meta(self.metaType, self.search, year=self.year)
-            if meta and 'trailer_url' in meta:
-                urlTrailer = meta['trailer_url']
-                        
+            if 'trailer' in meta and meta['trailer']:
+                self.SetTrailerUrl(meta['trailer'])
+                urlTrailer = self.sTrailerUrl
+                
         # Sinon recherche dans youtube
         if not urlTrailer:
             urlTrailer = 'https://www.youtube.com/results?q=' + QuotePlus(sTitle) + '&sp=EgIYAQ%253D%253D'

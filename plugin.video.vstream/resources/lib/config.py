@@ -127,7 +127,7 @@ class cConfig():
         return False
 
 
-def WindowsBoxes(sTitle, sFileName, num, year=''):
+def WindowsBoxes(sTitle, sFileName, metaType, year=''):
 
     ADDON = addon()
     DIALOG = dialog()
@@ -135,11 +135,11 @@ def WindowsBoxes(sTitle, sFileName, num, year=''):
     # Presence de l'addon ExtendedInfo?
     try:
         if (addon('script.extendedinfo') and ADDON.getSetting('extendedinfo-view') == 'true'):
-            if num == '2':
+            if metaType == '2':
                 DIALOG.VSinfo('Lancement de ExtendInfo')
                 xbmc.executebuiltin('XBMC.RunScript(script.extendedinfo, info=extendedtvinfo, name=%s)' % sFileName)
                 return
-            elif num == '1':
+            elif metaType == '1':
                 DIALOG.VSinfo('Lancement de ExtendInfo')
                 xbmc.executebuiltin('XBMC.RunScript(script.extendedinfo, info=extendedinfo, name=%s)' % sFileName)
                 return
@@ -148,34 +148,13 @@ def WindowsBoxes(sTitle, sFileName, num, year=''):
     
 
     # Sinon on gere par vStream via la lib TMDB
-    if num == '1':
-        try:
-            grab = cTMDb()
-            meta = grab.get_meta('movie', sFileName, '', xbmc.getInfoLabel('ListItem.Property(TmdbId)'))
-        except:
-            DIALOG.VSok("Veuillez vider le cache des métadonnées Paramètre - outils - 'vider le cache de vStream'")
-            pass
-    elif num == '2':
-        try:
-            grab = cTMDb()
-            meta = grab.get_meta('tvshow', sFileName, '', xbmc.getInfoLabel('ListItem.Property(TmdbId)'))
-        except:
-            DIALOG.VSok("Veuillez vider le cache des métadonnées Paramètre - outils - 'vider le cache de vStream'")
-            pass
-    elif num == '3':
-        try:
-            grab = cTMDb()
-            meta = grab.get_meta('collection', sFileName, '', xbmc.getInfoLabel('ListItem.Property(TmdbId)'))
-        except:
-            DIALOG.VSok("Veuillez vider le cache des métadonnées Paramètre - outils - 'vider le cache de vStream'")
-            pass
-    elif num == '4':
-        try:
-            grab = cTMDb()
-            meta = grab.get_meta('anime', sFileName, '', xbmc.getInfoLabel('ListItem.Property(TmdbId)'))
-        except:
-            DIALOG.VSok("Veuillez vider le cache des métadonnées Paramètre - outils - 'vider le cache de vStream'")
-            pass
+    sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'collection').replace('4', 'anime')
+
+    try:
+        meta = cTMDb().get_meta(sType, sFileName, tmdb_id = xbmc.getInfoLabel('ListItem.Property(TmdbId)'), year = year)
+    except:
+        DIALOG.VSok("Veuillez vider le cache des métadonnées Paramètre - outils - 'vider le cache de vStream'")
+        pass
         
 
     # si rien ne marche
@@ -355,6 +334,7 @@ def WindowsBoxes(sTitle, sFileName, num, year=''):
                 from resources.lib.ba import cShowBA
                 cBA = cShowBA()
                 cBA.SetSearch(sFileName)
+                cBA.SetYear(year)
                 cBA.SearchBA(True)
                 #self.close()
                 return
