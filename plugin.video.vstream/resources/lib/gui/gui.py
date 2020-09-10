@@ -400,7 +400,7 @@ class cGui:
         oContext = cContextElement()
         oContext.setFile('cGui')
         oContext.setSiteName('cGui')
-        oContext.setFunction('selectpage')
+        oContext.setFunction('selectPage')
         oContext.setTitle(self.ADDON.VSlang(30017))
         oOutputParameterHandler.addParameter('OldFunction', oGuiElement.getFunction())
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
@@ -411,7 +411,7 @@ class cGui:
         oContext = cContextElement()
         oContext.setFile('cGui')
         oContext.setSiteName('cGui')
-        oContext.setFunction('viewback')
+        oContext.setFunction('viewBack')
         oContext.setTitle(self.ADDON.VSlang(30018))
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oContext.setOutputParameterHandler(oOutputParameterHandler)
@@ -465,7 +465,7 @@ class cGui:
         oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
         oOutputParameterHandler.addParameter('sYear', oGuiElement.getYear())
 
-        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewinfo', self.ADDON.VSlang(30208))
+        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewInfo', self.ADDON.VSlang(30208))
 
     # Bande annonce
     def createContexMenuba(self, oGuiElement, oOutputParameterHandler=''):
@@ -485,7 +485,7 @@ class cGui:
         oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
         oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
 
-        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewsimil', self.ADDON.VSlang(30213))
+        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewSimil', self.ADDON.VSlang(30213))
 
     def CreateSimpleMenu(self, oGuiElement, oOutputParameterHandler, sFile, sName, sFunction, sTitle):
         oContext = cContextElement()
@@ -614,7 +614,7 @@ class cGui:
         cBA.SetMetaType(sMeta)
         cBA.SearchBA()
 
-    def viewback(self):
+    def viewBack(self):
         sPluginPath = cPluginHandler().getPluginPath()
         oInputParameterHandler = cInputParameterHandler()
         # sParams = oInputParameterHandler.getAllParameter()
@@ -623,7 +623,7 @@ class cGui:
         sTest = '%s?site=%s' % (sPluginPath, sId)
         xbmc.executebuiltin('XBMC.Container.Update(%s, replace)' % sTest)
 
-    def viewinfo(self):
+    def viewInfo(self):
         from resources.lib.config import WindowsBoxes
 
         oInputParameterHandler = cInputParameterHandler()
@@ -633,24 +633,30 @@ class cGui:
 
         WindowsBoxes(sCleanTitle, sCleanTitle, sMeta, sYear)
 
-    def viewsimil(self):
+    def viewSimil(self):
         sPluginPath = cPluginHandler().getPluginPath()
+        
         oInputParameterHandler = cInputParameterHandler()
-        # sFileName = oInputParameterHandler.getValue('sFileName')
-        sTitle = oInputParameterHandler.getValue('sTitle')
-        sCat = oInputParameterHandler.getValue('sCat')
+        sCleanTitle = oInputParameterHandler.getValue('sFileName') if oInputParameterHandler.exist('sFileName') else xbmc.getInfoLabel('ListItem.Property(sFileName)')
+        sCat = oInputParameterHandler.getValue('sCat') if oInputParameterHandler.exist('sCat') else xbmc.getInfoLabel('ListItem.Property(sCat)')
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
+        oOutputParameterHandler.addParameter('searchtext', sCleanTitle)
         oOutputParameterHandler.addParameter('sCat', sCat)
         oOutputParameterHandler.addParameter('readdb', 'False')
 
         sParams = oOutputParameterHandler.getParameterAsUri()
         sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, 'globalSearch', 'globalSearch', sParams)
+
+        # Si lancé depuis la page Home de Kodi, il faut d'abord en sortir pour lancer la recherche
+        if xbmc.getCondVisibility('Window.IsVisible(home)'):
+            xbmc.executebuiltin('ActivateWindow(%d)' % (10028))
+
         xbmc.executebuiltin('XBMC.Container.Update(%s)' % sTest)
+
         return False
 
-    def selectpage(self):
+    def selectPage(self):
         sPluginPath = cPluginHandler().getPluginPath()
         oInputParameterHandler = cInputParameterHandler()
         # sParams = oInputParameterHandler.getAllParameter()
@@ -677,7 +683,7 @@ class cGui:
 
         return False
 
-    def selectpage2(self):
+    def selectPage2(self):
         sPluginPath = cPluginHandler().getPluginPath()
         oInputParameterHandler = cInputParameterHandler()
         sId = oInputParameterHandler.getValue('sId')
