@@ -142,16 +142,13 @@ class cUtil:
         name = name.replace("'", " ")
         # vire caractere special
         # name = re.sub('[^a-zA-Z0-9 ]', '', name)
-        # Modif du 15/12 caractere special
         name = re.sub('[^a-zA-Z0-9 : -]', '', name)
         # tout en minuscule
         name = name.lower()
-        # vire espace double
+        # vire espace debut et fin
+        name = name.strip()
+        # vire espace double au milieu
         name = re.sub(' +', ' ', name)
-
-        # vire espace a la fin
-        if name.endswith(' '):
-            name = name[:-1]
 
         # on remet l'annee
         if annee:
