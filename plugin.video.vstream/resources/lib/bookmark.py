@@ -192,12 +192,10 @@ class cFav:
         meta['fav'] = sFav
         meta['cat'] = sCat
 
-        # ListItem.title contient des code de couleurs, sMovieTitle le titre en plus "propre"
-        # Inutile a la prochaine version, car plus de couleurs a la base.
         if oInputParameterHandler.getValue('sMovieTitle'):
             meta['title'] = oInputParameterHandler.getValue('sMovieTitle')
         else:
-            meta['title'] = xbmc.getInfoLabel('ListItem.title')
+            meta['title'] = xbmc.getInfoLabel('ListItem.Property(sFileName)')
 
         meta['icon'] = xbmc.getInfoLabel('ListItem.Art(thumb)')
         meta['fanart'] = xbmc.getInfoLabel('ListItem.Art(fanart)')
