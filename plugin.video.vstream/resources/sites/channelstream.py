@@ -70,7 +70,7 @@ def showMovies():
             if progress_.iscanceled():
                 break
 
-            if not str(aEntry[2]) == "Dorcel TV":
+            if not "+18" in str(aEntry[2]):
                 sTitle = aEntry[2]
                 sUrl2 = URL_MAIN + aEntry[0]
                 sThumb = URL_MAIN + '/' + aEntry[1]
