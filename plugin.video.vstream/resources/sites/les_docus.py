@@ -137,7 +137,7 @@ def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
-      sUrl = sSearch.replace(" ", "+")
+        sUrl = sSearch.replace(" ", "+")
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -198,14 +198,14 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sHtmlContent = re.sub('<iframe.+?src="(.+?amazon.+?)"', '', sHtmlContent)
+    sHtmlContent1 = re.sub('<iframe.+?src="(.+?amazon.+?)"', '', sHtmlContent)
 
     sPattern = '<iframe.+?src="(.+?)"'
-    aResult = oParser.parse(sHtmlContent, sPattern)
+    aResult = oParser.parse(sHtmlContent1, sPattern)
 
     if not (aResult[0] == True):
         sPattern = 'data-video_id="(.+?)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+        aResult = oParser.parse(sHtmlContent1, sPattern)
         if (aResult[0] == True):
             sHosterUrl = 'https://www.youtube.com/embed/' + aResult[1][0]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -213,6 +213,16 @@ def showHosters():
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+        else:
+            sPattern = '<iframe.+?data-src="([^"]+)'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                sHosterUrl = aResult[1][0]
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
     else:
         for aEntry in list(set(aResult[1])):
             sHosterUrl = aEntry
