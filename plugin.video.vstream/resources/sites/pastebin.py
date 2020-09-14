@@ -188,24 +188,23 @@ def showMenu():
             containFilms = True
             if pbContent.GENRES>=0 and len(movie[pbContent.GENRES].strip())>0:
                 containFilmGenres = True
-            if pbContent.GROUPES>=0 and len(movie[pbContent.GROUPES].strip())>0:
+            if pbContent.GROUPES>=0 and len(movie[pbContent.GROUPES].replace('[', '').replace(']', '').strip())>0:
                 containFilmGroupes = True
             if pbContent.YEAR>=0 and len(movie[pbContent.YEAR].strip())>0:
                 containFilmYear = True
-            if pbContent.RES>=0 and len(movie[pbContent.RES].strip())>0:
-                if movie[pbContent.RES].strip() != '[]':
-                    containFilmRes = True
+            if pbContent.RES>=0 and len(movie[pbContent.RES].replace('[', '').replace(']', '').replace(',', '').strip())>0:
+                containFilmRes = True
             if pbContent.SAISON>=0 and len(movie[pbContent.SAISON].strip())>0:
                 containFilmSaga = True
 
         elif 'serie' in movie[pbContent.CAT]:
             containSeries = True
-            if pbContent.GROUPES>=0 and len(movie[pbContent.GROUPES].strip())>0:
+            if pbContent.GROUPES>=0 and len(movie[pbContent.GROUPES].replace('[', '').replace(']', '').strip())>0:
                 containSerieGroupes = True
 
         elif 'anime' in movie[pbContent.CAT]:
             containAnimes = True
-            if pbContent.GROUPES>=0 and len(movie[pbContent.GROUPES].strip())>0:
+            if pbContent.GROUPES>=0 and len(movie[pbContent.GROUPES].replace('[', '').replace(']', '').strip())>0:
                 containAnimeGroupes = True
 
     if containFilms:
@@ -269,11 +268,11 @@ def showMenu():
         if containSerieGroupes:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie')
-            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Séries (Dossiers)', 'genres.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Séries (Listes)', 'genres.png', oOutputParameterHandler)
     
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie')
-        oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Séries (Liste)', 'listes.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Séries (Ordre alphabétique)', 'listes.png', oOutputParameterHandler)
 
 
     if containAnimes:
@@ -293,11 +292,11 @@ def showMenu():
         if containAnimeGroupes:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime')
-            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Animes (Dossiers)', 'genres.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Animes (Listes)', 'genres.png', oOutputParameterHandler)
     
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime')
-        oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Animes (Liste)', 'listes.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Animes (Ordre alphabétique)', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
