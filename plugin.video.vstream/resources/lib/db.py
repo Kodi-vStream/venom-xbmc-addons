@@ -25,7 +25,7 @@ class cDb:
     try:
         REALDB = xbmc.translatePath(DB).decode('utf-8')
     except AttributeError:
-         REALDB = xbmc.translatePath(DB)
+        REALDB = xbmc.translatePath(DB)
 
     DIALOG = dialog()
     ADDON = addon()
@@ -335,35 +335,48 @@ class cDb:
             VSlog('SQL ERROR EXECUTE')
             return None
 
-    def del_bookmark(self):
-        from resources.lib.gui.gui import cGui
-        oGui = cGui()
-        oInputParameterHandler = cInputParameterHandler()
+    def del_bookmark(self, sSiteUrl='', sMovieTitle='', sCat = '', sAll = False):
+        
+        sql_delete = None
 
-        if oInputParameterHandler.exist('sCat'):
-            sql_delete = "DELETE FROM favorite WHERE cat = '%s'" % (oInputParameterHandler.getValue('sCat'))
+        # Tous supprimer
+        if sAll:
+            sql_delete = 'DELETE FROM favorite;'
 
-        if oInputParameterHandler.exist('sMovieTitle'):
-
-            siteUrl = oInputParameterHandler.getValue('siteUrl')
-            sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-            siteUrl = QuotePlus(siteUrl)
+        # Supprimer un bookmark selon son titre
+        elif sMovieTitle:
+            siteUrl = QuotePlus(sSiteUrl)
             title = self.str_conv(sMovieTitle)
             title = title.replace("'", r"''")
             sql_delete = "DELETE FROM favorite WHERE siteurl = '%s' AND title = '%s'" % (siteUrl, title)
 
-        if oInputParameterHandler.exist('sAll'):
-            sql_delete = 'DELETE FROM favorite;'
+        # Supprimer un bookmark selon son url
+        elif sSiteUrl:
+            siteUrl = QuotePlus(sSiteUrl)
+            sql_delete = "DELETE FROM favorite WHERE siteurl = '%s'" % siteUrl
 
-        try:
-            self.dbcur.execute(sql_delete)
-            self.db.commit()
-            self.DIALOG.VSinfo(self.ADDON.VSlang(30044))
-            oGui.updateDirectory()
-            return False, False
-        except Exception:
-            VSlog('SQL ERROR EXECUTE')
-            return False, False
+        # Supprimer toute une catégorie
+        elif sCat:
+            sql_delete = "DELETE FROM favorite WHERE cat = '%s'" % sCat
+
+
+        if sql_delete:
+            from resources.lib.gui.gui import cGui
+            try:
+                self.dbcur.execute(sql_delete)
+                self.db.commit()
+                update = self.db.total_changes
+                
+                if not update and sSiteUrl and sMovieTitle:
+                    # si pas trouvé, on essaie sans le titre, seulement l'URL
+                    return self.del_bookmark(sSiteUrl)
+                    
+                self.DIALOG.VSinfo(self.ADDON.VSlang(30044))
+                cGui().updateDirectory()
+                return False, False
+            except Exception:
+                VSlog('SQL ERROR EXECUTE')
+                return False, False
 
     # ***********************************
     #   Download fonctions

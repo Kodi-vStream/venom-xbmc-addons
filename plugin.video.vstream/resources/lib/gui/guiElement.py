@@ -4,6 +4,7 @@
 import re
 import string
 import xbmc
+import unicodedata
 
 from resources.lib.comaddon import addon
 from resources.lib.db import cDb
@@ -68,11 +69,10 @@ class cGuiElement:
         self.__aProperties = {}
         self.__aContextElements = []
         self.__sSiteName = ''
-        # categorie utiliser pour marque page et recherche.
-        # 1 - movies , 2 - tvshow, - 3 misc,
-        # oGuiElement.setCat(1)
+        
+        # categorie utilisé pour marque-page et recherche.
+        # 1 - movies/saga , 2 - tvshow/episode/anime, 5 - misc/Next
         self.__sCat = ''
-        # cGuiElement.COUNT += 1
 
     # def __len__(self): return self.__sCount
 
@@ -308,13 +308,13 @@ class cGuiElement:
         return sTitle, False
 
     def setTitle(self, sTitle):
-        self.__sCleanTitle = sTitle
+        self.__sCleanTitle = sTitle.replace('[]', '').replace('()', '').strip()
         try:
-            sTitle = sTitle.decode('utf-8')
+            sTitle = sTitle.strip().decode('utf-8')
         except:
             pass
 
-        if not sTitle.startswith('[COLOR'):
+        if not '[COLOR' in sTitle:
             self.__sTitle = self.TraiteTitre(sTitle)
         else:
             self.__sTitle = sTitle
@@ -419,7 +419,6 @@ class cGuiElement:
         except (AttributeError, UnicodeEncodeError):
             pass
 
-        import unicodedata
         data = unicodedata.normalize('NFKD', data).encode('ascii', 'ignore')
         # cherche la saison et episode puis les balises [color]titre[/color]
         # data, saison = self.getSaisonTitre(data)
@@ -645,7 +644,7 @@ class cGuiElement:
             self.addItemValues('playcount', w)
 
         self.addItemProperties('siteUrl', self.getSiteUrl())
-        self.addItemProperties('sFileName', self.getFileName())
+        self.addItemProperties('sCleanTitle', self.getCleanTitle())
         self.addItemProperties('sId', self.getSiteName())
         self.addItemProperties('sFav', self.getFunction())
         self.addItemProperties('sCat', str(self.getCat()))

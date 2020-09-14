@@ -343,7 +343,6 @@ class cGui:
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
 
         # sPluginHandle = cPluginHandler().getPluginHandle()
-        # modif 22/06
         # xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=_isFolder)
         self.listing.append((sItemUrl, oListItem, _isFolder))
 
@@ -370,7 +369,6 @@ class cGui:
 
         # sPluginHandle = cPluginHandler().getPluginHandle()
 
-        # modif 13/09
         # xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=False)
         self.listing.append((sItemUrl, oListItem, False))
 
@@ -382,13 +380,11 @@ class cGui:
         oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
         # oListItem.setThumbnailImage(oGuiElement.getThumbnail())
         # oListItem.setIconImage(oGuiElement.getIcon())
-
-        # krypton et sont comportement
         oListItem.setArt({'poster': oGuiElement.getPoster(), 'thumb': oGuiElement.getThumbnail(), 'icon': oGuiElement.getIcon(), 'fanart': oGuiElement.getFanart()})
 
         aProperties = oGuiElement.getItemProperties()
-        for sPropertyKey in aProperties.keys():
-            oListItem.setProperty(sPropertyKey, aProperties[sPropertyKey])
+        for sPropertyKey, sPropertyValue in aProperties.items():
+            oListItem.setProperty(sPropertyKey, str(sPropertyValue))
 
         return oListItem
 
@@ -419,6 +415,7 @@ class cGui:
 
     # marque page
     def createContexMenuBookmark(self, oGuiElement, oOutputParameterHandler = ''):
+        oOutputParameterHandler.addParameter('sCleanTitle', oGuiElement.getCleanTitle())
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
         oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
