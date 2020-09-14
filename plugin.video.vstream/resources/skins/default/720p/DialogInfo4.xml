@@ -2,6 +2,7 @@
 <window id="130">
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<onload>SetProperty(vstream_menu,Home)</onload>
+	<onload>PlayerControl(stop)</onload>
 	<onunload>SetProperty(vstream_menu,Home)</onunload>
     <!--<onunload>ClearProperty(TMDbHelper.WidgetContainer,Home)</onunload>-->
 	<allowoverlay>no</allowoverlay>
