@@ -451,7 +451,7 @@ def showSaisonEpisodes():
 
     url = re.search("document\.getElementById\(\'openlink_\'\+n\).href = '(.+?)';", sHtmlContent).group(1)
     oParser = cParser()
-    sPattern = '<span style="margin-left: 20px;">(.+?)</span>|<span style="margin-left: 35px;">(.+?)<.+?<span class="fa arrow">|<b>(.+?)</b>.+?var hash_.+?= "(.+?)"'
+    sPattern = '<span style="margin-left: 20px;">(.+?)</span>|<span style="margin-left: 35px;">(.+?)<.+?<span class="fa arrow">|<i class="fa fa-download fa-fw">.+?<b>(.+?)</b>.+?var hash_.+?= "(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -481,7 +481,7 @@ def showSaisonEpisodes():
 def getLinkHtml(sHtmlContent):
     if not "Limite atteinte" in sHtmlContent:
         oParser = cParser()
-        sPattern = '<div class="panel panel-s4i panel-no-border".+?>(.+?)<span style='
+        sPattern = 'style="color: #adadad;"(.+?)no_our_shit_us'
         aResult = oParser.parse(sHtmlContent, sPattern)
         return aResult[1][0]
     return False
@@ -502,13 +502,13 @@ def decryptTime():
         oRequestHandler.addHeaderEntry('Cookie', Cookie)
     sHtmlContent = oRequestHandler.request()
 
-    if "Test de sécurité !" in sHtmlContent:
+    if "Test de s" in sHtmlContent:
         sPattern = '<img style="margin: auto; display: block; width: 120px; height: 120px;" src="([^"]+)"/>.+?name="challenge" value="([^"]+)"'
         result = oParser.parse(sHtmlContent, sPattern)
         challenge = result[1][0][0]
         challengeTok = result[1][0][1]
 
-        sPattern = ' <img onclick="choose\(\'([^\']+)\'\).+?src="([^"]+)"'
+        sPattern = '<img onclick="choose\(\'([^\']+)\'\).+?src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         Filename = []
@@ -538,7 +538,7 @@ def decryptTime():
         oSolver = cInputWindow(captcha=Filename, challenge="special://home/userdata/addon_data/plugin.video.vstream/challenge.png")
         retArg = oSolver.get()
 
-        data = "challenge=" + challengeTok + "&g-recaptcha-response=" + aResult[1][int(retArg)][0]
+        data = "g-recaptcha-response=" + aResult[1][int(retArg)][0] + "&challenge=" + challengeTok
 
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.setRequestType(1)
@@ -722,10 +722,10 @@ class cInputWindow(xbmcgui.WindowDialog):
         return False
 
     def onControl(self, control):
-        if control == self.okbutton:
+        if str(control.getLabel()) == "OK":
             if self.anythingChecked():
                 self.close()
-        elif control == self.cancelbutton:
+        elif str(control.getLabel()) == "Cancel":
             self.cancelled = True
             self.close()
         try:
