@@ -30,17 +30,21 @@
         <menu id="kodi.core.main">
             <item library="resources/lib/gui/menuInformation.py">
 		        <label>$ADDON[plugin.video.vstream 30208]</label>
-				<visible>Window.IsVisible(home) + [Integer.IsEqual(ListItem.Property(sMeta), 1) | Integer.IsEqual(ListItem.Property(sMeta), 2) | Integer.IsEqual(ListItem.Property(sMeta), 3) | Integer.IsEqual(ListItem.Property(sMeta), 4)]</visible>
+				<visible>Window.IsVisible(home) + ListItem.Property(sMeta)</visible>
             </item>
             <item library="resources/lib/gui/menuAddBookmark.py">
 		        <label>$ADDON[plugin.video.vstream 30210]</label>
-				<visible>Window.IsVisible(home) + [Integer.IsEqual(ListItem.Property(sMeta), 1) | Integer.IsEqual(ListItem.Property(sMeta), 2) | Integer.IsEqual(ListItem.Property(sMeta), 3) | Integer.IsEqual(ListItem.Property(sMeta), 4)]</visible>
+				<visible>Window.IsVisible(home) + !ListItem.Property(isBookmark) + ListItem.Property(sMeta)</visible>
             </item>
             <item library="resources/lib/gui/menuSimil.py">
 		        <label>$ADDON[plugin.video.vstream 30213]</label>
-				<visible>Window.IsVisible(home) + [Integer.IsEqual(ListItem.Property(sMeta), 1) | Integer.IsEqual(ListItem.Property(sMeta), 2) | Integer.IsEqual(ListItem.Property(sMeta), 3) | Integer.IsEqual(ListItem.Property(sMeta), 4)]</visible>
+				<visible>Window.IsVisible(home) + ListItem.Property(sMeta)</visible>
             </item>
-        </menu>
+            <item library="resources/lib/gui/menuDelBookmark.py">
+		        <label>$ADDON[plugin.video.vstream 30412]</label>
+				<visible>Window.IsVisible(home) + ListItem.Property(isBookmark)</visible>
+            </item>
+		</menu>
     </extension>
 
     <extension point="xbmc.service" library="service.py"/>

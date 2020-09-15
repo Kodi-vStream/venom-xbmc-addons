@@ -182,6 +182,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
         meta['durationH'] = 0
         meta['durationM'] = 0
 
+
     # affichage du dialog perso
     class XMLDialog(xbmcgui.WindowXMLDialog):
 
@@ -204,7 +205,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
         def onInit(self):
             # par default le resumer#
             color = ADDON.getSetting('deco_color')
-            window(10000).setProperty('color', color)
+            self.setProperty('color', color)
             self.poster = 'https://image.tmdb.org/t/p/%s' % self.ADDON.getSetting('poster_tmdb')
             self.none_poster = 'https://eu.ui-avatars.com/api/?background=000&size=512&name=%s&color=FFF&font-size=0.33'
 
@@ -266,14 +267,14 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
             #         listitems.append(listitem_)
             #         cast.append(slabel.encode('ascii', 'ignore'))
             #     self.getControl(50).addItems(listitems)
-            #     #window(10000).setProperty('ListItem.casting', str(cast))
+            #     #self.setProperty('ListItem.casting', str(cast))
             # except:
             #     pass
             
             # title
             # self.getControl(1).setLabel(meta['title'])
             meta['title'] = sTitle
-
+            
             # self.getControl(49).setVisible(True)
             # self.getControl(2).setImage(meta['cover_url'])
             # self.getControl(3).setLabel(meta['rating'])
@@ -283,13 +284,12 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
             if 'votes' not in meta or meta['votes'] == '0':
                 meta['votes'] = '-'
  
-            for e in meta:
-                prop = 'ListItem.%s' % (e)
-                if isinstance(meta[e], unicode):
-                    window(10000).setProperty(prop, meta[e].encode('utf-8'))
+            for prop in meta:
+                if isinstance(meta[prop], unicode):
+                    self.setProperty(prop, meta[prop].encode('utf-8'))
                 else:
-                    window(10000).setProperty(prop, str(meta[e]))
-
+                    self.setProperty(prop, str(meta[prop]))
+                    
         def credit(self, meta='', control=''):
             #self.getControl(control).reset()
             listitems = []
@@ -309,7 +309,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                     else :
                         sThumbnail = self.none_poster % sTitle
                     
-                    sId = i['id']
+                    # sId = i['id']
 
                     listitem_ = listitem(label=sTitle, iconImage=sThumbnail)
                     try:
@@ -329,18 +329,20 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
             # self.setFocus(self.getControl(5200))
 
         def onClick(self, controlId):
-            #print(controlId)
+
             if controlId == 11:
                 from resources.lib.ba import cShowBA
                 cBA = cShowBA()
                 cBA.SetSearch(sFileName)
                 cBA.SetYear(year)
+                cBA.SetTrailerUrl(self.getProperty('trailer'))
                 cBA.SearchBA(True)
-                #self.close()
                 return
+
             elif controlId == 30:
                 self.close()
                 return
+
             elif controlId == 50 or controlId == 5200 :
                 # print(self.getControl(50).ListItem.Property('id'))
                 item = self.getControl(controlId).getSelectedItem()
@@ -374,21 +376,22 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                         age = meta['deathday']
                         
                   
-                    window(10000).setProperty('Person_name', sTitle)
-                    window(10000).setProperty('Person_birthday', meta['birthday'])
-                    window(10000).setProperty('Person_place_of_birth', meta['place_of_birth'])
-                    window(10000).setProperty('Person_deathday', str(age))
-                    window(10000).setProperty('Person_biography', meta['biography']) 
+                    self.setProperty('Person_name', sTitle)
+                    self.setProperty('Person_birthday', meta['birthday'])
+                    self.setProperty('Person_place_of_birth', meta['place_of_birth'])
+                    self.setProperty('Person_deathday', str(age))
+                    self.setProperty('Person_biography', meta['biography']) 
                     self.setFocusId(9000)                   
        
                 except:
                     return
                 # self.getControl(50).setVisible(True)
                 self.setProperty('vstream_menu', 'Person')
+            
             # click sur similaire
             elif controlId == 9:
                 # print(self.getControl(9000).ListItem.tmdb_id)
-                sid = window(10000).getProperty('ListItem.tmdb_id')
+                sid = self.getProperty('tmdb_id')
 
                 grab = cTMDb()
                 sUrl_simil = 'movie/%s/similar' % str(sid)
@@ -407,8 +410,9 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                 except:
                     return
 
+            # click pour recherche
             elif controlId == 5215 or controlId == 5205 or controlId == 5210:
-                # click pour recherche
+
                 import sys
                 from resources.lib.util import cUtil
                 item = self.getControl(controlId).getSelectedItem()
@@ -420,9 +424,14 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                 except:
                     return
 
+                self.close()
+
+                # Si lancé depuis la page Home de Kodi, il faut d'abord en sortir pour lancer la recherche
+                if xbmc.getCondVisibility('Window.IsVisible(home)'):
+                    xbmc.executebuiltin('ActivateWindow(%d)' % (10028))
+
                 sTest = '%s?site=globalSearch&searchtext=%s&sCat=1' % (sys.argv[0], sTitle)
                 xbmc.executebuiltin('XBMC.Container.Update(%s)' % sTest)
-                self.close()
                 return
             # elif controlId == 2:
             #     print("paseeeee")
