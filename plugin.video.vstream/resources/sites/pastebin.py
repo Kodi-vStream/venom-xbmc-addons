@@ -1052,7 +1052,8 @@ def showHosters():
                 res = listRes[resIdx]
                 if res.isdigit(): res += 'p'
                 res = res.replace('P', 'p').replace('1080p', 'HD').replace('720p', 'SD').replace('2160p', '4K')
-                sDisplayName = '%s [%s]' %(sTitle, res)
+                sDisplayName = sTitle
+                if res: sDisplayName += ' [%s]' %res
                 resIdx += 1
             else:
                 sDisplayName = sTitle
