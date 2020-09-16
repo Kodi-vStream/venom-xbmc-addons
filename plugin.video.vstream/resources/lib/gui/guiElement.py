@@ -85,22 +85,6 @@ class cGuiElement:
     def getType(self):
         return self.__sType
 
-    # utiliser setImdbId
-    def setImdb(self, sImdb):
-        self.__ImdbId = sImdb
-
-    # utiliser  getImdbId
-    def getImdb(self):
-        return self.__ImdbId
-
-    # utiliser  setTmdbId
-    def setTmdb(self, sTmdb):
-        self.__TmdbId = sTmdb
-
-    # utiliser  getTmdbId
-    def getTmdb(self):
-        return self.__TmdbId
-
     def setCat(self, sCat):
         self.__sCat = sCat
 
@@ -543,32 +527,51 @@ class cGuiElement:
 
         meta['title'] = self.getTitle()
 
-        for key, value in meta.items():
-            self.addItemValues(key, value)
+        if 'media_type' in meta:
+            meta.pop('media_type')
 
-        if 'imdb_id' in meta and meta['imdb_id']:
-            self.__ImdbId = meta['imdb_id']
+        if 'imdb_id' in meta:
+            imdb_id = meta.pop('imdb_id')
+            if imdb_id:
+                self.__ImdbId = imdb_id
 
-        if 'tmdb_id' in meta and meta['tmdb_id']:
-            self.__TmdbId = meta['tmdb_id']
+        if 'tmdb_id' in meta:
+            tmdb_id = meta.pop('tmdb_id')
+            if tmdb_id:
+                self.__TmdbId = tmdb_id
 
-        # if 'tvdb_id' in meta and meta['tvdb_id']:
-            # self.__TvdbId = meta['tvdb_id']
+        if 'tvdb_id' in meta:
+#            if meta['tvdb_id']:
+#             self.__TvdbId = meta['tvdb_id']
+            meta.pop('tvdb_id')
 
         # Si fanart trouvé dans les meta alors on l'utilise, sinon on n'en met pas
-        if 'backdrop_url' in meta and meta['backdrop_url']:
-            self.addItemProperties('fanart_image', meta['backdrop_url'])
-            self.__sFanart = meta['backdrop_url']
-        else:
-            self.addItemProperties('fanart_image', '')
+        if 'backdrop_url' in meta:
+            url = meta.pop('backdrop_url')
+            if url:
+                self.addItemProperties('fanart_image', url)
+                self.__sFanart = url
+            else:
+                self.addItemProperties('fanart_image', '')
+
+        if 'backdrop_path' in meta:
+            meta.pop('backdrop_path')
+
+        if 'poster_path' in meta:
+            meta.pop('poster_path')
+
+        if 'cover_url' in meta:
+            cover = meta.pop('cover_url')
+            if cover:
+                self.__sThumbnail = cover
+                self.__sPoster = cover
 
         if 'trailer' in meta and meta['trailer']:
             self.__sTrailer = meta['trailer']
 
-        if 'cover_url' in meta and meta['cover_url']:
-            self.__sThumbnail = meta['cover_url']
-            self.__sPoster = meta['cover_url']
-            
+        for key, value in meta.items():
+            self.addItemValues(key, value)
+
         return
 
     def getItemValues(self):
@@ -620,6 +623,10 @@ class cGuiElement:
         if self.getTmdbId():
             self.addItemProperties('TmdbId', str(self.getTmdbId()))
             self.addItemValues('DBID', str(self.getTmdbId()))
+
+        # imdbid
+        if self.getImdbId():
+            self.addItemProperties('ImdbId', str(self.getImdbId()))
 
         # Utilisation des infos connues si non trouvées
         if not self.getItemValue('plot') and self.getDescription():
