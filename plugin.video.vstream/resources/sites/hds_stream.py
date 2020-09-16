@@ -21,7 +21,7 @@ URL_MAIN = 'https://wnw.hds-stream.to/'
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_GENRES = (URL_MAIN, 'showGenres')
 MOVIE_EXCLUS = (URL_MAIN + 'tendance/', 'showMovies')
-MOVIE_ANNEES = (True, 'showMovieYears')
+#MOVIE_ANNEES = (True, 'showMovieYears')
 
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
 
