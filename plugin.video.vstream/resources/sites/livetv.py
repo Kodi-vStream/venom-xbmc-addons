@@ -275,10 +275,10 @@ def showHosters(): #affiche les videos disponible du live
     if (aResult[0]):
 
         sHosterUrl = ''
-
         Referer =''
         url = aResult[1][0]
-
+        if (not url.startswith("http")):
+                url = "http:" + url
         #url = 'http://www.sporcanli.com/frame2.html' #a garder peut etre utils pour ajouter un hébergeur
 
         VSlog(url)
@@ -1080,9 +1080,9 @@ def showMovies4(sSearch = ''):#Afficher le club recherché
             sTitle = sTitle.encode("utf-8", 'ignore')
 
             try:
-                sTitle2 = str(sTitle2, encoding="utf8", errors='ignore')
+                sTitle = str(sTitle, encoding="utf8", errors='ignore')
                 sHoster = str(sHoster, encoding="utf8", errors='ignore')
-                sQual = str(sQual, encoding="utf8", errors='ignore')
+                #sQual = str(sQual, encoding="utf8", errors='ignore')
             except:
                 pass
 
@@ -1150,9 +1150,9 @@ def showMenu(sSearch = ''):#affiche le menu du club
             sTitle = sTitle.encode("utf-8", 'ignore')
 
             try:
-                sTitle2 = str(sTitle2, encoding="utf8", errors='ignore')
-                sHoster = str(sHoster, encoding="utf8", errors='ignore')
-                sQual = str(sQual, encoding="utf8", errors='ignore')
+                sTitle = str(sTitle, encoding="utf8", errors='ignore')
+                #sHoster = str(sHoster, encoding="utf8", errors='ignore')
+                #sQual = str(sQual, encoding="utf8", errors='ignore')
             except:
                 pass
 
