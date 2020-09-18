@@ -292,7 +292,8 @@ def decodeHTML(oResponse, ResponseHeader, zlibMode=False):
 
         else:
             #Unique maniere de formatter la page apres le passage de zlib.
-            sContent = str(oResponse.encode("utf8", errors='ignore').encode("utf-8").decode('unicode-escape'))
+            #sContent = str(oResponse.encode("utf8", errors='ignore').encode("utf-8").decode('unicode-escape'))
+            sContent = oResponse
             return sContent
 
         #Corrige l'affichage des accentes, malheureusement il n'y a pas de solution unique.
