@@ -181,7 +181,9 @@ class cRequestHandler:
             if self.__sResponseHeader.get('Content-Encoding') == 'gzip':
                 import zlib
                 sContent = zlib.decompress(sContent, zlib.MAX_WBITS | 16)
-                sContent = decodeHTML(sContent, self.__sResponseHeader, zlibMode = True)
+                
+                if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+                	sContent = decodeHTML(sContent, self.__sResponseHeader, zlibMode = True)
 
             # https://bugs.python.org/issue4773
             self.__sRealUrl = oResponse.geturl()
@@ -292,8 +294,7 @@ def decodeHTML(oResponse, ResponseHeader, zlibMode=False):
 
         else:
             #Unique maniere de formatter la page apres le passage de zlib.
-            #sContent = str(oResponse.encode("utf8", errors='ignore').encode("utf-8").decode('unicode-escape'))
-            sContent = oResponse
+            sContent = str(oResponse, encoding="utf8", errors='ignore').encode("utf-8").decode('unicode-escape')
             return sContent
 
         #Corrige l'affichage des accentes, malheureusement il n'y a pas de solution unique.
@@ -307,7 +308,7 @@ def decodeHTML(oResponse, ResponseHeader, zlibMode=False):
                 sContent = sContent.decode()
             except:
                 pass
-            sContent = str(sContent).encode(encoding)
+            sContent = str(sContent, encoding)
         except:
             sContent = str(sContent)
         else:
