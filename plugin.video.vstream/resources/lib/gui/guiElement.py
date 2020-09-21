@@ -6,7 +6,7 @@ import string
 import xbmc
 import unicodedata
 
-from resources.lib.comaddon import addon
+from resources.lib.comaddon import addon, VSlog
 from resources.lib.db import cDb
 from resources.lib.util import QuoteSafe
 from resources.lib.tmdb import cTMDb
@@ -273,6 +273,14 @@ class cGuiElement:
         if self.__Year:
             sTitle2 = '%s [COLOR %s](%s)[/COLOR]' % (sTitle2, self.__sDecoColor, self.__Year)
 
+        #Py3
+        try:
+            if "Ã©" in sTitle2:
+                sTitle2 = sTitle2.encode("iso-8859-1", 'ignore')
+                sTitle2 = str(sTitle2, encoding="utf8", errors='ignore')
+        except:
+            pass
+
         # on repasse en utf-8
         try:
             return sTitle2.encode('utf-8')
@@ -316,7 +324,11 @@ class cGuiElement:
         return self.__sTitleWatched
 
     def setDescription(self, sDescription):
-        self.__sDescription = sDescription
+        #Py3
+        try:
+            self.__sDescription = sDescription.encode('latin-1')
+        except:
+            self.__sDescription = sDescription
 
     def getDescription(self):
         return self.__sDescription
