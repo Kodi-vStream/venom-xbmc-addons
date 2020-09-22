@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-import re
 import xbmcplugin
 
 from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window, xbmc
@@ -11,7 +10,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil, QuotePlus
+from resources.lib.util import QuotePlus
 
 
 class cGui:
@@ -19,7 +18,6 @@ class cGui:
     SITE_NAME = 'cGui'
     CONTENT = 'files'
     searchResults = []
-    # modif 22/06
     listing = []
     ADDON = addon()
 

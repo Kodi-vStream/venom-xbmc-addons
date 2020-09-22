@@ -16,7 +16,6 @@ headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/201
 class cHoster(iHoster):
 
     def __init__(self):
-        self.ADDON = addon()
         self.__sDisplayName = 'Uptobox'
         self.__sFileName = self.__sDisplayName
         self.oPremiumHandler = None
@@ -79,11 +78,12 @@ class cHoster(iHoster):
         return self.__sUrl
 
     def getMediaLink(self):
+        ADDON = addon()
         self.oPremiumHandler = cPremiumHandler(self.getPluginIdentifier())
         if (self.oPremiumHandler.isPremiumModeAvailable()):
 
             try:
-                mDefault = int(self.ADDON.getSetting("hoster_uptobox_mode_default"))
+                mDefault = int(ADDON.getSetting("hoster_uptobox_mode_default"))
             except AttributeError:
                 mDefault = 0
 

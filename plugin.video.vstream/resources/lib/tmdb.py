@@ -22,10 +22,10 @@ except ImportError:
 
 try:
     from sqlite3 import dbapi2 as sqlite
-    VSlog('SQLITE 3 as DB engine')
+    VSlog('SQLITE 3 as DB engine for tmdb')
 except:
     from pysqlite2 import dbapi2 as sqlite
-    VSlog('SQLITE 2 as DB engine')
+    VSlog('SQLITE 2 as DB engine for tmdb')
 
 class cTMDb:
 
@@ -72,10 +72,11 @@ class cTMDb:
     except AttributeError:
         REALCACHE = xbmc.translatePath(CACHE)
 
-    ADDON = addon()
 
     def __init__(self, api_key='', debug=False, lang='fr'):
 
+        self.ADDON = addon()
+        
         self.api_key = self.ADDON.getSetting('api_tmdb')
         self.debug = debug
         self.lang = lang
@@ -218,20 +219,18 @@ class cTMDb:
             sText = (self.ADDON.VSlang(30421)) % (url, result['request_token'])
 
             DIALOG = dialog()
-            oDialog = DIALOG.VSyesno(sText)
-            if (oDialog == 0):
+            if not DIALOG.VSyesno(sText):
                 return False
 
-            if (oDialog == 1):
-                result = self._call('authentication/session/new', 'request_token=' + result['request_token'])
+            result = self._call('authentication/session/new', 'request_token=' + result['request_token'])
 
-                if 'success' in result and result['success']:
-                    self.ADDON.setSetting('tmdb_session', str(result['session_id']))
-                    DIALOG.VSinfo(self.ADDON.VSlang(30000))
-                    return
-                else:
-                    DIALOG.VSerror('Erreur' + self.ADDON.VSlang(30000))
-                    return
+            if 'success' in result and result['success']:
+                self.ADDON.setSetting('tmdb_session', str(result['session_id']))
+                DIALOG.VSinfo(self.ADDON.VSlang(30000))
+                return
+            else:
+                DIALOG.VSerror('Erreur' + self.ADDON.VSlang(30000))
+                return
 
             # xbmc.executebuiltin('Container.Refresh')
             return

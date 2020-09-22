@@ -11,15 +11,10 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.comaddon import dialog, addon, VSlog
 import xbmc
 
-ADDON = addon()
-Token_Alldebrid = ADDON.getSetting('token_alldebrid')
-
-
 class cHosterGui:
 
     SITE_NAME = 'cHosterGui'
     ADDON = addon()
-    DIALOG = dialog()
 
     # step 1 - bGetRedirectUrl in ein extra optionsObject verpacken
     def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail, bGetRedirectUrl=False):
@@ -422,6 +417,8 @@ class cHosterGui:
 
     def play(self):
         oGui = cGui()
+        oDialog = dialog()
+
         oInputParameterHandler = cInputParameterHandler()
         sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
@@ -441,7 +438,7 @@ class cHosterGui:
         oHoster.setFileName(sFileName)
 
         sHosterName = oHoster.getDisplayName()
-        self.DIALOG.VSinfo(sHosterName, 'Resolve')
+        oDialog.VSinfo(sHosterName, 'Resolve')
 
         try:
 
@@ -464,11 +461,11 @@ class cHosterGui:
                 oPlayer.run(oGuiElement, oHoster.getFileName(), aLink[1])
                 return
             else:
-                self.DIALOG.VSerror(self.ADDON.VSlang(30020))
+                oDialog.VSerror(self.ADDON.VSlang(30020))
                 return
 
         except:
-            self.DIALOG.VSerror(self.ADDON.VSlang(30020))
+            oDialog.VSerror(self.ADDON.VSlang(30020))
             return
 
         oGui.setEndOfDirectory()
@@ -499,7 +496,7 @@ class cHosterGui:
 
             oPlayer = cPlayer()
             oPlayer.addItemToPlaylist(oGuiElement)
-            self.DIALOG.VSinfo(str(oHoster.getFileName()), 'Playlist')
+            dialog().VSinfo(str(oHoster.getFileName()), 'Playlist')
             return
 
         oGui.setEndOfDirectory()

@@ -6,10 +6,9 @@ import string
 import xbmc
 import unicodedata
 
-from resources.lib.comaddon import addon, VSlog
+from resources.lib.comaddon import addon
 from resources.lib.db import cDb
 from resources.lib.util import QuoteSafe
-from resources.lib.tmdb import cTMDb
 import random
 
 # rouge E26543
@@ -23,11 +22,12 @@ class cGuiElement:
 
     DEFAULT_FOLDER_ICON = 'icon.png'
     # COUNT = 0
-    ADDON = addon()
     DB = cDb()
 
     def __init__(self):
 
+        addons = addon()
+        
         # self.__sRootArt = cConfig().getRootArt()
         self.__sFunctionName = ''
         self.__sRootArt = 'special://home/addons/plugin.video.vstream/resources/art/'
@@ -35,7 +35,7 @@ class cGuiElement:
         self.__sMeta = 0
         self.__sPlaycount = 0
         self.__sTrailer = ''
-        self.__sMetaAddon = self.ADDON.getSetting('meta-view')
+        self.__sMetaAddon = addons.getSetting('meta-view')
         self.__sImdb = ''
         self.__sTmdb = ''
         self.__sMediaUrl = ''
@@ -56,7 +56,7 @@ class cGuiElement:
         self.__Episode = ''
         self.__sIcon = self.DEFAULT_FOLDER_ICON
         self.__sFanart = 'special://home/addons/plugin.video.vstream/fanart.jpg'
-        self.__sDecoColor = self.ADDON.getSetting('deco_color')
+        self.__sDecoColor = addons.getSetting('deco_color')
 
         # For meta search
         # TmdbId the movie database https://developers.themoviedb.org/
@@ -480,6 +480,7 @@ class cGuiElement:
             self.addItemProperties('fanart_image', '')
             return
 
+        from resources.lib.tmdb import cTMDb
         TMDb = cTMDb()
 
         sTitle = self.__sFileName
@@ -589,6 +590,7 @@ class cGuiElement:
     def getItemValues(self):
         self.addItemValues('Title', self.getTitle())
 
+        # https://kodi.wiki/view/InfoLabels
         # https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#ga0b71166869bda87ad744942888fb5f14
 
         # - Video Values:
@@ -685,6 +687,7 @@ class cGuiElement:
     
     # Des vidéos pour remplacer des bandes annnonces manquantes
     def getDefaultTrailer(self):
+        from resources.lib.tmdb import cTMDb
         trailers = ['WWkYjM3ZXxU',
                     'LpvKI7I5rF4',
                     'svTVRDgI08Y',

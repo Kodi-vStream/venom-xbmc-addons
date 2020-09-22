@@ -20,8 +20,6 @@ from resources.lib.comaddon import addon, dialog, VSlog
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
     REQUEST_TYPE_POST = 1
-    DIALOG = dialog()
-    ADDON = addon()
 
     def __init__(self, sUrl):
         self.__sUrl = sUrl
@@ -183,7 +181,7 @@ class cRequestHandler:
                 sContent = zlib.decompress(sContent, zlib.MAX_WBITS | 16)
                 
                 if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-                	sContent = decodeHTML(sContent, self.__sResponseHeader, zlibMode = True)
+                    sContent = decodeHTML(sContent, self.__sResponseHeader, zlibMode = True)
 
             # https://bugs.python.org/issue4773
             self.__sRealUrl = oResponse.geturl()
@@ -210,7 +208,7 @@ class cRequestHandler:
 
             else:
                 try:
-                    VSlog("%s (%d),%s" % (self.ADDON.VSlang(30205), e.code, self.__sUrl))
+                    VSlog("%s (%d),%s" % (addon().VSlang(30205), e.code, self.__sUrl))
                     self.__sRealUrl = e.geturl()
                     self.__sResponseHeader = e.headers
                     sContent = e.read()
@@ -218,7 +216,7 @@ class cRequestHandler:
                     sContent = ''
 
             if not sContent:
-                self.DIALOG.VSerror("%s (%d),%s" % (self.ADDON.VSlang(30205), e.code, self.__sUrl))
+                dialog().VSerror("%s (%d),%s" % (addon().VSlang(30205), e.code, self.__sUrl))
 
         except UrlError as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e.reason) and self.BUG_SSL == False:
@@ -231,11 +229,11 @@ class cRequestHandler:
                     self.__enableDNS = True
                     return self.__callRequest()
                 else:
-                    error_msg = self.ADDON.VSlang(30470)
+                    error_msg = addon().VSlang(30470)
             else:
-                error_msg = "%s (%s),%s" % (self.ADDON.VSlang(30205), e.reason, self.__sUrl)
+                error_msg = "%s (%s),%s" % (addon().VSlang(30205), e.reason, self.__sUrl)
 
-            self.DIALOG.VSerror(error_msg)
+            dialog().VSerror(error_msg)
             sContent = ''
 
         if sContent:

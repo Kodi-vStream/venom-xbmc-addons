@@ -1,17 +1,10 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #Ovni crea
-from resources.lib.handler.requestHandler import cRequestHandler 
 from resources.lib.parser import cParser 
 from resources.hosters.hoster import iHoster
 import requests
-from resources.lib.comaddon import addon, dialog, VSlog, xbmcgui, xbmc
-
-
-import re, urllib2, urllib
-
-addons = addon()
-dialogs = dialog()
+from resources.lib.comaddon import dialog
 
 class cHoster(iHoster):
 

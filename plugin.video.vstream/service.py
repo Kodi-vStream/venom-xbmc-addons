@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-import subprocess  # , time, os
+import subprocess
 import xbmcvfs
 from datetime import datetime
-from resources.lib.comaddon import addon, xbmc, VSlog  # , xbmcgui, progress, dialog
+from resources.lib.comaddon import addon, xbmc, VSlog
 
 
 def service():
     ADDON = addon()
-    interval = ADDON.getSetting('heure_verification')
     recordIsActivate = ADDON.getSetting('enregistrement_activer')
     if recordIsActivate == 'false':
         return
@@ -19,10 +18,13 @@ def service():
         xbmcvfs.mkdir(path)
 
     recordList = xbmcvfs.listdir(path)
+    interval = ADDON.getSetting('heure_verification')
     ADDON.setSetting('path_enregistrement_programmation', path)
     recordInProgress = False
     monitor = xbmc.Monitor()
 
+    del ADDON
+    
     while not monitor.abortRequested() and not recordInProgress == True:
         if monitor.waitForAbort(int(interval)):
             break

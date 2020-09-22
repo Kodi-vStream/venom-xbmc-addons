@@ -12,10 +12,10 @@ SITE_NAME = 'DB'
 
 try:
     from sqlite3 import dbapi2 as sqlite
-    VSlog('SQLITE 3 as DB engine')
+    VSlog('SQLITE 3 as DB engine for db')
 except:
     from pysqlite2 import dbapi2 as sqlite
-    VSlog('SQLITE 2 as DB engine')
+    VSlog('SQLITE 2 as DB engine for db')
 
 
 class cDb:
@@ -26,9 +26,6 @@ class cDb:
         REALDB = xbmc.translatePath(DB).decode('utf-8')
     except AttributeError:
         REALDB = xbmc.translatePath(DB)
-
-    DIALOG = dialog()
-    ADDON = addon()
 
     def __init__(self):
 
@@ -185,7 +182,7 @@ class cDb:
         try:
             self.dbcur.execute(sql_delete)
             self.db.commit()
-            self.DIALOG.VSinfo(self.ADDON.VSlang(30041))
+            dialog().VSinfo(addon().VSlang(30041))
             oGui.updateDirectory()
             return False, False
         except Exception:
@@ -314,11 +311,11 @@ class cDb:
 
             self.db.commit()
 
-            self.DIALOG.VSinfo(self.ADDON.VSlang(30042), meta['title'])
+            dialog().VSinfo(addon().VSlang(30042), meta['title'])
             VSlog('SQL INSERT favorite Successfully')
         except Exception as e:
             if 'UNIQUE constraint failed' in e.message:
-                self.DIALOG.VSinfo(self.ADDON.VSlang(30043), meta['title'])
+                dialog().VSinfo(addon().VSlang(30043), meta['title'])
             VSlog('SQL ERROR INSERT')
             pass
 
@@ -371,7 +368,7 @@ class cDb:
                     # si pas trouvé, on essaie sans le titre, seulement l'URL
                     return self.del_bookmark(sSiteUrl)
                     
-                self.DIALOG.VSinfo(self.ADDON.VSlang(30044))
+                dialog().VSinfo(addon().VSlang(30044))
                 cGui().updateDirectory()
                 return False, False
             except Exception:
@@ -395,7 +392,7 @@ class cDb:
         try:
             self.db.commit()
             VSlog('SQL INSERT download Successfully')
-            self.DIALOG.VSinfo(self.ADDON.VSlang(30042), meta['title'])
+            dialog().VSinfo(addon().VSlang(30042), meta['title'])
         except Exception:
             VSlog('SQL ERROR INSERT')
             pass
