@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.comaddon import addon, dialog, window, listitem, xbmc, xbmcgui
+from resources.lib.comaddon import addon, dialog, listitem, xbmc, xbmcgui
 from resources.lib.tmdb import cTMDb
 from datetime import date, datetime
 
@@ -158,7 +158,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
         
 
     # si rien ne marche
-    if (not meta['imdb_id'] and not ['tmdb_id'] and not ['tvdb_id']):
+    if (not meta['imdb_id'] and not meta['tmdb_id'] and not meta['tvdb_id']):
         # dialog par defaut
         # xbmc.executebuiltin('Action(Info)')
         # fenetre d'erreur
