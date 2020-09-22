@@ -15,7 +15,6 @@ import xbmcplugin
 class cPlayer(xbmc.Player):
 
     ADDON = addon()
-    DIALOG = dialog()
 
     def __init__(self, *args):
 
@@ -126,10 +125,10 @@ class cPlayer(xbmc.Player):
         if (self.SubtitleActive):
             if (self.ADDON.getSetting('srt-view') == 'true'):
                 self.showSubtitles(True)
-                self.DIALOG.VSinfo('Sous-titres chargés', 'Sous-Titres', 5)
+                dialog().VSinfo('Sous-titres chargés', 'Sous-Titres', 5)
             else:
                 self.showSubtitles(False)
-                self.DIALOG.VSinfo('Sous-titres chargés, vous pouvez les activer', 'Sous-Titres', 15)
+                dialog().VSinfo('Sous-titres chargés, vous pouvez les activer', 'Sous-Titres', 15)
 
         while self.isPlaying() and not self.forcestop:
         #while not xbmc.abortRequested:
