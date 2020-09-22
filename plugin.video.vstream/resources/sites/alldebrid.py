@@ -11,23 +11,20 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, addon
 
-ADDON = addon()
-URL_HOST = ADDON.getSetting('urlmain_alldebrid')
-
-
 SITE_IDENTIFIER = 'alldebrid'
 SITE_NAME = '[COLOR violet]Alldebrid[/COLOR]'
 SITE_DESC = 'Débrideur de lien premium'
-
-ALL_ALL = (URL_HOST + 'links/', 'showLiens')
-ALL_MAGNETS = (URL_HOST + 'magnets/', 'showMagnets')
-ALL_INFORMATION = ('https://alldebrid.fr', 'showInfo')
-
+    
 ITEM_PAR_PAGE = 20
-
 
 def load():
     oGui = cGui()
+    oAddon = addon()
+
+    URL_HOST = oAddon.getSetting('urlmain_alldebrid')
+    ALL_ALL = (URL_HOST + 'links/', 'showLiens')
+    ALL_MAGNETS = (URL_HOST + 'magnets/', 'showMagnets')
+    ALL_INFORMATION = ('https://alldebrid.fr', 'showInfo')
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ALL_ALL[0])
