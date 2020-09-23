@@ -665,7 +665,7 @@ class cGuiElement:
             self.addItemValues('playcount', w)
 
         self.addItemProperties('siteUrl', self.getSiteUrl())
-        self.addItemProperties('sCleanTitle', self.getCleanTitle())
+        self.addItemProperties('sCleanTitle', self.getFileName())
         self.addItemProperties('sId', self.getSiteName())
         self.addItemProperties('sFav', self.getFunction())
         self.addItemProperties('sCat', str(self.getCat()))
