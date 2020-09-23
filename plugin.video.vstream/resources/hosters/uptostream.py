@@ -164,7 +164,7 @@ def decodeur1(Html):
                 movieID = ''
                 qua_list = set()
                 lang_list = list()
-                supportedLang = ['eng', 'eng2', 'English', 'fr', 'fre', 'fre2', 'French',
+                supportedLang = ['eng', 'eng2', 'English', 'fre', 'fre1', 'fre2', 'French',
                                  'jap', 'jpn', 'Japanese', 'chi', 'Chinese', 'rus',
                                  'Russian', 'spa', 'Spanish', 'ger', 'ger2', 'German']
 
