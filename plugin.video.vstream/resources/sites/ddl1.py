@@ -630,7 +630,7 @@ def Display_protected_link():
                'Content-Type': 'application/x-www-form-urlencoded',
                'Content-Length': '16'}
 
-    r = requests.post(sUrl.replace('http', 'https'), headers=headers, data=payload)
+    r = requests.post(sUrl.replace('http:', 'https:'), headers=headers, data=payload)
     sHtmlContent = r.content
 
     # fh = open('c:\\test.txt', "w")
