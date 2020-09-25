@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'mesfilms'
 SITE_NAME = 'Mes Films'
 SITE_DESC = 'Mes Films - Films en streaming HD'
 
-URL_MAIN = 'https://mesfilms.net/
+URL_MAIN = 'https://mesfilms.net/'
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showSearchResult')
