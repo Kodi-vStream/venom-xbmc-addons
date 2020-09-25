@@ -114,12 +114,15 @@ class cPlayer(xbmc.Player):
 
         #Attend que le lecteur demarre, avec un max de 20s
         if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-            xrange = range
-
-        for _ in xrange(20):
-            if self.playBackEventReceived:
-                break
-            xbmc.sleep(1000)
+            for _ in range(20):
+                if self.playBackEventReceived:
+                    break
+                xbmc.sleep(1000)
+        else:
+            for _ in xrange(20):
+                if self.playBackEventReceived:
+                    break
+                xbmc.sleep(1000)
 
         #active/desactive les sous titres suivant l'option choisie dans la config
         if (self.SubtitleActive):
