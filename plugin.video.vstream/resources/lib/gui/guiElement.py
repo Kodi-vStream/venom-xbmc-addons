@@ -306,7 +306,7 @@ class cGuiElement:
         except:
             pass
 
-        if not '[COLOR' in sTitle:
+        if not sTitle.startswith('[COLOR'):
             self.__sTitle = self.TraiteTitre(sTitle)
         else:
             self.__sTitle = sTitle
