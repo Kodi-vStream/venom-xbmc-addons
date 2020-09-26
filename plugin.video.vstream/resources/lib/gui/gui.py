@@ -508,7 +508,7 @@ class cGui:
                 oOutputParameterHandler = oContextItem.getOutputParameterHandler()
                 sParams = oOutputParameterHandler.getParameterAsUri()
                 sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-                aContextMenus += [(oContextItem.getTitle(), 'XBMC.RunPlugin(%s)' % sTest)]
+                aContextMenus += [(oContextItem.getTitle(), 'RunPlugin(%s)' % sTest)]
 
             oListItem.addContextMenuItems(aContextMenus, True)
 
@@ -523,7 +523,7 @@ class cGui:
                 oOutputParameterHandler = oContextItem.getOutputParameterHandler()
                 sParams = oOutputParameterHandler.getParameterAsUri()
                 sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-                aContextMenus += [(oContextItem.getTitle(), 'XBMC.RunPlugin(%s)' % sTest)]
+                aContextMenus += [(oContextItem.getTitle(), 'RunPlugin(%s)' % sTest)]
 
             oListItem.addContextMenuItems(aContextMenus)
 
@@ -538,7 +538,7 @@ class cGui:
                 oOutputParameterHandler = oContextItem.getOutputParameterHandler()
                 sParams = oOutputParameterHandler.getParameterAsUri()
                 sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-                aContextMenus += [(oContextItem.getTitle(), 'XBMC.RunPlugin(%s)' % sTest)]
+                aContextMenus += [(oContextItem.getTitle(), 'RunPlugin(%s)' % sTest)]
 
             oListItem.addContextMenuItems(aContextMenus)
 
@@ -616,7 +616,7 @@ class cGui:
         sId = oInputParameterHandler.getValue('sId')
 
         sTest = '%s?site=%s' % (sPluginPath, sId)
-        xbmc.executebuiltin('XBMC.Container.Update(%s, replace)' % sTest)
+        xbmc.executebuiltin('Container.Update(%s, replace)' % sTest)
 
     def viewInfo(self):
         from resources.lib.config import WindowsBoxes
@@ -647,7 +647,7 @@ class cGui:
         if xbmc.getCondVisibility('Window.IsVisible(home)'):
             xbmc.executebuiltin('ActivateWindow(%d)' % (10028))
 
-        xbmc.executebuiltin('XBMC.Container.Update(%s)' % sTest)
+        xbmc.executebuiltin('Container.Update(%s)' % sTest)
 
         return False
 
@@ -672,7 +672,7 @@ class cGui:
                 oOutputParameterHandler.addParameter('siteUrl', siteUrl)
                 sParams = oOutputParameterHandler.getParameterAsUri()
                 sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, sId, sFunction, sParams)
-                xbmc.executebuiltin('XBMC.Container.Update(%s)' % sTest)
+                xbmc.executebuiltin('Container.Update(%s)' % sTest)
             except:
                 return False
 
@@ -693,7 +693,7 @@ class cGui:
 
         sParams = oOutputParameterHandler.getParameterAsUri()
         sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, sId, sFunction, sParams)
-        xbmc.executebuiltin('XBMC.Container.Update(%s, replace)' % sTest)
+        xbmc.executebuiltin('Container.Update(%s, replace)' % sTest)
 
     def setWatched(self):
         if True:
