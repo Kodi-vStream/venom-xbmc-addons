@@ -300,6 +300,10 @@ class cGuiElement:
         return sTitle, False
 
     def setTitle(self, sTitle):
+        #Convertie les bytes en strs pour le replace.
+        if isinstance(sTitle, bytes):
+            sTitle = sTitle.decode('utf-8')
+        
         self.__sCleanTitle = sTitle.replace('[]', '').replace('()', '').strip()
         try:
             sTitle = sTitle.strip().decode('utf-8')
