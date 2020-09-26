@@ -10,6 +10,7 @@ except ImportError:  # Python 3
 import ssl
 import re
 
+from resources.hosters.youtube import cHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.player import cPlayer
@@ -70,7 +71,6 @@ class cShowBA:
             ids = result['items'][0]['id']['videoId']
 
             url = 'http://www.youtube.com/watch?v=%s' % ids
-            from resources.hosters.youtube import cHoster
             hote = cHoster()
             hote.setUrl(url)
             api_call = hote.getMediaLink()[1]
