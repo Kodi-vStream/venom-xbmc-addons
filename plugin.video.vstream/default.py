@@ -64,9 +64,9 @@ class main:
         
         # Exclue les appels par des plugins qu'on ne sait pas gérer, par exemple :  plugin://plugin.video.vstream/extrafanart
         oPluginHandler = cPluginHandler()
-        if oPluginHandler.getPluginPath() != 'plugin://plugin.video.vstream/':
-           cGui().setEndOfDirectory()
-           return
+#         if oPluginHandler.getPluginPath() != 'plugin://plugin.video.vstream/':
+#             cGui().setEndOfDirectory()
+#             return
         
         oInputParameterHandler = cInputParameterHandler()
 
