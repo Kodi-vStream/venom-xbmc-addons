@@ -137,11 +137,11 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
         if (addon('script.extendedinfo') and ADDON.getSetting('extendedinfo-view') == 'true'):
             if metaType == '2':
                 DIALOG.VSinfo('Lancement de ExtendInfo')
-                xbmc.executebuiltin('XBMC.RunScript(script.extendedinfo, info=extendedtvinfo, name=%s)' % sFileName)
+                xbmc.executebuiltin('RunScript(script.extendedinfo, info=extendedtvinfo, name=%s)' % sFileName)
                 return
             elif metaType == '1':
                 DIALOG.VSinfo('Lancement de ExtendInfo')
-                xbmc.executebuiltin('XBMC.RunScript(script.extendedinfo, info=extendedinfo, name=%s)' % sFileName)
+                xbmc.executebuiltin('RunScript(script.extendedinfo, info=extendedinfo, name=%s)' % sFileName)
                 return
     except:
         pass
@@ -177,7 +177,8 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
         duration = meta['duration']/60  # En minutes
         durationH = duration/60 # Nombre d'heures
         meta['durationH'] = durationH
-        meta['durationM'] = '{:02d}'.format(duration - 60*durationH)
+        #Le resultat doit obligatoirement etre un int sous Py3.
+        meta['durationM'] = '{:02d}'.format(int(duration - 60*durationH))
     else:
         meta['durationH'] = 0
         meta['durationM'] = 0
@@ -222,7 +223,12 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
             if 'credits' in meta and meta['credits']:
                 cast = []
                 crew = []
-                data = eval(str(meta['credits']).decode('utf-8'))
+
+                #Decodage python 3
+                try:
+                    data = eval(str(meta['credits']).decode('utf-8'))
+                except:
+                    data = eval(str(meta['credits']))
     
                 try:
                     listitems = []
@@ -284,12 +290,20 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
             if 'votes' not in meta or meta['votes'] == '0':
                 meta['votes'] = '-'
  
+
             for prop in meta:
-                if isinstance(meta[prop], unicode):
-                    self.setProperty(prop, meta[prop].encode('utf-8'))
-                else:
-                    self.setProperty(prop, str(meta[prop]))
-                    
+                #Py3 unicode == str.
+                try:
+                    if isinstance(meta[prop], unicode):
+                        self.setProperty(prop, meta[prop].encode('utf-8'))
+                    else:
+                        self.setProperty(prop, str(meta[prop]))
+                except:
+                    if isinstance(meta[prop], str):
+                        self.setProperty(prop, meta[prop].encode('utf-8'))
+                    else:
+                        self.setProperty(prop, str(meta[prop]))                    
+                   
         def credit(self, meta='', control=''):
             #self.getControl(control).reset()
             listitems = []
@@ -431,7 +445,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                     xbmc.executebuiltin('ActivateWindow(%d)' % (10028))
 
                 sTest = '%s?site=globalSearch&searchtext=%s&sCat=1' % (sys.argv[0], sTitle)
-                xbmc.executebuiltin('XBMC.Container.Update(%s)' % sTest)
+                xbmc.executebuiltin('Container.Update(%s)' % sTest)
                 return
             # elif controlId == 2:
             #     print("paseeeee")
