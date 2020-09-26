@@ -91,7 +91,8 @@ class cHoster(iHoster):
             url = []
             qua = [] 
             for aEntry in aResult[1]:
-                url.append(aEntry[0].replace('\u0026', '&'))
+                #Py3 a besoin de la deuxieme version, je laisse le 1er replace au cas où pour Py2
+                url.append(aEntry[0].replace("\u0026","&").replace("\\u0026","&"))
                 qua.append(aEntry[1])
 
             if url:
