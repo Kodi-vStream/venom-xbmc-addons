@@ -3,10 +3,9 @@
 # Venom.
 import re
 import string
-import xbmc
 import unicodedata
 
-from resources.lib.comaddon import addon
+from resources.lib.comaddon import addon, xbmc
 from resources.lib.db import cDb
 from resources.lib.util import QuoteSafe
 import random
@@ -301,8 +300,9 @@ class cGuiElement:
 
     def setTitle(self, sTitle):
         #Convertie les bytes en strs pour le replace.
-#         if isinstance(sTitle, bytes):
-#             sTitle = sTitle.decode('utf-8')
+        if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+	        if isinstance(sTitle, bytes):
+	            sTitle = sTitle.decode('utf-8')
         
         self.__sCleanTitle = sTitle.replace('[]', '').replace('()', '').strip()
         try:
