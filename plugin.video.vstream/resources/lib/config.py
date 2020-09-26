@@ -152,6 +152,10 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
 
     try:
         meta = cTMDb().get_meta(sType, sFileName, tmdb_id = xbmc.getInfoLabel('ListItem.Property(TmdbId)'), year = year)
+        try:
+            meta['plot'] = str(meta['plot'].encode('latin-1'), 'utf-8')
+        except:
+            pass
     except:
         DIALOG.VSok("Veuillez vider le cache des métadonnées Paramètre - outils - 'vider le cache de vStream'")
         pass
