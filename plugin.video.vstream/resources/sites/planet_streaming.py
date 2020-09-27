@@ -9,17 +9,17 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil, urlEncode
+from resources.lib.util import urlEncode
 from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'planet_streaming'
 SITE_NAME = 'Planet Streaming'
 SITE_DESC = 'Films en Streaming complet VF HD'
 
-URL_MAIN = 'https://streaming-planet.net/'
+URL_MAIN = 'https://wvw.planet-streaming1.com/'
 
 MOVIE_MOVIE = (True, 'load')
-MOVIE_NEWS = (URL_MAIN + 'regarder-film/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_TOP = (URL_MAIN + 'exclu/', 'showMovies')
 MOVIE_HD = (URL_MAIN + 'xfsearch/hd/', 'showMovies')
 MOVIE_GENRES = (URL_MAIN, 'showGenres')
@@ -123,7 +123,7 @@ def showMovies(sSearch=''):
         if Nextpagesearch:
             query_args = (('do', 'search'), ('subaction', 'search'), ('search_start', Nextpagesearch), ('story', sSearch))
         else:
-            query_args = (('do', 'search'), ('subaction', 'search'), ('story', sSearch), ('titleonly', '3'))
+            query_args = (('do', 'search'), ('subaction', 'search'), ('story', sSearch))
 
         data = urlEncode(query_args)
 
@@ -140,7 +140,11 @@ def showMovies(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="fullstream fullstreaming">\s*<img src="([^"]+)"[^<>]+alt="([^"]+)".+?<h3 class="mov-title"><a href="([^"]+)".+?<strong>(?:Qualité|Version)(.+?)<\/*strong>.+?xfsearch.+?">([^<]+)'
+    if sSearch:
+        sPattern = '<div class="fullstream fullstreaming">.+?<img src="([^"]+)".+?<h3 class="mov-title"><a href="([^"]+)" >([^<]+)</a>.+?<strong>(?:Qualit|Version).+?">(.+?)</a>.+?<\/*strong>'
+    else:
+        sPattern = '<div class="fullstream fullstreaming">\s*<img src="([^"]+)".+?alt="([^"]+).+?<strong>(?:Qualit|Version).+?">(.+?)</a>.+?<\/*strong>.+?xfsearch.+?">([^<]+).+?<div itemprop="description".+?;">([^<]+).+?<a href="([^"]+)"'
+    
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -154,15 +158,35 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            sThumb = aEntry[0]
-            if sThumb.startswith('/'):
-                sThumb = URL_MAIN[:-1] + sThumb
+            if sSearch:
+                sThumb = aEntry[0]
+                if sThumb.startswith('/'):
+                    sThumb = URL_MAIN[:-1] + sThumb
 
-            sTitle = aEntry[1]
-            siteUrl = re.sub('www\.', '', aEntry[2])
-            sQual = cUtil().removeHtmlTags(aEntry[3])
-            sQual = sQual.replace(':', '').replace(' ', '').replace(',', '/')
-            sYear = re.search('(\d{4})', aEntry[4]).group(1)
+                siteUrl = re.sub('www\.', '', aEntry[1])
+                sTitle = aEntry[2]
+                sQual = aEntry[3]
+                sQual = sQual.replace(':', '').replace(' ', '').replace(',', '/')
+                sYear = ''
+                sDesc = ''
+
+            else:
+                sThumb = aEntry[0]
+                if sThumb.startswith('/'):
+                    sThumb = "https:" + sThumb
+
+                sTitle = aEntry[1]
+                sQual = aEntry[2]
+                sQual = sQual.replace(':', '').replace(' ', '').replace(',', '/')
+
+                #Certain film n'ont pas de date.
+                try:
+                    sYear = re.search('(\d{4})', aEntry[3]).group(1)
+                except:
+                    pass
+
+                sDesc = aEntry[4]
+                siteUrl = re.sub('www\.', '', aEntry[5])
 
             sDisplayTitle = '%s [%s]' % (sTitle, sQual)
 
@@ -172,7 +196,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sYear', sYear)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
