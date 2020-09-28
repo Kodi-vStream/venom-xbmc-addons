@@ -40,7 +40,7 @@ class cLibrary:
         sFileName = oInputParameterHandler.getValue('sFileName')
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
 
-        ret = self.DIALOG.select('Sélectionner une catégorie', ['Film', 'Série'])
+        ret = self.DIALOG.VSselect(['Film', 'Série'], 'Sélectionner une catégorie')
         if ret == 0:
             sCat = '1'
         elif ret == -1:
@@ -49,18 +49,24 @@ class cLibrary:
             sCat = '2'
 
         sMediaUrl = QuotePlus(sMediaUrl)
-        sFileName = QuotePlus(sFileName)
 
-        sLink = 'plugin://plugin.video.vstream/?function=play&site=cHosterGui&sFileName=' + sFileName + '&sMediaUrl=' + sMediaUrl + '&sHosterIdentifier=' + sHosterIdentifier
+        try:
+            sFileName = str(sFileName.encode('latin-1'),'utf-8')
+        except:
+            pass
+
+        sFileNameEncode = QuotePlus(sFileName)
+
+        sLink = 'plugin://plugin.video.vstream/?function=play&site=cHosterGui&sFileName=' + sFileNameEncode + '&sMediaUrl=' + sMediaUrl + '&sHosterIdentifier=' + sHosterIdentifier
 
         sTitle = sFileName
 
         if sCat == '1':  # film
-            sTitle = cUtil().CleanName(sTitle)
-            sTitle = self.showKeyBoard(sTitle, 'Nom du dossier et du fichier')
+            #sTitle = cUtil().CleanName(sTitle)
+            sFileName = self.showKeyBoard(sFileName, 'Nom du dossier et du fichier')
 
             try:
-                sPath = '/'.join([self.__sMovieFolder, sTitle])
+                sPath = '/'.join([self.__sMovieFolder, sFileName])
 
                 if not xbmcvfs.exists(sPath):
                     xbmcvfs.mkdir(sPath)
@@ -70,19 +76,19 @@ class cLibrary:
                 self.DIALOG.VSinfo('Rajout impossible')
 
         elif sCat == '2':  # serie
-            sTitle = cUtil().CleanName(sTitle)
-            sFTitle = self.showKeyBoard(sTitle, 'Recommandé Nomdeserie/Saison00')
+            #sFileName = cUtil().CleanName(sFileName)
+            sFTitle = self.showKeyBoard(sFileName, 'Recommandé Nomdeserie/Saison00')
 
             try:
 
-                sPath = '/'.join([self.__sTVFolder, sFTitle])
+                sPath = '/'.join([self.__sTVFolder, sFileName])
 
                 if not xbmcvfs.exists(sPath):
                     xbmcvfs.mkdir(sPath)
 
-                sTitle = self.showKeyBoard(sTitle, 'Recommandé NomdeserieS00E00')
+                sFileName = self.showKeyBoard(sFileName, 'Recommandé NomdeserieS00E00')
 
-                self.MakeFile(sPath, sTitle, sLink)
+                self.MakeFile(sPath, sFileName, sLink)
             except:
                 self.DIALOG.VSinfo('Rajout impossible')
 
