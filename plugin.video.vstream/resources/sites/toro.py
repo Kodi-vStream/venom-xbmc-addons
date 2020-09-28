@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'toro'
 SITE_NAME = 'Toro'
 SITE_DESC = 'Regarder Films et Séries en Streaming gratuit'
 
-URL_MAIN = 'https://torostreaming.net/'
+URL_MAIN = 'https://www.torostreaming.net/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
