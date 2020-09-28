@@ -230,7 +230,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
 
                 #Decodage python 3
                 try:
-                    data = eval(str(meta['credits']).decode('utf-8'))
+                    data = eval(str(meta['credits'].encode('latin-1'), 'utf-8'))
                 except:
                     data = eval(str(meta['credits']))
     
@@ -244,8 +244,9 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                         else :
                             sicon = self.none_poster % slabel
                         sid = i['id']
-                        listitem_ = listitem(label=slabel, label2=slabel2, iconImage=sicon)
+                        listitem_ = listitem(label=slabel, label2=slabel2)
                         listitem_.setProperty('id', str(sid))
+                        listitem_.setArt({'icon':sicon})
                         listitems.append(listitem_)
                         cast.append(slabel.encode('ascii', 'ignore'))
                     self.getControl(50).addItems(listitems)
@@ -262,8 +263,9 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                         else :
                             sicon = self.none_poster % slabel
                         sid = i['id']
-                        listitem_ = listitem(label=slabel, label2=slabel2, iconImage=sicon)
+                        listitem_ = listitem(label=slabel, label2=slabel2)
                         listitem_.setProperty('id', str(sid))
+                        listitem_.setArt({'icon':sicon})
                         listitems2.append(listitem_)
                         crew.append(slabel.encode('ascii', 'ignore'))
                     self.getControl(5200).addItems(listitems2)
@@ -329,12 +331,13 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                     
                     # sId = i['id']
 
-                    listitem_ = listitem(label=sTitle, iconImage=sThumbnail)
+                    listitem_ = listitem(label=sTitle)
                     try:
                         listitem_.setInfo('video', {'rating': i['vote_average'].encode('utf-8') })
                     except:
                         listitem_.setInfo('video', {'rating': str(i['vote_average'])})
 
+                    listitem_.setArt({'icon':sThumbnail})
                     listitems.append(listitem_)
                 self.getControl(control).addItems(listitems)
 
