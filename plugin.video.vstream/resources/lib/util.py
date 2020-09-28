@@ -10,6 +10,7 @@ except ImportError:
     import urllib.parse as urllib
     import urllib.request as urllib2
 
+from resources.lib.comaddon import addon, dialog, xbmc, VSlog
 import unicodedata
 import re
 # function util n'utilise pas xbmc, xbmcgui, xbmcaddon ect...
@@ -126,8 +127,8 @@ class cUtil:
             name = unicodedata.normalize('NFD', name).encode('ascii', 'ignore').decode('unicode_escape')
             name = name.encode('utf-8') #on repasse en utf-8
         except TypeError:
-            name = unicodedata.normalize('NFKD', name.decode("utf-8")).encode('ASCII', 'ignore')
-            name = name.decode("utf-8") #on repasse en utf-8
+            #name = unicodedata.normalize('NFKD', name.decode("utf-8")).encode('ASCII', 'ignore')
+            pass
 
         #on cherche l'annee
         annee = ''
