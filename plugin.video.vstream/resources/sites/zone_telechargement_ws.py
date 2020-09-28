@@ -12,6 +12,8 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
+from resources.lib import stormwall
+from resources.lib.config import GestionCookie
 # Fonction de vStream qui remplace urllib.quote, pour simplifier le passage en python 3
 from resources.lib.util import Quote, cUtil
 
@@ -22,7 +24,7 @@ SITE_IDENTIFIER = 'zone_telechargement_ws'
 SITE_NAME = '[COLOR violet]Zone-Telechargement[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
-URL_HOST = 'https://www.ZT-ZA.com/'
+URL_HOST = 'https://www.zt-za.com/'
 
 
 def GetURL_MAIN():
@@ -359,20 +361,31 @@ def showGenre():
 
     oGui.setEndOfDirectory()
 
-
 def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    cookies = oInputParameterHandler.getValue('Cookies')
 
     if sSearch:
         sUrl = sSearch
 
-    oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
+    if cookies:
+        pass
+    else:
+        cookies = GestionCookie().Readcookie(sUrl.split('/')[2])
+
+    oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    oRequestHandler.addHeaderEntry('Cookie', cookies)
     sHtmlContent = oRequestHandler.request()
+
+    if 'stormwall' in sHtmlContent:
+        VSlog("Stormwall Detected")
+        storm = stormwall.Stormwall()
+        sHtmlContent = storm.main(sUrl, sHtmlContent)
 
     sPattern = '<img class="mainimg.+?src="([^"]+)"(?:.|\s)+?<a href="([^"]+)">([^"]+)</a>.+?<span class=".+?<b>([^"]+)</span>.+?">([^<]+)</span>'
 
@@ -428,6 +441,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sDisplayTitle', sDisplayTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('Cookies', cookies)
 
             if 'anime' in sUrl or 'anime' in sUrl2:
                 oGui.addAnime(SITE_IDENTIFIER, 'showSeriesLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
@@ -448,6 +462,7 @@ def showMovies(sSearch=''):
             if (aResult[0] == True):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', re.sub('cstart=(\d+)', 'cstart=' + str(aResult[1][0]), sUrl))
+                oOutputParameterHandler.addParameter('Cookies',cookies)
                 number = re.search('([0-9]+)', aResult[1][0]).group(1)
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
@@ -456,12 +471,12 @@ def showMovies(sSearch=''):
             if (sNextPage != False):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+                oOutputParameterHandler.addParameter('Cookies',cookies)
                 number = re.search('/page/([0-9]+)', sNextPage).group(1)
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
-
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -485,12 +500,25 @@ def showMoviesLinks():
         sDisplayTitle = sMovieTitle
     sThumb = oInputParameterHandler.getValue('sThumb')
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    cookies = oInputParameterHandler.getValue('Cookies')
 
-    oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
+    if cookies:
+        pass
+    else:
+        cookies = GestionCookie().Readcookie(sUrl.split('/')[2])
+
+    oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    oRequestHandler.addHeaderEntry('Cookie', cookies)
+    oRequestHandler.addHeaderEntry('Referer', sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
+    if 'stormwall' in sHtmlContent:
+        VSlog("Stormwall Detected")
+        storm = stormwall.Stormwall()
+        sHtmlContent = storm.main(sUrl, sHtmlContent)
+
     # Affichage du texte
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles :[/COLOR]')
 
@@ -543,7 +571,6 @@ def showMoviesLinks():
 
     oGui.setEndOfDirectory()
 
-
 def showSeriesLinks():
     # VSlog('mode serie')
     oGui = cGui()
@@ -552,11 +579,24 @@ def showSeriesLinks():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    cookies = oInputParameterHandler.getValue('Cookies')
 
-    oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
+    if cookies:
+        pass
+    else:
+        cookies = GestionCookie().Readcookie(sUrl.split('/')[2])
+
+    oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    oRequestHandler.addHeaderEntry('Cookie', cookies)
+    oRequestHandler.addHeaderEntry('Referer', sUrl)
     sHtmlContent = oRequestHandler.request()
+
+    if 'stormwall' in sHtmlContent:
+        VSlog("Stormwall Detected")
+        storm = stormwall.Stormwall()
+        sHtmlContent = storm.main(sUrl, sHtmlContent)
 
     # Affichage du texte
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles :[/COLOR]')
@@ -659,16 +699,43 @@ def showHosters():
     sDesc = oInputParameterHandler.getValue('sDesc')
     sYear = oInputParameterHandler.getValue('sYear')
 
+    cookies = GestionCookie().Readcookie(sUrl.split('/')[2])
+
     try:
         sDesc = unicodedata.normalize('NFD', sDesc).encode('ascii', 'ignore').decode('unicode_escape')
         sDesc = sDesc.encode('latin-1')
     except:
         pass
         
-    oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
+    oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    oRequestHandler.addHeaderEntry('Cookie', cookies)
+    oRequestHandler.addHeaderEntry('Referer', sUrl)
     sHtmlContent = oRequestHandler.request()
+
+    if 'stormwall' in sHtmlContent:
+        VSlog("Stormwall Detected")
+        storm = stormwall.Stormwall()
+        sHtmlContent = storm.main(sUrl, sHtmlContent)
+
+    #Dl Protect present aussi a cette étape.
+    oParser = cParser()
+    sPattern = '<form action="(.+?)".+?type="hidden" name="_token" value="(.+?)">'
+    result = oParser.parse(sHtmlContent, sPattern)
+
+    if (result[0]):
+        RestUrl = str(result[1][0][0])
+        token = str(result[1][0][1])
+
+    cookies = GestionCookie().Readcookie(RestUrl.split('/')[2])
+    oRequestHandler = cRequestHandler(RestUrl)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    oRequestHandler.addHeaderEntry('Cookie', cookies)
+    oRequestHandler.addHeaderEntry('Referer', RestUrl)
+    oRequestHandler.addParameters('_token', token)
+    sHtmlContent = oRequestHandler.request() 
 
     # Si ca ressemble aux lien premiums on vire les liens non premium
     if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent:
@@ -692,6 +759,7 @@ def showHosters():
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sYear', sYear)
+                oOutputParameterHandler.addParameter('Cookies',cookies)
                 oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -706,15 +774,42 @@ def showSeriesHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
 
+    cookies = GestionCookie().Readcookie(sUrl.split('/')[2])
+
     try:
         sDesc = unicodedata.normalize('NFD', sDesc).encode('ascii', 'ignore').decode('unicode_escape')
         sDesc = sDesc.encode('latin-1')
     except:
         pass
-
-    oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
+        
+    oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    oRequestHandler.addHeaderEntry('Cookie', cookies)
+    oRequestHandler.addHeaderEntry('Referer', sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    if 'stormwall' in sHtmlContent:
+        VSlog("Stormwall Detected")
+        storm = stormwall.Stormwall()
+        sHtmlContent = storm.main(sUrl, sHtmlContent)
+
+    #Dl Protect present aussi a cette étape.
+    oParser = cParser()
+    sPattern = '<form action="(.+?)".+?type="hidden" name="_token" value="(.+?)">'
+    result = oParser.parse(sHtmlContent, sPattern)
+
+    if (result[0]):
+        RestUrl = str(result[1][0][0])
+        token = str(result[1][0][1])
+
+    cookies = GestionCookie().Readcookie(RestUrl.split('/')[2])
+    oRequestHandler = cRequestHandler(RestUrl)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    oRequestHandler.addHeaderEntry('Cookie', cookies)
+    oRequestHandler.addHeaderEntry('Referer', RestUrl)
+    oRequestHandler.addParameters('_token', token)
     sHtmlContent = oRequestHandler.request()
 
     # Pour les series on fait l'inverse des films on vire les liens premiums
@@ -743,10 +838,10 @@ def showSeriesHosters():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('Cookies',cookies)
                 oGui.addEpisode(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def Display_protected_link():
     # VSlog('Display_protected_link')
@@ -836,7 +931,6 @@ def CutQual(sHtmlContent):
 
     return ''
 
-
 def CutSais(sHtmlContent):
     oParser = cParser()
     sPattern = '<h3>Saisons.+?galement disponibles pour cette saison:</h3>(.+?)</div>'
@@ -873,64 +967,48 @@ def DecryptDlProtecte(url):
     if not (url):
         return ''
 
+    cookies = GestionCookie().Readcookie(url.split('/')[2])
+
     oRequestHandler = cRequestHandler(url)
-    sHtmlContent = oRequestHandler.request()
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    oRequestHandler.addHeaderEntry('Cookie', cookies)
+    oRequestHandler.addHeaderEntry('Referer', url)
+    sHtmlContent = oRequestHandler.request() 
     # Cookie = oRequestHandler.GetCookies()
 
+    if 'stormwall' in sHtmlContent:
+        VSlog("Stormwall Detected")
+        storm = stormwall.Stormwall()
+        sHtmlContent = storm.main(url, sHtmlContent)
+
+        cookies = GestionCookie().Readcookie(url.split('/')[2])
+
+    #Dl Protect present aussi a cette étape.
     oParser = cParser()
-    sPattern = '<form action="(.+?)".+?type="hidden" name="_token" value="(.+?)">.+?<input type="hidden" value="(.+?)"'
+    sPattern = '<form action="([^"]+)" method="get">.+?type="hidden" name="_token" value="(.+?)">'
     result = oParser.parse(sHtmlContent, sPattern)
 
     if (result[0]):
         RestUrl = str(result[1][0][0])
         token = str(result[1][0][1])
-        urlData = str(result[1][0][2])
-        
-    else:
-        sPattern = '<(.+?)action="([^"]+)" method="([^"]+)">.+?hidden".+?value="([^"]+)"'
-        result = oParser.parse(sHtmlContent, sPattern)
-
-        if not "<!-----" in (str(result[1][0][0])):
-            RestUrl = str(result[1][0][0])
-            method = str(result[1][0][1])
-            token = str(result[1][0][2])
-        else:
-            RestUrl = str(result[1][1][1]).replace("}", '%7D')
-            method = str(result[1][1][2])
-            token = str(result[1][1][3])
-
-        # VSlog(token)
-        # VSlog(method)
-        # VSlog(RestUrl)
 
         if RestUrl.startswith('/'):
             RestUrl = 'https://' + url.split('/')[2] + RestUrl
 
-    # f = {'_token': token}
-    # data = urlEncode(f)
-
     oRequestHandler = cRequestHandler(RestUrl)
-    if method == "post":
-        oRequestHandler.setRequestType(1)
-    # oRequestHandler.addHeaderEntry('User-Agent', UA)
-    # oRequestHandler.addHeaderEntry('Host', url.split('/')[2])
-    # oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-    # oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    # oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-    # oRequestHandler.addHeaderEntry('Referer', url)
-    # oRequestHandler.addHeaderEntry('Content-Type',  'application/x-www-form-urlencoded')
-    # oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
-    # oRequestHandler.addHeaderEntry('Cookie', Cookie)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    oRequestHandler.addHeaderEntry('Cookie', cookies)
+    oRequestHandler.addHeaderEntry('Referer', RestUrl)
     oRequestHandler.addParameters('_token', token)
-    # oRequestHandler.addParametersLine(data)
-    sHtmlContent = oRequestHandler.request()
+    sHtmlContent = oRequestHandler.request() 
     
     # fh = open('c:\\test.txt', 'w')
     # fh.write(sHtmlContent)
     # fh.close()
     
     return sHtmlContent
-
 
 # ******************************************************************************
 # from http://code.activestate.com/recipes/578668-encode-multipart-form-data-for-uploading-files-via/
