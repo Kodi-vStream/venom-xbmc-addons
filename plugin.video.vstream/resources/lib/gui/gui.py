@@ -124,6 +124,38 @@ class cGui:
         self.addMisc(sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, sCat=2)
         cGui.CONTENT = 'files'
 
+    # Affichage d'une personne (acteur, réalisateur, ..)
+    def addPerson(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler=''):
+        cGui.CONTENT = 'movies'
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName(sId)
+        oGuiElement.setFunction(sFunction)
+        oGuiElement.setTitle(sLabel)
+        oGuiElement.setIcon(sIcon)
+        oGuiElement.setMeta(7)
+#         oGuiElement.setCat(7)
+
+        try:
+            self.addFolder(oGuiElement, oOutputParameterHandler)
+        except:
+            pass
+
+    # Affichage d'un réseau de distribution du média
+    def addNetwork(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler=''):
+        cGui.CONTENT = 'files'
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName(sId)
+        oGuiElement.setFunction(sFunction)
+        oGuiElement.setTitle(sLabel)
+        oGuiElement.setIcon(sIcon)
+        oGuiElement.setMeta(8)
+#         oGuiElement.setCat(7)
+
+        try:
+            self.addFolder(oGuiElement, oOutputParameterHandler)
+        except:
+            pass
+
     # Meme mode d'affichage qu'un film, avec la description si fournie, mais il n'y a pas de recherche des Métadonnées
     def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler='', sCat=5):
         cGui.CONTENT = 'movies'
@@ -325,7 +357,7 @@ class cGui:
         oOutputParameterHandler.addParameter('sTitleWatched', oGuiElement.getTitleWatched())
 
         # new context prend en charge les metas
-        if oGuiElement.getMeta() > 0:
+        if oGuiElement.getMeta() in (1, 2, 3, 4):  # Films, Séries, Saga, Animes
             if cGui.CONTENT in ('movies', 'tvshows'):
                 self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuba(oGuiElement, oOutputParameterHandler)

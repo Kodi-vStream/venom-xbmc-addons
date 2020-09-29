@@ -434,6 +434,28 @@ class cTMDb:
 
         return meta
 
+    # Search for person by name.
+    def search_person_name(self, name):
+        name = re.sub(" +", " ", name)  # nettoyage du titre
+        term = QuotePlus(name)
+
+        meta = self._call('search/person', 'query=' + term)
+
+        # si pas d'erreur
+        if 'errors' not in meta and 'status_code' not in meta:
+            
+            # on prend le premier resultat
+            if 'total_results' in meta and meta['total_results'] != 0:
+                meta = meta['results'][0]
+                
+                # recherche de toutes les infos
+                person_id = meta['id']
+                meta = self.search_person_id(person_id)
+        else:
+            meta = {}
+
+        return meta
+
     # Get the basic movie information for a specific movie id.
     def search_movie_id(self, movie_id, append_to_response='append_to_response=trailers,credits'):
         result = self._call('movie/' + str(movie_id), append_to_response)
@@ -446,11 +468,26 @@ class cTMDb:
         result['tmdb_id'] = show_id
         return result
 
-    # Get the basic movie information for a specific movie id.
+    # Get the basic informations for a specific collection id.
     def search_collection_id(self, collection_id):
         result = self._call('collection/' + str(collection_id))
         result['tmdb_id'] = collection_id
         return result
+
+    # Get the basic person informations for a specific person id.
+    def search_person_id(self, person_id):
+        result = self._call('person/' + str(person_id))
+        result['tmdb_id'] = person_id
+        return result
+
+    # Get the informations for a specific network.
+    def search_network_id(self, network_id):
+        result = self._call('network/%s/images' % str(network_id))
+        if 'status_code' not in result and 'logos' in result:
+            result = result['logos'][0] 
+            result['tmdb_id'] = network_id
+            return result
+        return {}
 
     def _format(self, meta, name):
         _meta = {}
@@ -546,8 +583,10 @@ class cTMDb:
 
         if 'overview' in meta and meta['overview']:
             _meta['plot'] = meta['overview']
-        elif 'parts' in meta: # Il s'agit d'une collection, on récupere le plot du premier film 
+        elif 'parts' in meta: # Il s'agit d'une collection, on récupere le plot du premier film
             _meta['plot'] = meta['parts'][0]['overview']
+        elif 'biography' in meta: # Il s'agit d'une personne, on récupere sa bio
+            _meta['plot'] = meta['biography']
 
         if 'studio' in meta:
             _meta['studio'] = meta['studio']
@@ -639,7 +678,7 @@ class cTMDb:
             nbFilm = len(meta['parts'])
             _meta['backdrop_path'] = meta['parts'][nbFilm-1]['backdrop_path']
             _meta['backdrop_url'] = self.fanart + str(_meta['backdrop_path'])
-            
+
         if 'poster_path' in meta and meta['poster_path']:
             _meta['poster_path'] = meta['poster_path']
             _meta['cover_url'] = self.poster + str(_meta['poster_path'])
@@ -647,6 +686,13 @@ class cTMDb:
             nbFilm = len(meta['parts'])
             _meta['poster_path'] = meta['parts'][nbFilm-1]['poster_path']
             _meta['cover_url'] = self.fanart + str(_meta['poster_path'])
+        elif 'profile_path' in meta: # il s'agit d'une personne
+            _meta['poster_path'] = meta['profile_path']
+            _meta['cover_url'] = self.poster + str(_meta['poster_path'])
+        elif 'file_path' in meta: # il s'agit d'un network
+            _meta['poster_path'] = meta['file_path']
+            _meta['cover_url'] = self.poster + str(_meta['poster_path'])
+
 
         # special saisons
         if 's_poster_path' in meta and meta['s_poster_path']:
@@ -751,6 +797,9 @@ class cTMDb:
 
             if season:
                 sql_select = sql_select + ' AND season.season = \'%s\'' % season
+        else:
+            return None
+            
 
         try:
             self.dbcur.execute(sql_select)
@@ -768,9 +817,15 @@ class cTMDb:
 
     def _cache_save(self, meta, name, media_type, season, year):
 
+        # Pas de cache pour les personnes ou les distributeurs
+        if media_type in ('person', 'network'):
+            return
+
+        # cache des séries et animes
         if media_type == 'tvshow' or media_type == 'anime':
             return self._cache_save_tvshow(meta, name, 'tvshow', season, year)
 
+        # cache des collections
         if media_type == 'collection':
             media_type = 'movie'    # On utilise la même table que pour les films
             if not name.endswith('saga'):
@@ -897,6 +952,14 @@ class cTMDb:
                 meta = self.search_collection_id(tmdb_id)
             elif name:
                 meta = self.search_collection_name(name)
+        elif media_type == 'person':
+            if tmdb_id:
+                meta = self.search_person_id(tmdb_id)
+            elif name:
+                meta = self.search_person_name(name)
+        elif media_type == 'network':
+            if tmdb_id:
+                meta = self.search_network_id(tmdb_id)
 
         # Mise en forme des metas si trouvé
         if meta and 'tmdb_id' in meta:

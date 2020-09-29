@@ -301,8 +301,8 @@ class cGuiElement:
     def setTitle(self, sTitle):
         #Convertie les bytes en strs pour le replace.
         if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-	        if isinstance(sTitle, bytes):
-	            sTitle = sTitle.decode('utf-8')
+            if isinstance(sTitle, bytes):
+                sTitle = sTitle.decode('utf-8')
         
         self.__sCleanTitle = sTitle.replace('[]', '').replace('()', '').strip()
         try:
@@ -517,7 +517,7 @@ class cGuiElement:
                 sTitle = sTitle[:-3]
             sTitle = sTitle.strip()
 
-        sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'collection').replace('4', 'anime')
+        sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'collection').replace('4', 'anime').replace('7', 'person').replace('8', 'network')
 
         meta = {}
         if sType:
