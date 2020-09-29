@@ -46,10 +46,13 @@ class PasteBinContent:
     TMDB = -1    # (optionnel) - Id TMDB
     TITLE = -1   # Titre du film / épisodes
     SAISON = -1  # (optionnel) - Saison pour les séries (ex 'Saison 03' ou 'S03' ou '03') OU Saga pour les films (ex 'Mission impossible')
-    GROUPES = -1  # (optionnel) - Groupes tel que NETFLIX, HBO, MARVEL, DISNEY, Films enfants, ...
+    GROUPES = -1 # (optionnel) - Groupes tel que NETFLIX, HBO, MARVEL, DISNEY, Films enfants, ...
     YEAR = -1    # (optionnel) - Année
     GENRES = -1  # (optionnel) - Liste des genres
     RES = -1     # (optionnel) - Résolution (720p, 1080p, 4K, ...)
+    DIRECTOR = -1#  (optionnel) - Réalisateur au format id:nom
+    CAST = -1   #  (optionnel) - Acteurs au format id:nom
+    NETWORK = -1   #  (optionnel) - Diffuseur au format id:nom
     URLS = -1    # Liste des liens, avec épisodes pour les séries
     HEBERGEUR = '' # (optionnel) - URL de l'hebergeur, pour éviter de le mettre dans chaque URL, ex : 'https://uptobox.com/'  
     listeGroupe = {} # (optionnel) - Liste de groupes nommés
@@ -58,7 +61,7 @@ class PasteBinContent:
         lines = sContent.splitlines()
 
         # Vérifie si la ligne d'entete existe avec les champs obligatoires
-        entete = lines[0].replace(' ','').split(";")
+        entete = lines[0].split(";")
         if 'TITLE' not in entete and 'URLS' not in entete:
             return []
 
@@ -76,8 +79,9 @@ class PasteBinContent:
             if 'GROUPE' in champ:  # supporte GROUPE ou GROUPES
                 groupes = champ.split('=')
                 champ = 'GROUPES'
-                if '{' in groupes[1]:  # GROUPES = {"R": ["Réalisateur"], "D": ["Diffuseur"]}
-                    self.listeGroupe = eval(groupes[1])
+                if len(groupes)>1:
+                    if '{' in groupes[1]:  # GROUPES = {"R": ["Réalisateur"], "D": ["Diffuseur"]}
+                        self.listeGroupe = eval(groupes[1])
                 
             if champ in dir(self):
                 setattr(self, champ, idx)
@@ -178,8 +182,12 @@ def showMenu():
     containFilmSaga = False
     containFilmYear = False
     containFilmRes = False
+    containFilmReal = False
+    containFilmCast = False
+    containFilmNetwork = False
     containSeries = False
     containSerieGroupes = False
+    containSerieNetwork = False
     containAnimes = False
     containAnimeGroupes = False
 
@@ -194,13 +202,21 @@ def showMenu():
                 containFilmYear = True
             if pbContent.RES>=0 and len(movie[pbContent.RES].replace('[', '').replace(']', '').replace(',', '').strip())>0:
                 containFilmRes = True
+            if pbContent.DIRECTOR>=0 and len(movie[pbContent.DIRECTOR].replace('[', '').replace(']', '').replace(',', '').strip())>0:
+                containFilmReal = True
+            if pbContent.CAST>=0 and len(movie[pbContent.CAST].replace('[', '').replace(']', '').replace(',', '').strip())>0:
+                containFilmCast = True
             if pbContent.SAISON>=0 and len(movie[pbContent.SAISON].strip())>0:
                 containFilmSaga = True
+            if pbContent.NETWORK>=0 and len(movie[pbContent.NETWORK].replace('[', '').replace(']', '').strip())>0:
+                containFilmNetwork = True
 
         elif 'serie' in movie[pbContent.CAT]:
             containSeries = True
             if pbContent.GROUPES>=0 and len(movie[pbContent.GROUPES].replace('[', '').replace(']', '').strip())>0:
                 containSerieGroupes = True
+            if pbContent.NETWORK>=0 and len(movie[pbContent.NETWORK].replace('[', '').replace(']', '').strip())>0:
+                containSerieNetwork = True
 
         elif 'anime' in movie[pbContent.CAT]:
             containAnimes = True
@@ -242,9 +258,24 @@ def showMenu():
             oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film')
             oGui.addDir(SITE_IDENTIFIER, 'showResolution', 'Films (Par résolutions)', 'hd.png', oOutputParameterHandler)
 
+        if containFilmNetwork:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film')
+            oGui.addDir(SITE_IDENTIFIER, 'showNetwork', 'Films (Par diffuseurs)', 'host.png', oOutputParameterHandler)
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film')
-        oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Films (Ordre alphabétique)', 'listes.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Films (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
+
+        if containFilmReal:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film')
+            oGui.addDir(SITE_IDENTIFIER, 'showRealisateur', 'Films (Par réalisateurs)', 'Cast.png', oOutputParameterHandler)
+
+        if containFilmCast:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film')
+            oGui.addDir(SITE_IDENTIFIER, 'showCast', 'Films (Par acteurs)', 'Cast.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&bRandom=True')
@@ -270,9 +301,14 @@ def showMenu():
             oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie')
             oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Séries (Listes)', 'genres.png', oOutputParameterHandler)
     
+        if containSerieNetwork:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie')
+            oGui.addDir(SITE_IDENTIFIER, 'showNetwork', 'Séries (Par diffuseurs)', 'genres.png', oOutputParameterHandler)
+    
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie')
-        oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Séries (Ordre alphabétique)', 'listes.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Séries (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
 
     if containAnimes:
@@ -355,7 +391,6 @@ def showGenres():
 
     oRequestHandler = cRequestHandler(sUrl)
     sContent = oRequestHandler.request()
-
     pbContent = PasteBinContent()
     movies = pbContent.getLines(sContent)
 
@@ -384,6 +419,135 @@ def showGenres():
         siteUrl = sUrl + '&sMedia=' + sMedia +'&sGenre=' + str(genre) 
         oOutputParameterHandler.addParameter('siteUrl', siteUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sDisplayGenre, 'genres.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+def showNetwork():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    sUrl, params = sUrl.split('&',1)
+    aParams = dict(param.split('=') for param in params.split('&'))
+    if 'sMedia' in aParams:
+        sMedia = aParams['sMedia']
+    else:
+        sMedia = 'film'
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sContent = oRequestHandler.request()
+    pbContent = PasteBinContent()
+    movies = pbContent.getLines(sContent)
+
+    listNetwork = {}
+    for movie in movies:
+        if pbContent.CAT >=0 and sMedia not in movie[pbContent.CAT]:
+            continue
+
+        networks = movie[pbContent.NETWORK].strip()
+        if networks <> '':
+            networks = eval(networks)
+            if networks:
+                for network in networks:
+                    if ':' in network:
+                        networkId = network.split(':')[0]
+                        networkName = network.split(':')[1]
+                        if networkName in listNetwork:
+                            continue
+                        listNetwork[networkName] = networkId
+
+    for networkName, networkId in sorted(listNetwork.items()):
+        siteUrl = sUrl + '&sMedia=' + sMedia +'&sNetwork=' + networkId + ":" + networkName.replace('+', '|')
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+        oOutputParameterHandler.addParameter('sTmdbId', networkId)    # Utilisé par TMDB
+        oGui.addNetwork(SITE_IDENTIFIER, 'showMovies', networkName, 'host.png', oOutputParameterHandler)
+    
+    oGui.setEndOfDirectory()
+
+def showRealisateur():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    sUrl, params = sUrl.split('&',1)
+    aParams = dict(param.split('=') for param in params.split('&'))
+    if 'sMedia' in aParams:
+        sMedia = aParams['sMedia']
+    else:
+        sMedia = 'film'
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sContent = oRequestHandler.request()
+    pbContent = PasteBinContent()
+    movies = pbContent.getLines(sContent)
+
+    listReal = {}
+    for movie in movies:
+        if pbContent.CAT >=0 and sMedia not in movie[pbContent.CAT]:
+            continue
+
+        reals = movie[pbContent.DIRECTOR].strip()
+        if reals <> '':
+            reals = eval(reals)
+            if reals:
+                for real in reals:
+                    if ':' in real:
+                        realId = real.split(':')[0]
+                        realName = real.split(':')[1]
+                        if realName in listReal:
+                            continue
+                        listReal[realName] = realId
+
+    for realName, realId in sorted(listReal.items()):
+        siteUrl = sUrl + '&sMedia=' + sMedia +'&sDirector=' + realId + ":" + realName
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+        oOutputParameterHandler.addParameter('sTmdbId', realId)    # Utilisé par TMDB
+        oGui.addPerson(SITE_IDENTIFIER, 'showMovies', realName, 'Cast.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+def showCast():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    sUrl, params = sUrl.split('&',1)
+    aParams = dict(param.split('=') for param in params.split('&'))
+    if 'sMedia' in aParams:
+        sMedia = aParams['sMedia']
+    else:
+        sMedia = 'film'
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sContent = oRequestHandler.request()
+    pbContent = PasteBinContent()
+    movies = pbContent.getLines(sContent)
+
+    listActeur = {}
+    for movie in movies:
+        if pbContent.CAT >=0 and sMedia not in movie[pbContent.CAT]:
+            continue
+
+        acteurs = movie[pbContent.CAST].strip()
+        if acteurs <> '':
+            acteurs = eval(acteurs)
+            if acteurs:
+                for acteur in acteurs:
+                    if ':' in acteur:
+                        acteurId = acteur.split(':')[0]
+                        acteurName = acteur.split(':')[1]
+                        if acteurName in listActeur:
+                            continue
+                        listActeur[acteurName] = acteurId
+
+    for acteurName, acteurId in sorted(listActeur.items()):
+        siteUrl = sUrl + '&sMedia=' + sMedia +'&sCast=' + acteurId + ":" + acteurName
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+        oOutputParameterHandler.addParameter('sTmdbId', acteurId)    # Utilisé par TMDB
+        oGui.addPerson(SITE_IDENTIFIER, 'showMovies', acteurName, 'Cast.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -693,7 +857,7 @@ def showMovies(sSearch=''):
     numItem = oInputParameterHandler.getValue('numItem')
     numPage = oInputParameterHandler.getValue('numPage')
     sMedia = 'film' # Par défaut
-    sGenre = sSaga = sGroupe = sYear = sRes = sAlpha = None
+    sGenre = sSaga = sGroupe = sYear = sRes = sAlpha = sNetwork = sDirector = sCast = None
     bRandom = False
     
     if sSearch:
@@ -707,7 +871,7 @@ def showMovies(sSearch=''):
 
     sSearchTitle = ''
     
-    # Pour supporter les caracteres '&' et '+' dans les noms alors qu'il sontréservé
+    # Pour supporter les caracteres '&' et '+' dans les noms alors qu'ils sont réservés
     sUrl = sUrl.replace('+', ' ').replace('|', '+').replace(' & ', ' | ')
     
     sUrl, params = sUrl.split('&',1)
@@ -722,6 +886,10 @@ def showMovies(sSearch=''):
     if 'sYear' in aParams: sYear = aParams['sYear']
     if 'sRes' in aParams: sRes = aParams['sRes']
     if 'sAlpha' in aParams: sAlpha = aParams['sAlpha']
+    if 'sNetwork' in aParams: sNetwork = aParams['sNetwork']
+    if 'sDirector' in aParams: sDirector = aParams['sDirector']
+    if 'sCast' in aParams: sCast = aParams['sCast']
+    
     if 'bRandom' in aParams: bRandom = aParams['bRandom']
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -744,7 +912,7 @@ def showMovies(sSearch=''):
         movies = sorted(movies, key=lambda line: line[pbContent.YEAR])
 
     # Dans un dossier => trie par années inversées (du plus récent)
-    if sGroupe:
+    if sGroupe or sDirector or sCast:
         movies = sorted(movies, key=lambda line: line[pbContent.YEAR], reverse=True)
 
     if bRandom:
@@ -783,13 +951,41 @@ def showMovies(sSearch=''):
                 if sGenre not in genres:
                     continue
 
+        # Filtrage par réalisateur
+        if sDirector and pbContent.DIRECTOR >=0 :
+            listDirector = movie[pbContent.DIRECTOR].strip()
+            if not listDirector:
+                continue
+            listDirector = eval(listDirector)
+            if sDirector not in listDirector:
+                continue
+
+        # Filtrage par acteur
+        if sCast and pbContent.CAST >=0 :
+            listCast = movie[pbContent.CAST].strip()
+            if not listCast:
+                continue
+            listCast = eval(listCast)
+            if sCast not in listCast:
+                continue
+
+        # Filtrage par diffuseur
+        if sNetwork and pbContent.NETWORK >=0 :
+            listNetwork = movie[pbContent.NETWORK].strip()
+            if not listNetwork:
+                continue
+            listNetwork = eval(listNetwork)
+            if sNetwork not in listNetwork:
+                continue
+
         # Filtrage par groupe
         if sGroupe and pbContent.GROUPES >=0:
             groupes = movie[pbContent.GROUPES].strip()
-            if groupes:
-                groupes = eval(groupes)
-                if sGroupe not in groupes:
-                    continue
+            if not groupes:
+                continue
+            groupes = eval(groupes)
+            if sGroupe not in groupes:
+                continue
 
         # l'ID TMDB
         sTmdbId = None
@@ -894,6 +1090,9 @@ def showMovies(sSearch=''):
                 if sGroupe : siteUrl += '&sGroupe=' + sGroupe
                 if sYear : siteUrl += '&sYear=' + sYear
                 if sRes : siteUrl += '&sRes=' + sRes
+                if sDirector : siteUrl += '&sDirector=' + sDirector
+                if sCast : siteUrl += '&sCast=' + sCast
+                if sNetwork : siteUrl += '&sNetwork=' + sNetwork
                 if sAlpha : siteUrl += '&sAlpha=' + sAlpha
                 if bRandom : siteUrl += '&bRandom=True'
                 
@@ -1045,6 +1244,10 @@ def showHosters():
 
     resIdx = 0
     for sHosterUrl in listHoster:
+        
+        if not sHosterUrl.startswith('http'):
+            sHosterUrl += 'http://'+ sHosterUrl
+        
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
             
