@@ -23,7 +23,7 @@ URL_LAST = URL_MAIN + 'acceuils-5'  # URL used for list and search
 SERIE_SERIES = ('http://', 'load')
 SERIE_NEWS = (URL_MAIN + 'derniere-et-meilleures-serie-en-streaming', 'showMovies')
 SERIE_VIEWS = (URL_MAIN + 'la-top-des-meilleures-serie', 'showMovies')
-SERIE_COMMENT = (URL_MAIN + 'meilleurs-serie-populaire-streaming', 'showMovies')
+SERIE_COMMENT = (URL_MAIN + 'meilleur-serie-populaire-streaming', 'showMovies')
 SERIE_LIST = (URL_MAIN, 'showAZ')
 SERIE_GENRES = (True, 'showGenres')
 SERIE_ANNEES = (True, 'showSerieYears')
@@ -400,15 +400,25 @@ def showHosters():
     oRequest.addHeaderEntry('User-Agent', UA)
     oRequest.addHeaderEntry('Referer', sUrl)
 
-    oRequest.request()
+    sHtmlContent = oRequest.request()
     sHosterUrl = oRequest.getRealUrl()
 
-    if sHosterUrl:
+    if 'captcha' not in sHosterUrl :
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-
         if (oHoster != False):
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    else:
+        oParser = cParser()
+        sPattern = 'src="([^"]+)'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            sHosterUrl = aResult[1][0]
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
