@@ -909,8 +909,7 @@ def showActors(sSearch = ''):
             sName = sName.encode('utf-8')
 
             oOutputParameterHandler.addParameter('siteUrl', 'person/' + str(i['id']) + '/movie_credits')
-            # oGui.addMovieDB(SITE_IDENTIFIER, 'showFilmActor', '[COLOR red]'+str(sName)+'[/COLOR]', '', sThumb, '', oOutputParameterHandler)
-            sTitle = '[COLOR red]' + str(sName) + '[/COLOR]'
+            sTitle = str(sName)
 
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName(SITE_IDENTIFIER)
