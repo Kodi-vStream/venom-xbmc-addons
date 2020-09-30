@@ -270,12 +270,12 @@ def showMenu():
         if containFilmReal:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film')
-            oGui.addDir(SITE_IDENTIFIER, 'showRealisateur', 'Films (Par réalisateurs)', 'Cast.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showRealisateur', 'Films (Par réalisateurs)', 'actor.png', oOutputParameterHandler)
 
         if containFilmCast:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film')
-            oGui.addDir(SITE_IDENTIFIER, 'showCast', 'Films (Par acteurs)', 'Cast.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showCast', 'Films (Par acteurs)', 'actor.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&bRandom=True')
@@ -504,7 +504,7 @@ def showRealisateur():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', siteUrl)
         oOutputParameterHandler.addParameter('sTmdbId', realId)    # Utilisé par TMDB
-        oGui.addPerson(SITE_IDENTIFIER, 'showMovies', realName, 'Cast.png', oOutputParameterHandler)
+        oGui.addPerson(SITE_IDENTIFIER, 'showMovies', realName, 'actor.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -547,7 +547,7 @@ def showCast():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', siteUrl)
         oOutputParameterHandler.addParameter('sTmdbId', acteurId)    # Utilisé par TMDB
-        oGui.addPerson(SITE_IDENTIFIER, 'showMovies', acteurName, 'Cast.png', oOutputParameterHandler)
+        oGui.addPerson(SITE_IDENTIFIER, 'showMovies', acteurName, 'actor.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

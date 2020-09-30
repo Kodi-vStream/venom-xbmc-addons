@@ -484,9 +484,18 @@ class cTMDb:
     def search_network_id(self, network_id):
         result = self._call('network/%s/images' % str(network_id))
         if 'status_code' not in result and 'logos' in result:
-            result = result['logos'][0] 
-            result['tmdb_id'] = network_id
-            return result
+            network = result['logos'][0]
+            vote = -1
+            
+            # On prend le logo qui a la meilleure note 
+            for logo in result['logos']:
+                logoVote = float(logo['vote_average'])
+                if logoVote>vote:
+                    network = logo
+                    vote = logoVote
+            network['tmdb_id'] = network_id
+            network.pop('vote_average')
+            return network
         return {}
 
     def _format(self, meta, name):
@@ -692,6 +701,8 @@ class cTMDb:
         elif 'file_path' in meta: # il s'agit d'un network
             _meta['poster_path'] = meta['file_path']
             _meta['cover_url'] = self.poster + str(_meta['poster_path'])
+            _meta['backdrop_path'] = _meta['poster_path']
+            _meta['backdrop_url'] = self.fanart + str(_meta['backdrop_path'])
 
 
         # special saisons
