@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# source 08 update 25/08/2020
-
+# source 08 update 02/10/2020
+return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -356,7 +356,7 @@ def showMovies(sSearch=''):
 
     else:
         oGui.addText(SITE_IDENTIFIER, 'Requete inconnue')
-        oGui.setEndOfDirectory()
+        #Gui.setEndOfDirectory()
         return
 
     try:
@@ -369,11 +369,11 @@ def showMovies(sSearch=''):
     except Exception as e:
         if str(e) == "('The read operation timed out',)":
             oGui.addText(SITE_IDENTIFIER, 'site Inaccessible')
-            oGui.setEndOfDirectory()
+            #oGui.setEndOfDirectory()
             return
         else:
             oGui.addText(SITE_IDENTIFIER, 'Request Failed')
-            oGui.setEndOfDirectory()
+            #oGui.setEndOfDirectory()
             return
 
     aResult = oParser.parse(sHtmlContent, sPattern)
