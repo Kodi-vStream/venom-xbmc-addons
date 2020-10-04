@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# source 03 update 26/08/2020
+# source 03 update 04/10/2020
 
 import re
 import xbmc
@@ -26,7 +26,7 @@ SITE_IDENTIFIER = 'filmstoon_pro'
 SITE_NAME = 'Films toon'
 SITE_DESC = 'Films en streaming'
 
-URL_MAIN = 'https://www.filmstoon.icu/'
+URL_MAIN = 'https://ww.filmstoon.cam/'
 
 # globales
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -35,10 +35,7 @@ MOVIE_ANNEES = (True, 'showYears')
 MOVIE_VIEWS = (URL_MAIN + 'film/populaire/', 'showMovies')
 MOVIE_MOVIE = (True, 'load')
 
-# https://www.filmstoon.pw/film/populaire/
-# https://www.filmstoon.pw/?s=blood
-
-URL_SEARCH = (URL_MAIN, 'showMovies')
+URL_SEARCH = (URL_MAIN + '?do=search&subaction=search&story=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
@@ -74,7 +71,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = sSearchText.replace(' ', '+')
+        sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -119,7 +116,7 @@ def showGenres():
 def showYears():
     oGui = cGui()
     # https://www.filmstoon.pw/2020/
-    for i in reversed(range(1971, 2020)):
+    for i in reversed(range(1971, 2021)):
         sYear = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + sYear + '/')  # / inutile
@@ -131,13 +128,9 @@ def showMovies(sSearch=''):
     oGui = cGui()
 
     if sSearch:
-        pdata = 'do=search&subaction=search&story=' + sSearch
-        sUrl = URL_MAIN + '?s=' + sSearch
+        sUrl = sSearch
         oRequest = cRequestHandler(sUrl)
-        oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
-        oRequest.addHeaderEntry('Referer', sUrl)
-        oRequest.addParametersLine(pdata)
         sHtmlContent = oRequest.request()
         # url thumb tile desc
         sPattern = '<a class="sres-wrap.+?ref="([^"]*).+?data-src="([^"]*).+?alt="([^"]*).+?desc">([^<]*)'
@@ -154,7 +147,6 @@ def showMovies(sSearch=''):
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
-        # ifVSlog(sHtmlContent)
         ifVSlog('showMovies : Failed Pattern with url = ' + sUrl)
 
     if (aResult[0] == True):
