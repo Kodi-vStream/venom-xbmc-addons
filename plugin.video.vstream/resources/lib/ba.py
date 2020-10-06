@@ -121,7 +121,6 @@ class cShowBA:
 
         # BA trouvée
         if urlTrailer:
-            exec('from resources.hosters.youtube import cHoster')
             hote = cHoster()
             hote.setUrl(urlTrailer)
             api_call = hote.getMediaLink()[1]

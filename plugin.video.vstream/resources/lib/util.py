@@ -10,7 +10,6 @@ except ImportError:
     import urllib.parse as urllib
     import urllib.request as urllib2
 
-from resources.lib.comaddon import addon, dialog, xbmc, VSlog
 import unicodedata
 import re
 # function util n'utilise pas xbmc, xbmcgui, xbmcaddon ect...
