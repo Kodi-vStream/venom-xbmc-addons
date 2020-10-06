@@ -3,7 +3,7 @@
 
 import re
 import base64
-
+import time
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -338,7 +338,7 @@ def showHosters():
             # Recuperation de l'id
             sPattern1 = "var id.+?'(.+?)'"
             aResult = oParser.parse(sHtmlContent, sPattern1)
-            
+
             #VSlog(site)
             #VSlog(aResult)
 
@@ -359,19 +359,38 @@ def showHosters():
                 # https://lb.hdsto.me/public/dist/index.html?id=xxx
 
                 if 'public/dist' in sHosterUrl:
-                    sHosterUrl = 'https://' + sHosterUrl.split('/')[2] + '/hls/' + sHosterUrl.split('id=')[1] + '/' + sHosterUrl.split('id=')[1] + '.m3u8'
+                    urlmainhost ='https://' + sHosterUrl.split('/')[2]
+                    sHosterUrl1 = urlmainhost + '/playlist/' + sHosterUrl.split('id=')[1] + '/' + str(int(round(time.time() * 1000))) + '.m3u8'
 
-                    oRequestHandler = cRequestHandler(sHosterUrl)
-                    oRequestHandler.addHeaderEntry('Referer', Url)
+                    oRequestHandler = cRequestHandler(sHosterUrl1)
                     sHtmlContent = oRequestHandler.request()
-
-                    sHosterUrl = oRequestHandler.getRealUrl()
-
-                oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
-                    oHoster.setDisplayName(sMovieTitle)
-                    oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+  
+                    sPattern1 = 'EXT.*?RESOLUTION=([^\/]+).+?hls.([^\/]+)'
+                    aResult = oParser.parse(sHtmlContent, sPattern1)
+                    if (aResult[0] == True):
+                        for aEntry in aResult[1]:
+                            sHosterUrl1 = urlmainhost + '/hls/' + aEntry[1] + '/' + aEntry[1] + '.m3u8'
+                            sDisplayTitle = sMovieTitle + ' (' + aEntry[0] + ') '
+                            oHoster = cHosterGui().checkHoster(sHosterUrl1)
+                            if (oHoster != False):
+                                oHoster.setDisplayName(sDisplayTitle)
+                                oHoster.setFileName(sMovieTitle)
+                                cHosterGui().showHoster(oGui, oHoster, sHosterUrl1, sThumb)
+                
+                    else:
+                        sHosterUrl = 'https://' + sHosterUrl.split('/')[2] + '/hls/' + sHosterUrl.split('id=')[1] + '/' + sHosterUrl.split('id=')[1] + '.m3u8'
+                        oHoster = cHosterGui().checkHoster(sHosterUrl)
+                        if (oHoster != False):
+                            oHoster.setDisplayName(sDisplayTitle)
+                            oHoster.setFileName(sMovieTitle)
+                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                
+                else:
+                    oHoster = cHosterGui().checkHoster(sHosterUrl)
+                    if (oHoster != False):
+                        oHoster.setDisplayName(sMovieTitle)
+                        oHoster.setFileName(sMovieTitle)
+                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
