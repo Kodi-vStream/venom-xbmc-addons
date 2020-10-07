@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+#07/11/20
+return False
+
 import re
 import unicodedata
 
