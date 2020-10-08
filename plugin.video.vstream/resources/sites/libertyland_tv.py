@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'libertyland_tv'
 SITE_NAME = 'Libertyland'
 SITE_DESC = 'Les films et séries récentes en streaming et en téléchargement'
 
-URL_MAIN = 'https://www.libertyvf.in/'
+URL_MAIN = 'https://www.libertyvf.one/'
 
 URL_SEARCH = (URL_MAIN + 'v2/recherche/', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + 'v2/recherche/categorie=films&mot_search=', 'showMovies')
@@ -258,10 +258,10 @@ def showMovies(sSearch=''):
                 sThumb = URL_MAIN[:-1] + aEntry[0]
                 sTitle = aEntry[2].replace('télécharger ', '').replace('en Streaming', '')
                 sTitle = sTitle.replace(' TELECHARGEMENT GRATUIT', '').replace('gratuitement', '')
-                sUrl2 = URL_MAIN[:-1] + aEntry[1]
+                sUrl2 = aEntry[1]
             elif '/series' in sUrl:
                 sQual = ''
-                sUrl2 = URL_MAIN[:-1] + aEntry[0]
+                sUrl2 = aEntry[0]
                 sTitle = aEntry[1].replace('Regarder ', '').replace('en Streaming', '')
                 sThumb = URL_MAIN[:-1] + aEntry[2]
                 sYear = aEntry[3]
@@ -283,7 +283,7 @@ def showMovies(sSearch=''):
                     pass
 
                 sDesc = cUtil().unescape(sDesc).encode('utf-8')
-                sUrl2 = URL_MAIN[:-1] + aEntry[5]
+                sUrl2 = aEntry[5]
 
                 sQual = aEntry[2]
                 if sQual:
@@ -295,6 +295,9 @@ def showMovies(sSearch=''):
 
                     sQual = sQual.replace(u' qualit\u00E9', '').replace('et ', '/').replace('Haute', 'HD')\
                                  .replace(' ', '').replace('Bonne', 'DVD').replace('Mauvaise', 'SD').encode("utf-8")
+
+            if 'https' not in sUrl2:
+                    sUrl2 = URL_MAIN[:-1] + sUrl2
 
             sUrl2 = sUrl2.replace('telecharger', 'streaming')
 
