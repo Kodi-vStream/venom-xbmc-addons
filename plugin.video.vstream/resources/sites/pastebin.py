@@ -1358,7 +1358,7 @@ def showSerieLinks(sSaison=None):
     episodes = sHoster.keys()
 
     for episode in sorted(episodes):
-        links = sHoster[episode]
+        sUrl = sHoster[episode]
         
         if str(episode).isdigit():
             episode = '{}E{:02d}'.format(sSaison, int(episode))
@@ -1366,15 +1366,6 @@ def showSerieLinks(sSaison=None):
             episode = '{}{}'.format(sSaison, episode)
         sDisplayTitle = sTitle + ' - ' + episode
 
-        # Reconstruire les liens
-        if pbContent.HEBERGEUR:
-            if isinstance(links, list):
-                sUrl = [(pbContent.HEBERGEUR + link) for link in links]  
-            else:
-                sUrl = pbContent.HEBERGEUR + links
-        else:
-            sUrl = links
-        
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
