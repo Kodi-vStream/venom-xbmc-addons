@@ -24,6 +24,7 @@ URL_SEARCH_SERIES = (URL_SEARCH[0] + '&subaction=search&catlist%5B%5D=10&catlist
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
+MOVIE_ANNEES = (True, 'showYears')
 
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
 SERIE_SERIES = (URL_MAIN + 'series/', 'showMovies')
@@ -47,6 +48,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
@@ -101,6 +106,18 @@ def showGenres():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showYears():
+    oGui = cGui()
+
+    for i in reversed(range(2015, 2021)):  # avant 2015 hosts HS
+        Year = str(i)
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'xfsearch/year/' + Year + '/')
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
