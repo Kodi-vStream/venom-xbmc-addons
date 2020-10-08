@@ -57,7 +57,7 @@ class PasteBinContent:
     URLS = -1    # Liste des liens, avec épisodes pour les séries
     HEBERGEUR = '' # (optionnel) - URL de l'hebergeur, pour éviter de le mettre dans chaque URL, ex : 'https://uptobox.com/'  
 
-    # Pour comparer deux pastes, savoir si mêmes champs
+    # Pour comparer deux pastes, savoir si les champs sont dans le même ordre 
     def isFormat(self, other): 
         if not isinstance(other, PasteBinContent):
             return False
@@ -73,8 +73,7 @@ class PasteBinContent:
             and self.DIRECTOR == other.DIRECTOR \
             and self.CAST == other.CAST \
             and self.NETWORK == other.NETWORK \
-            and self.URLS == other.URLS \
-            and self.HEBERGEUR == other.HEBERGEUR \
+            and self.URLS == other.URLS
     
     def getLines(self, sContent):
         lines = sContent.splitlines()
@@ -100,6 +99,18 @@ class PasteBinContent:
             idx +=1
 
         lines = [k.split(";") for k in lines[1:]]
+        
+        # Reconstruire les liens
+        if self.HEBERGEUR:
+            for line in lines:
+                sHost = line[self.URLS]
+                if "[" in sHost:
+                    sHost = eval(sHost)
+                    sUrl = [(self.HEBERGEUR + link) for link in sHost]
+                else:
+                    sUrl = self.HEBERGEUR + sHost
+                line[self.URLS] = sUrl
+        
         return lines
 
 
@@ -1202,23 +1213,11 @@ def showMovies(sSearch=''):
         elif sMedia == 'anime':
             oGui.addAnime(SITE_IDENTIFIER, 'showSerieSaisons', sDisplayTitle, 'animes.png', '', '', oOutputParameterHandler)
         else:
-            sHost = movie[pbContent.URLS]
-            if len(sHost.replace('[', '').replace(']', '').replace('"', '').replace('\'', '').strip()) > 0:
-                
-                # Reconstruire les liens
-                if pbContent.HEBERGEUR:
-                    if "[" in sHost:
-                        sHost = eval(sHost)
-                        sUrl = [(pbContent.HEBERGEUR + link) for link in sHost]
-                    else:
-                        sUrl = pbContent.HEBERGEUR + sHost
-                else:
-                    sUrl = sHost
-
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                if listRes:
-                    oOutputParameterHandler.addParameter('listRes', listRes)
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', '', '', oOutputParameterHandler)
+            sUrl = movie[pbContent.URLS]
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            if listRes:
+                oOutputParameterHandler.addParameter('listRes', listRes)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', '', '', oOutputParameterHandler)
 
         # Gestion de la pagination
         if not sSearch:
@@ -1544,6 +1543,13 @@ def addPasteID():
     
     addons.setSetting(settingID, sID)
     oGui.updateDirectory()
+
+
+# msgctxt "#30042"
+# msgid "Successfully registered"
+# msgstr "Enregistré avec succès"
+
+
 
 # Retirer un groupe PasteBin
 def deletePasteName():
