@@ -14,7 +14,8 @@ SITE_IDENTIFIER = 'vkstream'
 SITE_NAME = 'Vkstream'
 SITE_DESC = 'Series en streaming, streaming HD, streaming VF, séries, récent'
 
-URL_MAIN = 'https://wvv.vkstream.org/'
+#URL_MAIN = 'https://wvv.vkstream.org/' # sous cloudfare
+URL_MAIN = 'https://wvw.voirseries1.co/' # ajout 09/10/2020 nom : VoirSeries ,clone sans CF avec  même code html
 
 SERIE_SERIES = (URL_MAIN + 'series/page/1', 'showSeries')
 SERIE_GENRES = (True, 'showGenres')
