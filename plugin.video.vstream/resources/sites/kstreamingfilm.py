@@ -192,9 +192,14 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        list_hoster= []
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
+            if not sHosterUrl in list_hoster:
+                    list_hoster.append(sHosterUrl)
+            else:
+                continue
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
