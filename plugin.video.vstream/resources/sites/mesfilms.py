@@ -326,9 +326,9 @@ def showLinks():
             sHost = sHost.capitalize()
             
             # filtrage des hosters
-            oHoster = cHosterGui().checkHoster(sHost)
-            if not oHoster:
-                continue
+            #oHoster = cHosterGui().checkHoster(sHost)
+            #if not oHoster:
+                #continue
 
             sTitle = ('%s [%s] [COLOR coral]%s[/COLOR]') % (sMovieTitle, sQual, sHost)
 
