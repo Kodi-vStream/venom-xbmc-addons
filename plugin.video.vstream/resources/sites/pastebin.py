@@ -30,7 +30,13 @@ URL_SEARCH_ANIMS = (URL_MAIN + '&pasteID=' + KEY_PASTE_ID + '&sMedia=anime&sSear
 FUNCTION_SEARCH = 'showSearchGlobal'
 
 
-ITEM_PAR_PAGE = 20
+def getNbItemParPage():
+    nbItem = addon().getSetting('pastebin_nbItemParPage')
+    if nbItem:
+        return int(nbItem)
+    return 25
+
+ITEM_PAR_PAGE = getNbItemParPage()
 PASTE_PAR_GROUPE = 50   # jusqu'à 50 groupes de paste, chaque groupe peut contenir jusqu'à 50 liens pastebin
 
 # Exemple
@@ -100,14 +106,19 @@ class PasteBinContent:
 
         lines = [k.split(";") for k in lines[1:]]
         
+        
         # Reconstruire les liens
         if self.HEBERGEUR:
             for line in lines:
                 sHost = line[self.URLS]
-                if "[" in sHost:
+                if "{" in sHost:   # Liens pour les séries
+                    sUrl = eval(sHost)
+                    for link in sUrl.keys():
+                        sUrl[link] = self.HEBERGEUR + sUrl[link] 
+                elif "[" in sHost: # Liens pour les films (multi lien)
                     sHost = eval(sHost)
                     sUrl = [(self.HEBERGEUR + link) for link in sHost]
-                else:
+                else:    # Liens pour les films (lien unique)
                     sUrl = self.HEBERGEUR + sHost
                 line[self.URLS] = sUrl
         
@@ -243,7 +254,7 @@ def showMenu():
             oGui.addDir(SITE_IDENTIFIER, 'showCast', 'Films (Par acteurs)', 'actor.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&pasteID=' + pasteID)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&bRandom=True&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Aléatoires)', 'news.png', oOutputParameterHandler)
 
 
@@ -396,12 +407,12 @@ def showGenres():
     oInputParameterHandler = cInputParameterHandler()
     siteUrl = oInputParameterHandler.getValue('siteUrl')
 
-    siteUrl, params = siteUrl.split('&',1)
+    sUrl, params = siteUrl.split('&',1)
     aParams = dict(param.split('=') for param in params.split('&'))
     sMedia = aParams['sMedia'] if 'sMedia' in aParams else 'film'
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
 
-    listeIDs = getPasteList(siteUrl, pasteID)
+    listeIDs = getPasteList(sUrl, pasteID)
     
     genres = {}
     for pasteBin in listeIDs:
@@ -434,10 +445,8 @@ def showGenres():
     for sDisplayGenre in sorted(genreKeys):
         genre = genres.get(sDisplayGenre)
         oOutputParameterHandler = cOutputParameterHandler()
-        siteUrl = URL_MAIN + '&sMedia=' + sMedia +'&sGenre=' + str(genre)
-        if pasteID:
-            siteUrl += '&pasteID=' + pasteID
-        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+        sUrl = siteUrl + '&sGenre=' + str(genre)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sDisplayGenre, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -447,14 +456,14 @@ def showNetwork():
     oInputParameterHandler = cInputParameterHandler()
     siteUrl = oInputParameterHandler.getValue('siteUrl')
 
-    siteUrl, params = siteUrl.split('&',1)
+    sUrl, params = siteUrl.split('&',1)
     aParams = dict(param.split('=') for param in params.split('&'))
     sMedia = aParams['sMedia'] if 'sMedia' in aParams else 'film'
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
 
     pbContent = PasteBinContent()
     movies = []
-    listeIDs = getPasteList(siteUrl, pasteID)
+    listeIDs = getPasteList(sUrl, pasteID)
     for pasteBin in listeIDs:
         sUrl = URL_MAIN + pasteBin
         oRequestHandler = cRequestHandler(sUrl)
@@ -474,11 +483,9 @@ def showNetwork():
             if networks:
                 for network in networks:
                     if ':' in network:
-                        networkId = network.split(':')[0]
-                        networkName = network.split(':')[1]
-                        if networkName in listNetwork:
-                            continue
-                        listNetwork[networkName] = networkId
+                        networkId, networkName = network.split(':')
+                        if networkName not in listNetwork:
+                            listNetwork[networkName] = networkId
 
     maxProgress = len(listNetwork)
     progress_ = progress().VScreate(SITE_NAME)
@@ -488,8 +495,7 @@ def showNetwork():
         if progress_.iscanceled():
             break
 
-        sUrl = siteUrl + '&sMedia=' + sMedia +'&sNetwork=' + networkId + ":" + networkName.replace('+', '|')
-        if pasteID: sUrl += '&pasteID=' + pasteID
+        sUrl = siteUrl + '&sNetwork=' + networkId + ":" + networkName.replace('+', '|')
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sTmdbId', networkId)    # Utilisé par TMDB
@@ -503,7 +509,7 @@ def showRealisateur():
     oInputParameterHandler = cInputParameterHandler()
     siteUrl = oInputParameterHandler.getValue('siteUrl')
 
-    siteUrl, params = siteUrl.split('&',1)
+    sUrl, params = siteUrl.split('&',1)
     aParams = dict(param.split('=') for param in params.split('&'))
     sMedia = aParams['sMedia'] if 'sMedia' in aParams else 'film'
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
@@ -519,7 +525,7 @@ def showRealisateur():
 
     pbContent = PasteBinContent()
     movies = []
-    listeIDs = getPasteList(siteUrl, pasteID)
+    listeIDs = getPasteList(sUrl, pasteID)
     for pasteBin in listeIDs:
         sUrl = URL_MAIN + pasteBin
         oRequestHandler = cRequestHandler(sUrl)
@@ -539,11 +545,9 @@ def showRealisateur():
             if reals:
                 for real in reals:
                     if ':' in real:
-                        realId = real.split(':')[0]
-                        realName = real.split(':')[1]
-                        if realName in listReal:
-                            continue
-                        listReal[realName] = realId
+                        realId, realName  = real.split(':')
+                        if realName not in listReal:
+                            listReal[realName] = realId
 
     nbItem = 0
     index = 0
@@ -561,8 +565,7 @@ def showRealisateur():
         if progress_.iscanceled():
             break
 
-        sUrl = siteUrl + '&sMedia=' + sMedia +'&sDirector=' + realId + ":" + realName
-        if pasteID: sUrl += '&pasteID=' + pasteID
+        sUrl = siteUrl + '&sDirector=' + realId + ":" + realName
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sTmdbId', realId)    # Utilisé par TMDB
@@ -572,11 +575,8 @@ def showRealisateur():
         if nbItem % ITEM_PAR_PAGE == 0:
             numPage += 1
             
-            sUrl = siteUrl + '&sMedia=' + sMedia
-            if pasteID: sUrl += '&pasteID=' + pasteID
-            
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('siteUrl', siteUrl)
             oOutputParameterHandler.addParameter('numPage', numPage)
             oOutputParameterHandler.addParameter('numItem', numItem)
             oGui.addNext(SITE_IDENTIFIER, 'showRealisateur', '[COLOR teal]Page ' + str(numPage) + ' >>>[/COLOR]', oOutputParameterHandler)
@@ -591,7 +591,7 @@ def showCast():
     oInputParameterHandler = cInputParameterHandler()
     siteUrl = oInputParameterHandler.getValue('siteUrl')
 
-    siteUrl, params = siteUrl.split('&',1)
+    sUrl, params = siteUrl.split('&',1)
     aParams = dict(param.split('=') for param in params.split('&'))
     sMedia = aParams['sMedia'] if 'sMedia' in aParams else 'film'
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
@@ -607,7 +607,7 @@ def showCast():
 
     pbContent = PasteBinContent()
     movies = []
-    listeIDs = getPasteList(siteUrl, pasteID)
+    listeIDs = getPasteList(sUrl, pasteID)
     for pasteBin in listeIDs:
         sUrl = URL_MAIN + pasteBin
         oRequestHandler = cRequestHandler(sUrl)
@@ -627,11 +627,9 @@ def showCast():
             if acteurs:
                 for acteur in acteurs:
                     if ':' in acteur:
-                        acteurId = acteur.split(':')[0]
-                        acteurName = acteur.split(':')[1]
-                        if acteurName in listActeur:
-                            continue
-                        listActeur[acteurName] = acteurId
+                        acteurId, acteurName = acteur.split(':')
+                        if acteurName not in listActeur:
+                            listActeur[acteurName] = acteurId
 
     nbItem = 0
     index = 0
@@ -649,8 +647,7 @@ def showCast():
         if progress_.iscanceled():
             break
 
-        sUrl = siteUrl + '&sMedia=' + sMedia +'&sCast=' + acteurId + ":" + acteurName
-        if pasteID: sUrl += '&pasteID=' + pasteID
+        sUrl = siteUrl + '&sCast=' + acteurId + ":" + acteurName
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sTmdbId', acteurId)    # Utilisé par TMDB
@@ -660,11 +657,8 @@ def showCast():
         if nbItem % ITEM_PAR_PAGE == 0:
             numPage += 1
             
-            sUrl = siteUrl + '&sMedia=' + sMedia
-            if pasteID: sUrl += '&pasteID=' + pasteID
-            
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('siteUrl', siteUrl)
             oOutputParameterHandler.addParameter('numPage', numPage)
             oOutputParameterHandler.addParameter('numItem', numItem)
             oGui.addNext(SITE_IDENTIFIER, 'showCast', '[COLOR teal]Page ' + str(numPage) + ' >>>[/COLOR]', oOutputParameterHandler)
@@ -680,14 +674,14 @@ def showGroupes():
     oInputParameterHandler = cInputParameterHandler()
     siteUrl = oInputParameterHandler.getValue('siteUrl')
 
-    siteUrl, params = siteUrl.split('&',1)
+    sUrl, params = siteUrl.split('&',1)
     aParams = dict(param.split('=') for param in params.split('&'))
     sMedia = aParams['sMedia'] if 'sMedia' in aParams else 'film'
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
 
     pbContent = PasteBinContent()
     movies = []
-    listeIDs = getPasteList(siteUrl, pasteID)
+    listeIDs = getPasteList(sUrl, pasteID)
     for pasteBin in listeIDs:
         sUrl = URL_MAIN + pasteBin
         oRequestHandler = cRequestHandler(sUrl)
@@ -708,16 +702,14 @@ def showGroupes():
                 for gr in groupe:
                     if ':' in gr:
                         grID = gr.split(':')[0]
-                        if grID in sousGroupe:
-                            continue
-                        sousGroupe.add(grID)
+                        if grID not in sousGroupe:
+                            sousGroupe.add(grID)
                     else:
                         groupesPerso.add(gr)
 
     groupes = groupesPerso.union(sousGroupe)
     for sGroupe in sorted(groupes):
-        sUrl = siteUrl + '&sMedia=' + sMedia +'&sGroupe=' + sGroupe
-        if pasteID: sUrl += '&pasteID=' + pasteID
+        sUrl = siteUrl + '&sGroupe=' + sGroupe
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         if sGroupe in sousGroupe:
@@ -733,16 +725,14 @@ def showGroupeDetails():
     oInputParameterHandler = cInputParameterHandler()
     siteUrl = oInputParameterHandler.getValue('siteUrl')
 
-    siteUrl, params = siteUrl.split('&',1)
+    sUrl, params = siteUrl.split('&',1)
     aParams = dict(param.split('=') for param in params.split('&'))
-    sMedia = aParams['sMedia'] if 'sMedia' in aParams else 'film'
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
-    if 'sGroupe' in aParams:
-        sGroupe = aParams['sGroupe'] + ':'
+    sGroupe = aParams['sGroupe'] + ':' if 'sGroupe' in aParams else None
 
     pbContent = PasteBinContent()
     movies = []
-    listeIDs = getPasteList(siteUrl, pasteID)
+    listeIDs = getPasteList(sUrl, pasteID)
     for pasteBin in listeIDs:
         sUrl = URL_MAIN + pasteBin
         oRequestHandler = cRequestHandler(sUrl)
@@ -752,18 +742,18 @@ def showGroupeDetails():
         movies += moviesBin
 
     groupes = set()
-    for movie in movies:
-        groupe = movie[pbContent.GROUPES].strip().replace("''",'')
-        if groupe:
-            groupe = eval(groupe)
+    if sGroupe:
+        for movie in movies:
+            groupe = movie[pbContent.GROUPES].strip().replace("''",'')
             if groupe:
-                for gr in groupe:
-                    if gr.startswith(sGroupe):
-                        groupes.add(gr)
+                groupe = eval(groupe)
+                if groupe:
+                    for gr in groupe:
+                        if gr.startswith(sGroupe):
+                            groupes.add(gr)
 
     for sGroupe in sorted(groupes):
-        sUrl = siteUrl + '&sMedia=' + sMedia +'&sGroupe=' + sGroupe.replace('+', '|')
-        if pasteID: sUrl += '&pasteID=' + pasteID
+        sUrl = siteUrl + '&sGroupe=' + sGroupe.replace('+', '|')
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         sDisplayGroupe = sGroupe.split(':')[1]
@@ -778,7 +768,7 @@ def showSaga():
     numItem = oInputParameterHandler.getValue('numItem')
     numPage = oInputParameterHandler.getValue('numPage')
 
-    siteUrl, params = siteUrl.split('&',1)
+    sUrl, params = siteUrl.split('&',1)
     aParams = dict(param.split('=') for param in params.split('&'))
     sMedia = aParams['sMedia'] if 'sMedia' in aParams else 'film'
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
@@ -791,7 +781,7 @@ def showSaga():
 
     pbContent = PasteBinContent()
     movies = []
-    listeIDs = getPasteList(siteUrl, pasteID)
+    listeIDs = getPasteList(sUrl, pasteID)
     for pasteBin in listeIDs:
         sUrl = URL_MAIN + pasteBin
         oRequestHandler = cRequestHandler(sUrl)
@@ -835,15 +825,12 @@ def showSaga():
 
         sTmdbId = sagas[sSagaName]
 
-        sUrl = siteUrl + '&sMedia=' + sMedia
-        if pasteID: sUrl += '&pasteID=' + pasteID
-
         oOutputParameterHandler = cOutputParameterHandler()
         if sTmdbId.isdigit():
             oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)    # Utilisé par TMDB
-            sUrl += '&sSaga=' + sTmdbId + ':' + sSagaName
+            sUrl = siteUrl + '&sSaga=' + sTmdbId + ':' + sSagaName
         else:
-            sUrl += '&sSaga=' + sSagaName
+            sUrl = siteUrl + '&sSaga=' + sSagaName
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         
         sDisplaySaga = sSagaName
@@ -858,11 +845,8 @@ def showSaga():
         if nbItem % ITEM_PAR_PAGE == 0:
             numPage += 1
             
-            sUrl = siteUrl + '&sMedia=' + sMedia
-            if pasteID: sUrl += '&pasteID=' + pasteID
-            
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('siteUrl', siteUrl)
             oOutputParameterHandler.addParameter('numPage', numPage)
             oOutputParameterHandler.addParameter('numItem', numItem)
             oGui.addNext(SITE_IDENTIFIER, 'showSaga', '[COLOR teal]Page ' + str(numPage) + ' >>>[/COLOR]', oOutputParameterHandler)
@@ -879,14 +863,14 @@ def showYears():
     oInputParameterHandler = cInputParameterHandler()
     siteUrl = oInputParameterHandler.getValue('siteUrl')
 
-    siteUrl, params = siteUrl.split('&',1)
+    sUrl, params = siteUrl.split('&',1)
     aParams = dict(param.split('=') for param in params.split('&'))
     sMedia = aParams['sMedia'] if 'sMedia' in aParams else 'film'
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
 
     pbContent = PasteBinContent()
     movies = []
-    listeIDs = getPasteList(siteUrl, pasteID)
+    listeIDs = getPasteList(sUrl, pasteID)
     for pasteBin in listeIDs:
         sUrl = URL_MAIN + pasteBin
         oRequestHandler = cRequestHandler(sUrl)
@@ -904,8 +888,7 @@ def showYears():
         years.add(year)
 
     for sYear in sorted(years, reverse=True):
-        sUrl = siteUrl + '&sMedia=' + sMedia +'&sYear=' + sYear
-        if pasteID: sUrl += '&pasteID=' + pasteID
+        sUrl = siteUrl + '&sYear=' + sYear
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'years.png', oOutputParameterHandler)
@@ -918,14 +901,14 @@ def showResolution():
     oInputParameterHandler = cInputParameterHandler()
     siteUrl = oInputParameterHandler.getValue('siteUrl')
 
-    siteUrl, params = siteUrl.split('&',1)
+    sUrl, params = siteUrl.split('&',1)
     aParams = dict(param.split('=') for param in params.split('&'))
     sMedia = aParams['sMedia'] if 'sMedia' in aParams else 'film'
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
 
     pbContent = PasteBinContent()
     movies = []
-    listeIDs = getPasteList(siteUrl, pasteID)
+    listeIDs = getPasteList(sUrl, pasteID)
     for pasteBin in listeIDs:
         sUrl = URL_MAIN + pasteBin
         oRequestHandler = cRequestHandler(sUrl)
@@ -957,10 +940,9 @@ def showResolution():
 
         sDisplayRes = sRes
         if sDisplayRes.isdigit(): sDisplayRes += 'p'
-        sDisplayRes = sDisplayRes.replace('P', 'p').replace('1080p', 'HD [1080p]').replace('720p', 'SD [720p]').replace('4K', '2160p').replace('2160p', '4K [2160p]')
+        sDisplayRes = sDisplayRes.replace('P', 'p').replace('1080p', 'HD [1080p]').replace('720p', 'HD [720p]').replace('4K', '2160p').replace('2160p', '4K [2160p]')
 
-        sUrl = siteUrl + '&sMedia=' + sMedia +'&sRes=' + sRes 
-        if pasteID: sUrl += '&pasteID=' + pasteID
+        sUrl = siteUrl + '&sRes=' + sRes
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sDisplayRes, 'hd.png', oOutputParameterHandler)
@@ -972,12 +954,7 @@ def AlphaList():
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    sUrl, params = sUrl.split('&',1)
-    aParams = dict(param.split('=') for param in params.split('&'))
-    sMedia = aParams['sMedia'] if 'sMedia' in aParams else 'film'
-    pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
+    siteUrl = oInputParameterHandler.getValue('siteUrl')
 
     for i in range(0, 36):
         if (i < 10):
@@ -985,11 +962,10 @@ def AlphaList():
         else:
             sLetter = chr(65 + i -10)
 
-        siteUrl = sUrl + '&sMedia=' + sMedia +'&sAlpha=' + sLetter
-        if pasteID: sUrl += '&pasteID=' + pasteID
+        sUrl = siteUrl + '&sAlpha=' + sLetter
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] Lettre [COLOR red]' + sLetter + '[/COLOR][/COLOR]', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -1017,9 +993,9 @@ def showMovies(sSearch=''):
     sSearchTitle = ''
     
     # Pour supporter les caracteres '&' et '+' dans les noms alors qu'ils sont réservés
-    siteUrl = siteUrl.replace('+', ' ').replace('|', '+').replace(' & ', ' | ')
+    sUrl = siteUrl.replace('+', ' ').replace('|', '+').replace(' & ', ' | ')
     
-    siteUrl, params = siteUrl.split('&',1)
+    sUrl, params = sUrl.split('&',1)
     aParams = dict(param.split('=') for param in params.split('&'))
 
     if 'pasteID' in aParams: pasteID = aParams['pasteID']
@@ -1035,15 +1011,13 @@ def showMovies(sSearch=''):
     if 'sNetwork' in aParams: sNetwork = aParams['sNetwork']
     if 'sDirector' in aParams: sDirector = aParams['sDirector']
     if 'sCast' in aParams: sCast = aParams['sCast']
-    
     if 'bRandom' in aParams: bRandom = aParams['bRandom']
 
     pbContent = PasteBinContent()
     movies = []
-    listeIDs = getPasteList(siteUrl, pasteID)
+    listeIDs = getPasteList(sUrl, pasteID)
     for pasteBin in listeIDs:
-        sUrl = URL_MAIN + pasteBin
-        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler = cRequestHandler(URL_MAIN + pasteBin)
         oRequestHandler.setTimeout(4)
         sContent = oRequestHandler.request()
         moviesBin = pbContent.getLines(sContent)
@@ -1065,19 +1039,19 @@ def showMovies(sSearch=''):
         numItem = 0
         randoms = [random.randint(0, len(movies)) for _ in range(ITEM_PAR_PAGE)]
     
-    serieTitles = set()
+    movieIds = set()
+    
     nbItem = 0
-    index = 0
+    index = -1
     progress_ = progress().VScreate(SITE_NAME)
 
     for movie in movies:
 
+        index += 1
         if bRandom and index not in randoms:
-            index += 1
             continue
 
         # Pagination, on se repositionne
-        index += 1
         if index <= numItem:
             continue
         numItem += 1
@@ -1103,7 +1077,7 @@ def showMovies(sSearch=''):
                     continue
 
         # Filtrage par réalisateur
-        if sDirector and pbContent.DIRECTOR >=0 :
+        if sDirector and pbContent.DIRECTOR >= 0 :
             listDirector = movie[pbContent.DIRECTOR].strip()
             if not listDirector:
                 continue
@@ -1121,7 +1095,7 @@ def showMovies(sSearch=''):
                 continue
 
         # Filtrage par diffuseur
-        if sNetwork and pbContent.NETWORK >=0 :
+        if sNetwork and pbContent.NETWORK >= 0 :
             listNetwork = movie[pbContent.NETWORK].strip()
             if not listNetwork:
                 continue
@@ -1130,7 +1104,7 @@ def showMovies(sSearch=''):
                 continue
 
         # Filtrage par groupe
-        if sGroupe and pbContent.GROUPES >=0:
+        if sGroupe and pbContent.GROUPES >= 0:
             groupes = movie[pbContent.GROUPES].strip()
             if not groupes:
                 continue
@@ -1140,9 +1114,11 @@ def showMovies(sSearch=''):
 
         # l'ID TMDB
         sTmdbId = None
-        if pbContent.TMDB >=0:
+        if pbContent.TMDB >= 0:
             sTmdbId = movie[pbContent.TMDB].strip()
-        
+            if sTmdbId in movieIds:
+                continue            # Filtre des doublons
+            movieIds.add(sTmdbId)
 
         # Filtrage par titre
         sTitle = movie[pbContent.TITLE].strip()
@@ -1157,89 +1133,68 @@ def showMovies(sSearch=''):
             if sTitle[0].upper() != sAlpha:
                 continue
 
-        # Une série ne doit apparaitre qu'une seule fois, les saisons sont gérées plus tard
-        if sMedia in ('serie', 'anime'):
-            if sTitle in serieTitles:
-                continue
-            serieTitles.add(sTitle)
-
         sDisplayTitle = sTitle
 
         # Filtrage par années
-        if pbContent.YEAR>=0:
-            year = movie[pbContent.YEAR].strip()
+        if pbContent.YEAR >= 0:
+            movieYear = movie[pbContent.YEAR].strip()
             if sYear:
-                if not year or sYear != year:
+                if not movieYear or sYear != movieYear:
                     continue
-                sDisplayTitle = '%s (%s)' % (sTitle, year)
+                # sDisplayTitle = '%s (%s)' % (sTitle, movieYear)
 
         # Filtrage par résolutions vidéos
         listRes = None
-        if pbContent.RES>=0:
-            res = movie[pbContent.RES].strip()
-            listRes = []
-            if '[' in res:
-                listRes.extend(eval(res))
-            else:
-                listRes.append(res)
-            if len(listRes) == 0:
-                listRes.append('')
-                    
-        if sRes:
-            if sRes == UNCLASSIFIED_RESOLUTION:
-                if '' not in listRes:
+        
+        if 'movie' in sMedia:
+            if pbContent.RES>=0:
+                res = movie[pbContent.RES].strip()
+                listRes = []
+                if '[' in res:
+                    listRes.extend(eval(res))
+                else:
+                    listRes.append(res)
+                if len(listRes) == 0:
+                    listRes.append('')
+                        
+            if sRes:
+                if sRes == UNCLASSIFIED_RESOLUTION:
+                    if '' not in listRes:
+                        continue
+                elif sRes not in listRes:
                     continue
-            elif sRes not in listRes:
-                continue
         
         nbItem += 1
         progress_.VSupdate(progress_, ITEM_PAR_PAGE)
         if progress_.iscanceled():
             break
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        sUrl = siteUrl
         if sMedia : sUrl += '&sMedia=' + sMedia
         if pasteID: sUrl += '&pasteID=' + pasteID
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        if movieYear : sUrl += '&sYear=' + movieYear
+        if sTmdbId: sUrl += '&idTMDB=' + sTmdbId
+        sUrl += '&sTitle=' + sTitle
         
-        sTitle = sTitle.replace('[', '').replace(']', '')   # Exemple pour le film [REC], les crochets sont génant pour certaines fonctions
+        sTitle = sTitle.replace('[', '').replace(']', '')   # Exemple pour le film [REC], les crochets sont génants pour certaines fonctions
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-        if sTmdbId:
-            oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
+        if listRes: oOutputParameterHandler.addParameter('listRes', listRes)
 
         if sMedia == 'serie':
             oGui.addTV(SITE_IDENTIFIER, 'showSerieSaisons', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
         elif sMedia == 'anime':
             oGui.addAnime(SITE_IDENTIFIER, 'showSerieSaisons', sDisplayTitle, 'animes.png', '', '', oOutputParameterHandler)
         else:
-            sUrl = movie[pbContent.URLS]
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            if listRes:
-                oOutputParameterHandler.addParameter('listRes', listRes)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', '', '', oOutputParameterHandler)
 
         # Gestion de la pagination
         if not sSearch:
             if nbItem % ITEM_PAR_PAGE == 0:
                 numPage += 1
-                
-                sUrl = siteUrl
-                if sMedia : sUrl += '&sMedia=' + sMedia
-                if pasteID : sUrl += '&pasteID=' + pasteID
-                if sGenre : sUrl += '&sGenre=' + sGenre
-                if sSaga : sUrl += '&sSaga=' + sSaga
-                if sGroupe : sUrl += '&sGroupe=' + sGroupe
-                if sYear : sUrl += '&sYear=' + sYear
-                if sRes : sUrl += '&sRes=' + sRes
-                if sDirector : sUrl += '&sDirector=' + sDirector
-                if sCast : sUrl += '&sCast=' + sCast
-                if sNetwork : sUrl += '&sNetwork=' + sNetwork
-                if sAlpha : sUrl += '&sAlpha=' + sAlpha
-                if bRandom : sUrl += '&bRandom=True'
-                
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('siteUrl', siteUrl)
                 oOutputParameterHandler.addParameter('numPage', numPage)
                 oOutputParameterHandler.addParameter('numItem', numItem)
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(numPage) + ' >>>[/COLOR]', oOutputParameterHandler)
@@ -1255,123 +1210,118 @@ def showSerieSaisons():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     siteUrl = oInputParameterHandler.getValue('siteUrl')
-    sTitle = oInputParameterHandler.getValue('sMovieTitle')
+    searchTitle = oInputParameterHandler.getValue('sMovieTitle')
+    searchYear = oInputParameterHandler.getValue('sYear')
 
-    siteUrl, params = siteUrl.split('&',1)
+    sUrl, params = siteUrl.split('&',1)
     aParams = dict(param.split('=') for param in params.split('&'))
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
+    idTMDB = aParams['idTMDB'] if 'idTMDB' in aParams else None
 
+    saisons = []
+    listeIDs = getPasteList(sUrl, pasteID)
     pbContent = PasteBinContent()
-    movies = []
-    listeIDs = getPasteList(siteUrl, pasteID)
     for pasteBin in listeIDs:
         sUrl = URL_MAIN + pasteBin
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.setTimeout(4)
         sContent = oRequestHandler.request()
         moviesBin = pbContent.getLines(sContent)
-        movies += moviesBin
 
-    saisons = []
+        # Recherche les saisons de la série
+        for serie in moviesBin:
+            
+            # Recherche par id
+            found = False
+            if idTMDB and pbContent.TMDB >= 0:
+                sMovieID = serie[pbContent.TMDB].strip()
+                if sMovieID:
+                    if sMovieID != idTMDB:
+                        continue
+                    found = True
+            
+            # Sinon, recherche par titre/année
+            if not found:
+                if pbContent.CAT >= 0 and 'serie' not in serie[pbContent.CAT]:
+                    continue
+                if searchYear and pbContent.YEAR >= 0:
+                    sYear = serie[pbContent.YEAR].strip()
+                    if sYear and sYear != searchYear:
+                        continue
 
-    # Recherche les saisons de la série
-    for line in movies:
-        title = line[pbContent.TITLE].strip()
-        if title != sTitle:
-            continue
-        saisons.append(line[pbContent.SAISON].strip())
-
+                sTitle = serie[pbContent.TITLE].strip()
+                if sTitle != searchTitle:
+                    continue
+            
+            numSaison = serie[pbContent.SAISON].strip()
+            if numSaison not in saisons:
+                saisons.append(numSaison)
+                
+        
     # Une seule saison, directement les épisodes
     if len(saisons) == 1:
-        saison = saisons[0]
-        showSerieLinks(saison)
+        siteUrl += '&sSaison=' + saisons[0]
+        showEpisodesLinks(siteUrl)
         return
 
     # Proposer les différentes saisons
     for sSaison in sorted(saisons):
         sUrl = siteUrl + '&sSaison=' + sSaison
-        if pasteID: sUrl += '&pasteID=' + pasteID
 
         if sSaison.isdigit():
             sSaison = 'S{:02d}'.format(int(sSaison))
         
-        sDisplayTitle = sTitle + ' - ' + sSaison
-
+        sDisplayTitle = searchTitle + ' - ' + sSaison
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle) # on ne passe pas le sTitre afin de pouvoir mettre la saison en marque-page
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addEpisode(SITE_IDENTIFIER, 'showSerieLinks', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle) # on ne passe pas le sTitre afin de pouvoir mettre la saison en marque-page
+        oGui.addEpisode(SITE_IDENTIFIER, 'showEpisodesLinks', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def showSerieLinks(sSaison=None):
+def showEpisodesLinks(siteUrl = ''):
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    siteUrl = oInputParameterHandler.getValue('siteUrl')
-    sTitle = oInputParameterHandler.getValue('sMovieTitle')
     
-    siteUrl, params = siteUrl.split('&',1)
+    if not siteUrl:    
+        oInputParameterHandler = cInputParameterHandler()
+        siteUrl = oInputParameterHandler.getValue('siteUrl')
+    
+    params = siteUrl.split('&',1)[1]
     aParams = dict(param.split('=') for param in params.split('&'))
-    pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
-
-    if not sSaison:
-        if 'sSaison' in aParams:
-            sSaison = aParams['sSaison']
-    
-        sTitle = sTitle[:sTitle.rindex(' - ')]
-    
-    if not sSaison:
-        oGui.setEndOfDirectory()
-        return
-
-    pbContent = PasteBinContent()
-    movies = []
-    listeIDs = getPasteList(siteUrl, pasteID)
-    for pasteBin in listeIDs:
-        sUrl = URL_MAIN + pasteBin
-        oRequestHandler = cRequestHandler(sUrl)
-        oRequestHandler.setTimeout(4)
-        sContent = oRequestHandler.request()
-        moviesBin = pbContent.getLines(sContent)
-        movies += moviesBin
-
-    # Recherche la saison
-    links = None
-    for line in movies:
-        if line[pbContent.TITLE].strip() != sTitle:
-            continue
-        if line[pbContent.SAISON].strip() == sSaison:
-            links = line[pbContent.URLS]
-            break
-
-    if str(sSaison).isdigit():
-        sSaison = 'S{:02d}'.format(int(sSaison))
+    sSaison = aParams['sSaison'] if 'sSaison' in aParams else None
+    searchTitle = aParams['sTitle']
  
-    if not links:
+    if not sSaison:
         oGui.setEndOfDirectory()
         return
+ 
+    lines = getHosterList(siteUrl)[0]
 
-    sHoster = eval(links)
-        
-    # Trie des épisodes 
-    episodes = sHoster.keys()
+    listeEpisodes = []
+    for episode in lines:
+        for numEpisode in episode.keys():
+            if not numEpisode in listeEpisodes:
+                listeEpisodes.append(numEpisode)
+ 
+    sDisplaySaison = sSaison
+    if sSaison.isdigit():
+        sDisplaySaison = 'S{:02d}'.format(int(sSaison))
 
-    for episode in sorted(episodes):
-        sUrl = sHoster[episode]
-        
+    for episode in sorted(listeEpisodes):
+        sUrl = siteUrl + '&sEpisode=' + str(episode)
+
         if str(episode).isdigit():
-            episode = '{}E{:02d}'.format(sSaison, int(episode))
-        elif episode[0] == 'E': 
-            episode = '{}{}'.format(sSaison, episode)
-        sDisplayTitle = sTitle + ' - ' + episode
-
+            episode = '{}E{:02d}'.format(sDisplaySaison, int(episode))
+        else:
+            episode = '{}{}'.format(sDisplaySaison, episode)
+        sDisplayTitle = searchTitle + ' - ' + episode
+ 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-
+        oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
         oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
-
+ 
     oGui.setEndOfDirectory()
 
 
@@ -1379,21 +1329,12 @@ def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sHoster = oInputParameterHandler.getValue('siteUrl')
-    listRes = oInputParameterHandler.getValue('listRes')
+    siteUrl = oInputParameterHandler.getValue('siteUrl')
 
-    if "[" in sHoster:
-        listHoster = eval(sHoster)
-    else:
-        listHoster = []   
-        listHoster.append(sHoster)
+    listHoster, listRes = getHosterList(siteUrl)    
 
-    # La liste des résolutions doit avoir la même taille que la liste des host,
-    # sinon on affiche pas la résolution de chaque flux
-    if listRes:
-        listRes = eval(listRes)
-        if len(listRes) != len (listHoster):
-            listRes = None
+    if len(listRes) != len (listHoster):
+        listRes = None
 
     resIdx = 0
     for sHosterUrl in listHoster:
@@ -1407,7 +1348,7 @@ def showHosters():
             if listRes:
                 res = listRes[resIdx]
                 if res.isdigit(): res += 'p'
-                res = res.replace('P', 'p').replace('1080p', 'HD').replace('720p', 'SD').replace('2160p', '4K')
+                res = res.replace('P', 'p').replace('1080p', 'HD').replace('720p', 'HD').replace('2160p', '4K')
                 sDisplayName = sTitle
                 if res: sDisplayName += ' [%s]' %res
                 resIdx += 1
@@ -1420,6 +1361,95 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
+# Retrouve tous les liens disponibles pour un film, ou un épisode, gère les groupes multipaste
+def getHosterList(siteUrl):
+    siteUrl, params = siteUrl.split('&',1)
+    aParams = dict(param.split('=') for param in params.split('&'))
+    sMedia = aParams['sMedia'] if 'sMedia' in aParams else 'film'
+    pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
+    searchYear = aParams['sYear'] if 'sYear' in aParams else None
+    searchSaison = aParams['sSaison'] if 'sSaison' in aParams else None
+    searchEpisode = aParams['sEpisode'] if 'sEpisode' in aParams else None
+    idTMDB = aParams['idTMDB'] if 'idTMDB' in aParams else None
+    searchTitle = aParams['sTitle']
+    
+    pbContent = PasteBinContent()
+    movies = []
+    listeIDs = getPasteList(siteUrl, pasteID)
+    for pasteBin in listeIDs:
+        sUrl = URL_MAIN + pasteBin
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.setTimeout(4)
+        sContent = oRequestHandler.request()
+        moviesBin = pbContent.getLines(sContent)
+        movies += moviesBin
+
+    listHoster = []
+    listRes = []
+
+    for movie in movies:
+
+        # Filtrage par saison
+        if searchSaison and pbContent.SAISON >= 0:
+            sSaisons = movie[pbContent.SAISON].strip()
+            if sSaisons and searchSaison != sSaisons:
+                continue
+        
+        # Recherche par id
+        found = False
+        if idTMDB and pbContent.TMDB >= 0:
+            sMovieID = movie[pbContent.TMDB].strip()
+            if sMovieID:
+                if sMovieID != idTMDB:
+                    continue
+                found = True
+
+        # sinon, recherche par titre/année
+        if not found:
+            if pbContent.CAT >=0 and sMedia not in movie[pbContent.CAT]:
+                continue
+            # Filtrage par années
+            if searchYear and pbContent.YEAR >= 0:
+                sYear = movie[pbContent.YEAR].strip()
+                if sYear and sYear != searchYear:
+                    continue
+        
+            # Filtrage par titre
+            sTitle = movie[pbContent.TITLE].strip()
+            if sTitle != searchTitle:
+                continue
+
+        links = movie[pbContent.URLS]
+        if "[" in links:
+            links = eval(links)
+            listHoster.extend(links)
+        elif isinstance(links, list):
+            listHoster.extend(links)
+        else:
+            if searchEpisode:
+                for numEpisode, link in links.items():
+                    if str(numEpisode) == searchEpisode:
+                        listHoster.append(link)
+                        break
+            else:
+                listHoster.append(links)
+
+        # Retrouve les résolutions pour les films
+        if pbContent.RES >= 0 and 'film' in sMedia:
+            res = movie[pbContent.RES].strip()
+            if '[' in res:
+                listRes.extend(eval(res))
+            else:
+                listRes.append(res)
+            if len(listRes) < len(links):  # On complete les résolutions manquantes
+                for _ in range(len(links) - len(listRes)):
+                    listRes.append('')
+
+    # Supprime les doublons en gardant l'ordre
+#     links = [links.extend(elem) for elem in listHoster if not elem in links]
+
+    return listHoster, listRes
+    
 
 # Ajout d'un lien pastebin
 def addPasteName():
@@ -1450,6 +1480,7 @@ def addPasteName():
 
     # Enregistrer Label/id dans les settings
     addons.setSetting(settingLabel, sLabel)
+    dialog().VSinfo(addons.VSlang(30042))
     
     oGui.updateDirectory()
 
@@ -1475,7 +1506,7 @@ def getPasteList(siteUrl, pasteID):
             if pasteBin and pasteBin not in IDs:
                 IDs.append(pasteBin)
     return IDs
- 
+
 
 # Ajout d'un lien pastebin
 def addPasteID():
@@ -1492,7 +1523,7 @@ def addPasteID():
     prefixID = SETTING_PASTE_ID + str(pasteID)
     pasteBin = addons.getSetting(prefixID)
     if pasteBin:
-        IDs.add(pasteBin)        # IDs déjà renseigné
+        IDs.add(pasteBin)           # IDs déjà renseigné
     if pasteBin == '':
         settingID = prefixID
     for numID in range(1, PASTE_PAR_GROUPE):
@@ -1504,15 +1535,25 @@ def addPasteID():
             settingID = pasteID
      
     # Demande de l'id PasteBin
-    sID = oGui.showKeyBoard('', "Saisir l'ID du PasteBin")
-    if sID == False:
+    pasteID = oGui.showKeyBoard('', "Saisir l'ID du PasteBin")
+    if pasteID == False:
         return
-    if sID in IDs:
+    if pasteID in IDs:              # ID déjà dans le groupe
         dialog().VSok(addons.VSlang(30082))
         return
  
-    # Vérifier que les pastes ont le même format d'entete
-    pbContentOld = None
+    # Vérifier l'entete du Paste
+    pbContentNew = PasteBinContent()
+    sUrl = URL_MAIN + pasteID
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.setTimeout(4)
+    sContent = oRequestHandler.request()
+    movies = pbContentNew.getLines(sContent)
+    if len(movies) ==0 :
+        dialog().VSok(addons.VSlang(30022))
+        return
+    
+    # Vérifier que les autres pastes du groupe ont le même format d'entete
     if len(IDs)>0:
         pbContentOld = PasteBinContent()
         sUrl = URL_MAIN + IDs.pop()
@@ -1521,25 +1562,14 @@ def addPasteID():
         sContent = oRequestHandler.request()
         pbContentOld.getLines(sContent)
 
-    if pbContentOld:
-        pbContentNew = PasteBinContent()
-        sUrl = URL_MAIN + sID
-        oRequestHandler = cRequestHandler(sUrl)
-        oRequestHandler.setTimeout(4)
-        sContent = oRequestHandler.request()
-        pbContentNew.getLines(sContent)
         if not pbContentNew.isFormat(pbContentOld):
             dialog().VSok(addons.VSlang(30022))
             return
     
-    addons.setSetting(settingID, sID)
+    addons.setSetting(settingID, pasteID)
+    dialog().VSinfo(addons.VSlang(30042))
+    
     oGui.updateDirectory()
-
-
-# msgctxt "#30042"
-# msgid "Successfully registered"
-# msgstr "Enregistré avec succès"
-
 
 
 # Retirer un groupe PasteBin
@@ -1565,3 +1595,6 @@ def deletePasteName():
 
     cGui().updateDirectory()
 
+# msgctxt "#30072"
+# msgid "File deleted"
+# msgstr "Fichier supprimé"
