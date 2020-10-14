@@ -1246,6 +1246,7 @@ def showMovies(sSearch=''):
         if progress_.iscanceled():
             break
 
+        sUrl = siteUrl
         if sMedia : sUrl += '&sMedia=' + sMedia
         if pasteID: sUrl += '&pasteID=' + pasteID
         if movieYear : sUrl += '&sYear=' + movieYear
