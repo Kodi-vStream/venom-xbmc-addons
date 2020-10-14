@@ -441,6 +441,8 @@ def showGenres():
             elif "''" in genre:
                 genre = genre.replace("''", "'"+UNCLASSIFIED_GENRE+"'")
             genre = eval(genre)
+            if isinstance(genre, int):
+                genre = [genre]
             if genre:
                 for g in genre:
                     sDisplayGenre = g
@@ -1169,8 +1171,8 @@ def showMovies(sSearch=''):
         sDisplayTitle = sTitle
 
         # Filtrage par années
+        movieYear = ''
         if sYear:
-            movieYear = ''
             if pbContent.YEAR >= 0:
                 movieYear = movie[pbContent.YEAR].strip()
                 # sDisplayTitle = '%s (%s)' % (sTitle, movieYear)
@@ -1586,10 +1588,15 @@ def addPasteID():
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.setTimeout(4)
     sContent = oRequestHandler.request()
-    movies = pbContentNew.getLines(sContent)
-    if len(movies) ==0 :
-        dialog().VSok(addons.VSlang(30022))
-        return
+
+    try:
+        movies = pbContentNew.getLines(sContent)
+        if len(movies) == 0 :
+            dialog().VSok(addons.VSlang(30022))
+            return
+    except Exception:
+        dialog().VSinfo(addons.VSlang(30011))
+        raise
     
     # Vérifier que les autres pastes du groupe ont le même format d'entete
     if len(IDs)>0:
