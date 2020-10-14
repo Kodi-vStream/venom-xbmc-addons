@@ -104,6 +104,11 @@ class Stormwall(object):
         except:
             pass
 
+        try:
+            html = html.encode("utf-8")
+        except:
+            pass
+
         if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
             try:
                 html = str(html, "utf-8")
