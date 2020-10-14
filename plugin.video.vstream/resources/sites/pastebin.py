@@ -22,7 +22,7 @@ KEY_PASTE_ID = 'PASTE_ID'
 SETTING_PASTE_ID = 'pastebin_id_'
 SETTING_PASTE_LABEL = 'pastebin_label_'
 UNCLASSIFIED_GENRE = '_NON CLASSÉ_'
-UNCLASSIFIED_RESOLUTION = 'Indéterminé'
+UNCLASSIFIED = 'Indéterminé'
 
 URL_SEARCH_MOVIES = (URL_MAIN + '&pasteID=' + KEY_PASTE_ID + '&sMedia=film&sSearch=', 'showSearchGlobal')
 URL_SEARCH_SERIES = (URL_MAIN + '&pasteID=' + KEY_PASTE_ID + '&sMedia=serie&sSearch=', 'showSearchGlobal')
@@ -278,6 +278,11 @@ def showMenu():
             oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&pasteID=' + pasteID)
             oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Séries (Listes)', 'genres.png', oOutputParameterHandler)
     
+        if 'containSerieYear' in contenu:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&pasteID=' + pasteID)
+            oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Séries (Par années)', 'annees.png', oOutputParameterHandler)
+
         if 'containSerieNetwork' in contenu:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&pasteID=' + pasteID)
@@ -361,6 +366,8 @@ def getPasteBin(pasteBin):
                 containList.add('containSerieGroupes')
             if pbContent.NETWORK>=0 and len(movie[pbContent.NETWORK].replace('[', '').replace(']', '').strip())>0:
                 containList.add('containSerieNetwork')
+            if pbContent.YEAR>=0 and len(movie[pbContent.YEAR].strip())>0:
+                containList.add('containSerieYear')
 
         elif 'anime' in movie[pbContent.CAT]:
             containList.add('containAnimes')
@@ -886,6 +893,8 @@ def showYears():
             continue
 
         year = line[pbContent.YEAR].strip()
+        if not year:
+            year = UNCLASSIFIED
         years.add(year)
 
     for sYear in sorted(years, reverse=True):
@@ -929,18 +938,18 @@ def showResolution():
                 res = eval(res)
                 resolutions = resolutions.union(res)
                 if '' in res or len(res) == 0:
-                    resolutions.add(UNCLASSIFIED_RESOLUTION)
+                    resolutions.add(UNCLASSIFIED)
         else:
             resolutions.add(res)
 
-        if not res or res == '[]' : resolutions.add(UNCLASSIFIED_RESOLUTION)
+        if not res or res == '[]' : resolutions.add(UNCLASSIFIED)
 
     resolutions.discard('')
     
     # Trie des rsolutions
     resOrder = ['8K','4K','1080P', '1080p', '720P', '720p', '576p', '540P', '540p', '480P', '480p', '360P', '360p']
     def trie_res(key):
-        if key == UNCLASSIFIED_RESOLUTION:
+        if key == UNCLASSIFIED:
             return 20
         if key not in resOrder:
             resOrder.append(key)
@@ -1160,12 +1169,17 @@ def showMovies(sSearch=''):
         sDisplayTitle = sTitle
 
         # Filtrage par années
-        if pbContent.YEAR >= 0:
-            movieYear = movie[pbContent.YEAR].strip()
-            if sYear:
-                if not movieYear or sYear != movieYear:
-                    continue
+        if sYear:
+            movieYear = ''
+            if pbContent.YEAR >= 0:
+                movieYear = movie[pbContent.YEAR].strip()
                 # sDisplayTitle = '%s (%s)' % (sTitle, movieYear)
+
+            if sYear == UNCLASSIFIED:
+                if movieYear != '':
+                    continue
+            elif not movieYear or sYear != movieYear:
+                continue
 
         # Filtrage par résolutions vidéos
         listRes = None
@@ -1182,7 +1196,7 @@ def showMovies(sSearch=''):
                     listRes.append('')
                         
             if sRes:
-                if sRes == UNCLASSIFIED_RESOLUTION:
+                if sRes == UNCLASSIFIED:
                     if '' not in listRes:
                         continue
                 elif sRes not in listRes:
