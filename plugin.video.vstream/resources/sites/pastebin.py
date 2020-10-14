@@ -99,7 +99,8 @@ class PasteBinContent:
                 champ = 'URLS'
                 if len(hebergeur)>1:
                     self.HEBERGEUR = hebergeur[1].replace(' ','').replace('"','').replace('\'','')
-                
+                    if not self.HEBERGEUR.endswith('/'):
+                        self.HEBERGEUR += '/'
             if champ in dir(self):
                 setattr(self, champ, idx)
             idx +=1
@@ -111,14 +112,14 @@ class PasteBinContent:
         if self.HEBERGEUR:
             for line in lines:
                 sHost = line[self.URLS]
-                if "{" in sHost:   # Liens pour les séries
+                if "{" in sHost:
                     sUrl = eval(sHost)
                     for link in sUrl.keys():
                         sUrl[link] = self.HEBERGEUR + sUrl[link] 
-                elif "[" in sHost: # Liens pour les films (multi lien)
+                elif "[" in sHost:
                     sHost = eval(sHost)
                     sUrl = [(self.HEBERGEUR + link) for link in sHost]
-                else:    # Liens pour les films (lien unique)
+                else:
                     sUrl = self.HEBERGEUR + sHost
                 line[self.URLS] = sUrl
         
@@ -923,7 +924,6 @@ def showResolution():
             continue
 
         res = line[pbContent.RES].strip()
-
         if '[' in res:
             if res != '[]':
                 res = eval(res)
@@ -935,12 +935,35 @@ def showResolution():
 
         if not res or res == '[]' : resolutions.add(UNCLASSIFIED_RESOLUTION)
 
-    for sRes in sorted(resolutions):
+    resolutions.discard('')
+    
+    # Trie des rsolutions
+    resOrder = ['8K','4K','1080P', '1080p', '720P', '720p', '576p', '540P', '540p', '480P', '480p', '360P', '360p']
+    def trie_res(key):
+        if key == UNCLASSIFIED_RESOLUTION:
+            return 20
+        if key not in resOrder:
+            resOrder.append(key)
+        return resOrder.index(key)
+    
+    resolutions = sorted(resolutions, key=trie_res)
+
+    for sRes in resolutions:
         if sRes == '': continue
 
         sDisplayRes = sRes
         if sDisplayRes.isdigit(): sDisplayRes += 'p'
-        sDisplayRes = sDisplayRes.replace('P', 'p').replace('1080p', 'HD [1080p]').replace('720p', 'HD [720p]').replace('4K', '2160p').replace('2160p', '4K [2160p]')
+        sDisplayRes = sDisplayRes\
+            .replace('P', 'p')\
+            .replace('1080p', 'HD [1080p]')\
+            .replace('720p', 'HD [720p]')\
+            .replace('540p', 'SD [540p]')\
+            .replace('480p', 'SD [480p]')\
+            .replace('360p', 'SD [360p]')\
+            .replace('4K', '2160p')\
+            .replace('8K', '4320p')\
+            .replace('2160p', '4K [2160p]')\
+            .replace('4320p', '8K [4320p]')
 
         sUrl = siteUrl + '&sRes=' + sRes
         oOutputParameterHandler = cOutputParameterHandler()
@@ -1042,16 +1065,17 @@ def showMovies(sSearch=''):
     movieIds = set()
     
     nbItem = 0
-    index = -1
+    index = 0
     progress_ = progress().VScreate(SITE_NAME)
 
     for movie in movies:
 
-        index += 1
         if bRandom and index not in randoms:
+            index += 1
             continue
 
         # Pagination, on se repositionne
+        index += 1
         if index <= numItem:
             continue
         numItem += 1
@@ -1146,7 +1170,7 @@ def showMovies(sSearch=''):
         # Filtrage par résolutions vidéos
         listRes = None
         
-        if 'movie' in sMedia:
+        if 'film' in sMedia:
             if pbContent.RES>=0:
                 res = movie[pbContent.RES].strip()
                 listRes = []
