@@ -190,6 +190,7 @@ def showMenu():
 
     oInputParameterHandler = cInputParameterHandler()
     pasteID = oInputParameterHandler.getValue('pasteID')
+    sMedia = oInputParameterHandler.getValue('sMedia')
 
     prefixID = SETTING_PASTE_ID + str(pasteID)
     pasteBin = addons.getSetting(prefixID)
@@ -198,7 +199,49 @@ def showMenu():
     for numID in range(1, PASTE_PAR_GROUPE):
         pasteBin = addons.getSetting(prefixID + '_' + str(numID))
         contenu = contenu.union(getPasteBin(pasteBin))
+        
+    if not sMedia:
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('pasteID', pasteID)
+        
+        cnt = contenu.intersection(['containFilms', 'containSeries', 'containAnimes'])
+        if len(cnt) == 1:
+            showDetailMenu(pasteID, contenu)
+        else:
+            if 'containFilms' in contenu:
+                oOutputParameterHandler.addParameter('sMedia', 'film')
+                oGui.addDir(SITE_IDENTIFIER, 'showMenu', 'Films', 'films.png', oOutputParameterHandler)
+        
+            if 'containSeries' in contenu:
+                oOutputParameterHandler.addParameter('sMedia', 'serie')
+                oGui.addDir(SITE_IDENTIFIER, 'showMenu', 'Séries', 'tv.png', oOutputParameterHandler)
+            
+            if 'containAnimes' in contenu:
+                oOutputParameterHandler.addParameter('sMedia', 'anime')
+                oGui.addDir(SITE_IDENTIFIER, 'showMenu', 'Animes', 'animes.png', oOutputParameterHandler)
+        
+        oGui.addDir(SITE_IDENTIFIER, 'addPasteID', '[COLOR coral]Ajouter un lien PasteBin[/COLOR]', 'listes.png', oOutputParameterHandler)
 
+    elif 'film' in sMedia:
+        contenu.discard('containSeries')
+        contenu.discard('containAnimes')
+        showDetailMenu(pasteID, contenu)
+    elif 'serie' in sMedia:
+        contenu.discard('containFilms')
+        contenu.discard('containAnimes')
+        showDetailMenu(pasteID, contenu)
+    elif 'anime' in sMedia:
+        contenu.discard('containFilms')
+        contenu.discard('containSeries')
+        showDetailMenu(pasteID, contenu)
+                               
+    oGui.setEndOfDirectory()
+
+
+
+def showDetailMenu(pasteID, contenu):
+    oGui = cGui()
+    
     sUrl = URL_MAIN #+ pasteBin
     if 'containFilms' in contenu:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -316,12 +359,6 @@ def showMenu():
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Animes (Ordre alphabétique)', 'listes.png', oOutputParameterHandler)
     
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('pasteID', pasteID)
-    oGui.addDir(SITE_IDENTIFIER, 'addPasteID', '[COLOR coral]Ajouter un lien PasteBin[/COLOR]', 'listes.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
 
 
 def getPasteBin(pasteBin):
