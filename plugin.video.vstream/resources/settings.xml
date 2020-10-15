@@ -157,6 +157,8 @@
         <setting visible="false" id="plugin_neko_sama" type="bool" label="Neko Sama" default="true"/>
 
         <setting visible="false" id="plugin_neuf_docu" type="bool" label="9Docu" default="true"/>
+        
+        <setting visible="false" id="plugin_O1streaming" type="bool" label="01streaming" default="true"/>
 
         <setting visible="false" id="plugin_otaku_attitude" type="bool" label="Otaku-Attitude" default="true"/>
 
