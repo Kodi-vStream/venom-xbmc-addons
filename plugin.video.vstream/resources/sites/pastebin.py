@@ -1246,13 +1246,15 @@ def showMovies(sSearch=''):
         if progress_.iscanceled():
             break
 
-        sUrl = siteUrl
+        sUrl = URL_MAIN
         if sMedia : sUrl += '&sMedia=' + sMedia
         if pasteID: sUrl += '&pasteID=' + pasteID
         if movieYear : sUrl += '&sYear=' + movieYear
         if sTmdbId: sUrl += '&idTMDB=' + sTmdbId
         sUrl += '&sTitle=' + sTitle
         
+        # Pour supporter les caracteres '&' et '+' dans les noms alors qu'ils sont réservés
+        sTitle = sTitle.replace('+', ' ').replace(' & ', ' | ')
         sTitle = sTitle.replace('[', '').replace(']', '')   # Exemple pour le film [REC], les crochets sont génants pour certaines fonctions
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -1291,10 +1293,14 @@ def showSerieSaisons():
     searchTitle = oInputParameterHandler.getValue('sMovieTitle')
     searchYear = oInputParameterHandler.getValue('sYear')
 
-    sUrl, params = siteUrl.split('&',1)
+    # Pour supporter les caracteres '&' et '+' dans les noms alors qu'ils sont réservés
+    sUrl = siteUrl.replace('+', ' ').replace('|', '+').replace(' & ', ' | ')
+
+    sUrl, params = sUrl.split('&',1)
     aParams = dict(param.split('=') for param in params.split('&'))
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
     idTMDB = aParams['idTMDB'] if 'idTMDB' in aParams else None
+    sMedia = aParams['sMedia'] if 'sMedia' in aParams else 'serie'
 
     saisons = []
     listeIDs = getPasteList(sUrl, pasteID)
@@ -1309,6 +1315,9 @@ def showSerieSaisons():
         # Recherche les saisons de la série
         for serie in moviesBin:
             
+            if pbContent.CAT >=0 and sMedia not in moviesBin[pbContent.CAT]:
+                continue
+
             # Recherche par id
             found = False
             if idTMDB and pbContent.TMDB >= 0:
@@ -1317,7 +1326,7 @@ def showSerieSaisons():
                     if sMovieID != idTMDB:
                         continue
                     found = True
-            
+
             # Sinon, recherche par titre/année
             if not found:
                 if pbContent.CAT >= 0 and 'serie' not in serie[pbContent.CAT]:
@@ -1365,10 +1374,13 @@ def showEpisodesLinks(siteUrl = ''):
         oInputParameterHandler = cInputParameterHandler()
         siteUrl = oInputParameterHandler.getValue('siteUrl')
     
-    params = siteUrl.split('&',1)[1]
+    # Pour supporter les caracteres '&' et '+' dans les noms alors qu'ils sont réservés
+    sUrl = siteUrl.replace('+', ' ').replace('|', '+').replace(' & ', ' | ')
+
+    params = sUrl.split('&',1)[1]
     aParams = dict(param.split('=') for param in params.split('&'))
     sSaison = aParams['sSaison'] if 'sSaison' in aParams else None
-    searchTitle = aParams['sTitle']
+    searchTitle = aParams['sTitle'].replace(' | ', ' & ')
  
     if not sSaison:
         oGui.setEndOfDirectory()
@@ -1416,10 +1428,10 @@ def showHosters():
 
     resIdx = 0
     for sHosterUrl in listHoster:
-        
+
         if not sHosterUrl.startswith('http'):
             sHosterUrl += 'http://'+ sHosterUrl
-        
+
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
             
@@ -1441,7 +1453,10 @@ def showHosters():
 
 # Retrouve tous les liens disponibles pour un film, ou un épisode, gère les groupes multipaste
 def getHosterList(siteUrl):
-    siteUrl, params = siteUrl.split('&',1)
+    # Pour supporter les caracteres '&' et '+' dans les noms alors qu'ils sont réservés
+    sUrl = siteUrl.replace('+', ' ').replace('|', '+').replace(' & ', ' | ')
+
+    siteUrl, params = sUrl.split('&',1)
     aParams = dict(param.split('=') for param in params.split('&'))
     sMedia = aParams['sMedia'] if 'sMedia' in aParams else 'film'
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
@@ -1449,8 +1464,8 @@ def getHosterList(siteUrl):
     searchSaison = aParams['sSaison'] if 'sSaison' in aParams else None
     searchEpisode = aParams['sEpisode'] if 'sEpisode' in aParams else None
     idTMDB = aParams['idTMDB'] if 'idTMDB' in aParams else None
-    searchTitle = aParams['sTitle']
-    
+    searchTitle = aParams['sTitle'].replace(' | ', ' & ')
+
     pbContent = PasteBinContent()
     movies = []
     listeIDs = getPasteList(siteUrl, pasteID)
@@ -1466,6 +1481,10 @@ def getHosterList(siteUrl):
     listRes = []
 
     for movie in movies:
+
+        # Filtrer par catégorie
+        if pbContent.CAT >=0 and sMedia not in movie[pbContent.CAT]:
+            continue
 
         # Filtrage par saison
         if searchSaison and pbContent.SAISON >= 0:
@@ -1484,8 +1503,6 @@ def getHosterList(siteUrl):
 
         # sinon, recherche par titre/année
         if not found:
-            if pbContent.CAT >=0 and sMedia not in movie[pbContent.CAT]:
-                continue
             # Filtrage par années
             if searchYear and pbContent.YEAR >= 0:
                 sYear = movie[pbContent.YEAR].strip()
