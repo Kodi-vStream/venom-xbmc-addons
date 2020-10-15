@@ -11,7 +11,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 
-SITE_IDENTIFIER = 'O1streaming'
+SITE_IDENTIFIER = 'o1streaming'
 SITE_NAME = '01 Streaming'
 SITE_DESC = 'Films & Séries'
 
