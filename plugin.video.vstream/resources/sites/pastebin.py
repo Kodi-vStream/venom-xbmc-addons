@@ -1209,11 +1209,10 @@ def showMovies(sSearch=''):
 
         # Filtrage par années
         movieYear = ''
+        if pbContent.YEAR >= 0:
+            movieYear = movie[pbContent.YEAR].strip()
+            # sDisplayTitle = '%s (%s)' % (sTitle, movieYear)
         if sYear:
-            if pbContent.YEAR >= 0:
-                movieYear = movie[pbContent.YEAR].strip()
-                # sDisplayTitle = '%s (%s)' % (sTitle, movieYear)
-
             if sYear == UNCLASSIFIED:
                 if movieYear != '':
                     continue
@@ -1260,6 +1259,8 @@ def showMovies(sSearch=''):
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+        if sTmdbId: oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)    # Utilisé par TMDB
+        if movieYear : oOutputParameterHandler.addParameter('sYear', movieYear) # Utilisé par TMDB
         if listRes: oOutputParameterHandler.addParameter('listRes', listRes)
 
         if sMedia == 'serie':
