@@ -619,7 +619,7 @@ def showRealisateur():
         oGui.addPerson(SITE_IDENTIFIER, 'showMovies', realName, 'actor.png', oOutputParameterHandler)
 
         nbItem += 1
-        if nbItem % ITEM_PAR_PAGE == 0:
+        if nbItem % ITEM_PAR_PAGE == 0 and numPage*ITEM_PAR_PAGE < len(listReal) :
             numPage += 1
             
             oOutputParameterHandler = cOutputParameterHandler()
@@ -701,7 +701,7 @@ def showCast():
         oGui.addPerson(SITE_IDENTIFIER, 'showMovies', acteurName, 'actor.png', oOutputParameterHandler)
 
         nbItem += 1
-        if nbItem % ITEM_PAR_PAGE == 0:
+        if nbItem % ITEM_PAR_PAGE == 0 and numPage*ITEM_PAR_PAGE < len(listActeur) :
             numPage += 1
             
             oOutputParameterHandler = cOutputParameterHandler()
@@ -889,7 +889,7 @@ def showSaga():
         oGui.addMoviePack(SITE_IDENTIFIER, 'showMovies', sDisplaySaga, 'genres.png', '', '', oOutputParameterHandler)
 
         nbItem += 1
-        if nbItem % ITEM_PAR_PAGE == 0:
+        if nbItem % ITEM_PAR_PAGE == 0 and numPage*ITEM_PAR_PAGE < len(names) :
             numPage += 1
             
             oOutputParameterHandler = cOutputParameterHandler()
@@ -1108,7 +1108,8 @@ def showMovies(sSearch=''):
 
     if bRandom:
         numItem = 0
-        randoms = [random.randint(0, len(movies)) for _ in range(ITEM_PAR_PAGE)]
+        # Génération d'indices aléatoires, ajout de deux indices car les doublons aléatoires sont rassemblés
+        randoms = [random.randint(0, len(movies)) for _ in range(ITEM_PAR_PAGE+2)]
     
     movieIds = set()
     
@@ -1272,7 +1273,8 @@ def showMovies(sSearch=''):
 
         # Gestion de la pagination
         if not sSearch:
-            if nbItem % ITEM_PAR_PAGE == 0:
+ 
+            if nbItem % ITEM_PAR_PAGE == 0 and numPage*ITEM_PAR_PAGE < len(movies) :
                 numPage += 1
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', siteUrl)
