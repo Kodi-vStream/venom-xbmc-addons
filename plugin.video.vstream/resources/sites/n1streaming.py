@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-
+# site HS desactivée le 15/10/2002 (les dernieres correction sont adaptées au site 01 streaming qui n'est pas un clone)
+return False 
 import re
 
 from resources.lib.gui.hoster import cHosterGui
