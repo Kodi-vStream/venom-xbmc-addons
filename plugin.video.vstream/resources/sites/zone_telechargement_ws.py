@@ -485,6 +485,21 @@ def showMoviesLinks():
 
     sHtmlContent = Stormwall().GetHtml(sUrl)
 
+    if "zt-protect" in sUrl:
+	    #Dl Protect present aussi a cette étape.
+	    oParser = cParser()
+	    sPattern = '<form action="(.+?)".+?type="hidden" name="_token" value="(.+?)">'
+	    result = oParser.parse(sHtmlContent, sPattern)
+
+	    if (result[0]):
+	        RestUrl = str(result[1][0][0])
+	        try:
+	            token = str(result[1][0][1], 'utf-8')
+	        except:
+	            token =  result[1][0][1]
+
+	    sHtmlContent = Stormwall().GetHtml(RestUrl + "?_token" + token)
+
     # Affichage du texte
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles :[/COLOR]')
 
@@ -516,12 +531,12 @@ def showMoviesLinks():
     oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     # on regarde si dispo dans d'autres qualités
-    sPattern = '<a href="([^"]+)".+?<span class="otherquality"><span style="color:#.{6}"><b>([^<]+)</b></span><span style="color:#.{6}"><b>([^<]+)</b></span>'
+    sPattern = '<a href="([^"]+)"><span class="otherquality"><span style="color:#.{6}"><b>([^<]+)</b></span><span style="color:#.{6}"><b>([^<]+)</b></span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sUrl = aEntry[0]
+            sUrl = URL_MAIN[:-1] + aEntry[0]
             sQual = aEntry[1]
             sLang = aEntry[2]
             sTitle = ('%s [%s] %s') % (sMovieTitle, sQual, sLang)
@@ -533,7 +548,7 @@ def showMoviesLinks():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sYear', sYear)
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showMoviesLinks', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -547,6 +562,21 @@ def showSeriesLinks():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sHtmlContent = Stormwall().GetHtml(sUrl)
+
+    if "zt-protect" in sUrl:
+	    #Dl Protect present aussi a cette étape.
+	    oParser = cParser()
+	    sPattern = '<form action="(.+?)".+?type="hidden" name="_token" value="(.+?)">'
+	    result = oParser.parse(sHtmlContent, sPattern)
+
+	    if (result[0]):
+	        RestUrl = str(result[1][0][0])
+	        try:
+	            token = str(result[1][0][1], 'utf-8')
+	        except:
+	            token =  result[1][0][1]
+
+	    sHtmlContent = Stormwall().GetHtml(RestUrl + "?_token" + token)
 
     # Affichage du texte
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles :[/COLOR]')
@@ -588,12 +618,15 @@ def showSeriesLinks():
 
     # on regarde si dispo dans d'autres qualités
     sHtmlContent1 = CutQual(sHtmlContent)
-    sPattern1 = '<a href="([^"]+)".+?<span class="otherquality"><span style="color:#.{6}"><b>([^<]+)</b></span><span style="color:#.{6}"><b>([^<]+)'
+    sPattern1 = 'href="([^"]+)"><span class="otherquality"><span style="color:#.{6}"><b>([^<]+)</b></span><span style="color:#.{6}"><b>([^<]+)'
     aResult1 = oParser.parse(sHtmlContent1, sPattern1)
 
     if (aResult1[0] == True):
         for aEntry in aResult1[1]:
-            sUrl = aEntry[0]
+            if 'animes' in sUrl:
+                sUrl = URL_MAIN + 'animes' + aEntry[0]
+            else:
+                sUrl = URL_MAIN + 'telecharger-serie' + aEntry[0]
             sQual = aEntry[1]
             sLang = aEntry[2]
             sDisplayTitle = ('%s [%s] %s') % (sMovieTitle, sQual, sLang)
@@ -603,36 +636,36 @@ def showSeriesLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     # on regarde si dispo d'autres saisons
     # Une ligne par saison, pas besoin d'afficher les qualités ici
-    # saisons = []
-    # sHtmlContent2 = CutSais(sHtmlContent)
-    # sPattern2 = 'href="([^"]+)".+?<span class="otherquality">([^<]+)<b>([^<]+)<span style="color:#.{6}">([^<]+)</span><span style="color:#.{6}">([^<]+)'
-    # aResult2 = oParser.parse(sHtmlContent2, sPattern2)
+    saisons = []
+    sHtmlContent2 = CutSais(sHtmlContent)
+    sPattern2 = 'href="([^"]+)"><span class="otherquality">([^<]+)<b>([^<]+)<span style="color:#.{6}">([^<]+)</span><span style="color:#.{6}">([^<]+)'
+    aResult2 = oParser.parse(sHtmlContent2, sPattern2)
 
-    # # Affichage du texte
-    # if (aResult2[0] == True):
-    #     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Autres saisons disponibles :[/COLOR]')
+    # Affichage du texte
+    if (aResult2[0] == True):
+        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Autres saisons disponibles :[/COLOR]')
 
-    #     for aEntry in aResult2[1]:
-    #         sSaison = aEntry[2].strip()
-    #         if sSaison in saisons:
-    #             continue
-    #         saisons.append(sSaison)
+        for aEntry in aResult2[1]:
+            sSaison = aEntry[2].strip()
+            if sSaison in saisons:
+                continue
+            saisons.append(sSaison)
 
-    #         if 'animes' in sUrl:
-    #             sUrl = URL_MAIN + 'animes' + aEntry[0]
-    #         else:
-    #             sUrl = URL_MAIN + 'telecharger-serie' + aEntry[0]
-    #         sMovieTitle = aEntry[1] + aEntry[2]
-    #         sTitle = '[COLOR skyblue]' + sMovieTitle + '[/COLOR]'
+            if 'animes' in sUrl:
+                sUrl = URL_MAIN + 'animes' + aEntry[0]
+            else:
+                sUrl = URL_MAIN + 'telecharger-serie' + aEntry[0]
+            sMovieTitle = aEntry[1] + aEntry[2]
+            sTitle = '[COLOR skyblue]' + sMovieTitle + '[/COLOR]'
 
-    #         oOutputParameterHandler = cOutputParameterHandler()
-    #         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-    #         oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-    #         oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesLinks', sTitle, 'series.png', sThumb, sMovieTitle, oOutputParameterHandler)
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesLinks', sTitle, 'series.png', sThumb, sMovieTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -706,9 +739,9 @@ def showSeriesHosters():
         pass
         
     sHtmlContent = Stormwall().GetHtml(sUrl)
-    #Dl Protect present aussi a cette étape.
 
     if "zt-protect" in sUrl:
+	    #Dl Protect present aussi a cette étape.
 	    oParser = cParser()
 	    sPattern = '<form action="(.+?)".+?type="hidden" name="_token" value="(.+?)">'
 	    result = oParser.parse(sHtmlContent, sPattern)
