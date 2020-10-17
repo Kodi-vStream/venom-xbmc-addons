@@ -100,13 +100,9 @@
 
         <setting visible="false" id="plugin_extreme_down" type="bool" label="ExtremeDown" default="true"/>
 
-        <setting visible="false" id="plugin_film_illimit_fr" type="bool" label="Film Illimité" default="true"/>
-
         <setting visible="false" id="plugin_filmspourenfants" type="bool" label="Films pour Enfants" default="true"/>
 
         <setting visible="false" id="plugin_filmstoon_pro" type="bool" label="Films Toon" default="true"/>
-
-        <setting visible="false" id="plugin_filmstreaming" type="bool" label="Film Streaming" default="true"/>
 
         <setting visible="false" id="plugin_filmstreamvk_com" type="bool" label="Filmstream vk" default="true"/>
 
@@ -140,8 +136,6 @@
 
         <setting visible="false" id="plugin_libertyland_tv" type="bool" label="Libertyland" default="true"/>
 
-        <setting visible="false" id="plugin_libre_stream_org" type="bool" label="Libre-stream" default="true"/>
-
         <setting visible="false" id="plugin_livetv" type="bool" label="Live TV" default="true"/>
 
         <setting visible="false" id="plugin_lsbd" type="bool" label="Liveset Database" default="true"/>
@@ -150,13 +144,11 @@
 
         <setting visible="false" id="plugin_mesfilms" type="bool" label="Mes Films" default="true"/>
 
-        <setting visible="false" id="plugin_mystream_zone" type="bool" label="My Stream" default="true"/>
+        <setting visible="false" id="plugin_n1streaming" type="bool" label="01streaming" default="true"/>
 
         <setting visible="false" id="plugin_neko_sama" type="bool" label="Neko Sama" default="true"/>
 
         <setting visible="false" id="plugin_neuf_docu" type="bool" label="9Docu" default="true"/>
-        
-        <setting visible="false" id="plugin_o1streaming" type="bool" label="01streaming" default="true"/>
 
         <setting visible="false" id="plugin_otaku_attitude" type="bool" label="Otaku-Attitude" default="true"/>
 
@@ -178,8 +170,6 @@
 
         <setting visible="false" id="plugin_spion_com" type="bool" label="Spion" default="true"/>
 
-        <setting visible="false" id="plugin_streamavie" type="bool" label="Streamavie" default="true"/>
-
         <setting visible="false" id="plugin_streamay_series" type="bool" label="StreamAy Séries" default="true"/>
 
         <setting visible="false" id="plugin_streamcomplet" type="bool" label="StreamComplet" default="true"/>
@@ -192,8 +182,6 @@
 
         <setting visible="false" id="plugin_streamingdivx" type="bool" label="StreamingDivx" default="true"/>
 
-        <setting visible="false" id="plugin_streamingk_com" type="bool" label="StreamingK" default="true"/>
-
         <setting visible="false" id="plugin_telecharger_streaming" type="bool" label="Télécharger-streaming" default="true"/>
 
         <setting visible="false" id="plugin_time2watch" type="bool" label="Time2Watch" default="true"/>
@@ -203,8 +191,6 @@
         <setting visible="false" id="plugin_topreplay" type="bool" label="TopReplay" default="true"/>
 
         <setting visible="false" id="plugin_toro" type="bool" label="Toro" default="true"/>
-
-        <setting visible="false" id="plugin_tvrex_net" type="bool" label="Tvrex" default="true"/>
 
         <setting visible="false" id="plugin_tvseriestreaming" type="bool" label="TVseriestreaming" default="true"/>
 
@@ -225,12 +211,6 @@
         <setting visible="false" id="plugin_zone_streaming" type="bool" label="Zone Streaming" default="true"/>
 
         <setting visible="false" id="plugin_zone_telechargement_ws" type="bool" label="Zone Téléchargement.ws" default="true"/>
-
-        <setting visible="false" id="plugin_zonefilms" type="bool" label="Zone Films" default="true"/>
-
-        <setting visible="false" id="plugin_zonefilms_co" type="bool" label="Zone Films.co" default="true"/>
-
-        <setting visible="false" id="plugin_zt_stream" type="bool" label="Zone Téléchargement Stream" default="true"/>
 
         <setting visible="false" id="plugin_zustream" type="bool" label="ZuStream" default="true"/>
     </category>
