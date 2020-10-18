@@ -13,7 +13,6 @@ from resources.lib.util import cUtil
 from resources.lib.multihost import cJheberg
 from resources.lib.multihost import cMultiup
 from resources.lib.packer import cPacker
-from resources.lib.comaddon import progress
 from resources.lib.util import Unquote
 
 SITE_IDENTIFIER = 'robindesdroits'
@@ -30,7 +29,7 @@ SPORT_RUGBY = (URL_MAIN + 'rugby/', 'showMovies')
 SPORT_TENNIS = (URL_MAIN + 'tennis/', 'showMovies')
 SPORT_HAND = (URL_MAIN + 'handball/', 'showMovies')
 SPORT_BASKET = (URL_MAIN + 'basketball/', 'showMovies')
-SPORT_DIVERS = (URL_MAIN + 'divers/', 'showMovies')
+SPORT_DIVERS = (URL_MAIN + 'docus-et-divers/', 'showMovies')
 SPORT_SPORTS = (True, 'showGenres')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
@@ -78,10 +77,6 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SPORT_HAND[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_HAND[1], 'Handball', 'sport.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SPORT_DIVERS[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_DIVERS[1], 'Divers', 'sport.png', oOutputParameterHandler)
-
     oGui.setEndOfDirectory()
 
 
@@ -100,29 +95,35 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append(['Football', SPORT_FOOT[0], 'match'])
-    liste.append(['Football (Emissions)', SPORT_FOOT[0], 'tv'])
+    liste.append(['Football', SPORT_FOOT[0], 'Matchs de Football'])
+    liste.append(['Football (Emissions)', SPORT_FOOT[0], 'Emissions de Football'])
 
-    liste.append(['Rugby', SPORT_RUGBY[0], 'match'])
-    liste.append(['Rugby (Emissions)', SPORT_RUGBY[0], 'tv'])
+    liste.append(['Rugby', SPORT_RUGBY[0], 'Matchs de Rugby'])
+    liste.append(['Rugby (Emissions)', SPORT_RUGBY[0], 'Emissions de Rugby'])
 
-    liste.append(['Basketball', SPORT_BASKET[0], 'match'])
+    liste.append(['Basketball', SPORT_BASKET[0], 'BASKETBALL'])
 
-    liste.append(['Sports Automobiles', SPORT_AUTO[0], 'match'])
-    liste.append(['Sports Automobiles (Emissions)', SPORT_AUTO[0], 'tv'])
+    liste.append(['Sports Automobiles', SPORT_AUTO[0], 'Courses de Sports Mécaniques'])
+    liste.append(['Sports Automobiles (Emissions)', SPORT_AUTO[0], 'Emissions de Sports Mécaniques'])
 
-    liste.append(['Sports US', SPORT_US[0], 'match'])
-    liste.append(['Sports US (Emissions)', SPORT_US[0], 'tv'])
+    liste.append(['Sports US', SPORT_US[0], 'Matchs de Sports US'])
+    liste.append(['Sports US (Emissions)', SPORT_US[0], 'Emissions de Sports US'])
 
-    liste.append(['Tennis', SPORT_TENNIS[0], 'match'])
+    liste.append(['Tennis (Grand Chelem)', SPORT_TENNIS[0], 'Grand Chelem'])
+    liste.append(['Tennis (ATP)', SPORT_TENNIS[0], 'ATP Masters 1000'])
+#     liste.append(['Tennis', SPORT_TENNIS[0], 'ATP Finals'])
 
-    liste.append(['Handball', SPORT_HAND[0], 'match'])
+    liste.append(['Handball', SPORT_HAND[0], 'HANDBALL'])
 
     for sTitle, sUrl, sFiltre in liste:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('cat', sFiltre)
         oGui.addDir(SITE_IDENTIFIER, 'showCat', sTitle, 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SPORT_DIVERS[0])
+    oGui.addDir(SITE_IDENTIFIER, SPORT_DIVERS[1], 'Documentaires', 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -133,42 +134,30 @@ def showCat():
     oParser = cParser()
 
     oInputParameterHandler = cInputParameterHandler()
-    siteUrl = oInputParameterHandler.getValue('siteUrl')
+    # siteUrl = oInputParameterHandler.getValue('siteUrl')
     sFiltre = oInputParameterHandler.getValue('cat')
 
-    if 'match' in sFiltre:
-        sPattern = '<li class=\'mega-menu-item mega-menu-item-type-post_type mega-menu-item-object-page mega-menu-item-([0-9]+)\' id=\'mega-menu-item-([0-9]+)\'>'
-    else:  # emission
-        sPattern = '<li class=\'mega-menu-item mega-menu-item-type-taxonomy mega-menu-item-object-category mega-menu-item-([0-9]+)\' id=\'mega-menu-item-([0-9]+)\'>'
-    sPattern += '<a class="mega-menu-link" href="'+siteUrl+'([^"]+)">(.+?)</a>'
-
-    oRequestHandler = cRequestHandler(siteUrl)
+    oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
+
+    sHtmlContent = oParser.abParse(sHtmlContent, sFiltre, '</ul>')
+    sPattern = 'href="([^"]+)">(.+?)</a>'
+
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
-
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
-            sUrl = siteUrl + aEntry[2]
-            sTitle = aEntry[3]
+            sUrl = aEntry[0]
+            sTitle = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
 
-            if 'match' in sFiltre:
-                oGui.addDir(SITE_IDENTIFIER, 'showLinkGenres', sTitle, 'sport.png', oOutputParameterHandler)
-            else:
+            if 'Emissions' in sFiltre:
                 oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'sport.png', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+            else:
+                oGui.addDir(SITE_IDENTIFIER, 'showLinkGenres', sTitle, 'sport.png', oOutputParameterHandler)
     else:
         oGui.addText(SITE_DESC)
 
@@ -188,7 +177,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<figure class="mh-loop-thumb">.+?<a href="([^"]+)"><img src=".+?" style="background:url\(\'(.+?)\'\).+?rel="bookmark">(.+?)</a>.+?</h3>'
+    sPattern = '<figure class="mh-loop-thumb"><a href="([^"]+)"><img src=".+?" style="background:url\(\'(.+?)\'\).+?rel="bookmark">(.+?)</a></h3>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -196,14 +185,8 @@ def showMovies(sSearch=''):
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sUrl = aEntry[0]
             sThumb = aEntry[1]
             sTitle = aEntry[2]
@@ -213,9 +196,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addDir(SITE_IDENTIFIER, 'showLink', sTitle, 'sport.png', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+            oGui.addMisc(SITE_IDENTIFIER, 'showLink', sTitle, 'sport.png', sThumb, '', oOutputParameterHandler)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -260,14 +241,7 @@ def showLinkGenres():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             if aEntry[0]:
                 title = aEntry[0]
                 oGui.addText(SITE_IDENTIFIER, '[COLOR gold]' + title + '[/COLOR]')
@@ -282,8 +256,6 @@ def showLinkGenres():
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
 
                 oGui.addDir(SITE_IDENTIFIER, 'showLink', sTitle, 'sport.png', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -300,7 +272,7 @@ def showLink():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<a href="([^"]+)">(?:<span.+?|)<b>([^<]+)</b>.+?</span>'
+    sPattern = 'a href="([^"]+)">(?:<span.+?|)<b>([^<]+)</b><'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -400,7 +372,7 @@ def showHosters():
                 aResult = oParser.parse(sUrl, sPattern)
                 if (aResult[0] == True):
                     sUrl = Unquote(''.join(aResult[1])).decode('utf8')
-
+    
             oRequestHandler = cRequestHandler(sUrl)
             sHtmlContent = oRequestHandler.request()
 
@@ -408,7 +380,7 @@ def showHosters():
     sPattern = '<b><a href=".+?redirect\/\?url\=(.+?)\&id.+?">'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0] == True:
-        sUrl = cUtil().urlDecode(aResult[1][0])
+        sUrl = Unquote(aResult[1][0])
 
     # Et maintenant le ou les liens
 
@@ -423,7 +395,11 @@ def showHosters():
 
             sPattern = '{sources:\["([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
+            if not aResult[0]:
+                sPattern = '\[{src:"([^"]+)"'
+                aResult = oParser.parse(sHtmlContent, sPattern)
+            
+            if aResult[0]:
                 sHosterUrl = aResult[1][0]
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
