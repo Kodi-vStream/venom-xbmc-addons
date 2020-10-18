@@ -257,3 +257,10 @@ def isKrypton():
     except:
         return False
 
+#Transforme les "special" en chemin normal.
+def VSPath(pathSpecial):
+    if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+        path = xbmcvfs.translatePath(pathSpecial)
+    else:
+        path = xbmc.translatePath(pathSpecial)
+    return path
