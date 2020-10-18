@@ -5,7 +5,7 @@ import xbmcvfs
 
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.util import QuotePlus, Unquote
-from resources.lib.comaddon import dialog, addon, VSlog, xbmc
+from resources.lib.comaddon import dialog, addon, VSlog, VSPath
 
 SITE_IDENTIFIER = 'cDb'
 SITE_NAME = 'DB'
@@ -17,15 +17,14 @@ except:
     from pysqlite2 import dbapi2 as sqlite
     VSlog('SQLITE 2 as DB engine for db')
 
-
 class cDb:
 
     DB = 'special://home/userdata/addon_data/plugin.video.vstream/vstream.db'
     # important seul xbmcvfs peux lire le special
     try:
-        REALDB = xbmc.translatePath(DB).decode('utf-8')
+        REALDB = VSPath(DB).decode('utf-8')
     except AttributeError:
-        REALDB = xbmc.translatePath(DB)
+        REALDB = VSPath(DB)
 
     def __init__(self):
 
