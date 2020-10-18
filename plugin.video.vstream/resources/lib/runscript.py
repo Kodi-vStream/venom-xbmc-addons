@@ -4,6 +4,9 @@
 # vstream = xbmcaddon.Addon('plugin.video.vstream')
 # sLibrary = VSPath(vstream.getAddonInfo("path")).decode("utf-8")
 # sys.path.append (sLibrary)
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.comaddon import addon, dialog, VSlog, window, VSPath, xbmc
+from resources.lib.util import urlEncode
 
 try:  # Python 2
     import urllib2
@@ -15,9 +18,6 @@ import xbmcvfs
 import sys
 import xbmc
 import xbmcgui
-
-from resources.lib.comaddon import addon, dialog, VSlog, window, VSPath
-from resources.lib.util import urlEncode
 
 try:
     from sqlite3 import dbapi2 as sqlite
@@ -176,7 +176,7 @@ class cClear:
 
         elif (env == 'clean'):
             liste = ['Historiques', 'Lecture en cours', 'Marqués vues', 'Marque-Pages', 'Téléchargements']
-            ret = self.DIALOG.select(self.ADDON.VSlang(30110), liste)
+            ret = self.DIALOG.VSselect(liste, self.ADDON.VSlang(30110))
             cached_DB = "special://home/userdata/addon_data/plugin.video.vstream/vstream.db"
             # important seul xbmcvfs peux lire le special
             try:
@@ -242,16 +242,19 @@ class cClear:
                     logop = xbmcvfs.File(path, 'rb')
                     result = logop.read()
                     logop.close()
-                    post_data['raw_paste'] = result
-                    post_data['author'] = 'kodi.log'
-                    post_data['language'] = 'text'
-                    post_data['permissions'] = 1  # private
-                    post_data['expire'] = 259200  # 3j
-                    post_data['submit'] = 'Submit+Paste'
-                    request = urllib2.Request(cUrl, urlEncode(post_data), headers)
-                    reponse = urllib2.urlopen(request)
-                    code = reponse.geturl().replace('http://slexy.org/view/', '')
-                    reponse.close()
+
+                    oRequestHandler = cRequestHandler(cUrl)
+                    oRequestHandler.setRequestType(1)
+                    oRequestHandler.addHeaderEntry('User-Agent', UA)
+                    oRequestHandler.addParameters('raw_paste',result)
+                    oRequestHandler.addParameters('author', "kodi.log")
+                    oRequestHandler.addParameters('language', "text")
+                    oRequestHandler.addParameters('permissions',1) # private
+                    oRequestHandler.addParameters('expire', 259200)  # 3j
+                    oRequestHandler.addParameters('submit', 'Submit+Paste') 
+                    sHtmlContent = oRequestHandler.request()
+                    code = oRequestHandler.getRealUrl().replace('http://slexy.org/view/', '')
+
                     self.ADDON.setSetting('service_log', code)
                     self.DIALOG.VSok(self.ADDON.VSlang(30097) + '  ' + code)
             return
