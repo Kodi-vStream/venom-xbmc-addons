@@ -2,7 +2,7 @@ import re
 import os
 import xbmcaddon
 
-from resources.lib.comaddon import VSlog, xbmc
+from resources.lib.comaddon import VSlog, xbmc, VSPath
 from resources.lib.handler.requestHandler import cRequestHandler
 
 try:  # Python 2
@@ -11,7 +11,7 @@ try:  # Python 2
 except ImportError:  # Python 3
     import urllib.request as urllib2
 
-PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo('profile'))
+PathCache = VSPath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo('profile'))
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
 class Stormwall(object):
