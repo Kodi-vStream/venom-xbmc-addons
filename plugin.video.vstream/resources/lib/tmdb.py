@@ -12,7 +12,7 @@ import unicodedata
 import webbrowser
 
 from resources.lib.util import QuotePlus
-from resources.lib.comaddon import addon, dialog, VSlog, xbmc
+from resources.lib.comaddon import addon, dialog, VSlog, VSPath
 from resources.lib.handler.requestHandler import cRequestHandler
 
 try:
@@ -68,9 +68,9 @@ class cTMDb:
 
     # important seul xbmcvfs peux lire le special
     try:
-        REALCACHE = xbmc.translatePath(CACHE).decode('utf-8')
+        REALCACHE = VSPath(CACHE).decode('utf-8')
     except AttributeError:
-        REALCACHE = xbmc.translatePath(CACHE)
+        REALCACHE = VSPath(CACHE)
 
 
     def __init__(self, api_key='', debug=False, lang='fr'):

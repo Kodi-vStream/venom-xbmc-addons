@@ -2,7 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 # vstream = xbmcaddon.Addon('plugin.video.vstream')
-# sLibrary = xbmc.translatePath(vstream.getAddonInfo("path")).decode("utf-8")
+# sLibrary = VSPath(vstream.getAddonInfo("path")).decode("utf-8")
 # sys.path.append (sLibrary)
 
 try:  # Python 2
@@ -16,7 +16,7 @@ import sys
 import xbmc
 import xbmcgui
 
-from resources.lib.comaddon import addon, dialog, VSlog, window
+from resources.lib.comaddon import addon, dialog, VSlog, window, VSPath
 from resources.lib.util import urlEncode
 
 try:
@@ -155,9 +155,9 @@ class cClear:
                 cached_Cache = "special://home/userdata/addon_data/plugin.video.vstream/video_cache.db"
                 # important seul xbmcvfs peux lire le special
                 try:
-                    cached_Cache = xbmc.translatePath(cached_Cache).decode("utf-8")
+                    cached_Cache = VSPath(cached_Cache).decode("utf-8")
                 except AttributeError:
-                    cached_Cache = xbmc.translatePath(cached_Cache)
+                    cached_Cache = VSPath(cached_Cache)
                 
                 try:
                     db = sqlite.connect(cached_Cache)
@@ -180,9 +180,9 @@ class cClear:
             cached_DB = "special://home/userdata/addon_data/plugin.video.vstream/vstream.db"
             # important seul xbmcvfs peux lire le special
             try:
-                cached_DB = xbmc.translatePath(cached_DB).decode("utf-8")
+                cached_DB = VSPath(cached_DB).decode("utf-8")
             except AttributeError:
-                cached_DB = xbmc.translatePath(cached_DB)
+                cached_DB = VSPath(cached_DB)
 
             sql_drop = ""
 

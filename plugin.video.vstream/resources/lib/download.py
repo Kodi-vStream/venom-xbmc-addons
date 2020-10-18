@@ -14,7 +14,7 @@ import xbmcvfs
 import xbmcgui
 import xbmc
 
-from resources.lib.comaddon import addon, dialog, progress, VSlog, VSupdate
+from resources.lib.comaddon import addon, dialog, progress, VSlog, VSupdate, VSPath
 from resources.lib.db import cDb
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
@@ -623,14 +623,14 @@ class cDownload:
         if (sTitle != False and len(sTitle) > 0):
 
             # chemin de sauvegarde
-            sPath2 = xbmc.translatePath(self.ADDON.getSetting('download_folder'))
+            sPath2 = VSPath(self.ADDON.getSetting('download_folder'))
 
             dialog = xbmcgui.Dialog()
             sPath = dialog.browse(3, 'Downloadfolder', 'files', '', False, False, sPath2)
 
             if (sPath != ''):
                 self.ADDON.setSetting('download_folder', sPath)
-                sDownloadPath = xbmc.translatePath(sPath + '%s' % (sTitle))
+                sDownloadPath = VSPath(sPath + '%s' % (sTitle))
 
                 if xbmcvfs.exists(sDownloadPath):
                     self.DIALOG.VSinfo(self.ADDON.VSlang(30082), sTitle)

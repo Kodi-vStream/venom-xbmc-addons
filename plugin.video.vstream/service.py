@@ -3,7 +3,7 @@
 import subprocess
 import xbmcvfs
 from datetime import datetime
-from resources.lib.comaddon import addon, xbmc, VSlog
+from resources.lib.comaddon import addon, xbmc, VSlog, VSPath
 
 
 def service():
@@ -32,7 +32,7 @@ def service():
         hour = datetime.now().strftime('%d-%H-%M') + '.py'
         if hour in str(recordList):
             hour = path + '/' + hour
-            hour = xbmc.translatePath(hour)
+            hour = VSPath(hour)
             recordInProgress = True
             VSlog('python ' + hour)
             command = 'python ' + hour
