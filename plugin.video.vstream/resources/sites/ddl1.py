@@ -20,7 +20,7 @@ SITE_IDENTIFIER = 'ddl1'
 SITE_NAME = '[COLOR violet]DDL[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
 
-URL_MAIN = "https://www.ddl1.best/"
+URL_MAIN = "https://www.ddl-best.com/"
 URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&story=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
@@ -71,11 +71,6 @@ ANIM_VFS = (URL_MAIN + 'dessin-anime-mangas/animes-vf/', 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + 'dessin-anime-mangas/animes-vostfr/', 'showMovies')
 FILM_ANIM = (URL_MAIN + 'dessin-anime-mangas/films-mangas/', 'showMovies')
 
-DOC_NEWS = (URL_MAIN + 'documentaires/', 'showMovies')
-TV_NEWS = (URL_MAIN + 'emissions-tv/', 'showMovies')
-SPECT_NEWS = (URL_MAIN + 'spectacles/', 'showMovies')
-CONCERT_NEWS = (URL_MAIN + 'concerts/', 'showMovies')
-
 
 def load():
     oGui = cGui()
@@ -91,10 +86,6 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuMangas', 'Animés', 'animes.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMenuAutres', 'Autres', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -235,37 +226,6 @@ def showMenuMangas():
     oGui.addDir(SITE_IDENTIFIER, FILM_ANIM[1], 'Films d\'animes ', 'animes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
-
-def showMenuAutres():
-    oGui = cGui()
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MISC[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher autres', 'search.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('misc', True)
-    oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('misc', True)
-    oOutputParameterHandler.addParameter('siteUrl', SPECT_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SPECT_NEWS[1], 'Spectacles', 'star.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('misc', True)
-    oOutputParameterHandler.addParameter('siteUrl', CONCERT_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, CONCERT_NEWS[1], 'Concerts', 'music.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('misc', True)
-    oOutputParameterHandler.addParameter('siteUrl', TV_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, TV_NEWS[1], 'Emissions TV', 'tv.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
 
 def showSearch():
     oGui = cGui()
