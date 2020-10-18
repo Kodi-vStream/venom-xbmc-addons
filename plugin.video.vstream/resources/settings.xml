@@ -144,11 +144,13 @@
 
         <setting visible="false" id="plugin_mesfilms" type="bool" label="Mes Films" default="true"/>
 
-        <setting visible="false" id="plugin_n1streaming" type="bool" label="01streaming" default="true"/>
+        <setting visible="false" id="plugin_n1streaming" type="bool" label="N1 streaming" default="true"/>
 
         <setting visible="false" id="plugin_neko_sama" type="bool" label="Neko Sama" default="true"/>
 
         <setting visible="false" id="plugin_neuf_docu" type="bool" label="9Docu" default="true"/>
+
+        <setting visible="false" id="plugin_o1streaming" type="bool" label="O1 streaming" default="true"/>
 
         <setting visible="false" id="plugin_otaku_attitude" type="bool" label="Otaku-Attitude" default="true"/>
 
