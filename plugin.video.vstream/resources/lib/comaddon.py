@@ -226,11 +226,13 @@ VSlog('testtttttttttttt')
 
 #xbmc des fonctions pas des class
 def VSlog(e, level = xbmc.LOGDEBUG):
-    #rapelle l'ID de l'addon pour être appelé hors addon
-    if (ADDONVS.getSetting('debug') == 'true'):
-        level = xbmc.LOGNOTICE
     try:
+        #rapelle l'ID de l'addon pour être appelé hors addon
+        if (ADDONVS.getSetting('debug') == 'true'):
+            level = xbmc.LOGNOTICE
         xbmc.log('\t[PLUGIN] vStream: ' + str(e), level)
+    except AttributeError:
+        xbmc.log('\t[PLUGIN] vStream: ' + str(e))
     except:
         pass
 
