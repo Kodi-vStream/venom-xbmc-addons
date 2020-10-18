@@ -14,7 +14,7 @@ except ImportError:  # Python 3
 import xbmc
 
 from resources.lib.util import urlEncode
-from resources.lib.comaddon import addon, dialog, VSlog
+from resources.lib.comaddon import addon, dialog, VSlog, VSPath
 
 
 class cRequestHandler:
@@ -259,7 +259,7 @@ class cRequestHandler:
             import sys
             import dns.resolver
 
-            path = xbmc.translatePath('special://home/addons/script.module.dnspython/lib/').decode('utf-8')
+            path = VSPath('special://home/addons/script.module.dnspython/lib/').decode('utf-8')
             if path not in sys.path:
                 sys.path.append(path)
             host = args[0]
