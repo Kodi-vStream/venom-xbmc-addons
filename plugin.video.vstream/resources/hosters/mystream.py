@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 import re
@@ -59,7 +58,6 @@ class cHoster(iHoster):
 
             for i in aResult:
                 decoded = temp_decode(i)
-
                 if decoded:
                     r = re.search("setAttribute\(\'src\', *\'([^']+)\'\)", decoded, re.DOTALL)
                     if r:
@@ -75,51 +73,46 @@ def temp_decode(data):
     endpos = data.find('"\\"")())()')
 
     first_group = data[startpos:endpos]
+    first_group = first_group.replace('$.__+', 't').replace('$._+', 'u').replace('$._$+', 'o')
 
-    l = re.search("(\(!\[\]\+\"\"\)\[.+?\]\+)", first_group, re.DOTALL)
-    if l:
-        first_group = first_group.replace(l.group(1), 'l').replace('$.__+', 't').replace('$._+', 'u').replace('$._$+', 'o')
+    tmplist = []
+    js = re.search(r'(\$={.+?});', data)
+    if js:
+        js_group = js.group(1)[3:][:-1]
+        second_group = js_group.split(',')
 
-        tmplist = []
-        js = re.search('(\$={.+?});', data, re.DOTALL)
-        if js:
-            js_group = js.group(1)[3:][:-1]
+        i = -1
+        for x in second_group:
+            a, b = x.split(':')
 
-            second_group = js_group.split(',')
+            if b == '++$':
+                i += 1
+                tmplist.append(("$.{}+".format(a), i))
 
-            i = -1
+            elif b == '(![]+"")[$]':
+                tmplist.append(("$.{}+".format(a), 'false'[i]))
 
-            for x in second_group:
-                a, b = x.split(':')
+            elif b == '({}+"")[$]':
+                tmplist.append(("$.{}+".format(a), '[object Object]'[i]))
 
-                if b == '++$':
-                    i += 1
-                    tmplist.append(("{}{}{}".format('$.', a, '+'), i))
+            elif b == '($[$]+"")[$]':
+                tmplist.append(("$.{}+".format(a), 'undefined'[i]))
 
-                elif b == '(![]+"")[$]':
-                    tmplist.append(("{}{}{}".format('$.', a, '+'), 'false'[i]))
+            elif b == '(!""+"")[$]':
+                tmplist.append(("$.{}+".format(a), 'true'[i]))
 
-                elif b == '({}+"")[$]':
-                    tmplist.append(("{}{}{}".format('$.', a, '+'), '[object Object]'[i]))
+        tmplist = sorted(tmplist, key=lambda z: str(z[1]))
+        for x in tmplist:
+            first_group = first_group.replace(x[0], str(x[1]))
 
-                elif b == '($[$]+"")[$]':
-                    tmplist.append(("{}{}{}".format('$.',a,'+'),'undefined'[i]))
+        first_group = first_group.replace('\\"', '\\').replace("\"\\\\\\\\\"", "\\\\") \
+                                 .replace('\\"', '\\').replace('"', '').replace("+", "")
 
-                elif b == '(!""+"")[$]':
-                    tmplist.append(("{}{}{}".format('$.', a, '+'), 'true'[i]))
-
-
-            tmplist = sorted(tmplist, key=lambda x: x[1])
-
-            for x in tmplist:
-                first_group = first_group.replace(x[0], str(x[1]))
-
-            first_group = first_group.replace(r'\\"' , '\\').replace("\"\\\\\\\\\"", "\\\\").replace('\\"', '\\').replace('"', '').replace("+", "")
-
-
-
+        pos = re.findall(r"\(!\[\]\)\[.+?\]", first_group)
+        for p in pos:
+            first_group = first_group.replace(p,"l")
     try:
-        final_data = unicode(first_group, encoding = 'unicode-escape')
+        final_data = first_group.encode('ascii').decode('unicode-escape').encode('ascii').decode('unicode-escape')
         return final_data
     except:
         return False
