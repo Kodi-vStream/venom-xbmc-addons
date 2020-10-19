@@ -3,6 +3,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 import re
+
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0'
 
 class cHoster(iHoster):
@@ -53,15 +54,13 @@ class cHoster(iHoster):
         api_call = False
 
         sPattern =  '([$]=.+?\(\)\)\(\);)'
-        aResult = re.findall(sPattern, sHtmlContent, re.DOTALL)
+        aResult = re.search(sPattern, sHtmlContent, re.DOTALL)
         if aResult:
-
-            for i in aResult:
-                decoded = temp_decode(i)
-                if decoded:
-                    r = re.search("setAttribute\(\'src\', *\'([^']+)\'\)", decoded, re.DOTALL)
-                    if r:
-                        api_call = r.group(1)
+            decoded = temp_decode(aResult.group(1))
+            if decoded:
+                r = re.search("setAttribute\(\'src\', *\'([^']+)\'\)", decoded, re.DOTALL)
+                if r:
+                    api_call = r.group(1)
 
         if (api_call):
             return True, api_call + '|User-Agent=' + UA + '&Referer=' + self.__sUrl + '&Origin=https://embed.mystream.to'
@@ -111,8 +110,9 @@ def temp_decode(data):
         pos = re.findall(r"\(!\[\]\)\[.+?\]", first_group)
         for p in pos:
             first_group = first_group.replace(p,"l")
+
     try:
-        final_data = first_group.encode('ascii').decode('unicode-escape').encode('ascii').decode('unicode-escape')
+        final_data = first_group.encode('ascii').decode('unicode-escape')
         return final_data
     except:
         return False
