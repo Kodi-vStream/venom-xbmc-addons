@@ -360,7 +360,7 @@ def showSearchMovie():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        showMovies(sSearchText)
+        showMovies(sSearchText.replace(' ', '+'))
         # oGui.setEndOfDirectory()
         return
 
@@ -370,7 +370,7 @@ def showSearchSerie():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        showSeries(sSearchText)
+        showSeries(sSearchText.replace(' ', '+'))
         # oGui.setEndOfDirectory()
         return
 
@@ -380,7 +380,7 @@ def showSearchActor():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        showActors(sSearchText)
+        showActors(sSearchText.replace(' ', '+'))
         # oGui.setEndOfDirectory()
         return
 
@@ -461,17 +461,17 @@ def showFolderList():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Top Manga', '31665'] )
-    liste.append( ['Top Manga 2', '31695'] )
+    liste.append( ['Top 50 des plus grands films', '10'] )
+    liste.append( ['Gagnants des Oscars', '31670'] )
+    liste.append( ['Les films fascinants ', '43'] )
+    liste.append( ['science-fiction', '3945'] )
+    liste.append( ['Les adaptations', '9883'] )
     liste.append( ['Disney Classic', '338'] )
     liste.append( ['Pixar', '3700'] )
-    liste.append( ['Top 50 des plus grands films', '10'] )
     liste.append( ['Marvel', '1'] )
     liste.append( ['DC Comics Universe', '3'] )
-    liste.append( ['Les films fascinants ', '43'] )
-    liste.append( ['Gagnants des Oscars', '31670'] )
-    liste.append( ['Les adaptations', '9883'] )
-    liste.append( ['science-fiction', '3945'] )
+    liste.append( ['Top Manga', '31665'] )
+    liste.append( ['Top Manga 2', '31695'] )
     liste.append( ['Best séries', '36788'] )
     liste.append( ['Films de Noel', '40944'] )
     # liste.append( ['nom de la liste', 'ID de la liste'] )
@@ -909,8 +909,7 @@ def showActors(sSearch = ''):
             sName = sName.encode('utf-8')
 
             oOutputParameterHandler.addParameter('siteUrl', 'person/' + str(i['id']) + '/movie_credits')
-            # oGui.addMovieDB(SITE_IDENTIFIER, 'showFilmActor', '[COLOR red]'+str(sName)+'[/COLOR]', '', sThumb, '', oOutputParameterHandler)
-            sTitle = '[COLOR red]' + str(sName) + '[/COLOR]'
+            sTitle = str(sName)
 
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName(SITE_IDENTIFIER)

@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'streamay_series'
 SITE_NAME = 'StreamAy Séries'
 SITE_DESC = 'Séries en Streaming'
 
-URL_MAIN = 'https://wvw.streamay.site/'
+URL_MAIN = 'https://fr.streamay.site/'
 
 SERIE_SERIES = (URL_MAIN + 'series.html', 'showMovies')
 SERIE_NEWS = (URL_MAIN, 'showSeriesNews')
@@ -101,7 +101,7 @@ def showSerieYears():
     # for i in itertools.chain(range(5, 7), [8, 9]): afficher dans l'ordre (pense bete ne pas effacer)
     oGui = cGui()
     from itertools import chain
-    generator = chain([1983, 1990, 1994], range(1997, 2021))#desordre
+    generator = chain([1983, 1990, 1994], range(1997, 2021))  # desordre
 
     for i in reversed(list(generator)):
         Year = str(i)
@@ -119,7 +119,7 @@ def AlphaList():
         if (i < 10):
             sTitle = chr(48 + i)
         else:
-            sTitle = chr(65 + i -10)
+            sTitle = chr(65 + i - 10)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/alphabet/' + sTitle.lower())
@@ -245,7 +245,7 @@ def ShowSaisons():
     # récupération du Synopsis
     sDesc = ''
     try:
-        sPattern = 'class="fsynopsis"><p>(.+?)<\/p>'
+        sPattern = 'class="fsynopsis"><p>(.+?)</p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
@@ -294,7 +294,7 @@ def showEpisodes():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
-            sTitle =  sMovieTitle + ' ' + aEntry[1]
+            sTitle = sMovieTitle + ' ' + aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -318,7 +318,7 @@ def showLinks():
     sHtmlContent = oRequest.request()
     sHtmlContent = sHtmlContent.replace(' class="download-server"', '')
 
-    sPattern = '<div data-url="([^"]+)".+?id="player_v_DIV_5">([^<]+)<.+?<img src="\/storage\/icon\/(.+?)_l.png"'
+    sPattern = '<div data-url="([^"]+)".+?id="player_v_DIV_5">([^<]+)<.+?<img src="/storage/icon/(.+?)_l.png"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -326,8 +326,6 @@ def showLinks():
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sHost = aEntry[1].capitalize()
-            if 'Lecteur hd vip' in sHost:
-                continue
             # Filtre host connue
             oHoster = cHosterGui().checkHoster(sHost)
             if not oHoster:

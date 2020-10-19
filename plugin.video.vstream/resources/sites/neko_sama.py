@@ -20,7 +20,7 @@ SITE_DESC = 'anime en streaming'
 
 URL_MAIN = 'https://www.neko-sama.fr/'
 
-URL_SEARCH = (URL_MAIN + 'animes-search.json?gkeorgkeogkccc', 'showSearchResult')
+URL_SEARCH = (URL_MAIN + 'animes-search.json', 'showSearchResult')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showSearchResult')
 FUNCTION_SEARCH = 'showSearchResult'
 
@@ -114,7 +114,7 @@ def showSearchResult(sSearch):
     data = json.loads(oRequestHandler.request())
 
     Title, Url, Thumb = parseJson(data, sSearch)
-    total = len(zip(Title, Url, Thumb))
+    total = len(Title)
     progress_ = progress().VScreate(SITE_NAME)
     for title, url, thumb in zip(Title, Url, Thumb):
         progress_.VSupdate(progress_, total)

@@ -15,7 +15,6 @@ import xbmcplugin
 class cPlayer(xbmc.Player):
 
     ADDON = addon()
-    DIALOG = dialog()
 
     def __init__(self, *args):
 
@@ -114,19 +113,25 @@ class cPlayer(xbmc.Player):
             VSlog('Player use setResolvedUrl() method')
 
         #Attend que le lecteur demarre, avec un max de 20s
-        for _ in xrange(20):
-            if self.playBackEventReceived:
-                break
-            xbmc.sleep(1000)
+        if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+            for _ in range(20):
+                if self.playBackEventReceived:
+                    break
+                xbmc.sleep(1000)
+        else:
+            for _ in xrange(20):
+                if self.playBackEventReceived:
+                    break
+                xbmc.sleep(1000)
 
         #active/desactive les sous titres suivant l'option choisie dans la config
         if (self.SubtitleActive):
             if (self.ADDON.getSetting('srt-view') == 'true'):
                 self.showSubtitles(True)
-                self.DIALOG.VSinfo('Sous-titres chargés', 'Sous-Titres', 5)
+                dialog().VSinfo('Sous-titres chargés', 'Sous-Titres', 5)
             else:
                 self.showSubtitles(False)
-                self.DIALOG.VSinfo('Sous-titres chargés, vous pouvez les activer', 'Sous-Titres', 15)
+                dialog().VSinfo('Sous-titres chargés, vous pouvez les activer', 'Sous-Titres', 15)
 
         while self.isPlaying() and not self.forcestop:
         #while not xbmc.abortRequested:
@@ -153,9 +158,9 @@ class cPlayer(xbmc.Player):
         VSlog('Closing player')
 
     #fonction light servant par exmple pour visualiser les DL ou les chaines de TV
-    def startPlayer(self):
+    def startPlayer(self, window=False):
         oPlayList = self.__getPlayList()
-        self.play(oPlayList)
+        self.play(oPlayList, windowed=window)
 
     def onPlayBackEnded(self):
         self.onPlayBackStopped()

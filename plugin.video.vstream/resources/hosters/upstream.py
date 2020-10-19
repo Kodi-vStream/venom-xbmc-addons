@@ -3,6 +3,12 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
+from resources.lib.packer import cPacker
+
+from resources.lib.comaddon import VSlog
+import re
+
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:62.0) Gecko/20100101 Firefox/62.0'
 
 class cHoster(iHoster):
 
@@ -46,15 +52,24 @@ class cHoster(iHoster):
         api_call = ''
 
         oRequest = cRequestHandler(self.__sUrl)
+        oRequest.addHeaderEntry("User-Agent",UA)
         sHtmlContent = oRequest.request()
+        
+        sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
+        aResult = re.findall(sPattern, sHtmlContent)
+
+        if (aResult):
+            sUnpacked = cPacker().unpack(aResult[0])
+            sHtmlContent = sUnpacked
 
         sPattern = 'sources: *\[\{file:"([^"]+)"'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
+        
         if (aResult[0] == True):
             api_call = aResult[1][0]
 
         if (api_call):
-            return True, api_call
+            return True, api_call + '|Referer=' + self.__sUrl
 
         return False, False

@@ -10,14 +10,13 @@ except ImportError:  # Python 3
 import base64
 import os
 import re
-import xbmc
 import xbmcaddon
 import unicodedata
 
-from resources.lib.comaddon import VSlog
+from resources.lib.comaddon import VSlog, VSPath
 from resources.lib.util import urlEncode
 
-PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo('profile'))
+PathCache = VSPath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo('profile'))
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
 

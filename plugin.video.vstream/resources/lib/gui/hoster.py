@@ -9,13 +9,12 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.player import cPlayer
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.comaddon import dialog, addon, VSlog
-
+import xbmc
 
 class cHosterGui:
 
     SITE_NAME = 'cHosterGui'
     ADDON = addon()
-    DIALOG = dialog()
 
     # step 1 - bGetRedirectUrl in ein extra optionsObject verpacken
     def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail, bGetRedirectUrl=False):
@@ -105,13 +104,16 @@ class cHosterGui:
                 oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'siteonefichier', 'siteonefichier', 'UptomyAccount', '1fichier')
 
         # context FAV menu
-        oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+        oGui.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
 
         # context Library menu
         oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cLibrary', 'cLibrary', 'setLibrary', self.ADDON.VSlang(30324))
 
         # bug
         oGui.addHost(oGuiElement, oOutputParameterHandler)
+        
+            
+        
 
     def checkHoster(self, sHosterUrl):
         # securite
@@ -138,6 +140,13 @@ class cHosterGui:
                 RH = RH.replace('www.', '')
                 tmp.setRealHost(RH.split('.')[0].upper())
                 return tmp
+            
+        # L'user a active alldebrid ?
+            
+        if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
+            return self.getHoster('alldebrid')
+            
+                
 
         # Gestion classique
         if ('streamz' in sHostName):
@@ -187,9 +196,10 @@ class cHosterGui:
         if ('uptostream' in sHostName):
             return self.getHoster('uptostream')
         if ('dailymotion' in sHostName) or ('dai.ly' in sHostName):
-            if 'stream' in sHosterUrl:
-                return self.getHoster('lien_direct')
-            else:
+            try:    
+                if 'stream' in sHosterUrl:    
+                    return self.getHoster('lien_direct')    
+            except:    
                 return self.getHoster('dailymotion')
         if ('livestream' in sHostName):
             return self.getHoster('lien_direct')
@@ -336,11 +346,14 @@ class cHosterGui:
             return self.getHoster('frenchvid')
         if ('core1player' in sHostName) or ('vfsplayer' in sHostName):
             return self.getHoster('frenchvid')
-
+        if ('viki' in sHostName):
+            return self.getHoster('viki')
         if ('flix555' in sHostName):
             return self.getHoster('flix555')
-        if ('onlystream' in sHostName) or ('gotochus' in sHostName):
+        if ('onlystream' in sHostName):
             return self.getHoster('onlystream')
+        if ('gotochus' in sHostName):
+            return self.getHoster('gotochus')
         if ('pstream' in sHostName):
             return self.getHoster('pstream')
         if ('vudeo' in sHostName):
@@ -373,12 +386,27 @@ class cHosterGui:
             return self.getHoster('lien_direct')
         if ('cloudhost' in sHostName):
             return self.getHoster('cloudhost')
+        if ('rapidgator' in sHostName):
+            return False
+        if ('turbobit' in sHostName):
+            return False
+        if ('mega.nz' in sHostName) or ('mega.co.nz' in sHostName):
+            return False
+        if ('hitfile' in sHostName):
+            return False
+        if ('myfiles.alldebrid.com' in sHostName):
+            return self.getHoster('lien_direct')
+        if ('dl.free.fr' in sHostName):
+            return False
+        if ('easyload.io' in sHostName):
+            return self.getHoster('easyload')
+            
 
         # Si aucun hebergeur connu on teste les liens directs
-        if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8.webm'):
+        if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8.webm.mkv'):
             return self.getHoster('lien_direct')
         # Cas special si parametre apres le lien_direct
-        if (sHosterUrl.split('?')[0][-4:] in '.mp4.avi.flv.m3u8.webm'):
+        if (sHosterUrl.split('?')[0][-4:] in '.mp4.avi.flv.m3u8.webm.mkv'):
             return self.getHoster('lien_direct')
 
         return False
@@ -389,6 +417,8 @@ class cHosterGui:
 
     def play(self):
         oGui = cGui()
+        oDialog = dialog()
+
         oInputParameterHandler = cInputParameterHandler()
         sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
@@ -408,7 +438,7 @@ class cHosterGui:
         oHoster.setFileName(sFileName)
 
         sHosterName = oHoster.getDisplayName()
-        self.DIALOG.VSinfo(sHosterName, 'Resolve')
+        oDialog.VSinfo(sHosterName, 'Resolve')
 
         try:
 
@@ -431,11 +461,11 @@ class cHosterGui:
                 oPlayer.run(oGuiElement, oHoster.getFileName(), aLink[1])
                 return
             else:
-                self.DIALOG.VSerror(self.ADDON.VSlang(30020))
+                oDialog.VSerror(self.ADDON.VSlang(30020))
                 return
 
         except:
-            self.DIALOG.VSerror(self.ADDON.VSlang(30020))
+            oDialog.VSerror(self.ADDON.VSlang(30020))
             return
 
         oGui.setEndOfDirectory()
@@ -466,7 +496,7 @@ class cHosterGui:
 
             oPlayer = cPlayer()
             oPlayer.addItemToPlaylist(oGuiElement)
-            self.DIALOG.VSinfo(str(oHoster.getFileName()), 'Playlist')
+            dialog().VSinfo(str(oHoster.getFileName()), 'Playlist')
             return
 
         oGui.setEndOfDirectory()

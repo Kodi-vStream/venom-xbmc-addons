@@ -14,14 +14,12 @@ except ImportError:  # Python 3
 import xbmc
 
 from resources.lib.util import urlEncode
-from resources.lib.comaddon import addon, dialog, VSlog
+from resources.lib.comaddon import addon, dialog, VSlog, VSPath
 
 
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
     REQUEST_TYPE_POST = 1
-    DIALOG = dialog()
-    ADDON = addon()
 
     def __init__(self, sUrl):
         self.__sUrl = sUrl
@@ -169,32 +167,10 @@ class cRequestHandler:
                 oResponse = urllib2.urlopen(oRequest, timeout=self.__timeout)
 
             self.__sResponseHeader = oResponse.info()
+
             #En python 3 on doit décoder la reponse
             if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19' and not self.__sResponseHeader.get('Content-Encoding') == 'gzip':
-                #Si c'est une image ou autre element en bytes, on ne le decode pas
-                image_formats = ("image/png", "image/jpeg", "image/jpg", "application/download")
-                if not self.__sResponseHeader.get('Content-Type') in image_formats:
-                    sContent = oResponse.read()
-
-                    if self.__sResponseHeader.get_content_charset():
-                        encoding = self.__sResponseHeader.get_content_charset()
-                    else:
-                        encoding = 'utf-8'
-                    try:
-
-                        try:
-                            sContent = sContent.decode()
-                        except:
-                            pass
-
-                        sContent = str(sContent, encoding)
-                    except:
-                        sContent = str(sContent)
-                    else:
-                        pass
-
-                else:
-                    sContent = oResponse.read()
+                sContent = decodeHTML(oResponse, self.__sResponseHeader, zlibMode = False)
 
             else:
                 sContent = oResponse.read()
@@ -203,6 +179,9 @@ class cRequestHandler:
             if self.__sResponseHeader.get('Content-Encoding') == 'gzip':
                 import zlib
                 sContent = zlib.decompress(sContent, zlib.MAX_WBITS | 16)
+                
+                if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+                    sContent = decodeHTML(sContent, self.__sResponseHeader, zlibMode = True)
 
             # https://bugs.python.org/issue4773
             self.__sRealUrl = oResponse.geturl()
@@ -229,7 +208,7 @@ class cRequestHandler:
 
             else:
                 try:
-                    VSlog("%s (%d),%s" % (self.ADDON.VSlang(30205), e.code, self.__sUrl))
+                    VSlog("%s (%d),%s" % (addon().VSlang(30205), e.code, self.__sUrl))
                     self.__sRealUrl = e.geturl()
                     self.__sResponseHeader = e.headers
                     sContent = e.read()
@@ -237,7 +216,7 @@ class cRequestHandler:
                     sContent = ''
 
             if not sContent:
-                self.DIALOG.VSerror("%s (%d),%s" % (self.ADDON.VSlang(30205), e.code, self.__sUrl))
+                dialog().VSerror("%s (%d),%s" % (addon().VSlang(30205), e.code, self.__sUrl))
 
         except UrlError as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e.reason) and self.BUG_SSL == False:
@@ -250,11 +229,11 @@ class cRequestHandler:
                     self.__enableDNS = True
                     return self.__callRequest()
                 else:
-                    error_msg = self.ADDON.VSlang(30470)
+                    error_msg = addon().VSlang(30470)
             else:
-                error_msg = "%s (%s),%s" % (self.ADDON.VSlang(30205), e.reason, self.__sUrl)
+                error_msg = "%s (%s),%s" % (addon().VSlang(30205), e.reason, self.__sUrl)
 
-            self.DIALOG.VSerror(error_msg)
+            dialog().VSerror(error_msg)
             sContent = ''
 
         if sContent:
@@ -280,7 +259,7 @@ class cRequestHandler:
             import sys
             import dns.resolver
 
-            path = xbmc.translatePath('special://home/addons/script.module.dnspython/lib/').decode('utf-8')
+            path = VSPath('special://home/addons/script.module.dnspython/lib/').decode('utf-8')
             if path not in sys.path:
                 sys.path.append(path)
             host = args[0]
@@ -302,11 +281,51 @@ class cRequestHandler:
             VSlog("new_getaddrinfo ERROR: {0}".format(e))
             return self.save_getaddrinfo(*args)
 
+#Decode le contenu de la page html sous Python 3
+def decodeHTML(oResponse, ResponseHeader, zlibMode=False):
+    image_formats = ("image/png", "image/jpeg", "image/jpg", "application/download")
+
+    #Ne pas décoder les contenu en bytes.
+    if not ResponseHeader.get('Content-Type') in image_formats:
+        if zlibMode == False:
+            sContent = oResponse.read()
+
+        else:
+            #Unique maniere de formatter la page apres le passage de zlib.
+            sContent = str(oResponse, encoding="utf8", errors='ignore').encode("utf-8").decode('unicode-escape')
+            return sContent
+
+        #Corrige l'affichage des accentes, malheureusement il n'y a pas de solution unique.
+        if ResponseHeader.get_content_charset():
+            encoding = ResponseHeader.get_content_charset()
+
+        else:
+            encoding = 'utf-8'
+        try:
+            try:
+                sContent = sContent.decode()
+            except:
+                pass
+            sContent = str(sContent, encoding)
+        except:
+            sContent = str(sContent)
+        else:
+            pass
+
+        #Formatter correctement le contenu de la page.
+        try:
+            sContent = sContent.encode().decode('unicode-escape')
+        except:
+            pass
+
+    else:
+        sContent = oResponse.read()
+
+    return sContent
+
 # ******************************************************************************
 # from https://github.com/eliellis/mpart.py
 # ******************************************************************************
-
-
 def MPencode(fields):
     import mimetypes
     random_boundary = __randy_boundary()

@@ -45,7 +45,10 @@ class cParser:
         return re.escape(sValue)
 
     def getNumberFromString(self, sValue):
-        sPattern = '(\d+)$'
+        if '/0-9/' in sValue:
+            sPattern = '/0-9.+?(\d+)'
+        else:
+            sPattern = '\d+'
         aMatches = re.findall(sPattern, sValue)
         if (len(aMatches) > 0):
             return aMatches[0]
@@ -60,12 +63,13 @@ class cParser:
         except:
             return {'title': sHtmlContent}
 
-    def abParse(self, sHtmlContent, start, end, startoffset=''):
+    def abParse(self, sHtmlContent, start, end, startoffset=0):
         # usage oParser.abParse(sHtmlContent, 'start', 'end')
         # startoffset (int) décale le début pour ne pas prendre en compte start dans le résultat final si besoin
+        # la fin est recherchée forcement après le début
         # usage2 oParser.abParse(sHtmlContent, 'start', 'end', 6)
         # ex youtube.py
-        if startoffset:
-            return sHtmlContent[startoffset + sHtmlContent.find(start): sHtmlContent.find(end)]
-        else:
-            return sHtmlContent[sHtmlContent.find(start):sHtmlContent.find(end)]
+        
+        startIdx = sHtmlContent.find(start)
+        endIdx = sHtmlContent[startoffset + startIdx : ].find(end)
+        return sHtmlContent[startoffset + startIdx : startoffset + startIdx + endIdx]

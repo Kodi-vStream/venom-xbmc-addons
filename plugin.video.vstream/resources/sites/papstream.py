@@ -19,8 +19,12 @@ URL_MAIN = 'https://wvw.papstream.cc/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + 'rechercher', 'showMovies')
-URL_SEARCH_MOVIES = ('', 'showMovies')
-URL_SEARCH_SERIES = ('', 'showMovies')
+
+# recherche globale MOVIE/TVSHOWS
+key_search_movies = '#searchsomemovies'
+key_search_series = '#searchsomeseries'
+URL_SEARCH_MOVIES = (key_search_movies, 'showMovies')
+URL_SEARCH_SERIES = (key_search_series, 'showMovies')
 
 MOVIE_MOVIE = (URL_MAIN + 'films.html', 'showMoviesMenu')
 MOVIE_NEWS = (URL_MAIN + 'dernier-films.html', 'showMovies')
@@ -34,7 +38,7 @@ SERIE_ANNEES = (True, 'showSerieYears')
 
 ANIM_ANIMS = (URL_MAIN + 'animes.html', 'showAnimesMenu')
 ANIM_NEWS = (URL_MAIN + 'animes.html', 'showMovies')
-#ANIM_GENRES = (URL_MAIN + 'animes/', 'showGenres')
+# ANIM_GENRES = (URL_MAIN + 'animes/', 'showGenres')
 ANIM_ANNEES = (True, 'showAnimeYears')
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0'
@@ -198,25 +202,27 @@ def showAnimeYears():
 def showMovies(sSearch=''):
     oGui = cGui()
 
+    bSearchMovie = False
+    bSearchSerie = False
     if sSearch:
+        KeySearch = sSearch
+        if key_search_movies in KeySearch:
+            KeySearch = str(KeySearch).replace(key_search_movies, '')
+            bSearchMovie = True
+        if key_search_series in KeySearch:
+            KeySearch = str(KeySearch).replace(key_search_series, '')
+            bSearchSerie = True
         sUrl = URL_SEARCH[0]
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+        oRequestHandler.addParametersLine('story=' + KeySearch)
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    oRequestHandler = cRequestHandler(sUrl)
-
-    if sSearch:
-
-        oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
-        oRequestHandler.addHeaderEntry('User-Agent', UA)
-        # oRequestHandler.addHeaderEntry('Host', 'wwv.papstream.cc')
-        # oRequestHandler.addHeaderEntry('Origin', URL_MAIN)
-        oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-        # oRequestHandler.addParametersLine('do=search')
-        # oRequestHandler.addParametersLine('subaction=search')
-        oRequestHandler.addParametersLine('story=' + sSearch)
+        oRequestHandler = cRequestHandler(sUrl)
 
     sHtmlContent = oRequestHandler.request()
     sPattern = 'class="short-images-link".+?img src="([^"]+)".+?short-link"><a href="([^"]+)".+?>([^<]+)</a>'
@@ -239,13 +245,20 @@ def showMovies(sSearch=''):
             sUrl2 = URL_MAIN[:-1] + aEntry[1].replace('/animes/films/', '/films/').replace('/animes/series/', '/series/')
             sTitle = aEntry[2]
 
+            if bSearchMovie:
+                if '/series/' in sUrl2:
+                    continue
+            if bSearchSerie:
+                if '/films/' in sUrl2:
+                    continue
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if '/animes/' in sUrl2:
-                oGui.addAnime(SITE_IDENTIFIER, 'showSaisons', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
+                oGui.addAnime(SITE_IDENTIFIER, 'showSaisons', sTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
             elif '/series/' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             else:
@@ -373,7 +386,7 @@ def showLink():
         if aResult[0]:
             sDesc = aResult[1][0]
 
-    sPattern = 'href="#" rel="([^"]+)".+?id="player".+?<i class="server player-.+?"></i>([^<]+)</span>.+?<img src="([^"]+)".+?<span style=".+?">([^<]+)<'
+    sPattern = 'href="#" rel="([^"]+).+?id="player".+?class="server player-.+?"></i>([^<]+)</span>.+?<img src="([^"]+).+?<span style=".+?">([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):

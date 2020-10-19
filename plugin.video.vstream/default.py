@@ -24,7 +24,8 @@ from resources.lib.util import Quote
 #
 ####################
 
-DEBUG = False  # Mettre True pour activer le debug
+# Mettre True pour activer le debug
+DEBUG = False
 
 if DEBUG:
 
@@ -60,6 +61,13 @@ class main:
         # xbmc.log('Debug 1 >>' + str(xbmc.getInfoLabel('Container().CurrentPage')), xbmc.LOGNOTICE)
         # xbmc.log('Debug 2 >>' + str(xbmc.getInfoLabel('Container.FolderPath')), xbmc.LOGNOTICE)
 
+        
+        # Exclue les appels par des plugins qu'on ne sait pas gérer, par exemple :  plugin://plugin.video.vstream/extrafanart
+        oPluginHandler = cPluginHandler()
+#         if oPluginHandler.getPluginPath() != 'plugin://plugin.video.vstream/':
+#             cGui().setEndOfDirectory()
+#             return
+        
         oInputParameterHandler = cInputParameterHandler()
 
         if oInputParameterHandler.exist('function'):
@@ -150,7 +158,6 @@ class main:
 
             if sSiteName == 'globalSources':
                 oGui = cGui()
-                oPluginHandler = cPluginHandler()
                 aPlugins = oPluginHandler.getAvailablePlugins(True)
 
                 if len(aPlugins) == 0:

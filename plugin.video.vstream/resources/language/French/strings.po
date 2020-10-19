@@ -1055,3 +1055,15 @@ msgstr "Hoster Direct"
 msgctxt "#30470"
 msgid "Addon dnspython missing"
 msgstr "Addon dnspython manquant"
+
+msgctxt "#30998"
+msgid "Put the Token of your Alldebrid account"
+msgstr "Mettez le Token de votre compte Alldebrid"
+
+msgctxt "#31000"
+msgid "Enter the url of your multimedia folder"
+msgstr "Mettez l'url de votre dossier multimedia Alldebrid"
+
+msgctxt "#31101"
+msgid "Url"
+msgstr "Url"

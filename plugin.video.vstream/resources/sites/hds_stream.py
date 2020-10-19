@@ -16,12 +16,12 @@ SITE_IDENTIFIER = 'hds_stream'
 SITE_NAME = 'Hds-stream'
 SITE_DESC = 'Film streaming HD complet en vf. Des films et séries pour les fan de streaming hds.'
 
-URL_MAIN = 'https://waw.hds-stream.to/'
+URL_MAIN = 'https://wnw.hds-stream.to/'
 
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_GENRES = (URL_MAIN, 'showGenres')
 MOVIE_EXCLUS = (URL_MAIN + 'tendance/', 'showMovies')
-MOVIE_ANNEES = (True, 'showMovieYears')
+#MOVIE_ANNEES = (True, 'showMovieYears')
 
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
 
@@ -257,9 +257,9 @@ def showHosters():
     sPattern = "class='dooplay_player_option' data-type='([^']+)' data-post='([^']+)' data-nume='([^']+)'"
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
+        url_main = GET_REAL_URLMAIN(sUrl)
         for aEntry in aResult[1]:
-
-            sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
+            sUrl2 = url_main  + 'wp-admin/admin-ajax.php'
             dType = aEntry[0]
             dPost = aEntry[1]
             dNum = aEntry[2]
@@ -294,9 +294,9 @@ def showSeriesHosters():
     sPattern = "id='player-option-.+?data-type='([^']+)'.+?data-post='([^']+)'.+?data-nume='([^']+)'.+?'server'>([^.|^<]+)"
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
+        url_main = GET_REAL_URLMAIN(sUrl)
         for aEntry in aResult[1]:
-
-            sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
+            sUrl2 = url_main  + 'wp-admin/admin-ajax.php'
             dType = aEntry[0]
             dPost = aEntry[1]
             dNum = aEntry[2]
@@ -353,3 +353,9 @@ def showLink():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
+
+def GET_REAL_URLMAIN(url):
+    sd = url.split('.')
+    sdm = URL_MAIN.split('.')
+    return URL_MAIN.replace(sdm[0], sd[0])

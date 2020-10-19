@@ -154,7 +154,7 @@ def showSeriesGenres():
     liste.append(['Action', URL_MAIN + 'category/seriesweb/action-series/'])
     liste.append(['Animation', URL_MAIN + 'category/seriesweb/animation-series/'])
     liste.append(['Aventure', URL_MAIN + 'category/seriesweb/aventure-series/'])
-    liste.append(['Comédie', URL_MAIN + 'category/seriesweb/comedies-series/'])
+    liste.append(['Comédie', URL_MAIN + 'category/seriesweb/comedie-series/'])
     liste.append(['Documentaires', URL_MAIN + 'category/seriesweb/documentaires-series/'])
     liste.append(['Drame', URL_MAIN + 'category/seriesweb/drame-series/'])
     liste.append(['Fantastique', URL_MAIN + 'category/seriesweb/fantastique-series/'])
@@ -230,7 +230,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
-    sPattern = 'class="post-thumbnail">.+?href="([^"]+)".+?data-src="([^"]+)".+?title="Permalink to.+?>([^<]+)<.+?<p>([^<]+)<'
+    sPattern = 'class="post-thumbnail">.+?href="([^"]+)".+?src="([^"]+)".+?title="Permalink to.+?>([^<]+)<.+?<p>([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -310,9 +310,9 @@ def showHosters():
                 oRequestHandler = cRequestHandler(sUrl)
                 sHtmlContent = oRequestHandler.request()
 
-                fh = open('c:\\test.txt', "w")
-                fh.write(sHtmlContent)
-                fh.close()
+                #fh = open('c:\\test.txt', "w")
+                #fh.write(sHtmlContent)
+                #fh.close()
 
                 page = json.loads(sHtmlContent)
                 List_video = page["video"]

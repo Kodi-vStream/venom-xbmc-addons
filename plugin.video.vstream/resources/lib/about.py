@@ -167,7 +167,6 @@ class cAbout:
             add = 0
             dell = 0
             schange = 0
-            text = ''
             listitems = []
 
             if result:

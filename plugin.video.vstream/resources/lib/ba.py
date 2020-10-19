@@ -10,6 +10,7 @@ except ImportError:  # Python 3
 import ssl
 import re
 
+from resources.hosters.youtube import cHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.player import cPlayer
@@ -70,7 +71,6 @@ class cShowBA:
             ids = result['items'][0]['id']['videoId']
 
             url = 'http://www.youtube.com/watch?v=%s' % ids
-            from resources.hosters.youtube import cHoster
             hote = cHoster()
             hote.setUrl(url)
             api_call = hote.getMediaLink()[1]
@@ -93,7 +93,7 @@ class cShowBA:
             return
         return
 
-    def SearchBA(self):
+    def SearchBA(self, window=False):
 
         sTitle = self.search + ' - Bande Annonce'
 
@@ -103,9 +103,10 @@ class cShowBA:
         # Sinon recherche de la BA officielle dans TMDB
         if not urlTrailer:
             meta = cTMDb().get_meta(self.metaType, self.search, year=self.year)
-            if meta and 'trailer_url' in meta:
-                urlTrailer = meta['trailer_url']
-                        
+            if 'trailer' in meta and meta['trailer']:
+                self.SetTrailerUrl(meta['trailer'])
+                urlTrailer = self.sTrailerUrl
+                
         # Sinon recherche dans youtube
         if not urlTrailer:
             urlTrailer = 'https://www.youtube.com/results?q=' + QuotePlus(sTitle) + '&sp=EgIYAQ%253D%253D'
@@ -120,7 +121,6 @@ class cShowBA:
 
         # BA trouvée
         if urlTrailer:
-            exec('from resources.hosters.youtube import cHoster')
             hote = cHoster()
             hote.setUrl(urlTrailer)
             api_call = hote.getMediaLink()[1]
@@ -136,6 +136,6 @@ class cShowBA:
             oPlayer = cPlayer()
             oPlayer.clearPlayList()
             oPlayer.addItemToPlaylist(oGuiElement)
-            oPlayer.startPlayer()
+            oPlayer.startPlayer(window)
 
         return

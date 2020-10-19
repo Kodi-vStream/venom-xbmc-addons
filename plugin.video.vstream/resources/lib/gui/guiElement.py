@@ -3,12 +3,11 @@
 # Venom.
 import re
 import string
-import xbmc
+import unicodedata
 
-from resources.lib.comaddon import addon
+from resources.lib.comaddon import addon, xbmc
 from resources.lib.db import cDb
 from resources.lib.util import QuoteSafe
-from resources.lib.tmdb import cTMDb
 import random
 
 # rouge E26543
@@ -22,18 +21,20 @@ class cGuiElement:
 
     DEFAULT_FOLDER_ICON = 'icon.png'
     # COUNT = 0
-    ADDON = addon()
     DB = cDb()
 
     def __init__(self):
 
+        addons = addon()
+        
         # self.__sRootArt = cConfig().getRootArt()
+        self.__sFunctionName = ''
         self.__sRootArt = 'special://home/addons/plugin.video.vstream/resources/art/'
         self.__sType = 'Video'
         self.__sMeta = 0
         self.__sPlaycount = 0
         self.__sTrailer = ''
-        self.__sMetaAddon = self.ADDON.getSetting('meta-view')
+        self.__sMetaAddon = addons.getSetting('meta-view')
         self.__sImdb = ''
         self.__sTmdb = ''
         self.__sMediaUrl = ''
@@ -54,7 +55,7 @@ class cGuiElement:
         self.__Episode = ''
         self.__sIcon = self.DEFAULT_FOLDER_ICON
         self.__sFanart = 'special://home/addons/plugin.video.vstream/fanart.jpg'
-        self.__sDecoColor = self.ADDON.getSetting('deco_color')
+        self.__sDecoColor = addons.getSetting('deco_color')
 
         # For meta search
         # TmdbId the movie database https://developers.themoviedb.org/
@@ -67,11 +68,10 @@ class cGuiElement:
         self.__aProperties = {}
         self.__aContextElements = []
         self.__sSiteName = ''
-        # categorie utiliser pour marque page et recherche.
-        # 1 - movies , 2 - tvshow, - 3 misc,
-        # oGuiElement.setCat(1)
+        
+        # categorie utilisé pour marque-page et recherche.
+        # 1 - movies/saga , 2 - tvshow/episode/anime, 5 - misc/Next
         self.__sCat = ''
-        # cGuiElement.COUNT += 1
 
     # def __len__(self): return self.__sCount
 
@@ -83,22 +83,6 @@ class cGuiElement:
 
     def getType(self):
         return self.__sType
-
-    # utiliser setImdbId
-    def setImdb(self, sImdb):
-        self.__ImdbId = sImdb
-
-    # utiliser  getImdbId
-    def getImdb(self):
-        return self.__ImdbId
-
-    # utiliser  setTmdbId
-    def setTmdb(self, sTmdb):
-        self.__TmdbId = sTmdb
-
-    # utiliser  getTmdbId
-    def getTmdb(self):
-        return self.__TmdbId
 
     def setCat(self, sCat):
         self.__sCat = sCat
@@ -216,7 +200,7 @@ class cGuiElement:
         #~ for cle in index:
             #~ sTitle = sTitle.replace(cle.upper(), index[cle]).replace(cle, index[cle]).replace('(%s)' % (cle), index[cle])
 
-        #~ #recherche Qualiter
+        #~ #recherche Qualité
         #~ index = {'1080i': '(1080)', '1080p': '(1080)', '1080I': '(1080)', '1080P': '(1080)', '720i': '(720)', '720p': '(720)', '720I': '(720)', '720P': '(720)'}
         #~ for cle in index:
             #~ sTitle = sTitle.replace(cle, index[cle]).replace('[%s]' % (cle), index[cle])
@@ -288,6 +272,14 @@ class cGuiElement:
         if self.__Year:
             sTitle2 = '%s [COLOR %s](%s)[/COLOR]' % (sTitle2, self.__sDecoColor, self.__Year)
 
+        #Py3
+        try:
+            if "Ã©" in sTitle2:
+                sTitle2 = sTitle2.encode("iso-8859-1", 'ignore')
+                sTitle2 = str(sTitle2, encoding="utf8", errors='ignore')
+        except:
+            pass
+
         # on repasse en utf-8
         try:
             return sTitle2.encode('utf-8')
@@ -307,9 +299,14 @@ class cGuiElement:
         return sTitle, False
 
     def setTitle(self, sTitle):
-        self.__sCleanTitle = sTitle
+        #Convertie les bytes en strs pour le replace.
+        if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+            if isinstance(sTitle, bytes):
+                sTitle = sTitle.decode('utf-8')
+        
+        self.__sCleanTitle = sTitle.replace('[]', '').replace('()', '').strip()
         try:
-            sTitle = sTitle.decode('utf-8')
+            sTitle = sTitle.strip().decode('utf-8')
         except:
             pass
 
@@ -331,7 +328,11 @@ class cGuiElement:
         return self.__sTitleWatched
 
     def setDescription(self, sDescription):
-        self.__sDescription = sDescription
+        #Py3
+        try:
+            self.__sDescription = sDescription.encode('latin-1')
+        except:
+            self.__sDescription = sDescription
 
     def getDescription(self):
         return self.__sDescription
@@ -418,7 +419,6 @@ class cGuiElement:
         except (AttributeError, UnicodeEncodeError):
             pass
 
-        import unicodedata
         data = unicodedata.normalize('NFKD', data).encode('ascii', 'ignore')
         # cherche la saison et episode puis les balises [color]titre[/color]
         # data, saison = self.getSaisonTitre(data)
@@ -484,6 +484,7 @@ class cGuiElement:
             self.addItemProperties('fanart_image', '')
             return
 
+        from resources.lib.tmdb import cTMDb
         TMDb = cTMDb()
 
         sTitle = self.__sFileName
@@ -497,6 +498,7 @@ class cGuiElement:
 
         # Integrale de films, on nettoie le titre pour la recherche
         if metaType == 3:
+            sTitle = sTitle.replace('integrales', '')
             sTitle = sTitle.replace('integrale', '')
             sTitle = sTitle.replace('2 films', '')
             sTitle = sTitle.replace('6 films', '')
@@ -508,8 +510,14 @@ class cGuiElement:
             sTitle = sTitle.replace('octalogie', '')
             sTitle = sTitle.replace('hexalogie', '')
             sTitle = sTitle.replace('tetralogie', '')
+            sTitle = sTitle.strip()
+            if sTitle.endswith(' les'):
+                sTitle = sTitle[:-4]
+            if sTitle.endswith(' la') or sTitle.endswith(' l') :
+                sTitle = sTitle[:-3]
+            sTitle = sTitle.strip()
 
-        sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'movie').replace('4', 'anime')
+        sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'collection').replace('4', 'anime').replace('7', 'person').replace('8', 'network')
 
         meta = {}
         if sType:
@@ -536,38 +544,57 @@ class cGuiElement:
 
         meta['title'] = self.getTitle()
 
-        for key, value in meta.items():
-            self.addItemValues(key, value)
+        if 'media_type' in meta:
+            meta.pop('media_type')
 
-        if 'imdb_id' in meta and meta['imdb_id']:
-            self.__ImdbId = meta['imdb_id']
+        if 'imdb_id' in meta:
+            imdb_id = meta.pop('imdb_id')
+            if imdb_id:
+                self.__ImdbId = imdb_id
 
-        if 'tmdb_id' in meta and meta['tmdb_id']:
-            self.__TmdbId = meta['tmdb_id']
+        if 'tmdb_id' in meta:
+            tmdb_id = meta.pop('tmdb_id')
+            if tmdb_id:
+                self.__TmdbId = tmdb_id
 
-        # if 'tvdb_id' in meta and meta['tvdb_id']:
-            # self.__TvdbId = meta['tvdb_id']
+        if 'tvdb_id' in meta:
+#            if meta['tvdb_id']:
+#             self.__TvdbId = meta['tvdb_id']
+            meta.pop('tvdb_id')
 
         # Si fanart trouvé dans les meta alors on l'utilise, sinon on n'en met pas
-        if 'backdrop_url' in meta and meta['backdrop_url']:
-            self.addItemProperties('fanart_image', meta['backdrop_url'])
-            self.__sFanart = meta['backdrop_url']
-        else:
-            self.addItemProperties('fanart_image', '')
+        if 'backdrop_url' in meta:
+            url = meta.pop('backdrop_url')
+            if url:
+                self.addItemProperties('fanart_image', url)
+                self.__sFanart = url
+            else:
+                self.addItemProperties('fanart_image', '')
+
+        if 'backdrop_path' in meta:
+            meta.pop('backdrop_path')
+
+        if 'poster_path' in meta:
+            meta.pop('poster_path')
+
+        if 'cover_url' in meta:
+            cover = meta.pop('cover_url')
+            if cover:
+                self.__sThumbnail = cover
+                self.__sPoster = cover
 
         if 'trailer' in meta and meta['trailer']:
             self.__sTrailer = meta['trailer']
 
-        # Pas de changement de cover pour les coffrets de films
-        if metaType != 3:
-            if 'cover_url' in meta and meta['cover_url']:
-                self.__sThumbnail = meta['cover_url']
-                self.__sPoster = meta['cover_url']
+        for key, value in meta.items():
+            self.addItemValues(key, value)
+
         return
 
     def getItemValues(self):
         self.addItemValues('Title', self.getTitle())
 
+        # https://kodi.wiki/view/InfoLabels
         # https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#ga0b71166869bda87ad744942888fb5f14
 
         # - Video Values:
@@ -615,6 +642,10 @@ class cGuiElement:
             self.addItemProperties('TmdbId', str(self.getTmdbId()))
             self.addItemValues('DBID', str(self.getTmdbId()))
 
+        # imdbid
+        if self.getImdbId():
+            self.addItemProperties('ImdbId', str(self.getImdbId()))
+
         # Utilisation des infos connues si non trouvées
         if not self.getItemValue('plot') and self.getDescription():
             self.addItemValues('plot', self.getDescription())
@@ -637,6 +668,13 @@ class cGuiElement:
         if w == 1:
             self.addItemValues('playcount', w)
 
+        self.addItemProperties('siteUrl', self.getSiteUrl())
+        self.addItemProperties('sCleanTitle', self.getFileName())
+        self.addItemProperties('sId', self.getSiteName())
+        self.addItemProperties('sFav', self.getFunction())
+        self.addItemProperties('sCat', str(self.getCat()))
+        self.addItemProperties('sMeta', str(self.getMeta()))
+
         return self.__aItemValues
 
     def addItemProperties(self, sPropertyKey, mPropertyValue):
@@ -653,6 +691,7 @@ class cGuiElement:
     
     # Des vidéos pour remplacer des bandes annnonces manquantes
     def getDefaultTrailer(self):
+        from resources.lib.tmdb import cTMDb
         trailers = ['WWkYjM3ZXxU',
                     'LpvKI7I5rF4',
                     'svTVRDgI08Y',

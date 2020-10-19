@@ -19,16 +19,31 @@ class cFav:
     DIALOG = dialog()
     ADDON = addon()
 
-    # effacement direct par menu
-    def delBookmarksMenu(self):
-        if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
-            cDb().del_bookmark()
+    # Suppression d'un bookmark, d'une catégorie, ou tous les bookmarks
+    def delBookmark(self):
+        oInputParameterHandler = cInputParameterHandler()
+        if not self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
+            return False
+        
+        sAll = oInputParameterHandler.exist('sAll')
+        sCat = oInputParameterHandler.getValue('sCat')
+        siteUrl = oInputParameterHandler.getValue('siteUrl')
+        sTitle = oInputParameterHandler.getValue('sCleanTitle')
+#         sTitle = cUtil().CleanName(sTitle)
+        
+        cDb().del_bookmark(siteUrl, sTitle, sCat, sAll)
         return True
 
-    # avec confirmation pour les autres
-    def delBookmarks(self):
-        if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
-            cDb().del_bookmark()
+    # Suppression d'un bookmark depuis un Widget
+    def delBookmarkMenu(self):
+        if not self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
+            return False
+
+        sTitle = xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
+        siteUrl = xbmc.getInfoLabel('ListItem.Property(siteUrl)')
+
+        cDb().del_bookmark(siteUrl, sTitle)
+
         return True
 
     def getBookmarks(self):
@@ -40,11 +55,6 @@ class cFav:
         compt = [0, 0, 0, 0, 0, 0, 0, 0]
         for i in row:
             compt[int(i[5])] = compt[int(i[5])] + 1
-
-        # sTitle = '[COLOR khaki]Vous avez %s marque-page[/COLOR]' % (len(row))
-        # oOutputParameterHandler = cOutputParameterHandler()
-        # oOutputParameterHandler.addParameter('siteUrl', 'http://')
-        # oGui.addText(SITE_IDENTIFIER, sTitle)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '1')
@@ -72,7 +82,7 @@ class cFav:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sAll', 'true')
-        oGui.addDir(SITE_IDENTIFIER, 'delBookmarks', self.ADDON.VSlang(30209), 'trash.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'delBookmark', self.ADDON.VSlang(30209), 'trash.png', oOutputParameterHandler)
 
         # A virer dans les versions future, pour le moment c'est juste pr supprimer les liens bugges
         if compt[0] > 0:
@@ -108,7 +118,11 @@ class cFav:
                 thumbnail = data[6]
 
             try:
-                siteurl = UnquotePlus(data[2])
+                try:
+                    siteurl = data[2].encode('utf-8')
+                except:
+                    siteurl = data[2]
+                siteurl = UnquotePlus(siteurl)
                 site = data[3]
                 function = data[4]
                 cat = data[5]
@@ -150,8 +164,9 @@ class cFav:
                     oGuiElement.setCat(cat)
                 oGuiElement.setThumbnail(thumbnail)
                 oGuiElement.setFanart(fanart)
+                oGuiElement.addItemProperties('isBookmark', True)
 
-                oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler, 'cFav', 'cFav', 'delBookmarksMenu', self.ADDON.VSlang(30412))
+                oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler, 'cFav', 'cFav', 'delBookmark', self.ADDON.VSlang(30412))
 
                 if (function == 'play'):
                     oGui.addHost(oGuiElement, oOutputParameterHandler)
@@ -161,9 +176,11 @@ class cFav:
             except:
                 oGui.addDir(SITE_IDENTIFIER, 'DoNothing', '[COLOR red]ERROR[/COLOR]', 'films.png', oOutputParameterHandler)
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sCat', sCat)
-        oGui.addDir(SITE_IDENTIFIER, 'delBookmarks', self.ADDON.VSlang(30211), 'trash.png', oOutputParameterHandler)
+        # La suppression n'est pas accessible lors de l'utilisation en Widget
+        if not xbmc.getCondVisibility('Window.IsActive(home)'):
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('sCat', sCat)
+            oGui.addDir(SITE_IDENTIFIER, 'delBookmark', self.ADDON.VSlang(30211), 'trash.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -172,27 +189,23 @@ class cFav:
     def setBookmark(self):
         oInputParameterHandler = cInputParameterHandler()
 
-#         Pour quelle raison ? A expliquer en commentaire si cela est toujours vrai
-#         if oInputParameterHandler.getValue('sId') == 'kepliz_com':
-#             self.DIALOG.VSinfo('Error', self.ADDON.VSlang(30037))
-#             return
-
-        if int(oInputParameterHandler.getValue('sCat')) < 1:
+        sCat = oInputParameterHandler.getValue('sCat') if oInputParameterHandler.exist('sCat') else xbmc.getInfoLabel('ListItem.Property(sCat)')
+        if int(sCat) not in (1, 2, 5):
             self.DIALOG.VSinfo('Error', self.ADDON.VSlang(30038))
             return
 
         meta = {}
-        meta['siteurl'] = oInputParameterHandler.getValue('siteUrl')
-        meta['site'] = oInputParameterHandler.getValue('sId')
-        meta['fav'] = oInputParameterHandler.getValue('sFav')
-        meta['cat'] = oInputParameterHandler.getValue('sCat')
+        
+        sSiteUrl = oInputParameterHandler.getValue('siteUrl') if oInputParameterHandler.exist('siteUrl') else xbmc.getInfoLabel('ListItem.Property(siteUrl)')
+        sTitle = oInputParameterHandler.getValue('sMovieTitle') if oInputParameterHandler.exist('sMovieTitle') else xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
+        sSite = oInputParameterHandler.getValue('sId') if oInputParameterHandler.exist('sId') else xbmc.getInfoLabel('ListItem.Property(sId)')
+        sFav = oInputParameterHandler.getValue('sFav') if oInputParameterHandler.exist('sFav') else xbmc.getInfoLabel('ListItem.Property(sFav)')
 
-        # ListItem.title contient des code de couleurs, sMovieTitle le titre en plus "propre"
-        # Inutile a la prochaine version, car plus de couleurs a la base.
-        if oInputParameterHandler.getValue('sMovieTitle'):
-            meta['title'] = oInputParameterHandler.getValue('sMovieTitle')
-        else:
-            meta['title'] = xbmc.getInfoLabel('ListItem.title')
+        meta['siteurl'] = sSiteUrl
+        meta['title'] = sTitle
+        meta['site'] = sSite
+        meta['fav'] = sFav
+        meta['cat'] = sCat
 
         meta['icon'] = xbmc.getInfoLabel('ListItem.Art(thumb)')
         meta['fanart'] = xbmc.getInfoLabel('ListItem.Art(fanart)')

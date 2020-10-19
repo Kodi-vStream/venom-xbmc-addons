@@ -3,6 +3,7 @@
 import random
 import re
 import string
+import unicodedata
 
 from resources.lib.comaddon import progress, dialog, VSlog, addon
 from resources.lib.gui.gui import cGui
@@ -11,6 +12,8 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
+from resources.lib.stormwall import Stormwall
+from resources.lib.config import GestionCookie
 # Fonction de vStream qui remplace urllib.quote, pour simplifier le passage en python 3
 from resources.lib.util import Quote, cUtil
 
@@ -21,7 +24,7 @@ SITE_IDENTIFIER = 'zone_telechargement_ws'
 SITE_NAME = '[COLOR violet]Zone-Telechargement[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
-URL_HOST = 'https://wwvw.zone-annuaire.com/'
+URL_HOST = 'https://www.zt-za.com/'
 
 
 def GetURL_MAIN():
@@ -358,7 +361,6 @@ def showGenre():
 
     oGui.setEndOfDirectory()
 
-
 def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
@@ -368,10 +370,7 @@ def showMovies(sSearch=''):
     if sSearch:
         sUrl = sSearch
 
-    oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-    sHtmlContent = oRequestHandler.request()
+    sHtmlContent = Stormwall().GetHtml(sUrl)
 
     sPattern = '<img class="mainimg.+?src="([^"]+)"(?:.|\s)+?<a href="([^"]+)">([^"]+)</a>.+?<span class=".+?<b>([^"]+)</span>.+?">([^<]+)</span>'
 
@@ -399,8 +398,13 @@ def showMovies(sSearch=''):
                 sTitle = sTitle.replace('COMPLETE', '[Complete]')
 
             # nettoyage du titre
-            sDisplayTitle = sTitle.replace('Complete', 'Complète')
+            sTitle = sTitle.replace('Complete', 'Complète')
             sTitle = re.sub('\[\w+]', '', sTitle)
+
+            try:
+                sTitle = str(sTitle.encode('latin-1'), encoding="utf-8")
+            except:
+                pass
 
             # Enlever les films en doublons (même titre et même pochette)
             # il s'agit du même film dans une autre qualité qu'on retrouvera au moment du choix de la qualité
@@ -456,7 +460,6 @@ def showMovies(sSearch=''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
-
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = 'href="([^"]+)">Suivant</a>'
@@ -467,7 +470,6 @@ def __checkForNextPage(sHtmlContent):
             nextPage = URL_MAIN + nextPage
         return nextPage
     return False
-
 
 def showMoviesLinks():
     # VSlog('mode film')
@@ -481,11 +483,23 @@ def showMoviesLinks():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-    sHtmlContent = oRequestHandler.request()
-    
+    sHtmlContent = Stormwall().GetHtml(sUrl)
+
+    if "zt-protect" in sUrl:
+	    #Dl Protect present aussi a cette étape.
+	    oParser = cParser()
+	    sPattern = '<form action="(.+?)".+?type="hidden" name="_token" value="(.+?)">'
+	    result = oParser.parse(sHtmlContent, sPattern)
+
+	    if (result[0]):
+	        RestUrl = str(result[1][0][0])
+	        try:
+	            token = str(result[1][0][1], 'utf-8')
+	        except:
+	            token =  result[1][0][1]
+
+	    sHtmlContent = Stormwall().GetHtml(RestUrl + "?_token" + token)
+
     # Affichage du texte
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles :[/COLOR]')
 
@@ -499,6 +513,11 @@ def showMoviesLinks():
             aEntry = aResult[1][0]
             sYear = aEntry[1]
             sDesc = cUtil().removeHtmlTags(aEntry[3])
+    except:
+        pass
+
+    try:
+        sDesc = sDesc.encode('latin-1')
     except:
         pass
 
@@ -529,10 +548,9 @@ def showMoviesLinks():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sYear', sYear)
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showMoviesLinks', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def showSeriesLinks():
     # VSlog('mode serie')
@@ -543,10 +561,22 @@ def showSeriesLinks():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-    sHtmlContent = oRequestHandler.request()
+    sHtmlContent = Stormwall().GetHtml(sUrl)
+
+    if "zt-protect" in sUrl:
+	    #Dl Protect present aussi a cette étape.
+	    oParser = cParser()
+	    sPattern = '<form action="(.+?)".+?type="hidden" name="_token" value="(.+?)">'
+	    result = oParser.parse(sHtmlContent, sPattern)
+
+	    if (result[0]):
+	        RestUrl = str(result[1][0][0])
+	        try:
+	            token = str(result[1][0][1], 'utf-8')
+	        except:
+	            token =  result[1][0][1]
+
+	    sHtmlContent = Stormwall().GetHtml(RestUrl + "?_token" + token)
 
     # Affichage du texte
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles :[/COLOR]')
@@ -558,6 +588,11 @@ def showSeriesLinks():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = cUtil().removeHtmlTags(aResult[1][0][1])
+    except:
+        pass
+
+    try:
+        sDesc = sDesc.encode('latin-1')
     except:
         pass
 
@@ -601,7 +636,7 @@ def showSeriesLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     # on regarde si dispo d'autres saisons
     # Une ligne par saison, pas besoin d'afficher les qualités ici
@@ -634,7 +669,6 @@ def showSeriesLinks():
 
     oGui.setEndOfDirectory()
 
-
 def showHosters():
     # VSlog('showHosters')
     oGui = cGui()
@@ -645,10 +679,22 @@ def showHosters():
     sDesc = oInputParameterHandler.getValue('sDesc')
     sYear = oInputParameterHandler.getValue('sYear')
 
-    oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-    sHtmlContent = oRequestHandler.request()
+    sHtmlContent = Stormwall().GetHtml(sUrl)
+
+    if "zt-protect" in sUrl:
+	    #Dl Protect present aussi a cette étape.
+	    oParser = cParser()
+	    sPattern = '<form action="(.+?)".+?type="hidden" name="_token" value="(.+?)">'
+	    result = oParser.parse(sHtmlContent, sPattern)
+
+	    if (result[0]):
+	        RestUrl = str(result[1][0][0])
+	        try:
+	            token = str(result[1][0][1], 'utf-8')
+	        except:
+	            token =  result[1][0][1]
+
+	    sHtmlContent = Stormwall().GetHtml(RestUrl + "?_token" + token)
 
     # Si ca ressemble aux lien premiums on vire les liens non premium
     if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent:
@@ -676,7 +722,6 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
-
 def showSeriesHosters():
     # VSlog('showSeriesHosters')
     oGui = cGui()
@@ -687,10 +732,28 @@ def showSeriesHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
 
-    oRequestHandler = cRequestHandler(sUrl.replace('https', 'http'))
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-    sHtmlContent = oRequestHandler.request()
+    try:
+        sDesc = unicodedata.normalize('NFD', sDesc).encode('ascii', 'ignore').decode('unicode_escape')
+        sDesc = sDesc.encode('latin-1')
+    except:
+        pass
+        
+    sHtmlContent = Stormwall().GetHtml(sUrl)
+
+    if "zt-protect" in sUrl:
+	    #Dl Protect present aussi a cette étape.
+	    oParser = cParser()
+	    sPattern = '<form action="(.+?)".+?type="hidden" name="_token" value="(.+?)">'
+	    result = oParser.parse(sHtmlContent, sPattern)
+
+	    if (result[0]):
+	        RestUrl = str(result[1][0][0])
+	        try:
+	            token = str(result[1][0][1], 'utf-8')
+	        except:
+	            token =  result[1][0][1]
+
+	    sHtmlContent = Stormwall().GetHtml(RestUrl + "?_token" + token)
 
     # Pour les series on fait l'inverse des films on vire les liens premiums
     if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent or 'premium' in sHtmlContent:
@@ -721,7 +784,6 @@ def showSeriesHosters():
                 oGui.addEpisode(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def Display_protected_link():
     # VSlog('Display_protected_link')
@@ -811,7 +873,6 @@ def CutQual(sHtmlContent):
 
     return ''
 
-
 def CutSais(sHtmlContent):
     oParser = cParser()
     sPattern = '<h3>Saisons.+?galement disponibles pour cette saison:</h3>(.+?)</div>'
@@ -848,64 +909,25 @@ def DecryptDlProtecte(url):
     if not (url):
         return ''
 
-    oRequestHandler = cRequestHandler(url)
-    sHtmlContent = oRequestHandler.request()
-    # Cookie = oRequestHandler.GetCookies()
+    sHtmlContent = Stormwall().GetHtml(url)
 
     oParser = cParser()
-    sPattern = '<form action="(.+?)".+?type="hidden" name="_token" value="(.+?)">.+?<input type="hidden" value="(.+?)"'
+    sPattern = '<form action="([^"]+)" method="get">.+?type="hidden" name="_token" value="(.+?)">'
     result = oParser.parse(sHtmlContent, sPattern)
 
     if (result[0]):
         RestUrl = str(result[1][0][0])
-        token = str(result[1][0][1])
-        urlData = str(result[1][0][2])
-        
-    else:
-        sPattern = '<(.+?)action="([^"]+)" method="([^"]+)">.+?hidden".+?value="([^"]+)"'
-        result = oParser.parse(sHtmlContent, sPattern)
+        try:
+            token = str(result[1][0][1], 'utf-8')
+        except:
+            token =  result[1][0][1]
 
-        if not "<!-----" in (str(result[1][0][0])):
-            RestUrl = str(result[1][0][0])
-            method = str(result[1][0][1])
-            token = str(result[1][0][2])
-        else:
-            RestUrl = str(result[1][1][1]).replace("}", '%7D')
-            method = str(result[1][1][2])
-            token = str(result[1][1][3])
+    if not RestUrl.startswith('http'):
+        RestUrl = 'https://' + url.split('/')[2] +  RestUrl
 
-        # VSlog(token)
-        # VSlog(method)
-        # VSlog(RestUrl)
-
-        if RestUrl.startswith('/'):
-            RestUrl = 'https://' + url.split('/')[2] + RestUrl
-
-    # f = {'_token': token}
-    # data = urlEncode(f)
-
-    oRequestHandler = cRequestHandler(RestUrl)
-    if method == "post":
-        oRequestHandler.setRequestType(1)
-    # oRequestHandler.addHeaderEntry('User-Agent', UA)
-    # oRequestHandler.addHeaderEntry('Host', url.split('/')[2])
-    # oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-    # oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    # oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-    # oRequestHandler.addHeaderEntry('Referer', url)
-    # oRequestHandler.addHeaderEntry('Content-Type',  'application/x-www-form-urlencoded')
-    # oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
-    # oRequestHandler.addHeaderEntry('Cookie', Cookie)
-    oRequestHandler.addParameters('_token', token)
-    # oRequestHandler.addParametersLine(data)
-    sHtmlContent = oRequestHandler.request()
+    sHtmlContent = Stormwall().GetHtml(RestUrl + "?_token" + token)
     
-    # fh = open('c:\\test.txt', 'w')
-    # fh.write(sHtmlContent)
-    # fh.close()
-    
-    return sHtmlContent
-
+    return str(sHtmlContent)
 
 # ******************************************************************************
 # from http://code.activestate.com/recipes/578668-encode-multipart-form-data-for-uploading-files-via/

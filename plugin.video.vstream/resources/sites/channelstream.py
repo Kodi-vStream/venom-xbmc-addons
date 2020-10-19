@@ -4,8 +4,10 @@
 import base64
 import re
 import requests
+import json
 
-from resources.lib.comaddon import progress
+
+from resources.lib.comaddon import progress, VSlog
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -15,6 +17,9 @@ from resources.lib.packer import cPacker
 from resources.lib.parser import cParser
 from resources.sites.freebox import play__
 from resources.lib.util import Quote
+from datetime import datetime, timedelta
+
+#import web_pdb;
 
 SITE_IDENTIFIER = 'channelstream'
 SITE_NAME = 'Channel Stream'
@@ -65,7 +70,7 @@ def showMovies():
             if progress_.iscanceled():
                 break
 
-            if not str(aEntry[2]) == "Dorcel TV":
+            if not "+18" in str(aEntry[2]):
                 sTitle = aEntry[2]
                 sUrl2 = URL_MAIN + aEntry[0]
                 sThumb = URL_MAIN + '/' + aEntry[1]
@@ -92,6 +97,7 @@ def showHoster():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
 
     # Double Iframe a passer.
     oParser = cParser()
@@ -109,64 +115,28 @@ def showHoster():
     oRequestHandler.addHeaderEntry('Referer', iframeURL)
     sHtmlContent2 = oRequestHandler.request()
 
-    sPattern2 = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
+    sPattern2 = 'var\s+cid[^\'"]+[\'"]{1}([0-9]+)'
     aResult = re.findall(sPattern2, sHtmlContent2)
+    #VSlog(sHtmlContent2)
+
+
 
     if aResult:
         str2 = aResult[0]
-        if not str2.endswith(';'):
-            str2 = str2 + ';'
+        VSlog(str2)
+        datetoken = int(getTimer()) * 1000
+        
+        jsonUrl = 'https://telerium.tv/streams/'+str2+'/'+str(datetoken)+'.json'
+        VSlog(jsonUrl)
+        tokens = getRealTokenJson(jsonUrl,iframeURL1)
+        m3url = tokens['url']
+        nxturl = 'https://telerium.tv' + tokens['tokenurl']
+          #web_pdb.set_trace()
 
-        strs = cPacker().unpack(str2)
-
-    # Code source https://github.com/yannisKalt/Kodi_Remote_Manager/blob/master/addons/plugin.video.PLsportowo/resources/lib/mydecode.py
-    mainurlliczbacdurl = re.findall('url:\s*window\.atob\((.+?)\).slice\((.+?)\)\s*\+\s*window.atob\((.+?)\)', strs)[0]
-    mainurl = mainurlliczbacdurl[0]
-    liczba = mainurlliczbacdurl[1]
-    cdurl = mainurlliczbacdurl[2]
-    mainurlpattern = (mainurl + """\=['"](.+?)['"]""")
-    liczbapattern = (liczba + '\=(\d+)')
-    cdurlpattern = (cdurl + """\=['"](.+?)['"]""")
-
-    murl = re.findall(mainurlpattern, strs)[0]
-    licz = re.findall(liczbapattern, strs)[0]
-    curl = re.findall(cdurlpattern, strs)[0]
-
-    d1 = (base64.b64decode(murl))[int(licz):]
-    d2 = base64.b64decode(curl)
-    basurl = 'https://telerium.tv'
-
-    m3url = re.findall('{if\(esMobiliar\){(.+?)=.+?};function', strs)[0]
-    m3url = base64.b64decode(re.findall(m3url + """=['"](.+?)['"]""", strs)[0])
-
-    speechx = re.findall("""}else\{(.+?)\=dameVuelta\((.+?)\[(.+?)]\);""", strs)[0][2]
-
-    sppech = re.findall(speechx + '=(.+?)([-+])(.+?);', strs)[0]
-    reg1 = sppech[0] + '=(.+?)([-+])(.+?);'
-    reg2 = sppech[2] + '=(.+?)([-+])(.+?);'
-
-    ob1 = re.compile(reg1).findall(strs)
-    ob2 = re.compile(reg2).findall(strs)
-
-    ob11 = re.compile('var ' + ob1[0][0] + '=(.+?);').findall(strs)
-    ob12 = re.compile('var ' + ob1[0][2] + '=(.+?);').findall(strs)
-
-    ob21 = re.compile('var ' + ob2[0][0] + '=(.+?);').findall(strs)
-    ob22 = re.compile('var ' + ob2[0][2] + '=(.+?);').findall(strs)
-
-    obliczob1 = eval('%s%s%s' % (ob11[0], ob1[0][1], ob12[0]))
-    obliczob2 = eval('%s%s%s' % (ob21[0], ob2[0][1], ob22[0]))
-    spech = eval('%s%s%s' % (obliczob1, sppech[1], obliczob2))
-
-    try:
-        d1 = d1.decode('utf-8')
-        d2 = d2.decode('utf-8')
-    except:
-        pass
-
-    nxturl = basurl + d1 + d2
-
-    realtoken = getRealToken(nxturl, iframeURL1, spech)
+        
+    realtoken = getRealTokenJson(nxturl, iframeURL1)[10][::-1]
+    
+    #web_pdb.set_trace()
 
     try:
         m3url = m3url.decode("utf-8")
@@ -198,18 +168,19 @@ def showHoster():
     oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
     oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
     oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'enregistrement', 'Enregistrement')
-    oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+    oGui.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
     oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def getRealToken(link, referer, spech):
+def getRealTokenJson(link, referer):
     cookies = {'ChorreameLaJa': '100',
                'setVolumeSize': '100',
                'NoldoTres': '100'}
 
-    cookies = {'elVolumen': '100'}
+    cookies = {'elVolumen': '100',
+               '__ga':'100'}
 
     headers = {'Host': 'telerium.tv',
                'User-Agent': UA,
@@ -220,6 +191,13 @@ def getRealToken(link, referer, spech):
 
     realResp = requests.get(link, headers=headers, cookies=cookies, verify=False).content  # [1:-1]
 
-    realResp = re.findall('"(.+?)"', str(realResp))[spech]
+    #web_pdb.set_trace()
+    
+    return json.loads(realResp)
 
-    return realResp[::-1]
+def getTimer():
+    datenow = datetime.utcnow().replace(second=0, microsecond=0)
+    datenow = datenow + timedelta(days=1)
+    epoch = datetime(1970, 1, 1)
+        
+    return (datenow - epoch).total_seconds() // 1

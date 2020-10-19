@@ -35,7 +35,7 @@ MOVIE_HD1080 = (URL_MAIN + 'films-new-hd/new-bluray-1080p/', 'showMovies')
 # MOVIE_GENRES = (True, 'showGenres')
 # MOVIE_ANNEES = (True, 'showMovieYears')
 
-MOVIE_VOSTFR = (URL_MAIN + 'films-sd/dvdrip-vostfr', 'showMovies')
+MOVIE_VOSTFR = (URL_MAIN + 'films-vostfr/dvdrip-vostfr', 'showMovies')
 MOVIE_4K = (URL_MAIN + 'films-new-ultrahd/', 'showMovies')
 MOVIE_720 = (URL_MAIN + 'films-new-hd/new-bluray-720p/', 'showMovies')
 MOVIE_1080X265 = (URL_MAIN + 'films-hd/films-1080p-x265', 'showMovies')

@@ -254,13 +254,13 @@ class cBseries:
                 oGuiElement.setIcon("mark.png")
                 oGuiElement.setMeta(0)
                 oGuiElement.setThumbnail(sThumb)
-                oGuiElement.setTmdb(sImdb_id)
+                oGuiElement.setTmdbId(sImdb_id)
                 oGuiElement.setDescription(sDesc)
                 #oGuiElement.setFanart(fanart)
                     
                 #oGui.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
                     
-                 #oGui.addHost(oGuiElement, oOutputParameterHandler)
+                #oGui.addHost(oGuiElement, oOutputParameterHandler)
                 oGui.addFolder(oGuiElement, oOutputParameterHandler)
                 #oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'next.png', oOutputParameterHandler)
                

@@ -174,18 +174,13 @@ def showAlpha():
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            sPattern = 'class="next page-numbers".+?page/(\d{1,3})'
-            aResult = oParser.parse(sHtmlContent, sPattern)
-            page = ''
-            if (aResult[0] == True):
-                page = aResult[1][0]
-
-            oGui.addNext(SITE_IDENTIFIER, 'showAlpha', '[COLOR teal]Page ' + page + ' >>>[/COLOR]', oOutputParameterHandler)
+            number = re.search('/page/([0-9]+)/', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
-def showMovies(sSearch = ''):
+def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
 
@@ -194,7 +189,7 @@ def showMovies(sSearch = ''):
 
     if sSearch:
         if URL_SEARCH[0] in sSearch:
-            sSearch=sSearch.replace(URL_SEARCH[0], '')
+            sSearch = sSearch.replace(URL_SEARCH[0], '')
 
         sPattern = '<a class=\'asp_res_image_url\' href=\'([^>]+)\'.+?url\("([^"]+)"\).+?\'>([^.]+)d{2}.+?<span.+?<div class="asp_res_text">([^<]+)<'
 

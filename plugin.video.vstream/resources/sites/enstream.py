@@ -173,9 +173,9 @@ def showMovies(sSearch=''):
     if sSearch:
         sPattern = '<a href="([^"]+)".+?url\((.+?)\).+?<div class="title"> (.+?) </div>'
     elif 'Annee/' in sUrl or '/ABC' in sUrl:
-        sPattern = '<div class="table-movies-content"><a href="([^"]+)".+?url\((.+?)\).+?</i> ([^<]+) <'
+        sPattern = '<div class="table-movies-content.+?href="([^"]+)".+?url\((.+?)\).+?<.i>.([^<]+)'
     elif 'genre/' in sUrl:
-        sPattern = 'film-uno"><a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)"'
+        sPattern = 'film-uno.+?href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)'
     else:
         sPattern = 'film-uno">.+?<a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)".+?short-story">([^<]+)'
 
@@ -213,7 +213,7 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('page-([0-9]+)', sNextPage).group(1)
+            number = re.search('(page|genre).*?[-=\/]([0-9]+)', sNextPage).group(2)  # ou replace'.html',''; '([0-9]+)$'
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
@@ -260,7 +260,32 @@ def showHoster():
                 continue
 
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
-            lien = URL_MAIN + 'Players.php?PPl=' + sDataUrl + '&CData=' + sDataCode
+            lien = URL_MAIN + 'video/' + sDataCode + '/recaptcha/' + sDataUrl
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('siteUrl', lien)
+            oOutputParameterHandler.addParameter('referer', sUrl)
+
+            oGui.addLink(SITE_IDENTIFIER, 'showHostersLinks', sTitle, sThumb, sDesc, oOutputParameterHandler)
+
+    sPattern = "class=.download.+?href='/([^']*).+?mobile.>([^<]+)"
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
+
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+
+            lien = URL_MAIN + aEntry[0]
+            sHost = aEntry[1].capitalize()
+            oHoster = cHosterGui().checkHoster(sHost)
+            if not oHoster:
+                continue
+
+            sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)

@@ -31,7 +31,7 @@ Pour créer un nouvel hébergeur, utilisez le fichier avec commentaires pour vou
 
 [![images](https://img.shields.io/badge/Fichier-H%C3%A9bergeur-yellow.svg?style=for-the-badge)](https://github.com/Kodi-vStream/venom-xbmc-addons/blob/Beta/ajouter_un_hebergeur.py)
 
-Pour participer directement au projet:
+Pour participer directement au projet (Uniquement les développeurs):
 
 [![images](https://img.shields.io/badge/T%C3%A9l%C3%A9charger-B%C3%AAta-orange.svg?style=for-the-badge)](https://minhaskamal.github.io/DownGit/#/home?url=https:%2F%2Fgithub.com%2FKodi-vStream%2Fvenom-xbmc-addons%2Ftree%2FBeta%2Fplugin.video.vstream)
 

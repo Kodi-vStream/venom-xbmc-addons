@@ -24,7 +24,7 @@ URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 
 MOVIE_MOVIE = (True, 'load')
 MOVIE_NEWS = (URL_MAIN + 'films-1.html', 'showMovies')
-MOVIE_GENRES = (URL_MAIN , 'showGenres')
+MOVIE_GENRES = (URL_MAIN, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
 
 
@@ -63,15 +63,13 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
     liste.append(['Action', URL_MAIN + 'recherche-Action-1.html'])
     liste.append(['Animation', URL_MAIN + 'recherche-Animation-1.html'])
     liste.append(['Aventure', URL_MAIN + 'recherche-aventure-1.html'])
     liste.append(['Biopic', URL_MAIN + 'recherche-Biopic-1.html'])
-    liste.append(['Comédie', URL_MAIN +'recherche-Comedie-1.html'])
+    liste.append(['Comédie', URL_MAIN + 'recherche-Comedie-1.html'])
     liste.append(['Comédie Dramatique', URL_MAIN + 'recherche-Comedie-dramatique-1.html'])
     liste.append(['Comédie Musicale', URL_MAIN + 'recherche-Comedie-musicale.html'])
     liste.append(['Divers', URL_MAIN + 'recherche-Divers-1.html'])
@@ -83,7 +81,7 @@ def showGenres():
     liste.append(['Guerre', URL_MAIN + 'recherche-Guerre-1.html'])
     liste.append(['Opéra', URL_MAIN + 'recherche-Opera-1.html'])
     liste.append(['Policier', URL_MAIN + 'recherche-Policier-1.html'])
-    liste.append(['Romance', URL_MAIN +'recherche-romance-1.html'])
+    liste.append(['Romance', URL_MAIN + 'recherche-romance-1.html'])
     liste.append(['Science Fiction', URL_MAIN + 'recherche-science-fiction-1.html'])
     liste.append(['Thriller', URL_MAIN + 'recherche-thriller-1.html'])
 
@@ -116,7 +114,7 @@ def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
-        sUrl = sSearch + '.html'
+        sUrl = sSearch.replace(' ', '-') + '.html'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')

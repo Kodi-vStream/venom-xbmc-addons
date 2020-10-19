@@ -19,7 +19,7 @@ SITE_DESC = 'Films, Séries & Mangas en Streaming'
 URL_MAIN = 'https://filmstreamvk.bz/'
 
 MOVIE_MOVIE = (True, 'showMenuFilms')
-MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN , 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_EXCLUS = (URL_MAIN + 'tendance/', 'showMovies')
 
@@ -321,9 +321,9 @@ def showLinks():
             sHoster = aEntry[2].capitalize()
             
             # trie des hosters
-            oHoster = cHosterGui().checkHoster(sHoster)
-            if not oHoster:
-                continue
+            #oHoster = cHosterGui().checkHoster(sHoster)
+            #if not oHoster:
+                #continue
             
             sDisplaytitle = '%s [COLOR coral]%s[/COLOR]' % (sMovieTitle, sHoster)
 

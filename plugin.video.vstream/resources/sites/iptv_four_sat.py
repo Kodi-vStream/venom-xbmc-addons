@@ -15,22 +15,20 @@ SITE_NAME = 'Iptv4Sat'
 SITE_DESC = 'Regarder la télévision'
 
 URL_MAIN = 'https://www.iptv4sat.com/'
-IPTV_WOLRDWiDE = URL_MAIN + 'category/world/iptv-worldwide-m3u/'
-SPORT_LISTE = URL_MAIN + 'category/world/free-iptv-sports/'
-SMART_IPTV = URL_MAIN + 'category/world/smart-free-iptv/'
+IPTV_WOLRDWiDE = URL_MAIN + 'category/world-list/iptv-worldwide-m3u/'
+SPORT_LISTE = URL_MAIN + 'category/world-list/free-iptv-sports/'
+SMART_IPTV = URL_MAIN + 'category/world-list/smart-free-iptv/'
 
-IPTV_AMERICAIN = URL_MAIN + 'category/world/america-m3u-iptv/'
-IPTV_ARABE = URL_MAIN + 'category/world/free-iptv-arabic/'
-IPTV_BELGE = URL_MAIN + 'category/european/belgique-iptv/'
-IPTV_CANADA = URL_MAIN + 'category/world/canada-iptv-m3u/'
-IPTV_FRENCH = URL_MAIN + 'category/european/france-m3u-iptv/'
-IPTV_PAYSBAS = URL_MAIN + 'category/european/netherland-iptv/'
-IPTV_POLOGNE = URL_MAIN + 'category/european/poland-iptv/'
-IPTV_PORTUGAl = URL_MAIN + 'category/european/portugal-iptv-m3u/'
-IPTV_ROUMANIE = URL_MAIN + 'category/european/iptv-romania/'
-IPTV_TURC = URL_MAIN + 'category/european/m3u-turkey-iptv/'
-# IPTV_AUTRE = URL_MAIN + 'category/other-list/'
-
+IPTV_AMERICAIN = URL_MAIN + 'category/world-list/america-m3u-iptv/'
+IPTV_ARABE = URL_MAIN + 'category/world-list/free-iptv-arabic/'
+IPTV_BELGE = URL_MAIN + 'category/european-iptv/belgique-iptv/'
+IPTV_CANADA = URL_MAIN + 'category/world-list/canada-iptv-m3u/'
+IPTV_FRENCH = URL_MAIN + 'category/european-iptv-iptv/france-m3u-iptv/'
+IPTV_PAYSBAS = URL_MAIN + 'category/european-iptv/netherland-iptv/'
+IPTV_POLOGNE = URL_MAIN + 'category/european-iptv/poland-iptv/'
+IPTV_PORTUGAl = URL_MAIN + 'category/european-iptv/portugal-iptv-m3u/'
+IPTV_ROUMANIE = URL_MAIN + 'category/european-iptv/iptv-romania/'
+IPTV_TURC = URL_MAIN + 'category/european-iptv/m3u-turkey-iptv/'
 
 def load():
     oGui = cGui()
@@ -56,7 +54,6 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'listePerContry', 'Liste par Pays', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def listePerContry():
     oGui = cGui()
@@ -101,12 +98,7 @@ def listePerContry():
     oOutputParameterHandler.addParameter('siteUrl', IPTV_TURC)
     oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Liste chaines Turc', 'tv.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', IPTV_AUTRE)
-    # oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Liste chaines des autres pays', 'tv.png', oOutputParameterHandler)
-
     oGui.setEndOfDirectory()
-
 
 def showDailyList():
     oGui = cGui()
@@ -147,7 +139,6 @@ def showDailyList():
 
     oGui.setEndOfDirectory()
 
-
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = ' class="last".+?href="([^"]+)"'
@@ -157,7 +148,6 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
-
 
 def showAllPlaylist():  # On recupere les differentes playlist si il y en a
     oGui = cGui()

@@ -417,7 +417,7 @@ def showHostersLink3():
 
     # VSlog(data)
 
-    sPattern = 'file:"(.+?)".+?label:"(.+?)"'
+    sPattern = '(?:file)|(?:src):\s*[\'"](.+?)[\'"].+?label:\s*[\'"](.+?)[\'"]'
     aResult = oParser.parse(data, sPattern)
 
 

@@ -42,13 +42,13 @@ MOVIE_NOTES = (URL_MAIN + 'url', 'showMovies')  # films (les mieux notés)
 MOVIE_GENRES = (True, 'showGenres')  # films genres
 MOVIE_ANNEES = (True, 'showMovieYears')  # films (par années)
 # menu supplementaire non gerer par l'acceuil
-MOVIE_VF = (URL_MAIN + 'url', 'showMovies') #films VF
+MOVIE_VF = (URL_MAIN + 'url', 'showMovies')  # films VF
 MOVIE_VOSTFR = (URL_MAIN + 'url', 'showMovies')  # films VOSTFR
 
 # menu serie existant dans l'acceuil (Home)
 SERIE_SERIES = ('http://', 'load')  # séries (load source)
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')  # news.png ou series.png | séries (derniers ajouts = trie par date)
-SERIE_VIEWS =  (URL_MAIN + 'url', 'showMovies')  # views.png | series (les plus vus = populaire)
+SERIE_VIEWS = (URL_MAIN + 'url', 'showMovies')  # views.png | series (les plus vus = populaire)
 SERIE_HD = (URL_MAIN + 'series/', 'showMovies')  # hd.png | séries HD
 SERIE_GENRES = (True, 'showGenres')  # séries genres
 SERIE_ANNEES = (True, 'showSerieYears')  # séries (par années)
@@ -58,7 +58,7 @@ SERIE_VOSTFRS = (URL_MAIN + 'series/', 'showMovies')  # séries Vostfr
 
 ANIM_ANIMS = ('http://', 'load')  # animés (load source)
 ANIM_NEWS = (URL_MAIN + 'animes/', 'showMovies')  # animés (derniers ajouts = trie par date)
-ANIM_VIEWS =  (URL_MAIN + 'url', 'showMovies')  # views.png #animés (les plus vus = populaire)
+ANIM_VIEWS = (URL_MAIN + 'url', 'showMovies')  # views.png #animés (les plus vus = populaire)
 ANIM_GENRES = (True, 'showGenres')  # anime genres
 ANIM_ANNEES = (True, 'showAnimesYears')  # anime (par années)
 ANIM_VFS = (URL_MAIN + 'animes', 'showMovies')  # animés VF
@@ -71,14 +71,15 @@ DOC_GENRES = (True, 'showGenres')  # Documentaires Genres
 
 SPORT_SPORTS = (URL_MAIN + 'url', 'showMovies')  # sport
 
-NETS_NETS = ('http://' , 'load')  # video du net load
-NETS_NEWS =  (URL_MAIN + 'top-video.php', 'showMovies')  # video du net (derniers ajouts = trie par date)
-NETS_VIEWS =  (URL_MAIN + 'url', 'showMovies')  # videos (les plus vus = populaire)
+NETS_NETS = ('http://', 'load')  # video du net load
+NETS_NEWS = (URL_MAIN + 'top-video.php', 'showMovies')  # video du net (derniers ajouts = trie par date)
+NETS_VIEWS = (URL_MAIN + 'url', 'showMovies')  # videos (les plus vus = populaire)
 NETS_GENRES = (True, 'showGenres')  # video du net (genre)
 
 REPLAYTV_REPLAYTV = ('http://', 'load')  # Replay load
 REPLAYTV_NEWS = (URL_MAIN, 'showMovies')  # Replay trie par date
 REPLAYTV_GENRES = (True, 'showGenres')  # Replay Genre
+
 
 def load():  # fonction chargée automatiquement par l'addon, acceuil de la source.
     oGui = cGui()  # ouvre l'affichage
@@ -153,6 +154,7 @@ def load():  # fonction chargée automatiquement par l'addon, acceuil de la sour
 
     oGui.setEndOfDirectory()  # ferme l'affichage
 
+
 def showSearch():  # fonction de recherche
     oGui = cGui()
 
@@ -199,7 +201,7 @@ def showGenres():  # affiche les genres
     for sTitle, sUrl in liste:  # boucle
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl) #sortie de l'url en parametre
+        oOutputParameterHandler.addParameter('siteUrl', sUrl) # sortie de l'url en parametre
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
         # ajouter un dossier vers la fonction showMovies avec le titre de chaque categorie.
 
@@ -255,8 +257,8 @@ def showMovies(sSearch=''):
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    # le plus simple et de faire un  VSlog(str(aResult))
-    # dans le fichier log d'xbmc vous pourrez voir un array de ce que recupere le script
+    # le plus simple et de faire un VSlog(str(aResult))
+    # dans le fichier log de Kodi vous pourrez voir un array de ce que recupere le script
     # et modifier sPattern si besoin
     VSlog(str(aResult))  # Commenter ou supprimer cette ligne une fois fini
 
@@ -275,11 +277,11 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            # L'array affiche vos info dans l'orde de sPattern en commencant a 0, attention dans ce cas la on recupere 6 information
+            # L'array affiche vos info dans l'ordre de sPattern en commencant a 0, attention dans ce cas la on recupere 6 information
             # Mais selon votre regex il ne peut y en avoir que 2 ou 3.
+            sThumb = aEntry[0]
             sTitle = aEntry[1]
             sUrl2 = aEntry[2]
-            sThumb = aEntry[0]
             sLang = aEntry[3]
             sQual = aEntry[4]
             sHoster = aEntry[5]
@@ -290,9 +292,9 @@ def showMovies(sSearch=''):
             # Si vous avez des information dans aEntry Qualiter lang organiser un peux vos titre exemple.
             # Si vous pouvez la langue et la Qualite en MAJ ".upper()" vostfr.upper() = VOSTFR
             sTitle = ('%s [%s] (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sQual, sLang.upper(), sHoster)
-            # mettre les information de streaming entre [] et le reste entre () vstream s'occupe de la couleur automatiquement.
+            # mettre les informations de streaming entre [] et le reste entre () vStream s'occupe de la couleur automatiquement.
 
-            # Utile que si les liens recupere ne commencent pas par (http://www.nomdusite.com/)
+            # Utile si les liens recupere ne commencent pas par (http://www.nomdusite.com/)
             # sUrl2 = URL_MAIN + sUrl2
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -369,12 +371,13 @@ def showHosters():  # recherche et affiche les hotes
             sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)  # recherche l'hote dans l'addon
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle) #nom affiche
-                oHoster.setFileName(sMovieTitle) #idem
+                oHoster.setDisplayName(sMovieTitle)  # nom affiche
+                oHoster.setFileName(sMovieTitle)  # idem
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
                 # affiche le lien (oGui, oHoster, url du lien, poster)
 
     oGui.setEndOfDirectory()  # fin
+
 
 # Pour les series, il y a generalement une etape en plus pour la selection des episodes ou saisons.
 def ShowSerieSaisonEpisodes():
@@ -397,7 +400,6 @@ def ShowSerieSaisonEpisodes():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-
         progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
@@ -413,11 +415,14 @@ def ShowSerieSaisonEpisodes():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addEpisode(SITE_IDENTIFIER, 'seriesHosters', sTitle , 'series.png', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'seriesHosters', sTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
+            # il y a aussi addAnime pour les mangas
+            # oGui.addAnime(SITE_IDENTIFIER, 'seriesHosters', sTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
+
 
 def seriesHosters():  # cherche les episodes de series
     oGui = cGui()
