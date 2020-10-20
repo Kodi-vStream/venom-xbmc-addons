@@ -177,7 +177,7 @@ def showMovies(sSearch=''):
     elif 'genre/' in sUrl:
         sPattern = 'film-uno.+?href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)'
     else:
-        sPattern = 'film-uno">.+?<a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)".+?short-story">([^<]+)'
+        sPattern = 'film-uno">.+?<a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)".+?class="meta">.+?min ·([^·]+)·([^<]+).+?short-story">([^<]+)'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -198,14 +198,17 @@ def showMovies(sSearch=''):
             sTitle = aEntry[2]
             sDesc = ''
             if len(aEntry) > 3:
-                sDesc = aEntry[3]
+                sQual = aEntry[3]
+                sLang = aEntry[4]
+                sDesc = aEntry[5]
+            sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHoster', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHoster', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
         progress_.VSclose(progress_)
 
     if not sSearch:
