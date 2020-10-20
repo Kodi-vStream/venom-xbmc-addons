@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
+from resources.lib.comaddon import VSlog, xbmc
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 import re
@@ -104,15 +105,14 @@ def temp_decode(data):
         for x in tmplist:
             first_group = first_group.replace(x[0], str(x[1]))
 
-        first_group = first_group.replace('\\"', '\\').replace("\"\\\\\\\\\"", "\\\\") \
-                                 .replace('\\"', '\\').replace('"', '').replace("+", "")
+        first_group = first_group.replace('\\"', '\\').replace("\"\\\\\\\\\"", "\\\\").replace('\\"', '\\').replace('"', '').replace("+", "")
 
         pos = re.findall(r"\(!\[\]\)\[.+?\]", first_group)
         for p in pos:
             first_group = first_group.replace(p,"l")
 
     try:
-        final_data = first_group.encode('ascii').decode('unicode-escape')
+        final_data = first_group.encode('ascii').decode('unicode-escape').encode('ascii').decode('unicode-escape')
         return final_data
     except:
         return False
