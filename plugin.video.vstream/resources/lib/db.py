@@ -128,7 +128,11 @@ class cDb:
                 pass
         import unicodedata
         data = unicodedata.normalize('NFKD', data).encode('ascii', 'ignore')
-        data = data.decode('string-escape')  # ATTENTION: provoque des bugs pour les chemins a cause du caractere '/'
+        
+        try:
+            data = data.decode('string-escape')  # ATTENTION: provoque des bugs pour les chemins a cause du caractere '/'
+        except:
+            pass
 
         return data
 
