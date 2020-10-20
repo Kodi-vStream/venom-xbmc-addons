@@ -122,7 +122,12 @@ class cFav:
                     siteurl = data[2].encode('utf-8')
                 except:
                     siteurl = data[2]
-                siteurl = UnquotePlus(siteurl)
+
+                if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+                    siteurl = UnquotePlus(siteurl.decode('utf-8'))
+                else:
+                    siteurl = UnquotePlus(siteurl)
+
                 site = data[3]
                 function = data[4]
                 cat = data[5]
