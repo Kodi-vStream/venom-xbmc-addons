@@ -79,6 +79,8 @@ class cHoster(iHoster):
 
     def getMediaLink(self):
         ADDON = addon()
+        DIALOG = dialog()
+
         self.oPremiumHandler = cPremiumHandler(self.getPluginIdentifier())
         if (self.oPremiumHandler.isPremiumModeAvailable()):
 
@@ -87,8 +89,8 @@ class cHoster(iHoster):
             except AttributeError:
                 mDefault = 0
 
-            if mDefault is 0:
-                ret = dialog().select('Choissisez votre mode de fonctionnement', ['Passer en Streaming (via Uptostream)', 'Rester en direct (via Uptobox)'])
+            if mDefault == 0:
+                ret = DIALOG.VSselect(['Passer en Streaming (via Uptostream)', 'Rester en direct (via Uptobox)'], 'Choissisez votre mode de fonctionnement')
             else:
                 # 0 is ask me, so 1 is uptostream and so on...
                 ret = mDefault - 1
@@ -159,7 +161,6 @@ class cHoster(iHoster):
         return False
 
     def GetMedialinkStreaming(self, sHtmlContent):
-
         oParser = cParser()
 
         # Parfois codée
