@@ -361,6 +361,8 @@ class cTrakt:
         sFunction = 'getLoad'
         sId = SITE_IDENTIFIER
         searchtext = ''
+        sTitle = ''
+        
         if (total > 0):
             progress_ = progress().VScreate(SITE_NAME)
 
@@ -474,11 +476,12 @@ class cTrakt:
                         sFunction = 'showSearch'
                         sId = 'globalSearch'
 
-                    sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode('unicode_escape')
-                    sTitle.encode('utf-8')
-                    searchtext = ('%s') % (sTitle.encode('utf-8'))
-                    sFile = ('%s - %s') % (sTitle.encode('utf-8'), sYear)
-                    sTitle = ('%s Lectures - %s (%s)') % (sPlays, sTitle, sYear)
+                    if sTitle:
+                        sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode('unicode_escape')
+                        sTitle.encode('utf-8')
+                        searchtext = ('%s') % (sTitle.encode('utf-8'))
+                        sFile = ('%s - %s') % (sTitle.encode('utf-8'), sYear)
+                        sTitle = ('%s Lectures - %s (%s)') % (sPlays, sTitle, sYear)
 
                 elif 'played' in sUrl:
                     # commun
@@ -512,10 +515,11 @@ class cTrakt:
                         sTrakt, sImdb, sTmdb, sYear, sFirst_aired = movie['ids']['trakt'], movie['ids']['imdb'], movie['ids']['tmdb'], movie['year'], i['first_aired']
                         cTrakt.CONTENT = '1'
 
-                    sDate = datetime.datetime(*(time.strptime(sFirst_aired, '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y')
-                    searchtext = ('%s') % (sTitle.encode('utf-8'))
-                    sFile = ('%s - (%s)') % (sTitle.encode('utf-8'), sYear)
-                    sTitle = ('%s - %s (S%02dE%02d)') % (sDate, sTitle.encode('utf-8').decode('ascii', 'ignore'), sSaison, sEpisode)
+                    if sTitle:
+                        sDate = datetime.datetime(*(time.strptime(sFirst_aired, '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y')
+                        searchtext = ('%s') % (sTitle.encode('utf-8'))
+                        sFile = ('%s - (%s)') % (sTitle.encode('utf-8'), sYear)
+                        sTitle = ('%s - %s (S%02dE%02d)') % (sDate, sTitle.encode('utf-8').decode('ascii', 'ignore'), sSaison, sEpisode)
 
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
@@ -604,13 +608,14 @@ class cTrakt:
                 else:
                     return
 
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl + str(sTrakt))
-                oOutputParameterHandler.addParameter('file', sFile)
-                oOutputParameterHandler.addParameter('key', sKey)
-                oOutputParameterHandler.addParameter('searchtext', searchtext)
-                self.getFolder(oGui, sId, sTitle, sFile, sFunction, sImdb, sTmdb, oOutputParameterHandler)
-                sKey += 1
+                if sTitle:
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', sUrl + str(sTrakt))
+                    oOutputParameterHandler.addParameter('file', sFile)
+                    oOutputParameterHandler.addParameter('key', sKey)
+                    oOutputParameterHandler.addParameter('searchtext', searchtext)
+                    self.getFolder(oGui, sId, sTitle, sFile, sFunction, sImdb, sTmdb, oOutputParameterHandler)
+                    sKey += 1
 
             progress_.VSclose(progress_)
 
