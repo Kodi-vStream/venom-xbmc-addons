@@ -268,7 +268,7 @@ class cTrakt:
                 liste.append([self.ADDON.VSlang(30319), URL_API + 'users/me/watchlist/episodes?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_tvshows_show_watched') == 'true':
-                liste.append(['%s (%s)' % (self.ADDON.VSlang(30312), result2['movies']['watched']), URL_API + 'users/me/watched/shows?page=1&limit=' + str(MAXRESULT)])
+                liste.append(['%s (%s)' % (self.ADDON.VSlang(30312), result2['shows']['watched']), URL_API + 'users/me/watched/shows?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_tvshows_show_recommended') == 'true':
                 liste.append([self.ADDON.VSlang(30313), URL_API + 'recommendations/shows'])
