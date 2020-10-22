@@ -13,7 +13,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil, urlEncode, QuotePlus
+from resources.lib.util import cUtil, QuotePlus
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/69.0'
 headers = {'User-Agent': UA}
@@ -25,8 +25,10 @@ SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, r�
 URL_MAIN = 'https://www.extreme-down.video/'
 
 URL_SEARCH = (URL_MAIN + 'index.php?', 'showMovies')
-URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
-URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_MOVIES = (URL_SEARCH[0] + 'do=search&subaction=search&titleonly=3&speedsearch=1&story=', 'showMovies')
+URL_SEARCH_SERIES = (URL_SEARCH[0] + 'do=search&subaction=search&titleonly=3&speedsearch=2&story=', 'showMovies')
+URL_SEARCH_ANIMES = (URL_SEARCH[0] + 'do=search&subaction=search&titleonly=3&speedsearch=4&story=', 'showMovies')
+URL_SEARCH_MISC = (URL_SEARCH[0] + 'do=search&subaction=search&titleonly=3&speedsearch=3&story=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_MOVIE = (True, 'showMenuFilms')
@@ -82,10 +84,6 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'films.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuFilms', 'Films', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -110,6 +108,10 @@ def load():
 
 def showMenuFilms():
     oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MOVIES[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Films)', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
@@ -190,8 +192,12 @@ def showMenuSeries():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Séries)', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Series (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_HD[0])
@@ -232,6 +238,10 @@ def showMenuMangas():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMES[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Animes)', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animes (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
@@ -258,6 +268,10 @@ def showMenuAutre():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MISC[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Autres)', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
     oOutputParameterHandler.addParameter('misc', True)
     oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], "Documentaire (Derniers ajouts)", 'doc.png', oOutputParameterHandler)
@@ -282,10 +296,12 @@ def getToken():
 
 def showSearch():
     oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = sSearchText
+        sUrl += sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -360,32 +376,33 @@ def showMovies(sSearch=''):
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     nextPageSearch = oInputParameterHandler.getValue('nextPageSearch')
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    siteUrl = oInputParameterHandler.getValue('siteUrl')
     sMisc = oInputParameterHandler.getValue('misc') # Autre contenu
 
     if nextPageSearch:
-        sSearch = sUrl
+        sSearch = siteUrl
 
+    sCat = None
     if sSearch:
+        siteUrl = sSearch
 
         if URL_SEARCH[0] in sSearch:
             sSearch = sSearch.replace(URL_SEARCH[0], '')
+        
 
         if nextPageSearch:
-            query_args = (('do', 'search'), ('subaction', 'search'), ('search_start', nextPageSearch), ('story', sSearch), ('titleonly', '3'))
-        else:
-            query_args = (('do', 'search'), ('subaction', 'search'), ('story', sSearch), ('titleonly', '3'))
-
-        data = urlEncode(query_args)
-
+            sSearch += '&search_start=' + nextPageSearch
         oRequestHandler = cRequestHandler(URL_SEARCH[0])
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-        oRequestHandler.addParametersLine(data)
+        oRequestHandler.addParametersLine(sSearch)
         oRequestHandler.addParameters('User-Agent', UA)
         sHtmlContent = oRequestHandler.request()
-        sHtmlContent = oParser.abParse(sHtmlContent, 'de la recherche', 'Nous contacter')
+        sHtmlContent = oParser.abParse(sHtmlContent, 'de la recherche', 'À propos')
+
+        sCat = int(re.search('speedsearch=(\d)', sSearch).group(1))
+        sSearch = re.search('story=(.+?)($|&)', sSearch).group(1)
     else:
-        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler = cRequestHandler(siteUrl)
         sHtmlContent = oRequestHandler.request()
 
     sPattern = 'class="top-last thumbnails" href="([^"]+)".+?"img-post" src="([^"]+).+?alt="([^"]+)'
@@ -443,11 +460,11 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if sMisc:
+            if sCat == 3 or sMisc:
                 oGui.addMisc(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-            elif '/films-' in sUrl or '/manga-films/' in sUrl :
+            elif sCat == 1 or '/films-' in siteUrl or '/manga-films/' in siteUrl :
                 oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-            elif '/mangas/' in sUrl:
+            elif sCat == 4 or '/mangas/' in siteUrl:
                 oGui.addAnime(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
@@ -459,7 +476,7 @@ def showMovies(sSearch=''):
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sSearch)
+                oOutputParameterHandler.addParameter('siteUrl', siteUrl)
                 oOutputParameterHandler.addParameter('misc', sMisc)
                 oOutputParameterHandler.addParameter('nextPageSearch', aResult[1][0])
                 number = re.search('([0-9]+)', aResult[1][0]).group(1)
