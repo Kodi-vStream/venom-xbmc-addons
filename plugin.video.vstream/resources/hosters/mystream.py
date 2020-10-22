@@ -32,7 +32,7 @@ class cHoster(iHoster):
         return True
 
     def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
+        self.__sUrl = str(sUrl).replace('https://mystream.to/watch/', 'https://embed.mystream.to/')
 
     def checkUrl(self, sUrl):
         return True
