@@ -169,12 +169,6 @@ class cUtil:
         if string.startswith(' '):
             string = string[1:]
 
-        # convertion unicode
-        try:
-            string = string.decode('utf-8')
-        except AttributeError:
-            pass
-
         SXEX = ''
         m = re.search('(?i)(\wpisode ([0-9\.\-\_]+))', string, re.UNICODE)
         if m:
