@@ -573,7 +573,7 @@ def showMovies(sSearch = ''):
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', oOutputParameterHandler)
 
     except TypeError as e:
-        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Aucun résultat n\'a ete trouver.[/COLOR]')
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Aucun résultat n\'a été trouvé.[/COLOR]')
 
     # changement mode
     view = addons.getSetting('visuel-view')
@@ -682,7 +682,7 @@ def showSeries(sSearch=''):
                 oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', oOutputParameterHandler)
 
     except TypeError:
-        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Aucun résultat n\'a ete trouver.[/COLOR]')
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Aucun résultat n\'a été trouvé.[/COLOR]')
 
     # changement mode
     view = addons.getSetting('visuel-view')
