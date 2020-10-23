@@ -56,13 +56,16 @@ class cTrakt:
 
         headers = {'Content-Type': 'application/json'}
         post = {'client_id': API_KEY}
-        post = json.dumps(post)
+
+        try:
+            post = json.dumps(post).encode('utf-8')
+        except:
+            post = json.dumps(post)
 
         req = urllib2.Request(URL_API + 'oauth/device/code', post, headers)
         response = urllib2.urlopen(req)
         sHtmlContent = response.read()
         result = json.loads(sHtmlContent)
-        # VSlog(str(result))
         response.close()
 
         # {"device_code":"a434135042b5a76159628bc974eed2f266fb47df9f438d5738ce40396d531490", "user_code":"EBDFD843", "verification_url":"https://trakt.tv/activate", "expires_in":600, "interval":5}
@@ -82,7 +85,11 @@ class cTrakt:
                 try:
                     headers = {'Content-Type': 'application/json'}
                     post = {'client_id': API_KEY, 'client_secret': API_SECRET, 'code': result['device_code']}
-                    post = json.dumps(post)
+
+                    try:
+                        post = json.dumps(post).encode('utf-8')
+                    except:
+                        post = json.dumps(post)
 
                     req = urllib2.Request(URL_API + 'oauth/device/token', post, headers)
                     response = urllib2.urlopen(req)
@@ -94,6 +101,7 @@ class cTrakt:
                         self.ADDON.setSetting('bstoken', str(result['access_token']))
                         self.DIALOG.VSinfo(self.ADDON.VSlang(30000))
                         return
+
                 except:
                     pass
 
@@ -327,6 +335,14 @@ class cTrakt:
 
         return
 
+    def decode(self, elem, Unicode=False):
+        if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+            return elem
+        else:
+            if Unicode == True:
+                elem = unicodedata.normalize('NFD', elem).encode('ascii', 'ignore').decode('unicode_escape')
+            return elem.encode('utf-8')
+
     def getTrakt(self, url2=None):
         oGui = cGui()
 
@@ -390,14 +406,15 @@ class cTrakt:
                         sFunction = 'showSearch'
                         sId = 'globalSearch'
 
-                    searchtext = ('%s') % (sTitle.encode('utf-8'))
+                    sTitle = self.decode(sTitle)
+                    searchtext = ('%s') % (sTitle)
 
                     if sYear:
-                        sFile = ('%s - (%s)') % (sTitle.encode('utf-8'), int(sYear))
-                        sTitle = ('%s - (%s)') % (sTitle.encode('utf-8'), int(sYear))
+                        sFile = ('%s - (%s)') % (sTitle, int(sYear))
+                        sTitle = ('%s - (%s)') % (sTitle, int(sYear))
                     else:
-                        sFile = ('%s') % (sTitle.encode('utf-8'))
-                        sTitle = ('%s') % (sTitle.encode('utf-8'))
+                        sFile = ('%s') % (sTitle)
+                        sTitle = ('%s') % (sTitle)
 
                 elif 'history' in sUrl:
                     # commun
@@ -420,10 +437,9 @@ class cTrakt:
                         sExtra = ('(%s)') % (sYear)
                         cTrakt.CONTENT = '1'
 
-                    sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode('unicode_escape')
-                    sTitle.encode('utf-8')
-                    searchtext = ('%s') % (sTitle.encode('utf-8'))
-                    sFile = ('%s - (%s)') % (sTitle.encode('utf-8'), sExtra)
+                    sTitle = self.decode(sTitle,Unicode=True)
+                    searchtext = ('%s') % (sTitle)
+                    sFile = ('%s - (%s)') % (sTitle, sExtra)
                     sTitle = ('[COLOR gold]%s %s [/COLOR]- %s %s') % (sType, 'vu', sTitle, sExtra)
 
                 elif 'watchlist' in sUrl:
@@ -451,10 +467,9 @@ class cTrakt:
                         sExtra = ('(%s)') % (sYear)
                         cTrakt.CONTENT = '1'
 
-                    sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode('unicode_escape')
-                    sTitle.encode('utf-8')
-                    searchtext = ('%s') % (sTitle.encode('utf-8'))
-                    sFile = ('%s %s') % (sTitle.encode('utf-8'), sExtra)
+                    sTitle = self.decode(sTitle,Unicode=True)
+                    searchtext = ('%s') % (sTitle)
+                    sFile = ('%s %s') % (sTitle, sExtra)
                     sTitle = ('%s %s') % (sTitle, sExtra)
 
                 elif 'watched' in sUrl:
@@ -477,10 +492,9 @@ class cTrakt:
                         sId = 'globalSearch'
 
                     if sTitle:
-                        sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode('unicode_escape')
-                        sTitle.encode('utf-8')
-                        searchtext = ('%s') % (sTitle.encode('utf-8'))
-                        sFile = ('%s - %s') % (sTitle.encode('utf-8'), sYear)
+                        sTitle = self.decode(sTitle,Unicode=True)
+                        searchtext = ('%s') % (sTitle)
+                        sFile = ('%s - %s') % (sTitle, sYear)
                         sTitle = ('%s Lectures - %s (%s)') % (sPlays, sTitle, sYear)
 
                 elif 'played' in sUrl:
@@ -498,9 +512,11 @@ class cTrakt:
                         sTitle = self.getLocalizedTitle(movie, 'movies')
                         sTrakt, sImdb, sTmdb, sYear = movie['ids']['trakt'], movie['ids']['imdb'], movie['ids']['tmdb'], movie['year']
                         cTrakt.CONTENT = '1'
-                    searchtext = ('%s') % (sTitle.encode('utf-8'))
-                    sFile = ('%s - (%s)') % (sTitle.encode('utf-8'), int(sYear))
-                    sTitle = ('%s - (%s)') % (sTitle.encode('utf-8'), int(sYear))
+
+                    sTitle = self.decode(sTitle)
+                    searchtext = ('%s') % (sTitle)
+                    sFile = ('%s - (%s)') % (sTitle, int(sYear))
+                    sTitle = ('%s - (%s)') % (sTitle, int(sYear))
 
                 elif 'calendars' in sUrl:
                     if 'show' in i:
@@ -517,8 +533,9 @@ class cTrakt:
 
                     if sTitle:
                         sDate = datetime.datetime(*(time.strptime(sFirst_aired, '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y')
-                        searchtext = ('%s') % (sTitle.encode('utf-8'))
-                        sFile = ('%s - (%s)') % (sTitle.encode('utf-8'), sYear)
+                        sTitle = self.decode(sTitle)
+                        searchtext = ('%s') % (sTitle)
+                        sFile = ('%s - (%s)') % (sTitle, sYear)
                         sTitle = ('%s - %s (S%02dE%02d)') % (sDate, sTitle.encode('utf-8').decode('ascii', 'ignore'), sSaison, sEpisode)
 
                     sFunction = 'showSearch'
@@ -539,10 +556,9 @@ class cTrakt:
                         sFunction = 'showSearch'
                         sId = 'globalSearch'
 
-                    sTitle = unicodedata.normalize('NFD',  sTitle).encode('ascii', 'ignore').decode('unicode_escape')
-                    sTitle.encode('utf-8')
-                    searchtext = ('%s') % (sTitle.encode('utf-8'))
-                    sFile = ('%s - (%s)') % (sTitle.encode('utf-8'), sYear)
+                    sTitle = self.decode(sTitle,Unicode=True)
+                    searchtext = ('%s') % (sTitle)
+                    sFile = ('%s - (%s)') % (sTitle, sYear)
                     sTitle = ('%s (%s)') % ( sTitle, sYear )
 
                 elif 'recommendations' in sUrl or 'popular' in sUrl:
@@ -553,13 +569,14 @@ class cTrakt:
                         sTitle = self.getLocalizedTitle(i, 'movies')
                         cTrakt.CONTENT = '1'
                     sTrakt, sYear, sImdb, sTmdb = i['ids']['trakt'], i['year'], i['ids']['imdb'], i['ids']['tmdb']
-                    searchtext = ('%s') % (sTitle.encode('utf-8'))
+                    sTitle = self.decode(sTitle)
+                    searchtext = ('%s') % (sTitle)
                     if sYear:
-                        sFile = ('%s - (%s)') % (sTitle.encode('utf-8'), int(sYear))
-                        sTitle = ('%s - (%s)') % (sTitle.encode('utf-8'), int(sYear))
+                        sFile = ('%s - (%s)') % (sTitle, int(sYear))
+                        sTitle = ('%s - (%s)') % (sTitle, int(sYear))
                     else:
-                        sFile = ('%s') % (sTitle.encode('utf-8'))
-                        sTitle = ('%s') % (sTitle.encode('utf-8'))
+                        sFile = ('%s') % (sTitle)
+                        sTitle = ('%s') % (sTitle)
 
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
@@ -569,9 +586,11 @@ class cTrakt:
                         sTitle = self.getLocalizedTitle(movie, 'movies')
                         sTrakt, sYear, sImdb, sTmdb = movie['ids']['trakt'], movie['year'], movie['ids']['imdb'], movie['ids']['tmdb']
                         cTrakt.CONTENT = '1'
-                        searchtext = ('%s') % (sTitle.encode('utf-8'))
-                        sFile = ('%s - (%s)') % (sTitle.encode('utf-8'), int(sYear))
-                        sTitle = ('%s - (%s)') % (sTitle.encode('utf-8'), int(sYear))
+
+                        sTitle = self.decode(sTitle)
+                        searchtext = ('%s') % (sTitle)
+                        sFile = ('%s - (%s)') % (sTitle, int(sYear))
+                        sTitle = ('%s - (%s)') % (sTitle, int(sYear))
                         sFunction = 'showSearch'
                         sId = 'globalSearch'
 
@@ -599,10 +618,9 @@ class cTrakt:
                         sExtra = ('(%s)') % (sYear)
                         cTrakt.CONTENT = '1'
 
-                    sTitle = unicodedata.normalize('NFD',  sTitle).encode('ascii', 'ignore').decode('unicode_escape')
-                    sTitle.encode('utf-8')
-                    searchtext = ('%s') % (sTitle.encode('utf-8'))
-                    sFile = ('%s %s') % (sTitle.encode('utf-8'), sExtra)
+                    sTitle = self.decode(sTitle,Unicode=True)
+                    searchtext = ('%s') % (sTitle)
+                    sFile = ('%s %s') % (sTitle, sExtra)
                     sTitle = ('%s %s') % (sTitle, sExtra)
 
                 else:
@@ -662,7 +680,7 @@ class cTrakt:
                 else:
                     return
 
-                sTitle2 = ('%s - (S%02d)') % (sFile.encode('utf-8'), int(sNumber))
+                sTitle2 = ('%s - (S%02d)') % (self.decode(sFile), int(sNumber))
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl + str(sNumber))
                 # oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -697,7 +715,10 @@ class cTrakt:
             aliases = json.loads(aliasContent)
             title = next((title for title in aliases if title['language'].lower() == 'fr'), item)['title']
 
-            return title if 'episode' not in what else show_title + ' - ' + title
+            if title is None:
+                return item['title']
+            else:
+                return title if 'episode' not in what else show_title + ' - ' + title
 
         except:
             return item['title']
@@ -736,13 +757,13 @@ class cTrakt:
                     sNumber = i['number']
                     # sDate = datetime.datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y %H:%M')
 
-                    sTitle2 = ('%s (E%02d)') % (sTitle.encode('utf-8'), int(sNumber))
+                    sTitle2 = ('%s (E%02d)') % (self.decode(sTitle), int(sNumber))
 
                 elif 'watched' in sUrl:
                     sNumber, sPlays = i['number'], i['plays']
                     # sDate = datetime.datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y %H:%M')
 
-                    sTitle2 = ('%s Lectures - %s(E%02d)') % (sPlays, sTitle.encode('utf-8'), int(sNumber))
+                    sTitle2 = ('%s Lectures - %s(E%02d)') % (sPlays, self.decode(sTitle), int(sNumber))
 
                 else:
                     return
@@ -815,7 +836,7 @@ class cTrakt:
         disp.append(URL_API + 'sync/history/remove')
         lang.append('[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30312) + '[/COLOR]')
 
-        ret = self.DIALOG.select('Trakt', lang)
+        ret = self.DIALOG.VSselect(lang, 'Trakt')
 
         if ret > -1:
             self.__sAction = disp[ret]
@@ -885,7 +906,10 @@ class cTrakt:
 
         headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % self.ADDON.getSetting('bstoken')}
 
-        sPost = json.dumps(sPost)
+        try:
+            sPost = json.dumps(sPost).encode('utf-8')
+        except:
+            sPost = json.dumps(sPost)
 
         req = urllib2.Request(sAction, sPost, headers)
         response = urllib2.urlopen(req)
@@ -959,8 +983,11 @@ class cTrakt:
             sPost = {sCat_trakt: [{'ids': {'imdb': sImdb}}]}
 
         headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % self.ADDON.getSetting('bstoken')}
-
-        sPost = json.dumps(sPost)
+        
+        try:
+            sPost = json.dumps(sPost).encode('utf-8')
+        except:
+            sPost = json.dumps(sPost)
 
         sAction = URL_API + 'sync/watchlist'
 
@@ -1029,10 +1056,7 @@ class cTrakt:
         # sUrl = oInputParameterHandler.getValue('siteUrl')
         sMovieTitle = oInputParameterHandler.getValue('file')
         # sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-        # ancien decodage
-        sMovieTitle = unicode(sMovieTitle, 'utf-8')  # converti en unicode pour aider aux convertions
-        sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'replace').decode('unicode_escape')  # vire accent et '\'
-        sMovieTitle = sMovieTitle.encode('utf-8').lower()  # on repasse en utf-8
+        sMovieTitle = self.decode(sMovieTitle,Unicode=True).lower()  # on repasse en utf-8
         sMovieTitle = Quote(sMovieTitle)
         sMovieTitle = re.sub('\(.+?\)', ' ', sMovieTitle)  # vire les tags entre parentheses
 
@@ -1044,14 +1068,7 @@ class cTrakt:
         # vire les espaces multiples et on laisse les espaces sans modifs car certains codent avec %20 d'autres avec +
         sMovieTitle = re.sub(' +', ' ', sMovieTitle)
 
-        ret = self.DIALOG.select('Sélectionner un Moteur de Recherche', ['vStream (Fiable mais plus complexe)', 'Alluc (Simple mais resultats non garantis)'])
-
-        if ret == 0:
-            self.vStreamSearch(sMovieTitle)
-        elif ret == 1:
-            # modif test préfére les accent supprimer é = e
-            sMovieTitle = sMovieTitle.replace('%C3%A9', 'e').replace('%C3%A0', 'a')
-            self.AllucSearch(sMovieTitle)
+        self.vStreamSearch(sMovieTitle)
 
     def vStreamSearch(self, sMovieTitle):
         oGui = cGui()
@@ -1062,16 +1079,6 @@ class cTrakt:
         oHandler.setText(sMovieTitle)
         # oHandler.setDisp(sDisp)
         aPlugins = oHandler.getAvailablePlugins()
-
-        oGui.setEndOfDirectory()
-
-    def AllucSearch(self, sMovieTitle):
-        oGui = cGui()
-
-        exec('from resources.sites import alluc_ee as search')
-        sUrl = 'http://www.alluc.ee/stream/lang%3Afr+' + sMovieTitle
-        searchUrl = "search.%s('%s')" % ('showMovies', sUrl)
-        exec(searchUrl)
 
         oGui.setEndOfDirectory()
 
