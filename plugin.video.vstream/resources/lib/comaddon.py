@@ -61,7 +61,7 @@ class addon():
         return xbmcaddon.Addon(self.addonId).getAddonInfo(info) if self.addonId else ADDONVS.getAddonInfo(info)
      
     def VSlang(self, lang):
-        return xbmc.translatePath(xbmcaddon.Addon(self.addonId).getLocalizedString(lang)) if self.addonId else xbmc.translatePath(ADDONVS.getLocalizedString(lang))
+        return VSPath(xbmcaddon.Addon(self.addonId).getLocalizedString(lang)) if self.addonId else VSPath(ADDONVS.getLocalizedString(lang))
         #Bug avec accent xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang)).decode('utf-8')
 
 """
