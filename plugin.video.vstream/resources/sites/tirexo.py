@@ -129,7 +129,7 @@ ANIM_VF_1080 = (URL_MAIN + 'animes-vf-1080p/', 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + 'animes-vostfr/', 'showMovies')
 ANIM_VOSTFRS_720 = (URL_MAIN + 'animes-vostfr-720p/', 'showMovies')
 ANIM_VOSTFRS_1080 = (URL_MAIN + 'animes-vostfr-1080p/', 'showMovies')
-FILM_ANIM = (URL_MAIN + 'films-mangas/', 'showMovies')
+FILM_ANIM = (URL_MAIN + 'films-animes/', 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'animes/', 'showMovies')
 
 DOC_NEWS = (URL_MAIN + 'emissions-tv-documentaires/souscate_doc-Documentaire/', 'showMovies')
@@ -313,13 +313,13 @@ def showInstall():
 def load():
     oGui = cGui()
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showDetail', '[COLOR red]Explication pour le site[/COLOR]', 'films.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showInstall', '[COLOR blue]Cliquer ici pour installer selenium[/COLOR]', 'films.png', oOutputParameterHandler)
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    #oGui.addDir(SITE_IDENTIFIER, 'showDetail', '[COLOR red]Explication pour le site[/COLOR]', 'films.png', oOutputParameterHandler)
+#
+#    oOutputParameterHandler = cOutputParameterHandler()
+#    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+#    oGui.addDir(SITE_IDENTIFIER, 'showInstall', '[COLOR blue]Cliquer ici pour installer selenium[/COLOR]', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -628,7 +628,7 @@ def showMovies(sSearch=''):
     elif 'collections/' in sUrl:
         sPattern = 'class="mov-t nowrap" href=".+?".+?<img src="\/([^"]+)" width="200px" height="320px" title="([^"]+)".+?data-link="([^"]+)"'
     else:
-        sPattern = 'class="mov-t nowrap" href="([^"]+)">.+?data-content="([^"]+)".+?<img src="\/([^"]+)".+?title="([^"]+)"'
+        sPattern = 'class="mov-t nowrap" href="([^"]+)">  <.+?data-content="([^"]+)".+?<img src="\/([^"]+)".+?title="([^"]+)"'
 
     oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -1147,7 +1147,7 @@ def Display_protected_link():
             if sHtmlContent.startswith('http'):
                 aResult_dlprotecte = (True, [sHtmlContent])
             else:
-                sPattern_dlprotecte = '<div class="alert">.+?<a href="(.+?)">'
+                sPattern_dlprotecte = '<div class="alert">.+?<a href="(.+?)"'
                 aResult_dlprotecte = oParser.parse(sHtmlContent, sPattern_dlprotecte)
 
         else:
