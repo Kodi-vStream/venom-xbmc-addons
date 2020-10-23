@@ -272,14 +272,6 @@ class cGuiElement:
         if self.__Year:
             sTitle2 = '%s [COLOR %s](%s)[/COLOR]' % (sTitle2, self.__sDecoColor, self.__Year)
 
-        #Py3
-        try:
-            if "Ã©" in sTitle2:
-                sTitle2 = sTitle2.encode("iso-8859-1", 'ignore')
-                sTitle2 = str(sTitle2, encoding="utf8", errors='ignore')
-        except:
-            pass
-
         # on repasse en utf-8
         try:
             return sTitle2.encode('utf-8')
@@ -300,10 +292,6 @@ class cGuiElement:
 
     def setTitle(self, sTitle):
         #Convertie les bytes en strs pour le replace.
-        if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-            if isinstance(sTitle, bytes):
-                sTitle = sTitle.decode('utf-8')
-        
         self.__sCleanTitle = sTitle.replace('[]', '').replace('()', '').strip()
         try:
             sTitle = sTitle.strip().decode('utf-8')
