@@ -1066,7 +1066,10 @@ def showSeriesHosters():
     # oGui.addText(SITE_IDENTIFIER, '[COLOR blue]Veuillez attendre que le navigateur se ferme tout seul [/COLOR]')
     # oGui.addText(SITE_IDENTIFIER, '[COLOR blue]Pour qu\'il puisse récupérer automatiquement le bon lien [/COLOR]')
 
-    sHtmlContent = cloudflare(sUrl)
+    oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
     sPattern = '<th scope="col" class="no-sort"><img alt=.+?>([^<>]+)</th>|href=\'([^\']+?)\'>Episode ([^>]+)<'
@@ -1128,7 +1131,11 @@ def Display_protected_link():
         # Temporairement car la flemme de se battre avec les redirections
         # oRequestHandler = cRequestHandler(sUrl)
         # oRequestHandler.addHeaderEntry('User-Agent', UA)
-        sUrl = redi(sUrl)
+        oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+        sHtmlContent = oRequestHandler.request()
+        sUrl = oRequestHandler.getRealUrl()
         # VSlog(sUrl)
 
     if "journaldupirate" in sUrl:
