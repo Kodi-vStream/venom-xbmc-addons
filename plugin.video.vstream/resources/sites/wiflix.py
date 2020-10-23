@@ -311,7 +311,7 @@ def sHowEpisodes():
 
             if aEntry[1]:
                 sHosterUrl = aEntry[1].replace('/vd.php?u=', '')
-                if 'players.wiflix.net' in sHosterUrl:
+                if 'players.wiflix.' in sHosterUrl:
                     oRequestHandler = cRequestHandler(sHosterUrl)
                     oRequestHandler.request()
                     sHosterUrl = oRequestHandler.getRealUrl()
@@ -342,7 +342,7 @@ def showHosters():
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry.replace('/vd.php?u=', '')
-            if 'players.wiflix.net' in sHosterUrl:
+            if 'players.wiflix.' in sHosterUrl:
                 oRequestHandler = cRequestHandler(sHosterUrl)
                 oRequestHandler.request()
                 sHosterUrl = oRequestHandler.getRealUrl()
