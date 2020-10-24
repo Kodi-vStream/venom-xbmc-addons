@@ -99,7 +99,13 @@ def showHoster():
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '<iframe src="([^"]+)".+?</iframe>'
-    iframeURL1 = oParser.parse(sHtmlContent, sPattern)[1][0]
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    if not aResult[1]:    # Pas de flux
+        oGui.setEndOfDirectory()
+        return
+    
+    iframeURL1 = aResult[1][0]
 
     oRequestHandler = cRequestHandler(iframeURL1)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
