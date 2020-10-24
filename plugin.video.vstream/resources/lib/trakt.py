@@ -340,7 +340,14 @@ class cTrakt:
             return elem
         else:
             if Unicode == True:
-                elem = unicodedata.normalize('NFD', elem).encode('ascii', 'ignore').decode('unicode_escape')
+
+                try:
+                    elem = unicodedata.normalize('NFD', unicode(elem)).encode('ascii', 'ignore').decode('unicode_escape')
+                except UnicodeDecodeError:
+                    elem = elem.decode('utf-8')
+                except:
+                    pass
+
             return elem.encode('utf-8')
 
     def getTrakt(self, url2=None):
@@ -536,7 +543,7 @@ class cTrakt:
                         sTitle = self.decode(sTitle)
                         searchtext = ('%s') % (sTitle)
                         sFile = ('%s - (%s)') % (sTitle, sYear)
-                        sTitle = ('%s - %s (S%02dE%02d)') % (sDate, sTitle.encode('utf-8').decode('ascii', 'ignore'), sSaison, sEpisode)
+                        sTitle = ('%s - %s (S%02dE%02d)') % (sDate, self.decode(sTitle, Unicode=True), sSaison, sEpisode)
 
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
