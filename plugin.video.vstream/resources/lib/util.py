@@ -33,7 +33,8 @@ class cUtil:
 
     def CheckOccurence(self, str1, str2):
         ignoreListe = ['3d', 'la', 'le', 'les', 'un', 'une', 'de', 'des', 'du', 'en', 'a', 'au', 'aux', 'the', 'in', 'of', 'and', 'mais', 'ou', 'no', 'dr', 'contre', 'qui',
-                       'et', 'donc', 'or', 'ni', 'ne', 'pas', 'car', 'je', 'tu', 'il', 'elle', 'on', 'nous', 'vous', 'ils', 'elles', 'i', 'you', 'he', 'she', 'we', 'they']
+                       'et', 'donc', 'or', 'ni', 'ne', 'pas', 'car', 'je', 'tu', 'il', 'elle', 'on', 'nous', 'vous', 'ils', 'elles', 'i', 'you', 'he', 'she', 'it', 'we', 'they',
+                       'my', 'your', 'his', 'its', 'our']
 
         str1 = str1.replace('+', ' ').replace('%20', ' ').replace(':', ' ').replace('-', ' ')
         str2 = str2.replace(':', ' ').replace('-', ' ')
