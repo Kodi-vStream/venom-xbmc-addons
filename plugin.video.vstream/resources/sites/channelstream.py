@@ -1,25 +1,20 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Arias800
-import base64
 import re
 import requests
 import json
 
 
-from resources.lib.comaddon import progress, VSlog
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.packer import cPacker
 from resources.lib.parser import cParser
-from resources.sites.freebox import play__
+from resources.sites.freebox import play__  # A garder, appel implicite
 from resources.lib.util import Quote
 from datetime import datetime, timedelta
-
-#import web_pdb;
 
 SITE_IDENTIFIER = 'channelstream'
 SITE_NAME = 'Channel Stream'
@@ -35,41 +30,39 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/5
 def load():
     oGui = cGui()
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', TV_FRENCH[0])
-    oGui.addDir(SITE_IDENTIFIER, TV_FRENCH[1], 'Chaine Francaise', 'news.png', oOutputParameterHandler)
+    liste = []
+    liste.append(['Généralistes', 'Chaîne de télévision généraliste', 'tv.png'])
+    liste.append(['Cinéma', 'Chaîne consacrée aux Film', 'films.png'])
+    liste.append(['Sport', 'Chaîne Sportive', 'sport.png'])
+    liste.append(['Science et Nature', 'Chaîne axés sur les sciences', 'buzz.png'])
+
+
+    for sTitle, sFiltre, sIcon in liste:
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', TV_FRENCH[0])
+        oOutputParameterHandler.addParameter('sFiltre', sFiltre)
+        oGui.addDir(SITE_IDENTIFIER, TV_FRENCH[1], sTitle, sIcon, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
 def showMovies():
     oGui = cGui()
+    oParser = cParser()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    sFiltre = oInputParameterHandler.getValue('sFiltre')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>', '')
-
+    sHtmlContent = oParser.abParse(sHtmlContent, sFiltre, '<!-- Type Chaîne -->')
     sPattern = 'location.href = \'\.(.+?)\'.+?src=\'(.+?)\'.+?<div align="center">(.+?)</div>'
 
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
-        oGui.addText(SITE_IDENTIFIER)
-
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             if not "+18" in str(aEntry[2]):
                 sTitle = aEntry[2]
                 sUrl2 = URL_MAIN + aEntry[0]
@@ -80,9 +73,7 @@ def showMovies():
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-                oGui.addDir(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+                oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -117,27 +108,18 @@ def showHoster():
 
     sPattern2 = 'var\s+cid[^\'"]+[\'"]{1}([0-9]+)'
     aResult = re.findall(sPattern2, sHtmlContent2)
-    #VSlog(sHtmlContent2)
-
-
 
     if aResult:
         str2 = aResult[0]
-        VSlog(str2)
         datetoken = int(getTimer()) * 1000
         
         jsonUrl = 'https://telerium.tv/streams/'+str2+'/'+str(datetoken)+'.json'
-        VSlog(jsonUrl)
         tokens = getRealTokenJson(jsonUrl,iframeURL1)
         m3url = tokens['url']
         nxturl = 'https://telerium.tv' + tokens['tokenurl']
-          #web_pdb.set_trace()
-
         
     realtoken = getRealTokenJson(nxturl, iframeURL1)[10][::-1]
     
-    #web_pdb.set_trace()
-
     try:
         m3url = m3url.decode("utf-8")
     except:
@@ -191,8 +173,6 @@ def getRealTokenJson(link, referer):
 
     realResp = requests.get(link, headers=headers, cookies=cookies, verify=False).content  # [1:-1]
 
-    #web_pdb.set_trace()
-    
     return json.loads(realResp)
 
 def getTimer():
