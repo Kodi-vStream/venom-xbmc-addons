@@ -1056,7 +1056,9 @@ def showLists():
             
             sId, sTitle, sType, sThumb, sFanart, sVote, sDesc, sYear = i['tmdb_id'], i['title'], i['media_type'], i['cover_url'], i['backdrop_url'], i['rating'], i['plot'], i['year']
 
-            sTitle = sTitle.encode("utf-8")
+            if not xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+                sTitle = sTitle.encode("utf-8")
+
             sDisplayTitle = "%s (%s)" % (sTitle, sVote)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -1066,7 +1068,11 @@ def showLists():
             oOutputParameterHandler.addParameter('sId', sId)
             oOutputParameterHandler.addParameter('sFanart', sFanart)
             oOutputParameterHandler.addParameter('sTmdbId', sId)
-            oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
+
+            if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+                oOutputParameterHandler.addParameter('searchtext', sTitle)
+            else:
+                oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
 
             cGui.CONTENT = "movies"
             oGuiElement = cGuiElement()
