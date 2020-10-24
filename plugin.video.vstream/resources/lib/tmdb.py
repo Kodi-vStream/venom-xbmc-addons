@@ -999,21 +999,15 @@ class cTMDb:
         if append_to_response:
             url += '&%s' % append_to_response
 
-        oRequestHandler = cRequestHandler(url)
+        response = urllib2.urlopen(url)
+        data = json.loads(response.read())
 
-        name = oRequestHandler.request()
+        #Au cas où urllib échoue la 1er fois.
+        if data is bool:
+            oRequestHandler = cRequestHandler(url)
+            test = oRequestHandler.request()
+            data = json.load(test)
 
-        # Permet de régler les problemes d'accents.
-        if '/lists' in action:
-            try:
-                name = unicode(name, 'utf-8')
-            except:
-                pass
-
-            name = unicodedata.normalize('NFD', name).encode('ascii', 'ignore').decode('unicode_escape')
-            name = name.encode('utf-8')
-
-        data = json.loads(name)
         if 'status_code' in data and data['status_code'] == 34:
             return {}
         
