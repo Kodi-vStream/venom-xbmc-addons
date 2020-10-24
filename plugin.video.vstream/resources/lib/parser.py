@@ -72,6 +72,6 @@ class cParser:
         
         startIdx = sHtmlContent.find(start)
         endIdx = sHtmlContent[startoffset + startIdx : ].find(end)
-        if endIdx>startIdx:
+        if endIdx>0:
             return sHtmlContent[startoffset + startIdx : startoffset + startIdx + endIdx]
         return sHtmlContent[startoffset + startIdx :]
