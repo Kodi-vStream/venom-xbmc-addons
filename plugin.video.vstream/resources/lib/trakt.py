@@ -299,7 +299,7 @@ class cTrakt:
 
             for List in json_lists:
                 url = URL_API + 'users/me/lists/' + List['ids']['slug'] + '/items'
-                liste.append([(List['name'] + ' (' + str(List['item_count']) + ')').encode('utf-8'), url])
+                liste.append([self.decode((List['name'] + ' (' + str(List['item_count']) + ')')), url])
 
         for sTitle, sUrl in liste:
 
@@ -721,7 +721,10 @@ class cTrakt:
                 return title if 'episode' not in what else show_title + ' - ' + title
 
         except:
-            return item['title']
+            try:
+                return item['title']
+            except:
+                return item['show']['title']
 
     def getBepisodes(self):
         oGui = cGui()
