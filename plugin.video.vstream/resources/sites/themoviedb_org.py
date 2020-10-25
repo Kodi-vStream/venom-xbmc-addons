@@ -235,7 +235,7 @@ def getContext():
     yn.append(False)
     lang.append(addons.VSlang(30447))
 
-    ret = dialogs.select('TMDB',lang)
+    ret = dialogs.VSselect(lang, 'TMDB')
     if ret > -1:
         return disp[ret], fow[ret], yn[ret]
 
