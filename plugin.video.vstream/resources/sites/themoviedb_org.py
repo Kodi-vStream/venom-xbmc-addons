@@ -526,9 +526,15 @@ def showMovies(sSearch = ''):
                 sId, sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['tmdb_id'], i['title'], i['genre'], i['cover_url'], i['backdrop_url'], i['plot'], i['year']
                 
                 if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-                    sTitle = sTitle.encode("latin1").decode('utf-8')
+                    try:
+                        sTitle = sTitle.encode("latin1").decode('utf-8')
+                    except:
+                        pass
                 else:
-                    sTitle = sTitle.encode("utf-8")
+                    try:
+                        sTitle = sTitle.encode("utf-8")
+                    except:
+                        pass
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', 'http://tmdb/%s' % sId)
