@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# S09 update 25/08/2020
+# S09 update 25/10/2020
 
 import re
 from resources.lib.gui.hoster import cHosterGui
@@ -209,7 +209,6 @@ def RequestHandlerSearch(searchs):
         return True, sHtmlContent, ' Requete ok'
     else:
         return False, sHtmlContent, 'Recherche : Aucun resultat'
-    return
 
 
 def RequestHandlerGenre(searchs):
@@ -426,6 +425,7 @@ def showMovies(sSearch=''):
                 else:
                     sDisplayTitle = sDisplayTitle.replace(': Serie ', '')
 
+            sThumb = sThumb.replace(' ','%20')
             if sThumb.startswith('poster'):
                 sThumb = URL_MAIN + sThumb
 
@@ -717,7 +717,7 @@ def GetHtmlInfo(sDesc, sQual, sYear, sHtmlContent):
             sDesc = str(aResult[1][0]).replace('  ', '')
     if (not sQual):
         sQual = ''
-        sPattern = 'Qualité.*?title.+?">([^<]*)<.a'
+        sPattern = 'finfo-title">Qualité.*?title.+?streaming">([^<]*)<.a'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sQual = str(aResult[1][0])
