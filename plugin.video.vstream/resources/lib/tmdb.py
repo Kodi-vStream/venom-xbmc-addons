@@ -1020,7 +1020,10 @@ class cTMDb:
             return
 
         sUrl = '%s%s?api_key=%s&session_id=%s' % (self.URL, action, self.api_key, tmdb_session)
-        sPost = json.dumps(post)
+        try:
+            sPost = json.dumps(post).encode('utf-8')
+        except:
+            sPost = json.dumps(post)
 
         headers = {'Content-Type': 'application/json'}
         req = urllib2.Request(sUrl, sPost, headers)
