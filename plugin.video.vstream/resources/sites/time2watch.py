@@ -16,6 +16,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import Noredirection, urlEncode
+from resources.lib.multihost import cMultiup
 
 ADDON = addon()
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
@@ -560,12 +561,25 @@ def decryptTime():
 
     if aResult[0] == True:
         for aEntry in aResult[1]:
+            if 'multiup' in aEntry:
+                aResult = cMultiup().GetUrls(aEntry)
 
-            oHoster = cHosterGui().checkHoster(aEntry)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, aEntry, sThumb)
+                if (aResult):
+                    for aEntry in aResult:
+                        sHosterUrl = aEntry
+
+                        oHoster = cHosterGui().checkHoster(sHosterUrl)
+                        if (oHoster != False):
+                            oHoster.setDisplayName(sMovieTitle)
+                            oHoster.setFileName(sMovieTitle)
+                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+            else:      
+                oHoster = cHosterGui().checkHoster(aEntry)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, aEntry, sThumb)
 
     oGui.setEndOfDirectory()
 
