@@ -199,7 +199,9 @@ class cHosterGui:
             try:    
                 if 'stream' in sHosterUrl:    
                     return self.getHoster('lien_direct')    
-            except:    
+            except:
+                pass
+            else:
                 return self.getHoster('dailymotion')
         if ('livestream' in sHostName):
             return self.getHoster('lien_direct')
