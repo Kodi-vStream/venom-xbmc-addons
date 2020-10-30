@@ -99,8 +99,6 @@ class PasteBinContent:
                 champ = 'URLS'
                 if len(hebergeur)>1:
                     self.HEBERGEUR = hebergeur[1].replace(' ','').replace('"','').replace('\'','')
-                    if not self.HEBERGEUR.endswith('/'):
-                        self.HEBERGEUR += '/'
             if champ in dir(self):
                 setattr(self, champ, idx)
             idx +=1
@@ -113,6 +111,7 @@ class PasteBinContent:
             for line in lines:
                 sHost = line[self.URLS]
                 if "{" in sHost:
+                    sHost = sHost.replace('{0', '{').replace(',0', ',')    # numérotation des épisodes 08 -> 8 (problème de décodage en octal)
                     sUrl = eval(sHost)
                     for link in sUrl.keys():
                         sUrl[link] = self.HEBERGEUR + sUrl[link] 
@@ -1185,16 +1184,22 @@ def showMovies(sSearch=''):
             if sGroupe not in groupes:
                 continue
 
+        # Filtrage par titre
+        sTitle = movie[pbContent.TITLE].strip()
+
         # l'ID TMDB
         sTmdbId = None
         if pbContent.TMDB >= 0:
             sTmdbId = movie[pbContent.TMDB].strip()
-            if sTmdbId in movieIds:
+            if sTmdbId:
+                if sTmdbId in movieIds:
+                    continue            # Filtre des doublons
+                movieIds.add(sTmdbId)
+        if not sTmdbId:
+            if sTitle in movieIds:
                 continue            # Filtre des doublons
-            movieIds.add(sTmdbId)
+            movieIds.add(sTitle)
 
-        # Filtrage par titre
-        sTitle = movie[pbContent.TITLE].strip()
         
         # Titre recherché
         if sSearchTitle:
@@ -1569,7 +1574,7 @@ def addPasteName():
     
     
     # Demande du label et controle si déjà existant
-    sLabel = oGui.showKeyBoard('', "Saisir un nom")
+    sLabel = oGui.showKeyBoard('', "[COLOR coral]Saisir un nom pour le dossier[/COLOR]")
     if sLabel == False:
         return
     if sLabel in names:
@@ -1633,7 +1638,7 @@ def addPasteID():
             settingID = pasteID
      
     # Demande de l'id PasteBin
-    pasteID = oGui.showKeyBoard('', "Saisir l'ID du PasteBin")
+    pasteID = oGui.showKeyBoard('', "[COLOR coral]Saisir l'ID du PasteBin[/COLOR]")
     if pasteID == False:
         return
     if pasteID in IDs:              # ID déjà dans le groupe
