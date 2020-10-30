@@ -78,12 +78,10 @@ class cHoster(iHoster):
         return self.__sUrl
 
     def getMediaLink(self):
-        ADDON = addon()
-        DIALOG = dialog()
-
         self.oPremiumHandler = cPremiumHandler(self.getPluginIdentifier())
         if (self.oPremiumHandler.isPremiumModeAvailable()):
-
+            ADDON = addon()
+            DIALOG = dialog()
             try:
                 mDefault = int(ADDON.getSetting("hoster_uptobox_mode_default"))
             except AttributeError:
@@ -107,7 +105,7 @@ class cHoster(iHoster):
             return self.__getMediaLinkByPremiumUser()
 
         else:
-            VSlog('no premium')
+            VSlog('UPTOBOX - no premium')
             return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
