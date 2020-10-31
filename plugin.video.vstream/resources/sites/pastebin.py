@@ -241,7 +241,7 @@ def showMenu():
 def showDetailMenu(pasteID, contenu):
     oGui = cGui()
     
-    sUrl = URL_MAIN #+ pasteBin
+    sUrl = URL_MAIN + '&numPage=1'#+ pasteBin
     if 'containFilms' in contenu:
         oOutputParameterHandler = cOutputParameterHandler()
         searchUrl = URL_SEARCH_MOVIES[0].replace(KEY_PASTE_ID, pasteID)
@@ -636,20 +636,14 @@ def showCast():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     siteUrl = oInputParameterHandler.getValue('siteUrl')
+    numItem = oInputParameterHandler.getValue('numItem')
+    numPage = oInputParameterHandler.getValue('numPage')
 
     sUrl, params = siteUrl.split('&',1)
     aParams = dict(param.split('=') for param in params.split('&'))
     sMedia = aParams['sMedia'] if 'sMedia' in aParams else 'film'
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
-    numItem = oInputParameterHandler.getValue('numItem')
-    numPage = oInputParameterHandler.getValue('numPage')
-
-    # Gestion de la pagination
-    if not numItem:
-        numItem = 0
-        numPage = 1
-    numItem = int(numItem)
-    numPage = int(numPage)
+    if not numPage and 'numPage' in aParams : numPage = aParams['numPage']
 
     pbContent = PasteBinContent()
     movies = []
@@ -676,6 +670,18 @@ def showCast():
                         acteurId, acteurName = acteur.split(':')
                         if acteurName not in listActeur:
                             listActeur[acteurName] = acteurId
+
+    # Gestion de la pagination
+    if not numItem:
+        numItem = 0
+    else:
+        numItem = int(numItem)
+    numPage = int(numPage)
+    if numPage>1 and numItem == 0:  # choix d'une page
+        numItem = (numPage-1) * ITEM_PAR_PAGE
+        if numItem > len(listActeur):   # accès direct à la dernière page
+            numPage = len(listActeur) / ITEM_PAR_PAGE
+            numItem = (numPage-1) * ITEM_PAR_PAGE
 
     nbItem = 0
     index = 0
@@ -818,12 +824,7 @@ def showSaga():
     aParams = dict(param.split('=') for param in params.split('&'))
     sMedia = aParams['sMedia'] if 'sMedia' in aParams else 'film'
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
-
-    if not numItem:
-        numItem = 0
-        numPage = 1
-    numItem = int(numItem)
-    numPage = int(numPage)
+    if not numPage and 'numPage' in aParams : numPage = aParams['numPage']
 
     pbContent = PasteBinContent()
     movies = []
@@ -853,6 +854,18 @@ def showSaga():
             else:
                 sagas[saga] = saga
             
+    # Gestion de la pagination
+    if not numItem:
+        numItem = 0
+    else:
+        numItem = int(numItem)
+    numPage = int(numPage)
+    if numPage>1 and numItem == 0:  # choix d'une page
+        numItem = (numPage-1) * ITEM_PAR_PAGE
+        if numItem > len(sagas):   # accès direct à la dernière page
+            numPage = len(sagas) / ITEM_PAR_PAGE
+            numItem = (numPage-1) * ITEM_PAR_PAGE
+
     nbItem = 0
     index = 0
     progress_ = progress().VScreate(SITE_NAME)
@@ -1054,12 +1067,6 @@ def showMovies(sSearch=''):
     if sSearch:
         siteUrl = sSearch
 
-    if not numItem:
-        numItem = 0
-        numPage = 1
-    numItem = int(numItem)
-    numPage = int(numPage)
-
     sSearchTitle = ''
     
     # Pour supporter les caracteres '&' et '+' dans les noms alors qu'ils sont réservés
@@ -1082,6 +1089,7 @@ def showMovies(sSearch=''):
     if 'sDirector' in aParams: sDirector = aParams['sDirector']
     if 'sCast' in aParams: sCast = aParams['sCast']
     if 'bRandom' in aParams: bRandom = aParams['bRandom']
+    if not numPage and 'numPage' in aParams : numPage = aParams['numPage']
 
     pbContent = PasteBinContent()
     movies = []
@@ -1104,6 +1112,18 @@ def showMovies(sSearch=''):
     # Dans un dossier => trie par années inversées (du plus récent)
     if sGroupe or sDirector or sCast:
         movies = sorted(movies, key=lambda line: line[pbContent.YEAR], reverse=True)
+
+    # Gestion de la pagination
+    if not numItem:
+        numItem = 0
+    else:
+        numItem = int(numItem)
+    numPage = int(numPage)
+    if numPage>1 and numItem == 0:  # choix d'une page
+        numItem = (numPage-1) * ITEM_PAR_PAGE
+        if numItem > len(movies):   # accès direct à la dernière page
+            numPage = len(movies) / ITEM_PAR_PAGE
+            numItem = (numPage-1) * ITEM_PAR_PAGE
 
     if bRandom:
         numItem = 0
