@@ -111,7 +111,7 @@ class PasteBinContent:
             for line in lines:
                 sHost = line[self.URLS]
                 if "{" in sHost:
-                    sHost = sHost.replace('{0', '{').replace(',0', ',')    # numérotation des épisodes 08 -> 8 (problème de décodage en octal)
+                    sHost = sHost.replace('{0', '{').replace('{:', '{0:').replace(',0', ',')    # numérotation des épisodes 08 -> 8 (problème de décodage en octal)
                     sUrl = eval(sHost)
                     for link in sUrl.keys():
                         sUrl[link] = self.HEBERGEUR + sUrl[link] 
