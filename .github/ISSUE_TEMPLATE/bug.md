@@ -21,7 +21,7 @@ Pour cela il nous faut:
 
 **Log**
 L’accès un votre fichier log seras un plus. Pour savoir comment uploader votre log voir:
-http://www.vstream.ml/docs/outils/
+https://kodi-vstream.github.io/docs/outils/
 
 **Image**
 Si votre soucis est visuel faite une capture d’écran.
