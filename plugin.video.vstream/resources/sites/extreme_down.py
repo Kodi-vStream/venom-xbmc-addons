@@ -19,7 +19,7 @@ UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/
 headers = {'User-Agent': UA}
 
 SITE_IDENTIFIER = 'extreme_down'
-SITE_NAME = '[COLOR violet]Extreme Down[/COLOR] Kodi 19'
+SITE_NAME = '[COLOR violet]Extreme Down Kodi 19[/COLOR]'
 SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
 URL_MAIN = 'https://www.extreme-down.video/'
@@ -97,7 +97,8 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuAutre', 'Autres', 'tv.png', oOutputParameterHandler)
-
+    
+    oGui.setEndOfDirectory()
 
 def showMenuFilms():
     oGui = cGui()
