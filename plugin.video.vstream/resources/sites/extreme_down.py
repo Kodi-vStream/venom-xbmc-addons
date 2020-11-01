@@ -19,7 +19,7 @@ UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/
 headers = {'User-Agent': UA}
 
 SITE_IDENTIFIER = 'extreme_down'
-SITE_NAME = '[COLOR violet]Extreme Down[/COLOR]'
+SITE_NAME = '[COLOR violet]Extreme Down[/COLOR] Kodi 19'
 SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
 URL_MAIN = 'https://www.extreme-down.video/'
@@ -97,13 +97,6 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuAutre', 'Autres', 'tv.png', oOutputParameterHandler)
-
-    if ADDON.getSetting('token_alldebrid') == "":
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-        oGui.addDir(SITE_IDENTIFIER, 'getToken', '[COLOR red]Les utilisateurs d\'Alldebrid cliquez ici.[/COLOR]', 'films.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
 
 
 def showMenuFilms():
@@ -284,18 +277,9 @@ def showMenuAutre():
     oGui.setEndOfDirectory()
 
 
-def getToken():
-    ADDON = addon()
-    oGui = cGui()
-
-    token = oGui.showKeyBoard(heading="Entrez votre token")
-    ADDON.setSetting('token_alldebrid', token)
-    dialog().VSinfo('Token Ajouter', "Extreme-Download", 15)
-    oGui.setEndOfDirectory()
-
-
 def showSearch():
     oGui = cGui()
+    
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -496,7 +480,6 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         oGui.setEndOfDirectory()
-
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -727,71 +710,74 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
-
-def RecapchaBypass():  # Ouverture de Chrome Launcher s'il est intallez
-    ADDON = addon()
+def RecapchaBypass():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    Token_Alldebrid = ADDON.getSetting('token_alldebrid')
 
-    if Token_Alldebrid == "":
-        RecapchaBypassOld(sUrl)
+    from resources.lib import librecaptcha
+    test = librecaptcha.get_token(
+        api_key="6LeH9lwUAAAAAGgg9ZVf7yOm0zb0LlcSai8t8-2o",
+        site_url=sUrl,
+        user_agent= UA,
+        gui=False,
+        debug=False,
+    )
+
+    if test is None:
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Resolution du Recaptcha annulé[/COLOR]')
+
     else:
-        sUrl_Bypass = "https://api.alldebrid.com/v4/link/redirector?agent=service&version=1.0-&apikey=" + Token_Alldebrid + "&link=" + sUrl
-
-    oRequestHandler = cRequestHandler(sUrl_Bypass)
-    sHtmlContent = json.loads(oRequestHandler.request())
-
-    HostURL = sHtmlContent["data"]["links"]
-    for sHosterUrl in HostURL:
-
-        oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
-            oHoster.setDisplayName(sMovieTitle)
-            oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+        #N'affiche pas directement le liens car sinon Kodi crash.
+        sDisplayTitle = "Recaptcha passé avec succès, cliquez pour afficher les liens"
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+        oOutputParameterHandler.addParameter('sThumb', sThumb)
+        oOutputParameterHandler.addParameter('Token', test)
+        oGui.addLink(SITE_IDENTIFIER, 'getHost', sDisplayTitle, sThumb, "", oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
-
-def RecapchaBypassOld(sUrl):  # Ouverture de Chrome Launcher s'il est intallez
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    sPath = "special://home/addons/plugin.program.chrome.launcher/default.py"
-
-    if xbmcvfs.exists(sPath):
-        sUrl2 = QuotePlus(sUrl)
-        xbmc.executebuiltin('RunPlugin("plugin://plugin.program.chrome.launcher/?url=' + sUrl2 + '&mode=showSite&stopPlayback=yes")')
-
-    getHoster()
-
-
-def getHoster():  # Ouvrir le clavier + requete
+def getHost():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    test = oInputParameterHandler.getValue('Token')
 
-    # appelle le clavier xbmc
-    sSearchText = oGui.showKeyBoard(heading="Mettre le lien du hoster après avoir passer les Recaptchas manuellement")
-    if (sSearchText != False):
-        sUrl = sSearchText
+    data = 'g-recaptcha-response=' + test + '&submit_captcha=1'
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.setRequestType(1)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
+    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip')
+    oRequestHandler.addHeaderEntry('Referer', sUrl)
+    oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+    oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
+    oRequestHandler.addParametersLine(data)
+    sHtmlContent = oRequestHandler.request()
 
-        sHosterUrl = str(sUrl)
-        oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
-            oHoster.setDisplayName(sMovieTitle)
-            oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+    sPattern = '<div><span class="lien"><a target="_blank" href="(.+?)">'
 
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+
+        for aEntry in aResult[1]:
+            sHosterUrl = aEntry
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
     oGui.setEndOfDirectory()
-
-
+    
 def CutQual(sHtmlContent):
     oParser = cParser()
     sPattern = '<span class="other-qualities">&Eacute;galement disponible en :</span>(.+?)</div>'
