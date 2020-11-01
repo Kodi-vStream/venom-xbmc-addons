@@ -19,7 +19,7 @@ UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/
 headers = {'User-Agent': UA}
 
 SITE_IDENTIFIER = 'extreme_down'
-SITE_NAME = '[COLOR violet]Extreme Down Kodi 19[/COLOR]'
+SITE_NAME = '[COLOR violet]Extreme Down[/COLOR]'
 SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
 URL_MAIN = 'https://www.extreme-down.video/'
@@ -45,6 +45,8 @@ MOVIE_BLURAYVOSTFR = (URL_MAIN + 'films-vostfr/films-1080p-vostfr', 'showMovies'
 MOVIE_3D = (URL_MAIN + 'films-new-hd/new-full-bluray-3d', 'showMovies')
 MOVIE_FULL1080P = (URL_MAIN + 'films-new-hd/new-full-bluray', 'showMovies')
 MOVIE_FULL4K = (URL_MAIN + 'films-new-ultrahd/new-full-bluray-ultrahd-4k', 'showMovies')
+MOVIE_WEBRIP4K = (URL_MAIN + 'films-new-ultrahd/new-webrip-4k', "showMovies")
+MOVIE_REMUX4K = (URL_MAIN + 'films-new-ultrahd/new-ultrahd-4k', "showMovies")
 MOVIE_LIGHT720 = (URL_MAIN + 'films-hdlight/hdlight-720p', 'showMovies')
 MOVIE_LIGHT1080 = (URL_MAIN + 'films-hdlight/hdlight-1080p', 'showMovies')
 MOVIE_LIGHTBDRIP = (URL_MAIN + 'films-new-hd/new-bdrip-720p', 'showMovies')
@@ -98,6 +100,11 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuAutre', 'Autres', 'tv.png', oOutputParameterHandler)
     
+    if ADDON.getSetting('token_alldebrid') == "":
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+        oGui.addDir(SITE_IDENTIFIER, 'getToken', '[COLOR red]Les utilisateurs d\'Alldebrid cliquez ici.[/COLOR]', 'films.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
 
 def showMenuFilms():
@@ -145,7 +152,15 @@ def showMenuFilms():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_FULL4K[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_FULL4K[1], 'REMUX 4K', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_FULL4K[1], 'Bluray 4K', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_REMUX4K[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_REMUX4K[1], 'Remux 4K', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_WEBRIP4K[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_WEBRIP4K[1], 'Webrip 4K', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIGHT720[0])
@@ -275,6 +290,15 @@ def showMenuAutre():
     oOutputParameterHandler.addParameter('misc', True)
     oGui.addDir(SITE_IDENTIFIER, SPECTACLE_NEWS[1], "Spectacle et théatre (Derniers ajouts)", 'buzz.png', oOutputParameterHandler)
 
+    oGui.setEndOfDirectory()
+
+def getToken():
+    ADDON = addon()
+    oGui = cGui()
+
+    token = oGui.showKeyBoard(heading="Entrez votre token")
+    ADDON.setSetting('token_alldebrid', token)
+    dialog().VSinfo('Token Ajouter', "Extreme-Download", 15)
     oGui.setEndOfDirectory()
 
 
@@ -712,33 +736,51 @@ def showHosters():
     oGui.setEndOfDirectory()
 
 def RecapchaBypass():
+    ADDON = addon()
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    Token_Alldebrid = ADDON.getSetting('token_alldebrid')
 
-    from resources.lib import librecaptcha
-    test = librecaptcha.get_token(
-        api_key="6LeH9lwUAAAAAGgg9ZVf7yOm0zb0LlcSai8t8-2o",
-        site_url=sUrl,
-        user_agent= UA,
-        gui=False,
-        debug=False,
-    )
+    if Token_Alldebrid != "":
+        sUrl_Bypass = "https://api.alldebrid.com/v4/link/redirector?agent=service&version=1.0-&apikey=" + Token_Alldebrid + "&link=" + sUrl
 
-    if test is None:
-        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Resolution du Recaptcha annulé[/COLOR]')
+        oRequestHandler = cRequestHandler(sUrl_Bypass)
+        sHtmlContent = json.loads(oRequestHandler.request())
+
+        HostURL = sHtmlContent["data"]["links"]
+        for sHosterUrl in HostURL:
+
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     else:
-        #N'affiche pas directement le liens car sinon Kodi crash.
-        sDisplayTitle = "Recaptcha passé avec succès, cliquez pour afficher les liens"
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-        oOutputParameterHandler.addParameter('sThumb', sThumb)
-        oOutputParameterHandler.addParameter('Token', test)
-        oGui.addLink(SITE_IDENTIFIER, 'getHost', sDisplayTitle, sThumb, "", oOutputParameterHandler)
+        from resources.lib import librecaptcha
+        test = librecaptcha.get_token(
+            api_key="6LeH9lwUAAAAAGgg9ZVf7yOm0zb0LlcSai8t8-2o",
+            site_url=sUrl,
+            user_agent= UA,
+            gui=False,
+            debug=False,
+        )
+
+        if test is None:
+            oGui.addText(SITE_IDENTIFIER, '[COLOR red]Resolution du Recaptcha annulé[/COLOR]')
+
+        else:
+            #N'affiche pas directement le liens car sinon Kodi crash.
+            sDisplayTitle = "Recaptcha passé avec succès, cliquez pour afficher les liens"
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('Token', test)
+            oGui.addLink(SITE_IDENTIFIER, 'getHost', sDisplayTitle, sThumb, "", oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
