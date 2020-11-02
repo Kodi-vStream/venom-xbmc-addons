@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# S09 update 25/10/2020
+# S09 update 02/11/2020
 
 import re
 from resources.lib.gui.hoster import cHosterGui
@@ -282,7 +282,6 @@ def showMovies(sSearch=''):
         sbool, sHtmlContent, mes = RequestHandlerSearch(sUrl)
         if sbool == False:
             oGui.addText(SITE_IDENTIFIER, mes)
-            oGui.setEndOfDirectory()
             return
 
     elif URL_MAIN + 'recherche' in sUrl:  # 1 seule RequestHandlerGenre() if  genre-0.html
