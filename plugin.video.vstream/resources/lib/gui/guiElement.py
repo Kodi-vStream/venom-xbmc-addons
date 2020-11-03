@@ -298,6 +298,12 @@ class cGuiElement:
         except:
             pass
 
+        #Python 3 decode sTitle
+        try:
+            sTitle = sTitle.encode('latin-1').decode('utf-8')
+        except:
+            pass
+
         if not sTitle.startswith('[COLOR'):
             self.__sTitle = self.TraiteTitre(sTitle)
         else:
