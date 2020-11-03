@@ -195,7 +195,7 @@ def showHosters():
         list_hoster= []
         for aEntry in aResult[1]:
 
-            sHosterUrl = aEntry
+            sHosterUrl = aEntry.strip()
             if not sHosterUrl in list_hoster:
                     list_hoster.append(sHosterUrl)
             else:
