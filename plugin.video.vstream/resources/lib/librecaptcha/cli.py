@@ -14,13 +14,20 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with librecaptcha.  If not, see <http://www.gnu.org/licenses/>.
+from __future__ import with_statement
+from __future__ import absolute_import
 from resources.lib.comaddon import dialog, VSlog
 
 from .errors import UserError
 from .frontend import Frontend
 from .gui import cInputWindow, cInputWindowYesNo
 from threading import Thread, RLock
-from queue import Queue
+
+try:
+    from Queue import Queue
+except:
+    from queue import Queue
+
 import json
 import time
 import xbmcvfs, re
@@ -29,7 +36,7 @@ Objectif = ""
 DimTab = []
 STRINGS_PATH = 'special://home/userdata/addon_data/plugin.video.vstream'
 
-class CliSolver:
+class CliSolver(object):
     def __init__(self, solver):
         self.solver = solver
         self.__image_procs = []
@@ -47,7 +54,7 @@ class CliSolver:
 
 class CliDynamicSolver(CliSolver):
     def __init__(self, solver):
-        super().__init__(solver)
+        super(CliDynamicSolver, self).__init__(solver)
         solver.on_initial_image = self.handle_initial_image
         solver.on_tile_image = self.handle_tile_image
         self.image_open = False
@@ -65,7 +72,7 @@ class CliDynamicSolver(CliSolver):
         solver.finish()
 
     def show_imageNewTile(self, image):
-        oSolver = cInputWindowYesNo(captcha=image, msg="Est-ce que cette image est en lien avec le thème ?", roundnum=1)
+        oSolver = cInputWindowYesNo(captcha=image, msg="Est-ce que cette image est en lien avec le theme ?", roundnum=1)
         retArg = oSolver.get()
         return retArg
 
@@ -99,12 +106,15 @@ class CliDynamicSolver(CliSolver):
             delay and time.sleep(delay)
             with self.lock:
                 self.select_tile_sync(index)
-        Thread(target=target, daemon=True).start()
+                
+        myThread = Thread(target=target)
+        myThread.daemon = True
+        myThread.start()
 
 
 class CliMultiCaptchaSolver(CliSolver):
     def __init__(self, solver):
-        super().__init__(solver)
+        super(CliMultiCaptchaSolver, self).__init__(solver)
         solver.on_image = self.handle_image
 
     def handle_image(self, image, **kwargs):
@@ -130,7 +140,7 @@ this network.
 
 class Cli(Frontend):
     def __init__(self, recaptcha):
-        super().__init__(recaptcha)
+        super(Cli, self).__init__(recaptcha)
         rc = recaptcha
         rc.on_goal = self.handle_goal
         rc.on_challenge = self.handle_challenge
@@ -144,13 +154,20 @@ class Cli(Frontend):
         if goal:
             return
         global Objectif, DimTab
-        
+
         ID = json.dumps(meta).split(',')[0].replace('[','')
-        f = xbmcvfs.File(STRINGS_PATH + "/data.js")
+
+        f = xbmcvfs.File(STRINGS_PATH + "/data.txt")
         content = f.read()
         f.close()
-        Objectif = re.search('case '+ID+'.+?=".+?<strong>(.+?)</strong>', content).group(1).encode('utf-8').decode('unicode-escape')
-        DimTab = [int(json.dumps(meta).split(',')[3]),int(json.dumps(meta).split(',')[4])]
+
+        #Le deuxieme theme, si il est disponible, est plus juste que le 1er.
+        try:
+            Objectif = re.search('case "'+ID+'.+?=".+?<strong>(.+?)</strong>', content).group(2).encode('utf-8').decode('unicode-escape')
+        except:
+            Objectif = re.search('case '+ID+'.+?=".+?<strong>(.+?)</strong>', content).group(1).encode('utf-8').decode('unicode-escape')  
+                      
+        DimTab = [int(json.dumps(meta).split(',')[3]),int(json.dumps(meta).split(u',')[4])]
 
     def handle_challenge(self, ctype, **kwargs):
         if not self._first:

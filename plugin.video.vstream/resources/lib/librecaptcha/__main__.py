@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with librecaptcha.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
 from .errors import UserError, UserExit
 from .librecaptcha import get_token, __version__
 from .user_agents import random_user_agent
@@ -58,7 +59,7 @@ Options:
 
 
 def usage(file=sys.stdout):
-    print(USAGE, end="", file=file)
+    print (USAGE)
 
 
 def usage_error(exit=True):
@@ -67,7 +68,7 @@ def usage_error(exit=True):
         sys.exit(1)
 
 
-class ParsedArgs:
+class ParsedArgs(object):
     def __init__(self):
         self.parse_error = None
         self.api_key = None
@@ -79,7 +80,7 @@ class ParsedArgs:
         self.version = False
 
 
-class ArgParser:
+class ArgParser(object):
     def __init__(self, args):
         self.args = args
         self.index = 0
@@ -144,10 +145,10 @@ class ArgParser:
         if arg == "--":
             self.options_done = True
             return True
-        if re.match(r"--[^-]", arg):
+        if re.match("--[^-]", arg):
             self.parse_long_option(arg)
             return True
-        if re.match(r"-[^-]", arg):
+        if re.match("-[^-]", arg):
             self.parse_short_option(arg)
             return True
         return False
@@ -195,26 +196,25 @@ value of the "g-recaptcha-response" field.
 """
 
 
-def run(args: ParsedArgs):
+def run(args):
     random_ua = False
     user_agent = args.user_agent
     if args.user_agent is None:
         random_ua = True
         user_agent = random_user_agent()
     if args.debug:
-        print("User-agent string: {}".format(user_agent), file=sys.stderr)
+        print ("User-agent string: {}".format(user_agent))
 
     uvtoken = get_token(
         args.api_key, args.site_url, user_agent,
         gui=args.gui, debug=args.debug,
     )
-    print(GOT_TOKEN_MSG)
+    print (GOT_TOKEN_MSG)
     if random_ua:
-        print("Note: The following user-agent string was used:")
-        print(user_agent)
-        print()
-    print("Token:")
-    print(uvtoken)
+        print ("Note: The following user-agent string was used:")
+        print (user_agent)
+    print ("Token:")
+    print (uvtoken)
 
 
 UNEXPECTED_ERR_MSG = """\
@@ -222,21 +222,19 @@ An unexpected error occurred. The exception traceback is shown below:
 """
 
 
-def run_or_exit(args: ParsedArgs):
+def run_or_exit(args):
     if args.debug:
         return run(args)
     try:
         return run(args)
     except UserExit:
         sys.exit(2)
-    except UserError as e:
-        print(e.message, file=sys.stderr)
+    except UserError:
         sys.exit(1)
     except KeyboardInterrupt:
-        print(file=sys.stderr)
         sys.exit(2)
     except Exception:
-        print(UNEXPECTED_ERR_MSG, file=sys.stderr)
+        print (UNEXPECTED_ERR_MSG)
         raise
 
 
@@ -246,9 +244,8 @@ def main():
     error = parsed.parse_error
 
     if error is not None:
-        print(error, file=sys.stderr)
-        print("For usage information, run: {} --help".format(CMD),
-              file=sys.stderr)
+        print (error)
+        print ("For usage information, run: {} --help".format(CMD))
         sys.exit(1)
 
     if parsed.help:
@@ -256,7 +253,7 @@ def main():
         return
 
     if parsed.version:
-        print(__version__)
+        print (__version__)
         return
     run_or_exit(parsed)
 

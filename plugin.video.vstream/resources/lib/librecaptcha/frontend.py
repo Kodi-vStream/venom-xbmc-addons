@@ -16,7 +16,7 @@
 # along with librecaptcha.  If not, see <http://www.gnu.org/licenses/>.
 
 
-class Frontend:
+class Frontend(object):
     def __init__(self, recaptcha):
         self.rc = rc = recaptcha
         rc.on_token = self.__handle_token
@@ -24,8 +24,8 @@ class Frontend:
     def __handle_token(self, token, **kwargs):
         self.on_token(token)
 
-    def on_token(self, token: str, **kwargs):
-        """Callback; set this attribute in the parent class."""
+    def on_token(self, token, **kwargs):
+        u"""Callback; set this attribute in the parent class."""
         raise NotImplementedError
 
     def run(self, callback=None):

@@ -14,7 +14,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with librecaptcha.  If not, see <http://www.gnu.org/licenses/>.
-
+from resources.lib.comaddon import progress, VSlog
 from . import cli
 from .errors import GtkImportError, UserError
 from .recaptcha import ReCaptcha
@@ -25,12 +25,12 @@ __version__ = "0.6.3-dev"
 def _get_gui():
     try:
         from . import gui
-    except GtkImportError as e:
+    except GtkImportError:
         raise UserError(
             "Error: Could not load the GUI. Is PyGObject installed?\n"
             "Try (re)installing librecaptcha[gtk] with pip.\n"
             "For more details, add the --debug option.",
-        ) from e
+        )
     return gui
 
 
@@ -42,13 +42,24 @@ def has_gui():
     return True
 
 
-def get_token(api_key, site_url, user_agent, *, gui=False, debug=False):
+def get_token(api_key, site_url, user_agent, **_3to2kwargs):
+    if 'debug' in _3to2kwargs:
+        debug = _3to2kwargs['debug']; del _3to2kwargs['debug']
+    else:
+        debug = False
+
+    if 'gui' in _3to2kwargs:
+        gui = _3to2kwargs['gui']; del _3to2kwargs['gui']
+    else:
+        gui = False
+        
     rc = ReCaptcha(api_key, site_url, user_agent, debug=debug)
     ui = (_get_gui().Gui if gui else cli.Cli)(rc)
+
     uvtoken = None
 
     def callback(token):
-        nonlocal uvtoken
-        uvtoken = token
+        get_token.uvtoken = token
+        
     ui.run(callback)
-    return uvtoken
+    return get_token.uvtoken

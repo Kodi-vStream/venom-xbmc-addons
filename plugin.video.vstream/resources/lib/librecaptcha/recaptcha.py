@@ -14,19 +14,27 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with librecaptcha.  If not, see <http://www.gnu.org/licenses/>.
-from resources.lib.comaddon import progress, VSlog  # import du dialog progress
+from resources.lib.comaddon import VSlog  # import du dialog progress
 from .errors import UserError
 from .extract_strings import extract_and_save
+from .monotonic import monotonic
 
-from html.parser import HTMLParser
 from threading import Thread
-from urllib.parse import urlparse
+
+try:
+    from html.parser import HTMLParser
+    from urllib.parse import urlparse
+except:
+    from HTMLParser import HTMLParser
+    from urlparse import urlparse
+    
 
 import requests
 import base64
 import json
 import re
 import time
+import xbmcvfs
 
 BASE_URL = "https://www.google.com/recaptcha/api2/"
 API_JS_URL = "https://www.google.com/recaptcha/api.js"
@@ -61,8 +69,13 @@ def get_rc_site_url(url):
 
 def rc_base64(string):
     data = string
-    if isinstance(string, str):
-        data = string.encode()
+    try:
+        if isinstance(string, unicode):
+            data = string.encode()
+    except:
+        if isinstance(string, str):
+            data = string.encode()   
+
     return base64.b64encode(data, b"-_").decode().replace("=", ".")
 
 
@@ -100,15 +113,15 @@ def get_rresp(uvresp):
 
 def get_js_strings(user_agent, rc_version):
     def get_json():
-        with open(STRINGS_PATH) as f:
-            version, text = f.read().split("\n", 1)
-            if version != "{}/{}".format(STRINGS_VERSION, rc_version):
-                raise OSError("Incorrect version: {}".format(version))
-            return json.loads(text)
+        f = xbmcvfs.File(STRINGS_PATH)
+        version, text = f.read().split("\n", 1)
+        if version != "{}/{}".format(STRINGS_VERSION, rc_version):
+            raise OSError("Incorrect version: {}".format(version))
+        return json.loads(text)
 
     try:
         return get_json()
-    except (OSError, ValueError, json.JSONDecodeError):
+    except (OSError, ValueError):
         pass
 
     result = extract_and_save(
@@ -119,7 +132,7 @@ def get_js_strings(user_agent, rc_version):
 
 
 def get_rc_version(user_agent):
-    match = re.search(r"/recaptcha/releases/(.+?)/", requests.get(
+    match = re.search("/recaptcha/releases/(.+?)/", requests.get(
         API_JS_URL, headers={
             "User-Agent": user_agent,
         },
@@ -129,7 +142,7 @@ def get_rc_version(user_agent):
     return match.group(1)
 
 
-class Solver:
+class Solver(object):
     def __init__(self, recaptcha):
         self.rc = recaptcha
 
@@ -138,7 +151,7 @@ class Solver:
         raise NotImplementedError
 
 
-class HasGrid:
+class HasGrid(object):
     @property
     def num_rows(self):
         return self.dimensions[0]
@@ -154,7 +167,7 @@ class HasGrid:
 
 class DynamicSolver(Solver, HasGrid):
     def __init__(self, recaptcha, pmeta):
-        super().__init__(recaptcha)
+        super(DynamicSolver, self).__init__(recaptcha)
         self.selections = []
         meta = get_meta(pmeta, 1)
         self.meta = meta
@@ -185,7 +198,7 @@ class DynamicSolver(Solver, HasGrid):
         return max(self.get_timeout(i) for i in range(self.num_tiles))
 
     def get_timeout(self, index):
-        elapsed = time.monotonic() - self.last_request_map[index]
+        elapsed = monotonic() - self.last_request_map[index]
         duration = max(DYNAMIC_SELECT_DELAY - elapsed, 0)
         return duration
 
@@ -201,7 +214,9 @@ class DynamicSolver(Solver, HasGrid):
             time.sleep(self.get_timeout(index))
             self.on_tile_image(index, image)
         image = self.replace_tile(index)
-        Thread(target=target, daemon=True).start()
+        myThread = Thread(target=target)
+        myThread.daemon = True
+        myThread.start()
 
     def replace_tile(self, index):
         real_index = self.tile_index_map[int(index)]
@@ -211,7 +226,7 @@ class DynamicSolver(Solver, HasGrid):
             "ds": "[{}]".format(real_index),
         })
 
-        self.last_request_map[index] = time.monotonic()
+        self.last_request_map[index] = monotonic()
         data = load_rc_json(r.text)
         self.latest_index += 1
         self.tile_index_map[index] = self.latest_index
@@ -229,7 +244,7 @@ class DynamicSolver(Solver, HasGrid):
 
 class MultiCaptchaSolver(Solver, HasGrid):
     def __init__(self, recaptcha, pmeta):
-        super().__init__(recaptcha)
+        super(MultiCaptchaSolver, self).__init__(recaptcha)
         self.selection_groups = []
         self.dimensions = None
         self.challenge_type = None
@@ -290,7 +305,7 @@ class MultiCaptchaSolver(Solver, HasGrid):
         self.on_image(image)
 
 
-class ReCaptcha:
+class ReCaptcha(object):
     def __init__(self, api_key, site_url, user_agent, debug=False,
                  make_requests=True):
         self.api_key = api_key
@@ -308,31 +323,32 @@ class ReCaptcha:
             self.rc_version = get_rc_version(self.user_agent)
             self.js_strings = get_js_strings(self.user_agent, self.rc_version)
 
-    def on_goal(goal: str, meta, *, raw: str):
+    def on_goal(goal, meta, **_3to2kwargs):
+        raw = _3to2kwargs['raw']; del _3to2kwargs['raw']
         """Callback; set this attribute in the parent class."""
         raise NotImplementedError
 
-    def on_token(token: str, **kwargs):
+    def on_token(token, **kwargs):
         """Callback; set this attribute in the parent class."""
         raise NotImplementedError
 
-    def on_challenge(type: str, **kwargs):
+    def on_challenge(type, **kwargs):
         """Callback (optional); set this attribute in the parent class."""
         pass
 
-    def on_challenge_dynamic(solver: DynamicSolver, **kwargs):
+    def on_challenge_dynamic(solver, **kwargs):
         """Callback; set this attribute in the parent class."""
         raise NotImplementedError
 
-    def on_challenge_multicaptcha(solver: MultiCaptchaSolver, **kwargs):
+    def on_challenge_multicaptcha(solver, **kwargs):
         """Callback; set this attribute in the parent class."""
         raise NotImplementedError
 
-    def on_challenge_blocked(type: str, **kwargs):
+    def on_challenge_blocked(type, **kwargs):
         """Callback; set this attribute in the parent class."""
         raise NotImplementedError
 
-    def on_challenge_unknown(type: str, **kwargs):
+    def on_challenge_unknown(type, **kwargs):
         """Callback; set this attribute in the parent class."""
         raise NotImplementedError
 
@@ -340,18 +356,17 @@ class ReCaptcha:
         start = 0
         matching_strings = []
 
-        def try_find():
-            nonlocal start
+        def try_find(start):
             index = self.js_strings.index(id, start)
             for i in range(FIND_GOAL_SEARCH_DISTANCE):
                 next_str = self.js_strings[index + i + 1]
-                if re.search(r"\bselect all\b", next_str, re.I):
+                if re.search("\bselect all\b", next_str, re.I):
                     matching_strings.append((i, index, next_str))
             start = index + FIND_GOAL_SEARCH_DISTANCE + 1
 
         try:
             while True:
-                try_find()
+                try_find(start)
         except (ValueError, IndexError):
             pass
 
@@ -376,7 +391,7 @@ class ReCaptcha:
             headers["Accept-Language"] = "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3"
         return headers
 
-    def get(self, url, *, params=None, api=True, headers=None,
+    def get(self, url, params=None, api=True, headers=None,
             allow_errors=None, **kwargs):
         params = params or {}
         if api:
@@ -387,13 +402,13 @@ class ReCaptcha:
 
         r = requests.get(
             get_full_url(url), params=params, headers=headers,
-            **kwargs,
+            **kwargs
         )
         if not (allow_errors is True or r.status_code in (allow_errors or {})):
             r.raise_for_status()
         return r
 
-    def post(self, url, *, params=None, data=None, api=True, headers=None,
+    def post(self, url, params=None, data=None, api=True, headers=None,
              allow_errors=None, no_debug_response=False, **kwargs):
         params = params or {}
         data = data or {}
@@ -405,7 +420,7 @@ class ReCaptcha:
 
         r = requests.post(
             get_full_url(url), params=params, data=data, headers=headers,
-            **kwargs,
+            **kwargs
         )
         if not (allow_errors is True or r.status_code in (allow_errors or {})):
             r.raise_for_status()
@@ -415,7 +430,7 @@ class ReCaptcha:
         class Parser(HTMLParser):
             def __init__(p_self):
                 p_self.token = None
-                super().__init__()
+                HTMLParser.__init__(p_self)
 
             def handle_starttag(p_self, tag, attrs):
                 attrs = dict(attrs)
@@ -469,7 +484,7 @@ class ReCaptcha:
         pmeta = rresp[4]
         self.current_token = rresp[1]
         
-        VSlog("Captcha type :" + str(challenge_type) )
+        VSlog("Captcha type :" + str(challenge_type))
 
         solver_class = {
             "dynamic": DynamicSolver,

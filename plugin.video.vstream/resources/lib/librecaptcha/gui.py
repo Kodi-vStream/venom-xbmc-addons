@@ -21,7 +21,7 @@ class cInputWindow(xbmcgui.WindowDialog):
         self.cancelled = False
         self.addControl (self.ctrlBackground)
 
-        self.strActionInfo = xbmcgui.ControlLabel(250, 20, 724, 400, 'Le thème est : ' + kwargs.get('msg'), 'font40', '0xFFFF00FF')
+        self.strActionInfo = xbmcgui.ControlLabel(250, 20, 724, 400, 'Le theme est : ' + kwargs.get('msg'), 'font40', '0xFFFF00FF')
         self.addControl(self.strActionInfo)
 
         self.img = xbmcgui.ControlImage(250, 110, 780, 499, str(self.cptloc))
