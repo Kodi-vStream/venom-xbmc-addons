@@ -6,10 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui, VSlog
-from resources.lib.config import GestionCookie
-
-import re
+from resources.lib.comaddon import progress
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:82.0) Gecko/20100101 Firefox/82.0'
 
@@ -446,10 +443,8 @@ def showMovies(sSearch = ''):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    #VSlog(sUrl)
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    #VSlog(sHtmlContent)
 
     sPattern = '<a href="([^"]+)"><img alt="([^"]+)" src="([^"]+)" class="img-responsive">.+?<p>([^<]+)<'
 
@@ -467,7 +462,6 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            VSlog(aEntry)
             if not 'films' in sUrl:
                 sTitle = aEntry[1].split(' - ')[0] + ' ' + aEntry[1].split(' - ')[1]
                 sTitle = sTitle.replace('Saison ', ' S')
@@ -691,11 +685,7 @@ def showHosters():
     sThumb=oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
-    oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0')
-    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
     sHtmlContent = oRequestHandler.request()
-    #VSlog(sHtmlContent)
 
     oParser = cParser()
 
@@ -725,7 +715,6 @@ def showHosters():
     oGui.setEndOfDirectory()
 
 def showSeriesHosters():
-    #VSlog('showSeriesHosters')
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -751,14 +740,15 @@ def showSeriesHosters():
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
 
-            sTitle = sMovieTitle + ' ' + ' [COLOR coral]' + aEntry[2] + '[/COLOR] '
-            sUrl2 = aEntry[1]
+            else:
+                sTitle = sMovieTitle + ' ' + ' [COLOR coral]' + aEntry[2] + '[/COLOR] '
+                sUrl2 = aEntry[1]
 
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'RecapchaBypass', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oGui.addTV(SITE_IDENTIFIER, 'RecapchaBypass', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
