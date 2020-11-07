@@ -438,7 +438,6 @@ class ReCaptcha(object):
         text = self.get("anchor", params={"co": self.co}).text
         parser = Parser()
         parser.feed(text)
-        #VSlog(text)
 
         if not parser.token:
             raise RuntimeError(
@@ -470,11 +469,14 @@ class ReCaptcha(object):
 
     def handle_solved(self, response, **kwargs):
         uvtoken, rresp = self.verify(response)
+
         if rresp is not None:
             self.solve_challenge(rresp)
             return
+
         if not uvtoken:
             raise RuntimeError("Got neither uvtoken nor new rresp.")
+
         self.on_token(uvtoken)
 
     def solve_challenge(self, rresp):
@@ -497,9 +499,11 @@ class ReCaptcha(object):
         }.get(challenge_type)
 
         self.on_challenge(challenge_type)
+
         if handler is None:
             self.on_challenge_unknown(challenge_type)
             return
+
         if solver_class is None:
             handler(challenge_type)
             return

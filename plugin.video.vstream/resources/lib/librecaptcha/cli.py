@@ -65,8 +65,10 @@ class CliDynamicSolver(CliSolver):
     def handle_initial_image(self, image, **kwargs):
         solver = self.solver
         indices = self.show_image(image)
+
         if indices == False:
             return False
+
         self.select_initial(indices)
         self.new_tile_loop()
         solver.finish()
@@ -161,11 +163,13 @@ class Cli(Frontend):
         content = f.read()
         f.close()
 
-        #Le deuxieme theme, si il est disponible, est plus juste que le 1er.
-        try:
-            Objectif = re.search('case "'+ID+'.+?=".+?<strong>(.+?)</strong>', content).group(2).encode('utf-8').decode('unicode-escape')
-        except:
-            Objectif = re.search('case '+ID+'.+?=".+?<strong>(.+?)</strong>', content).group(1).encode('utf-8').decode('unicode-escape')  
+        Objectif = re.findall('case '+ID+'.+?<strong>([^<]+)</strong>', content)
+
+        #Récupere le theme de maniere plus précis.
+        if (int(json.dumps(meta).split(',')[3]) * int(json.dumps(meta).split(',')[4]) > 9):
+            Objectif = Objectif[0].encode('utf-8').decode('unicode-escape')
+        else:
+            Objectif = Objectif[1].encode('utf-8').decode('unicode-escape') 
                       
         DimTab = [int(json.dumps(meta).split(',')[3]),int(json.dumps(meta).split(u',')[4])]
 

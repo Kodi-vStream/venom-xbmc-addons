@@ -25,7 +25,7 @@ class Frontend(object):
         self.on_token(token)
 
     def on_token(self, token, **kwargs):
-        u"""Callback; set this attribute in the parent class."""
+        """Callback; set this attribute in the parent class."""
         raise NotImplementedError
 
     def run(self, callback=None):
