@@ -165,7 +165,7 @@ class Cli(Frontend):
 
         Objectif = re.findall('case '+ID+'.+?<strong>([^<]+)</strong>', content)
 
-        #Récupere le theme de maniere plus précis.
+        #Recupere le theme de maniere plus precis.
         if (int(json.dumps(meta).split(',')[3]) * int(json.dumps(meta).split(',')[4]) > 9):
             Objectif = Objectif[0].encode('utf-8').decode('unicode-escape')
         else:
