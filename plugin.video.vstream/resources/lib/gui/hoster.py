@@ -372,6 +372,10 @@ class cHosterGui:
             return self.getHoster('streamtape')
         if ('femax' in sHostName):
             return self.getHoster('femax')
+        if ('vidbem' in sHostName):
+            return self.getHoster('vidbem')
+        if ('sibnet' in sHostName):
+            return self.getHoster('sibnet')
 
         # Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
