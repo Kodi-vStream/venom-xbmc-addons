@@ -125,6 +125,7 @@ class cFav:
 
                 if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
                     siteurl = UnquotePlus(siteurl.decode('utf-8'))
+                    title = str(title,'utf-8')
                 else:
                     siteurl = UnquotePlus(siteurl)
 
