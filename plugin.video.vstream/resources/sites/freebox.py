@@ -162,7 +162,7 @@ def parseM3U(sUrl=None, infile=None):  # Traite les m3u local
 
     try:
         line = inf.readline()
-    finally:
+    except:
         pass
 
     playlist = []
@@ -196,7 +196,7 @@ def parseM3U(sUrl=None, infile=None):  # Traite les m3u local
 
     try:
         inf.close()
-    finally:
+    except:
         pass
 
     return playlist
