@@ -246,7 +246,12 @@ def getEPG(EPG, sTitle):
     oParser = cParser()
 
     sTitle = sTitle.replace('+', 'plus')
-    sTitle = cUtil().CleanName(sTitle)
+    
+    try:
+        sTitle = cUtil().CleanName(sTitle)
+    except:
+        pass
+
     sTitle = re.sub('[^%s]' % (string.ascii_lowercase + string.digits), '', sTitle.lower())
     
     sPattern = '(.+?)\/>(.+?)<'
