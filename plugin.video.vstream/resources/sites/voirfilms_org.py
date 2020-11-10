@@ -544,7 +544,11 @@ def showHosters():
 
     # attention fake redirection
     sUrl = redirection_target
-    m = re.search('url=([^"]+)', str(sHtmlContent))
+    try:
+    	m = re.search(r'url=([^"]+)', sHtmlContent)
+    except:
+    	m = re.search(r'url=([^"]+)', str(sHtmlContent))
+
     if m:
         sUrl = m.group(1)
 
