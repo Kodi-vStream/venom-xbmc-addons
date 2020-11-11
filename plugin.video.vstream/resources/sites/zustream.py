@@ -263,9 +263,12 @@ def showMovies(sSearch=''):
                 if aEntry[5]:
                     sDesc = aEntry[5]
 
-            sDesc = unicode(sDesc, 'utf-8')  # converti en unicode
-            sDesc = utils.unescape(sDesc).encode('utf-8')    # retire les balises HTML
-
+            try:
+                sDesc = unicode(sDesc, 'utf-8')  # converti en unicode
+                sDesc = utils.unescape(sDesc).encode('utf-8')    # retire les balises HTML
+            except:
+                pass
+                
             sDisplayTitle = ('%s (%s) (%s)') % (sTitle, sLang, sYear)
 
             oOutputParameterHandler = cOutputParameterHandler()
