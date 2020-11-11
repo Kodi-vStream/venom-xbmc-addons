@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Arias800
+return False
 import base64
 import os
 import re
