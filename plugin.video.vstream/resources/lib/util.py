@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
+from resources.lib.comaddon import xbmc
 try:
     import htmlentitydefs
     import urllib
@@ -38,8 +39,11 @@ class cUtil:
 
         str1 = str1.replace('+', ' ').replace('%20', ' ').replace(':', ' ').replace('-', ' ')
         str2 = str2.replace(':', ' ').replace('-', ' ')
-        str1 = self.CleanName(str1)
-        str2 = self.CleanName(str2)
+        
+        #Inutile avec Python 3.
+        if xbmc.getInfoLabel('system.buildversion')[0:2] <= '18':
+            str1 = self.CleanName(str1)
+            str2 = self.CleanName(str2)
 
         i = 0
         list2 = str2.split(' ')     # Comparaison mot à mot
