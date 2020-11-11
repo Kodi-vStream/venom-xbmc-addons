@@ -535,6 +535,13 @@ def showMoviesLinks():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = cUtil().removeHtmlTags(aResult[1][0])
+
+            #PY3
+            #Sans ca les caratere accentué n'apparissent pas.
+            try:
+                sDesc = sDesc.encode('utf-8')
+            except:
+                pass
     except:
         pass
 
@@ -595,6 +602,14 @@ def showSeriesLinks():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = cUtil().removeHtmlTags(aResult[1][0])
+            
+            #PY3
+            #Sans ca les caratere accentué n'apparissent pas.
+            try:
+                sDesc = sDesc.encode('utf-8')
+            except:
+                pass
+
     except:
         pass
 
