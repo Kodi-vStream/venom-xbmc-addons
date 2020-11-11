@@ -206,10 +206,13 @@ def showTitle(sMovieTitle, sUrl):
         sExtraTitle = sUrl.split('|')[1]
         sMovieTitle = sUrl.split('|')[0]
 
-    # ancien decodage
-    sMovieTitle = unicode(sMovieTitle, 'utf-8')  # converti en unicode pour aider aux convertions
-    sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'ignore').decode("unicode_escape")  # vire accent et '\'
-    sMovieTitle = sMovieTitle.encode("utf-8").lower()  # on repasse en utf-8
+    try:
+        # ancien decodage
+        sMovieTitle = unicode(sMovieTitle, 'utf-8')  # converti en unicode pour aider aux convertions
+        sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'ignore').decode("unicode_escape")  # vire accent et '\'
+        sMovieTitle = sMovieTitle.encode("utf-8").lower()  # on repasse en utf-8
+    except:
+        sMovieTitle = sMovieTitle.lower()
 
     sMovieTitle = Quote(sMovieTitle)
     sMovieTitle = re.sub('\(.+?\)', ' ', sMovieTitle)  # vire les tags entre parentheses
