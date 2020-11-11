@@ -518,11 +518,6 @@ def showMoviesLinks():
     except:
         pass
 
-    try:
-        sDesc = sDesc.encode('latin-1')
-    except:
-        pass
-
     # la qualité courante est le lien en cours ici-même
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -590,11 +585,6 @@ def showSeriesLinks():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = cUtil().removeHtmlTags(aResult[1][0][1])
-    except:
-        pass
-
-    try:
-        sDesc = sDesc.encode('latin-1')
     except:
         pass
 
