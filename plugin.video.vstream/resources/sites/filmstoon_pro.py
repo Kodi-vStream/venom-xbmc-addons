@@ -293,8 +293,9 @@ def showSXE():
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
 
-    sPattern = '<strong>Season.+?(\d+)|a>\s*<a href="([^"]+).+?Episode.+?(\d+)'
-    aResult = oParser.parse(sHtmlContent, sPattern)
+    #cutEpi permets de couper une partie précise du code html pour récupéré plus simplement les episodes.
+    sPattern = '<strong>Season.+?(\d+)|<a href="([^"]+).+?Episode.+?(\d+)'
+    aResult = oParser.parse(cutEpi(sHtmlContent), sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
@@ -374,3 +375,10 @@ def showHosters():
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
+def cutEpi(sHtmlContent):
+    oParser = cParser()
+    sPattern = 'class="les-title"(.+?)<div class="mvi-content"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        return aResult[1][0]
