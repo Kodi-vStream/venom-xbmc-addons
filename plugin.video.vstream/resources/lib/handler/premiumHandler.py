@@ -9,7 +9,7 @@ except ImportError:  # Python 3
     import urllib.request as urllib2
     from urllib.error import URLError as UrlError
 
-from resources.lib.comaddon import addon, dialog, VSlog
+from resources.lib.comaddon import addon, dialog, VSlog, xbmc
 from resources.lib.config import GestionCookie
 from resources.lib.parser import cParser
 from resources.lib.util import urlEncode
@@ -120,8 +120,13 @@ class cPremiumHandler:
             except:
                 self.__ssl = False
 
+
         if 'uptobox' in self.__sHosterIdentifier:
-            data = urlEncode(post_data)
+            #Py 3
+            try:
+                data = urlEncode(post_data).encode('utf-8')
+            except:
+                data = urlEncode(post_data)
 
             opener = urllib2.build_opener(NoRedirection)
 
@@ -165,11 +170,20 @@ class cPremiumHandler:
             response.close()
 
         if 'uptobox' in self.__sHosterIdentifier:
-            if 'xfss' in head['Set-Cookie']:
-                self.isLogin = True
+            if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+                if 'xfss' in response.getheader('Set-Cookie'):
+                    self.isLogin = True
+                else:
+                    self.DIALOG.VSinfo('Authentification rate', self.__sDisplayName)
+                    return False
+
             else:
-                self.DIALOG.VSinfo('Authentification rate', self.__sDisplayName)
-                return False
+                if 'xfss' in head['Set-Cookie']:
+                    self.isLogin = True
+                else:
+                    self.DIALOG.VSinfo('Authentification rate', self.__sDisplayName)
+                    return False
+
         elif 'onefichier' in self.__sHosterIdentifier:
             if 'You are logged in. This page will redirect you.' in sHtmlContent:
                 self.isLogin = True
@@ -190,7 +204,11 @@ class cPremiumHandler:
         if 'Set-Cookie' in head:
             oParser = cParser()
             sPattern = '(?:^|,) *([^;,]+?)=([^;,\/]+?);'
-            aResult = oParser.parse(str(head['Set-Cookie']), sPattern)
+            if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+                aResult = oParser.parse(str(response.getheader('Set-Cookie')), sPattern)
+            else:
+                aResult = oParser.parse(str(head['Set-Cookie']), sPattern)
+
             # print(aResult)
             if (aResult[0] == True):
                 for cook in aResult[1]:
@@ -207,6 +225,11 @@ class cPremiumHandler:
         return True
 
     def GetHtmlwithcookies(self, url, data, cookies):
+        #Py 3
+        try:
+            url = url.decode('utf-8')
+        except:
+            pass
 
         req = urllib2.Request(url, data, headers)
         if not (data == None):
@@ -221,9 +244,20 @@ class cPremiumHandler:
 
         sHtmlContent = response.read()
         response.close()
-        return sHtmlContent
+
+        #Py 3
+        try:
+            return sHtmlContent.decode('utf-8')
+        except:
+            return sHtmlContent
 
     def GetHtml(self, url, data=None):
+        #Py 3
+        try:
+            url = url.encode('utf-8')
+        except:
+            pass
+
         cookies = GestionCookie().Readcookie(self.__sHosterIdentifier)
 
         # aucun ne marche sans cookies
