@@ -430,10 +430,10 @@ def showMovies(sSearch=''):
             if ' - Episode' in sTitle:
                 sTitle = sTitle.replace(' -', '')
 
-            if isPython3:
-                sTitle = sTitle.encode()
-
-            sTitle = cUtil().CleanName(sTitle).capitalize()
+            if not isPython3:
+                sTitle = cUtil().CleanName(sTitle).capitalize()
+            else:
+                sTitle.capitalize()
 
             sDisplayTitle = ('%s (%s)') % (sTitle, sLang)
 
