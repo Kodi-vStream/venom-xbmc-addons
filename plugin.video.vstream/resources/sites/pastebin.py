@@ -175,9 +175,10 @@ def load():
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
     
 
-    # Menu pour ajouter un lien
-    oOutputParameterHandler = cOutputParameterHandler()
-    oGui.addDir(SITE_IDENTIFIER, 'addPasteName', '[COLOR coral]Ajouter un dossier PasteBin[/COLOR]', 'listes.png', oOutputParameterHandler)
+    # Menu pour ajouter un dossier (hors widget)
+    if not xbmc.getCondVisibility('Window.IsActive(home)'):
+        oOutputParameterHandler = cOutputParameterHandler()
+        oGui.addDir(SITE_IDENTIFIER, 'addPasteName', '[COLOR coral]Ajouter un dossier PasteBin[/COLOR]', 'listes.png', oOutputParameterHandler)
 
 
     oGui.setEndOfDirectory()
@@ -219,7 +220,9 @@ def showMenu():
                 oOutputParameterHandler.addParameter('sMedia', 'anime')
                 oGui.addDir(SITE_IDENTIFIER, 'showMenu', 'Animes', 'animes.png', oOutputParameterHandler)
         
-        oGui.addDir(SITE_IDENTIFIER, 'addPasteID', '[COLOR coral]Ajouter un lien PasteBin[/COLOR]', 'listes.png', oOutputParameterHandler)
+        # Menu pour ajouter un lien (hors widget)
+        if not xbmc.getCondVisibility('Window.IsActive(home)'):
+            oGui.addDir(SITE_IDENTIFIER, 'addPasteID', '[COLOR coral]Ajouter un lien PasteBin[/COLOR]', 'listes.png', oOutputParameterHandler)
 
     elif 'film' in sMedia:
         contenu.discard('containSeries')
@@ -780,7 +783,7 @@ def showGroupeDetails():
     sUrl, params = siteUrl.split('&',1)
     aParams = dict(param.split('=') for param in params.split('&'))
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
-    sGroupe = aParams['sGroupe'] + ':' if 'sGroupe' in aParams else None
+    sGroupe = aParams['sGroupe'].replace('+', ' ') + ':' if 'sGroupe' in aParams else None
 
     pbContent = PasteBinContent()
     movies = []
