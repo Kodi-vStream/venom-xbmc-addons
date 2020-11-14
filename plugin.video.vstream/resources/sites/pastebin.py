@@ -527,7 +527,7 @@ def showNetwork():
             continue
 
         networks = movie[pbContent.NETWORK].strip()
-        if networks <> '':
+        if networks != '':
             networks = eval(networks)
             if networks:
                 for network in networks:
@@ -589,7 +589,7 @@ def showRealisateur():
             continue
 
         reals = movie[pbContent.DIRECTOR].strip()
-        if reals <> '':
+        if reals != '':
             reals = eval(reals)
             if reals:
                 for real in reals:
@@ -665,7 +665,7 @@ def showCast():
             continue
 
         acteurs = movie[pbContent.CAST].strip()
-        if acteurs <> '':
+        if acteurs != '':
             acteurs = eval(acteurs)
             if acteurs:
                 for acteur in acteurs:
@@ -846,7 +846,7 @@ def showSaga():
             continue
 
         saga = movie[pbContent.SAISON].strip()
-        if saga <> '':
+        if saga != '':
             sTmdbId = name = saga
             idName = saga.split(':', 1)
             if len(idName)>1:
