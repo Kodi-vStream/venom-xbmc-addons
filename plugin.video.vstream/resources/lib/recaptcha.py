@@ -12,7 +12,12 @@ except ImportError:  # Python 3
     import urllib.request as urllib2
 
 import base64
-import cookielib
+
+try:
+    from http.cookiejar import CookieJar
+except ImportError:
+    from cookielib import CookieJar
+    
 import os
 import random
 import re
@@ -161,10 +166,10 @@ class cInputWindow(xbmcgui.WindowDialog):
         return False
 
     def onControl(self, control):
-        if control == self.okbutton:
+        if str(control.getLabel()) == "OK":
             if self.anythingChecked():
                 self.close()
-        elif control == self.cancelbutton:
+        elif str(control.getLabel()) == "Cancel":
             self.cancelled = True
             self.close()
         try:
