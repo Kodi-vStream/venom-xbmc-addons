@@ -120,7 +120,7 @@ class Stormwall(object):
         return False
 
     def DecryptCookie(self, content):
-        #Le nom peut varié selon les pages.
+        #Le nom peut varie selon les pages.
         if "const" in content:
             parseName = "const"
         else:
