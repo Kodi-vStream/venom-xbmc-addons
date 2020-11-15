@@ -244,17 +244,19 @@ class cTMDb:
         else:
             term = QuotePlus(name)
 
+        if mediaType == "tv":
+            term = term.split('Saison')[0]
+
         meta = self._call('search/' + str(mediaType), 'query=' + term + '&page=' + str(page))
 
-        if 'errors' not in meta and 'status_code' not in meta:
-            # si pas de résultat avec l'année, on teste sans l'année
-            if 'total_results' in meta and meta['total_results'] == 0 and year:
-                meta = self.search_movie_name(name, '')
+        # si pas de résultat avec l'année, on teste sans l'année
+        if 'total_results' in meta and meta['total_results'] == 0 and year:
+            meta = self.search_movie_name(name, '')
 
-            # cherche 1 seul resultat
-            if 'total_results' in meta and meta['total_results'] != 0:
-                tmdb_id = meta['results'][0]['id']
-                return tmdb_id
+        # cherche 1 seul resultat
+        if 'total_results' in meta and meta['total_results'] != 0:
+            tmdb_id = meta['results'][0]['id']
+            return tmdb_id
         else:
             return False
 
@@ -999,17 +1001,9 @@ class cTMDb:
         if append_to_response:
             url += '&%s' % append_to_response
 
-        response = urllib2.urlopen(url)
-        data = json.loads(response.read())
-
-        #Au cas où urllib échoue la 1er fois.
-        if data is bool:
-            oRequestHandler = cRequestHandler(url)
-            test = oRequestHandler.request()
-            data = json.load(test)
-
-        if 'status_code' in data and data['status_code'] == 34:
-            return {}
+        #On utilise requests car urllib n'arrive pas a certain moment a ouvrir le json.    
+        import requests
+        data = requests.get(url).json()
         
         return data
 
