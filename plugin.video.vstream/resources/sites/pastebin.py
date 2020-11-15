@@ -1346,7 +1346,7 @@ def showSerieSaisons():
         # Recherche les saisons de la série
         for serie in moviesBin:
             
-            if pbContent.CAT >=0 and sMedia not in moviesBin[pbContent.CAT]:
+            if pbContent.CAT >=0 and sMedia not in serie[pbContent.CAT]:
                 continue
 
             # Recherche par id
@@ -1360,8 +1360,6 @@ def showSerieSaisons():
 
             # Sinon, recherche par titre/année
             if not found:
-                if pbContent.CAT >= 0 and 'serie' not in serie[pbContent.CAT]:
-                    continue
                 if searchYear and pbContent.YEAR >= 0:
                     sYear = serie[pbContent.YEAR].strip()
                     if sYear and sYear != searchYear:
