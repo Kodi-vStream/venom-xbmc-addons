@@ -101,7 +101,6 @@ class cHoster(iHoster):
                 self.__sUrl = self.__sUrl.replace('uptobox.com/', 'uptostream.com/')
             else:
                 return False
-
             return self.__getMediaLinkByPremiumUser()
 
         else:
@@ -134,7 +133,7 @@ class cHoster(iHoster):
                 SubTitle = self.checkSubtitle(sHtmlContent)
 
                 if (self.stream):
-                    api_call = self.GetMedialinkStreaming(sHtmlContent)
+                    api_call = self.__getMediaLinkForGuest()
                 else:
                     api_call = self.GetMedialinkDL(sHtmlContent)
 
