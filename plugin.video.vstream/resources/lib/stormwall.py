@@ -120,10 +120,16 @@ class Stormwall(object):
         return False
 
     def DecryptCookie(self, content):
-        self.cE = re.search('var cE = "([^"]+)"', str(content)).group(1)
-        self.cK = re.search('var cK = ([0-9]+)', str(content)).group(1)
-        self.cN = re.search('var cN = "([^"]+)"', str(content)).group(1)
-        self.cO = re.search('var cO = "([^"]+)"', str(content)).group(1)
+        #Le nom peut varié selon les pages.
+        if "const" in content:
+            parseName = "const"
+        else:
+            parseName = "var"
+
+        self.cE = re.search(parseName + ' cE = "([^"]+)"', str(content)).group(1)
+        self.cK = re.search(parseName + ' cK = ([0-9]+)', str(content)).group(1)
+        self.cN = re.search(parseName + ' cN = "([^"]+)"', str(content)).group(1)
+        self.cO = re.search(parseName + ' cO = "([^"]+)"', str(content)).group(1)
 
         self.a = []
         self.b = {}
