@@ -705,7 +705,7 @@ class cGui:
             newNum = self.showNumBoard()
         if newNum:
             try:
-                siteUrl = siteUrl.replace(oldNum, newNum)
+                siteUrl = siteUrl.replace(oldNum, newNum, 1)
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', siteUrl)
