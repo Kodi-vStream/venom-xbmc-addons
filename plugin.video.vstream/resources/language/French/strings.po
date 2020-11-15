@@ -406,7 +406,7 @@ msgstr "Import/Export de la Base de Données, Réussi"
 
 msgctxt "#30100"
 msgid "Import/Export Database, Error"
-msgstr "Import/Export  de la Base de Données, Erreur"
+msgstr "Import/Export de la Base de Données, Erreur"
 
 msgctxt "#30101"
 msgid "News"
@@ -445,7 +445,7 @@ msgid "Children"
 msgstr "Enfants"
 
 msgctxt "#30110"
-msgid "Database to be delete"
+msgid "Database to delete"
 msgstr "Base de données à supprimer"
 
 msgctxt "#30111"
