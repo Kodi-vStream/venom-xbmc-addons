@@ -79,7 +79,7 @@ SITE_DESC = 'Films/Séries/Reportages/Concerts'
             #return ADDON.getSetting('Tirexo')
 
 # Teste pour le moment avec une url fixe.
-URL_MAIN = "https://www.tirexo.pro/"
+URL_MAIN = "https://www.tirexo.net/"
 # URL_MAIN = "https://tirexo.net/"  # Les regex sont différent mais il y a pas cloudflare
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=1&result_from=1&story=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=15&story=', 'showMovies')
@@ -612,8 +612,7 @@ def showGenre():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', genre, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
-
+        
 def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
@@ -628,7 +627,7 @@ def showMovies(sSearch=''):
     elif 'collections/' in sUrl:
         sPattern = 'class="mov-t nowrap" href=".+?".+?<img src="\/([^"]+)" width="200px" height="320px" title="([^"]+)".+?data-link="([^"]+)"'
     else:
-        sPattern = 'class="mov-t nowrap" href="([^"]+)">  <.+?data-content="([^"]+)".+?<img src="\/([^"]+)".+?title="([^"]+)"'
+        sPattern = 'class="mov-t nowrap" href="([^"]+)">  <.+?data-content="([^"]+)".+?img src="([^"]+)".+?title="([^"]+)"'
 
     oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -1032,9 +1031,10 @@ def showHostersLink():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
-    sHtmlContent = cloudflare(sUrl)
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
     sPattern = 'src="(.+?)"'
