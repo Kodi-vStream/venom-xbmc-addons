@@ -1,15 +1,13 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-# Makoto et Arias800
+# Makoto et Arias800 02/06/2019
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
-from resources.lib.util import cUtil
-
+from resources.lib.comaddon import progress ,VSlog
 import re
 
 SITE_IDENTIFIER = 'animeultime'
@@ -18,13 +16,27 @@ SITE_DESC = 'Animés, Dramas en Direct Download'
 
 URL_MAIN = 'http://www.anime-ultime.net/'
 
-ANIM_VOSTFRS = (URL_MAIN + 'series-0-1/anime/0---', 'ShowAlpha')
-SERIE_VOSTFRS = (URL_MAIN + 'series-0-1/drama/0---', 'ShowAlpha')
-TOKUSATSU = (URL_MAIN + 'series-0-1/tokusatsu/0---', 'ShowAlpha')
-
-URL_SEARCH = (URL_MAIN + 'search-0-1+', 'showMovies')
+ANIM_VOSTFRS = (URL_MAIN + 'series-0-1/anime/0---', 'showSeries')
+SERIE_VOSTFRS = (URL_MAIN + 'series-0-1/drama/0---', 'showSeries')
+TOKUSATSU = (URL_MAIN + 'series-0-1/tokusatsu/0---', 'showSeries')
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0'
+
+URL_SEARCH_SERIES = (URL_MAIN + 'search-0-1+', 'showMovies')
+
+ANIM_ANNEES = (True, 'ShowYearsAnime')
+ANIM_GENRES = (True, 'ShowGenreAnime')
+ANIM_ALPHA= (True, 'ShowAlphaAnime')
+
+SERIE_ANNEES = (True, 'ShowYearsDrama')
+SERIE_GENRE = (True, 'ShowGenreDrama')
+SERIE_ALPHA = (True, 'ShowAlphaDrama')
+
+TOKUSATSU_ALPHA = ('true', 'ShowAlphaTokusatsu')
+
+ANIM_ANIMS = (True, 'showMenuAnims')
+SERIE_SERIES = (True, 'showMenuSeries')
+TOKUSATSU_TOKUSATSUS = (True, 'showMenuTokusatsu')
 
 def load():
     oGui = cGui()
@@ -34,18 +46,192 @@ def load():
     oGui.addTV(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Dramas', 'animes.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'series.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', TOKUSATSU_TOKUSATSUS[0])
+    oGui.addDir(SITE_IDENTIFIER, TOKUSATSU_TOKUSATSUS[1], 'Tokusatsu', 'films.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+def showMenuAnims():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
     oGui.addTV(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés', 'animes.png', '', '', oOutputParameterHandler)
-   
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_ALPHA[0])
+    oGui.addTV(SITE_IDENTIFIER, ANIM_ALPHA[1], 'Animés  (Alpha)', 'animes.png', '', '', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
+    oGui.addTV(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genre)', 'animes.png', '', '', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANNEES[0])
+    oGui.addTV(SITE_IDENTIFIER, ANIM_ANNEES[1], 'Animés (Années)', 'animes.png', '', '', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showMenuSeries():
+    oGui = cGui()
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
     oGui.addTV(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Dramas', 'series.png', '', '', oOutputParameterHandler)
-   
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_ALPHA[0])
+    oGui.addTV(SITE_IDENTIFIER, SERIE_ALPHA[1], 'Dramas (Alpha)', 'animes.png', '', '', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRE[0])
+    oGui.addTV(SITE_IDENTIFIER, SERIE_GENRE[1], 'Dramas (Genre)', 'animes.png', '', '', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
+    oGui.addTV(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Dramas (Années)', 'animes.png', '', '', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showMenuTokusatsu():
+    oGui = cGui()
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', TOKUSATSU[0])
     oGui.addTV(SITE_IDENTIFIER, TOKUSATSU[1], 'Tokusatsu', 'vostfr.png', '', '', oOutputParameterHandler)
 
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', TOKUSATSU_ALPHA[0])
+    oGui.addTV(SITE_IDENTIFIER, TOKUSATSU_ALPHA[1], 'Tokusatsu (Alpha)', 'vostfr.png', '', '', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
+
+
+def loadTypelist(typemovie, typelist):
+    # typelist genre ou year
+    # <select name="genre"
+    # <select name="year"
+    sUrl = 'http://www.anime-ultime.net/series-0-1/' + typemovie
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    oParser = cParser()
+
+    sPattern = '<select name="([^"]+)|<option value=\'([^\']+).*?>([^<]+)'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    list_typelist = []
+
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+
+            list_item=[]
+            if aEntry[0]:
+                if aEntry[0] == typelist:   
+                    bfind = True
+                else :
+                    bfind = False
+
+            if bfind and aEntry[1]:
+                list_item.append(aEntry[1])
+                title = aEntry[2].decode('iso-8859-1').encode('utf8')
+                title = title.replace('e', 'E').strip()
+                list_item.append(title)
+                list_typelist.append(list_item)
+
+    return list_typelist
+
+
+def ShowGenreAnime():
+    ShowGenre('anime')
+
+
+def ShowGenreDrama():
+    ShowGenre('drama')
+
+
+def ShowGenre(typemovie):
+
+    oGui = cGui()
+
+    list_listgenre = loadTypelist( typemovie , 'genre')
+
+    for ilist in list_listgenre:
+        url = URL_MAIN + 'series-0-1/' + typemovie + '/-' + ilist[0] + '---'
+        sTitle = ilist[1] 
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', url)
+        oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'genres.png', oOutputParameterHandler)
+ 
+    oGui.setEndOfDirectory()
+
+
+def ShowYearsAnime():
+    ShowYears('anime')
+
+
+def ShowYearsDrama():
+    ShowYears('drama')
+
+
+def ShowYears(typemovie):
+    oGui = cGui()
+
+    list_year = loadTypelist( typemovie ,'year')
+
+    #http://www.anime-ultime.net/series-0-1/anime/--626--    2019
+    for liste in reversed(list_year):
+        url = URL_MAIN + 'series-0-1/' + typemovie + '/--' + liste[0] + '--'
+        sTitle = liste[1] 
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', url)
+        oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'genres.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def ShowAlphaAnime():
+    ShowAlpha('anime')
+
+
+def ShowAlphaDrama():
+    ShowAlpha('drama')
+
+
+def ShowAlphaTokusatsu():
+    ShowAlpha('tokusatsu')
+
+
+def ShowAlpha(typemovie):
+    oGui = cGui()
+
+    import string
+    #http://www.anime-ultime.net/series-0-1/tokusatsu/c---
+    sAlpha = string.ascii_lowercase
+    listalpha = list(sAlpha)
+    liste = []
+
+    liste.append(['#', URL_MAIN + 'series-0-1/' + typemovie + '/' + '1---' ])
+    for alpha in listalpha:
+        liste.append([str(alpha).upper(), URL_MAIN + 'series-0-1/' + typemovie + '/' + alpha + '---' ])
+
+    for sTitle, sUrl in liste:
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'listes.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
 
 def showSearch():
     oGui = cGui()
@@ -54,41 +240,13 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = sUrl + sSearchText.replace(' ','+')
-        showMovies(sUrl)
+        sUrl = sUrl + sSearchText
+        showSeries(sUrl)
         oGui.setEndOfDirectory()
         return
 
-def ShowAlpha(url = None):
-    oGui = cGui()
 
-    oInputParameterHandler = cInputParameterHandler()
-    if (url == None):
-        sUrl = oInputParameterHandler.getValue('siteUrl')
-    else:
-        sUrl = url
-
-    oRequestHandler = cRequestHandler(sUrl)
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    sHtmlContent = oRequestHandler.request()
-
-    sPattern = '<a class="letter" href="([^"]+)">([^<]+)</a>'
-
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-            sUrl = URL_MAIN + aEntry[0]
-            sLetter = aEntry[1]
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [B][COLOR red]' + sLetter + '[/COLOR][/B]', 'listes.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
-def showMovies(sSearch = ''):
+def showSeries(sSearch = ''):
     oGui = cGui()
     if sSearch:
       sUrl = sSearch
@@ -135,11 +293,29 @@ def showMovies(sSearch = ''):
                 break
 
             if sSearch:
-                sTitle = re.sub('<.*?>', '', aEntry[2])
+                #Enleve les balise.
+                try:
+                    sTitle = re.sub('<.*?>', '', aEntry[2])
+                except:
+                    sTitle = aEntry[2]
+
+                #Le décodage n'est pas utile sous Python 3
+                try:
+                    sTitle = sTitle.decode('iso-8859-1').encode('utf8')
+                except:
+                    pass
+
                 sUrl2 = URL_MAIN + aEntry[0]
                 sThumb = aEntry[1]
+
             else:
+
                 sTitle = aEntry[2]
+                try:
+                    sTitle = sTitle.decode('iso-8859-1').encode('utf8')
+                except:
+                    pass
+
                 sUrl2 = URL_MAIN + aEntry[0]
                 sThumb = aEntry[1]
 
@@ -159,6 +335,7 @@ def showMovies(sSearch = ''):
     if not sSearch:
       oGui.setEndOfDirectory()
 
+
 def showEpisode():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -168,19 +345,29 @@ def showEpisode():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
-    oParser = cParser()
 
+    oParser = cParser()
     sDesc = ''
     try:
-        sPattern = '<strong><br />([^<]+)'
+        #sPattern = '<strong>(.+?)<.+?>'
+        sPattern ='src="images.+?(?:<br \/>)(.+?)(?:<span style|TITRE ORIGINAL|ANNÉE DE PRODUCTION|STUDIO|GENRES)'
+
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
-            sDesc = aResult[1][0]
+            #sTitle = sMovieTitle
+            sDesc = aResult[1][0].replace('<br>','').replace('<br />','')
+            sDesc = sDesc.replace('Synopsis', '').replace('synopsis', '').replace(':', ' ')
+            sDesc= ('[I][COLOR coral]%s[/COLOR][/I] %s') % ('Synopsis :', sDesc)
+
+            #Enleve les balise.
+            try:
+                sDesc = re.sub('<.*?>', '', sDesc)
+            except:
+                pass
     except:
         pass
 
-    sPattern = '<tr.+?align="left">.+?align="left">([^"]+)</td>.+?<a href="([^"]+)">'
+    sPattern = '<tr.+?align="left">.+?align="left">([^"]+)</td>.+?nowrap>+?<.+?</td>.+?<.+?/td>.+?<.+?<a href="([^"]+)">.+?'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -193,7 +380,13 @@ def showEpisode():
             if progress_.iscanceled():
                 break
 
-            sTitle = aEntry[0]
+            sTitle = aEntry[0].replace('FHD','').replace('vostfr','').replace('HD','').replace('HQ','')
+
+            try:
+                sTitle = sTitle.decode('iso-8859-1').encode('utf8')
+            except:
+                pass
+
             sUrl2 = URL_MAIN + aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -205,6 +398,7 @@ def showEpisode():
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
+
 
 def showHosters():
     oGui = cGui()
