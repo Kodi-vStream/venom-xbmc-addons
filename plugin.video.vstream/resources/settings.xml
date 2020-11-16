@@ -80,6 +80,8 @@
 
         <setting visible="false" id="plugin_allfilms" type="bool" label="All Films" default="true"/>
 
+        <setting visible="false" id="plugin_animeultime" type="bool" label="Anime Ultime" default="true"/>
+
         <setting visible="false" id="plugin_asia_insane" type="bool" label="Asia Insane" default="true"/>
 
         <setting visible="false" id="plugin_buzzmonclick_com" type="bool" label="BuzzMonClick" default="true"/>
@@ -99,6 +101,8 @@
         <setting visible="false" id="plugin_enstream" type="bool" label="Enstream" default="true"/>
 
         <setting visible="false" id="plugin_extreme_down" type="bool" label="ExtremeDown" default="true"/>
+
+        <setting visible="false" id="plugin_film_illimit_fr" type="bool" label="Film Illimite" default="true"/>
 
         <setting visible="false" id="plugin_filmspourenfants" type="bool" label="Films pour Enfants" default="true"/>
 
@@ -205,6 +209,8 @@
         <setting visible="false" id="plugin_voirfilms_org" type="bool" label="VoirFilms" default="true"/>
 
         <setting visible="false" id="plugin_voirhd_co" type="bool" label="Voir HD" default="true"/>
+
+        <setting visible="false" id="plugin_wawacity" type="bool" label="Wawacity" default="true"/>
 
         <setting visible="false" id="plugin_wiflix" type="bool" label="WiFlix" default="true"/>
 
