@@ -135,7 +135,7 @@ class cHoster(iHoster):
 
 def decodeur1(Html):
     if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-        xrange = range
+        range = xrange
 
     from ast import literal_eval
     # search list64 and his var name.
@@ -265,7 +265,7 @@ def decodeur1(Html):
 
 def decoder(data, fn):
     if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-        xrange = range
+        range = xrange
 
     data = base64.b64decode(data)
 
@@ -301,8 +301,10 @@ def decoder(data, fn):
     y = 0
     i = 0
 
-    if xbmc.getInfoLabel('system.buildversion')[0:2] <= '18':
-        data = data .decode('utf-8')
+    try:
+        data = data.decode('utf-8')
+    except:
+        pass
 
     while i < len(data):
 
@@ -313,8 +315,10 @@ def decoder(data, fn):
         secretKey[x] = secretKey[y]
         secretKey[y] = temp
 
-        if xbmc.getInfoLabel('system.buildversion')[0:2] <= '18':
-            data = data .decode('utf-8')
+        try:
+            data = data.decode('utf-8')
+        except:
+            pass
 
         url += (chr(ord(data[i]) ^ secretKey[(secretKey[x] + secretKey[y]) % 256]))
 
