@@ -79,6 +79,8 @@
         <setting visible="false" id="plugin_alldebrid" type="bool" label="AllDebrid" default="true"/>
 
         <setting visible="false" id="plugin_allfilms" type="bool" label="All Films" default="true"/>
+		
+        <setting visible="false" id="plugin_animecomplet" type="bool" label="Animecomplet" default="true"/>
 
         <setting visible="false" id="plugin_animeultime" type="bool" label="Anime Ultime" default="true"/>
 
