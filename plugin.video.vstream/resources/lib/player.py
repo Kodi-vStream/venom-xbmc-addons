@@ -215,7 +215,7 @@ class cPlayer(xbmc.Player):
         elif sAction == 'trakt':
             #plugins = __import__('resources.lib.trakt', fromlist=['cTrakt'])
             plugins = __import__('resources.lib.trakt', fromlist=['trakt']).cTrakt()
-            function = getattr(plugins, 'getWatchlist')
+            function = getattr(plugins, 'setAsWatched')
             function()
 
         return
