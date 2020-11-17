@@ -6,12 +6,11 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import progress  # , VSlog
+from resources.lib.comaddon import progress
 from resources.lib.parser import cParser
 from resources.lib.packer import cPacker
 from resources.lib.util import cUtil
 import re
-import requests
 
 SITE_IDENTIFIER = 'zustream'
 SITE_NAME = 'ZuStream'
@@ -418,7 +417,6 @@ def showHosters():
 
     # fusion
     aResult = aResult1 + aResult2
-    # VSlog(aResult)
 
     if (aResult):
         for aEntry in aResult:
@@ -433,26 +431,7 @@ def showHosters():
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
                 oRequestHandler.addHeaderEntry('Referer', 'https://re.zu-lien.com')
                 sHtmlContent2 = oRequestHandler.request()
-                sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
-                sPattern2 = '<div id="videolink".+?>\/\/([^<>]+)'
-
-                aResult2 = oParser.parse(sHtmlContent2, sPattern)
-                aResult = re.findall(sPattern2, sHtmlContent2)
-
-                if (aResult2[0] == True):  # Gounlimited
-                    sHtmlContent = cPacker().unpack(aResult2[1][0])
-                    # VSlog(sHtmlContent)
-                    sPattern = 'src:"([^"]+)"'
-                    aResult3 = oParser.parse(sHtmlContent, sPattern)
-                    if (aResult3[0] == True):
-                        sHosterUrl = aResult3[1][0]
-
-                if aResult:  # streamtape
-                    redi = "https://" + aResult[0]
-                    # VSlog(redi)
-                    session = requests.Session()  # so connections are recycled
-                    resp = session.head(redi, allow_redirects=True)
-                    sHosterUrl = resp.url
+                sHosterUrl = oRequestHandler.getRealUrl()
 
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
