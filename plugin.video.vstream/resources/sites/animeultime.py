@@ -42,7 +42,7 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
     oGui.addTV(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -249,7 +249,7 @@ def showSearch():
 def showSeries(sSearch = ''):
     oGui = cGui()
     if sSearch:
-      sUrl = sSearch
+        sUrl = sSearch.replace(' ','+').replace('%20','+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -259,7 +259,7 @@ def showSeries(sSearch = ''):
 
     oParser = cParser()
     if sSearch:
-        sPattern = '<td class=".+?<a href="([^"]+)".+?<img src=([^>]+)/>.+?onMouseOut.+?>(.+?)</a>'
+        sPattern = '<td class=".+?<a href="([^"]+)".+?<img src=.+?img=([^>]+)/>.+?onMouseOut.+?>(.+?)</a>'
     else:
         sPattern = '<td class=".+?<a href="([^"]+)".+?<img src=([^>]+)/>.+?title="([^"]+)'
 
@@ -268,17 +268,24 @@ def showSeries(sSearch = ''):
     #Si il y a qu'un seule resultat alors le site fait une redirection.
     if (aResult[0] == False):
         if sSearch and not "sultats anime" in sHtmlContent:
-            sTitle = re.search('<h1>([^<]+)',sHtmlContent).group(1)
-            sUrl2 = sUrl
-            sThumb = ""
+            sTitle = ''
+            try:
+                sTitle = re.search('<h1>([^<]+)',sHtmlContent).group(1)
+            except:
+                pass
+            if sTitle :   
+                sUrl2 = sUrl
+                sThumb = ""
 
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
 
+            else:
+                oGui.addText(SITE_IDENTIFIER)
         else:
             oGui.addText(SITE_IDENTIFIER)
 
@@ -306,7 +313,7 @@ def showSeries(sSearch = ''):
                     pass
 
                 sUrl2 = URL_MAIN + aEntry[0]
-                sThumb = aEntry[1]
+                sThumb = URL_MAIN + aEntry[1]
 
             else:
 
