@@ -49,11 +49,11 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
-        sPattern1 = 'style="display:none;">([^<]+)'
+        sPattern1 = "<script>.+?\('videolink'\).+?='([^\']+)';</script>"
         
         aResult = oParser.parse(sHtmlContent, sPattern1)
         if (aResult[0] == True):
-            api_call = 'https:'+ aResult[1][0]
+            api_call = 'https:'+ aResult[1][0] + "&stream=1"
 
         if (api_call):
             return True, api_call + '|User-Agent=' + UA + '&Referer=' + self.__sUrl
