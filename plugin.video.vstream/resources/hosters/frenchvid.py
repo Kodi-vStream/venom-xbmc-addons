@@ -66,7 +66,9 @@ class cHoster(iHoster):
             baseUrl = 'https://feurl.com/api/source/'
         elif 'core1player' in self.__sUrl:
             baseUrl = 'https://www.core1player.com/api/source/'
-
+        elif 'gotochus' in self.__sUrl:
+            baseUrl = 'https://www.gotochus.com/api/source/'
+            
         if 'fem.tohds' in self.__sUrl:
             oRequestHandler = cRequestHandler(self.__sUrl)
             sHtmlContent = oRequestHandler.request()
