@@ -1036,6 +1036,89 @@ class cTrakt:
 
         return
 
+    def setAsWatched(self):
+
+        if not self.ADDON.getSetting('bstoken'):
+            return
+
+        oInputParameterHandler = cInputParameterHandler()
+        sCat = oInputParameterHandler.getValue('sCat')
+
+        if not sCat:
+            return
+
+        # entrer imdb ? venant d'ou?
+        sImdb = oInputParameterHandler.getValue('sImdbId')
+        # dans le doute si meta active
+        sTMDB = oInputParameterHandler.getValue('sTmdbId')
+        sTitle = oInputParameterHandler.getValue('sFileName')
+
+        sCat_trakt = sCat.replace('1', 'movies').replace('2', 'shows')
+
+        if sCat_trakt == "shows":
+            sSeason = re.search('aison (\d+)',sTitle).group(1)
+            sEpisode = re.search('pisode (\d+)',sTitle).group(1)
+        else:
+            sSeason = False
+            sEpisode = False
+
+        if not sImdb:
+            sPost = {}
+            if not sTMDB:
+                sTMDB = int(self.getTmdbID(oInputParameterHandler.getValue('sFileName'), sCat_trakt))
+
+            sPost = {sCat_trakt: [{'ids': {'tmdb': sTMDB}}]}
+            if sSeason:
+                sPost = {sCat_trakt: [{'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason)}]}]}
+            if sEpisode:
+                sPost = {sCat_trakt: [{'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason), 'episodes': [{'number': int(sEpisode)}]}]}]}
+        else:
+            sPost = {sCat_trakt: [{'ids': {'imdb': sImdb}}]}
+
+        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % self.ADDON.getSetting('bstoken')}
+        
+        try:
+            sPost = json.dumps(sPost).encode('utf-8')
+        except:
+            sPost = json.dumps(sPost)
+
+        sAction = URL_API + 'sync/history'
+
+        req = urllib2.Request(sAction, sPost, headers)
+        response = urllib2.urlopen(req)
+        sHtmlContent = response.read()
+        result = json.loads(sHtmlContent)
+        sText = False
+
+        try:
+            if result['added']['movies'] == 1 or result['added']['episodes'] > 0 or result['added']['shows'] > 0:
+                sText = 'Ajouté avec succès'
+        except:
+            pass
+
+        try:
+            if result['updated']['movies'] == 1 or result['updated']['episodes'] > 0 or result['updated']['shows'] > 0:
+                sText = 'Mise à jour avec succès'
+        except:
+            pass
+
+        try:
+            if result['deleted']['movies'] == 1 or result['deleted']['episodes'] > 0:
+                sText = 'Supprimé avec succès'
+        except:
+            pass
+
+        try:
+            if result['existing']['movies'] >0 or result['existing']['episodes'] > 0 or result['existing']['seasons'] > 0  or result['existing']['shows'] > 0:
+                sText = 'Entrée déjà présente'
+        except:
+            pass
+
+        if sText:
+            self.DIALOG.VSinfo(sText)
+
+        return
+
     def createContexTrakt(self, oGui, oGuiElement, oOutputParameterHandler=''):
 
         liste = []

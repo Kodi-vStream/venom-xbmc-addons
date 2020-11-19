@@ -245,7 +245,7 @@ class cTMDb:
             term = QuotePlus(name)
 
         if mediaType == "tv":
-            term = term.split('Saison')[0]
+            term = term.split('aison')[0].replace('+', ' ')
 
         meta = self._call('search/' + str(mediaType), 'query=' + term + '&page=' + str(page))
 
@@ -255,8 +255,20 @@ class cTMDb:
 
         # cherche 1 seul resultat
         if 'total_results' in meta and meta['total_results'] != 0:
-            tmdb_id = meta['results'][0]['id']
+            if meta['total_results'] > 1:
+                qua = []
+                url = []
+                for aEntry in meta['results']:
+                   url.append(aEntry["id"])
+                   qua.append(aEntry['title'])
+
+                #Affichage du tableau
+                tmdb_id = dialog().VSselectqual(qua, url)
+
+            else:
+                tmdb_id = meta['results'][0]['id']
             return tmdb_id
+
         else:
             return False
 

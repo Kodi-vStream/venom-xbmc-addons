@@ -325,15 +325,18 @@ def getWatchlist():
     if not sCat:
         return
 
-    # dans le doute si meta active
-    sTMDB = oInputParameterHandler.getValue('sTmdbId')
-    sSeason = oInputParameterHandler.getValue('sSeason')
-    sEpisode = oInputParameterHandler.getValue('sEpisode')
-
     sCat = sCat.replace('1', 'movie').replace('2', 'tv')
 
+    # dans le doute si meta active
+    sTMDB = oInputParameterHandler.getValue('sTmdbId')
+    sTitle = oInputParameterHandler.getValue('sFileName')
+
+    if sCat == "tv":
+        sSeason = re.search('aison (\d+)',sTitle).group(1)
+        sEpisode = re.search('pisode (\d+)',sTitle).group(1)
+
     if not sTMDB:
-        sTMDB = grab.get_idbyname(oInputParameterHandler.getValue('sFileName'), '', sCat)
+        sTMDB = grab.get_idbyname(sTitle, '', sCat)
     if not sTMDB:
         return
 
