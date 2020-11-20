@@ -22,7 +22,7 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like G
 SITE_IDENTIFIER = 'tirexo'
 SITE_NAME = '[COLOR violet]Tirexo[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
-# URL_HOST = 'https://www2.tirexo.com/'
+# URL_HOST = 'https://www.tirexo.cc/'
 
 
 # def getURL():
@@ -79,7 +79,7 @@ SITE_DESC = 'Films/Séries/Reportages/Concerts'
             #return ADDON.getSetting('Tirexo')
 
 # Teste pour le moment avec une url fixe.
-URL_MAIN = "https://www.tirexo.cc/"
+URL_MAIN = "https://www.tirexo.net/"
 # URL_MAIN = "https://tirexo.net/"  # Les regex sont différent mais il y a pas cloudflare
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=1&result_from=1&story=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=15&story=', 'showMovies')
