@@ -9,7 +9,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress#, VSlog
+from resources.lib.comaddon import progress #, VSlog
 from resources.lib.packer import cPacker
 
 SITE_IDENTIFIER = 'animecomplet'
@@ -354,8 +354,12 @@ def seriesHosters():
 
             sHost = ''
             oHoster = cHosterGui().checkHoster(sUrl2)
-            if (oHoster != False):
+            if (oHoster != False ):
                 sHost= '[COLOR skyblue]' + oHoster.getDisplayName() + '[/COLOR]'
+
+            elif 'userload' in sUrl2:
+                sHost= '[COLOR skyblue]' + GetHostname(sUrl2) + '[/COLOR]'
+
             else :
                 sHost= '[COLOR pink]' + GetHostname(sUrl2) + '[/COLOR]'
 
@@ -438,35 +442,40 @@ def SimilarTitle(s):
  
 def Hoster_userload_co(url):
 
-    # https://userload.co/embed/xxxxxxxx
     liendirect = ''
     oParser = cParser()
     oRequestHandler = cRequestHandler(url)
     sHtmlContent = oRequestHandler.request()
-    
-    # on peu utilser aussi le pattern pour avoir acces au deux variables
-    # morocco et mycountry
-    #eval.+?var\|\|.+?\|.+?\|([^\|]+).*?mp4\|.+?\|([^\|]+)   
-
+ 
     bvalid, svalue = CheckCpacker(sHtmlContent )
     if bvalid:
+
         sPattern = 'var.*?="([^"]+)'
         aResult = oParser.parse(svalue, sPattern)
 
+        list_mycountry = []
+        morocco = ''
         if (aResult[0]== True):
+            list_mycountry = []
 
-            if len(aResult[1]) > 3 :
-                morocco = aResult[1][2]
-                mycountry = aResult[1][0]
-                url2 = 'https://userload.co/api/request/'
-                pdata= 'morocco=' + morocco + '&mycountry=' + mycountry
-                #morocco=AOsI758RaZGE1ODQ4YWE1NzI1Br74Aa&mycountry=27dbf3235f35d7a4fb5b091af31a630e
-                oRequest = cRequestHandler(url2)
-                oRequest.setRequestType(1)
-                oRequest.addParametersLine(pdata)#
-                liendirect = oRequest.request()
-                if 'mp4' in liendirect:
-                    return True, liendirect.strip()
+            for r in aResult[1]:
+                if len(r) == 31: 
+                    morocco = r #AOsI758RaYjA0MTJiNTUwOGM2Br74Aa
+ 
+                if len(r) == 32: 
+                    list_mycountry.append(r)  # 3 variables indeterminées
+
+            if morocco and list_mycountry:
+                for mycountry in list_mycountry :
+                    url2 = 'https://userload.co/api/request/'
+                    pdata= 'morocco=' + morocco + '&mycountry=' + mycountry
+                    oRequest = cRequestHandler(url2)
+                    oRequest.setRequestType(1)
+                    oRequest.addHeaderEntry('Referer', url)
+                    oRequest.addParametersLine(pdata)
+                    liendirect = oRequest.request()
+                    if 'mp4' in liendirect and 'uloadcdn.com' in liendirect:
+                        return True, liendirect.strip()
 
     return False, liendirect
 
