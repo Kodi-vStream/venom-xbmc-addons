@@ -98,7 +98,7 @@ class cHoster(iHoster):
                 self.stream = False
             # mode stream
             elif ret == 0:
-                self.__sUrl = self.__sUrl.replace('uptobox.com/', 'uptostream.com/')
+                return self.__getMediaLinkForGuest()
             else:
                 return False
             return self.__getMediaLinkByPremiumUser()
