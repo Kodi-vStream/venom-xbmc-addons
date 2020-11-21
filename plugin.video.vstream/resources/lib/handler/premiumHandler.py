@@ -9,7 +9,7 @@ except ImportError:  # Python 3
     import urllib.request as urllib2
     from urllib.error import URLError as UrlError
 
-from resources.lib.comaddon import addon, dialog, VSlog, xbmc
+from resources.lib.comaddon import addon, dialog, VSlog, xbmc, isMatrix
 from resources.lib.config import GestionCookie
 from resources.lib.parser import cParser
 from resources.lib.util import urlEncode
@@ -123,9 +123,9 @@ class cPremiumHandler:
 
         if 'uptobox' in self.__sHosterIdentifier:
             #Py 3
-            try:
+			if isMatrix:
                 data = urlEncode(post_data).encode('utf-8')
-            except:
+            else:
                 data = urlEncode(post_data)
 
             opener = urllib2.build_opener(NoRedirection)
@@ -170,19 +170,11 @@ class cPremiumHandler:
             response.close()
 
         if 'uptobox' in self.__sHosterIdentifier:
-            if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-                if 'xfss' in response.getheader('Set-Cookie'):
-                    self.isLogin = True
-                else:
-                    self.DIALOG.VSinfo('Authentification rate', self.__sDisplayName)
-                    return False
-
+            if 'xfss' in response.getheader('Set-Cookie'):
+                self.isLogin = True
             else:
-                if 'xfss' in head['Set-Cookie']:
-                    self.isLogin = True
-                else:
-                    self.DIALOG.VSinfo('Authentification rate', self.__sDisplayName)
-                    return False
+                self.DIALOG.VSinfo('Authentification rate', self.__sDisplayName)
+                return False
 
         elif 'onefichier' in self.__sHosterIdentifier:
             if 'You are logged in. This page will redirect you.' in sHtmlContent:
@@ -204,10 +196,7 @@ class cPremiumHandler:
         if 'Set-Cookie' in head:
             oParser = cParser()
             sPattern = '(?:^|,) *([^;,]+?)=([^;,\/]+?);'
-            if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-                aResult = oParser.parse(str(response.getheader('Set-Cookie')), sPattern)
-            else:
-                aResult = oParser.parse(str(head['Set-Cookie']), sPattern)
+            aResult = oParser.parse(str(response.getheader('Set-Cookie')), sPattern)
 
             # print(aResult)
             if (aResult[0] == True):
@@ -226,10 +215,8 @@ class cPremiumHandler:
 
     def GetHtmlwithcookies(self, url, data, cookies):
         #Py 3
-        try:
+		if isMatrix:
             url = url.decode('utf-8')
-        except:
-            pass
 
         req = urllib2.Request(url, data, headers)
         if not (data == None):
@@ -246,17 +233,15 @@ class cPremiumHandler:
         response.close()
 
         #Py 3
-        try:
+		if isMatrix:
             return sHtmlContent.decode('utf-8')
-        except:
+        else:
             return sHtmlContent
 
     def GetHtml(self, url, data=None):
         #Py 3
-        try:
+		if isMatrix:
             url = url.encode('utf-8')
-        except:
-            pass
 
         cookies = GestionCookie().Readcookie(self.__sHosterIdentifier)
 
