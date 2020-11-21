@@ -380,6 +380,8 @@ class cHosterGui:
             return self.getHoster('sibnet')
         if ('vidplayer' in sHostName):
             return self.getHoster('vidplayer')
+        if ('userload' in sHostName):
+            return self.getHoster('userload')
 
         # Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
