@@ -153,7 +153,7 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0]):
-            return QuoteSafe(aResult[1][0])
+            return QuoteSafe(aResult[1][1])
 
         return False
 
