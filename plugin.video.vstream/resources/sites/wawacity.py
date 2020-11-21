@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress#, VSlog
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:82.0) Gecko/20100101 Firefox/82.0'
 
@@ -18,11 +18,15 @@ URL_MAIN = 'https://www.wawacity.vip/'
 
 URL_SEARCH = (URL_MAIN + '?search=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
-URL_SEARCH_MOVIES = (URL_SEARCH, 'showMovies')
-URL_SEARCH_SERIES = (URL_SEARCH, 'showMovies')
-URL_SEARCH_ANIMES = (URL_SEARCH, 'showMovies')
-URL_SEARCH_MANGAS = (URL_SEARCH, 'showMovies')
-URL_SEARCH_SPECTACLES = (URL_SEARCH, 'showMovies')
+
+tagmovies ='&p=films'
+tagseries ='&p=series'
+tagmangas ='&p=mangas'
+URL_SEARCH_MOVIES = (URL_SEARCH[0] + tagmovies, 'showMovies')
+URL_SEARCH_SERIES = (URL_SEARCH[0] +  tagseries, 'showMovies')
+URL_SEARCH_ANIMES = (URL_SEARCH[0] + tagmangas , 'showMovies')
+#URL_SEARCH_MANGAS = (URL_SEARCH[0], 'showMovies')
+#URL_SEARCH_SPECTACLES = (URL_SEARCH[0], 'showMovies')
 
 MOVIE_MOVIE = ('http://', 'showMenuMovies')
 MOVIE_EXCLU = (URL_MAIN + '?p=films&s=exclus', 'showMovies')
@@ -237,7 +241,7 @@ def showSearchMovies():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText + '&p=films'
+        sUrl = URL_SEARCH[0] + tagmovies + sSearchText #+ '&p=films'
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -246,7 +250,7 @@ def showSearchSeries():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText + '&p=series'
+        sUrl = URL_SEARCH[0] + tagseries + sSearchText #+ '&p=series'
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -255,7 +259,7 @@ def showSearchMangas():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText + '&p=mangas'
+        sUrl = URL_SEARCH[0] + tagmangas + sSearchText #+ '&p=mangas'
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -418,31 +422,33 @@ def showGenreDivers():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
-    bGlobal_Search = False
+
     if sSearch:
-
         #par defaut
-        sUrl = sSearch.replace(' ', '+')
-
-        if URL_SEARCH[0] in sSearch:
-            bGlobal_Search = True
-
-        #partie en test
-        oInputParameterHandler = cInputParameterHandler()
-        sType = oInputParameterHandler.getValue('type')
-
-        if sType:
-            if sType == "film":
-                sUrl = sUrl.replace(URL_SEARCH[0], URL_SEARCH_MOVIES[0])
-            if sType == "serie":
-                sUrl = sUrl.replace(URL_SEARCH[0], URL_SEARCH_SERIES[0])
-            if sType == "anime":
-                sUrl = sUrl.replace(URL_SEARCH[0], URL_SEARCH_ANIMS[0])
+        sUrl = sSearch.replace(' ', '+').replace('%20', '+')
+        # on replace le tag a la fin qqle soit la position du tag trouvé
+        if tagmovies in sUrl:
+            sUrl = sUrl.replace(tagmovies,'')
+            sUrl = sUrl + tagmovies
+        
+        if tagseries in sUrl:
+            sUrl = sUrl.replace(tagseries,'')
+            sUrl = sUrl + tagseries
+        
+        if tagmangas in sUrl:
+            sUrl = sUrl.replace(tagmangas,'')
+            sUrl = sUrl + tagmangas
+        
+        # ne marche pas en globale le programme sort subitement
+        # de ce module sans resultat de recherche a l'appel
+        # du parametre  sType oInputParameterHandler sType
+        #oInputParameterHandler = cInputParameterHandler()
+        #sType = oInputParameterHandler.getValue('type')
 
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -461,8 +467,12 @@ def showMovies(sSearch = ''):
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
+            sLang =''
+            if  'p=autre' in sUrl:
+                sTitle = aEntry[1]
+                sThumb = URL_MAIN + aEntry[2]
 
-            if not 'films' in sUrl:
+            elif not 'films' in sUrl:
                 sTitle = aEntry[1].split(' - ')[0] + ' ' + aEntry[1].split(' - ')[1]
                 sTitle = sTitle.replace('Saison ', ' S')
                 sLang = aEntry[1].split(' - ')[2].upper()
@@ -478,13 +488,18 @@ def showMovies(sSearch = ''):
             sDesc = aEntry[3]
 
             sDisplayTitle = ('%s (%s)') % (sTitle, sLang)
-
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if 'p=series' in sUrl or 'p=mangas' in sUrl:
+            if 'p=autre' in sUrl:
+                if ' Saison ' in sTitle:
+                    oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, sDesc, sThumb, '', oOutputParameterHandler)
+                else:
+                    oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sDesc, sThumb, '', oOutputParameterHandler)
+
+            elif 'p=series' in sUrl or 'p=mangas' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, sDesc, sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, sDesc, sThumb, '', oOutputParameterHandler)
@@ -676,6 +691,7 @@ def showSeriesLinks():
             oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showHosters():
     oGui = cGui()
