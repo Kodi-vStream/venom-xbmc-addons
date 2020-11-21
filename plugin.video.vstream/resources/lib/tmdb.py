@@ -12,7 +12,7 @@ import unicodedata
 import webbrowser
 
 from resources.lib.util import QuotePlus
-from resources.lib.comaddon import addon, dialog, VSlog, VSPath
+from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix
 from resources.lib.handler.requestHandler import cRequestHandler
 
 try:
@@ -67,9 +67,9 @@ class cTMDb:
     CACHE = 'special://home/userdata/addon_data/plugin.video.vstream/video_cache.db'
 
     # important seul xbmcvfs peux lire le special
-    try:
+    if not isMatrix:
         REALCACHE = VSPath(CACHE).decode('utf-8')
-    except AttributeError:
+    else:
         REALCACHE = VSPath(CACHE)
 
 
@@ -643,10 +643,10 @@ class cTMDb:
                     _meta['genre'] += genre
                 else:
                     _meta['genre'] += ' / ' + genre
-            try:
+
+            if not isMatrix:
                 _meta['genre'] = unicode(_meta['genre'], 'utf-8')
-            except:
-                pass
+
         elif 'parts' in meta:   # Il s'agit d'une collection, on récupere le genre du premier film 
             genres = self.getGenresFromIDs(meta['parts'][0]['genre_ids'])
             _meta['genre'] = ''
@@ -655,10 +655,9 @@ class cTMDb:
                     _meta['genre'] += genre
                 else:
                     _meta['genre'] += ' / ' + genre
-            try:
+
+            if not isMatrix:
                 _meta['genre'] = unicode(_meta['genre'], 'utf-8')
-            except:
-                pass
 
         trailer_id = ''
         if 'trailer' in meta and meta['trailer']:   # Lecture du cache
