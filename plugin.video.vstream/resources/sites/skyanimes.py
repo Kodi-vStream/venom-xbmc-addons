@@ -189,7 +189,7 @@ def showSearch(): #fonction de recherche
 def showSeries():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl').replace('+' , '%2B')
+    sUrl = oInputParameterHandler.getValue('siteUrl').replace('+' , '%2B').replace('é', 'e').replace('ô' , 'o').replace('É' , 'E').replace('ï' , 'i').replace('è' , 'e')
  
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
