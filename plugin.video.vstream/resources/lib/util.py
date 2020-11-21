@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.comaddon import xbmc
+from resources.lib.comaddon import xbmc, isMatrix
 try:
     import htmlentitydefs
     import urllib
@@ -41,7 +41,7 @@ class cUtil:
         str2 = str2.replace(':', ' ').replace('-', ' ')
         
         #Inutile avec Python 3.
-        if xbmc.getInfoLabel('system.buildversion')[0:2] <= '18':
+        if not isMatrix:
             str1 = self.CleanName(str1)
             str2 = self.CleanName(str2)
 
@@ -121,18 +121,19 @@ class cUtil:
         return re.sub('&#?\w+;', fixup, text)
 
     def CleanName(self, name):
-        # vire accent et '\'
-        try:
-            name = unicode(name, 'utf-8')  # converti en unicode pour aider aux convertions
-        except:
-            pass
+        if not isMatrix:
+            # vire accent et '\'
+            try:
+                name = unicode(name, 'utf-8')  # converti en unicode pour aider aux convertions
+            except:
+                pass
 
-        try:
-            name = unicodedata.normalize('NFD', name).encode('ascii', 'ignore').decode('unicode_escape')
-            name = name.encode('utf-8') #on repasse en utf-8
-        except TypeError:
-            #name = unicodedata.normalize('NFKD', name.decode("utf-8")).encode('ASCII', 'ignore')
-            pass
+            try:
+                name = unicodedata.normalize('NFD', name).encode('ascii', 'ignore').decode('unicode_escape')
+                name = name.encode('utf-8') #on repasse en utf-8
+            except TypeError:
+                #name = unicodedata.normalize('NFKD', name.decode("utf-8")).encode('ASCII', 'ignore')
+                pass
 
         #on cherche l'annee
         annee = ''
