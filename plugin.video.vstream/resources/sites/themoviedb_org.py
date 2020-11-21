@@ -331,9 +331,10 @@ def getWatchlist():
     sTMDB = oInputParameterHandler.getValue('sTmdbId')
     sTitle = oInputParameterHandler.getValue('sFileName')
 
-    if sCat == "tv":
-        sSeason = re.search('aison (\d+)',sTitle).group(1)
-        sEpisode = re.search('pisode (\d+)',sTitle).group(1)
+# import re
+#     if sCat == "tv":
+#         sSeason = re.search('aison (\d+)',sTitle).group(1)
+#         sEpisode = re.search('pisode (\d+)',sTitle).group(1)
 
     if not sTMDB:
         sTMDB = grab.get_idbyname(sTitle, '', sCat)
