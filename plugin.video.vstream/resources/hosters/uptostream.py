@@ -121,6 +121,7 @@ class cHoster(iHoster):
             sHtml = oRequest.request()
 
         qua, url_list = decodeur1(sHtml)
+
         if qua and url_list:
             api_call = dialog().VSselectqual(qua, url_list)
 
@@ -134,9 +135,6 @@ class cHoster(iHoster):
 
 
 def decodeur1(Html):
-    if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-        range = xrange
-
     from ast import literal_eval
     # search list64 and his var name.
     vl = re.search('var *(_\w+) *= *(\[[^;]+\]);', Html, re.DOTALL)
@@ -179,8 +177,8 @@ def decodeur1(Html):
                         if Html:
                             i = 0
                             vname = ''
-                            for i in xrange(len(Html)):
-                                fisrt_r = re.match("([^']+)':", Html)
+                            for i in range(len(Html)):
+                                fisrt_r = re.match("([^']+)':", Html, re.DOTALL)
                                 if fisrt_r:
                                     vname = fisrt_r.group(1)
                                     tableau[vname] = 'null'
@@ -264,21 +262,20 @@ def decodeur1(Html):
 
 
 def decoder(data, fn):
-    if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-        range = xrange
-
     data = base64.b64decode(data)
 
     secretKey = {}
     url = ''
     temp = ''
     tempData = ''
+    i = 0
 
-    for i in xrange(len(data)):
+    while i < len(data):
         if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
             tempData += ("%" + format(data[i], '02x'))
         else:
             tempData += ("%" + format(ord(data[i]), '02x'))
+        i = i + 1
 
     data = Unquote(tempData)
 
@@ -301,27 +298,32 @@ def decoder(data, fn):
     y = 0
     i = 0
 
-    try:
-        data = data.decode('utf-8')
-    except:
-        pass
+    if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+        while i < len(data):
 
-    while i < len(data):
+            x = (x + 1) % 256
+            y = (y + secretKey[x]) % 256
 
-        x = (x + 1) % 256
-        y = (y + secretKey[x]) % 256
+            temp = secretKey[x]
+            secretKey[x] = secretKey[y]
+            secretKey[y] = temp
 
-        temp = secretKey[x]
-        secretKey[x] = secretKey[y]
-        secretKey[y] = temp
+            url += (chr(ord(data[i]) ^ secretKey[(secretKey[x] + secretKey[y]) % 256]))
 
-        try:
-            data = data.decode('utf-8')
-        except:
-            pass
+            i += 1
 
-        url += (chr(ord(data[i]) ^ secretKey[(secretKey[x] + secretKey[y]) % 256]))
+    else:
+        while i < len(data.decode('utf-8')):
 
-        i += 1
+            x = (x + 1) % 256
+            y = (y + secretKey[x]) % 256
+
+            temp = secretKey[x]
+            secretKey[x] = secretKey[y]
+            secretKey[y] = temp
+
+            url += (chr(ord(data.decode('utf-8')[i]) ^ secretKey[(secretKey[x] + secretKey[y]) % 256]))
+
+            i += 1
 
     return url
