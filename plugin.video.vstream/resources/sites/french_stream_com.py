@@ -26,7 +26,7 @@ SITE_IDENTIFIER = 'french_stream_com'
 SITE_NAME = 'French-stream'
 SITE_DESC = 'Films, Séries & Mangas en streaming'
 
-URL_MAIN = 'https://www8.french-streaming.com/'
+URL_MAIN = 'https://www.french-streaming.to/'# old 'https://www8.french-streaming.com/'
 
 # URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=9&story=', 'showMovies')
 # URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=10&story=', 'showSeries')
