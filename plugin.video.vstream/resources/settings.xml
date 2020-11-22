@@ -79,7 +79,7 @@
         <setting visible="false" id="plugin_alldebrid" type="bool" label="AllDebrid" default="true"/>
 
         <setting visible="false" id="plugin_allfilms" type="bool" label="All Films" default="true"/>
-		
+
         <setting visible="false" id="plugin_animecomplet" type="bool" label="Animecomplet" default="true"/>
 
         <setting visible="false" id="plugin_animeultime" type="bool" label="Anime Ultime" default="true"/>
@@ -97,6 +97,8 @@
         <setting visible="false" id="plugin_ddl1" type="bool" label="DDL1" default="true"/>
 
         <setting visible="false" id="plugin_docu_fr" type="bool" label="Docu Fr" default="true"/>
+        
+        <setting visible="false" id="plugin_dpstream" type="bool" label="Dpstream" default="true"/>
 
         <setting visible="false" id="plugin_dpstreaming" type="bool" label="DP Streaming" default="true"/>
 
