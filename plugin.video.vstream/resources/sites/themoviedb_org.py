@@ -4,7 +4,7 @@ from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.comaddon import progress, addon, dialog, VSupdate, xbmc, isMatrix, VSlog
+from resources.lib.comaddon import progress, addon, dialog, VSupdate, xbmc, VSlog
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.tmdb import cTMDb
@@ -22,6 +22,11 @@ API_KEY = '92ab39516970ab9d86396866456ec9b6'
 API_VERS = '3'
 API_URL = URL_MAIN + API_VERS
 
+if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+    isMatrix = True
+else:
+    isMatrix = False
+    
 # FANART_URL = 'https://image.tmdb.org/t/p/original/'
 # https://api.themoviedb.org/3/movie/popular?api_key=92ab39516970ab9d86396866456ec9b6
 
