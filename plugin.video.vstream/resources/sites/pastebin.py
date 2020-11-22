@@ -27,6 +27,7 @@ UNCLASSIFIED = 'Indéterminé'
 URL_SEARCH_MOVIES = (URL_MAIN + '&pasteID=' + KEY_PASTE_ID + '&sMedia=film&sSearch=', 'showSearchGlobal')
 URL_SEARCH_SERIES = (URL_MAIN + '&pasteID=' + KEY_PASTE_ID + '&sMedia=serie&sSearch=', 'showSearchGlobal')
 URL_SEARCH_ANIMS = (URL_MAIN + '&pasteID=' + KEY_PASTE_ID + '&sMedia=anime&sSearch=', 'showSearchGlobal')
+URL_SEARCH_DIVERS = (URL_MAIN + '&pasteID=' + KEY_PASTE_ID + '&sMedia=divers&sSearch=', 'showSearchGlobal')
 FUNCTION_SEARCH = 'showSearchGlobal'
 
 
@@ -37,7 +38,7 @@ def getNbItemParPage():
     return 25
 
 ITEM_PAR_PAGE = getNbItemParPage()
-PASTE_PAR_GROUPE = 50   # jusqu'à 50 groupes de paste, chaque groupe peut contenir jusqu'à 50 liens pastebin
+PASTE_PAR_GROUPE = 100   # jusqu'à 100 dossiers, chaque dossier peut contenir jusqu'à 100 liens pastebin
 
 # Exemple
 # CAT; TMDB; TITLE; SAISON; YEAR; GENRES; URLS=https://uptobox.com/
@@ -204,7 +205,7 @@ def showMenu():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('pasteID', pasteID)
         
-        cnt = contenu.intersection(['containFilms', 'containSeries', 'containAnimes'])
+        cnt = contenu.intersection(['containFilms', 'containSeries', 'containAnimes', 'containDivers'])
         if len(cnt) == 1:
             showDetailMenu(pasteID, contenu)
         else:
@@ -227,14 +228,22 @@ def showMenu():
     elif 'film' in sMedia:
         contenu.discard('containSeries')
         contenu.discard('containAnimes')
+        contenu.discard('containDivers')
         showDetailMenu(pasteID, contenu)
     elif 'serie' in sMedia:
         contenu.discard('containFilms')
         contenu.discard('containAnimes')
+        contenu.discard('containDivers')
         showDetailMenu(pasteID, contenu)
     elif 'anime' in sMedia:
         contenu.discard('containFilms')
         contenu.discard('containSeries')
+        contenu.discard('containDivers')
+        showDetailMenu(pasteID, contenu)
+    elif 'divers' in sMedia:
+        contenu.discard('containFilms')
+        contenu.discard('containSeries')
+        contenu.discard('containAnimes')
         showDetailMenu(pasteID, contenu)
                                
     oGui.setEndOfDirectory()
@@ -331,7 +340,7 @@ def showDetailMenu(pasteID, contenu):
         if 'containSerieNetwork' in contenu:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&pasteID=' + pasteID)
-            oGui.addDir(SITE_IDENTIFIER, 'showNetwork', 'Séries (Par diffuseurs)', 'genres.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showNetwork', 'Séries (Par diffuseurs)', 'host.png', oOutputParameterHandler)
     
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&pasteID=' + pasteID)
@@ -361,6 +370,35 @@ def showDetailMenu(pasteID, contenu):
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Animes (Ordre alphabétique)', 'listes.png', oOutputParameterHandler)
     
+    if 'containDivers' in contenu:
+        oOutputParameterHandler = cOutputParameterHandler()
+        searchUrl = URL_SEARCH_DIVERS[0].replace(KEY_PASTE_ID, pasteID)
+        oOutputParameterHandler.addParameter('siteUrl', searchUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Divers)', 'search.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=divers&pasteID=' + pasteID)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Divers (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+        if 'containDiversGenres' in contenu:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=divers&pasteID=' + pasteID)
+            oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Divers (Catégories)', 'genres.png', oOutputParameterHandler)
+
+        if 'containDiversGroupes' in contenu:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=divers&pasteID=' + pasteID)
+            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Divers (Listes)', 'genres.png', oOutputParameterHandler)
+    
+        if 'containDiversYear' in contenu:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=divers&pasteID=' + pasteID)
+            oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Divers (Par années)', 'annees.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=divers&pasteID=' + pasteID)
+        oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Divers (Ordre alphabétique)', 'listes.png', oOutputParameterHandler)
+    
 
 
 def getPasteBin(pasteBin):
@@ -382,11 +420,11 @@ def getPasteBin(pasteBin):
     for movie in movies:
         if pbContent.CAT == -1 or 'film' in movie[pbContent.CAT]:
             containList.add('containFilms')
-            if pbContent.GENRES>=0 and len(movie[pbContent.GENRES].strip())>0:
+            if pbContent.GENRES>=0 and len(movie[pbContent.GENRES].strip())>2:
                 containList.add('containFilmGenres')
             if pbContent.GROUPES>=0 and len(movie[pbContent.GROUPES].replace('[', '').replace(']', '').strip())>0:
                 containList.add('containFilmGroupes')
-            if pbContent.YEAR>=0 and len(movie[pbContent.YEAR].strip())>0:
+            if pbContent.YEAR>=0 and len(movie[pbContent.YEAR].strip())>1:
                 containList.add('containFilmYear')
             if pbContent.RES>=0 and len(movie[pbContent.RES].replace('[', '').replace(']', '').replace(',', '').strip())>0:
                 containList.add('containFilmRes')
@@ -405,13 +443,22 @@ def getPasteBin(pasteBin):
                 containList.add('containSerieGroupes')
             if pbContent.NETWORK>=0 and len(movie[pbContent.NETWORK].replace('[', '').replace(']', '').strip())>0:
                 containList.add('containSerieNetwork')
-            if pbContent.YEAR>=0 and len(movie[pbContent.YEAR].strip())>0:
+            if pbContent.YEAR>=0 and len(movie[pbContent.YEAR].strip())>1:
                 containList.add('containSerieYear')
 
         elif 'anime' in movie[pbContent.CAT]:
             containList.add('containAnimes')
             if pbContent.GROUPES>=0 and len(movie[pbContent.GROUPES].replace('[', '').replace(']', '').strip())>0:
                 containList.add('containAnimeGroupes')
+
+        elif 'divers' in movie[pbContent.CAT]:
+            containList.add('containDivers')
+            if pbContent.GENRES>=0 and len(movie[pbContent.GENRES].strip())>2:
+                containList.add('containDiversGenres')
+            if pbContent.YEAR>=0 and len(movie[pbContent.YEAR].strip())>1:
+                containList.add('containDiversYear')
+            if pbContent.GROUPES>=0 and len(movie[pbContent.GROUPES].replace('[', '').replace(']', '').strip())>0:
+                containList.add('containDiversGroupes')
     return containList
 
 
@@ -1296,6 +1343,8 @@ def showMovies(sSearch=''):
             oGui.addTV(SITE_IDENTIFIER, 'showSerieSaisons', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
         elif sMedia == 'anime':
             oGui.addAnime(SITE_IDENTIFIER, 'showSerieSaisons', sDisplayTitle, 'animes.png', '', '', oOutputParameterHandler)
+        elif sMedia == 'divers':
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'doc.png', '', sDisplayTitle, oOutputParameterHandler)
         else:
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', '', '', oOutputParameterHandler)
 
