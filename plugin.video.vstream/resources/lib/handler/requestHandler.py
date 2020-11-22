@@ -29,6 +29,7 @@ class cRequestHandler:
         self.BUG_SSL = False
         self.__enableDNS = False
         self.s = Session()
+        self.redirects = True
 
     def removeNewLines(self, bRemoveNewLines):
         self.__bRemoveNewLines = bRemoveNewLines
@@ -134,10 +135,9 @@ class cRequestHandler:
         try:
             _request = Request(method, self.__sUrl, headers=self.__aHeaderEntries)
             if method in ['POST', 'PATCH', 'PUT']:
-                self.__aHeaderEntries['content-type'] = 'application/x-www-form-urlencoded'
                 _request.data = sParameters
             prepped = _request.prepare()
-            oResponse = self.s.send(prepped, timeout=self.__timeout)
+            oResponse = self.s.send(prepped, timeout=self.__timeout, allow_redirects=self.redirects)
 
             self.__sResponseHeader = oResponse.headers
             sContent = oResponse.content.decode('unicode-escape')
