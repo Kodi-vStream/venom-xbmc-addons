@@ -394,18 +394,12 @@ def showMovies(sSearch=''):
     sCat = None
     if sSearch:
         siteUrl = sSearch
-
-        if URL_SEARCH[0] in sSearch:
-            sSearch = sSearch.replace(URL_SEARCH[0], '')
         
-
         if nextPageSearch:
             sSearch += '&search_start=' + nextPageSearch
-        oRequestHandler = cRequestHandler(URL_SEARCH[0])
-        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-        oRequestHandler.addParametersLine(sSearch)
-        oRequestHandler.addParameters('User-Agent', UA)
+        oRequestHandler = cRequestHandler(siteUrl)
         sHtmlContent = oRequestHandler.request()
+
         sHtmlContent = oParser.abParse(sHtmlContent, 'de la recherche', 'À propos')
 
         sCat = int(re.search('speedsearch=(\d)', sSearch).group(1))
