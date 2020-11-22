@@ -7,6 +7,10 @@ from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 from resources.lib.aadecode import AADecoder
 from resources.lib.packer import cPacker
+from resources.lib.comaddon import progress#, VSlog
+import re
+
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0"
 
 class cHoster(iHoster):
 
@@ -61,66 +65,36 @@ class cHoster(iHoster):
         morocco = ''
         mycountry = ''
 
-        urlapi = "https://userload.co/api/assets/userload/js/videojs.js"
-
-        oRequestHandler = cRequestHandler(urlapi)
+        oRequestHandler = cRequestHandler(url)
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
         sHtmlContent1 = oRequestHandler.request()
 
-        oParser = cParser()
-        sPattern = '(ﾟωﾟ.+?\(\'_\'\);)'
-        aResult = oParser.parse(sHtmlContent1 , sPattern)
+        sPattern2 = '<script type="text/javascript">(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
+        aResult = re.findall(sPattern2, sHtmlContent1)
 
-        if (aResult[0]== True):
-            sdecode = AADecoder(aResult[1][0]).decode()
-            sPattern =  'morocco=".([^\W]+).+?"&mycountry=".([^\W]+)'
-            aResult_2 = oParser.parse(sdecode, sPattern)
+        if aResult:
+            str2 = aResult[0]
+            if not str2.endswith(';'):
+                str2 = str2 + ';'
 
-            if (aResult_2[0] == True):
-                keymorocco = aResult_2[1][0][0]
-                keymycountry = aResult_2[1][0][1]
+            strs = cPacker().unpack(str2)
+            sPattern3 = 'cfdcebbdaacf="([^"]+)".+?ffddacea="([^"]+)"'
+            mycountry = re.search(sPattern3, strs).group(1)
+            morocco = re.search(sPattern3, strs).group(2)
 
-        oRequestHandler = cRequestHandler(url)
-        sHtmlContent = oRequestHandler.request()
+        if morocco and mycountry:
+            url2 = 'https://userload.co/api/request/'
+            pdata = 'morocco=' + morocco + '&mycountry=' + mycountry
+            oRequest = cRequestHandler(url2)
+            oRequest.setRequestType(1)
+            oRequestHandler.addHeaderEntry('User-Agent', UA)
+            oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+            oRequest.addHeaderEntry('Content-Length', len(str(pdata)))
+            oRequest.addHeaderEntry('Referer', url)
+            oRequest.addParametersLine(pdata)
+            api_call = oRequest.request()
 
-        bvalid, svalue = CheckCpacker(sHtmlContent )
-        if bvalid:
-
-            sPattern = 'var\s(.+?)="([^"]*)'
-            aResult = oParser.parse(svalue, sPattern)
-
-            if (aResult[0]== True):
-                for r in aResult[1]:
-
-                    if r[0] == keymorocco:
-                        morocco = r[1]
-
-                    if r[0] == keymycountry:
-                        mycountry = r[1]
-
-                if morocco and mycountry:
-                    url2 = 'https://userload.co/api/request/'
-                    pdata = 'morocco=' + morocco + '&mycountry=' + mycountry
-                    oRequest = cRequestHandler(url2)
-                    oRequest.setRequestType(1)
-                    oRequest.addHeaderEntry('Referer', url)
-                    oRequest.addParametersLine(pdata)#
-                    api_call = oRequest.request()
-                    if 'mp4' in api_call  and 'uloadcdn.com' in api_call :
-                        return True, api_call.strip()
+            if 'mp4' in api_call  and 'uloadcdn.com' in api_call :
+                return True, api_call.strip()
 
         return False, False
-
-
-def CheckCpacker(sHtmlContent):
-    oParser = cParser()
-    sPattern = "(eval\(function\(p,a,c,k,e.+?)\s*<\/script>"
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        strpacked = aResult[1][0]
-        try:
-            result = cPacker().unpack(strpacked)
-            return True ,result
-        except:
-            pass
-
-    return False, False
