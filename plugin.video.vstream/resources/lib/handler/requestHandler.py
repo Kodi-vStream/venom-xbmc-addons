@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-import requests
+from requests import Session, Request, HTTPError
 import xbmc
 
 from resources.lib.util import urlEncode
@@ -28,6 +28,7 @@ class cRequestHandler:
         self.__sResponseHeader = ''
         self.BUG_SSL = False
         self.__enableDNS = False
+        self.s = Session()
 
     def removeNewLines(self, bRemoveNewLines):
         self.__bRemoveNewLines = bRemoveNewLines
@@ -124,16 +125,24 @@ class cRequestHandler:
                     sParameters = ''
 
         sContent = ''
+
+        if self.__cType == cRequestHandler.REQUEST_TYPE_GET:
+            method = "GET"
+        else:
+            method = "POST"
+
         try:
-            if self.__cType == cRequestHandler.REQUEST_TYPE_GET:
-                oResponse = requests.get(self.__sUrl, headers=self.__aHeaderEntries, timeout=self.__timeout)
-            else:
-                oResponse = requests.post(self.__sUrl, data = sParameters, headers = self.__aHeaderEntries, timeout=self.__timeout)
+            _request = Request(method, self.__sUrl, headers=self.__aHeaderEntries)
+            if method in ['POST', 'PATCH', 'PUT']:
+                self.__aHeaderEntries['content-type'] = 'application/x-www-form-urlencoded'
+                _request.data = sParameters
+            prepped = _request.prepare()
+            oResponse = self.s.send(prepped, timeout=self.__timeout)
 
             self.__sResponseHeader = oResponse.headers
             sContent = oResponse.content.decode('unicode-escape')
 
-        except requests.HTTPError as e:
+        except HTTPError as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e.reason) and self.BUG_SSL == False:
                 self.BUG_SSL = True
                 return self.__callRequest()
