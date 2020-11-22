@@ -41,7 +41,7 @@ MOVIE_HDLIGHT = (URL_MAIN + 'films-hdlight/', 'showMovies')
 MOVIE_3D = (URL_MAIN + 'films/bluray-3d/', 'showMovies')
 MOVIE_DVD = (URL_MAIN + 'films/dvd/', 'showMovies')
 OLD_MOVIE = (URL_MAIN + 'vieux-films.html', 'showMovies')
-FILM_ANIMATION = (URL_MAIN + 'dessins-animes/', 'showMovies')
+FILM_ANIMATION = (URL_MAIN + 'films/anime-films/', 'showMovies')
 MOVIE_VFSTFR = (URL_MAIN + 'films/films-vfstfr/', 'showMovies')
 
 MOVIE_2010 = (URL_MAIN + 'films-2010-2019.html', 'showMovies')
