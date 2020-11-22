@@ -19,12 +19,12 @@ URL_MAIN = 'https://www.wawacity.vip/'
 URL_SEARCH = (URL_MAIN + '?search=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-tagmovies ='&p=films'
-tagseries ='&p=series'
-tagmangas ='&p=mangas'
+tagmovies = '&p=films'
+tagseries = '&p=series'
+tagmangas = '&p=mangas'
 URL_SEARCH_MOVIES = (URL_SEARCH[0] + tagmovies, 'showMovies')
-URL_SEARCH_SERIES = (URL_SEARCH[0] +  tagseries, 'showMovies')
-URL_SEARCH_ANIMES = (URL_SEARCH[0] + tagmangas , 'showMovies')
+URL_SEARCH_SERIES = (URL_SEARCH[0] + tagseries, 'showMovies')
+URL_SEARCH_ANIMES = (URL_SEARCH[0] + tagmangas, 'showMovies')
 #URL_SEARCH_MANGAS = (URL_SEARCH[0], 'showMovies')
 #URL_SEARCH_SPECTACLES = (URL_SEARCH[0], 'showMovies')
 
@@ -448,7 +448,7 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -498,9 +498,10 @@ def showMovies(sSearch = ''):
                     oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, sDesc, sThumb, '', oOutputParameterHandler)
                 else:
                     oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sDesc, sThumb, '', oOutputParameterHandler)
-
-            elif 'p=series' in sUrl or 'p=mangas' in sUrl:
+            elif 'p=series' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, sDesc, sThumb, '', oOutputParameterHandler)
+            elif 'p=mangas' in sUrl:
+                oGui.addAnime(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, sDesc, sThumb, '', oOutputParameterHandler) 
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, sDesc, sThumb, '', oOutputParameterHandler)
 
@@ -617,7 +618,7 @@ def showSeriesLinks():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
-            sDesc = sDesc.replace('<span>', '').replace('<b><i>', '').replace('</i></b>', '').replace('</span>', '').replace('<br>', ' ')
+            sDesc = sDesc.replace('<span>', '').replace('<b><i>', '').replace('</i></b>', '').replace('</span>', '').replace('<br>', ' ').replace('<br />','')
     except:
         pass
 
@@ -691,7 +692,6 @@ def showSeriesLinks():
             oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def showHosters():
     oGui = cGui()
