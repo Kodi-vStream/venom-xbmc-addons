@@ -15,6 +15,7 @@ class cRequestHandler:
         self.__aParamaters = {}
         self.__aParamatersLine = ''
         self.__aHeaderEntries = {}
+        self.__Cookie = {}
         self.removeBreakLines(True)
         self.removeNewLines(True)
         self.__setDefaultHeader()
@@ -27,6 +28,7 @@ class cRequestHandler:
         self.s = Session()
         self.redirects = True
 
+    #Empeche les redirections 
     def disableRedirect(self):
         self.redirects = False
 
@@ -36,12 +38,22 @@ class cRequestHandler:
     def removeBreakLines(self, bRemoveBreakLines):
         self.__bRemoveBreakLines = bRemoveBreakLines
 
+    #Defini le type de requete
+    #0 : pour un requete GET
+    #1 : pour une requete POST
     def setRequestType(self, cType):
         self.__cType = cType
 
+    #Permets de definir un timeout
     def setTimeout(self, valeur):
         self.__timeout = valeur
 
+    #Ajouter un cookie dans le headers de la requete
+    def addCookieEntry(self, sHeaderKey, sHeaderValue):
+        aHeader = {sHeaderKey: sHeaderValue}
+        self.__Cookie.update(aHeader)
+
+    #Ajouter un elements dans le headers de la requete
     def addHeaderEntry(self, sHeaderKey, sHeaderValue):
         for sublist in list(self.__aHeaderEntries):
             if sHeaderKey in sublist:
@@ -53,9 +65,11 @@ class cRequestHandler:
         aHeader = {sHeaderKey: sHeaderValue}
         self.__aHeaderEntries.update(aHeader)
 
+    #Ajout un parametre dans la requete
     def addParameters(self, sParameterKey, mParameterValue):
         self.__aParamaters[sParameterKey] = mParameterValue
 
+    #Ajoute une ligne de parametre
     def addParametersLine(self, mParameterValue):
         self.__aParamatersLine = mParameterValue
 
@@ -74,6 +88,12 @@ class cRequestHandler:
     def getRealUrl(self):
         return self.__sRealUrl
 
+    def request(self):
+        # Supprimee car deconne si url contient ' ' et '+' en meme temps
+        # self.__sUrl = self.__sUrl.replace(' ', '+')
+        return self.__callRequest()
+
+    #Recupere les cookies de la requete
     def GetCookies(self):
         if not self.__sResponseHeader:
             return ''
@@ -91,14 +111,6 @@ class cRequestHandler:
                 cookies = cookies[:-1]
                 return cookies
         return ''
-
-    def request(self):
-        # Supprimee car deconne si url contient ' ' et '+' en meme temps
-        # self.__sUrl = self.__sUrl.replace(' ', '+')
-        return self.__callRequest()
-
-    def getRequestUri(self):
-        return self.__sUrl + '?' + self.__aParamaters
 
     def __setDefaultHeader(self):
         self.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0')
@@ -136,6 +148,10 @@ class cRequestHandler:
             _request = Request(method, self.__sUrl, headers=self.__aHeaderEntries)
             if method in ['POST', 'PATCH', 'PUT']:
                 _request.data = sParameters
+
+            if self.__Cookie:
+                _request.cookies = self.__Cookie
+
             prepped = _request.prepare()
             self.s.headers.update(self.__aHeaderEntries)
             oResponse = self.s.send(prepped, timeout=self.__timeout, allow_redirects=self.redirects)
@@ -191,10 +207,6 @@ class cRequestHandler:
             self.__enableDNS = False
 
         return sContent
-
-    def getHeaderLocationUrl(self):        
-        opened = urllib2.urlopen(self.__sUrl)
-        return opened.geturl()
 
     def new_getaddrinfo(self, *args):
         try:
