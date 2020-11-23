@@ -437,7 +437,6 @@ def showMovies(sSearch=''):
                 sTitle = aEntry[2].split(' - ')[0]
                 sQual = aEntry[2].split(' - ')[1].replace('Avec TRUEFRENCH', '').replace('TRUEFRENCH', '').replace('FRENCH ', '')
 
-
                 if 'Saison' in sQual:  # Pour les séries et animes
                     # * et non pas + car parfois "Saison integrale" pas de chiffre
                     saison = re.search('(Saison [0-9]*)', sQual).group(1)
@@ -463,7 +462,7 @@ def showMovies(sSearch=''):
             titles.add(key)
 
             if sSearch and total > 5:
-                if cUtil().CheckOccurence(sSearch, sTitle) == 0:
+                if cUtil().CheckOccurence(sSearch.lower(), sTitle.lower()) == 0:
                     continue
 
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
