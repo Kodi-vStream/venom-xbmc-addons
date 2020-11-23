@@ -31,6 +31,9 @@ class cRequestHandler:
         self.s = Session()
         self.redirects = True
 
+    def disableRedirect(self):
+        self.redirects = False
+
     def removeNewLines(self, bRemoveNewLines):
         self.__bRemoveNewLines = bRemoveNewLines
 
