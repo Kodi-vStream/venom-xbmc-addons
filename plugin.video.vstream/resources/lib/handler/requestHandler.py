@@ -1,21 +1,8 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-try:  # Python 2
-    import urllib2
-    from urllib2 import URLError as UrlError
-    from urllib2 import HTTPError as HttpError
-
-except ImportError:  # Python 3
-    import urllib.request as urllib2
-    from urllib.error import URLError as UrlError
-    from urllib.error import HTTPError as HttpError
-
-import xbmc
-
-from resources.lib.util import urlEncode
+from requests import Session, Request, HTTPError
 from resources.lib.comaddon import addon, dialog, VSlog, VSPath
-
 
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
@@ -27,7 +14,8 @@ class cRequestHandler:
         self.__cType = 0
         self.__aParamaters = {}
         self.__aParamatersLine = ''
-        self.__aHeaderEntries = []
+        self.__aHeaderEntries = {}
+        self.__Cookie = {}
         self.removeBreakLines(True)
         self.removeNewLines(True)
         self.__setDefaultHeader()
@@ -37,6 +25,12 @@ class cRequestHandler:
         self.__sResponseHeader = ''
         self.BUG_SSL = False
         self.__enableDNS = False
+        self.s = Session()
+        self.redirects = True
+
+    #Empeche les redirections 
+    def disableRedirect(self):
+        self.redirects = False
 
     def removeNewLines(self, bRemoveNewLines):
         self.__bRemoveNewLines = bRemoveNewLines
@@ -44,34 +38,38 @@ class cRequestHandler:
     def removeBreakLines(self, bRemoveBreakLines):
         self.__bRemoveBreakLines = bRemoveBreakLines
 
+    #Defini le type de requete
+    #0 : pour un requete GET
+    #1 : pour une requete POST
     def setRequestType(self, cType):
         self.__cType = cType
 
+    #Permets de definir un timeout
     def setTimeout(self, valeur):
         self.__timeout = valeur
 
-    def disableRedirection(self):
-        class NoRedirection(urllib2.HTTPErrorProcessor):
-            def http_response(self, request, response):
-                code, msg, hdrs = response.code, response.msg, response.info()
-
-                return response
-            
-            https_response = http_response
-
-        opener = urllib2.build_opener(NoRedirection)
-        urllib2.install_opener(opener)
-
-    def addHeaderEntry(self, sHeaderKey, sHeaderValue):
-        for sublist in self.__aHeaderEntries:
-            if sHeaderKey in sublist:
-                self.__aHeaderEntries.remove(sublist)
+    #Ajouter un cookie dans le headers de la requete
+    def addCookieEntry(self, sHeaderKey, sHeaderValue):
         aHeader = {sHeaderKey: sHeaderValue}
-        self.__aHeaderEntries.append(aHeader)
+        self.__Cookie.update(aHeader)
 
+    #Ajouter un elements dans le headers de la requete
+    def addHeaderEntry(self, sHeaderKey, sHeaderValue):
+        for sublist in list(self.__aHeaderEntries):
+            if sHeaderKey in sublist:
+                self.__aHeaderEntries.pop(sublist)
+
+            if sHeaderKey == "Content-Length":
+                sHeaderValue = str(sHeaderValue)
+
+        aHeader = {sHeaderKey: sHeaderValue}
+        self.__aHeaderEntries.update(aHeader)
+
+    #Ajout un parametre dans la requete
     def addParameters(self, sParameterKey, mParameterValue):
         self.__aParamaters[sParameterKey] = mParameterValue
 
+    #Ajoute une ligne de parametre
     def addParametersLine(self, mParameterValue):
         self.__aParamatersLine = mParameterValue
 
@@ -90,9 +88,16 @@ class cRequestHandler:
     def getRealUrl(self):
         return self.__sRealUrl
 
+    def request(self):
+        # Supprimee car deconne si url contient ' ' et '+' en meme temps
+        # self.__sUrl = self.__sUrl.replace(' ', '+')
+        return self.__callRequest()
+
+    #Recupere les cookies de la requete
     def GetCookies(self):
         if not self.__sResponseHeader:
             return ''
+
         if 'Set-Cookie' in self.__sResponseHeader:
             import re
 
@@ -107,14 +112,6 @@ class cRequestHandler:
                 return cookies
         return ''
 
-    def request(self):
-        # Supprimee car deconne si url contient ' ' et '+' en meme temps
-        # self.__sUrl = self.__sUrl.replace(' ', '+')
-        return self.__callRequest()
-
-    def getRequestUri(self):
-        return self.__sUrl + '?' + urlEncode(self.__aParamaters)
-
     def __setDefaultHeader(self):
         self.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0')
         self.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
@@ -127,15 +124,9 @@ class cRequestHandler:
             socket.getaddrinfo = self.new_getaddrinfo
 
         if self.__aParamatersLine:
-            sParameters = self.__aParamatersLine
-            if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-                sParameters = self.__aParamatersLine.encode("utf-8")
-            else:
-                sParameters = self.__aParamatersLine                
+            sParameters = self.__aParamatersLine            
         else:
-            sParameters = urlEncode(self.__aParamaters)
-            if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-                sParameters = sParameters.encode()
+            sParameters = self.__aParamaters
 
         if (self.__cType == cRequestHandler.REQUEST_TYPE_GET):
             if (len(sParameters) > 0):
@@ -146,79 +137,28 @@ class cRequestHandler:
                     self.__sUrl = self.__sUrl + '&' + str(sParameters)
                     sParameters = ''
 
-        if (len(sParameters) > 0):
-            oRequest = urllib2.Request(self.__sUrl, sParameters)
-        else:
-            oRequest = urllib2.Request(self.__sUrl)
-
-        for aHeader in self.__aHeaderEntries:
-            for sHeaderKey, sHeaderValue in aHeader.items():
-                oRequest.add_header(sHeaderKey, sHeaderValue)
-
         sContent = ''
+
+        if self.__cType == cRequestHandler.REQUEST_TYPE_GET:
+            method = "GET"
+        else:
+            method = "POST"
+
         try:
+            _request = Request(method, self.__sUrl, headers=self.__aHeaderEntries)
+            if method in ['POST', 'PATCH', 'PUT']:
+                _request.data = sParameters
 
-            if self.BUG_SSL:
-                VSlog('Retrying with SSL bug')
-                import ssl
-                gcontext = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
-                oResponse = urllib2.urlopen(oRequest, timeout=self.__timeout, context=gcontext)
-            else:
-                oResponse = urllib2.urlopen(oRequest, timeout=self.__timeout)
+            if self.__Cookie:
+                _request.cookies = self.__Cookie
 
-            self.__sResponseHeader = oResponse.info()
+            prepped = _request.prepare()
+            self.s.headers.update(self.__aHeaderEntries)
+            oResponse = self.s.send(prepped, timeout=self.__timeout, allow_redirects=self.redirects)
+            self.__sResponseHeader = oResponse.headers
+            sContent = oResponse.content.decode('unicode-escape')
 
-            #En python 3 on doit décoder la reponse
-            if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19' and not self.__sResponseHeader.get('Content-Encoding') == 'gzip':
-                sContent = decodeHTML(oResponse, self.__sResponseHeader, zlibMode = False)
-
-            else:
-                sContent = oResponse.read()
-
-            # compressed page ?
-            if self.__sResponseHeader.get('Content-Encoding') == 'gzip':
-                import zlib
-                sContent = zlib.decompress(sContent, zlib.MAX_WBITS | 16)
-                
-                if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-                    sContent = decodeHTML(sContent, self.__sResponseHeader, zlibMode = True)
-
-            # https://bugs.python.org/issue4773
-            self.__sRealUrl = oResponse.geturl()
-            self.__sResponseHeader = oResponse.info()
-
-            oResponse.close()
-
-        except HttpError as e:
-            if e.code == 503:
-
-                # Protected by cloudFlare ?
-                from resources.lib import cloudflare
-                if cloudflare.CheckIfActive(e.read()):
-                    self.__sResponseHeader = e.hdrs
-                    cookies = self.GetCookies()
-                    VSlog('Page protegee par cloudflare')
-                    CF = cloudflare.CloudflareBypass()
-                    sContent = CF.GetHtml(self.__sUrl, e.read(), cookies, sParameters, oRequest.headers)
-                    self.__sRealUrl, self.__sResponseHeader = CF.GetReponseInfo()
-                else:
-                    sContent = e.read()
-                    self.__sRealUrl = e.geturl()
-                    self.__sResponseHeader = e.headers()
-
-            else:
-                try:
-                    VSlog("%s (%d),%s" % (addon().VSlang(30205), e.code, self.__sUrl))
-                    self.__sRealUrl = e.geturl()
-                    self.__sResponseHeader = e.headers
-                    sContent = e.read()
-                except:
-                    sContent = ''
-
-            if not sContent:
-                dialog().VSerror("%s (%d),%s" % (addon().VSlang(30205), e.code, self.__sUrl))
-
-        except UrlError as e:
+        except HTTPError as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e.reason) and self.BUG_SSL == False:
                 self.BUG_SSL = True
                 return self.__callRequest()
@@ -236,6 +176,24 @@ class cRequestHandler:
             dialog().VSerror(error_msg)
             sContent = ''
 
+        if oResponse.status_code == 503:
+
+            # Protected by cloudFlare ?
+            from resources.lib import cloudflare
+            if cloudflare.CheckIfActive(sContent):
+                cookies = self.GetCookies()
+                VSlog('Page protegee par cloudflare')
+                CF = cloudflare.CloudflareBypass()
+                sContent = CF.GetHtml(self.__sUrl, sContent, cookies, sParameters, oResponse.headers)
+                self.__sRealUrl, self.__sResponseHeader = CF.GetReponseInfo()
+            else:
+                sContent = e.read()
+                self.__sRealUrl = e.geturl()
+                self.__sResponseHeader = e.headers()
+
+        if not sContent:
+            dialog().VSerror("%s (%d),%s" % (addon().VSlang(30205), oResponse.status_code, self.__sUrl))
+
         if sContent:
             if (self.__bRemoveNewLines == True):
                 sContent = sContent.replace("\n", "")
@@ -249,10 +207,6 @@ class cRequestHandler:
             self.__enableDNS = False
 
         return sContent
-
-    def getHeaderLocationUrl(self):        
-        opened = urllib2.urlopen(self.__sUrl)
-        return opened.geturl()
 
     def new_getaddrinfo(self, *args):
         try:
@@ -280,48 +234,6 @@ class cRequestHandler:
         except Exception as e:
             VSlog("new_getaddrinfo ERROR: {0}".format(e))
             return self.save_getaddrinfo(*args)
-
-#Decode le contenu de la page html sous Python 3
-def decodeHTML(oResponse, ResponseHeader, zlibMode=False):
-    image_formats = ("image/png", "image/jpeg", "image/jpg", "application/download")
-
-    #Ne pas décoder les contenu en bytes.
-    if not ResponseHeader.get('Content-Type') in image_formats:
-        if zlibMode == False:
-            sContent = oResponse.read()
-
-        else:
-            #Unique maniere de formatter la page apres le passage de zlib.
-            sContent = str(oResponse, encoding="utf8", errors='ignore').encode("utf-8").decode('unicode-escape')
-            return sContent
-
-        #Corrige l'affichage des accentes, malheureusement il n'y a pas de solution unique.
-        if ResponseHeader.get_content_charset():
-            encoding = ResponseHeader.get_content_charset()
-
-        else:
-            encoding = 'utf-8'
-        try:
-            try:
-                sContent = sContent.decode()
-            except:
-                pass
-            sContent = str(sContent, encoding)
-        except:
-            sContent = str(sContent)
-        else:
-            pass
-
-        #Formatter correctement le contenu de la page.
-        try:
-            sContent = sContent.encode().decode('unicode-escape')
-        except:
-            pass
-
-    else:
-        sContent = oResponse.read()
-
-    return sContent
 
 # ******************************************************************************
 # from https://github.com/eliellis/mpart.py
