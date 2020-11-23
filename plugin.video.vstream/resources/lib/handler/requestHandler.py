@@ -2,11 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
 from requests import Session, Request, HTTPError
-import xbmc
-
-from resources.lib.util import urlEncode
 from resources.lib.comaddon import addon, dialog, VSlog, VSPath
-
 
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
@@ -81,6 +77,7 @@ class cRequestHandler:
     def GetCookies(self):
         if not self.__sResponseHeader:
             return ''
+
         if 'Set-Cookie' in self.__sResponseHeader:
             import re
 
@@ -101,7 +98,7 @@ class cRequestHandler:
         return self.__callRequest()
 
     def getRequestUri(self):
-        return self.__sUrl + '?' + urlEncode(self.__aParamaters)
+        return self.__sUrl + '?' + self.__aParamaters
 
     def __setDefaultHeader(self):
         self.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0')
@@ -117,7 +114,7 @@ class cRequestHandler:
         if self.__aParamatersLine:
             sParameters = self.__aParamatersLine            
         else:
-            sParameters = urlEncode(self.__aParamaters)
+            sParameters = self.__aParamaters
 
         if (self.__cType == cRequestHandler.REQUEST_TYPE_GET):
             if (len(sParameters) > 0):
@@ -140,8 +137,8 @@ class cRequestHandler:
             if method in ['POST', 'PATCH', 'PUT']:
                 _request.data = sParameters
             prepped = _request.prepare()
+            self.s.headers.update(self.__aHeaderEntries)
             oResponse = self.s.send(prepped, timeout=self.__timeout, allow_redirects=self.redirects)
-
             self.__sResponseHeader = oResponse.headers
             sContent = oResponse.content.decode('unicode-escape')
 
