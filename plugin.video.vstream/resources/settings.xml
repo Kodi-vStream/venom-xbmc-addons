@@ -108,6 +108,8 @@
 
         <setting visible="false" id="plugin_film_illimit_fr" type="bool" label="Film Illimite" default="true"/>
 
+        <setting visible="false" id="plugin_filmoflix" type="bool" label="Filmoflix" default="true"/>
+
         <setting visible="false" id="plugin_filmspourenfants" type="bool" label="Films pour Enfants" default="true"/>
 
         <setting visible="false" id="plugin_filmstoon_pro" type="bool" label="Films Toon" default="true"/>
