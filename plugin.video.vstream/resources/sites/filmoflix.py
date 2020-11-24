@@ -442,7 +442,7 @@ def showSerieLinks():
             hostename = xfield.replace('_', ' ').replace('vf', 'VF')
 
             postdata = 'id=' + id + '&xfield=' + xfield + '&action=playEpisode'
-            sUrl2 = URL_MAIN +'/engine/inc/serial/app/ajax/Season.php'
+            sUrl2 = URL_MAIN +'engine/inc/serial/app/ajax/Season.php'
 
             sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle + ' (' + sYear + ')', hostename)
 
