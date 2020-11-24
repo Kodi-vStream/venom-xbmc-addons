@@ -41,7 +41,7 @@ class cUtil:
         str2 = str2.replace(':', ' ').replace('-', ' ')
         
         #Inutile avec Python 3.
-        if not isMatrix:
+        if not isMatrix():
             str1 = self.CleanName(str1.replace('.', ' '))
             str2 = self.CleanName(str2.replace('.', ' '))
 
