@@ -1065,7 +1065,7 @@ def showResolution():
         if sDisplayRes.isdigit(): sDisplayRes += 'p'
         sDisplayRes = sDisplayRes\
             .replace('P', 'p')\
-            .replace('1080p', 'HD [1080p]')\
+            .replace('1080p', 'fullHD [1080p]')\
             .replace('720p', 'HD [720p]')\
             .replace('540p', 'SD [540p]')\
             .replace('480p', 'SD [480p]')\
@@ -1344,7 +1344,7 @@ def showMovies(sSearch=''):
         elif sMedia == 'anime':
             oGui.addAnime(SITE_IDENTIFIER, 'showSerieSaisons', sDisplayTitle, 'animes.png', '', '', oOutputParameterHandler)
         elif sMedia == 'divers':
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'doc.png', '', sDisplayTitle, oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'doc.png', oOutputParameterHandler)
         else:
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', '', '', oOutputParameterHandler)
 
@@ -1516,7 +1516,7 @@ def showHosters():
             if listRes:
                 res = listRes[resIdx]
                 if res.isdigit(): res += 'p'
-                res = res.replace('P', 'p').replace('1080p', 'HD').replace('720p', 'HD').replace('2160p', '4K')
+                res = res.replace('P', 'p').replace('1080p', 'fullHD').replace('720p', 'HD').replace('2160p', '4K')
                 sDisplayName = sTitle
                 if res: sDisplayName += ' [%s]' %res
                 resIdx += 1
