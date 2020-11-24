@@ -462,7 +462,7 @@ def showMovies(sSearch=''):
             titles.add(key)
 
             if sSearch and total > 5:
-                if cUtil().CheckOccurence(sSearch.lower(), sTitle.lower()) == 0:
+                if cUtil().CheckOccurence(sSearch, sTitle) == 0:
                     continue
 
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
