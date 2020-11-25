@@ -473,6 +473,7 @@ def showSerieHosters():
     oRequest = cRequestHandler(sUrl)
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('Referer', referer)
+    oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
     #oRequest.addHeaderEntry('Cookie', cook) # pas besoin ici mais besoin pour les films
     oRequest.addParametersLine(postdata)
     shtml=oRequest.request()
