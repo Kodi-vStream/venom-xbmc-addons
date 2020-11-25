@@ -156,13 +156,16 @@ class cRequestHandler:
             self.s.headers.update(self.__aHeaderEntries)
             oResponse = self.s.send(prepped, timeout=self.__timeout, allow_redirects=self.redirects)
             self.__sResponseHeader = oResponse.headers
-            sContent = oResponse.content.decode('unicode-escape')
-
-            #Python 2 a besoin de ce decodage.
-            try:
-                sContent = sContent.encode('ascii', 'ignore').decode('ascii')
-            except:
-                pass
+            sContent = oResponse.content
+            
+            # En attente d'une solution compatible Python 2 et Python 3
+#             sContent = sContent.decode('unicode-escape')
+# 
+#             #Python 2 a besoin de ce decodage.
+#             try:
+#                 sContent = sContent.encode('ascii', 'ignore').decode('ascii')
+#             except:
+#                 pass
 
         except HTTPError as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e.reason) and self.BUG_SSL == False:
