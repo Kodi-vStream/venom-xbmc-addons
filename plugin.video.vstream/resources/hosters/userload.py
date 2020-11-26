@@ -7,7 +7,6 @@ from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 from resources.lib.aadecode import AADecoder
 from resources.lib.packer import cPacker
-from resources.lib.comaddon import progress#, VSlog
 import re
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0"
@@ -61,9 +60,26 @@ class cHoster(iHoster):
         url = self.__sUrl
 
         keymorocco = ''
-        keymycountry= ''
+        keymycountry = ''
         morocco = ''
         mycountry = ''
+
+        urlapi = "https://userload.co/api/assets/userload/js/videojs.js"
+
+        oRequestHandler = cRequestHandler(urlapi)
+        sHtmlContent1 = oRequestHandler.request()
+        oParser = cParser()
+        sPattern = '(ﾟωﾟ.+?\(\'_\'\);)'
+        aResult = oParser.parse(sHtmlContent1 , sPattern)
+
+        if (aResult[0]== True):
+            sdecode = AADecoder(aResult[1][0]).decode()
+            sPattern =  'morocco=".([^\W]+).+?"&mycountry=".([^\W]+)'
+            aResult_2 = oParser.parse(sdecode, sPattern)
+
+            if (aResult_2[0] == True):
+                keymorocco = aResult_2[1][0][0]
+                keymycountry = aResult_2[1][0][1]
 
         oRequestHandler = cRequestHandler(url)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -78,9 +94,16 @@ class cHoster(iHoster):
                 str2 = str2 + ';'
 
             strs = cPacker().unpack(str2)
-            sPattern3 = 'cfdcebbdaacf="([^"]+)".+?ffddacea="([^"]+)"'
-            mycountry = re.search(sPattern3, strs).group(1)
-            morocco = re.search(sPattern3, strs).group(2)
+            oParser = cParser()
+            sPattern = 'var\s(.+?)="([^"]*)'
+            aResult = oParser.parse(strs, sPattern)
+
+            if (aResult[0]== True):
+                for r in aResult[1]:
+                    if r[0] == keymorocco:
+                        morocco = r[1]
+                    if r[0] == keymycountry:
+                        mycountry = r[1]
 
         if morocco and mycountry:
             url2 = 'https://userload.co/api/request/'
