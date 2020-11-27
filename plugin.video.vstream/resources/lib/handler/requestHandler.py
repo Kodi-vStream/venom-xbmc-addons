@@ -156,8 +156,10 @@ class cRequestHandler:
             self.s.headers.update(self.__aHeaderEntries)
             oResponse = self.s.send(prepped, timeout=self.__timeout, allow_redirects=self.redirects)
             self.__sResponseHeader = oResponse.headers
+            self.__sRealUrl = oResponse.url
+
             sContent = oResponse.content
-            
+                        
             # En attente d'une solution compatible Python 2 et Python 3
 #             sContent = sContent.decode('unicode-escape')
 # 
