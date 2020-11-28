@@ -4,7 +4,7 @@ from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.comaddon import progress, addon, dialog, VSupdate, xbmc, VSlog
+from resources.lib.comaddon import progress, addon, dialog, VSupdate, xbmc, VSlog, isMatrix
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.tmdb import cTMDb
@@ -21,11 +21,6 @@ URL_MAIN = 'https://www.themoviedb.org/'
 API_KEY = '92ab39516970ab9d86396866456ec9b6'
 API_VERS = '3'
 API_URL = URL_MAIN + API_VERS
-
-if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-    isMatrix = True
-else:
-    isMatrix = False
     
 # FANART_URL = 'https://image.tmdb.org/t/p/original/'
 # https://api.themoviedb.org/3/movie/popular?api_key=92ab39516970ab9d86396866456ec9b6
@@ -534,6 +529,9 @@ def showMovies(sSearch = ''):
 
                 sId, sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['tmdb_id'], i['title'], i['genre'], i['cover_url'], i['backdrop_url'], i['plot'], i['year']
                 
+                if not isMatrix():
+                    sTitle = sTitle.encode("utf-8")
+
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', 'http://tmdb/%s' % sId)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -541,7 +539,7 @@ def showMovies(sSearch = ''):
                 oOutputParameterHandler.addParameter('sTmdbId', sId)
                 oOutputParameterHandler.addParameter('type', 'film')
 
-                if isMatrix:
+                if isMatrix():
                     oOutputParameterHandler.addParameter('searchtext', sTitle)
                 else:
                     oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
@@ -633,7 +631,7 @@ def showSeries(sSearch=''):
                 i = grab._format(i,'')
                 sId, sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['tmdb_id'], i['title'], i['genre'], i['cover_url'], i['backdrop_url'], i['plot'], i['year']
 
-                if not isMatrix:
+                if not isMatrix():
                     sTitle = sTitle.encode("utf-8")
 
                 sSiteUrl = 'tv/' + str(sId)
@@ -646,7 +644,7 @@ def showSeries(sSearch=''):
                 oOutputParameterHandler.addParameter('sFanart', sFanart)
                 oOutputParameterHandler.addParameter('sTmdbId', sId)
 
-                if isMatrix:
+                if isMatrix():
                     oOutputParameterHandler.addParameter('searchtext', sTitle)
                 else:
                     oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
@@ -717,7 +715,7 @@ def showSeriesSaison():
     oOutputParameterHandler.addParameter('siteUrl', sMovieTitle)
     # oOutputParameterHandler.addParameter('type', 'serie')
     # oOutputParameterHandler.addParameter('searchtext', sMovieTitle)
-    if not isMatrix:
+    if not isMatrix():
         oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sMovieTitle))
     else:
         oOutputParameterHandler.addParameter('searchtext', sMovieTitle)
@@ -814,7 +812,7 @@ def showSeriesEpisode():
     search = '%s S%02d' % (sMovieTitle, int(sSeason))
     # oOutputParameterHandler.addParameter('searchtext', search)
 
-    if not isMatrix:
+    if not isMatrix():
         oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(search))
     else:
         oOutputParameterHandler.addParameter('searchtext', search)
@@ -846,7 +844,7 @@ def showSeriesEpisode():
             i = grab._format(i,'')
             sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['title'], i['genre'], i['cover_url'], i['backdrop_url'], i['plot'], i['year']
 
-            if not isMatrix:
+            if not isMatrix():
                 sTitle = sTitle.encode("utf-8")
 
             sTitle = 'S%s E%s %s' % (sSeason, str(sEpNumber) , sTitle)
@@ -862,7 +860,7 @@ def showSeriesEpisode():
             oOutputParameterHandler.addParameter('sEpisode', sEpNumber)
             oOutputParameterHandler.addParameter('type', 'serie')
 
-            if not isMatrix:
+            if not isMatrix():
                 oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sMovieTitle))
             else:
                 oOutputParameterHandler.addParameter('searchtext', sMovieTitle)
@@ -941,7 +939,7 @@ def showActors(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if not isMatrix:
+            if not isMatrix():
                 sName = sName.encode('utf-8')
 
             oOutputParameterHandler.addParameter('siteUrl', 'person/' + str(i['id']) + '/movie_credits')
@@ -1008,7 +1006,7 @@ def showFilmActor():
 
             sId, sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['tmdb_id'], i['title'], i['genre'], i['cover_url'], i['backdrop_url'], i['plot'], i['year']
             
-            if not isMatrix:
+            if not isMatrix():
                 sTitle = sTitle.encode("utf-8")
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -1018,7 +1016,7 @@ def showFilmActor():
             oOutputParameterHandler.addParameter('sTmdbId', sId)
             oOutputParameterHandler.addParameter('type', 'film')
 
-            if not isMatrix:
+            if not isMatrix():
                 oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
             else:
                 oOutputParameterHandler.addParameter('searchtext', sTitle)
@@ -1078,7 +1076,7 @@ def showLists():
             
             sId, sTitle, sType, sThumb, sFanart, sVote, sDesc, sYear = i['tmdb_id'], i['title'], i['media_type'], i['cover_url'], i['backdrop_url'], i['rating'], i['plot'], i['year']
 
-            if not isMatrix:
+            if not isMatrix():
                 sTitle = sTitle.encode("utf-8")
 
             sDisplayTitle = "%s (%s)" % (sTitle, sVote)
@@ -1091,7 +1089,7 @@ def showLists():
             oOutputParameterHandler.addParameter('sFanart', sFanart)
             oOutputParameterHandler.addParameter('sTmdbId', sId)
 
-            if isMatrix:
+            if isMatrix():
                 oOutputParameterHandler.addParameter('searchtext', sTitle)
             else:
                 oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
