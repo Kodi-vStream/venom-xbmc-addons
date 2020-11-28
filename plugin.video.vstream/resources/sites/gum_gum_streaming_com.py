@@ -6,8 +6,6 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-#from resources.lib.util import cUtil
-from resources.lib.util import Noredirection
 from resources.lib.comaddon import progress, VSlog
 
 import re
@@ -323,21 +321,16 @@ def GetTinyUrl(url):
     #On va chercher le vrai lien
     else:
 
-        #VSlog('Decodage lien tinyurl : ' + str(url))
-
-        headers9 = [('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'), ('Referer', URL_MAIN)]
-
-        opener = Noredirection()
-        opener.addheaders = headers9
-        reponse = opener.open(url, None, 5)
-
-        UrlRedirect = reponse.geturl()
+        oRequestHandler = cRequestHandler(url)
+        oRequestHandler.disableRedirect(1)
+        oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0')
+        oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
+        reponse = oRequestHandler.request()
+        UrlRedirect = reponse.GetRealUrl()
 
         if not(UrlRedirect == url):
             url = UrlRedirect
-        elif 'Location' in reponse.headers:
-            url = reponse.headers['Location']
-
-        reponse.close()
+        elif 'Location' in reponse.getResponseHeader():
+            url = reponse.getResponseHeader()['Location']
 
     return url
