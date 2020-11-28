@@ -159,15 +159,6 @@ class cRequestHandler:
             self.__sRealUrl = oResponse.url
 
             sContent = oResponse.content
-                        
-            # En attente d'une solution compatible Python 2 et Python 3
-#             sContent = sContent.decode('unicode-escape')
-# 
-#             #Python 2 a besoin de ce decodage.
-#             try:
-#                 sContent = sContent.encode('ascii', 'ignore').decode('ascii')
-#             except:
-#                 pass
 
         except HTTPError as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e.reason) and self.BUG_SSL == False:
@@ -197,10 +188,6 @@ class cRequestHandler:
                 CF = cloudflare.CloudflareBypass()
                 sContent = CF.GetHtml(self.__sUrl, sContent, cookies, sParameters, oResponse.headers)
                 self.__sRealUrl, self.__sResponseHeader = CF.GetReponseInfo()
-            else:
-                sContent = e.read()
-                self.__sRealUrl = e.geturl()
-                self.__sResponseHeader = e.headers()
 
         if not sContent:
             dialog().VSerror("%s (%d),%s" % (addon().VSlang(30205), oResponse.status_code, self.__sUrl))
