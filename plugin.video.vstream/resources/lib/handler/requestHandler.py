@@ -2,7 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
 from requests import Session, Request, HTTPError
-from resources.lib.comaddon import addon, dialog, VSlog, VSPath
+from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix
 
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
@@ -159,6 +159,10 @@ class cRequestHandler:
             self.__sRealUrl = oResponse.url
 
             sContent = oResponse.content
+
+            #Necessaire pour Python 3
+            if isMatrix():
+            	sContent = sContent.decode('unicode-escape')
 
         except HTTPError as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e.reason) and self.BUG_SSL == False:
