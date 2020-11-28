@@ -2,7 +2,6 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Arias800
 import re
-import requests
 import string
 import json
 import resources.sites.freebox
@@ -16,9 +15,8 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+from resources.lib.util import cUtil, Quote
 
-from resources.lib.util import Quote
 from datetime import datetime, timedelta
 
 SITE_IDENTIFIER = 'channelstream'
@@ -214,12 +212,7 @@ def showHoster():
     cGui.CONTENT = 'movies'
     oGui.setEndOfDirectory()
 
-
 def getRealTokenJson(link, referer):
-#     cookies = {'ChorreameLaJa': '100',
-#                'setVolumeSize': '100',
-#                'NoldoTres': '100'}
-
     cookies = {'elVolumen': '100',
                '__ga':'100'}
 
@@ -230,8 +223,16 @@ def getRealTokenJson(link, referer):
                'X-Requested-With': 'XMLHttpRequest',
                'Referer': referer}
 
-    realResp = requests.get(link, headers=headers, cookies=cookies, verify=False).content  # [1:-1]
-
+    oRequestHandler = cRequestHandler(link)
+    oRequestHandler.addHeaderEntry('Host', 'telerium.tv')
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept', 'application/json, text/javascript, */*; q=0.01')
+    oRequestHandler.addHeaderEntry('Accept-Language', 'pl,en-US;q=0.7,en;q=0.3')
+    oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
+    oRequestHandler.addHeaderEntry('Referer', referer)
+    oRequestHandler.addCookieEntry('elVolumen', '100')
+    oRequestHandler.addCookieEntry('__ga','100')
+    realResp = oRequestHandler.request()
     return json.loads(realResp)
 
 def getTimer():
