@@ -628,7 +628,7 @@ def showSeriesLinks():
 
     if (aResult[0]):
         sSaison = aResult[1][0][2]
-        sMovieTitle = (aResult[1][0][0].replace('&amp;', '') + aResult[1][0][1] + ' ' + aResult[1][0][2]).replace('Télécharger', '')
+        sMovieTitle = (aResult[1][0][0].replace('&amp;', '') + aResult[1][0][1] + ' ' + aResult[1][0][2]).replace('Télécharger ', '').replace('TÃ©lÃ©charger','')
 
     #on recherche d'abord la langue courante
     sPattern = '<i class="fa fa-folder-open"></i>\s*.+?<i>([^"]+)</i>'
@@ -745,6 +745,7 @@ def showSeriesHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        epNumber = 0
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -754,17 +755,19 @@ def showSeriesHosters():
                 break
 
             if aEntry[0]:
+                epNumber = aEntry[0]
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
 
             else:
-                sTitle = sMovieTitle + ' ' + ' [COLOR coral]' + aEntry[2] + '[/COLOR] '
+                sTitle = sMovieTitle + ' ' + epNumber
+                sDisplayTitle = ("%s [COLOR coral]%s[/COLOR] ") % (sTitle, aEntry[2])
                 sUrl2 = aEntry[1]
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addTV(SITE_IDENTIFIER, 'RecapchaBypass', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'RecapchaBypass', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -804,30 +807,6 @@ def RecapchaBypass():
         gui=False,
         debug=False,
     )
-
-    if test is None:
-        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Resolution du Recaptcha annulé[/COLOR]')
-
-    else:
-
-        #N'affiche pas directement le liens car sinon Kodi crash.
-        sDisplayTitle = "Recaptcha passé avec succès, cliquez pour afficher les liens"
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-        oOutputParameterHandler.addParameter('sThumb', sThumb)
-        oOutputParameterHandler.addParameter('Token', test)
-        oGui.addLink(SITE_IDENTIFIER, 'getHost', sDisplayTitle, sThumb, "", oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
-def getHost():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumb = oInputParameterHandler.getValue('sThumb')
-    test = oInputParameterHandler.getValue('Token')
 
     data = 'subform=unlock&g-recaptcha-response=' + test
     oRequestHandler = cRequestHandler(sUrl)
