@@ -171,6 +171,8 @@
         <setting visible="false" id="plugin_pastebin" type="bool" label="PasteBin" default="true"/>
 
         <setting visible="false" id="plugin_planet_streaming" type="bool" label="Planet Streaming" default="true"/>
+        
+        <setting visible="false" id="plugin_quatreKstreamz" type="bool" label="4kstreamz" default="true"/>
 
         <setting visible="false" id="plugin_serie_streaming_watch" type="bool" label="SerieStreaming.watch" default="true"/>
 
