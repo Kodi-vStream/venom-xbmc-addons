@@ -23,7 +23,7 @@ MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
 URL_SEARCH = (URL_MAIN + 'recherche/', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
-
+URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'series.html', 'showMovies')
  
 def load():
