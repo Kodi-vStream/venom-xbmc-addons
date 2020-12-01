@@ -5,12 +5,12 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.gui.gui import cGui
 from resources.lib.util import cUtil, QuotePlus
-from resources.lib.comaddon import addon, dialog, xbmc, VSlog
+from resources.lib.comaddon import addon, dialog, xbmc, VSlog, VSPath
 from resources.lib.gui.hoster import cHosterGui
 import xbmcvfs
 
 import xbmcplugin, xbmcgui
-import re, os, sys
+import os, sys
 
 SITE_IDENTIFIER = 'cLibrary'
 SITE_NAME = 'Library'
@@ -129,30 +129,25 @@ class cLibrary:
             data = listDir[1]
 
         for i in data:
-            path = xbmc.translatePath(sFile+'/'+i) #Suppression du special: pour plus tard
-            Year = os.path.basename(path) #Titre du fichier .strm
+            path = VSPath(sFile+'/'+i) #Suppression du special: pour plus tard
+            sTitle = os.path.basename(path) #Titre du fichier .strm
 
             if '.strm' in i:
                 sHosterUrl = sFile+'/'+i
                 addon_handle = int(sys.argv[1])
                 xbmcplugin.setContent(addon_handle, 'video')
-                li = xbmcgui.ListItem(Year)
+                li = xbmcgui.ListItem(sTitle)
                 xbmcplugin.addDirectoryItem(handle=addon_handle, url=sHosterUrl, listitem=li)
 
             else:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('filePath', sFile+'/'+i)
-                oGui.addDir(SITE_IDENTIFIER, 'openLibrary', Year, 'annees.png', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'openLibrary', sTitle, 'annees.png', oOutputParameterHandler)
                 
         if '.strm' in i:
             xbmcplugin.endOfDirectory(addon_handle)
         else:
             oGui.setEndOfDirectory()
-
-    def callPlugin(self):
-        oInputParameterHandler = cInputParameterHandler()
-        pluginDir = oInputParameterHandler.getValue('pluginDir')
-        sTitle = oInputParameterHandler.getValue('sTitle')
 
     def Delfile(self):
         oInputParameterHandler = cInputParameterHandler()
