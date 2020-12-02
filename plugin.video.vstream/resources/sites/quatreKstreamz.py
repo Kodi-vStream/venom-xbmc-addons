@@ -9,8 +9,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress , VSlog
-from resources.lib.util import cUtil
+from resources.lib.comaddon import progress
  
 SITE_IDENTIFIER = 'quatreKstreamz'
 SITE_NAME = '4kstreamz'
@@ -92,12 +91,7 @@ def showGenres():
         oGui.addText(SITE_IDENTIFIER)
     TriAlpha = []
     if (aResult[0] == True):
-        
-
         for aEntry in aResult[1]:
-           
-
-            
             sUrl =  aEntry[0]
             sTitle = aEntry[1]
             TriAlpha.append((sTitle, sUrl))
@@ -106,21 +100,9 @@ def showGenres():
         TriAlpha = sorted(TriAlpha, key=lambda genre: genre[0])
 
         for sTitle, sUrl in TriAlpha:
-
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            
-            
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-
-            
-
-            
-
-        
-
-        
-
         oGui.setEndOfDirectory()
     
  
@@ -134,20 +116,14 @@ def showMovies(sSearch=''):
     if sSearch:
         
         sUrl = sSearch.replace(' ', '-').replace('%20', '-')+ '.html'
-    
-    
-    
-    
-    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
         
-    if 'genre' in sUrl or 'serie.html' in sUrl or 'recherche' in sUrl :
-        sPattern = '<a class="movie_single.+?href="([^"]+).+?img src="([^"]+).+?class="nop">([^<]+)'
-    else:
+    if 'list-films.html'  in sUrl :
         sPattern = '<a class="movie_single.+?href="([^"]+).+?img src="([^"]+).+?class="nop">([^<]+).+?class="qualitos">([^<]+).+?class="synopsis nop">([^<]+)'
+    else:
+        sPattern = '<a class="movie_single.+?href="([^"]+).+?img src="([^"]+).+?class="nop">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    VSlog(sUrl)
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
      
@@ -165,16 +141,14 @@ def showMovies(sSearch=''):
             if 'http' not in sThumb:
                 sThumb = URL_MAIN[:-1] + sThumb 
                  
-            sTitle = aEntry[2]
+            sTitle = aEntry[2].strip()
             sQual = ''
             sDesc = ''
             if 'list-films.html'  in sUrl :
                 sQual = aEntry[3]              
                 sDesc = aEntry[4]
             
-            
             sDisplayTitle = ('%s [%s] ') % (sTitle, sQual)
-    
         
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -233,7 +207,6 @@ def showSaisons():
  
     sPattern = 'itemprop="description">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    sDesc = 'no description'  
     if (aResult[0] == True):
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
     
@@ -274,8 +247,7 @@ def ShowEpisodes():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
     sYear = oInputParameterHandler.getValue('sYear')
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
+
     isaison = ''
     sPattern = 'saison.(.+?)'
     aResult = oParser.parse(sUrl , sPattern)
@@ -328,7 +300,6 @@ def showLinks():
     
     sPattern = 'itemprop="description">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    sDesc = 'no description'  
     if (aResult[0] == True):
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
     
@@ -398,7 +369,6 @@ def showHosters():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             sHosterUrl = aResult[1][0]
-            VSlog(sHosterUrl)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
@@ -407,7 +377,6 @@ def showHosters():
  
     else:
         sHosterUrl = urlreal
-        VSlog(sHosterUrl)
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
             oHoster.setDisplayName(sMovieTitle)
