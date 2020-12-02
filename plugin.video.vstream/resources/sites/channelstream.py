@@ -190,10 +190,10 @@ def showHoster():
         str2 = aResult[0]
         datetoken = int(getTimer()) * 1000
         
-        jsonUrl = 'https://telerium.tv/streams/'+str2+'/'+str(datetoken)+'.json'
+        jsonUrl = 'https://telerium.live/streams/'+str2+'/'+str(datetoken)+'.json'
         tokens = getRealTokenJson(jsonUrl,iframeURL1)
         m3url = tokens['url']
-        nxturl = 'https://telerium.tv' + tokens['tokenurl']
+        nxturl = 'https://telerium.live' + tokens['tokenurl']
         
         realtoken = getRealTokenJson(nxturl, iframeURL1)[10][::-1]
     
@@ -224,9 +224,9 @@ def getRealTokenJson(link, referer):
                'Referer': referer}
 
     oRequestHandler = cRequestHandler(link)
-    oRequestHandler.addHeaderEntry('Host', 'telerium.tv')
+    #oRequestHandler.addHeaderEntry('Host', 'telerium.tv')
     oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept', 'application/json, text/javascript, */*; q=0.01')
+    #oRequestHandler.addHeaderEntry('Accept', 'application/json, text/javascript, */*; q=0.01')
     oRequestHandler.addHeaderEntry('Accept-Language', 'pl,en-US;q=0.7,en;q=0.3')
     oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
     oRequestHandler.addHeaderEntry('Referer', referer)
@@ -268,5 +268,3 @@ def getEPG(EPG, sTitle):
                 return sDesc
 
     return ''
-
-
