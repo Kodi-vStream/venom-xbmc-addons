@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # source 33 date created 24/11/2020
+return False # CF depuis le 26/11/2020
 import re
 
 from resources.lib.gui.hoster import cHosterGui
