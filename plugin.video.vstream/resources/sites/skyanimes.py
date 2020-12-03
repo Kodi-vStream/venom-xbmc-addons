@@ -29,17 +29,15 @@ def load():
  
     oOutputParameterHandler = cOutputParameterHandler() #appelle la fonction pour sortir un parametre
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0]) # sortie du parametres siteUrl n'oubliez pas la Majuscule
-    oGui.addTV(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
  
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
-    oGui.addTV(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés', 'animes.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés', 'animes.png', oOutputParameterHandler)
  
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
-    oGui.addTV(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Dramas', 'vostfr.png', '', '', oOutputParameterHandler)
-    
-    
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Dramas', 'dramas.png', oOutputParameterHandler)
  
     oGui.setEndOfDirectory()
  
@@ -49,7 +47,6 @@ def showCatA():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRESA[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRESA[1], 'Animes (Genres)', 'genres.png', oOutputParameterHandler)
- 
     
     liste = []
     liste.append( ['En Cours', URL_MAIN + 'streaming-animes-en-cours?p=-1'] )
@@ -59,7 +56,7 @@ def showCatA():
  
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, 'anime.png', '', '', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'animes.png', oOutputParameterHandler)
  
     oGui.setEndOfDirectory()
  
@@ -78,7 +75,7 @@ def showCatD():
  
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, 'vostfr.png', '', '', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'dramas.png', oOutputParameterHandler)
  
     oGui.setEndOfDirectory()
  
@@ -101,30 +98,15 @@ def showGenresA():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        #total = len(aResult[1])
-        #progress_ = progress().VScreate(SITE_NAME)
-
         for aEntry in aResult[1]:
-            #progress_.VSupdate(progress_, total)
-            #if progress_.iscanceled():
-                #break
-
-            
             sUrl = URL_MAIN + aEntry[0]
             sTitle = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            #oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             
-            oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, '', '', '', oOutputParameterHandler)
-            
-
-            
-
-        #progress_.VSclose(progress_)
-
-        
+            oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'genres.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
     
@@ -147,32 +129,18 @@ def showGenresD():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        #total = len(aResult[1])
-        #progress_ = progress().VScreate(SITE_NAME)
-
         for aEntry in aResult[1]:
-            #progress_.VSupdate(progress_, total)
-            #if progress_.iscanceled():
-                #break
-
-            
             sUrl = URL_MAIN + aEntry[0]
             sTitle = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            #oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             
-            oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, '', '', '', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'genres.png', oOutputParameterHandler)
             
-
-            
-
-        #progress_.VSclose(progress_)
-
-        
-
         oGui.setEndOfDirectory()
+
 
 def showSearch(): #fonction de recherche
     oGui = cGui()
@@ -185,7 +153,8 @@ def showSearch(): #fonction de recherche
         showEpisode(sUrl) #appelle la fonction qui pourra lire la page de resultats
         oGui.setEndOfDirectory()
         return
- 
+
+
 def showSeries():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -223,7 +192,10 @@ def showSeries():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
  
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            if '-animes-' in sUrl:
+                oGui.addAnime(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            else:
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
  
         progress_.VSclose(progress_)
  
@@ -233,11 +205,11 @@ def showEpisode(sSearch = ''):
     oGui = cGui()
  
     if sSearch:
-      sUrl = sSearch
+        sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+        #sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
         sThumb = oInputParameterHandler.getValue('sThumb')
  
     oRequestHandler = cRequestHandler(sUrl)
@@ -270,20 +242,18 @@ def showEpisode(sSearch = ''):
                 sTitle = 'E'+sTitle1 + ' '+sTitle
                 sUrl2 = URL_MAIN + STREAM + aEntry[0]
                 sThumb = ""
-                sDesc = ""
             else:
                 sTitle = aEntry[1]
                 sTitle,sTitle1 = sTitle.replace('1080p','').replace('BD','').replace('V2','').replace('FIN','').replace('Fin','').replace('fin','').replace('OAV','').replace('Bluray','').replace('Blu-Ray','').rstrip().rsplit(' ',1)
                 sTitle = 'E'+sTitle1 + ' '+sTitle
                 sUrl2 = URL_MAIN + STREAM + aEntry[0]
- 
                 sUrl2 = sUrl2.replace('#','')
  
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
  
         progress_.VSclose(progress_)
     if not sSearch:
