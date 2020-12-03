@@ -121,11 +121,11 @@ def showMovies(sSearch = ''):#affiche les catégories qui ont des lives'
 
             try:
                 sTitle = sTitle.decode("iso-8859-1", 'ignore')
+                sTitle = cUtil().unescape(sTitle)
+                sTitle = sTitle.encode("utf-8", 'ignore')
             except:
                 pass
 
-            sTitle = cUtil().unescape(sTitle)
-            sTitle = sTitle.encode("utf-8", 'ignore')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl2', sUrl2)

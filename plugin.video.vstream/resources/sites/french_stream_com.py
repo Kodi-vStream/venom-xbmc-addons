@@ -26,7 +26,7 @@ SITE_IDENTIFIER = 'french_stream_com'
 SITE_NAME = 'French-stream'
 SITE_DESC = 'Films, Séries & Mangas en streaming'
 
-URL_MAIN = 'https://www8.french-streaming.com/'
+URL_MAIN = 'https://www.french-streaming.to/'# old 'https://www8.french-streaming.com/'
 
 # URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=9&story=', 'showMovies')
 # URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=10&story=', 'showSeries')
@@ -390,6 +390,7 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
+
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
@@ -415,11 +416,6 @@ def showMovies(sSearch=''):
             # on recupere le titre dans le poster car le site ne l'affiche pas toujours
             if (sTitle == ' '):
                 sTitle = aEntry[1].replace('/static/poster/', '').replace('-', ' ').replace('.jpg', '').title()
-
-            # Si recherche et trop de resultat, on filtre
-            if sSearch and total > 3:
-                if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH_MOVIES[0], ''), sTitle) == 0:
-                    continue
 
             # Année parfois
             sYear = ''
@@ -490,11 +486,6 @@ def showSeries(sSearch=''):
                 # sType = 'mangas'
             # else:
                 # sType = 'autre'
-
-            # Si recherche et trop de resultat, on nettoye
-            if sSearch and total > 2:
-                if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH_SERIES[0], ''), sTitle) == 0:
-                    continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)

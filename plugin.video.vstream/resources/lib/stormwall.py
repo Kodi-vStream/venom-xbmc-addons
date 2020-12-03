@@ -1,17 +1,12 @@
 import re
 import os
 import xbmcaddon
+import time
 
-from resources.lib.comaddon import VSlog, xbmc, VSPath
+from resources.lib.comaddon import VSlog, xbmc, VSPath, dialog
 from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.config import GestionCookie
 
-try:  # Python 2
-    import urllib2
-
-except ImportError:  # Python 3
-    import urllib.request as urllib2
-
-PathCache = VSPath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo('profile'))
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
 class Stormwall(object):
@@ -27,40 +22,6 @@ class Stormwall(object):
         self.hostComplet = ''
         self.host = ''
         self.url = ''
-
-    def DeleteCookie(self, Domain):
-        VSlog('Effacement cookies')
-        file = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt')
-        try:
-            os.remove(os.path.join(PathCache, file).decode('utf-8'))
-        except:
-            os.remove(os.path.join(PathCache, file))
-
-    def SaveCookie(self, Domain, data):
-        try:
-            Name = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt').decode('utf-8')
-        except:
-            Name = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt')
-
-        # save it
-        file = open(Name, 'w')
-        file.write(data)
-        file.close()
-
-    def Readcookie(self, Domain):
-        try:
-            Name = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt').decode('utf-8')
-        except:
-            Name = os.path.join(PathCache, 'Cookie_' + str(Domain) + '.txt')
-
-        try:
-            file = open(Name, 'r')
-            data = file.read()
-            file.close()
-        except:
-            return ''
-
-        return data
 
     def parseInt(self, sin):
         return int(''.join([c for c in re.split(r'[,.]',str(sin))[0] if c.isdigit()])) if re.match(r'\d+', str(sin), re.M) and not callable(sin) else None
@@ -99,31 +60,21 @@ class Stormwall(object):
         return _0x20559e
 
     def CheckIfActive(self, html):
-        try:
-            html = html.decode("utf-8")
-        except:
-            pass
-
-        try:
-            html = html.encode("utf-8")
-        except:
-            pass
-
-        if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-            try:
-                html = str(html, "utf-8")
-            except:
-                pass
-
         if 'stormwall' in str(html):
             return True
         return False
 
     def DecryptCookie(self, content):
-        self.cE = re.search('const cE = "([^"]+)"', str(content)).group(1)
-        self.cK = re.search('const cK = ([0-9]+)', str(content)).group(1)
-        self.cN = re.search('const cN = "([^"]+)"', str(content)).group(1)
-        self.cO = re.search('const cO = "([^"]+)"', str(content)).group(1)
+        #Le nom peut varie selon les pages.
+        if "const" in content:
+            parseName = "const"
+        else:
+            parseName = "var"
+
+        self.cE = re.search(parseName + ' cE = "([^"]+)"', str(content)).group(1)
+        self.cK = re.search(parseName + ' cK = ([0-9]+)', str(content)).group(1)
+        self.cN = re.search(parseName + ' cN = "([^"]+)"', str(content)).group(1)
+        self.cO = re.search(parseName + ' cO = "([^"]+)"', str(content)).group(1)
 
         self.a = []
         self.b = {}
@@ -139,15 +90,18 @@ class Stormwall(object):
         return self.cN + "=" + _0x3b45bc
 
     def GetHtml(self, url, data=None):
-        self.hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)', '\\1', url)
-        self.host = re.sub(r'https*:\/\/', '', self.hostComplet)
+        self.hostComplet = re.sub('(https*:\/\/[^/]+)(\/*.*)', '\\1', url)
+        self.host = re.sub('https*:\/\/', '', self.hostComplet)
         self.url = url
 
         # on cherche des precedents cookies
-        cookies = self.Readcookie(self.host.replace('.', '_'))
+        cookies = GestionCookie().Readcookie(self.host.replace('.', '_'))
         htmlcontent = self.htmlrequest(url, cookies, data)
 
         if not self.CheckIfActive(htmlcontent):
+            return htmlcontent
+        elif "recaptcha3key" in htmlcontent:
+            dialog().VSok('Recaptcha active, reessayer plus tard')
             return htmlcontent
 
         # on cherche le nouveau cookie
@@ -159,7 +113,7 @@ class Stormwall(object):
 
         VSlog('Protection Stormwall active')
 
-        self.SaveCookie(self.host.replace('.', '_'), cookies)
+        GestionCookie().SaveCookie(self.host.replace('.', '_'), cookies)
         htmlcontent = self.htmlrequest(url, cookies, data)
 
         return htmlcontent
@@ -169,10 +123,7 @@ class Stormwall(object):
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
         if cookies:
-            oRequestHandler.addHeaderEntry('Cookie', cookies)        
+            oRequestHandler.addCookieEntry(cookies.split('=')[0], cookies.split('=')[1])        
         oRequestHandler.addHeaderEntry('Referer', url)
-        if data:
-            for d in data:
-                oRequestHandler.addParameters(d, data[d])
         sHtmlContent = oRequestHandler.request()
         return sHtmlContent

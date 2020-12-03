@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'wiflix'
 SITE_NAME = 'Wiflix'
 SITE_DESC = 'Films & Séries en streaming'
 
-URL_MAIN = 'https://wvw.wiflix.co/'
+URL_MAIN = 'https://www.wiflix.co/'
 
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'film-en-streaming/', 'showMovies')
@@ -311,7 +311,7 @@ def sHowEpisodes():
 
             if aEntry[1]:
                 sHosterUrl = aEntry[1].replace('/vd.php?u=', '')
-                if 'players.wiflix.net' in sHosterUrl:
+                if 'players.wiflix.' in sHosterUrl:
                     oRequestHandler = cRequestHandler(sHosterUrl)
                     oRequestHandler.request()
                     sHosterUrl = oRequestHandler.getRealUrl()
@@ -342,7 +342,7 @@ def showHosters():
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry.replace('/vd.php?u=', '')
-            if 'players.wiflix.net' in sHosterUrl:
+            if 'players.wiflix.' in sHosterUrl:
                 oRequestHandler = cRequestHandler(sHosterUrl)
                 oRequestHandler.request()
                 sHosterUrl = oRequestHandler.getRealUrl()

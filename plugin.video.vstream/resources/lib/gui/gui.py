@@ -349,7 +349,9 @@ class cGui:
 
         # if oGuiElement.getMeta():
         #     oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
+
         if oGuiElement.getCat():
+            cGui.sCat = oGuiElement.getCat()
             oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
 
         sItemUrl = self.__createItemUrl(oGuiElement, oOutputParameterHandler)
@@ -378,12 +380,17 @@ class cGui:
 
     # affiche les liens playable
     def addHost(self, oGuiElement, oOutputParameterHandler=''):
-
+        oInputParameterHandler = cInputParameterHandler()
         cGui.CONTENT = 'files'
 
         if oOutputParameterHandler.getValue('siteUrl'):
             sSiteUrl = oOutputParameterHandler.getValue('siteUrl')
             oGuiElement.setSiteUrl(sSiteUrl)
+
+        #On récupere le sCat du fichier précédent.
+        sCat = oInputParameterHandler.getValue('sCat')
+        if sCat:
+            oGuiElement.setCat(sCat)
 
         oListItem = self.createListItem(oGuiElement)
         oListItem.setProperty('IsPlayable', 'true')
@@ -698,7 +705,7 @@ class cGui:
             newNum = self.showNumBoard()
         if newNum:
             try:
-                siteUrl = siteUrl.replace(oldNum, newNum)
+                siteUrl = siteUrl.replace(oldNum, newNum, 1)
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', siteUrl)

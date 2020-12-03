@@ -3,6 +3,7 @@
 
 import re
 import unicodedata
+import requests
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -10,7 +11,10 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.packer import cPacker
+from resources.lib.comaddon import progress, dialog, VSlog, xbmc
+from resources.lib.util import Quote
+
+UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
 
 SITE_IDENTIFIER = 'buzzmonclick_com'
 SITE_NAME = 'BuzzMonClick'
@@ -129,7 +133,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', sThumb, '', oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showLinks', sTitle, 'doc.png', sThumb, '', oOutputParameterHandler)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -151,6 +155,40 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
+def showLinks():
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    oParser = cParser()
+    sPattern = '(?:href=|src=)"([^"]+)".+?>(?:([^<]+)|)'
+    aResult = oParser.parse(cutLink(sHtmlContent), sPattern)
+
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+
+            sHost = aEntry[1]
+            if sHost == "":
+                sHost = aEntry[0].split('/')[2].split('.')[0]
+
+            sUrl = aEntry[0]
+            sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb )
+
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
 
 def showHosters():
     oGui = cGui()
@@ -159,50 +197,57 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
+    if 'forum-tv' in sUrl:
+        dialog().VSinfo('Décodage en cours', "Patientez", 5)
+        s = requests.Session()
 
-    oParser = cParser()
-    sPattern = '<noscript><iframe.+?src="([^"]+)".+?</iframe>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    # VSlog(aResult)
-    
-    # if (aResult[0] == False):
-        # sPattern = 'iframe src="([^"]+)"'
-        # aResult = oParser.parse(sHtmlContent, sPattern)
-    # else:
-        # oRequestHandler = cRequestHandler(''.join(aResult[1]))
-        # sHtmlContent = oRequestHandler.request()
-        # sPattern = '<a href="([^"]+)" target="_blank" class="link link--external" rel="nofollow '
-        # aResult = oParser.parse(sHtmlContent, sPattern)
+        response = s.get(sUrl, headers={'User-Agent':UA})
+        sHtmlContent = str(response.content)
+        cookie_string = "; ".join([str(x)+"="+str(y) for x,y in s.cookies.items()])
 
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
+        oParser = cParser()
+        sPattern = '<input type="hidden".+?value="([^"]+)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
 
-            if 'gounlimited' in aEntry:
-                oRequestHandler = cRequestHandler(aEntry)
-                sHtmlContent = oRequestHandler.request()
+        if (aResult[0] == True):
+            data = "_method="+aResult[1][0]+"&_csrfToken="+aResult[1][1]+"&ad_form_data="+Quote(aResult[1][2])+"&_Token%5Bfields%5D="+Quote(aResult[1][3])+"&_Token%5Bunlocked%5D="+Quote(aResult[1][4])
 
-                sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
-                aResult = oParser.parse(sHtmlContent, sPattern)
-                if (aResult[0] == True):
-                    sHtmlContent = cPacker().unpack(aResult[1][0])
+            #Obligatoire pour validé les cookies.
+            xbmc.sleep(6000)
+            oRequestHandler = cRequestHandler("https://forum-tv.org/adslinkme/links/go")
+            oRequestHandler.setRequestType(1)
+            oRequestHandler.addHeaderEntry('Referer', sUrl)
+            oRequestHandler.addHeaderEntry('Accept', 'application/json, text/javascript, */*; q=0.01')
+            oRequestHandler.addHeaderEntry('User-Agent', UA)
+            oRequestHandler.addHeaderEntry('Content-Length', len(data))
+            oRequestHandler.addHeaderEntry('Content-Type', "application/x-www-form-urlencoded; charset=UTF-8")
+            oRequestHandler.addHeaderEntry('X-Requested-With','XMLHttpRequest')
+            oRequestHandler.addHeaderEntry('Cookie', cookie_string)
+            oRequestHandler.addParametersLine(data)
+            sHtmlContent = oRequestHandler.request()
 
-                    sPattern = '{sources:\["([^"]+)"'
-                    aResult = oParser.parse(sHtmlContent, sPattern)
-                    if (aResult[0] == True):
-                        sHosterUrl = aResult[1][0]
-                        oHoster = cHosterGui().checkHoster(sHosterUrl)
-                        if (oHoster != False):
-                            oHoster.setDisplayName(sMovieTitle)
-                            oHoster.setFileName(sMovieTitle)
-                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-            else:
-                sHosterUrl = aEntry
+            sPattern = 'url":"([^"]+)"'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                sHosterUrl = aResult[1][0]
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    else:   
+        sHosterUrl = sUrl
+        oHoster = cHosterGui().checkHoster(sHosterUrl)
+        if (oHoster != False):
+            oHoster.setDisplayName(sMovieTitle)
+            oHoster.setFileName(sMovieTitle)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
+def cutLink(sHtmlContent):
+    oParser = cParser()
+    sPattern = '">Lecteurs Disponibles :</span></h3>(.+?)<div id="extras">'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        return aResult[1][0]

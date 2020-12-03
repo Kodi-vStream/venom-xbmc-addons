@@ -4,11 +4,10 @@ from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.comaddon import progress, addon, dialog, VSupdate
+from resources.lib.comaddon import progress, addon, dialog, VSupdate, xbmc, VSlog, isMatrix
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.tmdb import cTMDb
-
 
 
 SITE_IDENTIFIER = 'themoviedb_org'
@@ -22,14 +21,13 @@ URL_MAIN = 'https://www.themoviedb.org/'
 API_KEY = '92ab39516970ab9d86396866456ec9b6'
 API_VERS = '3'
 API_URL = URL_MAIN + API_VERS
-
+    
 # FANART_URL = 'https://image.tmdb.org/t/p/original/'
 # https://api.themoviedb.org/3/movie/popular?api_key=92ab39516970ab9d86396866456ec9b6
 
 view = '500'
 tmdb_session = ''
 tmdb_account = ''
-
 
 def load():
     oGui = cGui()
@@ -237,7 +235,7 @@ def getContext():
     yn.append(False)
     lang.append(addons.VSlang(30447))
 
-    ret = dialogs.select('TMDB',lang)
+    ret = dialogs.VSselect(lang, 'TMDB')
     if ret > -1:
         return disp[ret], fow[ret], yn[ret]
 
@@ -327,15 +325,19 @@ def getWatchlist():
     if not sCat:
         return
 
-    # dans le doute si meta active
-    sTMDB = oInputParameterHandler.getValue('sTmdbId')
-    sSeason = oInputParameterHandler.getValue('sSeason')
-    sEpisode = oInputParameterHandler.getValue('sEpisode')
-
     sCat = sCat.replace('1', 'movie').replace('2', 'tv')
 
+    # dans le doute si meta active
+    sTMDB = oInputParameterHandler.getValue('sTmdbId')
+    sTitle = oInputParameterHandler.getValue('sFileName')
+
+# import re
+#     if sCat == "tv":
+#         sSeason = re.search('aison (\d+)',sTitle).group(1)
+#         sEpisode = re.search('pisode (\d+)',sTitle).group(1)
+
     if not sTMDB:
-        sTMDB = grab.get_idbyname(oInputParameterHandler.getValue('sFileName'), '', sCat)
+        sTMDB = grab.get_idbyname(sTitle, '', sCat)
     if not sTMDB:
         return
 
@@ -511,60 +513,70 @@ def showMovies(sSearch = ''):
         sUrl = oInputParameterHandler.getValue('siteUrl')
         result = grab.getUrl(sUrl, iPage, term)
 
-    total = len(result)
-    if (total > 0):
-        total = len(result['results'])
-        progress_ = progress().VScreate(SITE_NAME)
+    try:
+        total = len(result)
+        if (total > 0):
+            total = len(result['results'])
+            progress_ = progress().VScreate(SITE_NAME)
 
-        for i in result['results']:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-            
-            # Mise en forme des infos (au format meta imdb)
-            i = grab._format(i,'')
+            for i in result['results']:
+                progress_.VSupdate(progress_, total)
+                if progress_.iscanceled():
+                    break
+                
+                # Mise en forme des infos (au format meta imdb)
+                i = grab._format(i,'')
 
-            sId, sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['tmdb_id'], i['title'], i['genre'], i['cover_url'], i['backdrop_url'], i['plot'], i['year']
-            sTitle = sTitle.encode("utf-8")
+                sId, sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['tmdb_id'], i['title'], i['genre'], i['cover_url'], i['backdrop_url'], i['plot'], i['year']
+                
+                if not isMatrix():
+                    sTitle = sTitle.encode("utf-8")
 
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'http://tmdb/%s' % sId)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sTmdbId', sId)
-            oOutputParameterHandler.addParameter('type', 'film')
-            oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', 'http://tmdb/%s' % sId)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('sTmdbId', sId)
+                oOutputParameterHandler.addParameter('type', 'film')
 
-            cGui.CONTENT = "movies"
-            oGuiElement = cGuiElement()
-            oGuiElement.setTmdbId(sId)
-            oGuiElement.setSiteName('globalSearch')
-            oGuiElement.setFunction('showSearch')
-            oGuiElement.setTitle(sTitle)
-            oGuiElement.setFileName(sTitle)
-            oGuiElement.setIcon('films.png')
-            oGuiElement.setMeta(1)
-            oGuiElement.setThumbnail(sThumb)
-            oGuiElement.setPoster(sThumb)
-            oGuiElement.setFanart(sFanart)
-            oGuiElement.setCat(1)
-            oGuiElement.setDescription(sDesc)
-            oGuiElement.setYear(sYear)
-            oGuiElement.setGenre(sGenre)
+                if isMatrix():
+                    oOutputParameterHandler.addParameter('searchtext', sTitle)
+                else:
+                    oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
 
-            oGui.addFolder(oGuiElement, oOutputParameterHandler)
+                cGui.CONTENT = "movies"
+                oGuiElement = cGuiElement()
+                oGuiElement.setTmdbId(sId)
+                oGuiElement.setSiteName('globalSearch')
+                oGuiElement.setFunction('showSearch')
+                oGuiElement.setTitle(sTitle)
+                oGuiElement.setFileName(sTitle)
+                oGuiElement.setIcon('films.png')
+                oGuiElement.setMeta(1)
+                oGuiElement.setThumbnail(sThumb)
+                oGuiElement.setPoster(sThumb)
+                oGuiElement.setFanart(sFanart)
+                oGuiElement.setCat(1)
+                oGuiElement.setDescription(sDesc)
+                oGuiElement.setYear(sYear)
+                oGuiElement.setGenre(sGenre)
 
-        progress_.VSclose(progress_)
+                oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-        if (iPage > 0):
-            iNextPage = int(iPage) + 1
-            oOutputParameterHandler = cOutputParameterHandler()
-            if sSearch:
-                oOutputParameterHandler.addParameter('sSearch', sSearch)
+            progress_.VSclose(progress_)
 
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('page', iNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', oOutputParameterHandler)
+            if (iPage > 0):
+                iNextPage = int(iPage) + 1
+                oOutputParameterHandler = cOutputParameterHandler()
+                if sSearch:
+                    oOutputParameterHandler.addParameter('sSearch', sSearch)
+
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('page', iNextPage)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', oOutputParameterHandler)
+
+    except TypeError as e:
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Aucun résultat n\'a été trouvé.[/COLOR]')
 
     # changement mode
     view = addons.getSetting('visuel-view')
@@ -602,67 +614,76 @@ def showSeries(sSearch=''):
         result = grab.getUrl(sUrl, iPage, term)
 
     oGui = cGui()
+    
+    try:
+        total = len(result)
 
-    total = len(result)
+        if (total > 0):
+            total = len(result['results'])
+            progress_ = progress().VScreate(SITE_NAME)
 
-    if (total > 0):
-        total = len(result['results'])
-        progress_ = progress().VScreate(SITE_NAME)
+            for i in result['results']:
+                progress_.VSupdate(progress_, total)
+                if progress_.iscanceled():
+                    break
 
-        for i in result['results']:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
+                # Mise en forme des infos (au format meta imdb)
+                i = grab._format(i,'')
+                sId, sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['tmdb_id'], i['title'], i['genre'], i['cover_url'], i['backdrop_url'], i['plot'], i['year']
 
-            # Mise en forme des infos (au format meta imdb)
-            i = grab._format(i,'')
-            sId, sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['tmdb_id'], i['title'], i['genre'], i['cover_url'], i['backdrop_url'], i['plot'], i['year']
+                if not isMatrix():
+                    sTitle = sTitle.encode("utf-8")
 
-            sTitle = sTitle.encode("utf-8")
+                sSiteUrl = 'tv/' + str(sId)
 
-            sSiteUrl = 'tv/' + str(sId)
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sSiteUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('sId', sId)
+                oOutputParameterHandler.addParameter('sFanart', sFanart)
+                oOutputParameterHandler.addParameter('sTmdbId', sId)
 
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sSiteUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sId', sId)
-            oOutputParameterHandler.addParameter('sFanart', sFanart)
-            oOutputParameterHandler.addParameter('sTmdbId', sId)
-            oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
+                if isMatrix():
+                    oOutputParameterHandler.addParameter('searchtext', sTitle)
+                else:
+                    oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
 
 
-            cGui.CONTENT = "tvshows"
-            oGuiElement = cGuiElement()
-            oGuiElement.setTmdbId(sId)
-            oGuiElement.setSiteName(SITE_IDENTIFIER) # a activer pour  saisons
-            oGuiElement.setFunction('showSeriesSaison')
-            oGuiElement.setTitle(sTitle)
-            oGuiElement.setFileName(sTitle)
-            oGuiElement.setIcon('series.png')
-            oGuiElement.setMeta(2)
-            oGuiElement.setThumbnail(sThumb)
-            oGuiElement.setPoster(sThumb)
-            oGuiElement.setFanart(sFanart)
-            oGuiElement.setCat(2)
-            oGuiElement.setDescription(sDesc)
-            oGuiElement.setYear(sYear)
-            oGuiElement.setGenre(sGenre)
+                cGui.CONTENT = "tvshows"
+                oGuiElement = cGuiElement()
+                oGuiElement.setTmdbId(sId)
+                oGuiElement.setSiteName(SITE_IDENTIFIER) # a activer pour  saisons
+                oGuiElement.setFunction('showSeriesSaison')
+                oGuiElement.setTitle(sTitle)
+                oGuiElement.setFileName(sTitle)
+                oGuiElement.setIcon('series.png')
+                oGuiElement.setMeta(2)
+                oGuiElement.setThumbnail(sThumb)
+                oGuiElement.setPoster(sThumb)
+                oGuiElement.setFanart(sFanart)
+                oGuiElement.setCat(2)
+                oGuiElement.setDescription(sDesc)
+                oGuiElement.setYear(sYear)
+                oGuiElement.setGenre(sGenre)
 
-            oGui.addFolder(oGuiElement, oOutputParameterHandler)
+                oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-        progress_.VSclose(progress_)
+            progress_.VSclose(progress_)
 
-        if (iPage > 0):
-            iNextPage = int(iPage) + 1
-            oOutputParameterHandler = cOutputParameterHandler()
-            if sSearch:
-                oOutputParameterHandler.addParameter('sSearch', sSearch)
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('page', iNextPage)
-            if (oInputParameterHandler.exist('genre')):
-                oOutputParameterHandler.addParameter('genre', oInputParameterHandler.getValue('genre'))
-            oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', oOutputParameterHandler)
+            if (iPage > 0):
+                iNextPage = int(iPage) + 1
+                oOutputParameterHandler = cOutputParameterHandler()
+                if sSearch:
+                    oOutputParameterHandler.addParameter('sSearch', sSearch)
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('page', iNextPage)
+                if (oInputParameterHandler.exist('genre')):
+                    oOutputParameterHandler.addParameter('genre', oInputParameterHandler.getValue('genre'))
+                oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', oOutputParameterHandler)
+
+    except TypeError:
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Aucun résultat n\'a été trouvé.[/COLOR]')
 
     # changement mode
     view = addons.getSetting('visuel-view')
@@ -694,7 +715,10 @@ def showSeriesSaison():
     oOutputParameterHandler.addParameter('siteUrl', sMovieTitle)
     # oOutputParameterHandler.addParameter('type', 'serie')
     # oOutputParameterHandler.addParameter('searchtext', sMovieTitle)
-    oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sMovieTitle))
+    if not isMatrix():
+        oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sMovieTitle))
+    else:
+        oOutputParameterHandler.addParameter('searchtext', sMovieTitle)
 
     oGuiElement = cGuiElement()
     oGuiElement.setSiteName('globalSearch')
@@ -719,7 +743,7 @@ def showSeriesSaison():
 
             # Mise en forme des infos (au format meta imdb)
             i = grab._format(i,'')
-            sId, sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['tmdb_id'], i['title'], i['genre'], i['cover_url'], i['backdrop_url'], i['plot'], i['year']
+            sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['title'], i['genre'], i['cover_url'], i['backdrop_url'], i['plot'], i['year']
 
             sTitle = 'Saison ' + str(SSeasonNum) + ' (' + str(sNbreEp) + ')'
 
@@ -787,7 +811,11 @@ def showSeriesEpisode():
     # oOutputParameterHandler.addParameter('type', 'serie')
     search = '%s S%02d' % (sMovieTitle, int(sSeason))
     # oOutputParameterHandler.addParameter('searchtext', search)
-    oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(search))
+
+    if not isMatrix():
+        oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(search))
+    else:
+        oOutputParameterHandler.addParameter('searchtext', search)
 
     oGuiElement = cGuiElement()
     oGuiElement.setSiteName('globalSearch')
@@ -816,7 +844,8 @@ def showSeriesEpisode():
             i = grab._format(i,'')
             sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['title'], i['genre'], i['cover_url'], i['backdrop_url'], i['plot'], i['year']
 
-            sTitle = sTitle.encode("utf-8")
+            if not isMatrix():
+                sTitle = sTitle.encode("utf-8")
 
             sTitle = 'S%s E%s %s' % (sSeason, str(sEpNumber) , sTitle)
 
@@ -830,7 +859,11 @@ def showSeriesEpisode():
             oOutputParameterHandler.addParameter('sSeason', sSeason)
             oOutputParameterHandler.addParameter('sEpisode', sEpNumber)
             oOutputParameterHandler.addParameter('type', 'serie')
-            oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sMovieTitle))
+
+            if not isMatrix():
+                oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sMovieTitle))
+            else:
+                oOutputParameterHandler.addParameter('searchtext', sMovieTitle)
 
             cGui.CONTENT = "tvshows"
             oGuiElement = cGuiElement()
@@ -906,7 +939,8 @@ def showActors(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            sName = sName.encode('utf-8')
+            if not isMatrix():
+                sName = sName.encode('utf-8')
 
             oOutputParameterHandler.addParameter('siteUrl', 'person/' + str(i['id']) + '/movie_credits')
             sTitle = str(sName)
@@ -971,7 +1005,9 @@ def showFilmActor():
             i = grab._format(i,'')
 
             sId, sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['tmdb_id'], i['title'], i['genre'], i['cover_url'], i['backdrop_url'], i['plot'], i['year']
-            sTitle = sTitle.encode("utf-8")
+            
+            if not isMatrix():
+                sTitle = sTitle.encode("utf-8")
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://tmdb/%s' % sId)
@@ -979,7 +1015,11 @@ def showFilmActor():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sTmdbId', sId)
             oOutputParameterHandler.addParameter('type', 'film')
-            oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
+
+            if not isMatrix():
+                oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
+            else:
+                oOutputParameterHandler.addParameter('searchtext', sTitle)
 
             cGui.CONTENT = "movies"
             oGuiElement = cGuiElement()
@@ -1036,7 +1076,9 @@ def showLists():
             
             sId, sTitle, sType, sThumb, sFanart, sVote, sDesc, sYear = i['tmdb_id'], i['title'], i['media_type'], i['cover_url'], i['backdrop_url'], i['rating'], i['plot'], i['year']
 
-            sTitle = sTitle.encode("utf-8")
+            if not isMatrix():
+                sTitle = sTitle.encode("utf-8")
+
             sDisplayTitle = "%s (%s)" % (sTitle, sVote)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -1046,7 +1088,11 @@ def showLists():
             oOutputParameterHandler.addParameter('sId', sId)
             oOutputParameterHandler.addParameter('sFanart', sFanart)
             oOutputParameterHandler.addParameter('sTmdbId', sId)
-            oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
+
+            if isMatrix():
+                oOutputParameterHandler.addParameter('searchtext', sTitle)
+            else:
+                oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
 
             cGui.CONTENT = "movies"
             oGuiElement = cGuiElement()

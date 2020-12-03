@@ -85,13 +85,15 @@ class cHoster(iHoster):
             oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
             sHtmlContent = oRequest.request()
 
-            sPattern = 'NAME="([^"]+)",PROGRESSIVE-URI="([^"]+)"'
+            sPattern = 'NAME="([^"]+)"(,PROGRESSIVE-URI="([^"]+)"|http(.+?)\#)'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
                 for aEntry in reversed(aResult[1]):
-                    if aEntry[0] not in qua:
-                        qua.append(aEntry[0])
-                        url.append(aEntry[1])
+                    quality = aEntry[0].replace('@60', '')
+                    if quality not in qua:
+                        qua.append(quality)
+                        link = aEntry[2] if aEntry[2]  else 'http' + aEntry[3]
+                        url.append(link)
 
 
             api_call = dialog().VSselectqual(qua, url)

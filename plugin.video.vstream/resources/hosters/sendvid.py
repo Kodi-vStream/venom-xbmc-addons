@@ -5,7 +5,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-#from resources.lib.comaddon import VSlog
+from resources.lib.comaddon import dialog
 
 class cHoster(iHoster):
 
@@ -44,33 +44,43 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        
+
         api_call = ''
-
-        data = 'r=&d='+self.__sUrl.split('/')[2]
-        oRequest = cRequestHandler("https://sendvid.net/api/source/" + self.__sUrl.split('/')[4])
-        oRequest.setRequestType(1)
-        oRequest.addHeaderEntry('Content-Length', len(str(data)))
-        oRequest.addParametersLine(data)
-        sHtmlContent = oRequest.request()
-
         oParser = cParser()
-        sPattern =  '"file":"([^"]+)","label":"([^"]+)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
 
-        from resources.lib.comaddon import dialog
+        if 'sendvid.net' in self.__sUrl:
 
-        url=[]
-        qua=[]
-        api_call = False
+            data = 'r=&d='+self.__sUrl.split('/')[2]
+            oRequest = cRequestHandler("https://sendvid.net/api/source/" + self.__sUrl.split('/')[4])
+            oRequest.setRequestType(1)
+            oRequest.addHeaderEntry('Content-Length', len(str(data)))
+            oRequest.addParametersLine(data)
+            sHtmlContent = oRequest.request()
 
-        for aEntry in aResult[1]:
-           url.append(aEntry[0])
-           qua.append(aEntry[1])
+            sPattern =  '"file":"([^"]+)","label":"([^"]+)"'
+            aResult = oParser.parse(sHtmlContent, sPattern)
 
-        api_call = dialog().VSselectqual(qua, url)
+            url=[]
+            qua=[]
+            api_call = False
+
+            if (aResult[0] == True):
+                for aEntry in aResult[1]:
+                    url.append(aEntry[0])
+                    qua.append(aEntry[1])
+
+                api_call = dialog().VSselectqual(qua, url)
+
+        #domain sendvid.com / https://sendvid.com/embed/xxxx
+        else:
+            oRequest = cRequestHandler(self.__sUrl)
+            sHtmlContent = oRequest.request()
+            sPattern = 'source\s*src="([^"]+)'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                api_call = aResult[1][0]
 
         if (api_call):
-             return True, api_call
+            return True, api_call
 
         return False, False

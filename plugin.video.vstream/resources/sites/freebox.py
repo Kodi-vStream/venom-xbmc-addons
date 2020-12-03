@@ -144,7 +144,6 @@ def parseM3U(sUrl=None, infile=None):  # Traite les m3u local
             return
 
         elif '#EXTM3U' not in sUrl:
-            site = infile
             headers = {'User-Agent': UA}
 
             oRequestHandler = cRequestHandler(sUrl)
@@ -163,7 +162,7 @@ def parseM3U(sUrl=None, infile=None):  # Traite les m3u local
 
     try:
         line = inf.readline()
-    finally:
+    except:
         pass
 
     playlist = []
@@ -197,7 +196,7 @@ def parseM3U(sUrl=None, infile=None):  # Traite les m3u local
 
     try:
         inf.close()
-    finally:
+    except:
         pass
 
     return playlist
@@ -277,14 +276,14 @@ def direct_epg():  # Code qui gerent l'epg
     oInputParameterHandler = cInputParameterHandler()
     # aParams = oInputParameterHandler.getAllParameter()
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sCom = cePg().get_epg(sTitle, 'direct')
+    cePg().view_epg(sTitle, 'direct')
 
 
 def soir_epg():  # Code qui gerent l'epg
     # oGuiElement = cGuiElement()
     oInputParameterHandler = cInputParameterHandler()
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sCom = cePg().get_epg(sTitle, 'soir')
+    cePg().view_epg(sTitle, 'soir')
 
 
 def enregistrement():  # Code qui gerent l'epg
@@ -294,7 +293,7 @@ def enregistrement():  # Code qui gerent l'epg
 
     enregistrementIsActif = ADDON.getSetting('enregistrement_activer')
     if enregistrementIsActif == 'false':
-        oDialog = dialog().VSok('Merci d\'activer l\'enregistrement dans les options')
+        dialog().VSok('Merci d\'activer l\'enregistrement dans les options')
         return
 
     if '[' in sUrl and ']' in sUrl:
@@ -303,7 +302,7 @@ def enregistrement():  # Code qui gerent l'epg
     if 'plugin' in sUrl:
         url = re.findall('url=(.+?)&amp', ''.join(sUrl))
         sUrl = Unquote(url[0])
-    shebdule = cEnregistremement().programmation_enregistrement(sUrl)
+    cEnregistremement().programmation_enregistrement(sUrl)
 
 
 def showAZ():
@@ -408,6 +407,7 @@ def play__():  # Lancer les liens
     sUrl = oInputParameterHandler.getValue('siteUrl').replace('P_L_U_S', '+')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sDesc = oInputParameterHandler.getValue('sDesc')
 
     # Special url with tag
     if '[' in sUrl and ']' in sUrl:
@@ -442,6 +442,7 @@ def play__():  # Lancer les liens
         sUrl = sUrl.replace(' ', '%20')
         oGuiElement.setMediaUrl(sUrl)
         oGuiElement.setThumbnail(sThumbnail)
+        oGuiElement.setDescription(sDesc)
 
         oPlayer = cPlayer()
         oPlayer.clearPlayList()

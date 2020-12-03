@@ -248,7 +248,7 @@ def seriesHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = "video.+? = \'([^']+)\'"
+    sPattern = "video\[\d+\] = \'([^']+)\'"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 

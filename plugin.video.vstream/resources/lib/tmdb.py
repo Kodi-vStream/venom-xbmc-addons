@@ -12,7 +12,7 @@ import unicodedata
 import webbrowser
 
 from resources.lib.util import QuotePlus
-from resources.lib.comaddon import addon, dialog, VSlog, VSPath
+from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix
 from resources.lib.handler.requestHandler import cRequestHandler
 
 try:
@@ -67,9 +67,9 @@ class cTMDb:
     CACHE = 'special://home/userdata/addon_data/plugin.video.vstream/video_cache.db'
 
     # important seul xbmcvfs peux lire le special
-    try:
+    if not isMatrix:
         REALCACHE = VSPath(CACHE).decode('utf-8')
-    except AttributeError:
+    else:
         REALCACHE = VSPath(CACHE)
 
 
@@ -244,17 +244,31 @@ class cTMDb:
         else:
             term = QuotePlus(name)
 
+        if mediaType == "tv":
+            term = term.split('aison')[0].replace('+', ' ')
+
         meta = self._call('search/' + str(mediaType), 'query=' + term + '&page=' + str(page))
 
-        if 'errors' not in meta and 'status_code' not in meta:
-            # si pas de résultat avec l'année, on teste sans l'année
-            if 'total_results' in meta and meta['total_results'] == 0 and year:
-                meta = self.search_movie_name(name, '')
+        # si pas de résultat avec l'année, on teste sans l'année
+        if 'total_results' in meta and meta['total_results'] == 0 and year:
+            meta = self.search_movie_name(name, '')
 
-            # cherche 1 seul resultat
-            if 'total_results' in meta and meta['total_results'] != 0:
+        # cherche 1 seul resultat
+        if 'total_results' in meta and meta['total_results'] != 0:
+            if meta['total_results'] > 1:
+                qua = []
+                url = []
+                for aEntry in meta['results']:
+                   url.append(aEntry["id"])
+                   qua.append(aEntry['title'])
+
+                #Affichage du tableau
+                tmdb_id = dialog().VSselectqual(qua, url)
+
+            else:
                 tmdb_id = meta['results'][0]['id']
-                return tmdb_id
+            return tmdb_id
+
         else:
             return False
 
@@ -629,10 +643,10 @@ class cTMDb:
                     _meta['genre'] += genre
                 else:
                     _meta['genre'] += ' / ' + genre
-            try:
+
+            if not isMatrix:
                 _meta['genre'] = unicode(_meta['genre'], 'utf-8')
-            except:
-                pass
+
         elif 'parts' in meta:   # Il s'agit d'une collection, on récupere le genre du premier film 
             genres = self.getGenresFromIDs(meta['parts'][0]['genre_ids'])
             _meta['genre'] = ''
@@ -641,10 +655,9 @@ class cTMDb:
                     _meta['genre'] += genre
                 else:
                     _meta['genre'] += ' / ' + genre
-            try:
+
+            if not isMatrix:
                 _meta['genre'] = unicode(_meta['genre'], 'utf-8')
-            except:
-                pass
 
         trailer_id = ''
         if 'trailer' in meta and meta['trailer']:   # Lecture du cache
@@ -999,23 +1012,9 @@ class cTMDb:
         if append_to_response:
             url += '&%s' % append_to_response
 
-        oRequestHandler = cRequestHandler(url)
-
-        name = oRequestHandler.request()
-
-        # Permet de régler les problemes d'accents.
-        if '/lists' in action:
-            try:
-                name = unicode(name, 'utf-8')
-            except:
-                pass
-
-            name = unicodedata.normalize('NFD', name).encode('ascii', 'ignore').decode('unicode_escape')
-            name = name.encode('utf-8')
-
-        data = json.loads(name)
-        if 'status_code' in data and data['status_code'] == 34:
-            return {}
+        #On utilise requests car urllib n'arrive pas a certain moment a ouvrir le json.    
+        import requests
+        data = requests.get(url).json()
         
         return data
 
@@ -1026,7 +1025,10 @@ class cTMDb:
             return
 
         sUrl = '%s%s?api_key=%s&session_id=%s' % (self.URL, action, self.api_key, tmdb_session)
-        sPost = json.dumps(post)
+        try:
+            sPost = json.dumps(post).encode('utf-8')
+        except:
+            sPost = json.dumps(post)
 
         headers = {'Content-Type': 'application/json'}
         req = urllib2.Request(sUrl, sPost, headers)

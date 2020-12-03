@@ -20,9 +20,9 @@ import re, random, requests
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
 
 SITE_IDENTIFIER = 'tirexo'
-SITE_NAME = '[COLOR violet]Tirexo [Selenium] [/COLOR]'
+SITE_NAME = '[COLOR violet]Tirexo[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
-# URL_HOST = 'https://www2.tirexo.com/'
+# URL_HOST = 'https://www2.tirexo.lol/'
 
 
 # def getURL():
@@ -79,8 +79,8 @@ SITE_DESC = 'Films/Séries/Reportages/Concerts'
             #return ADDON.getSetting('Tirexo')
 
 # Teste pour le moment avec une url fixe.
-URL_MAIN = "https://www.tirexo.pro/"
-# URL_MAIN = "https://tirexo.net/"  # Les regex sont différent mais il y a pas cloudflare
+URL_MAIN = "https://www2.tirexo.lol/"
+# URL_MAIN = "https://www.tirexo......./"  # Les regex sont différentes mais il n'y a pas cloudflare
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=1&result_from=1&story=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=15&story=', 'showMovies')
 URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=32&story=', 'showMovies')
@@ -129,7 +129,7 @@ ANIM_VF_1080 = (URL_MAIN + 'animes-vf-1080p/', 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + 'animes-vostfr/', 'showMovies')
 ANIM_VOSTFRS_720 = (URL_MAIN + 'animes-vostfr-720p/', 'showMovies')
 ANIM_VOSTFRS_1080 = (URL_MAIN + 'animes-vostfr-1080p/', 'showMovies')
-FILM_ANIM = (URL_MAIN + 'films-mangas/', 'showMovies')
+FILM_ANIM = (URL_MAIN + 'films-animes/', 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'animes/', 'showMovies')
 
 DOC_NEWS = (URL_MAIN + 'emissions-tv-documentaires/souscate_doc-Documentaire/', 'showMovies')
@@ -313,13 +313,13 @@ def showInstall():
 def load():
     oGui = cGui()
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showDetail', '[COLOR red]Explication pour le site[/COLOR]', 'films.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showInstall', '[COLOR blue]Cliquer ici pour installer selenium[/COLOR]', 'films.png', oOutputParameterHandler)
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    #oGui.addDir(SITE_IDENTIFIER, 'showDetail', '[COLOR red]Explication pour le site[/COLOR]', 'films.png', oOutputParameterHandler)
+#
+#    oOutputParameterHandler = cOutputParameterHandler()
+#    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+#    oGui.addDir(SITE_IDENTIFIER, 'showInstall', '[COLOR blue]Cliquer ici pour installer selenium[/COLOR]', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -612,8 +612,7 @@ def showGenre():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', genre, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
-
+        
 def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
@@ -628,9 +627,13 @@ def showMovies(sSearch=''):
     elif 'collections/' in sUrl:
         sPattern = 'class="mov-t nowrap" href=".+?".+?<img src="\/([^"]+)" width="200px" height="320px" title="([^"]+)".+?data-link="([^"]+)"'
     else:
-        sPattern = 'class="mov-t nowrap" href="([^"]+)"> <.+?data-content="([^"]+)".+?<img src="\/([^"]+)".+?title="([^"]+)"'
+        sPattern = 'class="mov-t nowrap" href="([^"]+)">  <.+?data-content="([^"]+)".+?img src="([^"]+)".+?title="([^"]+)"'
 
-    sHtmlContent = cloudflare(sUrl)
+    oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    sHtmlContent = oRequestHandler.request()
+
     aResult = oParser.parse(sHtmlContent, sPattern)
     # VSlog(aResult)
 
@@ -724,7 +727,10 @@ def showCollec():
 
     sPattern = 'class="mov-t nowrap" href="([^"]+)">.+?data-content="([^"]+)".+?<img src="\/([^"]+)".+?title="([^"]+)"'
 
-    sHtmlContent = cloudflare(sUrl)
+    oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    sHtmlContent = oRequestHandler.request()
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -780,8 +786,10 @@ def showMoviesLinks():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
 
-    sHtmlContent = cloudflare(sUrl)
-    # sHtmlContent = oRequestHandler.request()
+    oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    sHtmlContent = oRequestHandler.request()
 
     # Affichage du texte
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles pour ce film:[/COLOR]')
@@ -861,7 +869,10 @@ def showSeriesLinks():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
 
-    sHtmlContent = cloudflare(sUrl)
+    oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    sHtmlContent = oRequestHandler.request()
 
     # Affichage du texte
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles pour cette saison :[/COLOR]')
@@ -880,7 +891,7 @@ def showSeriesLinks():
         pass
 
     # Mise à jour du titre
-    sPattern = '<h2>Télécharger <b itemprop="name">(.+?)</b>.+?>(.+?)</span>'
+    sPattern = '<h2>T.+?charger <b itemprop="name">(.+?)</b>.+?>(.+?)</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sTitle = sMovieTitle
@@ -892,7 +903,7 @@ def showSeriesLinks():
     saisons.append(numSaison)
 
     # on recherche d'abord la qualité courante
-    sPattern = 'couleur-qualitesz">Qualité (.+?) <.+?couleur-languesz">(.+?)</span><br>.+?"couleur-seriesz">(.+?)\['
+    sPattern = 'couleur-qualitesz">Qualit.+? (.+?) <.+?couleur-languesz">(.+?)</span><br>.+?"couleur-seriesz">(.+?)\['
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sDisplayTitle = sTitle
@@ -969,24 +980,22 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumb=oInputParameterHandler.getValue('sThumb')
-    sDesc=oInputParameterHandler.getValue('sDesc')
-    oGui.addText(SITE_IDENTIFIER, '[COLOR blue]Veuillez attendre que le navigateur se ferme tout seul [/COLOR]')
-    oGui.addText(SITE_IDENTIFIER, '[COLOR blue]Pour qu\'il puisse récupérer automatiquement le bon lien [/COLOR]')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
+    #oGui.addText(SITE_IDENTIFIER, '[COLOR blue]Veuillez attendre que le navigateur se ferme tout seul [/COLOR]')
+    #oGui.addText(SITE_IDENTIFIER, '[COLOR blue]Pour qu\'il puisse récupérer automatiquement le bon lien [/COLOR]')
 
-    # oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
-    # oRequestHandler.addHeaderEntry('User-Agent', UA)
-    # oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-    # sHtmlContent = oRequestHandler.request()
-    sHtmlContent = cloudflare(sUrl)
-    # VSlog(sHtmlContent)
+    oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
 
     # Ajout des liens DL
     # Gere si un Hoster propose plusieurs liens
     # Retire les resultats proposés en plusieurs parties (ce sont des .rar)
-    sPattern = '<th scope="col" class="no-sort"><img src=.+?>([^><]+)</th>|class=\'download\'.+?href=\'([^\']+)\'>Télécharger <'
+    sPattern = '<th scope="col" class="no-sort"><img src=.+?>([^><]+)</th>|class=\'download\'.+?href=\'([^\']+)\'>T.+?charger <'
     aResult = oParser.parse(sHtmlContent, sPattern)
     # VSlog(aResult)
 
@@ -1022,9 +1031,10 @@ def showHostersLink():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
-    sHtmlContent = cloudflare(sUrl)
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
     sPattern = 'src="(.+?)"'
@@ -1052,10 +1062,14 @@ def showSeriesHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb=oInputParameterHandler.getValue('sThumb')
     sDesc=oInputParameterHandler.getValue('sDesc')
-    oGui.addText(SITE_IDENTIFIER, '[COLOR blue]Veuillez attendre que le navigateur se ferme tout seul [/COLOR]')
-    oGui.addText(SITE_IDENTIFIER, '[COLOR blue]Pour qu\'il puisse récupérer automatiquement le bon lien [/COLOR]')
 
-    sHtmlContent = cloudflare(sUrl)
+    # oGui.addText(SITE_IDENTIFIER, '[COLOR blue]Veuillez attendre que le navigateur se ferme tout seul [/COLOR]')
+    # oGui.addText(SITE_IDENTIFIER, '[COLOR blue]Pour qu\'il puisse récupérer automatiquement le bon lien [/COLOR]')
+
+    oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
     sPattern = '<th scope="col" class="no-sort"><img alt=.+?>([^<>]+)</th>|href=\'([^\']+?)\'>Episode ([^>]+)<'
@@ -1117,10 +1131,14 @@ def Display_protected_link():
         # Temporairement car la flemme de se battre avec les redirections
         # oRequestHandler = cRequestHandler(sUrl)
         # oRequestHandler.addHeaderEntry('User-Agent', UA)
-        sUrl = redi(sUrl)
+        oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+        sHtmlContent = oRequestHandler.request()
+        sUrl = oRequestHandler.getRealUrl()
         # VSlog(sUrl)
 
-    if "dl-protect" in sUrl:
+    if "journaldupirate" in sUrl:
         sHtmlContent = DecryptDlProtecte(sUrl)
         # VSlog(sHtmlContent)
 
@@ -1129,7 +1147,7 @@ def Display_protected_link():
             if sHtmlContent.startswith('http'):
                 aResult_dlprotecte = (True, [sHtmlContent])
             else:
-                sPattern_dlprotecte = '<div class="lienet"><a href="(.+?)">'
+                sPattern_dlprotecte = '<div class="alert">.+?<a href="(.+?)"'
                 aResult_dlprotecte = oParser.parse(sHtmlContent, sPattern_dlprotecte)
 
         else:
@@ -1253,18 +1271,30 @@ def DecryptDlProtecte(url):  # Passe par Selenium
     # return page_source
 
     """ Nouvelle méthode pour dl protect qui passe par requests"""
-    oRequestHandler = cRequestHandler(url)
-    sHtmlContent = oRequestHandler.request()
-    sPattern = '<input.+?name="lien" value="([^"]+)">'
-    aResult = re.findall(sPattern, sHtmlContent)
-    if aResult:
-        value = aResult
-        # VSlog(value)
     s = requests.Session()
-    payload_data = {'lien': value}
-    response = s.post(url, data=payload_data)
-    result = response.content
-    sHtmlContent = result
+
+    response = s.get(url)
+    sHtmlContent = str(response.content)
+    cookie_string = "; ".join([str(x)+"="+str(y) for x,y in s.cookies.items()])
+
+    sPattern = 'type="hidden" name="_token" value="(.+?)">'
+    aResult = re.search(sPattern, sHtmlContent).group(1)
+
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.setRequestType(1)
+    oRequestHandler.addHeaderEntry('Host', url.split('/')[2])
+    oRequestHandler.addHeaderEntry('Referer', url)
+    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    oRequestHandler.addHeaderEntry('Content-Length', len(str("_token=" + aResult + "&getlink=1")))
+    oRequestHandler.addHeaderEntry('Content-Type', "application/x-www-form-urlencoded")
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+    oRequestHandler.addHeaderEntry('Cookie', cookie_string)
+    oRequestHandler.addParameters("_token", aResult)
+    oRequestHandler.addParametersLine("_token=" + aResult + "&getlink=1")
+
+    sHtmlContent = oRequestHandler.request()
 
     return sHtmlContent
 

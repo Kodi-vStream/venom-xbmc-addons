@@ -56,13 +56,16 @@ class cTrakt:
 
         headers = {'Content-Type': 'application/json'}
         post = {'client_id': API_KEY}
-        post = json.dumps(post)
+
+        try:
+            post = json.dumps(post).encode('utf-8')
+        except:
+            post = json.dumps(post)
 
         req = urllib2.Request(URL_API + 'oauth/device/code', post, headers)
         response = urllib2.urlopen(req)
         sHtmlContent = response.read()
         result = json.loads(sHtmlContent)
-        # VSlog(str(result))
         response.close()
 
         # {"device_code":"a434135042b5a76159628bc974eed2f266fb47df9f438d5738ce40396d531490", "user_code":"EBDFD843", "verification_url":"https://trakt.tv/activate", "expires_in":600, "interval":5}
@@ -82,7 +85,11 @@ class cTrakt:
                 try:
                     headers = {'Content-Type': 'application/json'}
                     post = {'client_id': API_KEY, 'client_secret': API_SECRET, 'code': result['device_code']}
-                    post = json.dumps(post)
+
+                    try:
+                        post = json.dumps(post).encode('utf-8')
+                    except:
+                        post = json.dumps(post)
 
                     req = urllib2.Request(URL_API + 'oauth/device/token', post, headers)
                     response = urllib2.urlopen(req)
@@ -94,6 +101,7 @@ class cTrakt:
                         self.ADDON.setSetting('bstoken', str(result['access_token']))
                         self.DIALOG.VSinfo(self.ADDON.VSlang(30000))
                         return
+
                 except:
                     pass
 
@@ -268,7 +276,7 @@ class cTrakt:
                 liste.append([self.ADDON.VSlang(30319), URL_API + 'users/me/watchlist/episodes?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_tvshows_show_watched') == 'true':
-                liste.append(['%s (%s)' % (self.ADDON.VSlang(30312), result2['movies']['watched']), URL_API + 'users/me/watched/shows?page=1&limit=' + str(MAXRESULT)])
+                liste.append(['%s (%s)' % (self.ADDON.VSlang(30312), result2['shows']['watched']), URL_API + 'users/me/watched/shows?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_tvshows_show_recommended') == 'true':
                 liste.append([self.ADDON.VSlang(30313), URL_API + 'recommendations/shows'])
@@ -291,7 +299,7 @@ class cTrakt:
 
             for List in json_lists:
                 url = URL_API + 'users/me/lists/' + List['ids']['slug'] + '/items'
-                liste.append([(List['name'] + ' (' + str(List['item_count']) + ')').encode('utf-8'), url])
+                liste.append([self.decode((List['name'] + ' (' + str(List['item_count']) + ')')), url])
 
         for sTitle, sUrl in liste:
 
@@ -327,6 +335,21 @@ class cTrakt:
 
         return
 
+    def decode(self, elem, Unicode=False):
+        if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+            return elem
+        else:
+            if Unicode == True:
+
+                try:
+                    elem = unicodedata.normalize('NFD', unicode(elem)).encode('ascii', 'ignore').decode('unicode_escape')
+                except UnicodeDecodeError:
+                    elem = elem.decode('utf-8')
+                except:
+                    pass
+
+            return elem.encode('utf-8')
+
     def getTrakt(self, url2=None):
         oGui = cGui()
 
@@ -361,6 +384,8 @@ class cTrakt:
         sFunction = 'getLoad'
         sId = SITE_IDENTIFIER
         searchtext = ''
+        sTitle = ''
+        
         if (total > 0):
             progress_ = progress().VScreate(SITE_NAME)
 
@@ -388,14 +413,15 @@ class cTrakt:
                         sFunction = 'showSearch'
                         sId = 'globalSearch'
 
-                    searchtext = ('%s') % (sTitle.encode('utf-8'))
+                    sTitle = self.decode(sTitle)
+                    searchtext = ('%s') % (sTitle)
 
                     if sYear:
-                        sFile = ('%s - (%s)') % (sTitle.encode('utf-8'), int(sYear))
-                        sTitle = ('%s - (%s)') % (sTitle.encode('utf-8'), int(sYear))
+                        sFile = ('%s - (%s)') % (sTitle, int(sYear))
+                        sTitle = ('%s - (%s)') % (sTitle, int(sYear))
                     else:
-                        sFile = ('%s') % (sTitle.encode('utf-8'))
-                        sTitle = ('%s') % (sTitle.encode('utf-8'))
+                        sFile = ('%s') % (sTitle)
+                        sTitle = ('%s') % (sTitle)
 
                 elif 'history' in sUrl:
                     # commun
@@ -418,10 +444,9 @@ class cTrakt:
                         sExtra = ('(%s)') % (sYear)
                         cTrakt.CONTENT = '1'
 
-                    sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode('unicode_escape')
-                    sTitle.encode('utf-8')
-                    searchtext = ('%s') % (sTitle.encode('utf-8'))
-                    sFile = ('%s - (%s)') % (sTitle.encode('utf-8'), sExtra)
+                    sTitle = self.decode(sTitle,Unicode=True)
+                    searchtext = ('%s') % (sTitle)
+                    sFile = ('%s - (%s)') % (sTitle, sExtra)
                     sTitle = ('[COLOR gold]%s %s [/COLOR]- %s %s') % (sType, 'vu', sTitle, sExtra)
 
                 elif 'watchlist' in sUrl:
@@ -449,10 +474,9 @@ class cTrakt:
                         sExtra = ('(%s)') % (sYear)
                         cTrakt.CONTENT = '1'
 
-                    sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode('unicode_escape')
-                    sTitle.encode('utf-8')
-                    searchtext = ('%s') % (sTitle.encode('utf-8'))
-                    sFile = ('%s %s') % (sTitle.encode('utf-8'), sExtra)
+                    sTitle = self.decode(sTitle,Unicode=True)
+                    searchtext = ('%s') % (sTitle)
+                    sFile = ('%s %s') % (sTitle, sExtra)
                     sTitle = ('%s %s') % (sTitle, sExtra)
 
                 elif 'watched' in sUrl:
@@ -474,11 +498,11 @@ class cTrakt:
                         sFunction = 'showSearch'
                         sId = 'globalSearch'
 
-                    sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode('unicode_escape')
-                    sTitle.encode('utf-8')
-                    searchtext = ('%s') % (sTitle.encode('utf-8'))
-                    sFile = ('%s - %s') % (sTitle.encode('utf-8'), sYear)
-                    sTitle = ('%s Lectures - %s (%s)') % (sPlays, sTitle, sYear)
+                    if sTitle:
+                        sTitle = self.decode(sTitle,Unicode=True)
+                        searchtext = ('%s') % (sTitle)
+                        sFile = ('%s - %s') % (sTitle, sYear)
+                        sTitle = ('%s Lectures - %s (%s)') % (sPlays, sTitle, sYear)
 
                 elif 'played' in sUrl:
                     # commun
@@ -495,9 +519,11 @@ class cTrakt:
                         sTitle = self.getLocalizedTitle(movie, 'movies')
                         sTrakt, sImdb, sTmdb, sYear = movie['ids']['trakt'], movie['ids']['imdb'], movie['ids']['tmdb'], movie['year']
                         cTrakt.CONTENT = '1'
-                    searchtext = ('%s') % (sTitle.encode('utf-8'))
-                    sFile = ('%s - (%s)') % (sTitle.encode('utf-8'), int(sYear))
-                    sTitle = ('%s - (%s)') % (sTitle.encode('utf-8'), int(sYear))
+
+                    sTitle = self.decode(sTitle)
+                    searchtext = ('%s') % (sTitle)
+                    sFile = ('%s - (%s)') % (sTitle, int(sYear))
+                    sTitle = ('%s - (%s)') % (sTitle, int(sYear))
 
                 elif 'calendars' in sUrl:
                     if 'show' in i:
@@ -512,10 +538,12 @@ class cTrakt:
                         sTrakt, sImdb, sTmdb, sYear, sFirst_aired = movie['ids']['trakt'], movie['ids']['imdb'], movie['ids']['tmdb'], movie['year'], i['first_aired']
                         cTrakt.CONTENT = '1'
 
-                    sDate = datetime.datetime(*(time.strptime(sFirst_aired, '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y')
-                    searchtext = ('%s') % (sTitle.encode('utf-8'))
-                    sFile = ('%s - (%s)') % (sTitle.encode('utf-8'), sYear)
-                    sTitle = ('%s - %s (S%02dE%02d)') % (sDate, sTitle.encode('utf-8').decode('ascii', 'ignore'), sSaison, sEpisode)
+                    if sTitle:
+                        sDate = datetime.datetime(*(time.strptime(sFirst_aired, '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y')
+                        sTitle = self.decode(sTitle)
+                        searchtext = ('%s') % (sTitle)
+                        sFile = ('%s - (%s)') % (sTitle, sYear)
+                        sTitle = ('%s - %s (S%02dE%02d)') % (sDate, self.decode(sTitle, Unicode=True), sSaison, sEpisode)
 
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
@@ -535,10 +563,9 @@ class cTrakt:
                         sFunction = 'showSearch'
                         sId = 'globalSearch'
 
-                    sTitle = unicodedata.normalize('NFD',  sTitle).encode('ascii', 'ignore').decode('unicode_escape')
-                    sTitle.encode('utf-8')
-                    searchtext = ('%s') % (sTitle.encode('utf-8'))
-                    sFile = ('%s - (%s)') % (sTitle.encode('utf-8'), sYear)
+                    sTitle = self.decode(sTitle,Unicode=True)
+                    searchtext = ('%s') % (sTitle)
+                    sFile = ('%s - (%s)') % (sTitle, sYear)
                     sTitle = ('%s (%s)') % ( sTitle, sYear )
 
                 elif 'recommendations' in sUrl or 'popular' in sUrl:
@@ -549,13 +576,14 @@ class cTrakt:
                         sTitle = self.getLocalizedTitle(i, 'movies')
                         cTrakt.CONTENT = '1'
                     sTrakt, sYear, sImdb, sTmdb = i['ids']['trakt'], i['year'], i['ids']['imdb'], i['ids']['tmdb']
-                    searchtext = ('%s') % (sTitle.encode('utf-8'))
+                    sTitle = self.decode(sTitle)
+                    searchtext = ('%s') % (sTitle)
                     if sYear:
-                        sFile = ('%s - (%s)') % (sTitle.encode('utf-8'), int(sYear))
-                        sTitle = ('%s - (%s)') % (sTitle.encode('utf-8'), int(sYear))
+                        sFile = ('%s - (%s)') % (sTitle, int(sYear))
+                        sTitle = ('%s - (%s)') % (sTitle, int(sYear))
                     else:
-                        sFile = ('%s') % (sTitle.encode('utf-8'))
-                        sTitle = ('%s') % (sTitle.encode('utf-8'))
+                        sFile = ('%s') % (sTitle)
+                        sTitle = ('%s') % (sTitle)
 
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
@@ -565,9 +593,11 @@ class cTrakt:
                         sTitle = self.getLocalizedTitle(movie, 'movies')
                         sTrakt, sYear, sImdb, sTmdb = movie['ids']['trakt'], movie['year'], movie['ids']['imdb'], movie['ids']['tmdb']
                         cTrakt.CONTENT = '1'
-                        searchtext = ('%s') % (sTitle.encode('utf-8'))
-                        sFile = ('%s - (%s)') % (sTitle.encode('utf-8'), int(sYear))
-                        sTitle = ('%s - (%s)') % (sTitle.encode('utf-8'), int(sYear))
+
+                        sTitle = self.decode(sTitle)
+                        searchtext = ('%s') % (sTitle)
+                        sFile = ('%s - (%s)') % (sTitle, int(sYear))
+                        sTitle = ('%s - (%s)') % (sTitle, int(sYear))
                         sFunction = 'showSearch'
                         sId = 'globalSearch'
 
@@ -595,22 +625,22 @@ class cTrakt:
                         sExtra = ('(%s)') % (sYear)
                         cTrakt.CONTENT = '1'
 
-                    sTitle = unicodedata.normalize('NFD',  sTitle).encode('ascii', 'ignore').decode('unicode_escape')
-                    sTitle.encode('utf-8')
-                    searchtext = ('%s') % (sTitle.encode('utf-8'))
-                    sFile = ('%s %s') % (sTitle.encode('utf-8'), sExtra)
+                    sTitle = self.decode(sTitle,Unicode=True)
+                    searchtext = ('%s') % (sTitle)
+                    sFile = ('%s %s') % (sTitle, sExtra)
                     sTitle = ('%s %s') % (sTitle, sExtra)
 
                 else:
                     return
 
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl + str(sTrakt))
-                oOutputParameterHandler.addParameter('file', sFile)
-                oOutputParameterHandler.addParameter('key', sKey)
-                oOutputParameterHandler.addParameter('searchtext', searchtext)
-                self.getFolder(oGui, sId, sTitle, sFile, sFunction, sImdb, sTmdb, oOutputParameterHandler)
-                sKey += 1
+                if sTitle:
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', sUrl + str(sTrakt))
+                    oOutputParameterHandler.addParameter('file', sFile)
+                    oOutputParameterHandler.addParameter('key', sKey)
+                    oOutputParameterHandler.addParameter('searchtext', searchtext)
+                    self.getFolder(oGui, sId, sTitle, sFile, sFunction, sImdb, sTmdb, oOutputParameterHandler)
+                    sKey += 1
 
             progress_.VSclose(progress_)
 
@@ -657,7 +687,7 @@ class cTrakt:
                 else:
                     return
 
-                sTitle2 = ('%s - (S%02d)') % (sFile.encode('utf-8'), int(sNumber))
+                sTitle2 = ('%s - (S%02d)') % (self.decode(sFile), int(sNumber))
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl + str(sNumber))
                 # oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -692,10 +722,16 @@ class cTrakt:
             aliases = json.loads(aliasContent)
             title = next((title for title in aliases if title['language'].lower() == 'fr'), item)['title']
 
-            return title if 'episode' not in what else show_title + ' - ' + title
+            if title is None:
+                return item['title']
+            else:
+                return title if 'episode' not in what else show_title + ' - ' + title
 
         except:
-            return item['title']
+            try:
+                return item['title']
+            except:
+                return item['show']['title']
 
     def getBepisodes(self):
         oGui = cGui()
@@ -731,13 +767,13 @@ class cTrakt:
                     sNumber = i['number']
                     # sDate = datetime.datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y %H:%M')
 
-                    sTitle2 = ('%s (E%02d)') % (sTitle.encode('utf-8'), int(sNumber))
+                    sTitle2 = ('%s (E%02d)') % (self.decode(sTitle), int(sNumber))
 
                 elif 'watched' in sUrl:
                     sNumber, sPlays = i['number'], i['plays']
                     # sDate = datetime.datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y %H:%M')
 
-                    sTitle2 = ('%s Lectures - %s(E%02d)') % (sPlays, sTitle.encode('utf-8'), int(sNumber))
+                    sTitle2 = ('%s Lectures - %s(E%02d)') % (sPlays, self.decode(sTitle), int(sNumber))
 
                 else:
                     return
@@ -810,7 +846,7 @@ class cTrakt:
         disp.append(URL_API + 'sync/history/remove')
         lang.append('[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30312) + '[/COLOR]')
 
-        ret = self.DIALOG.select('Trakt', lang)
+        ret = self.DIALOG.VSselect(lang, 'Trakt')
 
         if ret > -1:
             self.__sAction = disp[ret]
@@ -880,7 +916,10 @@ class cTrakt:
 
         headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % self.ADDON.getSetting('bstoken')}
 
-        sPost = json.dumps(sPost)
+        try:
+            sPost = json.dumps(sPost).encode('utf-8')
+        except:
+            sPost = json.dumps(sPost)
 
         req = urllib2.Request(sAction, sPost, headers)
         response = urllib2.urlopen(req)
@@ -954,10 +993,96 @@ class cTrakt:
             sPost = {sCat_trakt: [{'ids': {'imdb': sImdb}}]}
 
         headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % self.ADDON.getSetting('bstoken')}
-
-        sPost = json.dumps(sPost)
+        
+        try:
+            sPost = json.dumps(sPost).encode('utf-8')
+        except:
+            sPost = json.dumps(sPost)
 
         sAction = URL_API + 'sync/watchlist'
+
+        req = urllib2.Request(sAction, sPost, headers)
+        response = urllib2.urlopen(req)
+        sHtmlContent = response.read()
+        result = json.loads(sHtmlContent)
+        sText = False
+
+        try:
+            if result['added']['movies'] == 1 or result['added']['episodes'] > 0 or result['added']['shows'] > 0:
+                sText = 'Ajouté avec succès'
+        except:
+            pass
+
+        try:
+            if result['updated']['movies'] == 1 or result['updated']['episodes'] > 0 or result['updated']['shows'] > 0:
+                sText = 'Mise à jour avec succès'
+        except:
+            pass
+
+        try:
+            if result['deleted']['movies'] == 1 or result['deleted']['episodes'] > 0:
+                sText = 'Supprimé avec succès'
+        except:
+            pass
+
+        try:
+            if result['existing']['movies'] >0 or result['existing']['episodes'] > 0 or result['existing']['seasons'] > 0  or result['existing']['shows'] > 0:
+                sText = 'Entrée déjà présente'
+        except:
+            pass
+
+        if sText:
+            self.DIALOG.VSinfo(sText)
+
+        return
+
+    def setAsWatched(self):
+
+        if not self.ADDON.getSetting('bstoken'):
+            return
+
+        oInputParameterHandler = cInputParameterHandler()
+        sCat = oInputParameterHandler.getValue('sCat')
+
+        if not sCat:
+            return
+
+        # entrer imdb ? venant d'ou?
+        sImdb = oInputParameterHandler.getValue('sImdbId')
+        # dans le doute si meta active
+        sTMDB = oInputParameterHandler.getValue('sTmdbId')
+        sTitle = oInputParameterHandler.getValue('sFileName')
+
+        sCat_trakt = sCat.replace('1', 'movies').replace('2', 'shows')
+
+        if sCat_trakt == "shows":
+            sSeason = re.search('aison (\d+)',sTitle).group(1)
+            sEpisode = re.search('pisode (\d+)',sTitle).group(1)
+        else:
+            sSeason = False
+            sEpisode = False
+
+        if not sImdb:
+            sPost = {}
+            if not sTMDB:
+                sTMDB = int(self.getTmdbID(oInputParameterHandler.getValue('sFileName'), sCat_trakt))
+
+            sPost = {sCat_trakt: [{'ids': {'tmdb': sTMDB}}]}
+            if sSeason:
+                sPost = {sCat_trakt: [{'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason)}]}]}
+            if sEpisode:
+                sPost = {sCat_trakt: [{'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason), 'episodes': [{'number': int(sEpisode)}]}]}]}
+        else:
+            sPost = {sCat_trakt: [{'ids': {'imdb': sImdb}}]}
+
+        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % self.ADDON.getSetting('bstoken')}
+        
+        try:
+            sPost = json.dumps(sPost).encode('utf-8')
+        except:
+            sPost = json.dumps(sPost)
+
+        sAction = URL_API + 'sync/history'
 
         req = urllib2.Request(sAction, sPost, headers)
         response = urllib2.urlopen(req)
@@ -1024,10 +1149,7 @@ class cTrakt:
         # sUrl = oInputParameterHandler.getValue('siteUrl')
         sMovieTitle = oInputParameterHandler.getValue('file')
         # sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-        # ancien decodage
-        sMovieTitle = unicode(sMovieTitle, 'utf-8')  # converti en unicode pour aider aux convertions
-        sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'replace').decode('unicode_escape')  # vire accent et '\'
-        sMovieTitle = sMovieTitle.encode('utf-8').lower()  # on repasse en utf-8
+        sMovieTitle = self.decode(sMovieTitle,Unicode=True).lower()  # on repasse en utf-8
         sMovieTitle = Quote(sMovieTitle)
         sMovieTitle = re.sub('\(.+?\)', ' ', sMovieTitle)  # vire les tags entre parentheses
 
@@ -1039,14 +1161,7 @@ class cTrakt:
         # vire les espaces multiples et on laisse les espaces sans modifs car certains codent avec %20 d'autres avec +
         sMovieTitle = re.sub(' +', ' ', sMovieTitle)
 
-        ret = self.DIALOG.select('Sélectionner un Moteur de Recherche', ['vStream (Fiable mais plus complexe)', 'Alluc (Simple mais resultats non garantis)'])
-
-        if ret == 0:
-            self.vStreamSearch(sMovieTitle)
-        elif ret == 1:
-            # modif test préfére les accent supprimer é = e
-            sMovieTitle = sMovieTitle.replace('%C3%A9', 'e').replace('%C3%A0', 'a')
-            self.AllucSearch(sMovieTitle)
+        self.vStreamSearch(sMovieTitle)
 
     def vStreamSearch(self, sMovieTitle):
         oGui = cGui()
@@ -1057,16 +1172,6 @@ class cTrakt:
         oHandler.setText(sMovieTitle)
         # oHandler.setDisp(sDisp)
         aPlugins = oHandler.getAvailablePlugins()
-
-        oGui.setEndOfDirectory()
-
-    def AllucSearch(self, sMovieTitle):
-        oGui = cGui()
-
-        exec('from resources.sites import alluc_ee as search')
-        sUrl = 'http://www.alluc.ee/stream/lang%3Afr+' + sMovieTitle
-        searchUrl = "search.%s('%s')" % ('showMovies', sUrl)
-        exec(searchUrl)
 
         oGui.setEndOfDirectory()
 

@@ -61,7 +61,7 @@ class addon():
         return xbmcaddon.Addon(self.addonId).getAddonInfo(info) if self.addonId else ADDONVS.getAddonInfo(info)
      
     def VSlang(self, lang):
-        return xbmc.translatePath(xbmcaddon.Addon(self.addonId).getLocalizedString(lang)) if self.addonId else xbmc.translatePath(ADDONVS.getLocalizedString(lang))
+        return VSPath(xbmcaddon.Addon(self.addonId).getLocalizedString(lang)) if self.addonId else VSPath(ADDONVS.getLocalizedString(lang))
         #Bug avec accent xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang)).decode('utf-8')
 
 """
@@ -253,6 +253,16 @@ def isKrypton():
     try:
         version = xbmc.getInfoLabel('system.buildversion')
         if version[0:2] >= '17':
+            return True
+        else:
+            return False
+    except:
+        return False
+
+def isMatrix():
+    try:
+        version = xbmc.getInfoLabel('system.buildversion')
+        if version[0:2] >= '19':
             return True
         else:
             return False

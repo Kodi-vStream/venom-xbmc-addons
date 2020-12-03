@@ -636,14 +636,14 @@ def direct_epg():  # Code qui gere l'epg
     oInputParameterHandler = cInputParameterHandler()
     # aParams = oInputParameterHandler.getAllParameter()
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sCom = cePg().get_epg(sTitle, 'direct')
+    sCom = cePg().view_epg(sTitle, 'direct')
 
 def soir_epg():  # Code qui gere l'epg
     oGuiElement = cGuiElement()
     oInputParameterHandler = cInputParameterHandler()
 
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sCom = cePg().get_epg(sTitle, 'soir')
+    sCom = cePg().view_epg(sTitle, 'soir')
 
 def enregistrement():  # Code qui gere l'epg
     oGuiElement = cGuiElement()

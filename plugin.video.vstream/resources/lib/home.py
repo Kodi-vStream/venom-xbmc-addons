@@ -440,7 +440,12 @@ class cHome:
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName('globalSearch')
             oGuiElement.setFunction('globalSearch')
-            oGuiElement.setTitle('- ' + match[1])
+
+            try:
+                oGuiElement.setTitle('- ' + match[1])
+            except:
+                oGuiElement.setTitle('- ' + str(match[1],'utf-8'))  
+                              
             oGuiElement.setFileName(match[1])
             oGuiElement.setCat(match[2])
             oGuiElement.setIcon('search.png')

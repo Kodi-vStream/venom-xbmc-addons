@@ -1,25 +1,23 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Arias800
-import base64
 import re
-import requests
+import string
 import json
+import resources.sites.freebox
 
 
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import addon
+from resources.lib.epg import cePg
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.packer import cPacker
 from resources.lib.parser import cParser
-from resources.sites.freebox import play__
-from resources.lib.util import Quote
-from datetime import datetime, timedelta
+from resources.lib.util import cUtil, Quote
 
-#import web_pdb;
+from datetime import datetime, timedelta
 
 SITE_IDENTIFIER = 'channelstream'
 SITE_NAME = 'Channel Stream'
@@ -35,60 +33,65 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/5
 def load():
     oGui = cGui()
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', TV_FRENCH[0])
-    oGui.addDir(SITE_IDENTIFIER, TV_FRENCH[1], 'Chaine Francaise', 'news.png', oOutputParameterHandler)
+    liste = []
+    liste.append(['Généralistes', 'Chaîne de télévision généraliste', 'tv.png'])
+    liste.append(['Cinéma', 'Chaîne consacrée aux Film', 'films.png'])
+    liste.append(['Sport', 'Chaîne Sportive', 'sport.png'])
+    liste.append(['Science et Nature', 'Chaîne axés sur les sciences', 'buzz.png'])
+
+
+    for sTitle, sFiltre, sIcon in liste:
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', TV_FRENCH[0])
+        oOutputParameterHandler.addParameter('sFiltre', sFiltre)
+        oGui.addDir(SITE_IDENTIFIER, TV_FRENCH[1], sTitle, sIcon, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
 def showMovies():
     oGui = cGui()
+    oParser = cParser()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    sFiltre = oInputParameterHandler.getValue('sFiltre')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>', '')
-
+    sHtmlContent = oParser.abParse(sHtmlContent, sFiltre, '<!-- Type Chaîne -->')
     sPattern = 'location.href = \'\.(.+?)\'.+?src=\'(.+?)\'.+?<div align="center">(.+?)</div>'
 
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
-        oGui.addText(SITE_IDENTIFIER)
+    EPG = cePg().get_epg('', 'direct')
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             if not "+18" in str(aEntry[2]):
                 sTitle = aEntry[2]
+                
+                if 'Canal + Série' in sTitle:
+                    sTitle = 'Canal + Séries'
+                
                 sUrl2 = URL_MAIN + aEntry[0]
                 sThumb = URL_MAIN + '/' + aEntry[1]
+
+                sDesc = getEPG(EPG, sTitle)
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-                oGui.addDir(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+                oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
 def showHoster():
     oGui = cGui()
+    oParser = cParser()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -98,17 +101,82 @@ def showHoster():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
+    info = cePg().getChannelEpg(sTitle)
+    sDesc = info['plot']
+
+    sMovieTitle = info['title']
+    if not sMovieTitle:
+        sMovieTitle = sTitle
+
+    sMeta = 0
+    sCat = info['media_type']
+    if sCat:
+        if 'Film' in sCat : sMeta = 1
+        if 'Série' in sCat : sMeta = 2
+    sYear = info['year']
+    coverUrl = info['cover_url']
+    if coverUrl :
+        sThumb = coverUrl
 
     # Double Iframe a passer.
-    oParser = cParser()
-    sPattern = '<iframe.+?src="([^"]+)".+?</iframe>'
+    sPattern = '<iframe.+?src="([^"]+)"'
     iframeURL = oParser.parse(sHtmlContent, sPattern)[1][0]
 
     oRequestHandler = cRequestHandler(iframeURL)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<iframe src="([^"]+)".+?</iframe>'
-    iframeURL1 = oParser.parse(sHtmlContent, sPattern)[1][0]
+    sPattern = '<iframe.+?src="([^"]+)"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    if not aResult[1]:    # Pas de flux
+        oGui.setEndOfDirectory()
+        return
+    
+    iframeURL1 = aResult[1][0]
+    sHosterUrl = iframeURL1
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+    oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+    oOutputParameterHandler.addParameter('sYear', sYear)
+    oOutputParameterHandler.addParameter('sDesc', sDesc)
+
+    oGuiElement = cGuiElement()
+    oGuiElement.setTitle(sMovieTitle)
+    oGuiElement.setDescription(sDesc)
+    oGuiElement.setFileName(sMovieTitle)
+    oGuiElement.setSiteName(resources.sites.freebox.SITE_IDENTIFIER)
+    oGuiElement.setFunction('play__')
+    oGuiElement.setIcon('tv.png')
+    oGuiElement.setMeta(sMeta)
+    oGuiElement.setThumbnail(sThumb)
+    oGuiElement.setDirectTvFanart()
+    oGuiElement.setCat(sMeta)
+
+#     oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
+#     oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
+    if addon().getSetting('enregistrement_activer') == 'true':
+        oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'enregistrement', 'Enregistrement')
+    
+    # Menu pour les films
+    if sMeta == 1 :
+        oGui.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
+        oGui.createContexMenuba(oGuiElement, oOutputParameterHandler)
+        oGui.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
+        oGui.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
+
+    if 'dailymotion' in sHosterUrl:
+        oOutputParameterHandler.addParameter('sHosterIdentifier', 'dailymotion')
+        oOutputParameterHandler.addParameter('sMediaUrl', sHosterUrl)
+        oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
+        oOutputParameterHandler.addParameter('sFileName', sMovieTitle)
+        oGuiElement.setFunction('play')
+        oGuiElement.setSiteName('cHosterGui')
+        oGui.addHost(oGuiElement, oOutputParameterHandler)
+        cGui.CONTENT = 'movies'
+        oGui.setEndOfDirectory()
+        return
+
 
     oRequestHandler = cRequestHandler(iframeURL1)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -117,68 +185,34 @@ def showHoster():
 
     sPattern2 = 'var\s+cid[^\'"]+[\'"]{1}([0-9]+)'
     aResult = re.findall(sPattern2, sHtmlContent2)
-    #VSlog(sHtmlContent2)
-
-
 
     if aResult:
         str2 = aResult[0]
-        VSlog(str2)
         datetoken = int(getTimer()) * 1000
         
-        jsonUrl = 'https://telerium.tv/streams/'+str2+'/'+str(datetoken)+'.json'
-        VSlog(jsonUrl)
+        jsonUrl = 'https://telerium.live/streams/'+str2+'/'+str(datetoken)+'.json'
         tokens = getRealTokenJson(jsonUrl,iframeURL1)
         m3url = tokens['url']
-        nxturl = 'https://telerium.tv' + tokens['tokenurl']
-          #web_pdb.set_trace()
-
+        nxturl = 'https://telerium.live' + tokens['tokenurl']
         
-    realtoken = getRealTokenJson(nxturl, iframeURL1)[10][::-1]
+        realtoken = getRealTokenJson(nxturl, iframeURL1)[10][::-1]
     
-    #web_pdb.set_trace()
+        try:
+            m3url = m3url.decode("utf-8")
+        except:
+            pass
+    
+        sHosterUrl = 'https:' + m3url + realtoken
+        sHosterUrl += '|User-Agent=' + UA + '&Referer=' + Quote(iframeURL1) + '&Sec-Fetch-Mode=cors&Origin=https://telerium.tv'
 
-    try:
-        m3url = m3url.decode("utf-8")
-    except:
-        pass
 
-    sHosterUrl = 'https:' + m3url + realtoken
-
-    sHosterUrl += '|User-Agent=' + UA + '&Referer=' + Quote(iframeURL1) + '&Sec-Fetch-Mode=cors&Origin=https://telerium.tv'
-
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
-    oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-    oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-
-    # oGui.addDirectTV(SITE_IDENTIFIER, 'play__', track.title, 'tv.png' , sRootArt + '/tv/' + sThumb, oOutputParameterHandler)
-
-    oGuiElement = cGuiElement()
-    oGuiElement.setSiteName(SITE_IDENTIFIER)
-    oGuiElement.setFunction('play__')
-    oGuiElement.setTitle(sTitle)
-    oGuiElement.setFileName(sTitle)
-    oGuiElement.setIcon('tv.png')
-    oGuiElement.setMeta(0)
-    oGuiElement.setThumbnail(sThumb)
-    oGuiElement.setDirectTvFanart()
-    oGuiElement.setCat(6)
-
-    oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
-    oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
-    oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'enregistrement', 'Enregistrement')
-    oGui.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
     oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
+    cGui.CONTENT = 'movies'
     oGui.setEndOfDirectory()
 
-
 def getRealTokenJson(link, referer):
-    cookies = {'ChorreameLaJa': '100',
-               'setVolumeSize': '100',
-               'NoldoTres': '100'}
-
     cookies = {'elVolumen': '100',
                '__ga':'100'}
 
@@ -189,10 +223,16 @@ def getRealTokenJson(link, referer):
                'X-Requested-With': 'XMLHttpRequest',
                'Referer': referer}
 
-    realResp = requests.get(link, headers=headers, cookies=cookies, verify=False).content  # [1:-1]
-
-    #web_pdb.set_trace()
-    
+    oRequestHandler = cRequestHandler(link)
+    #oRequestHandler.addHeaderEntry('Host', 'telerium.tv')
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    #oRequestHandler.addHeaderEntry('Accept', 'application/json, text/javascript, */*; q=0.01')
+    oRequestHandler.addHeaderEntry('Accept-Language', 'pl,en-US;q=0.7,en;q=0.3')
+    oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
+    oRequestHandler.addHeaderEntry('Referer', referer)
+    oRequestHandler.addCookieEntry('elVolumen', '100')
+    oRequestHandler.addCookieEntry('__ga','100')
+    realResp = oRequestHandler.request()
     return json.loads(realResp)
 
 def getTimer():
@@ -201,3 +241,30 @@ def getTimer():
     epoch = datetime(1970, 1, 1)
         
     return (datenow - epoch).total_seconds() // 1
+    
+def getEPG(EPG, sTitle):
+
+    oParser = cParser()
+
+    sTitle = sTitle.replace('+', 'plus')
+    
+    try:
+        sTitle = cUtil().CleanName(sTitle)
+    except:
+        pass
+
+    sTitle = re.sub('[^%s]' % (string.ascii_lowercase + string.digits), '', sTitle.lower())
+    
+    sPattern = '(.+?)\/>(.+?)<'
+    aResult = oParser.parse(EPG, sPattern)
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+            sChannel = aEntry[0]
+            
+            sChannel = re.sub('[^%s]' % (string.ascii_lowercase + string.digits), '', sChannel.lower())
+            if sChannel == sTitle:
+                sDesc = aEntry[1].replace('[COLOR khaki]', '\r\n\t[COLOR khaki]')
+                sDesc = sDesc.replace('[/COLOR]', '[/COLOR]\r\n')
+                return sDesc
+
+    return ''

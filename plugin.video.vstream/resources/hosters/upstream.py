@@ -54,20 +54,28 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         oRequest.addHeaderEntry("User-Agent",UA)
         sHtmlContent = oRequest.request()
-        
-        sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
-        aResult = re.findall(sPattern, sHtmlContent)
 
-        if (aResult):
-            sUnpacked = cPacker().unpack(aResult[0])
+        sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
+        aResult_1 = re.findall(sPattern, sHtmlContent)
+
+        if (aResult_1):
+            sUnpacked = cPacker().unpack(aResult_1[0])
             sHtmlContent = sUnpacked
 
         sPattern = 'sources: *\[\{file:"([^"]+)"'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
+
         if (aResult[0] == True):
             api_call = aResult[1][0]
+        elif len(aResult_1) > 1 :
+            sUnpacked = cPacker().unpack(aResult_1[1])
+            sHtmlContent = sUnpacked
+            sPattern = 'sources: *\[\{file:"([^"]+)"'
+            oParser = cParser()
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                api_call = aResult[1][0]
 
         if (api_call):
             return True, api_call + '|Referer=' + self.__sUrl

@@ -201,15 +201,15 @@ def setSetting(plugin_id, value):
     addons = addon()
     setting = addons.getSetting(plugin_id)
 
-    # la modification est possible seulement si le parametre existe
-    if setting != '' and setting != value:
+    # modifier si différent
+    if setting != value:
         addons.setSetting(plugin_id, value)
         return True
 
     return False
 
 
-# Permet la modification des settings depuis un raccourci dans le skin (jusqu'à 50 paramètres).
+# Permet la modification des settings depuis un raccourci dans le skin (jusqu'à 100 paramètres).
 # Supporte les retours à la ligne seulement derrière le paramètre, exemple :
 # RunAddon(plugin.video.vstream,function=setSettings&id1=plugin_cinemay_com&value1=true
 # &id2=plugin_cinemegatoil_org&value2=false
@@ -219,19 +219,17 @@ def setSetting(plugin_id, value):
 def setSettings(oInputParameterHandler):
     addons = addon()
     
-    for i in range(1, 50):
+    for i in range(1, 100):
         plugin_id = oInputParameterHandler.getValue('id' + str(i))
         if plugin_id:
             value = oInputParameterHandler.getValue('value' + str(i))
             value = value.replace('\n', '')
-            if value:
-                setting = addons.getSetting(plugin_id)
-            
-                # la modification est possible seulement si le parametre existe
-                if setting != '' and setting != value:
-                    addons.setSetting(plugin_id, value)
+            oldSetting = addons.getSetting(plugin_id)
+            # modifier si différent
+            if oldSetting != value:
+                addons.setSetting(plugin_id, value)
+
     return True
-            
     
 def isHosterGui(sSiteName, sFunction):
     if sSiteName == 'cHosterGui':

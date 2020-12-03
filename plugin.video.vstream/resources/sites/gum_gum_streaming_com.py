@@ -6,11 +6,9 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-#from resources.lib.util import cUtil
-from resources.lib.util import Noredirection
 from resources.lib.comaddon import progress, VSlog
 
-import re, urllib2
+import re
 
 SITE_IDENTIFIER = 'gum_gum_streaming_com'
 SITE_NAME = 'Gum-Gum-Streaming'
@@ -156,55 +154,34 @@ def showEpisodes():
     if sThumbResult[0]:
         sThumb = sThumbResult[1][0]
 
-    aSeasonsIdx = [m.start() for m in re.finditer('<h2', sUsentContent)]
-    aSeasonsEndIdx = aSeasonsIdx[1:] + [-1]
-    aSeasonsTitleEnd = [m.start() for m in re.finditer('</h2>', sUsentContent)]
-    for idx, val in enumerate(aSeasonsIdx):
-        sSeasonTitle = re.split('>', sUsentContent[val:aSeasonsTitleEnd[idx]])[1]
-        oGui.addText(SITE_IDENTIFIER, '[COLOR gold]' + sSeasonTitle + '[/COLOR]', 'sites/gum_gum_streaming_com.png')
+    sPattern = '<h2 style="color: #.+?">([^<]+)|href="([^"]+)">([^<]+)</a>'
+    aResult = oParser.parse(sUsentContent, sPattern)
 
-        sSeasonContent = sUsentContent[val:aSeasonsEndIdx[idx]]
-        aArcIdx = [m.start() for m in re.finditer('<h3>', sSeasonContent)]
-        if len(aArcIdx) > 0:
-            aArcEndIdx = aArcIdx[1:] + [-1]
-            aArcTitleEnd = [m.start() for m in re.finditer('</h3>', sSeasonContent)]
-            for idxarc, valarc in enumerate(aArcIdx):
-                sArcTitle = re.split('>', sSeasonContent[valarc:aArcTitleEnd[idxarc]])[1]
-                oGui.addText(SITE_IDENTIFIER, '[COLOR teal]' + sArcTitle + '[/COLOR]', 'sites/gum_gum_streaming_com.png')
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
 
-                sArcContent = str(sSeasonContent[valarc:aArcEndIdx[idxarc]])
-                sTitlePattern = '>• (.+?)</a>'
-                sUrlPattern = 'href="(.+?)"'
-                oParser = cParser()
-                aTitleResult = oParser.parse(sArcContent, sTitlePattern)
-                aUrlResult = oParser.parse(sArcContent, sUrlPattern)
-                if aTitleResult[0]:
-                    aTitle = aTitleResult[1]
-                    aUrl = aUrlResult[1]
-                    for sIdx, sTitle in enumerate(aTitle):
-                        oOutputParameterHandler = cOutputParameterHandler()
-                        oOutputParameterHandler.addParameter('siteUrl', aUrl[sIdx])
-                        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                        oOutputParameterHandler.addParameter('sDesc', sDesc)
-                        oOutputParameterHandler.addParameter('sThumb', sThumb)
-                        oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        progress_ = progress().VScreate(SITE_NAME)
 
-        else:
-            sTitlePattern = '>• (.+?)</a>'
-            sUrlPattern = 'href="(.+?)"'
-            oParser = cParser()
-            aTitleResult = oParser.parse(sSeasonContent, sTitlePattern)
-            aUrlResult = oParser.parse(sSeasonContent, sUrlPattern)
-            if aTitleResult[0]:
-                aTitle = aTitleResult[1]
-                aUrl = aUrlResult[1]
-                for sIdx, sTitle in enumerate(aTitle):
-                    oOutputParameterHandler = cOutputParameterHandler()
-                    oOutputParameterHandler.addParameter('siteUrl', aUrl[sIdx])
-                    oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                    oOutputParameterHandler.addParameter('sDesc', sDesc)
-                    oOutputParameterHandler.addParameter('sThumb', sThumb)
-                    oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+        for aEntry in aResult[1]:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
+
+            if aEntry[0]:
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
+
+            else:
+                sTitle = aEntry[2]
+                aUrl = aEntry[1]
+
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', aUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sDesc', sDesc)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -277,8 +254,6 @@ def showHosters():
     sPattern = '<div class="video-container"><iframe.+?data-lazy-src="([^<>"]+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    VSlog(aResult)
-
     if 'animedigitalnetwork.fr' in str(aResult[1]):
         oGui.addText(SITE_IDENTIFIER, "[COLOR red]Animés dispo gratuitement et legalement sur :[/COLOR][COLOR coral] anime digital network[/COLOR]")
     elif 'crunchyroll.com' in str(aResult[1]):
@@ -346,21 +321,16 @@ def GetTinyUrl(url):
     #On va chercher le vrai lien
     else:
 
-        #VSlog('Decodage lien tinyurl : ' + str(url))
-
-        headers9 = [('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'), ('Referer', URL_MAIN)]
-
-        opener = Noredirection()
-        opener.addheaders = headers9
-        reponse = opener.open(url, None, 5)
-
-        UrlRedirect = reponse.geturl()
+        oRequestHandler = cRequestHandler(url)
+        oRequestHandler.disableRedirect(1)
+        oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0')
+        oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
+        reponse = oRequestHandler.request()
+        UrlRedirect = reponse.GetRealUrl()
 
         if not(UrlRedirect == url):
             url = UrlRedirect
-        elif 'Location' in reponse.headers:
-            url = reponse.headers['Location']
-
-        reponse.close()
+        elif 'Location' in reponse.getResponseHeader():
+            url = reponse.getResponseHeader()['Location']
 
     return url

@@ -9,7 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import Unquote
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog, xbmc
 
 SITE_IDENTIFIER = 'enstream'
 SITE_NAME = 'Enstream'
@@ -177,7 +177,7 @@ def showMovies(sSearch=''):
     elif 'genre/' in sUrl:
         sPattern = 'film-uno.+?href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)'
     else:
-        sPattern = 'film-uno">.+?<a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)".+?short-story">([^<]+)'
+        sPattern = '<a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)".+?min.+?·([^<]+).+?short-story">([^<]+)'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -198,14 +198,26 @@ def showMovies(sSearch=''):
             sTitle = aEntry[2]
             sDesc = ''
             if len(aEntry) > 3:
-                sDesc = aEntry[3]
+                if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+                    sQual = aEntry[3].split('·')[1].replace('Â','').strip()
+                    sLang = aEntry[3].split('·')[2].strip()
+                else:
+                    sQual = aEntry[3].split('·')[1].strip()
+                    sLang = aEntry[3].split('·')[2].strip()
+
+                sDesc = aEntry[4]
+
+                sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
+
+            else:
+                sDisplayTitle = sTitle
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHoster', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHoster', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
         progress_.VSclose(progress_)
 
     if not sSearch:

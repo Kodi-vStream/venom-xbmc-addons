@@ -13,7 +13,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil, urlEncode, QuotePlus
+from resources.lib.util import cUtil, QuotePlus
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/69.0'
 headers = {'User-Agent': UA}
@@ -25,8 +25,10 @@ SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, r�
 URL_MAIN = 'https://www.extreme-down.video/'
 
 URL_SEARCH = (URL_MAIN + 'index.php?', 'showMovies')
-URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
-URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_MOVIES = (URL_SEARCH[0] + 'do=search&subaction=search&titleonly=3&speedsearch=1&story=', 'showMovies')
+URL_SEARCH_SERIES = (URL_SEARCH[0] + 'do=search&subaction=search&titleonly=3&speedsearch=2&story=', 'showMovies')
+URL_SEARCH_ANIMES = (URL_SEARCH[0] + 'do=search&subaction=search&titleonly=3&speedsearch=4&story=', 'showMovies')
+URL_SEARCH_MISC = (URL_SEARCH[0] + 'do=search&subaction=search&titleonly=3&speedsearch=3&story=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_MOVIE = (True, 'showMenuFilms')
@@ -43,6 +45,8 @@ MOVIE_BLURAYVOSTFR = (URL_MAIN + 'films-vostfr/films-1080p-vostfr', 'showMovies'
 MOVIE_3D = (URL_MAIN + 'films-new-hd/new-full-bluray-3d', 'showMovies')
 MOVIE_FULL1080P = (URL_MAIN + 'films-new-hd/new-full-bluray', 'showMovies')
 MOVIE_FULL4K = (URL_MAIN + 'films-new-ultrahd/new-full-bluray-ultrahd-4k', 'showMovies')
+MOVIE_WEBRIP4K = (URL_MAIN + 'films-new-ultrahd/new-webrip-4k', "showMovies")
+MOVIE_REMUX4K = (URL_MAIN + 'films-new-ultrahd/new-ultrahd-4k', "showMovies")
 MOVIE_LIGHT720 = (URL_MAIN + 'films-hdlight/hdlight-720p', 'showMovies')
 MOVIE_LIGHT1080 = (URL_MAIN + 'films-hdlight/hdlight-1080p', 'showMovies')
 MOVIE_LIGHTBDRIP = (URL_MAIN + 'films-new-hd/new-bdrip-720p', 'showMovies')
@@ -82,10 +86,6 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'films.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuFilms', 'Films', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -99,7 +99,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuAutre', 'Autres', 'tv.png', oOutputParameterHandler)
-
+    
     if ADDON.getSetting('token_alldebrid') == "":
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -107,9 +107,12 @@ def load():
 
     oGui.setEndOfDirectory()
 
-
 def showMenuFilms():
     oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MOVIES[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Films)', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
@@ -149,7 +152,15 @@ def showMenuFilms():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_FULL4K[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_FULL4K[1], 'REMUX 4K', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_FULL4K[1], 'Bluray 4K', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_REMUX4K[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_REMUX4K[1], 'Remux 4K', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_WEBRIP4K[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_WEBRIP4K[1], 'Webrip 4K', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIGHT720[0])
@@ -190,8 +201,12 @@ def showMenuSeries():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Séries)', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Series (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_HD[0])
@@ -232,6 +247,10 @@ def showMenuMangas():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMES[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Animes)', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animes (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
@@ -258,6 +277,10 @@ def showMenuAutre():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MISC[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Autres)', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
     oOutputParameterHandler.addParameter('misc', True)
     oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], "Documentaire (Derniers ajouts)", 'doc.png', oOutputParameterHandler)
@@ -268,7 +291,6 @@ def showMenuAutre():
     oGui.addDir(SITE_IDENTIFIER, SPECTACLE_NEWS[1], "Spectacle et théatre (Derniers ajouts)", 'buzz.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def getToken():
     ADDON = addon()
@@ -282,10 +304,13 @@ def getToken():
 
 def showSearch():
     oGui = cGui()
+    
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = sSearchText
+        sUrl += sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -360,32 +385,27 @@ def showMovies(sSearch=''):
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     nextPageSearch = oInputParameterHandler.getValue('nextPageSearch')
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    siteUrl = oInputParameterHandler.getValue('siteUrl')
     sMisc = oInputParameterHandler.getValue('misc') # Autre contenu
 
     if nextPageSearch:
-        sSearch = sUrl
+        sSearch = siteUrl
 
+    sCat = None
     if sSearch:
-
-        if URL_SEARCH[0] in sSearch:
-            sSearch = sSearch.replace(URL_SEARCH[0], '')
-
+        siteUrl = sSearch
+        
         if nextPageSearch:
-            query_args = (('do', 'search'), ('subaction', 'search'), ('search_start', nextPageSearch), ('story', sSearch), ('titleonly', '3'))
-        else:
-            query_args = (('do', 'search'), ('subaction', 'search'), ('story', sSearch), ('titleonly', '3'))
-
-        data = urlEncode(query_args)
-
-        oRequestHandler = cRequestHandler(URL_SEARCH[0])
-        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-        oRequestHandler.addParametersLine(data)
-        oRequestHandler.addParameters('User-Agent', UA)
+            sSearch += '&search_start=' + nextPageSearch
+        oRequestHandler = cRequestHandler(siteUrl)
         sHtmlContent = oRequestHandler.request()
-        sHtmlContent = oParser.abParse(sHtmlContent, 'de la recherche', 'Nous contacter')
+
+        sHtmlContent = oParser.abParse(sHtmlContent, 'de la recherche', 'À propos')
+
+        sCat = int(re.search('speedsearch=(\d)', sSearch).group(1))
+        sSearch = re.search('story=(.+?)($|&)', sSearch).group(1)
     else:
-        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler = cRequestHandler(siteUrl)
         sHtmlContent = oRequestHandler.request()
 
     sPattern = 'class="top-last thumbnails" href="([^"]+)".+?"img-post" src="([^"]+).+?alt="([^"]+)'
@@ -416,11 +436,20 @@ def showMovies(sSearch=''):
             if ' - ' in aEntry[2]:
                 sTitle = aEntry[2].split(' - ')[0]
                 sQual = aEntry[2].split(' - ')[1].replace('Avec TRUEFRENCH', '').replace('TRUEFRENCH', '').replace('FRENCH ', '')
+
                 if 'Saison' in sQual:  # Pour les séries et animes
                     # * et non pas + car parfois "Saison integrale" pas de chiffre
                     saison = re.search('(Saison [0-9]*)', sQual).group(1)
                     sTitle = sTitle + ' ' + saison
                     sQual = re.sub('Saison [0-9]+ ', '', sQual)
+
+                if '(E' in aEntry[2]:
+                    res = re.search('\(E([0-9]+ .+? [0-9]+)\)',aEntry[2])
+                    try:
+                        sTitle = sTitle + ' E' + res.group(1).replace('Ã',' - ').replace('à',' - ').split('[')[0]
+                    except:
+                        pass
+
             else:
                 sTitle = aEntry[2]#.replace('Avec TRUEFRENCH', '').replace('TRUEFRENCH', '').replace('FRENCH ', '')
                 sQual = ''
@@ -443,11 +472,11 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if sMisc:
+            if sCat == 3 or sMisc:
                 oGui.addMisc(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-            elif '/films-' in sUrl or '/manga-films/' in sUrl :
+            elif sCat == 1 or '/films-' in siteUrl or '/manga-films/' in siteUrl :
                 oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-            elif '/mangas/' in sUrl:
+            elif sCat == 4 or '/mangas/' in siteUrl:
                 oGui.addAnime(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
@@ -459,7 +488,7 @@ def showMovies(sSearch=''):
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sSearch)
+                oOutputParameterHandler.addParameter('siteUrl', siteUrl)
                 oOutputParameterHandler.addParameter('misc', sMisc)
                 oOutputParameterHandler.addParameter('nextPageSearch', aResult[1][0])
                 number = re.search('([0-9]+)', aResult[1][0]).group(1)
@@ -479,7 +508,6 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         oGui.setEndOfDirectory()
-
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -510,6 +538,13 @@ def showMoviesLinks():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = cUtil().removeHtmlTags(aResult[1][0])
+
+            #PY3
+            #Sans ca les caratere accentué n'apparissent pas.
+            try:
+                sDesc = sDesc.encode('utf-8')
+            except:
+                pass
     except:
         pass
 
@@ -570,6 +605,14 @@ def showSeriesLinks():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = cUtil().removeHtmlTags(aResult[1][0])
+            
+            #PY3
+            #Sans ca les caratere accentué n'apparissent pas.
+            try:
+                sDesc = sDesc.encode('utf-8')
+            except:
+                pass
+
     except:
         pass
 
@@ -710,8 +753,7 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
-
-def RecapchaBypass():  # Ouverture de Chrome Launcher s'il est intallez
+def RecapchaBypass():
     ADDON = addon()
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -720,61 +762,83 @@ def RecapchaBypass():  # Ouverture de Chrome Launcher s'il est intallez
     sThumb = oInputParameterHandler.getValue('sThumb')
     Token_Alldebrid = ADDON.getSetting('token_alldebrid')
 
-    if Token_Alldebrid == "":
-        RecapchaBypassOld(sUrl)
-    else:
+    if Token_Alldebrid != "":
         sUrl_Bypass = "https://api.alldebrid.com/v4/link/redirector?agent=service&version=1.0-&apikey=" + Token_Alldebrid + "&link=" + sUrl
 
-    oRequestHandler = cRequestHandler(sUrl_Bypass)
-    sHtmlContent = json.loads(oRequestHandler.request())
+        oRequestHandler = cRequestHandler(sUrl_Bypass)
+        sHtmlContent = json.loads(oRequestHandler.request())
 
-    HostURL = sHtmlContent["data"]["links"]
-    for sHosterUrl in HostURL:
+        HostURL = sHtmlContent["data"]["links"]
+        for sHosterUrl in HostURL:
 
-        oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
-            oHoster.setDisplayName(sMovieTitle)
-            oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+    else:
+        from resources.lib import librecaptcha
+        test = librecaptcha.get_token(
+            api_key="6LeH9lwUAAAAAGgg9ZVf7yOm0zb0LlcSai8t8-2o",
+            site_url=sUrl,
+            user_agent= UA,
+            gui=False,
+            debug=False,
+        )
+
+        if test is None:
+            oGui.addText(SITE_IDENTIFIER, '[COLOR red]Resolution du Recaptcha annulé[/COLOR]')
+
+        else:
+            #N'affiche pas directement le liens car sinon Kodi crash.
+            sDisplayTitle = "Recaptcha passé avec succès, cliquez pour afficher les liens"
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('Token', test)
+            oGui.addLink(SITE_IDENTIFIER, 'getHost', sDisplayTitle, sThumb, "", oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
-
-def RecapchaBypassOld(sUrl):  # Ouverture de Chrome Launcher s'il est intallez
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    sPath = "special://home/addons/plugin.program.chrome.launcher/default.py"
-
-    if xbmcvfs.exists(sPath):
-        sUrl2 = QuotePlus(sUrl)
-        xbmc.executebuiltin('RunPlugin("plugin://plugin.program.chrome.launcher/?url=' + sUrl2 + '&mode=showSite&stopPlayback=yes")')
-
-    getHoster()
-
-
-def getHoster():  # Ouvrir le clavier + requete
+def getHost():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    test = oInputParameterHandler.getValue('Token')
 
-    # appelle le clavier xbmc
-    sSearchText = oGui.showKeyBoard(heading="Mettre le lien du hoster après avoir passer les Recaptchas manuellement")
-    if (sSearchText != False):
-        sUrl = sSearchText
+    data = 'g-recaptcha-response=' + test + '&submit_captcha=1'
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.setRequestType(1)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
+    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip')
+    oRequestHandler.addHeaderEntry('Referer', sUrl)
+    oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+    oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
+    oRequestHandler.addParametersLine(data)
+    sHtmlContent = oRequestHandler.request()
 
-        sHosterUrl = str(sUrl)
-        oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
-            oHoster.setDisplayName(sMovieTitle)
-            oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+    sPattern = '<div><span class="lien"><a target="_blank" href="(.+?)">'
 
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+
+        for aEntry in aResult[1]:
+            sHosterUrl = aEntry
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
     oGui.setEndOfDirectory()
-
-
+    
 def CutQual(sHtmlContent):
     oParser = cParser()
     sPattern = '<span class="other-qualities">&Eacute;galement disponible en :</span>(.+?)</div>'

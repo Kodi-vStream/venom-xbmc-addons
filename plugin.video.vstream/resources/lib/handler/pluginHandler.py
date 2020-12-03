@@ -51,6 +51,7 @@ class cPluginHandler:
             return sSiteName, sPluginSettingsName, sSiteDesc
         except Exception as e:
             VSlog("Cannot import plugin " + str(sName))
+            VSlog("Detail de l\'erreur " + str(e))
             return False, False
 
     def getAvailablePlugins(self, force=False):

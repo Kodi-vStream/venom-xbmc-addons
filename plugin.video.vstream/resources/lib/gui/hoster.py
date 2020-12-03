@@ -199,7 +199,9 @@ class cHosterGui:
             try:    
                 if 'stream' in sHosterUrl:    
                     return self.getHoster('lien_direct')    
-            except:    
+            except:
+                pass
+            else:
                 return self.getHoster('dailymotion')
         if ('livestream' in sHostName):
             return self.getHoster('lien_direct')
@@ -337,6 +339,7 @@ class cHosterGui:
             return self.getHoster('jetload')
         if ('dustreaming' in sHostName):
             return self.getHoster('dustreaming')
+
         # frenchvid et clone
         if ('french-vid' in sHostName) or ('yggseries' in sHostName):
             return self.getHoster('frenchvid')
@@ -346,14 +349,15 @@ class cHosterGui:
             return self.getHoster('frenchvid')
         if ('core1player' in sHostName) or ('vfsplayer' in sHostName):
             return self.getHoster('frenchvid')
+        if ('gotochus' in sHostName):
+            return self.getHoster('frenchvid')
+
         if ('viki' in sHostName):
             return self.getHoster('viki')
         if ('flix555' in sHostName):
             return self.getHoster('flix555')
         if ('onlystream' in sHostName):
             return self.getHoster('onlystream')
-        if ('gotochus' in sHostName):
-            return self.getHoster('gotochus')
         if ('pstream' in sHostName):
             return self.getHoster('pstream')
         if ('vudeo' in sHostName):
@@ -368,6 +372,16 @@ class cHosterGui:
             return self.getHoster('vidia')
         if ('streamtape' in sHostName):
             return self.getHoster('streamtape')
+        if ('femax' in sHostName):
+            return self.getHoster('femax')
+        if ('vidbem' in sHostName):
+            return self.getHoster('vidbem')
+        if ('sibnet' in sHostName):
+            return self.getHoster('sibnet')
+        if ('vidplayer' in sHostName):
+            return self.getHoster('vidplayer')
+        if ('userload' in sHostName):
+            return self.getHoster('userload')
 
         # Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):

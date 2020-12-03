@@ -174,21 +174,25 @@ class cPlayer(xbmc.Player):
         pourcent =  0
         if self.totalTime > 0:
             pourcent = float('%.2f' % (self.currentTime / self.totalTime))
-        if (pourcent > 0.90):
+            #Dans le cas ou ont a vu intégralement le contenu, percent = 0.0
+            #Mais on n'a tout de meme terminé donc le temps actuel est egal au temps total.
+            if (pourcent > 0.90) or (pourcent == 0.0 and self.currentTime == self.totalTime):
 
-            # Marqué VU dans la BDD Vstream
-            cGui().setWatched()
+                # Marqué VU dans la BDD Vstream
+                cGui().setWatched()
 
-            # Marqué VU dans les comptes perso
-            try:
-                tmdb_session = self.ADDON.getSetting('tmdb_session')
-                if tmdb_session:
-                    self.__getWatchlist('tmdb')
-                bstoken = self.ADDON.getSetting('bstoken')
-                if bstoken:
-                    self.__getWatchlist('trakt')
-            except:
-                pass
+                # Marqué VU dans les comptes perso
+                try:
+                    tmdb_session = self.ADDON.getSetting('tmdb_session')
+                    if tmdb_session:
+                        self.__getWatchlist('tmdb')
+
+                    bstoken = self.ADDON.getSetting('bstoken')
+                    if bstoken:
+                        self.__getWatchlist('trakt')
+
+                except:
+                    pass
 
         #xbmc.executebuiltin('Container.Refresh')
 
@@ -211,7 +215,7 @@ class cPlayer(xbmc.Player):
         elif sAction == 'trakt':
             #plugins = __import__('resources.lib.trakt', fromlist=['cTrakt'])
             plugins = __import__('resources.lib.trakt', fromlist=['trakt']).cTrakt()
-            function = getattr(plugins, 'getWatchlist')
+            function = getattr(plugins, 'setAsWatched')
             function()
 
         return

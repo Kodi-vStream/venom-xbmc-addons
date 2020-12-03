@@ -176,15 +176,15 @@ def showMovies(sSearch=''):
 
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
-        sPattern = 'Title">Search<.+?<a href="([^"]+)".+?img src="([^"]+)".+?Title">([^<]+).+?Year">([^<]+).+?Qlty">([^<]+).+?Description"><p>([^<]+)'
-
+        #sPattern = 'Title">Search<.+?<a href="([^"]+)".+?img src="([^"]+)".+?Title">([^<]+).+?Year">([^<]+).+?Qlty">([^<]+).+?Description"><p>([^<]+)'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        if URL_MAIN + 'letters/' in sUrl:
-            sPattern = '<td class="MvTbImg">.+?href="([^"]+).+?src="([^"]+).+?class="MvTbTtl.+?<strong>([^<]*).+?<td>([^<]*).+?Qlty">([^<]+).+?<td>([^<]*)'
-        else:
-            sPattern = 'class="TPost C">.+?href="([^"]+)".+?img src="([^"]+)".+?Title">([^<]+).+?Year">([^<]+).+?Qlty">([^<]+).+?Description"><p>([^<]+)'
+
+    if URL_MAIN + 'letters/' in sUrl:
+        sPattern = '<td class="MvTbImg">.+?href="([^"]+).+?src="([^"]+).+?class="MvTbTtl.+?<strong>([^<]*).+?<td>([^<]*).+?Qlty">([^<]+).+?<td>([^<]*)'
+    else:
+        sPattern = 'class="TPost C">.+?href="([^"]+)".+?img src="([^"]+)".+?Title">([^<]+).+?Year">([^<]+).+?Qlty">([^<]+).+?Description"><p>([^<]+)'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -341,8 +341,9 @@ def showHosters():
             
             #VSlog(site)
             #VSlog(aResult)
-
-            sPost = decode(aResult[1][0])
+            #sPost = decode(aResult[1][0])
+            # t[::-1] renvoie la chaine t dans l'ordre inverse, identique à decode(t)
+            sPost = aResult[1][0][::-1] 
 
             if sPost:
 

@@ -132,7 +132,11 @@ def showFile():
             if x == 'files':
 
                 for y in content[x]:
-                    sTitle = y['file_name'].encode('utf-8')
+                    if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+                        sTitle = y['file_name']
+                    else:
+                        sTitle = y['file_name'].encode('utf-8')    
+
                     sHosterUrl = URL_MAIN + y['file_code']
 
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -145,8 +149,12 @@ def showFile():
             if x == 'folders':
 
                 for z in content[x]:
-                    sTitle = z['name'].encode('utf-8')
-                    sFoldername = z['fld_name'].encode('utf-8')
+                    if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+                        sTitle = z['name']
+                        sFoldername = z['fld_name']
+                    else:
+                        sTitle = z['name'].encode('utf-8')
+                        sFoldername = z['fld_name'].encode('utf-8')
 
                     sUrl = API_URL.replace('none', sToken)
 

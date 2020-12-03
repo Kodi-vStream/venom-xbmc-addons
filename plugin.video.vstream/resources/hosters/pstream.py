@@ -2,7 +2,7 @@
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog#, VSlog
+from resources.lib.comaddon import dialog, VSlog
 from resources.lib.parser import cParser
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
@@ -58,18 +58,27 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
 
         oRequest = cRequestHandler(self.__sUrl)
+        oRequest.addHeaderEntry('User-Agent', UA)
+        oRequest.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+        oRequest.addHeaderEntry("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  'vsuri = \'([^\']+)\';'
+        sPattern =  'v.uri = \'([^\']+)\';'
         aResult = oParser.parse(sHtmlContent, sPattern)
+        
+        VSlog(aResult[1][0])
 
         oRequest = cRequestHandler(aResult[1][0])
         oRequest.addHeaderEntry('User-Agent', UA)
+        oRequest.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+        oRequest.addHeaderEntry("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
+        oRequest.addHeaderEntry('Referer', self.__sUrl)
+        
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  '"([^"]+)":"([^"]+)"'
+        sPattern =  'NAME="([0-9]+)"([^#]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0]):
@@ -80,8 +89,10 @@ class cHoster(iHoster):
                 qua.append(aEntry[0])
 
             api_call = dialog().VSselectqual(qua, url)
+            
+        VSlog(api_call)
 
         if (api_call):
-            return True, api_call
+            return True, api_call + "|User-Agent=" + UA
 
         return False, False

@@ -121,7 +121,7 @@ def showMovies(sSearch=''):
 # search the next page
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<ul class="default-wp-page clearfix"><li class="previous"><a href="([^"]+)" >'
+    sPattern = '<li class="previous"><a href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
