@@ -7,7 +7,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress ,VSlog
+from resources.lib.comaddon import progress
 import re
 
 SITE_IDENTIFIER = 'animeultime'
@@ -38,20 +38,37 @@ ANIM_ANIMS = (True, 'showMenuAnims')
 SERIE_SERIES = (True, 'showMenuSeries')
 TOKUSATSU_TOKUSATSUS = (True, 'showMenuTokusatsu')
 
+DEBUG = False
+
+if DEBUG:
+
+    import sys  # pydevd module need to be copied in Kodi\system\python\Lib\pysrc
+    sys.path.append('H:\Program Files\Kodi\system\Python\Lib\pysrc')
+
+    try:
+        import pysrc.pydevd as pydevd
+        pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True)
+    except ImportError:
+        try:
+            import pydevd  # with the addon script.module.pydevd, only use `import pydevd`
+            pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True)
+        except ImportError:
+            sys.stderr.write("Error: " + "You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
+
 def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
-    oGui.addTV(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Dramas', 'animes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Dramas', 'dramas.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', TOKUSATSU_TOKUSATSUS[0])
@@ -64,19 +81,19 @@ def showMenuAnims():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
-    oGui.addTV(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés', 'animes.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés', 'animes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ALPHA[0])
-    oGui.addTV(SITE_IDENTIFIER, ANIM_ALPHA[1], 'Animés  (Alpha)', 'animes.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ALPHA[1], 'Animés  (Alpha)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
-    oGui.addTV(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genre)', 'animes.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genre)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANNEES[0])
-    oGui.addTV(SITE_IDENTIFIER, ANIM_ANNEES[1], 'Animés (Années)', 'animes.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANNEES[1], 'Animés (Années)', 'annees.png',oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -86,19 +103,19 @@ def showMenuSeries():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
-    oGui.addTV(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Dramas', 'series.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Dramas', 'dramas.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_ALPHA[0])
-    oGui.addTV(SITE_IDENTIFIER, SERIE_ALPHA[1], 'Dramas (Alpha)', 'animes.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_ALPHA[1], 'Dramas (Alpha)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRE[0])
-    oGui.addTV(SITE_IDENTIFIER, SERIE_GENRE[1], 'Dramas (Genre)', 'animes.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRE[1], 'Dramas (Genre)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
-    oGui.addTV(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Dramas (Années)', 'animes.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Dramas (Années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -108,11 +125,11 @@ def showMenuTokusatsu():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', TOKUSATSU[0])
-    oGui.addTV(SITE_IDENTIFIER, TOKUSATSU[1], 'Tokusatsu', 'vostfr.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, TOKUSATSU[1], 'Tokusatsu', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', TOKUSATSU_ALPHA[0])
-    oGui.addTV(SITE_IDENTIFIER, TOKUSATSU_ALPHA[1], 'Tokusatsu (Alpha)', 'vostfr.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, TOKUSATSU_ALPHA[1], 'Tokusatsu (Alpha)', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -130,12 +147,10 @@ def loadTypelist(typemovie, typelist):
     sPattern = '<select name="([^"]+)|<option value=\'([^\']+).*?>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    list_typelist = []
+    list_typelist = {}
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-
-            list_item=[]
             if aEntry[0]:
                 if aEntry[0] == typelist:   
                     bfind = True
@@ -143,11 +158,11 @@ def loadTypelist(typemovie, typelist):
                     bfind = False
 
             if bfind and aEntry[1]:
-                list_item.append(aEntry[1])
                 title = aEntry[2].decode('iso-8859-1').encode('utf8')
                 title = title.replace('e', 'E').strip()
-                list_item.append(title)
-                list_typelist.append(list_item)
+                list_typelist[title] = aEntry[1]
+
+    list_typelist = sorted(list_typelist.items(), key=lambda typeList: typeList[0])
 
     return list_typelist
 
@@ -167,8 +182,8 @@ def ShowGenre(typemovie):
     list_listgenre = loadTypelist( typemovie , 'genre')
 
     for ilist in list_listgenre:
-        url = URL_MAIN + 'series-0-1/' + typemovie + '/-' + ilist[0] + '---'
-        sTitle = ilist[1] 
+        url = URL_MAIN + 'series-0-1/' + typemovie + '/-' + ilist[1] + '---'
+        sTitle = ilist[0] 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', url)
         oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'genres.png', oOutputParameterHandler)
@@ -191,11 +206,11 @@ def ShowYears(typemovie):
 
     #http://www.anime-ultime.net/series-0-1/anime/--626--    2019
     for liste in reversed(list_year):
-        url = URL_MAIN + 'series-0-1/' + typemovie + '/--' + liste[0] + '--'
-        sTitle = liste[1] 
+        url = URL_MAIN + 'series-0-1/' + typemovie + '/--' + liste[1] + '--'
+        sTitle = liste[0]
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', url)
-        oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -282,7 +297,10 @@ def showSeries(sSearch = ''):
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
+                if '/anime/' in sUrl:
+                    oGui.addAnime(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
+                else:
+                    oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
 
             else:
                 oGui.addText(SITE_IDENTIFIER)
@@ -335,12 +353,15 @@ def showSeries(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
+            if '/anime/' in sUrl:
+                oGui.addAnime(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
+            else:
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     if not sSearch:
-      oGui.setEndOfDirectory()
+        oGui.setEndOfDirectory()
 
 
 def showEpisode():
@@ -400,7 +421,7 @@ def showEpisode():
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
