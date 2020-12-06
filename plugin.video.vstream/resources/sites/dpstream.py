@@ -190,6 +190,7 @@ def showMovies(sSearch=''):
             oRequestHandler.setRequestType(1)
             oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
             oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
+            oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
             oRequestHandler.addHeaderEntry('Cookie', scookie)
             oRequestHandler.addParametersLine(pdata)
             sHtmlContent = oRequestHandler.request()
