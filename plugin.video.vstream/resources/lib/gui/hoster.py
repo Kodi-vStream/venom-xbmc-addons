@@ -382,6 +382,8 @@ class cHosterGui:
             return self.getHoster('vidplayer')
         if ('userload' in sHostName):
             return self.getHoster('userload')
+        if ('aparat' in sHostName):
+            return self.getHoster('aparat')
 
         # Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
