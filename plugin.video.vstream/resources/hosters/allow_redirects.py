@@ -62,6 +62,9 @@ class cHoster(iHoster):
         resp = session.head(url, allow_redirects=True)
         sHosterUrl = resp.url
 
+        if sHosterUrl == url:
+            return False, False
+
         if sHosterUrl:
 
             from resources.lib.gui.hoster import cHosterGui
