@@ -9,16 +9,16 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress #,VSlog
 
 SITE_IDENTIFIER = 'papstream'
 SITE_NAME = 'PapStream'
-SITE_DESC = 'Films, Séries & Mangas'
+SITE_DESC = 'Films, Séries'
 
-URL_MAIN = 'https://wvw.papstream.cc/'
+URL_MAIN = 'https://www.papstream.in/'
 
 FUNCTION_SEARCH = 'showMovies'
-URL_SEARCH = (URL_MAIN + 'rechercher', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'recherche/', 'showMovies')
 
 # recherche globale MOVIE/TVSHOWS
 key_search_movies = '#searchsomemovies'
@@ -27,7 +27,7 @@ URL_SEARCH_MOVIES = (key_search_movies, 'showMovies')
 URL_SEARCH_SERIES = (key_search_series, 'showMovies')
 
 MOVIE_MOVIE = (URL_MAIN + 'films.html', 'showMoviesMenu')
-MOVIE_NEWS = (URL_MAIN + 'dernier-films.html', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'films.html', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
 
@@ -169,7 +169,7 @@ def showMovieYears():
     for i in reversed(range(1918, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/annee/' + Year + '.html')
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/annee-' + Year + '.html')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -181,7 +181,7 @@ def showSerieYears():
     for i in reversed(range(1936, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/annee/' + Year + '.html')
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/annee-' + Year + '.html')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -212,20 +212,16 @@ def showMovies(sSearch=''):
         if key_search_series in KeySearch:
             KeySearch = str(KeySearch).replace(key_search_series, '')
             bSearchSerie = True
-        sUrl = URL_SEARCH[0]
+        sUrl = URL_SEARCH[0] + KeySearch 
         oRequestHandler = cRequestHandler(sUrl)
-        oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
-        oRequestHandler.addHeaderEntry('User-Agent', UA)
-        oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-        oRequestHandler.addParametersLine('story=' + KeySearch)
+
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
         oRequestHandler = cRequestHandler(sUrl)
 
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'class="short-images-link".+?img src="([^"]+)".+?short-link"><a href="([^"]+)".+?>([^<]+)</a>'
+    sPattern = 'class="short-images-link".+?img src="([^"]+)".+?short-link">\s*<a href="([^"]+)".+?>([^<]+)</a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -300,13 +296,13 @@ def showSaisons():
     sHtmlContent = oRequestHandler.request()
 
     sDesc = ''
-    sPattern = '</a> :</h2>(.+?)<div'
+    sPattern = '</a>\s*:\s*</h2>\s*(.+?)<div'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sDesc = aResult[1][0]
 
     # Decoupage pour cibler la partie des saisons
-    sPattern = '<div id="full-video">(.+?)<div class="fstory-info block-p">'
+    sPattern = '<div id="full-video">(.+?)<div class="fstory'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sHtmlContent = aResult
@@ -344,7 +340,7 @@ def ShowEpisodes():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<div class="saision_LI2">.*?<a title="Regarder (.+?) en streaming" href=["\']([^"\']+)">'
+    sPattern = 'class="saision_LI2">\s*<a title="(.+?)"\s*href=["\']([^"\']+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -353,7 +349,7 @@ def ShowEpisodes():
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sTitle = aEntry[0]
+            sTitle = aEntry[0].replace(' en streaming','')
             sUrl2 = URL_MAIN[:-1] + aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -379,23 +375,31 @@ def showLink():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    # récupération du synopsis pour les films
     if (not sDesc):
-        sPattern = '</a> :</h2>(.+?)<div'
+        sPattern = '</a>\s*:\s*</h2>\s*(.+?)<div'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
-            sDesc = aResult[1][0]
+            sDesc = aResult[1][0].replace(' en Streaming Complet ', ': ')
 
-    sPattern = 'href="#" rel="([^"]+).+?id="player".+?class="server player-.+?"></i>([^<]+)</span>.+?<img src="([^"]+).+?<span style=".+?">([^<]+)<'
+    sPattern = '"#"\srel="([^"]+).+?class="server.+?<img src="([^"]+).+?<span style=".+?">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
             sUrl2 = aEntry[0]
-            sHost = aEntry[1].capitalize()
-            sLang = aEntry[2].replace('/images/', '').replace('.png', '')
-            sQual = aEntry[3].replace('(', '').replace(')', '')
+            sLang = aEntry[1].replace('/Public/images/', '').replace('.png', '')
+            sQual = aEntry[2].replace('(', '').replace(')', '')
+
+            if 'alliance4creativity' in sUrl2:
+                continue
+
+            oHoster = cHosterGui().checkHoster(sUrl2)
+            if (oHoster != False):
+                sHost = oHoster.getDisplayName()
+            else:
+                sHost = GetHostname(sUrl2)
+
             sTitle = '%s [%s] (%s) [COLOR coral]%s[/COLOR]' % (sMovieTitle, sQual, sLang.upper(), sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -433,3 +437,16 @@ def showHosters():
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
+
+def GetHostname(url):
+
+    try:
+        if 'www' not in url:
+            sHost = re.search('http.*?\/\/([^.]*)', url).group(1)
+        else:
+            sHost = re.search('htt.+?\/\/(?:www).([^.]*)', url).group(1)
+    except:
+        sHost = url
+
+    return sHost.capitalize()
