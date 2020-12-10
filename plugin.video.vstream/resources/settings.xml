@@ -122,7 +122,11 @@
 
         <setting visible="false" id="plugin_french_stream_com" type="bool" label="French Stream" default="true"/>
 
+        <setting visible="false" id="plugin_french_stream_lol" type="bool" label="French-stream-lol" default="true"/>
+
         <setting visible="false" id="plugin_gum_gum_streaming_com" type="bool" label="Gum-Gum-Streaming" default="true"/>
+
+        <setting visible="false" id="plugin_hds_fm" type="bool" label="Hds-fm" default="true"/>
 
         <setting visible="false" id="plugin_hds_stream" type="bool" label="Hds-stream" default="true"/>
 
@@ -189,6 +193,8 @@
         <setting visible="false" id="plugin_streaming_series" type="bool" label="Streaming-Series" default="true"/>
 
         <setting visible="false" id="plugin_streamingdivx" type="bool" label="StreamingDivx" default="true"/>
+
+        <setting visible="false" id="plugin_streamiz" type="bool" label="Streamiz" default="true"/>
 
         <setting visible="false" id="plugin_telecharger_streaming" type="bool" label="Télécharger-streaming" default="true"/>
 
