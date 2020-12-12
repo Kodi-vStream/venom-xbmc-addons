@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+return False
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -166,7 +167,6 @@ def showMovies(sSearch=''):
                               .replace(' en Streaming HD', '').replace(' Streaming HD', '')\
                               .replace(' streaming', '').replace('HD', '')
 
-
             sUrl2 = aEntry[0]
             sThumb = re.sub('/w\d+', '/w342', aEntry[1])
             if sThumb.startswith('//'):
@@ -202,7 +202,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.search('page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(number) + ' >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
