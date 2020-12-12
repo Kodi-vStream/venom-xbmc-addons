@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Makoto et Arias800 02/06/2019
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -11,7 +11,7 @@ from resources.lib.comaddon import progress
 import re
 
 SITE_IDENTIFIER = 'animeultime'
-SITE_NAME = 'Anime-Ultime'
+SITE_NAME = 'Anime Ultime'
 SITE_DESC = 'Animés, Dramas en Direct Download'
 
 URL_MAIN = 'http://www.anime-ultime.net/'
@@ -26,7 +26,7 @@ URL_SEARCH_SERIES = (URL_MAIN + 'search-0-1+', 'showSeries')
 
 ANIM_ANNEES = (True, 'ShowYearsAnime')
 ANIM_GENRES = (True, 'ShowGenreAnime')
-ANIM_ALPHA= (True, 'ShowAlphaAnime')
+ANIM_ALPHA = (True, 'ShowAlphaAnime')
 
 SERIE_ANNEES = (True, 'ShowYearsDrama')
 SERIE_GENRE = (True, 'ShowGenreDrama')
@@ -38,13 +38,14 @@ ANIM_ANIMS = (True, 'showMenuAnims')
 SERIE_SERIES = (True, 'showMenuSeries')
 TOKUSATSU_TOKUSATSUS = (True, 'showMenuTokusatsu')
 
+
 def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Dramas', 'dramas.png', oOutputParameterHandler)
@@ -52,12 +53,13 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', TOKUSATSU_TOKUSATSUS[0])
     oGui.addDir(SITE_IDENTIFIER, TOKUSATSU_TOKUSATSUS[1], 'Tokusatsu', 'films.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMenuAnims():
     oGui = cGui()
@@ -76,7 +78,7 @@ def showMenuAnims():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ANNEES[1], 'Animés (Années)', 'annees.png',oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANNEES[1], 'Animés (Années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -135,9 +137,9 @@ def loadTypelist(typemovie, typelist):
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             if aEntry[0]:
-                if aEntry[0] == typelist:   
+                if aEntry[0] == typelist:
                     bfind = True
-                else :
+                else:
                     bfind = False
 
             if bfind and aEntry[1]:
@@ -159,18 +161,17 @@ def ShowGenreDrama():
 
 
 def ShowGenre(typemovie):
-
     oGui = cGui()
 
-    list_listgenre = loadTypelist( typemovie , 'genre')
+    list_listgenre = loadTypelist(typemovie, 'genre')
 
     for ilist in list_listgenre:
         url = URL_MAIN + 'series-0-1/' + typemovie + '/-' + ilist[1] + '---'
-        sTitle = ilist[0] 
+        sTitle = ilist[0].title()
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', url)
         oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'genres.png', oOutputParameterHandler)
- 
+
     oGui.setEndOfDirectory()
 
 
@@ -185,9 +186,9 @@ def ShowYearsDrama():
 def ShowYears(typemovie):
     oGui = cGui()
 
-    list_year = loadTypelist( typemovie ,'year')
+    list_year = loadTypelist(typemovie, 'year')
 
-    #http://www.anime-ultime.net/series-0-1/anime/--626--    2019
+    # http://www.anime-ultime.net/series-0-1/anime/--626--    2019
     for liste in reversed(list_year):
         url = URL_MAIN + 'series-0-1/' + typemovie + '/--' + liste[1] + '--'
         sTitle = liste[0]
@@ -214,14 +215,12 @@ def ShowAlpha(typemovie):
     oGui = cGui()
 
     import string
-    #http://www.anime-ultime.net/series-0-1/tokusatsu/c---
+    # http://www.anime-ultime.net/series-0-1/tokusatsu/c---
     sAlpha = string.ascii_lowercase
     listalpha = list(sAlpha)
-    liste = []
-
-    liste.append(['#', URL_MAIN + 'series-0-1/' + typemovie + '/' + '1---' ])
+    liste = [['#', URL_MAIN + 'series-0-1/' + typemovie + '/' + '1---']]
     for alpha in listalpha:
-        liste.append([str(alpha).upper(), URL_MAIN + 'series-0-1/' + typemovie + '/' + alpha + '---' ])
+        liste.append([str(alpha).upper(), URL_MAIN + 'series-0-1/' + typemovie + '/' + alpha + '---'])
 
     for sTitle, sUrl in liste:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -244,10 +243,10 @@ def showSearch():
         return
 
 
-def showSeries(sSearch = ''):
+def showSeries(sSearch=''):
     oGui = cGui()
     if sSearch:
-        sUrl = sSearch.replace(' ','+').replace('%20','+')
+        sUrl = sSearch.replace(' ', '+').replace('%20', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -263,17 +262,17 @@ def showSeries(sSearch = ''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    #Si il y a qu'un seule resultat alors le site fait une redirection.
+    # Si il y a qu'un seule resultat alors le site fait une redirection.
     if (aResult[0] == False):
-        if sSearch and not "sultats anime" in sHtmlContent:
+        if sSearch and "sultats anime" not in sHtmlContent:
             sTitle = ''
             try:
-                sTitle = re.search('<h1>([^<]+)',sHtmlContent).group(1)
+                sTitle = re.search('<h1>([^<]+)', sHtmlContent).group(1)
             except:
                 pass
-            if sTitle :   
+            if sTitle:
                 sUrl2 = sUrl
-                sThumb = ""
+                sThumb = ''
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -301,13 +300,13 @@ def showSeries(sSearch = ''):
                 break
 
             if sSearch:
-                #Enleve les balise.
+                # Enleve les balise.
                 try:
                     sTitle = re.sub('<.*?>', '', aEntry[2])
                 except:
                     sTitle = aEntry[2]
 
-                #Le décodage n'est pas utile sous Python 3
+                # Le décodage n'est pas utile sous Python 3
                 try:
                     sTitle = sTitle.decode('iso-8859-1').encode('utf8')
                 except:
@@ -315,9 +314,7 @@ def showSeries(sSearch = ''):
 
                 sUrl2 = URL_MAIN + aEntry[0]
                 sThumb = URL_MAIN + aEntry[1]
-
             else:
-
                 sTitle = aEntry[2]
                 try:
                     sTitle = sTitle.decode('iso-8859-1').encode('utf8')
@@ -327,8 +324,8 @@ def showSeries(sSearch = ''):
                 sUrl2 = URL_MAIN + aEntry[0]
                 sThumb = aEntry[1]
 
-            #Enleve le contenu pour adulte.
-            if 'Inderdit -' in sTitle or 'Public Averti' in sTitle  or 'Interdit' in sTitle:
+            # Enleve le contenu pour adulte.
+            if 'Inderdit -' in sTitle or 'Public Averti' in sTitle or 'Interdit' in sTitle:
                 continue
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -351,7 +348,7 @@ def showEpisode():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('showSeries')
+    # sMovieTitle = oInputParameterHandler.getValue('showSeries')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -360,17 +357,17 @@ def showEpisode():
     oParser = cParser()
     sDesc = ''
     try:
-        #sPattern = '<strong>(.+?)<.+?>'
+        # sPattern = '<strong>(.+?)<.+?>'
         sPattern ='src="images.+?(?:<br \/>)(.+?)(?:<span style|TITRE ORIGINAL|ANNÉE DE PRODUCTION|STUDIO|GENRES)'
 
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
-            #sTitle = sMovieTitle
-            sDesc = aResult[1][0].replace('<br>','').replace('<br />','')
+            # sTitle = sMovieTitle
+            sDesc = aResult[1][0].replace('<br>', '').replace('<br />', '')
             sDesc = sDesc.replace('Synopsis', '').replace('synopsis', '').replace(':', ' ')
-            sDesc= ('[I][COLOR coral]%s[/COLOR][/I] %s') % ('Synopsis :', sDesc)
+            sDesc = ('[I][COLOR coral]%s[/COLOR][/I] %s') % ('Synopsis :', sDesc)
 
-            #Enleve les balise.
+            # Enleve les balise.
             try:
                 sDesc = re.sub('<.*?>', '', sDesc)
             except:
@@ -378,12 +375,11 @@ def showEpisode():
     except:
         pass
 
-    sPattern = '<tr.+?align="left">.+?align="left">([^"]+)</td>.+?nowrap>+?<.+?</td>.+?<.+?/td>.+?<.+?<a href="([^"]+)">.+?'
+    sPattern = '<tr.+?align="left">.+?align="left">([^"]+)</td>.+?nowrap>+?<.+?</td>.+?<.+?/td>.+?<.+?<a href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         total = len(aResult[1])
-
         progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
@@ -391,7 +387,7 @@ def showEpisode():
             if progress_.iscanceled():
                 break
 
-            sTitle = aEntry[0].replace('FHD','').replace('vostfr','').replace('HD','').replace('HQ','')
+            sTitle = aEntry[0].replace('FHD', '').replace('vostfr', '').replace('HD', '').replace('HQ', '')
 
             try:
                 sTitle = sTitle.decode('iso-8859-1').encode('utf8')
@@ -423,7 +419,7 @@ def showHosters():
     oRequestHandler = cRequestHandler('https://v5.anime-ultime.net/VideoPlayer.html')
     oRequestHandler.setRequestType(1)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addParameters('idfile',ids)
+    oRequestHandler.addParameters('idfile', ids)
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '"([0-9p]+)".+?url":"(.+?)"'
@@ -433,8 +429,8 @@ def showHosters():
         for aEntry in aResult[1]:
 
             sTitle = ('%s [%s]') % (sMovieTitle, aEntry[0])
-            sHosterUrl = aEntry[1].replace('\\/','/')
-            oHoster = cHosterGui().checkHoster("mp4")
+            sHosterUrl = aEntry[1].replace('\\/', '/')
+            oHoster = cHosterGui().checkHoster('mp4')
 
             if (oHoster != False):
                 oHoster.setDisplayName(sTitle)
