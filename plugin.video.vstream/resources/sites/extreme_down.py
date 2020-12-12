@@ -3,8 +3,6 @@
 #
 import json
 import re
-import xbmcvfs
-import xbmc
 
 from resources.lib.comaddon import progress, VSlog, dialog, addon
 from resources.lib.gui.gui import cGui
@@ -13,7 +11,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil, QuotePlus
+from resources.lib.util import cUtil
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/69.0'
 headers = {'User-Agent': UA}
@@ -99,13 +97,14 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuAutre', 'Autres', 'tv.png', oOutputParameterHandler)
-    
+
     if ADDON.getSetting('token_alldebrid') == "":
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
         oGui.addDir(SITE_IDENTIFIER, 'getToken', '[COLOR red]Les utilisateurs d\'Alldebrid cliquez ici.[/COLOR]', 'films.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMenuFilms():
     oGui = cGui()
@@ -292,6 +291,7 @@ def showMenuAutre():
 
     oGui.setEndOfDirectory()
 
+
 def getToken():
     ADDON = addon()
     oGui = cGui()
@@ -304,7 +304,7 @@ def getToken():
 
 def showSearch():
     oGui = cGui()
-    
+
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -348,7 +348,6 @@ def showGenres():
     liste.append(['Divers', URL_MAIN + 'divers/'])
 
     for sTitle, sUrl in liste:
-
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
@@ -358,7 +357,6 @@ def showGenres():
 
 def showMovieYears():
     oGui = cGui()
-
     for i in reversed(range(1913, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -370,7 +368,6 @@ def showMovieYears():
 
 def showSerieYears():
     oGui = cGui()
-
     for i in reversed(range(1936, 2021)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -386,7 +383,7 @@ def showMovies(sSearch=''):
     oInputParameterHandler = cInputParameterHandler()
     nextPageSearch = oInputParameterHandler.getValue('nextPageSearch')
     siteUrl = oInputParameterHandler.getValue('siteUrl')
-    sMisc = oInputParameterHandler.getValue('misc') # Autre contenu
+    sMisc = oInputParameterHandler.getValue('misc')  # Autre contenu
 
     if nextPageSearch:
         sSearch = siteUrl
@@ -394,7 +391,7 @@ def showMovies(sSearch=''):
     sCat = None
     if sSearch:
         siteUrl = sSearch
-        
+
         if nextPageSearch:
             sSearch += '&search_start=' + nextPageSearch
         oRequestHandler = cRequestHandler(siteUrl)
@@ -444,20 +441,20 @@ def showMovies(sSearch=''):
                     sQual = re.sub('Saison [0-9]+ ', '', sQual)
 
                 if '(E' in aEntry[2]:
-                    res = re.search('\(E([0-9]+ .+? [0-9]+)\)',aEntry[2])
+                    res = re.search('\(E([0-9]+ .+? [0-9]+)\)', aEntry[2])
                     try:
-                        sTitle = sTitle + ' E' + res.group(1).replace('Ã',' - ').replace('à',' - ').split('[')[0]
+                        sTitle = sTitle + ' E' + res.group(1).replace('Ã', ' - ').replace('à', ' - ').split('[')[0]
                     except:
                         pass
 
             else:
-                sTitle = aEntry[2]#.replace('Avec TRUEFRENCH', '').replace('TRUEFRENCH', '').replace('FRENCH ', '')
+                sTitle = aEntry[2]  # .replace('Avec TRUEFRENCH', '').replace('TRUEFRENCH', '').replace('FRENCH ', '')
                 sQual = ''
 
             # Enlever les films en doublons (même titre et même pochette)
             # il s'agit du même film dans une autre qualité qu'on retrouvera au moment du choix de la qualité
             key = sTitle + "-" + sThumb
-            if key in titles :
+            if key in titles:
                 continue
             titles.add(key)
 
@@ -484,7 +481,7 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
         if sSearch:
-            sPattern = '<a name="nextlink" id="nextlink" onclick="javascript:list_submit\(([0-9]+)\); return\(false\)" href="#">Suivant'
+            sPattern = 'name="nextlink" id="nextlink" onclick="javascript:list_submit\(([0-9]+)\); return\(false\)" href="#">Suivant'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -508,6 +505,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -539,8 +537,8 @@ def showMoviesLinks():
         if aResult[0]:
             sDesc = cUtil().removeHtmlTags(aResult[1][0])
 
-            #PY3
-            #Sans ca les caratere accentué n'apparissent pas.
+            # PY3
+            # Sans ca les caratere accentué n'apparissent pas.
             try:
                 sDesc = sDesc.encode('utf-8')
             except:
@@ -605,9 +603,9 @@ def showSeriesLinks():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = cUtil().removeHtmlTags(aResult[1][0])
-            
-            #PY3
-            #Sans ca les caratere accentué n'apparissent pas.
+
+            # PY3
+            # Sans ca les caratere accentué n'apparissent pas.
             try:
                 sDesc = sDesc.encode('utf-8')
             except:
@@ -619,10 +617,10 @@ def showSeriesLinks():
     sPattern = '(<title>Télécharger |<title>)([^"]+) - ([^"]+)(VOSTFR|VF)*.+?</title>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     # VSlog(aResult)
-    if (aResult[1]):
+    if aResult[1]:
         sMovieTitle = aResult[1][0][1]
 
-    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Qualités disponibles :[/COLOR]')
+    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles :[/COLOR]')
 
     sPattern = '<meta property="og:title" content=".+? - (.+?)(VOSTFR|VF)*/>'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -753,6 +751,7 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
+
 def RecapchaBypass():
     ADDON = addon()
     oGui = cGui()
@@ -779,19 +778,14 @@ def RecapchaBypass():
 
     else:
         from resources.lib import librecaptcha
-        test = librecaptcha.get_token(
-            api_key="6LeH9lwUAAAAAGgg9ZVf7yOm0zb0LlcSai8t8-2o",
-            site_url=sUrl,
-            user_agent= UA,
-            gui=False,
-            debug=False,
-        )
+        test = librecaptcha.get_token(api_key="6LeH9lwUAAAAAGgg9ZVf7yOm0zb0LlcSai8t8-2o", site_url=sUrl, user_agent=UA,
+                                      gui=False, debug=False)
 
         if test is None:
             oGui.addText(SITE_IDENTIFIER, '[COLOR red]Resolution du Recaptcha annulé[/COLOR]')
 
         else:
-            #N'affiche pas directement le liens car sinon Kodi crash.
+            # N'affiche pas directement le liens car sinon Kodi crash.
             sDisplayTitle = "Recaptcha passé avec succès, cliquez pour afficher les liens"
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -801,6 +795,7 @@ def RecapchaBypass():
             oGui.addLink(SITE_IDENTIFIER, 'getHost', sDisplayTitle, sThumb, "", oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def getHost():
     oGui = cGui()
@@ -838,7 +833,8 @@ def getHost():
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
     oGui.setEndOfDirectory()
-    
+
+
 def CutQual(sHtmlContent):
     oParser = cParser()
     sPattern = '<span class="other-qualities">&Eacute;galement disponible en :</span>(.+?)</div>'
