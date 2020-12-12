@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress
 
 import re
 
@@ -15,13 +15,14 @@ SITE_NAME = 'Gum-Gum-Streaming'
 SITE_DESC = 'Animés VF/VOSTFR'
 
 URL_MAIN = 'https://gum-gum-streaming.com/'
-#URL_MAIN = 'https://gum-gum-streaming.co/'  # sans pub
+# URL_MAIN = 'https://gum-gum-streaming.co/'  # sans pub
 
 ANIM_ANIMS = (True, 'load')
 ANIM_NEWS = (URL_MAIN, 'showNews')
 ANIM_VFS = (URL_MAIN + 'vf/', 'showAnimes')
 ANIM_VOSTFRS = (URL_MAIN + 'vostfr/', 'showAnimes')
 ANIM_MOVIES = (URL_MAIN + 'films/', 'showMovies')
+
 
 def load():
     oGui = cGui()
@@ -52,6 +53,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showNews():
     oGui = cGui()
     oParser = cParser()
@@ -65,7 +67,7 @@ def showNews():
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            #traitement pour affichage de la langue
+            # traitement pour affichage de la langue
             sLang = ''
             if '/vf/' in sUrl or '/vostfr/' in sUrl:
                 sLang = ''
@@ -88,6 +90,7 @@ def showNews():
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showAnimes():
     oGui = cGui()
@@ -113,7 +116,7 @@ def showAnimes():
             sTitle = aEntry[2]
             sThumb = aEntry[3]
 
-            #traitement du titre pour compatibilite
+            # traitement du titre pour compatibilite
             sTitle = sTitle.replace('(', ' ').replace(')', ' ')
             sTitle = re.sub('([0-9]+) .. ([0-9\?]+)', '\\1-\\2', sTitle)
             sTitle = re.sub('([0-9]+) & ([0-9\?]+)', '\\1-\\2', sTitle)
@@ -125,6 +128,7 @@ def showAnimes():
             oGui.addAnime(SITE_IDENTIFIER, 'showEpisodes', sTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
         progress_.VSclose(progress_)
     oGui.setEndOfDirectory()
+
 
 def showEpisodes():
     oGui = cGui()
@@ -139,7 +143,7 @@ def showEpisodes():
     aResult = oParser.parse(sHtmlContent, sPattern)
     sUsentContent = aResult[1][0]
 
-    #récupération du synopsis
+    # récupération du synopsis
     sDesc = ''
     sPattern = 'Synopsis:</span>(.+?)</h5>'
     aSynResult = oParser.parse(sUsentContent, sPattern)
@@ -147,7 +151,7 @@ def showEpisodes():
         sDesc = aSynResult[1][0]
         sDesc = sDesc.replace('<br />', '').replace('&#8216;', '\'').replace('&#8217;', '\'').replace('&#8230;', '...')
 
-    #récupération du poster
+    # récupération du poster
     sThumb = ''
     sPattern = '<h4 style=".+?"><img class="alignright".+?data-lazy-src="(.+?)"'
     sThumbResult = oParser.parse(sUsentContent, sPattern)
@@ -185,6 +189,7 @@ def showEpisodes():
 
     oGui.setEndOfDirectory()
 
+
 def showMovies():
     oGui = cGui()
     oParser = cParser()
@@ -220,6 +225,7 @@ def showMovies():
         progress_.VSclose(progress_)
     oGui.setEndOfDirectory()
 
+
 def showMovieList():
     oGui = cGui()
     oParser = cParser()
@@ -242,6 +248,7 @@ def showMovieList():
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showHosters():
     oGui = cGui()
@@ -270,17 +277,6 @@ def showHosters():
                 if 'tinyurl' in sHosterUrl:
                     sHosterUrl = GetTinyUrl(sHosterUrl)
 
-                # if 'goo.gl' in sHosterUrl or 'bit.ly' in sHosterUrl:
-                #     try:
-                #         import requests
-                #         url = sHosterUrl
-                #         session = requests.Session()  # so connections are recycled
-                #         resp = session.head(url, allow_redirects=True)
-                #         sHosterUrl = resp.url
-                #     except:
-                #         pass
-
-
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     oHoster.setDisplayName(sTitle)
@@ -288,11 +284,12 @@ def showHosters():
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
     oGui.setEndOfDirectory()
 
+
 def GetTinyUrl(url):
-    if not 'tinyurl' in url:
+    if 'tinyurl' not in url:
         return url
 
-    #Lien deja connu ?
+    # Lien deja connu ?
     if '://tinyurl.com/h7c9sr7' in url:
         url = url.replace('://tinyurl.com/h7c9sr7/', '://vidwatch.me/')
     elif '://tinyurl.com/jxblgl5' in url:
@@ -318,7 +315,7 @@ def GetTinyUrl(url):
     elif '://tinyurl.com/kt3owzh' in url:
         url = url.replace('://tinyurl.com/kt3owzh/', '://estream.to/')
 
-    #On va chercher le vrai lien
+    # On va chercher le vrai lien
     else:
 
         oRequestHandler = cRequestHandler(url)
