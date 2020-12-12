@@ -12,7 +12,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil, Quote
 from resources.lib.config import GestionCookie
-from resources.lib.comaddon import progress, dialog, VSlog
+from resources.lib.comaddon import progress, dialog
 
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
@@ -553,7 +553,6 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-
             if '-multi' in aEntry:
                 sHostName = 'Liens Multi'
             else:
@@ -659,8 +658,8 @@ def Display_protected_link():
 
     # Est ce un lien dl-protect ?
     if URL_PROTECT in sUrl:
-    	if "lien=" in sUrl:
-    		sUrl = sUrl.split('lien=')[1]
+        if "lien=" in sUrl:
+            sUrl = sUrl.split('lien=')[1]
         sHtmlContent = DecryptddlProtect(sUrl)
 
         if sHtmlContent:
