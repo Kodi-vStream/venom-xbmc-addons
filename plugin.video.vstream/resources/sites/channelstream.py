@@ -39,7 +39,6 @@ def load():
     liste.append(['Sport', 'Chaîne Sportive', 'sport.png'])
     liste.append(['Science et Nature', 'Chaîne axés sur les sciences', 'buzz.png'])
 
-
     for sTitle, sFiltre, sIcon in liste:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', TV_FRENCH[0])
@@ -68,12 +67,12 @@ def showMovies():
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            if not "+18" in str(aEntry[2]):
+            if "+18" not in str(aEntry[2]):
                 sTitle = aEntry[2]
-                
+
                 if 'Canal + Série' in sTitle:
                     sTitle = 'Canal + Séries'
-                
+
                 sUrl2 = URL_MAIN + aEntry[0]
                 sThumb = URL_MAIN + '/' + aEntry[1]
 
@@ -100,7 +99,7 @@ def showHoster():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     info = cePg().getChannelEpg(sTitle)
     sDesc = info['plot']
 
@@ -111,11 +110,13 @@ def showHoster():
     sMeta = 0
     sCat = info['media_type']
     if sCat:
-        if 'Film' in sCat : sMeta = 1
-        if 'Série' in sCat : sMeta = 2
+        if 'Film' in sCat:
+            sMeta = 1
+        if 'Série' in sCat:
+            sMeta = 2
     sYear = info['year']
     coverUrl = info['cover_url']
-    if coverUrl :
+    if coverUrl:
         sThumb = coverUrl
 
     # Double Iframe a passer.
@@ -127,11 +128,11 @@ def showHoster():
 
     sPattern = '<iframe.+?src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    if not aResult[1]:    # Pas de flux
+
+    if not aResult[1]:  # Pas de flux
         oGui.setEndOfDirectory()
         return
-    
+
     iframeURL1 = aResult[1][0]
     sHosterUrl = iframeURL1
 
@@ -153,13 +154,13 @@ def showHoster():
     oGuiElement.setDirectTvFanart()
     oGuiElement.setCat(sMeta)
 
-#     oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
-#     oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
+    # oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
+    # oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
     if addon().getSetting('enregistrement_activer') == 'true':
         oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'enregistrement', 'Enregistrement')
-    
+
     # Menu pour les films
-    if sMeta == 1 :
+    if sMeta == 1:
         oGui.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
         oGui.createContexMenuba(oGuiElement, oOutputParameterHandler)
         oGui.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
@@ -177,7 +178,6 @@ def showHoster():
         oGui.setEndOfDirectory()
         return
 
-
     oRequestHandler = cRequestHandler(iframeURL1)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Referer', iframeURL)
@@ -189,22 +189,21 @@ def showHoster():
     if aResult:
         str2 = aResult[0]
         datetoken = int(getTimer()) * 1000
-        
-        jsonUrl = 'https://telerium.live/streams/'+str2+'/'+str(datetoken)+'.json'
-        tokens = getRealTokenJson(jsonUrl,iframeURL1)
+
+        jsonUrl = 'https://telerium.live/streams/' + str2 + '/' + str(datetoken) + '.json'
+        tokens = getRealTokenJson(jsonUrl, iframeURL1)
         m3url = tokens['url']
         nxturl = 'https://telerium.live' + tokens['tokenurl']
-        
+
         realtoken = getRealTokenJson(nxturl, iframeURL1)[10][::-1]
-    
+
         try:
             m3url = m3url.decode("utf-8")
         except:
             pass
-    
+
         sHosterUrl = 'https:' + m3url + realtoken
         sHosterUrl += '|User-Agent=' + UA + '&Referer=' + Quote(iframeURL1) + '&Sec-Fetch-Mode=cors&Origin=https://telerium.tv'
-
 
     oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
     oGui.addFolder(oGuiElement, oOutputParameterHandler)
@@ -212,55 +211,55 @@ def showHoster():
     cGui.CONTENT = 'movies'
     oGui.setEndOfDirectory()
 
-def getRealTokenJson(link, referer):
-    cookies = {'elVolumen': '100',
-               '__ga':'100'}
 
-    headers = {'Host': 'telerium.tv',
-               'User-Agent': UA,
-               'Accept': 'application/json, text/javascript, */*; q=0.01',
-               'Accept-Language': 'pl,en-US;q=0.7,en;q=0.3',
-               'X-Requested-With': 'XMLHttpRequest',
-               'Referer': referer}
+def getRealTokenJson(link, referer):
+    # cookies = {'elVolumen': '100', '__ga': '100'}
+
+    # headers = {'Host': 'telerium.tv',
+               # 'User-Agent': UA, 'Accept': 'application/json, text/javascript, */*; q=0.01',
+               # 'Accept-Language': 'pl,en-US;q=0.7,en;q=0.3', 'X-Requested-With': 'XMLHttpRequest',
+               # 'Referer': referer}
 
     oRequestHandler = cRequestHandler(link)
-    #oRequestHandler.addHeaderEntry('Host', 'telerium.tv')
+    # oRequestHandler.addHeaderEntry('Host', 'telerium.tv')
     oRequestHandler.addHeaderEntry('User-Agent', UA)
-    #oRequestHandler.addHeaderEntry('Accept', 'application/json, text/javascript, */*; q=0.01')
+    # oRequestHandler.addHeaderEntry('Accept', 'application/json, text/javascript, */*; q=0.01')
     oRequestHandler.addHeaderEntry('Accept-Language', 'pl,en-US;q=0.7,en;q=0.3')
     oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
     oRequestHandler.addHeaderEntry('Referer', referer)
     oRequestHandler.addCookieEntry('elVolumen', '100')
-    oRequestHandler.addCookieEntry('__ga','100')
+    oRequestHandler.addCookieEntry('__ga', '100')
     realResp = oRequestHandler.request()
     return json.loads(realResp)
+
 
 def getTimer():
     datenow = datetime.utcnow().replace(second=0, microsecond=0)
     datenow = datenow + timedelta(days=1)
     epoch = datetime(1970, 1, 1)
-        
+
     return (datenow - epoch).total_seconds() // 1
-    
+
+
 def getEPG(EPG, sTitle):
 
     oParser = cParser()
 
     sTitle = sTitle.replace('+', 'plus')
-    
+
     try:
         sTitle = cUtil().CleanName(sTitle)
     except:
         pass
 
     sTitle = re.sub('[^%s]' % (string.ascii_lowercase + string.digits), '', sTitle.lower())
-    
+
     sPattern = '(.+?)\/>(.+?)<'
     aResult = oParser.parse(EPG, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sChannel = aEntry[0]
-            
+
             sChannel = re.sub('[^%s]' % (string.ascii_lowercase + string.digits), '', sChannel.lower())
             if sChannel == sTitle:
                 sDesc = aEntry[1].replace('[COLOR khaki]', '\r\n\t[COLOR khaki]')
