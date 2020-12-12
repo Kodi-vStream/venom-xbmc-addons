@@ -11,8 +11,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress
 
 # Detecte si c'est Kodi 19 ou plus
 if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
@@ -26,7 +25,7 @@ SITE_IDENTIFIER = 'french_stream_com'
 SITE_NAME = 'French-stream'
 SITE_DESC = 'Films, Séries & Mangas en streaming'
 
-URL_MAIN = 'https://www.french-streaming.to/'# old 'https://www8.french-streaming.com/'
+URL_MAIN = 'https://www.french-streaming.to/'  # old 'https://www8.french-streaming.com/'
 
 # URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=9&story=', 'showMovies')
 # URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=10&story=', 'showSeries')
@@ -339,7 +338,7 @@ def showSerieGenres():
     oGui = cGui()
 
     liste = []
-    liste.append(['Action', URL_MAIN +'serie-genre/Action/'])
+    liste.append(['Action', URL_MAIN + 'serie-genre/Action/'])
     liste.append(['Animation', URL_MAIN+'serie-genre/Animation/'])
     liste.append(['Arts Martiaux', URL_MAIN + 'serie-genre/Arts-Martiaux/'])
     liste.append(['Aventure', URL_MAIN + 'serie-genre/Aventure/'])
