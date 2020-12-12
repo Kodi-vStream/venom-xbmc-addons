@@ -14,8 +14,9 @@ from resources.lib.comaddon import progress, addon
 SITE_IDENTIFIER = 'alldebrid'
 SITE_NAME = '[COLOR violet]Alldebrid[/COLOR]'
 SITE_DESC = 'Débrideur de lien premium'
-    
+
 ITEM_PAR_PAGE = 20
+
 
 def load():
     oGui = cGui()
@@ -169,7 +170,7 @@ def showMagnets(sSearch=''):
                     oGui.addNext(SITE_IDENTIFIER, 'showLiens', '[COLOR teal]Page ' + str(numPage) + ' >>>[/COLOR]', oOutputParameterHandler)
                     break
 
-            if 'mp4'in sUrl2 or 'avi' in sUrl2 or 'mkv' in sUrl2:
+            if 'mp4' in sUrl2 or 'avi' in sUrl2 or 'mkv' in sUrl2:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showseriesHoster', sTitle, 'movies.png', sThumb, sDesc, oOutputParameterHandler)
