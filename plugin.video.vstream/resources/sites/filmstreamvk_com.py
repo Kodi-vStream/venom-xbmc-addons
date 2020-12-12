@@ -19,7 +19,7 @@ SITE_DESC = 'Films, Séries & Mangas en Streaming'
 URL_MAIN = 'https://filmstreamvk.bz/'
 
 MOVIE_MOVIE = (True, 'showMenuFilms')
-MOVIE_NEWS = (URL_MAIN , 'showMovies')
+MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_EXCLUS = (URL_MAIN + 'tendance/', 'showMovies')
 
@@ -170,7 +170,7 @@ def showMovies(sSearch=''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -207,7 +207,7 @@ def showMovies(sSearch=''):
                 sDesc = aEntry[3]
 
             # si utile il faut retirer oOutputParameterHandler.addParameter(sDesc)
-            # if sDesc:  # désactivé le 17/06/2020, 
+            # if sDesc:  # désactivé le 17/06/2020,
                 # try:
                     # sDesc = cUtil().unescape(sDesc.decode('utf8'))
                 # except AttributeError:
@@ -302,12 +302,12 @@ def showLinks():
         sPattern = 'dooplay_player_option.+?data-post="(\d+)".+?data-nume="(.+?)">.+?"title">(.+?)<'
     else:
         sPattern = "dooplay_player_option.+?data-post='(\d+)'.+?data-nume='(.+?)'>.+?'title'>(.+?)<"
-    oParser = cParser()        
+    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            if ('trailer' in aEntry[1]): 
+            if ('trailer' in aEntry[1]):
                 continue
             sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
             if 'episodes' in sUrl:
@@ -319,12 +319,12 @@ def showLinks():
             pdata = 'action=doo_player_ajax&post=' + dpost + '&nume=' + dnum + '&type=' + dtype
 
             sHoster = aEntry[2].capitalize()
-            
+
             # trie des hosters
-            #oHoster = cHosterGui().checkHoster(sHoster)
-            #if not oHoster:
-                #continue
-            
+            # oHoster = cHosterGui().checkHoster(sHoster)
+            # if not oHoster:
+                # continue
+
             sDisplaytitle = '%s [COLOR coral]%s[/COLOR]' % (sMovieTitle, sHoster)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -361,7 +361,7 @@ def showHosters():
     sPattern = "<iframe.+?src='(.+?)'"
     aResult = re.findall(sPattern, sHtmlContent)
 
-    if (aResult):
+    if aResult:
         for aEntry in aResult:
             sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
