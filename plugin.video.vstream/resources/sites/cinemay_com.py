@@ -433,59 +433,6 @@ def showSeriesHosters():
     oGui.setEndOfDirectory()
 
 
-def showHostersOld():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumb = oInputParameterHandler.getValue('sThumb')
-    sRefUrl = oInputParameterHandler.getValue('sRefUrl')
-    sCookie = oInputParameterHandler.getValue('cookies')
-
-    # validation
-    oRequestHandler = cRequestHandler(URL_MAIN + 'image/logo.png')
-    oRequestHandler.addHeaderEntry("User-Agent", UA)
-    oRequestHandler.addHeaderEntry("Referer", sRefUrl)
-    oRequestHandler.addHeaderEntry("Cookie", sCookie)
-    sHtmlContent = oRequestHandler.request()
-
-    # final
-    oRequestHandler = cRequestHandler(sUrl)
-    oRequestHandler.addHeaderEntry("User-Agent", UA)
-    oRequestHandler.addHeaderEntry("Referer", sRefUrl)
-    oRequestHandler.addHeaderEntry("Cookie", sCookie)
-    sHtmlContent = oRequestHandler.request()
-
-    sPattern = '<script type=\"text\/javascript\">;(.+?)<\/script>'
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == False):
-        oGui.setEndOfDirectory()
-        return
-
-    if (aResult[0] == True):
-        jscode = aResult[1][0]
-        maxretries = 5
-        while 'url=' not in jscode:
-            sPattern = "join\(\'\'\)\;\}\('(.+?)','(.+?)','(.+?)','(.+?)'\)\)"
-            args = re.findall(sPattern, jscode, re.DOTALL)
-            jscode = decode_js(args[0][0], args[0][1], args[0][2], args[0][3])
-            maxretries = maxretries - 1
-
-        sPattern='url=([^"]+)\"'
-        oParser = cParser()
-        aResult = oParser.parse(jscode, sPattern)
-        if (aResult[0] == True):
-            sHosterUrl = aResult[1][0]
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
-    oGui.setEndOfDirectory()
-
-
 def getcookie(head):
     # get cookie
     cookies = ''
@@ -506,7 +453,7 @@ def decode_js(k, i, s, e):
     finalincr = 0
     firsttab = []
     secondtab = []
-    while True :
+    while True:
         if varinc < 5:
             secondtab.append(k[varinc])
         elif varinc < len(k):
