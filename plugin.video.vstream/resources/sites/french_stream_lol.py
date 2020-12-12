@@ -182,6 +182,7 @@ def MyshowSearchSerie():
         oGui.setEndOfDirectory()
         return
 
+
 def MyshowSearchMovie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
@@ -191,6 +192,7 @@ def MyshowSearchMovie():
         oGui.setEndOfDirectory()
         return
 
+
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
@@ -199,6 +201,7 @@ def showSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
+
 
 def showMovieGenres():
 
@@ -228,8 +231,8 @@ def showSerieGenres():
                   , 'fantastique', 'historique', 'horreur', 'judiciaire', 'medical'
                   , 'policier', 'romance', 'science-fiction', 'thriller', 'western']
 
-    #https://french-stream.lol/serie-judiciare/
-    #https://french-stream.lol/serie/serie-judiciare/
+    # https://french-stream.lol/serie-judiciare/
+    # https://french-stream.lol/serie/serie-judiciare/
     for igenre in listegenre:
         urlgenre = igenre
         if igenre == 'judiciaire':
@@ -253,17 +256,17 @@ def showMovies(sSearch=''):
     bSearchMovie = False
     bSearchSerie = False
     if sSearch:
-        sUrl = URL_SEARCH[0]  # sert a rien
+        # sUrl = URL_SEARCH[0]  # sert a rien
         sSearch = sSearch.replace(' ', '+').replace('%20', '+')
 
         if key_search_movies in sSearch:
-            sSearch = sSearch.replace(key_search_movies , '')
+            sSearch = sSearch.replace(key_search_movies, '')
             bSearchMovie = True
         if key_search_series in sSearch:
-            sSearch = sSearch.replace(key_search_series , '')
+            sSearch = sSearch.replace(key_search_series, '')
             bSearchSerie = True
 
-        pdata = 'do=search&subaction=search&search_start=1&full_search=0&result_from=1&story=' +  sSearch
+        pdata = 'do=search&subaction=search&search_start=1&full_search=0&result_from=1&story=' + sSearch
         oRequest = cRequestHandler(URL_SEARCH[0])
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('Referer', URL_MAIN)
@@ -298,13 +301,13 @@ def showMovies(sSearch=''):
 
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
-            sTitle = aEntry[2]#.replace('-','')
+            sTitle = aEntry[2]  # .replace('-','')
 
             if bSearchMovie:
                 if '/serie' in sUrl2:
                     continue
             if bSearchSerie:
-                if not '/serie' in sUrl2:
+                if '/serie' not in sUrl2:
                     continue
 
             sDisplayTitle = sTitle.replace('-', '')
@@ -324,7 +327,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
             if '/serie' not in sUrl2:
-                oGui.addMovie(SITE_IDENTIFIER, 'showMovieLinks', sDisplayTitle, '', sThumb,'' , oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showMovieLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'ShowEpisodes', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
@@ -333,9 +336,9 @@ def showMovies(sSearch=''):
     if not sSearch:
         bNextPage, urlNextpage, pagination = __checkForNextPage(sHtmlContent)
         if (bNextPage != False):
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', urlNextpage)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] ' + pagination + ' >>>[/COLOR]', oOutputParameterHandler)
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', urlNextpage)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] ' + pagination + ' >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -358,7 +361,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<span class="pnext">.+?ref="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        urlNextpage = aResult[1][0] # minimum requis
+        urlNextpage = aResult[1][0]  # minimum requis
         try:
             snumberNext = re.search('page.([0-9]+)', urlNextpage).group(1)
         except:
@@ -382,8 +385,6 @@ def ShowEpisodes():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    sDesc = oInputParameterHandler.getValue('sDesc')
-    sSaison = oInputParameterHandler.getValue('sSaison')
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -400,7 +401,6 @@ def ShowEpisodes():
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', cleanDesc(aResult[1][0]))
 
 
-    sPattern = '("VOSTFR-tab"|"VF-tab")|id="(?:honey|yoyo)(?:\d+)"\s*href="([^"]+).+?title="([^"]+).+?data-rel="([^"]+)'
     sPattern = 'fa-play-circle-o">.+?(VOSTFR|VF)|id="(?:honey|yoyo)(?:\d+)"\s*href="([^"]+).+?title="([^"]+).+?data-rel="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -417,7 +417,7 @@ def ShowEpisodes():
                 ValidEntry = True 
                 sFirst_Url = aEntry[1]
                 sEpisode = aEntry[2]
-                sRel_Episode= aEntry[3]
+                sRel_Episode = aEntry[3]
 
                 sDisplayTitle = sMovieTitle.replace('-', '') + ' ' + sEpisode + ' (' + Slang + ' )' 
 
@@ -433,7 +433,7 @@ def ShowEpisodes():
                 oGui.addEpisode(SITE_IDENTIFIER, 'showSerieLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     if not ValidEntry:
-        oGui.addText(SITE_IDENTIFIER,'# Aucune  video trouvée #')
+        oGui.addText(SITE_IDENTIFIER, '# Aucune  video trouvée #')
 
     oGui.setEndOfDirectory()
 
@@ -448,15 +448,15 @@ def showSerieLinks():
     sDesc = oInputParameterHandler.getValue('sDesc')
     sRel_Episode = oInputParameterHandler.getValue('sRel_Episode')
     sFirst_Url = oInputParameterHandler.getValue('sFirst_Url')
-    sDisplayTitle1  = oInputParameterHandler.getValue('sDisplayTitle')
+    sDisplayTitle1 = oInputParameterHandler.getValue('sDisplayTitle')
 
-    #VSlog(sUrl );VSlog('sRel_Episode=' + sRel_Episode );VSlog('sFirst_Url=' +sFirst_Url )
+    # VSlog(sUrl );VSlog('sRel_Episode=' + sRel_Episode );VSlog('sFirst_Url=' +sFirst_Url )
     
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div id="([^"]+) class="fullsfeature".*?<li><a (id="singh.*?<div style="height)'
+    # sPattern = '<div id="([^"]+) class="fullsfeature".*?<li><a (id="singh.*?<div style="height)'
     sPattern = '<div id="' + sRel_Episode + '" class="fullsfeature".*?<li><a (id="singh.*?<div style="height)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -479,9 +479,9 @@ def showSerieLinks():
 
     if (aResult[0] == True):
         html = aResult[1][0]
-        #VSlog(html)
+        # VSlog(html)
         sPattern = 'href="([^"]+).*?aria-hidden'
-        aResulturl = oParser.parse(html , sPattern)
+        aResulturl = oParser.parse(html, sPattern)
         if (aResulturl[0] == True):
             for aEntry in aResulturl[1]:
                 sUrl2 = aEntry
@@ -490,12 +490,12 @@ def showSerieLinks():
                     continue
 
                 if 'http' not in sUrl2: # liens naze du site url
-                    #sUrl2 = URL_MAIN + "/film/f/" +sUrl2
+                    # sUrl2 = URL_MAIN + "/film/f/" +sUrl2
                     continue
 
                 if 'hqq.tv' in sUrl2:
                     continue
-                    #pass
+                    # pass
 
                 sHost= '[COLOR coral]' + GetHostname(sUrl2) + '[/COLOR]'
                 sDisplayTitle = sDisplayTitle1 + ' ' + sHost
@@ -519,8 +519,8 @@ def showMovieLinks():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    sDesc = oInputParameterHandler.getValue('sDesc')
-    #VSlog(sUrl)
+    # sDesc = oInputParameterHandler.getValue('sDesc')
+    # VSlog(sUrl)
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -529,12 +529,11 @@ def showMovieLinks():
     aResult = oParser.parse(sHtmlContent, sPattern)
     sDesc = 'french stream lol'
     if (aResult[0] == True):
-        try: # a verifier
+        try:  # a verifier
             if len(aResult[1]) == 2:
                 syear = aResult[1][1][1]
                 sDesc = ('%s [I][COLOR grey]%s[/COLOR][/I] %s') % ('Année : ' + syear + '\r\n', 'Synopsis :', cleanDesc(aResult[1][0][0]))
             else:
-                #sDesc = (' [I][COLOR grey]%s[/COLOR][/I] %s') % ( 'Synopsis :', cleanDesc(aResult[1][0]))
                 sDesc = (' [I][COLOR grey]%s[/COLOR][/I] %s') % ( 'Synopsis :', cleanDesc(aResult[1][0][0]))
         except:
             pass
@@ -552,10 +551,9 @@ def showMovieLinks():
                 continue
 
             if 'http' not in sUrl2:  # liens nazes du site url
-                    #sUrl2 = URL_MAIN + "/film/f/" +sUrl2
-                    continue
+                continue
             if 'hqq.tv' in sUrl2:
-                    continue
+                continue
 
             if sUrl2 not in valide_host:  # à cause de l'url par défaut
                 valide_host.append(sUrl2)
@@ -597,7 +595,7 @@ def showHosters():
 def GetHostname(url):
     try:
         # en genral pour liens opsktp url_redirect mais on affiche l'host
-        bvalid,sHost = isValidhost(url)
+        bvalid, sHost = isValidhost(url)
         if bvalid:
             pass
 
@@ -615,7 +613,7 @@ def GetHostname(url):
 
 def isValidhost(url):
     Validhost = ['mystream', 'uptobox', 'fembed', 'vidlox']
-    urllower=url.lower()
+    urllower = url.lower()
     for host in Validhost:
         if host.lower() in urllower:
             return True, host
@@ -623,8 +621,8 @@ def isValidhost(url):
 
 
 def isblackhost(url):
-    black_host= ['playzer.xyz']  # à rajouter
-    urllower=url.lower()
+    black_host = ['playzer.xyz']  # à rajouter
+    urllower = url.lower()
     for host in black_host:
         if host.lower() in urllower:
             return True
@@ -643,6 +641,6 @@ def cleanDesc(sdesc):
     list_comment = [':', 'en streaming', 'Voir Serie ']
 
     for s in list_comment:
-        sdesc = sdesc.replace(s , '')
+        sdesc = sdesc.replace(s, '')
 
     return sdesc
