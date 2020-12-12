@@ -67,7 +67,7 @@ def showThemes():
 
     sHtmlContent = oParser.abParse(sHtmlContent, '<lien1>Portail pour les familles</lien1><br>', '<lien1><i class=icon-circle>')
 
-    sPattern = '<a href=([^>]+)><lien3><i class=icon-circle></i>([^<]+)<\/lien3><\/a><br>'
+    sPattern = '<a href=([^>]+)><lien3><i class=icon-circle></i>([^<]+)</lien3></a><br>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
