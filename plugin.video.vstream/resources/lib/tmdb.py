@@ -238,14 +238,16 @@ class cTMDb:
 
     # cherche dans les films ou serie l'id par le nom, return ID ou FALSE
     def get_idbyname(self, name, year='', mediaType='movie', page=1):
+        #Pour les series il faut enlever le numero de l episode et la saison.
+        if mediaType == "tv":
+            m = re.search('(?i)(\wpisode ([0-9\.\-\_]+))', name)
+            m1 = re.search('(?i)(s(?:aison )*([0-9]+))', name)
+            name = name.replace(m.group(1), '').replace(m1.group(1), '').replace('+', ' ')
 
         if year:
             term = QuotePlus(name) + '&year=' + year
         else:
             term = QuotePlus(name)
-
-        if mediaType == "tv":
-            term = term.split('aison')[0].replace('+', ' ')
 
         meta = self._call('search/' + str(mediaType), 'query=' + term + '&page=' + str(page))
 
@@ -260,7 +262,7 @@ class cTMDb:
                 url = []
                 for aEntry in meta['results']:
                    url.append(aEntry["id"])
-                   qua.append(aEntry['title'])
+                   qua.append(aEntry['name'])
 
                 #Affichage du tableau
                 tmdb_id = dialog().VSselectqual(qua, url)
