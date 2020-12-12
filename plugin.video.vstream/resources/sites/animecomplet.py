@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'animecomplet'
 SITE_NAME = 'Animecomplet'
 SITE_DESC = 'Series Anime'
 
-URL_MAIN = 'https://www.animecomplet.org/'
+URL_MAIN = 'https://animecomplet.co/'
 
 ANIM_LIST = (URL_MAIN + 'liste-manga-vostfr-et-manga-vf/', 'showSeries')
 tag_alpha ='tagaplha'
