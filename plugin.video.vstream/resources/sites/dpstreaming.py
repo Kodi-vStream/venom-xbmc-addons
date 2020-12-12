@@ -38,8 +38,7 @@ def ProtectstreamBypass(url):
     UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
 
     session = requests.Session()
-    session.headers.update({'User-Agent': UA,
-                            'Referer': URL_MAIN,
+    session.headers.update({'User-Agent': UA, 'Referer': URL_MAIN,
                             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'})
 
     try:
@@ -61,11 +60,8 @@ def ProtectstreamBypass(url):
         xbmc.sleep(5000)
 
         postdata = aResult[1][0]
-        headers = {'User-Agent': UA,
-                   'Accept': '*/*',
-                   'Referer': url,
-                   'Content-Type': 'application/x-www-form-urlencoded'
-                   }
+        headers = {'User-Agent': UA, 'Accept': '*/*', 'Referer': url,
+                   'Content-Type': 'application/x-www-form-urlencoded'}
         session.headers.update(headers)
         data = {'k': postdata}
 
@@ -230,7 +226,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.search('page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(number) + ' >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -298,7 +294,7 @@ def showLinks():
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/', '')
 
-    sPattern = '<td class="lg" width=".+?">(?:(VF|VOSTFR|VO))</td>.+?<td class="lg" width=".+?">([^<]+)</td>.+?<a href="([^"]+)"'
+    sPattern = 'class="lg" width=".+?">(?:(VF|VOSTFR|VO))</td>.+?<td class="lg" width=".+?">([^<]+)</td.+?href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
