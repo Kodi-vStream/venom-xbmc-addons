@@ -21,7 +21,7 @@ URL_MAIN = 'https://wtw.hds-stream.to/'
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_GENRES = (URL_MAIN, 'showGenres')
 MOVIE_EXCLUS = (URL_MAIN + 'tendance/', 'showMovies')
-#MOVIE_ANNEES = (True, 'showMovieYears')
+# MOVIE_ANNEES = (True, 'showMovieYears')
 
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
 
@@ -177,7 +177,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            
+
             if '/series' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showSxE', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
@@ -191,7 +191,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(number) + ' >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -214,7 +214,7 @@ def showSxE():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sDesc = oInputParameterHandler.getValue('sDesc')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sPattern = '<span class=\'title\'>([^<]+)|class=\'numerando\'>\d - ([^<]+).+?class=\'episodiotitle\'><a href=\'([^\']+)\'>([^<]+)'
@@ -259,7 +259,7 @@ def showHosters():
     if (aResult[0] == True):
         url_main = GET_REAL_URLMAIN(sUrl)
         for aEntry in aResult[1]:
-            sUrl2 = url_main  + 'wp-admin/admin-ajax.php'
+            sUrl2 = url_main + 'wp-admin/admin-ajax.php'
             dType = aEntry[0]
             dPost = aEntry[1]
             dNum = aEntry[2]
@@ -287,7 +287,7 @@ def showSeriesHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
-    
+
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
 
@@ -296,14 +296,14 @@ def showSeriesHosters():
     if (aResult[0] == True):
         url_main = GET_REAL_URLMAIN(sUrl)
         for aEntry in aResult[1]:
-            sUrl2 = url_main  + 'wp-admin/admin-ajax.php'
+            sUrl2 = url_main + 'wp-admin/admin-ajax.php'
             dType = aEntry[0]
             dPost = aEntry[1]
             dNum = aEntry[2]
             pdata = 'action=doo_player_ajax&post=' + dPost + '&nume=' + dNum + '&type=' + dType
             if (aEntry[3]).startswith('Unknown'):
                 sHost = 'Serveur ' + dNum
-            else:      
+            else:
                 sHost = aEntry[3].capitalize()
 
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
