@@ -332,7 +332,7 @@ def showHosters():
 
     oParser = cParser()
 
-    sPattern = 'data-lazy-src="([^"]+)'
+    sPattern = '<div class="movieplay">.+?src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
