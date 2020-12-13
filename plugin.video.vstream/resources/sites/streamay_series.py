@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'streamay_series'
 SITE_NAME = 'StreamAy Séries'
 SITE_DESC = 'Séries en Streaming'
 
-URL_MAIN = 'https://fr.streamay.site/'
+URL_MAIN = 'https://serie.streamay.site/'
 
 SERIE_SERIES = (URL_MAIN + 'series.html', 'showMovies')
 SERIE_NEWS = (URL_MAIN, 'showSeriesNews')
