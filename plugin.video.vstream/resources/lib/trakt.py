@@ -179,7 +179,7 @@ class cTrakt:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', 'https://')
                 oOutputParameterHandler.addParameter('type', 'custom-lists')
-                oGui.addDir(SITE_IDENTIFIER, 'menuList', "Mes listes", 'trakt.png', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'menuList', "Listes", 'trakt.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', URL_API + 'users/me/history?page=1&limit=' + str(MAXRESULT))
@@ -201,6 +201,16 @@ class cTrakt:
 
     def menuList(self):
         oGui = cGui()
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'https://')
+        oOutputParameterHandler.addParameter('type', 'lists-tendances')
+        oGui.addDir(SITE_IDENTIFIER, 'getLists', "Listes tendances", 'trakt.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'https://')
+        oOutputParameterHandler.addParameter('type', 'lists-pop')
+        oGui.addDir(SITE_IDENTIFIER, 'getLists', "Listes populaires", 'trakt.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'https://')
@@ -316,13 +326,24 @@ class cTrakt:
                 url = URL_API + 'users/me/lists/' + List['ids']['slug'] + '/items'
                 liste.append([self.decode((List['name'] + ' (' + str(List['item_count']) + ')')), url])
 
-        elif sType == 'liked-lists':
-            request = urllib2.Request(URL_API + '/users/likes/lists', headers=headers)
+        elif sType == 'liked-lists' or sType == 'lists-tendances' or sType == 'lists-pop':
+            if sType == 'liked-lists':
+                URL = URL_API + '/users/likes/lists'
+            elif sType == "lists-tendances":
+                URL = URL_API + '/lists/trending'
+            elif sType == 'lists-pop':
+                URL = URL_API + 'lists/popular'
+
+            request = urllib2.Request(URL, headers=headers)
             response_lists = urllib2.urlopen(request).read()
             json_lists = json.loads(response_lists)
 
             for List in json_lists:
-                url = URL_API + 'users/' + List['list']['user']['name'] + '/lists/' + List['list']['ids']['slug'] + '/items'
+                if sType == 'liked-lists':
+                    url = URL_API + 'users/' + List['list']['user']['name'] + '/lists/' + List['list']['ids']['slug'] + '/items'
+                else:
+                    url = URL_API + '/lists/' + List['list']['ids']['slug'] + '/items'
+
                 liste.append([self.decode((List['list']['name'] + ' (' + str(List['list']['item_count']) + ')')), url])
 
         for sTitle, sUrl in liste:
