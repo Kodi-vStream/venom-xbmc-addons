@@ -179,7 +179,7 @@ class cTrakt:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', 'https://')
                 oOutputParameterHandler.addParameter('type', 'custom-lists')
-                oGui.addDir(SITE_IDENTIFIER, 'getLists', self.ADDON.VSlang(30360), 'trakt.png', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'menuList', "Mes listes", 'trakt.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', URL_API + 'users/me/history?page=1&limit=' + str(MAXRESULT))
@@ -198,6 +198,21 @@ class cTrakt:
             oGui.addDir(SITE_IDENTIFIER, 'getBsout', self.ADDON.VSlang(30309), 'trakt.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
+
+    def menuList(self):
+        oGui = cGui()
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'https://')
+        oOutputParameterHandler.addParameter('type', 'custom-lists')
+        oGui.addDir(SITE_IDENTIFIER, 'getLists', self.ADDON.VSlang(30360), 'trakt.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'https://')
+        oOutputParameterHandler.addParameter('type', 'liked-lists')
+        oGui.addDir(SITE_IDENTIFIER, 'getLists', "Mes listes aimer", 'trakt.png', oOutputParameterHandler)    
+
+        oGui.setEndOfDirectory() 
 
     def getCalendrier(self):
         oGui = cGui()
@@ -300,6 +315,15 @@ class cTrakt:
             for List in json_lists:
                 url = URL_API + 'users/me/lists/' + List['ids']['slug'] + '/items'
                 liste.append([self.decode((List['name'] + ' (' + str(List['item_count']) + ')')), url])
+
+        elif sType == 'liked-lists':
+            request = urllib2.Request(URL_API + '/users/likes/lists', headers=headers)
+            response_lists = urllib2.urlopen(request).read()
+            json_lists = json.loads(response_lists)
+
+            for List in json_lists:
+                url = URL_API + 'users/' + List['list']['user']['name'] + '/lists/' + List['list']['ids']['slug'] + '/items'
+                liste.append([self.decode((List['list']['name'] + ' (' + str(List['list']['item_count']) + ')')), url])
 
         for sTitle, sUrl in liste:
 
