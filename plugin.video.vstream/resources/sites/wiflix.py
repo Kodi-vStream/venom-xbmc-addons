@@ -344,11 +344,13 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = aEntry.replace('/wiflix.cc/', '')
-            if 'players.wiflix.' in sHosterUrl:
+            sHosterUrl = aEntry#.replace('/wiflix.cc/', '')
+            if 'wiflix.' in sHosterUrl:
                 oRequestHandler = cRequestHandler(sHosterUrl)
                 oRequestHandler.request()
                 sHosterUrl = oRequestHandler.getRealUrl()
+            else :
+                sHosterUrl = aEntry.replace('/wiflix.cc/', '')
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
