@@ -21,9 +21,10 @@ URL_MAIN = 'http://livetv.sx'
 URL_SEARCH = (URL_MAIN + '/frx/fanclubs/?q=', 'showMovies4')
 FUNCTION_SEARCH = 'showMovies4'
 
-SPORT_SPORTS = (URL_MAIN + '/frx/allupcoming/', 'showMovies') #Les matchs en directs
+SPORT_SPORTS = (URL_MAIN + '/frx/allupcoming/', 'showMovies')  # Liste de diffusion des sports
+SPORT_LIVE = (URL_MAIN + '/frx/', 'showLive')  # streaming Actif
 #SPORT_SPORTSCLASS = (URL_MAIN + '/frx/calendar/411/', 'showClass')# Les classements
-NETS_GENRES = (True, 'showGenres') #Les clubs de football
+NETS_GENRES = (True, 'showGenres')  # Les clubs de football
 
 def load():
     oGui = cGui()
@@ -34,7 +35,11 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_SPORTS[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Les matchs en direct', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Les Sports (Genre)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
+    oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Les sports (En live)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', NETS_GENRES[0])
@@ -81,6 +86,44 @@ def showGenres(): #affiche les clubs de foot
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMenu', sTitle, 'genres.png', oOutputParameterHandler)
         #showMenu car c'est pour afficher les infos du club seul resultat est fonctionnel pour l'instant''
+
+    oGui.setEndOfDirectory()
+
+def showLive():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    oParser = cParser()
+    sPattern = '<a class="live" href="([^>]+)">([^>]+)<.a>\s*<br>\s*<a\s*class="live.+?span class="evdesc">([^<]+)'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
+
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        progress_ = progress().VScreate(SITE_NAME)
+
+        for aEntry in aResult[1]:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
+
+            sUrl3 = aEntry[0]
+            sTitle2 = aEntry[1] + ' ' + aEntry[2]
+            sUrl3 = URL_MAIN + sUrl3
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl3', sUrl3)
+            oOutputParameterHandler.addParameter('sMovieTitle2', sTitle2)
+
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies3', sTitle2, 'sport.png', oOutputParameterHandler)
+
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -146,7 +189,7 @@ def showMovies2(): #affiche les matchs en direct depuis la section showMovie
     oRequestHandler = cRequestHandler(sUrl2)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<a class="live" href="([^>]+)">([^>]+)</a>\s*(?:<br><img src=".+?/img/live.gif"><br>|<br>)\s*<span class="evdesc">([^>]+)\s*<br>\s*([^>]+)</span>'
+    sPattern = '<a class="live" href="([^>]+)">([^>]+)</a>\s*(<br><img src=".+?/img/live.gif"><br>|<br>)\s*<span class="evdesc">([^>]+)\s*<br>\s*([^>]+)</span>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -162,13 +205,18 @@ def showMovies2(): #affiche les matchs en direct depuis la section showMovie
             if progress_.iscanceled():
                 break
 
+            sThumb = ''
+            taglive = ''
             sTitle2 = aEntry[1].replace('<br>', ' ')
             sUrl3 = aEntry[0]
-            sThumb = ''
+
+            if 'live.gif' in aEntry[2]:
+                taglive = ' [COLOR limegreen] Online[/COLOR]'
+
             #sLang = aEntry[3]
-            sQual = aEntry[3]
-            sHoster = aEntry[2]
-            
+            sQual = aEntry[4]
+            sHoster = aEntry[3]
+
             try:
                 sTitle2 = sTitle2.decode("iso-8859-1", 'ignore')
                 sHoster = sHoster.decode("iso-8859-1", 'ignore')
@@ -193,7 +241,7 @@ def showMovies2(): #affiche les matchs en direct depuis la section showMovie
                 pass
 
             sTitle2 = ('%s (%s) [COLOR yellow]%s[/COLOR]') % (sTitle2, sHoster, sQual)
-
+            sDisplayTitle = sTitle2 + taglive
             sUrl3 = URL_MAIN + sUrl3
             #VSlog(sUrl3)
 
@@ -202,7 +250,7 @@ def showMovies2(): #affiche les matchs en direct depuis la section showMovie
             oOutputParameterHandler.addParameter('sMovieTitle2', sTitle2)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies3', sTitle2, 'sport.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies3', sDisplayTitle, 'sport.png', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
