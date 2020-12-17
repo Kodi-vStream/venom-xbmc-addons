@@ -117,6 +117,13 @@ def showLive():
             sTitle2 = aEntry[1] + ' ' + aEntry[2]
             sUrl3 = URL_MAIN + sUrl3
 
+            try:
+                sTitle2 = sTitle2.decode("iso-8859-1", 'ignore')
+                sTitle2 = cUtil().unescape(sTitle2)
+                sTitle2 = sTitle2.encode("utf-8", 'ignore')
+            except:
+                pass
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl3', sUrl3)
             oOutputParameterHandler.addParameter('sMovieTitle2', sTitle2)
@@ -329,6 +336,26 @@ def showHosters():  # affiche les videos disponible du live
         # url = 'http://www.sporcanli.com/frame2.html' #a garder peut etre utils pour ajouter un hébergeur
 
         # VSlog(url)
+
+        if 'allsports.icu' in url:
+            sPattern = 'ch(\d+).php'
+            aResult = re.findall(sPattern, url)
+            if aResult:
+                id = aResult[0]
+            url2 = 'http://allsports.icu/stream/ch' + id + '.html'
+            oRequestHandler = cRequestHandler(url2)
+            sHtmlContent2 = oRequestHandler.request()
+            sPattern1 = '<iframe.+?src="(.+?)"'
+            aResult = re.findall(sPattern1, sHtmlContent2)
+            if aResult:
+                url3 = 'https:' + aResult[0]
+                oRequestHandler = cRequestHandler(url3)
+                oRequestHandler.addHeaderEntry('Referer', url2) 
+                sHtmlContent2 = oRequestHandler.request()
+                sPattern1 = 'source.+?"(https.+?)"'
+                aResult = re.findall(sPattern1, sHtmlContent2)
+                if aResult:
+                    sHosterUrl = aResult[0] 
 
         if 'espn-live.stream' in url:
             oRequestHandler = cRequestHandler(url)
