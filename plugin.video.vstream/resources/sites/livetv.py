@@ -342,20 +342,20 @@ def showHosters():  # affiche les videos disponible du live
             aResult = re.findall(sPattern, url)
             if aResult:
                 id = aResult[0]
-            url2 = 'http://allsports.icu/stream/ch' + id + '.html'
-            oRequestHandler = cRequestHandler(url2)
-            sHtmlContent2 = oRequestHandler.request()
-            sPattern1 = '<iframe.+?src="(.+?)"'
-            aResult = re.findall(sPattern1, sHtmlContent2)
-            if aResult:
-                url3 = 'https:' + aResult[0]
-                oRequestHandler = cRequestHandler(url3)
-                oRequestHandler.addHeaderEntry('Referer', url2) 
+                url2 = 'http://allsports.icu/stream/ch' + id + '.html'
+                oRequestHandler = cRequestHandler(url2)
                 sHtmlContent2 = oRequestHandler.request()
-                sPattern1 = 'source.+?"(https.+?)"'
+                sPattern1 = '<iframe.+?src="(.+?)"'
                 aResult = re.findall(sPattern1, sHtmlContent2)
                 if aResult:
-                    sHosterUrl = aResult[0] 
+                    url3 = 'https:' + aResult[0]
+                    oRequestHandler = cRequestHandler(url3)
+                    oRequestHandler.addHeaderEntry('Referer', url2) 
+                    sHtmlContent2 = oRequestHandler.request()
+                    sPattern1 = 'source.+?"(https.+?)"'
+                    aResult = re.findall(sPattern1, sHtmlContent2)
+                    if aResult:
+                        sHosterUrl = aResult[0] 
 
         if 'espn-live.stream' in url:
             oRequestHandler = cRequestHandler(url)
