@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+import random
+import time
+import xbmcvfs
 from resources.lib.comaddon import progress, addon, dialog, VSlog, VSPath, isMatrix, xbmc
-from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
-from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.tmdb import cTMDb
 from resources.lib.util import Quote, cUtil, Unquote
-
-
-import xbmcvfs
-import random
-import time
+import resources.sites.ianime as i
+from resources.lib.tmdb import cTMDb
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.guiElement import cGuiElement
+from resources.lib.gui.hoster import cHosterGui
 
 try:
     import urllib2
@@ -82,23 +81,24 @@ CACHE_DURATION = getCacheDuration()
 # serie;48866;Les 100;Saison 2; 2014; ['Fantastique', 'Aventure']; {'S02E01':['lien1', 'lien2'], 'S02E02':['lien1']}
 
 # Exemple minimum
-# TITLE; URLS
-# Demain ne meurt jamais;['https://uptobox.com/nwxxxx']
+# CAT;TITLE; URLS
+# film;Demain ne meurt jamais;['https://uptobox.com/nwxxxx']
 
 class PasteBinContent:
-    CAT = -1     # (Optionnel) - Catégorie 'film', 'serie' 'anime' (Film par défaut)
-    TMDB = -1    # (optionnel) - Id TMDB
-    TITLE = -1   # Titre du film / épisodes
-    SAISON = -1  # (optionnel) - Saison pour les séries (ex 'Saison 03' ou 'S03' ou '03') OU Saga pour les films (ex 'Mission impossible')
-    GROUPES = -1 # (optionnel) - Groupes tel que NETFLIX, HBO, MARVEL, DISNEY, Films enfants, ...
-    YEAR = -1    # (optionnel) - Année
-    GENRES = -1  # (optionnel) - Liste des genres
-    RES = -1     # (optionnel) - Résolution (720p, 1080p, 4K, ...)
-    DIRECTOR = -1#  (optionnel) - Réalisateur au format id:nom
-    CAST = -1   #  (optionnel) - Acteurs au format id:nom
-    NETWORK = -1   #  (optionnel) - Diffuseur au format id:nom
-    URLS = -1    # Liste des liens, avec épisodes pour les séries
-    HEBERGEUR = '' # (optionnel) - URL de l'hebergeur, pour éviter de le mettre dans chaque URL, ex : 'https://uptobox.com/'  
+    CAT = -1        # (Optionnel) - Catégorie 'film', 'serie' 'anime' (Film par défaut)
+    TMDB = -1       # (optionnel) - Id TMDB
+    TITLE = -1      # Titre du film / épisodes
+    SAISON = -1     # (optionnel) - Saison pour les séries (ex 'Saison 03' ou 'S03' ou '03') OU Saga pour les films (ex 'Mission impossible')
+    GROUPES = -1    # (optionnel) - Groupes tel que NETFLIX, HBO, MARVEL, DISNEY, Films enfants, ...
+    YEAR = -1       # (optionnel) - Année
+    GENRES = -1     # (optionnel) - Liste des genres
+    RES = -1        # (optionnel) - Résolution (720p, 1080p, 4K, ...)
+    DIRECTOR = -1   #  (optionnel) - Réalisateur au format id:nom
+    CAST = -1       #  (optionnel) - Acteurs au format id:nom
+    NETWORK = -1    #  (optionnel) - Diffuseur au format id:nom
+    c = False       # Liste des liens, avec épisodes pour les séries
+    HEBERGEUR = ''  # (optionnel) - URL de l'hebergeur, pour éviter de le mettre dans chaque URL, ex : 'https://uptobox.com/'  
+    URLS = -1       # Liste des liens, avec épisodes pour les séries
 
     # Pour comparer deux pastes, savoir si les champs sont dans le même ordre 
     def isFormat(self, other): 
@@ -121,22 +121,30 @@ class PasteBinContent:
     def getLines(self, pasteBin):
         
         #Lecture en cache
-        sContent = self._cache_read(pasteBin)
+        sContent, self.c = self._cache_read(pasteBin)
         
+        if sContent:
+            lines = sContent.splitlines()
+            entete = lines[0].split(";")
+
         # Lecture sur le site
-        if not sContent:
+        else:
             sUrl = URL_MAIN + pasteBin
             oRequestHandler = cRequestHandler(sUrl)
             oRequestHandler.setTimeout(4)
             sContent = oRequestHandler.request()
+            if sContent.startswith('<'):
+                return []
+
+            # test si paste accessible
+            sContent, self.c = self.decompress(sContent)
+
+            # Vérifie si la ligne d'entete existe avec les champs obligatoires
+            lines = sContent.splitlines()
+            entete = lines[0].split(";")
+            if 'TITLE' not in entete and 'URLS' not in entete:
+                return []
             self._cache_save(pasteBin, sContent)
-
-        lines = sContent.splitlines()
-
-        # Vérifie si la ligne d'entete existe avec les champs obligatoires
-        entete = lines[0].split(";")
-        if 'TITLE' not in entete and 'URLS' not in entete:
-            return []
 
         # Calcul des index de chaque champ
         idx = 0
@@ -154,25 +162,24 @@ class PasteBinContent:
 
         lines = [k.split(";") for k in lines[1:]]
         
-        
-        # Reconstruire les liens
-        if self.HEBERGEUR:
-            for line in lines:
-                sHost = line[self.URLS]
-                if "{" in sHost:
-                    sHost = sHost.replace('{0', '{').replace('{:', '{0:').replace(',0', ',')    # numérotation des épisodes 08 -> 8 (problème de décodage en octal)
-                    sUrl = eval(sHost)
-                    for link in sUrl.keys():
-                        sUrl[link] = self.HEBERGEUR + sUrl[link] 
-                elif "[" in sHost:
-                    sHost = eval(sHost)
-                    sUrl = [(self.HEBERGEUR + link) for link in sHost]
-                else:
-                    sUrl = self.HEBERGEUR + sHost
-                line[self.URLS] = sUrl
-        
         return lines
 
+            
+    def decompress(self, sContent):
+        
+        if sContent.startswith('CAT;'):
+            return sContent, False
+        
+        sContent = sContent.decode('utf8')
+        d = i.s.index(sContent[0])
+        s =''
+        for tx in sContent[1:].splitlines():
+            tab = sorted(list(set([x for x in tx])))
+            cr = [(tab[(tab.index(t) - d) % len(tab)]) for t in tx]
+            s += ''.join(cr) + '\r\n'
+            
+        s = s.encode('utf8')
+        return s, True
     
     
     """
@@ -233,7 +240,7 @@ class PasteBinContent:
             matchedrow = self.dbcur.fetchone()
         except Exception as e:
             VSlog('************* Error selecting from cache db: %s' % e, 4)
-            return None
+            return None, False
     
         if matchedrow:
             data = dict(matchedrow)
@@ -242,20 +249,22 @@ class PasteBinContent:
             cacheDuration = time.time() - CACHE_DURATION * 3600
             if data['date'] < cacheDuration:
                 self._cache_del(cacheDuration)
-                return None
+                return None, False
             
             # Utiliser les données du cache
             content = str(data['content'])
-            return content
+            if content[-1] == '.':
+                return content[:-1], True
+            return content, False
         else:
-            return None
+            return None, False
     
     # Sauvegarde des données dans un cache
     def _cache_save(self, pasteID, pasteContent):
     
         try:
             sql = 'INSERT INTO pastebin (paste_id, content, date) VALUES (?, ?, ?)'
-            self.dbcur.execute(sql, (pasteID, buffer(pasteContent), time.time()))
+            self.dbcur.execute(sql, (pasteID, buffer(pasteContent+'.' if self.c else pasteContent), time.time()))
             #buffer(zlib.compress(html))
             self.db.commit()
         except Exception as e:
@@ -1537,11 +1546,12 @@ def showSerieSaisons():
                     listRes.add(res)
                 
         
-    # Une seule saison, directement les épisodes
-    if len(saisons) == 1:
-        siteUrl += '&sSaison=' + saisons[0]
-        showEpisodesLinks(siteUrl)
-        return
+#     # Une seule saison, directement les épisodes
+#     if len(saisons) == 1:
+#         key, res = saisons.items()
+#         siteUrl += '&sSaison=' + key
+#         showEpisodesLinks(siteUrl)
+#         return
 
     # Proposer les différentes saisons
     saisons = sorted(saisons.items(), key=lambda saison: saison[0])
@@ -1686,7 +1696,7 @@ def getHosterList(siteUrl):
     idTMDB = aParams['idTMDB'] if 'idTMDB' in aParams else None
     searchTitle = aParams['sTitle'].replace(' | ', ' & ')
 
-    pbContent = PasteBinContent()
+    pbContent=p = PasteBinContent()
     listHoster = []
     listRes = []
     movies = []
@@ -1695,74 +1705,86 @@ def getHosterList(siteUrl):
         moviesBin = pbContent.getLines(pasteBin)
         movies += moviesBin
 
-
-    for movie in movies:
-
-        # Filtrer par catégorie
-        if pbContent.CAT >=0 and sMedia not in movie[pbContent.CAT]:
-            continue
-
-        # Filtrage par saison
-        if searchSaison and pbContent.SAISON >= 0:
-            sSaisons = movie[pbContent.SAISON].strip()
-            if sSaisons and searchSaison != sSaisons:
+        for movie in moviesBin:
+    
+            # Filtrer par catégorie
+            if pbContent.CAT >=0 and sMedia not in movie[pbContent.CAT]:
                 continue
-        
-        # Recherche par id
-        found = False
-        if idTMDB and pbContent.TMDB >= 0:
-            sMovieID = movie[pbContent.TMDB].strip()
-            if sMovieID:
-                if sMovieID != idTMDB:
+    
+            # Filtrage par saison
+            if searchSaison and pbContent.SAISON >= 0:
+                sSaisons = movie[pbContent.SAISON].strip()
+                if sSaisons and searchSaison != sSaisons:
                     continue
-                found = True
-
-        # sinon, recherche par titre/année
-        if not found:
-            # Filtrage par années
-            if searchYear and pbContent.YEAR >= 0:
-                sYear = movie[pbContent.YEAR].strip()
-                if sYear and sYear != searchYear:
+            
+            # Recherche par id
+            found = False
+            if idTMDB and pbContent.TMDB >= 0:
+                sMovieID = movie[pbContent.TMDB].strip()
+                if sMovieID:
+                    if sMovieID != idTMDB:
+                        continue
+                    found = True
+    
+            # sinon, recherche par titre/année
+            if not found:
+                # Filtrage par années
+                if searchYear and pbContent.YEAR >= 0:
+                    sYear = movie[pbContent.YEAR].strip()
+                    if sYear and sYear != searchYear:
+                        continue
+            
+                # Filtrage par titre
+                sTitle = movie[pbContent.TITLE].strip()
+                if sTitle != searchTitle:
                     continue
-        
-            # Filtrage par titre
-            sTitle = movie[pbContent.TITLE].strip()
-            if sTitle != searchTitle:
-                continue
+    
+            links = movie[pbContent.URLS]
 
-        links = movie[pbContent.URLS]
-        if "[" in links:
-            links = eval(links)
-            listHoster.extend(links)
-        elif isinstance(links, list):
-            listHoster.extend(links)
-        else:
-            if searchEpisode:
-                for numEpisode, link in links.items():
-                    if str(numEpisode) == searchEpisode:
-                        listHoster.append(link)
-                        break
-            else:
-                listHoster.append(links)
+            # numérotation des épisodes 08 -> 8 (problème de décodage en octal)
+            if "{" in links:
+                links = links.replace('{0', '{').replace('{:', '{0:').replace(',0', ',')
 
-        # Retrouve les résolutions pour les films
-        if pbContent.RES >= 0 and 'film' in sMedia:
-            res = movie[pbContent.RES].strip()
-            if '[' in res:
-                listRes.extend(eval(res))
-            else:
-                listRes.append(res)
-            if len(listRes) < len(links):  # On complete les résolutions manquantes
-                for _ in range(len(links) - len(listRes)):
-                    listRes.append('')
+            listLinks = []
 
-        # Retrouve les résolutions pour les séries
-        if pbContent.RES >= 0 and 'serie' in sMedia:
-            res = movie[pbContent.RES].strip()
-            if '[' in res:
-                listRes.extend(eval(res))
+            if "[" in links or "{" in links:
+                links = eval(links)
+            if isinstance(links, list):
+                for l in links:
+                    listLinks.append(''.join([chr(ord(x)^31) for x in l]) if p.c else l)
+            elif isinstance(links, dict):
+                if searchEpisode:
+                    link = links.get(int(searchEpisode))
+                    if link:
+                        listLinks.append(''.join([chr(ord(x)^31) for x in link]) if p.c else link)
+                else:
+                    listHoster.append(links)
             else:
-                listRes.append(res)
+                listLinks.append(links)
+    
+            if pbContent.HEBERGEUR:
+                listLinks = [(pbContent.HEBERGEUR + link) for link in listLinks]
+                
+            listHoster.extend(listLinks)
+                    
+            # Retrouve les résolutions pour les films
+            if pbContent.RES >= 0 and 'film' in sMedia:
+                res = movie[pbContent.RES].strip()
+                if '[' in res:
+                    listRes.extend(eval(res))
+                else:
+                    listRes.append(res)
+                if len(listRes) < len(links):  # On complete les résolutions manquantes
+                    for _ in range(len(links) - len(listRes)):
+                        listRes.append('')
+    
+            # Retrouve les résolutions pour les séries
+            if pbContent.RES >= 0 and 'serie' in sMedia:
+                res = movie[pbContent.RES].strip()
+                if '[' in res:
+                    listRes.extend(eval(res))
+                else:
+                    listRes.append(res)
 
     # Supprime les doublons en gardant l'ordre
 #     links = [links.extend(elem) for elem in listHoster if not elem in links]
@@ -1876,8 +1898,7 @@ def addPasteID():
     # Vérifier que les autres pastes du groupe ont le même format d'entete
     if len(IDs)>0:
         pbContentOld = PasteBinContent()
-        pasteID = IDs.pop()
-        pbContentOld.getLines(pasteID)
+        pbContentOld.getLines(IDs.pop())
 
         if not pbContentNew.isFormat(pbContentOld):
             dialog().VSok(addons.VSlang(30022))
