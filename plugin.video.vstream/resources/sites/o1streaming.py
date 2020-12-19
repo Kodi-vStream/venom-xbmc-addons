@@ -29,6 +29,7 @@ MOVIE_GENRES = (True, 'showMoviesGenres')
 SERIE_GENRES = (True, 'showSeriesGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
 
+
 def load():
     oGui = cGui()
 
@@ -61,7 +62,7 @@ def load():
 
 def showMovieYears():
     oGui = cGui()
-    for i in reversed(range(2000, 2021)): # a revérifier pas grand chose (4-5 films par pages)32 - 90 
+    for i in reversed(range(2000, 2021)):  # a revérifier pas grand chose (4-5 films par pages)32 - 90
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'release/' + Year)
@@ -73,19 +74,18 @@ def showMovieYears():
 def showMoviesGenres():
     showGenres('?type=movies')
 
+
 def showSeriesGenres():
     showGenres('?type=series')
 
-def showGenres(sType):
 
+def showGenres(sType):
     oGui = cGui()
     liste = []
-    listegenre = ['action', 'action-adventure', 'afro', 'animation', 'aventure'
-                , 'comedie', 'crime', 'documentaire', 'drame', 'familial'
-                , 'fantastique', 'guerre', 'histoire' , 'horreur'
-                , 'kids', 'musique', 'mystere', 'reality', 'romance'
-                , 'science-fiction', 'science-fiction-fantastique'
-                , 'telefilm', 'thriller', 'vieux', 'war-politics', 'western']
+    listegenre = ['action', 'action-adventure', 'afro', 'animation', 'aventure', 'comedie', 'crime', 'documentaire',
+                  'drame', 'familial', 'fantastique', 'guerre', 'histoire', 'horreur', 'kids', 'musique',
+                  'mystere', 'reality', 'romance', 'science-fiction', 'science-fiction-fantastique', 'telefilm',
+                  'thriller', 'vieux', 'war-politics', 'western']
 
     url1g = URL_MAIN + 'genre/'
 
@@ -99,9 +99,9 @@ def showGenres(sType):
 
     oGui.setEndOfDirectory()
 
+
 def showSearch():
     oGui = cGui()
-
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '%20')
@@ -109,7 +109,8 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
-def showMovies(sSearch = ''):
+
+def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
@@ -137,20 +138,19 @@ def showMovies(sSearch = ''):
                 break
 
             sThumb = aEntry[1]
-            sUrl2 = aEntry[2]
-            sTitle = aEntry[0]
-            
             if sThumb.startswith('//'):
                 sThumb = 'http:' + sThumb
-                
+            sUrl2 = aEntry[2]
+            sTitle = aEntry[0]
+
             s = sTitle
             if ('/release/' in sUrl or sSearch):
                 if '/serie' in sUrl2:
                     s = s + ' [Serie] '
                 else:
                     s = s + ' [Film] '
-            
-            sDisplayTitle = s 
+
+            sDisplayTitle = s
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -171,7 +171,7 @@ def showMovies(sSearch = ''):
             try:
                 snumberNext = 'Page ' + re.search('/page/([0-9]+)', sNextPage).group(1)
             except:
-                pass  
+                pass
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] ' + snumberNext + ' >>>[/COLOR]', oOutputParameterHandler)
@@ -237,7 +237,6 @@ def ShowEpisodes():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
 
@@ -252,7 +251,7 @@ def ShowEpisodes():
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sUrl2 =  aEntry[1]
+            sUrl2 = aEntry[1]
             sTitle = aEntry[0]
 
             sDisplayTitle = sTitle
@@ -262,7 +261,6 @@ def ShowEpisodes():
             oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-
             oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
+import xbmc
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -9,7 +10,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import Unquote
-from resources.lib.comaddon import progress, VSlog, xbmc
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'enstream'
 SITE_NAME = 'Enstream'
@@ -116,34 +117,12 @@ def showAlpha():
     oGui = cGui()
     sUrl = URL_MAIN + 'ABC/'
 
-    liste = []
-    liste.append(['0-9', sUrl])
-    liste.append(['A', sUrl + 'A'])
-    liste.append(['B', sUrl + 'B'])
-    liste.append(['C', sUrl + 'C'])
-    liste.append(['D', sUrl + 'D'])
-    liste.append(['E', sUrl + 'E'])
-    liste.append(['F', sUrl + 'F'])
-    liste.append(['G', sUrl + 'G'])
-    liste.append(['H', sUrl + 'H'])
-    liste.append(['I', sUrl + 'I'])
-    liste.append(['J', sUrl + 'J'])
-    liste.append(['K', sUrl + 'K'])
-    liste.append(['L', sUrl + 'L'])
-    liste.append(['M', sUrl + 'M'])
-    liste.append(['N', sUrl + 'N'])
-    liste.append(['O', sUrl + 'O'])
-    liste.append(['P', sUrl + 'P'])
-    liste.append(['Q', sUrl + 'Q'])
-    liste.append(['R', sUrl + 'R'])
-    liste.append(['S', sUrl + 'S'])
-    liste.append(['T', sUrl + 'T'])
-    liste.append(['U', sUrl + 'U'])
-    liste.append(['V', sUrl + 'V'])
-    liste.append(['W', sUrl + 'W'])
-    liste.append(['X', sUrl + 'X'])
-    liste.append(['Y', sUrl + 'Y'])
-    liste.append(['Z', sUrl + 'Z'])
+    liste = [['0-9', sUrl], ['A', sUrl + 'A'], ['B', sUrl + 'B'], ['C', sUrl + 'C'], ['D', sUrl + 'D'],
+             ['E', sUrl + 'E'], ['F', sUrl + 'F'], ['G', sUrl + 'G'], ['H', sUrl + 'H'], ['I', sUrl + 'I'],
+             ['J', sUrl + 'J'], ['K', sUrl + 'K'], ['L', sUrl + 'L'], ['M', sUrl + 'M'], ['N', sUrl + 'N'],
+             ['O', sUrl + 'O'], ['P', sUrl + 'P'], ['Q', sUrl + 'Q'], ['R', sUrl + 'R'], ['S', sUrl + 'S'],
+             ['T', sUrl + 'T'], ['U', sUrl + 'U'], ['V', sUrl + 'V'], ['W', sUrl + 'W'], ['X', sUrl + 'X'],
+             ['Y', sUrl + 'Y'], ['Z', sUrl + 'Z']]
 
     for sTitle, sUrl in liste:
 
@@ -199,7 +178,7 @@ def showMovies(sSearch=''):
             sDesc = ''
             if len(aEntry) > 3:
                 if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-                    sQual = aEntry[3].split('·')[1].replace('Â','').strip()
+                    sQual = aEntry[3].split('·')[1].replace('Â', '').strip()
                     sLang = aEntry[3].split('·')[2].strip()
                 else:
                     sQual = aEntry[3].split('·')[1].strip()

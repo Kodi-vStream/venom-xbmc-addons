@@ -159,11 +159,11 @@ class cFav:
                 oGuiElement.setIcon("mark.png")
                 if (cat  == '1'):
                     cGui.CONTENT = 'movies'
-                    oGuiElement.setMeta(cat)
+                    oGuiElement.setMeta(1)
                     oGuiElement.setCat(1)
                 elif (cat == '2'):
                     cGui.CONTENT = 'tvshows'
-                    oGuiElement.setMeta(cat)
+                    oGuiElement.setMeta(2)
                     oGuiElement.setCat(2)
                 else:
                     oGuiElement.setMeta(0)

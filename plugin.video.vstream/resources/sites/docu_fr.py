@@ -96,7 +96,7 @@ def showMovies(sSearch=''):
     sHtmlContent = sHtmlContent.replace('&nbsp;', '').replace('&#39;', '\'')
 
     # if 'category' in sUrl or sSearch:
-    sPattern = 'article id=".+?data-background="([^"]+)">.+?<div class="read-title">.+?<a href="([^"]+)">(.+?)<\/a>'
+    sPattern = 'article id=".+?data-background="([^"]+)">.+?<div class="read-title">.+?<a href="([^"]+)">([^<]+)'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -113,11 +113,9 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            sUrl2 = aEntry[1]
-            # if 'private-video' in sUrl2:
-                # continue
-            sTitle = aEntry[2]
             sThumb = aEntry[0]
+            sUrl2 = aEntry[1]
+            sTitle = aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -132,7 +130,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.search('page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(number) + ' >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()

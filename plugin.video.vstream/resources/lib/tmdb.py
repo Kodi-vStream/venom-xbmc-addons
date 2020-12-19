@@ -8,12 +8,10 @@ import json
 
 import xbmcvfs
 import string
-import unicodedata
 import webbrowser
 
 from resources.lib.util import QuotePlus
 from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix
-from resources.lib.handler.requestHandler import cRequestHandler
 
 try:
     import urllib2
@@ -67,7 +65,7 @@ class cTMDb:
     CACHE = 'special://home/userdata/addon_data/plugin.video.vstream/video_cache.db'
 
     # important seul xbmcvfs peux lire le special
-    if not isMatrix:
+    if not isMatrix():
         REALCACHE = VSPath(CACHE).decode('utf-8')
     else:
         REALCACHE = VSPath(CACHE)
@@ -238,14 +236,16 @@ class cTMDb:
 
     # cherche dans les films ou serie l'id par le nom, return ID ou FALSE
     def get_idbyname(self, name, year='', mediaType='movie', page=1):
+        #Pour les series il faut enlever le numero de l episode et la saison.
+        if mediaType == "tv":
+            m = re.search('(?i)(\wpisode ([0-9\.\-\_]+))', name)
+            m1 = re.search('(?i)(s(?:aison )*([0-9]+))', name)
+            name = name.replace(m.group(1), '').replace(m1.group(1), '').replace('+', ' ')
 
         if year:
             term = QuotePlus(name) + '&year=' + year
         else:
             term = QuotePlus(name)
-
-        if mediaType == "tv":
-            term = term.split('aison')[0].replace('+', ' ')
 
         meta = self._call('search/' + str(mediaType), 'query=' + term + '&page=' + str(page))
 
@@ -259,8 +259,8 @@ class cTMDb:
                 qua = []
                 url = []
                 for aEntry in meta['results']:
-                   url.append(aEntry["id"])
-                   qua.append(aEntry['title'])
+                    url.append(aEntry["id"])
+                    qua.append(aEntry['name'])
 
                 #Affichage du tableau
                 tmdb_id = dialog().VSselectqual(qua, url)
@@ -644,7 +644,7 @@ class cTMDb:
                 else:
                     _meta['genre'] += ' / ' + genre
 
-            if not isMatrix:
+            if not isMatrix():
                 _meta['genre'] = unicode(_meta['genre'], 'utf-8')
 
         elif 'parts' in meta:   # Il s'agit d'une collection, on récupere le genre du premier film 
@@ -656,7 +656,7 @@ class cTMDb:
                 else:
                     _meta['genre'] += ' / ' + genre
 
-            if not isMatrix:
+            if not isMatrix():
                 _meta['genre'] = unicode(_meta['genre'], 'utf-8')
 
         trailer_id = ''

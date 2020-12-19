@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -16,9 +17,10 @@ SITE_IDENTIFIER = 'wiflix'
 SITE_NAME = 'Wiflix'
 SITE_DESC = 'Films & Séries en streaming'
 
-URL_MAIN = 'https://www.wiflix.co/'
+URL_MAIN = 'https://www.wiflix.cc/'
 
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming/', 'showMovies')
+MOVIE_EXCLU = (URL_MAIN + 'film-en-streaming/exclue', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'film-en-streaming/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
@@ -46,7 +48,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
@@ -54,6 +56,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_EXCLU[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_EXCLU[1], 'Films et Séries (Exclues)', 'news.png', oOutputParameterHandler)
 
     # oOutputParameterHandler = cOutputParameterHandler()
     # oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
@@ -81,37 +87,35 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
+    oParser = cParser()
 
-    liste = []
-    liste.append(['Action', URL_MAIN + 'film-en-streaming/action/'])
-    liste.append(['Animation', URL_MAIN + 'film-en-streaming/animation/'])
-    liste.append(['Arts Martiaux', URL_MAIN + 'film-en-streaming/arts-martiaux/'])
-    liste.append(['Aventure', URL_MAIN + 'film-en-streaming/aventure/'])
-    liste.append(['Biopic', URL_MAIN + 'film-en-streaming/biopic/'])
-    liste.append(['Comédie', URL_MAIN + 'film-en-streaming/comedie/'])
-    liste.append(['Comédie Dramatique', URL_MAIN + 'film-en-streaming/comedie-dramatique/'])
-    liste.append(['Drame', URL_MAIN + 'film-en-streaming/drame/'])
-    liste.append(['Documentaire', URL_MAIN + 'film-en-streaming/documentaire/'])
-    liste.append(['Epouvante Horreur', URL_MAIN + 'film-en-streaming/horreur/'])
-    liste.append(['Espionnage', URL_MAIN + 'film-en-streaming/espionnage/'])
-    liste.append(['Famille', URL_MAIN + 'film-en-streaming/famille/'])
-    liste.append(['Fantastique', URL_MAIN + 'film-en-streaming/fantastique/'])
-    liste.append(['Guerre', URL_MAIN + 'film-en-streaming/guerre/'])
-    liste.append(['Historique', URL_MAIN + 'film-en-streaming/historique/'])
-    liste.append(['Musical', URL_MAIN + 'film-en-streaming/musical/'])
-    liste.append(['Policier', URL_MAIN + 'film-en-streaming/policier/'])
-    liste.append(['Romance', URL_MAIN + 'film-en-streaming/romance/'])
-    liste.append(['Science-Fiction', URL_MAIN + 'film-en-streaming/science-fiction/'])
-    liste.append(['Spectacles', URL_MAIN + 'film-en-streaming/spectacles/'])
-    liste.append(['Thriller', URL_MAIN + 'film-en-streaming/thriller/'])
-    liste.append(['Western', URL_MAIN + 'film-en-streaming/western/'])
+    sUrl = URL_MAIN 
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    sStart = '</span><b>Films par genre</b></div>'
+    sEnd = '<div class="side-b">'
+    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
 
-    for sTitle, sUrl in liste:
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+    sPattern = '<a href="([^"]+)">([^<]+)'
+    aResult = oParser.parse(sHtmlContent, sPattern)
 
-    oGui.setEndOfDirectory()
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
+    TriAlpha = []
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+            sUrl =  URL_MAIN + aEntry[0]
+            sTitle = aEntry[1].capitalize()
+            TriAlpha.append((sTitle, sUrl))
+
+        # Trie des genres par ordre alphabétique
+        TriAlpha = sorted(TriAlpha, key=lambda genre: genre[0])
+
+        for sTitle, sUrl in TriAlpha:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.setEndOfDirectory()
 
 
 def showMovies(sSearch=''):
@@ -265,7 +269,7 @@ def showSeries(sSearch=''):
 
             sTitle = aEntry[1].replace('- Saison', 'Saison').replace(' wiflix', '')
             sLang = re.sub('Saison \d+', '', aEntry[3]).replace(' ', '')
-            sDisplaytitle = '%s (%s)' % (sTitle, sLang)
+            sDisplaytitle = ('%s (%s)') % (sTitle, sLang)
             sUrl = aEntry[2]
             sDesc = aEntry[4]
 
@@ -335,21 +339,27 @@ def showHosters():
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<a href="([^"]+)" *target="x_player_wfx"><span>'
+    sPattern = '<a href="\/vd.php\?u=([^"]+)" *target="x_player_wfx"><span>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = aEntry.replace('/vd.php?u=', '')
-            if 'players.wiflix.' in sHosterUrl:
+            sHosterUrl = aEntry[0]#.replace('/wiflix.cc/', '')
+            if 'wiflix.' in sHosterUrl:
                 oRequestHandler = cRequestHandler(sHosterUrl)
                 oRequestHandler.request()
                 sHosterUrl = oRequestHandler.getRealUrl()
-
+            else :
+                sHosterUrl = aEntry[0].replace('/wiflix.cc/', '')
+            sLang = aEntry[1].replace('2' , '').replace('3' , '')    
+            if 'Vost' in aEntry[1]:
+                sDisplaytitle =('%s (%s)')% (sMovieTitle , sLang)
+            else:
+                sDisplaytitle = sMovieTitle          
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setDisplayName(sDisplaytitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 

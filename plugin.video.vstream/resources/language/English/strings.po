@@ -25,7 +25,7 @@ msgid "Downloads Stopped"
 msgstr ""
 
 msgctxt "#30005"
-msgid "vStream will be faster with your own API key."
+msgid "vStream will be faster with your own TMDB API key"
 msgstr ""
 
 msgctxt "#30006"

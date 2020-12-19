@@ -59,7 +59,7 @@ MOVIE_GENRES = ('films-gratuit/', 'showGenre')
 SERIE_SERIES = (True, 'showMenuSeries')
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
 SERIE_VF = (URL_MAIN + 'series/series-vf/', 'showMovies')
-SERIE_VF_720 = (URL_MAIN + 'series/series-vf-720p/','showMovies')
+SERIE_VF_720 = (URL_MAIN + 'series/series-vf-720p/', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'series/series-vostfr/', 'showMovies')
 SERIE_VOSTFRS_720 = (URL_MAIN + 'series/series-vostfr-720p/', 'showMovies')
 PACK_SERIE_VOSTFRS = (URL_MAIN + 'series/pack-sries-vf-sd/', 'showMovies')
@@ -226,6 +226,7 @@ def showMenuMangas():
     oGui.addDir(SITE_IDENTIFIER, FILM_ANIM[1], 'Films d\'animes ', 'animes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showSearch():
     oGui = cGui()
@@ -507,7 +508,7 @@ def showHosters():
             sUrl2 = aEntry[1]
             sTitle = sMovieTitle
 
-            if not "protect" in sUrl2:
+            if "protect" not in sUrl2:
                 oHoster = cHosterGui().checkHoster(sUrl2)
                 if (oHoster != False):
                     oHoster.setDisplayName(sTitle)
@@ -533,8 +534,8 @@ def showSeriesHosters():
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumb=oInputParameterHandler.getValue('sThumb')
-    sDesc=oInputParameterHandler.getValue('sDesc')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
 
     oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -575,6 +576,7 @@ def showSeriesHosters():
     else:   # certains films mals classés apparaissent dans les séries
         showHosters()
 
+
 def Display_protected_link():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -587,8 +589,7 @@ def Display_protected_link():
 
     payload = "folder=Continuer"
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0',
-               'Content-Type': 'application/x-www-form-urlencoded',
-               'Content-Length': '16'}
+               'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': '16'}
 
     r = requests.post(sUrl.replace('http:', 'https:'), headers=headers, data=payload)
     sHtmlContent = r.content

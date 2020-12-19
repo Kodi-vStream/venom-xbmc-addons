@@ -25,8 +25,8 @@ msgid "Downloads Stopped"
 msgstr "Téléchargements Arrêté"
 
 msgctxt "#30005"
-msgid "vStream will be faster with your own API key."
-msgstr "vStream sera plus rapide avec votre propre clef API."
+msgid "vStream will be faster with your own TMDB API key"
+msgstr "vStream sera plus rapide avec votre propre clef API TMDB"
 
 msgctxt "#30006"
 msgid "Search Metadata (slowed vStream)"

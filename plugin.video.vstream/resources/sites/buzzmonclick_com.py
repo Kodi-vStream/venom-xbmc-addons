@@ -4,6 +4,7 @@
 import re
 import unicodedata
 import requests
+import xbmc
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -11,7 +12,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, dialog, VSlog, xbmc
+from resources.lib.comaddon import dialog
 from resources.lib.util import Quote
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
@@ -140,7 +141,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(number) + ' >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -154,6 +155,7 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
+
 
 def showLinks():
     oGui = cGui()
@@ -190,6 +192,7 @@ def showLinks():
 
     oGui.setEndOfDirectory()
 
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -212,7 +215,7 @@ def showHosters():
         if (aResult[0] == True):
             data = "_method="+aResult[1][0]+"&_csrfToken="+aResult[1][1]+"&ad_form_data="+Quote(aResult[1][2])+"&_Token%5Bfields%5D="+Quote(aResult[1][3])+"&_Token%5Bunlocked%5D="+Quote(aResult[1][4])
 
-            #Obligatoire pour validé les cookies.
+            # Obligatoire pour validé les cookies.
             xbmc.sleep(6000)
             oRequestHandler = cRequestHandler("https://forum-tv.org/adslinkme/links/go")
             oRequestHandler.setRequestType(1)
@@ -221,7 +224,7 @@ def showHosters():
             oRequestHandler.addHeaderEntry('User-Agent', UA)
             oRequestHandler.addHeaderEntry('Content-Length', len(data))
             oRequestHandler.addHeaderEntry('Content-Type', "application/x-www-form-urlencoded; charset=UTF-8")
-            oRequestHandler.addHeaderEntry('X-Requested-With','XMLHttpRequest')
+            oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
             oRequestHandler.addHeaderEntry('Cookie', cookie_string)
             oRequestHandler.addParametersLine(data)
             sHtmlContent = oRequestHandler.request()
@@ -244,6 +247,7 @@ def showHosters():
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
 
 def cutLink(sHtmlContent):
     oParser = cParser()

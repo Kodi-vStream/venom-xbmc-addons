@@ -321,7 +321,7 @@ def Display_protected_link():
 
 def DecryptddlProtect(url):
     # VSlog 'entering DecryptddlProtect'
-    if not (url):
+    if not url:
         return ''
 
     # Get host
@@ -417,7 +417,7 @@ def get_response(img, cookie):
     # on affiche le dialogue
     solution = ''
 
-    if (True):
+    if True:
         # nouveau captcha
         try:
             # affichage du dialog perso
@@ -495,7 +495,7 @@ def get_response(img, cookie):
             # xbmc.sleep(3000)
             kb = xbmc.Keyboard('', 'Tapez les Lettres/chiffres de l\'image', False)
             kb.doModal()
-            if (kb.isConfirmed()):
+            if kb.isConfirmed():
                 solution = kb.getText()
                 if solution == '':
                     dialogs.VSinfo("Vous devez taper le captcha")

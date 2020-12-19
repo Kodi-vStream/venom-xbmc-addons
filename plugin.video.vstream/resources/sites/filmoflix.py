@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # source 33 date created 24/11/2020
-return False # CF depuis le 26/11/2020
+return False  # CF depuis le 26/11/2020
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -169,11 +169,9 @@ def showGenres(urltype,s):
 
     oGui = cGui()
     liste = []
-    listegenre = ['action', 'animation', 'aventure', 'biopic', 'comedie' 
-                  ,'drame', 'documentaire'
-                  , 'epouvante-horreur', 'espionnage' ,'famille', 'fantastique'
-                  , 'guerre',  'historique' , 'policier' , 'romance'
-                  , 'science-fiction', 'thriller', 'western']
+    listegenre = ['action', 'animation', 'aventure', 'biopic', 'comedie', 'drame', 'documentaire', 'epouvante-horreur'
+	              , 'espionnage' ,'famille', 'fantastique', 'guerre', 'historique', 'policier' , 'romance'
+				  , 'science-fiction', 'thriller', 'western']
 
     #https://www.filmoflix.net/filmsenstreaming/action/
     #https://www.filmoflix.net/seriesenstreaming/action-s/
@@ -199,7 +197,7 @@ def showMovies(sSearch=''):
     bSearchSerie = False
 
     if sSearch:
-        sUrl = URL_SEARCH[0] # sert a rien
+        # sUrl = URL_SEARCH[0] # sert a rien
         sSearch = sSearch.replace(' ', '+').replace('%20', '+')
 
         if key_search_movies in sSearch:
@@ -284,7 +282,7 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
     if not sSearch:
-        bNextPage,urlNextpage,pagination = __checkForNextPage(sHtmlContent)
+        bNextPage, urlNextpage, pagination = __checkForNextPage(sHtmlContent)
         if (bNextPage != False):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', urlNextpage)
@@ -332,10 +330,10 @@ def showSaisons():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumb = oInputParameterHandler.getValue('sThumb')
+    # sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sYear = oInputParameterHandler.getValue('sYear')
-    sDesc = oInputParameterHandler.getValue('sDesc')
+    # sDesc = oInputParameterHandler.getValue('sDesc')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -468,14 +466,14 @@ def showSerieHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     referer = oInputParameterHandler.getValue('referer')
-    cook = oInputParameterHandler.getValue('cook')
+    # cook = oInputParameterHandler.getValue('cook')
     postdata = oInputParameterHandler.getValue('postdata')
 
     oRequest = cRequestHandler(sUrl)
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('Referer', referer)
     oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-    #oRequest.addHeaderEntry('Cookie', cook) # pas besoin ici mais besoin pour les films
+    # oRequest.addHeaderEntry('Cookie', cook) # pas besoin ici mais besoin pour les films
     oRequest.addParametersLine(postdata)
     shtml=oRequest.request()
 
@@ -484,7 +482,7 @@ def showSerieHosters():
     aResult = oParser.parse( shtml, sPattern)
     if (aResult[0] == True):
         sHosterUrl = aResult[1][0]
-        #VSlog(sHosterUrl)
+        # VSlog(sHosterUrl)
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
             oHoster.setDisplayName(sMovieTitle)
@@ -501,7 +499,7 @@ def showMovieLinks():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    sDesc = oInputParameterHandler.getValue('sDesc')
+    # sDesc = oInputParameterHandler.getValue('sDesc')
     sYear= oInputParameterHandler.getValue('sYear')
 
     oRequestHandler = cRequestHandler(sUrl)

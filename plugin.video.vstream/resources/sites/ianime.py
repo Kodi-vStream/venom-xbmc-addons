@@ -4,7 +4,7 @@ import random
 import re
 import unicodedata
 
-from resources.lib.comaddon import progress, xbmc
+from resources.lib.comaddon import progress, xbmc, VSlog
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -766,6 +766,11 @@ def showHosters():
 
                 if 'tinyurl' in sHosterUrl:
                     sHosterUrl = GetTinyUrl(sHosterUrl)
+                    
+                if '///' in sHosterUrl:
+                    sHosterUrl = 'https://' + '/'.join(sHosterUrl.split('/')[5:])
+                    
+                VSlog(sHosterUrl)
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
