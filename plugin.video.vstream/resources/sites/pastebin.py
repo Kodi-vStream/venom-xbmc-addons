@@ -1754,9 +1754,10 @@ def getHosterList(siteUrl):
                     listLinks.append(''.join([chr(ord(x)^31) for x in l]) if p.c else l)
             elif isinstance(links, dict):
                 if searchEpisode:
-                    link = links.get(int(searchEpisode))
-                    if link:
-                        listLinks.append(''.join([chr(ord(x)^31) for x in link]) if p.c else link)
+                    for numEpisode, link in links.items():
+                        if str(numEpisode) == searchEpisode:
+                            listLinks.append(''.join([chr(ord(x)^31) for x in link]) if p.c else link)
+                            break
                 else:
                     listHoster.append(links)
             else:
