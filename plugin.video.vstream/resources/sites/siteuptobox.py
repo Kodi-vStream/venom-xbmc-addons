@@ -4,6 +4,7 @@ import json
 import re
 import xbmc
 import xbmcgui
+from resources.sites.themoviedb_org import API_URL
 
 try:  # Python 2
     import urllib2
@@ -47,6 +48,10 @@ def load():
         oGui.addDir(SITE_IDENTIFIER,'opensetting', addons.VSlang(30023), 'none.png', oOutputParameterHandler)
     else:
         if (GestionCookie().Readcookie('uptobox') != ''):
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+            oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -57,6 +62,11 @@ def load():
             if (Connection == False):
                 dialog().VSinfo('Connexion refusée')
                 return
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+            oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -67,15 +77,32 @@ def load():
 
 def opensetting():
     addon().openSettings()
+    
+def showSearch():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+         
 
+    sSearchText = oGui.showKeyBoard()
+    if (sSearchText != False):
+        sUrlSearch =  '&searchField=file_name&search=' + sSearchText
+        
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sUrlSearch', sUrlSearch)
+        showFile(sUrlSearch)
+        
+        
 
-def showFile():
+def showFile(sSearch=''):
 
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    
     # VSlog('input   ' + str(sUrl))
     oParser = cParser()
+    
 
     sOffset = 0
     if (oInputParameterHandler.exist('sOffset')):
@@ -114,7 +141,11 @@ def showFile():
             if (aResult[0] == True):
                 sToken = aResult[1][0]
 
-            sHtmlContent = oPremiumHandler.GetHtml(API_URL.replace('none', sToken) + '%2F%2F')
+            if sSearch:
+                
+                sHtmlContent = oPremiumHandler.GetHtml(API_URL.replace('none', sToken) + '%2F%2F' + sSearch )
+            else:
+                sHtmlContent = oPremiumHandler.GetHtml(API_URL.replace('none', sToken) + '%2F%2F')
 
     content = json.loads(sHtmlContent)
     content = content['data']
@@ -183,6 +214,7 @@ def showFile():
     oGui.setEndOfDirectory()
 
 
+    
 def getpath(content):
     for x in content:
         if x == 'path':
