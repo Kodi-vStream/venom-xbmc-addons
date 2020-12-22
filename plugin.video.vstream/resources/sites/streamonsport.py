@@ -343,7 +343,7 @@ def Hoster_Telerium(url, referer):
 
         return True, sHosterUrl
 
-    return True, False
+    return False, False
 
 def Hoster_Andrhino(url, referer):
     oRequestHandler = cRequestHandler(url)
