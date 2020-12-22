@@ -418,7 +418,7 @@ def ShowEpisodes():
                 sEpisode = aEntry[2]
                 sRel_Episode = aEntry[3]
 
-                sDisplayTitle = sMovieTitle.replace('-', '') + ' ' + sEpisode + ' (' + Slang + ' )'
+                sDisplayTitle = sMovieTitle.replace('-', '') + ' ' + sEpisode + ' (' + Slang + ')'
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -496,7 +496,7 @@ def showSerieLinks():
                     continue
                     # pass
 
-                sHost= '[COLOR coral]' + GetHostname(sUrl2) + '[/COLOR]'
+                sHost = '[COLOR coral]' + GetHostname(sUrl2) + '[/COLOR]'
                 sDisplayTitle = sDisplayTitle1 + ' ' + sHost
 
                 oOutputParameterHandler = cOutputParameterHandler()
