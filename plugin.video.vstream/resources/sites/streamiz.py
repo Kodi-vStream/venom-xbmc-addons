@@ -10,7 +10,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress #,VSlog
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'streamiz'
 SITE_NAME = 'Streamiz'
@@ -19,13 +19,11 @@ SITE_DESC = 'Films en streaming.'
 URL_MAIN = 'https://streamiz-filmze.org/'
 
 
+MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN + 'streaming/', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'streaming/box-office/', 'showMovies')
 MOVIE_VOSTFR = (URL_MAIN + 'streaming/vostfr/', 'showMovies')
-
 MOVIE_GENRES = (True, 'showGenres')
-
-MOVIE_MOVIE = ('http://', 'load')
 
 URL_SEARCH = ('', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
@@ -70,16 +68,14 @@ def showSearch():
 
 
 def showGenres():
-
     oGui = cGui()
     liste = []
-    listegenre = ['action', 'animation','aventure', 'comedie' , 'drame', 'guerre', 'historique'
-                  ,'horreur', 'musical', 'policier' , 'romance', 'science-fiction', 'thriller'
-                  , 'western', 'documentaire', 'spectacle']
+    listegenre = ['action', 'animation', 'aventure', 'comedie', 'drame', 'guerre', 'historique', 'horreur', 'musical',
+                  'policier', 'romance', 'science-fiction', 'thriller', 'western', 'documentaire', 'spectacle']
 
-    #href="/streaming/action/
+    # href="/streaming/action/
     for igenre in listegenre:
-        liste.append([igenre.capitalize(), URL_MAIN + 'streaming/' + igenre +  '/'])
+        liste.append([igenre.capitalize(), URL_MAIN + 'streaming/' + igenre + '/'])
 
     for sTitle, sUrl in liste:
 
@@ -91,7 +87,6 @@ def showGenres():
 
 
 def showMovies(sSearch=''):
-
     oGui = cGui()
 
     if sSearch:
@@ -149,7 +144,7 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
     if not sSearch:
-        bvalid,sUrlNextPage, pagination = __checkForNextPage(sHtmlContent,sUrl)
+        bvalid, sUrlNextPage, pagination = __checkForNextPage(sHtmlContent, sUrl)
         if (bvalid == True):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrlNextPage)
@@ -158,12 +153,12 @@ def showMovies(sSearch=''):
         oGui.setEndOfDirectory()
 
 
-def __checkForNextPage(shtml,surl):
+def __checkForNextPage(shtml, surl):
     # pas de lien next page
     smax = ''
     imax = 0
-    scurrent = ''
-    icurrent = 0
+    # scurrent = ''
+    # icurrent = 0
     inext = 0
     snext = ''
     surlnext = ''
@@ -184,8 +179,8 @@ def __checkForNextPage(shtml,surl):
     oParser = cParser()
     aResult = oParser.parse(surl, sPattern)
     if (aResult[0] == False):
-        # la premier page ne contient pas d'index
-        if smax > 1: # mais il faut au moins deux pages
+        # la premiere page ne contient pas d'index
+        if smax > 1:  # mais il faut au moins deux pages
             inext = 2
             snext = '2'
             surlnext = surl + 'page/2/'
@@ -195,8 +190,8 @@ def __checkForNextPage(shtml,surl):
     if (aResult[0] == True):
         scurrent = aResult[1][0]
         icurrent = int(scurrent)
-        inext = icurrent + 1 
-        snext = str (inext)
+        inext = icurrent + 1
+        snext = str(inext)
         pcurrent = 'page/' + scurrent
         pnext = 'page/' + snext
         surlnext = surl.replace(pcurrent, pnext)
@@ -271,6 +266,7 @@ def showHosters():
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
 
 def GetHostname(url):
 
