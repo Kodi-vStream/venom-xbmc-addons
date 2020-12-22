@@ -50,6 +50,10 @@ def load():
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+            oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
             oGui.addDir(SITE_IDENTIFIER, 'showFile', 'Mes Fichiers et Dossiers', 'genres.png', oOutputParameterHandler)
 
         else:
@@ -60,6 +64,10 @@ def load():
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+            oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
             oGui.addDir(SITE_IDENTIFIER, 'showFile', 'Mes Fichiers et Dossiers', 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -67,7 +75,13 @@ def load():
 
 def opensetting():
     addon().openSettings()
-
+    
+def showSearch():
+    oGui = cGui()
+    sSearchText = oGui.showKeyBoard()
+    if (sSearchText != False):
+        sUrlSearch =  '&searchField=file_name&search=' + sSearchText
+        showFile(sUrlSearch)
 
 def showFile():
 
@@ -114,7 +128,12 @@ def showFile():
             if (aResult[0] == True):
                 sToken = aResult[1][0]
 
-            sHtmlContent = oPremiumHandler.GetHtml(API_URL.replace('none', sToken) + '%2F%2F')
+            if sSearch:
+                
+                sHtmlContent = oPremiumHandler.GetHtml(API_URL.replace('none', sToken) + '%2F%2F' + sSearch )
+            else:
+                sHtmlContent = oPremiumHandler.GetHtml(API_URL.replace('none', sToken) + '%2F%2F')
+
 
     content = json.loads(sHtmlContent)
     content = content['data']
