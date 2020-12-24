@@ -299,7 +299,7 @@ def showMovies(sSearch=''):
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMisc = oInputParameterHandler.getValue('misc') # Autre contenu
+    sMisc = oInputParameterHandler.getValue('misc')  # Autre contenu
 
     if sSearch:
         sUrl = sSearch
@@ -367,8 +367,8 @@ def showMovies(sSearch=''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oOutputParameterHandler.addParameter('misc', sMisc)
-            number = re.search('/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            sNumPage = re.search('/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
 
     if not sSearch:  # Le moteur de recherche du site est correct, laisser le nextPage même en globalSearch
         oGui.setEndOfDirectory()
@@ -470,8 +470,8 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumb=oInputParameterHandler.getValue('sThumb')
-    sDesc=oInputParameterHandler.getValue('sDesc')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
     sYear = oInputParameterHandler.getValue('sYear')
 
     oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
@@ -540,7 +540,7 @@ def showSeriesHosters():
     oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-    sHtmlContent = GetLink(oRequestHandler.request())
+    sHtmlContent = getLink(oRequestHandler.request())
 
     oParser = cParser()
     sPattern = 'download-alt" style="margin-right: 10px;"></i>([^<]+)|href="([^"]+)".+?external noreferrer">([^<]+)'
@@ -558,7 +558,7 @@ def showSeriesHosters():
                 sEpisode = aEntry[2].replace('pisode ', '').replace('FINAL ', '').replace('Télécharger', '')
                 sTitle = sMovieTitle + ' ' + sEpisode
 
-                if not "protect" in sUrl2:
+                if 'protect' not in sUrl2:
                     oHoster = cHosterGui().checkHoster(sUrl2)
                     if (oHoster != False):
                         oHoster.setDisplayName(sTitle)
@@ -618,7 +618,8 @@ def Display_protected_link():
 
     oGui.setEndOfDirectory()
 
-def GetLink(sHtmlContent):
+
+def getLink(sHtmlContent):
     oParser = cParser()
     sPattern = '<div class="link">(.+?)<div class="sect fcomms">'
     aResult = oParser.parse(sHtmlContent, sPattern)
