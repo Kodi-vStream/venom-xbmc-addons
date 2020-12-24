@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# source 37 https://streamiz-filmze.org/ 06122020
+# source 37 https://streamiz-filmze.org/ 24122020
 
 import re
 
@@ -16,13 +16,13 @@ SITE_IDENTIFIER = 'streamiz'
 SITE_NAME = 'Streamiz'
 SITE_DESC = 'Films en streaming.'
 
-URL_MAIN = 'https://streamiz-filmze.org/'
+URL_MAIN = 'https://streamiz-filmze.org/v7/'
 
 
 MOVIE_MOVIE = ('http://', 'load')
-MOVIE_NEWS = (URL_MAIN + 'streaming/', 'showMovies')
-MOVIE_VIEWS = (URL_MAIN + 'streaming/box-office/', 'showMovies')
-MOVIE_VOSTFR = (URL_MAIN + 'streaming/vostfr/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
+MOVIE_VIEWS = (URL_MAIN + 'films/box-office/', 'showMovies')
+MOVIE_VOSTFR = (URL_MAIN + 'films/vostfr/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
 URL_SEARCH = ('', 'showMovies')
@@ -73,9 +73,9 @@ def showGenres():
     listegenre = ['action', 'animation', 'aventure', 'comedie', 'drame', 'guerre', 'historique', 'horreur', 'musical',
                   'policier', 'romance', 'science-fiction', 'thriller', 'western', 'documentaire', 'spectacle']
 
-    # href="/streaming/action/
+    # href="/films/action/
     for igenre in listegenre:
-        liste.append([igenre.capitalize(), URL_MAIN + 'streaming/' + igenre + '/'])
+        liste.append([igenre.capitalize(), URL_MAIN + 'films/' + igenre + '/'])
 
     for sTitle, sUrl in liste:
 
@@ -92,15 +92,15 @@ def showMovies(sSearch=''):
     if sSearch:
 
         sSearch = sSearch.replace(' ', '+').replace('%20', '+')
-        pdata = 'do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=' + sSearch
-        sUrl = 'https://streamiz-filmze.org/streaming/index.php?do=search'
+        pData = 'do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=' + sSearch
+        sUrl = URL_MAIN + 'index.php?do=search'
 
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
         oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-        oRequestHandler.addParametersLine(pdata)
+        oRequestHandler.addParametersLine(pData)
         sHtmlContent = oRequestHandler.request()
 
     else:
@@ -109,8 +109,12 @@ def showMovies(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
+    # on ne récupère pas les films aléatoire
+    end = sHtmlContent.find('<b>Film aléatoire</b>')
+    sHtmlContent = sHtmlContent[:end]
+
     oParser = cParser()
-    sPattern = 'class="th-item">.+?ref="([^"]*).+?src="([^"]*).+?alt="([^"]*).+?<span>([^<]*)'
+    sPattern = 'images radius-3">.+?src="([^"]*)" alt="([^"]*).+?(?:|rip"><.+?>([^<]*).+?)link"><a href="([^"]*)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -124,22 +128,18 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            sUrl2 = aEntry[0]
-            sThumb = aEntry[1]
-            sTitle = aEntry[2]
-            sDesc = aEntry[3]  # <span>Thriller / Horreur / Sous-titre</span>
+            sThumb = aEntry[0]
+            sTitle = aEntry[1]
+            sLang = aEntry[2]
+            sUrl2 = aEntry[3]
 
-            if 'Sous-titre' in sDesc:
-                sTitle = sTitle + ' (VOST)'
-
-            sDesc = sDesc.replace('/ Sous-titre', '').replace('/ Box Office', '')
-            sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Genre :  ', sDesc.replace('/', ','))
+            sDisplayTitle = ('%s (%s)') % (sTitle, sLang)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -217,7 +217,7 @@ def showLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'Synopsis.+?clearfix">([^<]*)'
+    sPattern = 'Synopsis.+?info-text">([^<]*)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sDesc = 'streamiz-filmze.org'
     if (aResult[0] == True):
@@ -235,17 +235,17 @@ def showLinks():
 
             oHoster = cHosterGui().checkHoster(sUrl)
             if (oHoster != False):
-                Hostname = oHoster.getDisplayName()
+                hostName = oHoster.getDisplayName()
             else:
-                Hostname = GetHostname(sUrl)
+                hostName = getHostName(sUrl)
 
-            sDisplayName = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, Hostname)
+            sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, hostName)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayName, sThumb, sDesc, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -268,7 +268,7 @@ def showHosters():
     oGui.setEndOfDirectory()
 
 
-def GetHostname(url):
+def getHostName(url):
 
     try:
         if 'www' not in url:
