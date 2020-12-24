@@ -170,8 +170,8 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            sNumPage = re.search('/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -338,7 +338,7 @@ def showLinks():
         oRequestHandler.addHeaderEntry("Referer", sRefUrl)
         sHtmlContent = oRequestHandler.request()
         head = oRequestHandler.getResponseHeader()
-        cookies = getcookie(head)
+        cookies = getCookie(head)
 
     sPattern = 'hidden" name="videov" id="videov" value="([^"]+).+?</b>([^<]+)<span class="dt_flag">.+?/flags/(.+?)\.'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -433,7 +433,7 @@ def showSeriesHosters():
     oGui.setEndOfDirectory()
 
 
-def getcookie(head):
+def getCookie(head):
     # get cookie
     cookies = ''
     if 'Set-Cookie' in head:
@@ -481,7 +481,7 @@ def decode_js(k, i, s, e):
         if ord(secondstr[incerement2]) % 2:
             localvar = 1
         finaltab.append(chr(int(firststr[varinc: varinc+2], base=36) - localvar))
-        incerement2=incerement2 + 1
+        incerement2 = incerement2 + 1
         if incerement2 >= len(secondtab):
             incerement2 = 0
 
