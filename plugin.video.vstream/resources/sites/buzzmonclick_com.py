@@ -85,7 +85,6 @@ def showGenres():
     liste.append(['Télé-Réalité', URL_MAIN + 'tele-realite/'])
 
     for sTitle, sUrl in liste:
-
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
@@ -140,8 +139,8 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(number) + ' >>>[/COLOR]', oOutputParameterHandler)
+            sNumPage = re.search('/page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -186,7 +185,7 @@ def showLinks():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb )
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
@@ -204,20 +203,20 @@ def showHosters():
         dialog().VSinfo('Décodage en cours', "Patientez", 5)
         s = requests.Session()
 
-        response = s.get(sUrl, headers={'User-Agent':UA})
+        response = s.get(sUrl, headers={'User-Agent': UA})
         sHtmlContent = str(response.content)
-        cookie_string = "; ".join([str(x)+"="+str(y) for x,y in s.cookies.items()])
+        cookie_string = "; ".join([str(x) + "=" + str(y) for x, y in s.cookies.items()])
 
         oParser = cParser()
         sPattern = '<input type="hidden".+?value="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0] == True):
-            data = "_method="+aResult[1][0]+"&_csrfToken="+aResult[1][1]+"&ad_form_data="+Quote(aResult[1][2])+"&_Token%5Bfields%5D="+Quote(aResult[1][3])+"&_Token%5Bunlocked%5D="+Quote(aResult[1][4])
+            data = "_method=" + aResult[1][0] + "&_csrfToken=" + aResult[1][1] + "&ad_form_data=" + Quote(aResult[1][2]) + "&_Token%5Bfields%5D=" + Quote(aResult[1][3]) + "&_Token%5Bunlocked%5D=" + Quote(aResult[1][4])
 
             # Obligatoire pour validé les cookies.
             xbmc.sleep(6000)
-            oRequestHandler = cRequestHandler("https://forum-tv.org/adslinkme/links/go")
+            oRequestHandler = cRequestHandler('https://forum-tv.org/adslinkme/links/go')
             oRequestHandler.setRequestType(1)
             oRequestHandler.addHeaderEntry('Referer', sUrl)
             oRequestHandler.addHeaderEntry('Accept', 'application/json, text/javascript, */*; q=0.01')
