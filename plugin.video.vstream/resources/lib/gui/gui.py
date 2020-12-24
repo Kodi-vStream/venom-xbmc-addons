@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import xbmcplugin
+import xbmc
 
-from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window, xbmc
+from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window
 from resources.lib.db import cDb
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
@@ -232,7 +233,7 @@ class cGui:
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
-        oGuiElement.setTitle(sLabel)
+        oGuiElement.setTitle('[COLOR teal]' + sLabel + ' >>>[/COLOR]')
         oGuiElement.setIcon('next.png')
         oGuiElement.setThumbnail(oGuiElement.getIcon())
         oGuiElement.setMeta(0)
@@ -307,7 +308,7 @@ class cGui:
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
     # afficher les liens non playable
-    def addFolder(self, oGuiElement, oOutputParameterHandler = '', _isFolder=True):
+    def addFolder(self, oGuiElement, oOutputParameterHandler='', _isFolder=True):
 
         # recherche append les reponses
         if window(10101).getProperty('search') == 'true':
@@ -316,12 +317,10 @@ class cGui:
             return
 
         # Des infos a rajouter ?
-        params = {
-            'siteUrl': oGuiElement.setSiteUrl,  # indispensable
-            'sTmdbId': oGuiElement.setTmdbId,
-            'sImbdId': oGuiElement.setImdbId,  # inutile ?
-            'sYear': oGuiElement.setYear,
-        }
+        params = {'siteUrl': oGuiElement.setSiteUrl,  # indispensable
+                  'sTmdbId': oGuiElement.setTmdbId,
+                  'sImbdId': oGuiElement.setImdbId,  # inutile ?
+                  'sYear': oGuiElement.setYear}
 
         try:
             for sParam, callback in params.iteritems():
@@ -387,7 +386,7 @@ class cGui:
             sSiteUrl = oOutputParameterHandler.getValue('siteUrl')
             oGuiElement.setSiteUrl(sSiteUrl)
 
-        #On récupere le sCat du fichier précédent.
+        # On récupere le sCat du fichier précédent.
         sCat = oInputParameterHandler.getValue('sCat')
         if sCat:
             oGuiElement.setCat(sCat)
@@ -451,7 +450,7 @@ class cGui:
         oGuiElement.addContextItem(oContext)
 
     # marque page
-    def createContexMenuBookmark(self, oGuiElement, oOutputParameterHandler = ''):
+    def createContexMenuBookmark(self, oGuiElement, oOutputParameterHandler=''):
         oOutputParameterHandler.addParameter('sCleanTitle', oGuiElement.getCleanTitle())
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
@@ -608,7 +607,6 @@ class cGui:
             self.addText('cGui')
 
         xbmcplugin.addDirectoryItems(iHandler, self.listing, len(self.listing))
-
         xbmcplugin.setPluginCategory(iHandler, '')
         xbmcplugin.setContent(iHandler, cGui.CONTENT)
         xbmcplugin.addSortMethod(iHandler, xbmcplugin.SORT_METHOD_NONE)
@@ -653,8 +651,8 @@ class cGui:
         oInputParameterHandler = cInputParameterHandler()
         # sParams = oInputParameterHandler.getAllParameter()
         sId = oInputParameterHandler.getValue('sId')
-
         sTest = '%s?site=%s' % (sPluginPath, sId)
+
         xbmc.executebuiltin('Container.Update(%s, replace)' % sTest)
 
     def viewInfo(self):
@@ -736,7 +734,7 @@ class cGui:
 
     def setWatched(self):
         if True:
-            # Use VStream database
+            # Use vStream database
             oInputParameterHandler = cInputParameterHandler()
             sSite = oInputParameterHandler.getValue('siteUrl')
             sTitle = oInputParameterHandler.getValue('sTitleWatched')
