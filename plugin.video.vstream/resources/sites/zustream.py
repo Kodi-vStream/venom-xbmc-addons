@@ -141,6 +141,7 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
+
 def showNetwork():
     oGui = cGui()
 
@@ -223,7 +224,7 @@ def showMovies(sSearch=''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sPattern = '<article id="post-\d+".+?img src="([^"]+)" alt="([^"]+)".+?(?:|class="quality">([^<]+)<.+?)(?:|class="dtyearfr">([^<]+)<.+?)<a href="([^"]+)">.+?<div class="texto">(.*?)</div>'
+        sPattern = 'article id="post-\d+".+?img src="([^"]+)" alt="([^"]+).+?(?:|class="quality">([^<]+).+?)(?:|class="dtyearfr">([^<]+).+?)href="([^"]+).+?class="texto">(.*?)</div>'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -288,8 +289,8 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            sNumPage = re.search('/page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -368,7 +369,7 @@ def showLink():
             pdata = 'action=doo_player_ajax&post=' + dpost + '&nume=' + dnum + '&type=' + dtype
             sTitle = aEntry[2].replace('Serveur', '').replace('Télécharger', '').replace('(', '').replace(')', '')
 
-            if ('VIP - ' in sTitle):  # Les liens VIP ne fonctionnent pas
+            if 'VIP - ' in sTitle:  # Les liens VIP ne fonctionnent pas
                 continue
 
             sTitle = ('%s [%s]') % (sMovieTitle, sTitle)
@@ -403,22 +404,20 @@ def showHosters():
     oRequest.addParametersLine(pdata)
 
     sHtmlContent = oRequest.request()
-    oParser = cParser()
+    # oParser = cParser()
 
     # 1
-    sPattern = '(?:<iframe|<IFRAME).+?(?:src|SRC)=(?:\'|")(.+?)(?:\'|")'
+    sPattern = '(?:<iframe|<IFRAME).+?(?:src|SRC)=[\'|"]([^\'|]+)'
     aResult1 = re.findall(sPattern, sHtmlContent)
-    # VSlog(aResult1)
 
     # 2
     sPattern = '<a href="([^"]+)">'
     aResult2 = re.findall(sPattern, sHtmlContent)
-    # VSlog(aResult2)
 
     # fusion
     aResult = aResult1 + aResult2
 
-    if (aResult):
+    if aResult:
         for aEntry in aResult:
 
             sHosterUrl = aEntry
@@ -430,13 +429,13 @@ def showHosters():
                 oRequestHandler = cRequestHandler(sHosterUrl)
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
                 oRequestHandler.addHeaderEntry('Referer', 'https://re.zu-lien.com')
-                sHtmlContent2 = oRequestHandler.request()
+                # sHtmlContent2 = oRequestHandler.request()
                 sHosterUrl = oRequestHandler.getRealUrl()
 
-        oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
-            oHoster.setDisplayName(sMovieTitle)
-            oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
