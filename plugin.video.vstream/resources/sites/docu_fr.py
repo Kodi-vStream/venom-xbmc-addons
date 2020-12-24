@@ -45,7 +45,6 @@ def load():
 
 def showSearch():
     oGui = cGui()
-
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH_MISC[0] + sSearchText.replace(' ', '+')
@@ -83,17 +82,15 @@ def showGenres():
 
 def showMovies(sSearch=''):
     oGui = cGui()
-    oParser = cParser()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     if sSearch:
         sUrl = sSearch
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sHtmlContent = sHtmlContent.replace('&nbsp;', '').replace('&#39;', '\'')
+    sHtmlContent = sHtmlContent.replace('&#39;', '\'')
 
     # if 'category' in sUrl or sSearch:
     sPattern = 'article id=".+?data-background="([^"]+)">.+?<div class="read-title">.+?<a href="([^"]+)">([^<]+)'
@@ -129,8 +126,8 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(number) + ' >>>[/COLOR]', oOutputParameterHandler)
+            sNumPage = re.search('page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
