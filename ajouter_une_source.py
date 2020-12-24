@@ -325,10 +325,10 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Page ' + str(number) + ' >>>[/COLOR]', oOutputParameterHandler)
+            sNumPage = re.search('/page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showSeries', 'Page ' + sNumPage, oOutputParameterHandler)
             # Si pas de numero de page dans l'url du nextPage, utiliser la ligne suivante et désactiver les 2 précédentes
-            # oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            # oGui.addNext(SITE_IDENTIFIER, 'showMovies', Suivant, oOutputParameterHandler)
             # Ajoute une entree pour le lien Suivant | pas de addMisc pas de poster et de description inutile donc
 
         oGui.setEndOfDirectory()  # ferme l'affichage
