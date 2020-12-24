@@ -200,10 +200,10 @@ def showSeries(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             sNumPage = ''
             try:
-                sNumPage = '[COLOR teal]Page ' + re.search('page.([0-9]+)', sNextPage).group(1) + ' >>>[/COLOR]'
+                sNumPage = re.search('page.([0-9]+)', sNextPage).group(1)
             except:
                 pass
-            oGui.addNext(SITE_IDENTIFIER, 'showSeries', sNumPage, oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showSeries', 'Page ' + sNumPage, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -309,10 +309,10 @@ def showEpisodes():
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             sNumPage = ''
             try:
-                sNumPage = '[COLOR teal]Page ' + re.search('page.([0-9]+)', sNextPage).group(1) + ' >>>[/COLOR]'
+                sNumPage = re.search('page.([0-9]+)', sNextPage).group(1)
             except:
                 pass
-            oGui.addNext(SITE_IDENTIFIER, 'showEpisodes', sNumPage, oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showEpisodes', 'Page ' + sNumPage, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
