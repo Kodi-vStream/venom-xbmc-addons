@@ -19,7 +19,7 @@ SITE_DESC = 'Films, Séries & Mangas en Streaming'
 URL_MAIN = 'https://filmstreamvk.bz/'
 
 MOVIE_MOVIE = (True, 'showMenuFilms')
-MOVIE_NEWS = (URL_MAIN, 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'film', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_EXCLUS = (URL_MAIN + 'tendance/', 'showMovies')
 
@@ -233,8 +233,8 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            sNumPage = re.search('page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -299,9 +299,9 @@ def showLinks():
     sHtmlContent = oRequest.request()
 
     if 'episodes' in sUrl:
-        sPattern = 'dooplay_player_option.+?data-post="(\d+)".+?data-nume="(.+?)">.+?"title">(.+?)<'
+        sPattern = 'dooplay_player_option.+?data-post="(\d+)".+?data-nume="([^"]+).+?title">([^<]+)'
     else:
-        sPattern = "dooplay_player_option.+?data-post='(\d+)'.+?data-nume='(.+?)'>.+?'title'>(.+?)<"
+        sPattern = "dooplay_player_option.+?data-post='(\d+)'.+?data-nume='([^']+).+?title'>([^<]+)"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
