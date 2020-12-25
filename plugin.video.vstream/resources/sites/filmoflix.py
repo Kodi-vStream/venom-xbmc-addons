@@ -18,32 +18,30 @@ SITE_DESC = ' films et series'
 
 URL_MAIN = 'https://www.filmoflix.net/'
 
-MOVIE_NEWS = (URL_MAIN + '/filmsenstreaming/', 'showMovies')
-SERIE_NEWS = (URL_MAIN + 'seriesenstreaming/', 'showMovies')
-
+MOVIE_NEWS = (URL_MAIN + 'filmsenstreaming/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 
+SERIE_NEWS = (URL_MAIN + 'seriesenstreaming/', 'showMovies')
 SERIE_GENRES = (True, 'showSerieGenres')
-
 SERIE_VF = (URL_MAIN + 'seriesenstreaming/series-vf/', 'showMovies')
 SERIE_VOSTFR = (URL_MAIN + 'seriesenstreaming/series-vostfr/', 'showMovies')
 
 key_search_movies = '#searchsomemovies'
 key_search_series = '#searchsomeseries'
-URL_SEARCH = (URL_MAIN + '/index.php?do=search', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'index.php?do=search', 'showMovies')
 URL_SEARCH_MOVIES = (key_search_movies, 'showMovies')
 URL_SEARCH_SERIES= ( key_search_series, 'showMovies')
 
 # recherche utilisé quand on n'utilise pas le globale
-MY_SEARCH_MOVIES = ( True, 'MyshowSearchMovie')
-MY_SEARCH_SERIES = ( True, 'MyshowSearchSerie')
+MY_SEARCH_MOVIES = ( True, 'myShowSearchMovie')
+MY_SEARCH_SERIES = ( True, 'myShowSearchSerie')
 
 # Menu GLOBALE HOME
 MOVIE_MOVIE = (True, 'showMoviesSource')
 SERIE_SERIES = (True, 'showTvshowSource')
 
-def load():
 
+def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -129,7 +127,7 @@ def showTvshowSource():
     oGui.setEndOfDirectory()
 
 
-def MyshowSearchSerie():
+def myShowSearchSerie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
@@ -139,7 +137,7 @@ def MyshowSearchSerie():
         return
 
 
-def MyshowSearchMovie():
+def myShowSearchMovie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
@@ -162,16 +160,18 @@ def showSearch():
 def showMovieGenres():
     showGenres(URL_MAIN + 'filmsenstreaming/', '')
 
+
 def showSerieGenres():
     showGenres(URL_MAIN + 'seriesenstreaming/', '-s')
 
-def showGenres(urltype,s):
 
+def showGenres(urltype, s):
     oGui = cGui()
+
     liste = []
-    listegenre = ['action', 'animation', 'aventure', 'biopic', 'comedie', 'drame', 'documentaire', 'epouvante-horreur'
-	              , 'espionnage' ,'famille', 'fantastique', 'guerre', 'historique', 'policier' , 'romance'
-				  , 'science-fiction', 'thriller', 'western']
+    listegenre = ['action', 'animation', 'aventure', 'biopic', 'comedie', 'drame', 'documentaire', 'epouvante-horreur',
+                  'espionnage' ,'famille', 'fantastique', 'guerre', 'historique', 'policier' , 'romance',
+                  'science-fiction', 'thriller', 'western']
 
     #https://www.filmoflix.net/filmsenstreaming/action/
     #https://www.filmoflix.net/seriesenstreaming/action-s/
@@ -189,7 +189,6 @@ def showGenres(urltype,s):
 
 
 def showMovies(sSearch=''):
-
     oGui = cGui()
     oParser = cParser()
 
@@ -226,8 +225,6 @@ def showMovies(sSearch=''):
 
     # ref thum title yeras
     sPattern = 'class="th-item".+?.+?ref="([^"]*).+?src="([^"]*).+?alt="([^"]*).+?Date.+?<.span>([^<]+)'
-
-
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -261,7 +258,7 @@ def showMovies(sSearch=''):
                 else:
                     sDisplayTitle = sDisplayTitle + ' [film]'
 
-            #VSlog(sUrl2 );VSlog(sTitle);VSlog(sThumb );VSlog(sYear  )
+            # VSlog(sUrl2 );VSlog(sTitle);VSlog(sThumb );VSlog(sYear  )
 
             sDisplayTitle = sDisplayTitle + ' (' + sYear + ')'
             if 'http' not in sThumb:
@@ -282,11 +279,11 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
     if not sSearch:
-        bNextPage, urlNextpage, pagination = __checkForNextPage(sHtmlContent)
+        bNextPage, urlNextpage, sNumPage = __checkForNextPage(sHtmlContent)
         if (bNextPage != False):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', urlNextpage)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] ' + pagination + ' >>>[/COLOR]', oOutputParameterHandler)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -296,7 +293,7 @@ def __checkForNextPage(sHtmlContent):
     urlNextpage = ''
     snumberNext = ''
     sNumberMax = ''
-    pagination = ''
+    sNumPage = ''
 
     if '<div class="pnext' not in sHtmlContent:
         return False, 'none', 'none'
@@ -309,18 +306,18 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<div class="pnext">.+?href="([^"]*)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        urlNextpage = aResult[1][0] # minimum requis
+        urlNextpage = aResult[1][0]  # minimum requis
         try:
             snumberNext = re.search('page.([0-9]+)', urlNextpage).group(1)
         except:
             pass
 
     if snumberNext:
-        pagination = 'Page ' + str(snumberNext)
+        sNumPage = snumberNext
         if sNumberMax:
-            pagination = pagination + '/' + sNumberMax
+            sNumPage = sNumPage + '/' + sNumberMax
     if urlNextpage:
-        return True, urlNextpage, pagination
+        return True, urlNextpage, sNumPage
 
     return False, 'none', 'none'
 
@@ -358,9 +355,9 @@ def showSaisons():
             sSaison = aEntry[2]  # SAISON 2
 
             if 'http' not in sThumb:
-                sThumb = URL_MAIN[:-1] + sThumb 
+                sThumb = URL_MAIN[:-1] + sThumb
 
-            sTitle = ("%s %s %s") % (sMovieTitle , sSaison , '(' + sYear + ')')
+            sTitle = ("%s %s (%s)") % (sMovieTitle , sSaison , sYear)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -510,7 +507,7 @@ def showMovieLinks():
     sPattern = 'property="og:description".+?content="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sDesc = 'FilmoFlix'
-    
+
     if (aResult[0] == True):
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
 
@@ -539,7 +536,7 @@ def showMovieLinks():
             oOutputParameterHandler.addParameter('cook', cook)
             oGui.addLink(SITE_IDENTIFIER, 'showMovieHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
-    oGui.setEndOfDirectory() 
+    oGui.setEndOfDirectory()
 
 
 def showMovieHosters():
