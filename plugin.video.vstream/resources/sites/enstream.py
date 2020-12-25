@@ -57,7 +57,6 @@ def load():
 
 def showSearch():
     oGui = cGui()
-
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         showMovies(sSearchText)
@@ -204,8 +203,8 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('(page|genre).*?[-=\/]([0-9]+)', sNextPage).group(2)  # ou replace'.html',''; '([0-9]+)$'
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            sNumPage = re.search('(page|genre).*?[-=\/]([0-9]+)', sNextPage).group(2)  # ou replace'.html',''; '([0-9]+)$'
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
