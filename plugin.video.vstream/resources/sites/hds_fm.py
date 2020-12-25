@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # source 35 https://www1.hds.fm/films-streaming/ 29112020
-# update 06122020
+# update 25122020
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -211,7 +211,7 @@ def showSerieGenres():
     oGui = cGui()
     liste = []
     listegenre = ['Action', 'Animation', 'Arts-martiaux', 'Aventure', 'Biopic', 'Comédie', 'Drame',
-                  'Epouvante_horreur', 'Famille', 'Historique', 'Judiciaire', 'Médical' , 'Policier',
+                  'Epouvante_horreur', 'Famille', 'Historique', 'Judiciaire', 'Médical', 'Policier',
                   'Romance', 'Science-fiction', 'Sport-event', 'Thriller', 'Western']
 
     # https://www1.hds.fm/serie-genre/Drame/
@@ -236,21 +236,19 @@ def showMovies(sSearch=''):
 
     bSearchMovie = False
     bSearchSerie = False
-    # sSearch2 = ''
     if sSearch:
 
         sSearch = sSearch.replace('%20', ' ')
 
         if key_search_movies in sSearch:
-            sSearch = sSearch.replace(key_search_movies , '')
+            sSearch = sSearch.replace(key_search_movies, '')
             bSearchMovie = True
         if key_search_series in sSearch:
-            sSearch = sSearch.replace(key_search_series , '')
+            sSearch = sSearch.replace(key_search_series, '')
             bSearchSerie = True
         sSearch2 = sSearch.replace('-', '').strip().lower()
-        # sUrl = URL_SEARCH[0] + sSearch
         sUrl = URL_SEARCH[0] + sSearch2
-        oRequest = cRequestHandler(sUrl )
+        oRequest = cRequestHandler(sUrl)
         sHtmlContent = oRequest.request()
 
     else:
@@ -283,7 +281,7 @@ def showMovies(sSearch=''):
 
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
-            sTitle = aEntry[2]  # .replace('-','')
+            sTitle = aEntry[2]
 
             if bSearchMovie:
                 if ' saison ' in sTitle.lower():
@@ -339,21 +337,21 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
     if not sSearch:
-        bNextPage, urlNextpage, pagination = __checkForNextPage(sHtmlContent)
+        bNextPage, urlNextPage, sNumPage = __checkForNextPage(sHtmlContent)
         if (bNextPage != False):
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', urlNextpage)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] ' + pagination + ' >>>[/COLOR]', oOutputParameterHandler)
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', urlNextPage)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    urlNextpage = ''
-    snumberNext = ''
+    # urlNextPage = ''
+    sNumberNext = ''
     sNumberMax = ''
-    pagination = ''
+    sNumPage = ''
 
     if '<a class="next"' not in sHtmlContent:
         return False, 'none', 'none'
@@ -370,21 +368,21 @@ def __checkForNextPage(sHtmlContent):
     sPattern = 'class="next.+?href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        urlNextpage = aResult[1][0]  # minimum requis
-        if 'htpp' not in urlNextpage:
-            urlNextpage = URL_MAIN[:-1] + urlNextpage
+        urlNextPage = aResult[1][0]  # minimum requis
+        if 'htpp' not in urlNextPage:
+            urlNextPage = URL_MAIN[:-1] + urlNextPage
         try:
-            snumberNext = re.search('/(\d+)/', urlNextpage).group(1)
+            sNumberNext = re.search('/(\d+)/', urlNextPage).group(1)
         except:
             pass
 
-    if snumberNext:
-        pagination = 'Page ' + str(snumberNext)
-        if sNumberMax:
-            pagination = pagination + '/' + sNumberMax
+        if sNumberNext:
+            sNumPage = sNumberNext
+            if sNumberMax:
+                sNumPage = sNumPage + '/' + sNumberMax
 
-    if urlNextpage:
-        return True, urlNextpage, pagination
+        if urlNextPage:
+            return True, urlNextPage, sNumPage
 
     return False, 'none', 'none'
 
@@ -501,7 +499,7 @@ def showSerieLinks():
                 sHost = GetHostname(sUrl2)
                 # VSlog(sUrl2);VSlog(sHost)
                 if len(aResult[1]) == 1 and 'openload' in sUrl2:
-                    oGui.addText(SITE_IDENTIFIER,'[COLOR skyblue] openload : site non sécurisé [/COLOR]')
+                    oGui.addText(SITE_IDENTIFIER, '[COLOR skyblue] openload : site non sécurisé [/COLOR]')
                     continue
 
                 if isblackhost(sUrl2):
