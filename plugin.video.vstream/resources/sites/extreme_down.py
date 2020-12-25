@@ -471,7 +471,7 @@ def showMovies(sSearch=''):
 
             if sCat == 3 or sMisc:
                 oGui.addMisc(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-            elif sCat == 1 or '/films-' in siteUrl or '/manga-films/' in siteUrl :
+            elif sCat == 1 or '/films-' in siteUrl or '/manga-films/' in siteUrl:
                 oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             elif sCat == 4 or '/mangas/' in siteUrl:
                 oGui.addAnime(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
@@ -488,8 +488,8 @@ def showMovies(sSearch=''):
                 oOutputParameterHandler.addParameter('siteUrl', siteUrl)
                 oOutputParameterHandler.addParameter('misc', sMisc)
                 oOutputParameterHandler.addParameter('nextPageSearch', aResult[1][0])
-                number = re.search('([0-9]+)', aResult[1][0]).group(1)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+                sNumPage = re.search('([0-9]+)', aResult[1][0]).group(1)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
 
         else:
             sNextPage = __checkForNextPage(sHtmlContent)
@@ -497,8 +497,8 @@ def showMovies(sSearch=''):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
                 oOutputParameterHandler.addParameter('misc', sMisc)
-                number = re.search('/page/([0-9]+)', sNextPage).group(1)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+                sNumPage = re.search('/page/([0-9]+)', sNextPage).group(1)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
 
     if nextPageSearch:
         oGui.setEndOfDirectory()
@@ -549,11 +549,11 @@ def showMoviesLinks():
     sPattern = '(<title>Télécharger |<title>)([^"]+) - ([^"]+)</title>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[1]):
+    if aResult[1]:
         sMovieTitle = aResult[1][0][1]
         sQual = aResult[1][0][2].replace('"', '')
 
-    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Qualités disponibles :[/COLOR]')
+    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles :[/COLOR]')
 
     sDisplayTitle = ('%s (%s)') % (sMovieTitle, sQual)
 
@@ -698,7 +698,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     # Detection de la taille des fichier pour separer les fichier premium des parties en .rar
-    if not 'saison' in sUrl:
+    if 'saison' not in sUrl:
         fileSize = re.findall('<strong>Taille</strong><span style="float: right;">([^<]+)</span></td>', sHtmlContent)
         if 'et' in str(fileSize[0]):
             taille = str(fileSize[:-7])
@@ -710,16 +710,16 @@ def showHosters():
             if float(size) > 4.85:
                 if "1 Lien" in sHtmlContent:
                     VSlog('1 Lien premium')
-                    sPattern = '<h2 style="text-align: center;"><span style=.+?>([^<]+)<span style=".+?</h2>|<div class="prez_2">1 Lien Uptobox</div>\s*.+?>\s*.+?<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>.+?\s*<div class="showNFO"'
+                    sPattern = '<h2 style="text-align: center;"><span style=.+?>([^<]+)<span style=".+?</h2>|<div class="prez_2">1 Lien Uptobox</div>\s*.+?>\s*.+?<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<]+)*</strong>.+?\s*<div class="showNFO"'
                 else:
                     VSlog('Pas lien premium')
-                    sPattern = '<h2 style="text-align: center;"><span style=.+?>([^<]+)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)* Premium</strong>'
+                    sPattern = '<h2 style="text-align: center;"><span style=.+?>([^<]+)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<]+)* Premium</strong>'
             else:
-                sPattern = '<h2 style="text-align: center;"><span style=.+?>([^<]+)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
+                sPattern = '<h2 style="text-align: center;"><span style=.+?>([^<]+)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<]+)*</strong>'
         else:
-            sPattern = '<h2 style="text-align: center;"><span style=.+?>([^<]+)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
+            sPattern = '<h2 style="text-align: center;"><span style=.+?>([^<]+)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<]+)*</strong>'
     else:
-        sPattern = '<div class="prez_7">([^<]+)</div>|<a title=".+?" href="([^"]+)" target="_blank"><strong class="hebergeur">([^<>]+)</strong>'
+        sPattern = '<div class="prez_7">([^<]+)</div>|<a title=".+?" href="([^"]+)" target="_blank"><strong class="hebergeur">([^<]+)</strong>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -839,7 +839,7 @@ def CutQual(sHtmlContent):
     oParser = cParser()
     sPattern = '<span class="other-qualities">&Eacute;galement disponible en :</span>(.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0]):
+    if aResult[0]:
         return aResult[1][0]
     return ''
 
@@ -848,6 +848,6 @@ def CutSais(sHtmlContent):
     oParser = cParser()
     sPattern = '<span class="other-qualities">Autres saisons :</span>(.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0]):
+    if aResult[0]:
         return aResult[1][0]
     return ''
