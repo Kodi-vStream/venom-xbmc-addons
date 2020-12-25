@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-
+return False
 import re
 
 from resources.lib.gui.gui import cGui
@@ -143,7 +143,7 @@ def showDailyList():
     sPattern = '<h2 class="entry-title"><a href="(.+?)" rel="bookmark">(.+?)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -167,8 +167,8 @@ def showDailyList():
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('pages/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showDailyList', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            sNumPage = re.search('pages/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showDailyList', 'Page ' + sNumPage, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -178,7 +178,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = 'class="next page-numbers" href="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         return aResult[1][0]
 
     return False
@@ -196,8 +196,8 @@ def showAllPlaylist():  # On recupere les differentes playlist si il y en a
     sPattern = '<a class="more-link" title="(.+?)".+?href="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
-        sTitletest = ''
+    if aResult[0] is True:
+        sTitleTest = ''
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -209,10 +209,10 @@ def showAllPlaylist():  # On recupere les differentes playlist si il y en a
             sTitle = aEntry[0]
             sUrl2 = aEntry[1]
 
-            if (sTitle == sTitletest):
+            if (sTitle == sTitleTest):
                 continue
             else:
-                sTitletest = sTitle
+                sTitleTest = sTitle
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
