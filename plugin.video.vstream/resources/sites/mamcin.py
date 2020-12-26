@@ -53,7 +53,7 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['News', URL_MAIN + 'non-classe/'] )
+    liste.append(['News', URL_MAIN + 'non-classe/'])
 
     for sTitle, sUrl in liste:
 
@@ -95,8 +95,8 @@ def showMovies(sSearch=''):
 
             # first post filter
             if (str(aEntry[2]) != "https://www.mamcin.com/wp-content/uploads/2017/10/plus-belle-la-vie-episode-suivant-en-avance.jpg"):
-                sUrl    = aEntry[0]
-                sTitle  = aEntry[1]
+                sUrl = aEntry[0]
+                sTitle = aEntry[1]
                 sThumb = aEntry[2]
 
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -111,8 +111,8 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            sPaging = re.search('page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -123,7 +123,6 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<li class="previous"><a href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         return aResult[1][0]
 
