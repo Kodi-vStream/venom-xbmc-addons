@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # source 34 https://french-stream.lol/  french-stream.lol 29112020
-# update 25122020
+# update 26122020
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -275,6 +275,7 @@ def showMovies(sSearch=''):
         oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
         oRequest.addParametersLine(pdata)
         sHtmlContent = oRequest.request()
+        sPattern = '<div class="short-in.+?with-mask.+?ref="([^"]*).+?src="([^"]*).+?title="([^"]*)'
 
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -282,9 +283,8 @@ def showMovies(sSearch=''):
 
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
+        sPattern = '<div class="short-in.+?with-mask.+?ref="([^"]*).+?src="([^"]*).+?alt="([^"]*)'
 
-    # ref thum title
-    sPattern = '<div class="short-in.+?with-mask.+?ref="([^"]*).+?src="([^"]*).+?short-title">([^<]*)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -301,7 +301,7 @@ def showMovies(sSearch=''):
 
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
-            sTitle = aEntry[2]  # .replace('-','')
+            sTitle = aEntry[2].replace('Regarder ', '').replace(' en streaming complet', '')
 
             if bSearchMovie:
                 if '/serie' in sUrl2:
@@ -400,7 +400,7 @@ def ShowEpisodes():
     if (aResult[0] == True):
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', cleanDesc(aResult[1][0]))
 
-    sPattern = 'fa-play-circle-o">.+?(VOSTFR|VF)|id="(?:honey|yoyo)(?:\d+)"\s*href="([^"]+).+?title="([^"]+).+?data-rel="([^"]+)'
+    sPattern = 'fa-play-circle-o">.+?(VOSTFR|VF)|id="(?:honey|yoyo)(?:\d+)"\s*href="([^"]+).+?data-rel="([^"]+).+?<\/i>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     bfind = ""
@@ -415,8 +415,8 @@ def ShowEpisodes():
             if bfind and aEntry[1]:
                 ValidEntry = True
                 sFirst_Url = aEntry[1]
-                sEpisode = aEntry[2]
-                sRel_Episode = aEntry[3]
+                sRel_Episode = aEntry[2]
+                sEpisode = aEntry[3]
 
                 sDisplayTitle = sMovieTitle.replace('-', '') + ' ' + sEpisode + ' (' + Slang + ')'
 
@@ -469,7 +469,7 @@ def showSerieLinks():
             sDisplayTitle = sDisplayTitle1 + ' ' + sHost
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle1)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('referer', sUrl)
@@ -501,7 +501,7 @@ def showSerieLinks():
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle1)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('referer', sUrl)
