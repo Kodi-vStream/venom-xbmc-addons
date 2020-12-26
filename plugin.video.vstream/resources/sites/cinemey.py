@@ -1,15 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # source 27 https://cinemey.com/
-#
-'''
-upvid.net   
-embed.mystream.to  
-upstream.to 
-www.fembed.com
-jetload.net 
-
-'''
 
 import re
 import xbmc
@@ -38,8 +29,6 @@ SERIE_NEWS = (URL_MAIN + 'les-series-en-streaming', 'showMovies')
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 SERIE_SERIE = (True, 'showMenuSeries')
-
-#MOVIE_MOVIE = ('http://', 'load')
 
 
 def load():
@@ -85,7 +74,7 @@ def showMenuMovies():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
-    
+
     oGui.setEndOfDirectory()
 
 def showMenuSeries():
@@ -113,11 +102,9 @@ def showGenres():
     liste = []
     #https://serie.dpstreamhd.com/categories/romance
     # recherche nulle war-politics ,soap, kids ,talk ,news ,science-fiction-fantastique
-    listegenre = ['action ', 'action-adventure ', 'animation', 'aventure'
-                , 'comedie', 'crime', 'documentaire', 'drame ', 'familial'
-                , 'fantastique', 'guerre' , 'histoire', 'horreur', 'musique'
-                , 'Musical', 'mystere ', 'reality', 'romance' , 'science-fiction'
-                , 'telefilm', 'thriller' , 'western']
+    listegenre = ['action ', 'action-adventure ', 'animation', 'aventure', 'comedie', 'crime', 'documentaire'
+                  , 'drame ', 'familial', 'fantastique', 'guerre', 'histoire', 'horreur', 'musique'
+                  , 'Musical', 'mystere ', 'reality', 'romance', 'science-fiction', 'telefilm', 'thriller', 'western']
 
     url1g = URL_MAIN + 'categorie/'
 
@@ -131,10 +118,11 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
+
 def showMovieYears():
     oGui = cGui()
-    #https://cinemey.com/annee/2020
-    for i in reversed(range(2001, 2021)): #pas grand chode 32 - 90
+    # https://cinemey.com/annee/2020
+    for i in reversed(range(2001, 2021)):  # pas grand chode 32 - 90
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + Year)
@@ -148,15 +136,12 @@ def showMovies(sSearch=''):
     oParser = cParser()
 
     if sSearch:
-        
-        bvalid , stoken , scookie = GetTokens()
-        if bvalid:
-        #if True:  
-            #sSearch=sSearch.replace('%20', '+')
-            pdata = '_token=' + stoken + '&search=' + sSearch
 
+        bvalid, stoken, scookie = GetTokens()
+        if bvalid:
+            pdata = '_token=' + stoken + '&search=' + sSearch
             sUrl = URL_MAIN + 'search'
-            oRequestHandler = cRequestHandler(sUrl )
+            oRequestHandler = cRequestHandler(sUrl)
             oRequestHandler.setRequestType(1)
             oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
             oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
@@ -164,7 +149,6 @@ def showMovies(sSearch=''):
             oRequestHandler.addHeaderEntry('Cookie', scookie)
             oRequestHandler.addParametersLine(pdata)
             oRequestHandler.request()
-            
             # constatation ; on est oblige de faire  2 requetes 
             # dans le cas ou le mot recherché est composé ?
             xbmc.sleep(500)
@@ -173,9 +157,7 @@ def showMovies(sSearch=''):
             oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
             oRequestHandler.addHeaderEntry('Cookie', scookie)
             oRequestHandler.addParametersLine(pdata)
-            
             sHtmlContent = oRequestHandler.request()
-
         else:
             oGui.addText(SITE_IDENTIFIER)
             return
@@ -188,25 +170,29 @@ def showMovies(sSearch=''):
 
     # title img year surl 
     sPattern = '<article class.+?data-url.+?title="([^"]*)".+?img src=([^\s]*).+?year">([^<]+).+?href="([^"]+)'  
-
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        total = len(aResult[1])
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
 
             sDesc = ''
 
             sTitle = aEntry[0]
             sThumb = aEntry[1]
-            sYear = aEntry[2] 
+            sYear = aEntry[2]
             sUrl2 = aEntry[3]
-            sDisplayTitle = sTitle + '(' + sYear  +')'
-            
-            #VSlog('url = ' + sUrl2);VSlog('title = '+ sTitle);VSlog('thumb = '+ sThumb);VSlog('desc'+ sDesc )
+            sDisplayTitle = sTitle + '(' + sYear + ')'
+
+            # VSlog('url = ' + sUrl2);VSlog('title = '+ sTitle);VSlog('thumb = '+ sThumb);VSlog('desc'+ sDesc )
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -214,36 +200,36 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sYear', sYear)
-            
+
             if sSearch:
                 oGui.addLink(SITE_IDENTIFIER, 'showSelectType', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
-                #oGui.addLink(SITE_IDENTIFIER, 'hostersLink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
-           
-            
+
             elif SERIE_NEWS[0] in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSXE', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-            else:  
+            else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLink', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
-    
-    if not sSearch:
-        bNextPage,urlNextpage,pagination = __checkForNextPage(sHtmlContent,sUrl)
-        if (bNextPage != False):
 
+        progress_.VSclose(progress_)
+
+    if not sSearch:
+        bNextPage, urlNextpage, sPagination = __checkForNextPage(sHtmlContent, sUrl)
+        if (bNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', urlNextpage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] ' + pagination + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] ' + sPagination + ' >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
-def __checkForNextPage(sHtmlContent,sUrl):
+
+def __checkForNextPage(sHtmlContent, sUrl):
 
     oParser = cParser()
     urlNextpage = ''
     snumberNext = ''
     sNumberMax = ''
     bfailed1 = False
-    pagination = ''
+    sPagination = ''
     if 'next page-numbers' not in sHtmlContent:
         return False, 'none', 'none'
     # on tente de prendre le n max et l'url next ainsi que le numero de page
@@ -268,11 +254,11 @@ def __checkForNextPage(sHtmlContent,sUrl):
             except:
                 pass
     if snumberNext:
-        pagination = 'Page ' + str(snumberNext)
+        sPagination = 'Page ' + str(snumberNext)
         if sNumberMax:
-            pagination = pagination + '/' + sNumberMax
+            sPagination = sPagination + '/' + sNumberMax
     if urlNextpage:
-        return True, urlNextpage, pagination
+        return True, urlNextpage, sPagination
 
     return False, 'none', 'none'
 
@@ -294,21 +280,19 @@ def showSelectType():
     sPattern = 'class="description">.*?<br>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        sDesc= ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
-    
-    
+        sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
     oOutputParameterHandler.addParameter('sThumb', sThumb)
     oOutputParameterHandler.addParameter('sDesc', sDesc)
     oOutputParameterHandler.addParameter('sYear', sYear)
-    sDisplayTitle = sMovieTitle + '(' + str(sYear)  +')'
-    
-    if 'class="num-epi">' in sHtmlContent :
+    sDisplayTitle = sMovieTitle + '(' + str(sYear) + ')'
 
+    if 'class="num-epi">' in sHtmlContent:
         oGui.addTV(SITE_IDENTIFIER, 'showSXE', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
-    else:#VideoObject.+?"description":"([^"]+)
+    else:
         oGui.addMovie(SITE_IDENTIFIER, 'showLink', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -326,7 +310,6 @@ def showSXE():
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    oParser = cParser()
 
     oParser = cParser()
     sPattern = 'class="description">.*?<br>([^<]+)'
@@ -334,29 +317,24 @@ def showSXE():
     if (aResult[0] == True):
         sDesc= ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
 
-
-
-    #sPattern = 'class="numep">([^<]+).+?href="([^"]+)'
     sPattern = 'class="num-epi">([^<]+).+?href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     list_saison = []
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             if 'x' in aEntry[0]:
-                #class="numep">1x13<
-                saison,episode = aEntry[0].split('x')
+                # class="numep">1x13<
+                saison, episode = aEntry[0].split('x')
                 if saison not in list_saison:
                     list_saison.append(saison )
                     sSaison = 'Saison ' + saison
                     oGui.addText(SITE_IDENTIFIER, '[COLOR skyblue]' + sSaison + '[/COLOR]')
 
                 sUrl2 = aEntry[1]
-
                 sTitle = sMovieTitle + ' Episode' + episode
-                #VSlog('saison '+ str(saison)+' episode  ' + str(episode))
-
+                # VSlog('saison '+ str(saison)+' episode  ' + str(episode))
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -367,8 +345,6 @@ def showSXE():
                 oGui.addEpisode(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
-
 
 
 def showLink():
@@ -384,21 +360,17 @@ def showLink():
 
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
-    
-    
+
     oParser = cParser()
     sPattern = 'class="description">.*?<br>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        sDesc= ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
-    
-    
-    
-    
+        sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
+
     # dans le cas d'une erreur si serie (pas de controle année et genre)
-    if False and 'class="num-epi">' in sHtmlContent and 'episode' not in sUrl :
-        sDisplayTitle = sMovieTitle + '(' + str(sYear)  +')'
-        
+    if False and 'class="num-epi">' in sHtmlContent and 'episode' not in sUrl:
+        sDisplayTitle = sMovieTitle + '(' + str(sYear)  + ')'
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -410,7 +382,7 @@ def showLink():
         oGui.setEndOfDirectory()
         return 
 
-    sPattern = 'data-url="([^"]+).+?server.+?alt="([^"]+).+?alt="([^"]+)' 
+    sPattern = 'data-url="([^"]+).+?server.+?alt="([^"]+).+?alt="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
@@ -422,14 +394,12 @@ def showLink():
             vSlang = aEntry[2].upper()
             sUrl2 =  URL_MAIN + 'll/captcha?hash=' + skey
             sTitle = sMovieTitle
-  
+
             if sYear:
                 sTitle = sTitle + '(' +  sYear + ')'
 
-            #sTitle = ('%s %s [COLOR coral]%s[/COLOR]') % (sTitle, vSlang ,sHost )
-            
-            sTitle = ('%s %s [COLOR coral]%s[/COLOR]') % (sTitle,'[' + vSlang + ']', sHost )
-           
+            sTitle = ('%s %s [COLOR coral]%s[/COLOR]') % (sTitle, '[' + vSlang + ']', sHost )
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('referer', sUrl)
@@ -443,7 +413,6 @@ def showLink():
 def showHosters():
 
     oGui = cGui()
-    #oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -478,11 +447,11 @@ def GetTokens():
     site_session = ''
 
     sHeader = oRequestHandler.getResponseHeader()
-    sPattern ='<nav id="menu.+?name=_token.+?value="([^"]+).+?<div class="typeahead'
+    sPattern = '<nav id="menu.+?name=_token.+?value="([^"]+).+?<div class="typeahead'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-        return False , 'none', 'none'
+        return False, 'none', 'none'
 
     if (aResult[0] == True):
         token = aResult[1][0]
@@ -491,13 +460,13 @@ def GetTokens():
     aResult = oParser.parse(sHeader, sPattern)
 
     if (aResult[0] == False):
-        return False ,'none','none'
+        return False, 'none', 'none'
 
     if (aResult[0] == True):
         XSRF_TOKEN = aResult[1][0][0]
         site_session = aResult[1][0][1]
 
-    cook ='XSRF-TOKEN=' + XSRF_TOKEN + '; cinemay_session=' + site_session + ';'
+    cook = 'XSRF-TOKEN=' + XSRF_TOKEN + '; cinemay_session=' + site_session + ';'
     return True, token, cook
 
 
@@ -508,6 +477,6 @@ def cleanDesc(sdesc):
                 , 'Voir Serie '
                     ] 
     for s in list_comment:
-        sdesc = sdesc.replace(s , '')
+        sdesc = sdesc.replace(s, '')
 
     return sdesc
