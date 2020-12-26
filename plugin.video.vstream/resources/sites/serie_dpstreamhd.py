@@ -1,17 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # source 22 https://serie.dpstreamhd.com/
-# 
-''' 
-host disponible
-upvid.co
-embed.mystream.to
-mixdrop.to
-upstream.to
-www.fembed.com
-jetload.net
 
-'''
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -20,7 +10,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress #,VSlog
+from resources.lib.comaddon import progress # ,VSlog
 
 
 SITE_IDENTIFIER = 'serie_dpstreamhd'
@@ -114,13 +104,11 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    #https://serie.dpstreamhd.com/categories/romance
+    # https://serie.dpstreamhd.com/categories/romance
     # recherche nulle war-politics ,soap, kids ,talk ,news ,science-fiction-fantastique
-    listegenre = ['action ', 'action-adventure ', 'animation', 'aventure'
-                , 'comedie', 'crime', 'documentaire', 'drame ', 'familial'
-                , 'fantastique', 'guerre' , 'histoire', 'horreur', 'musique'
-                , 'Musical', 'mystere ', 'reality', 'romance' , 'science-fiction'
-                , 'telefilm', 'thriller' , 'western']
+    listegenre = ['action ', 'action-adventure ', 'animation', 'aventure', 'comedie', 'crime', 'documentaire', 'drame ', 'familial'
+                , 'fantastique', 'guerre', 'histoire', 'horreur', 'musique', 'Musical', 'mystere ', 'reality', 'romance', 'science-fiction'
+                , 'telefilm', 'thriller', 'western']
 
     url1g = URL_MAIN + 'categories/'
 
@@ -140,7 +128,7 @@ def showMovies(sSearch=''):
     oParser = cParser()
 
     if sSearch:
-        bvalid , stoken , scookie = GetTokens()
+        bvalid, stoken, scookie = GetTokens()
         if bvalid:
             pdata = '_token=' + stoken + '&search=' + sSearch
             sUrl = URL_MAIN + 'search'
@@ -171,23 +159,26 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-
     if (aResult[0] == True):
-
+        total = len(aResult[1])
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
+
             sYear = ''
             sDesc = ''
-            sThumb = aEntry[0] + '.jpg' # bug parfois pad de jpg ?
-            #VSlog(aEntry[1])
+            sThumb = aEntry[0] + '.jpg' # bug parfois pas de jpg  à revoir ?
             sTitle = cleanDesc(aEntry[1])
-            sDesc = 'note :'+ aEntry[2]
+            sDesc = 'note :' + aEntry[2]
             sUrl2 = aEntry[3]
-            sDisplayTitle = sTitle 
+            sDisplayTitle = sTitle
 
             if 'http' not in sUrl2:  # search
                 sUrl2 = URL_MAIN[:-1] + sUrl2
 
-            #VSlog('url = ' + sUrl2);VSlog('title = '+ sTitle);VSlog('thumb = '+ sThumb);VSlog('desc'+ sDesc )
+            # VSlog('url = ' + sUrl2);VSlog('title = '+ sTitle);VSlog('thumb = '+ sThumb);VSlog('desc'+ sDesc )
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -200,25 +191,27 @@ def showMovies(sSearch=''):
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showSXE', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
+        progress_.VSclose(progress_)
+
     if not sSearch:
-        bNextPage,urlNextpage,pagination = __checkForNextPage(sHtmlContent,sUrl)
+        bNextPage, urlNextpage, sPagination = __checkForNextPage(sHtmlContent, sUrl)
         if (bNextPage != False):
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', urlNextpage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] ' + pagination + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] ' + sPagination  + ' >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
-def __checkForNextPage(sHtmlContent,sUrl):
+def __checkForNextPage(sHtmlContent, sUrl):
 
     oParser = cParser()
     urlNextpage = ''
     snumberNext = ''
     sNumberMax = ''
     bfailed1 = False
-    pagination = ''
+    sPagination = ''
     if 'next page-nav' not in sHtmlContent:
         return False, 'none', 'none'
     # on tente de prendre le n max et l'url next ainsi que le numero de page
@@ -243,11 +236,11 @@ def __checkForNextPage(sHtmlContent,sUrl):
             except:
                 pass
     if snumberNext:
-        pagination = 'Page ' + str(snumberNext)
+        sPagination = 'Page ' + str(snumberNext)
         if sNumberMax:
-            pagination = pagination + '/' + sNumberMax
+            sPagination = sPagination + '/' + sNumberMax
     if urlNextpage:
-        return True, urlNextpage, pagination
+        return True, urlNextpage, sPagination
 
     return False, 'none', 'none'
 
@@ -272,7 +265,7 @@ def showSXE():
         aresult = aResult_[1][0]
         sYear = aresult[0]
         sDescColor = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aresult[1])
-        if  sDesc :
+        if  sDesc:
             sDesc = sDesc + '\r\n' + sDescColor
         else:
             sDesc = sDescColor
@@ -285,8 +278,8 @@ def showSXE():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             if 'x' in aEntry[0]:
-                #class="numep">1x13<
-                saison,episode = aEntry[0].split('x')
+                # class="numep">1x13<
+                saison, episode = aEntry[0].split('x')
                 if saison not in list_saison:
                     list_saison.append(saison )
                     sSaison = 'Saison ' + saison
@@ -319,7 +312,6 @@ def showLink():
     sDesc = oInputParameterHandler.getValue('sDesc')
     sDisplayTitle = oInputParameterHandler.getValue('sDisplayTitle')
 
-    #sYear = oInputParameterHandler.getValue('sYear')
     if sDisplayTitle:
         sMovieTitle = sDisplayTitle
 
@@ -329,15 +321,12 @@ def showLink():
     sYear = ''
     sPattern = 'année<.span>([^<]+).+?résume de.+?<br>([^<]+)'
     aResult_ = oParser.parse(sHtmlContent, sPattern)
-    sDesc = 'no description'  
+    sDesc = 'no description'
     if (aResult_[0] == True):
+        sDesc = ''
         aresult = aResult_[1][0]
         sYear = aresult[0]
-        sDescColor = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aresult[1])
-        if  sDesc:
-            sDesc = sDesc + '\r\n' + sDescColor
-        else:
-            sDesc = sDescColor
+        sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aresult[1])
 
     sPattern = 'data-url="([^"]+).+?alt="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -349,12 +338,12 @@ def showLink():
             skey = aEntry[0]
             sHost = aEntry[1]
 
-            sUrl2 =  URL_MAIN + 'll/captcha?hash=' + skey
+            sUrl2 = URL_MAIN + 'll/captcha?hash=' + skey
             sTitle = sMovieTitle
             if sYear:
-                sTitle = sTitle + '(' +  sYear + ')'
+                sTitle = sTitle + '(' + sYear + ')'
 
-            sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, sHost )
+            sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -369,7 +358,6 @@ def showLink():
 def showHosters():
 
     oGui = cGui()
-    #oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -394,7 +382,7 @@ def showHosters():
 
 def GetTokens():
     oParser = cParser()
-    oRequestHandler = cRequestHandler(URL_MAIN )
+    oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
     sHeader = oRequestHandler.getResponseHeader()
 
@@ -404,11 +392,11 @@ def GetTokens():
     site_session = ''
 
     sHeader = oRequestHandler.getResponseHeader()
-    sPattern ='name=_token.+?value="([^"]+).+?class="filter-options'
+    sPattern = 'name=_token.+?value="([^"]+).+?class="filter-options'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-        return False , 'none', 'none'
+        return False, 'none', 'none'
 
     if (aResult[0] == True):
         token = aResult[1][0]
@@ -417,13 +405,13 @@ def GetTokens():
     aResult = oParser.parse(sHeader, sPattern)
 
     if (aResult[0] == False):
-        return False ,'none','none'
+        return False, 'none', 'none'
 
     if (aResult[0] == True):
         XSRF_TOKEN = aResult[1][0][0]
         site_session = aResult[1][0][1]
 
-    cook ='XSRF-TOKEN=' + XSRF_TOKEN + '; dpstreamhd_session=' + site_session + ';'
+    cook = 'XSRF-TOKEN=' + XSRF_TOKEN + '; dpstreamhd_session=' + site_session + ';'
     return True, token, cook
 
 
@@ -434,6 +422,6 @@ def cleanDesc(sdesc):
                 , 'Voir Serie '
                     ] 
     for s in list_comment:
-        sdesc = sdesc.replace(s , '')
+        sdesc = sdesc.replace(s, '')
 
     return sdesc
