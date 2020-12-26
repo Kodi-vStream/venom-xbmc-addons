@@ -13,7 +13,7 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'lsdb'
-SITE_NAME = 'Liveset Database (bêta)'
+SITE_NAME = 'Liveset Database'
 SITE_DESC = 'liveset podcast et autre de musique électronique'
 
 URL_MAIN = 'https://lsdb.eu'  # Pas de / car peut poser probleme
@@ -22,7 +22,7 @@ URL_SEARCH = (URL_MAIN + '/search?q=', 'showMovies')
 URL_SEARCH_MISC = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-NETS_NEWS =  (URL_MAIN + '/livesets', 'showMovies')
+NETS_NEWS = (URL_MAIN + '/livesets', 'showMovies')
 NETS_GENRES = (True, 'showGenres')
 NETS_EVENTS = (URL_MAIN + '/events/index/1', 'showEvents')
 NETS_SHOWS = (URL_MAIN + '/events/index/2', 'showShows')
@@ -127,7 +127,6 @@ def showMovies(sSearch=''):
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    # VSlog(str(aResult)) #Commenter ou supprimer cette ligne une fois fini
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -148,12 +147,11 @@ def showMovies(sSearch=''):
 
         progress_.VSclose(progress_)
 
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('page=([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -171,7 +169,6 @@ def showIsdb():
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    # VSlog(str(aResult)) #Commenter ou supprimer cette ligne une fois fini
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -210,7 +207,6 @@ def showEvents():
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    # VSlog(str(aResult))
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
@@ -234,12 +230,11 @@ def showEvents():
 
         progress_.VSclose(progress_)
 
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('page=([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showEvents', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showEvents', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -255,7 +250,6 @@ def showShows():
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    # VSlog(str(aResult))
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
@@ -279,12 +273,11 @@ def showShows():
 
         progress_.VSclose(progress_)
 
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('page=([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showShows', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showShows', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -300,7 +293,6 @@ def showPodcast():
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    # VSlog(str(aResult))
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
@@ -324,12 +316,11 @@ def showPodcast():
 
         progress_.VSclose(progress_)
 
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('page=([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showPodcast', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showPodcast', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -345,7 +336,6 @@ def showPromo():
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    # VSlog(str(aResult))
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
@@ -369,12 +359,11 @@ def showPromo():
 
         progress_.VSclose(progress_)
 
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('page=([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showPromo', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showPromo', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -383,9 +372,10 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<li class="active"><a href="">.+?</a></li><li><a href="([^"]+)">.+?</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
-        return URL_MAIN + aResult[1][0]
+        sNextPage = URL_MAIN + aResult[1][0]
+        sPaging = re.search('page=([0-9]+)', sNextPage).group(1)
+        return sNextPage, sPaging
 
     return False
 
@@ -404,7 +394,6 @@ def showHosters():
     sPattern = '<br />\s*<a href="([^"]+)">.+?</a>.+?<br />'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    # VSlog(str(aResult))
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
