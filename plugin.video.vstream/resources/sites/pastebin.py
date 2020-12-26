@@ -60,7 +60,8 @@ def getNbItemParPage():
     return int(nbItem)
 
 ITEM_PAR_PAGE = getNbItemParPage()
-PASTE_PAR_GROUPE = 100   # jusqu'à 100 dossiers, chaque dossier peut contenir jusqu'à 100 liens pastebin
+GROUPE_MAX = 50          # jusqu'à 50 dossiers, limitation du skin
+PASTE_PAR_GROUPE = 100   # jusqu'à 100 liens pastebin par dossier
 
 
 # Durée du cache, en Heures
@@ -142,7 +143,7 @@ class PasteBinContent:
             # Vérifie si la ligne d'entete existe avec les champs obligatoires
             lines = sContent.splitlines()
             entete = lines[0].split(";")
-            if 'TITLE' not in entete and 'URLS' not in entete:
+            if 'TITLE' not in entete and 'URL' not in entete:
                 return []
             self._cache_save(pasteBin, sContent)
 
@@ -382,7 +383,8 @@ def showMenu():
         
         # Menu pour ajouter un lien (hors widget)
         if not xbmc.getCondVisibility('Window.IsActive(home)'):
-            oGui.addDir(SITE_IDENTIFIER, 'addPasteID', '[COLOR coral]Ajouter un lien PasteBin[/COLOR]', 'listes.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'addPasteID', '[COLOR coral]Ajouter un code PasteBin[/COLOR]', 'notes.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'adminPasteID', '[COLOR coral]Retirer un code PasteBin[/COLOR]', 'trash.png', oOutputParameterHandler)
 
     elif 'film' in sMedia:
         contenu.discard('containSeries')
@@ -638,7 +640,7 @@ def showSearchGlobal(sSearch=''):
 
     sUrl = sSearch
 
-    for numID in range(1, PASTE_PAR_GROUPE):
+    for numID in range(1, GROUPE_MAX):
         prefixID = SETTING_PASTE_LABEL + str(numID)
         pastebin = addons.getSetting(prefixID)
         if pastebin:
@@ -1793,7 +1795,7 @@ def getHosterList(siteUrl):
     return listHoster, listRes
     
 
-# Ajout d'un lien pastebin
+# Ajout d'un dossier pastebin
 def addPasteName():
     oGui = cGui()
     addons = addon()
@@ -1801,7 +1803,7 @@ def addPasteName():
     # Recherche d'un setting de libre
     names = set()
     newID = 0
-    for numID in range(1, PASTE_PAR_GROUPE):
+    for numID in range(1, GROUPE_MAX):
         pasteLabel = addons.getSetting(SETTING_PASTE_LABEL + str(numID))
         if pasteLabel == '':
             if newID == 0:
@@ -1825,6 +1827,31 @@ def addPasteName():
     dialog().VSinfo(addons.VSlang(30042))
     
     oGui.updateDirectory()
+
+
+# Retirer un dossier PasteBin
+def deletePasteName():
+
+    addons = addon()
+    if not dialog().VSyesno(addons.VSlang(30456)):
+        return
+    
+    oInputParameterHandler = cInputParameterHandler()
+    pasteID = oInputParameterHandler.getValue('pasteID')
+
+    labelSetting = SETTING_PASTE_LABEL + pasteID
+    addons.setSetting(labelSetting, '')
+
+    prefixID = SETTING_PASTE_ID + str(pasteID)
+    addons.setSetting(prefixID, '')
+
+    for numID in range(1, PASTE_PAR_GROUPE):
+        pasteID = prefixID + '_' + str(numID)
+        if addons.getSetting(pasteID):
+            addons.setSetting(pasteID, '')
+
+    cGui().updateDirectory()
+
 
 
 # Retourne la liste des PasteBin depuis l'URL ou un groupe
@@ -1910,30 +1937,71 @@ def addPasteID():
     
     oGui.updateDirectory()
 
+# Liste de pastes avec possibilité de les supprimer
+def adminPasteID():
+    oGui = cGui()
+    addons = addon()
 
-# Retirer un groupe PasteBin
-def deletePasteName():
+    oGui.addText(SITE_IDENTIFIER, '[COLOR coral]Valider le code à retirer[/COLOR]', 'trash.png')
+ 
+    oInputParameterHandler = cInputParameterHandler()
+    pasteID = oInputParameterHandler.getValue('pasteID')    # Numéro du dossier
+    prefixID = SETTING_PASTE_ID + str(pasteID)
 
+    pbContentNew = PasteBinContent()
+    for numID in range(0, PASTE_PAR_GROUPE):
+        if numID == 0 :
+            pasteBin = addons.getSetting(prefixID)
+        else:
+            pasteBin = addons.getSetting(prefixID + '_' + str(numID))
+        if not pasteBin:
+            continue
+     
+        # Vérifier la qualité du Paste
+        color = 'white' # Forcer une couleur évite aussi le nettoyage du "titre" 
+        try:
+            movies = pbContentNew.getLines(pasteBin)
+            if len(movies) == 0 :
+                color = 'red'
+        except Exception:
+            dialog().VSinfo(addons.VSlang(30011))
+            raise
+
+        pasteLabel = '[COLOR %s]%s[/COLOR]' % (color, pasteBin)
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('pasteID', pasteID)
+        oOutputParameterHandler.addParameter('pasteBin', pasteBin)
+        oGui.addDir(SITE_IDENTIFIER, 'deletePasteID', pasteLabel, 'trash.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+# Suppression d'un paste dans un dossier
+def deletePasteID():
+    
     addons = addon()
     if not dialog().VSyesno(addons.VSlang(30456)):
         return
-    
-    oInputParameterHandler = cInputParameterHandler()
-    pasteID = oInputParameterHandler.getValue('pasteID')
 
-    labelSetting = SETTING_PASTE_LABEL + pasteID
-    addons.setSetting(labelSetting, '')
+    oInputParameterHandler = cInputParameterHandler()
+    pasteID = oInputParameterHandler.getValue('pasteID')      # Numéro du dossier
+    pasteDel = oInputParameterHandler.getValue('pasteBin')    # Paste
 
     prefixID = SETTING_PASTE_ID + str(pasteID)
-    addons.setSetting(prefixID, '')
-
-    for numID in range(1, PASTE_PAR_GROUPE):
-        pasteID = prefixID + '_' + str(numID)
-        if addons.getSetting(pasteID):
-            addons.setSetting(pasteID, '')
-
+    pasteBin = addons.getSetting(prefixID)
+    if pasteDel == pasteBin:
+        addons.setSetting(prefixID, '')
+    else:
+        for numID in range(1, PASTE_PAR_GROUPE):
+            pasteID = prefixID + '_' + str(numID)
+            pasteBin = addons.getSetting(pasteID)
+            if pasteDel == pasteBin:
+                addons.setSetting(pasteID, '')
+                break
+    
+    dialog().VSinfo(addons.VSlang(30072))
+    
     cGui().updateDirectory()
 
-# msgctxt "#30072"
-# msgid "File deleted"
-# msgstr "Fichier supprimé"
+
