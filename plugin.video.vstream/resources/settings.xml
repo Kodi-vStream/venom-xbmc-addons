@@ -92,11 +92,15 @@
 
         <setting visible="false" id="plugin_cinemegatoil_org" type="bool" label="Cinemegatoil" default="true"/>
 
+        <setting visible="false" id="plugin_cinemey" type="bool" label="Cinemey" default="true"/>
+
         <setting visible="false" id="plugin_ddl1" type="bool" label="DDL1" default="true"/>
 
         <setting visible="false" id="plugin_docu_fr" type="bool" label="Docu Fr" default="true"/>
         
         <setting visible="false" id="plugin_dpstream" type="bool" label="Dpstream" default="true"/>
+
+        <setting visible="false" id="plugin_dpstreamhd" type="bool" label="DpStream HD" default="true"/>
 
         <setting visible="false" id="plugin_dpstreaming" type="bool" label="DP Streaming" default="true"/>
 
