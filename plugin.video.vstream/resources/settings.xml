@@ -90,6 +90,8 @@
 
         <setting visible="false" id="plugin_cinemay_com" type="bool" label="Cinemay" default="true"/>
 
+        <setting visible="false" id="plugin_cinemey" type="bool" label="Cinemey" default="true"/>
+
         <setting visible="false" id="plugin_cinemegatoil_org" type="bool" label="Cinemegatoil" default="true"/>
 
         <setting visible="false" id="plugin_ddl1" type="bool" label="DDL1" default="true"/>
@@ -103,6 +105,8 @@
         <setting visible="false" id="plugin_enstream" type="bool" label="Enstream" default="true"/>
 
         <setting visible="false" id="plugin_extreme_down" type="bool" label="ExtremeDown" default="true"/>
+
+        <setting visible="false" id="plugin_serie_dpstreamhd" type="bool" label="Serie Dpstream HD" default="true"/>
 
 <!-- CloudFlare         <setting visible="false" id="plugin_filmoflix" type="bool" label="Filmoflix" default="true"/>
  -->
