@@ -630,6 +630,7 @@ class cGui:
 
     def updateDirectory(self):  # refresh the content
         xbmc.executebuiltin('Container.Refresh')
+        xbmc.sleep(500)    # Nécessaire pour laisser le temps du refresh
 
     def viewBA(self):
         oInputParameterHandler = cInputParameterHandler()
