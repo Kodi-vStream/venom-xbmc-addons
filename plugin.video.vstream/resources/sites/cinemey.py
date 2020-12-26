@@ -19,6 +19,7 @@ SITE_DESC = 'Films VF & VOSTFR en streaming.'
 URL_MAIN = 'https://cinemey.com/'
 URL_SEARCH = ('', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN + 'top-films-en-streaming', 'showMovies')
