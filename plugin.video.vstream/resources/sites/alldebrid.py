@@ -48,12 +48,12 @@ def showLiens(sSearch=''):
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     numItem = oInputParameterHandler.getValue('numItem')
-    sNumPage = oInputParameterHandler.getValue('sNumPage')
+    numPage = oInputParameterHandler.getValue('numPage')
     if not numItem:
         numItem = 0
-        sNumPage = 1
+        numPage = 1
     numItem = int(numItem)
-    sNumPage = int(sNumPage)
+    numPage = int(numPage)
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -99,12 +99,12 @@ def showLiens(sSearch=''):
 
             if not sSearch:
                 if nbItem % ITEM_PAR_PAGE == 0:  # cherche la page suivante
-                    sNumPage += 1
+                    numPage += 1
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
                     oOutputParameterHandler.addParameter('numItem', numItem)
-                    oOutputParameterHandler.addParameter('sNumPage', sNumPage)
-                    oGui.addNext(SITE_IDENTIFIER, 'showLiens', 'Page ' + sNumPage, oOutputParameterHandler)
+                    oOutputParameterHandler.addParameter('numPage', numPage)
+                    oGui.addNext(SITE_IDENTIFIER, 'showLiens', 'Page ' + str(numPage), oOutputParameterHandler)
                     break
 
         oGui.setEndOfDirectory()
@@ -118,12 +118,12 @@ def showMagnets(sSearch=''):
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
     numItem = oInputParameterHandler.getValue('numItem')
-    sNumPage = oInputParameterHandler.getValue('sNumPage')
+    numPage = oInputParameterHandler.getValue('numPage')
     if not numItem:
         numItem = 0
-        sNumPage = 1
+        numPage = 1
     numItem = int(numItem)
-    sNumPage = int(sNumPage)
+    numPage = int(numPage)
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -162,12 +162,12 @@ def showMagnets(sSearch=''):
 
             if not sSearch:
                 if nbItem % ITEM_PAR_PAGE == 0:  # cherche la page suivante
-                    sNumPage += 1
+                    numPage += 1
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
                     oOutputParameterHandler.addParameter('numItem', numItem)
-                    oOutputParameterHandler.addParameter('sNumPage', sNumPage)
-                    oGui.addNext(SITE_IDENTIFIER, 'showLiens', 'Page ' + sNumPage, oOutputParameterHandler)
+                    oOutputParameterHandler.addParameter('numPage', numPage)
+                    oGui.addNext(SITE_IDENTIFIER, 'showLiens', 'Page ' + str(numPage), oOutputParameterHandler)
                     break
 
             if 'mp4' in sUrl2 or 'avi' in sUrl2 or 'mkv' in sUrl2:
@@ -187,12 +187,12 @@ def showseriesHoster(sSearch=''):
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     numItem = oInputParameterHandler.getValue('numItem')
-    sNumPage = oInputParameterHandler.getValue('sNumPage')
+    numPage = oInputParameterHandler.getValue('numPage')
     if not numItem:
         numItem = 0
-        sNumPage = 1
+        numPage = 1
     numItem = int(numItem)
-    sNumPage = int(sNumPage)
+    numPage = int(numPage)
 
     try:  # Dans le cas ou le mot mp4/avi/mkv n'est pas présent quand c'est un seul fichier
         s = requests.Session()
@@ -251,12 +251,12 @@ def showseriesHoster(sSearch=''):
 
             if not sSearch:
                 if nbItem % ITEM_PAR_PAGE == 0:  # cherche la page suivante
-                    sNumPage += 1
+                    numPage += 1
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
                     oOutputParameterHandler.addParameter('numItem', numItem)
-                    oOutputParameterHandler.addParameter('sNumPage', sNumPage)
-                    oGui.addNext(SITE_IDENTIFIER, 'showLiens', 'Page ' + sNumPage, oOutputParameterHandler)
+                    oOutputParameterHandler.addParameter('numPage', numPage)
+                    oGui.addNext(SITE_IDENTIFIER, 'showLiens', 'Page ' + str(numPage), oOutputParameterHandler)
                     break
 
             progress_.VSclose(progress_)
