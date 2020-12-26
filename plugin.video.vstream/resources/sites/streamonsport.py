@@ -170,7 +170,7 @@ def showMovies(sSearch=''):
             if bChaine :
                 oGui.addMisc(SITE_IDENTIFIER, 'showLive', sDisplayTitle, 'tv.png', sThumb, sDisplayTitle, oOutputParameterHandler)
             else:
-                oGui.addLink(SITE_IDENTIFIER, 'showLive', sDisplayTitle, sThumb, sDisplayTitle, oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'showLive', sDisplayTitle, sThumb, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
