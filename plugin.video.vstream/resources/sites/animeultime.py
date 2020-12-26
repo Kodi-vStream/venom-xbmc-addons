@@ -257,7 +257,7 @@ def showSeries(sSearch=''):
     if sSearch:
         sPattern = '<td class=".+?<a href="([^"]+)".+?<img src=.+?img=([^>]+)/>.+?onMouseOut.+?>(.+?)</a>'
     else:
-        sPattern = '<td class=".+?<a href="([^"]+)".+?<img src=([^>]+)/>.+?title="([^"]+)'
+        sPattern = '<td class=".+?<a href="([^"]+)".+?<img src=([^>]+)\/>.+?alt="([^"]+).+?<td class'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
