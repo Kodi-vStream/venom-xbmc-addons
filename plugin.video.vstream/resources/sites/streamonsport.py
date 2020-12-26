@@ -85,7 +85,7 @@ def showGenres():
     liste.append(['FootBall', URL_MAIN + '1-foot-streaming-ligue.html'])
     liste.append(['Rugby', URL_MAIN + '2-rugby-streaming.html'])
     liste.append(['Basketball', URL_MAIN + '3-basketball-streaming.html'])
-    liste.append(['Real-Madrid', URL_MAIN + '4-formule-1-grand-prix-despagne-en-streaming-gratuit.html'])
+    liste.append(['Formule 1', URL_MAIN + '4-formule-1-grand-prix-despagne-en-streaming-gratuit.html'])
     liste.append(['Handball', URL_MAIN + '6-handball-streaming.html'])
     liste.append(['Tennis', URL_MAIN + '5-tennis-streaming.html'])
     liste.append(['Moto', URL_MAIN + '7-moto-gp-streaming-portugal.html'])
@@ -147,9 +147,11 @@ def showMovies(sSearch=''):
             sdesc1 = aEntry[3]
             sdesc2 = aEntry[4]
             sDisplayTitle = sTitle
+            bChaine = False
             if sUrl != CHAINE_TV[0] and sUrl != SPORT_TV[0]:
                 sDisplayTitle = sTitle + '-' + sdesc1 + '-' + sdesc2
             else:
+                bChaine = True
                 sTitle = sTitle.upper()
                 sDisplayTitle = sTitle
 
@@ -162,9 +164,13 @@ def showMovies(sSearch=''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addMisc(SITE_IDENTIFIER, 'showLive', sDisplayTitle, 'sport.png', sThumb, '', oOutputParameterHandler)
+            if bChaine :
+                oGui.addMisc(SITE_IDENTIFIER, 'showLive', sDisplayTitle, 'tv.png', sThumb, sDisplayTitle, oOutputParameterHandler)
+            else:
+                oGui.addLink(SITE_IDENTIFIER, 'showLive', sDisplayTitle, sThumb, sDisplayTitle, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -177,6 +183,7 @@ def showLive():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -199,14 +206,14 @@ def showLive():
 
             i += 1
             sUrl2 = aEntry
-            sDisplayTitle = sMovieTitle + ' Link' + str(i)
+            sDisplayTitle = sMovieTitle + ' - Lien ' + str(i)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('siterefer', sUrl)
-            oGui.addMisc(SITE_IDENTIFIER, 'Showlink', sDisplayTitle, 'sport.png', '', '', oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'Showlink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -232,7 +239,7 @@ def showLive():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('siterefer', sUrl)
-            oGui.addDir(SITE_IDENTIFIER, 'Showlink', sDisplayTitle, 'sport.png', oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'Showlink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
