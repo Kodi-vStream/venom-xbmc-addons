@@ -30,7 +30,7 @@ ANIM_VOSTFRS = (URL_MAIN + 'liste-dl-animes.php', 'showAnimes')
 
 SERIE_DRAMAS = (URL_MAIN + 'liste-dl-dramas.php', 'showAnimes')
 
-OST_ANIME =(True, 'showGenres')
+OST_ANIME = (True, 'showGenres')
 
 
 def load():
@@ -45,8 +45,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Dramas)', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS [0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS [1], 'Animés (VOSTFR)', 'animes.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'animes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_DRAMAS[0])
@@ -91,19 +91,18 @@ def showSearch():
 
 def showAnimes(sSearch=''):
     oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     if sSearch:
         sUrl = sSearch
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
 
     # On memorise le lien de base ce qui permet d'avoir un nextpage fonctionnel sans modif et peut importe la categorie
     if not sSearch:
-        if not 'scroll' in sUrl:
-            MemorisedUrl = sUrl
+        if 'scroll' not in sUrl:
+            memorisedUrl = sUrl
             Page = 1
         else:
-            MemorisedUrl = oInputParameterHandler.getValue('MemorisedUrl')
+            memorisedUrl = oInputParameterHandler.getValue('memorisedUrl')
             Page = oInputParameterHandler.getValue('Page')
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -152,11 +151,11 @@ def showAnimes(sSearch=''):
     if not sSearch:
         Page = int(Page) + 1
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', MemorisedUrl + '?&scroll=' + str(Page))
+        oOutputParameterHandler.addParameter('siteUrl', memorisedUrl + '?&scroll=' + str(Page))
         # On renvoi l'url memoriser et le numero de page pour l'incrementer a chaque fois
-        oOutputParameterHandler.addParameter('MemorisedUrl', MemorisedUrl)
+        oOutputParameterHandler.addParameter('memorisedUrl', memorisedUrl)
         oOutputParameterHandler.addParameter('Page', Page)
-        oGui.addNext(SITE_IDENTIFIER, 'showAnimes', '[COLOR teal]Page ' + str(Page) + ' >>>[/COLOR]', oOutputParameterHandler)
+        oGui.addNext(SITE_IDENTIFIER, 'showAnimes', 'Page ' + str(Page), oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -166,11 +165,11 @@ def showOst():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    if not 'page' in sUrl:
-        MemorisedUrl = sUrl
+    if 'page' not in sUrl:
+        memorisedUrl = sUrl
         Page = 1
     else:
-        MemorisedUrl = oInputParameterHandler.getValue('MemorisedUrl')
+        memorisedUrl = oInputParameterHandler.getValue('memorisedUrl')
         Page = oInputParameterHandler.getValue('Page')
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -207,11 +206,11 @@ def showOst():
 
         Page = int(Page) + 1
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', MemorisedUrl + '?page=' + str(Page))
+        oOutputParameterHandler.addParameter('siteUrl', memorisedUrl + '?page=' + str(Page))
         # On renvoi l'url memoriser et le numero de page pour l'incrementer a chaque fois
-        oOutputParameterHandler.addParameter('MemorisedUrl', MemorisedUrl)
+        oOutputParameterHandler.addParameter('memorisedUrl', memorisedUrl)
         oOutputParameterHandler.addParameter('Page', Page)
-        oGui.addNext(SITE_IDENTIFIER, 'showOst', '[COLOR teal]Page ' + str(Page) + ' >>>[/COLOR]', oOutputParameterHandler)
+        oGui.addNext(SITE_IDENTIFIER, 'showOst', 'Page ' + str(Page), oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -262,7 +261,7 @@ def showEpisodes():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('serieID',serieID)
+            oOutputParameterHandler.addParameter('serieID', serieID)
             oOutputParameterHandler.addParameter('idEpisode', idEpisode)
             oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -326,6 +325,7 @@ def showHosters():
     serieID = oInputParameterHandler.getValue('serieID')
     idEpisode = oInputParameterHandler.getValue('idEpisode')
 
+    sHosterUrl = ''
     if 'fiche-anime' in sUrl:
         sHosterUrl = URL_MAIN + 'launch-download-1-' + serieID + '-ddl-' + idEpisode + '.html'
     elif 'fiche-drama' in sUrl:
