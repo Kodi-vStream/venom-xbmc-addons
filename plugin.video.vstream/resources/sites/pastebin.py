@@ -516,9 +516,19 @@ def showDetailMenu(pasteID, contenu):
             oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime&pasteID=' + pasteID)
             oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Animes (Listes)', 'genres.png', oOutputParameterHandler)
 
+        if 'containAnimeNetwork' in contenu:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime&pasteID=' + pasteID)
+            oGui.addDir(SITE_IDENTIFIER, 'showNetwork', 'Animes (Par diffuseurs)', 'host.png', oOutputParameterHandler)
+
+        if 'containAnimeYear' in contenu:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime&pasteID=' + pasteID)
+            oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Animes (Par années)', 'annees.png', oOutputParameterHandler)
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime&pasteID=' + pasteID)
-        oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Animes (Ordre alphabétique)', 'listes.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Animes (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
     if 'containDivers' in contenu:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -594,6 +604,10 @@ def getPasteBin(pbContent, pasteBin):
             containList.add('containAnimes')
             if pbContent.GROUPES >= 0 and len(movie[pbContent.GROUPES].replace('[', '').replace(']', '').strip()) > 0:
                 containList.add('containAnimeGroupes')
+            if pbContent.NETWORK >=0 and len(movie[pbContent.NETWORK].replace('[', '').replace(']', '').strip()) > 0:
+                containList.add('containAnimeNetwork')
+            if pbContent.YEAR >= 0 and len(movie[pbContent.YEAR].strip()) > 1:
+                containList.add('containAnimeYear')
 
         elif 'divers' in movie[pbContent.CAT]:
             containList.add('containDivers')
@@ -1122,7 +1136,7 @@ def showYears():
         sUrl = siteUrl + '&sYear=' + sYear
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'years.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
