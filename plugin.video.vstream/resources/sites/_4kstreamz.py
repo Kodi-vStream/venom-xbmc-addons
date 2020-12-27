@@ -11,9 +11,9 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 
-SITE_IDENTIFIER = 'quatreKstreamz'
+SITE_IDENTIFIER = '_4kstreamz'
 SITE_NAME = '4kstreamz'
-SITE_DESC = ' films et series'
+SITE_DESC = 'Films et Séries'
 
 URL_MAIN = 'https://www.4kstreamz.co/'
 
@@ -170,7 +170,7 @@ def showMovies(sSearch=''):
             sNumPage = sNumPage .replace('page-', '')
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + sNumPage + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -303,6 +303,7 @@ def showLinks():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
+            sLang = ''
             if aEntry[3]:
                 sLang = aEntry[3].upper()
 
@@ -310,7 +311,7 @@ def showLinks():
                 dataUrl = aEntry[0]
                 dataCode = aEntry[1]
                 sHost = aEntry[2].capitalize()
-                if isblackhost(sHost):
+                if isBlackHost(sHost):
                     continue
 
                 sUrl2 = URL_MAIN + 'Players.php?PPl=' + dataUrl + '&CData=' + dataCode
@@ -328,6 +329,8 @@ def showLinks():
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
+
+            sLang = ''
             if aEntry[3]:
                 sLang = aEntry[3].upper()
 
@@ -365,7 +368,7 @@ def showHosters():
         oRequest = cRequestHandler(sUrl)
         oRequest.addHeaderEntry('Referer', referer)
         oRequest.request()
-        sHtmlContent=oRequest.request()
+        sHtmlContent = oRequest.request()
 
         oParser = cParser()
         sPattern = 'class="DownloadSection.+?href="([^"]+)'
@@ -389,7 +392,7 @@ def showHosters():
     oGui.setEndOfDirectory()
 
 
-def isblackhost(url):
+def isBlackHost(url):
     black_host = ['4k player', 'streamango', 'openload', 'verystream']
     urlLower = url.lower()
     for host in black_host:
