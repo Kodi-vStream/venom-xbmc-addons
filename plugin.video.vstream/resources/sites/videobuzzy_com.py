@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-#Venom.
+# Venom.
 import re
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -95,14 +95,12 @@ def showMovies(sSearch=''):
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
-    # print(aResult)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sTitle = aEntry[1]
             sThumb = aEntry[2]
-            sDesc = aEntry[3].replace('&eacute;', 'é').replace('&agrave;', 'à').replace('&egrave;', 'è').replace('&ugrave;', 'ù')
-            sDesc = sDesc.replace('&#39;', '\'').replace('&iuml;', 'ï').replace('&ccedil;', 'ç').replace('&ocirc;', 'ô').replace('&ecirc;', 'ê')
+            sDesc = aEntry[3]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -115,7 +113,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.search('/page-([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -123,11 +121,9 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     sPattern = '<span class="current">.+?</span><a href="(.+?)" title=\'.+?\'>.+?</a>'
-
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        # print(aResult[1][0])
         return URL_MAIN + aResult[1][0]
 
     return False
@@ -147,7 +143,6 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    # print(aResult)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
