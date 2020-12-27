@@ -147,18 +147,18 @@ def showMovies(sSearch=''):
                 if (SPION_CENSURE == True):
                     if (sCat == 'NSFW') or (sCat == 'Trash'):
                         sPoster = LOGO_CSA
-                        oGui.addMisc(SITE_IDENTIFIER, 'showCensure', sTitle, '', sPoster,'', oOutputParameterHandler)
+                        oGui.addMisc(SITE_IDENTIFIER, 'showCensure', sTitle, '', sPoster, '', oOutputParameterHandler)
                     else:
-                        oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', sPoster,'', oOutputParameterHandler)
+                        oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', sPoster, '', oOutputParameterHandler)
                 else:
-                    oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', sPoster,'', oOutputParameterHandler)
+                    oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', sPoster, '', oOutputParameterHandler)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -194,7 +194,7 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-        sPattern = '<div class="video_tabs"><a href="([^<>"]+?)"'
+        sPattern = '<div class="video_tabs"><a href="([^"]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -206,7 +206,6 @@ def showHosters():
                 sHosterUrl = 'http:' + sHosterUrl
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
