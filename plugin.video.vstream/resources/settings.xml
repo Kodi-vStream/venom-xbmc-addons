@@ -74,6 +74,8 @@
         <setting type="sep"/>
 
         <!--activation invisible des sources -->
+        <setting visible="false" id="plugin__4kstreamz" type="bool" label="4kstreamz" default="true"/>
+
         <setting visible="false" id="plugin_adkami_com" type="bool" label="ADKami" default="true"/>
 
         <setting visible="false" id="plugin_alldebrid" type="bool" label="AllDebrid" default="true"/>
@@ -97,7 +99,7 @@
         <setting visible="false" id="plugin_ddl1" type="bool" label="DDL1" default="true"/>
 
         <setting visible="false" id="plugin_docu_fr" type="bool" label="Docu Fr" default="true"/>
-        
+
         <setting visible="false" id="plugin_dpstream" type="bool" label="Dpstream" default="true"/>
 
         <setting visible="false" id="plugin_dpstreamhd" type="bool" label="DpStream HD" default="true"/>
@@ -173,8 +175,6 @@
         <setting visible="false" id="plugin_pastebin" type="bool" label="PasteBin" default="true"/>
 
         <setting visible="false" id="plugin_planet_streaming" type="bool" label="Planet Streaming" default="true"/>
-        
-        <setting visible="false" id="plugin_quatreKstreamz" type="bool" label="4kstreamz" default="true"/>
 
         <setting visible="false" id="plugin_serie_streaming_watch" type="bool" label="SerieStreaming.watch" default="true"/>
 
