@@ -258,7 +258,7 @@ def showMovies(sSearch=''):
             # Derniers épisodes
             if 'derniere-et-meilleures-serie-en-streaming' in sUrl:
                 sUrl2 = aEntry[0]
-                sTitle = aEntry[1].replace(' - ', ' ') + aEntry[2].replace(' ','')
+                sTitle = aEntry[1].replace(' - ', ' ') + aEntry[2].replace(' ', '')
                 sThumb = 'news.png'
             else:
                 sTitle = aEntry[0].replace('Streaming', '')
@@ -277,25 +277,28 @@ def showMovies(sSearch=''):
 
         progress_.VSclose(progress_)
 
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('page=([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a class="page-link" href="([^"]+)" rel="next">'
+    sPattern = '>([^<]+)</a></li><li class="page-item"><a class="page-link" href="([^"]+)" rel="next">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return aResult[1][0]
+        sNumberMax = aResult[1][0][0]
+        sNextPage = aResult[1][0][1]
+        sNumberNext = re.search('page=([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    return False
+    return False, 'none'
 
 
 def showS_E():
@@ -309,13 +312,13 @@ def showS_E():
     oRequestHandler = cRequestHandler(rUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<img class=".+?src="(http.+?(?:.jpe*g|.png))|<a class="btn btn-primary btn-blo.+?" href="([^"]+)">(.+?)<\/a><\/div>'
+    sPattern = '<img class=".+?src="(http.+?(?:.jpe*g|.png))|<a class="btn btn-primary btn-blo.+?" href="([^"]+)">(.+?)</a></div>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            if '/saison/' in rUrl:#episode
+            if '/saison/' in rUrl:  # episode
                 if aEntry[0]:
                     sThumb = aEntry[0]
 
@@ -328,7 +331,7 @@ def showS_E():
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                     oGui.addEpisode(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, '', oOutputParameterHandler)
 
-            else:#saison
+            else:  # saison
                 if aEntry[0]:
                     sThumb = aEntry[0]
 
@@ -364,7 +367,7 @@ def showLink():
     except:
         pass
 
-    sPattern = '</i> *Lien.+?</td>.+?alt="([^"]+)".+?(?:|center">([^<]+)</td>.+?)(?:|data-uid="([^"]+)") data-id="([^"]+)">'
+    sPattern = '</i> *Lien.+?</td.+?alt="([^"]+).+?(?:|center">([^<]+)</td>.+?)(?:|data-uid="([^"]+)") data-id="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -403,7 +406,7 @@ def showHosters():
     sHtmlContent = oRequest.request()
     sHosterUrl = oRequest.getRealUrl()
 
-    if 'captcha' not in sHosterUrl :
+    if 'captcha' not in sHosterUrl:
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
             oHoster.setDisplayName(sMovieTitle)
