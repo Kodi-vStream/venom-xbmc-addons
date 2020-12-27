@@ -310,7 +310,7 @@ def showMovies(sSearch=''):
 
         sHtmlContent = oRequest.request()
 
-        sPattern = '<div class="unfilm".+?<a href="([^"]+)" title="([^"]+)".+?class="type ([^"]+)".+?<img src="([^"]+)".+?("suivre2">([^<]+)<|<span class="qualite ([^"]+)"|<div class="cdiv")'
+        sPattern = '<div class="unfilm".+?href="([^"]+)" title="([^"]+).+?class="type ([^"]+)".+?<img src="([^"]+).+?("suivre2">([^<]+)<|<span class="qualite ([^"]+)|<div class="cdiv")'
 
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -318,7 +318,7 @@ def showMovies(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
         sHtmlContent = re.sub('alt="title="', 'alt="', sHtmlContent)  # anime
-        sPattern = '<div class="unfilm".+?<a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)".+?("suivre2">([^<]+)<|<span class="qualite ([^"]+)"|<div class="cdiv")'
+        sPattern = '<div class="unfilm".+?href="([^"]+).+?<img src="([^"]+)" alt="([^"]+).+?("suivre2">([^<]+)<|<span class="qualite ([^"]+)|<div class="cdiv")'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -390,28 +390,31 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
     if not sSearch:
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.findall('([0-9]+)', sNextPage)[-1]
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
     sHtmlContent = re.sub(" rel='nofollow'", "", sHtmlContent)  # next genre
-    sPattern = "href='([^']+)'>suiv »"
+    sPattern = ">([^<]+)</a><a href='([^']+)'>suiv »"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        if aResult[1][0].startswith('/'):
-            return URL_MAIN[:-1] + aResult[1][0]
-        else:
-            return aResult[1][0]
+        sNumberMax = aResult[1][0][0]
+        sNextPage = aResult[1][0][1]
+        if sNextPage.startswith('/'):
+            sNextPage = URL_MAIN[:-1] + sNextPage
+        sNumberNext = re.findall('([0-9]+)', sNextPage)[-1]
+        sPaging = str(sNumberNext) + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    return False
+    return False, 'none'
 
 
 def showLinks():
@@ -545,9 +548,9 @@ def showHosters():
     # attention fake redirection
     sUrl = redirection_target
     try:
-    	m = re.search(r'url=([^"]+)', sHtmlContent)
+        m = re.search(r'url=([^"]+)', sHtmlContent)
     except:
-    	m = re.search(r'url=([^"]+)', str(sHtmlContent))
+        m = re.search(r'url=([^"]+)', str(sHtmlContent))
 
     if m:
         sUrl = m.group(1)
