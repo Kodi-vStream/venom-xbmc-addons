@@ -293,7 +293,7 @@ def load():
         if pasteLabel:
             pasteListe[pasteLabel] = numID
 
-    # Trie des listes par label
+    # Trie des dossiers par label
     pasteListe = sorted(pasteListe.items(), key=lambda paste: paste[0])
 
     if len(pasteListe) > 0:
@@ -413,7 +413,7 @@ def showDetailMenu(pasteID, contenu):
         oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Films)', 'search.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&pasteID=' + pasteID)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&bNews=True&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
         if 'containFilmGenres' in contenu:
@@ -471,7 +471,7 @@ def showDetailMenu(pasteID, contenu):
         oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Séries)', 'search.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&pasteID=' + pasteID)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&bNews=True&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -504,7 +504,7 @@ def showDetailMenu(pasteID, contenu):
         oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Animes)', 'search.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime&pasteID=' + pasteID)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime&bNews=True&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Animes (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -1246,7 +1246,7 @@ def showMovies(sSearch=''):
     numPage = oInputParameterHandler.getValue('numPage')
     sMedia = 'film'  # Par défaut
     pasteID = sGenre = sSaga = sGroupe = sYear = sRes = sAlpha = sNetwork = sDirector = sCast = None
-    bRandom = False
+    bRandom = bNews = False
 
     if sSearch:
         siteUrl = sSearch
@@ -1285,16 +1285,42 @@ def showMovies(sSearch=''):
         sCast = aParams['sCast']
     if 'bRandom' in aParams:
         bRandom = aParams['bRandom']
+    if 'bNews' in aParams:
+        bNews = aParams['bNews']
     if not numPage and 'numPage' in aParams:
         numPage = aParams['numPage']
 
     pbContent = PasteBinContent()
     movies = []
+    pasteLen = []
+    pasteMaxLen = []
+    maxlen = 0
     listeIDs = getPasteList(sUrl, pasteID)
+    
     for pasteBin in listeIDs:
         moviesBin = pbContent.getLines(pasteBin)
         movies += moviesBin
+        pasteLen.append(len(moviesBin))
+        maxlen += len(moviesBin)
+        pasteMaxLen.append(maxlen)
 
+    # si plusieurs pastes, on les parcourt en parallèle
+    if (bNews or sYear or sGenre or sRes) and len(listeIDs) > 1:
+        moviesNews = []
+        i = j = k = 0
+        lenMovie = len(movies)
+        while k < lenMovie:
+            if i < pasteMaxLen[j]:
+                moviesNews.append(movies[i])
+                k += 1
+            i += pasteLen[j]
+            j += 1
+            if j >= len(pasteMaxLen):
+                i = (i % lenMovie) + 1
+                j=0
+                
+        movies = moviesNews
+    
     # Recherche par ordre alphabetique => le tableau doit être trié
     if sAlpha:
         movies = sorted(movies, key=lambda line: line[pbContent.TITLE])
