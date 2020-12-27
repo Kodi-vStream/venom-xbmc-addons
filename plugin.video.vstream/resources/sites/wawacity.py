@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -53,7 +55,7 @@ ANIM_GENRES = (True, 'showGenreAnime')
 DIVERTISSEMENTS = (URL_MAIN + '?p=autres-videos&s=divertissements', 'showMovies')
 SPECTACLES = (URL_MAIN + '?p=autres-videos&s=spectacles', 'showMovies')
 DOC_DOCS = (URL_MAIN + '?p=autres-videos&s=documentaires','showMovies')
-DIVERS_LIST = (URL_MAIN + '?p=autres-videos','showMovies')
+DIVERS_LIST = (URL_MAIN + '?p=autres-videos', 'showMovies')
 DIVERS_GENRES = (True, 'showGenreDivers')
 
 SERIE_SERIES = ('http://', 'showMenuSeries')
@@ -491,7 +493,6 @@ def showMovies(sSearch=''):
                 sTitle = sTitle.replace('Saison ', ' S')
                 sLang = aEntry[1].split(' - ')[2].upper()
                 sThumb = URL_MAIN + aEntry[2]
-                sQual = ''
 
             else:
                 sTitle = aEntry[1]
@@ -521,11 +522,11 @@ def showMovies(sSearch=''):
 
         progress_.VSclose(progress_)
 
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -533,12 +534,16 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = 'href=\'([^"]+)\' rel=\'next\'>'
+    sPattern = '>([^<]+)</a></li><li ><a href=\'([^"]+)\' rel=\'next\'>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return URL_MAIN + aResult[1][0]
+        sNumberMax = aResult[1][0][0]
+        sNextPage = URL_MAIN + aResult[1][0][1]
+        sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    return False
+    return False, 'none'
 
 
 def showMoviesLinks():
@@ -571,9 +576,7 @@ def showMoviesLinks():
     sPattern = '<i class="fa fa-folder-open"></i>\s*.+?<i>([^"]+)</i>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    sQual = ''
     if (aResult[0]):
-        # sQual = aResult[1][0]
         sQual = aResult[1][0].split(' - ')[0]
         sLang = aResult[1][0].split(' - ')[1]
         sTitle = ('%s %s (%s)') % (sMovieTitle, sQual, sLang)
@@ -646,7 +649,8 @@ def showSeriesLinks():
 
     if (aResult[0]):
         sSaison = aResult[1][0][2]
-        sMovieTitle = (aResult[1][0][0].replace('&amp;', '') + aResult[1][0][1] + ' ' + aResult[1][0][2]).replace('Télécharger ', '').replace('TÃ©lÃ©charger', '')
+        sMovieTitle = (aResult[1][0][0].replace('&amp;', '') + aResult[1][0][1] + ' ' + aResult[1][0][2])
+        sMovieTitle = sMovieTitle.replace('Télécharger ', '').replace('TÃ©lÃ©charger', '')
 
     # on recherche d'abord la langue courante
     sPattern = '<i class="fa fa-folder-open"></i>\s*.+?<i>([^"]+)</i>'
@@ -717,7 +721,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumb=oInputParameterHandler.getValue('sThumb')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -754,12 +758,12 @@ def showSeriesHosters():
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumb=oInputParameterHandler.getValue('sThumb')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<p>.+?</i> - (.+?)<span class="pull-right">|<a rel="external nofollow" href="([^"]+)".+?text-center.+?>([^<]+)<'
+    sPattern = '<p>.+?</i> - (.+?)<span class="pull-right">|<a rel="external nofollow" href="([^"]+).+?text-center.+?>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
