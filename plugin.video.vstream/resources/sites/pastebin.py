@@ -1853,6 +1853,28 @@ def deletePasteName():
     cGui().updateDirectory()
 
 
+# Retirer tous les dossiers PasteBin
+def deleteAllPasteName():
+
+    addons = addon()
+
+    for numID in range(1, GROUPE_MAX):
+        labelSetting = SETTING_PASTE_LABEL + str(numID)
+        pasteLabel = addons.getSetting(labelSetting)
+        if not pasteLabel:
+            continue
+
+        addons.setSetting(labelSetting, '')
+    
+        prefixID = SETTING_PASTE_ID + str(numID)
+        if addons.getSetting(prefixID):
+            addons.setSetting(prefixID, '')
+    
+        for numID in range(1, PASTE_PAR_GROUPE):
+            pasteID = prefixID + '_' + str(numID)
+            if addons.getSetting(pasteID):
+                addons.setSetting(pasteID, '')
+
 
 # Retourne la liste des PasteBin depuis l'URL ou un groupe
 def getPasteList(siteUrl, pasteID):
