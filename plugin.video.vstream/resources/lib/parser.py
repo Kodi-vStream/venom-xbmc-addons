@@ -20,10 +20,10 @@ class cParser:
                       .replace('&acirc;', 'â').replace('&ecirc;', 'ê').replace('&icirc;', 'î').replace('&ocirc;', 'ô')\
                       .replace('&hellip;', '...').replace('&quot;', '"').replace('&gt;', '>').replace('&egrave;', 'è')\
                       .replace('&ccedil;', 'ç').replace('&laquo;', '<<').replace('&raquo;', '>>').replace('\xc9', 'E')\
-                      .replace('&ndash;', '-').replace('&eacute;', 'é').replace('&agrave;', 'à').replace('&lt;', '<')\
+                      .replace('&ndash;', '-').replace('&ugrave;', 'ù').replace('&agrave;', 'à').replace('&lt;', '<')\
                       .replace('&rsquo;', "'").replace('&lsquo;', '\'').replace('&nbsp;', '').replace('&#8217;', "'")\
-                      .replace('&#8230;', '...').replace('&#8242;', "'").replace('&#884;', '\'')\
-                      .replace('&#038;', '&').replace('–', '-').replace('—', '-')
+                      .replace('&#8230;', '...').replace('&#8242;', "'").replace('&#884;', '\'').replace('&#39;', '\'')\
+                      .replace('&#038;', '&').replace('&iuml;', 'ï').replace('–', '-').replace('—', '-')
 
     def parse(self, sHtmlContent, sPattern, iMinFoundValue=1):
         sHtmlContent = self.__replaceSpecialCharacters(str(sHtmlContent))
