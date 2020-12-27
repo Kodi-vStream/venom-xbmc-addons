@@ -94,10 +94,11 @@ def showMovies(sSearch=''):
         sSearch = sSearch.replace(' ', '+').replace('%20', '+')
         pData = 'do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=' + sSearch
         sUrl = URL_MAIN + 'index.php?do=search'
+        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
 
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.setRequestType(1)
-        oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
         oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
         oRequestHandler.addParametersLine(pData)
@@ -144,65 +145,27 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
     if not sSearch:
-        bvalid, sUrlNextPage, pagination = __checkForNextPage(sHtmlContent, sUrl)
-        if (bvalid == True):
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
+        if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrlNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + pagination + ' >>>[/COLOR]', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
-def __checkForNextPage(shtml, surl):
-    # pas de lien next page
-    smax = ''
-    imax = 0
-    # scurrent = ''
-    # icurrent = 0
-    inext = 0
-    snext = ''
-    surlnext = ''
-
-    sPattern = 'page/(\d+)/'
-
-    # max page
+def __checkForNextPage(sHtmlContent):
+    sPattern = '>([^<]+)</a> *</div></div><div class="col-lg-1 col-sm-2 col-xs-2 pages-next"><a href="([^"]+)'
     oParser = cParser()
-    aResult = oParser.parse(shtml, sPattern)
+    aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        for aresult in aResult[1]:
-            scurrentmax = aresult
-            icurentmax = int(scurrentmax)
-            if icurentmax > imax:
-                imax = icurentmax
-                smax = scurrentmax
-    # next page
-    oParser = cParser()
-    aResult = oParser.parse(surl, sPattern)
-    if (aResult[0] == False):
-        # la premiere page ne contient pas d'index
-        if smax > 1:  # mais il faut au moins deux pages
-            inext = 2
-            snext = '2'
-            surlnext = surl + 'page/2/'
-        else:
-            return False, False, False
+        sNumberMax = aResult[1][0][0]
+        sNextPage = aResult[1][0][1]
+        sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    if (aResult[0] == True):
-        scurrent = aResult[1][0]
-        icurrent = int(scurrent)
-        inext = icurrent + 1
-        snext = str(inext)
-        pcurrent = 'page/' + scurrent
-        pnext = 'page/' + snext
-        surlnext = surl.replace(pcurrent, pnext)
-
-    if imax != 0 and imax >= inext:
-        return True, surlnext, snext + '/' + smax
-
-    elif inext == 0:
-        return False, False, False
-
-    return False, False, False
+    return False, 'none'
 
 
 def showLinks():
@@ -258,7 +221,6 @@ def showHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     sHosterUrl = sUrl
-
     oHoster = cHosterGui().checkHoster(sHosterUrl)
     if (oHoster != False):
         oHoster.setDisplayName(sMovieTitle)
