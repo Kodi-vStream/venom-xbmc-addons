@@ -2,6 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 import re
+import xbmc
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -10,7 +11,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress, dialog, xbmc
+from resources.lib.comaddon import progress, dialog
 
 
 SITE_IDENTIFIER = 'streaming_series'
@@ -51,10 +52,10 @@ def showSerieSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            sUrl = URL_SEARCH[0] + sSearchText
-            showMovies(sUrl)
-            oGui.setEndOfDirectory()
-            return
+        sUrl = URL_SEARCH[0] + sSearchText
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
+        return
 
 
 def showGenres():
@@ -135,25 +136,28 @@ def showMovies(sSearch=''):
 
         progress_.VSclose(progress_)
 
-    if not sSearch: # une seule page par recherche
-        sNextPage = __checkForNextPage(sHtmlContent)
+    if not sSearch:  # une seule page par recherche
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = 'href="([^"]+)">Suivant'
+    sPattern = '>([^<]+)</a></li><li class="pg-item"><a class="next page-numbers" href="([^"]+)">Suivant'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return aResult[1][0]
+        sNumberMax = aResult[1][0][0]
+        sNextPage = aResult[1][0][1]
+        sNumberNext = re.search('/page/([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    return False
+    return False, 'none'
 
 
 def showEpisodes():
@@ -174,11 +178,11 @@ def showEpisodes():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
-            sDesc = sDesc.replace('&#8217;', '\'').replace('&#8220;', '\"').replace('&#8221;', '\"').replace('&#8230;', '...')
+            sDesc = sDesc.replace('&#8220;', '\"').replace('&#8221;', '\"')
     except:
         pass
 
-    #filtre pour ne prendre que sur une partie
+    # filtre pour ne prendre que sur une partie
     sStart = '<span>Informations</span>'
     sEnd = '<div class="content ">'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
@@ -251,10 +255,9 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    sHosterUrl = ProtectstreamBypass(sUrl)
+    sHosterUrl = protectStreamByPass(sUrl)
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
-
     if (oHoster != False):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
@@ -263,7 +266,7 @@ def showHosters():
     oGui.setEndOfDirectory()
 
 
-def ProtectstreamBypass(url):
+def protectStreamByPass(url):
 
     # lien commencant par VID_
     Codedurl = url
@@ -277,7 +280,7 @@ def ProtectstreamBypass(url):
     if (aResult[0] == True):
         postdata = 'k=' + aResult[1][0]
 
-        dialog().VSinfo('Décodage en cours', "Patientez", 5)
+        dialog().VSinfo('Décodage en cours', 'Patientez', 5)
         xbmc.sleep(5000)
 
         UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
