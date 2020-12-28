@@ -59,7 +59,7 @@ Options:
 
 
 def usage(file=sys.stdout):
-    print (USAGE)
+    print(USAGE)
 
 
 def usage_error(exit=True):
@@ -203,23 +203,18 @@ def run(args):
         random_ua = True
         user_agent = random_user_agent()
     if args.debug:
-        print ("User-agent string: {}".format(user_agent))
+        print("User-agent string: {}".format(user_agent))
 
-    uvtoken = get_token(
-        args.api_key, args.site_url, user_agent,
-        gui=args.gui, debug=args.debug,
-    )
-    print (GOT_TOKEN_MSG)
+    uvtoken = get_token(args.api_key, args.site_url, user_agent, gui=args.gui, debug=args.debug)
+    print(GOT_TOKEN_MSG)
     if random_ua:
-        print ("Note: The following user-agent string was used:")
-        print (user_agent)
-    print ("Token:")
-    print (uvtoken)
+        print("Note: The following user-agent string was used:")
+        print(user_agent)
+    print("Token:")
+    print(uvtoken)
 
 
-UNEXPECTED_ERR_MSG = """\
-An unexpected error occurred. The exception traceback is shown below:
-"""
+UNEXPECTED_ERR_MSG = """An unexpected error occurred. The exception traceback is shown below:"""
 
 
 def run_or_exit(args):
@@ -234,7 +229,7 @@ def run_or_exit(args):
     except KeyboardInterrupt:
         sys.exit(2)
     except Exception:
-        print (UNEXPECTED_ERR_MSG)
+        print(UNEXPECTED_ERR_MSG)
         raise
 
 
@@ -244,8 +239,8 @@ def main():
     error = parsed.parse_error
 
     if error is not None:
-        print (error)
-        print ("For usage information, run: {} --help".format(CMD))
+        print(error)
+        print("For usage information, run: {} --help".format(CMD))
         sys.exit(1)
 
     if parsed.help:
@@ -253,7 +248,7 @@ def main():
         return
 
     if parsed.version:
-        print (__version__)
+        print(__version__)
         return
     run_or_exit(parsed)
 
