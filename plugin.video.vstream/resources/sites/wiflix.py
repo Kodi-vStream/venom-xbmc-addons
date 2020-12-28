@@ -304,15 +304,21 @@ def showEpisodes():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
+    #Afficher le numero de l episode et la saison dans le titre
+    #permet de marquer vu avec trakt automatiquement.
+    ep = 0
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             if aEntry[0]:
                 if 'epblocks' in aEntry[0]:
                     continue
                 else:
-                    oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0].replace('ep', 'Episode ').replace('vs', ' Vostfr').replace('vf', ' VF') + '[/COLOR]')
+                    ep = aEntry[0].replace('ep', 'Episode ').replace('vs', '').replace('vf', '')
+                    oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0].replace('ep', 'Episode ').replace('vs', 'Vostfr').replace('vf', 'VF') + '[/COLOR]')
 
             if aEntry[1]:
+                sTitle = sMovieTitle + ' ' + ep
                 sHosterUrl = aEntry[1].replace('/vd.php?u=', '')
                 if 'players.wiflix.' in sHosterUrl:
                     oRequestHandler = cRequestHandler(sHosterUrl)
@@ -321,8 +327,8 @@ def showEpisodes():
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
-                    oHoster.setDisplayName(sMovieTitle)
-                    oHoster.setFileName(sMovieTitle)
+                    oHoster.setDisplayName(sTitle)
+                    oHoster.setFileName(sTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
