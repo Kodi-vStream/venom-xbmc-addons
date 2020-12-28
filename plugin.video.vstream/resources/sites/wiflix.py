@@ -48,7 +48,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
@@ -56,7 +56,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_EXCLU[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_EXCLU[1], 'Films et Séries (Exclues)', 'news.png', oOutputParameterHandler)
@@ -89,7 +89,7 @@ def showGenres():
     oGui = cGui()
     oParser = cParser()
 
-    sUrl = URL_MAIN 
+    sUrl = URL_MAIN
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sStart = '</span><b>Films par genre</b></div>'
@@ -304,21 +304,27 @@ def showEpisodes():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    #Afficher le numero de l episode et la saison dans le titre
-    #permet de marquer vu avec trakt automatiquement.
+    # Afficher le numero de l episode et la saison dans le titre
+    # permet de marquer vu avec trakt automatiquement.
     ep = 0
+    sLang = ''
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             if aEntry[0]:
+
+                if 'vs' in aEntry[0]:
+                    sLang = ' (VOSTFR)'
+                elif 'vf' in aEntry[0]:
+                    sLang = ' (VF)'
+
                 if 'epblocks' in aEntry[0]:
                     continue
-                else:
-                    ep = aEntry[0].replace('ep', 'Episode ').replace('vs', '').replace('vf', '')
-                    oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0].replace('ep', 'Episode ').replace('vs', 'Vostfr').replace('vf', 'VF') + '[/COLOR]')
+
+                ep = aEntry[0].replace('ep', 'Episode ').replace('vs', '').replace('vf', '')
 
             if aEntry[1]:
-                sTitle = sMovieTitle + ' ' + ep
+                sTitle = sMovieTitle + ' ' + ep + sLang
                 sHosterUrl = aEntry[1].replace('/vd.php?u=', '')
                 if 'players.wiflix.' in sHosterUrl:
                     oRequestHandler = cRequestHandler(sHosterUrl)
@@ -355,13 +361,13 @@ def showHosters():
                 oRequestHandler = cRequestHandler(sHosterUrl)
                 oRequestHandler.request()
                 sHosterUrl = oRequestHandler.getRealUrl()
-            else :
+            else:
                 sHosterUrl = aEntry[0].replace('/wiflix.cc/', '')
-            sLang = aEntry[1].replace('2', '').replace('3', '')    
+            sLang = aEntry[1].replace('2', '').replace('3', '')
             if 'Vost' in aEntry[1]:
                 sDisplaytitle =('%s (%s)') % (sMovieTitle, sLang)
             else:
-                sDisplaytitle = sMovieTitle          
+                sDisplaytitle = sMovieTitle
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sDisplaytitle)
