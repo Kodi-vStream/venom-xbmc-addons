@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'otakufr_com'
 SITE_NAME = 'OtakuFR'
 SITE_DESC = 'OtakuFR animés en streaming et téléchargement'
 
-URL_MAIN = 'http://otakufr.com/'
+URL_MAIN = 'https://otakufr.co/'
 
 ANIM_NEWS = (URL_MAIN + 'latest-episodes/', 'showMovies')
 ANIM_ANIMS = ('http://', 'load')
