@@ -242,6 +242,12 @@ class cTMDb:
             m1 = re.search('(?i)(s(?:aison )*([0-9]+))', name)
             name = name.replace(m.group(1), '').replace(m1.group(1), '').replace('+', ' ')
 
+        #On enleve le contenu entre paranthese.
+        try:
+            name = name.split('(')[0]
+        except:
+            pass
+
         if year:
             term = QuotePlus(name) + '&year=' + year
         else:
@@ -259,8 +265,8 @@ class cTMDb:
                 qua = []
                 url = []
                 for aEntry in meta['results']:
-                    url.append(aEntry["id"])
-                    qua.append(aEntry['name'])
+                   url.append(aEntry["id"])
+                   qua.append(aEntry['name'])
 
                 #Affichage du tableau
                 tmdb_id = dialog().VSselectqual(qua, url)
@@ -1054,4 +1060,3 @@ class cTMDb:
         if genre:
             return genre
         return genreID
-
