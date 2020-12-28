@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -26,6 +26,7 @@ AGE_6A8ANS = (URL_MAIN + 'pages/dessins-animes-6-a-8-ans/dessins-animes-pour-enf
 VIDEO_EDU6_8 = (URL_MAIN + 'pages/dessins-animes-6-a-8-ans/videos-educatives-pour-enfants-de-6-a-8-ans.html', 'showEdu')
 
 COMPIL = (URL_MAIN + 'videos/compilations-longues/', 'showEpisode')
+
 
 def load():
     oGui = cGui()
@@ -60,6 +61,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showMovies():
     oGui = cGui()
     oParser = cParser()
@@ -69,7 +71,7 @@ def showMovies():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtml = oRequestHandler.request()
-    sPattern = '<p style="text-align: center;"><a href="(http:\/\/www.youtitou.com\/videos.+?)">.+?<img.+?src="([^"]+)"'
+    sPattern = '<p style="text-align: center;"><a href="(http.//www.youtitou.com/videos.+?)">.+?<img.+?src="([^"]+)'
     aResult = oParser.parse(sHtml, sPattern)
 
     if (aResult[0] == True):
@@ -79,7 +81,7 @@ def showMovies():
                 sUrl = sUrl[:-1]
 
             sThumb = aEntry[1]
-            sTitle = sUrl.rsplit('/', 2)[1] #on prend le titre de l'url plus fiable site bordelique
+            sTitle = sUrl.rsplit('/', 2)[1]  # on prend le titre de l'url plus fiable site bordelique
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -87,6 +89,7 @@ def showMovies():
             oGui.addMisc(SITE_IDENTIFIER, 'showEpisode', sTitle, 'enfants.png', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showEpisode():
     oGui = cGui()
@@ -97,7 +100,7 @@ def showEpisode():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtml = oRequestHandler.request()
-    sPattern = '<div class="media-object">.+?<a href="(http:\/\/www.youtitou.com\/videos.+?)">.+?<img src="([^"]+)" alt="(.+?)"'
+    sPattern = 'class="media-object">.+?href="(http.//www.youtitou.com/videos.+?)".+?src="([^"]+)" alt="([^"]+)'
     aResult = oParser.parse(sHtml, sPattern)
 
     if (aResult[0] == True):
@@ -118,6 +121,7 @@ def showEpisode():
 
     oGui.setEndOfDirectory()
 
+
 def showHosters():
     oGui = cGui()
     oParser = cParser()
@@ -129,7 +133,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<iframe.+?src="(.+?)".+?<\/iframe>'
+    sPattern = '<iframe.+?src="(.+?)".+?</iframe>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -146,6 +150,7 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
+
 def showEdu():
     oGui = cGui()
     oParser = cParser()
@@ -155,11 +160,11 @@ def showEdu():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<h2 class="row-title">(.+?)<\/h2>.+?<iframe.+?src="([^"]+)".+?<\/iframe>'
+    sPattern = '<h2 class="row-title">(.+?)</h2>.+?<iframe.+?src="([^"]+)".+?</iframe>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if not(aResult[0] == True):
-        sPattern = '<iframe title="([^"]+)".+?src="([^"]+)".+?<\/iframe>' #pas de titre 6_8
+    if (aResult[0] == False):
+        sPattern = '<iframe title="([^"]+)".+?src="([^"]+)".+?</iframe>'  # pas de titre 6_8
         aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
