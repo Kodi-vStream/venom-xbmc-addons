@@ -104,7 +104,7 @@ def showGenres():
     TriAlpha = []
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sUrl =  URL_MAIN + aEntry[0]
+            sUrl = URL_MAIN + aEntry[0]
             sTitle = aEntry[1].capitalize()
             TriAlpha.append((sTitle, sUrl))
 
@@ -139,18 +139,14 @@ def showMovies(sSearch=''):
 
         sHtmlContent = oRequest.request()
 
-        # fh = open('c:\\test.txt', "w")
-        # fh.write(sHtmlContent)
-        # fh.close()
-
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'mov clearfix.+?src="([^"]+)" *alt="([^"]+).+?data-link="([^"]+).+?nbloc1">([^<]+).+?nbloc2">([^<]*)'
-    sPattern += '.+?ml-desc"> (.+?)</div.+?Synopsis:.+?ml-desc">(.+?)</div'
+    sPattern = 'mov clearfix.+?src="([^"]*)" *alt="([^"]*).+?link="([^"]+).+?(?:|bloc1">([^<]+).+?)(?:|bloc2">([^<]*).+?)'
+    sPattern += 'ml-desc"> (.+?)</div.+?Synopsis:.+?ml-desc">(.+?)</div'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -204,25 +200,29 @@ def showMovies(sSearch=''):
 
         progress_.VSclose(progress_)
 
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            # number = re.search('/page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<span class="pnext"><a href="([^"]+)">'
+    sPattern = '>([^<]+)</a> *</span>.*?<span class="pnext"><a href="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return aResult[1][0]
+        sNumberMax = aResult[1][0][0]
+        sNextPage = aResult[1][0][1]
+        sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    return False
+    return False, 'none'
 
 
 def showSeries(sSearch=''):
@@ -277,22 +277,21 @@ def showSeries(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'sHowEpisodes', sDisplaytitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sDisplaytitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showSeries', 'Page ' + sPaging, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
 
 
-def sHowEpisodes():
+def showEpisodes():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -345,16 +344,16 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = aEntry[0]#.replace('/wiflix.cc/', '')
+            sHosterUrl = aEntry[0]  # .replace('/wiflix.cc/', '')
             if 'wiflix.' in sHosterUrl:
                 oRequestHandler = cRequestHandler(sHosterUrl)
                 oRequestHandler.request()
                 sHosterUrl = oRequestHandler.getRealUrl()
             else :
                 sHosterUrl = aEntry[0].replace('/wiflix.cc/', '')
-            sLang = aEntry[1].replace('2' , '').replace('3' , '')    
+            sLang = aEntry[1].replace('2', '').replace('3', '')    
             if 'Vost' in aEntry[1]:
-                sDisplaytitle =('%s (%s)')% (sMovieTitle , sLang)
+                sDisplaytitle =('%s (%s)') % (sMovieTitle, sLang)
             else:
                 sDisplaytitle = sMovieTitle          
             oHoster = cHosterGui().checkHoster(sHosterUrl)
