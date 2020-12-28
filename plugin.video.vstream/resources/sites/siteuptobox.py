@@ -85,7 +85,7 @@ def showSearch():
         showFile(sUrlSearch)
 
 
-def showFile():
+def showFile(sSearch=''):
 
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
