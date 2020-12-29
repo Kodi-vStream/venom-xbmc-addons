@@ -113,7 +113,7 @@ def showMovies(sSearch=''):
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     if sSearch:
-        sUrl = sSearch.replace(' ', '-').replace('%20', '-')+ '.html'
+        sUrl = sSearch.replace(' ', '-').replace('%20', '-') + '.html'
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -164,13 +164,11 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
     if not sSearch:
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
-            sNumPage = re.search('page-([0-9]+)|([0-9]+)$', sNextPage).group(0)  # page-XX.html ou  annee-aaaa/XX
-            sNumPage = sNumPage .replace('page-', '')
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -178,17 +176,32 @@ def showMovies(sSearch=''):
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     if 'suivanthds' in sHtmlContent:  # genre
-        sPattern = 'suivanthds.+?href="([^"]+)'
-    elif 'CurrentPage':  # film année serie
-        sPattern = "CurrentPage.+?href='([^']+)"
-    else:
-        # verifier cas
-        return False
+        sPattern = '>([^<]+)</a><a class="suivanthds.+?href="([^"]+)'
+    elif 'CurrentPage' in sHtmlContent:  # film année serie
+        sPattern = "CurrentPage.+?href='([^']+).+?>([^<]+)</a></div"
+    else:  # film année à partir de la page 8
+        sPattern = "</a><span>.+?<a href='([^']+).+?</span>.+?>([^<]+)</a></div></div>\s*</div>\s*</div>"
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return URL_MAIN[:-1] + aResult[1][0]
-    return False
+        if 'suivanthds' in sHtmlContent:  # genre
+            sNumberMax = aResult[1][0][0]
+            sNextPage = aResult[1][0][1]
+        elif 'CurrentPage':  # film année serie
+            sNextPage = aResult[1][0][0]
+            sNumberMax = aResult[1][0][1]
+        else:  # film année à partir de la page 8
+            sNextPage = aResult[1][0][0]
+            sNumberMax = aResult[1][0][1]
+
+        sNumberNext = re.search('page-([0-9]+)|([0-9]+)$', sNextPage).group(0)  # page-XX.html ou  annee-aaaa/XX
+        sNumberNext = sNumberNext.replace('page-', '')
+        sNextPage = URL_MAIN[:-1] + sNextPage
+        sPaging = sNumberNext + '/' + sNumberMax
+
+        return sNextPage, sPaging
+
+    return False, 'none'
 
 
 def showSaisons():
