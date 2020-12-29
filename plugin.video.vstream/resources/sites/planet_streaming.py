@@ -246,6 +246,7 @@ def showHosters():
 
     sPattern = '<i class="fa fa-play-circle-o"></i>([^<]+)</div>|<a href="([^"]+)" title="([^"]+)" target="seriePlayer"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    sethost = set()
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
@@ -255,6 +256,10 @@ def showHosters():
                 continue
 
             sHosterUrl = aEntry[1]
+            if sHosterUrl not in sethost:
+                sethost.add(sHosterUrl)
+            else:
+                continue 
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
