@@ -370,14 +370,16 @@ def showPromo():
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<li class="active"><a href="">.+?</a></li><li><a href="([^"]+)">.+?</a>'
+    sPattern = 'class="active"><a href="".+?href="([^"]+).+?>([^<]+)</a></li>\s*</ul>\s*</div></div>\s*</div>\s*<div class="large'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        sNextPage = URL_MAIN + aResult[1][0]
-        sPaging = re.search('page=([0-9]+)', sNextPage).group(1)
+        sNextPage = URL_MAIN + aResult[1][0][0]
+        sNumberMax = aResult[1][0][1]
+        sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
         return sNextPage, sPaging
 
-    return False
+    return False, 'none'
 
 
 def showHosters():
