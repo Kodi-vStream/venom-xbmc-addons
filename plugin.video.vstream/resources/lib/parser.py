@@ -45,10 +45,7 @@ class cParser:
         return re.escape(sValue)
 
     def getNumberFromString(self, sValue):
-        if '/0-9/' in sValue:
-            sPattern = '/0-9.+?(\d+)'
-        else:
-            sPattern = '\d+'
+        sPattern = '\d+'
         aMatches = re.findall(sPattern, sValue)
         if (len(aMatches) > 0):
             return aMatches[0]
