@@ -697,14 +697,25 @@ class cGui:
         sFunction = oInputParameterHandler.getValue('OldFunction')
         siteUrl = oInputParameterHandler.getValue('siteUrl')
 
+        if '/0-9/' in siteUrl:  # for the lists http.://www.test.com/0-9/
+            urlSource = siteUrl.split('/', 4)[0] + '//' + siteUrl.split('/', 4)[2] + '/' + siteUrl.split('/', 4)[3]
+            endOfUrl = siteUrl.split('/', 4)[4]
+        elif 'alphabet' in siteUrl:  # for the lists http.://www.test.com/alphabet/1/
+            urlSource = siteUrl.split('/', 5)[0] + '//' + siteUrl.split('/', 5)[2] + '/' + siteUrl.split('/', 5)[3]
+            urlSource = urlSource + '/' + siteUrl.split('/', 5)[4]
+            endOfUrl = siteUrl.split('/', 5)[5]
+        else:  # for the url http.://ww1.test.com/ or http.://www.1test.com/
+            urlSource = siteUrl.split('/', 3)[0] + '//' + siteUrl.split('/', 3)[2]
+            endOfUrl = siteUrl.split('/', 3)[3]
+
         oParser = cParser()
-        oldNum = oParser.getNumberFromString(siteUrl)
+        oldNum = oParser.getNumberFromString(endOfUrl)
         newNum = 0
         if oldNum:
             newNum = self.showNumBoard()
         if newNum:
             try:
-                siteUrl = siteUrl.replace(oldNum, newNum, 1)
+                siteUrl = urlSource + '/' + endOfUrl.replace(oldNum, newNum, 1)
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', siteUrl)
