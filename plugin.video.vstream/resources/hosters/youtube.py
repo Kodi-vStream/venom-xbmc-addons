@@ -21,6 +21,7 @@ class cHoster(iHoster):
         self.__sDisplayName = 'Youtube'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
+        self.__res = False
 
     def getDisplayName(self):
         return self.__sDisplayName
@@ -42,6 +43,9 @@ class cHoster(iHoster):
 
     def getHD(self):
         return self.__sHD
+
+    def setResolution(self, res):
+        self.__res = res
 
     def isDownloadable(self):
         return True
@@ -96,7 +100,12 @@ class cHoster(iHoster):
                 qua.append(aEntry[1])
 
             if url:
-                api_call = dialog().VSselectqual(qua, url)
+                if self.__res:
+                    for i in range(len(qua)):
+                        if qua[i] == self.__res:
+                            api_call = url[i]
+                if not api_call:
+                    api_call = dialog().VSselectqual(qua, url)
 
         if api_call:
             return True, api_call
