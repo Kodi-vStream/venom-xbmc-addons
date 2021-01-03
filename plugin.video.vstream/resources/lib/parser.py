@@ -60,7 +60,7 @@ class cParser:
         except:
             return {'title': sHtmlContent}
 
-    def abParse(self, sHtmlContent, start, end = None, startoffset=0):
+    def abParse(self, sHtmlContent, start, end=None, startoffset=0):
         # usage oParser.abParse(sHtmlContent, 'start', 'end')
         # startoffset (int) décale le début pour ne pas prendre en compte start dans le résultat final si besoin
         # la fin est recherchée forcement après le début
@@ -69,11 +69,11 @@ class cParser:
         # ex youtube.py
         
         startIdx = sHtmlContent.find(start)
-        if startIdx == -1 :  # rien trouvé, retourner le texte complet
+        if startIdx == -1:  # rien trouvé, retourner le texte complet
             return sHtmlContent
         
         if end:
-            endIdx = sHtmlContent[startoffset + startIdx : ].find(end)
-            if endIdx>0:
-                return sHtmlContent[startoffset + startIdx : startoffset + startIdx + endIdx]
-        return sHtmlContent[startoffset + startIdx :]
+            endIdx = sHtmlContent[startoffset + startIdx:].find(end)
+            if endIdx > 0:
+                return sHtmlContent[startoffset + startIdx: startoffset + startIdx + endIdx]
+        return sHtmlContent[startoffset + startIdx:]
