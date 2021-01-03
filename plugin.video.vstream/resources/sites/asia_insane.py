@@ -169,12 +169,11 @@ def showAlpha():
 
         progress_.VSclose(progress_)
 
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            sNumPage = re.search('/page/([0-9]+)/', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -190,7 +189,7 @@ def showMovies(sSearch=''):
         if URL_SEARCH[0] in sSearch:
             sSearch = sSearch.replace(URL_SEARCH[0], '')
 
-        sPattern = '<a class=\'asp_res_image_url\' href=\'([^>]+)\'.+?url\("([^"]+)"\).+?\'>([^.]+)d{2}.+?<span.+?<div class="asp_res_text">([^<]+)<'
+        sPattern = '<a class=\'asp_res_image_url\' href=\'([^>]+)\'.+?url\("([^"]+)"\).+?\'>([^.]+)d{2}.+?<span.+?class="asp_res_text">([^<]+)'
 
         oRequestHandler = cRequestHandler(URL_SEARCH[0])
         oRequestHandler.setRequestType(1)
@@ -211,7 +210,7 @@ def showMovies(sSearch=''):
     elif '/amy_genre/' in sUrl or '/date/' in sUrl:
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-        sPattern = 'entry-item clearfix">.+?src="(http[^"]+).+?entry-title"><a href="([^"]+)">([^<]+)d{2}'
+        sPattern = 'item-poster">.+?src="(http[^"]+).+?href="([^"]+)">([^<]+)d{2}.+?desc"><p>([^<]+)'
 
     else:
         oRequestHandler = cRequestHandler(sUrl)
@@ -241,16 +240,16 @@ def showMovies(sSearch=''):
                 sDisplayTitle = ('%s') % (sTitle)
 
             elif '/amy_genre/' in sUrl or '/date/' in sUrl:
-                sUrl2 = aEntry[1]
                 sThumb = aEntry[0]
+                sUrl2 = aEntry[1]
                 sTitle = aEntry[2]
-                sDesc = ""
+                sDesc = aEntry[3]
 
                 sDisplayTitle = ('%s') % (sTitle)
 
             else:
-                sUrl2 = aEntry[1]
                 sThumb = aEntry[0]
+                sUrl2 = aEntry[1]
                 sTitle = aEntry[2]
                 sDesc = aEntry[3]
                 sQual = aEntry[4].upper()
@@ -270,25 +269,28 @@ def showMovies(sSearch=''):
 
         progress_.VSclose(progress_)
 
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            sNumPage = re.search('/page/([0-9]+)/', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a class="next page-numbers" href="([^"]+)">'
+    sPattern = '>([^<]+)</a><a class="next page-numbers" href="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return aResult[1][0]
+        sNumberMax = aResult[1][0][0]
+        sNextPage = aResult[1][0][1]
+        sNumberNext = re.search('/page/([0-9]+)/', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    return False
+    return False, 'none'
 
 
 def ShowSerieEpisodes():
