@@ -655,16 +655,19 @@ class cGui:
         sTest = '%s?site=%s' % (sPluginPath, sId)
 
         xbmc.executebuiltin('Container.Update(%s, replace)' % sTest)
-
+        
     def viewInfo(self):
-        from resources.lib.config import WindowsBoxes
+        if addon().getSetting('information-view') == "false":
+            from resources.lib.config import WindowsBoxes
 
-        oInputParameterHandler = cInputParameterHandler()
-        sCleanTitle = oInputParameterHandler.getValue('sFileName') if oInputParameterHandler.exist('sFileName') else xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
-        sMeta = oInputParameterHandler.getValue('sMeta') if oInputParameterHandler.exist('sMeta') else xbmc.getInfoLabel('ListItem.Property(sMeta)')
-        sYear = oInputParameterHandler.getValue('sYear') if oInputParameterHandler.exist('sYear') else xbmc.getInfoLabel('ListItem.Year')
+            oInputParameterHandler = cInputParameterHandler()
+            sCleanTitle = oInputParameterHandler.getValue('sFileName') if oInputParameterHandler.exist('sFileName') else xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
+            sMeta = oInputParameterHandler.getValue('sMeta') if oInputParameterHandler.exist('sMeta') else xbmc.getInfoLabel('ListItem.Property(sMeta)')
+            sYear = oInputParameterHandler.getValue('sYear') if oInputParameterHandler.exist('sYear') else xbmc.getInfoLabel('ListItem.Year')
 
-        WindowsBoxes(sCleanTitle, sCleanTitle, sMeta, sYear)
+            WindowsBoxes(sCleanTitle, sCleanTitle, sMeta, sYear)
+        else:
+            xbmc.executebuiltin('Action(Info)')
 
     def viewSimil(self):
         sPluginPath = cPluginHandler().getPluginPath()
