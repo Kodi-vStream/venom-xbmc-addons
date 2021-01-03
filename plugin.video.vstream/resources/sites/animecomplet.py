@@ -173,7 +173,7 @@ def showSeries(sSearch=''):
                 sTitle = sTitle.decode('ascii', errors='ignore')
             except:
             	pass
-            	
+
             if 'http' not in sThumb:
                 sThumb = URL_MAIN + sThumb
 
@@ -393,6 +393,11 @@ def hostersLink():
         oGui.addText(SITE_IDENTIFIER, ' vStream : Accès refusé : Le site Oload.tv n\'est pas sécurisé')
         oGui.setEndOfDirectory()
         return
+
+    #Petit hack pour conserver le nom de domaine du site
+    #necessaire pour userload.
+    if 'userload' in sHosterUrl:
+    	sHosterUrl = sHosterUrl + "|Referer=" + URL_MAIN
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
     if (oHoster != False):
