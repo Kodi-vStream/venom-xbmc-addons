@@ -154,7 +154,6 @@ def showSeries(sSearch=''):
             if sUrl == ANIM_LIST[0]:
                 sUrl2 = aEntry[0]
                 sTitle = aEntry[1]
-                sTitle = sTitle.decode('ascii', errors='ignore')
 
                 if '(0)' in sTitle or 'EPISODES' in sTitle:  # EPISODES  1 element pattern a revoir pattern
                     continue
@@ -168,9 +167,13 @@ def showSeries(sSearch=''):
                 sThumb = aEntry[0]
                 sUrl2 = aEntry[1]
                 sTitle = aEntry[2]
-                sTitle = sTitle.decode('ascii', errors='ignore')
                 sDesc = 'Mise à jour : ' + aEntry[3]
 
+            try:
+                sTitle = sTitle.decode('ascii', errors='ignore')
+            except:
+            	pass
+            	
             if 'http' not in sThumb:
                 sThumb = URL_MAIN + sThumb
 
