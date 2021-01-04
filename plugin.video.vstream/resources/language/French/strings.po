@@ -1067,3 +1067,7 @@ msgstr "Mettez l'url de votre dossier multimedia Alldebrid"
 msgctxt "#31101"
 msgid "Url"
 msgstr "Url"
+
+msgctxt "#31102"
+msgid "Use the skin display for the information windows"
+msgstr "Utiliser l'affichage du skin pour la fenetre information"
