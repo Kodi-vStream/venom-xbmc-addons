@@ -120,7 +120,7 @@ class cGui:
 
     # Affichage d'un épisode, sans recherche de Métadonnées, et menu adapté
     def addEpisode(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
-        
+
         # comportement proche de addMisc
         self.addMisc(sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, sCat=2)
         cGui.CONTENT = 'files'
@@ -416,7 +416,10 @@ class cGui:
         oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
         # oListItem.setThumbnailImage(oGuiElement.getThumbnail())
         # oListItem.setIconImage(oGuiElement.getIcon())
-        oListItem.setArt({'poster': oGuiElement.getPoster(), 'thumb': oGuiElement.getThumbnail(), 'icon': oGuiElement.getIcon(), 'fanart': oGuiElement.getFanart()})
+        oListItem.setArt({'poster': oGuiElement.getPoster(),
+                          'thumb': oGuiElement.getThumbnail(),
+                          'icon': oGuiElement.getIcon(),
+                          'fanart': oGuiElement.getFanart()})
 
         aProperties = oGuiElement.getItemProperties()
         for sPropertyKey, sPropertyValue in aProperties.items():
@@ -655,7 +658,7 @@ class cGui:
         sTest = '%s?site=%s' % (sPluginPath, sId)
 
         xbmc.executebuiltin('Container.Update(%s, replace)' % sTest)
-        
+
     def viewInfo(self):
         if addon().getSetting('information-view') == "false":
             from resources.lib.config import WindowsBoxes
@@ -671,7 +674,7 @@ class cGui:
 
     def viewSimil(self):
         sPluginPath = cPluginHandler().getPluginPath()
-        
+
         oInputParameterHandler = cInputParameterHandler()
         sCleanTitle = oInputParameterHandler.getValue('sFileName') if oInputParameterHandler.exist('sFileName') else xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
         sCat = oInputParameterHandler.getValue('sCat') if oInputParameterHandler.exist('sCat') else xbmc.getInfoLabel('ListItem.Property(sCat)')
@@ -700,16 +703,12 @@ class cGui:
         sFunction = oInputParameterHandler.getValue('OldFunction')
         siteUrl = oInputParameterHandler.getValue('siteUrl')
 
-        if '/0-9/' in siteUrl:  # for the lists http.://www.test.com/0-9/
-            urlSource = siteUrl.split('/', 4)[0] + '//' + siteUrl.split('/', 4)[2] + '/' + siteUrl.split('/', 4)[3]
-            endOfUrl = siteUrl.split('/', 4)[4]
-        elif 'alphabet' in siteUrl:  # for the lists http.://www.test.com/alphabet/1/
-            urlSource = siteUrl.split('/', 5)[0] + '//' + siteUrl.split('/', 5)[2] + '/' + siteUrl.split('/', 5)[3]
-            urlSource = urlSource + '/' + siteUrl.split('/', 5)[4]
-            endOfUrl = siteUrl.split('/', 5)[5]
-        else:  # for the url http.://ww1.test.com/ or http.://www.1test.com/
-            urlSource = siteUrl.split('/', 3)[0] + '//' + siteUrl.split('/', 3)[2]
-            endOfUrl = siteUrl.split('/', 3)[3]
+        if siteUrl.endswith('/'):  # for the url http.://www.1test.com/annee-2020/page-2/
+            urlSource = siteUrl.rsplit('/', 2)[0]
+            endOfUrl = siteUrl.rsplit('/', 2)[1] + '/'
+        else:  # for the url http.://www.1test.com/annee-2020/page-2 or /page-2.html
+            urlSource = siteUrl.rsplit('/', 1)[0]
+            endOfUrl = siteUrl.rsplit('/', 1)[1]
 
         oParser = cParser()
         oldNum = oParser.getNumberFromString(endOfUrl)
