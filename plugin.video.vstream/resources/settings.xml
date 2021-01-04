@@ -37,7 +37,7 @@
         <setting id="accueil-view" type="number" label="30407" default="500" enable="eq(-2,true)"/>
         <setting id="movie-view" type="number" label="30404" default="500" enable="eq(-3,true)"/>
         <setting id="serie-view" type="number" label="30405" default="500" enable="eq(-4,true)"/>
-        <setting id="information-view" type="bool" label="Utiliser l'affichage du skin pour la fenetre information" default="false"/>
+        <setting id="information-view" type="bool" label="31102" default="false"/>
     </category>
 
     <!-- A propos/sources -->
