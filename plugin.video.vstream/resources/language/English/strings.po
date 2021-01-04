@@ -1055,3 +1055,19 @@ msgstr ""
 msgctxt "#30470"
 msgid "Addon dnspython missing"
 msgstr ""
+
+msgctxt "#30998"
+msgid "Put the Token of your Alldebrid account"
+msgstr ""
+
+msgctxt "#31000"
+msgid "Enter the url of your multimedia folder"
+msgstr ""
+
+msgctxt "#31101"
+msgid "Url"
+msgstr ""
+
+msgctxt "#31102"
+msgid "Use the skin display for the information windows"
+msgstr ""
