@@ -432,12 +432,11 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
     if not sSearch:
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            sNumPage = re.search('/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -499,25 +498,37 @@ def showSeries(sSearch=''):
 
         progress_.VSclose(progress_)
 
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            sNumPage = re.search('/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showSeries', 'Page ' + sNumPage, oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showSeries', 'Page ' + sPaging, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a href="([^"]+)">>><'
     oParser = cParser()
+    sPattern = 'href="([^"]+)">>></a>.+?>(\d+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return URL_MAIN[:-1] + aResult[1][0]
+        sNextPage = URL_MAIN[:-1] + aResult[1][0][0]
+        sNumberMax = aResult[1][0][1]
+        sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    return False
+    sPattern = '>([^<]+)</a>\s*<a href="([^"]+)">>>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        sNumberMax = aResult[1][0][0]
+        sNextPage = URL_MAIN[:-1] + aResult[1][0][1]
+        sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
+
+    return False, 'none'
 
 
 def showHosters():
