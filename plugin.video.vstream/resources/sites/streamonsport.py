@@ -388,11 +388,11 @@ def Hoster_Wigistream(url, referer):
         sstr = aResult[0]
         if not sstr.endswith(';'):
             sstr = sstr + ';'
-            sUnpack = cPacker().unpack(sstr)
-            sPattern = 'source:"(.+?)"'
-            aResult = re.findall(sPattern, sUnpack)
-            if aResult:
-                return True, aResult[0] + '|User-Agent=' + UA + '&Referer=' + Quote(url)
+        sUnpack = cPacker().unpack(sstr)
+        sPattern = 'source:"(.+?)"'
+        aResult = re.findall(sPattern, sUnpack)
+        if aResult:
+            return True, aResult[0] + '|User-Agent=' + UA + '&Referer=' + Quote(url)
 
     return False, False
 
