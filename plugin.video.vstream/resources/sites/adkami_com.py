@@ -316,7 +316,7 @@ def showLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'video-iframe" data-url="([^"]+)"'
+    sPattern = 'video-iframe.+?data-url="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if not aResult[0]:
