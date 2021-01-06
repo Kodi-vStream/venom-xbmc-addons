@@ -155,7 +155,7 @@ def showMovies(sSearch=''):
     elif 'genre/' in sUrl:
         sPattern = 'film-uno.+?href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)'
     else:
-        sPattern = '<a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)".+?min.+?·([^<]+).+?short-story">([^<]+)'
+        sPattern = '<div class="film-uno">.+?<a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)".+?min.+?·([^<]+).+?short-story">([^<]+)'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
