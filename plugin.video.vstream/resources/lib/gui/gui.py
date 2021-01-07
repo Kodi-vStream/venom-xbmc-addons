@@ -670,7 +670,7 @@ class cGui:
 
             WindowsBoxes(sCleanTitle, sCleanTitle, sMeta, sYear)
         else:
-            xbmc.executebuiltin('Action(Info)')
+            xbmc.executebuiltin('ActivateWindow(12003)')     # WINDOW_DIALOG_VIDEO_INFO
 
     def viewSimil(self):
         sPluginPath = cPluginHandler().getPluginPath()

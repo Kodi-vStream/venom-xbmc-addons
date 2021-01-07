@@ -41,8 +41,8 @@ msgid "Fanarts Size"
 msgstr "Taille des Fanarts"
 
 msgctxt "#30009"
-msgid "Use extendedinfo"
-msgstr "Utiliser extendedinfo"
+msgid "Use extendedinfo for the information windows"
+msgstr "Utiliser extendedinfo pour la fenetre information"
 
 msgctxt "#30010"
 msgid "Color Text note"

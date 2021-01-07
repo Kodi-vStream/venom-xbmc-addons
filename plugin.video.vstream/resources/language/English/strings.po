@@ -41,7 +41,7 @@ msgid "Fanarts Size"
 msgstr ""
 
 msgctxt "#30009"
-msgid "Use extendedinfo"
+msgid "Use extendedinfo for the information windows"
 msgstr ""
 
 msgctxt "#30010"
