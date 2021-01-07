@@ -11,7 +11,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-
+from resources.lib.util import Noredirection
 
 # copie du site http://www.kaydo.ws/
 # copie du site https://www.hds.to/
@@ -342,7 +342,7 @@ def showHosters():
 
             # sPost = decode(aResult[1][0])
             # t[::-1] renvoie la chaine t dans l'ordre inverse, identique à decode(t)
-            sPost = aResult[1][0]#[::-1]
+            sPost = aResult[1][0][::-1]
 
             if sPost:
 
@@ -351,9 +351,21 @@ def showHosters():
                 oRequestHandler = cRequestHandler(sUrl1)
                 oRequestHandler.addHeaderEntry('Referer', Url)
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
-                sHtmlContent = oRequestHandler.request()
+                oRequestHandler.request()
 
                 sHosterUrl = oRequestHandler.getRealUrl()
+
+                if sHosterUrl == sUrl1:
+                    opener = Noredirection()
+                    opener.addheaders = [('User-Agent', UA)]
+                    opener.addheaders = [('Referer', Url)]
+                    response = opener.open(sUrl1)
+                    sHtmlContent = response.read()
+                    getreal = sUrl1
+                    if response.code == 302:
+                        getreal = response.headers['Location']
+                    response.close()
+                    sHosterUrl = getreal
 
                 # https://lb.hdsto.me/hls/xxx.playlist.m3u8
                 # https://lb.hdsto.me/public/dist/index.html?id=xxx
