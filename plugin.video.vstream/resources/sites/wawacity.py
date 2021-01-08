@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'wawacity'
 SITE_NAME = '[COLOR violet]Wawacity[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
-URL_MAIN = 'https://www.wawacity.vip/'
+URL_MAIN = 'https://www.wawacity.video/'
 
 URL_SEARCH = (URL_MAIN + '?search=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -526,7 +526,7 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] Page ' + sPaging + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
