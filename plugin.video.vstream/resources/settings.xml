@@ -211,6 +211,8 @@
 
         <setting visible="false" id="plugin_videobuzzy_com" type="bool" label="Videobuzzy" default="true"/>
 
+        <setting visible="false" id="plugin_viki_com" type="bool" label="Viki" default="true"/>
+
         <setting visible="false" id="plugin_voirfilms_org" type="bool" label="VoirFilms" default="true"/>
 
         <setting visible="false" id="plugin_wawacity" type="bool" label="Wawacity" default="true"/>
