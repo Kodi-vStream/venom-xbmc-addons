@@ -170,7 +170,11 @@ class PasteBinContent:
         if sContent.startswith('CAT;'):
             return sContent, False
 
-        sContent = sContent.decode('utf8')
+        try:
+            sContent = sContent.decode('utf8')
+        except:
+            pass
+            
         d = i.s.index(sContent[0])
         s = ''
         for tx in sContent[1:].splitlines():
