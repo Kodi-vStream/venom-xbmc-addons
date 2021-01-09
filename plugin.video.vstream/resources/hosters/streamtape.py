@@ -3,6 +3,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
+from resources.lib.comaddon import VSlog
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0'
 
@@ -50,12 +51,15 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
-        sPattern1 = '<script>.+?("videolink").+?"([^"]+)";</script>'
+        sPattern1 = "innerHTML = ([^;]+)"
         
         aResult = oParser.parse(sHtmlContent, sPattern1)
 
         if (aResult[0] == True):
-            api_call = 'https:'+ aResult[1][0][1] + "&stream=1"
+            url = aResult[1][0]
+            url = url.replace(' ','').replace('"','').replace("'","").replace("+","")
+            VSlog(url)
+            api_call = 'https:' + url + "&stream=1"
 
         if (api_call):
             return True, api_call + '|User-Agent=' + UA + '&Referer=' + self.__sUrl
