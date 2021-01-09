@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright (C) 2017, 2019 nickolas360 <contact@nickolas360.com>
 #
 # This file is part of librecaptcha.
