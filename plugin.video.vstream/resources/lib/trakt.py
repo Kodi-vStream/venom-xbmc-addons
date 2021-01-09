@@ -452,7 +452,13 @@ class cTrakt:
                     else:
                         movie = i['movie']
                         sTitle = self.getLocalizedTitle(movie, 'movies')
-                        sTrakt, sYear, sImdb, sTmdb, sDate = movie['ids']['trakt'], movie['year'], movie['ids']['imdb'], movie['ids']['tmdb'], i['collected_at']
+                        sTrakt, sYear, sImdb, sTmdb = movie['ids']['trakt'], movie['year'], movie['ids']['imdb'], movie['ids']['tmdb']
+
+                        try:
+                            sDate = i['collected_at']
+                        except:
+                            sDate = ""
+                            
                         # sDate = datetime.datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y %H:%M')
                         cTrakt.CONTENT = '1'
                         sFunction = 'showSearch'
