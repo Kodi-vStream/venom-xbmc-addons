@@ -600,6 +600,10 @@ msgctxt "#30222"
 msgid "Delete:"
 msgstr ""
 
+msgctxt "#30223"
+msgid "Rename"
+msgstr "Renommer"
+
 msgctxt "#30300"
 msgid "Library"
 msgstr ""
@@ -690,6 +694,10 @@ msgstr ""
 
 msgctxt "#30327"
 msgid "1Fichier"
+msgstr ""
+
+msgctxt "#30328"
+msgid "Token (Optional)"
 msgstr ""
 
 msgctxt "#30330"

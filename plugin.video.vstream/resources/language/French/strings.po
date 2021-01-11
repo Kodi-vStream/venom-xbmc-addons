@@ -600,6 +600,10 @@ msgctxt "#30222"
 msgid "Delete:"
 msgstr "Supprimer:"
 
+msgctxt "#30223"
+msgid "Rename"
+msgstr "Renommer"
+
 msgctxt "#30300"
 msgid "Library"
 msgstr "Librairie"
@@ -691,6 +695,10 @@ msgstr "Télécharger et Lire"
 msgctxt "#30327"
 msgid "1Fichier"
 msgstr "1Fichier"
+
+msgctxt "#30328"
+msgid "Token (Optional)"
+msgstr "Token (Facultatif)"
 
 msgctxt "#30330"
 msgid "Search"
@@ -1056,6 +1064,8 @@ msgctxt "#30470"
 msgid "Addon dnspython missing"
 msgstr "Addon dnspython manquant"
 
+
+# Alldebrid
 msgctxt "#30998"
 msgid "Put the Token of your Alldebrid account"
 msgstr "Mettez le Token de votre compte Alldebrid"

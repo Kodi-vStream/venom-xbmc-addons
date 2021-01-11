@@ -5,7 +5,6 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.comaddon import addon, dialog, VSlog
 from resources.lib.config import GestionCookie
 from resources.lib.parser import cParser
-from resources.lib.util import urlEncode
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -154,7 +153,6 @@ class cPremiumHandler:
         return True
 
     def GetHtmlwithcookies(self, url, data, cookies):
-        VSlog(data)
         oRequestHandler = cRequestHandler(url)
         oRequestHandler.addHeaderEntry('User-Agent',UA)
         if not (data == None):
@@ -188,3 +186,31 @@ class cPremiumHandler:
                 return ''
 
         return sHtmlContent
+
+    def getToken(self):
+
+        if not self.__Ispremium:
+            return None
+        
+        # le token est connu
+        sToken = self.ADDON.getSetting('hoster_' + str(self.__sHosterIdentifier) + '_token')
+        if sToken:
+            return sToken
+        
+        if 'uptobox' in self.__sHosterIdentifier:
+            
+            if not self.isLogin:
+                self.Authentificate()
+
+            # on retrouve le token et on le sauvegarde
+            if self.isLogin:
+                sHtmlContent = self.GetHtml('https://uptobox.com/my_account')
+                sPattern = 'Token:.+?<span class=\'none\'>(.+?)</span>'
+                aResult = cParser().parse(sHtmlContent, sPattern, 1)
+                if aResult[0]:
+                    sToken = aResult[1][0]
+                    self.ADDON.setSetting('hoster_' + str(self.__sHosterIdentifier) + '_token', sToken)
+                    return sToken
+
+        return None
+    
