@@ -159,7 +159,10 @@ class cGui:
 
     # Meme mode d'affichage qu'un film, avec la description si fournie, mais il n'y a pas de recherche des Métadonnées
     def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler='', sCat=5):
-        cGui.CONTENT = 'movies'
+        if sThumbnail or sDesc:
+            cGui.CONTENT = 'movies'
+        else:
+            cGui.CONTENT = 'files'
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
