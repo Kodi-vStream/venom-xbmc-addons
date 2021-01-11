@@ -10,6 +10,7 @@ from resources.lib.comaddon import progress
 from resources.lib.parser import cParser
 from resources.lib.packer import cPacker
 from resources.lib.util import cUtil
+from resources.lib.util import Noredirection
 import re
 
 SITE_IDENTIFIER = 'zustream'
@@ -410,7 +411,7 @@ def showHosters():
     # oParser = cParser()
 
     # 1
-    sPattern = '(?:<iframe|<IFRAME).+?(?:src|SRC)=[\'|"]([^\'|]+)'
+    sPattern = '(?:<iframe|<IFRAME).+?(?:src|SRC)=[\'|"]([^\'"|]+)'
     aResult1 = re.findall(sPattern, sHtmlContent)
 
     # 2
@@ -433,7 +434,20 @@ def showHosters():
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
                 oRequestHandler.addHeaderEntry('Referer', 'https://re.zu-lien.com')
                 # sHtmlContent2 = oRequestHandler.request()
-                sHosterUrl = oRequestHandler.getRealUrl()
+                sUrl1 = oRequestHandler.getRealUrl()
+                if not sUrl1 or sUrl1 == sHosterUrl :
+                    opener = Noredirection()
+                    opener.addheaders = [('User-Agent', UA)]
+                    opener.addheaders = [('Referer', 'https://re.zu-lien.com')]
+                    response = opener.open(sHosterUrl)
+                    sHtmlContent = response.read()
+                    getreal = sHosterUrl
+                    if response.code == 302:
+                        getreal = response.headers['Location']
+                    response.close()
+                    sHosterUrl = getreal
+                else:
+                    sHosterUrl = sUrl1
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
