@@ -66,6 +66,8 @@ class cHoster(iHoster):
         self.__sUrl = self.__sUrl.replace('feature=oembed', '')
         self.__sUrl = self.__sUrl.replace('autoplay=1', '')
         self.__sUrl = self.__sUrl.replace('autohide=1', '')
+        self.__sUrl = self.__sUrl.replace('autoplay=', '')
+        self.__sUrl = self.__sUrl.replace('autohide=', '')
 
     def checkUrl(self, sUrl):
         return True
