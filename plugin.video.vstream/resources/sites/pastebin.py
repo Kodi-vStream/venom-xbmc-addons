@@ -26,24 +26,6 @@ try:
 except:
     from pysqlite2 import dbapi2 as sqlite
 
-# Mettre True pour activer le debug
-DEBUG = False
-
-if DEBUG:
-
-    import sys  # pydevd module need to be copied in Kodi\system\python\Lib\pysrc
-    sys.path.append('H:\Program Files\Kodi\system\Python\Lib\pysrc')
-
-    try:
-        import pysrc.pydevd as pydevd
-        pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True)
-    except ImportError:
-        try:
-            import pydevd  # with the addon script.module.pydevd, only use `import pydevd`
-            pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True)
-        except ImportError:
-            sys.stderr.write("Error: " + "You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
-
 
 SITE_IDENTIFIER = 'pastebin'
 SITE_NAME = 'PasteBin'
@@ -66,13 +48,13 @@ FUNCTION_SEARCH = 'showSearchGlobal'
 
 
 CACHE = 'special://home/userdata/addon_data/plugin.video.vstream/%s_cache.db'  % SITE_IDENTIFIER
-PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt.pyc'
 
-# important seul xbmcvfs peux lire le special
 if not isMatrix():
     REALCACHE = VSPath(CACHE).decode('utf-8')
+    PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt2.pyc'
 else:
     REALCACHE = VSPath(CACHE)
+    PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt3.pyc'
 
 
 def getNbItemParPage():
@@ -240,7 +222,8 @@ class PasteContent:
     URLS = -1       # Liste des liens, avec épisodes pour les séries
     chiffrer = None
     cache = None
-    key = None
+    keyUpto = None
+    keyAlld = None
     
     # Pour comparer deux pastes, savoir si les champs sont dans le même ordre
     def isFormat(self, other):
@@ -305,13 +288,20 @@ class PasteContent:
             return self.HEBERGEUR+link
 
         if 'uptobox' in self.HEBERGEUR:
-            if not self.key:
-                self.key = cPremiumHandler('uptobox').getToken()
+            if not self.keyUpto and not self.keyAlld:
+                if not self.keyUpto:
+                    self.keyUpto = cPremiumHandler('uptobox').getToken()
+                if not self.keyUpto: # si toujours pas de clef upto, on essai une cle allDebrid
+                    self.keyAlld = cPremiumHandler('alldebrid').getToken()
             
-            if self.key:
-                links = self._getCrypt().resolveLink(pasteBin, link, self.key)
-                if links and len(links)>0:
-                    return links[0]
+            if self.keyUpto or self.keyAlld:
+                links = self._getCrypt().resolveLink(pasteBin, link, self.keyUpto, self.keyAlld)
+                if links and len(links)>1:
+                    l = links[0]
+                    if l:
+                        return l
+                    err = links[1]
+                    dialog().VSinfo('Erreur : ' + err)
             else:
                 dialog().VSinfo('Certains liens nécessitent un Compte Uptobox Premium')
 
@@ -325,7 +315,9 @@ class PasteContent:
         try:
             lines = self._getCrypt().loadFile(pasteBin)
             hasMovies = True
-        except:
+        except Exception as e:
+            VSlog('ERROR loadFile : %s' % e, 4)
+
             URL_MAIN + pasteBin
             
             oRequestHandler = cRequestHandler(URL_MAIN + pasteBin)
