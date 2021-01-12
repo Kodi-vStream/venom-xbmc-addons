@@ -198,6 +198,8 @@
         <setting visible="false" id="plugin_streamingdivx" type="bool" label="StreamingDivx" default="true"/>
 
         <setting visible="false" id="plugin_streamiz" type="bool" label="Streamiz" default="true"/>
+        
+        <setting visible="false" id="plugin_streampourvous" type="bool" label="Streampourvous" default="true"/>
 
         <setting visible="false" id="plugin_telecharger_streaming" type="bool" label="Télécharger-streaming" default="true"/>
 
