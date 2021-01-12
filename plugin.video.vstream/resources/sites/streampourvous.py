@@ -1,26 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.recaptcha import __sLang__
-
-
-DEBUG = False
-
-if DEBUG:
-
-    import sys  # pydevd module need to be copied in Kodi\system\python\Lib\pysrc
-    sys.path.append('C:\Program Files\Kodi\system\Python\Lib\pysrc')
-
-    try:
-        import pysrc.pydevd as pydevd
-        pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True)
-    except ImportError:
-        try:
-            import pydevd  # with the addon script.module.pydevd, only use `import pydevd`
-            pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True)
-        except ImportError:
-            sys.stderr.write("Error: " + "You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
-
-
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
