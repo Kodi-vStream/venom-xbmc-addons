@@ -4,7 +4,7 @@ import random
 import re
 import unicodedata
 
-from resources.lib.comaddon import progress, xbmc, VSlog
+from resources.lib.comaddon import progress, VSlog, isMatrix
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -16,13 +16,9 @@ from resources.lib.util import cUtil, Unquote, QuotePlus, Noredirection
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
 # Make random url
-s = 'azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN'
+s = 'azertyuiopqsdfghjklmwxcvbn0123456789AZERTYUIOPQSDFGHJKLMWXCVBN'
 RandomKey = ''.join(random.choice(s) for i in range(32))
 
-if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-    isPython3 = True
-else:
-    isPython3 = False
 
 SITE_IDENTIFIER = 'ianime'
 SITE_NAME = 'I anime'
@@ -93,7 +89,7 @@ def ICDecode(html):
         return html
 
     c = aResult[0][0]
-    a = aResult[0][1]
+    # a = aResult[0][1]
     x = aResult[0][2]
 
     # premier decodage
@@ -106,21 +102,18 @@ def ICDecode(html):
             d = d + c[i]
         i = i + 1
 
-    c = Unquote(d)
     # Recuperation du tableau
-    aResult = re.findall('t=Array\(([0-9,]+)\);', c)
+    aResult = re.findall('t=Array\(([0-9,]+)\);', Unquote(d))
     if not aResult:
         return ''
-    t = aResult[0].split(',')
 
+    t = aResult[0].split(',')
     l = len(x)
     b = 1024
-    i = j = r = p = 0
-    s = 0
-    w = 0
-
+    i = p = s = w = 0
     j = math.ceil(float(l) / b)
     r = ''
+    
     while j > 0:
 
         i = min(l, b)
@@ -393,6 +386,8 @@ def showMovies(sSearch=''):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
+        isPython3 = isMatrix()
+
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -499,6 +494,8 @@ def showEpisode():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        isPython3 = isMatrix()
+
         for aEntry in aResult[1]:
 
             if not isPython3:
@@ -685,7 +682,7 @@ def showHosters():
                 # sPattern = 'http:\/\/www.ianime[^\/\\]+\/([0-9a-zA-Z_-]+)\.vxm'
                 # aResult = oParser.parse(sHosterUrl, sPattern)
                 # if aResult[0] :
-                   # sHosterUrl = 'http://embed.nowvideo.sx/embed.php?v=' + aResult[1][0]
+                # sHosterUrl = 'http://embed.nowvideo.sx/embed.php?v=' + aResult[1][0]
 
                 # redirection tinyurl
                 if 'tinyurl' in sHosterUrl:
