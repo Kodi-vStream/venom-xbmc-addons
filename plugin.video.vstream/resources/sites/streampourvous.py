@@ -406,7 +406,8 @@ def showLink():
 
             if 'Bande-annonce' in sTitle:  
                 continue
-
+            if 'freebiesforyou.net' in sServer or 'evoload.io' in sServer:
+                continue
             sTitle = ('%s [%s] (%s)') % (sMovieTitle, sTitle, sLang)
 
             oOutputParameterHandler = cOutputParameterHandler()
