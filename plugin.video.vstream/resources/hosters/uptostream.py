@@ -44,6 +44,8 @@ class cHoster(iHoster):
         return ''
 
     def __getIdFromUrl(self):
+        if self.__sUrl[-4:] in '.mp4.avi.mkv':
+            return self.__sUrl.split('/')[3]
         return self.__sUrl.split('/')[-1]
 
     def setUrl(self, sUrl):
