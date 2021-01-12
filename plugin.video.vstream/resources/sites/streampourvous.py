@@ -128,7 +128,7 @@ def showGenres():
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sTitle = aEntry[1].capitalize()
-            sNumber= aEntry[2] #+ ' Films'
+            sNumber= aEntry[2] 
             if sNumber < '2' :
                 sNumber = sNumber  +  ' Film'
             else:
@@ -404,7 +404,7 @@ def showLink():
             sLang = aEntry[3].replace('fr', 'vf').replace('en', 'vostfr')
             
 
-            if 'Bande-annonce' in sTitle:  # Les liens VIP ne fonctionnent pas
+            if 'Bande-annonce' in sTitle:  
                 continue
 
             sTitle = ('%s [%s] (%s)') % (sMovieTitle, sTitle, sLang)
