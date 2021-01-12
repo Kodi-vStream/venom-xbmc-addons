@@ -4,11 +4,12 @@
 import json
 import re
 
-from resources.lib.comaddon import progress, VSlog, dialog, addon
+from resources.lib.comaddon import progress, VSlog, dialog
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
@@ -79,7 +80,6 @@ SPECTACLE_NEWS = (URL_MAIN + 'theatre/', 'showMovies')
 
 
 def load():
-    ADDON = addon()
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -98,7 +98,7 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuAutre', 'Autres', 'tv.png', oOutputParameterHandler)
 
-    if ADDON.getSetting('token_alldebrid') == "":
+    if not cPremiumHandler("alldebrid").getToken():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
         oGui.addDir(SITE_IDENTIFIER, 'getToken', '[COLOR red]Les utilisateurs d\'Alldebrid cliquez ici.[/COLOR]', 'films.png', oOutputParameterHandler)
@@ -293,12 +293,11 @@ def showMenuAutre():
 
 
 def getToken():
-    ADDON = addon()
     oGui = cGui()
 
-    token = oGui.showKeyBoard(heading="Entrez votre token")
-    ADDON.setSetting('token_alldebrid', token)
-    dialog().VSinfo('Token Ajouter', "Extreme-Download", 15)
+    sToken = oGui.showKeyBoard(heading="Entrez votre token alldebrid")
+    cPremiumHandler('alldebrid').setToken(sToken)
+    dialog().VSinfo('Token ajouté', "Extreme-Download", 5)
     oGui.setEndOfDirectory()
 
 
@@ -753,13 +752,13 @@ def showHosters():
 
 
 def RecapchaBypass():
-    ADDON = addon()
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    Token_Alldebrid = ADDON.getSetting('token_alldebrid')
+    
+    Token_Alldebrid = cPremiumHandler("alldebrid").getToken()
 
     if Token_Alldebrid != "":
         sUrl_Bypass = "https://api.alldebrid.com/v4/link/redirector?agent=service&version=1.0-&apikey=" + Token_Alldebrid + "&link=" + sUrl
