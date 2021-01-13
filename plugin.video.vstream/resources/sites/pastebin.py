@@ -150,7 +150,10 @@ class PasteCache:
                 return None, False
 
             # Utiliser les données du cache
-            content = str(data['content'])
+            if isMatrix():
+                content = data['content'].decode("utf-8")
+            else:
+                content = str(data['content'])
             if content[-1] == '.':
                 return content[:-1], True
             return content, False
@@ -165,7 +168,13 @@ class PasteCache:
             buff = str(pasteContent)
             if isMovie:
                 buff += '.'
-            self.dbcur.execute(sql, (pasteID, buffer(buff), time.time()))
+            
+            if isMatrix():
+                buff = memoryview(bytes(buff, encoding='utf-8'))
+            else:
+                buff = buffer(buff)
+            
+            self.dbcur.execute(sql, (pasteID, buff, time.time()))
             self.db.commit()
         except Exception as e:
             VSlog('SQL ERROR INSERT into table \'%s\', ID=%s, e=%s' % (SITE_IDENTIFIER, pasteID, e) )
@@ -2123,7 +2132,7 @@ def addPasteID():
             settingID = pasteID
 
     # Demande de l'id PasteBin
-    pasteID = oGui.showKeyBoard('', "[COLOR coral]Saisir l'ID du %s[/COLOR]" % SITE_NAME)
+    pasteID = oGui.showKeyBoard('', "[COLOR coral]Saisir le code du %s[/COLOR]" % SITE_NAME)
     if pasteID == False:
         return
     if pasteID in IDs:          # ID déjà dans le groupe
