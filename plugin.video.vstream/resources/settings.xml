@@ -119,8 +119,8 @@
 
         <setting visible="false" id="plugin_filmstreamvk_com" type="bool" label="Filmstream vk" default="true"/>
 
-        <setting visible="false" id="plugin_filmzenstream_com" type="bool" label="Filmzenstream)" default="true"/>
-
+<!-- 25/12/20        <setting visible="false" id="plugin_filmzenstream_com" type="bool" label="Filmzenstream)" default="true"/>
+ -->
         <setting visible="false" id="plugin_free_telechargement_org" type="bool" label="Free Telechargement" default="true"/>
 
         <setting visible="false" id="plugin_freebox" type="bool" label="active freebox" default="false"/>
