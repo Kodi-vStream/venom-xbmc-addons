@@ -68,7 +68,11 @@ class cHoster(iHoster):
 
         urlapi = "https://userload.co/api/assets/userload/js/videojs.js"
 
-        sHtmlContent1 = decodeData(requests.get(urlapi).text)
+        # ne marche plus (sur kodi18.7)
+        # sHtmlContent1 = decodeData(requests.get(urlapi).text)
+
+        oRequestHandler = cRequestHandler(urlapi)
+        sHtmlContent1 = oRequestHandler.request()
 
         oParser = cParser()
         sPattern = '(ﾟωﾟ.+?\(\'_\'\);)'
