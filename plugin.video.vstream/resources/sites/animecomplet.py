@@ -154,7 +154,10 @@ def showSeries(sSearch=''):
             if sUrl == ANIM_LIST[0]:
                 sUrl2 = aEntry[0]
                 sTitle = aEntry[1]
-
+                try:  # décodage fait avant comparaison
+                    sTitle = sTitle.decode('ascii', errors='ignore')
+                except:
+                    pass
                 if '(0)' in sTitle or 'EPISODES' in sTitle:  # EPISODES  1 element pattern a revoir pattern
                     continue
 
@@ -168,11 +171,10 @@ def showSeries(sSearch=''):
                 sUrl2 = aEntry[1]
                 sTitle = aEntry[2]
                 sDesc = 'Mise à jour : ' + aEntry[3]
-
-            try:
-                sTitle = sTitle.decode('ascii', errors='ignore')
-            except:
-            	pass
+                try:
+                    sTitle = sTitle.decode('ascii', errors='ignore')
+                except:
+                    pass
 
             if 'http' not in sThumb:
                 sThumb = URL_MAIN + sThumb
@@ -397,7 +399,7 @@ def hostersLink():
     #Petit hack pour conserver le nom de domaine du site
     #necessaire pour userload.
     if 'userload' in sHosterUrl:
-    	sHosterUrl = sHosterUrl + "|Referer=" + URL_MAIN
+        sHosterUrl = sHosterUrl + "|Referer=" + URL_MAIN
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
     if (oHoster != False):
