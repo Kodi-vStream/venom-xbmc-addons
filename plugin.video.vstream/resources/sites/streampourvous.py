@@ -26,7 +26,7 @@ MOVIE_ANNEES = (URL_MAIN + 'film-streaming/', 'showYears')
 SERIE_SERIES = (True, 'showMenuSeries')
 SERIE_NEWS = (URL_MAIN + 'serie-streaming/', 'showMovies')
 #SERIE_GENRES = ('?post_types=tvshows', 'showGenres')
-SERIE_MANGAS = (URL_MAIN + 'genre/mangas/', 'showMovies')
+SERIE_MANGAS = (URL_MAIN + 'genre/animation/', 'showMovies')
 SERIE_NETFLIX = (URL_MAIN + 'network/netflix/', 'showMovies')
 SERIE_CANAL = (URL_MAIN + 'network/canal/', 'showMovies')
 SERIE_AMAZON = (URL_MAIN + 'network/amazon/', 'showMovies')
@@ -102,7 +102,7 @@ def showMenuSeries():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_MANGAS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_MANGAS[1], 'Séries (Mangas)', 'animes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_MANGAS[1], 'Séries (Animations)', 'animes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
