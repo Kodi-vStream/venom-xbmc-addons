@@ -78,9 +78,12 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(sUrl_Bypass)
         sHtmlContent = json.loads(oRequest.request())
         
-        HostURL = sHtmlContent["data"]["link"]
-        VSlog(HostURL) #Garder le en cas que alldebrid change le fonctionnement
-        api_call = HostURL
+        api_call = HostURL = sHtmlContent["data"]["link"]
+        try:
+            mediaDisplay = HostURL.split('/')
+            VSlog('Hoster Alldebrid - play : %s/ ... /%s' % ('/'.join(mediaDisplay[0:3]), mediaDisplay[-1]))
+        except:
+            VSlog('Hoster Alldebrid - play : ' + HostURL)
         
 
         if (api_call):
