@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.recaptcha import __sLang__
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -128,7 +128,7 @@ def showGenres():
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sTitle = aEntry[1].capitalize()
-            sNumber= aEntry[2] 
+            sNumber= aEntry[2] #+ ' Films'
             if sNumber < '2' :
                 sNumber = sNumber  +  ' Film'
             else:
@@ -252,12 +252,24 @@ def showMovies(sSearch=''):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
         if 'serie-streaming/' in sUrl or 'network/' in sUrl:
+            oParser = cParser()
+            oRequestHandler = cRequestHandler(sUrl)
+            sHtmlContent = oRequestHandler.request()
+            sStart = 'class="animation-2 items">'
+            sEnd = '<div class=\'resppages\'>'
+            sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
             sPattern ='class="item tvshows"><div class="poster">.+?img src="([^"]+)" alt="([^"]+)".+?(?:|class="quality">([^<]+)<.+?)(?:|class="dtyearfr">([^<]+)<.+?)<a href="([^"]+)">.+?<div class="texto">(.*?)<\/div>'
-        else :     
+            
+        else :
+            oParser = cParser()
+            oRequestHandler = cRequestHandler(sUrl)
+            sHtmlContent = oRequestHandler.request()
+            sStart = 'class="animation-2 items">'
+            sEnd = '<div class=\'resppages\'>'
+            sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)     
             sPattern = ' class="item movies"><div class="poster">.+?img src="([^"]+)" alt="([^"]+)".+?(?:|class="quality">([^<]+)<.+?)(?:|class="dtyearfr">([^<]+)<.+?)<a href="([^"]+)">.+?<div class="texto">(.*?)<\/div>'
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-    oParser = cParser()
+            
+    
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -290,7 +302,7 @@ def showMovies(sSearch=''):
                     sYear = aEntry[3]
                 sUrl = aEntry[4]
                 if aEntry[5]:
-                    sDesc = aEntry[5]
+                    sDesc = aEntry[5].replace('Voir' , '').replace('Film complet streaming VF HD' , '').replace('streaming VF HD' , '')
 
             try:
                 sDesc = unicode(sDesc, 'utf-8')  # converti en unicode
@@ -385,7 +397,7 @@ def showLink():
 
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
-    sPattern = "dooplay_player_option.+?data-post='(\d+)'.+?data-nume='(.+?)'>.+?'title'>(.+?)<.+?flags\/(\w+)"
+    sPattern = 'dooplay_player_option.+?data-post=\'(\d+)\'.+?data-nume=\'(.+?)\'>.+?\'title\'>(.+?)<.+?class=\'server\'>(.+?)<.+?flags\/(\w+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -401,12 +413,15 @@ def showLink():
             dnum = aEntry[1]
             pdata = dpost + '?type=' + dtype +  '&source=' + dnum
             sTitle = aEntry[2].replace('Serveur', '').replace('Télécharger', '').replace('(', '').replace(')', '')
-            sLang = aEntry[3].replace('fr', 'vf').replace('en', 'vostfr')
+            sLang = aEntry[4].replace('fr', 'vf').replace('en', 'vostfr')
+            sServer = aEntry[3]
             
 
-            if 'Bande-annonce' in sTitle:  
-                continue
-            if 'freebiesforyou.net' in sServer or 'evoload.io' in sServer:
+            #if ('Bande-annonce' in sTitle):  # Les liens VIP ne fonctionnent pas
+                #continue
+            #if ('youtube.com', 'evoload.io', 'freebiesforyou.net') in sServer:
+            
+            if  'freebiesforyou.net' in sServer or 'evoload.io' in sServer or 'youtube.com' in sServer:
                 continue
             sTitle = ('%s [%s] (%s)') % (sMovieTitle, sTitle, sLang)
 
