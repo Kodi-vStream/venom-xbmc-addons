@@ -309,8 +309,9 @@ class PasteContent:
                     l = links[0]
                     if l:
                         return l
-                    err = links[1]
-                    dialog().VSinfo('Erreur : ' + err)
+                    err = 'Erreur : ' + str(links[1])
+                    VSlog(err)
+                    dialog().VSinfo(err)
             else:
                 dialog().VSinfo('Certains liens nécessitent un Compte Uptobox Premium')
 
