@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# source 08 update 02/10/2020
-return False
+# source 08 update 14/01/2021
+# return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -18,7 +18,7 @@ SITE_IDENTIFIER = 'mystream_zone'
 SITE_NAME = 'My Stream'
 SITE_DESC = 'Films et Series en Streaming'
 
-URL_MAIN = 'https://mystream.zone/'
+URL_MAIN = 'https://www2.mystream.zone/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
@@ -43,8 +43,8 @@ MOVIE_ALPHA = (True, 'showAlphaMovies')
 SERIE_ALPHA = (True, 'showAlphaSeries')
 #
 # variables internes
-MY_SEARCH_MOVIES = (True, 'MyshowSearchMovie')
-MY_SEARCH_SERIES = (True, 'MyshowSearchSerie')
+MY_SEARCH_MOVIES = (True, 'showSearchMovie')
+MY_SEARCH_SERIES = (True, 'showSearchSerie')
 
 MOVIE_TENDANCE = (URL_MAIN + 'tendance/', 'showMovies')
 MOVIE_MOVIES = (URL_MAIN + 'movies/', 'showMovies')  # = globale MOVIE_NEWS
@@ -62,19 +62,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Films & Series', 'search.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films & Series (Par Genres)', 'genres.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_TENDANCE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_TENDANCE[1], 'Films & Series (Populaires)', 'views.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films & Series (Par années)', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Films & Séries', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -83,6 +71,18 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuSeries', 'Séries', 'series.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films & Séries (Par Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_TENDANCE[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_TENDANCE[1], 'Films & Séries (Populaires)', 'views.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films & Séries (Par années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -116,11 +116,11 @@ def showMenuSeries():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_SERIES[1], 'Recherche Series ', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_SERIES[1], 'Recherche Séries ', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Series (Récentes)', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries (Récentes)', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS_SAISONS[0])
@@ -132,7 +132,7 @@ def showMenuSeries():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_TOP_IMD[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_TOP_IMD[1], 'Series (Top IMDd)', 'tmdb.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_TOP_IMD[1], 'Séries (Top IMDd)', 'tmdb.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_ALPHA[0])
@@ -152,7 +152,7 @@ def showSearch():
         return
 
 
-def MyshowSearchSerie():
+def showSearchSerie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
@@ -162,7 +162,7 @@ def MyshowSearchSerie():
         return
 
 
-def MyshowSearchMovie():
+def showSearchMovie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
@@ -236,7 +236,7 @@ def showAlpha(stype):
     oGui = cGui()
     # requete json 20 resultat max
     # https://mystream.zone/wp-json/dooplay/glossary/?term=g&nonce=2132c17353&type=tvshows
-    url1 = 'https://mystream.zone/wp-json/dooplay/glossary/?term='
+    url1 = URL_MAIN + 'wp-json/dooplay/glossary/?term='
     url2 = '&nonce='
     snonce = '2132c17353'  # a surveiller si jamais cela change
     url3 = '&type='
@@ -308,7 +308,7 @@ def showMovies(sSearch=''):
 
         jsonrsp = json.loads(sJsonContent)
         for i, idict in jsonrsp.items():
-            sTitle = str(jsonrsp[i]['title'].encode('utf-8', 'ignore'))  # I Know This Much Is True mystream
+            sTitle = str(jsonrsp[i]['title'].encode('utf-8', 'ignore')).replace(' mystream', '')  # I Know This Much Is True mystream
             sUrl2 = str(jsonrsp[i]['url'])
             sThumb = str(jsonrsp[i]['img'])
             sYears = str(jsonrsp[i]['year'])
@@ -328,35 +328,34 @@ def showMovies(sSearch=''):
         oGui.setEndOfDirectory()
         return
 
-    if 'https://mystream.zone/tendance/' in sUrl:  # url name years image
-        # sPattern = 'class="mepo">.+?class=.data.+?href="([^"]*)".+?([^<]*).+?span>.+?,.([^<]*).+?src="([^"]*)'
+    if '/tendance/' in sUrl:  # url name years image
         sPattern = 'img src="([^"]*).*?class="mepo">.+?class=.data.+?href="([^"]*)".+?([^<]*).+?span>.+?,.([^<]*)'
 
-    elif sUrl == 'https://mystream.zone/':  # url image title
+    elif sUrl == URL_MAIN:  # url image title
         sPattern = 'data dfeatur.+?href="([^"]*)".+?src="([^"]*).+?alt="([^"]*)'
 
-    elif 'https://mystream.zone/seasons/' in sUrl:  # image url number title
+    elif '/seasons/' in sUrl:  # image url number title
         sPattern = 'item se seasons.+?src="([^"]*)".+?href="([^"]*).+?class="b">([^<]*).+?c">([^<]*)'
 
-    elif 'https://mystream.zone/episodes/' in sUrl:  # url 'S1.E1.'  years '.2020'   title img
-        sPattern = 'div class="season_m.+?data.+?href="([^"]*)"..+?span>([^\/]*).+?,([^<]*).+?serie">([^<]*).+?src="([^"]*)"'
+    elif '/episodes/' in sUrl:  # url 'S1.E1.' years '.2020' title img
+        sPattern = 'div class="season_m.+?data.+?href="([^"]*)"..+?span>([^\/]*).+?,([^<]*).+?serie">([^<]*).+?src="([^"]*)'
 
-    elif 'https://mystream.zone/?s=' in sUrl:  # thumb url title years desc
+    elif '?s=' in sUrl:  # thumb url title years desc
         sPattern = 'animation-2.+?img src="([^"]*).+?class="title.+?ref="([^"]*)".([^<]*).+?year">([^<]*).*?contenido.><p>([^<]*)'
 
     # elif 'genre' in sUrl or 'tvshows' in sUrl or 'movies' in sUrl or 'release' in sUrl:
-    elif 'genre' in sUrl or 'release' in sUrl:
+    elif '/genre/' in sUrl or 'release' in sUrl:
         sPattern = 'class="item.+?src="([^"]*).+?class="mepo">.+?class="data".+?href="([^"]*).>([^<]*).+?span>.+?,.([^<]*).+?texto">([^<]*)'
-    elif 'mystream.zone/tvshows' in sUrl or 'mystream.zone/movies' in sUrl:
+    elif '/tvshows' in sUrl or 'mystream.zone/movies' in sUrl:
         sPattern = '<h1>.+?</html>'
 
-    elif 'mystream.zone/imdb/' in sUrl:  # url thumb title rate
+    elif '/imdb/' in sUrl:  # url thumb title rate
         sPattern = "class=.poster.+?ref=.([^']*).><img src=.([^']*).+?alt=.([^']*).+?class='rating'>([^<]*)"
         sMenu = 'imdb'
 
     else:
         oGui.addText(SITE_IDENTIFIER, 'Requete inconnue')
-        #Gui.setEndOfDirectory()
+        # Gui.setEndOfDirectory()
         return
 
     try:
@@ -369,11 +368,11 @@ def showMovies(sSearch=''):
     except Exception as e:
         if str(e) == "('The read operation timed out',)":
             oGui.addText(SITE_IDENTIFIER, 'site Inaccessible')
-            #oGui.setEndOfDirectory()
+            # oGui.setEndOfDirectory()
             return
         else:
             oGui.addText(SITE_IDENTIFIER, 'Request Failed')
-            #oGui.setEndOfDirectory()
+            # oGui.setEndOfDirectory()
             return
 
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -386,51 +385,52 @@ def showMovies(sSearch=''):
         bclosedprogress_1 = False
         sDesc = ''
         sYear = ''
-        
+
         for aEntry in aResult[1]:
             progress_1.VSupdate(progress_1, total)
             if progress_1.iscanceled():
                 break
-            
-            if 'https://mystream.zone/tendance/' in sUrl:  # image url title years
-                sUrl2 = aEntry[1]
-                sTitle = aEntry[2]
-                sThumb = aEntry[0]
-                sDisplayTitle = sTitle + '(' + aEntry[3] + ')'
 
-            elif sUrl == 'https://mystream.zone/':  # url image title
+            if '/tendance/' in sUrl:  # image url title years
+                sThumb = aEntry[0]
+                sUrl2 = aEntry[1]
+                sTitle = aEntry[2].replace(' mystream', '')
+                sYear = aEntry[3]
+                sDisplayTitle = sTitle + '(' + sYear + ')'
+
+            elif sUrl == URL_MAIN:  # url image title
                 sUrl2 = aEntry[0]
-                sTitle = str(aEntry[2]).replace(' mystream', '')
                 sThumb = aEntry[1]
+                sTitle = str(aEntry[2]).replace(' mystream', '')
                 sDisplayTitle = sTitle
 
-            elif 'https://mystream.zone/seasons/' in sUrl:  # image  url number title
-                sUrl2 = aEntry[1]
-                sTitle = aEntry[3]
+            elif '/seasons/' in sUrl:  # image  url number title
                 sThumb = aEntry[0]
+                sUrl2 = aEntry[1]
+                sTitle = aEntry[3].replace(' mystream', '')
                 sDisplayTitle = sTitle + ' Saison ' + aEntry[2]
 
-            elif 'https://mystream.zone/episodes/' in sUrl:  # url ;'S1.E1.' ; years '.2020' ;  title; img
+            elif '/episodes/' in sUrl:  # url ;'S1.E1.' ; years '.2020' ;  title; img
                 sUrl2 = aEntry[0]
+                sYear = aEntry[2]
                 sTitle = aEntry[3] + ' ' + aEntry[1]
                 sThumb = aEntry[4]
-                sDisplayTitle = sTitle + '(' + aEntry[2] + ')'
-                sYear = aEntry[2]
+                sDisplayTitle = sTitle + '(' + sYear + ')'
 
-            elif 'https://mystream.zone/?s=' in sUrl:  # img url title years desc
+            elif '?s=' in sUrl:  # img url title years desc
+                sThumb = aEntry[0]
                 sUrl2 = aEntry[1]
                 sTitle = str(aEntry[2]).replace(' mystream', '')
-                sThumb = aEntry[0]
-                sDesc = aEntry[4]
                 sYear = aEntry[3]
+                sDesc = aEntry[4]
                 sDisplayTitle = sTitle + ' (' + sYear + ' )'
 
             elif 'genre' in sUrl or 'release' in sUrl:
+                sThumb = aEntry[0]
                 sUrl2 = aEntry[1]
                 sTitle = str(aEntry[2]).replace(' mystream', '')
-                sThumb = aEntry[0]
-                sDesc = aEntry[4]
                 sYear = aEntry[3]
+                sDesc = aEntry[4]
                 sDisplayTitle = sTitle + ' (' + sYear + ')'
 
             # a revoir
@@ -461,12 +461,12 @@ def showMovies(sSearch=''):
                 if (aResult2[0] == True):
                     total = len(aResult2[1])
                     progress_2 = progress().VScreate(SITE_NAME)
-                    
+
                     for aEntry in aResult2[1]:
                         progress_2.VSupdate(progress_2, total)
                         if progress_2.iscanceled():
                             break
-                        
+
                         sUrl2 = aEntry[1]
                         sTitle = str(aEntry[2]).replace(' mystream', '')
                         sThumb = aEntry[0]
@@ -484,7 +484,7 @@ def showMovies(sSearch=''):
                             oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
                         else:
                             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
-        
+
                     progress_2.VSclose(progress_2)
 
             else:  # en théorie jamais atteint : a revoir
@@ -536,13 +536,13 @@ def showMovies(sSearch=''):
 
         if not bclosedprogress_1:
             progress_1.VSclose(progress_1)
-                   
+
         if not sSearch:
             bNextPage, urlNextpage, pagination = __checkForNextPage(sHtmlContent)
             if (bNextPage):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', urlNextpage)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] ' + pagination + ' >>>[/COLOR]', oOutputParameterHandler)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + pagination, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -578,9 +578,9 @@ def __checkForNextPage(sHtmlContent):
     if bnext:
         pagination = ''
         if numberNext:
-            pagination = 'Page ' + numberNext
+            pagination = numberNext
         if NumberMax:
-            pagination = pagination + '/' + NumberMax + ' '
+            pagination = pagination + '/' + NumberMax
         return True, urlNextpage, pagination
     else:
         return False, urlNextpage, 'nothing'
@@ -595,7 +595,6 @@ def showSaisons():
     sDesc = oInputParameterHandler.getValue('sDesc')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sYear = oInputParameterHandler.getValue('sYear')
-
     sMenu = oInputParameterHandler.getValue('sMenu')
     # probleme temps de la requete aleatoire normale, lent, ou tps de connexion > max autorisé
     oParser = cParser()
@@ -661,13 +660,13 @@ def showSaisons():
             if sYear:
                 sDisplayTitle = sDisplayTitle + ' (' + sYear + ')'
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sThumb', sThumb)
-        oOutputParameterHandler.addParameter('sDesc', sDesc)
-        oOutputParameterHandler.addParameter('sYear', sYear)
-        oOutputParameterHandler.addParameter('listeUrlEpisode', listeUrlEpisode)
-        oOutputParameterHandler.addParameter('listeStitle', listeStitle)
-        oGui.addEpisode(SITE_IDENTIFIER, 'showListEpisodes', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('sYear', sYear)
+            oOutputParameterHandler.addParameter('listeUrlEpisode', listeUrlEpisode)
+            oOutputParameterHandler.addParameter('listeStitle', listeStitle)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showListEpisodes', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -806,7 +805,7 @@ def showHosters():
             datatype = aEntry[0]
             datapost = aEntry[1]
             datanum = aEntry[2]
-            sUrl2 = 'https://mystream.zone/wp-admin/admin-ajax.php'
+            sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
             pdata = 'action=doo_player_ajax&post=' + datapost + '&nume=' + datanum + '&type=' + datatype
             if sYear:
                 sDisplayTitle = sTitle + ' (' + sYear + ')'
@@ -819,12 +818,12 @@ def showHosters():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sYear', sYear)
             oOutputParameterHandler.addParameter('pdata', pdata)
-            oGui.addLink(SITE_IDENTIFIER, 'Hosterslink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'hostersLink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def Hosterslink():
+def hostersLink():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -846,7 +845,8 @@ def Hosterslink():
     oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
     oRequest.addParametersLine(pdata)
     sHtmlContent = oRequest.request()
-    sPattern = '(?:<iframe|<IFRAME).+?(?:src|SRC)=(?:\'|")(.+?)(?:\'|")'
+    # sPattern = '(?:<iframe|<IFRAME).+?(?:src|SRC)=(?:\'|")(.+?)(?:\'|")'
+    sPattern = '(http[^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
