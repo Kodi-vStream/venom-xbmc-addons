@@ -191,6 +191,8 @@
 
         <setting visible="false" id="plugin_streamcomplet" type="bool" label="StreamComplet" default="true"/>
 
+        <setting visible="false" id="plugin_streamcomplet3" type="bool" label="Streamcomplet3" default="true"/>
+
         <setting visible="false" id="plugin_streamdivx" type="bool" label="StreamDivx" default="true"/>
 
         <setting visible="false" id="plugin_streaming_planet" type="bool" label="Streaming-Planet" default="true"/>
