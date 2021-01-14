@@ -44,6 +44,8 @@ class cHoster(iHoster):
         return ''
 
     def __getIdFromUrl(self):
+        if self.__sUrl[-4:] in '.mp4.avi.mkv':
+            return self.__sUrl.split('/')[3]
         return self.__sUrl.split('/')[-1]
 
     def setUrl(self, sUrl):
@@ -84,15 +86,7 @@ class cHoster(iHoster):
 
     def getMediaLink(self):
         self.oPremiumHandler = cPremiumHandler('uptobox')
-        if (self.oPremiumHandler.isPremiumModeAvailable()):
-            return self.__getMediaLinkForGuest(premium=True)
-
-        else:
-            VSlog('no premium')
-            return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self, premium=False):
-
+        premium = self.oPremiumHandler.isPremiumModeAvailable()
         api_call = False
         SubTitle = ''
 

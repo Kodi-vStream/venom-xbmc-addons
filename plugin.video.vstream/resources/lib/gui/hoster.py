@@ -384,6 +384,10 @@ class cHosterGui:
             return self.getHoster('userload')
         if ('aparat' in sHostName):
             return self.getHoster('aparat')
+        if ('evoload' in sHostName):
+            return self.getHoster('evoload')
+        if ('vidshar' in sHostName):
+            return self.getHoster('vidshar')
 
         # Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
@@ -448,7 +452,11 @@ class cHosterGui:
         if bGetRedirectUrl == 'True':
             sMediaUrl = self.__getRedirectUrl(sMediaUrl)
 
-        VSlog('Hoster - play ' + sMediaUrl)
+        try:
+            mediaDisplay = sMediaUrl.split('/')
+            VSlog('Hoster - play : %s/ ... /%s' % ('/'.join(mediaDisplay[0:3]), mediaDisplay[-1]))
+        except:
+            VSlog('Hoster - play : ' + sMediaUrl)
 
         oHoster = self.getHoster(sHosterIdentifier)
         oHoster.setFileName(sFileName)

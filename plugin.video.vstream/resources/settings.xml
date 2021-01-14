@@ -20,6 +20,7 @@
         <setting id="poster_tmdb" type="select" label="30007" values="w92|w154|w185|w342|w500|w780|original" default="w342"/>
         <setting id="backdrop_tmdb" type="select" label="30008" values="w300|w780|w1280|original" default="w1280"/>
         <setting id="extendedinfo-view" type="bool" label="30009" default="false"/>
+        <setting id="information-view" type="bool" label="31102" default="false"/>
 
         <setting label="30076" type="lsep"/>
         <setting type="sep"/>
@@ -74,6 +75,8 @@
         <setting type="sep"/>
 
         <!--activation invisible des sources -->
+        <setting visible="false" id="plugin__4kstreamz" type="bool" label="4kstreamz" default="true"/>
+
         <setting visible="false" id="plugin_adkami_com" type="bool" label="ADKami" default="true"/>
 
         <setting visible="false" id="plugin_alldebrid" type="bool" label="AllDebrid" default="true"/>
@@ -92,11 +95,15 @@
 
         <setting visible="false" id="plugin_cinemegatoil_org" type="bool" label="Cinemegatoil" default="true"/>
 
+        <setting visible="false" id="plugin_cinemey" type="bool" label="Cinemey" default="true"/>
+
         <setting visible="false" id="plugin_ddl1" type="bool" label="DDL1" default="true"/>
 
         <setting visible="false" id="plugin_docu_fr" type="bool" label="Docu Fr" default="true"/>
-        
+
         <setting visible="false" id="plugin_dpstream" type="bool" label="Dpstream" default="true"/>
+
+        <setting visible="false" id="plugin_dpstreamhd" type="bool" label="DpStream HD" default="true"/>
 
         <setting visible="false" id="plugin_dpstreaming" type="bool" label="DP Streaming" default="true"/>
 
@@ -112,8 +119,8 @@
 
         <setting visible="false" id="plugin_filmstreamvk_com" type="bool" label="Filmstream vk" default="true"/>
 
-        <setting visible="false" id="plugin_filmzenstream_com" type="bool" label="Filmzenstream)" default="true"/>
-
+<!-- 25/12/20        <setting visible="false" id="plugin_filmzenstream_com" type="bool" label="Filmzenstream)" default="true"/>
+ -->
         <setting visible="false" id="plugin_free_telechargement_org" type="bool" label="Free Telechargement" default="true"/>
 
         <setting visible="false" id="plugin_freebox" type="bool" label="active freebox" default="false"/>
@@ -154,6 +161,8 @@
 
         <setting visible="false" id="plugin_mesfilms" type="bool" label="Mes Films" default="true"/>
 
+        <setting visible="false" id="plugin_mystream_zone" type="bool" label="My Stream" default="true"/>
+
         <setting visible="false" id="plugin_neko_sama" type="bool" label="Neko Sama" default="true"/>
 
         <setting visible="false" id="plugin_neuf_docu" type="bool" label="9Docu" default="true"/>
@@ -169,8 +178,6 @@
         <setting visible="false" id="plugin_pastebin" type="bool" label="PasteBin" default="true"/>
 
         <setting visible="false" id="plugin_planet_streaming" type="bool" label="Planet Streaming" default="true"/>
-        
-        <setting visible="false" id="plugin_quatreKstreamz" type="bool" label="4kstreamz" default="true"/>
 
         <setting visible="false" id="plugin_serie_streaming_watch" type="bool" label="SerieStreaming.watch" default="true"/>
 
@@ -184,6 +191,8 @@
 
         <setting visible="false" id="plugin_streamcomplet" type="bool" label="StreamComplet" default="true"/>
 
+        <setting visible="false" id="plugin_streamcomplet3" type="bool" label="Streamcomplet3" default="true"/>
+
         <setting visible="false" id="plugin_streamdivx" type="bool" label="StreamDivx" default="true"/>
 
         <setting visible="false" id="plugin_streaming_planet" type="bool" label="Streaming-Planet" default="true"/>
@@ -192,7 +201,9 @@
 
         <setting visible="false" id="plugin_streamingdivx" type="bool" label="StreamingDivx" default="true"/>
 
-        <setting visible="false" id="plugin_streamiz" type="bool" label="Streamiz" default="true"/>
+<!-- 14/01/21        <setting visible="false" id="plugin_streamiz" type="bool" label="Streamiz" default="true"/>
+ -->        
+        <setting visible="false" id="plugin_streampourvous" type="bool" label="Streampourvous" default="true"/>
 
         <setting visible="false" id="plugin_telecharger_streaming" type="bool" label="Télécharger-streaming" default="true"/>
 
@@ -205,6 +216,8 @@
         <setting visible="false" id="plugin_vf_space" type="bool" label="VF.Space" default="true"/>
 
         <setting visible="false" id="plugin_videobuzzy_com" type="bool" label="Videobuzzy" default="true"/>
+
+        <setting visible="false" id="plugin_viki_com" type="bool" label="Viki" default="true"/>
 
         <setting visible="false" id="plugin_voirfilms_org" type="bool" label="VoirFilms" default="true"/>
 
@@ -333,6 +346,7 @@
         <setting id="hoster_uptobox_premium" type="bool" label="30403" default="false"/>
         <setting id="hoster_uptobox_username" type="text" label="30401" default=""/>
         <setting id="hoster_uptobox_password" type="text" label="30402" default="" option="hidden"/>
+        <setting id="hoster_uptobox_token" type="text" label="30328" default=""/>
         <setting id="hoster_uptobox_mode_default" type="enum" label="30451" lvalues="30452|30453|30454" default="0"/>
 
         <setting label="1Fichier" type="lsep"/>
@@ -347,13 +361,6 @@
         <setting id="hoster_uploaded_username" type="text" label="30401" default=""/>
         <setting id="hoster_uploaded_password" type="text" label="30402" default="" option="hidden"/>
 
-<!--  Time2Watch
-        <setting label="Time2Watch" type="lsep"/>
-        <setting type="sep"/>
-        <setting id="hoster_time2watch_premium" type="bool" label="30403" default="false"/>
-        <setting id="hoster_time2watch_username" type="text" label="30401" default=""/>
-        <setting id="hoster_time2watch_password" type="text" label="30402" default="" option="hidden"/>
- -->
         <setting label="UrlResolver" type="lsep"/>
         <setting type="sep"/>
         <setting type="text" label="30068" default=""/>

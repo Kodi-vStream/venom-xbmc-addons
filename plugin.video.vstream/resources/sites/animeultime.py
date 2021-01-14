@@ -24,18 +24,17 @@ UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/
 
 URL_SEARCH_SERIES = (URL_MAIN + 'search-0-1+', 'showSeries')
 
+ANIM_ANIMS = (True, 'showMenuAnims')
 ANIM_ANNEES = (True, 'ShowYearsAnime')
 ANIM_GENRES = (True, 'ShowGenreAnime')
 ANIM_ALPHA = (True, 'ShowAlphaAnime')
 
+SERIE_SERIES = (True, 'showMenuSeries')
 SERIE_ANNEES = (True, 'ShowYearsDrama')
 SERIE_GENRE = (True, 'ShowGenreDrama')
 SERIE_ALPHA = (True, 'ShowAlphaDrama')
 
 TOKUSATSU_ALPHA = ('true', 'ShowAlphaTokusatsu')
-
-ANIM_ANIMS = (True, 'showMenuAnims')
-SERIE_SERIES = (True, 'showMenuSeries')
 TOKUSATSU_TOKUSATSUS = (True, 'showMenuTokusatsu')
 
 
@@ -70,15 +69,15 @@ def showMenuAnims():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ALPHA[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ALPHA[1], 'Animés  (Alpha)', 'az.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ALPHA[1], 'Animés  (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genre)', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ANNEES[1], 'Animés (Années)', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANNEES[1], 'Animés (Par années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -92,15 +91,15 @@ def showMenuSeries():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_ALPHA[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_ALPHA[1], 'Dramas (Alpha)', 'az.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_ALPHA[1], 'Dramas (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRE[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRE[1], 'Dramas (Genre)', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRE[1], 'Dramas (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Dramas (Années)', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Dramas (Par années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -114,7 +113,7 @@ def showMenuTokusatsu():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', TOKUSATSU_ALPHA[0])
-    oGui.addDir(SITE_IDENTIFIER, TOKUSATSU_ALPHA[1], 'Tokusatsu (Alpha)', 'az.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, TOKUSATSU_ALPHA[1], 'Tokusatsu (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -123,7 +122,7 @@ def loadTypelist(typemovie, typelist):
     # typelist genre ou year
     # <select name="genre"
     # <select name="year"
-    sUrl = 'http://www.anime-ultime.net/series-0-1/' + typemovie
+    sUrl = URL_MAIN + 'series-0-1/' + typemovie
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -258,7 +257,7 @@ def showSeries(sSearch=''):
     if sSearch:
         sPattern = '<td class=".+?<a href="([^"]+)".+?<img src=.+?img=([^>]+)/>.+?onMouseOut.+?>(.+?)</a>'
     else:
-        sPattern = '<td class=".+?<a href="([^"]+)".+?<img src=([^>]+)/>.+?title="([^"]+)'
+        sPattern = '<td class=".+?<a href="([^"]+)".+?<img src=([^>]+)\/>.+?alt="([^"]+).+?<td class'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -358,7 +357,7 @@ def showEpisode():
     sDesc = ''
     try:
         # sPattern = '<strong>(.+?)<.+?>'
-        sPattern ='src="images.+?(?:<br \/>)(.+?)(?:<span style|TITRE ORIGINAL|ANNÉE DE PRODUCTION|STUDIO|GENRES)'
+        sPattern = 'src="images.+?(?:<br />)(.+?)(?:<span style|TITRE ORIGINAL|ANNÉE DE PRODUCTION|STUDIO|GENRES)'
 
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
@@ -367,7 +366,7 @@ def showEpisode():
             sDesc = sDesc.replace('Synopsis', '').replace('synopsis', '').replace(':', ' ')
             sDesc = ('[I][COLOR coral]%s[/COLOR][/I] %s') % ('Synopsis :', sDesc)
 
-            # Enleve les balise.
+            # Enleve les balises.
             try:
                 sDesc = re.sub('<.*?>', '', sDesc)
             except:

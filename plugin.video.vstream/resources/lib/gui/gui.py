@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import xbmcplugin
+import xbmc
 
-from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window, xbmc
+from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window
 from resources.lib.db import cDb
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
@@ -119,7 +120,7 @@ class cGui:
 
     # Affichage d'un épisode, sans recherche de Métadonnées, et menu adapté
     def addEpisode(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
-        
+
         # comportement proche de addMisc
         self.addMisc(sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, sCat=2)
         cGui.CONTENT = 'files'
@@ -158,7 +159,10 @@ class cGui:
 
     # Meme mode d'affichage qu'un film, avec la description si fournie, mais il n'y a pas de recherche des Métadonnées
     def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler='', sCat=5):
-        cGui.CONTENT = 'movies'
+        if sThumbnail or sDesc:
+            cGui.CONTENT = 'movies'
+        else:
+            cGui.CONTENT = 'files'
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
@@ -232,7 +236,7 @@ class cGui:
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
-        oGuiElement.setTitle(sLabel)
+        oGuiElement.setTitle('[COLOR teal]' + sLabel + ' >>>[/COLOR]')
         oGuiElement.setIcon('next.png')
         oGuiElement.setThumbnail(oGuiElement.getIcon())
         oGuiElement.setMeta(0)
@@ -307,7 +311,7 @@ class cGui:
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
     # afficher les liens non playable
-    def addFolder(self, oGuiElement, oOutputParameterHandler = '', _isFolder=True):
+    def addFolder(self, oGuiElement, oOutputParameterHandler='', _isFolder=True):
 
         # recherche append les reponses
         if window(10101).getProperty('search') == 'true':
@@ -316,12 +320,10 @@ class cGui:
             return
 
         # Des infos a rajouter ?
-        params = {
-            'siteUrl': oGuiElement.setSiteUrl,  # indispensable
-            'sTmdbId': oGuiElement.setTmdbId,
-            'sImbdId': oGuiElement.setImdbId,  # inutile ?
-            'sYear': oGuiElement.setYear,
-        }
+        params = {'siteUrl': oGuiElement.setSiteUrl,  # indispensable
+                  'sTmdbId': oGuiElement.setTmdbId,
+                  'sImbdId': oGuiElement.setImdbId,  # inutile ?
+                  'sYear': oGuiElement.setYear}
 
         try:
             for sParam, callback in params.iteritems():
@@ -387,7 +389,7 @@ class cGui:
             sSiteUrl = oOutputParameterHandler.getValue('siteUrl')
             oGuiElement.setSiteUrl(sSiteUrl)
 
-        #On récupere le sCat du fichier précédent.
+        # On récupere le sCat du fichier précédent.
         sCat = oInputParameterHandler.getValue('sCat')
         if sCat:
             oGuiElement.setCat(sCat)
@@ -417,7 +419,10 @@ class cGui:
         oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
         # oListItem.setThumbnailImage(oGuiElement.getThumbnail())
         # oListItem.setIconImage(oGuiElement.getIcon())
-        oListItem.setArt({'poster': oGuiElement.getPoster(), 'thumb': oGuiElement.getThumbnail(), 'icon': oGuiElement.getIcon(), 'fanart': oGuiElement.getFanart()})
+        oListItem.setArt({'poster': oGuiElement.getPoster(),
+                          'thumb': oGuiElement.getThumbnail(),
+                          'icon': oGuiElement.getIcon(),
+                          'fanart': oGuiElement.getFanart()})
 
         aProperties = oGuiElement.getItemProperties()
         for sPropertyKey, sPropertyValue in aProperties.items():
@@ -451,7 +456,7 @@ class cGui:
         oGuiElement.addContextItem(oContext)
 
     # marque page
-    def createContexMenuBookmark(self, oGuiElement, oOutputParameterHandler = ''):
+    def createContexMenuBookmark(self, oGuiElement, oOutputParameterHandler=''):
         oOutputParameterHandler.addParameter('sCleanTitle', oGuiElement.getCleanTitle())
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
@@ -608,7 +613,6 @@ class cGui:
             self.addText('cGui')
 
         xbmcplugin.addDirectoryItems(iHandler, self.listing, len(self.listing))
-
         xbmcplugin.setPluginCategory(iHandler, '')
         xbmcplugin.setContent(iHandler, cGui.CONTENT)
         xbmcplugin.addSortMethod(iHandler, xbmcplugin.SORT_METHOD_NONE)
@@ -632,6 +636,7 @@ class cGui:
 
     def updateDirectory(self):  # refresh the content
         xbmc.executebuiltin('Container.Refresh')
+        xbmc.sleep(500)    # Nécessaire pour laisser le temps du refresh
 
     def viewBA(self):
         oInputParameterHandler = cInputParameterHandler()
@@ -653,23 +658,26 @@ class cGui:
         oInputParameterHandler = cInputParameterHandler()
         # sParams = oInputParameterHandler.getAllParameter()
         sId = oInputParameterHandler.getValue('sId')
-
         sTest = '%s?site=%s' % (sPluginPath, sId)
+
         xbmc.executebuiltin('Container.Update(%s, replace)' % sTest)
 
     def viewInfo(self):
-        from resources.lib.config import WindowsBoxes
+        if addon().getSetting('information-view') == "false":
+            from resources.lib.config import WindowsBoxes
 
-        oInputParameterHandler = cInputParameterHandler()
-        sCleanTitle = oInputParameterHandler.getValue('sFileName') if oInputParameterHandler.exist('sFileName') else xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
-        sMeta = oInputParameterHandler.getValue('sMeta') if oInputParameterHandler.exist('sMeta') else xbmc.getInfoLabel('ListItem.Property(sMeta)')
-        sYear = oInputParameterHandler.getValue('sYear') if oInputParameterHandler.exist('sYear') else xbmc.getInfoLabel('ListItem.Year')
+            oInputParameterHandler = cInputParameterHandler()
+            sCleanTitle = oInputParameterHandler.getValue('sFileName') if oInputParameterHandler.exist('sFileName') else xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
+            sMeta = oInputParameterHandler.getValue('sMeta') if oInputParameterHandler.exist('sMeta') else xbmc.getInfoLabel('ListItem.Property(sMeta)')
+            sYear = oInputParameterHandler.getValue('sYear') if oInputParameterHandler.exist('sYear') else xbmc.getInfoLabel('ListItem.Year')
 
-        WindowsBoxes(sCleanTitle, sCleanTitle, sMeta, sYear)
+            WindowsBoxes(sCleanTitle, sCleanTitle, sMeta, sYear)
+        else:
+            xbmc.executebuiltin('ActivateWindow(12003)')     # WINDOW_DIALOG_VIDEO_INFO
 
     def viewSimil(self):
         sPluginPath = cPluginHandler().getPluginPath()
-        
+
         oInputParameterHandler = cInputParameterHandler()
         sCleanTitle = oInputParameterHandler.getValue('sFileName') if oInputParameterHandler.exist('sFileName') else xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
         sCat = oInputParameterHandler.getValue('sCat') if oInputParameterHandler.exist('sCat') else xbmc.getInfoLabel('ListItem.Property(sCat)')
@@ -698,14 +706,21 @@ class cGui:
         sFunction = oInputParameterHandler.getValue('OldFunction')
         siteUrl = oInputParameterHandler.getValue('siteUrl')
 
+        if siteUrl.endswith('/'):  # for the url http.://www.1test.com/annee-2020/page-2/
+            urlSource = siteUrl.rsplit('/', 2)[0]
+            endOfUrl = siteUrl.rsplit('/', 2)[1] + '/'
+        else:  # for the url http.://www.1test.com/annee-2020/page-2 or /page-2.html
+            urlSource = siteUrl.rsplit('/', 1)[0]
+            endOfUrl = siteUrl.rsplit('/', 1)[1]
+
         oParser = cParser()
-        oldNum = oParser.getNumberFromString(siteUrl)
+        oldNum = oParser.getNumberFromString(endOfUrl)
         newNum = 0
         if oldNum:
             newNum = self.showNumBoard()
         if newNum:
             try:
-                siteUrl = siteUrl.replace(oldNum, newNum, 1)
+                siteUrl = urlSource + '/' + endOfUrl.replace(oldNum, newNum, 1)
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', siteUrl)
@@ -736,7 +751,7 @@ class cGui:
 
     def setWatched(self):
         if True:
-            # Use VStream database
+            # Use vStream database
             oInputParameterHandler = cInputParameterHandler()
             sSite = oInputParameterHandler.getValue('siteUrl')
             sTitle = oInputParameterHandler.getValue('sTitleWatched')

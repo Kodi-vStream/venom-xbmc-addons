@@ -15,14 +15,14 @@ SITE_NAME = 'Iptv4Sat'
 SITE_DESC = 'Regarder la télévision'
 
 URL_MAIN = 'https://www.iptv4sat.com/'
-IPTV_WOLRDWiDE = URL_MAIN + 'category/world-list/iptv-worldwide-m3u/'
-SPORT_LISTE = URL_MAIN + 'category/world-list/free-iptv-sports/'
-SMART_IPTV = URL_MAIN + 'category/world-list/smart-free-iptv/'
+IPTV_WORLDWiDE = URL_MAIN + 'category/m3u-list-world-iptv/iptv-worldwide-m3u/'
+SPORT_LISTE = URL_MAIN + 'category/m3u-list-world-iptv/free-iptv-sports/'
+SMART_IPTV = URL_MAIN + 'category/m3u-list-world-iptv/smart-free-iptv/'
 
-IPTV_AMERICAIN = URL_MAIN + 'category/world-list/america-m3u-iptv/'
-IPTV_ARABE = URL_MAIN + 'category/world-list/free-iptv-arabic/'
+IPTV_AMERICAIN = URL_MAIN + 'category/m3u-list-world-iptv/america-m3u-iptv/'
+IPTV_ARABE = URL_MAIN + 'category/m3u-list-world-iptv/free-iptv-arabic/'
 IPTV_BELGE = URL_MAIN + 'category/european-iptv/belgique-iptv/'
-IPTV_CANADA = URL_MAIN + 'category/world-list/canada-iptv-m3u/'
+IPTV_CANADA = URL_MAIN + 'category/m3u-list-world-iptv/canada-iptv-m3u/'
 IPTV_FRENCH = URL_MAIN + 'category/european-iptv-iptv/france-m3u-iptv/'
 IPTV_PAYSBAS = URL_MAIN + 'category/european-iptv/netherland-iptv/'
 IPTV_POLOGNE = URL_MAIN + 'category/european-iptv/poland-iptv/'
@@ -30,16 +30,17 @@ IPTV_PORTUGAl = URL_MAIN + 'category/european-iptv/portugal-iptv-m3u/'
 IPTV_ROUMANIE = URL_MAIN + 'category/european-iptv/iptv-romania/'
 IPTV_TURC = URL_MAIN + 'category/european-iptv/m3u-turkey-iptv/'
 
+
 def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN)
-    oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Derniere liste', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Dernière liste', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', IPTV_WOLRDWiDE)
-    oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Derniere liste mondial', 'tv.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', IPTV_WORLDWiDE)
+    oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Dernière liste mondial', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_LISTE)
@@ -55,12 +56,13 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def listePerContry():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', IPTV_AMERICAIN)
-    oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Liste chaines Amerique', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Liste chaines Américaine', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', IPTV_ARABE)
@@ -100,6 +102,7 @@ def listePerContry():
 
     oGui.setEndOfDirectory()
 
+
 def showDailyList():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -110,7 +113,7 @@ def showDailyList():
     sPattern = '<div class="td-module-thumb"><a href="([^"]+)" rel="bookmark".+?title="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -134,20 +137,21 @@ def showDailyList():
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showDailyList', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            sNumPage = re.search('/page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showDailyList', 'Page ' + sNumPage, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = ' class="last".+?href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
+    if aResult[0] is True:
         return aResult[1][0]
 
     return False
+
 
 def showAllPlaylist():  # On recupere les differentes playlist si il y en a
     oGui = cGui()

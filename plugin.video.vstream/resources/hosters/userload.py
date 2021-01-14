@@ -7,7 +7,9 @@ from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 from resources.lib.aadecode import AADecoder
 from resources.lib.packer import cPacker
-import re
+from resources.lib.comaddon import VSlog
+
+import requests, re 
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0"
 
@@ -60,14 +62,18 @@ class cHoster(iHoster):
         url = self.__sUrl
 
         keymorocco = ''
-        keymycountry = ''
+        keymycountry= ''
         morocco = ''
         mycountry = ''
 
         urlapi = "https://userload.co/api/assets/userload/js/videojs.js"
 
+        # ne marche plus (sur kodi18.7)
+        # sHtmlContent1 = decodeData(requests.get(urlapi).text)
+
         oRequestHandler = cRequestHandler(urlapi)
         sHtmlContent1 = oRequestHandler.request()
+
         oParser = cParser()
         sPattern = '(ﾟωﾟ.+?\(\'_\'\);)'
         aResult = oParser.parse(sHtmlContent1 , sPattern)
@@ -81,8 +87,11 @@ class cHoster(iHoster):
                 keymorocco = aResult_2[1][0][0]
                 keymycountry = aResult_2[1][0][1]
 
+        referer = url.split('|Referer=')[1]
+        url = url.split('|Referer=')[:-1][0]
+
         oRequestHandler = cRequestHandler(url)
-        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Referer', referer)
         sHtmlContent1 = oRequestHandler.request()
 
         sPattern2 = '<script type="text/javascript">(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
@@ -94,6 +103,7 @@ class cHoster(iHoster):
                 str2 = str2 + ';'
 
             strs = cPacker().unpack(str2)
+
             oParser = cParser()
             sPattern = 'var\s(.+?)="([^"]*)'
             aResult = oParser.parse(strs, sPattern)
@@ -121,3 +131,9 @@ class cHoster(iHoster):
                 return True, api_call.strip()
 
         return False, False
+
+def decodeData(html):
+    html = html.replace('ï¾Ÿ',"ﾟ").replace('Ï‰','ω').replace('ï¾‰','ﾉ').replace('ï½€','｀')
+    html = html.replace('â”»â”â”»','┻━┻').replace('ï½Â´ï¼‰','ｍ´').replace('Â´âˆ‡','´∇').replace('ï½°','ｰ')
+    html = html.replace('Î˜','Θ').replace('Ð”','Д').replace('Îµ','ε')
+    return html

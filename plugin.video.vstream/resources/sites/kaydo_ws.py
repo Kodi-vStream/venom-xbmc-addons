@@ -10,8 +10,8 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress #, VSlog
-
+from resources.lib.comaddon import progress
+from resources.lib.util import Noredirection
 
 # copie du site http://www.kaydo.ws/
 # copie du site https://www.hds.to/
@@ -20,7 +20,7 @@ SITE_IDENTIFIER = 'kaydo_ws'
 SITE_NAME = 'Kaydo (hdss.to)'
 SITE_DESC = 'Site de streaming en HD'
 
-URL_MAIN = 'https://hdss.to/'
+URL_MAIN = 'https://hdss.la/'
 
 MOVIE_MOVIE = (URL_MAIN + 'films-z/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'films-z/', 'showMovies')
@@ -38,6 +38,7 @@ URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'sHowResultSearch'
 
 UA = 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0'
+
 
 def Decode(chain):
     try:
@@ -141,7 +142,7 @@ def showMovieGenres():
     oGui = cGui()
 
     liste = []
-    liste.append(['Action', URL_MAIN + 'action/'])
+    liste.append(['Action', URL_MAIN + 'actionn/'])
     liste.append(['Animation', URL_MAIN + 'animation/'])
     liste.append(['Aventure', URL_MAIN + 'aventure/'])
     liste.append(['Comédie', URL_MAIN + 'comedie/'])
@@ -176,25 +177,20 @@ def showMovies(sSearch=''):
 
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
-        #sPattern = 'Title">Search<.+?<a href="([^"]+)".+?img src="([^"]+)".+?Title">([^<]+).+?Year">([^<]+).+?Qlty">([^<]+).+?Description"><p>([^<]+)'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
     if URL_MAIN + 'letters/' in sUrl:
-        sPattern = '<td class="MvTbImg">.+?href="([^"]+).+?src="([^"]+).+?class="MvTbTtl.+?<strong>([^<]*).+?<td>([^<]*).+?Qlty">([^<]+).+?<td>([^<]*)'
+        sPattern = '<td class="MvTbImg">.+?href="([^"]+).+?src="([^"]*).+?class="MvTbTtl.+?<strong>([^<]*).+?<td>([^<]*).+?Qlty">([^<]+).+?<td>([^<]*)'
     else:
-        sPattern = 'class="TPost C">.+?href="([^"]+)".+?img src="([^"]+)".+?Title">([^<]+).+?Year">([^<]+).+?Qlty">([^<]+).+?Description"><p>([^<]+)'
+        sPattern = 'class="TPost C".+?href="([^"]+).+?src="([^"]*).+?Title">([^<]+).+?(?:|Year">([^<]*).+?)(?:|Qlty">([^<]*).+?)Description"><p>([^<]+)'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
     # réécriture pour prendre les séries dans le menu des genres
     # sHtmlContent = sHtmlContent.replace('<span class="Qlty">TV</span></div><h3', '</div><h3')
-
-    # fh = open('d:\\test.txt', "w")
-    # fh.write(sHtmlContent)
-    # fh.close()
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -210,7 +206,7 @@ def showMovies(sSearch=''):
                 break
 
             siteUrl = aEntry[0]
-            sThumb = aEntry[1]#.replace('w92', 'w342')
+            sThumb = re.sub('/w\d+', '/w342', aEntry[1])
             if sThumb.startswith('//'):
                 sThumb = 'https:' + sThumb
             sTitle = aEntry[2]
@@ -218,10 +214,10 @@ def showMovies(sSearch=''):
             sQual = aEntry[4]
             sDesc = aEntry[5]
             if sYear.lower() == 'unknown':
-                sYear=''
+                sYear = ''
             if sQual.lower() == 'unknown':
-                sQual ='' 
- 
+                sQual = ''
+
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sYear)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -236,23 +232,27 @@ def showMovies(sSearch=''):
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     if not sSearch:
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<a class="next page-numbers" href="([^"]+?)"'
+    sPattern = '>([^<]+?)</a><a class="next page-numbers" href="([^"]+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return aResult[1][0]
+        sNumberMax = aResult[1][0][0]
+        sNextPage = aResult[1][0][1]
+        sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    return False
+    return False, 'none'
 
 
 def ShowSaisonEpisodes():
@@ -291,6 +291,7 @@ def ShowSaisonEpisodes():
 
     oGui.setEndOfDirectory()
 
+
 def showHosters():
     # UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0'
     oGui = cGui()
@@ -316,10 +317,10 @@ def showHosters():
         for aEntry in aResult[1]:
 
             site = URL_MAIN + "?trembed=" + aEntry[0] + "&trid=" + aEntry[1] + "&trtype=" + aEntry[2]
-            #Marche plus ?........constaté : ne marche pas toujours avec les series...affaire à suivre
+            # Marche plus ?........constaté : ne marche pas toujours avec les series...affaire à suivre
             if aEntry[2] == '1':
-                site = site.replace("trembed=1","trembed=0")
-                if not site in list_site_film:
+                site = site.replace("trembed=1", "trembed=0")
+                if site not in list_site_film:
                     list_site_film.append(site)
                 else:
                     continue  # inutile de faire des requetes identiques pour les films
@@ -331,19 +332,17 @@ def showHosters():
             sPattern1 = '<div class="Video"><iframe.+?src="([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern1)
 
-            Url = aResult[1][0]
+            Url = aResult[1][0][:-1]
             oRequestHandler = cRequestHandler(Url)
             sHtmlContent = oRequestHandler.request()
 
             # Recuperation de l'id
-            sPattern1 = "var id.+?'(.+?)'"
+            sPattern1 = "var id.+?'([^']+)'"
             aResult = oParser.parse(sHtmlContent, sPattern1)
-            
-            #VSlog(site)
-            #VSlog(aResult)
-            #sPost = decode(aResult[1][0])
+
+            # sPost = decode(aResult[1][0])
             # t[::-1] renvoie la chaine t dans l'ordre inverse, identique à decode(t)
-            sPost = aResult[1][0][::-1] 
+            sPost = aResult[1][0][::-1]
 
             if sPost:
 
@@ -352,9 +351,21 @@ def showHosters():
                 oRequestHandler = cRequestHandler(sUrl1)
                 oRequestHandler.addHeaderEntry('Referer', Url)
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
-                sHtmlContent = oRequestHandler.request()
+                oRequestHandler.request()
 
                 sHosterUrl = oRequestHandler.getRealUrl()
+
+                if sHosterUrl == sUrl1:
+                    opener = Noredirection()
+                    opener.addheaders = [('User-Agent', UA)]
+                    opener.addheaders = [('Referer', Url)]
+                    response = opener.open(sUrl1)
+                    sHtmlContent = response.read()
+                    getreal = sUrl1
+                    if response.code == 302:
+                        getreal = response.headers['Location']
+                    response.close()
+                    sHosterUrl = getreal
 
                 # https://lb.hdsto.me/hls/xxx.playlist.m3u8
                 # https://lb.hdsto.me/public/dist/index.html?id=xxx

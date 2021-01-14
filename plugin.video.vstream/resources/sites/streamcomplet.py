@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-
+#return False  # Refonctionne le 09/01/21
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -9,7 +9,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress#, VSlog
+from resources.lib.comaddon import progress  #, VSlog
 from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'streamcomplet'
@@ -117,7 +117,7 @@ def showMovies(sSearch=''):
             sTitle = aEntry[2]
             sYear = aEntry[4]
 
-            #tris search
+            # tris search
             if sSearch and total > 3:
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
                     continue
@@ -137,7 +137,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.search('/([0-9]+)/', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -213,7 +213,7 @@ def showHosters():
 
 #
 #
-# Ancient code du site .xyz
+# Ancien code du site .xyz
 # si retour en arriere
 #
 #

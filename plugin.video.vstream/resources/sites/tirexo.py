@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.gui.hoster import cHosterGui
+import random
+import re
+import requests
+import time
+import xbmc
+import xbmcplugin
+import xbmcvfs
+from resources.lib.comaddon import progress, dialog, VSlog
+from resources.lib.config import GestionCookie
 from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, dialog, VSlog
-from resources.lib.config import GestionCookie
-import time
-import xbmc
-import xbmcvfs
-import xbmcplugin
 
-import re, random, requests
 # from test.test_socket import try_address
 
 
@@ -22,7 +24,7 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like G
 SITE_IDENTIFIER = 'tirexo'
 SITE_NAME = '[COLOR violet]Tirexo[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
-# URL_HOST = 'https://www3.tirexo.lol/'
+# URL_HOST = 'https://www3.tirexo.io/'
 
 
 # def getURL():
@@ -79,7 +81,7 @@ SITE_DESC = 'Films/Séries/Reportages/Concerts'
             #return ADDON.getSetting('Tirexo')
 
 # Teste pour le moment avec une url fixe.
-URL_MAIN = "https://www3.tirexo.lol/"
+URL_MAIN = "https://www3.tirexo.io/"
 # URL_MAIN = "https://www.tirexo......./"  # Les regex sont différentes mais il n'y a pas cloudflare
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=1&result_from=1&story=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=15&story=', 'showMovies')
@@ -114,11 +116,11 @@ SERIE_GENRES = ('telecharger-series/', 'showGenre')
 
 SERIE_SERIES = (True, 'showMenuSeries')
 SERIE_VFS = (URL_MAIN + 'series-vf/', 'showMovies')
-SERIE_VF_720 = (URL_MAIN + 'series-vf-en-hd/','showMovies')
-SERIE_VF_1080 = (URL_MAIN + 'series-vf-1080p/','showMovies')
+SERIE_VF_720 = (URL_MAIN + 'series-vf-en-hd/', 'showMovies')
+SERIE_VF_1080 = (URL_MAIN + 'series-vf-1080p/', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'series-vostfr/', 'showMovies')
-SERIE_VOSTFRS_720 = (URL_MAIN + 'series-vostfr-hd/','showMovies')
-SERIE_VOSTFRS_1080 = (URL_MAIN + 'series-vostfr-1080p/','showMovies')
+SERIE_VOSTFRS_720 = (URL_MAIN + 'series-vostfr-hd/', 'showMovies')
+SERIE_VOSTFRS_1080 = (URL_MAIN + 'series-vostfr-1080p/', 'showMovies')
 SERIE_VO = (URL_MAIN + 'series-vo/', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'telecharger-series/', 'showMovies')
 
@@ -161,7 +163,6 @@ def redi(url):  # Pour la redirection avec /link
         from selenium import webdriver
         from selenium.webdriver.common.driver_utils import get_driver_path
         from selenium.webdriver.support.ui import WebDriverWait
-
         from selenium.webdriver import Chrome
         from selenium.webdriver.chrome.options import Options
 
@@ -217,7 +218,6 @@ def cloudflare(url):  # Bypass cloudflare avec selenium
         from selenium import webdriver
         from selenium.webdriver.common.driver_utils import get_driver_path
         from selenium.webdriver.support.ui import WebDriverWait
-
         from selenium.webdriver import Chrome
         from selenium.webdriver.chrome.options import Options
         from selenium.webdriver import DesiredCapabilities
@@ -274,12 +274,8 @@ def cloudflare(url):  # Bypass cloudflare avec selenium
 
         # On récupere le timeout de maniere dynamique
         try:
-            time.sleep(float(
-                        re.search(
-                            r'submit\(\);\r?\n\s*},\s*([0-9]+)',
-                            browser.page_source
-                        ).group(1)
-                    ) / float(1000) + 1)
+            time.sleep(float(re.search(r'submit\(\);\r?\n\s*},\s*([0-9]+)',
+                                       browser.page_source).group(1)) / float(1000) + 1)
 
         except:
             # Sauf sur la nouvelle version où il n'est pas présent
@@ -567,8 +563,8 @@ https://github.com/Kodi-vStream/venom-xbmc-addons/issues/2948.
 
 
 Le fonctionnement:
-Une fenêtre va s'ouvrir pour ouvrir un serveur local(et aussi le navigateur de temps en temps) et récupérer le contenu du site.
-Veuillez ne pas le(s) fermer(s) il(s) se fermera(ont) automatiquement.
+Une fenêtre va s'ouvrir pour ouvrir un serveur local(et aussi le navigateur de temps en temps) et récupérer le contenu
+du site. Veuillez ne pas le(s) fermer(s) il(s) se fermera(ont) automatiquement.
 Pour le navigateur nous passons par Google Chrome car c'est le plus simple à configurer malheureusement.
 Si vous n'avez pas Google Chrome alors ça ne fonctionnera pas donc je vous conseille de l'installer à jour important !!!
 Veuillez noter que nous réfléchissons à une solution pour utiliser les autres navigateurs
@@ -577,7 +573,8 @@ Veuillez noter que nous réfléchissons à une solution pour utiliser les autres
 PS:
 Si Jamais de temps en temps ça ne passe pas retentez une deuxième fois.
 Veuillez noter aussi qu'il vous faut un ordinateur Windows ou linux (Mac est incompatible pour l'instant).
-Pour les appareils de types Android, Ios, Libreelec, Xbox et autres ne sont pas compatible avec Selenium et c'est impossible de résoudre ce problème désolé
+Pour les appareils de types Android, Ios, Libreelec, Xbox et autres ne sont pas compatible avec Selenium et c'est
+impossible de résoudre ce problème désolé.
 
                                         Merci d'avoir lu notre explication
                                         Vive vStream !!!!""", title="Fonctionnement du site")
@@ -612,7 +609,8 @@ def showGenre():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', genre, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-        
+
+
 def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
@@ -623,11 +621,11 @@ def showMovies(sSearch=''):
         sUrl = sSearch
 
     if sSearch or "index" in sUrl:  # en mode recherche
-        sPattern = 'class="mov-t nowrap" href="(https://www.tirexo.pro/films.+?|https://www.tirexo.pro/telecharger-series.+?|https://www.tirexo.pro/animes.+?|https://www.tirexo.pro/emissions-tv-documentaires.+?)" title="([^"]+)".+?data-content="([^"]+)".+?<img src="\/([^"]+)".+?<div style="height: 51px" class="mov-c nowrap">'
+        sPattern = 'class="mov-t nowrap" href="(https://www.tirexo.pro/films.+?|https://www.tirexo.pro/telecharger-series.+?|https://www.tirexo.pro/animes.+?|https://www.tirexo.pro/emissions-tv-documentaires.+?)" title="([^"]+).+?data-content="([^"]+).+?<img src="/([^"]+).+?<div style="height: 51px" class="mov-c nowrap'
     elif 'collections/' in sUrl:
-        sPattern = 'class="mov-t nowrap" href=".+?".+?<img src="\/([^"]+)" width="200px" height="320px" title="([^"]+)".+?data-link="([^"]+)"'
+        sPattern = 'class="mov-t nowrap" href=".+?<img src="\/([^"]+)" width="200px" height="320px" title="([^"]+).+?data-link="([^"]+)'
     else:
-        sPattern = 'class="mov-t nowrap" href="([^"]+)">  <.+?data-content="([^"]+)".+?img src="([^"]+)".+?title="([^"]+)"'
+        sPattern = 'class="mov-t nowrap" href="([^"]+)">  <.+?data-content="([^"]+).+?img src="([^"]+).+?title="([^"]+)'
 
     oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -694,14 +692,14 @@ def showMovies(sSearch=''):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', re.sub('search_start=(\d+)', 'search_start=' + str(aResult[1][0]), sUrl))
                 number = re.search('([0-9]+)', aResult[1][0]).group(1)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
         else:
             sNextPage = __checkForNextPage(sHtmlContent)
             if (sNextPage != False):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
                 number = re.search('/page/([0-9]+)', sNextPage).group(1)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -725,7 +723,7 @@ def showCollec():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    sPattern = 'class="mov-t nowrap" href="([^"]+)">.+?data-content="([^"]+)".+?<img src="\/([^"]+)".+?title="([^"]+)"'
+    sPattern = 'class="mov-t nowrap" href="([^"]+).+?data-content="([^"]+).+?<img src="/([^"]+).+?title="([^"]+)'
 
     oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -809,7 +807,6 @@ def showMoviesLinks():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sTitle = sMovieTitle
-    sQual = ''
     if (aResult[0]):
         sQual = aResult[1][0][0]
         sLang = aResult[1][0][1]
@@ -907,7 +904,6 @@ def showSeriesLinks():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sDisplayTitle = sTitle
-    sQual = ''
     if (aResult[0]):
         sQual = aResult[1][0][0]
         sLang = aResult[1][0][1]
@@ -982,8 +978,8 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
-    #oGui.addText(SITE_IDENTIFIER, '[COLOR blue]Veuillez attendre que le navigateur se ferme tout seul [/COLOR]')
-    #oGui.addText(SITE_IDENTIFIER, '[COLOR blue]Pour qu\'il puisse récupérer automatiquement le bon lien [/COLOR]')
+    # oGui.addText(SITE_IDENTIFIER, '[COLOR blue]Veuillez attendre que le navigateur se ferme tout seul [/COLOR]')
+    # oGui.addText(SITE_IDENTIFIER, '[COLOR blue]Pour qu\'il puisse récupérer automatiquement le bon lien [/COLOR]')
 
     oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -995,7 +991,7 @@ def showHosters():
     # Ajout des liens DL
     # Gere si un Hoster propose plusieurs liens
     # Retire les resultats proposés en plusieurs parties (ce sont des .rar)
-    sPattern = '<th scope="col" class="no-sort"><img src=.+?>([^><]+)</th>|class=\'download\'.+?href=\'([^\']+)\'>T.+?charger <'
+    sPattern = '<th scope="col" class="no-sort"><img src=.+?>([^<]+)</th>|class=\'download\'.+?href=\'([^\']+)\'>T.+?charger <'
     aResult = oParser.parse(sHtmlContent, sPattern)
     # VSlog(aResult)
 
@@ -1060,8 +1056,8 @@ def showSeriesHosters():
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumb=oInputParameterHandler.getValue('sThumb')
-    sDesc=oInputParameterHandler.getValue('sDesc')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
 
     # oGui.addText(SITE_IDENTIFIER, '[COLOR blue]Veuillez attendre que le navigateur se ferme tout seul [/COLOR]')
     # oGui.addText(SITE_IDENTIFIER, '[COLOR blue]Pour qu\'il puisse récupérer automatiquement le bon lien [/COLOR]')
@@ -1212,15 +1208,13 @@ def DecryptDlProtecte(url):  # Passe par Selenium
         from selenium import webdriver
         from selenium.webdriver.common.driver_utils import get_driver_path
         from selenium.webdriver.support.ui import WebDriverWait
-
         from selenium.webdriver import Chrome
         from selenium.webdriver.chrome.options import Options
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as EC
 
         # from selenium.webdriver.firefox.options import Options
         # from selenium.webdriver import Firefox
-
-        from selenium.webdriver.common.by import By
-        from selenium.webdriver.support import expected_conditions as EC
 
         VSlog("Chargement Selenium ok")
 
@@ -1275,7 +1269,7 @@ def DecryptDlProtecte(url):  # Passe par Selenium
 
     response = s.get(url)
     sHtmlContent = str(response.content)
-    cookie_string = "; ".join([str(x)+"="+str(y) for x,y in s.cookies.items()])
+    cookie_string = "; ".join([str(x) + "=" + str(y) for x, y in s.cookies.items()])
 
     sPattern = 'type="hidden" name="_token" value="(.+?)">'
     aResult = re.search(sPattern, sHtmlContent).group(1)
@@ -1304,7 +1298,7 @@ def exectProtect(cookies, url):  # Ne sert plus
     import string
     _BOUNDARY_CHARS = string.digits
     boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(30))
-    multipart_form_data = {'hidden': 'continuer', 'hidden': 'Continuer'}
+    multipart_form_data = {'hidden': 'continuer'}
     data, headersMulti = encode_multipart(multipart_form_data, {}, boundary)
 
     # 2 eme requete pour avoir le lien
@@ -1370,13 +1364,9 @@ def encode_multipart(fields, files, boundary):
     lines = []
 
     for name, value in fields.items():
-        lines.extend((
-            '-----------------------------{0}'.format(boundary),
-            'Content-Disposition: form-data; name="{0}"'.format(escape_quote(name)),
-            '',
-            str(value),
-            '-----------------------------{0}--'.format(boundary),
-            ''))
+        lines.extend(('-----------------------------{0}'.format(boundary),
+                      'Content-Disposition: form-data; name="{0}"'.format(escape_quote(name)), '', str(value),
+                      '-----------------------------{0}--'.format(boundary), ''))
 
     for name, value in files.items():
         filename = value['filename']

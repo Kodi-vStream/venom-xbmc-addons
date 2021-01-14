@@ -1,16 +1,11 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #Ovni-crea
+from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser 
 from resources.hosters.hoster import iHoster
 import json
-import xbmc
-import xbmcaddon
-from resources.lib.gui.gui import cGui
-from resources.lib.comaddon import addon, dialog, VSlog, xbmcgui, xbmc
-#Si premium
-from resources.lib.handler.premiumHandler import cPremiumHandler
 
 from resources.lib.comaddon import VSlog
 
@@ -20,7 +15,6 @@ class cHoster(iHoster):
         self.__sDisplayName = 'Alldebrid'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
-        self.oPremiumHandler = None
 
     def getDisplayName(self):
         return  self.__sDisplayName
@@ -75,8 +69,7 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        ADDON = addon()
-        Token_Alldebrid = ADDON.getSetting('token_alldebrid')
+        Token_Alldebrid = cPremiumHandler(self.getPluginIdentifier()).getToken()
         if Token_Alldebrid:
             sUrl_Bypass = "https://api.alldebrid.com/v4/link/unlock?agent=service&version=1.0-&apikey=" + Token_Alldebrid + "&link=" + self.__sUrl
         else:
@@ -85,9 +78,12 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(sUrl_Bypass)
         sHtmlContent = json.loads(oRequest.request())
         
-        HostURL = sHtmlContent["data"]["link"]
-        VSlog(HostURL) #Garder le en cas que alldebrid change le fonctionnement
-        api_call = HostURL
+        api_call = HostURL = sHtmlContent["data"]["link"]
+        try:
+            mediaDisplay = HostURL.split('/')
+            VSlog('Hoster Alldebrid - play : %s/ ... /%s' % ('/'.join(mediaDisplay[0:3]), mediaDisplay[-1]))
+        except:
+            VSlog('Hoster Alldebrid - play : ' + HostURL)
         
 
         if (api_call):

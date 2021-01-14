@@ -297,7 +297,7 @@ def showMovieGenres():
 
     liste = []
     liste.append(['Action', URL_MAIN + 'film-genre/action/'])
-    liste.append(['Animation', URL_MAIN +'film-genre/animation/'])
+    liste.append(['Animation', URL_MAIN + 'film-genre/animation/'])
     liste.append(['Arts Martiaux', URL_MAIN + 'film-genre/arts-Martiaux/'])
     liste.append(['Aventure', URL_MAIN + 'film-genre/aventure/'])
     liste.append(['Biopic', URL_MAIN + 'film-genre/biopic/'])
@@ -385,7 +385,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'film-ripz".+?href="([^"]+)" title="[^"]+"><img src="([^"]+)".+?class="short-titl.+?>([^<]+)<(\/div|br>(.+?)<)'
+    sPattern = 'film-ripz".+?href="([^"]+)" title="[^"]+"><img src="([^"]+).+?class="short-titl.+?>([^<]+)<(/div|br>(.+?)<)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -418,7 +418,7 @@ def showMovies(sSearch=''):
 
             # Année parfois
             sYear = ''
-            if len(aEntry)>4:
+            if len(aEntry) > 4:
                 sYear = aEntry[4]
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -432,12 +432,11 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
     if not sSearch:
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -499,25 +498,37 @@ def showSeries(sSearch=''):
 
         progress_.VSclose(progress_)
 
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showSeries', 'Page ' + sPaging, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a href="([^"]+)">>><'
     oParser = cParser()
+    sPattern = 'href="([^"]+)">>></a>.+?>(\d+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return URL_MAIN[:-1] + aResult[1][0]
+        sNextPage = URL_MAIN[:-1] + aResult[1][0][0]
+        sNumberMax = aResult[1][0][1]
+        sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    return False
+    sPattern = '>([^<]+)</a>\s*<a href="([^"]+)">>>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        sNumberMax = aResult[1][0][0]
+        sNextPage = URL_MAIN[:-1] + aResult[1][0][1]
+        sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
+
+    return False, 'none'
 
 
 def showHosters():

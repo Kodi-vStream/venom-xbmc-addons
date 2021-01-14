@@ -41,8 +41,8 @@ msgid "Fanarts Size"
 msgstr "Taille des Fanarts"
 
 msgctxt "#30009"
-msgid "Use extendedinfo"
-msgstr "Utiliser extendedinfo"
+msgid "Use extendedinfo for the information windows"
+msgstr "Utiliser extendedinfo pour la fenetre information"
 
 msgctxt "#30010"
 msgid "Color Text note"
@@ -600,6 +600,10 @@ msgctxt "#30222"
 msgid "Delete:"
 msgstr "Supprimer:"
 
+msgctxt "#30223"
+msgid "Rename"
+msgstr "Renommer"
+
 msgctxt "#30300"
 msgid "Library"
 msgstr "Librairie"
@@ -691,6 +695,10 @@ msgstr "Télécharger et Lire"
 msgctxt "#30327"
 msgid "1Fichier"
 msgstr "1Fichier"
+
+msgctxt "#30328"
+msgid "Token (Optional)"
+msgstr "Token (Facultatif)"
 
 msgctxt "#30330"
 msgid "Search"
@@ -1056,6 +1064,8 @@ msgctxt "#30470"
 msgid "Addon dnspython missing"
 msgstr "Addon dnspython manquant"
 
+
+# Alldebrid
 msgctxt "#30998"
 msgid "Put the Token of your Alldebrid account"
 msgstr "Mettez le Token de votre compte Alldebrid"
@@ -1067,3 +1077,7 @@ msgstr "Mettez l'url de votre dossier multimedia Alldebrid"
 msgctxt "#31101"
 msgid "Url"
 msgstr "Url"
+
+msgctxt "#31102"
+msgid "Use the skin display for the information windows"
+msgstr "Utiliser l'affichage du skin pour la fenetre information"

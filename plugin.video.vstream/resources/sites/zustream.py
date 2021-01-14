@@ -10,13 +10,14 @@ from resources.lib.comaddon import progress
 from resources.lib.parser import cParser
 from resources.lib.packer import cPacker
 from resources.lib.util import cUtil
+from resources.lib.util import Noredirection
 import re
 
 SITE_IDENTIFIER = 'zustream'
 SITE_NAME = 'ZuStream'
 SITE_DESC = 'Retrouvez un énorme répertoire de films, de séries et de mangas en streaming VF et VOSTFR complets'
 
-URL_MAIN = 'https://www.zustream.eu/'
+URL_MAIN = 'https://www.zustream.ws/'
 
 MOVIE_MOVIE = (True, 'showMenuFilms')
 MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
@@ -141,6 +142,7 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
+
 def showNetwork():
     oGui = cGui()
 
@@ -223,7 +225,7 @@ def showMovies(sSearch=''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sPattern = '<article id="post-\d+".+?img src="([^"]+)" alt="([^"]+)".+?(?:|class="quality">([^<]+)<.+?)(?:|class="dtyearfr">([^<]+)<.+?)<a href="([^"]+)">.+?<div class="texto">(.*?)</div>'
+        sPattern = 'article id="post-\d+".+?img src="([^"]+)" alt="([^"]+).+?(?:|class="quality">([^<]+).+?)(?:|class="dtyearfr">([^<]+).+?)href="([^"]+).+?class="texto">(.*?)</div>'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -284,24 +286,27 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
     if not sSearch:
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<link rel="next" href="([^"]+)"'
+    sPattern = '<span>Page.+?de ([^<]+)</span.+?href="([^"]+)"><i id=\'nextpagination\''
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return aResult[1][0]
+        sNumberMax = aResult[1][0][0]
+        sNextPage = aResult[1][0][1]
+        sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    return False
+    return False, 'none'
 
 
 def showSxE():
@@ -368,7 +373,7 @@ def showLink():
             pdata = 'action=doo_player_ajax&post=' + dpost + '&nume=' + dnum + '&type=' + dtype
             sTitle = aEntry[2].replace('Serveur', '').replace('Télécharger', '').replace('(', '').replace(')', '')
 
-            if ('VIP - ' in sTitle):  # Les liens VIP ne fonctionnent pas
+            if 'VIP - ' in sTitle:  # Les liens VIP ne fonctionnent pas
                 continue
 
             sTitle = ('%s [%s]') % (sMovieTitle, sTitle)
@@ -403,22 +408,20 @@ def showHosters():
     oRequest.addParametersLine(pdata)
 
     sHtmlContent = oRequest.request()
-    oParser = cParser()
+    # oParser = cParser()
 
     # 1
-    sPattern = '(?:<iframe|<IFRAME).+?(?:src|SRC)=(?:\'|")(.+?)(?:\'|")'
+    sPattern = '(?:<iframe|<IFRAME).+?(?:src|SRC)=[\'|"]([^\'"|]+)'
     aResult1 = re.findall(sPattern, sHtmlContent)
-    # VSlog(aResult1)
 
     # 2
     sPattern = '<a href="([^"]+)">'
     aResult2 = re.findall(sPattern, sHtmlContent)
-    # VSlog(aResult2)
 
     # fusion
     aResult = aResult1 + aResult2
 
-    if (aResult):
+    if aResult:
         for aEntry in aResult:
 
             sHosterUrl = aEntry
@@ -430,13 +433,26 @@ def showHosters():
                 oRequestHandler = cRequestHandler(sHosterUrl)
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
                 oRequestHandler.addHeaderEntry('Referer', 'https://re.zu-lien.com')
-                sHtmlContent2 = oRequestHandler.request()
-                sHosterUrl = oRequestHandler.getRealUrl()
+                # sHtmlContent2 = oRequestHandler.request()
+                sUrl1 = oRequestHandler.getRealUrl()
+                if not sUrl1 or sUrl1 == sHosterUrl :
+                    opener = Noredirection()
+                    opener.addheaders = [('User-Agent', UA)]
+                    opener.addheaders = [('Referer', 'https://re.zu-lien.com')]
+                    response = opener.open(sHosterUrl)
+                    sHtmlContent = response.read()
+                    getreal = sHosterUrl
+                    if response.code == 302:
+                        getreal = response.headers['Location']
+                    response.close()
+                    sHosterUrl = getreal
+                else:
+                    sHosterUrl = sUrl1
 
-        oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
-            oHoster.setDisplayName(sMovieTitle)
-            oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()

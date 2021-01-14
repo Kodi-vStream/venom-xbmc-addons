@@ -12,7 +12,7 @@ from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'adkami_com'
 SITE_NAME = 'ADKami'
-SITE_DESC = 'Bienvenue sur ADKami un site Animés Manga & Série en streaming.'
+SITE_DESC = 'Bienvenue sur ADKami un site Animés, Mangas & Séries en streaming.'
 
 URL_MAIN = 'https://www.adkami.com/'
 
@@ -233,8 +233,8 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('page=([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            sNumPage = re.search('page=([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -316,7 +316,7 @@ def showLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'video-iframe" data-url="([^"]+)"'
+    sPattern = 'video-iframe.+?data-url="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if not aResult[0]:
@@ -365,7 +365,7 @@ def showHosters():
     sUrl = sUrl.replace('plus', '+')
     sHosterUrl = sUrl
 
-    if (sHosterUrl):
+    if sHosterUrl:
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
             oHoster.setDisplayName(sMovieTitle)

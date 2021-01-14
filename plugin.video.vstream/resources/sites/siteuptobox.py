@@ -44,9 +44,13 @@ def load():
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + 'Nécessite un Compte Uptobox Premium ou Gratuit' + '[/COLOR]')
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-        oGui.addDir(SITE_IDENTIFIER,'opensetting', addons.VSlang(30023), 'none.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'opensetting', addons.VSlang(30023), 'none.png', oOutputParameterHandler)
     else:
         if (GestionCookie().Readcookie('uptobox') != ''):
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+            oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -60,6 +64,10 @@ def load():
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+            oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
             oGui.addDir(SITE_IDENTIFIER, 'showFile', 'Mes Fichiers et Dossiers', 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -69,7 +77,15 @@ def opensetting():
     addon().openSettings()
 
 
-def showFile():
+def showSearch():
+    oGui = cGui()
+    sSearchText = oGui.showKeyBoard()
+    if (sSearchText != False):
+        sUrlSearch = '&searchField=file_name&search=' + sSearchText
+        showFile(sUrlSearch)
+
+
+def showFile(sSearch=''):
 
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -114,7 +130,12 @@ def showFile():
             if (aResult[0] == True):
                 sToken = aResult[1][0]
 
-            sHtmlContent = oPremiumHandler.GetHtml(API_URL.replace('none', sToken) + '%2F%2F')
+            if sSearch:
+
+                sHtmlContent = oPremiumHandler.GetHtml(API_URL.replace('none', sToken) + '%2F%2F' + sSearch )
+            else:
+                sHtmlContent = oPremiumHandler.GetHtml(API_URL.replace('none', sToken) + '%2F%2F')
+
 
     content = json.loads(sHtmlContent)
     content = content['data']
@@ -135,7 +156,7 @@ def showFile():
                     if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
                         sTitle = y['file_name']
                     else:
-                        sTitle = y['file_name'].encode('utf-8')    
+                        sTitle = y['file_name'].encode('utf-8')
 
                     sHosterUrl = URL_MAIN + y['file_code']
 

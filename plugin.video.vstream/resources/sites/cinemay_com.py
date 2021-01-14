@@ -166,24 +166,38 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
     if not sSearch:
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = 'href="([^"]+)">>><'
     oParser = cParser()
+    # jusqu'au 5 dernières pages on utilise cette regex
+    sPattern = 'href="([^"]+)">>><.+?">(\d+)</a></div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return URL_MAIN[:-1] + aResult[1][0]
+        sNextPage = URL_MAIN[:-1] + aResult[1][0][0]
+        sNumberMax = aResult[1][0][1]
+        sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    return False
+    # à partir des 5 dernières pages on change de regex
+    sPattern = '>([^<]+)</a> <a class="inactive" style="margin-bottom:5px;" href="([^"]+)">>>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        sNumberMax = aResult[1][0][0]
+        sNextPage = URL_MAIN[:-1] + aResult[1][0][1]
+        sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
+
+    return False, 'none'
 
 
 def showSeriesNews():
@@ -338,7 +352,7 @@ def showLinks():
         oRequestHandler.addHeaderEntry("Referer", sRefUrl)
         sHtmlContent = oRequestHandler.request()
         head = oRequestHandler.getResponseHeader()
-        cookies = getcookie(head)
+        cookies = getCookie(head)
 
     sPattern = 'hidden" name="videov" id="videov" value="([^"]+).+?</b>([^<]+)<span class="dt_flag">.+?/flags/(.+?)\.'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -433,7 +447,7 @@ def showSeriesHosters():
     oGui.setEndOfDirectory()
 
 
-def getcookie(head):
+def getCookie(head):
     # get cookie
     cookies = ''
     if 'Set-Cookie' in head:
@@ -481,7 +495,7 @@ def decode_js(k, i, s, e):
         if ord(secondstr[incerement2]) % 2:
             localvar = 1
         finaltab.append(chr(int(firststr[varinc: varinc+2], base=36) - localvar))
-        incerement2=incerement2 + 1
+        incerement2 = incerement2 + 1
         if incerement2 >= len(secondtab):
             incerement2 = 0
 

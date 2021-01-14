@@ -20,10 +20,10 @@ class cParser:
                       .replace('&acirc;', 'â').replace('&ecirc;', 'ê').replace('&icirc;', 'î').replace('&ocirc;', 'ô')\
                       .replace('&hellip;', '...').replace('&quot;', '"').replace('&gt;', '>').replace('&egrave;', 'è')\
                       .replace('&ccedil;', 'ç').replace('&laquo;', '<<').replace('&raquo;', '>>').replace('\xc9', 'E')\
-                      .replace('&ndash;', '-').replace('&eacute;', 'é').replace('&agrave;', 'à').replace('&lt;', '<')\
+                      .replace('&ndash;', '-').replace('&ugrave;', 'ù').replace('&agrave;', 'à').replace('&lt;', '<')\
                       .replace('&rsquo;', "'").replace('&lsquo;', '\'').replace('&nbsp;', '').replace('&#8217;', "'")\
-                      .replace('&#8230;', '...').replace('&#8242;', "'").replace('&#884;', '\'')\
-                      .replace('&#038;', '&').replace('–', '-').replace('—', '-')
+                      .replace('&#8230;', '...').replace('&#8242;', "'").replace('&#884;', '\'').replace('&#39;', '\'')\
+                      .replace('&#038;', '&').replace('&iuml;', 'ï').replace('–', '-').replace('—', '-')
 
     def parse(self, sHtmlContent, sPattern, iMinFoundValue=1):
         sHtmlContent = self.__replaceSpecialCharacters(str(sHtmlContent))
@@ -45,10 +45,7 @@ class cParser:
         return re.escape(sValue)
 
     def getNumberFromString(self, sValue):
-        if '/0-9/' in sValue:
-            sPattern = '/0-9.+?(\d+)'
-        else:
-            sPattern = '\d+'
+        sPattern = '\d+'
         aMatches = re.findall(sPattern, sValue)
         if (len(aMatches) > 0):
             return aMatches[0]
@@ -63,7 +60,7 @@ class cParser:
         except:
             return {'title': sHtmlContent}
 
-    def abParse(self, sHtmlContent, start, end = None, startoffset=0):
+    def abParse(self, sHtmlContent, start, end=None, startoffset=0):
         # usage oParser.abParse(sHtmlContent, 'start', 'end')
         # startoffset (int) décale le début pour ne pas prendre en compte start dans le résultat final si besoin
         # la fin est recherchée forcement après le début
@@ -72,11 +69,11 @@ class cParser:
         # ex youtube.py
         
         startIdx = sHtmlContent.find(start)
-        if startIdx == -1 :  # rien trouvé, retourner le texte complet
+        if startIdx == -1:  # rien trouvé, retourner le texte complet
             return sHtmlContent
         
         if end:
-            endIdx = sHtmlContent[startoffset + startIdx : ].find(end)
-            if endIdx>0:
-                return sHtmlContent[startoffset + startIdx : startoffset + startIdx + endIdx]
-        return sHtmlContent[startoffset + startIdx :]
+            endIdx = sHtmlContent[startoffset + startIdx:].find(end)
+            if endIdx > 0:
+                return sHtmlContent[startoffset + startIdx: startoffset + startIdx + endIdx]
+        return sHtmlContent[startoffset + startIdx:]

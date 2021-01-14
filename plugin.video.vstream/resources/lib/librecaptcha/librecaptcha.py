@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright (C) 2017, 2019 nickolas360 <contact@nickolas360.com>
 #
 # This file is part of librecaptcha.
@@ -44,15 +45,17 @@ def has_gui():
 
 def get_token(api_key, site_url, user_agent, **_3to2kwargs):
     if 'debug' in _3to2kwargs:
-        debug = _3to2kwargs['debug']; del _3to2kwargs['debug']
+        debug = _3to2kwargs['debug']
+        del _3to2kwargs['debug']
     else:
         debug = False
 
     if 'gui' in _3to2kwargs:
-        gui = _3to2kwargs['gui']; del _3to2kwargs['gui']
+        gui = _3to2kwargs['gui']
+        del _3to2kwargs['gui']
     else:
         gui = False
-        
+
     rc = ReCaptcha(api_key, site_url, user_agent, debug=debug)
     ui = (_get_gui().Gui if gui else cli.Cli)(rc)
 
@@ -60,6 +63,6 @@ def get_token(api_key, site_url, user_agent, **_3to2kwargs):
 
     def callback(token):
         get_token.uvtoken = token
-        
+
     ui.run(callback)
     return get_token.uvtoken

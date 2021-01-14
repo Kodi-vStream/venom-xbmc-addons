@@ -165,31 +165,29 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
     if not sSearch:
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
-            snumberNext = 'Next '
-            try:
-                snumberNext = 'Page ' + re.search('/page/([0-9]+)', sNextPage).group(1)
-            except:
-                pass
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] ' + snumberNext + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<a href="([^"]+)">SUIVANT</a>'
+    sPattern = '>([^<]+)</a><a href="([^"]+)">SUIVANT</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
-        if aResult[1][0].startswith('/'):
-            return URL_MAIN[:-1] + aResult[1][0]
+        sNumberMax = aResult[1][0][0]
+        sNextPage = aResult[1][0][1]
+        sNumberNext = re.search('/page/([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        if sNextPage.startswith('/'):
+            return URL_MAIN[:-1] + sNextPage, sPaging
         else:
-            return aResult[1][0]
+            return sNextPage, sPaging
 
-    return False
+    return False, 'none'
 
 
 def showSaisons():

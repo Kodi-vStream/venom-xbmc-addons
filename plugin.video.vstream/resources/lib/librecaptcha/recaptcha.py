@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright (C) 2017, 2019 nickolas360 <contact@nickolas360.com>
 #
 # This file is part of librecaptcha.
@@ -489,6 +490,8 @@ class ReCaptcha(object):
         solver_class = {
             "dynamic": DynamicSolver,
             "multicaptcha": MultiCaptchaSolver,
+            "tileselect" : MultiCaptchaSolver,
+            "imageselect" : MultiCaptchaSolver
         }.get(challenge_type)
 
         handler = {
@@ -496,6 +499,8 @@ class ReCaptcha(object):
             "multicaptcha": self.on_challenge_multicaptcha,
             "default": self.on_challenge_blocked,
             "doscaptcha": self.on_challenge_blocked,
+            "tileselect" : self.on_challenge_multicaptcha,
+            "imageselect" : self.on_challenge_multicaptcha
         }.get(challenge_type)
 
         self.on_challenge(challenge_type)
