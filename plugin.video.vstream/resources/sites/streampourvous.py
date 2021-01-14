@@ -444,7 +444,7 @@ def showHosters():
     sUrl = sUrl + pdata
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = json.loads(oRequest.request())["embed_url"]
-    if 'dood.to' in sHtmlContent:
+    if 'dood' in sHtmlContent:
         sHosterUrl= str(sHtmlContent)
     else:
         sPattern = '(?:<iframe|<IFRAME).+?(?:src|SRC)=(?:\'|")(.+?)(?:\'|")'
