@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
+import json
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -10,7 +13,6 @@ from resources.lib.comaddon import progress
 from resources.lib.parser import cParser
 from resources.lib.packer import cPacker
 from resources.lib.util import cUtil
-import re, json
 
 SITE_IDENTIFIER = 'streampourvous'
 SITE_NAME = 'StreampourVous'
@@ -25,7 +27,7 @@ MOVIE_ANNEES = (URL_MAIN + 'film-streaming/', 'showYears')
 
 SERIE_SERIES = (True, 'showMenuSeries')
 SERIE_NEWS = (URL_MAIN + 'serie-streaming/', 'showMovies')
-#SERIE_GENRES = ('?post_types=tvshows', 'showGenres')
+# SERIE_GENRES = ('?post_types=tvshows', 'showGenres')
 SERIE_MANGAS = (URL_MAIN + 'genre/animation/', 'showMovies')
 SERIE_NETFLIX = (URL_MAIN + 'network/netflix/', 'showMovies')
 SERIE_CANAL = (URL_MAIN + 'network/canal/', 'showMovies')
@@ -128,21 +130,19 @@ def showGenres():
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sTitle = aEntry[1].capitalize()
-            sNumber= aEntry[2] #+ ' Films'
-            if sNumber < '2' :
-                sNumber = sNumber  +  ' Film'
+            sNumber = aEntry[2]  # + ' Films'
+            if sNumber < '2':
+                sNumber = sNumber + ' Film'
             else:
-                sNumber = sNumber  +  ' Films'
+                sNumber = sNumber + ' Films'
             sDisplayTitle = ('%s (%s)') % (sTitle, sNumber)
             TriAlpha.append((sDisplayTitle, sUrl))
-           
 
         # Trie des genres par ordre alphabétique
         TriAlpha = sorted(TriAlpha, key=lambda genre: genre[0])
 
         for sDisplayTitle, sUrl in TriAlpha:
-            
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sDisplayTitle, 'genres.png', oOutputParameterHandler)
@@ -154,32 +154,32 @@ def showNetwork():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NETFLIX[0])
-    oOutputParameterHandler.addParameter('sTmdbId', 213)    # Utilis� par TMDB
+    oOutputParameterHandler.addParameter('sTmdbId', 213)    # Utilisé par TMDB
     oGui.addNetwork(SITE_IDENTIFIER, SERIE_NETFLIX[1], 'Séries (Netflix)', 'host.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_CANAL[0])
-    oOutputParameterHandler.addParameter('sTmdbId', 285)    # Utilis� par TMDB
+    oOutputParameterHandler.addParameter('sTmdbId', 285)    # Utilisé par TMDB
     oGui.addNetwork(SITE_IDENTIFIER, SERIE_CANAL[1], 'Séries (Canal+)', 'host.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_AMAZON[0])
-    oOutputParameterHandler.addParameter('sTmdbId', 1024)    # Utilis� par TMDB
+    oOutputParameterHandler.addParameter('sTmdbId', 1024)    # Utilisé par TMDB
     oGui.addNetwork(SITE_IDENTIFIER, SERIE_AMAZON[1], 'Séries (Amazon Prime)', 'host.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_DISNEY[0])
-    oOutputParameterHandler.addParameter('sTmdbId', 2739)    # Utilis� par TMDB
+    oOutputParameterHandler.addParameter('sTmdbId', 2739)    # Utilisé par TMDB
     oGui.addNetwork(SITE_IDENTIFIER, SERIE_DISNEY[1], 'Séries (Disney+)', 'host.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_APPLE[0])
-    oOutputParameterHandler.addParameter('sTmdbId', 2552)    # Utilis� par TMDB
+    oOutputParameterHandler.addParameter('sTmdbId', 2552)    # Utilisé par TMDB
     oGui.addNetwork(SITE_IDENTIFIER, SERIE_APPLE[1], 'Séries (Apple TV+)', 'host.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_YOUTUBE[0])
-    oOutputParameterHandler.addParameter('sTmdbId', 1436)    # Utilis� par TMDB
+    oOutputParameterHandler.addParameter('sTmdbId', 1436)    # Utilisé par TMDB
     oGui.addNetwork(SITE_IDENTIFIER, SERIE_YOUTUBE[1], 'Séries (YouTube Originals)', 'host.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -201,14 +201,12 @@ def showYears():
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
-    
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sTitle = aEntry[1].capitalize()
-            
-              
-        
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
@@ -242,34 +240,27 @@ def showSearch():
 
 def showMovies(sSearch=''):
     oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    oParser = cParser()
 
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request()
         sPattern = '<div class="image">.+?<a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)".+?<p>(.+?)</p>'
-    
-    
+
     else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request()
+        sStart = 'class="animation-2 items">'
+        sEnd = '<div class=\'resppages\'>'
+        sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
         if 'serie-streaming/' in sUrl or 'network/' in sUrl:
-            oParser = cParser()
-            oRequestHandler = cRequestHandler(sUrl)
-            sHtmlContent = oRequestHandler.request()
-            sStart = 'class="animation-2 items">'
-            sEnd = '<div class=\'resppages\'>'
-            sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
-            sPattern ='class="item tvshows"><div class="poster">.+?img src="([^"]+)" alt="([^"]+)".+?(?:|class="quality">([^<]+)<.+?)(?:|class="dtyearfr">([^<]+)<.+?)<a href="([^"]+)">.+?<div class="texto">(.*?)<\/div>'
-            
-        else :
-            oParser = cParser()
-            oRequestHandler = cRequestHandler(sUrl)
-            sHtmlContent = oRequestHandler.request()
-            sStart = 'class="animation-2 items">'
-            sEnd = '<div class=\'resppages\'>'
-            sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)     
-            sPattern = ' class="item movies"><div class="poster">.+?img src="([^"]+)" alt="([^"]+)".+?(?:|class="quality">([^<]+)<.+?)(?:|class="dtyearfr">([^<]+)<.+?)<a href="([^"]+)">.+?<div class="texto">(.*?)<\/div>'
-            
-    
+            sPattern = 'class="item tvshows"><div class="poster">.+?img src="([^"]+)" alt="([^"]+).+?(?:|class="quality">([^<]+).+?)(?:|class="dtyearfr">([^<]+).+?)<a href="([^"]+)">.+?class="texto">(.*?)</div>'
+        else:
+            sPattern = 'class="item movies"><div class="poster">.+?img src="([^"]+)" alt="([^"]+)".+?(?:|class="quality">([^<]+)<.+?)(?:|class="dtyearfr">([^<]+)<.+?)<a href="([^"]+)">.+?class="texto">(.*?)</div>'
+
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -302,14 +293,15 @@ def showMovies(sSearch=''):
                     sYear = aEntry[3]
                 sUrl = aEntry[4]
                 if aEntry[5]:
-                    sDesc = aEntry[5].replace('Voir' , '').replace('Film complet streaming VF HD' , '').replace('streaming VF HD' , '')
+                    sDesc = aEntry[5].replace('Voir', '').replace('Film complet streaming VF HD', '')\
+                                     .replace('streaming VF HD', '')
 
             try:
                 sDesc = unicode(sDesc, 'utf-8')  # converti en unicode
                 sDesc = utils.unescape(sDesc).encode('utf-8')    # retire les balises HTML
             except:
                 pass
-                
+
             sDisplayTitle = ('%s %s (%s)') % (sTitle, sLang, sYear)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -330,8 +322,8 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging , oOutputParameterHandler)
+
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -368,7 +360,7 @@ def showSxE():
 
         for aEntry in aResult[1]:
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + aEntry[0].replace('Regarder' , '') + '[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + aEntry[0].replace('Regarder', '') + '[/COLOR]')
 
             else:
                 sUrl = aEntry[2]
@@ -403,25 +395,20 @@ def showLink():
 
     if (aResult[0] == True):
 
-        # trie par num�ro de serveur
+        # trie par numéro de serveur
         sortedList = sorted(aResult[1], key=lambda item: item[2])
         for aEntry in sortedList:
 
             sUrl2 = URL_MAIN + '/wp-json/dooplayer/v1/post/'
-            dtype = 'movie'  # fonctionne pour Film ou S�rie (pour info : s�rie -> dtype = 'tv')
+            dtype = 'movie'  # fonctionne pour Film ou Série (pour info : série -> dtype = 'tv')
             dpost = aEntry[0]
             dnum = aEntry[1]
-            pdata = dpost + '?type=' + dtype +  '&source=' + dnum
+            pdata = dpost + '?type=' + dtype + '&source=' + dnum
             sTitle = aEntry[2].replace('Serveur', '').replace('Télécharger', '').replace('(', '').replace(')', '')
             sLang = aEntry[4].replace('fr', 'vf').replace('en', 'vostfr')
             sServer = aEntry[3]
-            
 
-            #if ('Bande-annonce' in sTitle):  # Les liens VIP ne fonctionnent pas
-                #continue
-            #if ('youtube.com', 'evoload.io', 'freebiesforyou.net') in sServer:
-            
-            if  'freebiesforyou.net' in sServer or 'evoload.io' in sServer or 'youtube.com' in sServer:
+            if 'freebiesforyou.net' in sServer or 'evoload.io' in sServer or 'youtube.com' in sServer:
                 continue
             sTitle = ('%s [%s] (%s)') % (sMovieTitle, sTitle, sLang)
 
@@ -457,26 +444,22 @@ def showHosters():
     sUrl = sUrl + pdata
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = json.loads(oRequest.request())["embed_url"]
-   
+
     sPattern = '(?:<iframe|<IFRAME).+?(?:src|SRC)=(?:\'|")(.+?)(?:\'|")'
-    #sPattern = '<IFRAME SRC="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-  
-   
-    if (aResult):
+
+    if aResult:
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
-            
             if 'zustreamv2/viplayer' in sHosterUrl:
                 return
-            
-            
-        oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
-            oHoster.setDisplayName(sMovieTitle)
-            oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
