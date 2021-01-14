@@ -371,7 +371,7 @@ def showMovies(sSearch=''):
         sUrl = sSearch
 
     sHtmlContent = Stormwall().GetHtml(sUrl)
-    sPattern = '<img class="mainimg.+?src="([^"]+)(?:.|\s)+?<a href="([^"]+)">([^"]+)</a>.+?<span class=".+?<b>([^"]+)</span>.+?">([^<]+)</span>'
+    sPattern = '<img class="mainimg.+?src="([^"]+)(?:.|\s)+?<a href="([^"]+)">([^"]+)</a>.+?<span class=".+?<b>([^"]*)</span>.+?">([^<]+)</span>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
