@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # source 37 https://streamiz-filmze.org/ 24122020
-
+return False  # url instable et de plus en plus souvent  redirection vers streamcomplet3 (clone qui le remplace)
 import re
 
 from resources.lib.gui.hoster import cHosterGui
