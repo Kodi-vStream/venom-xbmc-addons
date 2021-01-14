@@ -444,22 +444,24 @@ def showHosters():
     sUrl = sUrl + pdata
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = json.loads(oRequest.request())["embed_url"]
+    if 'dood.to' in sHtmlContent:
+        sHosterUrl= str(sHtmlContent)
+    else:
+        sPattern = '(?:<iframe|<IFRAME).+?(?:src|SRC)=(?:\'|")(.+?)(?:\'|")'
+        oParser = cParser()
+        aResult = oParser.parse(sHtmlContent, sPattern)
 
-    sPattern = '(?:<iframe|<IFRAME).+?(?:src|SRC)=(?:\'|")(.+?)(?:\'|")'
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult:
+            for aEntry in aResult[1]:
 
-    if aResult:
-        for aEntry in aResult[1]:
+                sHosterUrl = aEntry
+                if 'zustreamv2/viplayer' in sHosterUrl:
+                    return
 
-            sHosterUrl = aEntry
-            if 'zustreamv2/viplayer' in sHosterUrl:
-                return
-
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    oHoster = cHosterGui().checkHoster(sHosterUrl)
+    if (oHoster != False):
+        oHoster.setDisplayName(sMovieTitle)
+        oHoster.setFileName(sMovieTitle)
+        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
