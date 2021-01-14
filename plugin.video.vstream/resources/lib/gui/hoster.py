@@ -384,6 +384,8 @@ class cHosterGui:
             return self.getHoster('userload')
         if ('aparat' in sHostName):
             return self.getHoster('aparat')
+        if ('evoload' in sHostName):
+            return self.getHoster('evoload')
 
         # Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
