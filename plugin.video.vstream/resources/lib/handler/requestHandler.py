@@ -27,6 +27,11 @@ class cRequestHandler:
         self.__enableDNS = False
         self.s = Session()
         self.redirects = True
+        self.verify = True
+
+    #Desactive le ssl
+    def disableSSL(self):
+        self.verify = False
 
     #Empeche les redirections 
     def disableRedirect(self):
@@ -154,7 +159,7 @@ class cRequestHandler:
 
             prepped = _request.prepare()
             self.s.headers.update(self.__aHeaderEntries)
-            oResponse = self.s.send(prepped, timeout=self.__timeout, allow_redirects=self.redirects)
+            oResponse = self.s.send(prepped, timeout=self.__timeout, allow_redirects=self.redirects, verify=self.verify)
             self.__sResponseHeader = oResponse.headers
             self.__sRealUrl = oResponse.url
 
