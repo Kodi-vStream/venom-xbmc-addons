@@ -120,6 +120,7 @@ class Stormwall(object):
 
     def htmlrequest(self, url, cookies, data):
         oRequestHandler = cRequestHandler(url)
+        oRequestHandler.disableSSL()
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
         if cookies:
