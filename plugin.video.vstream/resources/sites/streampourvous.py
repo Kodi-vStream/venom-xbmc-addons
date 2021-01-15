@@ -11,7 +11,6 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.comaddon import progress
 from resources.lib.parser import cParser
-from resources.lib.packer import cPacker
 from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'streampourvous'
@@ -405,10 +404,10 @@ def showLink():
             dnum = aEntry[1]
             pdata = dpost + '?type=' + dtype + '&source=' + dnum
             sTitle = aEntry[2].replace('Serveur', '').replace('Télécharger', '').replace('(', '').replace(')', '')
-            sLang = aEntry[4].replace('fr', 'vf').replace('en', 'vostfr')
+            sLang = aEntry[4].replace('fr', 'VF').replace('en', 'VOSTFR')
             sServer = aEntry[3]
 
-            if 'freebiesforyou.net' in sServer or 'evoload.io' in sServer or 'youtube.com' in sServer:
+            if 'freebiesforyou.net' in sServer or 'youtube.com' in sServer:
                 continue
             sTitle = ('%s [%s] (%s)') % (sMovieTitle, sTitle, sLang)
 
@@ -445,23 +444,23 @@ def showHosters():
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = json.loads(oRequest.request())["embed_url"]
     if 'dood' in sHtmlContent or 'evoload' in sHtmlContent:
-        sHosterUrl= str(sHtmlContent)
+        sPattern = '(http.+?)$'
     else:
-        sPattern = '(?:<iframe|<IFRAME).+?(?:src|SRC)=(?:\'|")(.+?)(?:\'|")'
-        oParser = cParser()
-        aResult = oParser.parse(sHtmlContent, sPattern)
+        sPattern = '(http.+?)[\'|"]'
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if aResult:
-            for aEntry in aResult[1]:
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
 
-                sHosterUrl = aEntry
-                if 'zustreamv2/viplayer' in sHosterUrl:
-                    return
+            sHosterUrl = aEntry
+            if 'zustreamv2/viplayer' in sHosterUrl:
+                continue
 
-    oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if (oHoster != False):
-        oHoster.setDisplayName(sMovieTitle)
-        oHoster.setFileName(sMovieTitle)
-        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
