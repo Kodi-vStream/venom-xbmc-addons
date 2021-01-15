@@ -10,7 +10,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress,VSlog
+from resources.lib.comaddon import progress
 
 
 # le 24122020  memes films que streamiz sans redirections (considéré comme clone et avec code differents)
@@ -112,7 +112,6 @@ def showMovies(sSearch=''):
         sUrl = oInputParameterHandler.getValue('siteUrl')
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-    VSlog(sUrl)
 
     oParser = cParser()
     sPattern = '<div class="th-item">.+?href="([^"]*).+?src="([^"]*).+?alt="([^"]*)'
@@ -133,13 +132,11 @@ def showMovies(sSearch=''):
             sThumb = aEntry[1]
             sTitle = aEntry[2]
 
-            sDisplayTitle = sTitle
-
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -154,7 +151,7 @@ def showMovies(sSearch=''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<\/span>\s*<a href="([^"]+).+?">(\d+)<\/a>\s*<\/div>'
+    sPattern = '</span>\s*<a href="([^"]+).+?">(\d+)</a>\s*</div>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -183,7 +180,7 @@ def showLinks():
     aResult = oParser.parse(sHtmlContent, sPattern)
     sDesc = 'streamcomplet3'
     if (aResult[0] == True):
-        sDesc = aResult[1][0].replace('Résumé du Film :','')
+        sDesc = aResult[1][0].replace('Résumé du Film :', '')
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', sDesc)
 
     sPattern = '<iframe.+?src="([^"]*)'
