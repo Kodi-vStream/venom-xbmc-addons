@@ -17,7 +17,7 @@ SITE_DESC = 'Films et Séries'
 
 URL_MAIN = 'https://www.4kstreamz.co/'
 
-MOVIE_NEWS = (URL_MAIN + '/list-films.html', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'list-films.html', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
 URL_SEARCH = (URL_MAIN + 'recherche/', 'showMovies')
@@ -286,7 +286,7 @@ def ShowEpisodes():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sYear', sYear)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
