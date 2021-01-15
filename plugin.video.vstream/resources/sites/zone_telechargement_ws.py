@@ -24,7 +24,7 @@ SITE_IDENTIFIER = 'zone_telechargement_ws'
 SITE_NAME = '[COLOR violet]Zone-Telechargement[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
-URL_HOST = 'https://www.zt-za.com/'
+URL_HOST = 'http://www.zt-za.net/'
 
 
 def GetURL_MAIN():
@@ -43,6 +43,7 @@ def GetURL_MAIN():
     # quand l'url ne contient pas celle déjà enregistrer dans settings et que c'est pas dlprotect on active.
     if not (Sources == 'callpluging' or Sources == 'globalSources' or Sources == 'search') and ADDON.getSetting('ZT')[6:] not in sUrl and 'dl-protect1.' not in sUrl and 'zt-protect.' not in sUrl:
         oRequestHandler = cRequestHandler(URL_HOST)
+        oRequestHandler.disableSSL()
         oRequestHandler.request()
         MemorisedHost = oRequestHandler.getRealUrl()
         if MemorisedHost is not None and MemorisedHost != '':
@@ -58,6 +59,7 @@ def GetURL_MAIN():
         # si pas de zt dans settings on récup l'url une fois dans le site
         if not ADDON.getSetting('ZT') and not (Sources == 'callpluging' or Sources == 'globalSources' or Sources == 'search'):
             oRequestHandler = cRequestHandler(URL_HOST)
+            oRequestHandler.disableSSL()
             oRequestHandler.request()
             MemorisedHost = oRequestHandler.getRealUrl()
             if MemorisedHost is not None and MemorisedHost != '':
