@@ -221,7 +221,7 @@ def showMovies(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)
 
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'class="short-images-link".+?img src="([^"]+)".+?short-link">\s*<a href="([^"]+)".+?>([^<]+)</a>'
+    sPattern = 'class="short-images-link".+?img src="([^"]+)".+?<a.+?>([^<]+).+?.+?<a.+?>([^<]+).+?short-link">\s*<a href="([^"]+)".+?>([^<]+)<\/a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -238,8 +238,10 @@ def showMovies(sSearch=''):
                 break
 
             sThumb = URL_MAIN[:-1] + aEntry[0]
-            sUrl2 = URL_MAIN[:-1] + aEntry[1].replace('/animes/films/', '/films/').replace('/animes/series/', '/series/')
-            sTitle = aEntry[2]
+            sUrl2 = URL_MAIN[:-1] + aEntry[3].replace('/animes/films/', '/films/').replace('/animes/series/', '/series/')
+            sTitle = aEntry[4]
+            sQual = aEntry[1]
+            sLang = aEntry[2].replace('French' , 'VF')
 
             if bSearchMovie:
                 if '/series/' in sUrl2:
@@ -247,7 +249,8 @@ def showMovies(sSearch=''):
             if bSearchSerie:
                 if '/films/' in sUrl2:
                     continue
-
+            sDisplayTitle = ('%s (%s) [%s]') % (sTitle, sQual,sLang)
+            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -258,7 +261,7 @@ def showMovies(sSearch=''):
             elif '/series/' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showLink', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showLink', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
