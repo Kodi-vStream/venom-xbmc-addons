@@ -388,6 +388,8 @@ class cHosterGui:
             return self.getHoster('evoload')
         if ('vidshar' in sHostName):
             return self.getHoster('vidshar')
+        if ('abcvideo' in sHostName):
+            return self.getHoster('abcvideo')
 
         # Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
