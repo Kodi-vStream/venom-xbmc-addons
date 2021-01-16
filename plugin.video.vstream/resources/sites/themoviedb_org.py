@@ -422,7 +422,8 @@ def showGenreTV():
         for i in result['genres']:
             sId, sTitle = i['id'], i['name']
 
-            sTitle = sTitle.encode("utf-8")
+            if not isMatrix():
+                sTitle = sTitle.encode("utf-8")
             # sUrl = API_URL + '/genre/' + str(sId) + '/tv'
             sUrl = 'discover/tv'
             oOutputParameterHandler = cOutputParameterHandler()
