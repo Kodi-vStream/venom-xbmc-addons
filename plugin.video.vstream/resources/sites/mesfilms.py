@@ -325,6 +325,8 @@ def showLinks():
             sNume = aEntry[1]
             sQual = aEntry[2]
             sHost = re.sub('\.\w+', '', aEntry[3]).capitalize()
+            if 'Youtube' in sHost:
+                continue
             
             sTitle = ('%s [%s] [COLOR coral]%s[/COLOR]') % (sMovieTitle, sQual, sHost)
 
