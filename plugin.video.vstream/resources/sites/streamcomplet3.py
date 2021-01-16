@@ -22,8 +22,9 @@ SITE_DESC = 'Films en streaming.'
 URL_MAIN = 'https://fr.streamcomplet3.com/v/'
 
 MOVIE_MOVIE = ('http://', 'load')
-MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
-MOVIE_VIEWS = (URL_MAIN + 'film/box-office/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN , 'showMovies')
+MOVIE_VIEWS = (URL_MAIN + 'film/', 'showMovies')
+MOVIE_BOXOFFICE = (URL_MAIN + 'film/box-office/', 'showMovies')
 MOVIE_VOSTFR = (URL_MAIN + 'film/vostfr/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
@@ -48,8 +49,12 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (les plus vus)', 'views.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_BOXOFFICE[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_BOXOFFICE[1], 'Films (Box Office)', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VOSTFR[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VOSTFR[1], 'Films (VOSTFR)', 'views.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VOSTFR[1], 'Films (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
