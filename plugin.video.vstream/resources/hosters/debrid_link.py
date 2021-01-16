@@ -60,7 +60,6 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        #self.__sUrl = self.__sUrl.replace('https://', 'http://')
 
     def checkUrl(self, sUrl):
         return True
@@ -131,7 +130,6 @@ def RenewToken():
         oRequestHandler.addParameters("refresh_token",refreshTok)
         oRequestHandler.addParameters("grant_type","refresh_token")
         r = json.loads(oRequestHandler.request())
-        VSlog(r)
 
         addon().setSetting('token_debrid_link', r["access_token"])
         return r["access_token"]
