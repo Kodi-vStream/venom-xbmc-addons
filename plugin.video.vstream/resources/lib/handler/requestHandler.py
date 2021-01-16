@@ -167,7 +167,12 @@ class cRequestHandler:
 
             #Necessaire pour Python 3
             if isMatrix():
-            	sContent = sContent.decode()
+                try:
+                   sContent = sContent.decode('unicode-escape')
+                except:
+                    sContent = sContent.decode()
+                else:
+                    pass
 
         except HTTPError as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e.reason) and self.BUG_SSL == False:
