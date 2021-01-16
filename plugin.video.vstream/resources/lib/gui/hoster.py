@@ -145,9 +145,13 @@ class cHosterGui:
             
         if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
             return self.getHoster('alldebrid')
-            
-                
 
+        if self.ADDON.getSetting('hoster_debrid_link_premium') == 'true':
+            if not "debrid.link" in sHosterUrl:
+                return self.getHoster('debrid_link')
+            else:
+                return self.getHoster("lien_direct")
+            
         # Gestion classique
         if ('streamz' in sHostName):
             return self.getHoster('streamz')
