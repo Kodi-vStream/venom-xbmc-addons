@@ -233,7 +233,8 @@ class PasteContent:
     cache = None
     keyUpto = None
     keyAlld = None
-    
+    keyReald = None    
+
     # Pour comparer deux pastes, savoir si les champs sont dans le même ordre
     def isFormat(self, other):
         if not isinstance(other, PasteContent):
@@ -297,14 +298,15 @@ class PasteContent:
             return self.HEBERGEUR+link
 
         if 'uptobox' in self.HEBERGEUR:
-            if not self.keyUpto and not self.keyAlld:
-                if not self.keyUpto:
-                    self.keyUpto = cPremiumHandler('uptobox').getToken()
+            if not self.keyUpto and not self.keyAlld and not self.keyReald:
+                self.keyUpto = cPremiumHandler('uptobox').getToken()
                 if not self.keyUpto: # si toujours pas de clef upto, on essai une cle allDebrid
                     self.keyAlld = cPremiumHandler('alldebrid').getToken()
+                    if not self.keyAlld: # si toujours pas de clef upto, on essai une cle allDebrid
+                        self.keyReald = cPremiumHandler('realdebrid').getToken()
             
-            if self.keyUpto or self.keyAlld:
-                links = self._getCrypt().resolveLink(pasteBin, link, self.keyUpto, self.keyAlld)
+            if self.keyUpto or self.keyAlld or self.keyReald:
+                links = self._getCrypt().resolveLink(pasteBin, link, self.keyUpto, self.keyAlld, self.keyReald)
                 if links and len(links)>1:
                     l = links[0]
                     if l:
@@ -313,7 +315,7 @@ class PasteContent:
                     VSlog(err)
                     dialog().VSinfo(err)
             else:
-                dialog().VSinfo('Certains liens nécessitent un Compte Uptobox Premium')
+                dialog().VSinfo('Certains liens nécessitent un Compte Premium')
 
         return self.HEBERGEUR+link
     
