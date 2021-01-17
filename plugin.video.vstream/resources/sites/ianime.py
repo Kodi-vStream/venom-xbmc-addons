@@ -44,6 +44,8 @@ URL_SEARCH_SERIES = ('tvshow=', 'showMovies')
 URL_SEARCH_ANIMS = ('anime=', 'showMovies')
 URL_SEARCH = (URL_MAIN+'resultat+', 'showMovies')
 
+def RandomReferer():
+    return URL_MAIN + ''.join(random.choice(s) for i in range(32)) + '.htm'
 
 def DecryptMangacity(chain):
     oParser = cParser()
@@ -355,12 +357,16 @@ def showMovies(sSearch=''):
         oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
         sHtmlContent = oRequestHandler.request()
         sHtmlContent = cutSearch(sHtmlContent, typeSearch)
+        
+        sUrl = url
+        
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Referer', RandomReferer())
         sHtmlContent = oRequestHandler.request()
         # sHtmlContent = DecryptMangacity(sHtmlContent)
 
@@ -485,6 +491,7 @@ def showEpisode():
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Referer', RandomReferer())
     sHtmlContent = oRequestHandler.request()
 
     if 'HTML/JavaScript Encoder' in sHtmlContent:
@@ -576,6 +583,7 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Referer', RandomReferer())
     sHtmlContent = oRequestHandler.request()
 
     if 'HTML/JavaScript Encoder' in sHtmlContent:
