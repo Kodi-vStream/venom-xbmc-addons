@@ -14,8 +14,7 @@ from resources.lib.comaddon import progress, addon, VSlog, dialog
 SITE_IDENTIFIER = 'debrid_link'
 SITE_NAME = '[COLOR violet]Debrid Link[/COLOR]'
 SITE_DESC = 'Débrideur de lien premium'
-    
-Token_debrid_link = "Bearer " + addon().getSetting('token_debrid_link')
+
 URL_HOST = "https://debrid-link.fr"
 
 def load():
@@ -52,6 +51,7 @@ def showLiens(sSearch=''):
         numPage = 0
     numPage = int(numPage)
 
+    Token_debrid_link = "Bearer " + addon().getSetting('hoster_debridlink_token')
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('Accept','application/json')
     oRequestHandler.addHeaderEntry('Authorization', Token_debrid_link)
@@ -157,12 +157,12 @@ def showInfo():
         oGui.setEndOfDirectory()
 
 def RenewToken():
-    refreshTok = addon().getSetting('refresh_token_debrid_link')
+    refreshTok = addon().getSetting('hoster_debridlink_tokenrefresh')
     if refreshTok == "":
         oRequestHandler = cRequestHandler(URL_HOST + "/api/oauth/device/code")
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('Content-Type','application/x-www-form-urlencoded')
-        oRequestHandler.addParameters('client_id',addon().getSetting('hoster_debrid_link_client_ID'))
+        oRequestHandler.addParameters('client_id',addon().getSetting('hoster_debridlink_ID'))
         r = json.loads(oRequestHandler.request())
 
         dialog().VSok('Allez sur la page : https://debrid-link.fr/device\n et rentrer le code ' + r["user_code"]  + ' pour autorisez la connection')
@@ -170,23 +170,23 @@ def RenewToken():
         oRequestHandler = cRequestHandler(URL_HOST + "/api/oauth/token")
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('Content-Type','application/x-www-form-urlencoded')
-        oRequestHandler.addParameters('client_id',addon().getSetting('hoster_debrid_link_client_ID'))
+        oRequestHandler.addParameters('client_id',addon().getSetting('hoster_debridlink_ID'))
         oRequestHandler.addParameters("code",r["device_code"])
         oRequestHandler.addParameters("grant_type","http://oauth.net/grant_type/device/1.0")
         r = json.loads(oRequestHandler.request())
 
-        addon().setSetting('refresh_token_debrid_link', r["refresh_token"])
-        addon().setSetting('token_debrid_link', r["access_token"])
+        addon().setSetting('hoster_debridlink_tokenrefresh', r["refresh_token"])
+        addon().setSetting('hoster_debridlink_token', r["access_token"])
         return r["access_token"]
 
     else:
         oRequestHandler = cRequestHandler(URL_HOST + "/api/oauth/token")
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('Content-Type','application/x-www-form-urlencoded')
-        oRequestHandler.addParameters('client_id',addon().getSetting('hoster_debrid_link_client_ID'))
+        oRequestHandler.addParameters('client_id',addon().getSetting('hoster_debridlink_ID'))
         oRequestHandler.addParameters("refresh_token",refreshTok)
         oRequestHandler.addParameters("grant_type","refresh_token")
         r = json.loads(oRequestHandler.request())
 
-        addon().setSetting('token_debrid_link', r["access_token"])
+        addon().setSetting('hoster_debridlink_token', r["access_token"])
         return r["access_token"]

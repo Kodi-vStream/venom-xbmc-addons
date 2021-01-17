@@ -335,10 +335,10 @@
 
         <setting label="Debrid Link" type="lsep"/>
         <setting type="sep"/>
-        <setting id="hoster_debrid_link_premium" type="bool" label="30403" default="false"/>
-        <setting id="hoster_debrid_link_client_ID" type="text" label="Client ID" default=""/>        
-        <setting id="token_debrid_link" type="text" label="Token" option="hidden" visible="true" default=""/>
-        <setting id="refresh_token_debrid_link" type="text" label="Refresh Token" option="hidden" visible="true" default=""/>
+        <setting id="hoster_debridlink_premium" type="bool" label="30403" default="false"/>
+        <setting id="hoster_debridlink_ID" type="text" label="Client ID" default=""/>
+        <setting id="hoster_debridlink_token" type="text" label="30328" option="hidden" visible="true" default=""/>
+        <setting id="hoster_debridlink_tokenrefresh" type="text" label="Refresh Token" option="hidden" visible="true" default=""/>
         
         <setting label="Alldebrid" type="lsep"/>
         <setting type="sep"/>
