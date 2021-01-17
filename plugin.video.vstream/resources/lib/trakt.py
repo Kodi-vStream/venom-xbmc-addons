@@ -220,7 +220,7 @@ class cTrakt:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'https://')
         oOutputParameterHandler.addParameter('type', 'liked-lists')
-        oGui.addDir(SITE_IDENTIFIER, 'getLists', "Mes listes aimer", 'trakt.png', oOutputParameterHandler)    
+        oGui.addDir(SITE_IDENTIFIER, 'getLists', "Mes listes aimées", 'trakt.png', oOutputParameterHandler)    
 
         oGui.setEndOfDirectory() 
 
