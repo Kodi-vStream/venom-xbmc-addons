@@ -1794,7 +1794,7 @@ def showHosters():
         if not sHosterUrl.startswith('http'):
             sHosterUrl += 'http://' + sHosterUrl
 
-        if '/dl/' in sHosterUrl:
+        if '/dl/' in sHosterUrl or '.download.' in sHosterUrl:
             oHoster = cHosterGui().getHoster('lien_direct')
         else:
             oHoster = cHosterGui().checkHoster(sHosterUrl)
