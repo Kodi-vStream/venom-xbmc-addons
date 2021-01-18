@@ -340,7 +340,7 @@ class cTrakt:
 
             for List in json_lists:
                 if sType == 'liked-lists':
-                    url = URL_API + 'users/' + List['list']['user']['name'] + '/lists/' + List['list']['ids']['slug'] + '/items'
+                    url = URL_API + 'users/' + List['list']['user']['ids']['slug'] + '/lists/' + List['list']['ids']['slug'] + '/items'
                 else:
                     url = URL_API + '/lists/' + List['list']['ids']['slug'] + '/items'
 
@@ -404,6 +404,7 @@ class cTrakt:
         else:
             sUrl = oInputParameterHandler.getValue('siteUrl')
 
+        sUrl = sUrl + "?page=1&limit=20"
         headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS,
                    'Authorization': 'Bearer %s' % self.ADDON.getSetting('bstoken')}
 
@@ -417,8 +418,6 @@ class cTrakt:
 
         result = json.loads(sHtmlContent)
 
-        sPage = '1'
-        sMaxPage = '1'
         if 'X-Pagination-Page' in sHeaders:
             sPage = sHeaders['X-Pagination-Page']
         if 'X-Pagination-Page-Count' in sHeaders:
