@@ -300,11 +300,12 @@ class PasteContent:
         if 'uptobox' in self.HEBERGEUR:
             if not self.keyUpto and not self.keyAlld and not self.keyReald:
                 self.keyUpto = cPremiumHandler('uptobox').getToken()
-                if not self.keyUpto: # si toujours pas de clef upto, on essai une cle allDebrid
-                    self.keyAlld = cPremiumHandler('alldebrid').getToken()
-                    if not self.keyAlld: # si toujours pas de clef upto, on essai une cle allDebrid
-                        self.keyReald = cPremiumHandler('realdebrid').getToken()
+                if not self.keyUpto: # si pas de clef upto, on essai une cle realDebrid
+                    self.keyReald = cPremiumHandler('realdebrid').getToken()
+                    if not self.keyReald: # si pas de clef realDebrid, on essai une cle allDebrid
+                        self.keyAlld = cPremiumHandler('alldebrid').getToken()
             
+            # Un token avec un des trois débrideurs
             if self.keyUpto or self.keyAlld or self.keyReald:
                 links = self._getCrypt().resolveLink(pasteBin, link, self.keyUpto, self.keyAlld, self.keyReald)
                 if links and len(links)>1:
