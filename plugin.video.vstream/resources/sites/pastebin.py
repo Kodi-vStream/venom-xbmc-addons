@@ -450,6 +450,10 @@ def showMenu():
                 oOutputParameterHandler.addParameter('sMedia', 'anime')
                 oGui.addDir(SITE_IDENTIFIER, 'showMenu', 'Animes', 'animes.png', oOutputParameterHandler)
 
+            if 'containDivers' in contenu:
+                oOutputParameterHandler.addParameter('sMedia', 'divers')
+                oGui.addDir(SITE_IDENTIFIER, 'showMenu', 'Divers', 'buzz.png', oOutputParameterHandler)
+
         # Menu pour ajouter un lien (hors widget)
         if not xbmc.getCondVisibility('Window.IsActive(home)'):
             oGui.addDir(SITE_IDENTIFIER, 'addPasteID', '[COLOR coral]Ajouter un code %s[/COLOR]' % SITE_NAME, 'notes.png', oOutputParameterHandler)
@@ -634,7 +638,7 @@ def showDetailMenu(pasteID, contenu):
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=divers&pasteID=' + pasteID)
-        oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Divers (Ordre alphabétique)', 'listes.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Divers (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
 
 # Etablir les menus en fonction du contenu
