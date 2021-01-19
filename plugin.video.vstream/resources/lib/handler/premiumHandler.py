@@ -95,6 +95,8 @@ class cPremiumHandler:
             return False
 
         oRequestHandler = cRequestHandler(url)
+        if "onefichier" in self.__sHosterIdentifier:
+            oRequestHandler.disableSSL()
         oRequestHandler.setRequestType(1)
         if 'uptobox' in self.__sHosterIdentifier:
             oRequestHandler.disableRedirect()
