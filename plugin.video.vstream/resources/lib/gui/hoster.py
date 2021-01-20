@@ -396,6 +396,10 @@ class cHosterGui:
             return self.getHoster('abcvideo')
         if ('plynow' in sHostName):
             return self.getHoster('plynow')
+        if ('myvi.tv' in sHostName):
+            return self.getHoster('myvitv')
+        if ('playtube' in sHostName):
+            return self.getHoster('playtube')
 
         # Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
