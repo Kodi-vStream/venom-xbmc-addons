@@ -298,28 +298,48 @@ class PasteContent:
             return self.HEBERGEUR+link
 
         if 'uptobox' in self.HEBERGEUR:
+            # Recherche d'un compte premium valide
+            links = None
             if not self.keyUpto and not self.keyAlld and not self.keyReald:
                 self.keyUpto = cPremiumHandler('uptobox').getToken()
-                if not self.keyUpto: # si pas de clef upto, on essai une cle realDebrid
+                if self.keyUpto: 
+                    links = self._resolveLink(pasteBin, link)
+                if not links :
+                    self.keyUpto = None
                     self.keyReald = cPremiumHandler('realdebrid').getToken()
-                    if not self.keyReald: # si pas de clef realDebrid, on essai une cle allDebrid
-                        self.keyAlld = cPremiumHandler('alldebrid').getToken()
+                    if self.keyReald: 
+                        links = self._resolveLink(pasteBin, link)
+                if not links :
+                    self.keyReald = None
+                    self.keyAlld = cPremiumHandler('alldebrid').getToken()
+                    if self.keyAlld:
+                        links = self._resolveLink(pasteBin, link)
+                        if not links :
+                            self.keyAlld = None
             
-            # Un token avec un des trois débrideurs
-            if self.keyUpto or self.keyAlld or self.keyReald:
-                links = self._getCrypt().resolveLink(pasteBin, link, self.keyUpto, self.keyAlld, self.keyReald)
-                if links and len(links)>1:
-                    l = links[0]
-                    if l:
-                        return l
-                    err = 'Erreur : ' + str(links[1])
-                    VSlog(err)
+            # Un compte avec un des trois débrideurs
+            if not links and (self.keyUpto or self.keyAlld or self.keyReald):
+                links = self._resolveLink(pasteBin, link)
+                if not links :
                     dialog().VSinfo(err)
+            if links:
+                return links
             else:
                 dialog().VSinfo('Certains liens nécessitent un Compte Premium')
 
         return self.HEBERGEUR+link
     
+    def _resolveLink(self, pasteBin, link):
+        
+        # Un token avec un des trois débrideurs
+        if self.keyUpto or self.keyAlld or self.keyReald:
+            links = self._getCrypt().resolveLink(pasteBin, link, self.keyUpto, self.keyAlld, self.keyReald)
+            if links and len(links)>1:
+                l = links[0]
+                if l:
+                    return l
+                err = 'Erreur : ' + str(links[1])
+                VSlog(err)
     
     def _decompress(self, pasteBin):
         
