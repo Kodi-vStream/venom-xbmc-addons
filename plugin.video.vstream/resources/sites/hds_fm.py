@@ -14,7 +14,7 @@ from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'hds_fm'
 SITE_NAME = 'Hds-fm'
-SITE_DESC = ' films et series'
+SITE_DESC = 'Films et Séries'
 
 URL_MAIN = 'https://www1.hds.fm/'
 
@@ -299,12 +299,12 @@ def showMovies(sSearch=''):
                 if sSearch2 not in s1:
                     continue
 
-            sDisplayTitle = sTitle.replace('-', '')
+            sDisplayTitle = sTitle.replace('- Saison', ' Saison')
             if sSearch and not bSearchMovie and not bSearchSerie:
-                if '/serie' in sUrl or ' saison ' in sTitle.lower():
-                    sDisplayTitle = sDisplayTitle + ' [serie]'
+                if '/serie' in sUrl or '- saison ' in sTitle.lower():
+                    sDisplayTitle = sDisplayTitle + ' [Série]'
                 else:
-                    sDisplayTitle = sDisplayTitle + ' [film]'
+                    sDisplayTitle = sDisplayTitle + ' [Film]'
 
             if 'http' not in sUrl2:
                 sUrl2 = URL_MAIN[:-1] + sUrl2
@@ -314,7 +314,7 @@ def showMovies(sSearch=''):
 
             # pour le debugage source avec bcpdechance d'etre hs
             # films didfficile a obtenir apres id= 18729
-            # if  not ('/serie' in sUrl or ' saison ' in sTitle.lower()):
+            # if not ('/serie' in sUrl or ' saison ' in sTitle.lower()):
                 # idmovie = get_id_int_Movie(sUrl2)
                 # if idmovie  <= 18729:
                     # sDisplayTitle = sDisplayTitle + ' *'
@@ -325,7 +325,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
-            if '/serie' in sUrl or ' saison ' in sTitle.lower():
+            if '/serie' in sUrl or '- saison ' in sTitle.lower():
 
                 oGui.addTV(SITE_IDENTIFIER, 'ShowEpisodes', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
@@ -425,7 +425,7 @@ def ShowEpisodes():
                 sEpisode = aEntry[2]
                 sRel_Episode = aEntry[3]
 
-                sTitle = sMovieTitle.replace('-', '') + ' ' + sEpisode
+                sTitle = sMovieTitle.replace('- Saison', ' Saison') + ' ' + sEpisode
                 sDisplayTitle = sTitle + ' (' + sLang + ')'
 
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -476,7 +476,7 @@ def showSerieLinks():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('referer', sUrl)
 
-            oGui.addLink(SITE_IDENTIFIER, 'showSerieHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     if (aResult[0] == True):
         html = aResult[1][0]
