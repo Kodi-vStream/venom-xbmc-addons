@@ -200,6 +200,8 @@
         <setting visible="false" id="plugin_streaming_series" type="bool" label="Streaming-Series" default="true"/>
 
         <setting visible="false" id="plugin_streamingdivx" type="bool" label="StreamingDivx" default="true"/>
+        
+        <setting visible="false" id="plugin_streaminz" type="bool" label="Streaminz" default="true"/>
 
 <!-- 14/01/21        <setting visible="false" id="plugin_streamiz" type="bool" label="Streamiz" default="true"/>
  -->        
