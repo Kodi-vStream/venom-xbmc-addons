@@ -1,14 +1,13 @@
 import re
-import os
-import xbmcaddon
 import time
 
-from resources.lib.comaddon import VSlog, xbmc, VSPath, dialog
+from resources.lib.comaddon import VSlog, dialog
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import GestionCookie
 from resources.lib.util import QuotePlus
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
+
 
 class Stormwall(object):
     def __init__(self):
@@ -16,20 +15,20 @@ class Stormwall(object):
         self.hostComplet = ''
         self.host = ''
         self.url = ''
-        self.cook = ""
+        self.cook = ''
 
     def get_jhash(self, b):
-            x = 123456789
-            i = 0
-            k = 0
+        x = 123456789
+        i = 0
+        k = 0
 
-            while(i < 1677696):
-                    x = (x + b ^ x + x % 3 + x % 17 + b ^ i) % (16776960)
-                    if(x % 117 == 0):
-                            k = (k + 1) % 1111
-                    i = i + 1
+        while (i < 1677696):
+            x = (x + b ^ x + x % 3 + x % 17 + b ^ i) % (16776960)
+            if (x % 117 == 0):
+                k = (k + 1) % 1111
+            i = i + 1
 
-            return k
+        return k
 
     def CheckIfActive(self, html):
         if 'stormwall' in str(html):
@@ -80,7 +79,7 @@ class Stormwall(object):
         oRequestHandler.addHeaderEntry('Accept', "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8")
         oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
         if cookies:
-            oRequestHandler.addHeaderEntry("Cookie",self.cook + "; _JHASH__="+cookies+"; _JUA__="+QuotePlus(UA))
+            oRequestHandler.addHeaderEntry("Cookie", self.cook + "; _JHASH__=" + cookies + "; _JUA__=" + QuotePlus(UA))
         oRequestHandler.addHeaderEntry('Referer', url)
         sHtmlContent = oRequestHandler.request()
         self.cook = oRequestHandler.GetCookies()
