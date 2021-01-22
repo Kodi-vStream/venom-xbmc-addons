@@ -54,7 +54,7 @@ ANIM_GENRES = (True, 'showGenreAnime')
 
 DIVERTISSEMENTS = (URL_MAIN + '?p=autres-videos&s=divertissements', 'showMovies')
 SPECTACLES = (URL_MAIN + '?p=autres-videos&s=spectacles', 'showMovies')
-DOC_DOCS = (URL_MAIN + '?p=autres-videos&s=documentaires','showMovies')
+DOC_DOCS = (URL_MAIN + '?p=autres-videos&s=documentaires', 'showMovies')
 DIVERS_LIST = (URL_MAIN + '?p=autres-videos', 'showMovies')
 DIVERS_GENRES = (True, 'showGenreDivers')
 
@@ -522,19 +522,19 @@ def showMovies(sSearch=''):
 
         progress_.VSclose(progress_)
 
+    if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '>([^<]+)</a></li><li ><a href=\'([^"]+)\' rel=\'next\'>'
+    sPattern = ">([^<]+)</a></li><li ><a href='([^']+)' rel='next'>"
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sNumberMax = aResult[1][0][0]
@@ -782,7 +782,7 @@ def showSeriesHosters():
 
             else:
                 sTitle = sMovieTitle + ' ' + epNumber
-                sDisplayTitle = ("%s [COLOR coral]%s[/COLOR] ") % (sTitle, aEntry[2])
+                sDisplayTitle = ("%s [COLOR coral]%s[/COLOR]") % (sTitle, aEntry[2])
                 sUrl2 = aEntry[1]
 
                 oOutputParameterHandler = cOutputParameterHandler()
