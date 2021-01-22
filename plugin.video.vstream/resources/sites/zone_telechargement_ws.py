@@ -13,23 +13,21 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.stormwall import Stormwall
-from resources.lib.config import GestionCookie
 # Fonction de vStream qui remplace urllib.quote, pour simplifier le passage en python 3
 from resources.lib.util import Quote, cUtil
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
-headers = {'User-Agent': UA}
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'}
 
 SITE_IDENTIFIER = 'zone_telechargement_ws'
 SITE_NAME = '[COLOR violet]Zone-Telechargement[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
-URL_HOST = 'http://www.zt-za.net/'
+URL_HOST = 'https://www.zt-za.net/'
 
 
 def GetURL_MAIN():
     ADDON = addon()
-    MemorisedHost = ''
+    # MemorisedHost = ''
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     Sources = oInputParameterHandler.getValue('function')
@@ -251,7 +249,7 @@ def showMenuSeries():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANCIENNE_SERIE[0])
-    oGui.addDir(SITE_IDENTIFIER, ANCIENNE_SERIE[1], 'Ancienne series (Derniers)', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANCIENNE_SERIE[1], 'Ancienne séries (Derniers)', 'series.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -373,7 +371,7 @@ def showMovies(sSearch=''):
         sUrl = sSearch
 
     sHtmlContent = Stormwall().GetHtml(sUrl)
-    sPattern = '<img class="mainimg.+?src="([^"]+)(?:.|\s)+?<a href="([^"]+)">([^"]+)</a>.+?<span class=".+?<b>([^"]*)</span>.+?">([^<]+)</span>'
+    sPattern = '<img class="mainimg.+?src="([^"]+)(?:.|\s)+?<a href="([^"]+)">([^<]+)</a>.+?<span class=".+?<b>([^<]*)</span>.+?">([^<]+)</span>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -443,6 +441,7 @@ def showMovies(sSearch=''):
 
         progress_.VSclose(progress_)
 
+    if not sSearch:
         if 'controller.php' in sUrl:
             sPattern = '<a href="#" class="nav" data-cstart="([^"]+)">Suivant</a></div>'
             aResult = oParser.parse(sHtmlContent, sPattern)
@@ -459,7 +458,6 @@ def showMovies(sSearch=''):
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
 
 
