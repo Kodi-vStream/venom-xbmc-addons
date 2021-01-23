@@ -170,9 +170,10 @@ class cRequestHandler:
                 try:
                    sContent = sContent.decode('unicode-escape')
                 except:
-                    sContent = sContent.decode()
-                else:
-                    pass
+                    try:
+                        sContent = sContent.decode()
+                    except:
+                        pass
 
         except HTTPError as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e.reason) and self.BUG_SSL == False:
