@@ -1,21 +1,23 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
-import re, json
+import json
+import re
 
-from resources.lib.gui.hoster import cHosterGui
+from resources.lib.comaddon import progress, addon, dialog
 from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, addon, VSlog, dialog
 
 SITE_IDENTIFIER = 'debrid_link'
 SITE_NAME = '[COLOR violet]Debrid Link[/COLOR]'
 SITE_DESC = 'Débrideur de lien premium'
 
 URL_HOST = "https://debrid-link.fr"
+
 
 def load():
     oGui = cGui()
@@ -75,7 +77,7 @@ def showLiens(sSearch=''):
             progress_.VSupdate(progress_, len(aEntry["name"]))
             if progress_.iscanceled():
                 break
-            
+
             if 'seedbox' in sUrl:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry["name"] + '[/COLOR]')
 
@@ -94,11 +96,14 @@ def showLiens(sSearch=''):
 
         if not sSearch:
             numPage += 1
-            sUrl = re.sub('page=([0-9])','page=' + str(numPage), sUrl)
+            sUrl = re.sub('page=([0-9])', 'page=' + str(numPage), sUrl)
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('numPage', numPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showLiens', '[COLOR teal]Page ' + str(numPage) + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showLiens', 'Page ' + str(numPage), oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showHosters():
     oGui = cGui()
@@ -156,23 +161,24 @@ def showInfo():
 
         oGui.setEndOfDirectory()
 
+
 def RenewToken():
     refreshTok = addon().getSetting('hoster_debridlink_tokenrefresh')
     if refreshTok == "":
         oRequestHandler = cRequestHandler(URL_HOST + "/api/oauth/device/code")
         oRequestHandler.setRequestType(1)
-        oRequestHandler.addHeaderEntry('Content-Type','application/x-www-form-urlencoded')
-        oRequestHandler.addParameters('client_id',addon().getSetting('hoster_debridlink_ID'))
+        oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+        oRequestHandler.addParameters('client_id', addon().getSetting('hoster_debridlink_ID'))
         r = json.loads(oRequestHandler.request())
 
-        dialog().VSok('Allez sur la page : https://debrid-link.fr/device\n et rentrer le code ' + r["user_code"]  + ' pour autorisez la connection')
+        dialog().VSok('Allez sur la page : https://debrid-link.fr/device\n et rentrer le code ' + r["user_code"] + ' pour autorisez la connection')
 
         oRequestHandler = cRequestHandler(URL_HOST + "/api/oauth/token")
         oRequestHandler.setRequestType(1)
-        oRequestHandler.addHeaderEntry('Content-Type','application/x-www-form-urlencoded')
-        oRequestHandler.addParameters('client_id',addon().getSetting('hoster_debridlink_ID'))
-        oRequestHandler.addParameters("code",r["device_code"])
-        oRequestHandler.addParameters("grant_type","http://oauth.net/grant_type/device/1.0")
+        oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+        oRequestHandler.addParameters('client_id', addon().getSetting('hoster_debridlink_ID'))
+        oRequestHandler.addParameters("code", r["device_code"])
+        oRequestHandler.addParameters("grant_type", "http://oauth.net/grant_type/device/1.0")
         r = json.loads(oRequestHandler.request())
 
         addon().setSetting('hoster_debridlink_tokenrefresh', r["refresh_token"])
@@ -182,10 +188,10 @@ def RenewToken():
     else:
         oRequestHandler = cRequestHandler(URL_HOST + "/api/oauth/token")
         oRequestHandler.setRequestType(1)
-        oRequestHandler.addHeaderEntry('Content-Type','application/x-www-form-urlencoded')
-        oRequestHandler.addParameters('client_id',addon().getSetting('hoster_debridlink_ID'))
-        oRequestHandler.addParameters("refresh_token",refreshTok)
-        oRequestHandler.addParameters("grant_type","refresh_token")
+        oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+        oRequestHandler.addParameters('client_id', addon().getSetting('hoster_debridlink_ID'))
+        oRequestHandler.addParameters("refresh_token", refreshTok)
+        oRequestHandler.addParameters("grant_type", "refresh_token")
         r = json.loads(oRequestHandler.request())
 
         addon().setSetting('hoster_debridlink_token', r["access_token"])
