@@ -31,7 +31,7 @@ class cHoster(iHoster):
         return self.__sFileName
 
     def getPluginIdentifier(self):
-        return 'debridlink'
+        return 'debrid_link'
 
     def setHD(self, sHD):
         self.__sHD = ''
