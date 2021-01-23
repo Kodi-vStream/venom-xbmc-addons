@@ -366,7 +366,7 @@ def showMovies(sSearch=''):
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sUrl = oInputParameterHandler.getValue('siteUrl').replace('index.php','')
     if sSearch:
         sUrl = sSearch
 
@@ -757,7 +757,7 @@ def showSeriesHosters():
     # Pour les series on fait l'inverse des films on vire les liens premiums
     if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent or 'premium' in sHtmlContent:
         sHtmlContent = CutPremiumlinks(sHtmlContent)
-
+        
     sPattern = '<div style="font-weight:bold;color:.+?">(.+?)</div>|<a class="btnToLink".+?href="(.+?)">(.+?)</a></b>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
