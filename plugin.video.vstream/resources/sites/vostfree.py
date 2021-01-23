@@ -156,6 +156,11 @@ def seriesHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     
+    url = URL_MAIN + 'templates/Animix/js/anime.js'
+ 
+    oRequestHandler = cRequestHandler(url)
+    playerContent = oRequestHandler.request()
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -194,21 +199,11 @@ def seriesHosters():
                 playerData = oParser.parse(sHtmlContent, sPattern)[1][0]
 
                 if not "http" in playerData:
-                    if aEntry1[1] == "VIP":
-                        sHosterUrl = "https://getvid.club/player/index.php?data=" + playerData
-                    elif aEntry1[1] == "Sibnet":
-                        sHosterUrl = "https://video.sibnet.ru/shell.php?videoid=" + playerData
-                    elif aEntry1[1] == "Uqload":
-                        sHosterUrl = "https://uqload.com/embed-" + playerData + ".html"
-                    elif aEntry1[1] == "Stream" or aEntry1[1] == "Mytv":
-                        sHosterUrl = "https://www.myvi.tv/embed/" + playerData
-                    elif aEntry1[1] == "Doodstream":
-                        sHosterUrl = "https://dood.to/e/" + playerData
-                    elif aEntry1[1] == "Mixdrop":
-                        sHosterUrl = "https://mixdrop.to/e/" + playerData
+                    sPattern = 'new_player_' + aEntry1[1].lower() + '.+?src="(.+?)" width'
+                    sHosterUrl = oParser.parse(playerContent, sPattern)[1][0].replace('"+player_content2+"',playerData)
                 else:
                     sHosterUrl = playerData
-                    
+
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     oHoster.setDisplayName(sTitle)
