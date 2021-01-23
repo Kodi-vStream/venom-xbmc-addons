@@ -23,12 +23,13 @@ URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-MOVIE_NEWS  = (URL_MAIN + 'films-vf-vostfr/', 'showMovies') 
+MOVIE_NEWS = (URL_MAIN + 'films-vf-vostfr/', 'showMovies')
 
 ANIM_ANIMS = ('http://', 'load')
-ANIM_NEWS = (URL_MAIN + 'lastnews/', 'showMovies') 
+ANIM_NEWS = (URL_MAIN + 'lastnews/', 'showMovies')
 ANIM_VFS = (URL_MAIN + 'animes-vf/', 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + 'animes-vostfr/', 'showMovies')
+
 
 def load():
     oGui = cGui()
@@ -43,15 +44,15 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animes (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animes VF', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés (VF)', 'vf.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animes Vostfr', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -66,23 +67,24 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showMovies(sSearch=''):
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     if sSearch:
-      sUrl = sSearch.replace(' ', '+')
+        sUrl = sSearch.replace(' ', '+')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    if "/films-vf-vostfr/" in sUrl:
-        sPattern = 'href="([^"]+)" alt="([^"]+)".+?src="([^"]+)".+?desc">([^<]+)'
-    elif sSearch:
-        sPattern = '<span class="image"><img src="([^"]+)" alt="([^"]+)" />.+?<a href="([^"]+)".+?"desc">([^<]+)'
+    if sSearch:
+        sPattern = '<span class="image"><img src="([^"]+)" alt="([^"]+).+?<a href="([^"]+).+?desc">([^<]+)'
+    elif '/films-vf-vostfr/' in sUrl:
+        sPattern = 'href="([^"]+)" alt="([^"]+).+?src="([^"]+).+?desc">([^<]+)'
     else:
-        sPattern = 'href="([^"]+)" alt="([^"]+)".+?src="([^"]+)".+?desc">([^<]+)<.+?</i>Saison</span><b>([^<]+)<.+?Ep</span><b>([^<]+)'
+        sPattern = 'href="([^"]+)" alt="([^"]+).+?src="([^"]+).+?desc">([^<]+).+?</i>Saison</span><b>([^<]+).+?Ep</span><b>([^<]+)'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -101,23 +103,28 @@ def showMovies(sSearch=''):
 
             if sSearch:
                 sThumb = aEntry[0]
-                if not 'http' in sThumb:
+                if 'http' not in sThumb:
                     sThumb = URL_MAIN + sThumb
-                sMovieTitle = aEntry[1]
                 sUrl2 = aEntry[2]
-                sDesc = aEntry[3]
             else:
                 sUrl2 = aEntry[0]
-                sMovieTitle = aEntry[1]
                 sThumb = aEntry[2]
-                if not 'http' in sThumb:
+                if 'http' not in sThumb:
                     sThumb = URL_MAIN + sThumb
-                sDesc = aEntry[3]
 
-            try:
-                sTitle = sMovieTitle + ' S' + aEntry[4] + ' E' + aEntry[5]
-            except:
-                sTitle = sMovieTitle
+            sMovieTitle = aEntry[1]
+            sDesc = aEntry[3]
+
+            sLang = ''
+            if 'FRENCH' in sMovieTitle or 'French' in sMovieTitle:
+                sLang = 'VF'
+            if 'VOSTFR' in sMovieTitle:
+                sLang = 'VOSTFR'
+
+            sMovieTitle = sMovieTitle.replace(' VOSTFR', '').replace(' FRENCH', '').replace(' French', '')
+            sDisplayTitle = sMovieTitle + ' (' + sLang + ')'
+            if len(aEntry) > 4:
+                sDisplayTitle = sDisplayTitle + ' S' + aEntry[4] + ' E' + aEntry[5]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -125,29 +132,34 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            oGui.addAnime(SITE_IDENTIFIER, 'seriesHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addAnime(SITE_IDENTIFIER, 'seriesHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     if not sSearch:
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(number) + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
+
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '</div>\s*<a href="(.+?)">\s*<span class="next-page">Suivant</span>'
+    sPattern = '>([^<]+)</a>\s*</div>\s*<a href="([^"]+)">\s*<span class="next-page">Suivant</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        return aResult[1][0]
+        sNumberMax = aResult[1][0][0]
+        sNextPage = aResult[1][0][1]
+        sNumberNext = re.search('/page/([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    return False
+    return False, 'none'
+
 
 def seriesHosters():
     oGui = cGui()
@@ -155,21 +167,21 @@ def seriesHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    
+
     url = URL_MAIN + 'templates/Animix/js/anime.js'
- 
+
     oRequestHandler = cRequestHandler(url)
     playerContent = oRequestHandler.request()
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #On récupere l'id associé a l'épisode
-    sPattern = '<option value="buttons_([0-9]+)">([^"]+)</option>'
+    # On récupere l'id associé a l'épisode
+    sPattern = '<option value="buttons_([0-9]+)">([^<]+)</option>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    epNumber = ""
+    epNumber = ''
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -180,17 +192,17 @@ def seriesHosters():
             if progress_.iscanceled():
                 break
 
-            #Streaming
-            sTitle = sMovieTitle + " " + aEntry[1]
+            # Streaming
+            sTitle = sMovieTitle + ' ' + aEntry[1]
             if epNumber != aEntry[1]:
                 epNumber = aEntry[1]
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + epNumber + '[/COLOR]')
 
-            #On récupere l'info du player
+            # On récupere l'info du player
             sPattern = '<div id="buttons_' + aEntry[0] + '" class="button_box">(.+?)/div></div>'
             htmlCut = oParser.parse(sHtmlContent, sPattern)[1][0]
 
-            sPattern = '<div id="player_([0-9]+)".+?">(.+?)<'
+            sPattern = '<div id="player_([0-9]+)".+?">([^<]+)<'
             data = oParser.parse(htmlCut, sPattern)
 
             for aEntry1 in data[1]:
@@ -198,9 +210,9 @@ def seriesHosters():
                 sPattern = '<div id="content_player_' + aEntry1[0] + '" class="player_box">([^<]+)</div>'
                 playerData = oParser.parse(sHtmlContent, sPattern)[1][0]
 
-                if not "http" in playerData:
+                if 'http' not in playerData:
                     sPattern = 'new_player_' + aEntry1[1].lower() + '.+?src="(.+?)" width'
-                    sHosterUrl = oParser.parse(playerContent, sPattern)[1][0].replace('"+player_content2+"',playerData)
+                    sHosterUrl = oParser.parse(playerContent, sPattern)[1][0].replace('"+player_content2+"', playerData)
                 else:
                     sHosterUrl = playerData
 
@@ -210,27 +222,29 @@ def seriesHosters():
                     oHoster.setFileName(sTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
-            sPattern = '<div class="lien-episode">.+?<b>' + epNumber + '<.+?href="([^"]+)".+?<b>([^<]+)<'
+            sPattern = '<div class="lien-episode">.+?<b>' + epNumber + '<.+?href="([^"]+).+?<b>([^<]+)<'
             ddlData = oParser.parse(sHtmlContent, sPattern)
 
             for aEntry2 in ddlData[1]:
-                sTitle = sMovieTitle + " " + epNumber + ' ' + aEntry2[1]
+                sTitle = sMovieTitle + ' ' + epNumber + ' ' + aEntry2[1]
                 url = aEntry2[0]
 
-                if "ouo" in url:
+                if 'ouo' in url:
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', url)
                     oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
-                    oGui.addLink(SITE_IDENTIFIER, 'DecryptOuo', sTitle, sThumb, "", oOutputParameterHandler)
+                    oGui.addLink(SITE_IDENTIFIER, 'DecryptOuo', sTitle, sThumb, '', oOutputParameterHandler)
 
                 else:
-                    oHoster = cHosterGui().checkHoster(url)
+                    sHosterUrl = url
+                    oHoster = cHosterGui().checkHoster(sHosterUrl)
                     if (oHoster != False):
                         oHoster.setDisplayName(sTitle)
                         oHoster.setFileName(sTitle)
-                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)  
+                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
     oGui.setEndOfDirectory()
+
 
 def DecryptOuo():
     from resources.lib.recaptcha import ResolveCaptcha
@@ -240,20 +254,20 @@ def DecryptOuo():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    if not '/fbc/' in urlOuo:
+    if '/fbc/' not in urlOuo:
         urlOuo = urlOuo.replace('io/', 'io/fbc/').replace('press/', 'press/fbc/')
 
     oRequestHandler = cRequestHandler(urlOuo)
     sHtmlContent = oRequestHandler.request()
     Cookie = oRequestHandler.GetCookies()
 
-    key = re.search('sitekey: "(.+?)"', str(sHtmlContent)).group(1)
-    OuoToken = re.search('<input name="_token" type="hidden" value="(.+?)">.+?<input id="v-token" name="v-token" type="hidden" value="(.+?)"', str(sHtmlContent), re.MULTILINE | re.DOTALL)
+    key = re.search('sitekey: "([^"]+)', str(sHtmlContent)).group(1)
+    OuoToken = re.search('<input name="_token" type="hidden" value="([^"]+).+?id="v-token" name="v-token" type="hidden" value="([^"]+)', str(sHtmlContent), re.MULTILINE | re.DOTALL)
 
     gToken = ResolveCaptcha(key, urlOuo)
 
     url = urlOuo.replace('/fbc/', '/go/')
-    params = '_token=' + OuoToken.group(1) + '&g-recaptcha-response=' + gToken + "&v-token=" + OuoToken.group(2)
+    params = '_token=' + OuoToken.group(1) + '&g-recaptcha-response=' + gToken + '&v-token=' + OuoToken.group(2)
 
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.setRequestType(1)
@@ -271,7 +285,7 @@ def DecryptOuo():
     final = re.search('<form method="POST" action="(.+?)" accept-charset=.+?<input name="_token" type="hidden" value="(.+?)">', str(sHtmlContent))
 
     url = final.group(1)
-    params = '_token=' + final.group(2) + '&x-token=' + ""
+    params = '_token=' + final.group(2) + '&x-token=' + ''
 
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.setRequestType(1)
@@ -284,7 +298,7 @@ def DecryptOuo():
     oRequestHandler.addHeaderEntry('Content-Length', str(len(params)))
     oRequestHandler.addHeaderEntry('Cookie', Cookie)
     oRequestHandler.addParametersLine(params)
-    sHtmlContent = oRequestHandler.request()
+    # sHtmlContent = oRequestHandler.request()
 
     sHosterUrl = oRequestHandler.getRealUrl()
     oHoster = cHosterGui().checkHoster(sHosterUrl)
