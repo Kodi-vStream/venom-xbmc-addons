@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
-from resources.lib.gui.hoster import cHosterGui
+import re
+
+from resources.lib.comaddon import progress
 from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import progress
 from resources.lib.parser import cParser
-from resources.lib.packer import cPacker
-from resources.lib.util import cUtil
 from resources.lib.util import Noredirection
-import re
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'zustream'
 SITE_NAME = 'ZuStream'
 SITE_DESC = 'Retrouvez un énorme répertoire de films, de séries et de mangas en streaming VF et VOSTFR complets'
 
-URL_MAIN = 'https://www.zustream.ws/'
+URL_MAIN = 'https://www.zustream.lol/'
 
 MOVIE_MOVIE = (True, 'showMenuFilms')
 MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
@@ -435,7 +435,7 @@ def showHosters():
                 oRequestHandler.addHeaderEntry('Referer', 'https://re.zu-lien.com')
                 # sHtmlContent2 = oRequestHandler.request()
                 sUrl1 = oRequestHandler.getRealUrl()
-                if not sUrl1 or sUrl1 == sHosterUrl :
+                if not sUrl1 or sUrl1 == sHosterUrl:
                     opener = Noredirection()
                     opener.addheaders = [('User-Agent', UA)]
                     opener.addheaders = [('Referer', 'https://re.zu-lien.com')]
