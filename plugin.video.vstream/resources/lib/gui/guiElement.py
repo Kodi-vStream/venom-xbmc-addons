@@ -5,7 +5,7 @@ import re
 import string
 import unicodedata
 
-from resources.lib.comaddon import addon, xbmc
+from resources.lib.comaddon import addon, xbmc, isMatrix, VSlog
 from resources.lib.db import cDb
 from resources.lib.util import QuoteSafe
 import random
@@ -151,7 +151,10 @@ class cGuiElement:
         return self.__sSiteName
 
     def setFileName(self, sFileName):
-        self.__sFileName = self.str_conv(sFileName)
+        if isMatrix():
+            self.__sFileName = sFileName
+        else:
+            self.__sFileName = self.str_conv(sFileName)
 
     def getFileName(self):
         return self.__sFileName
@@ -298,11 +301,9 @@ class cGuiElement:
         except:
             pass
 
-        #Python 3 decode sTitle
-        try:
-            sTitle = sTitle.encode('latin-1').decode('utf-8')
-        except:
-            pass
+        if isMatrix():
+            #Python 3 decode sTitle
+            sTitle = sTitle.encode().decode()
 
         if not sTitle.startswith('[COLOR'):
             self.__sTitle = self.TraiteTitre(sTitle)
@@ -323,9 +324,9 @@ class cGuiElement:
 
     def setDescription(self, sDescription):
         #Py3
-        try:
+        if isMatrix():
             self.__sDescription = sDescription.encode('latin-1')
-        except:
+        else:
             self.__sDescription = sDescription
 
     def getDescription(self):
