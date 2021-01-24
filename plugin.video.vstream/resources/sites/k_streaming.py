@@ -216,7 +216,7 @@ def showYears():
 def showSeriesYears():
     oGui = cGui()
 
-    for i in reversed(range(1980, 2021)):
+    for i in reversed(range(1980, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/series/annee-' + Year)
