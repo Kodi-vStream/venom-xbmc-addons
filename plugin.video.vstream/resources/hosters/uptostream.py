@@ -5,12 +5,16 @@ import base64
 import re
 
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, VSlog
+from resources.lib.comaddon import dialog, VSlog, isMatrix
 from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import Unquote
 
+try:
+    xrange
+except NameError:
+    xrange = range
 
 class cHoster(iHoster):
 
@@ -126,7 +130,6 @@ class cHoster(iHoster):
 
         return False, False
 
-
 def decodeur1(Html):
     from ast import literal_eval
     # search list64 and his var name.
@@ -171,7 +174,7 @@ def decodeur1(Html):
                             i = 0
                             vname = ''
                             for i in xrange(len(Html)):
-                                fisrt_r = re.match("([^']+)':", Html, re.DOTALL)
+                                fisrt_r = re.match("([^']+)':", Html)
                                 if fisrt_r:
                                     vname = fisrt_r.group(1)
                                     tableau[vname] = 'null'
@@ -263,7 +266,10 @@ def decoder(data, fn):
     tempData = ''
 
     for i in xrange(len(data)):
-        tempData += ("%" + format(ord(data[i]), '02x'))
+        if isMatrix():
+            tempData += ("%" + format(data[i], '02x'))
+        else:
+            tempData += ("%" + format(ord(data[i]), '02x'))
 
     data = Unquote(tempData)
 
@@ -285,7 +291,11 @@ def decoder(data, fn):
     x = 0
     y = 0
     i = 0
-    while i < len(data.decode('utf-8')):
+
+    if not isMatrix():
+        data = data.decode('utf-8')
+
+    while i < len(data):
 
         x = (x + 1) % 256
         y = (y + secretKey[x]) % 256
@@ -294,7 +304,10 @@ def decoder(data, fn):
         secretKey[x] = secretKey[y]
         secretKey[y] = temp
 
-        url += (chr(ord(data.decode('utf-8')[i]) ^ secretKey[(secretKey[x] + secretKey[y]) % 256]))
+        if not isMatrix():
+            data = data.decode('utf-8')
+
+        url += (chr(ord(data[i]) ^ secretKey[(secretKey[x] + secretKey[y]) % 256]))
 
         i += 1
 
