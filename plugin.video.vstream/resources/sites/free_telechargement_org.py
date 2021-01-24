@@ -271,7 +271,7 @@ def showGenreMoviesHD():
 def showMovieYears():
     oGui = cGui()
 
-    for i in reversed(range(1950, 2021)):
+    for i in reversed(range(1950, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '1/annee/?rech_year=' + Year)
