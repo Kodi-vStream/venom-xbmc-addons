@@ -100,7 +100,7 @@ def showGenres():
 def showYears():
     oGui = cGui()
 
-    for i in reversed(range(2017, 2021)):
+    for i in reversed(range(2017, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'nouveau-' + Year + '/')
