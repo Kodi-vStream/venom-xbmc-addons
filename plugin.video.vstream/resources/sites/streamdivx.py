@@ -102,7 +102,7 @@ def showGenres():
 def showMovieYears():
     oGui = cGui()
 
-    for i in reversed(range(1985, 2021)):
+    for i in reversed(range(1985, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'tags/' + Year + '/')
