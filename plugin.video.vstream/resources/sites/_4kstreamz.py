@@ -66,7 +66,7 @@ def showSearch():
 
 def showYears():
     oGui = cGui()
-    for i in reversed(range(1921, 2021)):
+    for i in reversed(range(1921, 2022)):
         sYear = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'filmspar?annee=' + sYear)  # / inutile
