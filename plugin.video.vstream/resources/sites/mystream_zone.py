@@ -258,7 +258,7 @@ def showAlpha(stype):
 def showYears():
     oGui = cGui()
     # https://mystream.zone/release/2020
-    for i in reversed(range(1982, 2021)):
+    for i in reversed(range(1982, 2022)):
         sYear = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'release/' + sYear)
