@@ -32,6 +32,7 @@ class Stormwall(object):
 
     def CheckIfActive(self, html):
         if 'stormwall' in str(html):
+            self.state = True
             return True
         return False
 
@@ -74,13 +75,16 @@ class Stormwall(object):
 
     def htmlrequest(self, url, cookies, data):
         oRequestHandler = cRequestHandler(url)
+        if self.state == True and self.cook == "":
+            oRequestHandler.disableRedirect()
         oRequestHandler.disableSSL()
         oRequestHandler.addHeaderEntry('User-Agent', UA)
-        oRequestHandler.addHeaderEntry('Accept', "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8")
         oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
         if cookies:
             oRequestHandler.addHeaderEntry("Cookie", self.cook + "; _JHASH__=" + cookies + "; _JUA__=" + QuotePlus(UA))
         oRequestHandler.addHeaderEntry('Referer', url)
         sHtmlContent = oRequestHandler.request()
-        self.cook = oRequestHandler.GetCookies()
+
+        if self.cook == "":
+            self.cook = oRequestHandler.GetCookies()
         return sHtmlContent
