@@ -182,7 +182,7 @@ def seriesHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     epNumber = ''
-
+    sHosterUrl = ''
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
@@ -202,7 +202,8 @@ def seriesHosters():
             sPattern = '<div id="buttons_' + aEntry[0] + '" class="button_box">(.+?)/div></div>'
             htmlCut = oParser.parse(sHtmlContent, sPattern)[1][0]
 
-            sPattern = '<div id="player_([0-9]+)".+?">([^<]+)<'
+            #sPattern = '<div id="player_([0-9]+)".+?">([^<]+)<'
+            sPattern = '<div id="player_([0-9]+)".+?class="new_player_([^"]+)'
             data = oParser.parse(htmlCut, sPattern)
 
             for aEntry1 in data[1]:
@@ -211,8 +212,12 @@ def seriesHosters():
                 playerData = oParser.parse(sHtmlContent, sPattern)[1][0]
 
                 if 'http' not in playerData:
-                    sPattern = 'new_player_' + aEntry1[1].lower() + '.+?src="(.+?)" width'
-                    sHosterUrl = oParser.parse(playerContent, sPattern)[1][0].replace('"+player_content2+"', playerData)
+                    sPattern = 'player_type.*=="new_player_' + aEntry1[1].lower()+ '"\|.+?(?:src=\\\\")([^"]*).*?player_content.*?"([^\\\\"]*)'
+                    aResult2 = oParser.parse(playerContent, sPattern)
+                    if aResult2[0] == True:
+                        sHosterUrl = aResult2[1][0][0] + playerData + aResult2[1][0][1]
+                        if 'http' not in sHosterUrl:
+                            sHosterUrl = 'https:' + sHosterUrl
                 else:
                     sHosterUrl = playerData
 
