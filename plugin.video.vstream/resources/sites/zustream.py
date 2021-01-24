@@ -182,7 +182,7 @@ def showNetwork():
 def showYears():
     oGui = cGui()
 
-    for i in reversed(range(1995, 2021)):
+    for i in reversed(range(1995, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'sortie/' + Year + '/?post_types=movies')
@@ -194,7 +194,7 @@ def showYears():
 def showYearsSeries():
     oGui = cGui()
 
-    for i in reversed(range(1997, 2021)):
+    for i in reversed(range(1997, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'sortie/' + Year + '/?post_types=tvshows')
