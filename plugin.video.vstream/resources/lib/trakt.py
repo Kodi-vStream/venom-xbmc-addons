@@ -1104,10 +1104,9 @@ class cTrakt:
         sTitle = oInputParameterHandler.getValue('sFileName')
 
         sCat_trakt = sCat.replace('1', 'movies').replace('2', 'shows')
-
         if sCat_trakt == "shows":
-            sSeason = re.search('aison (\d+)',sTitle).group(1)
-            sEpisode = re.search('pisode (\d+)',sTitle).group(1)
+            sSeason = re.search('aison(\s*[0-9]+)',sTitle).group(1)
+            sEpisode = re.search('pisode(\s*[0-9]+)',sTitle).group(1)
         else:
             sSeason = False
             sEpisode = False
