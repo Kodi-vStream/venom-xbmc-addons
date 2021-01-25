@@ -268,7 +268,8 @@ def ShowEpisodes():
     sStart = '<div class="contentomovies">'
     sEnd = '<div class="keywords"'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
-    sPattern = '<a href="([^"]+).+?class="titverle">.+?class="nop">Épisode([^<]+)'
+
+    sPattern = '<a href="([^"]+).+?class="titverle">.+?class="nop">.+?pisode([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
