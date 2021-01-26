@@ -697,6 +697,10 @@ msgid "1Fichier"
 msgstr ""
 
 msgctxt "#30328"
+msgid "Token"
+msgstr ""
+
+msgctxt "#30329"
 msgid "Token (Optional)"
 msgstr ""
 
@@ -1064,12 +1068,12 @@ msgctxt "#30470"
 msgid "Addon dnspython missing"
 msgstr ""
 
-msgctxt "#30998"
-msgid "Put the Token of your Alldebrid account"
+msgctxt "#30480"
+msgid "Small loading spinner"
 msgstr ""
 
 msgctxt "#31000"
-msgid "Enter the url of your multimedia folder"
+msgid "Multimedia folder URL (Optional)"
 msgstr ""
 
 msgctxt "#31101"

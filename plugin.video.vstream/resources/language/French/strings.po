@@ -697,8 +697,12 @@ msgid "1Fichier"
 msgstr "1Fichier"
 
 msgctxt "#30328"
+msgid "Token"
+msgstr "Token"
+
+msgctxt "#30329"
 msgid "Token (Optional)"
-msgstr "Token (Facultatif)"
+msgstr "Token (Optionnel)"
 
 msgctxt "#30330"
 msgid "Search"
@@ -1064,15 +1068,14 @@ msgctxt "#30470"
 msgid "Addon dnspython missing"
 msgstr "Addon dnspython manquant"
 
+msgctxt "#30480"
+msgid "Small loading spinner"
+msgstr "Sablier de chargement réduit"
 
 # Alldebrid
-msgctxt "#30998"
-msgid "Put the Token of your Alldebrid account"
-msgstr "Mettez le Token de votre compte Alldebrid"
-
 msgctxt "#31000"
-msgid "Enter the url of your multimedia folder"
-msgstr "Mettez l'url de votre dossier multimedia Alldebrid"
+msgid "Multimedia folder URL (Optional)"
+msgstr "URL du dossier multimedia (Optionnel)"
 
 msgctxt "#31101"
 msgid "Url"

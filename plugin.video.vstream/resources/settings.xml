@@ -29,6 +29,7 @@
         <setting label="30410" type="lsep"/>
         <setting type="sep"/>
         <setting id="Block_Noti_sound" type="bool" label="30411" default="false"/>
+        <setting id="spinner_small" type="bool" label="30480" default="true"/>
 
         <setting label="30032" type="lsep"/>
         <setting type="sep"/>
