@@ -304,9 +304,6 @@ def decoder(data, fn):
         secretKey[x] = secretKey[y]
         secretKey[y] = temp
 
-        if not isMatrix():
-            data = data.decode('utf-8')
-
         url += (chr(ord(data[i]) ^ secretKey[(secretKey[x] + secretKey[y]) % 256]))
 
         i += 1
