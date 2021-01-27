@@ -277,7 +277,7 @@ class cGuiElement:
             sTitle2 = '%s [COLOR %s](%s)[/COLOR]' % (sTitle2, self.__sDecoColor, self.__Year)
 
         # on repasse en utf-8
-        if not isMatrix:
+        if not isMatrix():
             return sTitle2.encode('utf-8')
         else:
             return sTitle2
