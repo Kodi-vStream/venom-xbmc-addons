@@ -1829,9 +1829,15 @@ def showHosters():
             if listRes:
                 res = listRes[resIdx]
                 resIdx += 1
-                # Filtre la résolution
-                if sRes and sRes != res:
-                    continue
+
+                # Filtre la résolution si demandée
+                if sRes:
+                    if sRes == UNCLASSIFIED:
+                        if res:
+                            continue
+                    else:
+                        if sRes != res:
+                            continue
 
                 if res.isdigit():
                     res += 'p'
