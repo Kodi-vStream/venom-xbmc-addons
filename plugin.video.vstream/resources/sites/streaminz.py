@@ -485,6 +485,23 @@ def showHosters():
                 aResult = oParser.parse(sHtmlContent2, sPattern)
                 for aEntry2 in aResult[1]:
                     sHosterUrl = 'https://waaw.to' + aEntry2
+            
+            # voir si filtrage ou non car parfois le lien mp4 créé un blocage
+            if 'streaminz.ml' in sHosterUrl:
+                sid = sHosterUrl.split('/')[-1]
+                sHosterUrl = sHosterUrl.replace('\\', '')
+                postdata = 'r=&d=streaminz.ml'
+                urlapi = 'https://streaminz.ml/api/source/' + sid
+                oRequest = cRequestHandler(urlapi)
+                oRequest.setRequestType(1)
+                oRequest.addHeaderEntry('Referer', sHosterUrl)
+                oRequest.addParametersLine(postdata)
+                sHtmlContent2 = oRequest.request()
+                oParser = cParser()
+                sPattern ='"data".+?file.+?"([^"]*).+?type.+?"([^"]*)'
+                aResult = oParser.parse(sHtmlContent2, sPattern)
+                if (aResult[0] == True):
+                    sHosterUrl = aResult[1][0][0] + '.' + aResult[1][0][1]
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
