@@ -19,7 +19,7 @@ SITE_IDENTIFIER = 'streamcomplet3'
 SITE_NAME = 'Streamcomplet3'
 SITE_DESC = 'Films en streaming.'
 
-URL_MAIN = 'https://fr.streamcomplet3.com/v/'
+URL_MAIN = 'https://fr.streamcomplet3.com/'
 
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN , 'showMovies')
