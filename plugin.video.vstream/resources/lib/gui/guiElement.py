@@ -330,7 +330,10 @@ class cGuiElement:
     def setDescription(self, sDescription):
         #Py3
         if isMatrix():
-            self.__sDescription = str(sDescription.encode('latin-1'),'utf-8')
+            try:
+                self.__sDescription = str(sDescription.encode('latin-1'),'utf-8')
+            except:
+                pass
         else:
             self.__sDescription = sDescription
 
