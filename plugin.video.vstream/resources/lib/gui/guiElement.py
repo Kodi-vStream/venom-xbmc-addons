@@ -657,7 +657,8 @@ class cGuiElement:
         if not self.getItemValue('trailer'):
             if self.getTrailer():
                 self.addItemValues('trailer', self.getTrailer())
-            # else:
+            else:
+                self.addItemValues('trailer', 'plugin')  # Faux trailer qui ne se lance pas mais evite une erreur
                 # self.addItemValues('trailer', self.getDefaultTrailer())
 
         # Used only if there is data in db, overwrite getMetadonne()
