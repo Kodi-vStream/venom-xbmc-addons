@@ -188,6 +188,8 @@
 
         <setting visible="false" id="plugin_spion_com" type="bool" label="Spion" default="true"/>
 
+        <setting visible="false" id="plugin_stream_complet" type="bool" label="Stream Complet" default="true"/>
+
         <setting visible="false" id="plugin_streamay_series" type="bool" label="StreamAy Séries" default="true"/>
 
         <setting visible="false" id="plugin_streamcomplet" type="bool" label="StreamComplet" default="true"/>
