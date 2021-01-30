@@ -898,11 +898,12 @@ class cTrakt:
 
         oInputParameterHandler = cInputParameterHandler()
 
-        sAction = oInputParameterHandler.getValue('sAction')
-        if not sAction:
-            sAction = self.getContext()
-        if not sAction:
-            return
+        if not Action == "SetWatched":
+            sAction = oInputParameterHandler.getValue('sAction')
+            if not sAction:
+                sAction = self.getContext()
+            if not sAction:
+                return
 
         sType = oInputParameterHandler.getValue('sCat')
         if not sType:
@@ -915,7 +916,10 @@ class cTrakt:
 
         sType = sType.replace('1', 'movies').replace('2', 'shows')
 
+        #Mettre en vu automatiquement.
         if Action == "SetWatched":
+            sTitle = oInputParameterHandler.getValue('sFileName')
+
             if sType == "shows":
                 sSeason = re.search('aison(\s*[0-9]+)',sTitle).group(1)
                 sEpisode = re.search('pisode(\s*[0-9]+)',sTitle).group(1)
@@ -925,10 +929,13 @@ class cTrakt:
 
             sAction = URL_API + 'sync/history'
 
+        else:
+            sTitle = oInputParameterHandler.getValue('sMovieTitle')
+
         if not sImdb:
             sPost = {}
             if not sTMDB:
-                sTMDB = int(self.getTmdbID(oInputParameterHandler.getValue('sMovieTitle'), sType))
+                sTMDB = int(self.getTmdbID(sTitle, sType))
 
             sPost = {sType: [{'ids': {'tmdb': sTMDB}}]}
             if sSeason:
