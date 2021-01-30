@@ -205,7 +205,9 @@
         <setting visible="false" id="plugin_vf_space" type="bool" label="VF.Space" default="true"/>
 
         <setting visible="false" id="plugin_videobuzzy_com" type="bool" label="Videobuzzy" default="true"/>
-
+        
+        <setting visible="false" id="plugin_voiranime" type="bool" label="voiranime" default="true"/>
+        
         <setting visible="false" id="plugin_voirfilms_org" type="bool" label="VoirFilms" default="true"/>
 
         <setting visible="false" id="plugin_wawacity" type="bool" label="Wawacity" default="true"/>
