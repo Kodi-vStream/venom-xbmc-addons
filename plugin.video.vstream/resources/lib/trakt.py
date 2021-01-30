@@ -1,19 +1,11 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-
-try:  # Python 2
-    import urllib2
-
-except ImportError:  # Python 3
-    import urllib.request as urllib2
-
 import datetime
 import re
 import time
 import unicodedata
-import xbmc
 
-from resources.lib.comaddon import addon, dialog, progress, VSlog
+from resources.lib.comaddon import addon, dialog, progress, VSlog, xbmc
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -21,11 +13,6 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.rechercheHandler import cRechercheHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.util import Quote
-
-try:
-    import json
-except:
-    import simplejson as json
 
 SITE_IDENTIFIER = 'cTrakt'
 SITE_NAME = 'Trakt'
@@ -36,8 +23,7 @@ API_KEY = '7139b7dace25c7bdf0bd79acf46fb02bd63310548b1f671d88832f75a4ac3dd6'
 API_SECRET = 'bb02b2b0267b045590bc25c21dac21b1c47446a62b792091b3275e9c4a943e74'
 API_VERS = '2'
 
-MAXRESULT = 10
-
+MAXRESULT = "10"
 
 class cTrakt:
 
@@ -46,35 +32,23 @@ class cTrakt:
     DIALOG = dialog()
 
     def __init__(self):
-        # self.__sFile = cConfig().getFileFav()
         self.__sTitle = ''
         self.__sAction = ''
         self.__sType = ''
-        # self.__sFunctionName = ''
 
     def getToken(self):
-
-        headers = {'Content-Type': 'application/json'}
-        post = {'client_id': API_KEY}
-
-        try:
-            post = json.dumps(post).encode('utf-8')
-        except:
-            post = json.dumps(post)
-
-        req = urllib2.Request(URL_API + 'oauth/device/code', post, headers)
-        response = urllib2.urlopen(req)
-        sHtmlContent = response.read()
-        result = json.loads(sHtmlContent)
-        response.close()
+        oRequestHandler = cRequestHandler(URL_API + 'oauth/device/code')
+        oRequestHandler.setRequestType(1)
+        oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addJSONEntry('client_id', API_KEY)
+        sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
         # {"device_code":"a434135042b5a76159628bc974eed2f266fb47df9f438d5738ce40396d531490", "user_code":"EBDFD843", "verification_url":"https://trakt.tv/activate", "expires_in":600, "interval":5}
 
         total = len(sHtmlContent)
 
         if (total > 0):
-            # self.__Token  = result['token']
-            sText = (self.ADDON.VSlang(30304)) % (result['verification_url'], result['user_code'])
+            sText = (self.ADDON.VSlang(30304)) % (sHtmlContent['verification_url'], sHtmlContent['user_code'])
 
             oDialog = self.DIALOG.VSyesno(sText)
             if (oDialog == 0):
@@ -83,29 +57,22 @@ class cTrakt:
             if (oDialog == 1):
 
                 try:
-                    headers = {'Content-Type': 'application/json'}
-                    post = {'client_id': API_KEY, 'client_secret': API_SECRET, 'code': result['device_code']}
+                    oRequestHandler = cRequestHandler(URL_API + 'oauth/device/token')
+                    oRequestHandler.setRequestType(1)
+                    oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+                    oRequestHandler.addJSONEntry('client_id', API_KEY)
+                    oRequestHandler.addJSONEntry('client_secret', API_SECRET)
+                    oRequestHandler.addJSONEntry('code', result['device_code'])
+                    sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
-                    try:
-                        post = json.dumps(post).encode('utf-8')
-                    except:
-                        post = json.dumps(post)
-
-                    req = urllib2.Request(URL_API + 'oauth/device/token', post, headers)
-                    response = urllib2.urlopen(req)
-                    sHtmlContent = response.read()
-                    result = json.loads(sHtmlContent)
-                    response.close()
-
-                    if result['access_token']:
-                        self.ADDON.setSetting('bstoken', str(result['access_token']))
+                    if sHtmlContent['access_token']:
+                        self.ADDON.setSetting('bstoken', str(sHtmlContent['access_token']))
                         self.DIALOG.VSinfo(self.ADDON.VSlang(30000))
                         return
 
                 except:
                     pass
 
-            # xbmc.executebuiltin('Container.Refresh')
             return
         return
 
@@ -137,25 +104,20 @@ class cTrakt:
             oGui.addDir(SITE_IDENTIFIER, 'getToken()', self.ADDON.VSlang(30305), 'trakt.png', oOutputParameterHandler)
         else:
             # nom de l'user
-            headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS,
-                       'Authorization': 'Bearer %s' % self.ADDON.getSetting('bstoken')}
-
-            # post = {'client_id': API_KEY, 'client_secret': API_SECRET, 'code': result['device_code']}
-            # post = json.dumps(post)
-
             try:
-                req = urllib2.Request(URL_API + 'users/me', None, headers)
-                response = urllib2.urlopen(req)
+                oRequestHandler = cRequestHandler(URL_API + 'users/me')
+                oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+                oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
+                oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
+                oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
+                sHtmlContent = oRequestHandler.request(jsonDecode=True)
             except:
                 return self.getToken()
 
-            sHtmlContent = response.read()
-            result = json.loads(sHtmlContent)
-            response.close()
             total = len(sHtmlContent)
 
             if (total > 0):
-                sUsername = result['username']
+                sUsername = sHtmlContent['username']
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', 'https://')
                 oGui.addText(SITE_IDENTIFIER, (self.ADDON.VSlang(30306)) % sUsername)
@@ -250,26 +212,23 @@ class cTrakt:
         oInputParameterHandler = cInputParameterHandler()
         sType = oInputParameterHandler.getValue('type')
 
-        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS,
-                   'Authorization': 'Bearer %s' % self.ADDON.getSetting('bstoken')}
-
         # stats user
-        req2 = urllib2.Request(URL_API + 'users/me/stats', None, headers)
-        response2 = urllib2.urlopen(req2)
-        sHtmlContent2 = response2.read()
-        result2 = json.loads(sHtmlContent2)
-        response2.close()
-        # total2 = len(sHtmlContent2)
+        oRequestHandler = cRequestHandler(URL_API + 'users/me/stats')
+        oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
+        oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
+        oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
+        sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
         liste = []
         if sType == 'movie':
-            liste.append(['%s (%s)' % (self.ADDON.VSlang(30310), result2['movies']['collected']), URL_API + 'users/me/collection/movies?page=1&limit=' + str(MAXRESULT)])
+            liste.append(['%s (%s)' % (self.ADDON.VSlang(30310), sHtmlContent['movies']['collected']), URL_API + 'users/me/collection/movies?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_movies_show_watchlist') == 'true':
                 liste.append([self.ADDON.VSlang(30311), URL_API + 'users/me/watchlist/movies?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_movies_show_watched') == 'true':
-                liste.append(['%s (%s)' % (self.ADDON.VSlang(30312), result2['movies']['watched']), URL_API + 'users/me/watched/movies?page=1&limit=' + str(MAXRESULT)])
+                liste.append(['%s (%s)' % (self.ADDON.VSlang(30312), sHtmlContent['movies']['watched']), URL_API + 'users/me/watched/movies?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_movies_show_recommended') == 'true':
                 liste.append([self.ADDON.VSlang(30313), URL_API + 'recommendations/movies'])
@@ -289,7 +248,7 @@ class cTrakt:
             # liste.append(['historique de Films', URL_API + 'users/me/history/movies'])
 
         elif sType == 'show':
-            liste.append(['%s (%s)' % (self.ADDON.VSlang(30310), result2['shows']['collected']), URL_API + 'users/me/collection/shows?page=1&limit=' + str(MAXRESULT)])
+            liste.append(['%s (%s)' % (self.ADDON.VSlang(30310), sHtmlContent['shows']['collected']), URL_API + 'users/me/collection/shows?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_tvshows_show_watchlist') == 'true':
                 liste.append([self.ADDON.VSlang(30311), URL_API + 'users/me/watchlist/shows?page=1&limit=' + str(MAXRESULT)])
@@ -301,7 +260,7 @@ class cTrakt:
                 liste.append([self.ADDON.VSlang(30319), URL_API + 'users/me/watchlist/episodes?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_tvshows_show_watched') == 'true':
-                liste.append(['%s (%s)' % (self.ADDON.VSlang(30312), result2['shows']['watched']), URL_API + 'users/me/watched/shows?page=1&limit=' + str(MAXRESULT)])
+                liste.append(['%s (%s)' % (self.ADDON.VSlang(30312), sHtmlContent['shows']['watched']), URL_API + 'users/me/watched/shows?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_tvshows_show_recommended') == 'true':
                 liste.append([self.ADDON.VSlang(30313), URL_API + 'recommendations/shows'])
@@ -318,11 +277,14 @@ class cTrakt:
             # liste.append(['Historique de séries', URL_API + 'users/me/history/shows'])
 
         elif sType == 'custom-lists':
-            request = urllib2.Request(URL_API + 'users/me/lists', headers=headers)
-            response_lists = urllib2.urlopen(request).read()
-            json_lists = json.loads(response_lists)
+            oRequestHandler = cRequestHandler(URL_API + 'users/me/lists')
+            oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+            oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
+            oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
+            oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
+            sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
-            for List in json_lists:
+            for List in sHtmlContent:
                 url = URL_API + 'users/me/lists/' + List['ids']['slug'] + '/items'
                 liste.append([self.decode((List['name'] + ' (' + str(List['item_count']) + ')')), url])
 
@@ -334,11 +296,14 @@ class cTrakt:
             elif sType == 'lists-pop':
                 URL = URL_API + 'lists/popular'
 
-            request = urllib2.Request(URL, headers=headers)
-            response_lists = urllib2.urlopen(request).read()
-            json_lists = json.loads(response_lists)
+            oRequestHandler = cRequestHandler(URL)
+            oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+            oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
+            oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
+            oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
+            sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
-            for List in json_lists:
+            for List in sHtmlContent:
                 if sType == 'liked-lists':
                     url = URL_API + 'users/' + List['list']['user']['ids']['slug'] + '/lists/' + List['list']['ids']['slug'] + '/items'
                 else:
@@ -360,17 +325,26 @@ class cTrakt:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
-        headers = {'Content-Type': 'application/x-www-form-urlencoded', 'trakt-api-key': API_KEY,
+        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY,
                    'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % self.ADDON.getSetting('bstoken')}
 
-        post = {'token': self.ADDON.getSetting('bstoken')}
-        post = json.dumps(post)
+        post = {'client_id': API_KEY, 'client_secret': API_SECRET, 'token': self.ADDON.getSetting('bstoken')}
 
-        req = urllib2.Request(sUrl, post, headers)
-        response = urllib2.urlopen(req)
-        sHtmlContent = response.read()
-        result = json.loads(sHtmlContent)
-        response.close()
+        try:
+            post = json.dumps(post).encode('utf-8')
+        except:
+            post = json.dumps(post)
+
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
+        oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
+        oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
+        oRequestHandler.addJSONEntry('client_id', API_KEY)
+        oRequestHandler.addJSONEntry('client_secret', API_SECRET)
+        oRequestHandler.addJSONEntry('token', self.ADDON.getSetting('bstoken'))
+        sHtmlContent = oRequestHandler.request(jsonDecode=True)
+
         total = len(sHtmlContent)
 
         if (total > 0):
@@ -404,26 +378,22 @@ class cTrakt:
         else:
             sUrl = oInputParameterHandler.getValue('siteUrl')
 
-        sUrl = sUrl + "?page=1&limit=20"
-        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS,
-                   'Authorization': 'Bearer %s' % self.ADDON.getSetting('bstoken')}
+        sUrl = sUrl + "?page=1&limit=" + MAXRESULT
 
-        # post = {'extended': 'metadata'}
-        # post = json.dumps(post)
-        req = urllib2.Request(sUrl, None, headers)
-        response = urllib2.urlopen(req)
-        sHtmlContent = response.read()
-        sHeaders = response.headers
-        response.close()
-
-        result = json.loads(sHtmlContent)
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
+        oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
+        oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
+        sHtmlContent = oRequestHandler.request(jsonDecode=True)
+        sHeaders = oRequestHandler.getResponseHeader()
 
         if 'X-Pagination-Page' in sHeaders:
             sPage = sHeaders['X-Pagination-Page']
         if 'X-Pagination-Page-Count' in sHeaders:
             sMaxPage = sHeaders['X-Pagination-Page-Count']
 
-        total = len(result)
+        total = len(sHtmlContent)
         sKey = 0
         sFunction = 'getLoad'
         sId = SITE_IDENTIFIER
@@ -433,7 +403,7 @@ class cTrakt:
         if (total > 0):
             progress_ = progress().VScreate(SITE_NAME)
 
-            for i in result:
+            for i in sHtmlContent:
                 progress_.VSupdate(progress_, total)
                 if progress_.iscanceled():
                     break
@@ -694,11 +664,14 @@ class cTrakt:
 
             progress_.VSclose(progress_)
 
-            if (sPage < sMaxPage):
-                sNextPage = sUrl.replace('page=' + str(sPage), 'page=' + str(int(sPage) + 1))
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-                oGui.addNext(SITE_IDENTIFIER, 'getTrakt', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            try:
+                if (sPage < sMaxPage):
+                    sNextPage = sUrl.replace('page=' + str(sPage), 'page=' + str(int(sPage) + 1))
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+                    oGui.addNext(SITE_IDENTIFIER, 'getTrakt', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            except:
+                pass
 
         oGui.setEndOfDirectory()
         return
@@ -712,24 +685,17 @@ class cTrakt:
         sKey = oInputParameterHandler.getValue('key')
         searchtext = oInputParameterHandler.getValue('searchtext')
 
-        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS,
-                   'Authorization': 'Bearer %s' % self.ADDON.getSetting('bstoken')}
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
+        oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
+        oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
+        sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
-        # post = {'extended': 'metadata'}
-        # post = json.dumps(post)
-
-        req = urllib2.Request(sUrl, None, headers)
-        response = urllib2.urlopen(req)
-        sHtmlContent = response.read()
-        result = json.loads(sHtmlContent)
-
-        response.close()
-        # total = len(sHtmlContent)
-
-        total = len(result)
+        total = len(sHtmlContent)
         sNum = 0
         if (total > 0):
-            for i in result[int(sKey)]['seasons']:
+            for i in sHtmlContent[int(sKey)]['seasons']:
 
                 if 'collection' in sUrl or 'watched' in sUrl:
                     sNumber = i['number']
@@ -753,24 +719,26 @@ class cTrakt:
         return
 
     def getLocalizedTitle(self, item, what):
-        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS,
-                   'Authorization': 'Bearer %s' % self.ADDON.getSetting('bstoken')}
-
         try:
             if not 'episode' in what:
-                request = urllib2.Request(URL_API + '%s/%s/translations/fr' % (what, item['ids']['slug']), headers = headers)
+                oRequestHandler = cRequestHandler(URL_API + '%s/%s/translations/fr' % (what, item['ids']['slug']))
+                oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+                oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
+                oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
+                oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
+                sHtmlContent = oRequestHandler.request(jsonDecode=True)
             else:
                 show_title = self.getLocalizedTitle(item['show'], 'shows')
                 t_values = (item['show']['ids']['slug'], item['episode']['season'], item['episode']['number'])
-                req = URL_API + 'shows/%s/seasons/%s/episodes/%s/translations/fr' % t_values
-                request = urllib2.Request(req, headers = headers)
 
-            response = urllib2.urlopen(request)
-            aliasContent = response.read()
-            response.close()
+                oRequestHandler = cRequestHandler(URL_API + 'shows/%s/seasons/%s/episodes/%s/translations/fr' % t_values)
+                oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+                oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
+                oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
+                oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
+                sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
-            aliases = json.loads(aliasContent)
-            title = next((title for title in aliases if title['language'].lower() == 'fr'), item)['title']
+            title = next((title for title in sHtmlContent if title['language'].lower() == 'fr'), item)['title']
 
             if title is None:
                 return item['title']
@@ -797,21 +765,19 @@ class cTrakt:
         cTrakt.CONTENT = '2'
 
         headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % self.ADDON.getSetting('bstoken')}
-        # post = {'extended': 'metadata'}
-        # post = json.dumps(post)
+        
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
+        oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
+        oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
+        sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
-        req = urllib2.Request(sUrl, None, headers)
-        response = urllib2.urlopen(req)
-        sHtmlContent = response.read()
-        result = json.loads(sHtmlContent)
+        total = len(sHtmlContent)
 
-        response.close()
-        # total = len(sHtmlContent)
-
-        total = len(result)
         sNumber = 0
         if (total > 0):
-            for i in result[int(sKey)]['seasons'][int(sNum)]['episodes']:
+            for i in sHtmlContent[int(sKey)]['seasons'][int(sNum)]['episodes']:
 
                 if 'collection' in sUrl:
                     sNumber = i['number']
@@ -926,7 +892,7 @@ class cTrakt:
         # for i in result:
             # VSlog(str(i['movie']['title'].encode('utf-8')) + '=' + str(i['movie']['ids']['imdb']))
 
-    def getAction(self):
+    def getAction(self, Action=""):
 
         if self.ADDON.getSetting('bstoken') == '':
             self.DIALOG.VSinfo('Vous devez être connecté')
@@ -951,6 +917,16 @@ class cTrakt:
 
         sType = sType.replace('1', 'movies').replace('2', 'shows')
 
+        if Action == "SetWatched":
+            if sType == "shows":
+                sSeason = re.search('aison(\s*[0-9]+)',sTitle).group(1)
+                sEpisode = re.search('pisode(\s*[0-9]+)',sTitle).group(1)
+            else:
+                sSeason = False
+                sEpisode = False
+
+            sAction = URL_API + 'sync/history'
+
         if not sImdb:
             sPost = {}
             if not sTMDB:
@@ -964,208 +940,50 @@ class cTrakt:
         else:
             sPost = {sType: [{'ids': {'imdb': sImdb}}]}
 
-        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % self.ADDON.getSetting('bstoken')}
+        oRequestHandler = cRequestHandler(sAction)
+        oRequestHandler.setRequestType(1)
+        oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
+        oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
+        oRequestHandler.addHeaderEntry('trakt-api-version', API_VERS)
+        oRequestHandler.addHeaderEntry('Authorization', 'Bearer %s' % self.ADDON.getSetting('bstoken'))
+        for a in sPost:
+            oRequestHandler.addJSONEntry(a, sPost[a])
+        sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
         try:
-            sPost = json.dumps(sPost).encode('utf-8')
-        except:
-            sPost = json.dumps(sPost)
-
-        req = urllib2.Request(sAction, sPost, headers)
-        response = urllib2.urlopen(req)
-        sHtmlContent = response.read()
-        result = json.loads(sHtmlContent)
-
-        sText = 'Erreur'
-
-        try:
-            if result['added']['movies'] == 1 or result['added']['episodes'] > 0 or result['added']['shows'] > 0:
+            if sHtmlContent['added']['movies'] == 1 or sHtmlContent['added']['episodes'] > 0 or sHtmlContent['added']['shows'] > 0:
                 sText = 'Ajouté avec succès'
         except:
             pass
 
         try:
-            if result['updated']['movies'] == 1 or result['updated']['episodes'] > 0 or result['updated']['shows'] > 0:
+            if sHtmlContent['updated']['movies'] == 1 or sHtmlContent['updated']['episodes'] > 0 or sHtmlContent['updated']['shows'] > 0:
                 sText = 'Mise à jour avec succès'
         except:
             pass
 
         try:
-            if result['deleted']['movies'] == 1 or result['deleted']['episodes'] > 0:
+            if sHtmlContent['deleted']['movies'] == 1 or sHtmlContent['deleted']['episodes'] > 0:
                 sText = 'Supprimé avec succès'
         except:
             pass
 
         try:
-            if result['existing']['movies'] > 0 or result['existing']['episodes'] > 0 or result['existing']['seasons'] > 0 or result['existing']['shows'] > 0:
+            if sHtmlContent['existing']['movies'] > 0 or sHtmlContent['existing']['episodes'] > 0 or sHtmlContent['existing']['seasons'] > 0 or sHtmlContent['existing']['shows'] > 0:
                 sText = 'Entrée déjà présente'
         except:
             pass
 
-        self.DIALOG.VSinfo(sText)
+        try:
+            self.DIALOG.VSinfo(sText)
+        except UnboundLocalError:
+            self.DIALOG.VSinfo("Erreur")
 
         # {u'not_found': {u'movies': [], u'seasons': [], u'people': [], u'episodes': [], u'shows': []}, u'updated': {u'movies': 0, u'episodes': 0}, u'added': {u'movies': 1, u'episodes': 0}, u'existing': {u'movies': 0, u'episodes': 0}}
         # {u'deleted': {u'movies': 0, u'episodes': 55}, u'not_found': {u'movies': [], u'seasons': [], u'people': [], u'episodes': [], u'shows': []}}
 
         if (oInputParameterHandler.exist('sReload')):
             xbmc.executebuiltin('Container.Refresh')
-        return
-
-    def getWatchlist(self):
-
-        if not self.ADDON.getSetting('bstoken'):
-            return
-
-        oInputParameterHandler = cInputParameterHandler()
-        sCat = oInputParameterHandler.getValue('sType')
-
-        if not sCat:
-            return
-        # entrer imdb ? venant d'ou?
-        sImdb = oInputParameterHandler.getValue('sImdbId')
-        sTMDB = oInputParameterHandler.getValue('sTmdbId')
-        sSeason = oInputParameterHandler.getValue('sSeason')
-        sEpisode = oInputParameterHandler.getValue('sEpisode')
-
-        sCat_trakt = sCat.replace('1', 'movies').replace('2', 'shows')
-
-        if not sImdb:
-            sPost = {}
-            if not sTMDB:
-                sTMDB = int(self.getTmdbID(oInputParameterHandler.getValue('sFileName'), sCat_trakt))
-
-            sPost = {sCat_trakt: [{'ids': {'tmdb': sTMDB}}]}
-            if sSeason:
-                sPost = {sCat_trakt: [{'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason)}]}]}
-            if sEpisode:
-                sPost = {sCat_trakt: [{'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason), 'episodes': [{'number': int(sEpisode)}]}]}]}
-        else:
-            sPost = {sCat_trakt: [{'ids': {'imdb': sImdb}}]}
-
-        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % self.ADDON.getSetting('bstoken')}
-        
-        try:
-            sPost = json.dumps(sPost).encode('utf-8')
-        except:
-            sPost = json.dumps(sPost)
-
-        sAction = URL_API + 'sync/watchlist'
-
-        req = urllib2.Request(sAction, sPost, headers)
-        response = urllib2.urlopen(req)
-        sHtmlContent = response.read()
-        result = json.loads(sHtmlContent)
-        sText = False
-
-        try:
-            if result['added']['movies'] == 1 or result['added']['episodes'] > 0 or result['added']['shows'] > 0:
-                sText = 'Ajouté avec succès'
-        except:
-            pass
-
-        try:
-            if result['updated']['movies'] == 1 or result['updated']['episodes'] > 0 or result['updated']['shows'] > 0:
-                sText = 'Mise à jour avec succès'
-        except:
-            pass
-
-        try:
-            if result['deleted']['movies'] == 1 or result['deleted']['episodes'] > 0:
-                sText = 'Supprimé avec succès'
-        except:
-            pass
-
-        try:
-            if result['existing']['movies'] >0 or result['existing']['episodes'] > 0 or result['existing']['seasons'] > 0  or result['existing']['shows'] > 0:
-                sText = 'Entrée déjà présente'
-        except:
-            pass
-
-        if sText:
-            self.DIALOG.VSinfo(sText)
-
-        return
-
-    def setAsWatched(self):
-
-        if not self.ADDON.getSetting('bstoken'):
-            return
-
-        oInputParameterHandler = cInputParameterHandler()
-        sCat = oInputParameterHandler.getValue('sCat')
-
-        if not sCat:
-            return
-
-        # entrer imdb ? venant d'ou?
-        sImdb = oInputParameterHandler.getValue('sImdbId')
-        # dans le doute si meta active
-        sTMDB = oInputParameterHandler.getValue('sTmdbId')
-        sTitle = oInputParameterHandler.getValue('sFileName')
-
-        sCat_trakt = sCat.replace('1', 'movies').replace('2', 'shows')
-        if sCat_trakt == "shows":
-            sSeason = re.search('aison(\s*[0-9]+)',sTitle).group(1)
-            sEpisode = re.search('pisode(\s*[0-9]+)',sTitle).group(1)
-        else:
-            sSeason = False
-            sEpisode = False
-
-        if not sImdb:
-            sPost = {}
-            if not sTMDB:
-                sTMDB = int(self.getTmdbID(oInputParameterHandler.getValue('sFileName'), sCat_trakt))
-
-            sPost = {sCat_trakt: [{'ids': {'tmdb': sTMDB}}]}
-            if sSeason:
-                sPost = {sCat_trakt: [{'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason)}]}]}
-            if sEpisode:
-                sPost = {sCat_trakt: [{'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason), 'episodes': [{'number': int(sEpisode)}]}]}]}
-        else:
-            sPost = {sCat_trakt: [{'ids': {'imdb': sImdb}}]}
-
-        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % self.ADDON.getSetting('bstoken')}
-        
-        try:
-            sPost = json.dumps(sPost).encode('utf-8')
-        except:
-            sPost = json.dumps(sPost)
-
-        sAction = URL_API + 'sync/history'
-
-        req = urllib2.Request(sAction, sPost, headers)
-        response = urllib2.urlopen(req)
-        sHtmlContent = response.read()
-        result = json.loads(sHtmlContent)
-        sText = False
-
-        try:
-            if result['added']['movies'] == 1 or result['added']['episodes'] > 0 or result['added']['shows'] > 0:
-                sText = 'Ajouté avec succès'
-        except:
-            pass
-
-        try:
-            if result['updated']['movies'] == 1 or result['updated']['episodes'] > 0 or result['updated']['shows'] > 0:
-                sText = 'Mise à jour avec succès'
-        except:
-            pass
-
-        try:
-            if result['deleted']['movies'] == 1 or result['deleted']['episodes'] > 0:
-                sText = 'Supprimé avec succès'
-        except:
-            pass
-
-        try:
-            if result['existing']['movies'] >0 or result['existing']['episodes'] > 0 or result['existing']['seasons'] > 0  or result['existing']['shows'] > 0:
-                sText = 'Entrée déjà présente'
-        except:
-            pass
-
-        if sText:
-            self.DIALOG.VSinfo(sText)
-
         return
 
     def createContexTrakt(self, oGui, oGuiElement, oOutputParameterHandler=''):
@@ -1236,32 +1054,27 @@ class cTrakt:
         oRequestHandler.addParameters('api_key', '92ab39516970ab9d86396866456ec9b6')
         oRequestHandler.addParameters('language', 'fr')
 
-        sHtmlContent = oRequestHandler.request()
-
-        try:
-            result = json.loads(sHtmlContent)
-        except:
-            return
+        sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
         # total = len(sHtmlContent)
         # format
         meta = {}
-        meta['imdb_id'] = result['id']
-        meta['title'] = result['title']
-        meta['tagline'] = result['tagline']
-        meta['rating'] = result['vote_average']
-        meta['votes'] = result['vote_count']
-        meta['duration'] = result['runtime']
-        meta['plot'] = result['overview']
+        meta['imdb_id'] = sHtmlContent['id']
+        meta['title'] = sHtmlContent['title']
+        meta['tagline'] = sHtmlContent['tagline']
+        meta['rating'] = sHtmlContent['vote_average']
+        meta['votes'] = sHtmlContent['vote_count']
+        meta['duration'] = sHtmlContent['runtime']
+        meta['plot'] = sHtmlContent['overview']
         # meta['mpaa'] = result['certification']
         # meta['premiered'] = result['released']
         # meta['director'] = result['director']
         # meta['writer'] = result['writer']
         # if (total > 0):
-        if result['poster_path']:
-            oGuiElement.setThumbnail('https://image.tmdb.org/t/p/w396' + result['poster_path'])
-        if result['backdrop_path']:
-            oGuiElement.setFanart('https://image.tmdb.org/t/p/w1280' + result['backdrop_path'])
+        if sHtmlContent['poster_path']:
+            oGuiElement.setThumbnail('https://image.tmdb.org/t/p/w396' + sHtmlContent['poster_path'])
+        if sHtmlContent['backdrop_path']:
+            oGuiElement.setFanart('https://image.tmdb.org/t/p/w1280' + sHtmlContent['backdrop_path'])
 
         for key, value in meta.items():
             oGuiElement.addItemValues(key, value)
