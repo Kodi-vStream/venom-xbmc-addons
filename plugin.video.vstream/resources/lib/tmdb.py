@@ -240,7 +240,11 @@ class cTMDb:
         if mediaType == "tv":
             m = re.search('(?i)(\wpisode ([0-9\.\-\_]+))', name)
             m1 = re.search('(?i)(s(?:aison )*([0-9]+))', name)
-            name = name.replace(m.group(1), '').replace(m1.group(1), '').replace('+', ' ')
+            
+            try:
+                name = name.replace(m.group(1), '').replace(m1.group(1), '').replace('+', ' ')
+            except:
+                pass
 
         #On enleve le contenu entre paranthese.
         try:
