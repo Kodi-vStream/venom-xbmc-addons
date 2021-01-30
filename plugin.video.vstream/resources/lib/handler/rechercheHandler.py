@@ -77,6 +77,8 @@ class cRechercheHandler:
         elif sCat == '2':
             sSearch = 'URL_SEARCH_SERIES'
         elif sCat == '3':
+            sSearch = 'URL_SEARCH_ANIMS'
+        elif sCat == '5':
             sSearch = 'URL_SEARCH_MISC'
         else :
             sSearch = 'URL_SEARCH'
@@ -108,7 +110,8 @@ class cRechercheHandler:
                 meta['title'] = sText
                 meta['disp'] = sCat
                 cDb().insert_history(meta)
-        except: pass
+        except:
+            pass
 
         sFolder = "special://home/addons/plugin.video.vstream/resources/sites"
 
