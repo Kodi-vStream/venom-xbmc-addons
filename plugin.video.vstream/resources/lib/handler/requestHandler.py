@@ -217,7 +217,10 @@ class cRequestHandler:
                 self.__sRealUrl, self.__sResponseHeader = CF.GetReponseInfo()
 
         if not sContent:
-            dialog().VSerror("%s (%d),%s" % (addon().VSlang(30205), oResponse.status_code, self.__sUrl))
+            #Ignorer ces deux codes erreurs.
+            ignoreStatus = [200,302]
+            if oResponse.status_code not in ignoreStatus:
+                dialog().VSerror("%s (%d),%s" % (addon().VSlang(30205), oResponse.status_code, self.__sUrl))
 
         if sContent:
             if (self.__bRemoveNewLines == True):
