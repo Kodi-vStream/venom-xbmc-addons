@@ -73,8 +73,8 @@ class cHome:
         oGui.addDir(SITE_IDENTIFIER, 'showDocs', self.addons.VSlang(30112), 'doc.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'SPORT_SPORTS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', self.addons.VSlang(30113), 'sport.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir(SITE_IDENTIFIER, 'showSports', self.addons.VSlang(30113), 'sport.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -357,6 +357,26 @@ class cHome:
 
         oGui.setEndOfDirectory()
 
+    def showSports(self):
+        oGui = cGui()
+
+        # Affiche les Nouveautés Sportives
+        # oOutputParameterHandler = cOutputParameterHandler()
+        # oOutputParameterHandler.addParameter('siteUrl', 'SPORT_NEWS')
+        # oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30112), self.addons.VSlang(30101)), 'news.png', oOutputParameterHandler)
+
+        # Affiche les Genres Sportifs
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'SPORT_GENRES')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30112), self.addons.VSlang(30105)), 'genres.png', oOutputParameterHandler)
+
+        # Affiche les Sources Sportives
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'SPORT_SPORTS')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', self.addons.VSlang(30138), 'sport.png', oOutputParameterHandler)
+
+        oGui.setEndOfDirectory()
+
     def showNets(self):
         oGui = cGui()
 
@@ -444,8 +464,8 @@ class cHome:
             try:
                 oGuiElement.setTitle('- ' + match[1])
             except:
-                oGuiElement.setTitle('- ' + str(match[1],'utf-8'))  
-                              
+                oGuiElement.setTitle('- ' + str(match[1], 'utf-8'))
+
             oGuiElement.setFileName(match[1])
             oGuiElement.setCat(match[2])
             oGuiElement.setIcon('search.png')
