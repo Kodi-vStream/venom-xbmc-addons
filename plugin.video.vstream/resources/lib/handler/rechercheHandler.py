@@ -99,7 +99,7 @@ class cRechercheHandler:
         sText = self.getText()
         if not sText:
             return False
-        sCat =  self.getCat()
+        sCat = self.getCat()
         if not sCat:
             return False
 
