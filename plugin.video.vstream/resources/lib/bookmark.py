@@ -24,13 +24,13 @@ class cFav:
         oInputParameterHandler = cInputParameterHandler()
         if not self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
             return False
-        
+
         sAll = oInputParameterHandler.exist('sAll')
         sCat = oInputParameterHandler.getValue('sCat')
         siteUrl = oInputParameterHandler.getValue('siteUrl')
         sTitle = oInputParameterHandler.getValue('sCleanTitle')
-#         sTitle = cUtil().CleanName(sTitle)
-        
+        # sTitle = cUtil().CleanName(sTitle)
+
         cDb().del_bookmark(siteUrl, sTitle, sCat, sAll)
         return True
 
@@ -125,7 +125,7 @@ class cFav:
 
                 if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
                     siteurl = UnquotePlus(siteurl.decode('utf-8'))
-                    title = str(title,'utf-8')
+                    title = str(title, 'utf-8')
                 else:
                     siteurl = UnquotePlus(siteurl)
 
@@ -172,7 +172,7 @@ class cFav:
                 oGuiElement.setFanart(fanart)
                 oGuiElement.addItemProperties('isBookmark', True)
 
-                oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler, 'cFav', 'cFav', 'delBookmark', self.ADDON.VSlang(30412))
+                oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cFav', 'cFav', 'delBookmark', self.ADDON.VSlang(30412))
 
                 if (function == 'play'):
                     oGui.addHost(oGuiElement, oOutputParameterHandler)
@@ -201,7 +201,7 @@ class cFav:
             return
 
         meta = {}
-        
+
         sSiteUrl = oInputParameterHandler.getValue('siteUrl') if oInputParameterHandler.exist('siteUrl') else xbmc.getInfoLabel('ListItem.Property(siteUrl)')
         sTitle = oInputParameterHandler.getValue('sMovieTitle') if oInputParameterHandler.exist('sMovieTitle') else xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
         sSite = oInputParameterHandler.getValue('sId') if oInputParameterHandler.exist('sId') else xbmc.getInfoLabel('ListItem.Property(sId)')
