@@ -399,6 +399,7 @@ class cTrakt:
         sId = SITE_IDENTIFIER
         searchtext = ''
         sTitle = ''
+        sOldDate = None
         
         if (total > 0):
             progress_ = progress().VScreate(SITE_NAME)
@@ -415,7 +416,6 @@ class cTrakt:
                         sTitle = self.getLocalizedTitle(show, 'shows')
                         sTrakt, sYear, sImdb, sTmdb, sDate = show['ids']['trakt'], show['year'], show['ids']['imdb'], show['ids']['tmdb'], i['last_collected_at']
 
-                        # sDate = datetime.datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y %H:%M')
                         cTrakt.CONTENT = '2'
                         sFunction = 'getBseasons'
                     else:
@@ -427,8 +427,7 @@ class cTrakt:
                             sDate = i['collected_at']
                         except:
                             sDate = ""
-                            
-                        # sDate = datetime.datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y %H:%M')
+                        
                         cTrakt.CONTENT = '1'
                         sFunction = 'showSearch'
                         sId = 'globalSearch'
@@ -447,8 +446,6 @@ class cTrakt:
                     # commun
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
-                    # 2016-11-16T09:21:18.000Z
-                    # sDate = datetime.datetime(*(time.strptime(i['watched_at'], '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y')
                     if 'episode' in i:
                         sType = 'Episode'
                         eps = i['episode']
@@ -473,8 +470,7 @@ class cTrakt:
                     # commun
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
-                    # 2016-11-16T09:21:18.000Z
-                    # sDate = datetime.datetime(*(time.strptime(i['listed_at'], '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y %H:%M')
+
                     if 'show' in i:
                         show = i['show']
                         sTitle = self.getLocalizedTitle(show, 'shows')
@@ -501,9 +497,7 @@ class cTrakt:
 
                 elif 'watched' in sUrl:
                     # commun
-                    sLast_watched_at, sPlays = i['last_watched_at'], i['plays']
-                    # 2016-11-16T09:21:18.000Z
-                    # sDate = datetime.datetime(*(time.strptime(sLast_watched_at, '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y %H:%M')
+                    sPlays = i['plays']
                     if 'show' in i:
                         show = i['show']
                         sTitle = self.getLocalizedTitle(show, 'shows')
@@ -560,10 +554,14 @@ class cTrakt:
 
                     if sTitle:
                         sDate = datetime.datetime(*(time.strptime(sFirst_aired, '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y')
+                        if sOldDate != sDate:
+                            sOldDate = sDate
+                            oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Episode prévu pour le :' + sOldDate + '[/COLOR]')
+
                         sTitle = self.decode(sTitle)
                         searchtext = ('%s') % (sTitle)
                         sFile = ('%s - (%s)') % (sTitle, sYear)
-                        sTitle = ('%s - %s (S%02dE%02d)') % (sDate, self.decode(sTitle, Unicode=True), sSaison, sEpisode)
+                        sTitle = ('%s (S%02dE%02d)') % (self.decode(sTitle, Unicode=True), sSaison, sEpisode)
 
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
