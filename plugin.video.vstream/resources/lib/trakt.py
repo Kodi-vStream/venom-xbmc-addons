@@ -62,7 +62,7 @@ class cTrakt:
                     oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
                     oRequestHandler.addJSONEntry('client_id', API_KEY)
                     oRequestHandler.addJSONEntry('client_secret', API_SECRET)
-                    oRequestHandler.addJSONEntry('code', result['device_code'])
+                    oRequestHandler.addJSONEntry('code', sHtmlContent['device_code'])
                     sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
                     if sHtmlContent['access_token']:
