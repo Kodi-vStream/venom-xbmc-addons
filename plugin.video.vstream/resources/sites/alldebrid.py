@@ -104,7 +104,7 @@ def showLiens(sSearch=''):
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
                     oOutputParameterHandler.addParameter('numItem', numItem)
                     oOutputParameterHandler.addParameter('numPage', numPage)
-                    oGui.addNext(SITE_IDENTIFIER, 'showLiens', '[COLOR teal]Page ' + str(numPage) + ' >>>[/COLOR]', oOutputParameterHandler)
+                    oGui.addNext(SITE_IDENTIFIER, 'showLiens', 'Page ' + str(numPage), oOutputParameterHandler)
                     break
 
         oGui.setEndOfDirectory()
@@ -129,7 +129,7 @@ def showMagnets(sSearch=''):
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('</h1><hr><pre><a href="../">../</a>', '')
     # Pattern servant à retrouver les éléments dans la page
-    sPattern = '<a href="(.+?)">([^<>]+)</a>'
+    sPattern = '<a href="(.+?)">([^<]+)</a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -167,7 +167,7 @@ def showMagnets(sSearch=''):
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
                     oOutputParameterHandler.addParameter('numItem', numItem)
                     oOutputParameterHandler.addParameter('numPage', numPage)
-                    oGui.addNext(SITE_IDENTIFIER, 'showLiens', '[COLOR teal]Page ' + str(numPage) + ' >>>[/COLOR]', oOutputParameterHandler)
+                    oGui.addNext(SITE_IDENTIFIER, 'showLiens', 'Page ' + str(numPage), oOutputParameterHandler)
                     break
 
             if 'mp4' in sUrl2 or 'avi' in sUrl2 or 'mkv' in sUrl2:
@@ -256,7 +256,7 @@ def showseriesHoster(sSearch=''):
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
                     oOutputParameterHandler.addParameter('numItem', numItem)
                     oOutputParameterHandler.addParameter('numPage', numPage)
-                    oGui.addNext(SITE_IDENTIFIER, 'showLiens', '[COLOR teal]Page ' + str(numPage) + ' >>>[/COLOR]', oOutputParameterHandler)
+                    oGui.addNext(SITE_IDENTIFIER, 'showLiens', 'Page ' + str(numPage), oOutputParameterHandler)
                     break
 
             progress_.VSclose(progress_)

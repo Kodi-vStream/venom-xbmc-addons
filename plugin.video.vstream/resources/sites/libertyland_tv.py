@@ -199,7 +199,7 @@ def showSerieGenres():
 def showMovieAnnees():
     oGui = cGui()
 
-    for i in reversed(range(1914, 2021)):
+    for i in reversed(range(1914, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/annee/' + Year + '.html')
@@ -211,7 +211,7 @@ def showMovieAnnees():
 def showSerieAnnees():
     oGui = cGui()
 
-    for i in reversed(range(1989, 2021)):
+    for i in reversed(range(1989, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'v2/series/annee/' + Year + '/')

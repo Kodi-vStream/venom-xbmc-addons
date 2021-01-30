@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+return False  # Cloudflare 15/01/2021
 
 import re
 import requests
@@ -31,7 +32,7 @@ URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 
-def ProtectstreamBypass(url):
+def protectStreamByPass(url):
     if url.startswith('/'):
         url = URL_MAIN[:-1] + url
 
@@ -73,13 +74,6 @@ def ProtectstreamBypass(url):
 
         data = response.text
         data = data.encode('utf-8', 'ignore')
-
-        # VSlog(type(data))
-        # VSlog(repr(data))
-
-        # fh = open('c:\\test.txt', 'w')
-        # fh.write(data)
-        # fh.close()
 
         # Test de fonctionnement
         aResult = oParser.parse(data, sPattern)
@@ -225,8 +219,8 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(number) + ' >>>[/COLOR]', oOutputParameterHandler)
+            sNumPage = re.search('page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -322,7 +316,7 @@ def serieHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    sHosterUrl = ProtectstreamBypass(sUrl)
+    sHosterUrl = protectStreamByPass(sUrl)
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
 

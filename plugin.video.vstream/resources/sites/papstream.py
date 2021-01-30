@@ -9,7 +9,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress #,VSlog
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'papstream'
 SITE_NAME = 'PapStream'
@@ -109,9 +109,9 @@ def showAnimesMenu():
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-#     oOutputParameterHandler = cOutputParameterHandler()
-#     oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
-#     oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genres)', 'genres.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
+    # oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANNEES[0])
@@ -140,7 +140,7 @@ def showGenres():
     liste.append(['Animation', sUrl + 'animation/'])
     liste.append(['Aventure', sUrl + 'aventure/'])
     liste.append(['Biopic', sUrl + 'biopic/'])
-    liste.append(['Comédie', sUrl +'comedie/'])
+    liste.append(['Comédie', sUrl + 'comedie/'])
     liste.append(['Comédie Dramatique', sUrl + 'comedie-dramatique/'])
     liste.append(['Comédie Musicale', sUrl + 'comedie-musicale/'])
     liste.append(['Documentaire', sUrl + 'documentaire/'])
@@ -150,7 +150,7 @@ def showGenres():
     liste.append(['Fantastique', sUrl + 'fantastique/'])
     liste.append(['Guerre', sUrl + 'guerre/'])
     liste.append(['Policier', sUrl + 'policier/'])
-    liste.append(['Romance', sUrl +'romance/'])
+    liste.append(['Romance', sUrl + 'romance/'])
     liste.append(['Science Fiction', sUrl + 'science-fiction/'])
     liste.append(['Thriller', sUrl + 'thriller/'])
 
@@ -166,7 +166,7 @@ def showGenres():
 def showMovieYears():
     oGui = cGui()
 
-    for i in reversed(range(1918, 2021)):
+    for i in reversed(range(1918, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/annee-' + Year + '.html')
@@ -178,7 +178,7 @@ def showMovieYears():
 def showSerieYears():
     oGui = cGui()
 
-    for i in reversed(range(1936, 2021)):
+    for i in reversed(range(1936, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/annee-' + Year + '.html')
@@ -190,7 +190,7 @@ def showSerieYears():
 def showAnimeYears():
     oGui = cGui()
 
-    for i in reversed(range(1965, 2021)):
+    for i in reversed(range(1965, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'animes/annee/' + Year + '.html')
@@ -212,7 +212,7 @@ def showMovies(sSearch=''):
         if key_search_series in KeySearch:
             KeySearch = str(KeySearch).replace(key_search_series, '')
             bSearchSerie = True
-        sUrl = URL_SEARCH[0] + KeySearch 
+        sUrl = URL_SEARCH[0] + KeySearch
         oRequestHandler = cRequestHandler(sUrl)
 
     else:
@@ -221,7 +221,7 @@ def showMovies(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)
 
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'class="short-images-link".+?img src="([^"]+)".+?short-link">\s*<a href="([^"]+)".+?>([^<]+)</a>'
+    sPattern = 'class="short-images-link".+?img src="([^"]+)".+?<a.+?>([^<]+).+?.+?<a.+?>([^<]+).+?short-link">\s*<a href="([^"]+)".+?>([^<]+)<\/a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -238,8 +238,10 @@ def showMovies(sSearch=''):
                 break
 
             sThumb = URL_MAIN[:-1] + aEntry[0]
-            sUrl2 = URL_MAIN[:-1] + aEntry[1].replace('/animes/films/', '/films/').replace('/animes/series/', '/series/')
-            sTitle = aEntry[2]
+            sUrl2 = URL_MAIN[:-1] + aEntry[3].replace('/animes/films/', '/films/').replace('/animes/series/', '/series/')
+            sTitle = aEntry[4]
+            sQual = aEntry[1]
+            sLang = aEntry[2].replace('French' , 'VF')
 
             if bSearchMovie:
                 if '/series/' in sUrl2:
@@ -247,7 +249,8 @@ def showMovies(sSearch=''):
             if bSearchSerie:
                 if '/films/' in sUrl2:
                     continue
-
+            sDisplayTitle = ('%s (%s) [%s]') % (sTitle, sQual,sLang)
+            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -258,7 +261,7 @@ def showMovies(sSearch=''):
             elif '/series/' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showLink', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showLink', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -266,8 +269,8 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('-([0-9]+).html', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            sNumPage = re.search('-([0-9]+).html', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -349,7 +352,7 @@ def ShowEpisodes():
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sTitle = aEntry[0].replace(' en streaming','')
+            sTitle = aEntry[0].replace(' en streaming', '')
             sUrl2 = URL_MAIN[:-1] + aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()

@@ -89,7 +89,7 @@ class cPlayer(xbmc.Player):
         player_conf = self.ADDON.getSetting('playerPlay')
 
         #Si lien dash, methode prioritaire
-        if sUrl.endswith('.mpd'):
+        if sUrl.endswith('.mpd') or sUrl.split('?')[0][-4:] in '.mpd':
             if isKrypton() == True:
                 self.enable_addon('inputstream.adaptive')
                 item.setProperty('inputstreamaddon','inputstream.adaptive')
@@ -215,8 +215,8 @@ class cPlayer(xbmc.Player):
         elif sAction == 'trakt':
             #plugins = __import__('resources.lib.trakt', fromlist=['cTrakt'])
             plugins = __import__('resources.lib.trakt', fromlist=['trakt']).cTrakt()
-            function = getattr(plugins, 'setAsWatched')
-            function()
+            function = getattr(plugins, 'getAction')
+            function(Action="SetWatched")
 
         return
 

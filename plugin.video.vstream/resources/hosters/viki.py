@@ -3,7 +3,6 @@
 # ==>vikki
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
-# from resources.lib.comaddon import VSlog
 import xbmcgui
 
 
@@ -50,16 +49,21 @@ class cHoster(iHoster):
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
+
+    
     def __getMediaLinkForGuest(self, api_call=None):
 
+        
+        # lesite ne fournit plus que du Mdp plus de format ['480p','360p','240p',
         sUrl = self.__sUrl
         # srtsubs_path = xbmc.translatePath('special://temp/vikir.English.srt')
         # Methode 1 on recoit une liste sUrl=[ urlstream,sub,q1,q2...urlq1,urlq2
+        
+        
         # if false sub=french
-        bSelectSub=True
-
+        bSelectSub = False
         # https://manifest-viki.viki.io/v1/1159945v/limelight/domain_4/mpd/normal/viki/high/mpd_mob/ww/na/manifest.mpd?
-        bsupportedMdp = False  # manifest.mpd
+        bsupportedMdp = True # manifest.mpd
 
         url = []
         qual = []
@@ -97,12 +101,19 @@ class cHoster(iHoster):
                 namesub.append('None')
                 sub = self.mydialog().VSselect(namesub, pathsub, 'Viki Select subtile :')
 
-            api_call = self.mydialog().VSselect(qual, url, 'Viki Select quality :')
+            
+            # a revoir avec tous les formats
+            if len(url) == 2:
+                if 'mpd?'  in url[0] and 'mpd?' in url[1]:
+                    api_call = url[0]
+                    
+            else:  
+                api_call = self.mydialog().VSselect(qual, url, 'Viki Select quality :')
             # api_call = self.VSselectsub(qual, url)
 
             if api_call:
                 if sub:
-                    return True,api_call, sub
+                    return True, api_call, sub
                 else:
                     return True, api_call
 

@@ -12,21 +12,22 @@ SITE_NAME = 'DB'
 
 try:
     from sqlite3 import dbapi2 as sqlite
-    VSlog('SQLITE 3 as DB engine for db')
 except:
     from pysqlite2 import dbapi2 as sqlite
-    VSlog('SQLITE 2 as DB engine for db')
 
 class cDb:
 
-    DB = 'special://home/userdata/addon_data/plugin.video.vstream/vstream.db'
     # important seul xbmcvfs peux lire le special
+    DB = 'special://home/userdata/addon_data/plugin.video.vstream/vstream.db'
+
     try:
         REALDB = VSPath(DB).decode('utf-8')
     except AttributeError:
         REALDB = VSPath(DB)
 
     def __init__(self):
+
+        VSlog('DB engine for db : ' + sqlite.__name__)
 
         try:
             if not xbmcvfs.exists(self.DB):

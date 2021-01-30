@@ -271,7 +271,7 @@ def showGenreMoviesHD():
 def showMovieYears():
     oGui = cGui()
 
-    for i in reversed(range(1950, 2021)):
+    for i in reversed(range(1950, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '1/annee/?rech_year=' + Year)
@@ -348,11 +348,11 @@ def showSearchResult(sSearch=''):
 
             sNextPage = __checkForNextPage(sHtmlContent)
             if (sNextPage != False):
-                n = '[COLOR teal] >>>[/COLOR]'
+                n = ' >>>'
                 if sSearch:
-                    n = '[COLOR teal] SD >>>[/COLOR]'
+                    n = ' SD >>>'
                 if loop == 2:
-                    n = '[COLOR teal] HD >>>[/COLOR]'
+                    n = ' HD >>>'
                 NextPage.append((n, sNextPage))
 
         loop = loop - 1
@@ -410,8 +410,8 @@ def showSearchResult(sSearch=''):
         for n, u in NextPage:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', u)
-            number = re.search('/([0-9]+)/', u).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showSearchResult', '[COLOR teal]Page ' + number + ' ' + n + '[/COLOR]', oOutputParameterHandler)
+            sNumPage = re.search('/([0-9]+)/', u).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showSearchResult', 'Page ' + sNumPage + ' ' + n, oOutputParameterHandler)
             # oGui.addNext(SITE_IDENTIFIER, 'showSearchResult', n, oOutputParameterHandler)
 
     if not sSearch:
@@ -474,8 +474,8 @@ def showMovies():
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/([0-9]+)/', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            sNumPage = re.search('/([0-9]+)/', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

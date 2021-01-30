@@ -338,8 +338,8 @@ class cDownload:
 
     def __createTitle(self, sUrl, sTitle):
 
-        sTitle = cUtil().FormatSerie(sTitle)
         sTitle = cUtil().CleanName(sTitle)
+        sTitle = cUtil().FormatSerie(sTitle)
 
         aTitle = sTitle.rsplit('.')
         # Si deja extension

@@ -78,7 +78,7 @@ def showSeries(sSearch=''):
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = 'fullstream fullstreaming"><img src="([^"]+)".+?alt="([^"]+)".+?"xqualitytaftaf"><strong>(.+?)<.+?<a href="([^"]+)" *>(.+?)<'
+    sPattern = 'fullstreaming"><img src="([^"]+).+?alt="([^"]+).+?xqualitytaftaf"><strong>([^<]+).+?href="([^"]+)" *>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
 
@@ -95,7 +95,7 @@ def showSeries(sSearch=''):
 
             sThumb = aEntry[0]
             if sThumb.startswith('/'):
-                sThumb = URL_MAIN[:-1] + sThumb
+                sThumb = 'https:' + sThumb
 
             sTitle = aEntry[1]
             saison = aEntry[2]
@@ -112,7 +112,7 @@ def showSeries(sSearch=''):
             elif 'VOSTFR' in sLang:
                 sLang = 'VOSTFR'
 
-            sDisplayTitle = ('%s %s [%s]') % (sTitle, saison, sLang)
+            sDisplayTitle = ('%s %s (%s)') % (sTitle, saison, sLang)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
@@ -123,12 +123,11 @@ def showSeries(sSearch=''):
 
         progress_.VSclose(progress_)
 
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showSeries', 'Page ' + sPaging, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -136,13 +135,16 @@ def showSeries(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<a href="([^"]+)">Suivant &#8594;'
+    sPattern = '>([^<]+)</a>  <a href="([^"]+)">Suivant &#8594;'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
-        return aResult[1][0]
+        sNumberMax = aResult[1][0][0]
+        sNextPage = aResult[1][0][1]
+        sNumberNext = re.search('/page/([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    return False
+    return False, 'none'
 
 
 def showHosters():
@@ -177,7 +179,7 @@ def showHosters():
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     # Liens VOSTFR
-    sHtmlTab = oParser.abParse(sHtmlContent, '<div class="VOSTFR-tab">', '</div class="VF-tab">')
+    sHtmlTab = oParser.abParse(sHtmlContent, '<div class="VOSTFR-tab">', '<div class="VF-tab">')
     if sHtmlTab:
 
         sPattern = '<a href="([^"]+)".+?</i> Ep *([0-9]+)'

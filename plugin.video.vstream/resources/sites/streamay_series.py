@@ -101,7 +101,7 @@ def showSerieYears():
     # for i in itertools.chain(range(5, 7), [8, 9]): afficher dans l'ordre (pense bete ne pas effacer)
     oGui = cGui()
     from itertools import chain
-    generator = chain([1983, 1990, 1994], range(1997, 2021))  # desordre
+    generator = chain([1983, 1990, 1994], range(1997, 2022))  # desordre
 
     for i in reversed(list(generator)):
         Year = str(i)
@@ -212,7 +212,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.search('/page-([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -222,7 +222,6 @@ def __checkForNextPage(sHtmlContent):
     sPattern = 'href="([^"]+)"><i class="fa fa-angle-right">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         if aResult[1][0].startswith('/'):
             return URL_MAIN[:-1] + aResult[1][0]

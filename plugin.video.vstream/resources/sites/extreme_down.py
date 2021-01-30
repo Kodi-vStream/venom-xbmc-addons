@@ -4,11 +4,12 @@
 import json
 import re
 
-from resources.lib.comaddon import progress, VSlog, dialog, addon
+from resources.lib.comaddon import progress, VSlog, dialog
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
@@ -20,7 +21,7 @@ SITE_IDENTIFIER = 'extreme_down'
 SITE_NAME = '[COLOR violet]Extreme Down[/COLOR]'
 SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
-URL_MAIN = 'https://www.extreme-down.video/'
+URL_MAIN = 'https://www.extreme-down.tv/'
 
 URL_SEARCH = (URL_MAIN + 'index.php?', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0] + 'do=search&subaction=search&titleonly=3&speedsearch=1&story=', 'showMovies')
@@ -79,7 +80,6 @@ SPECTACLE_NEWS = (URL_MAIN + 'theatre/', 'showMovies')
 
 
 def load():
-    ADDON = addon()
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -98,7 +98,7 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuAutre', 'Autres', 'tv.png', oOutputParameterHandler)
 
-    if ADDON.getSetting('token_alldebrid') == "":
+    if not cPremiumHandler("alldebrid").getToken():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
         oGui.addDir(SITE_IDENTIFIER, 'getToken', '[COLOR red]Les utilisateurs d\'Alldebrid cliquez ici.[/COLOR]', 'films.png', oOutputParameterHandler)
@@ -293,12 +293,11 @@ def showMenuAutre():
 
 
 def getToken():
-    ADDON = addon()
     oGui = cGui()
 
-    token = oGui.showKeyBoard(heading="Entrez votre token")
-    ADDON.setSetting('token_alldebrid', token)
-    dialog().VSinfo('Token Ajouter', "Extreme-Download", 15)
+    sToken = oGui.showKeyBoard(heading="Entrez votre token alldebrid")
+    cPremiumHandler('alldebrid').setToken(sToken)
+    dialog().VSinfo('Token ajouté', "Extreme-Download", 5)
     oGui.setEndOfDirectory()
 
 
@@ -471,7 +470,7 @@ def showMovies(sSearch=''):
 
             if sCat == 3 or sMisc:
                 oGui.addMisc(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-            elif sCat == 1 or '/films-' in siteUrl or '/manga-films/' in siteUrl :
+            elif sCat == 1 or '/films-' in siteUrl or '/manga-films/' in siteUrl:
                 oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             elif sCat == 4 or '/mangas/' in siteUrl:
                 oGui.addAnime(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
@@ -488,8 +487,8 @@ def showMovies(sSearch=''):
                 oOutputParameterHandler.addParameter('siteUrl', siteUrl)
                 oOutputParameterHandler.addParameter('misc', sMisc)
                 oOutputParameterHandler.addParameter('nextPageSearch', aResult[1][0])
-                number = re.search('([0-9]+)', aResult[1][0]).group(1)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+                sNumPage = re.search('([0-9]+)', aResult[1][0]).group(1)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
 
         else:
             sNextPage = __checkForNextPage(sHtmlContent)
@@ -497,8 +496,8 @@ def showMovies(sSearch=''):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
                 oOutputParameterHandler.addParameter('misc', sMisc)
-                number = re.search('/page/([0-9]+)', sNextPage).group(1)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+                sNumPage = re.search('/page/([0-9]+)', sNextPage).group(1)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
 
     if nextPageSearch:
         oGui.setEndOfDirectory()
@@ -536,24 +535,17 @@ def showMoviesLinks():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = cUtil().removeHtmlTags(aResult[1][0])
-
-            # PY3
-            # Sans ca les caratere accentué n'apparissent pas.
-            try:
-                sDesc = sDesc.encode('utf-8')
-            except:
-                pass
     except:
         pass
 
     sPattern = '(<title>Télécharger |<title>)([^"]+) - ([^"]+)</title>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[1]):
+    if aResult[1]:
         sMovieTitle = aResult[1][0][1]
         sQual = aResult[1][0][2].replace('"', '')
 
-    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Qualités disponibles :[/COLOR]')
+    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles :[/COLOR]')
 
     sDisplayTitle = ('%s (%s)') % (sMovieTitle, sQual)
 
@@ -603,13 +595,6 @@ def showSeriesLinks():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = cUtil().removeHtmlTags(aResult[1][0])
-
-            # PY3
-            # Sans ca les caratere accentué n'apparissent pas.
-            try:
-                sDesc = sDesc.encode('utf-8')
-            except:
-                pass
 
     except:
         pass
@@ -698,7 +683,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     # Detection de la taille des fichier pour separer les fichier premium des parties en .rar
-    if not 'saison' in sUrl:
+    if 'saison' not in sUrl:
         fileSize = re.findall('<strong>Taille</strong><span style="float: right;">([^<]+)</span></td>', sHtmlContent)
         if 'et' in str(fileSize[0]):
             taille = str(fileSize[:-7])
@@ -710,16 +695,16 @@ def showHosters():
             if float(size) > 4.85:
                 if "1 Lien" in sHtmlContent:
                     VSlog('1 Lien premium')
-                    sPattern = '<h2 style="text-align: center;"><span style=.+?>([^<]+)<span style=".+?</h2>|<div class="prez_2">1 Lien Uptobox</div>\s*.+?>\s*.+?<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>.+?\s*<div class="showNFO"'
+                    sPattern = '<h2 style="text-align: center;"><span style=.+?>([^<]+)<span style=".+?</h2>|<div class="prez_2">1 Lien Uptobox</div>\s*.+?>\s*.+?<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<]+)*</strong>.+?\s*<div class="showNFO"'
                 else:
                     VSlog('Pas lien premium')
-                    sPattern = '<h2 style="text-align: center;"><span style=.+?>([^<]+)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)* Premium</strong>'
+                    sPattern = '<h2 style="text-align: center;"><span style=.+?>([^<]+)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<]+)* Premium</strong>'
             else:
-                sPattern = '<h2 style="text-align: center;"><span style=.+?>([^<]+)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
+                sPattern = '<h2 style="text-align: center;"><span style=.+?>([^<]+)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<]+)*</strong>'
         else:
-            sPattern = '<h2 style="text-align: center;"><span style=.+?>([^<]+)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
+            sPattern = '<h2 style="text-align: center;"><span style=.+?>([^<]+)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<]+)*</strong>'
     else:
-        sPattern = '<div class="prez_7">([^<]+)</div>|<a title=".+?" href="([^"]+)" target="_blank"><strong class="hebergeur">([^<>]+)</strong>'
+        sPattern = '<div class="prez_7">([^<]+)</div>|<a title=".+?" href="([^"]+)" target="_blank"><strong class="hebergeur">([^<]+)</strong>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -753,13 +738,13 @@ def showHosters():
 
 
 def RecapchaBypass():
-    ADDON = addon()
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    Token_Alldebrid = ADDON.getSetting('token_alldebrid')
+    
+    Token_Alldebrid = cPremiumHandler("alldebrid").getToken()
 
     if Token_Alldebrid != "":
         sUrl_Bypass = "https://api.alldebrid.com/v4/link/redirector?agent=service&version=1.0-&apikey=" + Token_Alldebrid + "&link=" + sUrl
@@ -839,7 +824,7 @@ def CutQual(sHtmlContent):
     oParser = cParser()
     sPattern = '<span class="other-qualities">&Eacute;galement disponible en :</span>(.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0]):
+    if aResult[0]:
         return aResult[1][0]
     return ''
 
@@ -848,6 +833,6 @@ def CutSais(sHtmlContent):
     oParser = cParser()
     sPattern = '<span class="other-qualities">Autres saisons :</span>(.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0]):
+    if aResult[0]:
         return aResult[1][0]
     return ''

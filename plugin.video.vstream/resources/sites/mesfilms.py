@@ -5,7 +5,7 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import progress#, VSlog
+from resources.lib.comaddon import progress, VSlog
 from resources.lib.parser import cParser
 from resources.lib.util import Quote, cUtil
 import re
@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'mesfilms'
 SITE_NAME = 'Mes Films'
 SITE_DESC = 'Mes Films - Films en streaming HD'
 
-URL_MAIN = 'https://mesfilms.net/'
+URL_MAIN = 'https://mesfilms.site/'
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showSearchResult')
@@ -167,7 +167,7 @@ def showList():
 def showMovieYears():
     oGui = cGui()
 
-    for i in reversed(range(1963, 2021)):
+    for i in reversed(range(1963, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + Year + '/')
@@ -199,7 +199,7 @@ def showSearchResult(sSearch=''):
                 break
 
             sUrl = aEntry[0]
-            sThumb = re.sub('/w\d+', '/w342', aEntry[1], 1) #retraite l'url pour etre sure d'avoir la meilleure qualité
+            sThumb = re.sub('/w\d+', '/w342', aEntry[1], 1)  # meilleure qualité
             sTitle = aEntry[2]
             sYear = aEntry[3]
             sDesc = aEntry[4]
@@ -231,7 +231,7 @@ def showMovies(sSearch=''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<div class="poster"><img src="([^"]+)" alt="([^"]+)".+?(?:|class="quality">([^<]+)<.+?)<a href="([^"]+)".+?<span>([^<]+).+?(<div class="texto">(.*?)<|<\/article)'
+    sPattern = 'class="poster"><img src="([^"]+)" alt="([^"]+).+?(?:|class="quality">([^<]+).+?)<a href="([^"]+).+?<span>([^<]+).+?(<div class="texto">(.*?)<|<\/article)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -266,12 +266,11 @@ def showMovies(sSearch=''):
 
         progress_.VSclose(progress_)
 
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -279,13 +278,16 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = 'href="([^"]+)" ><span class="icon-chevron-right">'
+    sPattern = 'class="pagination"><span>Page.+?de ([^<]+).+?href="([^"]+)" ><span class="icon-chevron-right"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
-        return aResult[1][0]
+        sNumberMax = aResult[1][0][0]
+        sNextPage = aResult[1][0][1]
+        sNumberNext = re.search('page/([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    return False
+    return False, 'none'
 
 
 def showLinks():
@@ -306,7 +308,7 @@ def showLinks():
         sPattern = 'property="og:description" content="(.+?)" /><meta property='
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            sDesc = aResult[1][0].replace('&#8217;', '\'').replace('&#8230;', '...').replace('&hellip;', '...')
+            sDesc = aResult[1][0]
     except:
         pass
 
@@ -322,14 +324,10 @@ def showLinks():
             sPost = aEntry[0]
             sNume = aEntry[1]
             sQual = aEntry[2]
-            sHost = re.sub('\.\w+', '', aEntry[3])
-            sHost = sHost.capitalize()
+            sHost = re.sub('\.\w+', '', aEntry[3]).capitalize()
+            if 'Youtube' in sHost:
+                continue
             
-            # filtrage des hosters
-            #oHoster = cHosterGui().checkHoster(sHost)
-            #if not oHoster:
-                #continue
-
             sTitle = ('%s [%s] [COLOR coral]%s[/COLOR]') % (sMovieTitle, sQual, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()

@@ -41,7 +41,7 @@ msgid "Fanarts Size"
 msgstr ""
 
 msgctxt "#30009"
-msgid "Use extendedinfo"
+msgid "Use extendedinfo for the information windows"
 msgstr ""
 
 msgctxt "#30010"
@@ -600,6 +600,10 @@ msgctxt "#30222"
 msgid "Delete:"
 msgstr ""
 
+msgctxt "#30223"
+msgid "Rename"
+msgstr "Renommer"
+
 msgctxt "#30300"
 msgid "Library"
 msgstr ""
@@ -690,6 +694,14 @@ msgstr ""
 
 msgctxt "#30327"
 msgid "1Fichier"
+msgstr ""
+
+msgctxt "#30328"
+msgid "Token"
+msgstr ""
+
+msgctxt "#30329"
+msgid "Token (Optional)"
 msgstr ""
 
 msgctxt "#30330"
@@ -1054,4 +1066,20 @@ msgstr ""
 
 msgctxt "#30470"
 msgid "Addon dnspython missing"
+msgstr ""
+
+msgctxt "#30480"
+msgid "Small loading spinner"
+msgstr ""
+
+msgctxt "#31000"
+msgid "Multimedia folder URL (Optional)"
+msgstr ""
+
+msgctxt "#31101"
+msgid "Url"
+msgstr ""
+
+msgctxt "#31102"
+msgid "Use the skin display for the information windows"
 msgstr ""

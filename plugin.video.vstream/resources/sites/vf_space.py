@@ -113,7 +113,7 @@ def showGenres():
 def showYears():
     oGui = cGui()
 
-    for i in reversed(range(2015, 2021)):  # avant 2015 hosts HS
+    for i in reversed(range(2015, 2022)):  # avant 2015 hosts HS
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'xfsearch/year/' + Year + '/')
@@ -194,7 +194,7 @@ def showMovies(sSearch=''):
                 oOutputParameterHandler.addParameter('siteUrl', sSearch)
                 oOutputParameterHandler.addParameter('nextPageSearch', aResult[1][0])
                 number = re.search('([0-9]+)', aResult[1][0]).group(1)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
 
         else:
             sNextPage = __checkForNextPage(sHtmlContent)
@@ -202,7 +202,7 @@ def showMovies(sSearch=''):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
                 number = re.search('page/([0-9]+)', sNextPage).group(1)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
 
     if nextPageSearch:
         oGui.setEndOfDirectory()

@@ -145,9 +145,13 @@ class cHosterGui:
             
         if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
             return self.getHoster('alldebrid')
-            
-                
 
+        if self.ADDON.getSetting('hoster_debridlink_premium') == 'true':
+            if not "debrid.link" in sHosterUrl:
+                return self.getHoster('debrid_link')
+            else:
+                return self.getHoster("lien_direct")
+            
         # Gestion classique
         if ('streamz' in sHostName):
             return self.getHoster('streamz')
@@ -384,6 +388,18 @@ class cHosterGui:
             return self.getHoster('userload')
         if ('aparat' in sHostName):
             return self.getHoster('aparat')
+        if ('evoload' in sHostName):
+            return self.getHoster('evoload')
+        if ('vidshar' in sHostName):
+            return self.getHoster('vidshar')
+        if ('abcvideo' in sHostName):
+            return self.getHoster('abcvideo')
+        if ('plynow' in sHostName):
+            return self.getHoster('plynow')
+        if ('myvi.tv' in sHostName):
+            return self.getHoster('myvitv')
+        if ('playtube' in sHostName):
+            return self.getHoster('playtube')
 
         # Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
@@ -448,7 +464,11 @@ class cHosterGui:
         if bGetRedirectUrl == 'True':
             sMediaUrl = self.__getRedirectUrl(sMediaUrl)
 
-        VSlog('Hoster - play ' + sMediaUrl)
+        try:
+            mediaDisplay = sMediaUrl.split('/')
+            VSlog('Hoster - play : %s/ ... /%s' % ('/'.join(mediaDisplay[0:3]), mediaDisplay[-1]))
+        except:
+            VSlog('Hoster - play : ' + sMediaUrl)
 
         oHoster = self.getHoster(sHosterIdentifier)
         oHoster.setFileName(sFileName)

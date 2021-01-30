@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'planet_streaming'
 SITE_NAME = 'Planet Streaming'
 SITE_DESC = 'Films en Streaming complet VF HD'
 
-URL_MAIN = 'https://wvw.planet-streaming1.com/'
+URL_MAIN = 'https://w1w.planet-streaming1.com/'
 
 MOVIE_MOVIE = (True, 'load')
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
@@ -109,19 +109,18 @@ def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
-    Nextpagesearch = oInputParameterHandler.getValue('Nextpagesearch')
+    nextPageSearch = oInputParameterHandler.getValue('nextPageSearch')
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    if Nextpagesearch:
+    if nextPageSearch:
         sSearch = sUrl
 
     if sSearch:
-
         if URL_SEARCH[0] in sSearch:
             sSearch = sSearch.replace(URL_SEARCH[0], '')
 
-        if Nextpagesearch:
-            query_args = (('do', 'search'), ('subaction', 'search'), ('search_start', Nextpagesearch), ('story', sSearch))
+        if nextPageSearch:
+            query_args = (('do', 'search'), ('subaction', 'search'), ('search_start', nextPageSearch), ('story', sSearch))
         else:
             query_args = (('do', 'search'), ('subaction', 'search'), ('story', sSearch))
 
@@ -133,17 +132,15 @@ def showMovies(sSearch=''):
         oRequestHandler.addParameters('User-Agent', UA)
         sHtmlContent = oRequestHandler.request()
 
-        sHtmlContent = oRequestHandler.request()
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
-
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
     if sSearch:
-        sPattern = '<div class="fullstream fullstreaming">.+?<img src="([^"]+)".+?<h3 class="mov-title"><a href="([^"]+)" >([^<]+)</a>.+?<strong>(?:Qualit|Version).+?">(.+?)</a>.+?<\/*strong>'
+        sPattern = '<div class="fullstream fullstreaming">.+?<img src="([^"]+)".+?<h3 class="mov-title"><a href="([^"]+)" >([^<]+)</a>.+?<strong>(?:Qualit|Version).+?">(.+?)</a>.+?</*strong>'
     else:
-        sPattern = '<div class="fullstream fullstreaming">\s*<img src="([^"]+)".+?alt="([^"]+).+?<strong>(?:Qualit|Version).+?">(.+?)</a>.+?<\/*strong>.+?xfsearch.+?">([^<]+).+?<div itemprop="description".+?;">([^<]+).+?<a href="([^"]+)"'
+        sPattern = 'class="fullstream fullstreaming".+?src="([^"]+).+?alt="([^"]+).+?<strong>(?:Qualit|Version).+?>(.+?)</a>.+?</*strong>.+?xfsearch.+?>([^<]+).+?itemprop="description".+?;">([^<]+).+?<a href="([^"]+)'
     
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -158,6 +155,7 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
+            sYear = ''
             if sSearch:
                 sThumb = aEntry[0]
                 if sThumb.startswith('/'):
@@ -167,7 +165,6 @@ def showMovies(sSearch=''):
                 sTitle = aEntry[2]
                 sQual = aEntry[3]
                 sQual = sQual.replace(':', '').replace(' ', '').replace(',', '/')
-                sYear = ''
                 sDesc = ''
 
             else:
@@ -179,7 +176,7 @@ def showMovies(sSearch=''):
                 sQual = aEntry[2]
                 sQual = sQual.replace(':', '').replace(' ', '').replace(',', '/')
 
-                #Certain film n'ont pas de date.
+                # Certain film n'ont pas de date.
                 try:
                     sYear = re.search('(\d{4})', aEntry[3]).group(1)
                 except:
@@ -206,9 +203,9 @@ def showMovies(sSearch=''):
             if (aResult[0] == True):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sSearch)
-                oOutputParameterHandler.addParameter('Nextpagesearch', aResult[1][0])
+                oOutputParameterHandler.addParameter('nextPageSearch', aResult[1][0])
                 number = re.search('([0-9]+)', aResult[1][0]).group(1)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
 
         else:
             sNextPage = __checkForNextPage(sHtmlContent)
@@ -216,9 +213,9 @@ def showMovies(sSearch=''):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
                 number = re.search('/page/([0-9]+)', sNextPage).group(1)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
 
-    if Nextpagesearch:
+    if nextPageSearch:
         oGui.setEndOfDirectory()
 
     if not sSearch:
@@ -226,7 +223,7 @@ def showMovies(sSearch=''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a href="([^"]+)">Suivant &#8594;<\/a>'
+    sPattern = '<a href="([^"]+)">Suivant &#8594;'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -249,6 +246,7 @@ def showHosters():
 
     sPattern = '<i class="fa fa-play-circle-o"></i>([^<]+)</div>|<a href="([^"]+)" title="([^"]+)" target="seriePlayer"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    sethost = set()
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
@@ -258,6 +256,10 @@ def showHosters():
                 continue
 
             sHosterUrl = aEntry[1]
+            if sHosterUrl not in sethost:
+                sethost.add(sHosterUrl)
+            else:
+                continue 
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):

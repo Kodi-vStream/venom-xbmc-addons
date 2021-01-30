@@ -109,7 +109,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="short-images.+?<a href="([^"]+)" title="([^"]+)" class=.+?<img src="([^"]+)".+?(?:<div class="short-content">|<a href=.+?qualite.+?>(.*?)</a>.+?<a href=.+?langue.+?>(.*?)<\/a>)'
+    sPattern = '<div class="short-images.+?<a href="([^"]+)" title="([^"]+)" class=.+?<img src="([^"]+).+?(?:<div class="short-content">|<a href=.+?qualite.+?>(.*?)</a>.+?<a href=.+?langue.+?>(.*?)</a>)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == False):
@@ -157,30 +157,32 @@ def showMovies(sSearch=''):
 
         progress_.VSclose(progress_)
 
-
     if not sSearch:  # une seule page par recherche
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.search('page-([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = "pages-next\"><a href=['\"]([^'\"]+)['\"]"
-
+    sPattern = ">([^<]+)</a></div></div><div class=\"col-lg-1 col-sm-2 col-xs-2 pages-next\"><a href=['\"]([^'\"]+)"
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        if aResult[1][0].startswith('/'):
-            return URL_MAIN[:-1] + aResult[1][0]
-        else:
-            return aResult[1][0]
+        sNumberMax = aResult[1][0][0]
+        sNextPage = aResult[1][0][1]
+        sNumberNext = re.search('page-([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        if sNextPage.startswith('/'):
+            sNextPage = URL_MAIN[:-1] + sNextPage
 
-    return False
+        return sNextPage, sPaging
+
+    return False, 'none'
 
 
 def showSaisons():
@@ -332,13 +334,12 @@ def showHosters():
     sUrl = URL_MAIN + 'streamer.php?p=' + datanum + '&c=' + datacode
 
     oRequest = cRequestHandler(sUrl)
-    #oRequest.setRequestType(1)
+    # oRequest.setRequestType(1)
     oRequest.addHeaderEntry('User-Agent', UA)
     oRequest.addHeaderEntry('Referer', sReferer)
     oRequest.request()
 
     sHosterUrl = oRequest.getRealUrl()
-
     oHoster = cHosterGui().checkHoster(sHosterUrl)
     if (oHoster != False):
         oHoster.setDisplayName(sMovieTitle)

@@ -204,7 +204,7 @@ def showAlpha():
 def showYears():
     oGui = cGui()
 
-    for i in reversed(range(1918, 2021)):
+    for i in reversed(range(1918, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/films/annee-' + Year)
@@ -216,7 +216,7 @@ def showYears():
 def showSeriesYears():
     oGui = cGui()
 
-    for i in reversed(range(1980, 2021)):
+    for i in reversed(range(1980, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/series/annee-' + Year)
@@ -283,8 +283,8 @@ def showMovies(sSearch=''):
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.findall('([0-9]+)', sNextPage)[-1]
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            sNumPage = re.findall('([0-9]+)', sNextPage)[-1]
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
 
     if not sSearch:  # Le moteur de recherche du site est correct pour laisser le nextPage même en globalSearch
         oGui.setEndOfDirectory()

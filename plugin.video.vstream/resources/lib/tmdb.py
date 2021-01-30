@@ -242,6 +242,12 @@ class cTMDb:
             m1 = re.search('(?i)(s(?:aison )*([0-9]+))', name)
             name = name.replace(m.group(1), '').replace(m1.group(1), '').replace('+', ' ')
 
+        #On enleve le contenu entre paranthese.
+        try:
+            name = name.split('(')[0]
+        except:
+            pass
+
         if year:
             term = QuotePlus(name) + '&year=' + year
         else:
@@ -259,8 +265,8 @@ class cTMDb:
                 qua = []
                 url = []
                 for aEntry in meta['results']:
-                    url.append(aEntry["id"])
-                    qua.append(aEntry['name'])
+                   url.append(aEntry["id"])
+                   qua.append(aEntry['name'])
 
                 #Affichage du tableau
                 tmdb_id = dialog().VSselectqual(qua, url)
@@ -752,7 +758,7 @@ class cTMDb:
             crews = []
             
             if len(casts) > 0:
-                #licast = []
+                licast = []
                 if 'crew' in listCredits:
                     crews = listCredits['crew']
                 if len(crews)>0:
@@ -761,9 +767,9 @@ class cTMDb:
                     _meta['credits'] = "{u'cast': " + str(casts) + '}'
 #                 _meta['credits'] = "{u'cast': " + str(casts) + ", u'crew': "+str(crews) + "}"
 #                 _meta['credits'] = 'u\'cast\': ' + str(casts) + ''
-                #for cast in casts:
-                #    licast.append((cast['name'], cast['character'], self.poster + str(cast['profile_path']), str(cast['id'])))
-                #_meta['cast'] = licast
+                for cast in casts:
+                    licast.append((cast['name'], cast['character']))
+                _meta['cast'] = licast
 
             #if 'crew' in listCredits:
             if len(crews) > 0:
@@ -1054,4 +1060,3 @@ class cTMDb:
         if genre:
             return genre
         return genreID
-

@@ -78,7 +78,7 @@ def showDailyList():
     sPattern = '<div class="news-thumb col-md-6">\s*<a href=([^"]+) title="([^"]+)".+?\s*<img src=.+?uploads/.+?/.+?/([^"]+)\..+?'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -107,19 +107,18 @@ def showDailyList():
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showDailyList', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            sNumPage = re.search('/page/([0-9]+)', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showDailyList', 'Page ' + sNumPage, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<a class="next page-numbers" href=([^"]+)>Next</a>'
+    sPattern = '<a class="next page-numbers" href=([^>]+)>Next</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
-        return  aResult[1][0]
+    if aResult[0] is True:
+        return aResult[1][0]
 
     return False
 

@@ -7,7 +7,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress#, VSlog
 from resources.lib.util import QuoteSafe, Noredirection, Quote
 import re
 
@@ -210,7 +210,7 @@ def showGenres():
 def showMovieYears():
     oGui = cGui()
 
-    for i in reversed(range(1913, 2021)):
+    for i in reversed(range(1913, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/annee-' + Year)
@@ -222,7 +222,7 @@ def showMovieYears():
 def showSerieYears():
     oGui = cGui()
 
-    for i in reversed(range(1936, 2021)):
+    for i in reversed(range(1936, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/annee-' + Year)
@@ -310,7 +310,7 @@ def showMovies(sSearch=''):
 
         sHtmlContent = oRequest.request()
 
-        sPattern = '<div class="unfilm".+?<a href="([^"]+)" title="([^"]+)".+?class="type ([^"]+)".+?<img src="([^"]+)".+?("suivre2">([^<]+)<|<span class="qualite ([^"]+)"|<div class="cdiv")'
+        sPattern = '<div class="unfilm".+?href="([^"]+)" title="([^"]+).+?class="type ([^"]+)".+?<img src="([^"]+).+?("suivre2">([^<]+)<|<span class="qualite ([^"]+)|<div class="cdiv")'
 
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -318,7 +318,7 @@ def showMovies(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
         sHtmlContent = re.sub('alt="title="', 'alt="', sHtmlContent)  # anime
-        sPattern = '<div class="unfilm".+?<a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)".+?("suivre2">([^<]+)<|<span class="qualite ([^"]+)"|<div class="cdiv")'
+        sPattern = '<div class="unfilm".+?href="([^"]+).+?<img src="([^"]+)" alt="([^"]+).+?("suivre2">([^<]+)<|<span class="qualite ([^"]+)|<div class="cdiv")'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -390,28 +390,31 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
     if not sSearch:
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.findall('([0-9]+)', sNextPage)[-1]
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
     sHtmlContent = re.sub(" rel='nofollow'", "", sHtmlContent)  # next genre
-    sPattern = "href='([^']+)'>suiv »"
+    sPattern = ">([^<]+)</a><a href='([^']+)'>suiv »"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        if aResult[1][0].startswith('/'):
-            return URL_MAIN[:-1] + aResult[1][0]
-        else:
-            return aResult[1][0]
+        sNumberMax = aResult[1][0][0]
+        sNextPage = aResult[1][0][1]
+        if sNextPage.startswith('/'):
+            sNextPage = URL_MAIN[:-1] + sNextPage
+        sNumberNext = re.findall('([0-9]+)', sNextPage)[-1]
+        sPaging = str(sNumberNext) + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    return False
+    return False, 'none'
 
 
 def showLinks():
@@ -435,7 +438,7 @@ def showLinks():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sUrl = aEntry[0]
+            sUrl2 = aEntry[0]
             sHost = aEntry[1].capitalize()
             if 'apidgator' in sHost or 'dl_to' in sHost:
                 continue
@@ -444,11 +447,36 @@ def showLinks():
             sTitle = '%s (%s) [COLOR coral]%s[/COLOR]' % (sMovieTitle, sLang, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
+
+    sPattern = 'href="(https:\/\/cineactu.co\/.+?").*?span class="([^"]+).*?class="([^"]+)'
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+
+            sUrl2 = aEntry[0]
+            sHost = aEntry[1]
+            if 'fichier' in sHost:
+                sHost = '1 Fichier'
+            if 'uptobox' in sHost:
+                sHost = 'Uptobox'
+            sHost = sHost.capitalize()  # ou autres ?
+
+            sLang = aEntry[2].upper().replace('L', '')
+            sTitle = '%s (%s) [COLOR coral]%s[/COLOR]' % (sMovieTitle, sLang, sHost)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('siteReferer', sUrl)
+            oGui.addLink(SITE_IDENTIFIER, 'showHostersDL', sTitle, sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -545,9 +573,9 @@ def showHosters():
     # attention fake redirection
     sUrl = redirection_target
     try:
-    	m = re.search(r'url=([^"]+)', sHtmlContent)
+        m = re.search(r'url=([^"]+)', sHtmlContent)
     except:
-    	m = re.search(r'url=([^"]+)', str(sHtmlContent))
+        m = re.search(r'url=([^"]+)', str(sHtmlContent))
 
     if m:
         sUrl = m.group(1)
@@ -565,3 +593,68 @@ def showHosters():
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
+def showHostersDL():
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    siteReferer = oInputParameterHandler.getValue('siteReferer')
+
+    if 'cineactu.co' in sUrl:  # tjrs vrai mais au cas ou autre pattern fait sur host DL
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Referer', siteReferer)
+        oRequestHandler.request()
+        redirection_target = oRequestHandler.getRealUrl()
+        if 'shortn.co' in redirection_target:
+            bvalid, shost = Hoster_shortn(redirection_target, sUrl)
+            if bvalid:
+                sHosterUrl = shost
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+    oGui.setEndOfDirectory()
+
+
+def Hoster_shortn(url, refer):
+    shost = ''
+    # url="https://shortn.co/f/6183943"
+    url = url.replace('%22', '')
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Referer', refer)
+    sHtmlContent = oRequestHandler.request()
+    cookies = oRequestHandler.GetCookies()
+    sPattern = "type.*?name=.*?value='([^']+)"
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        token = aResult[0]
+        data = '_token=' + token 
+        oRequestHandler = cRequestHandler(url)
+        oRequestHandler.setRequestType(1)
+        oRequestHandler.addHeaderEntry('Referer', url)
+        oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Content-Type', "application/x-www-form-urlencoded")
+        oRequestHandler.addHeaderEntry('Cookie', cookies)
+        oRequestHandler.addParametersLine(data)
+        sHtmlContent = oRequestHandler.request()
+
+        # https://1fichier.com/?jttay6v60izpcu3rank7
+        # https://uptobox.com/vy7g5a6itlgj?aff_id=10831504
+        sPattern = 'href="([^"]+).+?target="_blank'
+        aResult = re.findall(sPattern, sHtmlContent)
+        if aResult:
+            shost = aResult[0]
+            if '?' in shost and 'uptobox' in shost:
+                shost = shost.split('?')[0]
+    if shost:
+        return True, shost
+
+    return False, False

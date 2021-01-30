@@ -100,7 +100,7 @@ def showGenres():
 def showYears():
     oGui = cGui()
 
-    for i in reversed(range(2017, 2021)):
+    for i in reversed(range(2017, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'nouveau-' + Year + '/')
@@ -108,18 +108,18 @@ def showYears():
 
     oGui.setEndOfDirectory()
 
+
 def showMovies(sSearch=''):
     oGui = cGui()
 
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     if sSearch:
         sUrl = sSearch
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
-    oRequestHandler = cRequestHandler(sUrl)
 
+    oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'movie-item">\s*<a href="([^"]+)">\s*<h3>([^<]*)</h3>.+?<li style=".+?">([^<]*)<.+?">([^<]*)<.+?">([^<]*)<.+?src="([^"]+)"'
+    sPattern = 'movie-item">\s*<a href="([^"]+)">\s*<h3>([^<]*)</h3.+?style=.+?>([^<]*).+?;">([^<]*).+?;">([^<]*).+?src="([^"]*)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -154,25 +154,28 @@ def showMovies(sSearch=''):
 
         progress_.VSclose(progress_)
 
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a href="([^"]+)"><i class="fa fa-angle-right" aria-hidden="true"></i></a>'
+    sPattern = '>([^<]+)</a></div>.+?<a href="([^"]+)"><i class="fa fa-angle-right" aria-hidden="true"></i></a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return  aResult[1][0]
+        sNumberMax = aResult[1][0][0]
+        sNextPage = aResult[1][0][1]
+        sNumberNext = re.search('/page/([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    return False
+    return False, 'none'
 
 
 def showHosters():
@@ -185,9 +188,7 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
     sPattern = '<iframe.+?data-src="([^"]+)"'
-
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 

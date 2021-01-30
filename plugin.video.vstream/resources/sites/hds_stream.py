@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'hds_stream'
 SITE_NAME = 'Hds-stream'
 SITE_DESC = 'Film streaming HD complet en vf. Des films et séries pour les fan de streaming hds.'
 
-URL_MAIN = 'https://wtw.hds-stream.to/'
+URL_MAIN = 'https://hds.club/'
 
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_GENRES = (URL_MAIN, 'showGenres')
@@ -73,10 +73,10 @@ def showSearch():
 
 
 def showGenres():
+    oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    oGui = cGui()
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -186,25 +186,28 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
     if not sSearch:
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(number) + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = 'class="current".+?a href=["\']([^"\']+/page/\d)\/["\'] class="inactive"'
+    sPattern = '>Page \d+ de (\d+)</span>.*?<span class="current.+?href=["\']([^"\']+/page/\d+)/["\'] class="inactive'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        return aResult[1][0]
+        sNumberMax = aResult[1][0][0]
+        sNextPage = aResult[1][0][1]
+        sNumberNext = re.search('page/([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    return False
+    return False, 'none'
 
 
 def showSxE():

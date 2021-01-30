@@ -1,31 +1,12 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-
-try:  # Python 2
-    import urllib2
-    from urllib2 import URLError as UrlError
-
-except ImportError:  # Python 3
-    import urllib.request as urllib2
-    from urllib.error import URLError as UrlError
+from resources.lib.handler.requestHandler import cRequestHandler
 
 from resources.lib.comaddon import addon, dialog, VSlog
 from resources.lib.config import GestionCookie
 from resources.lib.parser import cParser
-from resources.lib.util import urlEncode
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
-headers = {'User-Agent': UA}
-
-
-class NoRedirection(urllib2.HTTPErrorProcessor):
-    def http_response(self, request, response):
-        code, msg, hdrs = response.code, response.msg, response.info()
-
-        return response
-
-    https_response = http_response
-
 
 class cPremiumHandler:
     ADDON = addon()
@@ -102,7 +83,6 @@ class cPremiumHandler:
             post_data['lt'] = 'on'
             post_data['purge'] = 'on'
             post_data['valider'] = 'Send'
-            self.__ssl = True
 
         elif 'uploaded' in self.__sHosterIdentifier:
             url = 'http://uploaded.net/io/login'
@@ -113,56 +93,22 @@ class cPremiumHandler:
         else:
             return False
 
-        if (self.__ssl):
-            try:
-                import ssl
-                context = ssl._create_unverified_context()
-            except:
-                self.__ssl = False
+        oRequestHandler = cRequestHandler(url)
+        oRequestHandler.setRequestType(1)
 
         if 'uptobox' in self.__sHosterIdentifier:
-            data = urlEncode(post_data)
+            oRequestHandler.disableRedirect()
 
-            opener = urllib2.build_opener(NoRedirection)
+            oRequestHandler.addHeaderEntry('User-Agent',UA)
+            oRequestHandler.addHeaderEntry('Content-Type',"application/x-www-form-urlencoded")
+            oRequestHandler.addHeaderEntry('Referer',url)
+            oRequestHandler.addHeaderEntry('Content-Length',str(len(post_data)))
 
-            opener.addheaders = [('User-Agent', UA)]
-            opener.addheaders.append(('Content-Type', 'application/x-www-form-urlencoded'))
-            opener.addheaders.append(('Referer', str(url)))
-            opener.addheaders.append(('Content-Length', str(len(data))))
+        for data in post_data:
+            oRequestHandler.addParameters(data, post_data[data])
 
-            try:
-                response = opener.open(url, data)
-                head = response.info()
-            except UrlError:
-                return ''
-        else:
-            req = urllib2.Request(url, urlEncode(post_data), headers)
-
-            try:
-                if (self.__ssl):
-                    response = urllib2.urlopen(req, context=context)
-                else:
-                    response = urllib2.urlopen(req)
-            except UrlError as e:
-                if getattr(e, "code", None) == 403:
-                    # login denied
-                    self.DIALOG.VSinfo('Authentification rate', self.__sDisplayName)
-                elif getattr(e, "code", None) == 502:
-                    # login denied
-                    self.DIALOG.VSinfo('Authentification rate', self.__sDisplayName)
-                elif getattr(e, "code", None) == 234:
-                    # login denied
-                    self.DIALOG.VSinfo('Authentification rate', self.__sDisplayName)
-                else:
-                    VSlog("debug" + str(getattr(e, "code", None)))
-                    VSlog("debug" + str(getattr(e, "reason", None)))
-
-                self.isLogin = False
-                return False
-
-            sHtmlContent = response.read()
-            head = response.headers
-            response.close()
+        sHtmlContent = oRequestHandler.request()
+        head = oRequestHandler.getResponseHeader()
 
         if 'uptobox' in self.__sHosterIdentifier:
             if 'xfss' in head['Set-Cookie']:
@@ -207,20 +153,15 @@ class cPremiumHandler:
         return True
 
     def GetHtmlwithcookies(self, url, data, cookies):
-
-        req = urllib2.Request(url, data, headers)
+        oRequestHandler = cRequestHandler(url)
+        oRequestHandler.addHeaderEntry('User-Agent',UA)
         if not (data == None):
-            req.add_header('Referer', url)
+            oRequestHandler.addParametersLine(data)
+            oRequestHandler.addHeaderEntry('Referer', url)
 
-        req.add_header('Cookie', cookies)
+        oRequestHandler.addHeaderEntry('Cookie', cookies)
 
-        try:
-            response = urllib2.urlopen(req)
-        except UrlError:
-            return ''
-
-        sHtmlContent = response.read()
-        response.close()
+        sHtmlContent = oRequestHandler.request()
         return sHtmlContent
 
     def GetHtml(self, url, data=None):
@@ -246,3 +187,42 @@ class cPremiumHandler:
                 return ''
 
         return sHtmlContent
+
+    def setToken(self, sToken):
+        self.ADDON.setSetting('hoster_' + str(self.__sHosterIdentifier) + '_token', sToken)
+
+    def getToken(self):
+
+        # pas de premium, pas de token
+        if not self.__Ispremium:
+            return None
+
+        # le token est connu, on le retourne
+        sToken = self.ADDON.getSetting('hoster_' + str(self.__sHosterIdentifier) + '_token')
+        if sToken:
+            return sToken
+
+        # token alldebrid était connu avec un aute setting
+        if 'alldebrid' in self.__sHosterIdentifier:
+            sToken = self.ADDON.getSetting('token_alldebrid')  # ancien nom, à supprimer après quelques temps
+            if sToken:
+                self.ADDON.setSetting('hoster_' + str(self.__sHosterIdentifier) + '_token', sToken)
+            return sToken
+
+        # Si pas de token pour uptobox, on le récupère depuis le compte
+        if 'uptobox' in self.__sHosterIdentifier:
+
+            if not self.isLogin:
+                self.Authentificate()
+
+            # on retrouve le token et on le sauvegarde
+            if self.isLogin:
+                sHtmlContent = self.GetHtml('https://uptobox.com/my_account')
+                sPattern = 'Token:.+?<span class=\'none\'>(.+?)</span>'
+                aResult = cParser().parse(sHtmlContent, sPattern, 1)
+                if aResult[0]:
+                    sToken = aResult[1][0]
+                    self.ADDON.setSetting('hoster_' + str(self.__sHosterIdentifier) + '_token', sToken)
+                    return sToken
+
+        return None

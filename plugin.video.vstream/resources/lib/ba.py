@@ -109,9 +109,9 @@ class cShowBA:
                 
         # Sinon recherche dans youtube
         if not urlTrailer:
-            urlTrailer = 'https://www.youtube.com/results?q=' + QuotePlus(sTitle) + '&sp=EgIYAQ%253D%253D'
+            urlTrailer2 = 'https://www.youtube.com/results?q=' + QuotePlus(sTitle) + '&sp=EgIYAQ%253D%253D'
             
-            oRequestHandler = cRequestHandler(urlTrailer)
+            oRequestHandler = cRequestHandler(urlTrailer2)
             sHtmlContent = oRequestHandler.request()
     
             listResult = re.findall('"url":"\/watch\?v=([^"]+)"', sHtmlContent)
@@ -123,6 +123,7 @@ class cShowBA:
         if urlTrailer:
             hote = cHoster()
             hote.setUrl(urlTrailer)
+            hote.setResolution('720p')
             api_call = hote.getMediaLink()[1]
             if not api_call:
                 return

@@ -4,7 +4,7 @@ import random
 import re
 import unicodedata
 
-from resources.lib.comaddon import progress, xbmc, VSlog
+from resources.lib.comaddon import progress, VSlog, isMatrix
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -16,13 +16,9 @@ from resources.lib.util import cUtil, Unquote, QuotePlus, Noredirection
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
 # Make random url
-s = 'azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN'
+s = 'azertyuiopqsdfghjklmwxcvbn0123456789AZERTYUIOPQSDFGHJKLMWXCVBN'
 RandomKey = ''.join(random.choice(s) for i in range(32))
 
-if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-    isPython3 = True
-else:
-    isPython3 = False
 
 SITE_IDENTIFIER = 'ianime'
 SITE_NAME = 'I anime'
@@ -48,6 +44,8 @@ URL_SEARCH_SERIES = ('tvshow=', 'showMovies')
 URL_SEARCH_ANIMS = ('anime=', 'showMovies')
 URL_SEARCH = (URL_MAIN+'resultat+', 'showMovies')
 
+def RandomReferer():
+    return URL_MAIN + ''.join(random.choice(s) for i in range(32)) + '.htm'
 
 def DecryptMangacity(chain):
     oParser = cParser()
@@ -72,7 +70,7 @@ def DecryptMangacity(chain):
 
 
 def FullUnescape(code):
-    sPattern = '<script type="text\/javascript">document\.write\(unescape\(".+?"\)\);<\/script>'
+    sPattern = '<script type="text/javascript">document\.write\(unescape\(".+?"\)\);</script>'
     aResult = re.findall(sPattern, code)
     if aResult:
         return Unquote(aResult[0])
@@ -93,7 +91,7 @@ def ICDecode(html):
         return html
 
     c = aResult[0][0]
-    a = aResult[0][1]
+    # a = aResult[0][1]
     x = aResult[0][2]
 
     # premier decodage
@@ -106,21 +104,18 @@ def ICDecode(html):
             d = d + c[i]
         i = i + 1
 
-    c = Unquote(d)
     # Recuperation du tableau
-    aResult = re.findall('t=Array\(([0-9,]+)\);', c)
+    aResult = re.findall('t=Array\(([0-9,]+)\);', Unquote(d))
     if not aResult:
         return ''
-    t = aResult[0].split(',')
 
+    t = aResult[0].split(',')
     l = len(x)
     b = 1024
-    i = j = r = p = 0
-    s = 0
-    w = 0
-
+    i = p = s = w = 0
     j = math.ceil(float(l) / b)
     r = ''
+    
     while j > 0:
 
         i = min(l, b)
@@ -309,7 +304,7 @@ def ShowAlpha2():
         ShowAlpha(URL_MAIN + aResult[1][0])
 
 
-def ShowAlpha(url = None):
+def ShowAlpha(url=None):
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
@@ -362,12 +357,16 @@ def showMovies(sSearch=''):
         oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
         sHtmlContent = oRequestHandler.request()
         sHtmlContent = cutSearch(sHtmlContent, typeSearch)
+        
+        sUrl = url
+        
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Referer', RandomReferer())
         sHtmlContent = oRequestHandler.request()
         # sHtmlContent = DecryptMangacity(sHtmlContent)
 
@@ -392,6 +391,8 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+
+        isPython3 = isMatrix()
 
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
@@ -460,7 +461,7 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Suivant', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -490,22 +491,18 @@ def showEpisode():
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Referer', RandomReferer())
     sHtmlContent = oRequestHandler.request()
 
     if 'HTML/JavaScript Encoder' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
 
-    # On fait 2 passage pr accelerer le parsing regex
-    # sPattern = '<div class="&#105;&#110;&#110;&#101;&#114;">(.+?)<footer id="footer">'
-    # aResult = oParser.parse(sHtmlContent, sPattern)
-
-    # sPattern = '<img src="(.+?).+? alt="&#101;&#112;&#105;&#115;&#111;&#100;&#101;&#115;".+?<a href="(.+?)" title="(.+?)"'
-    # aResult = oParser.parse(aResult[1][0], sPattern)
-
     sPattern = '<headline11>(.+?)<\/headline11><\/a>|<a href="*([^"]+)"* title="([^"]+)"[^>]+style="*text-decoration:none;"*>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        isPython3 = isMatrix()
+
         for aEntry in aResult[1]:
 
             if not isPython3:
@@ -550,7 +547,7 @@ def ExtractLink(html):
         for a in aResult:
             if ('adnetworkperformance' in a) or ('jquery' in a):
                 continue
-            if fake1 not in a and fake2 not in a :
+            if fake1 not in a and fake2 not in a:
                 final = a
                 break
 
@@ -562,7 +559,7 @@ def ExtractLink(html):
 
     sPattern = "'file': '(.+?)',"
     aResult = oParser.parse(html, sPattern)
-    if aResult[0] == True:
+    if aResult[0] is True:
         if fake1 not in aResult[1][0] and fake2 not in aResult[1][0]:
             final = aResult[1][0]
 
@@ -586,6 +583,7 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Referer', RandomReferer())
     sHtmlContent = oRequestHandler.request()
 
     if 'HTML/JavaScript Encoder' in sHtmlContent:
@@ -598,11 +596,11 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if 'animedigitalnetwork.fr' in str(aResult[1]):
-        oGui.addText(SITE_IDENTIFIER, "[COLOR red]Animés dispo gratuitement et legalement sur :[/COLOR][COLOR coral] anime digital network[/COLOR]")
+        oGui.addText(SITE_IDENTIFIER, "[COLOR red]Animés dispo gratuitement et légalement sur :[/COLOR][COLOR coral] anime digital network[/COLOR]")
     elif 'crunchyroll.com' in str(aResult[1]):
-        oGui.addText(SITE_IDENTIFIER, "[COLOR red]Animés dispo gratuitement et legalement sur :[/COLOR][COLOR coral] crunchyroll[/COLOR]")
+        oGui.addText(SITE_IDENTIFIER, "[COLOR red]Animés dispo gratuitement et légalement sur :[/COLOR][COLOR coral] crunchyroll[/COLOR]")
     elif 'wakanim.tv' in str(aResult[1]):
-        oGui.addText(SITE_IDENTIFIER, "[COLOR red]Animés dispo gratuitement et legalement sur :[/COLOR][COLOR coral] wakanim[/COLOR]")
+        oGui.addText(SITE_IDENTIFIER, "[COLOR red]Animés dispo gratuitement et légalement sur :[/COLOR][COLOR coral] wakanim[/COLOR]")
     else:
         list_url = []
 
@@ -612,7 +610,7 @@ def showHosters():
 
         if (aResult[0] == True):
             for aEntry in aResult[1]:
-                if re.match(".+?&#[0-9]+;", aEntry):#directe mais codé html
+                if re.match(".+?&#[0-9]+;", aEntry):  # directe mais codé html
                     sHosterUrl = cUtil().unescape(aEntry)
 
                 else:  # directe en clair
@@ -673,9 +671,9 @@ def showHosters():
                 # Passe par lien .asx ??
                 sPattern = '(https*:\/\/www.ianime[^\/\\]+\/[0-9a-zA-Z_-]+\.asx)'
                 aResult = oParser.parse(sHosterUrl, sPattern)
-                if aResult[0] :
+                if aResult[0]:
                     # on telecharge la page
-                    oRequestHandler = cRequestHandler(sHosterUrl )
+                    oRequestHandler = cRequestHandler(sHosterUrl)
                     oRequestHandler.addHeaderEntry('Referer', sUrl)
                     oRequestHandler.addHeaderEntry('User-Agent', UA)
                     sHtmlContent = oRequestHandler.request()
@@ -684,7 +682,7 @@ def showHosters():
                     if ('ianime' not in oRequestHandler.getRealUrl().split('/')[2]):
                         sHosterUrl = oRequestHandler.getRealUrl()
                     else:
-                        #Sinon on remplace le code
+                        # Sinon on remplace le code
                         html = ICDecode(sHtmlContent)
                         sHosterUrl = ExtractLink(html)
 
@@ -692,12 +690,11 @@ def showHosters():
                 # sPattern = 'http:\/\/www.ianime[^\/\\]+\/([0-9a-zA-Z_-]+)\.vxm'
                 # aResult = oParser.parse(sHosterUrl, sPattern)
                 # if aResult[0] :
-                   # sHosterUrl = 'http://embed.nowvideo.sx/embed.php?v=' + aResult[1][0]
+                # sHosterUrl = 'http://embed.nowvideo.sx/embed.php?v=' + aResult[1][0]
 
                 # redirection tinyurl
                 if 'tinyurl' in sHosterUrl:
                     sHosterUrl = GetTinyUrl(sHosterUrl)
-
 
                 # test pr liens raccourcis
                 if 'http://goo.gl' in sHosterUrl:
@@ -714,7 +711,7 @@ def showHosters():
 
                 # Potection visio.php
                 if '/visio.php?' in sHosterUrl:
-                    oRequestHandler = cRequestHandler(sHosterUrl )
+                    oRequestHandler = cRequestHandler(sHosterUrl)
                     oRequestHandler.addHeaderEntry('Referer', sUrl)
                     oRequestHandler.addHeaderEntry('User-Agent', UA)
                     sHtmlContent = oRequestHandler.request()
@@ -783,7 +780,7 @@ def showHosters():
 
 # -------------------------------------------------------------------------------------------
 def GetTinyUrl(url):
-    if not 'tinyurl' in url:
+    if 'tinyurl' not in url:
         return url
 
     # Lien deja connu ?
@@ -833,14 +830,12 @@ def GetTinyUrl(url):
 
 
 def cutSearch(sHtmlContent, typeSearch):
-    types = {
-            'movies': 'Films et Animations',
-            'tvshow': 'S&eacute;ries et Drama',
-            'anime': 'Animes et Mangas'
-    }
+    types = {'movies': 'Films et Animations',
+             'tvshow': 'S&eacute;ries et Drama',
+             'anime': 'Animes et Mangas'}
     sPattern = types.get(typeSearch) + '<.+?alt="separateur"(.+?)alt="separateur"'
 
     aResult = cParser().parse(sHtmlContent, sPattern)
-    if (aResult[0]):
+    if aResult[0]:
         return aResult[1][0]
     return ''

@@ -57,7 +57,6 @@ def load():
 
 def showSearch():
     oGui = cGui()
-
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         showMovies(sSearchText)
@@ -104,7 +103,7 @@ def showGenres():
 def showYears():
     oGui = cGui()
 
-    for i in reversed(range(1942, 2021)):
+    for i in reversed(range(1942, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'Annee/' + Year)
@@ -156,7 +155,7 @@ def showMovies(sSearch=''):
     elif 'genre/' in sUrl:
         sPattern = 'film-uno.+?href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)'
     else:
-        sPattern = '<a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)".+?min.+?·([^<]+).+?short-story">([^<]+)'
+        sPattern = '<div class="film-uno">.+?<a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)".+?min.+?·([^<]+).+?short-story">([^<]+)'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -204,8 +203,8 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('(page|genre).*?[-=\/]([0-9]+)', sNextPage).group(2)  # ou replace'.html',''; '([0-9]+)$'
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            sNumPage = re.search('(page|genre).*?[-=\/]([0-9]+)', sNextPage).group(2)  # ou replace'.html',''; '([0-9]+)$'
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 

@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'streamdivx'
 SITE_NAME = 'StreamDivx'
 SITE_DESC = 'Regarder, Voir Films En Streaming VF 100% Gratuit.'
 
-URL_MAIN = 'https://wvvw.streamdivx.net/' # ou 'https://www.voustreaming.com/' < recherche hs
+URL_MAIN = 'https://wvvw.streamdivx.net/'  # ou 'https://www.voustreaming.com/' < recherche hs
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + 'tags/', FUNCTION_SEARCH)
@@ -102,13 +102,14 @@ def showGenres():
 def showMovieYears():
     oGui = cGui()
 
-    for i in reversed(range(1985, 2021)):
+    for i in reversed(range(1985, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'tags/' + Year + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMovies(sSearch=''):
     oGui = cGui()
@@ -131,7 +132,7 @@ def showMovies(sSearch=''):
         else:
             sHtmlContent = sHtmlContent
 
-    sPattern = '<div class="film-uno *">.+?href="([^"]+)".+?src="([^"]+)" alt="([^"]+)".+?class="quality ">([^<]+).+?<p class="nop short-story *">(.+?)<\/p>'
+    sPattern = 'class="film-uno *">.+?href="([^"]+)".+?src="([^"]+)" alt="([^"]+).+?class="quality ">([^<]+).+?class="nop short-story *">(.+?)</p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -154,7 +155,7 @@ def showMovies(sSearch=''):
 
             # Nettoie le titre, la premiere phrase est souvent doublée
             sDesc = sDesc.replace('SYNOPSIS ET DÉTAILS', '').lstrip()
-            if len (sDesc) > 180:
+            if len(sDesc) > 180:
                 idx = sDesc.find(sDesc[:15], 30, 180)
                 if idx > 0:
                     sDesc = sDesc[idx:]
@@ -173,14 +174,14 @@ def showMovies(sSearch=''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<a href="([^"]+)">Last page<\/a>'
+    sPattern = '<a href="([^"]+)">Last page</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         return aResult[1][0]
@@ -200,10 +201,8 @@ def showHosters():
     # oRequestHandler.setRequestType(1)
     # oRequestHandler.addParameters('levideo', sPost)
     sHtmlContent = oRequestHandler.request()
-
-    oParser = cParser()
     sPattern = '<a href="([^"]+)" target="iframe.+?"'
-
+    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):

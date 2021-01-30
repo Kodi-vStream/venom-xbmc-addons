@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # source 34 https://french-stream.lol/  french-stream.lol 29112020
-# update 06122020
+# update 26122020
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -42,8 +42,8 @@ URL_SEARCH_MOVIES = (key_search_movies, 'showMovies')
 URL_SEARCH_SERIES = (key_search_series, 'showMovies')
 
 # recherche utilisée quand on utilise directement la source
-MY_SEARCH_MOVIES = (True, 'MyshowSearchMovie')
-MY_SEARCH_SERIES = (True, 'MyshowSearchSerie')
+MY_SEARCH_MOVIES = (True, 'myShowSearchMovie')
+MY_SEARCH_SERIES = (True, 'myShowSearchSerie')
 
 # Menu GLOBALE HOME
 MOVIE_MOVIE = (True, 'showMoviesSource')
@@ -173,7 +173,7 @@ def showTvshowSource():
     oGui.setEndOfDirectory()
 
 
-def MyshowSearchSerie():
+def myShowSearchSerie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
@@ -183,7 +183,7 @@ def MyshowSearchSerie():
         return
 
 
-def MyshowSearchMovie():
+def myShowSearchMovie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
@@ -275,6 +275,7 @@ def showMovies(sSearch=''):
         oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
         oRequest.addParametersLine(pdata)
         sHtmlContent = oRequest.request()
+        sPattern = '<div class="short-in.+?with-mask.+?ref="([^"]*).+?src="([^"]*).+?title="([^"]*)'
 
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -282,9 +283,8 @@ def showMovies(sSearch=''):
 
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
+        sPattern = '<div class="short-in.+?with-mask.+?ref="([^"]*).+?src="([^"]*).+?alt="([^"]*)'
 
-    # ref thum title
-    sPattern = '<div class="short-in.+?with-mask.+?ref="([^"]*).+?src="([^"]*).+?short-title">([^<]*)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -301,7 +301,7 @@ def showMovies(sSearch=''):
 
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
-            sTitle = aEntry[2]  # .replace('-','')
+            sTitle = aEntry[2].replace('Regarder ', '').replace(' en streaming complet', '')
 
             if bSearchMovie:
                 if '/serie' in sUrl2:
@@ -334,23 +334,23 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
     if not sSearch:
-        bNextPage, urlNextpage, pagination = __checkForNextPage(sHtmlContent)
+        bNextPage, urlNextpage, sNumPage = __checkForNextPage(sHtmlContent)
         if (bNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', urlNextpage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] ' + pagination + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    urlNextpage = ''
-    snumberNext = ''
+    # urlNextpage = ''
+    sNumberNext = ''
     sNumberMax = ''
-    pagination = ''
+    sNumPage = ''
 
-    if '<span class="pnext">' not in sHtmlContent:
+    if '<span class="pnext"><a href="' not in sHtmlContent:
         return False, 'none', 'none'
 
     sPattern = '(\d+)<.a>\s*<.span>\s*<span class="pnext">'
@@ -358,22 +358,22 @@ def __checkForNextPage(sHtmlContent):
     if (aResult[0] == True):
         sNumberMax = aResult[1][0]
 
-    sPattern = '<span class="pnext">.+?ref="([^"]+)'
+    sPattern = '<span class="pnext"><a href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         urlNextpage = aResult[1][0]  # minimum requis
         try:
-            snumberNext = re.search('page.([0-9]+)', urlNextpage).group(1)
+            sNumberNext = re.search('page.([0-9]+)', urlNextpage).group(1)
         except:
             pass
 
-    if snumberNext:
-        pagination = 'Page ' + str(snumberNext)
-        if sNumberMax:
-            pagination = pagination + '/' + sNumberMax
+        if sNumberNext:
+            sNumPage = sNumberNext
+            if sNumberMax:
+                sNumPage = sNumPage + '/' + sNumberMax
 
-    if urlNextpage:
-        return True, urlNextpage, pagination
+        if urlNextpage:
+            return True, urlNextpage, sNumPage
 
     return False, 'none', 'none'
 
@@ -400,7 +400,7 @@ def ShowEpisodes():
     if (aResult[0] == True):
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', cleanDesc(aResult[1][0]))
 
-    sPattern = 'fa-play-circle-o">.+?(VOSTFR|VF)|id="(?:honey|yoyo)(?:\d+)"\s*href="([^"]+).+?title="([^"]+).+?data-rel="([^"]+)'
+    sPattern = 'fa-play-circle-o">.+?(VOSTFR|VF)|id="(?:honey|yoyo)(?:\d+)"\s*href="([^"]+).+?data-rel="([^"]+).+?<\/i>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     bfind = ""
@@ -415,10 +415,10 @@ def ShowEpisodes():
             if bfind and aEntry[1]:
                 ValidEntry = True
                 sFirst_Url = aEntry[1]
-                sEpisode = aEntry[2]
-                sRel_Episode = aEntry[3]
+                sRel_Episode = aEntry[2]
+                sEpisode = aEntry[3]
 
-                sDisplayTitle = sMovieTitle.replace('-', '') + ' ' + sEpisode + ' (' + Slang + ' )'
+                sDisplayTitle = sMovieTitle.replace('-', '') + ' ' + sEpisode + ' (' + Slang + ')'
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -469,7 +469,7 @@ def showSerieLinks():
             sDisplayTitle = sDisplayTitle1 + ' ' + sHost
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle1)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('referer', sUrl)
@@ -496,12 +496,12 @@ def showSerieLinks():
                     continue
                     # pass
 
-                sHost= '[COLOR coral]' + GetHostname(sUrl2) + '[/COLOR]'
+                sHost = '[COLOR coral]' + GetHostname(sUrl2) + '[/COLOR]'
                 sDisplayTitle = sDisplayTitle1 + ' ' + sHost
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle1)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('referer', sUrl)

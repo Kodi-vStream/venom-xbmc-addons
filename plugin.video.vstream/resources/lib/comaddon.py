@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 
-import xbmcaddon, xbmcgui, xbmc, xbmcvfs 
+import xbmcaddon, xbmcgui, xbmc, xbmcplugin, xbmcvfs 
 
 """System d'importation
 
@@ -149,21 +149,37 @@ class empty():
     def VSclose(self, dialog):
         pass
 
-class progress(xbmcgui.DialogProgress):
+class progress():
 
     def VScreate(self, title = 'vStream', desc = ''):
 
+        # Ne pas afficher le sablier si nous ne sommes pas dans un menu vStream
         currentWindow = xbmcgui.getCurrentWindowId()
-#         if currentWindow == 10000 or currentWindow == 10103: # home, keyboard
-        if currentWindow != 10025: # videonav
+        if currentWindow != 10025 : # 10025 = videonav, 10000 = home
             return empty()
+
+        # Ne pas afficher le sablier si une dialog est ouverte, inclut le menu contextuel
+        # sauf pour le spinner de chargement (10138)
+        dlgId = xbmcgui.getCurrentWindowDialogId()
+        if dlgId != 9999 and dlgId != 10138: # 9999 = None
+            return empty()
+
+#         # Ne pas afficher le sablier si le mode d'affichage est une liste
+#         # Ne fonctionne pas car l'info correspond à la fenêtre precedente
+#         viewMode = xbmc.getInfoLabel('Container.ViewMode')
+#         VSlog('viewMode = '+ viewMode)
+#         if 'list' in viewMode or 'List' in viewMode:
+#             return empty()
 
         global PROGRESS
         if PROGRESS == None:
-            self.create(title, desc)
-            PROGRESS = self
+            if ADDONVS.getSetting('spinner_small') == 'true':
+                PROGRESS = xbmcgui.DialogProgressBG()
+            else:
+                PROGRESS = xbmcgui.DialogProgress()
+            PROGRESS.create(title, desc)
 
-        return PROGRESS
+        return self
 
     def VSupdate(self, dialog, total, text = '', search = False):
 
@@ -177,20 +193,25 @@ class progress(xbmcgui.DialogProgress):
         global COUNT
         COUNT += 1
         iPercent = int(float(COUNT * 100) / total)
-        dialog.update(iPercent, 'Loading: ' + str(COUNT) + '/' + str(total) + " " + text)
+        PROGRESS.update(iPercent, 'Chargement ' + str(COUNT) + '/' + str(total) + " " + text)
+
+    def iscanceled(self):
+        if isinstance(PROGRESS, xbmcgui.DialogProgress):
+            return PROGRESS.iscanceled()
+        return False
 
     def VSclose(self, dialog = ''):
         global PROGRESS
-        if not dialog and PROGRESS:
-            dialog = PROGRESS
-        if not dialog:
-            return
+        if not PROGRESS:
+            return      # Déjà fermée
 
         if window(10101).getProperty('search') == 'true':
             return
         
-        PROGRESS = None
-        dialog.close()
+        if PROGRESS:            # test si pas fermé entre-temps
+            dialog = PROGRESS   # Sémaphore pour synchroniser la fermeture
+            PROGRESS = None
+            dialog.close()
 
     
 """

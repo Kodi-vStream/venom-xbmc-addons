@@ -36,7 +36,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', NETS_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, NETS_NEWS[1], 'Vidéos du net', 'buzz.png',oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, NETS_NEWS[1], 'Vidéos du net', 'buzz.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', NETS_GENRES[0])
@@ -149,8 +149,8 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('-([0-9]+).html', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            sPaging = re.search('-([0-9]+).html', sNextPage).group(1)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -181,7 +181,7 @@ def showHosters():
     sPattern = "<source src='([^']+)' type='video/mp4'"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-     # lien dailymotion
+    # lien dailymotion
     if (aResult[0] == False):
         sPattern = 'src="([^"]+)\?.+?" allowfullscreen></iframe>'
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -206,7 +206,7 @@ def showHosters():
             sPattern = "window.location.href = '([^']+)';"
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
-                sHosterUrl = aResult[1][0].replace('download-','').replace('.html','')
+                sHosterUrl = aResult[1][0].replace('download-', '').replace('.html', '')
 
                 sHosterUrl = 'http://videos.lesdebiles.com/' + sHosterUrl + '.mp4'
 

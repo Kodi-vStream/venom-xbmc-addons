@@ -230,7 +230,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
-    sPattern = 'class="post-thumbnail">.+?href="([^"]+)".+?src="([^"]+)".+?title="Permalink to.+?>([^<]+)<.+?<p>([^<]+)<'
+    sPattern = 'class="post-thumbnail".+?href="([^"]+).+?src="(http[^"]+).+?title="Permalink.+?>([^<]+)<.+?<p>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -260,26 +260,29 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
     if not sSearch:
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
     # &raquo; == >> traité dans parser
-    sPattern = 'href="([^"]+?)">>><'
-
+    sPattern = 'pages\'>Page.+?sur ([^<]+?)<.+?href="([^"]+?)">>><'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return  aResult[1][0]
+        sNumberMax = aResult[1][0][0]
+        sNextPage = aResult[1][0][1]
+        sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    return False
+    return False, 'none'
 
 
 def showHosters():
@@ -309,10 +312,6 @@ def showHosters():
                 sUrl = 'https://www.youtube-nocookie.com/list_ajax?style=json&action_get_list=1&list=' + idList
                 oRequestHandler = cRequestHandler(sUrl)
                 sHtmlContent = oRequestHandler.request()
-
-                #fh = open('c:\\test.txt', "w")
-                #fh.write(sHtmlContent)
-                #fh.close()
 
                 page = json.loads(sHtmlContent)
                 List_video = page["video"]
