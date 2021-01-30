@@ -22,7 +22,8 @@ TOKUSATSU = (URL_MAIN + 'series-0-1/tokusatsu/0---', 'showSeries')
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0'
 
-URL_SEARCH_SERIES = (URL_MAIN + 'search-0-1+', 'showSeries')
+# URL_SEARCH_SERIES = (URL_MAIN + 'search-0-1+', 'showSeries')  # désactivé car DRAMAS
+URL_SEARCH_ANIMS = (URL_MAIN + 'search-0-1+', 'showSeries')
 
 ANIM_ANIMS = (True, 'showMenuAnims')
 ANIM_ANNEES = (True, 'ShowYearsAnime')
