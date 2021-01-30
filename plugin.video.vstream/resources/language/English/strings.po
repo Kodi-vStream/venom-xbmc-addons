@@ -480,6 +480,10 @@ msgctxt "#30118"
 msgid "Search (Anim)"
 msgstr ""
 
+msgctxt "#30119"
+msgid "Live"
+msgstr ""
+
 msgctxt "#30120"
 msgid "Movies"
 msgstr ""
