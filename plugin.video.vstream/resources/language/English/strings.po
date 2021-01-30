@@ -321,7 +321,7 @@ msgid "Search (Movie)"
 msgstr ""
 
 msgctxt "#30079"
-msgid "Search (Tvshow/Anim)"
+msgid "Search (Tvshow)"
 msgstr ""
 
 msgctxt "#30080"
@@ -474,6 +474,10 @@ msgstr ""
 
 msgctxt "#30117"
 msgid "TV replay"
+msgstr ""
+
+msgctxt "#30118"
+msgid "Search (Anim)"
 msgstr ""
 
 msgctxt "#30120"
