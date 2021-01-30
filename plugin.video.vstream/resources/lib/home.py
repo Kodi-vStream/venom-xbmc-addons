@@ -129,18 +129,14 @@ class cHome:
         if not searchtext:
             return self.showSearchText()
 
-        # n'existe plus mais pas sure.
-        # xbmcgui.Window(10101).clearProperty('search_text')
         window(10101).clearProperty('search_text')
 
         oGui = cGui()
-
-        # print(xbmc.getInfoLabel('ListItem.Property(Category)'))
-
         oGui.addText('globalSearch', self.addons.VSlang(30077) % searchtext, 'none.png')
 
         # utilisation de guielement pour ajouter la bonne catégorie
 
+        # Recherche globale films
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oOutputParameterHandler.addParameter('searchtext', searchtext)
@@ -158,6 +154,7 @@ class cHome:
 
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
+        # Recherche globale séries
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oOutputParameterHandler.addParameter('searchtext', searchtext)
@@ -175,10 +172,25 @@ class cHome:
 
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
+        # Recherche globale Animés
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName('globalSearch')
+        oGuiElement.setFunction('showSearch')
+        oGuiElement.setTitle(self.addons.VSlang(30118))
+        oGuiElement.setFileName(self.addons.VSlang(30118))
+        oGuiElement.setIcon('search.png')
+        oGuiElement.setMeta(0)
+        # oGuiElement.setThumbnail(sThumbnail)
+        # oGuiElement.setFanart(sFanart)
+        oGuiElement.setCat(3)
+
+        oGui.addFolder(oGuiElement, oOutputParameterHandler)
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oOutputParameterHandler.addParameter('searchtext', searchtext)
 
+        # Recherche globale divers
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName('globalSearch')
         oGuiElement.setFunction('showSearch')
@@ -188,7 +200,7 @@ class cHome:
         oGuiElement.setMeta(0)
         # oGuiElement.setThumbnail(sThumbnail)
         # oGuiElement.setFanart(sFanart)
-        oGuiElement.setCat(3)
+        oGuiElement.setCat(5)
 
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
