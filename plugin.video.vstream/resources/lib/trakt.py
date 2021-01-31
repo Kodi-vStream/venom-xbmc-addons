@@ -411,10 +411,15 @@ class cTrakt:
 
                 if 'collection' in sUrl:
 
+                    try:
+                        sDate = i['last_collected_at']
+                    except:
+                        sDate = ""
+
                     if 'show' in i:
                         show = i['show']
                         sTitle = self.getLocalizedTitle(show, 'shows')
-                        sTrakt, sYear, sImdb, sTmdb, sDate = show['ids']['trakt'], show['year'], show['ids']['imdb'], show['ids']['tmdb'], i['last_collected_at']
+                        sTrakt, sYear, sImdb, sTmdb = show['ids']['trakt'], show['year'], show['ids']['imdb'], show['ids']['tmdb']
 
                         cTrakt.CONTENT = '2'
                         sFunction = 'getBseasons'
@@ -422,11 +427,6 @@ class cTrakt:
                         movie = i['movie']
                         sTitle = self.getLocalizedTitle(movie, 'movies')
                         sTrakt, sYear, sImdb, sTmdb = movie['ids']['trakt'], movie['year'], movie['ids']['imdb'], movie['ids']['tmdb']
-
-                        try:
-                            sDate = i['collected_at']
-                        except:
-                            sDate = ""
                         
                         cTrakt.CONTENT = '1'
                         sFunction = 'showSearch'
@@ -667,7 +667,7 @@ class cTrakt:
                     sNextPage = sUrl.replace('page=' + str(sPage), 'page=' + str(int(sPage) + 1))
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-                    oGui.addNext(SITE_IDENTIFIER, 'getTrakt', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+                    oGui.addNext(SITE_IDENTIFIER, 'getTrakt', '[COLOR teal]Page ' + str(int(sPage) + 1)  + '/' + sMaxPage + ' >>>[/COLOR]', oOutputParameterHandler)
             except:
                 pass
 
@@ -944,7 +944,7 @@ class cTrakt:
                 sPost = {sType: [{'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason), 'episodes': [{'number': int(sEpisode)}]}]}]}
         else:
             sPost = {sType: [{'ids': {'imdb': sImdb}}]}
-
+            
         oRequestHandler = cRequestHandler(sAction)
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
