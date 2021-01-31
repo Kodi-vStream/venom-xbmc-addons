@@ -98,8 +98,10 @@ class cHoster(iHoster):
         #Request URL
         oRequest = cRequestHandler(Fakeurl)
         oRequest.addHeaderEntry('User-Agent', UA)
-        tmp = oRequest.request()
-  
+        try:
+            tmp = oRequest.request()
+        except:
+            pass
         sPattern =  '(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
