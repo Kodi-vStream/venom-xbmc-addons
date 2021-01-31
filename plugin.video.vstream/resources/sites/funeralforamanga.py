@@ -17,6 +17,8 @@ SITE_DESC = 'animés en streaming'
 
 URL_MAIN = 'https://funeralforamanga.fr/'
 
+ANIM_ANIMS = ('http://', 'load')
+
 ANIM_NEWS = (URL_MAIN + 'videos?sk=c&unlicenced=1&p=1', 'showMovies')
 ANIM_POPULAR = (URL_MAIN + 'videos?sk=b&unlicenced=1&p=1&', 'showMovies')
 ANIM_ANNEES = (True, 'showAllYears')
@@ -36,12 +38,10 @@ ANIM_SERIE_VOSTFRS = (URL_MAIN + 'videos?sk=c&filter=serie&unlicenced=1&lang=vos
 ANIM_MOVIE_NEWS = (URL_MAIN + '/videos?sk=c&filter=movie&unlicenced=1&p=1', 'showMovies')
 ANIM_MOVIE_POPULAR = (URL_MAIN + '/videos?sk=b&filter=movie&unlicenced=1&p=1', 'showMovies')
 ANIM_MOVIE_ANNEES = (True, 'showMovieYears')
-ANIM_MOVIE_ALPHA = (True, 'showMovieAlpha')#
+ANIM_MOVIE_ALPHA = (True, 'showMovieAlpha')
 ANIM_MOVIE_GENRES = (True, 'showMovieGenre')
 ANIM_MOVIE_VFS = (URL_MAIN + 'videos?sk=c&filter=movie&unlicenced=1&lang=vf&p=1', 'showMovies')
 ANIM_MOVIE_VOSTFRS = (URL_MAIN + 'videos?sk=c&filter=movie&unlicenced=1&lang=vostfrp=1', 'showMovies')
-
-ANIM_ANIMS = ('http://', 'load')
 
 URL_SEARCH = (URL_MAIN + 'videos?unlicenced=1&q=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'videos?filter=serie&unlicenced=1&q=', 'showMovies')
@@ -96,7 +96,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_SERIE_POPULAR[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_SERIE_POPULAR[1], 'Animes Séries (Populaires)', 'views.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_SERIE_POPULAR[1], 'Animés Séries (Populaires)', 'views.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_SERIE_ANNEES[0])
@@ -211,7 +211,8 @@ def showSerieGenre():
 def showAllGenre(sfilter=''):
     oGui = cGui()
 
-    listegenre = ['action', 'aventure', 'comedie', 'drame', 'fantastique', 'horreur', 'policier', 'romance', 'science-fiction', 'sexy', 'sport']
+    listegenre = ['action', 'aventure', 'comedie', 'drame', 'fantastique', 'horreur', 'policier', 'romance',
+                  'science-fiction', 'sexy', 'sport']
 
     url1 = URL_MAIN + 'videos?sk=c&filter=' + sfilter + '&unlicenced=1&genres='
     url2 = '&p=1'
@@ -341,7 +342,7 @@ def showEpisodesxMovies():
     sHtmlContent = oRequestHandler.request()
 
     sDesc = ''
-    sPattern = '<h4>Intrigue<.h4>(.+?)<\/p>'
+    sPattern = '<h4>Intrigue<.h4>(.+?)</p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', cleanDesc(aResult[1][0]))
