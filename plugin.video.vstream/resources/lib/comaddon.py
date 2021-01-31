@@ -173,7 +173,9 @@ class progress():
 
         global PROGRESS
         if PROGRESS == None:
-            if ADDONVS.getSetting('spinner_small') == 'true':
+            if large:
+                PROGRESS = xbmcgui.DialogProgress()
+            elif ADDONVS.getSetting('spinner_small') == 'true':
                 PROGRESS = xbmcgui.DialogProgressBG()
             else:
                 PROGRESS = xbmcgui.DialogProgress()
