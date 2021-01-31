@@ -26,7 +26,7 @@ tagseries = '&p=series'
 tagmangas = '&p=mangas'
 URL_SEARCH_MOVIES = (URL_SEARCH[0] + tagmovies, 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0] + tagseries, 'showMovies')
-URL_SEARCH_ANIMES = (URL_SEARCH[0] + tagmangas, 'showMovies')
+URL_SEARCH_ANIMS = (URL_SEARCH[0] + tagmangas, 'showMovies')
 # URL_SEARCH_MANGAS = (URL_SEARCH[0], 'showMovies')
 # URL_SEARCH_SPECTACLES = (URL_SEARCH[0], 'showMovies')
 
