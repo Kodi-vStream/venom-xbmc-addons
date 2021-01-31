@@ -18,17 +18,17 @@ SITE_IDENTIFIER = 'otaku_attitude'
 SITE_NAME = 'Otaku-Attitude'
 SITE_DESC = 'Animes, Drama et OST en DDL et Streaming'
 
-URL_MAIN = 'http://www.otaku-attitude.net/'
+URL_MAIN = 'https://www.otaku-attitude.net/'
 OST_MAIN = 'https://forum.otaku-attitude.net/musicbox/playlists/'
 
-URL_SEARCH_SERIES = (URL_MAIN + 'recherche.html?cat=1&q=', 'showAnimes')
+URL_SEARCH_ANIMS = (URL_MAIN + 'recherche.html?cat=1&q=', 'showAnimes')
 URL_SEARCH_DRAMAS = (URL_MAIN + 'recherche.html?cat=2&q=', 'showAnimes')
 FUNCTION_SEARCH = 'showAnimes'
 
 ANIM_ANIMS = ('http://', 'load')
 ANIM_VOSTFRS = (URL_MAIN + 'liste-dl-animes.php', 'showAnimes')
 
-SERIE_DRAMAS = (URL_MAIN + 'liste-dl-dramas.php', 'showAnimes')
+DRAMA_SERIES = (URL_MAIN + 'liste-dl-dramas.php', 'showAnimes')
 
 OST_ANIME = (True, 'showGenres')
 
@@ -37,7 +37,7 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Animés)', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -49,8 +49,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'animes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_DRAMAS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_DRAMAS[1], 'Dramas (VOSTFR)', 'dramas.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_SERIES[1], 'Dramas (VOSTFR)', 'dramas.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', OST_ANIME[0])
