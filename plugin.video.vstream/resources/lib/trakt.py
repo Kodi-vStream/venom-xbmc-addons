@@ -358,14 +358,6 @@ class cTrakt:
 
         sUrl = sUrl + "?page=1&limit=" + MAXRESULT
 
-        #Fonctionnement specifique au calendrier.
-        if 'calendars/all/shows/new' in sUrl:
-            if sCurrentLimit == False:
-                sCurrentLimit = 0
-            else:
-                #Supprimer les elements deja afficher.
-                sHtmlContent = sHtmlContent[int(sCurrentLimit):]
-
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
@@ -374,12 +366,23 @@ class cTrakt:
         sHtmlContent = oRequestHandler.request(jsonDecode=True)
         sHeaders = oRequestHandler.getResponseHeader()
 
+        #Fonctionnement specifique au calendrier.
+        if 'calendars/all/shows/new' in sUrl:
+            if sCurrentLimit == False:
+                sCurrentLimit = 0
+            else:
+                #Supprimer les elements deja afficher.
+                sHtmlContent = sHtmlContent[int(sCurrentLimit):]
+
+            total = int(MAXRESULT)
+        else:
+            total = len(sHtmlContent)
+
         if 'X-Pagination-Page' in sHeaders:
             sPage = sHeaders['X-Pagination-Page']
         if 'X-Pagination-Page-Count' in sHeaders:
             sMaxPage = sHeaders['X-Pagination-Page-Count']
 
-        total = len(sHtmlContent)
         sKey = 0
         sFunction = 'getLoad'
         sId = SITE_IDENTIFIER
@@ -662,7 +665,7 @@ class cTrakt:
             except:
                 pass
 
-            if "calendars/all/shows/new" in sUrl:
+            if "calendars/all/shows/new" in sUrl and len(sHtmlContent) > 10:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('limite', int(sCurrentLimit) + int(MAXRESULT))
