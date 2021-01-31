@@ -25,9 +25,10 @@ ANIM_NEWS_EPISODES = (URL_MAIN, 'showMovies')  # revoir libellé des urls ANIM_N
 key_serie = '?key_serie&s='
 key_film = '?key_film&s='
 
+URL_SEARCH_ANIMS = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + key_serie, 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + key_film, 'showMovies')
+URL_INTERNALSEARCH_SERIES = (URL_MAIN + key_serie, 'showMovies')
+URL_INTERNALSEARCH_MOVIES = (URL_MAIN + key_film, 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 
@@ -113,7 +114,7 @@ def showSearchMovie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH_MOVIES[0] + sSearchText
+        sUrl = URL_INTERNALSEARCH_MOVIES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -123,7 +124,7 @@ def showSearchSerie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH_SERIES[0] + sSearchText
+        sUrl = URL_INTERNALSEARCH_SERIES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
