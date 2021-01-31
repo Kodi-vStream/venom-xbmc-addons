@@ -29,6 +29,8 @@ URL_API = 'https://api.viki.io/v4/'
 MOVIE_GENRES = (True, 'showMovieGenre')
 MOVIE_PAYS = (True, 'showMoviePays')
 
+DRAMA_DRAMAS = (True, 'load')
+
 MOVIE_NEWS = (URL_API + 'movies.json?sort=newest_video&page=1&per_page=50&app=100000a&t=', 'showMovies')
 MOVIE_RECENT = (URL_API + 'movies.json?sort=views_recent&page=1&per_page=50&app=100000a&t=', 'showMovies')
 MOVIE_POPULAR = (URL_API + 'movies.json?sort=trending&page=1&per_page=50&app=100000a&t=', 'showMovies')
@@ -46,12 +48,7 @@ SERIE_DATE_CREATED = (URL_API + 'series.json?sort=created_at&page=1&per_page=50&
 
 URL_SEARCH = (URL_API + 'search.json?page=1&per_page=50&app=100000a&term=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
-
-URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
-URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
-
-MOVIE_MOVIE = (True, 'showMenuMovies')
-SERIE_SERIES = (True, 'showMenuSeries')
+URL_SEARCH_DRAMAS = (URL_SEARCH[0], 'showMovies')
 
 se = 'true'  # activation des sous titres
 # lang = 'en' ou 'fr'
@@ -215,9 +212,9 @@ def showMovies(sSearch=''):
                             sDesc = str(mt)
                             sTitle = str(jsonrsp['response'][movie]['titles']['en'].encode('utf-8', 'ignore'))
                             sThumb = str(jsonrsp['response'][movie]['images']['poster']['url'])
-                            sUrlApi = str(jsonrsp['response'][movie]['id']\
-                                          + '@' + jsonrsp['response'][movie]['images']['poster']['url']\
-                                          + '@' + subtitle_completion1 + '@' + subtitle_completion2 + '@' + mt)
+                            sUrlApi = str(jsonrsp['response'][movie]['id'] + '@' +
+                                          jsonrsp['response'][movie]['images']['poster']['url'] + '@' +
+                                          subtitle_completion1 + '@' + subtitle_completion2 + '@' + mt)
 
                             oOutputParameterHandler = cOutputParameterHandler()
                             oOutputParameterHandler.addParameter('siteUrl', sUrlApi)
@@ -233,9 +230,9 @@ def showMovies(sSearch=''):
     if not sSearch:
         if (jsonrsp['more'] == True):
             getpage = re.compile('(.+?)&page=(.+?)&per_page=(.+?)&t=').findall(url)
-            for fronturl, page, backurl in getpage:
+            for frontUrl, page, backurl in getpage:
                 iNumberPage = int(page) + 1
-                url = fronturl + '&page=' + str(iNumberPage) + '&per_page=' + backurl + '&t='
+                url = frontUrl + '&page=' + str(iNumberPage) + '&per_page=' + backurl + '&t='
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', url)
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + str(iNumberPage), oOutputParameterHandler)
@@ -280,9 +277,9 @@ def showSaisons():
                     pass
 
                 sTitle = jsonrsp['response'][episode]['container']['titles']['en'] + ' Episode ' + str(jsonrsp['response'][episode]['number'])
-                sUrl = str(jsonrsp['response'][episode]['id']\
-                           + '@' + jsonrsp['response'][episode]['images']['poster']['url']\
-                           + '@' + subtitle_completion1 + '@' + subtitle_completion2 + '@' + et)
+                sUrl = str(jsonrsp['response'][episode]['id'] + '@' +
+                           jsonrsp['response'][episode]['images']['poster']['url'] + '@' +
+                           subtitle_completion1 + '@' + subtitle_completion2 + '@' + et)
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -304,9 +301,9 @@ def showSaisons():
 
     if (jsonrsp['more'] == True):
         getpage = re.compile('(.+?)page=(.+?)&per_page').findall(url)
-        for fronturl, page in getpage:
-            newpage = int(page) + 1
-            url = fronturl + 'page=' + str(newpage) + '&per_page=50&app=100000a&t=' + timestamp
+        for frontUrl, page in getpage:
+            newPage = int(page) + 1
+            url = frontUrl + 'page=' + str(newPage) + '&per_page=50&app=100000a&t=' + timestamp
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', url)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page', oOutputParameterHandler)
@@ -431,7 +428,7 @@ def GET_SUBTILES(url, subtitle_completion1, subtitle_completion2):
 
 def GET_URLS_STREAM(url):
     qlist = ['480p', '360p', '240p', 'mpd']  # plus de '480p', '360p', '240p ?
-    streamUrllist = []
+    streamUrlList = []
     validq = []
 
     urlreq = SIGN(url, '/streams.json')
@@ -447,16 +444,16 @@ def GET_URLS_STREAM(url):
         if qual in jsonrsp:
             if qual == 'mpd':
                 basehttp = 'http'
-            streamUrllist.append(jsonrsp[qual][basehttp]['url'])
+            streamUrlList.append(jsonrsp[qual][basehttp]['url'])
             validq.append(qual)
             testeurl = jsonrsp[qual][basehttp]['url']
             testeq = qual
 
     # ajout du teste à enlever + 1 à revoir et
-    streamUrllist.append(testeurl)
+    streamUrlList.append(testeurl)
     validq.append(testeq)
 
-    return validq, streamUrllist
+    return validq, streamUrlList
 
 
 def showLinks():
@@ -466,25 +463,25 @@ def showLinks():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    Datalist = []
+    dataList = []
 
     url, thumbnail, sub_pourcent1, sub_pourcent2, stitle = sUrl.split("@")
     sSubPathFr2, sSubPathEn2 = GET_SUBTILES(url, sub_pourcent1, sub_pourcent2)
     qualityList2, streamList2 = GET_URLS_STREAM(url)
 
-    Datalist.append(sSubPathFr2)
-    Datalist.append(sSubPathEn2)
+    dataList.append(sSubPathFr2)
+    dataList.append(sSubPathEn2)
 
     for item in qualityList2:
-        Datalist.append(item)
+        dataList.append(item)
 
     for item in streamList2:
-        Datalist.append(item)
+        dataList.append(item)
 
     oHoster = cHosterGui().checkHoster('viki')
     if (oHoster != False):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
-        cHosterGui().showHoster(oGui, oHoster, Datalist, sThumb)
+        cHosterGui().showHoster(oGui, oHoster, dataList, sThumb)
 
     oGui.setEndOfDirectory()
