@@ -4,7 +4,6 @@ import datetime
 import re
 import time
 import unicodedata
-import json
 
 from resources.lib.comaddon import addon, dialog, progress, VSlog, xbmc
 from resources.lib.gui.gui import cGui
@@ -26,7 +25,6 @@ API_VERS = '2'
 
 MAXRESULT = '10'
 
-
 class cTrakt:
 
     CONTENT = '0'
@@ -44,8 +42,6 @@ class cTrakt:
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
         oRequestHandler.addJSONEntry('client_id', API_KEY)
         sHtmlContent = oRequestHandler.request(jsonDecode=True)
-
-        # {"device_code":"a434135042b5a76159628bc974eed2f266fb47df9f438d5738ce40396d531490", "user_code":"EBDFD843", "verification_url":"https://trakt.tv/activate", "expires_in":600, "interval":5}
 
         total = len(sHtmlContent)
 
@@ -149,10 +145,6 @@ class cTrakt:
             oOutputParameterHandler.addParameter('siteUrl', URL_API + 'users/me/history?page=1&limit=' + str(MAXRESULT))
             oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30308), 'trakt.png', oOutputParameterHandler)
 
-            # oOutputParameterHandler = cOutputParameterHandler()
-            # oOutputParameterHandler.addParameter('siteUrl', URL_API + 'users/me/watching')
-            # oGui.addDir(SITE_IDENTIFIER, 'getBseries', 'Actuellement', 'mark.png', oOutputParameterHandler)
-
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', URL_API + 'oauth/revoke')
             oGui.addDir(SITE_IDENTIFIER, 'getCalendrier', self.ADDON.VSlang(30331), 'trakt.png', oOutputParameterHandler)
@@ -184,9 +176,9 @@ class cTrakt:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'https://')
         oOutputParameterHandler.addParameter('type', 'liked-lists')
-        oGui.addDir(SITE_IDENTIFIER, 'getLists', 'Mes listes aimées', 'trakt.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'getLists', 'Mes listes aimées', 'trakt.png', oOutputParameterHandler)  
 
-        oGui.setEndOfDirectory()
+        oGui.setEndOfDirectory() 
 
     def getCalendrier(self):
         oGui = cGui()
@@ -198,7 +190,6 @@ class cTrakt:
         liste.append(['Mes sorties sur les 7 jours à venir', URL_API + 'calendars/my/shows/' + today_date + '/7'])
         liste.append(['Mes sorties sur les 30 jours à venir', URL_API + 'calendars/my/shows/' + today_date + '/30'])
         liste.append(['Nouveautées sur 7 jours', URL_API + 'calendars/all/shows/new/' + today_date + '/7'])
-        # liste.append(['Freeze - Nouveautées sur la journée à venir', URL_API + 'calendars/all/shows/' + today_date + '/1'])
 
         for sTitle, sUrl in liste:
 
@@ -247,8 +238,6 @@ class cTrakt:
             if self.ADDON.getSetting('trakt_movies_show_most_monthly') == 'true':
                 liste.append([self.ADDON.VSlang(30317), URL_API + 'movies/played/monthly?page=1&limit=' + str(MAXRESULT)])
 
-            # liste.append(['historique de Films', URL_API + 'users/me/history/movies'])
-
         elif sType == 'show':
             liste.append(['%s (%s)' % (self.ADDON.VSlang(30310), sHtmlContent['shows']['collected']), URL_API + 'users/me/collection/shows?page=1&limit=' + str(MAXRESULT)])
 
@@ -275,8 +264,6 @@ class cTrakt:
 
             if self.ADDON.getSetting('trakt_tvshows_show_most_monthly') == 'true':
                 liste.append([self.ADDON.VSlang(30317), URL_API + 'shows/played/monthly?page=1&limit=' + str(MAXRESULT)])
-
-            # liste.append(['Historique de séries', URL_API + 'users/me/history/shows'])
 
         elif sType == 'custom-lists':
             oRequestHandler = cRequestHandler(URL_API + 'users/me/lists')
@@ -322,20 +309,8 @@ class cTrakt:
         oGui.setEndOfDirectory()
 
     def getBsout(self):
-        # oGui = cGui()
-
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-
-        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY,
-                   'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % self.ADDON.getSetting('bstoken')}
-
-        post = {'client_id': API_KEY, 'client_secret': API_SECRET, 'token': self.ADDON.getSetting('bstoken')}
-
-        try:
-            post = json.dumps(post).encode('utf-8')
-        except:
-            post = json.dumps(post)
 
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
@@ -378,9 +353,18 @@ class cTrakt:
         if url2:
             sUrl = url2
         else:
+            sCurrentLimit = oInputParameterHandler.getValue('limite') 
             sUrl = oInputParameterHandler.getValue('siteUrl')
 
         sUrl = sUrl + "?page=1&limit=" + MAXRESULT
+
+        #Fonctionnement specifique au calendrier.
+        if 'calendars/all/shows/new' in sUrl:
+            if sCurrentLimit == False:
+                sCurrentLimit = 0
+            else:
+                #Supprimer les elements deja afficher.
+                sHtmlContent = sHtmlContent[int(sCurrentLimit):]
 
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
@@ -402,11 +386,16 @@ class cTrakt:
         searchtext = ''
         sTitle = ''
         sOldDate = None
-
+        
         if (total > 0):
             progress_ = progress().VScreate(SITE_NAME)
 
             for i in sHtmlContent:
+                #Limite les elements du calendrier
+                if 'calendars/all/shows/new' in sUrl:
+                    if progress_.getProgress() >= 10:
+                        break
+
                 progress_.VSupdate(progress_, total)
                 if progress_.iscanceled():
                     break
@@ -429,7 +418,7 @@ class cTrakt:
                         movie = i['movie']
                         sTitle = self.getLocalizedTitle(movie, 'movies')
                         sTrakt, sYear, sImdb, sTmdb = movie['ids']['trakt'], movie['year'], movie['ids']['imdb'], movie['ids']['tmdb']
-
+                        
                         cTrakt.CONTENT = '1'
                         sFunction = 'showSearch'
                         sId = 'globalSearch'
@@ -563,7 +552,7 @@ class cTrakt:
                         sTitle = self.decode(sTitle)
                         searchtext = ('%s') % (sTitle)
                         sFile = ('%s - (%s)') % (sTitle, sYear)
-                        sTitle = ('%s (S%02dE%02d)') % (self.decode(sTitle, Unicode=True), sSaison, sEpisode)
+                        sTitle = ('%s (S%02dE%02d)') % (self.decode(sTitle,  Unicode=True), sSaison, sEpisode)
 
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
@@ -669,12 +658,17 @@ class cTrakt:
                     sNextPage = sUrl.replace('page=' + str(sPage), 'page=' + str(int(sPage) + 1))
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-                    oGui.addNext(SITE_IDENTIFIER, 'getTrakt', 'Page ' + str(int(sPage) + 1) + '/' + sMaxPage, oOutputParameterHandler)
+                    oGui.addNext(SITE_IDENTIFIER, 'getTrakt', 'Page ' + str(int(sPage) + 1)  + '/' + sMaxPage, oOutputParameterHandler)
             except:
                 pass
 
+            if "calendars/all/shows/new" in sUrl:
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('limite', int(sCurrentLimit) + int(MAXRESULT))
+                oGui.addNext(SITE_IDENTIFIER, 'getTrakt', 'Page suivante', oOutputParameterHandler)  
+
         oGui.setEndOfDirectory()
-        return
 
     def getBseasons(self):
         oGui = cGui()
@@ -715,11 +709,10 @@ class cTrakt:
                 sNum += 1
 
         oGui.setEndOfDirectory()
-        return
 
     def getLocalizedTitle(self, item, what):
         try:
-            if 'episode' not in what:
+            if not 'episode' in what:
                 oRequestHandler = cRequestHandler(URL_API + '%s/%s/translations/fr' % (what, item['ids']['slug']))
                 oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
                 oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
@@ -763,9 +756,6 @@ class cTrakt:
 
         cTrakt.CONTENT = '2'
 
-        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS,
-                   'Authorization': 'Bearer %s' % self.ADDON.getSetting('bstoken')}
-
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
@@ -781,12 +771,12 @@ class cTrakt:
 
                 if 'collection' in sUrl:
                     sNumber = i['number']
-                    # sDate = datetime.datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y %H:%M')
+
                     sTitle2 = ('%s (E%02d)') % (self.decode(sTitle), int(sNumber))
 
                 elif 'watched' in sUrl:
                     sNumber, sPlays = i['number'], i['plays']
-                    # sDate = datetime.datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y %H:%M')
+
                     sTitle2 = ('%s Lectures - %s(E%02d)') % (sPlays, self.decode(sTitle), int(sNumber))
 
                 else:
@@ -809,12 +799,10 @@ class cTrakt:
         oGuiElement.setTitle(sTitle)
         oGuiElement.setFileName(sFile)
         oGuiElement.setIcon('trakt.png')
-        # oGuiElement.setThumbnail(sThumb)
         oGuiElement.setImdbId(sImdb)
         oGuiElement.setTmdbId(sTmdb)
 
         if self.ADDON.getSetting('meta-view') == 'false':
-            # self.getTmdbInfo(sTmdb, oGuiElement)
             oGuiElement.setMetaAddon('true')
 
         if cTrakt.CONTENT == '2':
@@ -826,15 +814,7 @@ class cTrakt:
             oGuiElement.setCat(1)
             cGui.CONTENT = 'movies'
 
-        # oGuiElement.setDescription(sDesc)
-        # oGuiElement.setFanart(fanart)
-
-        # oGui.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
-
-        # oGui.addHost(oGuiElement, oOutputParameterHandler)
-        # self.createContexTrakt(oGui, oGuiElement, oOutputParameterHandler)
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
-        # oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'next.png', oOutputParameterHandler)
 
     def getContext(self):
 
@@ -875,18 +855,6 @@ class cTrakt:
         if ret > -1:
             self.__sType = disp[ret]
         return self.__sType
-
-    # def getAction2(self):
-        # sAction = URL_API + 'search/movie?query=tron'
-        # headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS}
-
-        # req = urllib2.Request(sAction, None, headers)
-        # response = urllib2.urlopen(req)
-        # sHtmlContent = response.read()
-        # result = json.loads(sHtmlContent)
-        # VSlog(str(result))
-        # for i in result:
-            # VSlog(str(i['movie']['title'].encode('utf-8')) + '=' + str(i['movie']['ids']['imdb']))
 
     def getAction(self, Action=''):
 
@@ -942,7 +910,7 @@ class cTrakt:
                 sPost = {sType: [{'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason), 'episodes': [{'number': int(sEpisode)}]}]}]}
         else:
             sPost = {sType: [{'ids': {'imdb': sImdb}}]}
-
+            
         oRequestHandler = cRequestHandler(sAction)
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
@@ -982,9 +950,6 @@ class cTrakt:
         except UnboundLocalError:
             self.DIALOG.VSinfo("Erreur")
 
-        # {u'not_found': {u'movies': [], u'seasons': [], u'people': [], u'episodes': [], u'shows': []}, u'updated': {u'movies': 0, u'episodes': 0}, u'added': {u'movies': 1, u'episodes': 0}, u'existing': {u'movies': 0, u'episodes': 0}}
-        # {u'deleted': {u'movies': 0, u'episodes': 55}, u'not_found': {u'movies': [], u'seasons': [], u'people': [], u'episodes': [], u'shows': []}}
-
         if (oInputParameterHandler.exist('sReload')):
             xbmc.executebuiltin('Container.Refresh')
         return
@@ -999,7 +964,7 @@ class cTrakt:
         liste.append(['[COLOR teal]' + self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30312) + '[/COLOR]', URL_API + 'sync/history'])
         liste.append(['[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30312) + '[/COLOR]', URL_API + 'sync/history/remove'])
 
-        for sTitle, sUrl in liste:
+        for sTitle,sUrl in liste:
             oOutputParameterHandler = cOutputParameterHandler()
             if cTrakt.CONTENT == '2':
                 oOutputParameterHandler.addParameter('sType', 'shows')
@@ -1038,7 +1003,6 @@ class cTrakt:
 
         oHandler = cRechercheHandler()
         oHandler.setText(sMovieTitle)
-        # oHandler.setDisp(sDisp)
         aPlugins = oHandler.getAvailablePlugins()
 
         oGui.setEndOfDirectory()
@@ -1057,7 +1021,6 @@ class cTrakt:
 
         sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
-        # total = len(sHtmlContent)
         # format
         meta = {}
         meta['imdb_id'] = sHtmlContent['id']
@@ -1067,11 +1030,6 @@ class cTrakt:
         meta['votes'] = sHtmlContent['vote_count']
         meta['duration'] = sHtmlContent['runtime']
         meta['plot'] = sHtmlContent['overview']
-        # meta['mpaa'] = result['certification']
-        # meta['premiered'] = result['released']
-        # meta['director'] = result['director']
-        # meta['writer'] = result['writer']
-        # if (total > 0):
         if sHtmlContent['poster_path']:
             oGuiElement.setThumbnail('https://image.tmdb.org/t/p/w396' + sHtmlContent['poster_path'])
         if sHtmlContent['backdrop_path']:
@@ -1102,11 +1060,6 @@ class cTrakt:
         if r:
             year = str(r.group(0))
             sTitle = sTitle.replace(year, '')
-
-        # VSlog('Recherche de : ' + sTitle)
-        # VSlog('Saison/episode : ' + SaisonEpisode)
-        # VSlog('Annee : ' + year)
-        # VSlog('Type : ' + sType)
 
         meta = grab.get_idbyname(oInputParameterHandler.getValue('sFileName'), year, sType)
 
