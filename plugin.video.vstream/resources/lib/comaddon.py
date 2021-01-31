@@ -151,7 +151,7 @@ class empty():
 
 class progress():
 
-    def VScreate(self, title = 'vStream', desc = ''):
+    def VScreate(self, title = 'vStream', desc = '', large=False):
 
         # Ne pas afficher le sablier si nous ne sommes pas dans un menu vStream
         currentWindow = xbmcgui.getCurrentWindowId()
