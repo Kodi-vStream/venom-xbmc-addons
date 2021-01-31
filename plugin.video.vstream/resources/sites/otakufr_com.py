@@ -25,7 +25,7 @@ ANIM_GENRES = (True, 'ShowGenre')
 ANIM_LIST = (URL_MAIN + 'liste-anime/', 'showAlpha')
 
 URL_SEARCH = (URL_MAIN + 'toute-la-liste-affiches/?q=', 'showMovies')
-URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_ANIMS = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 
