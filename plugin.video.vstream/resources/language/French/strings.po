@@ -42,7 +42,7 @@ msgstr "Taille des Fanarts"
 
 msgctxt "#30009"
 msgid "Use extendedinfo for the information windows"
-msgstr "Utiliser extendedinfo pour la fenetre information"
+msgstr "Utiliser la fenetre d'information ExtendedInfo"
 
 msgctxt "#30010"
 msgid "Color Text note"
@@ -645,8 +645,8 @@ msgid "[COLOR khaki]Hello, %s[/COLOR]"
 msgstr "[COLOR khaki][COLOR khaki]Bonjour, %s[/COLOR]"
 
 msgctxt "#30308"
-msgid "History"
-msgstr "Historique"
+msgid "Search history"
+msgstr "Historique de recherche"
 
 msgctxt "#30309"
 msgid "Disconnection"
@@ -878,7 +878,7 @@ msgstr "[COLOR gold]Recherche saison complète[/COLOR]"
 
 msgctxt "#30416"
 msgid "[COLOR gold]Search history[/COLOR]"
-msgstr "[COLOR gold]Historique de recherche[/COLOR]"
+msgstr "[COLOR gold]Lancer une nouvelle recherche[/COLOR]"
 
 msgctxt "#30417"
 msgid "[COLOR orange]Search on Alluc_ee[/COLOR]"
@@ -1099,4 +1099,4 @@ msgstr "Url"
 
 msgctxt "#31102"
 msgid "Use the skin display for the information windows"
-msgstr "Utiliser l'affichage du skin pour la fenetre information"
+msgstr "Utiliser la fenetre d'information du skin"

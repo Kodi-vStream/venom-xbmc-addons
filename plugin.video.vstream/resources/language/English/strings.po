@@ -645,7 +645,7 @@ msgid "[COLOR khaki]Hello, %s[/COLOR]"
 msgstr ""
 
 msgctxt "#30308"
-msgid "History"
+msgid "Search history"
 msgstr ""
 
 msgctxt "#30309"
