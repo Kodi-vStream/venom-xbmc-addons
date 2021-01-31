@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -8,7 +10,6 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 from resources.lib.multihost import cMultiup
-import re
 
 SITE_IDENTIFIER = 'asia_insane'
 SITE_NAME = 'Asia Insane'
@@ -16,17 +17,16 @@ SITE_DESC = 'Regarder Films et Séries Asiatique en Streaming gratuit'
 
 URL_MAIN = 'https://www.asia-insane.biz/'
 
+DRAMA_DRAMAS = (True, 'load')
+DRAMA_MOVIES = (URL_MAIN + 'films-asiatiques-affichage-grid/', 'showMovies')
+DRAMA_GENRES = (True, 'showGenres')
+DRAMA_ANNEES = (True, 'showYears')
+DRAMA_LIST = (True, 'showAlpha')
+DRAMA_SERIES = (URL_MAIN + 'liste-des-dramas-vostfr-ddl/', 'showMovies')
+
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + 'wp-admin/admin-ajax.php', 'showMovies')
-URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
-URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
-
-MOVIE_MOVIE = (True, 'load')
-MOVIE_NEWS = (URL_MAIN + 'films-asiatiques-affichage-grid/', 'showMovies')
-MOVIE_GENRES = (True, 'showGenres')
-MOVIE_ANNEES = (True, 'showYears')
-MOVIE_LIST = (True, 'showAlpha')
-SERIE_DRAMAS = (URL_MAIN + 'liste-des-dramas-vostfr-ddl/', 'showMovies')
+URL_SEARCH_DRAMAS = (URL_SEARCH[0], 'showMovies')
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -39,24 +39,24 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_MOVIES[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_MOVIES[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_GENRES[1], 'Dramas (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_ANNEES[1], 'Dramas (Par années)', 'annees.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Ordre alphabétique)', 'listes.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_LIST[1], 'Films (Ordre alphabétique)', 'listes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_DRAMAS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_DRAMAS[1], 'Séries (Dramas)', 'dramas.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_SERIES[1], 'Séries (Dramas)', 'dramas.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -180,7 +180,6 @@ def showAlpha():
 
 def showMovies(sSearch=''):
     oGui = cGui()
-    oParser = cParser()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -217,6 +216,7 @@ def showMovies(sSearch=''):
         sHtmlContent = oRequestHandler.request()
         sPattern = 'front">.+?src="(http[^"]+).+?field-title"><a href="([^"]+)">([^<]+)d{2}.+?field-desc"><p>([^<]+).+?(?:|/version/([^/]+).+?)(?:|/date/([^/]+).+?)Genre:'
 
+    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
