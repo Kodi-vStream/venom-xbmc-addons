@@ -43,9 +43,10 @@ ANIM_MOVIE_GENRES = (True, 'showMovieGenre')
 ANIM_MOVIE_VFS = (URL_MAIN + 'videos?sk=c&filter=movie&unlicenced=1&lang=vf&p=1', 'showMovies')
 ANIM_MOVIE_VOSTFRS = (URL_MAIN + 'videos?sk=c&filter=movie&unlicenced=1&lang=vostfrp=1', 'showMovies')
 
+URL_SEARCH_ANIMS = (URL_MAIN + 'videos?unlicenced=1&q=', 'showMovies')
 URL_SEARCH = (URL_MAIN + 'videos?unlicenced=1&q=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + 'videos?filter=serie&unlicenced=1&q=', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + 'videos?filter=movie&unlicenced=1&q=', 'showMovies')
+URL_INTERNALSEARCH_SERIES = (URL_MAIN + 'videos?filter=serie&unlicenced=1&q=', 'showMovies')
+URL_INTERNALSEARCH_MOVIES = (URL_MAIN + 'videos?filter=movie&unlicenced=1&q=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
@@ -240,7 +241,7 @@ def showSearchMovie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH_MOVIES[0] + sSearchText
+        sUrl = URL_INTERNALSEARCH_MOVIES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -250,7 +251,7 @@ def showSearchSerie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH_SERIES[0] + sSearchText
+        sUrl = URL_INTERNALSEARCH_SERIES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
