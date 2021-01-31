@@ -94,7 +94,7 @@ class PasteCache:
                 self.__createdb()
                 return
         except:
-            VSlog('Error: Unable to write on %s' % REALCACHE)
+            VSlog('Error: Unable to create DB %s' % REALCACHE)
             pass
 
         try:
@@ -116,10 +116,10 @@ class PasteCache:
         try:
             self.dbcur.execute(sql_create)
         except:
-            VSlog('Error: Cannot create table movie')
+            VSlog('Error: Unable to create table %s' % SITE_IDENTIFIER)
 
         self.dbcur.execute(sql_create)
-        VSlog('table pastebin creee')
+        VSlog('table %s creee' % SITE_IDENTIFIER)
 
     def __del__(self):
         """ Cleanup db when object destroyed """
@@ -137,7 +137,7 @@ class PasteCache:
             self.dbcur.execute(sql_select)
             matchedrow = self.dbcur.fetchone()
         except Exception as e:
-            VSlog('************* Error selecting from cache db: %s' % e, 4)
+            VSlog('************* Error selecting from %s db: %s' % (SITE_IDENTIFIER, e), 4)
             return None, False
 
         if matchedrow:
@@ -200,7 +200,7 @@ class PasteCache:
             self.dbcur.execute(sql_delete)
             self.db.commit()
         except Exception as e:
-            VSlog('************* Error deleting from cache db: %s' % e, 4)
+            VSlog('************* Error deleting from %s db: %s' % (SITE_IDENTIFIER, e), 4)
             return None
 
 
