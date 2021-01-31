@@ -496,6 +496,14 @@ msgctxt "#30122"
 msgid "Animes"
 msgstr "Animés"
 
+msgctxt "#30123"
+msgid "Search (Dramas)"
+msgstr "Recherche (Dramas)"
+
+msgctxt "#30124"
+msgid "Dramas"
+msgstr "Dramas"
+
 msgctxt "#30127"
 msgid "Tools"
 msgstr "Outils"
