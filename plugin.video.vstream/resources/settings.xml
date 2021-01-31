@@ -92,6 +92,8 @@
 
         <setting visible="false" id="plugin_channelstream" type="bool" label="Channel Stream" default="true"/>
 
+        <setting visible="false" id="plugin_cine974" type="bool" label="Ciné 974" default="true"/>
+
         <setting visible="false" id="plugin_cinemay_com" type="bool" label="Cinemay" default="true"/>
 
         <setting visible="false" id="plugin_cinemegatoil_org" type="bool" label="Cinemegatoil" default="true"/>
@@ -108,13 +110,13 @@
 
         <setting visible="false" id="plugin_dpstreamhd" type="bool" label="DpStream HD" default="true"/>
 
-        <setting visible="false" id="plugin_dpstreaming" type="bool" label="DP Streaming" default="true"/>
-
+<!-- CloudFlare       15/01/21        <setting visible="false" id="plugin_dpstreaming" type="bool" label="DP Streaming" default="true"/>
+ -->
         <setting visible="false" id="plugin_enstream" type="bool" label="Enstream" default="true"/>
 
         <setting visible="false" id="plugin_extreme_down" type="bool" label="ExtremeDown" default="true"/>
 
-<!-- CloudFlare         <setting visible="false" id="plugin_filmoflix" type="bool" label="Filmoflix" default="true"/>
+<!-- CloudFlare   26/11/20      <setting visible="false" id="plugin_filmoflix" type="bool" label="Filmoflix" default="true"/>
  -->
         <setting visible="false" id="plugin_filmspourenfants" type="bool" label="Films pour Enfants" default="true"/>
 
@@ -226,10 +228,10 @@
 
         <setting visible="false" id="plugin_videobuzzy_com" type="bool" label="Videobuzzy" default="true"/>
 
-        <setting visible="false" id="plugin_voiranime" type="bool" label="voiranime" default="true"/>
-        
         <setting visible="false" id="plugin_viki_com" type="bool" label="Viki" default="true"/>
 
+        <setting visible="false" id="plugin_voiranime" type="bool" label="voiranime" default="true"/>
+        
         <setting visible="false" id="plugin_voirfilms_org" type="bool" label="VoirFilms" default="true"/>
 
         <setting visible="false" id="plugin_wawacity" type="bool" label="Wawacity" default="true"/>
