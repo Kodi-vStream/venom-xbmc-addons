@@ -24,10 +24,12 @@ ANIM_GENRES = (True, 'ShowGenre')
 ANIM_NEWS_EPISODES = (URL_MAIN, 'showMovies')  # revoir libellé des urls ANIM_NEWS ANIM_NEWS_EPISODES
 key_serie = '?key_serie&s='
 key_film = '?key_film&s='
+
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + key_serie, 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + key_film, 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
+
 
 def load():
     oGui = cGui()
@@ -47,7 +49,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS_EPISODES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS_EPISODES[1], 'Animés (Derniers épisodes)', 'news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'siteUrl')
     oGui.addDir(SITE_IDENTIFIER, 'showSearchMovie', 'Recherche Films', 'search.png', oOutputParameterHandler)
@@ -71,8 +73,8 @@ def ShowGenre():
 
     oGui = cGui()
     listegenre = ['action', 'aventure', 'comedie', 'crime', 'drame', 'family', 'fantastique', 'josei', 'musical',
-                   'mystere', 'psychologique', 'romance', 'school-life', 'science-fiction', 'seinen', 'shoujo', 
-                   'shounen', 'slice-of-life', 'sports', 'surnaturel', 'thriller', 'ueda-shigeru']
+                  'mystere', 'psychologique', 'romance', 'school-life', 'science-fiction', 'seinen', 'shoujo',
+                  'shounen', 'slice-of-life', 'sports', 'surnaturel', 'thriller', 'ueda-shigeru']
     for igenre in listegenre:
         sTitle = igenre.capitalize().replace('-', ' ')
         sUrl = URL_MAIN + 'genre/' + igenre + '/'
@@ -103,7 +105,7 @@ def showAlpha():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('AZ', sLetter)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre - [COLOR coral]' + sLetter + '[/COLOR]', 'az.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]' + sLetter + '[/COLOR]', 'az.png', oOutputParameterHandler)
     oGui.setEndOfDirectory()
 
 
@@ -181,7 +183,7 @@ def showMovies(sSearch=''):
                     continue
 
             if 'film' in sTitle.lower():
-                sTitle = sTitle.replace('Film', '').replace('film', '')  # à reverifier .replace('Movie', '') 
+                sTitle = sTitle.replace('Film', '').replace('film', '')  # à reverifier .replace('Movie', '')
                 sTitle = sTitle + ' [film]'
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -214,7 +216,7 @@ def __checkForNextPage(sHtmlContent):
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
-        sPaging = sNumberNext + '/' + sNumberMax 
+        sPaging = sNumberNext + '/' + sNumberMax
         return sNextPage, sPaging
 
     return False, False
@@ -286,7 +288,7 @@ def showLinks():
                 sUrl2 = 'https:' + sUrl2
 
             sHost = GetHostname(sUrl2)
-            i = i + 1 
+            i = i + 1
             sDisplayTitle = '%s [COLOR coral]%s[/COLOR]' % (sMovieTitle, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -321,7 +323,6 @@ def GetHostname(url):
     if (oHoster != False):
         return oHoster.getDisplayName()
     try:
-        sHost = ''
         if 'www' not in url:
             sHost = re.search('http.*?\/\/([^.]*)', url).group(1)
         else:
