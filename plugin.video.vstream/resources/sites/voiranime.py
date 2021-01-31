@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# 
+
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -9,7 +11,6 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 from resources.lib.util import Quote
-import re
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -23,16 +24,17 @@ ANIM_ANIMS = (True, 'load')
 ANIM_NEWS = (URL_MAIN, "showAnimes")
 ANIM_NEWS_VOSTFR = (URL_MAIN + "?filter=subbed", "showAnimes")
 ANIM_NEWS_VF = (URL_MAIN + "?filter=dubbed", "showAnimes")
-ANIM_GENRES = (URL_MAIN + "anime-genre/", "showGenres") 
+ANIM_GENRES = (URL_MAIN + "anime-genre/", "showGenres")
 ANIM_ALPHA = (URL_MAIN + 'liste-danimes/?start=', 'showAlpha')
 
 FUNCTION_SEARCH = 'showAnimes'
 URL_SEARCH = (URL_MAIN + '?post_type=wp-manga&m_orderby=views', 'showAnimes')
 URL_SEARCH_SERIES = (URL_SEARCH[0] + '&s=', 'showAnimes')
-#URL_SEARCH_ANIMS = (URL_SEARCH[0], 'showAnimes')
+URL_SEARCH_ANIMS = (URL_SEARCH[0], 'showAnimes')
 
 URL_SEARCH_VOSTFR = (URL_SEARCH[0] + '&language=vostfr&s=', 'showAnimes')
 URL_SEARCH_VF = (URL_SEARCH[0] + '&language=vf&s=', 'showAnimes')
+
 
 def load():
     oGui = cGui()
@@ -40,27 +42,27 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_VOSTFR[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d\'animés [VOSTFR]', 'search.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_VF[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d\'animés [VF]', 'search.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS_VOSTFR[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS_VOSTFR[1], 'Animés (Derniers ajouts) [VOSTFR]', 'news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS_VF[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS_VF[1], 'Animés (Derniers ajouts) [VF]', 'news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Par genres)', 'genres.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ALPHA[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ALPHA[1], 'Animés (Par ordre alphabétique)', 'az.png', oOutputParameterHandler)
@@ -90,15 +92,15 @@ def showAlpha():
 
     for i in range(-1, 27):
         progress_.VSupdate(progress_, 36)
-        
+
         oOutputParameterHandler = cOutputParameterHandler()
-        
+
         if (i == -1):
             sTitle = 'ALL'
-            oOutputParameterHandler.addParameter('siteUrl', sUrl.replace('?start=',''))
+            oOutputParameterHandler.addParameter('siteUrl', sUrl.replace('?start=', ''))
         elif (i == 0):
             sTitle = '#'
-            oOutputParameterHandler.addParameter('siteUrl', sUrl + "non-char")
+            oOutputParameterHandler.addParameter('siteUrl', sUrl + 'non-char')
         else:
             sTitle = chr(64 + i)
             oOutputParameterHandler.addParameter('siteUrl', sUrl + sTitle)
@@ -164,16 +166,14 @@ def showAnimes(sSearch=''):
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-
         sHtmlContent = oRequest.request()
-
         sPattern = '<a href="([^"]+)" title="([^"]+)".+?src="([^"]+)".+?Type.+?content.+?>([^<]+)'
 
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
         oRequestHandler = cRequestHandler(sUrl)
-        sHtmlContent = oRequestHandler.request() #code html recupéré
+        sHtmlContent = oRequestHandler.request()
         sPattern = '<div class="page-item-detail video">.+?a href="([^"]+)" title="([^"]+)".+?src="([^"]+)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -191,16 +191,14 @@ def showAnimes(sSearch=''):
                 break
 
             sUrl = aEntry[0]
-            sThumb = aEntry[2]
-            sTitle = aEntry[1]
-
             if 'http' not in sUrl:
                 sUrl = URL_MAIN[:-1] + sUrl
 
-            sTitle = sTitle.replace('film ', '')  # genre on peut elever
-            sTitle = sTitle.replace(' streaming', '')  # genre
+            sTitle = aEntry[1].replace('film ', '').replace(' streaming', '')
+            sThumb = aEntry[2]
+            if 'http' not in sThumb:
+                sThumb = URL_MAIN + sThumb
 
-            sLang = ''
             if 'VOSTFR' in sTitle:
                 sTitle = sTitle.replace('VOSTFR', '')
                 sLang = 'VOSTFR'
@@ -208,12 +206,9 @@ def showAnimes(sSearch=''):
                 sTitle = sTitle.replace('VF', '')
                 sLang = 'VF'
             else:
-                sLang= 'VOSTFR'
+                sLang = 'VOSTFR'
 
             sDisplayTitle = '%s (%s)' % (sTitle, sLang)
-
-            if 'http' not in sThumb:
-                sThumb = URL_MAIN + sThumb
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -230,7 +225,7 @@ def showAnimes(sSearch=''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.findall('([0-9]+)', sNextPage)[-1]
-            oGui.addNext(SITE_IDENTIFIER, 'showAnimes', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showAnimes', 'Page ' + number, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -244,24 +239,24 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
+
 def showEpisodes():
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    # sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<div class="summary__content ">.+?<p>([^<]+)' #recup description
+    sPattern = '<div class="summary__content ">.+?<p>([^<]+)'  # recup description
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[0])
 
-    sPattern = '<li class="wp-manga-chapter.+?="([^"]+)".+?([^<]+)' #Recup lien + titre
+    sPattern = '<li class="wp-manga-chapter.+?="([^"]+)".+?([^<]+)'  # Recup lien + titre
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -269,7 +264,7 @@ def showEpisodes():
 
     if (aResult[0] == True):
 
-        #Dernier épisode
+        # Dernier épisode
         sUrlEpisode = aResult[1][0][0]
         sTitle = aResult[1][0][1]
         oOutputParameterHandler = cOutputParameterHandler()
@@ -280,7 +275,7 @@ def showEpisodes():
 
         oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', '===] Dernier épisode [===', '', sThumb, sDesc, oOutputParameterHandler)
 
-        #Premier épisode
+        # Premier épisode
         sUrlEpisode = aResult[1][-1][0]
         sTitle = aResult[1][-1][1]
         oOutputParameterHandler = cOutputParameterHandler()
@@ -290,8 +285,8 @@ def showEpisodes():
         oOutputParameterHandler.addParameter('sThumb', sThumb)
 
         oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', '===] Premier épisode [===', '', sThumb, sDesc, oOutputParameterHandler)
-        
-        #Liste des épisodes
+
+        # Liste des épisodes
         for aEntry in aResult[1]:
             sUrlEpisode = aEntry[0]
             sTitle = aEntry[1]
@@ -303,9 +298,10 @@ def showEpisodes():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-    
+
     oGui.setEndOfDirectory()
-    
+
+
 def showLinks():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -317,13 +313,13 @@ def showLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #Les elements post.
-    data = re.search('data-action="bookmark" data-post="([^"]+)" data-chapter="([^"]+)"',sHtmlContent)
+    # Les elements post.
+    data = re.search('data-action="bookmark" data-post="([^"]+)" data-chapter="([^"]+)"', sHtmlContent)
     post = data.group(1)
     chapter = data.group(2)
 
-    #Ont extrait une partie de la page pour eviter les doublons.
-    sData = re.search('<select class="selectpicker host-select">(.+?)</select> </label>',sHtmlContent, re.MULTILINE|re.DOTALL).group(1)
+    # On extrait une partie de la page pour eviter les doublons.
+    sData = re.search('<select class="selectpicker host-select">(.+?)</select> </label>', sHtmlContent, re.MULTILINE | re.DOTALL).group(1)
 
     oParser = cParser()
     sPattern = '<option data-redirect=.+?value="([^"]+)">LECTEUR.+?</option>'
@@ -342,11 +338,12 @@ def showLinks():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sPost', post)
             oOutputParameterHandler.addParameter('sChapter', chapter)
-            oOutputParameterHandler.addParameter('sType', aEntry)            
+            oOutputParameterHandler.addParameter('sType', aEntry)
 
             oGui.addEpisode(SITE_IDENTIFIER, 'RecapchaBypass', sTitle, '', sThumb, '', oOutputParameterHandler)
-    
+
     oGui.setEndOfDirectory()
+
 
 def RecapchaBypass():
     oGui = cGui()
@@ -358,7 +355,7 @@ def RecapchaBypass():
     chapter = oInputParameterHandler.getValue('sChapter')
     types = oInputParameterHandler.getValue('sType')
 
-    #La lib qui gere recaptcha
+    # La lib qui gere recaptcha
     from resources.lib import librecaptcha
     test = librecaptcha.get_token(api_key="6Ld2q9gUAAAAAP9vNl23kYuST72fYsu494_B2qaZ", site_url=sUrl,
                                   user_agent=UA, gui=False, debug=False)
@@ -376,10 +373,11 @@ def RecapchaBypass():
         oOutputParameterHandler.addParameter('Token', test)
         oOutputParameterHandler.addParameter('sPost', post)
         oOutputParameterHandler.addParameter('sChapter', chapter)
-        oOutputParameterHandler.addParameter('sType', types)       
+        oOutputParameterHandler.addParameter('sType', types)
         oGui.addEpisode(SITE_IDENTIFIER, 'getHost', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def getHost():
     oGui = cGui()
@@ -392,8 +390,8 @@ def getHost():
     chapter = oInputParameterHandler.getValue('sChapter')
     types = oInputParameterHandler.getValue('sType')
 
-    #On valide le token du coté du site
-    data = 'action=get_video_chapter_content&grecaptcha=' + test + '&manga=' + post + '&chapter=' + chapter + '&host=' + types.replace(' ','+')
+    # On valide le token du coté du site
+    data = 'action=get_video_chapter_content&grecaptcha=' + test + '&manga=' + post + '&chapter=' + chapter + '&host=' + types.replace(' ', '+')
     oRequestHandler = cRequestHandler("https://voiranime.com/wp-admin/admin-ajax.php")
     oRequestHandler.setRequestType(1)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -414,7 +412,7 @@ def getHost():
     if (aResult[0] == True):
 
         for aEntry in aResult[1]:
-            sHosterUrl = aEntry.replace('\\','').replace('\\/','/')
+            sHosterUrl = aEntry.replace('\\', '').replace('\\/', '/')
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
