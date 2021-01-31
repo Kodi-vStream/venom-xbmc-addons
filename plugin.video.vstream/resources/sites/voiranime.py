@@ -29,8 +29,8 @@ ANIM_ALPHA = (URL_MAIN + 'liste-danimes/?start=', 'showAlpha')
 
 FUNCTION_SEARCH = 'showAnimes'
 URL_SEARCH = (URL_MAIN + '?post_type=wp-manga&m_orderby=views', 'showAnimes')
-URL_SEARCH_SERIES = (URL_SEARCH[0] + '&s=', 'showAnimes')
-URL_SEARCH_ANIMS = (URL_SEARCH[0], 'showAnimes')
+# URL_SEARCH_SERIES = (URL_SEARCH[0] + '&s=', 'showAnimes')
+URL_SEARCH_ANIMS = (URL_SEARCH[0] + '&s=', 'showAnimes')
 
 URL_SEARCH_VOSTFR = (URL_SEARCH[0] + '&language=vostfr&s=', 'showAnimes')
 URL_SEARCH_VF = (URL_SEARCH[0] + '&language=vf&s=', 'showAnimes')
