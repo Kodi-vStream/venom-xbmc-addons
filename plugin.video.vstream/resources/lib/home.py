@@ -70,6 +70,10 @@ class cHome:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir(SITE_IDENTIFIER, 'showDramas', self.addons.VSlang(30124), 'animes.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir(SITE_IDENTIFIER, 'showDocs', self.addons.VSlang(30112), 'doc.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -183,6 +187,20 @@ class cHome:
         # oGuiElement.setThumbnail(sThumbnail)
         # oGuiElement.setFanart(sFanart)
         oGuiElement.setCat(3)
+
+        oGui.addFolder(oGuiElement, oOutputParameterHandler)
+
+        # Recherche globale Dramas
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName('globalSearch')
+        oGuiElement.setFunction('showSearch')
+        oGuiElement.setTitle(self.addons.VSlang(30123))
+        oGuiElement.setFileName(self.addons.VSlang(30123))
+        oGuiElement.setIcon('search.png')
+        oGuiElement.setMeta(0)
+        # oGuiElement.setThumbnail(sThumbnail)
+        # oGuiElement.setFanart(sFanart)
+        oGuiElement.setCat(4)
 
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
@@ -345,6 +363,38 @@ class cHome:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'ANIM_ANIMS')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', self.addons.VSlang(30138), 'host.png', oOutputParameterHandler)
+
+        oGui.setEndOfDirectory()
+
+    def showDramas(self):
+        oGui = cGui()
+
+        # Affiche les Nouveautés Dramas
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'DRAMA_NEWS')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30124), self.addons.VSlang(30101)), 'news.png', oOutputParameterHandler)
+
+        # Affiche les Genres Dramas
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'DRAMA_GENRES')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30124), self.addons.VSlang(30105)), 'genres.png', oOutputParameterHandler)
+
+        # oOutputParameterHandler = cOutputParameterHandler()
+        # oOutputParameterHandler.addParameter('siteUrl', 'DRAMA_ANNEES')
+        # oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30124), self.addons.VSlang(30106)), 'annees.png', oOutputParameterHandler)
+
+        # oOutputParameterHandler = cOutputParameterHandler()
+        # oOutputParameterHandler.addParameter('siteUrl', 'DRAMA_VFS')
+        # oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30124), self.addons.VSlang(30107)), 'vf.png', oOutputParameterHandler)
+
+        # oOutputParameterHandler = cOutputParameterHandler()
+        # oOutputParameterHandler.addParameter('siteUrl', 'DRAMA_VOSTFRS')
+        # oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30124), self.addons.VSlang(30108)), 'vostfr.png', oOutputParameterHandler)
+
+        # Affiche les Sources Dramas
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'DRAMA_DRAMAS')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', self.addons.VSlang(30138), 'host.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
