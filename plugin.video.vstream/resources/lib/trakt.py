@@ -4,6 +4,7 @@ import datetime
 import re
 import time
 import unicodedata
+import json
 
 from resources.lib.comaddon import addon, dialog, progress, VSlog, xbmc
 from resources.lib.gui.gui import cGui
@@ -23,7 +24,8 @@ API_KEY = '7139b7dace25c7bdf0bd79acf46fb02bd63310548b1f671d88832f75a4ac3dd6'
 API_SECRET = 'bb02b2b0267b045590bc25c21dac21b1c47446a62b792091b3275e9c4a943e74'
 API_VERS = '2'
 
-MAXRESULT = "10"
+MAXRESULT = '10'
+
 
 class cTrakt:
 
@@ -182,9 +184,9 @@ class cTrakt:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'https://')
         oOutputParameterHandler.addParameter('type', 'liked-lists')
-        oGui.addDir(SITE_IDENTIFIER, 'getLists', "Mes listes aimées", 'trakt.png', oOutputParameterHandler)    
+        oGui.addDir(SITE_IDENTIFIER, 'getLists', 'Mes listes aimées', 'trakt.png', oOutputParameterHandler)
 
-        oGui.setEndOfDirectory() 
+        oGui.setEndOfDirectory()
 
     def getCalendrier(self):
         oGui = cGui()
@@ -400,7 +402,7 @@ class cTrakt:
         searchtext = ''
         sTitle = ''
         sOldDate = None
-        
+
         if (total > 0):
             progress_ = progress().VScreate(SITE_NAME)
 
@@ -427,7 +429,7 @@ class cTrakt:
                         movie = i['movie']
                         sTitle = self.getLocalizedTitle(movie, 'movies')
                         sTrakt, sYear, sImdb, sTmdb = movie['ids']['trakt'], movie['year'], movie['ids']['imdb'], movie['ids']['tmdb']
-                        
+
                         cTrakt.CONTENT = '1'
                         sFunction = 'showSearch'
                         sId = 'globalSearch'
@@ -461,7 +463,7 @@ class cTrakt:
                         sExtra = ('(%s)') % (sYear)
                         cTrakt.CONTENT = '1'
 
-                    sTitle = self.decode(sTitle,Unicode=True)
+                    sTitle = self.decode(sTitle, Unicode=True)
                     searchtext = ('%s') % (sTitle)
                     sFile = ('%s - (%s)') % (sTitle, sExtra)
                     sTitle = ('[COLOR gold]%s %s [/COLOR]- %s %s') % (sType, 'vu', sTitle, sExtra)
@@ -490,7 +492,7 @@ class cTrakt:
                         sExtra = ('(%s)') % (sYear)
                         cTrakt.CONTENT = '1'
 
-                    sTitle = self.decode(sTitle,Unicode=True)
+                    sTitle = self.decode(sTitle, Unicode=True)
                     searchtext = ('%s') % (sTitle)
                     sFile = ('%s %s') % (sTitle, sExtra)
                     sTitle = ('%s %s') % (sTitle, sExtra)
@@ -513,7 +515,7 @@ class cTrakt:
                         sId = 'globalSearch'
 
                     if sTitle:
-                        sTitle = self.decode(sTitle,Unicode=True)
+                        sTitle = self.decode(sTitle, Unicode=True)
                         searchtext = ('%s') % (sTitle)
                         sFile = ('%s - %s') % (sTitle, sYear)
                         sTitle = ('%s Lectures - %s (%s)') % (sPlays, sTitle, sYear)
@@ -581,10 +583,10 @@ class cTrakt:
                         sFunction = 'showSearch'
                         sId = 'globalSearch'
 
-                    sTitle = self.decode(sTitle,Unicode=True)
+                    sTitle = self.decode(sTitle, Unicode=True)
                     searchtext = ('%s') % (sTitle)
                     sFile = ('%s - (%s)') % (sTitle, sYear)
-                    sTitle = ('%s (%s)') % ( sTitle, sYear )
+                    sTitle = ('%s (%s)') % (sTitle, sYear)
 
                 elif 'recommendations' in sUrl or 'popular' in sUrl:
                     if 'shows' in sUrl:
@@ -607,17 +609,17 @@ class cTrakt:
                     sId = 'globalSearch'
 
                 elif 'boxoffice' in sUrl:
-                        movie = i['movie']
-                        sTitle = self.getLocalizedTitle(movie, 'movies')
-                        sTrakt, sYear, sImdb, sTmdb = movie['ids']['trakt'], movie['year'], movie['ids']['imdb'], movie['ids']['tmdb']
-                        cTrakt.CONTENT = '1'
+                    movie = i['movie']
+                    sTitle = self.getLocalizedTitle(movie, 'movies')
+                    sTrakt, sYear, sImdb, sTmdb = movie['ids']['trakt'], movie['year'], movie['ids']['imdb'], movie['ids']['tmdb']
+                    cTrakt.CONTENT = '1'
 
-                        sTitle = self.decode(sTitle)
-                        searchtext = ('%s') % (sTitle)
-                        sFile = ('%s - (%s)') % (sTitle, int(sYear))
-                        sTitle = ('%s - (%s)') % (sTitle, int(sYear))
-                        sFunction = 'showSearch'
-                        sId = 'globalSearch'
+                    sTitle = self.decode(sTitle)
+                    searchtext = ('%s') % (sTitle)
+                    sFile = ('%s - (%s)') % (sTitle, int(sYear))
+                    sTitle = ('%s - (%s)') % (sTitle, int(sYear))
+                    sFunction = 'showSearch'
+                    sId = 'globalSearch'
 
                 elif 'lists' in sUrl:
 
@@ -643,7 +645,7 @@ class cTrakt:
                         sExtra = ('(%s)') % (sYear)
                         cTrakt.CONTENT = '1'
 
-                    sTitle = self.decode(sTitle,Unicode=True)
+                    sTitle = self.decode(sTitle, Unicode=True)
                     searchtext = ('%s') % (sTitle)
                     sFile = ('%s %s') % (sTitle, sExtra)
                     sTitle = ('%s %s') % (sTitle, sExtra)
@@ -667,7 +669,7 @@ class cTrakt:
                     sNextPage = sUrl.replace('page=' + str(sPage), 'page=' + str(int(sPage) + 1))
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-                    oGui.addNext(SITE_IDENTIFIER, 'getTrakt', '[COLOR teal]Page ' + str(int(sPage) + 1)  + '/' + sMaxPage + ' >>>[/COLOR]', oOutputParameterHandler)
+                    oGui.addNext(SITE_IDENTIFIER, 'getTrakt', 'Page ' + str(int(sPage) + 1) + '/' + sMaxPage, oOutputParameterHandler)
             except:
                 pass
 
@@ -704,7 +706,6 @@ class cTrakt:
                 sTitle2 = ('%s - (S%02d)') % (self.decode(sFile), int(sNumber))
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl + str(sNumber))
-                # oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('Key', sKey)
                 oOutputParameterHandler.addParameter('sNum', sNum)
                 oOutputParameterHandler.addParameter('file', sFile)
@@ -718,7 +719,7 @@ class cTrakt:
 
     def getLocalizedTitle(self, item, what):
         try:
-            if not 'episode' in what:
+            if 'episode' not in what:
                 oRequestHandler = cRequestHandler(URL_API + '%s/%s/translations/fr' % (what, item['ids']['slug']))
                 oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
                 oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
@@ -762,8 +763,9 @@ class cTrakt:
 
         cTrakt.CONTENT = '2'
 
-        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % self.ADDON.getSetting('bstoken')}
-        
+        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS,
+                   'Authorization': 'Bearer %s' % self.ADDON.getSetting('bstoken')}
+
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
         oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
@@ -780,13 +782,11 @@ class cTrakt:
                 if 'collection' in sUrl:
                     sNumber = i['number']
                     # sDate = datetime.datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y %H:%M')
-
                     sTitle2 = ('%s (E%02d)') % (self.decode(sTitle), int(sNumber))
 
                 elif 'watched' in sUrl:
                     sNumber, sPlays = i['number'], i['plays']
                     # sDate = datetime.datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S.%fZ')[0:6])).strftime('%d-%m-%Y %H:%M')
-
                     sTitle2 = ('%s Lectures - %s(E%02d)') % (sPlays, self.decode(sTitle), int(sNumber))
 
                 else:
@@ -795,8 +795,6 @@ class cTrakt:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl + str(sNumber))
                 oOutputParameterHandler.addParameter('file', sFile)
-                # oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                # oOutputParameterHandler.addParameter('Key', skey)
                 oOutputParameterHandler.addParameter('searchtext', searchtext)
                 self.getFolder(oGui, 'globalSearch', sTitle2, sFile, 'showSearch', '', '', oOutputParameterHandler)
 
@@ -890,7 +888,7 @@ class cTrakt:
         # for i in result:
             # VSlog(str(i['movie']['title'].encode('utf-8')) + '=' + str(i['movie']['ids']['imdb']))
 
-    def getAction(self, Action=""):
+    def getAction(self, Action=''):
 
         if self.ADDON.getSetting('bstoken') == '':
             self.DIALOG.VSinfo('Vous devez être connecté')
@@ -916,7 +914,7 @@ class cTrakt:
 
         sType = sType.replace('1', 'movies').replace('2', 'shows')
 
-        #Mettre en vu automatiquement.
+        # Mettre en vu automatiquement.
         if Action == "SetWatched":
             sTitle = oInputParameterHandler.getValue('sFileName')
 
@@ -944,7 +942,7 @@ class cTrakt:
                 sPost = {sType: [{'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason), 'episodes': [{'number': int(sEpisode)}]}]}]}
         else:
             sPost = {sType: [{'ids': {'imdb': sImdb}}]}
-            
+
         oRequestHandler = cRequestHandler(sAction)
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
@@ -1001,7 +999,7 @@ class cTrakt:
         liste.append(['[COLOR teal]' + self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30312) + '[/COLOR]', URL_API + 'sync/history'])
         liste.append(['[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30312) + '[/COLOR]', URL_API + 'sync/history/remove'])
 
-        for sTitle,sUrl in liste:
+        for sTitle, sUrl in liste:
             oOutputParameterHandler = cOutputParameterHandler()
             if cTrakt.CONTENT == '2':
                 oOutputParameterHandler.addParameter('sType', 'shows')
@@ -1021,7 +1019,7 @@ class cTrakt:
         # sUrl = oInputParameterHandler.getValue('siteUrl')
         sMovieTitle = oInputParameterHandler.getValue('file')
         # sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-        sMovieTitle = self.decode(sMovieTitle,Unicode=True).lower()  # on repasse en utf-8
+        sMovieTitle = self.decode(sMovieTitle, Unicode=True).lower()  # on repasse en utf-8
         sMovieTitle = Quote(sMovieTitle)
         sMovieTitle = re.sub('\(.+?\)', ' ', sMovieTitle)  # vire les tags entre parentheses
 
@@ -1037,8 +1035,6 @@ class cTrakt:
 
     def vStreamSearch(self, sMovieTitle):
         oGui = cGui()
-        # oInputParameterHandler = cInputParameterHandler()
-        # sUrl = oInputParameterHandler.getValue('siteUrl')
 
         oHandler = cRechercheHandler()
         oHandler.setText(sMovieTitle)
