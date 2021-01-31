@@ -215,6 +215,8 @@ class progress():
             PROGRESS = None
             dialog.close()
 
+     def getProgress(self):
+          return COUNT
     
 """
 from resources.lib.comaddon import window
