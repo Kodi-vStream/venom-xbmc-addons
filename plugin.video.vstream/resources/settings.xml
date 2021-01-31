@@ -98,6 +98,8 @@
 
         <setting visible="false" id="plugin_cinemey" type="bool" label="Cinemey" default="true"/>
 
+        <setting visible="false" id="plugin_dbanimes" type="bool" label="DBanimes" default="true"/>
+
         <setting visible="false" id="plugin_ddl1" type="bool" label="DDL1" default="true"/>
 
         <setting visible="false" id="plugin_docu_fr" type="bool" label="Docu Fr" default="true"/>
@@ -129,6 +131,8 @@
         <setting visible="false" id="plugin_french_stream_com" type="bool" label="French Stream" default="true"/>
 
         <setting visible="false" id="plugin_french_stream_lol" type="bool" label="French-stream-lol" default="true"/>
+
+        <setting visible="false" id="plugin_funeralforamanga" type="bool" label="Funeral for a manga" default="true"/>
 
         <setting visible="false" id="plugin_gum_gum_streaming_com" type="bool" label="Gum-Gum-Streaming" default="true"/>
 
