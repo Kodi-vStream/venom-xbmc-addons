@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Makoto et Arias800 02/06/2019
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -8,7 +10,6 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-import re
 
 SITE_IDENTIFIER = 'animeultime'
 SITE_NAME = 'Anime Ultime'
@@ -16,25 +17,25 @@ SITE_DESC = 'Animés, Dramas en Direct Download'
 
 URL_MAIN = 'http://www.anime-ultime.net/'
 
-ANIM_VOSTFRS = (URL_MAIN + 'series-0-1/anime/0---', 'showSeries')
-SERIE_VOSTFRS = (URL_MAIN + 'series-0-1/drama/0---', 'showSeries')
-TOKUSATSU = (URL_MAIN + 'series-0-1/tokusatsu/0---', 'showSeries')
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0'
 
-# URL_SEARCH_SERIES = (URL_MAIN + 'search-0-1+', 'showSeries')  # désactivé car DRAMAS
+URL_SEARCH_DRAMAS = (URL_MAIN + 'search-0-1+', 'showSeries')
 URL_SEARCH_ANIMS = (URL_MAIN + 'search-0-1+', 'showSeries')
 
 ANIM_ANIMS = (True, 'showMenuAnims')
 ANIM_ANNEES = (True, 'ShowYearsAnime')
 ANIM_GENRES = (True, 'ShowGenreAnime')
 ANIM_ALPHA = (True, 'ShowAlphaAnime')
+ANIM_VOSTFRS = (URL_MAIN + 'series-0-1/anime/0---', 'showSeries')
 
-SERIE_SERIES = (True, 'showMenuSeries')
-SERIE_ANNEES = (True, 'ShowYearsDrama')
-SERIE_GENRE = (True, 'ShowGenreDrama')
-SERIE_ALPHA = (True, 'ShowAlphaDrama')
+DRAMA_DRAMAS = (True, 'showMenuSeries')
+DRAMA_ANNEES = (True, 'ShowYearsDrama')
+DRAMA_GENRES = (True, 'ShowGenreDrama')
+DRAMA_ALPHA = (True, 'ShowAlphaDrama')
+DRAMA_VOSTFRS = (URL_MAIN + 'series-0-1/drama/0---', 'showSeries')
 
+TOKUSATSU = (URL_MAIN + 'series-0-1/tokusatsu/0---', 'showSeries')
 TOKUSATSU_ALPHA = ('true', 'ShowAlphaTokusatsu')
 TOKUSATSU_TOKUSATSUS = (True, 'showMenuTokusatsu')
 
@@ -43,12 +44,12 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_DRAMAS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Dramas', 'dramas.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_DRAMAS[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_DRAMAS[1], 'Dramas', 'dramas.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
@@ -87,20 +88,20 @@ def showMenuSeries():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Dramas', 'dramas.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_VOSTFRS[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_VOSTFRS[1], 'Dramas', 'dramas.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_ALPHA[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_ALPHA[1], 'Dramas (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_ALPHA[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_ALPHA[1], 'Dramas (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRE[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRE[1], 'Dramas (Genres)', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_GENRES[1], 'Dramas (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Dramas (Par années)', 'annees.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_ANNEES[1], 'Dramas (Par années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
