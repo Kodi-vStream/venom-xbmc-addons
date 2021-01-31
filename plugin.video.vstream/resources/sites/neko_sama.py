@@ -16,12 +16,12 @@ from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'neko_sama'
 SITE_NAME = 'Neko Sama'
-SITE_DESC = 'anime en streaming'
+SITE_DESC = 'Animés en streaming'
 
 URL_MAIN = 'https://www.neko-sama.fr/'
 
 URL_SEARCH = (URL_MAIN + 'animes-search.json', 'showSearchResult')
-URL_SEARCH_SERIES = (URL_SEARCH[0], 'showSearchResult')
+URL_SEARCH_ANIMS = (URL_SEARCH[0], 'showSearchResult')
 FUNCTION_SEARCH = 'showSearchResult'
 
 ANIM_ANIMS = ('http://', 'load')
