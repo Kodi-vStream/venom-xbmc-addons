@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-return False  # ne propose que Netu en hoster
+return False  # ne propose que Netu en hoster 31/01/21
 import re
 
 from resources.lib.gui.hoster import cHosterGui
