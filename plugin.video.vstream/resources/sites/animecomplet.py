@@ -40,13 +40,13 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers  épisodes récents)', 'series.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_LIST[1], 'Animés (Liste complète)', 'listes.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', ANIM_LIST[0])
+    # oGui.addDir(SITE_IDENTIFIER, ANIM_LIST[1], 'Animés (Liste complète)', 'listes.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_ALPHA[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ALPHA[1], 'Animés (Liste alphabétique)', 'az.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', ANIM_ALPHA[0])
+    # oGui.addDir(SITE_IDENTIFIER, ANIM_ALPHA[1], 'Animés (Liste alphabétique)', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
