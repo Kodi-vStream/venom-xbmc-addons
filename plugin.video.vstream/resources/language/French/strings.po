@@ -1103,4 +1103,4 @@ msgstr "Utiliser la fenetre d'information du skin"
 
 msgctxt "#31103"
 msgid "Allow adult content"
-msgstr "Autorisez le contenu pour adultes"
+msgstr "Autoriser le contenu pour adultes"
