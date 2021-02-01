@@ -9,14 +9,13 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, addon, isMatrix
 
 SITE_IDENTIFIER = 'animeultime'
 SITE_NAME = 'Anime Ultime'
 SITE_DESC = 'Animés, Dramas en Direct Download'
 
 URL_MAIN = 'http://www.anime-ultime.net/'
-
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0'
 
@@ -39,6 +38,7 @@ TOKUSATSU = (URL_MAIN + 'series-0-1/tokusatsu/0---', 'showSeries')
 TOKUSATSU_ALPHA = ('true', 'ShowAlphaTokusatsu')
 TOKUSATSU_TOKUSATSUS = (True, 'showMenuTokusatsu')
 
+adulteContent = addon().getSetting('contenu_adulte')
 
 def load():
     oGui = cGui()
@@ -119,7 +119,6 @@ def showMenuTokusatsu():
 
     oGui.setEndOfDirectory()
 
-
 def loadTypelist(typemovie, typelist):
     # typelist genre ou year
     # <select name="genre"
@@ -144,14 +143,16 @@ def loadTypelist(typemovie, typelist):
                     bfind = False
 
             if bfind and aEntry[1]:
-                title = aEntry[2].decode('iso-8859-1').encode('utf8')
+                if not isMatrix():
+                    title = aEntry[2].decode('iso-8859-1').encode('utf8')
+                else:
+                    title = aEntry[2]
                 title = title.replace('e', 'E').strip()
                 list_typelist[title] = aEntry[1]
 
     list_typelist = sorted(list_typelist.items(), key=lambda typeList: typeList[0])
 
     return list_typelist
-
 
 def ShowGenreAnime():
     ShowGenre('anime')
@@ -275,11 +276,17 @@ def showSeries(sSearch=''):
                 sUrl2 = sUrl
                 sThumb = ''
 
+                # Enleve le contenu pour adulte.
+                if 'Inderdit -' in sTitle or 'Public Averti' in sTitle or 'Interdit' in sTitle:
+                    if adulteContent == "false":
+                        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Contenu pour adulte desactiver dans les parametre[/COLOR]')
+                        return
+
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-
+                    
                 if '/anime/' in sUrl:
                     oGui.addAnime(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
                 else:
@@ -325,9 +332,10 @@ def showSeries(sSearch=''):
                 sUrl2 = URL_MAIN + aEntry[0]
                 sThumb = aEntry[1]
 
-            # Enleve le contenu pour adulte.
-            if 'Inderdit -' in sTitle or 'Public Averti' in sTitle or 'Interdit' in sTitle:
-                continue
+                if adulteContent == "false":
+                    # Enleve le contenu pour adulte.
+                    if 'Inderdit -' in sTitle or 'Public Averti' in sTitle or 'Interdit' in sTitle:
+                        continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
