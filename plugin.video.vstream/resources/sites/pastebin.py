@@ -525,7 +525,7 @@ def showDetailMenu(pasteID, contenu):
         if 'containFilmGroupes' in contenu:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&pasteID=' + pasteID)
-            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Films (Listes)', 'genres.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Films (Listes)', 'listes.png', oOutputParameterHandler)
 
         if 'containFilmSaga' in contenu:
             oOutputParameterHandler = cOutputParameterHandler()
@@ -563,7 +563,7 @@ def showDetailMenu(pasteID, contenu):
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&bRandom=True&pasteID=' + pasteID)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Aléatoires)', 'news.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Aléatoires)', 'listes.png', oOutputParameterHandler)
 
     if 'containSeries' in contenu:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -583,7 +583,7 @@ def showDetailMenu(pasteID, contenu):
         if 'containSerieGroupes' in contenu:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&pasteID=' + pasteID)
-            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Séries (Listes)', 'genres.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Séries (Listes)', 'listes.png', oOutputParameterHandler)
 
         if 'containSerieNetwork' in contenu:
             oOutputParameterHandler = cOutputParameterHandler()
@@ -598,6 +598,10 @@ def showDetailMenu(pasteID, contenu):
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Séries (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&bRandom=True&pasteID=' + pasteID)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Aléatoires)', 'listes.png', oOutputParameterHandler)
 
     if 'containAnimes' in contenu:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -616,7 +620,7 @@ def showDetailMenu(pasteID, contenu):
         if 'containAnimeGroupes' in contenu:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime&pasteID=' + pasteID)
-            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Animes (Listes)', 'genres.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Animes (Listes)', 'listes.png', oOutputParameterHandler)
 
         if 'containAnimeNetwork' in contenu:
             oOutputParameterHandler = cOutputParameterHandler()
@@ -650,7 +654,7 @@ def showDetailMenu(pasteID, contenu):
         if 'containDiversGroupes' in contenu:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=divers&pasteID=' + pasteID)
-            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Divers (Listes)', 'genres.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Divers (Listes)', 'listes.png', oOutputParameterHandler)
 
         if 'containDiversYear' in contenu:
             oOutputParameterHandler = cOutputParameterHandler()
