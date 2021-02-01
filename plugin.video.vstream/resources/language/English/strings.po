@@ -1099,3 +1099,7 @@ msgstr ""
 msgctxt "#31102"
 msgid "Use the skin display for the information windows"
 msgstr ""
+
+msgctxt "#31103"
+msgid "Allow adult content"
+msgstr ""
