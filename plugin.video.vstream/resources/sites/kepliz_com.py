@@ -18,6 +18,8 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.comaddon import progress
 
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
+
 # On garde le nom kepliz pour pas perturber
 SITE_IDENTIFIER = 'kepliz_com'
 SITE_NAME = 'Kepliz'
@@ -95,7 +97,7 @@ def showGenres():
     liste.append(['Documentaires', URL_MAIN + 'index.php?option=com_content&view=category&id=26'])
     liste.append(['Drame', URL_MAIN + 'index.php?option=com_content&view=category&id=7'])
     liste.append(['Epouvante Horreur', URL_MAIN + 'index.php?option=com_content&view=category&id=9'])
-    liste.append(['Fantastique',URL_MAIN + 'index.php?option=com_content&view=category&id=8'])
+    liste.append(['Fantastique', URL_MAIN + 'index.php?option=com_content&view=category&id=8'])
     liste.append(['Policier', URL_MAIN + 'index.php?option=com_content&view=category&id=10'])
     liste.append(['Science Fiction', URL_MAIN + 'index.php?option=com_content&view=category&id=11'])
     liste.append(['Spectacle', URL_MAIN + 'index.php?option=com_content&view=category&id=3'])
@@ -123,10 +125,10 @@ def showMovies(sSearch=''):
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
     # En cas de recherche direct OU lors de la navigation dans les differentes pages de résultats d'une recherche
-    if('searchword=' in sUrl) :
+    if ('searchword=' in sUrl):
         sPattern = '<h4><a href="\/[0-9a-zA-Z]+\/(.+?)"  >(.+?)<'
     else:
-        sPattern = '<span style="list-style-type:none;" >.+? href="\/[0-9a-zA-Z]+\/(.+?)">(.+?)<\/a>'
+        sPattern = '<span style="list-style-type:none;" >.+? href="\/[0-9a-zA-Z]+\/(.+?)">(.+?)</a>'
 
     # L'url change tres souvent donc faut la retrouver
     oRequestHandler = cRequestHandler(URL_HOST)
@@ -181,7 +183,7 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sMainUrl + sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Suivant', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -213,7 +215,7 @@ def showHosters():
     # Recuperation info film, com et image
     sThumb = ''
     sDesc = ''
-    sPattern = '<p style="text-align: center;"><img src="([^"]+)".+?<p style="text-align: left;">(.+?)<\/p>'
+    sPattern = '<p style="text-align: center;"><img src="([^"]+)".+?<p style="text-align: left;">(.+?)</p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -230,12 +232,12 @@ def showHosters():
 
     if (aResult[0]):
         sLink = aResult[1][0]
-        sPattern = '\/plugins\/([0-9a-zA-Z]+)\/plugins\/GRUDALpluginsphp.js"><\/script>'
+        sPattern = '\/plugins\/([0-9a-zA-Z]+)\/plugins\/GRUDALpluginsphp.js"></script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0]):
             sPostUrl = sMainUrl + 'plugins/' + aResult[1][0] + '/plugins/GRUDALpluginsphp.php'
 
-        if ((sLink) and (sPostUrl)):
+        if (sLink and sPostUrl):
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -258,7 +260,6 @@ def showHosters():
                 sLink = URL_HOST[:-1] + sLink
 
             oOutputParameterHandler = cOutputParameterHandler()
-            # oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sLink', sLink)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
 
@@ -277,7 +278,6 @@ def showHosters():
                 sLink = URL_HOST[:-1] + sLink
 
             oOutputParameterHandler = cOutputParameterHandler()
-            # oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sLink', sLink)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
 
@@ -297,14 +297,13 @@ def showHostersLink():
 
     oRequestHandler = cRequestHandler(sPostUrl)
     oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-    oRequestHandler.addHeaderEntry('User-Agent', "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0")
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Host', sUrl.split('/')[2])
     oRequestHandler.addHeaderEntry('Referer', sUrl)
     oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
     oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
     oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
     oRequestHandler.addHeaderEntry('Content-Type',  "application/x-www-form-urlencoded; charset=UTF-8'")
-#     oRequestHandler.addHeaderEntry('Content-Length', len(str(data)))
     oRequestHandler.addParameters('link', sLink)
     data = oRequestHandler.request()
 
@@ -333,7 +332,6 @@ def showHostersLink2():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
-    # sUrl = oInputParameterHandler.getValue('siteUrl')
     sLink = oInputParameterHandler.getValue('sLink')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
@@ -352,7 +350,7 @@ def showHostersLink2():
             sTitle = sMovieTitle + ' [' + sQual + ']'
 
             oRequestHandler = cRequestHandler(sLink2)
-            oRequestHandler.addHeaderEntry('User-Agent', "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0")
+            oRequestHandler.addHeaderEntry('User-Agent', UA)
             oRequestHandler.addHeaderEntry('Referer', sLink)
             oRequestHandler.addHeaderEntry('Accept', 'video/webm,video/ogg,video/*;q=0.9,application/ogg;q=0.7,audio/*;q=0.6,*/*;q=0.5')
             oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
@@ -383,7 +381,6 @@ def showHostersLink3():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
-    # sUrl = oInputParameterHandler.getValue('siteUrl')
     sLink = oInputParameterHandler.getValue('sLink')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
@@ -393,10 +390,6 @@ def showHostersLink3():
     # Recherche du premier lien
     sPattern = 'href=["\'](http[^"\']+)["\']'
     aResult = oParser.parse(data, sPattern)
-
-    # fh = open('c:\\test.txt', "w")
-    # fh.write(data)
-    # fh.close()
 
     # Si il existe, suivi du lien
     if ( aResult[0] == True ):
@@ -408,7 +401,7 @@ def showHostersLink3():
 
         # VSlog(aResult[1][0])
         oRequestHandler = cRequestHandler(aResult[1][0])
-        oRequestHandler.addHeaderEntry('User-Agent', "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0")
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
         oRequestHandler.addHeaderEntry('Referer', sLink)
         oRequestHandler.addHeaderEntry('Accept', 'video/webm,video/ogg,video/*;q=0.9,application/ogg;q=0.7,audio/*;q=0.6,*/*;q=0.5')
         oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
@@ -419,7 +412,6 @@ def showHostersLink3():
 
     sPattern = '(?:file)|(?:src):\s*[\'"](.+?)[\'"].+?label:\s*[\'"](.+?)[\'"]'
     aResult = oParser.parse(data, sPattern)
-
 
     if (aResult[0] == True):
 
@@ -433,7 +425,7 @@ def showHostersLink3():
             if (False):
 
                 oRequestHandler = cRequestHandler(sLink2)
-                oRequestHandler.addHeaderEntry('User-Agent', "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0")
+                oRequestHandler.addHeaderEntry('User-Agent', UA)
                 oRequestHandler.addHeaderEntry('Referer', sLink)
                 oRequestHandler.addHeaderEntry('Accept', 'video/webm,video/ogg,video/*;q=0.9,application/ogg;q=0.7,audio/*;q=0.6,*/*;q=0.5')
                 oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')

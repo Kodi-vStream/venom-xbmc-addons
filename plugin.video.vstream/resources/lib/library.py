@@ -128,6 +128,7 @@ class cLibrary:
         else:
             data = listDir[1]
 
+        addon_handle = None
         for i in data:
             path = VSPath(sFile+'/'+i) #Suppression du special: pour plus tard
             sTitle = os.path.basename(path) #Titre du fichier .strm
@@ -144,7 +145,7 @@ class cLibrary:
                 oOutputParameterHandler.addParameter('filePath', sFile+'/'+i)
                 oGui.addDir(SITE_IDENTIFIER, 'openLibrary', sTitle, 'annees.png', oOutputParameterHandler)
                 
-        if '.strm' in i:
+        if addon_handle:
             xbmcplugin.endOfDirectory(addon_handle)
         else:
             oGui.setEndOfDirectory()

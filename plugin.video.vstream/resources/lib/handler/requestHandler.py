@@ -27,6 +27,12 @@ class cRequestHandler:
         self.__enableDNS = False
         self.s = Session()
         self.redirects = True
+        self.verify = True
+        self.json = {}
+
+    #Desactive le ssl
+    def disableSSL(self):
+        self.verify = False
 
     #Empeche les redirections 
     def disableRedirect(self):
@@ -52,6 +58,11 @@ class cRequestHandler:
     def addCookieEntry(self, sHeaderKey, sHeaderValue):
         aHeader = {sHeaderKey: sHeaderValue}
         self.__Cookie.update(aHeader)
+
+    #Ajouter des parametre JSON
+    def addJSONEntry(self, sHeaderKey, sHeaderValue):
+        aHeader = {sHeaderKey: sHeaderValue}
+        self.json.update(aHeader)
 
     #Ajouter un elements dans le headers de la requete
     def addHeaderEntry(self, sHeaderKey, sHeaderValue):
@@ -88,10 +99,10 @@ class cRequestHandler:
     def getRealUrl(self):
         return self.__sRealUrl
 
-    def request(self):
+    def request(self,jsonDecode=False):
         # Supprimee car deconne si url contient ' ' et '+' en meme temps
         # self.__sUrl = self.__sUrl.replace(' ', '+')
-        return self.__callRequest()
+        return self.__callRequest(jsonDecode)
 
     #Recupere les cookies de la requete
     def GetCookies(self):
@@ -117,7 +128,7 @@ class cRequestHandler:
         self.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         self.addHeaderEntry('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.7')
 
-    def __callRequest(self):
+    def __callRequest(self, jsonDecode=False):
         if self.__enableDNS:
             import socket
             self.save_getaddrinfo = socket.getaddrinfo
@@ -152,17 +163,29 @@ class cRequestHandler:
             if self.__Cookie:
                 _request.cookies = self.__Cookie
 
+            if self.json:
+                _request.json = self.json
+
             prepped = _request.prepare()
             self.s.headers.update(self.__aHeaderEntries)
-            oResponse = self.s.send(prepped, timeout=self.__timeout, allow_redirects=self.redirects)
+            oResponse = self.s.send(prepped, timeout=self.__timeout, allow_redirects=self.redirects, verify=self.verify)
             self.__sResponseHeader = oResponse.headers
             self.__sRealUrl = oResponse.url
 
-            sContent = oResponse.content
+            if jsonDecode==False:
+                sContent = oResponse.content
 
-            #Necessaire pour Python 3
-            if isMatrix():
-            	sContent = sContent.decode()
+                #Necessaire pour Python 3
+                if isMatrix():
+                    try:
+                       sContent = sContent.decode('unicode-escape')
+                    except:
+                        try:
+                            sContent = sContent.decode()
+                        except:
+                            pass
+            else:
+                sContent = oResponse.json()
 
         except HTTPError as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e.reason) and self.BUG_SSL == False:
@@ -194,7 +217,10 @@ class cRequestHandler:
                 self.__sRealUrl, self.__sResponseHeader = CF.GetReponseInfo()
 
         if not sContent:
-            dialog().VSerror("%s (%d),%s" % (addon().VSlang(30205), oResponse.status_code, self.__sUrl))
+            #Ignorer ces deux codes erreurs.
+            ignoreStatus = [200,302]
+            if oResponse.status_code not in ignoreStatus:
+                dialog().VSerror("%s (%d),%s" % (addon().VSlang(30205), oResponse.status_code, self.__sUrl))
 
         if sContent:
             if (self.__bRemoveNewLines == True):

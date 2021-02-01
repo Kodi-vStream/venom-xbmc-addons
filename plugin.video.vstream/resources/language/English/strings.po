@@ -321,7 +321,7 @@ msgid "Search (Movie)"
 msgstr ""
 
 msgctxt "#30079"
-msgid "Search (Tvshow/Anim)"
+msgid "Search (Tvshow)"
 msgstr ""
 
 msgctxt "#30080"
@@ -476,6 +476,14 @@ msgctxt "#30117"
 msgid "TV replay"
 msgstr ""
 
+msgctxt "#30118"
+msgid "Search (Anim)"
+msgstr ""
+
+msgctxt "#30119"
+msgid "Live"
+msgstr ""
+
 msgctxt "#30120"
 msgid "Movies"
 msgstr ""
@@ -486,6 +494,14 @@ msgstr ""
 
 msgctxt "#30122"
 msgid "Animes"
+msgstr ""
+
+msgctxt "#30123"
+msgid "Search (Dramas)"
+msgstr ""
+
+msgctxt "#30124"
+msgid "Dramas"
 msgstr ""
 
 msgctxt "#30127"
@@ -629,7 +645,7 @@ msgid "[COLOR khaki]Hello, %s[/COLOR]"
 msgstr ""
 
 msgctxt "#30308"
-msgid "History"
+msgid "Search history"
 msgstr ""
 
 msgctxt "#30309"
@@ -697,6 +713,10 @@ msgid "1Fichier"
 msgstr ""
 
 msgctxt "#30328"
+msgid "Token"
+msgstr ""
+
+msgctxt "#30329"
 msgid "Token (Optional)"
 msgstr ""
 
@@ -877,7 +897,7 @@ msgid "Enable/Disable sources"
 msgstr ""
 
 msgctxt "#30421"
-msgid "Go to [COLOR teal]%s[CR]%s[/COLOR][CR],Valid vStream, only then click YES"
+msgid "Go to [COLOR teal]%s[CR]%s[/COLOR][CR] Valid vStream, only then click YES"
 msgstr ""
 
 msgctxt "#30422"
@@ -1064,12 +1084,12 @@ msgctxt "#30470"
 msgid "Addon dnspython missing"
 msgstr ""
 
-msgctxt "#30998"
-msgid "Put the Token of your Alldebrid account"
+msgctxt "#30480"
+msgid "Small loading spinner"
 msgstr ""
 
 msgctxt "#31000"
-msgid "Enter the url of your multimedia folder"
+msgid "Multimedia folder URL (Optional)"
 msgstr ""
 
 msgctxt "#31101"
@@ -1078,4 +1098,8 @@ msgstr ""
 
 msgctxt "#31102"
 msgid "Use the skin display for the information windows"
+msgstr ""
+
+msgctxt "#31103"
+msgid "Allow adult content"
 msgstr ""

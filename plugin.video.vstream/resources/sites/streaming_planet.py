@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-
+return False  # ne propose que Netu en hoster 31/01/21
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -100,7 +100,7 @@ def showGenres():
 def showYears():
     oGui = cGui()
 
-    for i in reversed(range(2017, 2021)):
+    for i in reversed(range(2017, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'nouveau-' + Year + '/')

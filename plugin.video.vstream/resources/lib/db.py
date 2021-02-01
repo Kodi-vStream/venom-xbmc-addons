@@ -159,7 +159,7 @@ class cDb:
                 self.dbcur.execute(ex)
                 self.db.commit()
                 VSlog('SQL UPDATE history Successfully')
-            VSlog('SQL ERROR INSERT')
+            VSlog('SQL ERROR INSERT, title = %s, %s' % (title, e) )
             pass
 
     def get_history(self):
@@ -170,8 +170,8 @@ class cDb:
             # matchedrow = self.dbcur.fetchone()
             matchedrow = self.dbcur.fetchall()
             return matchedrow
-        except Exception:
-            VSlog('SQL ERROR EXECUTE')
+        except Exception as e:
+            VSlog('SQL ERROR EXECUTE, %s' % e)
             return None
 
     def del_history(self):
@@ -190,7 +190,7 @@ class cDb:
             oGui.updateDirectory()
             return False, False
         except Exception:
-            VSlog('SQL ERROR DELETE')
+            VSlog('SQL ERROR DELETE : %s' % sql_delete)
             return False, False
 
     # ***********************************
@@ -209,7 +209,7 @@ class cDb:
             self.db.commit()
             VSlog('SQL INSERT watched Successfully')
         except Exception:
-            VSlog('SQL ERROR INSERT')
+            VSlog('SQL ERROR INSERT watched : title = %s, site = %s' % (title, site) )
             pass
 
     def get_watched(self, meta):
@@ -228,7 +228,7 @@ class cDb:
                 return 1
             return 0
         except Exception:
-            VSlog('SQL ERROR EXECUTE')
+            VSlog('SQL ERROR %s' % sql_select)
             return None
 
     def del_watched(self, meta):
@@ -242,7 +242,7 @@ class cDb:
             self.db.commit()
             return False, False
         except Exception:
-            VSlog('SQL ERROR EXECUTE')
+            VSlog('SQL ERROR %s' % sql_select)
             return False, False
 
     # ***********************************
@@ -261,9 +261,8 @@ class cDb:
 
         try:
             self.db.commit()
-            VSlog('SQL INSERT resume Successfully')
         except Exception:
-            VSlog('SQL ERROR INSERT')
+            VSlog('SQL ERROR INSERT resume, title = %s' % title)
             pass
 
     def get_resume(self, meta):
@@ -278,7 +277,7 @@ class cDb:
             matchedrow = self.dbcur.fetchall()
             return matchedrow
         except Exception:
-            VSlog('SQL ERROR EXECUTE')
+            VSlog('SQL ERROR %s' % sql_select)
             return None
 
     def del_resume(self, meta):
@@ -291,7 +290,7 @@ class cDb:
             self.db.commit()
             return False, False
         except Exception:
-            VSlog('SQL ERROR EXECUTE')
+            VSlog('SQL ERROR %s' % sql_select)
             return False, False
 
 
@@ -320,7 +319,7 @@ class cDb:
         except Exception as e:
             if 'UNIQUE constraint failed' in e.message:
                 dialog().VSinfo(addon().VSlang(30043), meta['title'])
-            VSlog('SQL ERROR INSERT')
+            VSlog('SQL ERROR INSERT : %s' % e)
             pass
 
     def get_bookmark(self):
@@ -376,7 +375,7 @@ class cDb:
                 cGui().updateDirectory()
                 return False, False
             except Exception:
-                VSlog('SQL ERROR EXECUTE')
+                VSlog('SQL ERROR %s' % sql_delete)
                 return False, False
 
     # ***********************************
@@ -398,7 +397,7 @@ class cDb:
             VSlog('SQL INSERT download Successfully')
             dialog().VSinfo(addon().VSlang(30042), meta['title'])
         except Exception:
-            VSlog('SQL ERROR INSERT')
+            VSlog('SQL ERROR INSERT into download')
             pass
 
     def get_download(self, meta=''):
@@ -414,7 +413,7 @@ class cDb:
             matchedrow = self.dbcur.fetchall()
             return matchedrow
         except Exception:
-            VSlog('SQL ERROR EXECUTE')
+            VSlog('SQL ERROR %s' % sql_select)
             return None
 
     def clean_download(self):
@@ -426,7 +425,7 @@ class cDb:
             self.db.commit()
             return False, False
         except Exception:
-            VSlog('SQL ERROR EXECUTE')
+            VSlog('SQL ERROR %s' % sql_select)
             return False, False
 
     def reset_download(self, meta):
@@ -439,7 +438,7 @@ class cDb:
             self.db.commit()
             return False, False
         except Exception:
-            VSlog('SQL ERROR EXECUTE')
+            VSlog('SQL ERROR %s' % sql_select)
             return False, False
 
     def del_download(self, meta):
@@ -458,7 +457,7 @@ class cDb:
             self.db.commit()
             return False, False
         except Exception:
-            VSlog('SQL ERROR EXECUTE')
+            VSlog('SQL ERROR %s' % sql_select)
             return False, False
 
     def cancel_download(self):
@@ -468,7 +467,7 @@ class cDb:
             self.db.commit()
             return False, False
         except Exception:
-            VSlog('SQL ERROR EXECUTE')
+            VSlog('SQL ERROR %s' % sql_select)
             return False, False
 
     def update_download(self, meta):
@@ -485,5 +484,5 @@ class cDb:
             self.db.commit()
             return False, False
         except Exception:
-            VSlog('SQL ERROR EXECUTE')
+            VSlog('SQL ERROR %s' % sql_select)
             return False, False

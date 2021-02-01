@@ -167,7 +167,7 @@ def showList():
 def showMovieYears():
     oGui = cGui()
 
-    for i in reversed(range(1963, 2021)):
+    for i in reversed(range(1963, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + Year + '/')
@@ -325,6 +325,8 @@ def showLinks():
             sNume = aEntry[1]
             sQual = aEntry[2]
             sHost = re.sub('\.\w+', '', aEntry[3]).capitalize()
+            if 'Youtube' in sHost:
+                continue
             
             sTitle = ('%s [%s] [COLOR coral]%s[/COLOR]') % (sMovieTitle, sQual, sHost)
 

@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Makoto et Arias800 02/06/2019
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
-import re
+from resources.lib.comaddon import progress, addon, isMatrix
 
 SITE_IDENTIFIER = 'animeultime'
 SITE_NAME = 'Anime Ultime'
@@ -16,38 +17,39 @@ SITE_DESC = 'Animés, Dramas en Direct Download'
 
 URL_MAIN = 'http://www.anime-ultime.net/'
 
-ANIM_VOSTFRS = (URL_MAIN + 'series-0-1/anime/0---', 'showSeries')
-SERIE_VOSTFRS = (URL_MAIN + 'series-0-1/drama/0---', 'showSeries')
-TOKUSATSU = (URL_MAIN + 'series-0-1/tokusatsu/0---', 'showSeries')
-
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0'
 
-URL_SEARCH_SERIES = (URL_MAIN + 'search-0-1+', 'showSeries')
+URL_SEARCH_DRAMAS = (URL_MAIN + 'search-0-1+', 'showSeries')
+URL_SEARCH_ANIMS = (URL_MAIN + 'search-0-1+', 'showSeries')
 
 ANIM_ANIMS = (True, 'showMenuAnims')
 ANIM_ANNEES = (True, 'ShowYearsAnime')
 ANIM_GENRES = (True, 'ShowGenreAnime')
 ANIM_ALPHA = (True, 'ShowAlphaAnime')
+ANIM_VOSTFRS = (URL_MAIN + 'series-0-1/anime/0---', 'showSeries')
 
-SERIE_SERIES = (True, 'showMenuSeries')
-SERIE_ANNEES = (True, 'ShowYearsDrama')
-SERIE_GENRE = (True, 'ShowGenreDrama')
-SERIE_ALPHA = (True, 'ShowAlphaDrama')
+DRAMA_DRAMAS = (True, 'showMenuSeries')
+DRAMA_ANNEES = (True, 'ShowYearsDrama')
+DRAMA_GENRES = (True, 'ShowGenreDrama')
+DRAMA_ALPHA = (True, 'ShowAlphaDrama')
+DRAMA_VOSTFRS = (URL_MAIN + 'series-0-1/drama/0---', 'showSeries')
 
+TOKUSATSU = (URL_MAIN + 'series-0-1/tokusatsu/0---', 'showSeries')
 TOKUSATSU_ALPHA = ('true', 'ShowAlphaTokusatsu')
 TOKUSATSU_TOKUSATSUS = (True, 'showMenuTokusatsu')
 
+adulteContent = addon().getSetting('contenu_adulte')
 
 def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_DRAMAS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Dramas', 'dramas.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_DRAMAS[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_DRAMAS[1], 'Dramas', 'dramas.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
@@ -86,20 +88,20 @@ def showMenuSeries():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Dramas', 'dramas.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_VOSTFRS[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_VOSTFRS[1], 'Dramas', 'dramas.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_ALPHA[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_ALPHA[1], 'Dramas (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_ALPHA[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_ALPHA[1], 'Dramas (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRE[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRE[1], 'Dramas (Genres)', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_GENRES[1], 'Dramas (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Dramas (Par années)', 'annees.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_ANNEES[1], 'Dramas (Par années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -116,7 +118,6 @@ def showMenuTokusatsu():
     oGui.addDir(SITE_IDENTIFIER, TOKUSATSU_ALPHA[1], 'Tokusatsu (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def loadTypelist(typemovie, typelist):
     # typelist genre ou year
@@ -142,14 +143,16 @@ def loadTypelist(typemovie, typelist):
                     bfind = False
 
             if bfind and aEntry[1]:
-                title = aEntry[2].decode('iso-8859-1').encode('utf8')
+                if not isMatrix():
+                    title = aEntry[2].decode('iso-8859-1').encode('utf8')
+                else:
+                    title = aEntry[2]
                 title = title.replace('e', 'E').strip()
                 list_typelist[title] = aEntry[1]
 
     list_typelist = sorted(list_typelist.items(), key=lambda typeList: typeList[0])
 
     return list_typelist
-
 
 def ShowGenreAnime():
     ShowGenre('anime')
@@ -273,11 +276,17 @@ def showSeries(sSearch=''):
                 sUrl2 = sUrl
                 sThumb = ''
 
+                # Enleve le contenu pour adulte.
+                if 'Inderdit -' in sTitle or 'Public Averti' in sTitle or 'Interdit' in sTitle:
+                    if adulteContent == "false":
+                        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Contenu pour adulte desactiver dans les parametre[/COLOR]')
+                        return
+
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-
+                    
                 if '/anime/' in sUrl:
                     oGui.addAnime(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
                 else:
@@ -323,9 +332,10 @@ def showSeries(sSearch=''):
                 sUrl2 = URL_MAIN + aEntry[0]
                 sThumb = aEntry[1]
 
-            # Enleve le contenu pour adulte.
-            if 'Inderdit -' in sTitle or 'Public Averti' in sTitle or 'Interdit' in sTitle:
-                continue
+                if adulteContent == "false":
+                    # Enleve le contenu pour adulte.
+                    if 'Inderdit -' in sTitle or 'Public Averti' in sTitle or 'Interdit' in sTitle:
+                        continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)

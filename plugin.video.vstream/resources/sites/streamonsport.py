@@ -24,37 +24,33 @@ SITE_DESC = 'Site pour regarder du sport en direct'
 
 URL_MAIN = 'https://www.streamonsport.info/'
 
+SPORT_SPORTS = (True, 'showMenuHomeSport')
 SPORT_TV = (URL_MAIN + '31-sport-tv-fr-streaming.html', 'showMovies')
 CHAINE_TV = (URL_MAIN + '2370162-chaines-tv-streaming.html', 'showMovies')
 SPORT_LIVE = (URL_MAIN, 'showMovies')
 SPORT_GENRES = (True, 'showGenres')
-SPORT_SPORTS = (True, 'showMenuHomeSport')
-URL_SEARCH = (URL_MAIN + '?search=', 'showMovies')  # recherche hs
+# URL_SEARCH = (URL_MAIN + '?search=', 'showMovies')  # recherche hs
 
 
 def load():
     oGui = cGui()
 
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    # oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher', 'search.png', oOutputParameterHandler)
-
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines Sport TV', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines Sport TV', 'sport.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Les Sports en direct', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Sports (En direct)', 'replay.png', oOutputParameterHandler)
 
     # menu souvent vide
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Sports (Genre)', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Sports (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', CHAINE_TV[0])
-    oGui.addDir(SITE_IDENTIFIER, CHAINE_TV[1], 'Chaines generaliste TV', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, CHAINE_TV[1], 'Chaines TV généralistes', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -64,16 +60,20 @@ def showMenuHomeSport():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_TV [0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines Sport TV', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines Sport TV', 'sport.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Les Sports en direct', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Sports (En direct)', 'replay.png', oOutputParameterHandler)
 
     # menu souvent vide
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Sports (Genre)', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Sports (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', CHAINE_TV[0])
+    oGui.addDir(SITE_IDENTIFIER, CHAINE_TV[1], 'Chaines généralistes TV', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -166,7 +166,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if bChaine :
+            if bChaine:
                 oGui.addMisc(SITE_IDENTIFIER, 'showLive', sDisplayTitle, 'tv.png', sThumb, sDisplayTitle, oOutputParameterHandler)
             else:
                 oGui.addDir(SITE_IDENTIFIER, 'showLive', sDisplayTitle, sThumb, oOutputParameterHandler)
@@ -190,7 +190,7 @@ def showLive():
     oParser = cParser()
 
     # liens visibles
-    sPattern = 'btn btn-success btn-sm.+?src=\'([^\']*)'
+    sPattern = "btn btn-success btn-sm.+?src='([^\']*)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     i = 0

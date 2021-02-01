@@ -80,7 +80,7 @@ def showSerieYears():
     # for i in itertools.chain(range(5, 7), [8, 9]): afficher dans l'ordre (pense bete ne pas effacer)
     oGui = cGui()
     from itertools import chain
-    generator = chain([1936, 1940, 1941, 1950, 1955], range(1958, 2021))
+    generator = chain([1936, 1940, 1941, 1950, 1955], range(1958, 2022))
 
     for i in reversed(list(generator)):
         Year = str(i)

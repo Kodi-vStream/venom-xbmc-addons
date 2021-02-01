@@ -113,7 +113,7 @@ def showGenres():
 def showYears():
     oGui = cGui()
 
-    for i in reversed(range(2015, 2021)):  # avant 2015 hosts HS
+    for i in reversed(range(2015, 2022)):  # avant 2015 hosts HS
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'xfsearch/year/' + Year + '/')

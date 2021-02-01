@@ -25,7 +25,7 @@ ANIM_ALPHA = (tag_alpha, 'showAlpha')
 ANIM_VOSTFRS = (URL_MAIN, 'showSeries')
 
 tag_global = '#global'
-URL_SEARCH_SERIES = (URL_MAIN + tag_global + '?s=', 'showSeries')
+URL_SEARCH_ANIMS = (URL_MAIN + tag_global + '?s=', 'showSeries')
 URL_SEARCH = (URL_MAIN + '?s=', 'showSeries')
 
 
@@ -40,13 +40,13 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers  épisodes récents)', 'series.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_LIST[1], 'Animés (Liste complète)', 'listes.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', ANIM_LIST[0])
+    # oGui.addDir(SITE_IDENTIFIER, ANIM_LIST[1], 'Animés (Liste complète)', 'listes.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_ALPHA[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ALPHA[1], 'Animés (Liste alphabétique)', 'az.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', ANIM_ALPHA[0])
+    # oGui.addDir(SITE_IDENTIFIER, ANIM_ALPHA[1], 'Animés (Liste alphabétique)', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -114,12 +114,12 @@ def showSeries(sSearch=''):
 
     # pour la liste alpha on peu aussi faire sUrl=alpha (plus rapide)
     # sPattern = '<a href="([^"]+)">..' + alpha + '([^<]+).+?style="width'
-    balpha = False
+    bAlpha = False
     sAlpha = ''
     if tag_alpha in sUrl:
         letag, sAlpha = sUrl.split(';')
         sUrl = ANIM_LIST[0]
-        balpha = True
+        bAlpha = True
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -133,8 +133,8 @@ def showSeries(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    icurrent = 0
-    list_simlilar= []
+    iCurrent = 0
+    list_simlilar = []
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
@@ -148,7 +148,7 @@ def showSeries(sSearch=''):
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
-            icurrent = icurrent + 1
+            iCurrent = iCurrent + 1
             sThumb = ''
             sDesc = ''
             if sUrl == ANIM_LIST[0]:
@@ -161,7 +161,7 @@ def showSeries(sSearch=''):
                 if '(0)' in sTitle or 'EPISODES' in sTitle:  # EPISODES  1 element pattern a revoir pattern
                     continue
 
-                if balpha:
+                if bAlpha:
                     sTitle2 = sTitle.strip().lower()
                     if not sTitle2.startswith(sAlpha):
                         continue
@@ -182,9 +182,9 @@ def showSeries(sSearch=''):
             # le lien liés a l'episode va
             # nous fournir apres tous les episodes saisons
             # donc inutile de tout afficher si titre semblable
-            if bSearchGlobal and icurrent > 3:
-                bvalid, sim = similarTitle(sTitle)
-                if bvalid:
+            if bSearchGlobal and iCurrent > 3:
+                bValid, sim = similarTitle(sTitle)
+                if bValid:
                     if sim not in list_simlilar:
                         list_simlilar.append(sim)
                     else:

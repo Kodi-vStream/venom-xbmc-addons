@@ -132,10 +132,9 @@ def showFile(sSearch=''):
 
             if sSearch:
 
-                sHtmlContent = oPremiumHandler.GetHtml(API_URL.replace('none', sToken) + '%2F%2F' + sSearch )
+                sHtmlContent = oPremiumHandler.GetHtml(API_URL.replace('none', sToken) + '%2F%2F' + sSearch)
             else:
                 sHtmlContent = oPremiumHandler.GetHtml(API_URL.replace('none', sToken) + '%2F%2F')
-
 
     content = json.loads(sHtmlContent)
     content = content['data']
@@ -197,7 +196,7 @@ def showFile(sSearch=''):
                     oOutputParameterHandler.addParameter('sNext', sNext)
                     oOutputParameterHandler.addParameter('sOffset', sOffset)
                     oOutputParameterHandler.addParameter('sPath', sPath)
-                    oGui.addNext(SITE_IDENTIFIER, 'showFile', '[COLOR teal]Suite >>>[/COLOR]', oOutputParameterHandler)
+                    oGui.addNext(SITE_IDENTIFIER, 'showFile', 'Suite', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 

@@ -17,20 +17,21 @@ URL_MAIN = 'http://www.sky-animes.com/'
 
 STREAM = 'index.php?file=Media&nuked_nude=index&op=do_dl&dl_id='
 
-URL_SEARCH_SERIES = (URL_MAIN + 'index.php?file=Search&op=mod_search&searchtype=matchand&autor=&module=Download&limit=100&main=', 'showEpisode')
+URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?file=Search&op=mod_search&searchtype=matchand&autor=&module=Download&limit=100&main=', 'showEpisode')
 FUNCTION_SEARCH = 'showEpisode'
 
-ANIM_VOSTFRS = (URL_MAIN + '', 'showCatA')
-SERIE_VOSTFRS = (URL_MAIN + '', 'showCatD')
-MOVIE_GENRESA = (True, 'showGenresA')
-MOVIE_GENRESD = (True, 'showGenresD')
+ANIM_VOSTFRS = (URL_MAIN + '', 'showMenuAnims')
+ANIM_GENRES = (True, 'showGenresA')
+
+DRAMA_VOSTFRS = (URL_MAIN + '', 'showMenuDramas')
+DRAMA_GENRES = (True, 'showGenresD')
 
 
 def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -38,18 +39,18 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés', 'animes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Dramas', 'dramas.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_VOSTFRS[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_VOSTFRS[1], 'Dramas', 'dramas.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def showCatA():
+def showMenuAnims():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRESA[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRESA[1], 'Animes (Genres)', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genres)', 'genres.png', oOutputParameterHandler)
 
     liste = []
     liste.append(['En Cours', URL_MAIN + 'streaming-animes-en-cours?p=-1'])
@@ -64,12 +65,12 @@ def showCatA():
     oGui.setEndOfDirectory()
 
 
-def showCatD():
+def showMenuDramas():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRESD[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRESD[1], 'Dramas (Genres)', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_GENRES[1], 'Dramas (Genres)', 'genres.png', oOutputParameterHandler)
 
     liste = []
     liste.append(['En Cours', URL_MAIN + 'download-dramas-en-cours?p=-1'])
@@ -170,7 +171,7 @@ def showSeries():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<a href="([^<]+)"><img src="(.+?)" width.+?alt="(.+?)".+?></a>'
+    sPattern = '<a href="([^"]+)"><img src="([^"]+)" width.+?alt="([^"]+).+?></a>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -223,7 +224,7 @@ def showEpisode(sSearch=''):
     if sSearch:
         sPattern = '<a href=".+?id=([^"]+)"><b>(.+?)</b>'
     else:
-        sPattern = '<td style="padding-left: 12px;"><a href="([^"]+)".+?><b><img.+?>(.+?)</b>.+?</a>'
+        sPattern = '<td style="padding-left: 12px;"><a href="([^"]+).+?><b><img.+?>(.+?)</b>.+?</a>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     VSlog(aResult)

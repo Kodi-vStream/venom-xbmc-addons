@@ -5,7 +5,7 @@ import re
 import string
 import unicodedata
 
-from resources.lib.comaddon import addon, xbmc
+from resources.lib.comaddon import addon, xbmc, isMatrix, VSlog
 from resources.lib.db import cDb
 from resources.lib.util import QuoteSafe
 import random
@@ -151,7 +151,10 @@ class cGuiElement:
         return self.__sSiteName
 
     def setFileName(self, sFileName):
-        self.__sFileName = self.str_conv(sFileName)
+        if isMatrix():
+            self.__sFileName = sFileName
+        else:
+            self.__sFileName = self.str_conv(sFileName)
 
     def getFileName(self):
         return self.__sFileName
@@ -177,7 +180,8 @@ class cGuiElement:
             # traitement du titre pour retirer le - quand c'est une Saison. Tiret, tiret moyen et cadratin
             sTitle = sTitle.replace(' - Saison', ' Saison').replace(' – Saison', ' Saison').replace(' — Saison', ' Saison')
 
-            sTitle = sTitle.decode('utf-8')
+            if not isMatrix():
+                sTitle = sTitle.decode('utf-8')
         except:
             pass
 
@@ -273,9 +277,9 @@ class cGuiElement:
             sTitle2 = '%s [COLOR %s](%s)[/COLOR]' % (sTitle2, self.__sDecoColor, self.__Year)
 
         # on repasse en utf-8
-        try:
+        if not isMatrix():
             return sTitle2.encode('utf-8')
-        except AttributeError:
+        else:
             return sTitle2
 
     def getEpisodeTitre(self, sTitle):
@@ -293,16 +297,18 @@ class cGuiElement:
     def setTitle(self, sTitle):
         #Convertie les bytes en strs pour le replace.
         self.__sCleanTitle = sTitle.replace('[]', '').replace('()', '').strip()
-        try:
-            sTitle = sTitle.strip().decode('utf-8')
-        except:
-            pass
 
-        #Python 3 decode sTitle
-        try:
-            sTitle = sTitle.encode('latin-1').decode('utf-8')
-        except:
-            pass
+        if isMatrix():
+            #Python 3 decode sTitle
+            try:
+                sTitle = str(sTitle.encode('latin-1'),'utf-8')
+            except:
+                pass
+        else:
+            try:
+                sTitle = sTitle.strip().decode('utf-8')
+            except:
+                pass
 
         if not sTitle.startswith('[COLOR'):
             self.__sTitle = self.TraiteTitre(sTitle)
@@ -323,9 +329,12 @@ class cGuiElement:
 
     def setDescription(self, sDescription):
         #Py3
-        try:
-            self.__sDescription = sDescription.encode('latin-1')
-        except:
+        if isMatrix():
+            try:
+                self.__sDescription = str(sDescription.encode('latin-1'),'utf-8')
+            except:
+                pass
+        else:
             self.__sDescription = sDescription
 
     def getDescription(self):
@@ -401,19 +410,16 @@ class cGuiElement:
 
     def str_conv(self, data):
         # Pas d'autre solution pour le moment que de faire comme ca.
-        if isinstance(data, str):
-            # Must be encoded in UTF-8
-            try:
-                data = data.decode('utf8')
-            except AttributeError:
-                pass
+        if not isMatrix():
+            if isinstance(data, str):
+                # Must be encoded in UTF-8
+                try:
+                    data = data.decode('utf8')
+                except AttributeError:
+                    pass
 
-        try:
-            data = data.decode('utf8')
-        except (AttributeError, UnicodeEncodeError):
-            pass
+            data = unicodedata.normalize('NFKD', data).encode('ascii', 'ignore')
 
-        data = unicodedata.normalize('NFKD', data).encode('ascii', 'ignore')
         # cherche la saison et episode puis les balises [color]titre[/color]
         # data, saison = self.getSaisonTitre(data)
         # data, episode = self.getEpisodeTitre(data)
@@ -654,7 +660,8 @@ class cGuiElement:
         if not self.getItemValue('trailer'):
             if self.getTrailer():
                 self.addItemValues('trailer', self.getTrailer())
-            # else:
+            else:
+                self.addItemValues('trailer', 'plugin')  # Faux trailer qui ne se lance pas mais evite une erreur
                 # self.addItemValues('trailer', self.getDefaultTrailer())
 
         # Used only if there is data in db, overwrite getMetadonne()

@@ -17,7 +17,7 @@ SITE_DESC = 'Films et Séries'
 
 URL_MAIN = 'https://www.4kstreamz.co/'
 
-MOVIE_NEWS = (URL_MAIN + '/list-films.html', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'list-films.html', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
 URL_SEARCH = (URL_MAIN + 'recherche/', 'showMovies')
@@ -66,7 +66,7 @@ def showSearch():
 
 def showYears():
     oGui = cGui()
-    for i in reversed(range(1921, 2021)):
+    for i in reversed(range(1921, 2022)):
         sYear = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'filmspar?annee=' + sYear)  # / inutile
@@ -268,7 +268,8 @@ def ShowEpisodes():
     sStart = '<div class="contentomovies">'
     sEnd = '<div class="keywords"'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
-    sPattern = '<a href="([^"]+).+?class="titverle">.+?class="nop">Épisode([^<]+)'
+
+    sPattern = '<a href="([^"]+).+?class="titverle">.+?class="nop">.+?pisode([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -286,7 +287,7 @@ def ShowEpisodes():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sYear', sYear)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
@@ -310,20 +311,20 @@ def showLinks():
     if (aResult[0] == True):
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
 
-    sPattern = 'data-url="([^"]+).+?data-code="([^"]+).+?<span>([^<]+)|<img src=".(vf|vostfr).png'
+    sPattern = '<img src=".(vf|vostfr).png|data-url="([^"]+).+?data-code="([^"]+).+?<span>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    sLang = ''
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sLang = ''
-            if aEntry[3]:
-                sLang = aEntry[3].upper()
-
             if aEntry[0]:
-                dataUrl = aEntry[0]
-                dataCode = aEntry[1]
-                sHost = aEntry[2].capitalize()
+                sLang = aEntry[0].upper()
+
+            if aEntry[1]:
+                dataUrl = aEntry[1]
+                dataCode = aEntry[2]
+                sHost = aEntry[3].capitalize()
                 if isBlackHost(sHost):
                     continue
 
@@ -337,20 +338,19 @@ def showLinks():
                 oOutputParameterHandler.addParameter('referer', sUrl)
                 oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
-    sPattern = "class=.Playersbelba.+?PPl=(.+?)CData=([^']+).+?<.span>.+?<span>([^<]+)|<img src=\".(vf|vostfr).png"
+    sPattern = "<img src=\".(vf|vostfr).png|class=.Playersbelba.+?PPl=(.+?)CData=([^']+).+?<.span>.+?<span>([^<]+)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sLang = ''
-            if aEntry[3]:
-                sLang = aEntry[3].upper()
-
             if aEntry[0]:
-                dataUrl = aEntry[0]
-                dataCode = aEntry[1]
-                sHost = aEntry[2].capitalize()
+                sLang = aEntry[0].upper()
+
+            if aEntry[1]:
+                dataUrl = aEntry[1]
+                dataCode = aEntry[2]
+                sHost = aEntry[3].capitalize()
                 sUrl2 = URL_MAIN + 'Players.php?PPl=' + dataUrl + 'CData=' + dataCode
 
                 sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sLang, sHost)

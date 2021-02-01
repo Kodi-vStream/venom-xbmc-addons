@@ -106,7 +106,7 @@ def showGenres():
 
 def showYears():
     oGui = cGui()
-    for i in reversed(range(2005, 2021)):
+    for i in reversed(range(2005, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'index.php?do=xfsearch&xf=' + Year)

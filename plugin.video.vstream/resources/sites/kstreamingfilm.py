@@ -142,6 +142,7 @@ def showMovies(sSearch=''):
             sUrl = aEntry[2]
             sYear = aEntry[3]
             sDesc = aEntry[4]
+            sDisplayTitle = sTitle + '(' + sYear + ')'
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -150,7 +151,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sYear', sYear)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 

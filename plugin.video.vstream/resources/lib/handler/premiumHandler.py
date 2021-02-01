@@ -83,7 +83,6 @@ class cPremiumHandler:
             post_data['lt'] = 'on'
             post_data['purge'] = 'on'
             post_data['valider'] = 'Send'
-            self.__ssl = True
 
         elif 'uploaded' in self.__sHosterIdentifier:
             url = 'http://uploaded.net/io/login'
@@ -96,6 +95,7 @@ class cPremiumHandler:
 
         oRequestHandler = cRequestHandler(url)
         oRequestHandler.setRequestType(1)
+
         if 'uptobox' in self.__sHosterIdentifier:
             oRequestHandler.disableRedirect()
 
@@ -156,6 +156,7 @@ class cPremiumHandler:
         oRequestHandler = cRequestHandler(url)
         oRequestHandler.addHeaderEntry('User-Agent',UA)
         if not (data == None):
+            oRequestHandler.addParametersLine(data)
             oRequestHandler.addHeaderEntry('Referer', url)
 
         oRequestHandler.addHeaderEntry('Cookie', cookies)
@@ -200,7 +201,7 @@ class cPremiumHandler:
         sToken = self.ADDON.getSetting('hoster_' + str(self.__sHosterIdentifier) + '_token')
         if sToken:
             return sToken
-        
+
         # token alldebrid était connu avec un aute setting
         if 'alldebrid' in self.__sHosterIdentifier:
             sToken = self.ADDON.getSetting('token_alldebrid')  # ancien nom, à supprimer après quelques temps
@@ -210,7 +211,7 @@ class cPremiumHandler:
 
         # Si pas de token pour uptobox, on le récupère depuis le compte
         if 'uptobox' in self.__sHosterIdentifier:
-            
+
             if not self.isLogin:
                 self.Authentificate()
 
@@ -225,4 +226,3 @@ class cPremiumHandler:
                     return sToken
 
         return None
-    

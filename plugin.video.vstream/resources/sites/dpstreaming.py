@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+return False  # Cloudflare 15/01/2021
 
 import re
 import requests
@@ -73,13 +74,6 @@ def protectStreamByPass(url):
 
         data = response.text
         data = data.encode('utf-8', 'ignore')
-
-        # VSlog(type(data))
-        # VSlog(repr(data))
-
-        # fh = open('c:\\test.txt', 'w')
-        # fh.write(data)
-        # fh.close()
 
         # Test de fonctionnement
         aResult = oParser.parse(data, sPattern)

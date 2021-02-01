@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
-from resources.lib.gui.hoster import cHosterGui
+import re
+
+from resources.lib.comaddon import progress
 from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import progress
 from resources.lib.parser import cParser
-from resources.lib.packer import cPacker
-from resources.lib.util import cUtil
 from resources.lib.util import Noredirection
-import re
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'zustream'
 SITE_NAME = 'ZuStream'
 SITE_DESC = 'Retrouvez un énorme répertoire de films, de séries et de mangas en streaming VF et VOSTFR complets'
 
-URL_MAIN = 'https://www.zustream.ws/'
+URL_MAIN = 'https://www.zustream.lol/'
 
 MOVIE_MOVIE = (True, 'showMenuFilms')
 MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
@@ -41,6 +41,7 @@ URL_SEARCH_MOVIES = (URL_MAIN + '?post_types=movies&s=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + '?post_types=tvshows&s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
 
 def load():
     oGui = cGui()
@@ -182,7 +183,7 @@ def showNetwork():
 def showYears():
     oGui = cGui()
 
-    for i in reversed(range(1995, 2021)):
+    for i in reversed(range(1995, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'sortie/' + Year + '/?post_types=movies')
@@ -194,7 +195,7 @@ def showYears():
 def showYearsSeries():
     oGui = cGui()
 
-    for i in reversed(range(1997, 2021)):
+    for i in reversed(range(1997, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'sortie/' + Year + '/?post_types=tvshows')
@@ -297,7 +298,7 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<span>Page.+?de ([^<]+)</span.+?href="([^"]+)"><i id=\'nextpagination\''
+    sPattern = '<span>Page.+?de ([^<]+)<\/span.+?href="([^"]+)(?:"><i id=\'nextpagination\'|" ><span class="icon-chevron-right)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sNumberMax = aResult[1][0][0]
@@ -400,7 +401,7 @@ def showHosters():
 
     oRequest = cRequestHandler(sUrl)
     oRequest.setRequestType(1)
-    oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
+    oRequest.addHeaderEntry('User-Agent', UA)
     oRequest.addHeaderEntry('Referer', referer)
     oRequest.addHeaderEntry('Accept', '*/*')
     oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
@@ -429,13 +430,12 @@ def showHosters():
                 return
 
             if 're.zu-lien.com' in sHosterUrl:
-                UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
                 oRequestHandler = cRequestHandler(sHosterUrl)
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
                 oRequestHandler.addHeaderEntry('Referer', 'https://re.zu-lien.com')
                 # sHtmlContent2 = oRequestHandler.request()
                 sUrl1 = oRequestHandler.getRealUrl()
-                if not sUrl1 or sUrl1 == sHosterUrl :
+                if not sUrl1 or sUrl1 == sHosterUrl:
                     opener = Noredirection()
                     opener.addheaders = [('User-Agent', UA)]
                     opener.addheaders = [('Referer', 'https://re.zu-lien.com')]

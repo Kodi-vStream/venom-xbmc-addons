@@ -94,7 +94,7 @@ class PasteCache:
                 self.__createdb()
                 return
         except:
-            VSlog('Error: Unable to write on %s' % REALCACHE)
+            VSlog('Error: Unable to create DB %s' % REALCACHE)
             pass
 
         try:
@@ -116,10 +116,10 @@ class PasteCache:
         try:
             self.dbcur.execute(sql_create)
         except:
-            VSlog('Error: Cannot create table movie')
+            VSlog('Error: Unable to create table %s' % SITE_IDENTIFIER)
 
         self.dbcur.execute(sql_create)
-        VSlog('table pastebin creee')
+        VSlog('table %s creee' % SITE_IDENTIFIER)
 
     def __del__(self):
         """ Cleanup db when object destroyed """
@@ -137,7 +137,7 @@ class PasteCache:
             self.dbcur.execute(sql_select)
             matchedrow = self.dbcur.fetchone()
         except Exception as e:
-            VSlog('************* Error selecting from cache db: %s' % e, 4)
+            VSlog('************* Error selecting from %s db: %s' % (SITE_IDENTIFIER, e), 4)
             return None, False
 
         if matchedrow:
@@ -200,7 +200,7 @@ class PasteCache:
             self.dbcur.execute(sql_delete)
             self.db.commit()
         except Exception as e:
-            VSlog('************* Error deleting from cache db: %s' % e, 4)
+            VSlog('************* Error deleting from %s db: %s' % (SITE_IDENTIFIER, e), 4)
             return None
 
 
@@ -233,7 +233,8 @@ class PasteContent:
     cache = None
     keyUpto = None
     keyAlld = None
-    
+    keyReald = None    
+
     # Pour comparer deux pastes, savoir si les champs sont dans le même ordre
     def isFormat(self, other):
         if not isinstance(other, PasteContent):
@@ -297,26 +298,48 @@ class PasteContent:
             return self.HEBERGEUR+link
 
         if 'uptobox' in self.HEBERGEUR:
-            if not self.keyUpto and not self.keyAlld:
-                if not self.keyUpto:
-                    self.keyUpto = cPremiumHandler('uptobox').getToken()
-                if not self.keyUpto: # si toujours pas de clef upto, on essai une cle allDebrid
+            # Recherche d'un compte premium valide
+            links = None
+            if not self.keyUpto and not self.keyAlld and not self.keyReald:
+                self.keyUpto = cPremiumHandler('uptobox').getToken()
+                if self.keyUpto: 
+                    links = self._resolveLink(pasteBin, link)
+                if not links :
+                    self.keyUpto = None
+                    self.keyReald = cPremiumHandler('realdebrid').getToken()
+                    if self.keyReald: 
+                        links = self._resolveLink(pasteBin, link)
+                if not links :
+                    self.keyReald = None
                     self.keyAlld = cPremiumHandler('alldebrid').getToken()
+                    if self.keyAlld:
+                        links = self._resolveLink(pasteBin, link)
+                        if not links :
+                            self.keyAlld = None
             
-            if self.keyUpto or self.keyAlld:
-                links = self._getCrypt().resolveLink(pasteBin, link, self.keyUpto, self.keyAlld)
-                if links and len(links)>1:
-                    l = links[0]
-                    if l:
-                        return l
-                    err = 'Erreur : ' + str(links[1])
-                    VSlog(err)
+            # Un compte avec un des trois débrideurs
+            if not links and (self.keyUpto or self.keyAlld or self.keyReald):
+                links = self._resolveLink(pasteBin, link)
+                if not links :
                     dialog().VSinfo(err)
+            if links:
+                return links
             else:
-                dialog().VSinfo('Certains liens nécessitent un Compte Uptobox Premium')
+                dialog().VSinfo('Certains liens nécessitent un Compte Premium')
 
         return self.HEBERGEUR+link
     
+    def _resolveLink(self, pasteBin, link):
+        
+        # Un token avec un des trois débrideurs
+        if self.keyUpto or self.keyAlld or self.keyReald:
+            links = self._getCrypt().resolveLink(pasteBin, link, self.keyUpto, self.keyAlld, self.keyReald)
+            if links and len(links)>1:
+                l = links[0]
+                if l:
+                    return l
+                err = 'Erreur : ' + str(links[1])
+                VSlog(err)
     
     def _decompress(self, pasteBin):
         
@@ -324,12 +347,12 @@ class PasteContent:
         hasMovies = False
         try:
             lines = self._getCrypt().loadFile(pasteBin)
-            hasMovies = True
+            if lines:
+                hasMovies = True
         except Exception as e:
-            VSlog('ERROR loadFile : %s' % e, 4)
-
-            URL_MAIN + pasteBin
-            
+            pass
+        
+        if not hasMovies:
             oRequestHandler = cRequestHandler(URL_MAIN + pasteBin)
             oRequestHandler.setTimeout(4)
             sContent = oRequestHandler.request()
@@ -447,6 +470,10 @@ def showMenu():
                 oOutputParameterHandler.addParameter('sMedia', 'anime')
                 oGui.addDir(SITE_IDENTIFIER, 'showMenu', 'Animes', 'animes.png', oOutputParameterHandler)
 
+            if 'containDivers' in contenu:
+                oOutputParameterHandler.addParameter('sMedia', 'divers')
+                oGui.addDir(SITE_IDENTIFIER, 'showMenu', 'Divers', 'buzz.png', oOutputParameterHandler)
+
         # Menu pour ajouter un lien (hors widget)
         if not xbmc.getCondVisibility('Window.IsActive(home)'):
             oGui.addDir(SITE_IDENTIFIER, 'addPasteID', '[COLOR coral]Ajouter un code %s[/COLOR]' % SITE_NAME, 'notes.png', oOutputParameterHandler)
@@ -498,7 +525,7 @@ def showDetailMenu(pasteID, contenu):
         if 'containFilmGroupes' in contenu:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&pasteID=' + pasteID)
-            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Films (Listes)', 'genres.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Films (Listes)', 'listes.png', oOutputParameterHandler)
 
         if 'containFilmSaga' in contenu:
             oOutputParameterHandler = cOutputParameterHandler()
@@ -536,7 +563,7 @@ def showDetailMenu(pasteID, contenu):
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&bRandom=True&pasteID=' + pasteID)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Aléatoires)', 'news.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Aléatoires)', 'listes.png', oOutputParameterHandler)
 
     if 'containSeries' in contenu:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -548,14 +575,15 @@ def showDetailMenu(pasteID, contenu):
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&bNews=True&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&pasteID=' + pasteID)
-        oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
+        if 'containSerieGenres' in contenu:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&pasteID=' + pasteID)
+            oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
         if 'containSerieGroupes' in contenu:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&pasteID=' + pasteID)
-            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Séries (Listes)', 'genres.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Séries (Listes)', 'listes.png', oOutputParameterHandler)
 
         if 'containSerieNetwork' in contenu:
             oOutputParameterHandler = cOutputParameterHandler()
@@ -570,6 +598,10 @@ def showDetailMenu(pasteID, contenu):
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Séries (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&bRandom=True&pasteID=' + pasteID)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Aléatoires)', 'listes.png', oOutputParameterHandler)
 
     if 'containAnimes' in contenu:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -588,7 +620,7 @@ def showDetailMenu(pasteID, contenu):
         if 'containAnimeGroupes' in contenu:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime&pasteID=' + pasteID)
-            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Animes (Listes)', 'genres.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Animes (Listes)', 'listes.png', oOutputParameterHandler)
 
         if 'containAnimeNetwork' in contenu:
             oOutputParameterHandler = cOutputParameterHandler()
@@ -622,7 +654,7 @@ def showDetailMenu(pasteID, contenu):
         if 'containDiversGroupes' in contenu:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=divers&pasteID=' + pasteID)
-            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Divers (Listes)', 'genres.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Divers (Listes)', 'listes.png', oOutputParameterHandler)
 
         if 'containDiversYear' in contenu:
             oOutputParameterHandler = cOutputParameterHandler()
@@ -631,7 +663,7 @@ def showDetailMenu(pasteID, contenu):
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=divers&pasteID=' + pasteID)
-        oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Divers (Ordre alphabétique)', 'listes.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Divers (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
 
 # Etablir les menus en fonction du contenu
@@ -667,6 +699,8 @@ def getPasteBin(pbContent, pasteBin):
 
         elif 'serie' in movie[pbContent.CAT]:
             containList.add('containSeries')
+            if pbContent.GENRES >= 0 and len(movie[pbContent.GENRES].strip()) > 2:
+                containList.add('containSerieGenres')
             if pbContent.GROUPES >= 0 and len(movie[pbContent.GROUPES].replace('[', '').replace(']', '').strip()) > 0:
                 containList.add('containSerieGroupes')
             if pbContent.NETWORK >=0 and len(movie[pbContent.NETWORK].replace('[', '').replace(']', '').strip()) > 0:
@@ -1792,7 +1826,7 @@ def showHosters():
         if not sHosterUrl.startswith('http'):
             sHosterUrl += 'http://' + sHosterUrl
 
-        if '/dl/' in sHosterUrl:
+        if '/dl/' in sHosterUrl or '.download.' in sHosterUrl:
             oHoster = cHosterGui().getHoster('lien_direct')
         else:
             oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -1802,9 +1836,15 @@ def showHosters():
             if listRes:
                 res = listRes[resIdx]
                 resIdx += 1
-                # Filtre la résolution
-                if sRes and sRes != res:
-                    continue
+
+                # Filtre la résolution si demandée
+                if sRes:
+                    if sRes == UNCLASSIFIED:
+                        if res:
+                            continue
+                    else:
+                        if sRes != res:
+                            continue
 
                 if res.isdigit():
                     res += 'p'

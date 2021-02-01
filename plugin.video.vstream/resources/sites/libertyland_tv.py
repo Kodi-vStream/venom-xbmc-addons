@@ -199,7 +199,7 @@ def showSerieGenres():
 def showMovieAnnees():
     oGui = cGui()
 
-    for i in reversed(range(1914, 2021)):
+    for i in reversed(range(1914, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/annee/' + Year + '.html')
@@ -211,7 +211,7 @@ def showMovieAnnees():
 def showSerieAnnees():
     oGui = cGui()
 
-    for i in reversed(range(1989, 2021)):
+    for i in reversed(range(1989, 2022)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'v2/series/annee/' + Year + '/')
@@ -231,9 +231,9 @@ def showMovies(sSearch=''):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
         if '/series' in sUrl:
-            sPattern = '<div class="divtelecha.+?href="([^"]+)"><strong>([^<]+)<\/strong>.+?<img class="img-responsive".+?src="([^"]+)".+?serie de (\d{4})<.+?Synopsis :([^<]+)<'
+            sPattern = '<div class="divtelecha.+?href="([^"]+)"><strong>([^<]+)</strong>.+?<img class="img-responsive".+?src="([^"]+).+?serie de (\d{4})<.+?Synopsis :([^<]+)'
         else:  # films
-            sPattern = '<h2 class="heading"> *<a href="[^"]+">([^<]+)<.+?<img class="img-responsive" *src="([^"]+)" *alt.+?(?:<font color="#.+?">([^<]+)<\/font>.+?).+?>film de (\d{4})<.+?Synopsis : ([^<]+)<.+?<div class="divtelecha.+?href="([^"]+)"'
+            sPattern = '<h2 class="heading"> *<a href="[^"]+">([^<]+).+?<img class="img-responsive" *src="([^"]+)" *alt.+?(?:<font color="#.+?">([^<]+)</font>.+?).+?>film de (\d{4})<.+?Synopsis : ([^<]+).+?<div class="divtelecha.+?href="([^"]+)'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -297,7 +297,7 @@ def showMovies(sSearch=''):
                                  .replace(' ', '').replace('Bonne', 'DVD').replace('Mauvaise', 'SD').encode("utf-8")
 
             if 'https' not in sUrl2:
-                    sUrl2 = URL_MAIN[:-1] + sUrl2
+                sUrl2 = URL_MAIN[:-1] + sUrl2
 
             sUrl2 = sUrl2.replace('telecharger', 'streaming')
 
@@ -338,7 +338,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.findall('([0-9]+)', sNextPage)[-1]
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + number + ' >>>[/COLOR]', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -473,13 +473,11 @@ def showHosters():
     sType = oInputParameterHandler.getValue('sType')
     idHeb = oInputParameterHandler.getValue('idHeb')
 
-    # film
-    if (oInputParameterHandler.exist('idMov')):
+    if (oInputParameterHandler.exist('idMov')):  # film
         idMov = oInputParameterHandler.getValue('idMov')
         pdata = 'id=' + idHeb + '&id_movie=' + idMov + '&type=' + sType
         pUrl = URL_MAIN + 'v2/video.php'
-    else:
-        # serie pas d'idmov
+    else:  # serie pas d'idmov
         pdata = 'id=' + idHeb + '&type=' + sType
         pUrl = URL_MAIN + 'v2/video.php'
 

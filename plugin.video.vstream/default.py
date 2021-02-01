@@ -30,7 +30,7 @@ DEBUG = False
 if DEBUG:
 
     import sys  # pydevd module need to be copied in Kodi\system\python\Lib\pysrc
-    sys.path.append('C:\Program Files\Kodi\system\Python\Lib\pysrc')
+    sys.path.append('H:\Program Files\Kodi\system\Python\Lib\pysrc')
 
     try:
         import pysrc.pydevd as pydevd
@@ -307,7 +307,7 @@ def searchGlobal():
         return True
 
     total = len(aPlugins)
-    progress_ = progress().VScreate()
+    progress_ = progress().VScreate(large=True)
 
     # kodi 17 vire la fenetre busy qui se pose au dessus de la barre de Progress
     try:
@@ -323,7 +323,6 @@ def searchGlobal():
  
         progress_.VSupdate(progress_, total, plugin['name'], True)
         if progress_.iscanceled():
-            progress_.close()
             break
  
         oGui.searchResults[:] = []  # vider le tableau de résultats pour les récupérer par source

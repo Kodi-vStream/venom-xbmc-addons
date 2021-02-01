@@ -1,11 +1,11 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
+# https://www.pstream.net/e/xxxxx
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, VSlog
+from resources.lib.comaddon import dialog, VSPath, isMatrix
 from resources.lib.parser import cParser
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
 
 class cHoster(iHoster):
 
@@ -57,42 +57,58 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
 
-        oRequest = cRequestHandler(self.__sUrl)
-        oRequest.addHeaderEntry('User-Agent', UA)
-        oRequest.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-        oRequest.addHeaderEntry("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
+        api_call = ''
+        url = self.__sUrl
+
+        pathfile = 'special://temp/video_pstream.m3u8'
+        if not isMatrix():
+            video_pstream_path = VSPath(pathfile).decode('utf-8')
+        else:
+            video_pstream_path = VSPath(pathfile)
+
+        oRequest = cRequestHandler(url)
+        oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+        oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  'v.uri = \'([^\']+)\';'
+        sPattern =  "playerBrand.+?var.+?\'([^\']+)"
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
-        VSlog(aResult[1][0])
+        if (aResult[0] == True):
+            url2 = aResult[1][0]
 
-        oRequest = cRequestHandler(aResult[1][0])
-        oRequest.addHeaderEntry('User-Agent', UA)
-        oRequest.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-        oRequest.addHeaderEntry("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
-        oRequest.addHeaderEntry('Referer', self.__sUrl)
-        
-        sHtmlContent = oRequest.request()
+            oRequest = cRequestHandler(url2)
+            oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+            oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+            sHtmlContent = oRequest.request()
 
-        oParser = cParser()
-        sPattern =  'NAME="([0-9]+)"([^#]+)'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+            sPattern = "NAME=.([^\"']+).+?https([^#]+)"
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                url = []
+                qua = []
+                for aEntry in aResult[1]:
+                    urls = 'https' + aEntry[1].strip()
+                    qua.append(aEntry[0])
+                    url.append(urls.strip())
 
-        if (aResult[0]):
-            url = []
-            qua = []
-            for aEntry in aResult[1]:
-                url.append(aEntry[1])
-                qua.append(aEntry[0])
+                sUrlselect = dialog().VSselectqual(qua, url)
 
-            api_call = dialog().VSselectqual(qua, url)
-            
-        VSlog(api_call)
+                sUrlselect = sUrlselect.strip()
+                oRequest = cRequestHandler(sUrlselect)
+                oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+                oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+                sHtmlContent = oRequest.request()
+
+                if '#EXT' not in sHtmlContent:
+                    return False, False
+
+                with open(video_pstream_path, "w") as subfile:
+                    subfile.write(sHtmlContent)
+
+                api_call = video_pstream_path
 
         if (api_call):
-            return True, api_call + "|User-Agent=" + UA
+            return True, api_call
 
         return False, False

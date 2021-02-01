@@ -42,7 +42,7 @@ msgstr "Taille des Fanarts"
 
 msgctxt "#30009"
 msgid "Use extendedinfo for the information windows"
-msgstr "Utiliser extendedinfo pour la fenetre information"
+msgstr "Utiliser la fenetre d'information ExtendedInfo"
 
 msgctxt "#30010"
 msgid "Color Text note"
@@ -321,8 +321,8 @@ msgid "Search (Movie)"
 msgstr "Recherche (Films)"
 
 msgctxt "#30079"
-msgid "Search (Tvshow/Anim)"
-msgstr "Recherche (Séries/Animés)"
+msgid "Search (Tvshow)"
+msgstr "Recherche (Séries)"
 
 msgctxt "#30080"
 msgid "Search (Other category)"
@@ -476,6 +476,14 @@ msgctxt "#30117"
 msgid "TV replay"
 msgstr "TV replay"
 
+msgctxt "#30118"
+msgid "Search (Anim)"
+msgstr "Recherche (Animés)"
+
+msgctxt "#30119"
+msgid "Live"
+msgstr "En direct"
+
 msgctxt "#30120"
 msgid "Movies"
 msgstr "Films"
@@ -487,6 +495,14 @@ msgstr "Séries"
 msgctxt "#30122"
 msgid "Animes"
 msgstr "Animés"
+
+msgctxt "#30123"
+msgid "Search (Dramas)"
+msgstr "Recherche (Dramas)"
+
+msgctxt "#30124"
+msgid "Dramas"
+msgstr "Dramas"
 
 msgctxt "#30127"
 msgid "Tools"
@@ -629,8 +645,8 @@ msgid "[COLOR khaki]Hello, %s[/COLOR]"
 msgstr "[COLOR khaki][COLOR khaki]Bonjour, %s[/COLOR]"
 
 msgctxt "#30308"
-msgid "History"
-msgstr "Historique"
+msgid "Search history"
+msgstr "Historique de recherche"
 
 msgctxt "#30309"
 msgid "Disconnection"
@@ -697,8 +713,12 @@ msgid "1Fichier"
 msgstr "1Fichier"
 
 msgctxt "#30328"
+msgid "Token"
+msgstr "Token"
+
+msgctxt "#30329"
 msgid "Token (Optional)"
-msgstr "Token (Facultatif)"
+msgstr "Token (Optionnel)"
 
 msgctxt "#30330"
 msgid "Search"
@@ -858,7 +878,7 @@ msgstr "[COLOR gold]Recherche saison complète[/COLOR]"
 
 msgctxt "#30416"
 msgid "[COLOR gold]Search history[/COLOR]"
-msgstr "[COLOR gold]Historique de recherche[/COLOR]"
+msgstr "[COLOR gold]Lancer une nouvelle recherche[/COLOR]"
 
 msgctxt "#30417"
 msgid "[COLOR orange]Search on Alluc_ee[/COLOR]"
@@ -878,7 +898,7 @@ msgstr "Activer/Désactiver les sources"
 
 msgctxt "#30421"
 msgid "Go to [COLOR teal]%s[CR]%s[/COLOR][CR],Valid vStream, only then click YES"
-msgstr "Rendez vous sur [COLOR teal]%s[CR]%s[/COLOR][CR], Valider vStream, seulement ensuite cliquer OUI"
+msgstr "Rendez vous sur [COLOR teal]%s[CR]%s[/COLOR][CR] Approuver vStream, puis seulement ensuite cliquez OUI"
 
 msgctxt "#30422"
 msgid "Enable log records"
@@ -1064,15 +1084,14 @@ msgctxt "#30470"
 msgid "Addon dnspython missing"
 msgstr "Addon dnspython manquant"
 
+msgctxt "#30480"
+msgid "Small loading spinner"
+msgstr "Sablier de chargement réduit"
 
 # Alldebrid
-msgctxt "#30998"
-msgid "Put the Token of your Alldebrid account"
-msgstr "Mettez le Token de votre compte Alldebrid"
-
 msgctxt "#31000"
-msgid "Enter the url of your multimedia folder"
-msgstr "Mettez l'url de votre dossier multimedia Alldebrid"
+msgid "Multimedia folder URL (Optional)"
+msgstr "URL du dossier multimedia (Optionnel)"
 
 msgctxt "#31101"
 msgid "Url"
@@ -1080,4 +1099,8 @@ msgstr "Url"
 
 msgctxt "#31102"
 msgid "Use the skin display for the information windows"
-msgstr "Utiliser l'affichage du skin pour la fenetre information"
+msgstr "Utiliser la fenetre d'information du skin"
+
+msgctxt "#31103"
+msgid "Allow adult content"
+msgstr "Autoriser le contenu pour adultes"

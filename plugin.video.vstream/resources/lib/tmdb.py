@@ -238,8 +238,9 @@ class cTMDb:
     def get_idbyname(self, name, year='', mediaType='movie', page=1):
         #Pour les series il faut enlever le numero de l episode et la saison.
         if mediaType == "tv":
-            m = re.search('(?i)(\wpisode ([0-9\.\-\_]+))', name)
-            m1 = re.search('(?i)(s(?:aison )*([0-9]+))', name)
+            m = re.search('(?i)(\wpisode\s*([0-9]+))', name)
+            m1 = re.search('(?i)(\waison\s*([0-9]+))', name)
+            
             name = name.replace(m.group(1), '').replace(m1.group(1), '').replace('+', ' ')
 
         #On enleve le contenu entre paranthese.

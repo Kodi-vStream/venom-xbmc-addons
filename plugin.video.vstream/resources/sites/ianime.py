@@ -42,7 +42,11 @@ FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH_MOVIES = ('movies=', 'showMovies')
 URL_SEARCH_SERIES = ('tvshow=', 'showMovies')
 URL_SEARCH_ANIMS = ('anime=', 'showMovies')
-URL_SEARCH = (URL_MAIN+'resultat+', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'resultat+', 'showMovies')
+
+
+def RandomReferer():
+    return URL_MAIN + ''.join(random.choice(s) for i in range(32)) + '.htm'
 
 
 def DecryptMangacity(chain):
@@ -113,7 +117,7 @@ def ICDecode(html):
     i = p = s = w = 0
     j = math.ceil(float(l) / b)
     r = ''
-    
+
     while j > 0:
 
         i = min(l, b)
@@ -135,6 +139,7 @@ def ICDecode(html):
     return str(r)
 
 # ------------------------------------------------------------------------------------
+
 
 def load():
     oGui = cGui()
@@ -321,7 +326,7 @@ def ShowAlpha(url=None):
     if sHtmlContent.startswith('<script type="text/javascript">'):
         sHtmlContent = FullUnescape(sHtmlContent)
 
-    sPattern = "<a href=.([^<>]+?). class=.button (?:red )*light.><headline6>(?:<font color=.black.>)*([A-Z#])(?:<\/font>)*<\/headline6><\/a>"
+    sPattern = "<a href=.([^<>]+?). class=.button (?:red )*light.><headline6>(?:<font color=.black.>)*([A-Z#])(?:</font>)*</headline6></a>"
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -348,19 +353,21 @@ def showMovies(sSearch=''):
         sSearch = cUtil().CleanName(sSearch)
         sSearch = QuotePlus(sSearch).upper()  # remplace espace par + et passe en majuscule
 
-        url = URL_SEARCH[0] + sSearch + '.html'
+        sUrl = URL_SEARCH[0] + sSearch + '.html'
 
-        oRequestHandler = cRequestHandler(url)
+        oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
         sHtmlContent = oRequestHandler.request()
         sHtmlContent = cutSearch(sHtmlContent, typeSearch)
+
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Referer', RandomReferer())
         sHtmlContent = oRequestHandler.request()
         # sHtmlContent = DecryptMangacity(sHtmlContent)
 
@@ -485,6 +492,7 @@ def showEpisode():
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Referer', RandomReferer())
     sHtmlContent = oRequestHandler.request()
 
     if 'HTML/JavaScript Encoder' in sHtmlContent:
@@ -576,6 +584,7 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Referer', RandomReferer())
     sHtmlContent = oRequestHandler.request()
 
     if 'HTML/JavaScript Encoder' in sHtmlContent:
@@ -615,7 +624,7 @@ def showHosters():
                 list_url.append(sHosterUrl)
 
         # 2 eme methode
-        sPattern = '<script>eval\(unescape\((.+?)\); eval\(unescape\((.+?)\);<\/script>'
+        sPattern = '<script>eval\(unescape\((.+?)\); eval\(unescape\((.+?)\);</script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             for aEntry in aResult[1]:
@@ -755,10 +764,10 @@ def showHosters():
 
                 if 'tinyurl' in sHosterUrl:
                     sHosterUrl = GetTinyUrl(sHosterUrl)
-                    
+
                 if '///' in sHosterUrl:
                     sHosterUrl = 'https://' + '/'.join(sHosterUrl.split('/')[5:])
-                    
+
                 VSlog(sHosterUrl)
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -803,7 +812,7 @@ def GetTinyUrl(url):
 
     # On va chercher le vrai lien
     else:
-        headers9 = [('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'), ('Referer', URL_MAIN)]
+        headers9 = [('User-Agent', UA), ('Referer', URL_MAIN)]
 
         opener = Noredirection()
         opener.addheaders = headers9

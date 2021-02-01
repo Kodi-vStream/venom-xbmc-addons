@@ -673,7 +673,8 @@ class cGui:
 
             WindowsBoxes(sCleanTitle, sCleanTitle, sMeta, sYear)
         else:
-            xbmc.executebuiltin('ActivateWindow(12003)')     # WINDOW_DIALOG_VIDEO_INFO
+        	#On appel la fonction integrer a Kodi pour charger les infos.
+            xbmc.executebuiltin('Action(Info)')
 
     def viewSimil(self):
         sPluginPath = cPluginHandler().getPluginPath()

@@ -112,7 +112,7 @@ def showMyTmdb():
     if tmdb_session == '':
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'https://')
-        oGui.addDir(SITE_IDENTIFIER, 'getToken', addons.VSlang(30305), 'trakt.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'getToken', addons.VSlang(30305), 'tmdb.png', oOutputParameterHandler)
     else:
         # pas de deco possible avec l'api donc on test l'username sinon ont supprime tous
         result = grab.getUrl('account', '1', 'session_id=' + tmdb_session)
@@ -422,7 +422,8 @@ def showGenreTV():
         for i in result['genres']:
             sId, sTitle = i['id'], i['name']
 
-            sTitle = sTitle.encode("utf-8")
+            if not isMatrix():
+                sTitle = sTitle.encode("utf-8")
             # sUrl = API_URL + '/genre/' + str(sId) + '/tv'
             sUrl = 'discover/tv'
             oOutputParameterHandler = cOutputParameterHandler()
