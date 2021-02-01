@@ -41,6 +41,7 @@ URL_SEARCH_MOVIES = (URL_MAIN + '?post_types=movies&s=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + '?post_types=tvshows&s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
 
 def load():
     oGui = cGui()
@@ -297,7 +298,7 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<span>Page.+?de ([^<]+)</span.+?href="([^"]+)"><i id=\'nextpagination\''
+    sPattern = '<span>Page.+?de ([^<]+)<\/span.+?href="([^"]+)(?:"><i id=\'nextpagination\'|" ><span class="icon-chevron-right)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sNumberMax = aResult[1][0][0]
@@ -400,7 +401,7 @@ def showHosters():
 
     oRequest = cRequestHandler(sUrl)
     oRequest.setRequestType(1)
-    oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
+    oRequest.addHeaderEntry('User-Agent', UA)
     oRequest.addHeaderEntry('Referer', referer)
     oRequest.addHeaderEntry('Accept', '*/*')
     oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
@@ -429,7 +430,6 @@ def showHosters():
                 return
 
             if 're.zu-lien.com' in sHosterUrl:
-                UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
                 oRequestHandler = cRequestHandler(sHosterUrl)
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
                 oRequestHandler.addHeaderEntry('Referer', 'https://re.zu-lien.com')
