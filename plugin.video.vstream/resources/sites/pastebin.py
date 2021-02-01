@@ -347,12 +347,12 @@ class PasteContent:
         hasMovies = False
         try:
             lines = self._getCrypt().loadFile(pasteBin)
-            hasMovies = True
+            if lines:
+                hasMovies = True
         except Exception as e:
-            VSlog('ERROR loadFile : %s' % e, 4)
-
-            URL_MAIN + pasteBin
-            
+            pass
+        
+        if not hasMovies:
             oRequestHandler = cRequestHandler(URL_MAIN + pasteBin)
             oRequestHandler.setTimeout(4)
             sContent = oRequestHandler.request()
