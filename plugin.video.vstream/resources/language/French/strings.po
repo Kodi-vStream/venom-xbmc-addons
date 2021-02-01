@@ -1100,3 +1100,7 @@ msgstr "Url"
 msgctxt "#31102"
 msgid "Use the skin display for the information windows"
 msgstr "Utiliser la fenetre d'information du skin"
+
+msgctxt "#31103"
+msgid "Allow adult content"
+msgstr "Autorisez le contenu pour adultes"
