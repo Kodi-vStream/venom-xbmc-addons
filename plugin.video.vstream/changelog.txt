@@ -13,9 +13,9 @@ Historique des modifications
 ==================================================================================
 
 *** 0.8.6***
-- Sablier réduit pour améliorer les performances avec de navigation
+- Sablier réduit pour améliorer les performances de navigation
 - Recherche "japAnimes" séparée de la recherche "Séries".
 - De nouvelles sources pour les japAnimes
 - Menu "Dramas" et recherche "Dramas"
 - Autoriser le contenu Adulte (appliquer pour l'instant à certaines catégories Dramas)
-- Support de la fenetre d'information du skin
+- Permettre l'utilisation de la fenetre d'information du skin
