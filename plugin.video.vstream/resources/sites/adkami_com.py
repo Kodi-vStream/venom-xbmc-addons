@@ -16,7 +16,7 @@ SITE_DESC = 'Bienvenue sur ADKami un site Animés, Mangas & Séries en streaming
 
 URL_MAIN = 'https://www.adkami.com/'
 
-ANIM_ANIMS = ('http://', 'load')
+ANIM_ANIMS = ('http://', 'showAnimesSources')
 ANIM_NEWS = (URL_MAIN + 'anime', 'showMovies')
 ANIM_LIST = (URL_MAIN + 'video?search=&n=&g=&s=&v=&t=0&p=&order=&d1=&d2=&e=&m=&q=&l=', 'showAZ')
 ANIM_VIEWS = (URL_MAIN + 'video?search=&t=0&order=3', 'showMovies')
@@ -26,12 +26,15 @@ SERIE_NEWS = (URL_MAIN + 'serie', 'showMovies')
 SERIE_LIST = (URL_MAIN + 'video?search=&n=&g=&s=&v=&t=1&p=&order=&d1=&d2=&e=&m=&q=&l=', 'showAZ')
 SERIE_VIEWS = (URL_MAIN + 'video?search=&t=1&order=3', 'showMovies')
 
+DRAMA_DRAMAS = ('http://', 'showDramasSources')
 SERIE_DRAMAS = (URL_MAIN + 'drama', 'showMovies')
 DRAMA_LIST = (URL_MAIN + 'video?search=&n=&g=&s=&v=&t=5&p=&order=&d1=&d2=&e=&m=&q=&l=', 'showAZ')
 DRAMA_VIEWS = (URL_MAIN + 'video?search=&t=5&order=3', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + 'video?search=', 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_DRAMAS = (URL_MAIN + 'video?t=5&order=0&search=' , 'showMovies')
+URL_SEARCH_ANIMES = (URL_MAIN + 'video?t=0&order=0&search=' , 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 
@@ -67,6 +70,65 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, DRAMA_VIEWS[1], 'Dramas (Les plus vues)', 'dramas.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
+
+def showAnimesSources():
+
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchAnime', 'Recherche', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_LIST[1], 'Animés (Liste)', 'animes.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VIEWS[1], 'Animés (Les plus vus)', 'views.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+def showDramasSources():
+
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchDrama', 'Recherche', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_LIST[1], 'Dramas (Liste)', 'az.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_VIEWS[1], 'Dramas (Les plus vues)', 'dramas.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showSearchAnime():
+    oGui = cGui()
+
+    sSearchText = oGui.showKeyBoard()
+    if (sSearchText != False):
+        sUrl = URL_SEARCH_ANIMES[0] + sSearchText
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
+        return
+
+
+def showSearchDrama():
+    oGui = cGui()
+
+    sSearchText = oGui.showKeyBoard()
+    if (sSearchText != False):
+        sUrl = URL_SEARCH_DRAMAS[0] + sSearchText
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
+        return
 
 
 def showSearch():
