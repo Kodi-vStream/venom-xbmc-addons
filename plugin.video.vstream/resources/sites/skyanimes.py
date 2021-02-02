@@ -21,6 +21,7 @@ URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?file=Search&op=mod_search&searchtype=m
 FUNCTION_SEARCH = 'showEpisode'
 
 ANIM_ANIMS = (URL_MAIN + '', 'showMenuAnims')
+ANIM_VOSTFRS = (URL_MAIN + '', 'showSeries')
 ANIM_GENRES = (True, 'showGenresA')
 
 DRAMA_DRAMAS = (URL_MAIN + '', 'showMenuDramas')
