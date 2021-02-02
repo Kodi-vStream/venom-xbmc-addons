@@ -14,6 +14,7 @@ Historique des modifications
 
 *** 0.8.6***
 - Sablier réduit pour améliorer les performances de navigation
+- Nouvelle clef TMDB pour les Métadonnées
 - Recherche "japAnimes" séparée de la recherche "Séries".
 - De nouvelles sources pour les japAnimes
 - Menu "Dramas" et recherche "Dramas"
