@@ -20,9 +20,11 @@ STREAM = 'index.php?file=Media&nuked_nude=index&op=do_dl&dl_id='
 URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?file=Search&op=mod_search&searchtype=matchand&autor=&module=Download&limit=100&main=', 'showEpisode')
 FUNCTION_SEARCH = 'showEpisode'
 
+ANIM_ANIMS = (URL_MAIN + '', 'showMenuAnims')
 ANIM_VOSTFRS = (URL_MAIN + '', 'showMenuAnims')
 ANIM_GENRES = (True, 'showGenresA')
 
+DRAMA_DRAMAS = (URL_MAIN + '', 'showMenuDramas')
 DRAMA_VOSTFRS = (URL_MAIN + '', 'showMenuDramas')
 DRAMA_GENRES = (True, 'showGenresD')
 
