@@ -20,11 +20,12 @@ STREAM = 'index.php?file=Media&nuked_nude=index&op=do_dl&dl_id='
 URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?file=Search&op=mod_search&searchtype=matchand&autor=&module=Download&limit=100&main=', 'showEpisode')
 FUNCTION_SEARCH = 'showEpisode'
 
-ANIM_ANIMS = (URL_MAIN + '', 'showMenuAnims')
-ANIM_VOSTFRS = (URL_MAIN + '', 'showSeries')
+ANIM_ANIMS = (True, 'showMenuAnims')
 ANIM_GENRES = (True, 'showGenresA')
+ANIM_VOSTFRS = (URL_MAIN + 'streaming-films', 'showSeries')
+# ANIM_OAVS = (URL_MAIN + 'streaming-oavs', 'showSeries')
 
-DRAMA_DRAMAS = (URL_MAIN + '', 'showMenuDramas')
+DRAMA_DRAMAS = (True, 'showMenuDramas')
 DRAMA_GENRES = (True, 'showGenresD')
 
 
@@ -48,6 +49,9 @@ def showMenuAnims():
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
 
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (Films)', 'films.png', oOutputParameterHandler)
+
     oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genres)', 'genres.png', oOutputParameterHandler)
 
@@ -66,6 +70,10 @@ def showMenuAnims():
 def showMenuDramas():
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
+
+    # contenu à controler
+    # oOutputParameterHandler.addParameter('siteUrl', ANIM_OAVS[0])
+    # oGui.addDir(SITE_IDENTIFIER, ANIM_OAVS[1], 'Dramas (OAVS)', 'dramas.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, DRAMA_GENRES[1], 'Dramas (Genres)', 'genres.png', oOutputParameterHandler)
