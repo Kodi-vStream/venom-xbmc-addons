@@ -17,6 +17,9 @@ SITE_DESC = 'animés en streaming'
 
 URL_MAIN = 'https://dbanimes.com/'
 
+
+ANIM_ANIMS = (True, 'load')
+ANIM_VOSTFRS = (URL_MAIN + 'anime/', 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'anime/', 'showMovies')
 ANIM_MOVIES = (URL_MAIN + 'statu/films/', 'showMovies')
 ANIM_LIST = (URL_MAIN + 'liste/a/', 'showAlpha')
