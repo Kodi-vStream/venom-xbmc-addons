@@ -26,25 +26,25 @@ SITE_DESC = 'Emissions TV, Series et films asiatiques'
 URL_MAIN = 'https://www.viki.com/'
 
 URL_API = 'https://api.viki.io/v4/'
-MOVIE_GENRES = (True, 'showMovieGenre')
-MOVIE_PAYS = (True, 'showMoviePays')
 
 DRAMA_DRAMAS = (True, 'load')
 
+# il n'existe qu'une vingtaine de films
+MOVIE_GENRES = (True, 'showMovieGenre')
+MOVIE_PAYS = (True, 'showMoviePays')
 MOVIE_NEWS = (URL_API + 'movies.json?sort=newest_video&page=1&per_page=50&app=100000a&t=', 'showMovies')
 MOVIE_RECENT = (URL_API + 'movies.json?sort=views_recent&page=1&per_page=50&app=100000a&t=', 'showMovies')
 MOVIE_POPULAR = (URL_API + 'movies.json?sort=trending&page=1&per_page=50&app=100000a&t=', 'showMovies')
 MOVIE_BEST = (URL_API + 'movies.json?sort=views&page=1&per_page=50&app=100000a&t=', 'showMovies')
-MOVIE_DATE_CREATED = (URL_API + 'movies.json?sort=created_at&page=1&per_page=50&app=100000a&t=', 'showMovies')
+# MOVIE_DATE_CREATED = (URL_API + 'movies.json?sort=created_at&page=1&per_page=50&app=100000a&t=', 'showMovies')
 
-SERIE_GENRES = (True, 'showSerieGenre')
-SERIE_PAYS = (True, 'showSeriePays')
-
-SERIE_NEWS = (URL_API + 'series.json?sort=newest_video&page=1&per_page=50&app=100000a&t=', 'showMovies')
-SERIE_RECENT = (URL_API + 'series.json?sort=views_recent&page=1&per_page=50&app=100000a&t=', 'showMovies')
-SERIE_POPULAR = (URL_API + 'series.json?sort=trending&page=1&per_page=50&app=100000a&t=', 'showMovies')
-SERIE_BEST = (URL_API + 'series.json?sort=views&page=1&per_page=50&app=100000a&t=', 'showMovies')
-SERIE_DATE_CREATED = (URL_API + 'series.json?sort=created_at&page=1&per_page=50&app=100000a&t=', 'showMovies')
+DRAMA_GENRES = (True, 'showSerieGenre')
+DRAMA_PAYS = (True, 'showSeriePays')
+DRAMA_NEWS = (URL_API + 'series.json?sort=newest_video&page=1&per_page=50&app=100000a&t=', 'showMovies')
+DRAMA_RECENT = (URL_API + 'series.json?sort=views_recent&page=1&per_page=50&app=100000a&t=', 'showMovies')
+DRAMA_POPULAR = (URL_API + 'series.json?sort=trending&page=1&per_page=50&app=100000a&t=', 'showMovies')
+DRAMA_BEST = (URL_API + 'series.json?sort=views&page=1&per_page=50&app=100000a&t=', 'showMovies')
+# SERIE_DATE_CREATED = (URL_API + 'series.json?sort=created_at&page=1&per_page=50&app=100000a&t=', 'showMovies')
 
 URL_SEARCH = (URL_API + 'search.json?page=1&per_page=50&app=100000a&term=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -75,15 +75,14 @@ def load():
 def showMenuMovies():
     oGui = cGui()
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    # oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_PAYS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_PAYS[1], 'Films (Pays)', 'lang.png', oOutputParameterHandler)
 
-    # 21 results
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (News)', 'news.png', oOutputParameterHandler)
@@ -105,28 +104,28 @@ def showMenuSeries():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Série (Genres)', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_GENRES[1], 'Série (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_PAYS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_PAYS[1], 'Séries (Pays)', 'lang.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_PAYS[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_PAYS[1], 'Séries (Pays)', 'lang.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (News)', 'dramas.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_NEWS[1], 'Séries (News)', 'dramas.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_RECENT[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_RECENT[1], 'Séries (Récentes)', 'news.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_RECENT[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_RECENT[1], 'Séries (Récentes)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_POPULAR[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_POPULAR[1], 'Séries (Populaires)', 'comments.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_POPULAR[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_POPULAR[1], 'Séries (Populaires)', 'comments.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_BEST[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_BEST[1], 'Séries (Best)', 'notes.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_BEST[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_BEST[1], 'Séries (Best)', 'notes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -165,7 +164,7 @@ def showMovies(sSearch=''):
     if not jsonrsp:
         oGui.addText(SITE_IDENTIFIER)
 
-    if len(jsonrsp['response']) >= 0:
+    if len(jsonrsp['response']) > 0:
         total = len(jsonrsp['response'])
         progress_ = progress().VScreate(SITE_NAME)
         for movie in range(0, len(jsonrsp['response'])):
