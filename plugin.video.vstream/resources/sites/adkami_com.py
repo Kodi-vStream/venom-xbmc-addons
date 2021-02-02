@@ -33,8 +33,8 @@ DRAMA_VIEWS = (URL_MAIN + 'video?search=&t=5&order=3', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + 'video?search=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'video?t=1&order=0&search=', 'showMovies')
-URL_SEARCH_DRAMAS = (URL_MAIN + 'video?t=5&order=0&search=' , 'showMovies')
-URL_SEARCH_ANIMS = (URL_MAIN + 'video?t=0&order=0&search=' , 'showMovies')
+URL_SEARCH_DRAMAS = (URL_MAIN + 'video?t=5&order=0&search=', 'showMovies')
+URL_SEARCH_ANIMS = (URL_MAIN + 'video?t=0&order=0&search=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 
