@@ -46,7 +46,7 @@ MOVIE_TENDANCE = (URL_MAIN + 'tendance/', 'showMovies')
 MOVIE_FEATURED = (URL_MAIN, 'showMovies')
 MOVIE_TOP_IMD = (URL_MAIN + 'imdb/' + imdmovies, 'showMovies')  # = globale MOVIE_NOTES
 
-SERIE_SERIES = (True, 'showMenuSeries')
+SERIE_SERIES = (True, 'showMenuTvShows')
 SERIE_NEWS = (URL_MAIN + 'tvshows/', 'showMovies')
 SERIE_NOTES = (URL_MAIN + 'imdb/' + imdseries, 'showMovies')
 SERIE_ALPHA = (True, 'showAlphaSeries')
@@ -66,7 +66,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showMenuMovies', 'Films', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMenuSeries', 'Séries', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuTvShows', 'Séries', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films & Séries (Par Genres)', 'genres.png', oOutputParameterHandler)
@@ -102,7 +102,7 @@ def showMenuMovies():
     oGui.setEndOfDirectory()
 
 
-def showMenuSeries():
+def showMenuTvShows():
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
 
@@ -456,6 +456,7 @@ def showMovies(sSearch=''):
                         sDesc = aEntry[4]
                         sYear = aEntry[3]
                         sDisplayTitle = sTitle + ' (' + sYear + ')'
+
                         oOutputParameterHandler = cOutputParameterHandler()
                         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
