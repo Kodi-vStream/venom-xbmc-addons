@@ -38,23 +38,18 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_MOVIES[0])
     oGui.addDir(SITE_IDENTIFIER, DRAMA_MOVIES[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, DRAMA_GENRES[1], 'Dramas (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, DRAMA_ANNEES[1], 'Dramas (Par années)', 'annees.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_LIST[0])
     oGui.addDir(SITE_IDENTIFIER, DRAMA_LIST[1], 'Films (Ordre alphabétique)', 'listes.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, DRAMA_SERIES[1], 'Séries (Dramas)', 'dramas.png', oOutputParameterHandler)
 
