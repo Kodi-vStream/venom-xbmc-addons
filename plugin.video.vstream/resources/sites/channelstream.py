@@ -202,8 +202,8 @@ def showHoster():
         except:
             pass
 
-        sHosterUrl = 'https:' + m3url + realtoken
-        sHosterUrl += '|User-Agent=' + UA + '&Referer=' + Quote(iframeURL1) + '&Sec-Fetch-Mode=cors&Origin=https://telerium.tv'
+        sHosterUrl = 'https:' + m3url + realtoken + '|User-Agent=' + UA
+        sHosterUrl += '&Referer=' + Quote(iframeURL1) + '&Sec-Fetch-Mode=cors&Origin=https://telerium.tv'
 
     oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
     oGui.addFolder(oGuiElement, oOutputParameterHandler)
