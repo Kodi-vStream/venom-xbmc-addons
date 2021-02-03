@@ -39,16 +39,13 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines Sport TV', 'sport.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Sports (En direct)', 'replay.png', oOutputParameterHandler)
 
     # menu souvent vide
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Sports (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', CHAINE_TV[0])
     oGui.addDir(SITE_IDENTIFIER, CHAINE_TV[1], 'Chaines TV généralistes', 'tv.png', oOutputParameterHandler)
 
@@ -62,16 +59,13 @@ def showMenuHomeSport():
     oOutputParameterHandler.addParameter('siteUrl', SPORT_TV [0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines Sport TV', 'sport.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Sports (En direct)', 'replay.png', oOutputParameterHandler)
 
     # menu souvent vide
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Sports (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', CHAINE_TV[0])
     oGui.addDir(SITE_IDENTIFIER, CHAINE_TV[1], 'Chaines généralistes TV', 'tv.png', oOutputParameterHandler)
 
