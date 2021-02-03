@@ -37,7 +37,7 @@ MOVIE_GENRES = (True, 'showGenres')
 MOVIE_HD = (URL_MAIN, 'showMovies')
 
 DOC_NEWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=26', 'showMovies')
-SHOW_SHOWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=3', 'showMovies')  # Spectacle
+SHOW_SHOWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=3', 'showMovies')
 
 URL_SEARCH = ('', 'showMovies')
 URL_SEARCH_MOVIES = ('', 'showMovies')
@@ -52,23 +52,18 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SHOW_SHOWS[0])
     oGui.addDir(SITE_IDENTIFIER, SHOW_SHOWS[1], 'Spectacles', 'doc.png', oOutputParameterHandler)
 
@@ -125,7 +120,7 @@ def showMovies(sSearch=''):
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
     # En cas de recherche direct OU lors de la navigation dans les differentes pages de résultats d'une recherche
-    if ('searchword=' in sUrl):
+    if 'searchword=' in sUrl:
         sPattern = '<h4><a href="\/[0-9a-zA-Z]+\/(.+?)"  >(.+?)<'
     else:
         sPattern = '<span style="list-style-type:none;" >.+? href="\/[0-9a-zA-Z]+\/(.+?)">(.+?)</a>'
@@ -164,7 +159,7 @@ def showMovies(sSearch=''):
 
             sUrl2 = aEntry[0]
             sTitle = aEntry[1]
-            sTitle = re.sub('<font color="#[0-9a-f]{6}" *><i>HD<\/i><\/font>', '[HD]', sTitle)
+            sTitle = re.sub('<font color="#[0-9a-f]{6}" *><i>HD</i></font>', '[HD]', sTitle)
 
             # not found better way
             # sTitle = unicode(sTitle, errors='replace')
