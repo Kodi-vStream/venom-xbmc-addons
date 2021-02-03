@@ -17,13 +17,14 @@ URL_MAIN = 'http://www.sky-animes.com/'
 
 STREAM = 'index.php?file=Media&nuked_nude=index&op=do_dl&dl_id='
 
-URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?file=Search&op=mod_search&searchtype=matchand&autor=&module=Download&limit=100&main=', 'showEpisode')
+INDEX = 'index.php?file=Search&op=mod_search&searchtype=matchand&autor=&module=Download&limit=100&main='
+URL_SEARCH_ANIMS = (URL_MAIN + INDEX, 'showEpisode')
 FUNCTION_SEARCH = 'showEpisode'
 
 ANIM_ANIMS = (True, 'showMenuAnims')
 ANIM_GENRES = (True, 'showGenresA')
 ANIM_VOSTFRS = (URL_MAIN + 'streaming-films', 'showSeries')
-# ANIM_OAVS = (URL_MAIN + 'streaming-oavs', 'showSeries')
+ANIM_OAVS = (URL_MAIN + 'streaming-oavs', 'showSeries')
 
 DRAMA_DRAMAS = (True, 'showMenuDramas')
 DRAMA_GENRES = (True, 'showGenresD')
@@ -31,8 +32,8 @@ DRAMA_GENRES = (True, 'showGenresD')
 
 def load():
     oGui = cGui()
-    oOutputParameterHandler = cOutputParameterHandler()
 
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
@@ -47,8 +48,8 @@ def load():
 
 def showMenuAnims():
     oGui = cGui()
-    oOutputParameterHandler = cOutputParameterHandler()
 
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (Films)', 'films.png', oOutputParameterHandler)
 
