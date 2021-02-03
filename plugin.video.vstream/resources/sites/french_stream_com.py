@@ -33,20 +33,20 @@ URL_SEARCH_MOVIES = (URL_MAIN + 'search/', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'search/', 'showSeries')
 FUNCTION_SEARCH = 'showMovies'
 
-MOVIE_MOVIE = (True, 'showMoviesMenu')
+MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_NEWS = (URL_MAIN + 'films-streaming/', 'showMovies')
 # MOVIE_VF = (URL_MAIN + 'films/vf/', 'showMovies')
 MOVIE_VOSTFR = (URL_MAIN + 'film/VOSTFR/', 'showMovies')
 MOVIE_HD = (URL_MAIN + 'qualit/HDLight/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 
-SERIE_SERIES = (True, 'showSeriesMenu')
+SERIE_SERIES = (True, 'showMenuTvShows')
 SERIE_NEWS = (URL_MAIN + 'serie-tv-streaming', 'showSeries')
 SERIE_VFS = (URL_MAIN + 'serie/VF/', 'showSeries')
 SERIE_VOSTFRS = (URL_MAIN + 'serie/VOSTFR/', 'showSeries')
 SERIE_GENRES = (True, 'showSerieGenres')
 
-ANIM_ANIMS = (True, 'showMangasMenu')
+ANIM_ANIMS = (True, 'showMenuAnims')
 ANIM_NEWS = (URL_MAIN + 'mangas/', 'showSeries')
 
 
@@ -55,7 +55,6 @@ def decode_url_Serie(url, sId, tmp=''):
     v = url
 
     if 'singh' in sId:
-        # sId2 = sId[6:]
         fields = url.split('nbsp')
         try:
             if isPython3:
@@ -72,7 +71,6 @@ def decode_url_Serie(url, sId, tmp=''):
         v = "/s.php?p_id=1&&c_id=" + str(t)
 
     if sId == 'honey':
-        # sId2 = sId[6:]
         fields = url.split('nbsp')
         if isPython3:
             t = base64.b64encode(base64.b64encode(fields[1].encode()))
@@ -81,7 +79,6 @@ def decode_url_Serie(url, sId, tmp=''):
         v = "/s.php?p_id=1&&c_id=" + str(t)
 
     if sId == 'yoyo':
-        # sId2 = sId[5:]
         fields = url.split('nbsp')
         if isPython3:
             t = base64.b64encode(base64.b64encode(fields[1].encode()))
@@ -185,82 +182,69 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Film', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearchSeries', 'Recherche Série', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def showMoviesMenu():
+def showMenuMovies():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Film', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler = cOutputParameterHandler()
     # oOutputParameterHandler.addParameter('siteUrl', MOVIE_VF[0])
     # oGui.addDir(SITE_IDENTIFIER, MOVIE_VF[1], 'Films (VF)', 'vf.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VOSTFR[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VOSTFR[1], 'Films (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films (HD-VF)', 'hd.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def showSeriesMenu():
+def showMenuTvShows():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearchSeries', 'Recherche Série', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries (VF)', 'vf.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def showMangasMenu():
+def showMenuAnims():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
