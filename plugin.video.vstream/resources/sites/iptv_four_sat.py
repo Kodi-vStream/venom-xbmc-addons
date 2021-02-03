@@ -38,19 +38,15 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN)
     oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Dernière liste', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', IPTV_WORLDWiDE)
     oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Dernière liste mondial', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_LISTE)
     oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Liste Sport', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SMART_IPTV)
     oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Smart Iptv', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'listePerContry', 'Liste par Pays', 'tv.png', oOutputParameterHandler)
 
@@ -64,39 +60,30 @@ def listePerContry():
     oOutputParameterHandler.addParameter('siteUrl', IPTV_AMERICAIN)
     oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Liste chaines Américaine', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', IPTV_ARABE)
     oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Liste chaines Arabe', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', IPTV_BELGE)
     oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Liste chaines Belgique', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', IPTV_CANADA)
     oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Liste chaines Canada', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', IPTV_FRENCH)
     oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Liste chaines France', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', IPTV_PAYSBAS)
     oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Liste chaines Pays-bas', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', IPTV_POLOGNE)
     oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Liste chaines Pologne', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', IPTV_PORTUGAl)
     oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Liste chaines Portugal', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', IPTV_ROUMANIE)
     oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Liste chaines Roumanie', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', IPTV_TURC)
     oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Liste chaines Turc', 'tv.png', oOutputParameterHandler)
 
