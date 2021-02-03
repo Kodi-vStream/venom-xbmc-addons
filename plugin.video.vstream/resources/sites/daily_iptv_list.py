@@ -29,27 +29,21 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN)
     oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Dernière liste', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN)
     oGui.addDir(SITE_IDENTIFIER, 'showPays', 'Choix du pays', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_EUROPE)
     oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Liste iptv Europe', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_AMERICA)
     oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Liste iptv America', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_ASIA)
     oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Liste iptv Asia', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SPORT)
     oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Liste iptv Sport', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_WORLDWIDE)
     oGui.addDir(SITE_IDENTIFIER, 'showDailyList', 'Liste iptv Worldwide', 'tv.png', oOutputParameterHandler)
 
