@@ -45,7 +45,7 @@ sRootArt = 'special://home/addons/plugin.video.vstream/resources/art/tv'
 ADDON = addon()
 
 
-class track():
+class track:
     def __init__(self, length, title, path, icon, data=''):
         self.length = length
         self.title = title
@@ -62,23 +62,18 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', URL_WEB)
     oGui.addDir(SITE_IDENTIFIER, 'showWeb', addons.VSlang(30332), 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_IPTVSITE)
     oGui.addDir(SITE_IDENTIFIER, 'showIptvSite', 'Iptv (Sites)', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
     oGui.addDir('radio', 'showGenres', addons.VSlang(30203) + ' (Genres)', 'music.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
     oGui.addDir('radio', 'showAZ', addons.VSlang(30203) + ' (A-Z)', 'music.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
     oGui.addDir('radio', 'showWeb', addons.VSlang(30203), 'music.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
     oGui.addDir('lsdb', 'load', 'Liveset Database', 'music.png', oOutputParameterHandler)
 
@@ -188,7 +183,7 @@ def parseM3U(sUrl=None, infile=None):  # Traite les m3u local
             song = track(length, title, None, icon)
 
         elif (len(line) != 0):
-            if (ValidEntry) and (not (line.startswith('!') or line.startswith('#'))):
+            if ValidEntry and (not (line.startswith('!') or line.startswith('#'))):
                 ValidEntry = False
                 song.path = line
                 playlist.append(song)
@@ -239,8 +234,9 @@ def showWeb(infile=None):  # Code qui s'occupe de liens TV du Web
             # les + ne peuvent pas passer
             url2 = track.path.replace('+', 'P_L_U_S')
             if not xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-                if not '[' in url2 and not ']' in url2 and not '.m3u8' in url2 and not 'dailymotion' in url2:
-                    url2 = 'plugin://plugin.video.f4mTester/?url=' + QuotePlus(url2) + '&amp;streamtype=TSDOWNLOADER&name=' + Quote(track.title)
+                if '[' not in url2 and ']' not in url2 and '.m3u8' not in url2 and 'dailymotion' not in url2:
+                    url2 = 'plugin://plugin.video.f4mTester/?url=' + QuotePlus(url2)
+                    url2 += '&amp;streamtype=TSDOWNLOADER&name=' + Quote(track.title)
 
             thumb = '/'.join([sRootArt, sThumb])
 
@@ -467,27 +463,26 @@ def GetRealUrl(chain):
     UA2 = UA
     url = chain
     regex = ''
-    sHtmlContent = ''
 
     r = re.search('\[[BRIGHTCOVEKEY]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
-    if (r):
+    if r:
         url = getBrightcoveKey(r.group(1))
 
     r = re.search('\[[REGEX]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
-    if (r):
+    if r:
         regex = r.group(1)
 
     r = re.search('\[[UA]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
-    if (r):
+    if r:
         UA2 = r.group(1)
 
     r = re.search('\[[URL]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
-    if (r):
+    if r:
         url = r.group(1)
 
     # post metehod ?
     r = re.search('\[[POSTFORM]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
-    if (r):
+    if r:
         param = r.group(1)
         oRequestHandler = cRequestHandler(url)
         oRequestHandler.setRequestType(1)
@@ -544,7 +539,7 @@ def unZip():
     showWeb(inf)
 
 
-def unGoogleDrive (infile):
+def unGoogleDrive(infile):
     ids = re.findall('<a href="https://drive.google.com/file/d/([^"]+)/view', infile)[0]
     url = 'https://drive.google.com/uc?id=' + ids + '&export=download'
     inf = getHtml(url)
