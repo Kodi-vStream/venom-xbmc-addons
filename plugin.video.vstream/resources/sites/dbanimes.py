@@ -17,7 +17,6 @@ SITE_DESC = 'animés en streaming'
 
 URL_MAIN = 'https://dbanimes.com/'
 
-
 ANIM_ANIMS = (True, 'load')
 ANIM_VOSTFRS = (URL_MAIN + 'anime/', 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'anime/', 'showMovies')
@@ -28,8 +27,8 @@ ANIM_NEWS_EPISODES = (URL_MAIN, 'showMovies')  # revoir libellé des urls ANIM_N
 key_serie = '?key_serie&s='
 key_film = '?key_film&s='
 
-URL_SEARCH_ANIMS = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_ANIMS = (URL_SEARCH[0], 'showMovies')
 URL_INTERNALSEARCH_SERIES = (URL_MAIN + key_serie, 'showMovies')
 URL_INTERNALSEARCH_MOVIES = (URL_MAIN + key_film, 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -42,31 +41,24 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'siteUrl')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Films & Séries', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'siteUrl')
     oGui.addDir(SITE_IDENTIFIER, 'showSearchSerie', 'Recherche Séries', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS_EPISODES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS_EPISODES[1], 'Animés (Derniers épisodes)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'siteUrl')
     oGui.addDir(SITE_IDENTIFIER, 'showSearchMovie', 'Recherche Films', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_MOVIES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_MOVIES[1], 'Animés (Films)', 'animes.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_LIST[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_LIST[1], 'Animés (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genres)', 'genres.png', oOutputParameterHandler)
 
