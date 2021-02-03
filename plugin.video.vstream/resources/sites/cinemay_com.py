@@ -20,12 +20,12 @@ SITE_DESC = 'Films & Séries en streaming'
 
 URL_MAIN = 'https://cinemay.li/'
 
+MOVIE_MOVIE = (True, 'load')
 MOVIE_NEWS = (URL_MAIN + 'film-vf-streaming/', 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'film-vf-streaming/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
+SERIE_SERIES = (True, 'load')
 SERIE_NEWS = (URL_MAIN + 'serie-streaming/', 'showMovies')
-SERIE_SERIES = (URL_MAIN + 'serie-streaming/', 'showMovies')
 # SERIE_LIST = (URL_MAIN + 'serie-streaming/', 'showSeriesList')
 
 URL_SEARCH = (URL_MAIN + '?keyword=', 'showMovies')
@@ -41,19 +41,15 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films & Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler = cOutputParameterHandler()
     # oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
     # oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste)', 'az.png', oOutputParameterHandler)
 
