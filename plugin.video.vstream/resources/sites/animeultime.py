@@ -110,6 +110,7 @@ def showMenuTokusatsu():
 
     oGui.setEndOfDirectory()
 
+
 def loadTypelist(typemovie, typelist):
     # typelist genre ou year
     # <select name="genre"
@@ -144,6 +145,7 @@ def loadTypelist(typemovie, typelist):
     list_typelist = sorted(list_typelist.items(), key=lambda typeList: typeList[0])
 
     return list_typelist
+
 
 def ShowGenreAnimes():
     ShowGenre('anime')
@@ -348,7 +350,6 @@ def showEpisode():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    # sMovieTitle = oInputParameterHandler.getValue('showSeries')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -362,7 +363,6 @@ def showEpisode():
 
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
-            # sTitle = sMovieTitle
             sDesc = aResult[1][0].replace('<br>', '').replace('<br />', '')
             sDesc = sDesc.replace('Synopsis', '').replace('synopsis', '').replace(':', ' ')
             sDesc = ('[I][COLOR coral]%s[/COLOR][/I] %s') % ('Synopsis :', sDesc)
