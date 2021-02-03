@@ -21,7 +21,7 @@ SITE_DESC = 'Séries en Streaming'
 
 URL_MAIN = 'https://series.dpstreaming.to/'
 
-SERIE_SERIES = (URL_MAIN + 'serie-category/series/', 'showMovies')
+SERIE_SERIES = (True, 'load')
 SERIE_NEWS = (URL_MAIN + 'serie-category/series/', 'showMovies')
 SERIE_GENRES = (True, 'showGenres')
 
@@ -103,11 +103,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSeriesSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
