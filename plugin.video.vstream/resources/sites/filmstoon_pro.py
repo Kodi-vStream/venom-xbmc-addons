@@ -16,14 +16,14 @@ SITE_IDENTIFIER = 'filmstoon_pro'
 SITE_NAME = 'Films toon'
 SITE_DESC = 'Films en streaming'
 
-# URL_MAIN = 'https://ww.filmstoon.cam/'
 URL_MAIN = 'https://filmstoon.in/'
 
+MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_NEWS = (URL_MAIN + 'movies/page/1/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
-MOVIE_MOVIE = (True, 'load')
 
+SERIE_SERIES = (True, 'showMenuTvShows')
 SERIE_NEWS = (URL_MAIN + 'series/page/1/', 'showMovies')
 SERIE_NEWS_EPISODE = (URL_MAIN + 'episode/page/1/', 'showMovies')
 
@@ -51,33 +51,61 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Films & Séries', 'search.png', oOutputParameterHandler)
 
+    oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_MOVIES[0])
+    oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_MOVIES[1], 'Recherche Films ', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_SERIES[1], 'Recherche Séries ', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films & Séries (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films & Séries (Par années)', 'annees.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS_EPISODE[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS_EPISODE[1], 'Episodes (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showMenuMovies():
+    oGui = cGui()
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_MOVIES[0])
     oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_MOVIES[1], 'Recherche Films ', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_SERIES[1], 'Recherche Séries ', 'search.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS_EPISODE[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS_EPISODE[1], 'Episodes (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films & Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films & Séries (Par années)', 'annees.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showMenuTvShows():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_SERIES[0] )
+    oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_SERIES[1], 'Recherche Series ', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS_EPISODE[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS_EPISODE[1], 'Episodes (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -135,7 +163,7 @@ def showGenres():
 
 def showYears():
     oGui = cGui()
-    # https://www.filmstoon.pw/2020/
+    # https://www.filmstoon.in/2020/
     # https://filmstoon.in/release-year/2020/
     for i in reversed(range(1935, 2022)):
         sYear = str(i)
@@ -203,7 +231,7 @@ def showMovies(sSearch=''):
             if sDesc:
                 sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', sDesc)
 
-            sDisplayTitle = sTitle
+            sDisplayTitle = sTitle.replace(' - Season', ' Saison').replace('-Season', ' Saison')
             if sSearch or 'genre/' in sUrl or 'release-year/' in sUrl:
                 if 'series' in sUrl2:
                     sDisplayTitle = sDisplayTitle + ' [Série]'
@@ -225,10 +253,10 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
     if not sSearch:
-        bvalid, sUrlNextPage, sNumPage = __checkForNextPage(sHtmlContent, sUrl)
+        bvalid, sNextPage, sNumPage = __checkForNextPage(sHtmlContent, sUrl)
         if (bvalid == True):
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrlNextPage)
+            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
@@ -238,11 +266,6 @@ def __checkForNextPage(shtml, surl):
     # pas de lien next page on crée l'url et on verifie l'index de la derniere page
     sMax = ''
     iMax = 0
-    # sCurrent = ''
-    # iCurrent = 0
-    # iNext = 0
-    # sNext = ''
-    # sUrlNext = ''
     sPattern = 'page/(\d+)/'
     oParser = cParser()
     aResult = oParser.parse(shtml, sPattern)
