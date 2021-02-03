@@ -42,15 +42,12 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
@@ -184,7 +181,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return  aResult[1][0]
+        return aResult[1][0]
 
     return False
 
@@ -257,7 +254,7 @@ def Display_protected_link():
 
     if 'ouo' in sUrl:
         sHosterUrl = DecryptOuo(sUrl)
-        if (sHosterUrl):
+        if sHosterUrl:
             sTitle = sMovieTitle
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -286,7 +283,7 @@ def Display_protected_link():
 
     elif 'keeplinks' in sUrl:
         sHosterUrl = DecryptKeeplinks(sUrl)
-        if (sHosterUrl):
+        if sHosterUrl:
             sTitle = sMovieTitle
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -536,7 +533,7 @@ def DecryptKeeplinks(sUrl):
 
 def DecryptOuo(sUrl):
     urlOuo = sUrl
-    if not '/fbc/' in urlOuo:
+    if '/fbc/' not in urlOuo:
         urlOuo = urlOuo.replace('io/', 'io/fbc/').replace('press/', 'press/fbc/')
 
     oRequestHandler = cRequestHandler(urlOuo)
