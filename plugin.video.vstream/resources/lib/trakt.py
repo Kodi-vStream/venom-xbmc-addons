@@ -4,8 +4,9 @@ import datetime
 import re
 import time
 import unicodedata
+import xbmc
 
-from resources.lib.comaddon import addon, dialog, progress, VSlog, xbmc
+from resources.lib.comaddon import addon, dialog, progress, VSlog
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -24,6 +25,7 @@ API_SECRET = 'bb02b2b0267b045590bc25c21dac21b1c47446a62b792091b3275e9c4a943e74'
 API_VERS = '2'
 
 MAXRESULT = '10'
+
 
 class cTrakt:
 
@@ -82,8 +84,6 @@ class cTrakt:
         oOutputParameterHandler.addParameter('type', 'movie')
         oGui.addDir('themoviedb_org', 'showSearchMovie', self.ADDON.VSlang(30423), 'films.png', oOutputParameterHandler)
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'https://')
         oOutputParameterHandler.addParameter('type', 'show')
         oGui.addDir('themoviedb_org', 'showSearchSerie', self.ADDON.VSlang(30424), 'series.png', oOutputParameterHandler)
 
@@ -94,9 +94,9 @@ class cTrakt:
         # self.getToken()
         oGui = cGui()
 
+        oOutputParameterHandler = cOutputParameterHandler()
         if self.ADDON.getSetting('bstoken') == '':
             VSlog('bstoken invalid')
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oOutputParameterHandler.addParameter('type', 'movie')
             oGui.addDir(SITE_IDENTIFIER, 'getToken()', self.ADDON.VSlang(30305), 'trakt.png', oOutputParameterHandler)
@@ -116,40 +116,29 @@ class cTrakt:
 
             if (total > 0):
                 sUsername = sHtmlContent['username']
-                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', 'https://')
                 oGui.addText(SITE_IDENTIFIER, (self.ADDON.VSlang(30306)) % sUsername)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oOutputParameterHandler.addParameter('type', 'movie')
             oGui.addDir(SITE_IDENTIFIER, 'search', self.ADDON.VSlang(30330), 'search.png', oOutputParameterHandler)
 
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oOutputParameterHandler.addParameter('type', 'movie')
             oGui.addDir(SITE_IDENTIFIER, 'getLists', self.ADDON.VSlang(30120), 'films.png', oOutputParameterHandler)
 
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oOutputParameterHandler.addParameter('type', 'show')
             oGui.addDir(SITE_IDENTIFIER, 'getLists', self.ADDON.VSlang(30121), 'series.png', oOutputParameterHandler)
 
             if self.ADDON.getSetting('trakt_show_lists'):
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', 'https://')
                 oOutputParameterHandler.addParameter('type', 'custom-lists')
                 oGui.addDir(SITE_IDENTIFIER, 'menuList', "Listes", 'trakt.png', oOutputParameterHandler)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', URL_API + 'users/me/history?page=1&limit=' + str(MAXRESULT))
             oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30308), 'trakt.png', oOutputParameterHandler)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', URL_API + 'oauth/revoke')
             oGui.addDir(SITE_IDENTIFIER, 'getCalendrier', self.ADDON.VSlang(30331), 'trakt.png', oOutputParameterHandler)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', URL_API + 'oauth/revoke')
             oGui.addDir(SITE_IDENTIFIER, 'getBsout', self.ADDON.VSlang(30309), 'trakt.png', oOutputParameterHandler)
 
@@ -163,18 +152,12 @@ class cTrakt:
         oOutputParameterHandler.addParameter('type', 'lists-tendances')
         oGui.addDir(SITE_IDENTIFIER, 'getLists', "Listes tendances", 'trakt.png', oOutputParameterHandler)
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'https://')
         oOutputParameterHandler.addParameter('type', 'lists-pop')
         oGui.addDir(SITE_IDENTIFIER, 'getLists', "Listes populaires", 'trakt.png', oOutputParameterHandler)
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'https://')
         oOutputParameterHandler.addParameter('type', 'custom-lists')
         oGui.addDir(SITE_IDENTIFIER, 'getLists', self.ADDON.VSlang(30360), 'trakt.png', oOutputParameterHandler)
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'https://')
         oOutputParameterHandler.addParameter('type', 'liked-lists')
         oGui.addDir(SITE_IDENTIFIER, 'getLists', 'Mes listes aimées', 'trakt.png', oOutputParameterHandler)  
 
@@ -366,12 +349,12 @@ class cTrakt:
         sHtmlContent = oRequestHandler.request(jsonDecode=True)
         sHeaders = oRequestHandler.getResponseHeader()
 
-        #Fonctionnement specifique au calendrier.
+        # Fonctionnement specifique au calendrier.
         if 'calendars/all/shows/new' in sUrl:
             if sCurrentLimit == False:
                 sCurrentLimit = 0
             else:
-                #Supprimer les elements deja afficher.
+                # Supprimer les elements deja afficher.
                 sHtmlContent = sHtmlContent[int(sCurrentLimit):]
 
             total = int(MAXRESULT)
@@ -394,7 +377,7 @@ class cTrakt:
             progress_ = progress().VScreate(SITE_NAME)
 
             for i in sHtmlContent:
-                #Limite les elements du calendrier
+                # Limite les elements du calendrier
                 if 'calendars/all/shows/new' in sUrl:
                     if progress_.getProgress() >= 10:
                         break
@@ -661,7 +644,7 @@ class cTrakt:
                     sNextPage = sUrl.replace('page=' + str(sPage), 'page=' + str(int(sPage) + 1))
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-                    oGui.addNext(SITE_IDENTIFIER, 'getTrakt', 'Page ' + str(int(sPage) + 1)  + '/' + sMaxPage, oOutputParameterHandler)
+                    oGui.addNext(SITE_IDENTIFIER, 'getTrakt', 'Page ' + str(int(sPage) + 1) + '/' + sMaxPage, oOutputParameterHandler)
             except:
                 pass
 
@@ -715,7 +698,7 @@ class cTrakt:
 
     def getLocalizedTitle(self, item, what):
         try:
-            if not 'episode' in what:
+            if 'episode' not in what:
                 oRequestHandler = cRequestHandler(URL_API + '%s/%s/translations/fr' % (what, item['ids']['slug']))
                 oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
                 oRequestHandler.addHeaderEntry('trakt-api-key', API_KEY)
@@ -902,7 +885,6 @@ class cTrakt:
             sTitle = oInputParameterHandler.getValue('sMovieTitle')
 
         if not sImdb:
-            sPost = {}
             if not sTMDB:
                 sTMDB = int(self.getTmdbID(sTitle, sType))
 
@@ -967,7 +949,7 @@ class cTrakt:
         liste.append(['[COLOR teal]' + self.ADDON.VSlang(30221) + ' ' + self.ADDON.VSlang(30312) + '[/COLOR]', URL_API + 'sync/history'])
         liste.append(['[COLOR red]' + self.ADDON.VSlang(30222) + ' ' + self.ADDON.VSlang(30312) + '[/COLOR]', URL_API + 'sync/history/remove'])
 
-        for sTitle,sUrl in liste:
+        for sTitle, sUrl in liste:
             oOutputParameterHandler = cOutputParameterHandler()
             if cTrakt.CONTENT == '2':
                 oOutputParameterHandler.addParameter('sType', 'shows')
@@ -984,9 +966,7 @@ class cTrakt:
     def showHosters(self):
 
         oInputParameterHandler = cInputParameterHandler()
-        # sUrl = oInputParameterHandler.getValue('siteUrl')
         sMovieTitle = oInputParameterHandler.getValue('file')
-        # sThumbnail = oInputParameterHandler.getValue('sThumbnail')
         sMovieTitle = self.decode(sMovieTitle, Unicode=True).lower()  # on repasse en utf-8
         sMovieTitle = Quote(sMovieTitle)
         sMovieTitle = re.sub('\(.+?\)', ' ', sMovieTitle)  # vire les tags entre parentheses
