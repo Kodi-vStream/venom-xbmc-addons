@@ -126,75 +126,42 @@ class cHome:
         oOutputParameterHandler.addParameter('searchtext', searchtext)
 
         # utilisation de guielement pour ajouter la bonne catégorie
-
-        # Recherche globale films
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName('globalSearch')
         oGuiElement.setFunction('showSearch')
-        oGuiElement.setTitle(self.addons.VSlang(30078))
-        oGuiElement.setFileName(self.addons.VSlang(30078))
         oGuiElement.setIcon('search.png')
         oGuiElement.setMeta(0)
         # oGuiElement.setThumbnail(sThumbnail)
         # oGuiElement.setFanart(sFanart)
-        oGuiElement.setCat(1)
 
+        # Recherche globale films
+        oGuiElement.setTitle(self.addons.VSlang(30078))
+        oGuiElement.setFileName(self.addons.VSlang(30078))
+        oGuiElement.setCat(1)
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         # Recherche globale séries
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName('globalSearch')
-        oGuiElement.setFunction('showSearch')
         oGuiElement.setTitle(self.addons.VSlang(30079))
         oGuiElement.setFileName(self.addons.VSlang(30079))
-        oGuiElement.setIcon('search.png')
-        oGuiElement.setMeta(0)
-        # oGuiElement.setThumbnail(sThumbnail)
-        # oGuiElement.setFanart(sFanart)
         oGuiElement.setCat(2)
-
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         # Recherche globale Animés
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName('globalSearch')
-        oGuiElement.setFunction('showSearch')
         oGuiElement.setTitle(self.addons.VSlang(30118))
         oGuiElement.setFileName(self.addons.VSlang(30118))
-        oGuiElement.setIcon('search.png')
-        oGuiElement.setMeta(0)
-        # oGuiElement.setThumbnail(sThumbnail)
-        # oGuiElement.setFanart(sFanart)
         oGuiElement.setCat(3)
-
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         # Recherche globale Dramas
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName('globalSearch')
-        oGuiElement.setFunction('showSearch')
         oGuiElement.setTitle(self.addons.VSlang(30123))
         oGuiElement.setFileName(self.addons.VSlang(30123))
-        oGuiElement.setIcon('search.png')
-        oGuiElement.setMeta(0)
-        # oGuiElement.setThumbnail(sThumbnail)
-        # oGuiElement.setFanart(sFanart)
         oGuiElement.setCat(4)
-
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         # Recherche globale divers
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName('globalSearch')
-        oGuiElement.setFunction('showSearch')
         oGuiElement.setTitle(self.addons.VSlang(30080))
         oGuiElement.setFileName(self.addons.VSlang(30080))
-        oGuiElement.setIcon('search.png')
-        oGuiElement.setMeta(0)
-        # oGuiElement.setThumbnail(sThumbnail)
-        # oGuiElement.setFanart(sFanart)
         oGuiElement.setCat(5)
-
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         # oOutputParameterHandler.addParameter('disp', 'search10')
