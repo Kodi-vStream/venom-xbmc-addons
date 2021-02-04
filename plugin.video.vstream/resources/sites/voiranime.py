@@ -21,10 +21,10 @@ SITE_DESC = 'Animés en Streaming'
 URL_MAIN = 'https://voiranime.to/'
 
 ANIM_ANIMS = (True, 'load')
-ANIM_NEWS = (URL_MAIN, "showAnimes")
-ANIM_NEWS_VOSTFR = (URL_MAIN + "?filter=subbed", "showAnimes")
-ANIM_NEWS_VF = (URL_MAIN + "?filter=dubbed", "showAnimes")
-ANIM_GENRES = (URL_MAIN + "anime-genre/", "showGenres")
+ANIM_NEWS = (URL_MAIN, 'showAnimes')
+ANIM_VOSTFRS = (URL_MAIN + '?filter=subbed', 'showAnimes')
+ANIM_VFS = (URL_MAIN + '?filter=dubbed', 'showAnimes')
+ANIM_GENRES = (URL_MAIN + 'anime-genre/', 'showGenres')
 ANIM_ALPHA = (URL_MAIN + 'liste-danimes/?start=', 'showAlpha')
 
 FUNCTION_SEARCH = 'showAnimes'
@@ -41,29 +41,23 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_VOSTFR[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d\'animés [VOSTFR]', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d\'animés (VOSTFR)', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_VF[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d\'animés [VF]', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d\'animés (VF)', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS_VOSTFR[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS_VOSTFR[1], 'Animés (Derniers ajouts) [VOSTFR]', 'news.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS_VF[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS_VF[1], 'Animés (Derniers ajouts) [VF]', 'news.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés (VF)', 'vf.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Par genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ALPHA[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ALPHA[1], 'Animés (Par ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
