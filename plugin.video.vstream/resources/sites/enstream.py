@@ -87,9 +87,8 @@ def showGenres():
     liste.append(['Thriller', URL_MAIN + 'genre/thriller/'])
     liste.append(['Western', URL_MAIN + 'genre/western/'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -99,9 +98,9 @@ def showGenres():
 def showYears():
     oGui = cGui()
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(range(1942, 2022)):
         Year = str(i)
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'Annee/' + Year)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
@@ -119,9 +118,8 @@ def showAlpha():
              ['T', sUrl + 'T'], ['U', sUrl + 'U'], ['V', sUrl + 'V'], ['W', sUrl + 'W'], ['X', sUrl + 'X'],
              ['Y', sUrl + 'Y'], ['Z', sUrl + 'Z']]
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'listes.png', oOutputParameterHandler)
 
