@@ -61,6 +61,7 @@ def showNews():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             # traitement pour affichage de la langue
             sLang = ''
@@ -79,7 +80,6 @@ def showNews():
             if sFilter:
                 continue
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', '', oOutputParameterHandler)
@@ -99,6 +99,7 @@ def showAnimes():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -116,7 +117,6 @@ def showAnimes():
             sTitle = re.sub('([0-9]+) .. ([0-9\?]+)', '\\1-\\2', sTitle)
             sTitle = re.sub('([0-9]+) & ([0-9\?]+)', '\\1-\\2', sTitle)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
@@ -160,6 +160,7 @@ def showEpisodes():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -175,7 +176,6 @@ def showEpisodes():
                 sTitle = aEntry[2]
                 aUrl = aEntry[1]
 
-                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', aUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
@@ -197,6 +197,7 @@ def showMovies():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -209,7 +210,6 @@ def showMovies():
             sTitle = aEntry[2]
             sThumb = aEntry[3]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             if sTitle.lower().find('les films') != -1:
@@ -224,6 +224,7 @@ def showMovies():
 def showMovieList():
     oGui = cGui()
     oParser = cParser()
+    oOutputParameterHandler = cOutputParameterHandler()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -237,7 +238,6 @@ def showMovieList():
             sUrl = aEntry[0]
             sTitle = aEntry[1]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, '', '', oOutputParameterHandler)
