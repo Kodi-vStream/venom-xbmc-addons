@@ -64,12 +64,12 @@ def showThemes():
     sPattern = '<a href=([^>]+)><lien3><i class=icon-circle></i>([^<]+)</lien3></a><br>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
+    oOutputParameterHandler = cOutputParameterHandler()
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sUrl = URL_MAIN + aEntry[0]
             sTitle = aEntry[1]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
