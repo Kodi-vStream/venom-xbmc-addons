@@ -101,8 +101,8 @@ def showGenres():
     liste.append(['Tranche de vie', sUrl + 'tranche-de-vie/'])
     liste.append(['Thriller', sUrl + 'thriller/'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
@@ -116,9 +116,9 @@ def showYears():
     from itertools import chain
     generator = chain([1966, 1972, 1987, 1988, 1990, 1991, 1992], range(1994, 2022))
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(list(generator)):
         Year = str(i)
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'date/' + Year + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
