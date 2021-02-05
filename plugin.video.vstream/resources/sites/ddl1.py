@@ -219,8 +219,8 @@ def showGenre():
                    'comédie-musicale', 'comédie', 'divers', 'documentaire', 'drame', 'epouvante-horreur', 'espionnage',
                    'famille', 'fantastique', 'guerre', 'historique', 'musical', 'péplum',
                    'policier', 'romance', 'science-fiction', 'thriller', 'western']
+    oOutputParameterHandler = cOutputParameterHandler()
     for genre in listeGenres:
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + genre.replace(' ', '%20') + '.html')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', genre.capitalize(), 'genres.png', oOutputParameterHandler)
 
