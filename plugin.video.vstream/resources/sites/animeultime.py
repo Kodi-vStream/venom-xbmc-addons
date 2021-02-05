@@ -160,10 +160,10 @@ def ShowGenre(typemovie):
 
     list_listgenre = loadTypelist(typemovie, 'genre')
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for ilist in list_listgenre:
         url = URL_MAIN + 'series-0-1/' + typemovie + '/-' + ilist[1] + '---'
         sTitle = ilist[0].title()
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', url)
         oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -184,10 +184,10 @@ def ShowYears(typemovie):
     list_year = loadTypelist(typemovie, 'year')
 
     # http://www.anime-ultime.net/series-0-1/anime/--626--    2019
+    oOutputParameterHandler = cOutputParameterHandler()
     for liste in reversed(list_year):
         url = URL_MAIN + 'series-0-1/' + typemovie + '/--' + liste[1] + '--'
         sTitle = liste[0]
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', url)
         oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'annees.png', oOutputParameterHandler)
 
@@ -217,8 +217,8 @@ def ShowAlpha(typemovie):
     for alpha in listalpha:
         liste.append([str(alpha).upper(), URL_MAIN + 'series-0-1/' + typemovie + '/' + alpha + '---'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'listes.png', oOutputParameterHandler)
 
