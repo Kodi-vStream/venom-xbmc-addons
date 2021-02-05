@@ -202,9 +202,8 @@ def showMovieGenres():
     for igenre in listegenre:
         liste.append([igenre.capitalize(), URL_MAIN + igenre + '/'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -227,9 +226,8 @@ def showSerieGenres():
             urlgenre = 'judiciare'
         liste.append([igenre.capitalize(), URL_MAIN + 'serie/serie-' + urlgenre + '/'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
