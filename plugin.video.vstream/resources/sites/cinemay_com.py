@@ -93,8 +93,8 @@ def showGenres():
     liste.append(['Thriller', URL_MAIN + 'genre/thriller/'])
     liste.append(['Western', URL_MAIN + 'genre/western/'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
