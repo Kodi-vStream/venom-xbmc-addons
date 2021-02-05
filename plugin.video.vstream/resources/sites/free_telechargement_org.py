@@ -240,18 +240,6 @@ def showGenreMoviesHD():
     showGenre("Films+BluRay+720p+et+1080p/")
 
 
-def showMovieYears():
-    oGui = cGui()
-
-    for i in reversed(range(1950, 2022)):
-        Year = str(i)
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '1/annee/?rech_year=' + Year)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
-
 def showGenre(basePath):
     oGui = cGui()
 
@@ -279,11 +267,22 @@ def showGenre(basePath):
     liste.append(['Thriller', URL_MAIN + '1/genre-Thriller/' + basePath])
     liste.append(['Western', URL_MAIN + '1/genre-Westerns/' + basePath])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showMovieYears():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    for i in reversed(range(1950, 2022)):
+        Year = str(i)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '1/annee/?rech_year=' + Year)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
