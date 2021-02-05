@@ -96,6 +96,8 @@
 
         <setting visible="false" id="plugin_cine974" type="bool" label="Ciné 974" default="true"/>
 
+        <setting visible="false" id="plugin_cinemay_cc" type="bool" label="Cinemay_cc" default="true"/>
+
         <setting visible="false" id="plugin_cinemay_com" type="bool" label="Cinemay" default="true"/>
 
         <setting visible="false" id="plugin_cinemegatoil_org" type="bool" label="Cinemegatoil" default="true"/>
