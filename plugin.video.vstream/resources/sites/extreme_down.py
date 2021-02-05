@@ -306,8 +306,8 @@ def showGenres():
     liste.append(['Western', URL_MAIN + 'western/'])
     liste.append(['Divers', URL_MAIN + 'divers/'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -316,9 +316,9 @@ def showGenres():
 
 def showMovieYears():
     oGui = cGui()
+    oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(range(1913, 2021)):
         Year = str(i)
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/annee-' + Year)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
@@ -327,9 +327,9 @@ def showMovieYears():
 
 def showSerieYears():
     oGui = cGui()
+    oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(range(1936, 2021)):
         Year = str(i)
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/annee-' + Year)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
