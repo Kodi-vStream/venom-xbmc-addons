@@ -39,8 +39,8 @@ def load():
     liste.append(['Sport', 'Chaîne Sportive', 'sport.png'])
     liste.append(['Science et Nature', 'Chaîne axés sur les sciences', 'buzz.png'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sFiltre, sIcon in liste:
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', TV_FRENCH[0])
         oOutputParameterHandler.addParameter('sFiltre', sFiltre)
         oGui.addDir(SITE_IDENTIFIER, TV_FRENCH[1], sTitle, sIcon, oOutputParameterHandler)
