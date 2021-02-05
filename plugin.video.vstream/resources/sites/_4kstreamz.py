@@ -62,9 +62,9 @@ def showSearch():
 
 def showYears():
     oGui = cGui()
+    oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(range(1921, 2022)):
         sYear = str(i)
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'filmspar?annee=' + sYear)  # / inutile
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
     oGui.setEndOfDirectory()
@@ -74,8 +74,7 @@ def showGenres():
     oGui = cGui()
     oParser = cParser()
 
-    sUrl = URL_MAIN
-    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
     sStart = '<h4 class="head nop">Genre'
     sEnd = '<div class="menu_first">'
@@ -96,8 +95,8 @@ def showGenres():
         # Trie des genres par ordre alphabétique
         triAlpha = sorted(triAlpha, key=lambda genre: genre[0])
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for sTitle, sUrl in triAlpha:
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
         oGui.setEndOfDirectory()
