@@ -71,10 +71,10 @@ def ShowGenre():
     listegenre = ['action', 'aventure', 'comedie', 'crime', 'drame', 'family', 'fantastique', 'josei', 'musical',
                   'mystere', 'psychologique', 'romance', 'school-life', 'science-fiction', 'seinen', 'shoujo',
                   'shounen', 'slice-of-life', 'sports', 'surnaturel', 'thriller', 'ueda-shigeru']
+    oOutputParameterHandler = cOutputParameterHandler()
     for igenre in listegenre:
         sTitle = igenre.capitalize().replace('-', ' ')
         sUrl = URL_MAIN + 'genre/' + igenre + '/'
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -93,12 +93,12 @@ def showAlpha():
     sPattern = 'class=liste><a href=(\S+).+?mb-2">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
+    oOutputParameterHandler = cOutputParameterHandler()
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
             sLetter = aEntry[1]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('AZ', sLetter)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]' + sLetter + '[/COLOR]', 'az.png', oOutputParameterHandler)
