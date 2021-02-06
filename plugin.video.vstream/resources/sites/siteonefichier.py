@@ -74,19 +74,18 @@ def showFile(sFileTree=''):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
 
             if aEntry[0]:
-                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', '%s%s%s%s' % (URL_FILE, '?dir_id=', aEntry[1], '&oby=0&search='))
                 oOutputParameterHandler.addParameter('sTitle', aEntry[2])
                 oGui.addDir(SITE_IDENTIFIER, 'showFile', aEntry[2], 'genres.png', oOutputParameterHandler)
 
             else:
-                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', '%s%s' % (URL_MAIN, 'console/link.pl'))
                 oOutputParameterHandler.addParameter('sCode', aEntry[1])
                 oOutputParameterHandler.addParameter('sTitle', aEntry[2])
@@ -102,7 +101,6 @@ def showHosters():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sTitle = oInputParameterHandler.getValue('sTitle')
     sCode = oInputParameterHandler.getValue('sCode')
 
     oPremiumHandler = cPremiumHandler('onefichier')
