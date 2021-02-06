@@ -160,6 +160,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -184,7 +185,6 @@ def showMovies(sSearch=''):
             else:
                 sDisplayTitle = sTitle
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -232,6 +232,7 @@ def showHoster():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
             sDataUrl = aEntry[0]
@@ -246,7 +247,6 @@ def showHoster():
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
             lien = URL_MAIN + 'video/' + sDataCode + '/recaptcha/' + sDataUrl
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('siteUrl', lien)
@@ -261,6 +261,7 @@ def showHoster():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
             lien = URL_MAIN + aEntry[0]
@@ -271,7 +272,6 @@ def showHoster():
 
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('siteUrl', lien)
