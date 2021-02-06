@@ -259,6 +259,7 @@ def showSeries(sSearch=''):
 
     # Si il y a qu'un seule resultat alors le site fait une redirection.
     if (aResult[0] == False):
+        oOutputParameterHandler = cOutputParameterHandler()
         if sSearch and "sultats anime" not in sHtmlContent:
             sTitle = ''
             try:
@@ -275,7 +276,6 @@ def showSeries(sSearch=''):
                         oGui.addText(SITE_IDENTIFIER, '[COLOR red]Contenu pour adulte desactiver dans les parametre[/COLOR]')
                         return
 
-                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -292,9 +292,9 @@ def showSeries(sSearch=''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-
         progress_ = progress().VScreate(SITE_NAME)
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -330,7 +330,6 @@ def showSeries(sSearch=''):
                     if 'Inderdit -' in sTitle or 'Public Averti' in sTitle or 'Interdit' in sTitle:
                         continue
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -382,13 +381,13 @@ def showEpisode():
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
 
             sTitle = aEntry[0].replace('FHD', '').replace('vostfr', '').replace('HD', '').replace('HQ', '')
-
             try:
                 sTitle = sTitle.decode('iso-8859-1').encode('utf8')
             except:
@@ -396,7 +395,6 @@ def showEpisode():
 
             sUrl2 = URL_MAIN + aEntry[1]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
