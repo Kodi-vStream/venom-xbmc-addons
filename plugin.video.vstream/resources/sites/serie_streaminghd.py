@@ -53,7 +53,6 @@ def load():
 
 def showSearch():
     oGui = cGui()
-
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH[0] + sSearchText
@@ -77,13 +76,13 @@ def showSeries(sSearch=''):
     sPattern = 'fullstreaming"><img src="([^"]+).+?alt="([^"]+).+?xqualitytaftaf"><strong>([^<]+).+?href="([^"]+)" *>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -110,7 +109,6 @@ def showSeries(sSearch=''):
 
             sDisplayTitle = ('%s %s (%s)') % (sTitle, saison, sLang)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
