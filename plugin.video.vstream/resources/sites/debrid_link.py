@@ -70,6 +70,7 @@ def showLiens(sSearch=''):
     if (r["success"] == True):
         progress_ = progress().VScreate(SITE_NAME)
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in r["value"]:
 
             progress_.VSupdate(progress_, len(aEntry["name"]))
@@ -86,7 +87,6 @@ def showLiens(sSearch=''):
                 sTitle = aEntry["name"]
                 sUrl2 = aEntry["downloadUrl"]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', '', '', oOutputParameterHandler)
@@ -139,6 +139,7 @@ def showInfo():
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -150,7 +151,6 @@ def showInfo():
 
             sDisplayTitle = ('%s (%s)') % (sHebergeur, sDisponible)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
 
             oGui.addText(SITE_IDENTIFIER, sDisplayTitle)
