@@ -85,9 +85,8 @@ def showGenres():
     liste.append(['Science-fiction', sUrl + 'science-fiction'])
     liste.append(['Thriller', sUrl + 'thriller'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -115,6 +114,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -142,7 +142,6 @@ def showMovies(sSearch=''):
 
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang.upper())
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -205,6 +204,7 @@ def showSaisons():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in reversed(aResult[1]):
 
             sUrl = aEntry[0]
@@ -218,7 +218,6 @@ def showSaisons():
             sTitle = aEntry[2].replace('Streaming', '').replace('streaming', '')\
                               .replace('Voir la série', '').replace('en  VF et VOSTFR', '')
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -247,6 +246,7 @@ def showEp():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in reversed(aResult[1]):
 
             sUrl = aEntry[0]
@@ -257,7 +257,6 @@ def showEp():
 
             sDisplayTitle = ('%s %s') % (sMovieTitle, sTitle)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -295,6 +294,7 @@ def showLinks():
     aResult = oParser.parse(sHtmlContent, sPattern2)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
             sHost = aEntry[2].replace('server player-', '').replace('télécharger sur ', '').capitalize()
@@ -308,7 +308,6 @@ def showLinks():
 
             sDisplayTitle = ('%s (%s) [COLOR %s]%s[/COLOR]') % (sMovieTitle, sLang.upper(), sColor, sHost)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('datanum', aEntry[0])
             oOutputParameterHandler.addParameter('datacode', aEntry[1])
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
