@@ -258,6 +258,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -269,7 +270,6 @@ def showMovies(sSearch=''):
             sTitle = aEntry[3] 
             sDisplayTitle = sTitle + ' [' + sType + ']'
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -339,6 +339,7 @@ def showEpisodesxMovies():
 
     bvalid = False
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
                 bvalid = True
@@ -348,7 +349,6 @@ def showEpisodesxMovies():
                 sUrl = URL_MAIN[:-1] + aEntry[1]
                 sTitle = sMovieTitle + ' ' + aEntry[2].replace('Épisode', 'Episode')
 
-                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -374,6 +374,7 @@ def showLinks():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sId = aEntry[0]
             sHost = aEntry[1].replace(' ', '').replace('-', '')
@@ -381,7 +382,6 @@ def showLinks():
             sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
             sUrl2 = URL_MAIN + 'remote/ajax-load_video'
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
