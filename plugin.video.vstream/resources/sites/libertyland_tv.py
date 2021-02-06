@@ -142,9 +142,8 @@ def showMovieGenres():
     liste.append(['Thriller', sUrl + 'thriller.html'])
     liste.append(['Western', sUrl + 'western.html'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -178,9 +177,8 @@ def showSerieGenres():
     liste.append(['Thriller', sUrl + 'thriller/'])
     liste.append(['Télé-réalité', sUrl + 'tele-realite/'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -189,10 +187,9 @@ def showSerieGenres():
 
 def showMovieAnnees():
     oGui = cGui()
-
+    oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(range(1914, 2022)):
         Year = str(i)
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/annee/' + Year + '.html')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
@@ -201,10 +198,9 @@ def showMovieAnnees():
 
 def showSerieAnnees():
     oGui = cGui()
-
+    oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(range(1989, 2022)):
         Year = str(i)
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'v2/series/annee/' + Year + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
@@ -236,7 +232,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
-
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -309,7 +305,6 @@ def showMovies(sSearch=''):
 
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sYear)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -381,6 +376,7 @@ def showSaisonsEpisodes():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
@@ -390,7 +386,7 @@ def showSaisonsEpisodes():
                 sUrl = aEntry[2]
                 if 'https' not in sUrl:
                     sUrl = URL_MAIN[:-1] + sUrl
-                oOutputParameterHandler = cOutputParameterHandler()
+
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -428,6 +424,7 @@ def showLinks():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
             if 'VF' in aEntry[0]:
@@ -441,7 +438,6 @@ def showLinks():
             sHost = aEntry[2].capitalize()
             sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
