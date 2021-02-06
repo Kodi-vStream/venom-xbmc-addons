@@ -75,6 +75,7 @@ def showMenuMovies():
 
 def showMenuSeries():
     oGui = cGui()
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Series (Derniers ajouts)', 'news.png', oOutputParameterHandler)
@@ -181,6 +182,7 @@ def showMovies(sSearch=''):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -193,7 +195,6 @@ def showMovies(sSearch=''):
             sUrl2 = aEntry[3]
             sDisplayTitle = sTitle + '(' + sYear + ')'
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -293,6 +294,7 @@ def showSXE():
     list_saison = []
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if 'x' in aEntry[0]:
                 # class="numep">1x13<
@@ -305,7 +307,6 @@ def showSXE():
                 sUrl2 = aEntry[1]
                 sTitle = sMovieTitle + ' Episode' + episode
 
-                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -356,6 +357,7 @@ def showLink():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sKey = aEntry[0]
             sHost = aEntry[1].replace('www.', '').replace('embed.mystream.to', 'mystream')
@@ -365,7 +367,6 @@ def showLink():
 
             sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('referer', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
