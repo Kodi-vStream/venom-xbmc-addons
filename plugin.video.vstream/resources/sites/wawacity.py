@@ -285,7 +285,6 @@ def showGenresMovies():
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -321,10 +320,9 @@ def showGenreSeries():
     liste.append(['Spectacle', URL_MAIN + '?p=series&genre=spectacle'])
     liste.append(['Thriller', URL_MAIN + '?p=series&genre=thriller'])
     liste.append(['Western', URL_MAIN + '?p=series&genre=western'])
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -372,7 +370,6 @@ def showGenreAnime():
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -397,7 +394,6 @@ def showGenreDivers():
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -452,6 +448,7 @@ def showMovies(sSearch=''):
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
+
             sLang = ''
             if 'p=autre' in sUrl:
                 sTitle = aEntry[1]
