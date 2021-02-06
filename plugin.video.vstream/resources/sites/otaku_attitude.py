@@ -63,9 +63,8 @@ def showGenres():
     liste.append(['Dramas', OST_MAIN + '6-drama/'])
     liste.append(['Jeux Vidéo', OST_MAIN + '7-jeu-vidéo/'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showOst', sTitle, 'music.png', oOutputParameterHandler)
 
@@ -118,7 +117,7 @@ def showAnimes(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
-
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -134,12 +133,10 @@ def showAnimes(sSearch=''):
                 if cUtil().CheckOccurence(sSearch, sTitle) == 0:
                     continue
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-
             oGui.addAnime(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -181,7 +178,7 @@ def showOst():
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
-
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -191,7 +188,6 @@ def showOst():
             sTitle = aEntry[1].replace('- Artiste non défini', '')
             sThumb = aEntry[2]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -233,6 +229,7 @@ def showEpisodes():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in sorted(aResult[1], key=lambda aResult: aResult[1]):
             sQual = aEntry[2]
             # Changemement de formats ...x... -> ....P
@@ -253,7 +250,6 @@ def showEpisodes():
             sTitle = 'E' + aEntry[1] + ' ' + sMovieTitle + ' ' + sQual
             idEpisode = aEntry[0]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -280,11 +276,11 @@ def showMusic():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sTitle = aEntry[2] + ' ' + aEntry[1]
             mp3Url = aEntry[0]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('mp3Url', mp3Url)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
