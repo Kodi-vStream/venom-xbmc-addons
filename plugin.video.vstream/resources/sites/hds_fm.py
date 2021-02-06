@@ -179,8 +179,8 @@ def showMovieGenres():
     for igenre in listegenre:
         liste.append([igenre.capitalize(), URL_MAIN + 'film-genre/' + igenre])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -201,9 +201,8 @@ def showSerieGenres():
             urlgenre = 'judiciare'
         liste.append([igenre.capitalize(), URL_MAIN + 'serie-genre/' + urlgenre + '/'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -249,9 +248,9 @@ def showMovies(sSearch=''):
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -300,7 +299,6 @@ def showMovies(sSearch=''):
                 # if idmovie  <= 18729:
                     # sDisplayTitle = sDisplayTitle + ' *'
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -395,6 +393,7 @@ def ShowEpisodes():
     sLang = ''
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
                 sLang = aEntry[0].replace('-tab', '').replace('"', '')
@@ -409,7 +408,6 @@ def ShowEpisodes():
                 sTitle = sMovieTitle.replace('- Saison', ' Saison') + ' ' + sEpisode
                 sDisplayTitle = sTitle + ' (' + sLang + ')'
 
-                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -464,6 +462,7 @@ def showSerieLinks():
         sPattern = 'href="([^"]+).*?aria-hidden'
         aResulturl = oParser.parse(html, sPattern)
         if (aResulturl[0] == True):
+            oOutputParameterHandler = cOutputParameterHandler()
             for aEntry in aResulturl[1]:
                 sUrl2 = aEntry
                 sHost = getHostName(sUrl2)
@@ -483,7 +482,6 @@ def showSerieLinks():
                 sHost = '[COLOR coral]' + sHost + '[/COLOR]'
                 sDisplayTitle = sMovieTitle + ' ' + sHost
 
-                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
@@ -516,6 +514,7 @@ def showMovieLinks():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
             sHost = aEntry[1].strip().capitalize()
@@ -539,7 +538,6 @@ def showMovieLinks():
 
             sDisplayTitle = sTitle + ' ' + '[COLOR coral]' + sHost + '[/COLOR]'
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
