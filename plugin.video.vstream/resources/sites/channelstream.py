@@ -66,6 +66,7 @@ def showMovies():
     EPG = cePg().get_epg('', 'direct')
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if "+18" not in str(aEntry[2]):
                 sTitle = aEntry[2]
@@ -75,10 +76,8 @@ def showMovies():
 
                 sUrl2 = URL_MAIN + aEntry[0]
                 sThumb = URL_MAIN + '/' + aEntry[1]
-
                 sDesc = getEPG(EPG, sTitle)
 
-                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
