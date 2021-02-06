@@ -170,6 +170,7 @@ def showMovies(sSearch=''):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -203,7 +204,6 @@ def showMovies(sSearch=''):
                 # except AttributeError:
                     # sDesc = cUtil().unescape(sDesc)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -259,6 +259,7 @@ def showSxE():
 
     if (aResult[0] == True):
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + aEntry[0] + '[/COLOR]')
@@ -270,7 +271,6 @@ def showSxE():
 
                 sDisplaytitle = sMovieTitle + ' ' + re.sub('saison \d+ ', '', SxE)
 
-                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -299,6 +299,7 @@ def showLinks():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if ('trailer' in aEntry[1]):
                 continue
@@ -320,7 +321,6 @@ def showLinks():
 
             sDisplaytitle = '%s [COLOR coral]%s[/COLOR]' % (sMovieTitle, sHoster)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('referer', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
