@@ -47,7 +47,6 @@ def load():
 
 def showSearch():
     oGui = cGui()
-
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH[0] + sSearchText
@@ -79,6 +78,7 @@ def showMovies(sSearch=''):
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if sSearch:
                 sUrl2 = aEntry[0]
@@ -91,7 +91,6 @@ def showMovies(sSearch=''):
                 sThumb = aEntry[2]
                 sDesc = aEntry[3].replace('</strong>', '')
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
