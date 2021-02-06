@@ -139,6 +139,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -154,7 +155,6 @@ def showMovies(sSearch=''):
             sYear = re.search('([0-9]{4})', aEntry[3]).group(1)
             sDesc = aEntry[5]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'none')
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sYear', sYear)
