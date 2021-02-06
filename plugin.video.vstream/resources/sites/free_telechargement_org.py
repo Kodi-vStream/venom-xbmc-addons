@@ -338,6 +338,7 @@ def showSearchResult(sSearch=''):
 
     if (aResult):
         i = 0
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult:
 
             # titre ?
@@ -363,7 +364,6 @@ def showSearchResult(sSearch=''):
 
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -383,7 +383,6 @@ def showSearchResult(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', u)
             sNumPage = re.search('/([0-9]+)/', u).group(1)
             oGui.addNext(SITE_IDENTIFIER, 'showSearchResult', 'Page ' + sNumPage + ' ' + n, oOutputParameterHandler)
-            # oGui.addNext(SITE_IDENTIFIER, 'showSearchResult', n, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -405,6 +404,7 @@ def showMovies():
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -424,7 +424,6 @@ def showMovies():
 
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -522,6 +521,7 @@ def showHosters():
     # VSlog(aResult)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
             if '-multi' in aEntry:
@@ -546,8 +546,8 @@ def showHosters():
 
                 sHostName = cUtil().removeHtmlTags(sHostName)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             sTitle = '[COLOR coral]' + sHostName + '[/COLOR]'
+
             if '-multi' in aEntry:
                 oOutputParameterHandler.addParameter('siteUrl', aEntry)
             else:
@@ -602,8 +602,8 @@ def showSeriesHosters():
         total = len(aResult[1])
         oGui.addText(SITE_IDENTIFIER, sMovieTitle + aResult1[1][0])
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            oOutputParameterHandler = cOutputParameterHandler()
             if total == 1:
                 sTitle = '[COLOR coral]' + 'Liens Premium' + '[/COLOR]'
                 oOutputParameterHandler.addParameter('siteUrl', aEntry)
