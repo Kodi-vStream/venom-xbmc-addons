@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
+# 06/02/21
+return false 
+
 import re
 try:  # Python 2
     from urllib2 import URLError as UrlError
