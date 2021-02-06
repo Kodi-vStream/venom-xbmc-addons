@@ -235,13 +235,13 @@ def showNoAlpha():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
 
         for aEntry in aResult[1]:
 
             sUrl2 = aEntry[0]
             sTitle = aEntry[1]  # .decode("unicode_escape").encode("latin-1")
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
@@ -276,6 +276,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
 
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
@@ -285,7 +286,6 @@ def showMovies(sSearch=''):
             sUrl2 = aEntry[0]
             sTitle = aEntry[1]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
@@ -353,6 +353,7 @@ def showEpisode():
 
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
+            oOutputParameterHandler = cOutputParameterHandler()
             for aEntry in aResult[1]:
                 if aEntry[0]:
                     oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0].capitalize() + '[/COLOR]')
@@ -363,7 +364,6 @@ def showEpisode():
                     sDisplayTitle = re.sub(' vostfr', ' (VOSTFR)', sTitle, re.IGNORECASE)
                     sTitle = sDisplayTitle.replace(' (VF)', '').replace(' (VOSTFR)', '')
 
-                    oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -392,6 +392,7 @@ def showLinks():
         sPattern = '<iframe.+?src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for aEntry in aResult[1]:
         sUrl = aEntry.replace('+', 'plus')
         try:
@@ -415,7 +416,6 @@ def showLinks():
         else:
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, 'Inconnu')
 
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
         oOutputParameterHandler.addParameter('sThumb', sThumb)
