@@ -95,7 +95,6 @@ def showMenuTvShows():
 
 def showSearch():
     oGui = cGui()
-
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
@@ -119,11 +118,11 @@ def showGenres():
     if (aResult[0] == True):
         genres = set(aResult[1])
         genres = sorted(genres, key=lambda genre: genre[1])
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in genres:
             sUrl = aEntry[0]
             sTitle = aEntry[1]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -142,11 +141,11 @@ def showMovieYears():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sYear = aEntry[1]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'genres.png', oOutputParameterHandler)
 
@@ -178,7 +177,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
-
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -204,11 +203,11 @@ def showMovies(sSearch=''):
 
             sDisplayTitle = ('%s (%s)') % (sTitle, sYear)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('sYear', sYear)
 
             if '/series' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showSxE', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
@@ -257,7 +256,7 @@ def showSxE():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + aEntry[0] + '[/COLOR]')
@@ -267,7 +266,6 @@ def showSxE():
                 Ep = aEntry[1]
                 sTitle = sMovieTitle + ' Episode' + Ep + EpTitle
 
-                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -293,6 +291,7 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         url_main = GET_REAL_URLMAIN(sUrl)
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = url_main + 'wp-admin/admin-ajax.php'
             dType = aEntry[0]
@@ -303,7 +302,6 @@ def showHosters():
 
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('referer', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -330,6 +328,7 @@ def showSeriesHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         url_main = GET_REAL_URLMAIN(sUrl)
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = url_main + 'wp-admin/admin-ajax.php'
             dType = aEntry[0]
@@ -343,7 +342,6 @@ def showSeriesHosters():
 
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('referer', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
