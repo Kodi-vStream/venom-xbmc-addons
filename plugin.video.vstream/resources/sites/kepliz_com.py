@@ -2,7 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 # 06/02/21
-return false 
+return False 
 
 import re
 try:  # Python 2
