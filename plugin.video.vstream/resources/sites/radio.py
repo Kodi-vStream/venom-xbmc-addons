@@ -46,11 +46,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
     oGui.addDir(SITE_IDENTIFIER, 'showGenres', addons.VSlang(30203) + ' (Genres)', 'music.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
     oGui.addDir(SITE_IDENTIFIER, 'showAZ', addons.VSlang(30203) + ' (A-Z)', 'music.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
     oGui.addDir(SITE_IDENTIFIER, 'showWeb', addons.VSlang(30203), 'music.png', oOutputParameterHandler)
 
@@ -81,9 +79,8 @@ def showGenres():
     liste.append(['Slow', 'Slow'])
     liste.append(['Trance', 'Trance'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sIdent in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', '')
         oOutputParameterHandler.addParameter('ident', sIdent)
         oGui.addDir(SITE_IDENTIFIER, 'showWeb', sTitle, 'genres.png', oOutputParameterHandler)
@@ -137,12 +134,12 @@ def showWeb():  # Code qui s'occupe de liens TV du Web
         oOutputParameterHandler.addParameter('siteUrl', 'http://')
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]Aucun résultat[/COLOR] ')
     else:
+        oOutputParameterHandler = cOutputParameterHandler()
         for track in playlist:
             sThumb = track.image
             if not sThumb:
                 sThumb = 'tv.png'
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', track.location)
             oOutputParameterHandler.addParameter('sMovieTitle', track.title)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
@@ -172,14 +169,14 @@ def showAZ():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for i in string.digits:
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('AZ', i)
         oGui.addDir(SITE_IDENTIFIER, 'showWeb', i, 'az.png', oOutputParameterHandler)
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for i in string.ascii_uppercase:
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('AZ', i)
         oGui.addDir(SITE_IDENTIFIER, 'showWeb', i, 'az.png', oOutputParameterHandler)
