@@ -101,9 +101,8 @@ def showGenres():
     liste.append(['Spectacle', URL_MAIN + 'index.php?option=com_content&view=category&id=3'])
     liste.append(['Thriller', URL_MAIN + 'index.php?option=com_content&view=category&id=12'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -154,7 +153,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
-
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -168,7 +167,6 @@ def showMovies(sSearch=''):
             # sTitle = unicode(sTitle, errors='replace')
             # sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sMainUrl + sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sMainUrl', sMainUrl)
