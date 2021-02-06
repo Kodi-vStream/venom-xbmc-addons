@@ -39,8 +39,8 @@ MY_SEARCH_SERIES = (key_search_series, 'showSearchSerie')
 FUNCTION_SEARCH = 'showMovies'
 
 # Menu GLOBALE HOME
-MOVIE_MOVIE = (True, 'showMoviesSource')
-SERIE_SERIES = (True, 'showTvShowSource')
+MOVIE_MOVIE = (True, 'showMenuMovies')
+SERIE_SERIES = (True, 'showMenuTvShows')
 
 
 def load():
@@ -74,7 +74,7 @@ def load():
     oGui.setEndOfDirectory()
 
 
-def showMoviesSource():
+def showMenuMovies():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -93,7 +93,7 @@ def showMoviesSource():
     oGui.setEndOfDirectory()
 
 
-def showTvShowSource():
+def showMenuTvShows():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -234,6 +234,7 @@ def showMovies(sSearch=''):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -261,7 +262,6 @@ def showMovies(sSearch=''):
             if sSearch and not bSearchMovie and not bSearchSerie:
                 sDisplayTitle = sDisplayTitle + ' [' + aEntry[4] + ']'
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -366,13 +366,13 @@ def showSaisons():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in reversed(aResult[1]):
             sUrl2 = aEntry[0]
             saison = aEntry[1]
 
             sTitle = ("%s %s") % (sMovieTitle, ' Saison ' + saison)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
@@ -408,13 +408,13 @@ def ShowEpisodes():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
             nEpisode = aEntry[1]
 
             sTitle = sMovieTitle + iSaison + ' episode' + nEpisode
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -466,6 +466,7 @@ def showLink():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sKey = aEntry[0]
             sHost = re.sub('www.', '', aEntry[1])
@@ -480,7 +481,6 @@ def showLink():
 
             sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sLang, sHost)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('referer', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
