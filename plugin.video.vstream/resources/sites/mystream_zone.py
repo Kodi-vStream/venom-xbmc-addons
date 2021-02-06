@@ -57,8 +57,8 @@ SERIE_NEWS_EPISODES = (URL_MAIN + 'episodes/', 'showMovies')
 
 def load():
     oGui = cGui()
-    oOutputParameterHandler = cOutputParameterHandler()
 
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Films & Séries', 'search.png', oOutputParameterHandler)
 
@@ -82,8 +82,8 @@ def load():
 
 def showMenuMovies():
     oGui = cGui()
-    oOutputParameterHandler = cOutputParameterHandler()
 
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_MOVIES[0])
     oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_MOVIES[1], 'Recherche Films ', 'search.png', oOutputParameterHandler)
 
@@ -104,8 +104,8 @@ def showMenuMovies():
 
 def showMenuTvShows():
     oGui = cGui()
-    oOutputParameterHandler = cOutputParameterHandler()
 
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_SERIES[1], 'Recherche Séries ', 'search.png', oOutputParameterHandler)
 
@@ -202,8 +202,8 @@ def showGenres():
     liste.append(['Guerre & politique', URL_MAIN + 'genre/war-politics/'])
     liste.append(['Western', URL_MAIN + 'genre/western/'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrlGenre in liste:
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrlGenre)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
     oGui.setEndOfDirectory()
@@ -232,8 +232,8 @@ def showAlpha(stype):
     for alpha in listalpha:
         liste.append([str(alpha).upper(), url1 + str(alpha) + url2 + snonce + url3 + stype])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'listes.png', oOutputParameterHandler)
 
@@ -243,9 +243,9 @@ def showAlpha(stype):
 def showYears():
     oGui = cGui()
     # https://mystream.zone/release/2020
+    oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(range(1982, 2022)):
         sYear = str(i)
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'release/' + sYear)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
 
@@ -292,6 +292,7 @@ def showMovies(sSearch=''):
                 return
 
         jsonrsp = json.loads(sJsonContent)
+        oOutputParameterHandler = cOutputParameterHandler()
         for i, idict in jsonrsp.items():
             sTitle = str(jsonrsp[i]['title'].encode('utf-8', 'ignore')).replace(' mystream', '')  # I Know This Much Is True mystream
             sUrl2 = str(jsonrsp[i]['url'])
@@ -300,7 +301,6 @@ def showMovies(sSearch=''):
             sDisplayTitle = sTitle + ' (' + sYear + ')'
             sDesc = ''
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -369,6 +369,7 @@ def showMovies(sSearch=''):
         sDesc = ''
         sYear = ''
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_1.VSupdate(progress_1, total)
             if progress_1.iscanceled():
@@ -457,7 +458,6 @@ def showMovies(sSearch=''):
                         sYear = aEntry[3]
                         sDisplayTitle = sTitle + ' (' + sYear + ')'
 
-                        oOutputParameterHandler = cOutputParameterHandler()
                         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                         oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -611,6 +611,7 @@ def showSaisons():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             iSaison = aEntry[0]
             iEpisode = aEntry[1]
@@ -618,7 +619,6 @@ def showSaisons():
 
             sTitle = sMovieTitle + ' Saison ' + str(iSaison) +  ' Episode ' + str(iEpisode)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -659,10 +659,10 @@ def showListEpisodes():  # plus utilisé
         for aEntry in aResult[1]:
             listeStitle2.append(aEntry)
     i = 0
+    oOutputParameterHandler = cOutputParameterHandler()
     for itemurl in listeUrlEpisode2:
         sTitle = listeStitle2[i]
         i = i + 1
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', itemurl)
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -704,13 +704,13 @@ def showEpisodes():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             iSaison = re.search('([0-9]+)', aEntry[0]).group(1)
             iEpisode = re.search('([0-9]+)$', aEntry[0]).group(1)
             sUrl = aEntry[1]
             sDisplayTitle = sMovieTitle + ' ' + ' Saison ' + str(iSaison) + ' Episode ' + str(iEpisode)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -758,6 +758,7 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             datatype = aEntry[0]
             datapost = aEntry[1]
@@ -767,7 +768,6 @@ def showHosters():
             pdata = 'action=doo_player_ajax&post=' + datapost + '&nume=' + datanum + '&type=' + datatype
             sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, sHost.capitalize())
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('referer', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
