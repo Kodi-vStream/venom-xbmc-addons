@@ -3,6 +3,7 @@
 # source 45 06022021 https://hds-streamingvf.org/
 
 import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -16,6 +17,10 @@ SITE_NAME = 'Hds-Streamingvf'
 SITE_DESC = 'Films et Séries en streaming VF et VOSTFR'
 
 URL_MAIN = 'https://hds-streamingvf.org/'
+
+# Sous menus
+MOVIE_MOVIE = (True, 'showMenuMovies')
+SERIE_SERIES = (True, 'showMenuTvShows')
 
 MOVIE_GENRES = (URL_MAIN, 'showGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
@@ -36,8 +41,8 @@ UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/
 
 def load():
     oGui = cGui()
-    oOutputParameterHandler = cOutputParameterHandler()
 
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Films & Séries', 'search.png', oOutputParameterHandler)
 
@@ -61,6 +66,35 @@ def load():
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films & Séries (Années)', 'annees.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showMenuMovies():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'siteUrl')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchMovie', 'Recherche Films', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showMenuTvShows():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'siteUrl')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchSerie', 'Recherche Séries', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NETFLIX[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NETFLIX[1], 'Séries (Netflix)', 'series.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -116,6 +150,7 @@ def showGenres():
 def showMovieYears():
     import datetime
     oGui = cGui()
+
     oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(range(1930, int(datetime.datetime.now().year) + 1)):
         Year = str(i)
@@ -177,13 +212,13 @@ def showMovies(sSearch=''):
 
             sDisplayTitle = sTitle
             if '/series' in sUrl2:
-                sDisplayTitle = sDisplayTitle + ' [série]'
+                sDisplayTitle = sDisplayTitle + ' [Série]'
             else:
-                sDisplayTitle = sDisplayTitle + ' [film]'
+                sDisplayTitle = sDisplayTitle + ' [Film]'
 
             if sYear:
                 sDisplayTitle = ('%s (%s)') % (sDisplayTitle, sYear)
-            
+
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -247,7 +282,7 @@ def showSaisons():
         else:
             oGui.addText(SITE_IDENTIFIER)
 
-    
+
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
@@ -279,9 +314,7 @@ def ShowEpisodes():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
     sPattern = "class=.numerando.+?>([^<]+).+?ref='([^']+).>([^<]*)"
-
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -290,7 +323,7 @@ def ShowEpisodes():
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            
+
             sSaisonEpisode = aEntry[0]
             sUrl2 = aEntry[1]
             sDesc2 = aEntry[2] + '\r\n' + sDesc
@@ -301,7 +334,6 @@ def ShowEpisodes():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sYear', sYear)
             oOutputParameterHandler.addParameter('sDesc', sDesc2)
-
             oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc2, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
