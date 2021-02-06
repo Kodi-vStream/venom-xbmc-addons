@@ -146,6 +146,8 @@
 
         <setting visible="false" id="plugin_hds_stream" type="bool" label="Hds-stream" default="true"/>
 
+        <setting visible="false" id="plugin_hds_streamingvf" type="bool" label="Hds-Streamingvf" default="true"/>
+
         <setting visible="false" id="plugin_ianime" type="bool" label="Ianime" default="true"/>
 
         <setting visible="false" id="plugin_k_streaming" type="bool" label="K_Streaming" default="true"/>
