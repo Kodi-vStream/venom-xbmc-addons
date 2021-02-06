@@ -120,10 +120,9 @@ def showAnims(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    if sUrl == ANIM_LIST[0]:  # category"><a href="([^"]+).+?title="([^"]+).+?meta-date">([^<]+).+?src=.([^">]+)
+    if sUrl == ANIM_LIST[0]:
         sPattern = '<a href="([^"]+)">.([^<]+).+?style="width'
     else:
-        # sPattern = 'category"><a href="([^"]+).+?title="([^"]+).+?meta-date">([^<]+).+?src=.([^">]+)'
         sPattern = '<center><p><img.*?src=.([^">]+).*?category"><a href="([^"]+).+?title="([^"]+).+?meta-date">([^<]+)'
 
     oParser = cParser()
@@ -139,6 +138,7 @@ def showAnims(sSearch=''):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
             progress_.VSupdate(progress_, total)
@@ -186,7 +186,6 @@ def showAnims(sSearch=''):
                     else:
                         continue
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -243,11 +242,11 @@ def showSaisons():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
             sTitle = sMovieTitle + ' ' + aEntry[1]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -285,6 +284,7 @@ def showEpisodes():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
             sUrl2 = aEntry[0]
@@ -293,7 +293,6 @@ def showEpisodes():
             if 'http' not in sThumb:
                 sThumb = URL_MAIN + sThumb
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -327,6 +326,7 @@ def seriesHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry
 
@@ -345,7 +345,6 @@ def seriesHosters():
                 sHost = sHost + ' #'
 
             sDisplayTitle = sMovieTitle + ' ' + sHost
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
