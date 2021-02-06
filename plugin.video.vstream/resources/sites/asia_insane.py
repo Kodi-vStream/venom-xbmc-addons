@@ -143,6 +143,7 @@ def showAlpha():
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -152,7 +153,6 @@ def showAlpha():
             sUrl = aEntry[1]
             sTitle = aEntry[2]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -221,6 +221,7 @@ def showMovies(sSearch=''):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -252,7 +253,6 @@ def showMovies(sSearch=''):
 
                 sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sYear)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -311,6 +311,7 @@ def ShowSerieEpisodes():
 
     if (aResult[0] == True):
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sTitle = sMovieTitle + "E" + aEntry[1]
             sUrl2 = aEntry[0]
@@ -318,7 +319,6 @@ def ShowSerieEpisodes():
             if not sUrl2.startswith('http'):
                 sUrl2 = URL_MAIN + sUrl2
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('HostUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
