@@ -105,8 +105,8 @@ def showGenres():
         # Trie des genres par ordre alphabétique
         TriAlpha = sorted(TriAlpha, key=lambda genre: genre[0])
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for sTitle, sUrl in TriAlpha:
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
         oGui.setEndOfDirectory()
@@ -149,6 +149,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
 
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
@@ -184,7 +185,6 @@ def showMovies(sSearch=''):
 
             sDisplaytitle = '%s [%s] (%s)' % (sTitle, Squal, sLang)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -251,6 +251,7 @@ def showSeries(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
 
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
@@ -267,7 +268,6 @@ def showSeries(sSearch=''):
             sUrl = aEntry[2]
             sDesc = aEntry[4]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -359,7 +359,7 @@ def showHosters():
                 sHosterUrl = aEntry[0].replace('/wiflix.cc/', '')
             sLang = aEntry[1].replace('2', '').replace('3', '')
             if 'Vost' in aEntry[1]:
-                sDisplaytitle =('%s (%s)') % (sMovieTitle, sLang)
+                sDisplaytitle = ('%s (%s)') % (sMovieTitle, sLang)
             else:
                 sDisplaytitle = sMovieTitle
             oHoster = cHosterGui().checkHoster(sHosterUrl)
