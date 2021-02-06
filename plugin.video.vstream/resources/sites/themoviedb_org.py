@@ -375,12 +375,12 @@ def showGenreMovie():
     result = grab.getUrl(sUrl)
     total = len(result)
     if (total > 0):
+        oOutputParameterHandler = cOutputParameterHandler()
         for i in result['genres']:
             sId, sTitle = i['id'], i['name']
 
             sTitle = sTitle.encode("utf-8")
             sUrl = 'genre/' + str(sId) + '/movies'
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', str(sTitle), 'genres.png', oOutputParameterHandler)
 
@@ -397,6 +397,7 @@ def showGenreTV():
     result = grab.getUrl(sUrl)
     total = len(result)
     if (total > 0):
+        oOutputParameterHandler = cOutputParameterHandler()
         for i in result['genres']:
             sId, sTitle = i['id'], i['name']
 
@@ -404,7 +405,6 @@ def showGenreTV():
                 sTitle = sTitle.encode("utf-8")
             # sUrl = API_URL + '/genre/' + str(sId) + '/tv'
             sUrl = 'discover/tv'
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('genre', sId)
             oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'genres.png', oOutputParameterHandler)
@@ -427,11 +427,11 @@ def showUserLists():
     result = grab.getUrl(sUrl, iPage, term)
     total = len(result)
     if (total > 0):
+        oOutputParameterHandler = cOutputParameterHandler()
         for i in result['results']:
             sId, sTitle = i['id'], i['name']
 
             # sUrl = API_URL + '/genre/' + str(sId) + '/tv'
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sId)
             oGui.addDir(SITE_IDENTIFIER, 'showLists', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -457,9 +457,8 @@ def showFolderList():
     liste.append(['Films de Noel', '40944'])
     # liste.append(['nom de la liste', 'ID de la liste'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showLists', sTitle, 'listes.png', oOutputParameterHandler)
 
@@ -652,10 +651,10 @@ def showSeries(sSearch=''):
             if (iPage > 0):
                 iNextPage = int(iPage) + 1
                 oOutputParameterHandler = cOutputParameterHandler()
-                if sSearch:
-                    oOutputParameterHandler.addParameter('sSearch', sSearch)
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('page', iNextPage)
+                if sSearch:
+                    oOutputParameterHandler.addParameter('sSearch', sSearch)
                 if (oInputParameterHandler.exist('genre')):
                     oOutputParameterHandler.addParameter('genre', oInputParameterHandler.getValue('genre'))
                 oGui.addNext(SITE_IDENTIFIER, 'showSeries', 'Page ' + str(iNextPage), oOutputParameterHandler)
@@ -711,6 +710,7 @@ def showSeriesSaison():
     if (total > 0):
         total = len(result['seasons'])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
 
         for i in result['seasons']:
             progress_.VSupdate(progress_, total)
@@ -727,7 +727,6 @@ def showSeriesSaison():
 
             sUrl = 'tv/' + str(sId) + '/season/' + str(SSeasonNum)
 
-            # oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -809,6 +808,7 @@ def showSeriesEpisode():
     if (total > 0 and 'episodes' in result):
         total = len(result['episodes'])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
 
         for i in result['episodes']:
             progress_.VSupdate(progress_, total)
@@ -829,7 +829,6 @@ def showSeriesEpisode():
 
             sExtraTitle = ' S' + "%02d" % int(sSeason) + 'E' + "%02d" % int(sEpNumber)
 
-            # oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sMovieTitle + '|' + sExtraTitle)  # Pour compatibilite Favoris
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -896,6 +895,7 @@ def showActors(sSearch=''):
     if (total > 0):
         total = len(result['results'])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
 
         # récup le nombre de page pour NextPage
         nbrpage = result['total_pages']
@@ -913,7 +913,6 @@ def showActors(sSearch=''):
             else:
                 sThumb = ''
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
@@ -941,13 +940,13 @@ def showActors(sSearch=''):
         if (int(iPage) < int(nbrpage)):
             iNextPage = int(iPage) + 1
             oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('page', iNextPage)
 
             # ajoute param sSearch pour garder le bon format d'url avec grab url
             if sSearch:
                 oOutputParameterHandler.addParameter('sSearch', sSearch)
 
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('page', iNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showActors', 'Page ' + str(iNextPage), oOutputParameterHandler)
 
     view = addons.getSetting('visuel-view')
@@ -973,6 +972,7 @@ def showFilmActor():
     if (total > 0):
         total = len(result['cast'])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
 
         for i in result['cast']:
             progress_.VSupdate(progress_, total)
@@ -987,7 +987,6 @@ def showFilmActor():
             if not isMatrix():
                 sTitle = sTitle.encode("utf-8")
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://tmdb/%s' % sId)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -1043,6 +1042,7 @@ def showLists():
     if (total > 0):
         total = len(result['items'])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
 
         for i in result['items']:
             progress_.VSupdate(progress_, total)
@@ -1059,7 +1059,6 @@ def showLists():
 
             sDisplayTitle = "%s (%s)" % (sTitle, sVote)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://tmdb/%s' % sId)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
