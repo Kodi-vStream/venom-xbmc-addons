@@ -69,6 +69,7 @@ def showMovies():
     aResult = oParser.parse(sHtml, sPattern)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             if sUrl.endswith('//'):
@@ -77,7 +78,6 @@ def showMovies():
             sThumb = aEntry[1]
             sTitle = sUrl.rsplit('/', 2)[1]  # on prend le titre de l'url plus fiable site bordelique
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addMisc(SITE_IDENTIFIER, 'showEpisode', sTitle, 'enfants.png', sThumb, '', oOutputParameterHandler)
@@ -98,6 +98,7 @@ def showEpisode():
     aResult = oParser.parse(sHtml, sPattern)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
             sUrl = aEntry[0]
@@ -107,7 +108,6 @@ def showEpisode():
             sThumb = aEntry[1]
             sTitle = aEntry[2]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
