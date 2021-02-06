@@ -44,6 +44,7 @@ OLD_MOVIE = (URL_MAIN + 'vieux-films.html', 'showMovies')
 FILM_ANIMATION = (URL_MAIN + 'films/anime-films/', 'showMovies')
 MOVIE_VFSTFR = (URL_MAIN + 'films/films-vfstfr/', 'showMovies')
 
+MOVIE_ANNEES = (True, 'showYears')
 MOVIE_2010 = (URL_MAIN + 'films-2010-2019.html', 'showMovies')
 MOVIE_2000 = (URL_MAIN + 'films-2000-2009.html', 'showMovies')
 MOVIE_1990 = (URL_MAIN + 'films-1990-1999.html', 'showMovies')
@@ -69,7 +70,7 @@ PACK_SERIE_VOSTFRS_1080 = (URL_MAIN + 'series/pack-sries-vf-hd-1080p/', 'showMov
 ANIM_ANIMS = (True, 'showMenuMangas')
 ANIM_VFS = (URL_MAIN + 'dessin-anime-mangas/animes-vf/', 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + 'dessin-anime-mangas/animes-vostfr/', 'showMovies')
-FILM_ANIM = (URL_MAIN + 'dessin-anime-mangas/films-mangas/', 'showMovies')
+FILM_ANIMS = (URL_MAIN + 'dessin-anime-mangas/films-mangas/', 'showMovies')
 
 
 def load():
@@ -193,8 +194,8 @@ def showMenuMangas():
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'animes.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', FILM_ANIM[0])
-    oGui.addDir(SITE_IDENTIFIER, FILM_ANIM[1], 'Films d\'animés ', 'animes.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', FILM_ANIMS[0])
+    oGui.addDir(SITE_IDENTIFIER, FILM_ANIMS[1], 'Films d\'animés ', 'animes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -219,6 +220,7 @@ def showGenre():
                    'comédie-musicale', 'comédie', 'divers', 'documentaire', 'drame', 'epouvante-horreur', 'espionnage',
                    'famille', 'fantastique', 'guerre', 'historique', 'musical', 'péplum',
                    'policier', 'romance', 'science-fiction', 'thriller', 'western']
+
     oOutputParameterHandler = cOutputParameterHandler()
     for genre in listeGenres:
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + genre.replace(' ', '%20') + '.html')
@@ -279,6 +281,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -306,7 +309,6 @@ def showMovies(sSearch=''):
             sDesc = re.sub('<[^<]+?>', '', sDesc)
             sDisplayTitle = ('%s (%s)') % (sTitle, sYear)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -414,11 +416,11 @@ def showMoviesLinks():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sTitle = aEntry[1]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -453,12 +455,12 @@ def showHosters():
         sPattern = '<a href="([^"]+)".+?rel="noopener external noreferrer">(?!Partie)([^<]+)</a>'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sHoster = aEntry[1]
             sUrl2 = aEntry[0]
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHoster)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -467,6 +469,7 @@ def showHosters():
             oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     elif (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sHoster = aEntry[0]
             sUrl2 = aEntry[1]
@@ -483,7 +486,6 @@ def showHosters():
 
                 sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHoster)
 
-                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -512,7 +514,7 @@ def showSeriesHosters():
 
     if (aResult[0] == True):
         oGui = cGui()
-
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + re.sub('\.\w+', '', aEntry[0]) + '[/COLOR]')
@@ -530,7 +532,6 @@ def showSeriesHosters():
                         cHosterGui().showHoster(oGui, oHoster, sUrl2, sThumb)
 
                 else:
-                    oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
