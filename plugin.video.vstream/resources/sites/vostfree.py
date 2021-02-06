@@ -90,6 +90,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
 
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
@@ -121,7 +122,6 @@ def showMovies(sSearch=''):
             if len(aEntry) > 4:
                 sDisplayTitle = sDisplayTitle + ' S' + aEntry[4] + ' E' + aEntry[5]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -226,11 +226,12 @@ def seriesHosters():
             ddlData = oParser.parse(sHtmlContent, sPattern)
 
             for aEntry2 in ddlData[1]:
+                oOutputParameterHandler = cOutputParameterHandler()
                 sTitle = sMovieTitle + ' ' + epNumber + ' ' + aEntry2[1]
                 url = aEntry2[0]
 
                 if 'ouo' in url:
-                    oOutputParameterHandler = cOutputParameterHandler()
+                    
                     oOutputParameterHandler.addParameter('siteUrl', url)
                     oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
