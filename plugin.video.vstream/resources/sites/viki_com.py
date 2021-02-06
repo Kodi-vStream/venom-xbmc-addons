@@ -120,7 +120,6 @@ def showMenuSeries():
 
 def showSearch():
     oGui = cGui()
-
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH[0] + sSearchText
@@ -309,14 +308,14 @@ def showMovieGenre():
     sJsonContent = oRequestHandler.request()
     jsonrsp = json.loads(sJsonContent)
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for genre in range(0, len(jsonrsp)):
-
         typeGenre = jsonrsp[genre]['name']['fr']  # or jsonrsp[genre]['name']['en']
         urlGenre = URL_API + sGenre + '.json?sort=newest_video&page=1&per_page=50&app=100000a&genre=' + jsonrsp[genre]['id'] + '&t='
 
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', urlGenre)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', typeGenre.capitalize(), 'genres.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
 
 
@@ -331,10 +330,11 @@ def showSerieGenre():
     sJsonContent = oRequestHandler.request()
     jsonrsp = json.loads(sJsonContent)
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for genre in range(0, len(jsonrsp)):
         urlGenre = URL_API + sGenre + '.json?sort=newest_video&page=1&per_page=50&app=100000a&genre=' + jsonrsp[genre]['id'] + '&t='
         typeGenre = jsonrsp[genre]['name']['fr']
-        oOutputParameterHandler = cOutputParameterHandler()
+
         oOutputParameterHandler.addParameter('siteUrl', urlGenre)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', typeGenre.capitalize(), 'genres.png', oOutputParameterHandler)
 
@@ -361,6 +361,7 @@ def showPays(genre):
     # site ou il n'y a jamais rien
     sBlaccountryList = ['tw', 'ca', 'us', 'gb', 'th', 'ph', 'es']
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for country, subdict in jsonrsp.items():
         if country in sBlaccountryList:
             continue
@@ -368,7 +369,6 @@ def showPays(genre):
         else:
             urlcountry = URL_API + genre + '.json?sort=newest_video&page=1&per_page=50&app=100000a&origin_country=' + country + '&t='
             country = jsonrsp[country]['name']['en']
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', urlcountry)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', country.capitalize(), 'genres.png', oOutputParameterHandler)
 
