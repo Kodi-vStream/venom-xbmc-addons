@@ -268,7 +268,6 @@ def showGenres():  # affiche les genres
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:  # boucle
-
         oOutputParameterHandler.addParameter('siteUrl', sUrl) # sortie de l'url en parametre
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
         # ajouter un dossier vers la fonction showMovies avec le titre de chaque categorie.
@@ -339,6 +338,7 @@ def showMovies(sSearch=''):
         # dialog barre de progression
         progress_ = progress().VScreate(SITE_NAME)
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             # dialog update
             progress_.VSupdate(progress_, total)
@@ -365,7 +365,6 @@ def showMovies(sSearch=''):
             # Utile si les liens recupere ne commencent pas par (http://www.nomdusite.com/)
             # sUrl2 = URL_MAIN + sUrl2
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)  # sortie de l'url
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)  # sortie du titre
             oOutputParameterHandler.addParameter('sThumb', sThumb)  # sortie du poster
@@ -470,6 +469,7 @@ def ShowSerieSaisonEpisodes():
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -478,7 +478,6 @@ def ShowSerieSaisonEpisodes():
             sTitle = sMovieTitle + aEntry[0]
             sUrl2 = aEntry[1]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
