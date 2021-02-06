@@ -283,9 +283,9 @@ def showGenresMovies():
     liste.append(['Thriller', URL_MAIN + '?p=films&genre=thriller'])
     liste.append(['Western', URL_MAIN + '?p=films&genre=western'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
 
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -321,10 +321,10 @@ def showGenreSeries():
     liste.append(['Spectacle', URL_MAIN + '?p=series&genre=spectacle'])
     liste.append(['Thriller', URL_MAIN + '?p=series&genre=thriller'])
     liste.append(['Western', URL_MAIN + '?p=series&genre=western'])
-
+    
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
 
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -370,9 +370,9 @@ def showGenreAnime():
     liste.append(['Thriller', URL_MAIN + '?p=mangas&genre=thriller'])
     liste.append(['Tournois', URL_MAIN + '?p=mangas&genre=tournois'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
 
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -395,9 +395,9 @@ def showGenreDivers():
     liste.append(['Sport', URL_MAIN + '?p=autres-videos&genre=sport'])
     liste.append(['Autres', URL_MAIN + '?p=autres-videos&genre=autres'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
 
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -447,6 +447,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -471,7 +472,7 @@ def showMovies(sSearch=''):
             sDesc = aEntry[3]
 
             sDisplayTitle = ('%s (%s)') % (sTitle, sLang)
-            oOutputParameterHandler = cOutputParameterHandler()
+
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -564,6 +565,7 @@ def showMoviesLinks():
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -574,7 +576,6 @@ def showMoviesLinks():
             sLang = aEntry[2]
             sTitle = ('%s [%s] %s') % (sMovieTitle, sQual, sLang)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -644,6 +645,7 @@ def showSeriesLinks():
     if (aResult1[0] == True):
         total = len(aResult1[1])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult1[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -653,7 +655,6 @@ def showSeriesLinks():
             sLang = aEntry[1]
             sDisplayTitle = ('%s (%s)') % (sMovieTitle, sLang)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -669,13 +670,12 @@ def showSeriesLinks():
     # Affichage du texte
     if (aResult2[0] == True):
         oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Autres Saisons disponibles pour cette série:[/COLOR]')
-
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult2[1]:
 
             sUrl = URL_MAIN + aEntry[0]
             sTitle = '[COLOR skyblue]' + aEntry[1].split(' - ')[1] + '[/COLOR]'
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -700,7 +700,7 @@ def showHosters():
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
-
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -708,7 +708,6 @@ def showHosters():
 
             sTitle = sMovieTitle + ' [COLOR coral]' + aEntry[1] + '[/COLOR] '
             sUrl = aEntry[0]
-            oOutputParameterHandler = cOutputParameterHandler()
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -738,6 +737,7 @@ def showSeriesHosters():
         epNumber = 0
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
 
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
@@ -753,7 +753,6 @@ def showSeriesHosters():
                 sDisplayTitle = ("%s [COLOR coral]%s[/COLOR]") % (sTitle, aEntry[2])
                 sUrl2 = aEntry[1]
 
-                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
