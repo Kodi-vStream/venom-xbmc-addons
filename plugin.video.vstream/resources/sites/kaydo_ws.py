@@ -150,9 +150,8 @@ def showAlpha():
     liste.append(['Y', URL_MAIN + 'letters/y/'])
     liste.append(['Z', URL_MAIN + 'letters/z/'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'listes.png', oOutputParameterHandler)
 
@@ -161,7 +160,6 @@ def showAlpha():
 
 def showSearch():
     oGui = cGui()
-
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH[0] + sSearchText
@@ -195,9 +193,8 @@ def showMovieGenres():
     liste.append(['Thriller', URL_MAIN + 'thriller/'])
     liste.append(['Western', URL_MAIN + 'western/'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -232,6 +229,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -252,7 +250,6 @@ def showMovies(sSearch=''):
 
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sYear)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -302,7 +299,7 @@ def ShowSaisonEpisodes():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]Saison: ' + aEntry[0] + '[/COLOR]')
@@ -313,7 +310,6 @@ def ShowSaisonEpisodes():
                 sUrl2 = aEntry[2]
                 sTitle = aEntry[3]
 
-                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -403,7 +399,8 @@ def showHosters():
                 # https://lb.hdsto.me/public/dist/index.html?id=xxx
 
                 if 'public/dist' in sHosterUrl:
-                    sHosterUrl = 'https://' + sHosterUrl.split('/')[2] + '/hls/' + sHosterUrl.split('id=')[1] + '/' + sHosterUrl.split('id=')[1] + '.m3u8'
+                    sHosterUrl = 'https://' + sHosterUrl.split('/')[2] + '/hls/' + sHosterUrl.split('id=')[1]
+                    sHosterUrl += '/' + sHosterUrl.split('id=')[1] + '.m3u8'
 
                     oRequestHandler = cRequestHandler(sHosterUrl)
                     oRequestHandler.addHeaderEntry('Referer', Url)
