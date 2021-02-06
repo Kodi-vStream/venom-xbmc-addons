@@ -379,6 +379,7 @@ def showMovies(sSearch=''):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -403,7 +404,6 @@ def showMovies(sSearch=''):
             if len(aEntry) > 4:
                 sYear = aEntry[4]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -447,6 +447,7 @@ def showSeries(sSearch=''):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -467,7 +468,6 @@ def showSeries(sSearch=''):
             # else:
                 # sType = 'autre'
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -567,6 +567,7 @@ def showEpisode():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult:
 
             if aEntry[0]:
@@ -577,7 +578,6 @@ def showEpisode():
                 sTitle = aEntry[2] + ' ' + sMovieTitle
                 sData = aEntry[3]
 
-                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sData', sData)
                 # oOutputParameterHandler.addParameter('sId', sId)
