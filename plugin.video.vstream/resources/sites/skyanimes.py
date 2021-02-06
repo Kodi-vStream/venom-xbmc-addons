@@ -61,7 +61,6 @@ def showMenuAnims():
     liste.append(['Terminés', URL_MAIN + 'download-animes-termines?p=-1'])
 
     for sTitle, sUrl in liste:
-
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'animes.png', oOutputParameterHandler)
 
@@ -70,21 +69,20 @@ def showMenuAnims():
 
 def showMenuDramas():
     oGui = cGui()
+
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_GENRES[1], 'Dramas (Genres)', 'genres.png', oOutputParameterHandler)
 
     # contenu à controler
     # oOutputParameterHandler.addParameter('siteUrl', ANIM_OAVS[0])
     # oGui.addDir(SITE_IDENTIFIER, ANIM_OAVS[1], 'Dramas (OAVS)', 'dramas.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', DRAMA_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, DRAMA_GENRES[1], 'Dramas (Genres)', 'genres.png', oOutputParameterHandler)
 
     liste = []
     liste.append(['En Cours', URL_MAIN + 'download-dramas-en-cours?p=-1'])
     liste.append(['Terminés', URL_MAIN + 'download-dramas-termines?p=-1'])
 
     for sTitle, sUrl in liste:
-
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'dramas.png', oOutputParameterHandler)
 
@@ -110,14 +108,13 @@ def showGenresA():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = URL_MAIN + aEntry[0]
             sTitle = aEntry[1]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-
             oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'genres.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
@@ -142,11 +139,11 @@ def showGenresD():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = URL_MAIN + aEntry[0]
             sTitle = aEntry[1]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'genres.png', oOutputParameterHandler)
@@ -187,7 +184,7 @@ def showSeries():
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
-
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -200,7 +197,6 @@ def showSeries():
 
             sTitle = sTitle.replace(', telecharger en ddl', '')
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
@@ -241,7 +237,7 @@ def showEpisode(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
-
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in sorted(aResult[1]):
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -264,7 +260,6 @@ def showEpisode(sSearch=''):
                 sUrl2 = URL_MAIN + STREAM + aEntry[0]
                 sUrl2 = sUrl2.replace('#', '')
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
