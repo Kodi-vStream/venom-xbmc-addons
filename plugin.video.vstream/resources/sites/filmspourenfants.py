@@ -64,8 +64,8 @@ def showThemes():
     sPattern = '<a href=([^>]+)><lien3><i class=icon-circle></i>([^<]+)</lien3></a><br>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = URL_MAIN + aEntry[0]
             sTitle = aEntry[1]
@@ -92,6 +92,7 @@ def showMovies():
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -102,7 +103,6 @@ def showMovies():
             sUrl = aEntry[2]
             sTitle = aEntry[3]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
