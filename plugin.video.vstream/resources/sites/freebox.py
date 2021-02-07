@@ -395,7 +395,7 @@ def showTV():
 
 
 def play__():  # Lancer les liens
-
+    oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl').replace('P_L_U_S', '+')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -420,13 +420,19 @@ def play__():  # Lancer les liens
                                  , callbackparam='', iconImage=sThumbnail)
             return
 
-    if 'dailymotion' in sUrl:
-        showDailymotionStream(sUrl, sTitle, sThumbnail)
-        return
-
     if 'f4mTester' in sUrl:
         xbmc.executebuiltin('XBMC.RunPlugin(' + sUrl + ')')
         return
+
+    elif 'dailymotion' in sUrl:
+        oHoster = cHosterGui().checkHoster(sUrl)
+
+        if (oHoster != False):
+            oHoster.setDisplayName(sTitle)
+            oHoster.setFileName(sTitle)
+            cHosterGui().showHoster(oGui, oHoster, sUrl, sThumbnail)
+
+        oGui.setEndOfDirectory()
 
     else:
         oGuiElement = cGuiElement()
@@ -441,7 +447,6 @@ def play__():  # Lancer les liens
         oPlayer.clearPlayList()
         oPlayer.addItemToPlaylist(oGuiElement)
         oPlayer.startPlayer()
-
 
 """
 Fonction diverse:
@@ -505,6 +510,20 @@ def openwindows():
     xbmc.executebuiltin('ActivateWindow(%d, return)' % 10601)
     return
 
+def decodeNrj(d):
+    oRequestHandler = cRequestHandler(d)
+    sHtmlContent = oRequestHandler.request()
+
+    title = re.search('<div data-title="([^"]+)"',sHtmlContent).group(1)
+    post = re.search('data-cover="([^"]+)"',sHtmlContent).group(1)
+    ids = re.search('data-ref="([^"]+)"',sHtmlContent).group(1)
+
+    url = 'https://www.nrj-play.fr/compte/live?channel=nrj12&title=' + title + '&channel=nrj12&cover=' + post + '&ref=' + ids + '&formId=formDirect'
+
+    oRequestHandler = cRequestHandler(url)
+    sHtmlContent = oRequestHandler.request()
+    dataUrl = re.search('"contentUrl" content="([^"]+)"',sHtmlContent).group(1)
+    return dataUrl
 
 def decodeEmail(e):
     head, e = e.split('a href=')
@@ -536,47 +555,11 @@ def unZip():
     showWeb(inf)
 
 
-def unGoogleDrive(infile):
+def unGoogleDrive (infile):
     ids = re.findall('<a href="https://drive.google.com/file/d/([^"]+)/view', infile)[0]
     url = 'https://drive.google.com/uc?id=' + ids + '&export=download'
     inf = getHtml(url)
     return inf
-
-
-def showDailymotionStream(sUrl, sTitle, sThumbnail):
-    oGui = cGui()
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-
-    metadata = json.loads(sHtmlContent)
-    if metadata['qualities']:
-        sUrl = str(metadata['qualities']['auto'][0]['url'])
-    oRequestHandler = cRequestHandler(sUrl)
-    oRequestHandler.addHeaderEntry('User-Agent', 'Android')
-    mb = oRequestHandler.request()
-    mb = re.findall('NAME="([^"]+)"\n(.+)', mb)
-    mb = sorted(mb, reverse=True)
-    for entry in mb:
-        if not entry[1].startswith('http'):
-            sHosterUrl = sUrl
-            oHoster = cHosterGui().checkHoster('m3u8')
-            if (oHoster != False):
-                oHoster.setDisplayName(sTitle)
-                oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-                break
-        else:
-            sHosterUrl = entry[1]
-            sDisplayName = ('%s [%s]') % (sTitle, entry[0])
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sDisplayName)
-                oHoster.setFileName(sDisplayName)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-
-    oGui.setEndOfDirectory()
-    return
-
 
 def getBrightcoveKey(sUrl):
     oRequestHandler = cRequestHandler(sUrl)
@@ -603,3 +586,4 @@ def getBrightcoveKey(sUrl):
     sHtmlContent = oRequestHandler.request()
     url = re.search('"sources":.+?src":"([^"]+)"', sHtmlContent).group(1)
     return url
+
