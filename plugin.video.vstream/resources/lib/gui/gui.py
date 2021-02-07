@@ -25,104 +25,74 @@ class cGui:
     if isKrypton():
         CONTENT = 'addons'
 
+    def addNewDir(self, Type, sId, sFunction, sLabel, sIcon, sThumbnail='', sDesc='', oOutputParameterHandler='', sMeta=0, sCat=None):
+        oGuiElement = cGuiElement()
+        #dir n'a pas de type
+        if Type != "dir":
+            cGui.CONTENT = Type
+        oGuiElement.setSiteName(sId)
+        oGuiElement.setFunction(sFunction)
+        oGuiElement.setTitle(sLabel)
+
+        if sThumbnail == '':
+            oGuiElement.setThumbnail(oGuiElement.getIcon())   
+        else:       
+            oGuiElement.setThumbnail(sThumbnail)
+            oGuiElement.setPoster(sThumbnail)
+
+        oGuiElement.setMeta(sMeta)
+        oGuiElement.setDescription(sDesc)
+
+        if sCat is not None:
+            oGuiElement.setCat(sCat)
+        #Pour addLink on recupere le sCat precedent.
+        elif Type == "link":
+            oInputParameterHandler = cInputParameterHandler()
+            sCat = oInputParameterHandler.getValue('sCat')
+            if sCat:
+                oGuiElement.setCat(sCat)
+
+        oOutputParameterHandler.addParameter('sFav', sFunction)
+
+        if oOutputParameterHandler.getValue('sMovieTitle'):
+            sTitle = oOutputParameterHandler.getValue('sMovieTitle')
+            oGuiElement.setFileName(sTitle)
+
+        try:
+            self.addFolder(oGuiElement, oOutputParameterHandler)
+        except:
+            pass
+
     def addMovie(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
-        cGui.CONTENT = 'movies'
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(sId)
-        oGuiElement.setFunction(sFunction)
-        oGuiElement.setTitle(sLabel)
-        oGuiElement.setIcon(sIcon)
-        oGuiElement.setThumbnail(sThumbnail)
-        oGuiElement.setPoster(sThumbnail)
-        oGuiElement.setMeta(1)
-        oGuiElement.setDescription(sDesc)
-        # oGuiElement.setMovieFanart()
-        oGuiElement.setCat(1)
-
-        if oOutputParameterHandler.getValue('sMovieTitle'):
-            sTitle = oOutputParameterHandler.getValue('sMovieTitle')
-            oGuiElement.setFileName(sTitle)
-
-        try:
-            self.addFolder(oGuiElement, oOutputParameterHandler)
-        except:
-            pass
-
-    # Coffret et integrale de films
-    def addMoviePack(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
-        cGui.CONTENT = 'movies'
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(sId)
-        oGuiElement.setFunction(sFunction)
-        oGuiElement.setTitle(sLabel)
-        oGuiElement.setIcon(sIcon)
-        oGuiElement.setThumbnail(sThumbnail)
-        oGuiElement.setPoster(sThumbnail)
-        oGuiElement.setMeta(3)
-        oGuiElement.setDescription(sDesc)
-        # oGuiElement.setMovieFanart()
-        oGuiElement.setCat(1)
-
-        if oOutputParameterHandler.getValue('sMovieTitle'):
-            sTitle = oOutputParameterHandler.getValue('sMovieTitle')
-            oGuiElement.setFileName(sTitle)
-
-        try:
-            self.addFolder(oGuiElement, oOutputParameterHandler)
-        except:
-            pass
+        self.addNewDir('movies', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 1, 1)
 
     def addTV(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
-        cGui.CONTENT = 'tvshows'
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(sId)
-        oGuiElement.setFunction(sFunction)
-        oGuiElement.setTitle(sLabel)
-        oGuiElement.setIcon(sIcon)
-        oGuiElement.setThumbnail(sThumbnail)
-        oGuiElement.setPoster(sThumbnail)
-        oGuiElement.setMeta(2)
-        oGuiElement.setDescription(sDesc)
-        # oGuiElement.setTvFanart()
-        oGuiElement.setCat(2)
-
-        if oOutputParameterHandler.getValue('sMovieTitle'):
-            sTitle = oOutputParameterHandler.getValue('sMovieTitle')
-            oGuiElement.setFileName(sTitle)
-
-        try:
-            self.addFolder(oGuiElement, oOutputParameterHandler)
-        except:
-            pass
+        self.addNewDir('tvshows', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 2, 2)
 
     def addAnime(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
-        cGui.CONTENT = 'tvshows'
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(sId)
-        oGuiElement.setFunction(sFunction)
-        oGuiElement.setTitle(sLabel)
-        oGuiElement.setIcon(sIcon)
-        oGuiElement.setThumbnail(sThumbnail)
-        oGuiElement.setPoster(sThumbnail)
-        oGuiElement.setMeta(4)  # Recherche des Métas spécifiques Animation
-        oGuiElement.setDescription(sDesc)
-        # oGuiElement.setTvFanart()
-        oGuiElement.setCat(2)
+        self.addNewDir('tvshows', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 4, 2)
 
-        if oOutputParameterHandler.getValue('sMovieTitle'):
-            sTitle = oOutputParameterHandler.getValue('sMovieTitle')
-            oGuiElement.setFileName(sTitle)
+    def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
+        self.addNewDir('files', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 5)
 
-        try:
-            self.addFolder(oGuiElement, oOutputParameterHandler)
-        except:
-            pass
+    def addMoviePack(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
+        self.addNewDir('movies', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 3, 1)
+
+    def addDir(self, sId, sFunction, sLabel, sThumbnail, oOutputParameterHandler='', sDesc=""):
+        if not "http" in sThumbnail:
+            sThumbnail = 'special://home/addons/plugin.video.vstream/resources/art/' + sThumbnail
+        sIcon = sThumbnail
+        self.addNewDir('dir', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, None)
+
+    def addLink(self, sId, sFunction, sLabel, sThumbnail, sDesc, oOutputParameterHandler=''):
+        sIcon = sThumbnail
+        self.addNewDir('link', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, None)
 
     # Affichage d'un épisode, sans recherche de Métadonnées, et menu adapté
     def addEpisode(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
 
         # comportement proche de addMisc
-        self.addMisc(sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, sCat=2)
+        self.addMisc(sId, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, sCat=2)
         cGui.CONTENT = 'files'
 
     # Affichage d'une personne (acteur, réalisateur, ..)
@@ -182,50 +152,6 @@ class cGui:
         self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
         # self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
         self.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
-
-        try:
-            self.addFolder(oGuiElement, oOutputParameterHandler)
-        except:
-            pass
-
-    def addLink(self, sId, sFunction, sLabel, sThumbnail, sDesc, oOutputParameterHandler=''):
-        cGui.CONTENT = 'files'
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(sId)
-        oGuiElement.setFunction(sFunction)
-        oGuiElement.setTitle(sLabel)
-        # oGuiElement.setIcon(sIcon)
-        oGuiElement.setThumbnail(sThumbnail)
-        oGuiElement.setPoster(sThumbnail)
-        oGuiElement.setDescription(sDesc)
-        oGuiElement.setMeta(0)
-        # oGuiElement.setDirFanart('')
-
-        oInputParameterHandler = cInputParameterHandler()
-        sCat = oInputParameterHandler.getValue('sCat')
-        if sCat:
-            oGuiElement.setCat(sCat)
-
-        try:
-            self.addFolder(oGuiElement, oOutputParameterHandler)
-        except:
-            pass
-
-    def addDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler=''):
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(sId)
-        oGuiElement.setFunction(sFunction)
-        oGuiElement.setTitle(sLabel)
-        oGuiElement.setIcon(sIcon)
-        oGuiElement.setThumbnail(oGuiElement.getIcon())
-        oGuiElement.setMeta(0)
-        # oGuiElement.setDirFanart(sIcon)
-
-        oOutputParameterHandler.addParameter('sFav', sFunction)
-
-        # context parametre
-#        if isKrypton():
-#            self.createContexMenuSettings(oGuiElement, oOutputParameterHandler)
 
         try:
             self.addFolder(oGuiElement, oOutputParameterHandler)
@@ -673,7 +599,7 @@ class cGui:
 
             WindowsBoxes(sCleanTitle, sCleanTitle, sMeta, sYear)
         else:
-        	#On appel la fonction integrer a Kodi pour charger les infos.
+            #On appel la fonction integrer a Kodi pour charger les infos.
             xbmc.executebuiltin('Action(Info)')
 
     def viewSimil(self):
