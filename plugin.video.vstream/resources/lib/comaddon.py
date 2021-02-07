@@ -90,6 +90,9 @@ class dialog():
     def numeric(self, dialogType, heading, defaultt):
         return DIALOG.numeric(dialogType, heading, defaultt)
 
+    def VSbrowse(self, type, heading, shares):
+        return DIALOG.browse(type, heading, shares)
+
     def VSselectqual(self, list_qual, list_url):
 
         if len(list_url) == 0:
@@ -152,6 +155,7 @@ class empty():
 class progress():
 
     def VScreate(self, title = 'vStream', desc = '', large=False):
+        # l'option "large" permet de forcer un sablier large, seul le sablier large peut être annulé.
 
         # Ne pas afficher le sablier si nous ne sommes pas dans un menu vStream
         currentWindow = xbmcgui.getCurrentWindowId()
@@ -198,6 +202,7 @@ class progress():
         PROGRESS.update(iPercent, 'Chargement ' + str(COUNT) + '/' + str(total) + " " + text)
 
     def iscanceled(self):
+        global PROGRESS
         if isinstance(PROGRESS, xbmcgui.DialogProgress):
             return PROGRESS.iscanceled()
         return False

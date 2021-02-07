@@ -385,19 +385,22 @@ class cClear:
             select = self.DIALOG.VSselect(['Import', 'Export'])
             DB = "special://home/userdata/addon_data/plugin.video.vstream/vstream.db"
             if select >= 0:
-                new = self.DIALOG.browse(3, 'vStream', "files")
-                if new:
-                    try:
-                        if select == 0:
+                try:
+                    if select == 0:
+                        # sélection d'un fichier
+                        new = self.DIALOG.VSbrowse(1, 'vStream', "files")
+                        if new:
                             xbmcvfs.delete(DB)
-                            # copy(source, destination)--copy file to destination, returns true/false.
-                            xbmcvfs.copy(new + 'vstream.db', DB)
-                        elif select == 1:
-                            # copy(source, destination)--copy file to destination, returns true/false.
+                            xbmcvfs.copy(new, DB)
+                            self.DIALOG.VSinfo(self.ADDON.VSlang(30099))
+                    elif select == 1:
+                        # sélection d'un répertoire
+                        new = self.DIALOG.VSbrowse(3, 'vStream', "files")
+                        if new:
                             xbmcvfs.copy(DB, new + 'vstream.db')
-                        self.DIALOG.VSinfo(self.ADDON.VSlang(30099))
-                    except:
-                        self.DIALOG.VSerror(self.ADDON.VSlang(30100))
+                            self.DIALOG.VSinfo(self.ADDON.VSlang(30099))
+                except:
+                    self.DIALOG.VSerror(self.ADDON.VSlang(30100))
 
                 return
 
