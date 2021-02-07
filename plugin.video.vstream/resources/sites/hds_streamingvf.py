@@ -362,7 +362,7 @@ def showHosters():
             datatype = aEntry[0]
             datapost = aEntry[1]
             datanum = aEntry[2]
-            sHost = aEntry[3]
+            sHost = re.sub('\.\w+', '', aEntry[3])
             sLang = str(aEntry[4]).upper()
 
             if 'lecteur hd' in sHost.lower():
