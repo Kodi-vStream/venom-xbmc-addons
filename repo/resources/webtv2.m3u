@@ -15,19 +15,16 @@
 [REGEX]"url":"([^"]+)"[URL]https://delivery.tf1.fr/mytf1-wrd/L_LCI?format=hls
 
 #EXTINF:-1 tvg-logo="france2.png",France 2
-[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_2%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
+[REGEX]{"url": "([^"]+)"}[URL]https://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=https://simulcast.ftven.fr/simulcast/France_2/hls_fr2/index.m3u8
 
 #EXTINF:-1 tvg-logo="france3.png",France 3
-[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_3%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
+[REGEX]{"url": "([^"]+)"}[URL]https://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=https://simulcast.ftven.fr/simulcast/France_3/hls_fr3/index.m3u8
 
 #EXTINF:-1 tvg-logo="france4.png" ,France 4
-[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_4%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
+[REGEX]{"url": "([^"]+)"}[URL]https://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=https://simulcast.ftven.fr/simulcast/France_4/hls_fr4/index.m3u8
 
 #EXTINF:-1 tvg-logo="france5.png" ,France 5
-[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_5%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
-
-#EXTINF:-1 tvg-logo="franceo.png" ,France O
-[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_O%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
+[REGEX]{"url": "([^"]+)"}[URL]https://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=https://simulcast.ftven.fr/simulcast/France_5/hls_fr5/index.m3u8
 
 #EXTINF:-1 tvg-logo="arte.png" ,Arte
 http://artelive-lh.akamaihd.net/i/artelive_fr@344805/master.m3u8
@@ -36,7 +33,7 @@ http://artelive-lh.akamaihd.net/i/artelive_fr@344805/master.m3u8
 [REGEX]url = "(.+?)"[URL]http://replay.gulli.fr/jwplayer/embedstreamtv
 
 #EXTINF:-1 tvg-logo="nrj12.png" ,NRJ 12
-http://nrj-apple-live.adaptive.level3.net/apple/nrj/nrj/nrj12hi.m3u8
+[DECODENRJ]https://www.nrj-play.fr/nrj12/direct
 
 #EXTINF:-1 tvg-logo="cstar.png" ,CStar
 https://www.dailymotion.com/player/metadata/video/x5gv5v0
@@ -61,6 +58,7 @@ https://www.dailymotion.com/player/metadata/video/xgepjr
 
 #EXTINF:-1 tvg-logo="bfmbus.png" ,BFM Buisness
 [BRIGHTCOVEKEY]https://www.bfmtv.com/economie/en-direct/
+
 #EXTINF:-1 tvg-logo="rmcstory.png" ,RMC Story
 https://www.dailymotion.com/player/metadata/video/x13p3qi
 
@@ -69,6 +67,3 @@ https://www.dailymotion.com/player/metadata/video/x13p3qi
 
 #EXTINF:-1 tvg-logo="equipe21.png" ,L'equipe 21
 https://www.dailymotion.com/player/metadata/video/x2lefik
-
-#EXTINF:-1 tvg-logo="gong.png" ,Gong
-[REGEX]<source.+?src="([^"]+)">[URL]http://www.gongnetworks.com/gong.php
