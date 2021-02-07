@@ -35,6 +35,9 @@ http://artelive-lh.akamaihd.net/i/artelive_fr@344805/master.m3u8
 #EXTINF:-1 tvg-logo="nrj12.png" ,NRJ 12
 [DECODENRJ]https://www.nrj-play.fr/nrj12/direct
 
+#EXTINF:-1 tvg-logo="cherie25.png" ,Cherie 25
+[DECODENRJ]https://www.nrj-play.fr/cherie25/direct
+
 #EXTINF:-1 tvg-logo="cstar.png" ,CStar
 https://www.dailymotion.com/player/metadata/video/x5gv5v0
 
