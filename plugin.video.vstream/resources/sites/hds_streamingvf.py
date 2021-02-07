@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# source 45 06022021 https://hds-streamingvf.org/
+# source 45 07022021
 
 import re
 
@@ -133,12 +133,12 @@ def showGenres():
 
     oGui = cGui()
 
-    listegenre = ['action', 'animation', 'aventure', 'comedie', 'crime', 'documentaire', 'drame', 'familial',
-                  'fantastique', 'guerre', 'histoire', 'horreur', 'kids', 'musique', 'mystere', 'reality', 'romance',
-                   'science-fiction', 'science-fiction-fantastique', 'soap', 'telefilm/', 'thriller', 'war-politics', 'western',]
+    liste = ['action', 'animation', 'aventure', 'comedie', 'crime', 'documentaire', 'drame', 'familial', 'fantastique',
+             'guerre', 'histoire', 'horreur', 'kids', 'musique', 'mystere', 'reality', 'romance', 'science-fiction',
+             'science-fiction-fantastique', 'soap', 'telefilm/', 'thriller', 'war-politics', 'western']
 
     oOutputParameterHandler = cOutputParameterHandler()
-    for igenre in listegenre:
+    for igenre in liste:
         sTitle = igenre.capitalize()
         sUrl = URL_MAIN + 'genre/' + igenre + '/'
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -156,7 +156,9 @@ def showMovieYears():
         Year = str(i)
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + Year + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
+
 
 def showMovies(sSearch=''):
     oGui = cGui()
@@ -198,7 +200,7 @@ def showMovies(sSearch=''):
             else:
                 sThumb = aEntry[0]
                 sTitle = aEntry[1]
-                sRate  = aEntry[2]
+                sRate = aEntry[2]
                 sUrl2 = aEntry[3]
                 sYear = aEntry[4]
                 sDesc = 'IMDb :' + sRate + '\r\n' + aEntry[5]
@@ -237,7 +239,7 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', sPagination , oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', sPagination, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -260,7 +262,6 @@ def showSaisons():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sYear = oInputParameterHandler.getValue('sYear')
     sDesc = oInputParameterHandler.getValue('sDesc')
@@ -278,10 +279,9 @@ def showSaisons():
 
     if (aResult[0] == False):
         if 'la saison que vous voulez voir' not in sHtmlContent:
-            oGui.addText(SITE_IDENTIFIER,'Pas de video disponible')  # juste info si bug ou pas
+            oGui.addText(SITE_IDENTIFIER, 'Pas de video disponible')  # juste info si bug ou pas
         else:
             oGui.addText(SITE_IDENTIFIER)
-
 
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
@@ -290,7 +290,7 @@ def showSaisons():
             sSaison = aEntry[1]
             sThumb = aEntry[2]
 
-            sTitle = ("%s %s (%s)") % (sMovieTitle, sSaison, sYear)
+            sTitle = ("%s %s") % (sMovieTitle, sSaison)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -327,7 +327,7 @@ def ShowEpisodes():
             sSaisonEpisode = aEntry[0]
             sUrl2 = aEntry[1]
             sDesc2 = aEntry[2] + '\r\n' + sDesc
-            sTitle = sMovieTitle + sSaisonEpisode + '(' + sYear + ')'
+            sTitle = sMovieTitle + sSaisonEpisode
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -370,7 +370,7 @@ def showHosters():
 
             sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
             pdata = 'action=doo_player_ajax&post=' + datapost + '&nume=' + datanum + '&type=' + datatype
-            sDisplayTitle = ('%s (%s) (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sYear, sLang, sHost.capitalize())
+            sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost.capitalize())
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('referer', sUrl)
