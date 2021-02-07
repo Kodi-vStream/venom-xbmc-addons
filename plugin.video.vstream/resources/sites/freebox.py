@@ -424,17 +424,9 @@ def play__():  # Lancer les liens
         xbmc.executebuiltin('XBMC.RunPlugin(' + sUrl + ')')
         return
 
-    elif 'dailymotion' in sUrl:
-        oHoster = cHosterGui().checkHoster(sUrl)
-
-        if (oHoster != False):
-            oHoster.setDisplayName(sTitle)
-            oHoster.setFileName(sTitle)
-            cHosterGui().showHoster(oGui, oHoster, sUrl, sThumbnail)
-
-        oGui.setEndOfDirectory()
-
-    else:
+    #Bug specifique au flux france TV
+    #eof detectedL
+    elif 'ftven.fr' in sUrl:
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(SITE_IDENTIFIER)
         oGuiElement.setTitle(sTitle)
@@ -447,6 +439,16 @@ def play__():  # Lancer les liens
         oPlayer.clearPlayList()
         oPlayer.addItemToPlaylist(oGuiElement)
         oPlayer.startPlayer()
+
+    else:
+        oHoster = cHosterGui().checkHoster(sUrl)
+
+        if (oHoster != False):
+            oHoster.setDisplayName(sTitle)
+            oHoster.setFileName(sTitle)
+            cHosterGui().showHoster(oGui, oHoster, sUrl, sThumbnail)
+
+        oGui.setEndOfDirectory()
 
 """
 Fonction diverse:
@@ -465,6 +467,10 @@ def GetRealUrl(chain):
     UA2 = UA
     url = chain
     regex = ''
+
+    r = re.search('\[[DECODENRJ]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
+    if r:
+        url = decodeNrj(r.group(1))
 
     r = re.search('\[[BRIGHTCOVEKEY]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
     if r:
@@ -515,10 +521,9 @@ def decodeNrj(d):
     sHtmlContent = oRequestHandler.request()
 
     title = re.search('<div data-title="([^"]+)"',sHtmlContent).group(1)
-    post = re.search('data-cover="([^"]+)"',sHtmlContent).group(1)
     ids = re.search('data-ref="([^"]+)"',sHtmlContent).group(1)
 
-    url = 'https://www.nrj-play.fr/compte/live?channel=nrj12&title=' + title + '&channel=nrj12&cover=' + post + '&ref=' + ids + '&formId=formDirect'
+    url = 'https://www.nrj-play.fr/compte/live?channel=' + d.split('/')[3] + '&title=' + title + '&channel=' + d.split('/')[3] + '&ref=' + ids + '&formId=formDirect'
 
     oRequestHandler = cRequestHandler(url)
     sHtmlContent = oRequestHandler.request()
@@ -586,4 +591,3 @@ def getBrightcoveKey(sUrl):
     sHtmlContent = oRequestHandler.request()
     url = re.search('"sources":.+?src":"([^"]+)"', sHtmlContent).group(1)
     return url
-
