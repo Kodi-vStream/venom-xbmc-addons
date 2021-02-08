@@ -13,7 +13,6 @@ from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.parser import cParser
 from resources.lib.util import QuotePlus
 
-
 class cGui:
 
     SITE_NAME = 'cGui'
@@ -36,7 +35,8 @@ class cGui:
 
         if sThumbnail == '':
             oGuiElement.setThumbnail(oGuiElement.getIcon())
-        else:
+            
+        else:       
             oGuiElement.setThumbnail(sThumbnail)
             oGuiElement.setPoster(sThumbnail)
 
@@ -45,6 +45,7 @@ class cGui:
 
         if sCat is not None:
             oGuiElement.setCat(sCat)
+            
         # Pour addLink on recupere le sCat precedent.
         elif Type == 'link':
             oInputParameterHandler = cInputParameterHandler()
@@ -53,12 +54,12 @@ class cGui:
                 oGuiElement.setCat(sCat)
 
         oOutputParameterHandler.addParameter('sFav', sFunction)
+
         if oOutputParameterHandler.getValue('sMovieTitle'):
             sTitle = oOutputParameterHandler.getValue('sMovieTitle')
             oGuiElement.setFileName(sTitle)
 
         self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-        # self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
         self.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
 
         try:
@@ -101,7 +102,6 @@ class cGui:
         if 'http' not in sThumbnail:
             sThumbnail = 'special://home/addons/plugin.video.vstream/resources/art/' + sThumbnail
         sIcon = sThumbnail
-        sDesc = ''
         self.addNewDir('movies', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 7)
 
     # Affichage d'un réseau de distribution du média
@@ -120,7 +120,6 @@ class cGui:
         oGuiElement.setIcon('next.png')
         oGuiElement.setThumbnail(oGuiElement.getIcon())
         oGuiElement.setMeta(0)
-        # oGuiElement.setDirFanart('next.png')
         oGuiElement.setCat(5)
 
         self.createContexMenuPageSelect(oGuiElement, oOutputParameterHandler)
@@ -202,35 +201,10 @@ class cGui:
         # Des infos a rajouter ?
         params = {'siteUrl': oGuiElement.setSiteUrl,  # indispensable
                   'sTmdbId': oGuiElement.setTmdbId,
-                  'sImbdId': oGuiElement.setImdbId,  # inutile ?
                   'sYear': oGuiElement.setYear}
-
-        try:
-            for sParam, callback in params.iteritems():
-                value = oOutputParameterHandler.getValue(sParam)
-                if value:
-                    callback(value)
-
-        except AttributeError:
-            for sParam, callback in params.items():
-                value = oOutputParameterHandler.getValue(sParam)
-                if value:
-                    callback(value)
 
         oListItem = self.createListItem(oGuiElement)
         oListItem.setProperty('IsPlayable', 'false')
-
-        # affiche tag HD
-        # if '1080' in oGuiElement.getTitle():
-        #     oListItem.addStreamInfo('video', {'aspect': '1.78', 'width': 1920, 'height': 1080})
-        # elif '720' in oGuiElement.getTitle():
-        #     oListItem.addStreamInfo('video', {'aspect': '1.50', 'width': 1280, 'height': 720})
-        # elif '2160'in oGuiElement.getTitle():
-        #     oListItem.addStreamInfo('video', {'aspect': '1.78', 'width': 3840, 'height': 2160})
-        # oListItem.addStreamInfo('audio', {'language': 'fr'})
-
-        # if oGuiElement.getMeta():
-        #     oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
 
         if oGuiElement.getCat():
             cGui.sCat = oGuiElement.getCat()
@@ -255,9 +229,6 @@ class cGui:
                 self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
-
-        # sPluginHandle = cPluginHandler().getPluginHandle()
-        # xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=_isFolder)
         self.listing.append((sItemUrl, oListItem, _isFolder))
 
     # affiche les liens playable
@@ -286,9 +257,6 @@ class cGui:
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
 
-        # sPluginHandle = cPluginHandler().getPluginHandle()
-
-        # xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=False)
         self.listing.append((sItemUrl, oListItem, False))
 
     def createListItem(self, oGuiElement):
@@ -297,8 +265,6 @@ class cGui:
 
         # voir : https://kodi.wiki/view/InfoLabels
         oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
-        # oListItem.setThumbnailImage(oGuiElement.getThumbnail())
-        # oListItem.setIconImage(oGuiElement.getIcon())
         oListItem.setArt({'poster': oGuiElement.getPoster(),
                           'thumb': oGuiElement.getThumbnail(),
                           'icon': oGuiElement.getIcon(),
@@ -473,9 +439,6 @@ class cGui:
             oOutputParameterHandler = cOutputParameterHandler()
 
         sParams = oOutputParameterHandler.getParameterAsUri()
-        # cree une id unique
-        # if oGuiElement.getSiteUrl():
-            # print(str(hash(oGuiElement.getSiteUrl())))
 
         sPluginPath = cPluginHandler().getPluginPath()
 
