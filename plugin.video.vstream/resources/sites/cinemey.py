@@ -2,6 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # source 27 https://cinemey.com/
 return False  # HS voir https://cinemay.cc/ memes films et series
+
 import re
 import xbmc
 from resources.lib.gui.hoster import cHosterGui
@@ -29,7 +30,7 @@ MOVIE_VIEWS = (URL_MAIN + 'classement-box-office-film', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'les-series-en-streaming', 'showMovies')
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
-SERIE_SERIE = (True, 'showMenuSeries')
+SERIE_SERIES = (True, 'showMenuSeries')
 
 
 def load():
@@ -78,7 +79,7 @@ def showMenuSeries():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Series (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
