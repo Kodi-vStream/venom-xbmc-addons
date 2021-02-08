@@ -26,8 +26,8 @@ class cGui:
 
     def addNewDir(self, Type, sId, sFunction, sLabel, sIcon, sThumbnail='', sDesc='', oOutputParameterHandler='', sMeta=0, sCat=None):
         oGuiElement = cGuiElement()
-        # dir n'a pas de type
-        if Type != 'dir':
+        # dir ou link => CONTENT par défaut = files
+        if Type != 'dir' and Type != 'link':
             cGui.CONTENT = Type
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
@@ -60,9 +60,6 @@ class cGui:
             sTitle = oOutputParameterHandler.getValue('sMovieTitle')
             oGuiElement.setFileName(sTitle)
 
-        self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-        self.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
-
         try:
             self.addFolder(oGuiElement, oOutputParameterHandler)
         except:
@@ -79,7 +76,7 @@ class cGui:
 
     def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
         if sThumbnail or sDesc:
-            type = 'movies'
+            type = 'videos'
         else:
             type = 'files'
         self.addNewDir(type, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 5)
@@ -224,27 +221,30 @@ class cGui:
         oListItem = self.createListItem(oGuiElement)
         oListItem.setProperty('IsPlayable', 'false')
 
-        if oGuiElement.getCat():
-            cGui.sCat = oGuiElement.getCat()
-            oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
+        sCat = oGuiElement.getCat()
+        if sCat:
+            cGui.sCat = sCat
+            oOutputParameterHandler.addParameter('sCat', sCat)
 
         sItemUrl = self.__createItemUrl(oGuiElement, oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('sTitleWatched', oGuiElement.getTitleWatched())
 
-        # new context prend en charge les metas
-        if oGuiElement.getMeta() in (1, 2, 3, 4):  # Films, Séries, Saga, Animes
-            if cGui.CONTENT in ('movies', 'tvshows'):
-                self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuba(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
+        if cGui.CONTENT in ('movies', 'tvshows', 'episodes'):
+            self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
+            self.createContexMenuba(oGuiElement, oOutputParameterHandler)
+            self.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
 
-                if self.ADDON.getSetting('bstoken') != '':
-                    self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
-                if self.ADDON.getSetting('tmdb_account') != '':
-                    self.createContexMenuTMDB(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
+            if self.ADDON.getSetting('bstoken') != '':
+                self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
+            if self.ADDON.getSetting('tmdb_account') != '':
+                self.createContexMenuTMDB(oGuiElement, oOutputParameterHandler)
+            self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
+            self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
+
+        elif sCat and sCat == 5:    # MISC
+            self.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
+            self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
         self.listing.append((sItemUrl, oListItem, _isFolder))
@@ -632,14 +632,14 @@ class cGui:
             else:
                 db.insert_watched(meta)
             # To test
-            # xbmc.executebuiltin('Container.Refresh')
+            # updateDirectory()
 
         else:
             # Use kodi buildin feature
             xbmc.executebuiltin('Action(ToggleWatched)')
 
         # Not usefull ?
-        # xbmc.executebuiltin('Container.Refresh')
+        # updateDirectory()
 
     def showKeyBoard(self, sDefaultText='', heading=''):
         keyboard = xbmc.Keyboard(sDefaultText)
