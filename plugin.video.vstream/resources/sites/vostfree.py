@@ -225,18 +225,16 @@ def seriesHosters():
             sPattern = '<div class="lien-episode">.+?<b>' + epNumber + '<.+?href="([^"]+).+?<b>([^<]+)<'
             ddlData = oParser.parse(sHtmlContent, sPattern)
 
+            oOutputParameterHandler = cOutputParameterHandler()
             for aEntry2 in ddlData[1]:
-                oOutputParameterHandler = cOutputParameterHandler()
                 sTitle = sMovieTitle + ' ' + epNumber + ' ' + aEntry2[1]
                 url = aEntry2[0]
 
                 if 'ouo' in url:
-                    
                     oOutputParameterHandler.addParameter('siteUrl', url)
                     oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
                     oGui.addLink(SITE_IDENTIFIER, 'DecryptOuo', sTitle, sThumb, '', oOutputParameterHandler)
-
                 else:
                     sHosterUrl = url
                     oHoster = cHosterGui().checkHoster(sHosterUrl)

@@ -82,6 +82,7 @@ def showFile(sFileTree=''):
 
             if aEntry[0]:
                 oOutputParameterHandler.addParameter('siteUrl', '%s%s%s%s' % (URL_FILE, '?dir_id=', aEntry[1], '&oby=0&search='))
+                oOutputParameterHandler.addParameter('sCode', '')
                 oOutputParameterHandler.addParameter('sTitle', aEntry[2])
                 oGui.addDir(SITE_IDENTIFIER, 'showFile', aEntry[2], 'genres.png', oOutputParameterHandler)
 

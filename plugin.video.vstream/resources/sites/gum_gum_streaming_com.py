@@ -223,7 +223,6 @@ def showMovies():
 def showMovieList():
     oGui = cGui()
     oParser = cParser()
-    oOutputParameterHandler = cOutputParameterHandler()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -233,11 +232,12 @@ def showMovieList():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sTitle = aEntry[1]
 
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, '', '', oOutputParameterHandler)
 

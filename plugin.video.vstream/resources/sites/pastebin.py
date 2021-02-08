@@ -407,6 +407,7 @@ def load():
         oOutputParameterHandler.addParameter('siteUrl', searchUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Animes)', 'search.png', oOutputParameterHandler)
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for pasteBin in pasteListe:
         pasteLabel = pasteBin[0]
         pasteID = pasteBin[1]
@@ -418,7 +419,6 @@ def load():
         oGuiElement.setIcon("mark.png")
         oGuiElement.setMeta(0)
 
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('pasteID', pasteID)
         oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'renamePasteName', addons.VSlang(30223))
         oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'refreshPaste', "Forcer la mise à jour")
@@ -507,8 +507,8 @@ def showDetailMenu(pasteID, contenu):
     oGui = cGui()
 
     sUrl = URL_MAIN + '&numPage=1'  # + pasteBin
+    oOutputParameterHandler = cOutputParameterHandler()
     if 'containFilms' in contenu:
-        oOutputParameterHandler = cOutputParameterHandler()
         searchUrl = URL_SEARCH_MOVIES[0].replace(KEY_PASTE_ID, pasteID)
         oOutputParameterHandler.addParameter('siteUrl', searchUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Films)', 'search.png', oOutputParameterHandler)
@@ -555,7 +555,6 @@ def showDetailMenu(pasteID, contenu):
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Aléatoires)', 'listes.png', oOutputParameterHandler)
 
     if 'containSeries' in contenu:
-        oOutputParameterHandler = cOutputParameterHandler()
         searchUrl = URL_SEARCH_SERIES[0].replace(KEY_PASTE_ID, pasteID)
         oOutputParameterHandler.addParameter('siteUrl', searchUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Séries)', 'search.png', oOutputParameterHandler)
@@ -586,7 +585,6 @@ def showDetailMenu(pasteID, contenu):
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Aléatoires)', 'listes.png', oOutputParameterHandler)
 
     if 'containAnimes' in contenu:
-        oOutputParameterHandler = cOutputParameterHandler()
         searchUrl = URL_SEARCH_ANIMS[0].replace(KEY_PASTE_ID, pasteID)
         oOutputParameterHandler.addParameter('siteUrl', searchUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Animes)', 'search.png', oOutputParameterHandler)
@@ -613,7 +611,6 @@ def showDetailMenu(pasteID, contenu):
         oGui.addDir(SITE_IDENTIFIER, 'AlphaList', 'Animes (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
     if 'containDivers' in contenu:
-        oOutputParameterHandler = cOutputParameterHandler()
         searchUrl = URL_SEARCH_DIVERS[0].replace(KEY_PASTE_ID, pasteID)
         oOutputParameterHandler.addParameter('siteUrl', searchUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Divers)', 'search.png', oOutputParameterHandler)
@@ -878,6 +875,7 @@ def showRealisateur():
     maxProgress = min(len(listReal), ITEM_PAR_PAGE)
     progress_ = progress().VScreate(SITE_NAME)
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for realName, realId in sorted(listReal.items()):
         # Pagination, on se repositionne
         index += 1
@@ -890,7 +888,6 @@ def showRealisateur():
             break
 
         sUrl = siteUrl + '&sDirector=' + realId + ":" + realName
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sTmdbId', realId)    # Utilisé par TMDB
         oGui.addPerson(SITE_IDENTIFIER, 'showMovies', realName, 'actor.png', '', oOutputParameterHandler)
@@ -964,6 +961,7 @@ def showCast():
     maxProgress = min(len(listActeur), ITEM_PAR_PAGE)
     progress_ = progress().VScreate(SITE_NAME)
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for acteurName, acteurId in sorted(listActeur.items()):
         # Pagination, on se repositionne
         index += 1
@@ -976,7 +974,6 @@ def showCast():
             break
 
         sUrl = siteUrl + '&sCast=' + acteurId + ":" + acteurName
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sTmdbId', acteurId)    # Utilisé par TMDB
         oGui.addPerson(SITE_IDENTIFIER, 'showMovies', acteurName, 'actor.png', '', oOutputParameterHandler)
@@ -1138,6 +1135,7 @@ def showSaga():
     index = 0
     progress_ = progress().VScreate(SITE_NAME)
     names = sagas.keys()
+    oOutputParameterHandler = cOutputParameterHandler()
     for sSagaName in sorted(names):
 
         # Pagination, on se repositionne
@@ -1152,11 +1150,11 @@ def showSaga():
 
         sTmdbId = sagas[sSagaName]
 
-        oOutputParameterHandler = cOutputParameterHandler()
         if sTmdbId.isdigit():
             oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)  # Utilisé par TMDB
             sUrl = siteUrl + '&sSaga=' + sTmdbId + ':' + sSagaName
         else:
+            oOutputParameterHandler.addParameter('sTmdbId', '')
             sUrl = siteUrl + '&sSaga=' + sSagaName
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
 
@@ -1694,6 +1692,7 @@ def showSerieSaisons():
 #         return
 
     # Proposer les différentes saisons
+    oOutputParameterHandler = cOutputParameterHandler()
     saisons = sorted(saisons.items(), key=lambda saison: saison[0])
     for sSaison, res in saisons:
 
@@ -1704,7 +1703,6 @@ def showSerieSaisons():
         if len(res) == 0:
             sUrl = siteUrl + '&sSaison=' + sSaison
             sDisplayTitle = searchTitle + ' - ' + sDisplaySaison
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle) # on ne passe pas le sTitre afin de pouvoir mettre la saison en marque-page
             oGui.addEpisode(SITE_IDENTIFIER, 'showEpisodesLinks', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
@@ -1712,7 +1710,6 @@ def showSerieSaisons():
             for resolution in res:
                 sUrl = siteUrl + '&sSaison=' + sSaison + '&sRes=' + resolution
                 sDisplayTitle = ('%s %s [%s]') % (searchTitle, sDisplaySaison, resolution)
-                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle) # on ne passe pas le sTitre afin de pouvoir mettre la saison en marque-page
                 oGui.addEpisode(SITE_IDENTIFIER, 'showEpisodesLinks', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
