@@ -119,7 +119,7 @@ class cUtil:
         return re.sub('&#?\w+;', fixup, text)
 
     def CleanName(self, name):
-        if not isMatrix:
+        if not isMatrix():
             # vire accent et '\'
             try:
                 name = unicode(name, 'utf-8')  # converti en unicode pour aider aux convertions
