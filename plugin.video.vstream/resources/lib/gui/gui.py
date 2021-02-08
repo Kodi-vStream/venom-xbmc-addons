@@ -77,7 +77,11 @@ class cGui:
         self.addNewDir('tvshows', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 4, 2)
 
     def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
-        self.addNewDir('files', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 5)
+        if sThumbnail or sDesc:
+            type = 'movies'
+        else:
+            type = 'files'
+        self.addNewDir(type, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 5)
 
     def addMoviePack(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
         self.addNewDir('movies', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 3, 1)
@@ -479,7 +483,7 @@ class cGui:
 
     def updateDirectory(self):  # refresh the content
         xbmc.executebuiltin('Container.Refresh')
-        xbmc.sleep(500)    # Nécessaire pour laisser le temps du refresh
+        xbmc.sleep(600)    # Nécessaire pour laisser le temps du refresh
 
     def viewBA(self):
         oInputParameterHandler = cInputParameterHandler()
