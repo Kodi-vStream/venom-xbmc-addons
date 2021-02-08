@@ -2,7 +2,6 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 import re
-import xbmc
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -28,11 +27,12 @@ MOVIE_ANNEES = (True, 'showMovieYears')
 MOVIE_LIST = ('', 'showAlpha')
 
 SERIE_NEWS = (URL_MAIN + 'les-series-en-streaming', 'showMovies')
-SERIE_LIST = ('/series', 'showAlpha')
+SERIE_GENRES = (True, 'showGenresTVShow')
+SERIE_ANNEES = (True, 'showMovieYearsTVShow')
+SERIE_LIST = ('', 'showAlphaTVShow')
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 SERIE_SERIE = (True, 'showMenuSeries')
-
 
 def load():
     oGui = cGui()
@@ -52,9 +52,21 @@ def load():
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Par ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Series (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Series (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Series (Par années)', 'annees.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Series (Par ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -88,6 +100,15 @@ def showMenuSeries():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Series (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Series (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Series (Par ordre alphabétique)', 'az.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
 
 
@@ -95,35 +116,40 @@ def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
+        sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
 
 
-def showGenres():
+def showGenresTVShow():
+    showGenres(sTypeSerie='/series')
+
+
+def showGenres(sTypeSerie=''):
     oGui = cGui()
 
-    liste = []
     listegenre = ['action',  'action-adventure', 'animation', 'aventure', 'comedie', 'crime', 'documentaire', 'drame',
                   'familial', 'fantastique', 'guerre', 'histoire', 'horreur', 'kids', 'musique', 'musical', 'mystere',
-                  'news', 'romance', 'science-fiction', 'science-fiction-fantastique', 'reality', 'romance', 'soap',
+                  'news', 'science-fiction', 'science-fiction-fantastique', 'reality', 'romance', 'soap',
                   'talk', 'telefilm', 'thriller', 'war-politics', 'western']
 
-    url1g = URL_MAIN + 'categories/'
-
-    for igenre in listegenre:
-        liste.append([igenre.capitalize(), url1g + igenre])
-
     oOutputParameterHandler = cOutputParameterHandler()
-    for sTitle, sUrl in liste:
+    for igenre in listegenre:
+
+        sUrl = URL_MAIN + 'categories/' + igenre + sTypeSerie
+        sTitle = igenre.capitalize()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def showAlpha():
+def showAlphaTVShow():
+    showAlpha(sTypeSerie='/series')
+
+
+def showAlpha(sTypeSerie=''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sType = oInputParameterHandler.getValue('siteUrl')
@@ -139,18 +165,21 @@ def showAlpha():
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl + str(sType))
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + str(sType) + sTypeSerie)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def showMovieYears():
+def showMovieYearsTVShow():
+    showMovieYears(sTypeSerie='/series')
+
+def showMovieYears(sTypeSerie=''):
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(range(2001, 2022)):  # pas grand chose 32 - 90
         Year = str(i)
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + Year)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + Year + sTypeSerie)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -161,7 +190,7 @@ def showMovies(sSearch=''):
     oParser = cParser()
 
     if sSearch:
-
+        sSearch = sSearch.replace(' ', '+').replace('&20', '+')
         bvalid, stoken, scookie = GetTokens()
         if bvalid:
             pdata = '_token=' + stoken + '&search=' + sSearch
@@ -176,16 +205,6 @@ def showMovies(sSearch=''):
             oRequestHandler.addHeaderEntry('Cookie', scookie)
             oRequestHandler.addParametersLine(pdata)
             oRequestHandler.request()
-
-            # constatation : on est oblige de faire 2 requetes
-            # dans le cas ou le mot recherché est composé ?
-            # xbmc.sleep(500)
-            # oRequestHandler.setRequestType(1)
-            # oRequestHandler.addHeaderEntry('User-Agent', UA)
-            # oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
-            # oRequestHandler.addHeaderEntry('Cookie', scookie)
-            # oRequestHandler.addParametersLine(pdata)
-
             sHtmlContent = oRequestHandler.request()
 
         else:
@@ -199,7 +218,7 @@ def showMovies(sSearch=''):
         sHtmlContent = oRequestHandler.request()
 
     # title img year surl
-    sPattern = '<figure>.+?data-src="([^"]+.jpg)" alt="([^"]+).+?year">([^<]*).+?href="([^"]+)'
+    sPattern = '<figure>.+?data-src="([^"]+.jpg)" (?:alt|title)="([^"]+).+?year">([^<]*).+?href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
