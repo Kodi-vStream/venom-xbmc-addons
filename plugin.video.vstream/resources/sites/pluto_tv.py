@@ -42,11 +42,11 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', CHAINE_DIRECT[0])
-    oGui.addDir(SITE_IDENTIFIER, CHAINE_DIRECT[1], 'Chaine en direct', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, CHAINE_DIRECT[1], 'Chaines en direct', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', VOD[0])
-    oGui.addDir(SITE_IDENTIFIER, VOD[1], 'Programme disponible en VOD', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, VOD[1], 'Programmes disponibles en VOD', 'films.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -63,15 +63,9 @@ def showTV():
     oRequestHandler.addHeaderEntry('User-Agent',UA)
     sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
-    if (sHtmlContent):
-        total = len(sHtmlContent)
-        progress_ = progress().VScreate(SITE_NAME)
+    if sHtmlContent:
 
         for aEntry in sHtmlContent:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-        
             sThumb = aEntry["featuredImage"]["path"]
             sTitle = aEntry["name"]
             if not isMatrix():
@@ -86,9 +80,7 @@ def showTV():
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('referer', sUrl)
 
-            oGui.addDir(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'tv.png', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -104,16 +96,8 @@ def showGenre():
     sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
     sID = 1
-    if (sHtmlContent):
-        total = len(sHtmlContent)
-        progress_ = progress().VScreate(SITE_NAME)
-
+    if sHtmlContent:
         for aEntry in sHtmlContent["categories"]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-        
-            sThumb = ''
             sTitle = aEntry["name"]
             if not isMatrix():
                 sTitle = sTitle.encode('utf8')
@@ -125,9 +109,7 @@ def showGenre():
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             sID = sID + 1
 
-            oGui.addDir(SITE_IDENTIFIER, 'showVOD', sTitle, sThumb, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+            oGui.addDir(SITE_IDENTIFIER, 'showVOD', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -144,11 +126,12 @@ def showVOD():
     oRequestHandler.addHeaderEntry('User-Agent',UA)
     sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
-    if (sHtmlContent):
-        total = len(sHtmlContent["categories"][int(sID) - 1])
+    if sHtmlContent:
+        items = sHtmlContent["categories"][int(sID) - 1]["items"]
+        total = len(items)
         progress_ = progress().VScreate(SITE_NAME)
 
-        for aEntry in sHtmlContent["categories"][int(sID) - 1]["items"]:
+        for aEntry in items:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
@@ -191,15 +174,8 @@ def ShowSerieSaisonEpisodes():
     oRequestHandler.addHeaderEntry('User-Agent',UA)
     sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
-    if (sHtmlContent):
-        total = len(sHtmlContent)
-        progress_ = progress().VScreate(SITE_NAME)
-
+    if sHtmlContent:
         for aEntry in sHtmlContent["seasons"]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-            
             for a in aEntry["episodes"]:
                 sTitle = sMovieTitle + " S" + str(a["season"]) + " E" + str(a["number"])
                 sID = a["_id"]
@@ -211,8 +187,6 @@ def ShowSerieSaisonEpisodes():
                 oGui.addEpisode(SITE_IDENTIFIER, 'seriesHosters', sTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
                 # il y a aussi addAnime pour les mangas
                 # oGui.addAnime(SITE_IDENTIFIER, 'seriesHosters', sTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
