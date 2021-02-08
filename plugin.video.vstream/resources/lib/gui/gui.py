@@ -109,6 +109,7 @@ class cGui:
         if not "http" in sIcon:
             sIcon = 'special://home/addons/plugin.video.vstream/resources/art/' + sIcon
         sThumbnail = sIcon
+        sDesc = ""
         self.addNewDir('files', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 8)
 
     def addNext(self, sId, sFunction, sLabel, oOutputParameterHandler):
