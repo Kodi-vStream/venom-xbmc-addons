@@ -7,7 +7,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, addon
+from resources.lib.comaddon import progress, addon, isMatrix
 from resources.lib.util import Quote
 
 UA = "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0"
@@ -74,6 +74,9 @@ def showTV():
         
             sThumb = aEntry["featuredImage"]["path"]
             sTitle = aEntry["name"]
+            if not isMatrix():
+                sTitle = sTitle.encode('utf8')
+
             sUrl2 = "https://boot.pluto.tv/v4/start?deviceId=" + deviceID + "&deviceMake=Firefox&deviceType=web&deviceVersion=87.0&deviceModel=web&DNT=0&appName=web&appVersion=5.14.0-0f5ca04c21649b8c8aad4e56266a23b96d73b83a&serverSideAds=true&channelSlug=" + aEntry["slug"] + "&episodeSlugs=&clientID=" + clientID + "&clientModelNumber=na"
             sDesc = ''
 
@@ -112,6 +115,8 @@ def showGenre():
         
             sThumb = ''
             sTitle = aEntry["name"]
+            if not isMatrix():
+                sTitle = sTitle.encode('utf8')
             sDesc = ''
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -152,6 +157,9 @@ def showVOD():
             sTitle = aEntry["name"]
             ids = aEntry["_id"]
             sDesc = aEntry["description"]
+            if not isMatrix():
+                sTitle = sTitle.encode('utf8')
+                sDesc = sDesc.encode('utf8')
 
             oOutputParameterHandler.addParameter('sID', ids)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
