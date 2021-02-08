@@ -3,7 +3,7 @@
 import xbmcplugin
 import xbmc
 
-from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window, VSlog
+from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window
 from resources.lib.db import cDb
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
@@ -27,16 +27,16 @@ class cGui:
 
     def addNewDir(self, Type, sId, sFunction, sLabel, sIcon, sThumbnail='', sDesc='', oOutputParameterHandler='', sMeta=0, sCat=None):
         oGuiElement = cGuiElement()
-        #dir n'a pas de type
-        if Type != "dir":
+        # dir n'a pas de type
+        if Type != 'dir':
             cGui.CONTENT = Type
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
         oGuiElement.setTitle(sLabel)
 
         if sThumbnail == '':
-            oGuiElement.setThumbnail(oGuiElement.getIcon())   
-        else:       
+            oGuiElement.setThumbnail(oGuiElement.getIcon())
+        else:
             oGuiElement.setThumbnail(sThumbnail)
             oGuiElement.setPoster(sThumbnail)
 
@@ -45,15 +45,14 @@ class cGui:
 
         if sCat is not None:
             oGuiElement.setCat(sCat)
-        #Pour addLink on recupere le sCat precedent.
-        elif Type == "link":
+        # Pour addLink on recupere le sCat precedent.
+        elif Type == 'link':
             oInputParameterHandler = cInputParameterHandler()
             sCat = oInputParameterHandler.getValue('sCat')
             if sCat:
                 oGuiElement.setCat(sCat)
 
         oOutputParameterHandler.addParameter('sFav', sFunction)
-
         if oOutputParameterHandler.getValue('sMovieTitle'):
             sTitle = oOutputParameterHandler.getValue('sMovieTitle')
             oGuiElement.setFileName(sTitle)
@@ -83,7 +82,7 @@ class cGui:
         self.addNewDir('movies', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 3, 1)
 
     def addDir(self, sId, sFunction, sLabel, sThumbnail, oOutputParameterHandler='', sDesc=""):
-        if not "http" in sThumbnail:
+        if 'http' not in sThumbnail:
             sThumbnail = 'special://home/addons/plugin.video.vstream/resources/art/' + sThumbnail
         sIcon = sThumbnail
         self.addNewDir('dir', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, None)
@@ -98,18 +97,19 @@ class cGui:
         self.addNewDir('files', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 2)
 
     # Affichage d'une personne (acteur, réalisateur, ..)
-    def addPerson(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler=''):
-        if not "http" in sThumbnail:
+    def addPerson(self, sId, sFunction, sLabel, sIcon, sThumbnail, oOutputParameterHandler=''):
+        if 'http' not in sThumbnail:
             sThumbnail = 'special://home/addons/plugin.video.vstream/resources/art/' + sThumbnail
         sIcon = sThumbnail
+        sDesc = ''
         self.addNewDir('movies', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 7)
 
     # Affichage d'un réseau de distribution du média
     def addNetwork(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler=''):
-        if not "http" in sIcon:
+        if 'http' not in sIcon:
             sIcon = 'special://home/addons/plugin.video.vstream/resources/art/' + sIcon
         sThumbnail = sIcon
-        sDesc = ""
+        sDesc = ''
         self.addNewDir('files', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 8)
 
     def addNext(self, sId, sFunction, sLabel, oOutputParameterHandler):
@@ -553,7 +553,7 @@ class cGui:
 
             WindowsBoxes(sCleanTitle, sCleanTitle, sMeta, sYear)
         else:
-            #On appel la fonction integrer a Kodi pour charger les infos.
+            # On appel la fonction integrer a Kodi pour charger les infos.
             xbmc.executebuiltin('Action(Info)')
 
     def viewSimil(self):
@@ -675,7 +675,7 @@ class cGui:
         dialogs = dialog()
         numboard = dialogs.numeric(0, self.ADDON.VSlang(30019), sDefaultNum)
         # numboard.doModal()
-        if numboard != None:
+        if numboard is not None:
             return numboard
 
         return False
