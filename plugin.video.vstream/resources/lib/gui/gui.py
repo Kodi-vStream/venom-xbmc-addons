@@ -32,6 +32,7 @@ class cGui:
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
         oGuiElement.setTitle(sLabel)
+        oGuiElement.setIcon(sIcon)
 
         if sThumbnail == '':
             oGuiElement.setThumbnail(oGuiElement.getIcon())
@@ -99,14 +100,14 @@ class cGui:
     # Affichage d'un épisode, sans recherche de Métadonnées, et menu adapté
     def addEpisode(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
         # comportement proche de addMisc
-        self.addNewDir('files', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 2)
+        self.addNewDir('episodes', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 2)
 
     # Affichage d'une personne (acteur, réalisateur, ..)
     def addPerson(self, sId, sFunction, sLabel, sIcon, sThumbnail, oOutputParameterHandler=''):
         if 'http' not in sThumbnail:
             sThumbnail = 'special://home/addons/plugin.video.vstream/resources/art/' + sThumbnail
         sIcon = sThumbnail
-        self.addNewDir('movies', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 7)
+        self.addNewDir('artists', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 7)
 
     # Affichage d'un réseau de distribution du média
     def addNetwork(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler=''):
@@ -202,10 +203,23 @@ class cGui:
             cGui.searchResults.append({'guiElement': oGuiElement, 'params': copy.deepcopy(oOutputParameterHandler)})
             return
 
-        # Des infos a rajouter ?
-        params = {'siteUrl': oGuiElement.setSiteUrl,  # indispensable
-                  'sTmdbId': oGuiElement.setTmdbId,
-                  'sYear': oGuiElement.setYear}
+#         # VERIFIER L'UTILITÉ
+#         # Des infos a rajouter ?
+#         params = {'siteUrl': oGuiElement.setSiteUrl,  # indispensable
+#                   'sTmdbId': oGuiElement.setTmdbId,
+#                   'sYear': oGuiElement.setYear}
+# 
+#         try:
+#             for sParam, callback in params.iteritems():
+#                 value = oOutputParameterHandler.getValue(sParam)
+#                 if value:
+#                     callback(value)
+# 
+#         except AttributeError:
+#             for sParam, callback in params.items():
+#                 value = oOutputParameterHandler.getValue(sParam)
+#                 if value:
+#                     callback(value)
 
         oListItem = self.createListItem(oGuiElement)
         oListItem.setProperty('IsPlayable', 'false')
@@ -470,12 +484,12 @@ class cGui:
             xbmc.executebuiltin('Container.SetViewMode(' + str(ForceViewMode) + ')')
         else:
             if self.ADDON.getSetting('active-view') == 'true':
-                if cGui.CONTENT == 'movies':
+                if cGui.CONTENT == 'movies' or  cGui.CONTENT == 'artists':
                     # xbmc.executebuiltin('Container.SetViewMode(507)')
                     xbmc.executebuiltin('Container.SetViewMode(%s)' % self.ADDON.getSetting('movie-view'))
                 elif cGui.CONTENT == 'tvshows':
                     xbmc.executebuiltin('Container.SetViewMode(%s)' % self.ADDON.getSetting('serie-view'))
-                elif cGui.CONTENT == 'files':
+                elif cGui.CONTENT == 'files' or cGui.CONTENT == 'episodes':
                     xbmc.executebuiltin('Container.SetViewMode(%s)' % self.ADDON.getSetting('default-view'))
 
         # bug affichage Kodi 18
