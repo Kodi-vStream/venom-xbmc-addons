@@ -3,7 +3,7 @@
 import xbmcplugin
 import xbmc
 
-from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window
+from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window, VSlog
 from resources.lib.db import cDb
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
@@ -58,6 +58,10 @@ class cGui:
             sTitle = oOutputParameterHandler.getValue('sMovieTitle')
             oGuiElement.setFileName(sTitle)
 
+        self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
+        # self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
+        self.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
+
         try:
             self.addFolder(oGuiElement, oOutputParameterHandler)
         except:
@@ -90,73 +94,22 @@ class cGui:
 
     # Affichage d'un épisode, sans recherche de Métadonnées, et menu adapté
     def addEpisode(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
-
         # comportement proche de addMisc
-        self.addMisc(sId, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, sCat=2)
-        cGui.CONTENT = 'files'
+        self.addNewDir('files', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 2)
 
     # Affichage d'une personne (acteur, réalisateur, ..)
     def addPerson(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler=''):
-        cGui.CONTENT = 'movies'
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(sId)
-        oGuiElement.setFunction(sFunction)
-        oGuiElement.setTitle(sLabel)
-        oGuiElement.setIcon(sIcon)
-        oGuiElement.setMeta(7)
-#         oGuiElement.setCat(7)
-
-        try:
-            self.addFolder(oGuiElement, oOutputParameterHandler)
-        except:
-            pass
+        if not "http" in sThumbnail:
+            sThumbnail = 'special://home/addons/plugin.video.vstream/resources/art/' + sThumbnail
+        sIcon = sThumbnail
+        self.addNewDir('movies', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 7)
 
     # Affichage d'un réseau de distribution du média
     def addNetwork(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler=''):
-        cGui.CONTENT = 'files'
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(sId)
-        oGuiElement.setFunction(sFunction)
-        oGuiElement.setTitle(sLabel)
-        oGuiElement.setIcon(sIcon)
-        oGuiElement.setMeta(8)
-#         oGuiElement.setCat(7)
-
-        try:
-            self.addFolder(oGuiElement, oOutputParameterHandler)
-        except:
-            pass
-
-    # Meme mode d'affichage qu'un film, avec la description si fournie, mais il n'y a pas de recherche des Métadonnées
-    def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler='', sCat=5):
-        if sThumbnail or sDesc:
-            cGui.CONTENT = 'movies'
-        else:
-            cGui.CONTENT = 'files'
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(sId)
-        oGuiElement.setFunction(sFunction)
-        oGuiElement.setTitle(sLabel)
-        oGuiElement.setIcon(sIcon)
-        oGuiElement.setThumbnail(sThumbnail)
-        oGuiElement.setDescription(sDesc)
-        # oGuiElement.setPoster(sThumbnail)
-        oGuiElement.setMeta(0)
-        # oGuiElement.setDirFanart(sIcon)
-        oGuiElement.setCat(sCat)
-
-        if oOutputParameterHandler.getValue('sMovieTitle'):
-            sTitle = oOutputParameterHandler.getValue('sMovieTitle')
-            oGuiElement.setFileName(sTitle)
-
-        self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-        # self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
-        self.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
-
-        try:
-            self.addFolder(oGuiElement, oOutputParameterHandler)
-        except:
-            pass
+        if not "http" in sIcon:
+            sIcon = 'special://home/addons/plugin.video.vstream/resources/art/' + sIcon
+        sThumbnail = sIcon
+        self.addNewDir('files', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 8)
 
     def addNext(self, sId, sFunction, sLabel, oOutputParameterHandler):
         oGuiElement = cGuiElement()
