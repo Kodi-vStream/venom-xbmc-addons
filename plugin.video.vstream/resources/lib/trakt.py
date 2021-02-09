@@ -24,8 +24,7 @@ API_KEY = '7139b7dace25c7bdf0bd79acf46fb02bd63310548b1f671d88832f75a4ac3dd6'
 API_SECRET = 'bb02b2b0267b045590bc25c21dac21b1c47446a62b792091b3275e9c4a943e74'
 API_VERS = '2'
 
-MAXRESULT = '10'
-
+MAXRESULT = addon().getSetting('trakt_number_element')
 
 class cTrakt:
 
