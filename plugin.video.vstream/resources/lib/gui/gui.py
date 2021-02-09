@@ -200,23 +200,22 @@ class cGui:
             cGui.searchResults.append({'guiElement': oGuiElement, 'params': copy.deepcopy(oOutputParameterHandler)})
             return
 
-#         # VERIFIER L'UTILITÉ
-#         # Des infos a rajouter ?
-#         params = {'siteUrl': oGuiElement.setSiteUrl,  # indispensable
-#                   'sTmdbId': oGuiElement.setTmdbId,
-#                   'sYear': oGuiElement.setYear}
-# 
-#         try:
-#             for sParam, callback in params.iteritems():
-#                 value = oOutputParameterHandler.getValue(sParam)
-#                 if value:
-#                     callback(value)
-# 
-#         except AttributeError:
-#             for sParam, callback in params.items():
-#                 value = oOutputParameterHandler.getValue(sParam)
-#                 if value:
-#                     callback(value)
+        # Des infos a rajouter ?
+        params = {'siteUrl': oGuiElement.setSiteUrl,
+                  'sTmdbId': oGuiElement.setTmdbId,
+                  'sYear': oGuiElement.setYear}
+ 
+        try:
+            for sParam, callback in params.iteritems():
+                value = oOutputParameterHandler.getValue(sParam)
+                if value:
+                    callback(value)
+ 
+        except AttributeError:
+            for sParam, callback in params.items():
+                value = oOutputParameterHandler.getValue(sParam)
+                if value:
+                    callback(value)
 
         oListItem = self.createListItem(oGuiElement)
         oListItem.setProperty('IsPlayable', 'false')
