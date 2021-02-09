@@ -3,15 +3,15 @@
 	<title>vStream Radio</title>
 	<trackList>
 		<track>
-			<location>http://str4uice.streamakaci.com/4uclassicrock.mp3</location>
-			<title>4U Classic Rock</title>
-			<image>https://i3.radionomy.com/radios/200/8d44acef-ed6d-4402-9d20-79d584eef7e9.png</image>
-			<identifier>Rock</identifier>
-		</track>
-		<track>
 			<location>http://streaming.radionomy.com/4U-70s?lang=fr-FR%2cfr%3bq%3d0.9%2cen-US%3bq%3d0.8%2cen%3bq%3d0.7</location>
 			<title>4U 70s</title>
 			<image>https://i3.radionomy.com/radios/200/e9fa1d18-12eb-4202-b2b5-5bb9de4d7110.jpg</image>
+			<identifier>Rock</identifier>
+		</track>
+		<track>
+			<location>http://str4uice.streamakaci.com/4uclassicrock.mp3</location>
+			<title>4U Classic Rock</title>
+			<image>https://i3.radionomy.com/radios/200/8d44acef-ed6d-4402-9d20-79d584eef7e9.png</image>
 			<identifier>Rock</identifier>
 		</track>
 		<track>
@@ -493,12 +493,6 @@
 			<title>Maxxima</title>
 			<image>https://i3.radionomy.com/radios/200/4d0c49fa-4ebc-42dd-914f-26a9a988a2bb.png</image>
 			<identifier>Clubbing</identifier>			
-		</track>
-		<track>
-			<location>http://str4uice.streamakaci.com/4uclassicrock.mp3</location>
-			<title>4U Classic Rock</title>
-			<image>https://i3.radionomy.com/radios/200/8d44acef-ed6d-4402-9d20-79d584eef7e9.png</image>
-			<identifier>Rock</identifier>
 		</track>
 		<track>
 			<location>http://direct.mouv.fr/live/mouv-midfi.mp3</location>
