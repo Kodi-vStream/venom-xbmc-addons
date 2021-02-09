@@ -9,7 +9,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress #, VSlog
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'stream_complet'
 SITE_NAME = 'Stream Complet'
@@ -296,24 +296,45 @@ def showHosters():
     siteReferer = oInputParameterHandler.getValue('siteReferer')
     sLang = oInputParameterHandler.getValue('sLang')
 
-    oRequestHandler = cRequestHandler(sUrl)
-    oRequestHandler.addHeaderEntry('Referer', siteReferer)
-    sHtmlContent = oRequestHandler.request()
+    sDisplayName = ('%s (%s)') % (sMovieTitle, sLang)
 
-    oParser = cParser()
-    sPattern = 'url=([^"]+)'
-    aResult = oParser.parse(sHtmlContent, sPattern)
+    if 'sstatic.co/' in sUrl:
+        sUrl1 = sUrl + '/ajax'
+        oRequestHandler = cRequestHandler(sUrl1)
+        oRequestHandler.addHeaderEntry('Referer', sUrl)
+        oRequestHandler.addHeaderEntry('Accept', 'application/json, text/javascript, */*; q=0.01')
+        oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
+        sHtmlContent = oRequestHandler.request()
 
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-            sHosterUrl = aEntry
-            sDisplayName = ('%s (%s)') % (sMovieTitle, sLang)
-            # VSlog(sHosterUrl)
+        oParser = cParser()
+        sPattern = 'url":"([^"]+)'  # tjrs doodstream
+        aResult = oParser.parse(sHtmlContent, sPattern)
+
+        if (aResult[0] == True):
+            sHosterUrl = aResult[1][0]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sDisplayName)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    else:
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.addHeaderEntry('Referer', siteReferer)
+        sHtmlContent = oRequestHandler.request()
+
+        oParser = cParser()
+        sPattern = 'url=([^"]+)'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+
+        if (aResult[0] == True):
+            for aEntry in aResult[1]:
+                sHosterUrl = aEntry
+                # VSlog(sHosterUrl)
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sDisplayName)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
