@@ -1103,3 +1103,7 @@ msgstr ""
 msgctxt "#31103"
 msgid "Allow adult content"
 msgstr ""
+
+msgctxt "#31200"
+msgid "Choose the number of items to display"
+msgstr ""
