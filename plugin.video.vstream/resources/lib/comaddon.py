@@ -159,7 +159,7 @@ class progress():
 
         # Ne pas afficher le sablier si nous ne sommes pas dans un menu vStream
         currentWindow = xbmcgui.getCurrentWindowId()
-        if currentWindow != 10025 : # 10025 = videonav, 10000 = home
+        if currentWindow != 10025 and currentWindow != 10028 : # 10025 = videonav, 10000 = home
             return empty()
 
         # Ne pas afficher le sablier si une dialog est ouverte, inclut le menu contextuel
