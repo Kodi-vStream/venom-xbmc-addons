@@ -246,6 +246,8 @@
         
         <setting visible="false" id="plugin_voirfilms_org" type="bool" label="VoirFilms" default="true"/>
 
+        <setting visible="false" id="plugin_voirseries_best" type="bool" label="VoirSeries" default="true"/>
+
         <setting visible="false" id="plugin_wawacity" type="bool" label="Wawacity" default="true"/>
 
         <setting visible="false" id="plugin_wiflix" type="bool" label="WiFlix" default="true"/>
