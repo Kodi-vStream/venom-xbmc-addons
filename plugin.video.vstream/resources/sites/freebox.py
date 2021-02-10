@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import io
-import json
 import re
 import string
 import sys
@@ -110,7 +109,7 @@ def getHtml(sUrl, data=None):  # S'occupe des requetes
     oRequestHandler.addHeaderEntry('User-Agent', UA)
 
     if data is None and 'watch' not in sUrl:
-        data = r.text
+        data = r.text  # Unresolved reference 'r' ??
     else:
         data = oRequestHandler.request()
     return data
@@ -127,8 +126,8 @@ def parseM3U(sUrl=None, infile=None):  # Traite les m3u local
             zip_files = ZipFile(io.BytesIO(sHtmlContent))
             files = zip_files.namelist()
 
+            oOutputParameterHandler = cOutputParameterHandler()
             for Title in files:
-                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('sMovieTitle', Title)
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
 
@@ -138,7 +137,6 @@ def parseM3U(sUrl=None, infile=None):  # Traite les m3u local
             return
 
         elif '#EXTM3U' not in sUrl:
-            headers = {'User-Agent': UA}
 
             oRequestHandler = cRequestHandler(sUrl)
             oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -155,7 +153,7 @@ def parseM3U(sUrl=None, infile=None):  # Traite les m3u local
         inf = infile
 
     try:
-        line = inf.readline()
+        line = inf.readline()  # Local variable 'line' value is not used ??
     except:
         pass
 
@@ -362,12 +360,12 @@ def showTV():
             string = sorted(aResult[1], key=lambda t: t[0].strip().capitalize())
 
         total = len(string)
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in string:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
             oOutputParameterHandler.addParameter('sMovieTitle', aEntry[0])
             oOutputParameterHandler.addParameter('sThumbnail', 'tv.png')
@@ -424,8 +422,8 @@ def play__():  # Lancer les liens
         xbmc.executebuiltin('XBMC.RunPlugin(' + sUrl + ')')
         return
 
-    #Bug specifique au flux france TV
-    #eof detectedL
+    # Bug specifique au flux france TV
+    # eof detectedL
     elif 'ftven.fr' in sUrl:
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(SITE_IDENTIFIER)
@@ -449,6 +447,7 @@ def play__():  # Lancer les liens
             cHosterGui().showHoster(oGui, oHoster, sUrl, sThumbnail)
 
         oGui.setEndOfDirectory()
+
 
 """
 Fonction diverse:
@@ -516,19 +515,23 @@ def openwindows():
     xbmc.executebuiltin('ActivateWindow(%d, return)' % 10601)
     return
 
+
 def decodeNrj(d):
     oRequestHandler = cRequestHandler(d)
     sHtmlContent = oRequestHandler.request()
 
-    title = re.search('<div data-title="([^"]+)"',sHtmlContent).group(1)
-    ids = re.search('data-ref="([^"]+)"',sHtmlContent).group(1)
+    title = re.search('<div data-title="([^"]+)"', sHtmlContent).group(1)
+    ids = re.search('data-ref="([^"]+)"', sHtmlContent).group(1)
 
-    url = 'https://www.nrj-play.fr/compte/live?channel=' + d.split('/')[3] + '&title=' + title + '&channel=' + d.split('/')[3] + '&ref=' + ids + '&formId=formDirect'
+    url = 'https://www.nrj-play.fr/compte/live?channel=' + d.split('/')[3] + '&title=' + title + '&channel='
+    url += d.split('/')[3] + '&ref=' + ids + '&formId=formDirect'
 
     oRequestHandler = cRequestHandler(url)
     sHtmlContent = oRequestHandler.request()
-    dataUrl = re.search('"contentUrl" content="([^"]+)"',sHtmlContent).group(1)
+    dataUrl = re.search('"contentUrl" content="([^"]+)"', sHtmlContent).group(1)
+
     return dataUrl
+
 
 def decodeEmail(e):
     head, e = e.split('a href=')
@@ -557,6 +560,7 @@ def unZip():
         for line in f:
             sHtmlContent.append(line)
         inf = sHtmlContent
+
     showWeb(inf)
 
 
@@ -564,7 +568,9 @@ def unGoogleDrive (infile):
     ids = re.findall('<a href="https://drive.google.com/file/d/([^"]+)/view', infile)[0]
     url = 'https://drive.google.com/uc?id=' + ids + '&export=download'
     inf = getHtml(url)
+
     return inf
+
 
 def getBrightcoveKey(sUrl):
     oRequestHandler = cRequestHandler(sUrl)
@@ -590,4 +596,5 @@ def getBrightcoveKey(sUrl):
     oRequestHandler.addHeaderEntry('Accept', "application/json;pk=" + policyKey)
     sHtmlContent = oRequestHandler.request()
     url = re.search('"sources":.+?src":"([^"]+)"', sHtmlContent).group(1)
+
     return url
