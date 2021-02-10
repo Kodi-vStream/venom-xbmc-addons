@@ -135,7 +135,7 @@ def showMovies(sSearch=''):
 
             sThumb = aEntry[0]
             sUrl2 = aEntry[1]
-            sTitle = aEntry[2].replace(' streaming gratuit', '')
+            sTitle = aEntry[2].replace(' streaming gratuit', '').replace(' foot', '')
             sdesc1 = aEntry[3]
             sdesc2 = aEntry[4]
             sDisplayTitle = sTitle
