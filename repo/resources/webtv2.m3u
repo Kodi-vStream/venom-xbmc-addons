@@ -1,18 +1,18 @@
 #EXTM3U
-#EXTINF:-1 tvg-logo="tf1.png",TF1
-[REGEX]"url":"([^"]+)"[URL]https://delivery.tf1.fr/mytf1-wrd/L_TF1?format=hls
+#EXTINF:-1 tvg-logo="tf1.png,TF1
+[REGEX]"delivery".+?"url":"([^"]+)"[URL]https://mediainfo.tf1.fr/mediainfocombo/L_TF1?context=MYTF1&pver=4008002&platform=web&os=windows&osVersion=unknown&topDomain=www.tf1.fr&format=hls
 
 #EXTINF:-1 tvg-logo="tmc.png",TMC
-[REGEX]"url":"([^"]+)"[URL]https://delivery.tf1.fr/mytf1-wrd/L_TMC?format=hls
+[REGEX]"delivery".+?"url":"([^"]+)"[URL]https://mediainfo.tf1.fr/mediainfocombo/L_TMC?context=MYTF1&pver=4008002&platform=web&os=windows&osVersion=unknown&topDomain=www.tf1.fr&format=hls
 
 #EXTINF:-1 tvg-logo="tfx.png",TFX
-[REGEX]"url":"([^"]+)"[URL]https://delivery.tf1.fr/mytf1-wrd/L_NT1?format=hls
+[REGEX]"delivery".+?"url":"([^"]+)"[URL]https://mediainfo.tf1.fr/mediainfocombo/L_NT1?context=MYTF1&pver=4008002&platform=web&os=windows&osVersion=unknown&topDomain=www.tf1.fr&format=hls
 
 #EXTINF:-1 tvg-logo="tf1seriesfilms.png",TF1 Serie et films
-[REGEX]"url":"([^"]+)"[URL]https://delivery.tf1.fr/mytf1-wrd/L_HD1?format=hls
+[REGEX]"delivery".+?"url":"([^"]+)"[URL]https://mediainfo.tf1.fr/mediainfocombo/L_HD1?context=MYTF1&pver=4008002&platform=web&os=windows&osVersion=unknown&topDomain=www.tf1.fr&format=hls
 
 #EXTINF:-1 tvg-logo="lci.png",LCI
-[REGEX]"url":"([^"]+)"[URL]https://delivery.tf1.fr/mytf1-wrd/L_LCI?format=hls
+[REGEX]"delivery".+?"url":"([^"]+)"[URL]https://mediainfo.tf1.fr/mediainfocombo/L_LCI?context=MYTF1&pver=4008002&platform=web&os=windows&osVersion=unknown&topDomain=www.tf1.fr&format=hls
 
 #EXTINF:-1 tvg-logo="france2.png",France 2
 [REGEX]{"url": "([^"]+)"}[URL]https://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=https://simulcast.ftven.fr/simulcast/France_2/hls_fr2/index.m3u8
