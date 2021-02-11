@@ -197,13 +197,13 @@ class cTrakt:
 
         liste = []
         if sType == 'movie':
-            liste.append(['%s (%s)' % (self.ADDON.VSlang(30310), sHtmlContent['movies']['collected']), URL_API + 'users/me/collection/movies?page=1&limit=' + str(MAXRESULT)])
+            liste.append(['%s (%s)' % (self.ADDON.VSlang(30310), sHtmlContent['movies']['collected']), URL_API + 'users/me/collection/movies'])
 
             if self.ADDON.getSetting('trakt_movies_show_watchlist') == 'true':
                 liste.append([self.ADDON.VSlang(30311), URL_API + 'users/me/watchlist/movies?page=1&limit=' + str(MAXRESULT)])
 
             if self.ADDON.getSetting('trakt_movies_show_watched') == 'true':
-                liste.append(['%s (%s)' % (self.ADDON.VSlang(30312), sHtmlContent['movies']['watched']), URL_API + 'users/me/watched/movies?page=1&limit=' + str(MAXRESULT)])
+                liste.append(['%s (%s)' % (self.ADDON.VSlang(30312), sHtmlContent['movies']['watched']), URL_API + 'users/me/watched/movies'])
 
             if self.ADDON.getSetting('trakt_movies_show_recommended') == 'true':
                 liste.append([self.ADDON.VSlang(30313), URL_API + 'recommendations/movies'])
@@ -212,40 +212,40 @@ class cTrakt:
                 liste.append([self.ADDON.VSlang(30314), URL_API + 'movies/boxoffice'])
 
             if self.ADDON.getSetting('trakt_movies_show_popular') == 'true':
-                liste.append([self.ADDON.VSlang(30315), URL_API + 'movies/popular?page=1&limit=' + str(MAXRESULT)])
+                liste.append([self.ADDON.VSlang(30315), URL_API + 'movies/popular'])
 
             if self.ADDON.getSetting('trakt_movies_show_most_weekly') == 'true':
-                liste.append([self.ADDON.VSlang(30316), URL_API + 'movies/played/weekly?page=1&limit=' + str(MAXRESULT)])
+                liste.append([self.ADDON.VSlang(30316), URL_API + 'movies/played/weekly'])
 
             if self.ADDON.getSetting('trakt_movies_show_most_monthly') == 'true':
-                liste.append([self.ADDON.VSlang(30317), URL_API + 'movies/played/monthly?page=1&limit=' + str(MAXRESULT)])
+                liste.append([self.ADDON.VSlang(30317), URL_API + 'movies/played/monthly'])
 
         elif sType == 'show':
-            liste.append(['%s (%s)' % (self.ADDON.VSlang(30310), sHtmlContent['shows']['collected']), URL_API + 'users/me/collection/shows?page=1&limit=' + str(MAXRESULT)])
+            liste.append(['%s (%s)' % (self.ADDON.VSlang(30310), sHtmlContent['shows']['collected']), URL_API + 'users/me/collection/shows'])
 
             if self.ADDON.getSetting('trakt_tvshows_show_watchlist') == 'true':
-                liste.append([self.ADDON.VSlang(30311), URL_API + 'users/me/watchlist/shows?page=1&limit=' + str(MAXRESULT)])
+                liste.append([self.ADDON.VSlang(30311), URL_API + 'users/me/watchlist/shows'])
 
             if self.ADDON.getSetting('trakt_tvshows_show_watchlist_seasons') == 'true':
-                liste.append([self.ADDON.VSlang(30318), URL_API + 'users/me/watchlist/seasons?page=1&limit=' + str(MAXRESULT)])
+                liste.append([self.ADDON.VSlang(30318), URL_API + 'users/me/watchlist/seasons'])
 
             if self.ADDON.getSetting('trakt_tvshows_show_watchlist_episodes') == 'true':
-                liste.append([self.ADDON.VSlang(30319), URL_API + 'users/me/watchlist/episodes?page=1&limit=' + str(MAXRESULT)])
+                liste.append([self.ADDON.VSlang(30319), URL_API + 'users/me/watchlist/episodes'])
 
             if self.ADDON.getSetting('trakt_tvshows_show_watched') == 'true':
-                liste.append(['%s (%s)' % (self.ADDON.VSlang(30312), sHtmlContent['shows']['watched']), URL_API + 'users/me/watched/shows?page=1&limit=' + str(MAXRESULT)])
+                liste.append(['%s (%s)' % (self.ADDON.VSlang(30312), sHtmlContent['shows']['watched']), URL_API + 'users/me/watched/shows'])
 
             if self.ADDON.getSetting('trakt_tvshows_show_recommended') == 'true':
                 liste.append([self.ADDON.VSlang(30313), URL_API + 'recommendations/shows'])
 
             if self.ADDON.getSetting('trakt_tvshows_show_popular') == 'true':
-                liste.append([self.ADDON.VSlang(30315), URL_API + 'shows/popular?page=1&limit=' + str(MAXRESULT)])
+                liste.append([self.ADDON.VSlang(30315), URL_API + 'shows/popular'])
 
             if self.ADDON.getSetting('trakt_tvshows_show_most_weekly') == 'true':
-                liste.append([self.ADDON.VSlang(30316), URL_API + 'shows/played/weekly?page=1&limit=' + str(MAXRESULT)])
+                liste.append([self.ADDON.VSlang(30316), URL_API + 'shows/played/weekly'])
 
             if self.ADDON.getSetting('trakt_tvshows_show_most_monthly') == 'true':
-                liste.append([self.ADDON.VSlang(30317), URL_API + 'shows/played/monthly?page=1&limit=' + str(MAXRESULT)])
+                liste.append([self.ADDON.VSlang(30317), URL_API + 'shows/played/monthly'])
 
         elif sType == 'custom-lists':
             oRequestHandler = cRequestHandler(URL_API + 'users/me/lists')
@@ -349,14 +349,17 @@ class cTrakt:
         sHeaders = oRequestHandler.getResponseHeader()
 
         # Fonctionnement specifique au calendrier.
-        if 'calendars/all/shows/new' in sUrl:
+        if not 'X-Pagination-Page-Count' in sHeaders:
             if sCurrentLimit == False:
                 sCurrentLimit = 0
             else:
                 # Supprimer les elements deja afficher.
                 sHtmlContent = sHtmlContent[int(sCurrentLimit):]
 
-            total = int(MAXRESULT)
+            if len(sHtmlContent) > 20:
+                total = int(MAXRESULT)
+            else:
+                total = len(sHtmlContent)
         else:
             total = len(sHtmlContent)
 
@@ -377,8 +380,8 @@ class cTrakt:
 
             for i in sHtmlContent:
                 # Limite les elements du calendrier
-                if 'calendars/all/shows/new' in sUrl:
-                    if progress_.getProgress() >= 10:
+                if not 'X-Pagination-Page-Count' in sHeaders:
+                    if progress_.getProgress() >= int(MAXRESULT):
                         break
 
                 progress_.VSupdate(progress_, total)
@@ -647,7 +650,7 @@ class cTrakt:
             except:
                 pass
 
-            if "calendars/all/shows/new" in sUrl and len(sHtmlContent) > 10:
+            if not 'X-Pagination-Page-Count' in sHeaders and len(sHtmlContent) > int(MAXRESULT):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('limite', int(sCurrentLimit) + int(MAXRESULT))
