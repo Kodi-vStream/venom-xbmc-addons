@@ -99,13 +99,13 @@ class cGui:
     def addPerson(self, sId, sFunction, sLabel, sIcon, sThumbnail, oOutputParameterHandler=''):
         sThumbnail = ''
         sDesc = ''
-        self.addNewDir('artists', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 7)
+        self.addNewDir('artists', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 7, None)
 
     # Affichage d'un réseau de distribution du média
     def addNetwork(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler=''):
         sThumbnail = ''
         sDesc = ''
-        self.addNewDir('files', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 8)
+        self.addNewDir('files', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 8, None)
 
     def addNext(self, sId, sFunction, sLabel, oOutputParameterHandler):
         oGuiElement = cGuiElement()
