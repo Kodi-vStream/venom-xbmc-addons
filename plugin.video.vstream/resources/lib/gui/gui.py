@@ -84,11 +84,8 @@ class cGui:
     def addMoviePack(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
         self.addNewDir('movies', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 3, 1)
 
-    def addDir(self, sId, sFunction, sLabel, sThumbnail, oOutputParameterHandler='', sDesc=""):
-        if 'http' not in sThumbnail:
-            sThumbnail = 'special://home/addons/plugin.video.vstream/resources/art/' + sThumbnail
-        sIcon = sThumbnail
-        self.addNewDir('dir', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, None)
+    def addDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler='', sDesc=""):
+        self.addNewDir('dir', sId, sFunction, sLabel, sIcon, '', sDesc, oOutputParameterHandler, 0, None)
 
     def addLink(self, sId, sFunction, sLabel, sThumbnail, sDesc, oOutputParameterHandler=''):
         sIcon = sThumbnail
@@ -96,21 +93,17 @@ class cGui:
 
     # Affichage d'un épisode, sans recherche de Métadonnées, et menu adapté
     def addEpisode(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
-        # comportement proche de addMisc
         self.addNewDir('episodes', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 2)
 
     # Affichage d'une personne (acteur, réalisateur, ..)
     def addPerson(self, sId, sFunction, sLabel, sIcon, sThumbnail, oOutputParameterHandler=''):
-        if 'http' not in sThumbnail:
-            sThumbnail = 'special://home/addons/plugin.video.vstream/resources/art/' + sThumbnail
-        sIcon = sThumbnail
+        sThumbnail = ''
+        sDesc = ''
         self.addNewDir('artists', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 7)
 
     # Affichage d'un réseau de distribution du média
     def addNetwork(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler=''):
-        if 'http' not in sIcon:
-            sIcon = 'special://home/addons/plugin.video.vstream/resources/art/' + sIcon
-        sThumbnail = sIcon
+        sThumbnail = ''
         sDesc = ''
         self.addNewDir('files', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 8)
 
