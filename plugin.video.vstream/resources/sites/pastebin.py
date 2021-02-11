@@ -476,7 +476,10 @@ def showMenu():
 
         # Menu pour ajouter un lien (hors widget)
         if not xbmc.getCondVisibility('Window.IsActive(home)'):
+            oOutputParameterHandler.addParameter('pasteID', pasteID) # remettre les paramètres lorsqu'on recycle oOutputParameterHandler
             oGui.addDir(SITE_IDENTIFIER, 'addPasteID', '[COLOR coral]Ajouter un code %s[/COLOR]' % SITE_NAME, 'notes.png', oOutputParameterHandler)
+            
+            oOutputParameterHandler.addParameter('pasteID', pasteID) # remettre les paramètres lorsqu'on recycle oOutputParameterHandler
             oGui.addDir(SITE_IDENTIFIER, 'adminPasteID', '[COLOR coral]Retirer un code %s[/COLOR]' % SITE_NAME, 'trash.png', oOutputParameterHandler)
 
     elif 'film' in sMedia:
@@ -1433,6 +1436,7 @@ def showMovies(sSearch=''):
     nbItem = 0
     index = 0
     progress_ = progress().VScreate(SITE_NAME)
+    oOutputParameterHandler = cOutputParameterHandler()
 
     for movie in movies:
 
@@ -1585,7 +1589,6 @@ def showMovies(sSearch=''):
         sTitle = sTitle.replace('+', ' ').replace(' & ', ' | ')
         sTitle = sTitle.replace('[', '').replace(']', '')   # Exemple pour le film [REC], les crochets sont génants pour certaines fonctions
 
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         if sTmdbId:
