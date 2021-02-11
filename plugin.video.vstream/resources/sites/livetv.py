@@ -23,10 +23,11 @@ URL_SEARCH = (URL_MAIN + '/frx/fanclubs/?q=', 'showMovies4')
 URL_SEARCH_MISC = (URL_MAIN + '/frx/fanclubs/?q=', 'showMovies4')
 FUNCTION_SEARCH = 'showMovies4'
 
-SPORT_SPORTS = (URL_MAIN + '/frx/allupcoming/', 'showMovies')  # Liste de diffusion des sports
+SPORT_GENRES = (URL_MAIN + '/frx/allupcoming/', 'showMovies')  # Liste de diffusion des sports
 SPORT_LIVE = (URL_MAIN + '/frx/', 'showLive')  # streaming Actif
 # SPORT_SPORTSCLASS = (URL_MAIN + '/frx/calendar/411/', 'showClass')  # Les classements
 NETS_GENRES = (True, 'showGenres')  # Les clubs de football
+SPORT_SPORTS = (True, 'load')
 
 
 def load():
@@ -36,8 +37,8 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher l\'équipe', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', SPORT_SPORTS[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Les sports (Genre)', 'news.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Les sports (Genres)', 'sport.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Les sports (En live)', 'news.png', oOutputParameterHandler)
