@@ -479,6 +479,8 @@ class cGuiElement:
         return
 
     def getMetadonne(self):
+        # On vide la variable pour que les infos ne reste pas bloquer
+        self.__TmdbId = ""
         metaType = self.getMeta()
         if metaType == 0:  # non media -> on sort, et on enleve le fanart
             self.addItemProperties('fanart_image', '')
@@ -533,7 +535,6 @@ class cGuiElement:
                 kwargs['season'] = self.__Season
             if (self.__Episode):
                 kwargs['episode'] = self.__Episode
-
             try:
                 meta = TMDb.get_meta(*args, **kwargs)
             except:
@@ -588,7 +589,6 @@ class cGuiElement:
 
         for key, value in meta.items():
             self.addItemValues(key, value)
-
         return
 
     def getItemValues(self):
