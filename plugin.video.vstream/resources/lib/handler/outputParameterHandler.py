@@ -26,6 +26,9 @@ class cOutputParameterHandler:
 
         return False
 
+    def clearParameter(self):
+        self.__aParams.clear()
+    
     def exist(self, sParamName):
         if sParamName in self.__aParams:
             return sParamName

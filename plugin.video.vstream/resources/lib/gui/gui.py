@@ -240,6 +240,9 @@ class cGui:
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
         self.listing.append((sItemUrl, oListItem, _isFolder))
+        
+        # Vider les paramètres pour être recyclé
+        oOutputParameterHandler.clearParameter()
 
     # affiche les liens playable
     def addHost(self, oGuiElement, oOutputParameterHandler=''):
