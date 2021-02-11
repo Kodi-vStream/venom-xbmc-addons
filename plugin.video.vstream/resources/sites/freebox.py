@@ -107,11 +107,7 @@ def showIptvSite():
 def getHtml(sUrl, data=None):  # S'occupe des requetes
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
-
-    if data is None and 'watch' not in sUrl:
-        data = r.text  # Unresolved reference 'r' ??
-    else:
-        data = oRequestHandler.request()
+    data = oRequestHandler.request()
     return data
 
 
