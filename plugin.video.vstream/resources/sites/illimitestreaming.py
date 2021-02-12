@@ -289,8 +289,7 @@ def showMovies(sSearch=''):
                 sThumb = aEntry[2]
                 sDesc = aEntry[3]
 
-            # meilleur qualité mais laisser p/ car w\d+ possible plusieurs fois dans l'url
-            sThumb = re.sub('p/w\d+', 'p/w342', sThumb)
+            sThumb = re.sub('/w\d+', '/w342', sThumb)
             try:
                 sDesc = unicode(sDesc, 'utf-8')  # converti en unicode
                 sDesc = utils.unescape(sDesc).encode('utf-8')    # retire les balises HTML
