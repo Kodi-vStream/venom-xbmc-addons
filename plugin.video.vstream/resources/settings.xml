@@ -214,6 +214,8 @@
 
         <setting visible="false" id="plugin_streamcomplet3" type="bool" label="Streamcomplet3" default="true"/>
 
+        <setting visible="false" id="plugin_streamcomplet3_2" type="bool" label="Streamcomplet3 (2)" default="true"/>
+
         <setting visible="false" id="plugin_streamdivx" type="bool" label="StreamDivx" default="true"/>
 
 <!-- 12/02/21 Netu        <setting visible="false" id="plugin_streaming_planet" type="bool" label="Streaming-Planet" default="true"/> -->
