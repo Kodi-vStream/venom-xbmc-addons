@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # source 42 14012021 https://fr.streamcomplet3.com (clone streamiz)
-
+return False
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -19,7 +19,7 @@ SITE_IDENTIFIER = 'streamcomplet3'
 SITE_NAME = 'Streamcomplet3'
 SITE_DESC = 'Films en streaming.'
 
-URL_MAIN = 'https://www.stream-complet.run/'
+URL_MAIN = 'https://stream.apkgratuits.com/'
 
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN + '6/', 'showMovies')
