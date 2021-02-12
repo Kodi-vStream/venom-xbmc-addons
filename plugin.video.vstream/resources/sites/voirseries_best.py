@@ -31,8 +31,8 @@ FUNCTION_SEARCH = 'showSeries'
 
 def load():
     oGui = cGui()
-    oOutputParameterHandler = cOutputParameterHandler()
 
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
@@ -66,8 +66,9 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
-    liste = ['action', 'animation', 'aventure', 'biopic', 'comaedie', 'divers', 'documentaire', 'drame', 'epouvante-horreur',
-             'famille', 'fantastique', 'guerre', 'policier', 'romance', 'science-fiction', 'thriller']
+    liste = ['action', 'animation', 'aventure', 'biopic', 'comaedie', 'divers', 'documentaire', 'drame',
+             'epouvante-horreur', 'famille', 'fantastique', 'guerre', 'policier', 'romance', 'science-fiction',
+             'thriller']
 
     oOutputParameterHandler = cOutputParameterHandler()
     for igenre in liste:
@@ -115,7 +116,6 @@ def showSaisonsEpisodesNews():
             if progress_.iscanceled():
                 break
             sThumb = ''
-            sDesc = ''
             sUrl2 = aEntry[0]
             sTitle = aEntry[1]
             if sUrl == SERIE_NEWS_EPISODES[0]:
@@ -128,7 +128,6 @@ def showSaisonsEpisodesNews():
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
 
             if sUrl == SERIE_NEWS_EPISODES[0]:
                 oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
@@ -173,7 +172,7 @@ def showSeries(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'ShowSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -199,7 +198,7 @@ def __checkForNextPage(sHtmlContent):
     return False, 'none'
 
 
-def ShowSaisons():
+def showSaisons():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -312,7 +311,7 @@ def showLinks():
             sUrl2 = aEntry[0]
             sHostName = aEntry[1]
             sLang = aEntry[2].upper()
-            if 'HD VIP' in sHostName or 'STREAMANGO' in sHostName  or 'OPENLOAD' in sHostName or 'VERYSTREAM' in sHostName:
+            if 'HD VIP' in sHostName or 'STREAMANGO' in sHostName or 'OPENLOAD' in sHostName or 'VERYSTREAM' in sHostName:
                 continue
 
             sHostName = sHostName.capitalize()
