@@ -73,7 +73,7 @@
 
         <setting id="PlutoTV_deviceID" type="text" label="" default="" visible="false"/>
         <setting id="PlutoTV_clientID" type="text" label="" default="" visible="false"/>
-        <setting id="PlutoTV_sid" type="text" label="" default="" visible="false"/>   
+        <setting id="PlutoTV_sid" type="text" label="" default="" visible="false"/>
 
         <!--<setting label="30420" type="action"  action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, search)"/>-->
         <setting label="30420" type="action"  action="RunScript(plugin.video.vstream, search, ?site=globalRun&amp;function=search)"/>
@@ -118,13 +118,13 @@
 
         <setting visible="false" id="plugin_dpstreamhd" type="bool" label="DpStream HD" default="true"/>
 
-<!-- CloudFlare       15/01/21        <setting visible="false" id="plugin_dpstreaming" type="bool" label="DP Streaming" default="true"/>
+<!-- CloudFlare 15/01/21        <setting visible="false" id="plugin_dpstreaming" type="bool" label="DP Streaming" default="true"/>
  -->
         <setting visible="false" id="plugin_enstream" type="bool" label="Enstream" default="true"/>
 
         <setting visible="false" id="plugin_extreme_down" type="bool" label="ExtremeDown" default="true"/>
 
-<!-- CloudFlare   26/11/20      <setting visible="false" id="plugin_filmoflix" type="bool" label="Filmoflix" default="true"/>
+<!-- CloudFlare 26/11/20      <setting visible="false" id="plugin_filmoflix" type="bool" label="Filmoflix" default="true"/>
  -->
         <setting visible="false" id="plugin_filmspourenfants" type="bool" label="Films pour Enfants" default="true"/>
 
@@ -132,7 +132,7 @@
 
         <setting visible="false" id="plugin_filmstreamvk_com" type="bool" label="Filmstream vk" default="true"/>
 
-<!-- 25/12/20        <setting visible="false" id="plugin_filmzenstream_com" type="bool" label="Filmzenstream)" default="true"/>
+<!-- CloudFlare 25/12/20        <setting visible="false" id="plugin_filmzenstream_com" type="bool" label="Filmzenstream)" default="true"/>
  -->
         <setting visible="false" id="plugin_free_telechargement_org" type="bool" label="Free Telechargement" default="true"/>
 
@@ -153,10 +153,10 @@
         <setting visible="false" id="plugin_hds_streamingvf" type="bool" label="Hds-Streamingvf" default="true"/>
 
         <setting visible="false" id="plugin_ianime" type="bool" label="Ianime" default="true"/>
-        
+
         <setting visible="false" id="plugin_illimitestreaming" type="bool" label="Illimitestreaming" default="true"/>
 
-        <setting visible="false" id="plugin_k_streaming" type="bool" label="K_Streaming" default="true"/>
+        <!-- <setting visible="false" id="plugin_k_streaming" type="bool" label="K_Streaming" default="true"/> -->
 
         <setting visible="false" id="plugin_kaydo_ws" type="bool" label="kaydo" default="true"/>
 
@@ -216,16 +216,16 @@
 
         <setting visible="false" id="plugin_streamdivx" type="bool" label="StreamDivx" default="true"/>
 
-        <setting visible="false" id="plugin_streaming_planet" type="bool" label="Streaming-Planet" default="true"/>
+<!-- 12/02/21 Netu        <setting visible="false" id="plugin_streaming_planet" type="bool" label="Streaming-Planet" default="true"/> -->
 
         <setting visible="false" id="plugin_streaming_series" type="bool" label="Streaming-Series" default="true"/>
 
         <setting visible="false" id="plugin_streamingdivx" type="bool" label="StreamingDivx" default="true"/>
-        
+
         <setting visible="false" id="plugin_streaminz" type="bool" label="Streaminz" default="true"/>
 
 <!-- 14/01/21        <setting visible="false" id="plugin_streamiz" type="bool" label="Streamiz" default="true"/>
- -->        
+ -->
         <setting visible="false" id="plugin_streampourvous" type="bool" label="Streampourvous" default="true"/>
 
         <setting visible="false" id="plugin_telecharger_streaming" type="bool" label="Télécharger-streaming" default="true"/>
@@ -236,14 +236,12 @@
 
         <setting visible="false" id="plugin_tvseriestreaming" type="bool" label="TVseriestreaming" default="true"/>
 
-        <setting visible="false" id="plugin_vf_space" type="bool" label="VF.Space" default="true"/>
-
         <setting visible="false" id="plugin_videobuzzy_com" type="bool" label="Videobuzzy" default="true"/>
 
         <setting visible="false" id="plugin_viki_com" type="bool" label="Viki" default="true"/>
 
         <setting visible="false" id="plugin_voiranime" type="bool" label="voiranime" default="true"/>
-        
+
         <setting visible="false" id="plugin_voirfilms_org" type="bool" label="VoirFilms" default="true"/>
 
         <setting visible="false" id="plugin_voirseries_best" type="bool" label="VoirSeries" default="true"/>
@@ -367,7 +365,7 @@
         <setting id="hoster_debridlink_ID" type="text" label="Client ID" default=""/>
         <setting id="hoster_debridlink_token" type="text" label="30328" option="hidden" visible="true" default=""/>
         <setting id="hoster_debridlink_tokenrefresh" type="text" label="Refresh Token" option="hidden" visible="true" default=""/>
-        
+
         <setting label="Alldebrid" type="lsep"/>
         <setting type="sep"/>
         <setting id="hoster_alldebrid_premium" type="bool" label="30403" default="false"/>
