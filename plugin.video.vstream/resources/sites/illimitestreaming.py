@@ -13,7 +13,7 @@ from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'illimitestreaming'
 SITE_NAME = 'Illimitestreaming'
-SITE_DESC = ' films, de séries et de mangas en streaming VF et VOSTFR complets'
+SITE_DESC = 'Regarder Les Films & Séries VF. VOSTFR .VO'
 
 URL_MAIN = 'https://www.illimitestreaming.co/'
 
@@ -243,7 +243,7 @@ def showMovies(sSearch=''):
         else:
             sTypeYear = ''
 
-    sPattern = 'data-movie-id="\d+".+?href="([^"]+).+?oldtitle="([^"]+).+?data-original="([^"]+).+?desc"><p>([^<]+)'
+    sPattern = 'data-movie-id="\d+".+?href="([^"]+).+?oldtitle="([^"]+).+?data-original="([^ "]+).+?desc"><p>([^<]+)'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -289,6 +289,8 @@ def showMovies(sSearch=''):
                 sThumb = aEntry[2]
                 sDesc = aEntry[3]
 
+            # meilleur qualité mais laisser p/ car w\d+ possible plusieurs fois dans l'url
+            sThumb = re.sub('p/w\d+', 'p/w342', sThumb)
             try:
                 sDesc = unicode(sDesc, 'utf-8')  # converti en unicode
                 sDesc = utils.unescape(sDesc).encode('utf-8')    # retire les balises HTML
