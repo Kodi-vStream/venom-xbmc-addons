@@ -384,8 +384,6 @@ def showHosters():
 
     if (aResult[0] == True):
 
-        oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + sMovieTitle + '[/COLOR]')
-
         tab = aResult[1]
         n = len(tab)/3
         for i in range(n):
