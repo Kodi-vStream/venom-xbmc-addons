@@ -25,7 +25,6 @@ USER_AGENT = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/
 headers = {'User-Agent': USER_AGENT, 'Accept': '*/*', 'Connection': 'keep-alive'}
 
 icon = 'tv.png'
-# /home/lordvenom/.kodi/
 # sRootArt = cConfig().getRootArt()
 sRootArt = 'special://home/addons/plugin.video.vstream/resources/art/tv'
 
@@ -58,26 +57,10 @@ def load():
 def showGenres():
     oGui = cGui()
 
-    liste = []
-    liste.append(['70', '70'])
-    liste.append(['80', '80'])
-    liste.append(['90', '90'])
-    liste.append(['Classic', 'Classic'])
-    liste.append(['Clubbing', 'Clubbing'])
-    liste.append(['Dance', 'Dance'])
-    liste.append(['Electronic', 'Electronic'])
-    liste.append(['Funk', 'Funk'])
-    liste.append(['Hip-Hop', 'Hip-Hop'])
-    liste.append(['Hits', 'Hits'])
-    liste.append(['Jazz', 'Jazz'])
-    liste.append(['Lounge', 'Lounge'])
-    liste.append(['Love', 'Love'])
-    liste.append(['Metal', 'Metal'])
-    liste.append(['News', 'News'])
-    liste.append(['Pop', 'Pop'])
-    liste.append(['Rock', 'Rock'])
-    liste.append(['Slow', 'Slow'])
-    liste.append(['Trance', 'Trance'])
+    liste = [['70', '70'], ['80', '80'], ['90', '90'], ['Classic', 'Classic'], ['Clubbing', 'Clubbing'],
+             ['Dance', 'Dance'], ['Electronic', 'Electronic'], ['Funk', 'Funk'], ['Hip-Hop', 'Hip-Hop'],
+             ['Hits', 'Hits'], ['Jazz', 'Jazz'], ['Lounge', 'Lounge'], ['Love', 'Love'], ['Metal', 'Metal'],
+             ['News', 'News'], ['Pop', 'Pop'], ['Rock', 'Rock'], ['Slow', 'Slow'], ['Trance', 'Trance']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sIdent in liste:
@@ -90,7 +73,7 @@ def showGenres():
 
 def parseWebM3U():  # Traite les m3u
     playlist = []
-    song = track(None, None, None, None)
+    # song = track(None, None, None, None)
     sFile = 'special://home/addons/plugin.video.vstream/resources/extra/radio.xspf'
 
     if not xbmcvfs.exists(sFile):
@@ -100,10 +83,10 @@ def parseWebM3U():  # Traite les m3u
     sHtmlContent = f.read()
     f.close()
 
-    line = re.compile('<location>(.+?)<.+?<title>(.+?)<.+?<image>(.+?)<.+?<identifier>(.+?)<', re.MULTILINE | re.IGNORECASE | re.DOTALL).findall(sHtmlContent)
+    line = re.compile('<location>([^<]+).+?title>([^<]+).+?image>([^<]+).+?identifier>([^<]+)', re.MULTILINE | re.IGNORECASE | re.DOTALL).findall(sHtmlContent)
 
     if line:
-        total = len(line)
+        # total = len(line)
 
         for result in line:
             # sUrl2 = result[0].replace('\r', '')
