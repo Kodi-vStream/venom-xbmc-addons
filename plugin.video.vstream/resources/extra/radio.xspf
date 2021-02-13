@@ -3,6 +3,12 @@
 	<title>vStream Radio</title>
 	<trackList>
 		<track>
+			<location>http://listen.shoutcast.com/100-hard-rock.m3u</location>
+			<title>100 % Hard Rock</title>
+			<image>https://ws.shoutcast.com/images/contacts/3/3b50/3b504300-32e3-4efe-a703-b287b63125aa/radios/a5a80f3b-760a-4e6a-ad33-bf81753b7d43/a5a80f3b-760a-4e6a-ad33-bf81753b7d43.jpg</image>
+			<identifier>Rock</identifier>
+		</track>
+		<track>
 			<location>http://listen.shoutcast.com/100-pour-cent-france.m3u</location>
 			<title>100 pour cent France</title>
 			<image>https://ws.shoutcast.com/images/contacts/5/51f4/51f43cd6-dc11-4afa-ab28-9bdaf8c1e687/radios/460e0157-8df4-4de8-9823-de41e1edcb07/460e0157-8df4-4de8-9823-de41e1edcb07.jpg</image>
@@ -15,10 +21,22 @@
 			<identifier>Rock</identifier>
 		</track>
 		<track>
+			<location>http://listen.shoutcast.com/4u-hard-fm.m3u</location>
+			<title>4U Rock N Metal</title>
+			<image>https://ws.shoutcast.com/images/contacts/7/7e22/7e22b37f-bd10-41c0-a4bc-de465345ac38/radios/1f8e9574-3425-4c22-90d7-b2db2c4fc276/1f8e9574-3425-4c22-90d7-b2db2c4fc276.jpg</image>
+			<identifier>Rock</identifier>
+		</track>
+		<track>
 			<location>http://str4uice.streamakaci.com/4uclassicrock.mp3.m3u</location>
 			<title>4U Classic Rock</title>
 			<image>https://i3.radionomy.com/radios/400/8d44acef-ed6d-4402-9d20-79d584eef7e9.png</image>
 			<identifier>Rock</identifier>
+		</track>
+		<track>
+			<location>http://stream.laut.fm/80sexitos</location>
+			<title>80s EXITOS</title>
+			<image>https://cdn.webradio.media/Images/41093-80-33.png</image>
+			<identifier>80</identifier>
 		</track>
 		<track>
 			<location>https://stream2.addictradio.net/addictalternative.mp3</location>
@@ -55,6 +73,12 @@
 			<title>Ado FM</title>
 			<image>https://i3.radionomy.com/radios/200/54fee3c7-a8c5-4c52-a2c8-36dcd4de4d4f.jpg</image>
 			<identifier>Hip-Hop</identifier>
+		</track>
+		<track>
+			<location>http://stream.laut.fm/albumradiosouvenirs</location>
+			<title>Album Radio Club</title>
+			<image>https://cdn.webradio.media/Images/28084-AR-Club-70-80-90-300x300.png</image>
+			<identifier>Dancefloor</identifier>
 		</track>
 		<track>
 			<location>http://d3-soundcast-edge-1.infomaniak.ch/alouette-high.mp3</location>
@@ -105,6 +129,12 @@
 			<identifier>Pop</identifier>
 		</track>
 		<track>
+			<location>https://manager5.streamradio.fr:1200/pymgiwne/1/winamp.m3u</location>
+			<title>Channel Music Radio</title>
+			<image>https://static.wixstatic.com/media/342975_699a7cfc76124e9abdfe389890c5981b~mv2.png/v1/fill/w_201,h_201,al_c,q_85,usm_1.20_1.00_0.01/logo%20transparent%20800%20plus%20nom.webp</image>
+			<identifier>Pop</identifier>
+		</track>
+		<track>
 			<location>https://chantefrance.ice.infomaniak.ch/chantefrance-128.mp3</location>
 			<title>Chante France</title>
 			<image>https://i3.radionomy.com/radios/200/c5b0a6d9-05d8-459d-baf7-71eed7b85f71.png</image>
@@ -112,7 +142,7 @@
 		</track>
 		<track>
 			<location>http://185.52.127.132/fr/30201/aac_64.mp3</location>
-			<title>Cherie FM</title>
+			<title>Chérie FM</title>
 			<image>https://players.nrjaudio.fm/live-metadata/player/img/player-files/cfm/logos/173x173/P_LOGO_CHERIE_BLOC_ROUGE-V1.png</image>
 			<identifier>Pop</identifier>
 		</track>
@@ -533,11 +563,23 @@
 		<track>
 			<location>http://cdn.nrjaudio.fm/audio1/fr/40016/aac_64.mp3</location>
 			<title>NRJ</title>
-			<image>https://i3.radionomy.com/radios/200/b84544f6-4e41-4cbf-be49-5defc5c80024.png</image>
+			<image>https://ws.shoutcast.com/images/contacts/b/b19c/b19ccd7c-18af-43fe-aab4-8991024a659f/radios/d06a25da-31c9-4f39-812f-c76cd35cb9f7/d06a25da-31c9-4f39-812f-c76cd35cb9f7.png</image>
 			<identifier>Hits</identifier>
 		</track>
 		<track>
-			<location>http://streaming.radionti.com/nti-128.mp3</location>
+			<location>http://listen.shoutcast.com/nrj.m3u</location>
+			<title>NRJ - Hit Music Only in Belgium</title>
+			<image>https://ws.shoutcast.com/images/contacts/b/b19c/b19ccd7c-18af-43fe-aab4-8991024a659f/radios/d06a25da-31c9-4f39-812f-c76cd35cb9f7/d06a25da-31c9-4f39-812f-c76cd35cb9f7.png</image>
+			<identifier>Hits</identifier>
+		</track>
+		<track>
+			<location>http://listen.shoutcast.com/nrjnouveautesbelgique.m3u</location>
+			<title>NRJ Nouveautés Belgique</title>
+			<image>https://ws.shoutcast.com/images/contacts/b/b19c/b19ccd7c-18af-43fe-aab4-8991024a659f/radios/35ed782d-3949-4115-aa91-b99fd2a85ab3/35ed782d-3949-4115-aa91-b99fd2a85ab3.png</image>
+			<identifier>Hits</identifier>
+		</track>
+		<track>
+			<location>http://streaming.radionti.com/nti-128.mp3.m3u</location>
 			<title>NTI</title>
 			<image>https://i3.radionomy.com/radios/200/c4b8b4b8-67e0-444b-8e4f-8788e4376744.jpg</image>
 			<identifier>Clubbing</identifier>
@@ -620,6 +662,12 @@
 			<title>Radio Nova</title>
 			<image>http://www.nova.fr/sites/default/files/2017-06/Grand_Mix_460x460.jpg</image>
 			<identifier>Hits</identifier>
+		</track>
+		<track>
+			<location>http://listen.shoutcast.com/radio-oldies-and-rock--n--roll.m3u</location>
+			<title>Radio Oldies and Rock 'N' Roll</title>
+			<image>https://ws.shoutcast.com/images/contacts/b/b225/b2257413-a9fb-4484-8c47-2abac570a0f4/radios/bffd254a-9629-4d9c-960e-12310cc9efc9/bffd254a-9629-4d9c-960e-12310cc9efc9.jpg</image>
+			<identifier>Rock</identifier>
 		</track>
 		<track>
 			<location>http://91.121.62.121:8100/listen.pls</location>
