@@ -585,18 +585,6 @@
 			<identifier>90</identifier>
 		</track>
 		<track>
-			<location>https://scdn.nrjaudio.fm/fr/30613/aac_64.mp3?listenerid=a978bc03c59cbbe6cc2f7365363b2f9d&awparams=companionAds%3Atrue;playerid:Nostalgie-Best-of-1970&origine=playernostalgie&cdn_path=adswizz_lbs7</location>
-			<title>Nostalgie Best of 70</title>
-			<image>https://players.nrjaudio.fm/live-metadata/player/img/player-files/nosta/logos/640x640/Nosta_Best_of_70_1.png</image>
-			<identifier>70</identifier>
-		</track>
-		<track>
-			<location>https://scdn.nrjaudio.fm/fr/30605/aac_64.mp3?listenerid=a978bc03c59cbbe6cc2f7365363b2f9d&awparams=companionAds%3Atrue;playerid:Nostalgie-Best-of-80-s&origine=playernostalgie&cdn_path=adswizz_lbs7</location>
-			<title>Nostalgie Best of 80</title>
-			<image>https://players.nrjaudio.fm/live-metadata/player/img/player-files/nosta/logos/640x640/Nosta_Best_of_80_1.png</image>
-			<identifier>80</identifier>
-		</track>
-		<track>
 			<location>http://listen.shoutcast.com/nostalgiechansonsfrancaises.m3u</location>
 			<title>Nostalgie Chansons Françaises</title>
 			<image>https://ws.shoutcast.com/images/contacts/4/4860/486058f4-92a4-447c-9c31-302077b5fda3/radios/06fe50fb-0d59-4f74-81a7-b7d873de1f77/06fe50fb-0d59-4f74-81a7-b7d873de1f77.png</image>
@@ -627,16 +615,40 @@
 			<identifier>Jazz</identifier>
 		</track>
 		<track>
-			<location>https://scdn.nrjaudio.fm/fr/30621/aac_64.mp3?listenerid=a978bc03c59cbbe6cc2f7365363b2f9d&awparams=companionAds%3Atrue;playerid:Nostalgie-Rock&origine=playernostalgie&cdn_path=adswizz_lbs7</location>
-			<title>Nostalgie Rock</title>
-			<image>https://players.nrjaudio.fm/live-metadata/player/img/player-files/nosta/logos/640x640/Nosta_WR_Rock_2.png</image>
+			<location>http://listen.shoutcast.com/nostalgiejohnnyhallyday.m3u</location>
+			<title>Nostalgie Johnny Hallyday</title>
+			<image>https://ws.shoutcast.com/images/contacts/4/4860/486058f4-92a4-447c-9c31-302077b5fda3/radios/74f20907-8fa4-4955-92b6-99fb21bf7b5d/74f20907-8fa4-4955-92b6-99fb21bf7b5d.png</image>
+			<identifier>Jazz</identifier>
+		</track>
+		<track>
+			<location>http://listen.shoutcast.com/nostalgielemeilleur.m3u</location>
+			<title>Nostalgie Le meilleur</title>
+			<image>https://ws.shoutcast.com/images/contacts/4/4860/486058f4-92a4-447c-9c31-302077b5fda3/radios/8950a2fa-df5f-432e-a420-8d10a8ed0869/8950a2fa-df5f-432e-a420-8d10a8ed0869.png</image>
+			<identifier>Lounge</identifier>
+		</track>
+		<track>
+			<location>http://listen.shoutcast.com/nostalgielove.m3u</location>
+			<title>Nostalgie Love</title>
+			<image>https://ws.shoutcast.com/images/contacts/4/4860/486058f4-92a4-447c-9c31-302077b5fda3/radios/9bc68bf6-a30b-42dc-ab97-330ba56141bc/9bc68bf6-a30b-42dc-ab97-330ba56141bc.png</image>
+			<identifier>Lounge</identifier>
+		</track>
+		<track>
+			<location>http://listen.shoutcast.com/nostalgienewwave.m3u</location>
+			<title>Nostalgie New Wave</title>
+			<image>https://ws.shoutcast.com/images/contacts/4/4860/486058f4-92a4-447c-9c31-302077b5fda3/radios/bc221aef-cae1-41fa-9f42-2b802b2cd08d/bc221aef-cae1-41fa-9f42-2b802b2cd08d.png</image>
+			<identifier>Lounge</identifier>
+		</track>
+		<track>
+			<location>http://listen.shoutcast.com/nostalgierock80.m3u</location>
+			<title>Nostalgie Rock 80</title>
+			<image>https://ws.shoutcast.com/images/contacts/4/4860/486058f4-92a4-447c-9c31-302077b5fda3/radios/42a1c5ce-435e-41e1-a274-591c0f55f162/42a1c5ce-435e-41e1-a274-591c0f55f162.png</image>
 			<identifier>Rock</identifier>
 		</track>
 		<track>
-			<location>https://scdn.nrjaudio.fm/fr/30609/aac_64.mp3?listenerid=a978bc03c59cbbe6cc2f7365363b2f9d&awparams=companionAds%3Atrue;playerid:Nostalgie-Les-Plus-Grands-Slows&origine=playernostalgie&cdn_path=adswizz_lbs7</location>
-			<title>Nostalgie Slow</title>
-			<image>https://players.nrjaudio.fm/live-metadata/player/img/player-files/nosta/logos/640x640/Nosta_WR_Les_plus_grands_slows_2.png</image>
-			<identifier>Slow</identifier>
+			<location>http://listen.shoutcast.com/nostalgierock90.m3u</location>
+			<title>Nostalgie Rock 90</title>
+			<image>https://ws.shoutcast.com/images/contacts/4/4860/486058f4-92a4-447c-9c31-302077b5fda3/radios/82be2b8a-c745-43c4-ae38-fae6b57f193a/82be2b8a-c745-43c4-ae38-fae6b57f193a.png</image>
+			<identifier>Rock</identifier>
 		</track>
 		<track>
 			<location>http://listen.shoutcast.com/nostalgiesoulparty.m3u</location>
