@@ -573,6 +573,18 @@
 			<identifier>Hits</identifier>
 		</track>
 		<track>
+			<location>http://listen.shoutcast.com/nostalgie80.m3u</location>
+			<title>Nostalgie 80</title>
+			<image>https://ws.shoutcast.com/images/contacts/4/4860/486058f4-92a4-447c-9c31-302077b5fda3/radios/37c974e0-ae6b-4875-bcab-0134f5a80054/37c974e0-ae6b-4875-bcab-0134f5a80054.png</image>
+			<identifier>80</identifier>
+		</track>
+		<track>
+			<location>http://listen.shoutcast.com/nostalgie90.m3u</location>
+			<title>Nostalgie 90</title>
+			<image>https://ws.shoutcast.com/images/contacts/4/4860/486058f4-92a4-447c-9c31-302077b5fda3/radios/742e3108-c70b-42c2-970b-09d24a29ec5b/742e3108-c70b-42c2-970b-09d24a29ec5b.png</image>
+			<identifier>90</identifier>
+		</track>
+		<track>
 			<location>https://scdn.nrjaudio.fm/fr/30613/aac_64.mp3?listenerid=a978bc03c59cbbe6cc2f7365363b2f9d&awparams=companionAds%3Atrue;playerid:Nostalgie-Best-of-1970&origine=playernostalgie&cdn_path=adswizz_lbs7</location>
 			<title>Nostalgie Best of 70</title>
 			<image>https://players.nrjaudio.fm/live-metadata/player/img/player-files/nosta/logos/640x640/Nosta_Best_of_70_1.png</image>
@@ -585,6 +597,36 @@
 			<identifier>80</identifier>
 		</track>
 		<track>
+			<location>http://listen.shoutcast.com/nostalgiechansonsfrancaises.m3u</location>
+			<title>Nostalgie Chansons Françaises</title>
+			<image>https://ws.shoutcast.com/images/contacts/4/4860/486058f4-92a4-447c-9c31-302077b5fda3/radios/06fe50fb-0d59-4f74-81a7-b7d873de1f77/06fe50fb-0d59-4f74-81a7-b7d873de1f77.png</image>
+			<identifier>Lounge</identifier>
+		</track>
+		<track>
+			<location>http://listen.shoutcast.com/nostalgiecinema.m3u</location>
+			<title>Nostalgie Cinéma</title>
+			<image>https://ws.shoutcast.com/images/contacts/4/4860/486058f4-92a4-447c-9c31-302077b5fda3/radios/fe2b29a9-ce96-4815-a386-3e8e1f72bc32/fe2b29a9-ce96-4815-a386-3e8e1f72bc32.png</image>
+			<identifier>Lounge</identifier>
+		</track>
+		<track>
+			<location>http://listen.shoutcast.com/nostalgiedance80.m3u</location>
+			<title>Nostalgie Dance 80</title>
+			<image>https://ws.shoutcast.com/images/contacts/4/4860/486058f4-92a4-447c-9c31-302077b5fda3/radios/e969376f-d77e-4068-b448-9a5163daa16a/e969376f-d77e-4068-b448-9a5163daa16a.png</image>
+			<identifier>80</identifier>
+		</track>
+		<track>
+			<location>http://listen.shoutcast.com/nostalgiedance90.m3u</location>
+			<title>Nostalgie Dance 90</title>
+			<image>https://ws.shoutcast.com/images/contacts/4/4860/486058f4-92a4-447c-9c31-302077b5fda3/radios/6ee2c618-f537-4027-86ac-78e8f7b0923f/6ee2c618-f537-4027-86ac-78e8f7b0923f.png</image>
+			<identifier>90</identifier>
+		</track>
+		<track>
+			<location>http://listen.shoutcast.com/nostalgiejazz.m3u</location>
+			<title>Nostalgie Jazz</title>
+			<image>https://ws.shoutcast.com/images/contacts/4/4860/486058f4-92a4-447c-9c31-302077b5fda3/radios/6244bba0-04f5-4a6d-89ca-f40e36360ffb/6244bba0-04f5-4a6d-89ca-f40e36360ffb.png</image>
+			<identifier>Jazz</identifier>
+		</track>
+		<track>
 			<location>https://scdn.nrjaudio.fm/fr/30621/aac_64.mp3?listenerid=a978bc03c59cbbe6cc2f7365363b2f9d&awparams=companionAds%3Atrue;playerid:Nostalgie-Rock&origine=playernostalgie&cdn_path=adswizz_lbs7</location>
 			<title>Nostalgie Rock</title>
 			<image>https://players.nrjaudio.fm/live-metadata/player/img/player-files/nosta/logos/640x640/Nosta_WR_Rock_2.png</image>
@@ -594,6 +636,12 @@
 			<location>https://scdn.nrjaudio.fm/fr/30609/aac_64.mp3?listenerid=a978bc03c59cbbe6cc2f7365363b2f9d&awparams=companionAds%3Atrue;playerid:Nostalgie-Les-Plus-Grands-Slows&origine=playernostalgie&cdn_path=adswizz_lbs7</location>
 			<title>Nostalgie Slow</title>
 			<image>https://players.nrjaudio.fm/live-metadata/player/img/player-files/nosta/logos/640x640/Nosta_WR_Les_plus_grands_slows_2.png</image>
+			<identifier>Slow</identifier>
+		</track>
+		<track>
+			<location>http://listen.shoutcast.com/nostalgiesoulparty.m3u</location>
+			<title>Nostalgie Soul Party</title>
+			<image>https://ws.shoutcast.com/images/contacts/4/4860/486058f4-92a4-447c-9c31-302077b5fda3/radios/e874ddb7-785e-4d26-8bcf-1acaf831b893/e874ddb7-785e-4d26-8bcf-1acaf831b893.png</image>
 			<identifier>Slow</identifier>
 		</track>
 		<track>
