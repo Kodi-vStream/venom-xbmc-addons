@@ -579,16 +579,64 @@
 			<identifier>Hits</identifier>
 		</track>
 		<track>
-			<location>http://streaming.radionti.com/nti-128.mp3.m3u</location>
+			<location>http://streaming.radionti.com/nti-hd.mp3.m3u</location>
 			<title>NTI</title>
-			<image>https://i3.radionomy.com/radios/200/c4b8b4b8-67e0-444b-8e4f-8788e4376744.jpg</image>
+			<image>https://www.radionti.com/upload/design/5dd6aba2840dc2.95622307.png</image>
 			<identifier>Clubbing</identifier>
 		</track>
 		<track>
-			<location>http://ods.ice.infomaniak.ch/ods-high.mp3</location>
-			<title>ODS Radio</title>
-			<image>https://i3.radionomy.com/radios/200/0b68a421-9e16-4f3e-9fe3-d4c3a6c12dcf.png</image>
+			<location>http://ods-wr01.ice.infomaniak.ch/ods-wr01.mp3</location>
+			<title>ODS Années 80</title>
+			<image>https://www.odsradio.com/media/radio/thumb/100x100_512-ods-wr01.png</image>
+			<identifier>80</identifier>
+		</track>
+		<track>
+			<location>http://ods-wr03.ice.infomaniak.ch/ods-wr03.mp3</location>
+			<title>ODS Années 90</title>
+			<image>https://www.odsradio.com/media/radio/thumb/100x100_5e610120be846-ods-logo-rond-90.png</image>
+			<identifier>90</identifier>
+		</track>
+		<track>
+			<location>http://allzic13.ice.infomaniak.ch/allzic13.mp3</location>
+			<title>ODS Fitness</title>
+			<image>https://www.odsradio.com/media/radio/thumb/100x100_ods-logo-rond-byallzic-fitness.png</image>
+			<identifier>Lounge</identifier>
+		</track>
+		<track>
+			<location>http://allzic44.ice.infomaniak.ch/allzic44.mp3</location>
+			<title>ODS Live FR</title>
+			<image>https://www.odsradio.com/media/radio/thumb/100x100_ods-logo-rond-byallzic-livefr.png</image>
+			<identifier>Lounge</identifier>
+		</track>
+		<track>
+			<location>http://allzic21.ice.infomaniak.ch/allzic21.aac</location>
+			<title>ODS Lounge</title>
+			<image>https://www.odsradio.com/media/radio/thumb/100x100_ods-logo-rond-byallzic-lounge.png</image>
+			<identifier>Lounge</identifier>
+		</track>
+		<track>
+			<location>http://ods-wr02.ice.infomaniak.ch/ods-wr02.mp3</location>
+			<title>ODS Pop Folk</title>
+			<image>https://www.odsradio.com/media/radio/thumb/100x100_5e3db2551275d-ods-logo-rond-byallzic-2016.png</image>
 			<identifier>Rock</identifier>
+		</track>
+		<track>
+			<location>http://ods.ice.infomaniak.ch/ods-high.mp3.m3u</location>
+			<title>ODS Radio</title>
+			<image>https://www.odsradio.com/media/option/logo.png</image>
+			<identifier>Rock</identifier>
+		</track>
+		<track>
+			<location>http://allzic17.ice.infomaniak.ch/allzic17.mp3</location>
+			<title>ODS Rock FM</title>
+			<image>https://www.odsradio.com/media/radio/thumb/100x100_ods-logo-rond-byallzic-rockfm.png</image>
+			<identifier>Rock</identifier>
+		</track>
+		<track>
+			<location>http://allzic22.ice.infomaniak.ch/allzic22.mp3</location>
+			<title>ODS Top 10</title>
+			<image>https://www.odsradio.com/media/radio/thumb/100x100_ods-logo-rond-byallzic-top10.png</image>
+			<identifier>Hits</identifier>
 		</track>
 		<track>
 			<location>http://stream.ouifm.fr/ouifm-high.mp3</location>
