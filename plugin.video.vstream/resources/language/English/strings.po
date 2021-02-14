@@ -577,7 +577,7 @@ msgid "Trailer"
 msgstr ""
 
 msgctxt "#30213"
-msgid "Search Similar"
+msgid "Search"
 msgstr ""
 
 msgctxt "#30214"

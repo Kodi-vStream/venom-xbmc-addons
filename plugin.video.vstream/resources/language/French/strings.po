@@ -577,8 +577,8 @@ msgid "Trailer"
 msgstr "Bande annonce"
 
 msgctxt "#30213"
-msgid "Search Similar"
-msgstr "Recherche similaire"
+msgid "Search"
+msgstr "Rechercher"
 
 msgctxt "#30214"
 msgid "Trakt"
