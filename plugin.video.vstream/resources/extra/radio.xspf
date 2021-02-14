@@ -101,7 +101,7 @@
 		<track>
 			<location>http://start-adofm.ice.infomaniak.ch/start-adofm-high.mp3</location>
 			<title>Ado FM</title>
-			<image>https://i3.radionomy.com/radios/200/54fee3c7-a8c5-4c52-a2c8-36dcd4de4d4f.jpg</image>
+			<image>http://media.nrj.fr/webradio_logo/120x120/ado-fm_lwebradio.jpg</image>
 			<identifier>Hip-Hop</identifier>
 		</track>
 		<track>
@@ -113,13 +113,19 @@
 		<track>
 			<location>http://d3-soundcast-edge-1.infomaniak.ch/alouette-high.mp3</location>
 			<title>Alouette</title>
-			<image>https://i3.radionomy.com/radios/200/2bad83db-eee8-443a-8e52-f2f7a424dcd9.png</image>
+			<image>https://www.alouette.fr/upload/design/5d037848e2c0e6.65045490.png</image>
 			<identifier>Hits</identifier>
 		</track>
 		<track>
 			<location>http://alpes1gap.ice.infomaniak.ch/alpes1gap-high.mp3</location>
-			<title>Alpes 1</title>
-			<image>https://i3.radionomy.com/radios/200/e4be31e6-c6df-4ff7-af1b-0b5c83fb7588.png</image>
+			<title>Alpes 1 Alpes du Sud</title>
+			<image>http://alpesdusud.alpes1.com/media/option/logo.png</image>
+			<identifier>Hits</identifier>
+		</track>
+		<track>
+			<location>http://alpes1grenoble.ice.infomaniak.ch/alpes1grenoble-high.mp3</location>
+			<title>Alpes 1 Grenoble</title>
+			<image>http://grandgrenoble.alpes1.com/media/option/logo.png</image>
 			<identifier>Hits</identifier>
 		</track>
 		<track>
@@ -143,7 +149,7 @@
 		<track>
 			<location>http://streaming.radionomy.com/Best---Radio?lang=fr-FR%2cfr%3bq%3d0.9%2cen-US%3bq%3d0.8%2cen%3bq%3d0.7%2cpt%3bq%3d0.6%2cnl%3bq%3d0.5</location>
 			<title>Bestradio</title>
-			<image>https://i3.radionomy.com/radios/400/eee01d2a-8278-4723-9c72-446ac795d9d4.png</image>
+			<image>https://d3kle7qwymxpcy.cloudfront.net/images/broadcasts/70/d6/117347/1/c175.png</image>
 			<identifier>Jazz</identifier>
 		</track>
 		<track>
@@ -154,20 +160,20 @@
 		</track>
 		<track>
 			<location>http://listen.shoutcast.com/bleudream-80.m3u</location>
-			<title>Bleudream</title>
+			<title>Bleudream-80</title>
 			<image>https://ws.shoutcast.com/images/contacts/a/a78d/a78dc385-ff6f-41fb-b330-2b24d631ebb9/radios/10f73472-d493-4942-878f-1a0f50c8d7f4/10f73472-d493-4942-878f-1a0f50c8d7f4.jpg</image>
 			<identifier>80</identifier>
 		</track>
 		<track>
-			<location>http://www.streamakaci.com/radios/littoralam.asx</location>
+			<location>https://bretagne5.streamakaci.com/bretagne5.mp3</location>
 			<title>Bretagne 5</title>
-			<image>https://www.bretagne5.fr/wp-content/uploads/2017/10/bretagne5-558x558.png</image>
+			<image>https://www.bretagne5.fr/sites/bretagne5.fr/files/logo_0.png</image>
 			<identifier>News</identifier>
 		</track>
 		<track>
-			<location>http://s0n3.khot.us/c9.mp3</location>
+			<location>https://secure-stream.c9.fr/c9radio-192.mp3</location>
 			<title>C9 Radio</title>
-			<image>https://i3.radionomy.com/radios/200/fcec15a9-cbbf-403d-90ba-a89eb9052f00.jpg</image>
+			<image>https://www.c9.fr/assets/c9.png</image>
 			<identifier>Pop</identifier>
 		</track>
 		<track>
@@ -179,13 +185,13 @@
 		<track>
 			<location>https://chantefrance.ice.infomaniak.ch/chantefrance-128.mp3</location>
 			<title>Chante France</title>
-			<image>https://i3.radionomy.com/radios/200/c5b0a6d9-05d8-459d-baf7-71eed7b85f71.png</image>
+			<image>https://www.chantefrance.com/public/img/logo.png</image>
 			<identifier>Hits</identifier>
 		</track>
 		<track>
 			<location>http://radio5.pro-fhi.net:9027/</location>
-			<title>Chic Radio</title>
-			<image>https://i3.radionomy.com/radios/200/eb890225-ba6d-4eb9-be9b-d8421af62717.jpg</image>
+			<title>Chic Radio Hits</title>
+			<image>http://www.chicradiohits.fr/images/logo-smart-sanssl.jpg</image>
 			<identifier>Hits</identifier>
 		</track>
 		<track>
@@ -207,9 +213,9 @@
 			<identifier>Hits</identifier>
 		</track>
 		<track>
-			<location>http://radio-contact.ice.infomaniak.ch:80/radio-contact-high</location>
+			<location>https://radio-contact.ice.infomaniak.ch/radio-contact-high.mp3</location>
 			<title>Contact FM</title>
-			<image>https://i3.radionomy.com/radios/200/682fe093-c89c-48be-978e-50db78ea3f42.png</image>
+			<image>https://www.mycontact.fr/upload/design/5dbaea6d0883b4.76642440.png</image>
 			<identifier>Hits</identifier>
 		</track>
 		<track>
@@ -221,43 +227,43 @@
 		<track>
 			<location>http://cristalfm.no-ip.biz:8000/</location>
 			<title>Cristal FM</title>
-			<image>https://i3.radionomy.com/radios/200/af19e63b-e3fe-4f7f-afc5-bfe1ba920379.jpg</image>
+			<image>http://www.cristalfm.org/favicon-196.png</image>
 			<identifier>Hits</identifier>
 		</track>
 		<track>
 			<location>http://stream.demoisellefm.com:8000/rochefort-192.mp3</location>
 			<title>Demoiselle FM</title>
-			<image>https://i3.radionomy.com/radios/200/20ad7a95-6717-49f4-9eda-88d68858b284.png</image>
+			<image>https://www.demoisellefm.com/demoiselle/images/logov4.png</image>
 			<identifier>Hits</identifier>
 		</track>
 		<track>
 			<location>http://ridibundus.divergence-fm.org:8000/divergence.mp3</location>
 			<title>Divergence FM</title>
-			<image>https://i3.radionomy.com/radios/200/365a28f1-ebdb-47f4-ad48-cde664bc5e55.jpg</image>
+			<image>http://www.divergence-fm.org/divergencelogo.png</image>
 			<identifier>Pop</identifier>
 		</track>
 		<track>
 			<location>http://str30.creacast.com/ecn1</location>
 			<title>ECN</title>
-			<image>https://i3.radionomy.com/radios/200/35591614-0292-455e-bf55-7e3e9262b3a9.png</image>
+			<image>https://www.radioecn.com/upload/design/5d0754219f5151.19130481.png</image>
 			<identifier>Hits</identifier>
 		</track>
 		<track>
 			<location>http://www.enjoystation.net/player/mp3.m3u</location>
 			<title>Enjoy Station</title>
-			<image>https://i3.radionomy.com/radios/200/96f07fcc-5b34-4afd-94ff-0148eff61c5a.jpg</image>
+			<image>https://media.nrj.fr/webradio_logo/120x120/enjoy-station_logo2654.jpg</image>
 			<identifier>Hits</identifier>
 		</track>
 		<track>
-			<location>http://e1-live-mp3-128.scdn.arkena.com/europe1.mp3</location>
+			<location>https://stream-09.dc3.dailymotion.com/sec(kIyZk1TvJ__htJbCTbJjvMu0IU88Rn7ZvpZtZei313Y)/dm/3/xqjkfz/d/live-0.m3u8</location>
 			<title>Europe 1</title>
-			<image>https://i3.radionomy.com/radios/200/1689e2ca-fa60-6cb3-d0bd-f9d6221316ac.png</image>
+			<image>https://cdn-europe1.lanmedia.fr/europe1/apple-touch-icon.png</image>
 			<identifier>News</identifier>
 		</track>
 		<track>
-			<location>http://stream1.evasionfm.com/Oise</location>
+			<location>https://evasion60e.ice.infomaniak.ch/evasion60e-128.mp3</location>
 			<title>Evasion</title>
-			<image>https://i3.radionomy.com/radios/200/199c936b-529f-461b-82f5-37cbd15e9bf9.png</image>
+			<image>https://www.evasionfm.com/assets/img/logo_evasion_big.png</image>
 			<identifier>Hits</identifier>
 		</track>
 		<track>
@@ -267,40 +273,100 @@
 			<identifier>Blues</identifier>
 		</track>
 		<track>
-			<location>http://www.radiofg.com/streams/fgc.pls</location>
+			<location>https://radiofg.impek.com/max2.mp3</location>
+			<title>FG 90's</title>
+			<image>https://ecouter.lesindesradios.net/logos/orange491.png</image>
+			<identifier>90</identifier>
+		</track>
+		<track>
+			<location>https://radiofg.impek.com/fge.mp3</location>
+			<title>FG At Work</title>
+			<image>https://ecouter.lesindesradios.net/logos/orange238.png</image>
+			<identifier>Lounge</identifier>
+		</track>
+		<track>
+			<location>https://radiofg.impek.com/fgc.mp3</location>
 			<title>FG Chic</title>
-			<image>https://i3.radionomy.com/radios/200/47c63c61-4ead-41b6-abef-9c3d11e91de0.png</image>
+			<image>https://d3kle7qwymxpcy.cloudfront.net/images/broadcasts/97/6a/3171/4/c175.png</image>
+			<identifier>Lounge</identifier>
+		</track>
+		<track>
+			<location>https://radiofg.impek.com/fg6.mp3</location>
+			<title>FG Club</title>
+			<image>https://d3kle7qwymxpcy.cloudfront.net/images/broadcasts/77/a8/22108/2/c175.png</image>
+			<identifier>Clubbing</identifier>
+		</track>
+		<track>
+			<location>https://radiofg.impek.com/fgd.mp3</location>
+			<title>FG Deep Dance</title>
+			<image>https://d3kle7qwymxpcy.cloudfront.net/images/broadcasts/73/e5/3170/2/c175.png</image>
 			<identifier>Hits</identifier>
 		</track>
 		<track>
-			<location>http://www.radiofg.com/streams/fg6.pls</location>
-			<title>FG Clubbing</title>
-			<image>https://i3.radionomy.com/radios/200/d765535f-c71e-4422-9afd-3b243f50f0a9.png</image>
+			<location>https://radiofg.impek.com/max1.mp3</location>
+			<title>FG Maxximum</title>
+			<image>https://ecouter.lesindesradios.net/logos/orange490.png</image>
 			<identifier>Hits</identifier>
 		</track>
 		<track>
-			<location>http://www.radiofg.com/streams/fgd.pls</location>
-			<title>FG Dance</title>
-			<image>https://i3.radionomy.com/radios/200/4b1fbcf4-6500-4a96-84d2-28054f28f72d.png</image>
+			<location>https://radiofg.impek.com/fg.mp3</location>
+			<title>FG Radio FG</title>
+			<image>https://d3kle7qwymxpcy.cloudfront.net/images/broadcasts/7e/1d/1577/2/c175.png</image>
 			<identifier>Hits</identifier>
 		</track>
 		<track>
-			<location>http://www.radiofg.com/streams/fg.pls</location>
-			<title>FG DJ Radio</title>
-			<image>https://www.radiofg.com/upload/players/544f82eeba14a9.60371704.png</image>
-			<identifier>Hits</identifier>
-		</track>
-		<track>
-			<location>http://www.radiofg.com/streams/fgu.pls</location>
+			<location>https://radiofg.impek.com/ufg.mp3</location>
 			<title>FG Underground</title>
-			<image>https://i3.radionomy.com/radios/200/19613050-8b70-4b16-82c7-369a2eedc64f.jpg</image>
+			<image>https://d3kle7qwymxpcy.cloudfront.net/images/broadcasts/95/d3/1578/2/c175.png</image>
 			<identifier>Electronic</identifier>
 		</track>
 		<track>
-			<location>http://chai5she.cdn.dvmr.fr/fip-midfi.mp3</location>
+			<location>https://audio-edge-qgk6d.ams.f.radiomast.io/49eb538d-b99d-477c-9d07-774bdb627834</location>
+			<title>FG X-tra</title>
+			<image>https://ecouter.lesindesradios.net/logos/orange454.png</image>
+			<identifier>Electronic</identifier>
+		</track>
+		<track>
+			<location>https://icecast.radiofrance.fr/fip-hifi.aac</location>
 			<title>FIP</title>
-			<image>https://i3.radionomy.com/radios/200/f305a38d-349e-4fa2-852a-a194413d3fd3.png</image>
+			<image>https://d3kle7qwymxpcy.cloudfront.net/images/broadcasts/fd/45/4234/c175.png</image>
 			<identifier>Blues</identifier>
+		</track>
+		<track>
+			<location>https://icecast.radiofrance.fr/fipelectro-midfi.mp3</location>
+			<title>FIP Electro</title>
+			<image>https://d3kle7qwymxpcy.cloudfront.net/images/broadcasts/b0/49/103524/1/c175.png</image>
+			<identifier>Electronic</identifier>
+		</track>
+		<track>
+			<location>https://icecast.radiofrance.fr/fipgroove-midfi.mp3?ID=pd569ib97j</location>
+			<title>FIP Groove</title>
+			<image>https://d3kle7qwymxpcy.cloudfront.net/images/broadcasts/a4/5d/38217/2/c175.png</image>
+			<identifier>Groove</identifier>
+		</track>
+		<track>
+			<location>https://icecast.radiofrance.fr/fipjazz-midfi.mp3?ID=pd569ib97j</location>
+			<title>FIP Jazz</title>
+			<image>https://d3kle7qwymxpcy.cloudfront.net/images/broadcasts/36/24/38216/2/c175.png</image>
+			<identifier>Jazz</identifier>
+		</track>
+		<track>
+			<location>https://icecast.radiofrance.fr/fipworld-midfi.mp3?ID=pd569ib97j</location>
+			<title>FIP Monde</title>
+			<image>https://d3kle7qwymxpcy.cloudfront.net/images/broadcasts/91/7c/38218/2/c175.png</image>
+			<identifier>Lounge</identifier>
+		</track>
+		<track>
+			<location>https://icecast.radiofrance.fr/fipreggae-midfi.mp3?ID=pd569ib97j</location>
+			<title>FIP Reggae</title>
+			<image>https://d3kle7qwymxpcy.cloudfront.net/images/broadcasts/6f/78/103525/1/c175.png</image>
+			<identifier>Reggae</identifier>
+		</track>
+		<track>
+			<location>https://icecast.radiofrance.fr/fiprock-midfi.mp3?ID=pd569ib97j</location>
+			<title>FIP Rock</title>
+			<image>https://d3kle7qwymxpcy.cloudfront.net/images/broadcasts/e7/e8/38215/2/c175.png</image>
+			<identifier>Rock</identifier>
 		</track>
 		<track>
 			<location>http://listen.radionomy.com/france80.m3u</location>
@@ -1001,7 +1067,7 @@
 		<track>
 			<location>http://tsfjazz.ice.infomaniak.ch/tsfjazz-high.mp3</location>
 			<title>TSF Jazz</title>
-			<image>https://i3.radionomy.com/radios/200/7eef3657-9fee-7e93-7af7-707eb67c3b50.jpg</image>
+			<image>https://media.nrj.fr/webradio_logo/120x120/tsf-jazz_lwebradio.jpg</image>
 			<identifier>Jazz</identifier>
 		</track>
 		<track>
