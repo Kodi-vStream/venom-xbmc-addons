@@ -459,6 +459,30 @@
 			<identifier>Hits</identifier>
 		</track>
 		<track>
+			<location>http://eagle.streemlion.com:4171/stream</location>
+			<title>Kif Cool</title>
+			<image>http://www.kifradio.com/public/radios/player-png-140911141425.png</image>
+			<identifier>Pop</identifier>
+		</track>
+		<track>
+			<location>http://eagle.streemlion.com:4168/stream</location>
+			<title>Kif Radio</title>
+			<image>http://www.kifradio.com/public/radios/player-jpg-140911141400.jpg</image>
+			<identifier>Hits</identifier>
+		</track>
+		<track>
+			<location>http://eagle.streemlion.com:4180/stream</location>
+			<title>Kif Radio Hits</title>
+			<image>http://www.kifradio.com/public/radios/player-png-140911141635.png</image>
+			<identifier>Hits</identifier>
+		</track>
+		<track>
+			<location>http://eagle.streemlion.com:4183/stream</location>
+			<title>Kif Rock</title>
+			<image>http://www.kifradio.com/public/radios/player-png-140911141711.png</image>
+			<identifier>Rock</identifier>
+		</track>
+		<track>
 			<location>http://www.lagrosseradio.com/son/stream/192.m3u</location>
 			<title>La Grosse Radio</title>
 			<image>https://i3.radionomy.com/radios/200/60fc6a91-358e-4eb1-b112-c52dfee36fac.jpg</image>
@@ -787,6 +811,12 @@
 			<title>PulsRadio Trance</title>
 			<image>https://www.pulsradio.com/img/logo-trance.png</image>
 			<identifier>Trance</identifier>
+		</track>
+		<track>
+			<location>http://radio666.net:8000/666.mp3</location>
+			<title>Radio 666</title>
+			<image>http://www.radio666.com/wp-content/themes/radio666/images/logo-radio-666.png</image>
+			<identifier>Rock</identifier>
 		</track>
 		<track>
 			<location>http://players.creacast.com/creacast/classique/playlist.pls</location>
