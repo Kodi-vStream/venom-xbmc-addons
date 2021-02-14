@@ -371,37 +371,37 @@
 		<track>
 			<location>http://listen.radionomy.com/france80.m3u</location>
 			<title>France 80</title>
-			<image>https://i3.radionomy.com/radios/200/10f73472-d493-4942-878f-1a0f50c8d7f4.jpg</image>
+			<image>https://dbs.radioline.fr/pictures/radio_b724632c38ecc8dcfa9febe0d67de97c/logo200.jpg</image>
 			<identifier>Rock</identifier>
 		</track>
 		<track>
-			<location>http://direct.francebleu.fr/live/fb1071-midfi.mp3</location>
+			<location>http://icecast.radiofrance.fr/fb1071-midfi.mp3</location>
 			<title>France Bleu</title>
-			<image>https://i3.radionomy.com/radios/200/d92e9224-4d42-4f8f-8c80-6ff9c224c009.png</image>
+			<image>https://upload.wikimedia.org/wikipedia/fr/thumb/9/98/France_Bleu_logo_2015.svg/1200px-France_Bleu_logo_2015.svg.png</image>
 			<identifier>News</identifier>
 		</track>
 		<track>
-			<location>http://direct.franceculture.fr/live/franceculture-midfi.mp3</location>
+			<location>http://icecast.radiofrance.fr/franceculture-midfi.mp3</location>
 			<title>France Culture</title>
-			<image>https://i3.radionomy.com/radios/200/7bae99de-d622-c579-1ad3-d5aaba1d4e0d.png</image>
+			<image>https://upload.wikimedia.org/wikipedia/fr/thumb/c/c9/France_Culture_-_2008.svg/1200px-France_Culture_-_2008.svg.png</image>
 			<identifier>News</identifier>
 		</track>
 		<track>
-			<location>http://direct.franceinfo.fr/live/franceinfo-midfi.mp3</location>
+			<location>http://icecast.radiofrance.fr/franceinfo-midfi.mp3</location>
 			<title>France Info</title>
-			<image>https://i3.radionomy.com/radios/200/19f38f15-a5d5-b2ce-22e5-ad5445b022f2.png</image>
+			<image>https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Franceinfo.svg/510px-Franceinfo.svg.png</image>
 			<identifier>News</identifier>
 		</track>
 		<track>
-			<location>http://direct.franceinter.fr/live/franceinter-midfi.mp3</location>
+			<location>http://icecast.radiofrance.fr/franceinter-midfi.mp3</location>
 			<title>France Inter</title>
-			<image>https://i3.radionomy.com/radios/200/1872d1ab-9021-fb0a-1b82-3f02dcbaab69.jpg</image>
+			<image>https://upload.wikimedia.org/wikipedia/fr/thumb/3/39/France_Inter_logo.svg/1200px-France_Inter_logo.svg.png</image>
 			<identifier>News</identifier>
 		</track>
 		<track>
-			<location>http://freqplus.ice.infomaniak.ch:80/freqplus-high.mp3</location>
+			<location>http://freqplus.ice.infomaniak.ch/freqplus-high.mp3</location>
 			<title>Frequence Plus</title>
-			<image>https://i3.radionomy.com/radios/200/d4aba874-69b7-49cd-a657-61944ae53907.png</image>
+			<image>https://dbs.radioline.fr/pictures/radio_ddcfaff132ad1be1a32b9ae001d5b9d1/logo200.jpg</image>
 			<identifier>Hits</identifier>
 		</track>
 		<track>
@@ -413,7 +413,7 @@
 		<track>
 			<location>http://statslive.infomaniak.ch/playlist/frequencek/frequencek-128.mp3/playlist.m3u</location>
 			<title>Fréquence K</title>
-			<image>https://i3.radionomy.com/radios/200/41476a03-8af6-4067-8cfe-d96f148cb85f.png</image>
+			<image>https://dbs.radioline.fr/pictures/radio_2eabe654d934373f924ab2d244de7935/logo200.jpg</image>
 			<identifier>Hits</identifier>
 		</track>
 		<track>
