@@ -5,7 +5,6 @@ import random
 import time
 import xbmc
 import xbmcvfs
-import resources.sites.ianime as i
 
 from resources.lib.comaddon import progress, addon, dialog, VSlog, VSPath, isMatrix
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -452,25 +451,28 @@ def showMenu():
 
     if not sMedia:
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('pasteID', pasteID)
 
         cnt = contenu.intersection(['containFilms', 'containSeries', 'containAnimes', 'containDivers'])
         if len(cnt) == 1:
             showDetailMenu(pasteID, contenu)
         else:
             if 'containFilms' in contenu:
+                oOutputParameterHandler.addParameter('pasteID', pasteID)
                 oOutputParameterHandler.addParameter('sMedia', 'film')
                 oGui.addDir(SITE_IDENTIFIER, 'showMenu', 'Films', 'films.png', oOutputParameterHandler)
 
             if 'containSeries' in contenu:
+                oOutputParameterHandler.addParameter('pasteID', pasteID)
                 oOutputParameterHandler.addParameter('sMedia', 'serie')
                 oGui.addDir(SITE_IDENTIFIER, 'showMenu', 'Séries', 'tv.png', oOutputParameterHandler)
 
             if 'containAnimes' in contenu:
+                oOutputParameterHandler.addParameter('pasteID', pasteID)
                 oOutputParameterHandler.addParameter('sMedia', 'anime')
                 oGui.addDir(SITE_IDENTIFIER, 'showMenu', 'Animes', 'animes.png', oOutputParameterHandler)
 
             if 'containDivers' in contenu:
+                oOutputParameterHandler.addParameter('pasteID', pasteID)
                 oOutputParameterHandler.addParameter('sMedia', 'divers')
                 oGui.addDir(SITE_IDENTIFIER, 'showMenu', 'Divers', 'buzz.png', oOutputParameterHandler)
 
