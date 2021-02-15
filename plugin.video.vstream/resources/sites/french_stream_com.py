@@ -524,13 +524,13 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<a style="display.+?cid="([^"]+)".+?</i>([^"]+)</a>'
+    sPattern = '<a style="display.+?cid="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            oHoster = cHosterGui().checkHoster(aEntry[0])
+            oHoster = cHosterGui().checkHoster(aEntry)
             if (oHoster != False):
 
                 oHoster.setDisplayName(sMovieTitle)
