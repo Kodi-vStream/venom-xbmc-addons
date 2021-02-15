@@ -186,6 +186,8 @@
 
         <setting visible="false" id="plugin_neuf_docu" type="bool" label="9Docu" default="true"/>
 
+        <setting visible="false" id="plugin_o1seriestreaming" type="bool" label="01series" default="true"/>
+
         <setting visible="false" id="plugin_o1streaming" type="bool" label="O1 streaming" default="true"/>
 
         <setting visible="false" id="plugin_otaku_attitude" type="bool" label="Otaku-Attitude" default="true"/>
