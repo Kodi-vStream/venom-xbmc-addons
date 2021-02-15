@@ -51,7 +51,7 @@ ANIM_NEWS = (URL_MAIN + 'mangas/', 'showSeries')
 
 
 def decode_url_Serie(url, sId, tmp=''):
-    
+
     v = url
 
     if 'singh' in sId:
@@ -160,7 +160,7 @@ def ResolveUrl(url):
         sId = re.search(pat, url, re.DOTALL).group(1)
         hAsh = re.search(pat, url, re.DOTALL).group(2)
         hAsh = base64.b64decode(base64.b64decode(hAsh))
- 
+
         if sId == '2':
             url2 = 'https://oload.stream/embed/'
         elif sId == '3':
@@ -385,16 +385,16 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            sUrl2 = URL_MAIN[:-1] + aEntry[0]       
+            sUrl2 = URL_MAIN[:-1] + aEntry[0]
             sThumb = aEntry[1]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
-                
+
             sTitle = aEntry[2]
-            
+
             if (sSearch and ' - Saison ' in sTitle):  # La recherche retourne aussi des séries
                 continue
-            
+
             # on recupere le titre dans le poster car le site ne l'affiche pas toujours
             if (sTitle == ' '):
                 sTitle = aEntry[1].replace('/static/poster/', '').replace('-', ' ').replace('.jpg', '').title()
@@ -461,7 +461,7 @@ def showSeries(sSearch=''):
 
             if (sSearch and not ' - Saison ' in sTitle):  # La recherche retourne aussi des films
                 continue
-             
+
             # filtre pour réorienter les mangas
             # if '/manga' in sUrl:
                 # sType = 'mangas'
@@ -530,12 +530,13 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            oHoster = cHosterGui().checkHoster(aEntry)
+            sHosterUrl = aEntry
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
 
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, aEntry[0], sThumb)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
