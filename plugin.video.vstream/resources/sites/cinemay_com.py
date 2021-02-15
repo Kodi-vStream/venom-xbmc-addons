@@ -284,10 +284,10 @@ def showSeries():
 
     sDesc = ''
     try:
-        sPattern = '<p>Résumé.+?treaming : (.+?)</p>'
+        sPattern = '<p>Résumé.+?omplet : (.+?)</p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
-            sDesc = aResult[1][0]
+            sDesc = aResult[1][0].split('Résumé')[0]
     except:
         pass
 
@@ -397,10 +397,10 @@ def showHosters():
 
             sHosterUrl = aEntry
 
-            if 'opsktp' in aEntry:  # redirection vers ==> fsimg
-                oRequestHandler = cRequestHandler(aEntry)
-                oRequestHandler.request()
-                sHosterUrl = oRequestHandler.getRealUrl()
+            # if 'opsktp' in aEntry:  # redirection vers ==> fsimg
+                # oRequestHandler = cRequestHandler(aEntry)
+                # oRequestHandler.request()
+                # sHosterUrl = oRequestHandler.getRealUrl()
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
