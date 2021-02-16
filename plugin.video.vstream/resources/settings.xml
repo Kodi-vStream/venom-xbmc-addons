@@ -130,6 +130,8 @@
 
         <setting visible="false" id="plugin_filmstoon_pro" type="bool" label="Films Toon" default="true"/>
 
+        <setting visible="false" id="plugin_filmstreamingy" type="bool" label="FilmstreamingY" default="true"/>
+
         <setting visible="false" id="plugin_filmstreamvk_com" type="bool" label="Filmstream vk" default="true"/>
 
 <!-- CloudFlare 25/12/20        <setting visible="false" id="plugin_filmzenstream_com" type="bool" label="Filmzenstream)" default="true"/>
