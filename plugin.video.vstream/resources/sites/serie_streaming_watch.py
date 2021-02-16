@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+return False
+"""
+error: HTTPSConnectionPool(host='ww1.series-en-streaming.xyz', port=443):
+Max retries exceeded with url: /category/series/?orderby=date
+(Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection
+object at 0x0000000010234E80>: Failed to establish a new connection: [Errno 10061]
+Aucune connexion n\x92a pu \xeatre \xe9tablie car l\x92ordinateur cible l\x92a express\xe9ment refus\xe9e',))
+"""
 
 import re
 import xbmc
@@ -114,7 +122,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="video\s.+?href="([^"]+)".+?class="izimg".+?src="([^"]+)".+?title="([^"]+)"'
+    sPattern = '<div class="video\s.+?href="([^"]+).+?class="izimg".+?src="([^"]+).+?title="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
