@@ -73,13 +73,15 @@ def showGenres():
 
     sPattern = 'category menu-item.+?href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
     triAlpha = []
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
+            if ('liste-de-films-de-noel'  in aEntry[0]) or ('top-films-streaming-12'  in aEntry[0]):
+                continue
+
             sUrl = aEntry[0]
             sTitle = aEntry[1].capitalize().replace('Co-', 'Comédie-')
             triAlpha.append((sTitle, sUrl))
