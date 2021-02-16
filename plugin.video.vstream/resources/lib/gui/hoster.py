@@ -9,7 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.player import cPlayer
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.comaddon import dialog, addon, VSlog
-import xbmc
+
 
 class cHosterGui:
 
@@ -111,9 +111,6 @@ class cHosterGui:
 
         # bug
         oGui.addHost(oGuiElement, oOutputParameterHandler)
-        
-            
-        
 
     def checkHoster(self, sHosterUrl):
         # securite
@@ -140,18 +137,17 @@ class cHosterGui:
                 RH = RH.replace('www.', '')
                 tmp.setRealHost(RH.split('.')[0].upper())
                 return tmp
-            
+
         # L'user a active alldebrid ?
-            
         if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
             return self.getHoster('alldebrid')
 
         if self.ADDON.getSetting('hoster_debridlink_premium') == 'true':
-            if not "debrid.link" in sHosterUrl:
+            if "debrid.link" not in sHosterUrl:
                 return self.getHoster('debrid_link')
             else:
                 return self.getHoster("lien_direct")
-            
+
         # Gestion classique
         if ('streamz' in sHostName):
             return self.getHoster('streamz')
@@ -200,9 +196,9 @@ class cHosterGui:
         if ('uptostream' in sHostName):
             return self.getHoster('uptostream')
         if ('dailymotion' in sHostName) or ('dai.ly' in sHostName):
-            try:    
-                if 'stream' in sHosterUrl:    
-                    return self.getHoster('lien_direct')    
+            try:
+                if 'stream' in sHosterUrl:
+                    return self.getHoster('lien_direct')
             except:
                 pass
             else:
@@ -400,6 +396,8 @@ class cHosterGui:
             return self.getHoster('myvitv')
         if ('playtube' in sHostName):
             return self.getHoster('playtube')
+        if ('dwfull' in sHostName):
+            return self.getHoster('dwfull')
 
         # Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
@@ -409,7 +407,7 @@ class cHosterGui:
         if ('uplea' in sHostName):
             return self.getHoster('uplea')
         if ('uploaded' in sHostName) or ('ul.to' in sHostName):
-            if('/file/forbidden' in sHosterUrl):
+            if ('/file/forbidden' in sHosterUrl):
                 return False
             return self.getHoster('uploaded')
         if ('vidload' in sHostName):
@@ -430,9 +428,8 @@ class cHosterGui:
             return self.getHoster('lien_direct')
         if ('dl.free.fr' in sHostName):
             return False
-        if ('easyload.io' in sHostName):
+        if ('easyload' in sHostName):
             return self.getHoster('easyload')
-            
 
         # Si aucun hebergeur connu on teste les liens directs
         if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8.webm.mkv'):
@@ -477,7 +474,6 @@ class cHosterGui:
         oDialog.VSinfo(sHosterName, 'Resolve')
 
         try:
-
             oHoster.setUrl(sMediaUrl)
             aLink = oHoster.getMediaLink()
 
@@ -499,7 +495,6 @@ class cHosterGui:
             else:
                 oDialog.VSerror(self.ADDON.VSlang(30020))
                 return
-
         except:
             oDialog.VSerror(self.ADDON.VSlang(30020))
             return
