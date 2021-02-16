@@ -121,9 +121,6 @@ class cHome:
         oGui = cGui()
         oGui.addText('globalSearch', self.addons.VSlang(30077) % searchtext, 'none.png')
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oOutputParameterHandler.addParameter('searchtext', searchtext)
 
         # utilisation de guielement pour ajouter la bonne catégorie
         oGuiElement = cGuiElement()
@@ -135,35 +132,48 @@ class cHome:
         # oGuiElement.setFanart(sFanart)
 
         # Recherche globale films
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oOutputParameterHandler.addParameter('searchtext', searchtext)
         oGuiElement.setTitle(self.addons.VSlang(30078))
         oGuiElement.setFileName(self.addons.VSlang(30078))
         oGuiElement.setCat(1)
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         # Recherche globale séries
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oOutputParameterHandler.addParameter('searchtext', searchtext)
         oGuiElement.setTitle(self.addons.VSlang(30079))
         oGuiElement.setFileName(self.addons.VSlang(30079))
         oGuiElement.setCat(2)
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         # Recherche globale Animés
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oOutputParameterHandler.addParameter('searchtext', searchtext)
         oGuiElement.setTitle(self.addons.VSlang(30118))
         oGuiElement.setFileName(self.addons.VSlang(30118))
         oGuiElement.setCat(3)
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         # Recherche globale Dramas
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oOutputParameterHandler.addParameter('searchtext', searchtext)
         oGuiElement.setTitle(self.addons.VSlang(30123))
         oGuiElement.setFileName(self.addons.VSlang(30123))
         oGuiElement.setCat(4)
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         # Recherche globale divers
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oOutputParameterHandler.addParameter('searchtext', searchtext)
         oGuiElement.setTitle(self.addons.VSlang(30080))
         oGuiElement.setFileName(self.addons.VSlang(30080))
         oGuiElement.setCat(5)
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
+        # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        # oOutputParameterHandler.addParameter('searchtext', searchtext)
         # oOutputParameterHandler.addParameter('disp', 'search10')
         # oOutputParameterHandler.addParameter('readdb', 'True')
         # oGui.addDir('globalSearch', 'showSearchText', 'self.addons.VSlang(30417), 'search.png', oOutputParameterHandler)
@@ -407,8 +417,8 @@ class cHome:
             oGui.addText(SITE_IDENTIFIER, self.addons.VSlang(30416))
         else:
             oGui.addText(SITE_IDENTIFIER)
+        oOutputParameterHandler = cOutputParameterHandler()
         for match in row:
-            oOutputParameterHandler = cOutputParameterHandler()
 
             # code to get type with disp
             sType = self.addons.getSetting('search' + match[2][-1:] + '_type')
@@ -437,7 +447,6 @@ class cHome:
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         if row:
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
             oGui.addDir(SITE_IDENTIFIER, 'delSearch', self.addons.VSlang(30413), 'search.png', oOutputParameterHandler)
 
@@ -455,12 +464,12 @@ class cHome:
 
         oPluginHandler = cSiteHandler()
         aPlugins = oPluginHandler.getAvailablePlugins(sSiteUrl)
+        oOutputParameterHandler = cOutputParameterHandler()
         for aPlugin in aPlugins:
             try:
                 # exec('import ' + aPlugin[1])
                 # exec('sSiteUrl = ' + aPlugin[1] + '.' + sVar)
                 icon = 'sites/%s.png' % (aPlugin[2])
-                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', aPlugin[0])
                 oGui.addDir(aPlugin[2], aPlugin[3], aPlugin[1], icon, oOutputParameterHandler)
             except:
