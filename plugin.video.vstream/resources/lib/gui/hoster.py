@@ -313,7 +313,7 @@ class cHosterGui:
             return self.getHoster('iframe_secured')
         if ('iframe-secure' in sHostName):
             return self.getHoster('iframe_secure')
-        if ('goo.gl' in sHostName) or ('bit.ly' in sHostName) or ('streamcrypt' in sHostName):
+        if ('goo.gl' in sHostName) or ('bit.ly' in sHostName) or ('streamcrypt' in sHostName) or ('opsktp' in sHosterUrl):
             return self.getHoster('allow_redirects')
         if ('jawcloud' in sHostName):
             return self.getHoster('jawcloud')
