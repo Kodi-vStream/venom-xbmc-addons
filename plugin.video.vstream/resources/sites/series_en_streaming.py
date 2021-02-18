@@ -3,7 +3,7 @@
 
 """
 Pour rappel.
-Problème avec les DNS en ipv6 il faut utiliser les suivantes
+Problème avec les Dns en ipv6 il faut utiliser les suivantes
 CloudFlare DNS:
 Préféré : 2606:4700:4700::1111
 Auxiliaire : 2606:4700:4700::1001
@@ -11,6 +11,7 @@ Ou:
 Google DNS:
 Préféré : 2001:4860:4860::8888
 """
+
 import re
 import xbmc
 
@@ -24,8 +25,8 @@ from resources.lib.comaddon import progress, dialog
 from resources.lib.util import cUtil
 
 
-SITE_IDENTIFIER = 'serie_streaming_watch'
-SITE_NAME = 'Serie-Streaming-Watch'
+SITE_IDENTIFIER = 'series_en_streaming'
+SITE_NAME = 'Series-en-Streaming'
 SITE_DESC = 'Séries & Animés en Streaming'
 
 URL_MAIN = 'https://ww1.series-en-streaming.xyz/'
@@ -266,7 +267,7 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    sHosterUrl = ProtectstreamBypass(sUrl)
+    sHosterUrl = protectStreamByPass(sUrl)
     oHoster = cHosterGui().checkHoster(sHosterUrl)
 
     if (oHoster != False):
@@ -277,7 +278,7 @@ def showHosters():
     oGui.setEndOfDirectory()
 
 
-def ProtectstreamBypass(url):
+def protectStreamByPass(url):
 
     # lien commencant par VID_
     Codedurl = url
