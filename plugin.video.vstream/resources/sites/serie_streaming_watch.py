@@ -1,6 +1,16 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
+"""
+Pour rappel.
+Problème avec les DNS en ipv6 il faut utiliser les suivantes
+CloudFlare DNS:
+Préféré : 2606:4700:4700::1111
+Auxiliaire : 2606:4700:4700::1001
+Ou:
+Google DNS:
+Préféré : 2001:4860:4860::8888
+"""
 import re
 import xbmc
 
