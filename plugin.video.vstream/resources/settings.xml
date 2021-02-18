@@ -202,9 +202,9 @@
 
         <setting visible="false" id="plugin_planet_streaming" type="bool" label="Planet Streaming" default="true"/>
 
-        <setting visible="false" id="plugin_serie_streaming_watch" type="bool" label="SerieStreaming.watch" default="true"/>
-
         <setting visible="false" id="plugin_serie_streaminghd" type="bool" label="Série-StreamingHD" default="true"/>
+
+        <setting visible="false" id="plugin_series_en_streaming" type="bool" label="Series en Streaming" default="true"/>
 
         <setting visible="false" id="plugin_skyanimes" type="bool" label="Sky-Animes" default="true"/>
 
