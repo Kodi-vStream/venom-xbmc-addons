@@ -13,7 +13,7 @@ from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'kstreamingfilm'
 SITE_NAME = 'K Streaming Film'
-SITE_DESC = 'Médiathèque de chaînes officielles'
+SITE_DESC = 'Films en streaming français sur internet.'
 
 URL_MAIN = 'https://filmstreamz.xyz/'
 
