@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# source 42 14012021 https://fr.streamcomplet3.com (clone streamiz)
+# source 42 14012021
 return False  # Cloudflare
 import re
 
@@ -19,7 +19,8 @@ SITE_IDENTIFIER = 'streamcomplet3'
 SITE_NAME = 'Streamcomplet3'
 SITE_DESC = 'Films en streaming.'
 
-URL_MAIN = 'https://stream.apkgratuits.com/'
+URL_MAIN = 'https://in.streamcomplet3.com/'
+# URL_MAIN = 'https://stream.apkgratuits.com/'  # clone mais aussi sous CF
 
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN + '6/', 'showMovies')
