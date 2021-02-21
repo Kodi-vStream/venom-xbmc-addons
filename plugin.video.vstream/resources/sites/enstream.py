@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-return False
 import re
 import xbmc
 
@@ -17,7 +16,7 @@ SITE_IDENTIFIER = 'enstream'
 SITE_NAME = 'Enstream'
 SITE_DESC = 'Regarder tous vos films streaming complets, gratuit et illimité'
 
-URL_MAIN = 'https://enstream.to/'
+URL_MAIN = 'https://vvv.enstream.co/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = ('', FUNCTION_SEARCH)
