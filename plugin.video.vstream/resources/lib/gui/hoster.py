@@ -398,6 +398,8 @@ class cHosterGui:
             return self.getHoster('playtube')
         if ('dwfull' in sHostName):
             return self.getHoster('dwfull')
+        if ('directmoviedl' in sHostName) or ('moviesroot' in sHostName):
+            return self.getHoster('directmoviedl')
 
         # Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
