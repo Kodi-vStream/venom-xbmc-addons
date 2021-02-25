@@ -134,8 +134,8 @@
 
         <setting visible="false" id="plugin_filmstreamvk_com" type="bool" label="Filmstream vk" default="true"/>
 
-<!-- CloudFlare 25/12/20        <setting visible="false" id="plugin_filmzenstream_com" type="bool" label="Filmzenstream)" default="true"/>
- -->
+        <setting visible="false" id="plugin_filmzenstream_com" type="bool" label="Filmzenstream)" default="true"/>
+
         <setting visible="false" id="plugin_free_telechargement_org" type="bool" label="Free Telechargement" default="true"/>
 
         <setting visible="false" id="plugin_freebox" type="bool" label="active freebox" default="false"/>
@@ -158,7 +158,7 @@
 
         <setting visible="false" id="plugin_illimitestreaming" type="bool" label="Illimitestreaming" default="true"/>
 
-        <!-- <setting visible="false" id="plugin_k_streaming" type="bool" label="K_Streaming" default="true"/> -->
+        <setting visible="false" id="plugin_k_streaming" type="bool" label="K_Streaming" default="true"/>
 
         <setting visible="false" id="plugin_kaydo_ws" type="bool" label="kaydo" default="true"/>
 
@@ -207,6 +207,8 @@
         <setting visible="false" id="plugin_series_en_streaming" type="bool" label="Series en Streaming" default="true"/>
 
         <setting visible="false" id="plugin_skyanimes" type="bool" label="Sky-Animes" default="true"/>
+
+        <setting visible="false" id="plugin_sokrostream" type="bool" label="Sokrostream" default="true"/>
 
         <setting visible="false" id="plugin_spion_com" type="bool" label="Spion" default="true"/>
 
