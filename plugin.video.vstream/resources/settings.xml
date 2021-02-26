@@ -122,6 +122,8 @@
  -->
         <setting visible="false" id="plugin_enstream" type="bool" label="Enstream" default="true"/>
 
+        <setting visible="false" id="plugin_enstream_series" type="bool" label="Enstream (Séries)" default="true"/>
+
         <setting visible="false" id="plugin_extreme_down" type="bool" label="ExtremeDown" default="true"/>
 
 <!-- CloudFlare 26/11/20      <setting visible="false" id="plugin_filmoflix" type="bool" label="Filmoflix" default="true"/>
