@@ -155,7 +155,7 @@ class cInputWindowYesNo(xbmcgui.WindowDialog):
         self.strActionInfo = xbmcgui.ControlLabel(250, 20, 724, 400, kwargs.get('msg'), 'font40', '0xFFFF00FF')
         self.addControl(self.strActionInfo)
 
-        self.img = xbmcgui.ControlImage(250, 110, 500, 300, str(self.cptloc))
+        self.img = xbmcgui.ControlImage(500, 250, 280, 280, str(self.cptloc))
         self.addControl(self.img)
 
         self.Yesbutton = xbmcgui.ControlButton(250 + 520 - 50, 620, 100, 50, 'Yes', alignment=2)

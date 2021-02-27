@@ -10,6 +10,7 @@ import xbmcvfs
 import string
 import webbrowser
 
+from resources.lib.librecaptcha.gui import cInputWindowYesNo
 from resources.lib.util import QuotePlus
 from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix
 
@@ -211,14 +212,19 @@ class cTMDb:
             try:
                 #Si possible on ouvre la page automatiquement dans un navigateur internet.
                 webbrowser.open(url + result['request_token'])
+                sText = (self.ADDON.VSlang(30421)) % (url, result['request_token'])
+                DIALOG = dialog()
+                if not DIALOG.VSyesno(sText):
+                    return False
             except:
-                pass
-
-            sText = (self.ADDON.VSlang(30421)) % (url, result['request_token'])
-
-            DIALOG = dialog()
-            if not DIALOG.VSyesno(sText):
-                return False
+                from resources.lib import pyqrcode
+                qr = pyqrcode.create(url + result['request_token'])
+                qr.png('special://home/userdata/addon_data/plugin.video.vstream/qrcode.png', scale=5)
+                oSolver = cInputWindowYesNo(captcha='special://home/userdata/addon_data/plugin.video.vstream/qrcode.png', msg="Scanner le QRCode pour acceder au lien d'autorisation", roundnum=1)
+                retArg = oSolver.get()
+                DIALOG = dialog()
+                if retArg == "N":
+                    return False
 
             result = self._call('authentication/session/new', 'request_token=' + result['request_token'])
 
