@@ -708,7 +708,7 @@ def RecapchaBypass():
 
     Token_Alldebrid = cPremiumHandler("alldebrid").getToken()
 
-    if Token_Alldebrid != "":
+    if Token_Alldebrid:
         sUrl_Bypass = "https://api.alldebrid.com/v4/link/redirector?agent=service&version=1.0-&apikey="
         sUrl_Bypass += Token_Alldebrid + "&link=" + sUrl
 
