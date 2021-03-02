@@ -12,7 +12,7 @@ import webbrowser
 
 from resources.lib.librecaptcha.gui import cInputWindowYesNo
 from resources.lib.util import QuotePlus
-from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix
+from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix, xbmc
 
 try:
     import urllib2
@@ -209,14 +209,14 @@ class cTMDb:
 
         if (total > 0):
             url = 'https://www.themoviedb.org/authenticate/'
-            try:
+            if not xbmc.getCondVisibility('system.platform.android'):
                 #Si possible on ouvre la page automatiquement dans un navigateur internet.
                 webbrowser.open(url + result['request_token'])
                 sText = (self.ADDON.VSlang(30421)) % (url, result['request_token'])
                 DIALOG = dialog()
                 if not DIALOG.VSyesno(sText):
                     return False
-            except:
+            else:
                 from resources.lib import pyqrcode
                 qr = pyqrcode.create(url + result['request_token'])
                 qr.png('special://home/userdata/addon_data/plugin.video.vstream/qrcode.png', scale=5)
