@@ -61,29 +61,29 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append(['Action', URL_MAIN + 'action/'])
-    liste.append(['Animation', URL_MAIN + 'animation/'])
-    liste.append(['Aventure', URL_MAIN + 'aventure/'])
-    liste.append(['Biographie', URL_MAIN + 'biographie/'])
-    liste.append(['Comédie', URL_MAIN + 'comedie/'])
-    liste.append(['Comédie Dramatique', URL_MAIN + 'comedie-dramatique/'])
-    liste.append(['Crime', URL_MAIN + 'crime/'])
-    liste.append(['Drame', URL_MAIN + 'drame/'])
-    liste.append(['Documentaire', URL_MAIN + 'documentaire/'])
-    liste.append(['Familial', URL_MAIN + 'familial/'])
-    liste.append(['Fantasy', URL_MAIN + 'fantasy/'])
-    liste.append(['Fantastique', URL_MAIN + 'fantastique/'])
-    liste.append(['Guerre', URL_MAIN + 'guerre/'])
-    liste.append(['Histoire', URL_MAIN + 'histoire/'])
-    liste.append(['Horreur', URL_MAIN + 'horreur/'])
-    liste.append(['Mélodrame', URL_MAIN + 'melodrame/'])
-    liste.append(['Musique', URL_MAIN + 'musique/'])
-    liste.append(['Mystère', URL_MAIN + 'mystery/'])
-    liste.append(['Romance', URL_MAIN + 'romance/'])
-    liste.append(['Science-fiction', URL_MAIN + 'science-fiction/'])
-    liste.append(['Sports', URL_MAIN + 'sports/'])
-    liste.append(['Thriller', URL_MAIN + 'thriller/'])
-    liste.append(['Western', URL_MAIN + 'western/'])
+    liste.append(['Action', URL_MAIN + 'category/action/'])
+    liste.append(['Animation', URL_MAIN + 'category/animation/'])
+    liste.append(['Aventure', URL_MAIN + 'category/aventure/'])
+    liste.append(['Biographie', URL_MAIN + 'category/biographie/'])
+    liste.append(['Comédie', URL_MAIN + 'category/comedie/'])
+    liste.append(['Comédie Dramatique', URL_MAIN + 'category/comedie-dramatique/'])
+    liste.append(['Crime', URL_MAIN + 'category/crime/'])
+    liste.append(['Drame', URL_MAIN + 'category/drame/'])
+    liste.append(['Documentaire', URL_MAIN + 'category/documentaire/'])
+    liste.append(['Familial', URL_MAIN + 'category/famille'])
+    liste.append(['Fantasy', URL_MAIN + 'category/fantaisie/'])
+    liste.append(['Fantastique', URL_MAIN + 'category/fantastique/'])
+    liste.append(['Guerre', URL_MAIN + 'category/guerre/'])
+    liste.append(['Histoire', URL_MAIN + 'category/histoire/'])
+    liste.append(['Horreur', URL_MAIN + 'category/horreur/'])
+    liste.append(['Mélodrame', URL_MAIN + 'category/melodrame/'])
+    liste.append(['Musique', URL_MAIN + 'category/musical/'])
+    liste.append(['Mystère', URL_MAIN + 'category/mystere/'])
+    liste.append(['Romance', URL_MAIN + 'category/romance/'])
+    liste.append(['Science-fiction', URL_MAIN + 'category/science-fiction/'])
+    liste.append(['Sports', URL_MAIN + 'category/sport/'])
+    liste.append(['Thriller', URL_MAIN + 'category/thriller/'])
+    #liste.append(['Western', URL_MAIN + 'category/western/'])
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
@@ -140,9 +140,9 @@ def showMovies(sSearch=''):
             if len(sTitle) > 4 and sTitle[-4:].isdigit():
                 sYear = sTitle[-4:]
                 sTitle = sTitle[0:len(sTitle)-4]
-            sDisplayTitle = sTitle + '(' + sYear + ')'
-
+            sDisplayTitle = sTitle
             if sYear:
+                sDisplayTitle = sDisplayTitle + '(' + sYear + ')'
                 oOutputParameterHandler.addParameter('sYear', sYear)
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
