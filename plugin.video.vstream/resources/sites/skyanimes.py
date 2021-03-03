@@ -7,7 +7,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'skyanimes'
 SITE_NAME = 'Sky-Animes'
@@ -214,8 +214,10 @@ def showEpisode(sSearch=''):
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
-    sThumb = oInputParameterHandler.getValue('sThumb')
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    sThumb = sThumb.replace(' ', '%20')
+
     if sSearch:
         sUrl = sSearch
 
@@ -229,7 +231,6 @@ def showEpisode(sSearch=''):
         sPattern = '<td style="padding-left: 12px;"><a href="([^"]+).+?><b><img.+?>(.+?)</b>.+?</a>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    VSlog(aResult)
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
@@ -276,7 +277,7 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-
+    sThumb = sThumb.replace(' ', '%20')
     oHoster = cHosterGui().checkHoster('m3u8')
 
     if (oHoster != False):
