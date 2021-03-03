@@ -89,7 +89,7 @@ def showAnimMenu():
     oGui.setEndOfDirectory()
 
 
-def showDramasMenu():
+def showDramaMenu():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
