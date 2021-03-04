@@ -216,7 +216,8 @@ def showEpisode(sSearch=''):
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    sThumb = sThumb.replace(' ', '%20')
+    if sThumb:
+        sThumb = sThumb.replace(' ', '%20')
 
     if sSearch:
         sUrl = sSearch
@@ -277,7 +278,8 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    sThumb = sThumb.replace(' ', '%20')
+    if sThumb:
+        sThumb = sThumb.replace(' ', '%20')
     oHoster = cHosterGui().checkHoster('m3u8')
 
     if (oHoster != False):
