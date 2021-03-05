@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'o1streaming'
 SITE_NAME = '01 Streaming'
 SITE_DESC = 'Films & Séries'
 
-URL_MAIN = 'https://01streaming.ws/'
+URL_MAIN = 'https://01streaming.biz/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
