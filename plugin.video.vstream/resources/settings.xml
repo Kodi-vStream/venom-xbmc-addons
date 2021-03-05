@@ -246,6 +246,8 @@
 
         <setting visible="false" id="plugin_tvseriestreaming" type="bool" label="TVseriestreaming" default="true"/>
 
+        <setting visible="false" id="plugin_vf_film" type="bool" label="VF Film" default="true"/>
+
         <setting visible="false" id="plugin_videobuzzy_com" type="bool" label="Videobuzzy" default="true"/>
 
         <setting visible="false" id="plugin_viki_com" type="bool" label="Viki" default="true"/>
