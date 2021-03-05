@@ -239,7 +239,7 @@ def showHoster():
     sPattern = 'Opt1"><iframe.+?src="([^"]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
 
             oRequestHandler = cRequestHandler(aEntry)
@@ -248,8 +248,8 @@ def showHoster():
             aResult = oParser.parse(sHtmlContent, sPattern)
 
             if aResult[0] is True:
-                for aEntry in aResult[1]:
-                    sHosterUrl = aEntry
+                for aEntry1 in aResult[1]:
+                    sHosterUrl = aEntry1
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
                     if (oHoster != False):
                         oHoster.setDisplayName(sMovieTitle)
