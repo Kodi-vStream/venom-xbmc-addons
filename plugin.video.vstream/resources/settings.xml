@@ -250,6 +250,8 @@
 
         <setting visible="false" id="plugin_vf_serie" type="bool" label="VF Série" default="true"/>
 
+        <setting visible="false" id="plugin_vfilms" type="bool" label="VFilms" default="true"/>
+
         <setting visible="false" id="plugin_videobuzzy_com" type="bool" label="Videobuzzy" default="true"/>
 
         <setting visible="false" id="plugin_viki_com" type="bool" label="Viki" default="true"/>
