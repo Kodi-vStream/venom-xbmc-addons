@@ -17,10 +17,14 @@ SITE_DESC = 'Films et Séries'
 
 URL_MAIN = 'https://www.4kstreamz.co/'
 
+MOVIE_MOVIE = (True, 'showMenuMovies')
+SERIE_SERIES = (True, 'showMenuTvShows')
+
 MOVIE_NEWS = (URL_MAIN + 'list-films.html', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
 SERIE_NEWS = (URL_MAIN + 'series.html', 'showMovies')
+
 URL_SEARCH = (URL_MAIN + 'recherche/', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
@@ -28,8 +32,8 @@ URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 
 def load():
     oGui = cGui()
-    oOutputParameterHandler = cOutputParameterHandler()
 
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
@@ -41,6 +45,38 @@ def load():
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showMenuMovies():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MOVIES[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showMenuTvShows():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
