@@ -20,19 +20,20 @@ URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-MOVIE_NEWS = (URL_MAIN + 'les-films-streaming', 'showMovies')
-MOVIE_VIEWS = (URL_MAIN + 'les-films-box-offices', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'film-streaming', 'showMovies')
+MOVIE_VIEWS = (URL_MAIN + 'films-box-office', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
 MOVIE_LIST = ('', 'showAlpha')
 
-SERIE_NEWS = (URL_MAIN + 'les-series-en-streaming', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'serie-streaming', 'showMovies')
 SERIE_GENRES = (True, 'showGenresTVShow')
 SERIE_ANNEES = (True, 'showMovieYearsTVShow')
 SERIE_LIST = ('', 'showAlphaTVShow')
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 SERIE_SERIES = (True, 'showMenuSeries')
+
 
 def load():
     oGui = cGui()
@@ -52,7 +53,7 @@ def load():
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Par ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
@@ -129,7 +130,7 @@ def showGenresTVShow():
 def showGenres(sTypeSerie=''):
     oGui = cGui()
 
-    listegenre = ['action',  'action-adventure', 'animation', 'aventure', 'comedie', 'crime', 'documentaire', 'drame',
+    listegenre = ['action', 'action-adventure', 'animation', 'aventure', 'comedie', 'crime', 'documentaire', 'drame',
                   'familial', 'fantastique', 'guerre', 'histoire', 'horreur', 'kids', 'musique', 'musical', 'mystere',
                   'news', 'science-fiction', 'science-fiction-fantastique', 'reality', 'romance', 'soap',
                   'talk', 'telefilm', 'thriller', 'war-politics', 'western']
@@ -173,6 +174,7 @@ def showAlpha(sTypeSerie=''):
 
 def showMovieYearsTVShow():
     showMovieYears(sTypeSerie='/series')
+
 
 def showMovieYears(sTypeSerie=''):
     oGui = cGui()
@@ -235,8 +237,7 @@ def showMovies(sSearch=''):
                 break
 
             sDesc = ''
-            sThumb = re.sub('/w\d+', '/w342', aEntry[0])
-            # sThumb = aEntry[0]
+            sThumb = re.sub('/w\d+/', '/w342/', aEntry[0])
             sTitle = aEntry[1].replace('film en streaming', '').replace('série en streaming', '')
             sYear = aEntry[2]
             sUrl2 = aEntry[3]
