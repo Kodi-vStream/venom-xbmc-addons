@@ -39,16 +39,16 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'notes.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'views.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Ordre alphabétique)', 'listes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Par ordre alphabétique)', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -63,7 +63,7 @@ def showSearch():
         return
 
 
-def showGenres():  # recup les genres et la quantites sur le site
+def showGenres():
     oGui = cGui()
     oParser = cParser()
     oRequestHandler = cRequestHandler(URL_MAIN)
@@ -137,7 +137,7 @@ def showMovies(sSearch=''):
                 break
 
             sUrl2 = aEntry[0]
-            sThumb = re.sub('/w\d+', '/w342', 'https:' + aEntry[1])
+            sThumb = re.sub('/w\d+/', '/w342/', 'https:' + aEntry[1])
             sTitle = aEntry[2]
             if'/lettre/' in sUrl:
                 sDesc = ''
