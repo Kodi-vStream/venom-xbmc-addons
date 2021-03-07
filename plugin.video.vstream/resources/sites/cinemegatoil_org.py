@@ -2,7 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 # 07/05/20 mise en place recaptcha
-# return False
+return False  # 07/03/2021
 
 import re
 import xbmc
