@@ -5,7 +5,7 @@ import xbmcvfs
 
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.util import QuotePlus, Unquote
-from resources.lib.comaddon import dialog, addon, VSlog, VSPath
+from resources.lib.comaddon import dialog, addon, VSlog, VSPath, isMatrix
 
 SITE_IDENTIFIER = 'cDb'
 SITE_NAME = 'DB'
@@ -121,19 +121,23 @@ class cDb:
 
     # Ne pas utiliser cette fonction pour les chemins
     def str_conv(self, data):
-        if isinstance(data, str):
-            # Must be encoded in UTF-8
+        if not isMatrix():
+            if isinstance(data, str):
+                # Must be encoded in UTF-8
+                try:
+                    data = data.decode('utf8')
+                except AttributeError:
+                    pass
+            import unicodedata
+            data = unicodedata.normalize('NFKD', data).encode('ascii', 'ignore')
+            
             try:
-                data = data.decode('utf8')
-            except AttributeError:
+                data = data.decode('string-escape')  # ATTENTION: provoque des bugs pour les chemins a cause du caractere '/'
+            except:
                 pass
-        import unicodedata
-        data = unicodedata.normalize('NFKD', data).encode('ascii', 'ignore')
-        
-        try:
-            data = data.decode('string-escape')  # ATTENTION: provoque des bugs pour les chemins a cause du caractere '/'
-        except:
-            pass
+
+        else:
+            data = data.encode().decode()
 
         return data
 
