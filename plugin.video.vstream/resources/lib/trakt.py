@@ -28,6 +28,7 @@ MAXRESULT = addon().getSetting('trakt_number_element')
 
 class cTrakt:
 
+    oOutputParameterHandler = cOutputParameterHandler()
     CONTENT = '0'
     ADDON = addon()
     DIALOG = dialog()
@@ -78,7 +79,6 @@ class cTrakt:
     def search(self):
         oGui = cGui()
 
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'https://')
         oOutputParameterHandler.addParameter('type', 'movie')
         oGui.addDir('themoviedb_org', 'showSearchMovie', self.ADDON.VSlang(30423), 'films.png', oOutputParameterHandler)
@@ -93,7 +93,6 @@ class cTrakt:
         # self.getToken()
         oGui = cGui()
 
-        oOutputParameterHandler = cOutputParameterHandler()
         if self.ADDON.getSetting('bstoken') == '':
             VSlog('bstoken invalid')
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
@@ -875,8 +874,8 @@ class cTrakt:
             sTitle = oInputParameterHandler.getValue('sFileName')
 
             if sType == "shows":
-                sSeason = re.search('aison(\s*[0-9]+)',sTitle).group(1)
-                sEpisode = re.search('pisode(\s*[0-9]+)',sTitle).group(1)
+                sSeason = re.search('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))',sTitle).group(2)
+                sEpisode = re.search('(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))',sTitle).group(2)
             else:
                 sSeason = False
                 sEpisode = False
