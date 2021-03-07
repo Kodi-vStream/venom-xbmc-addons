@@ -81,7 +81,7 @@
         <setting subsetting="true" label="30070" type="lsep"/>
         <setting type="sep"/>
 
-        <!--activation invisible des sources -->
+        <!--activation invisible des sources pour la recherche globale, il n'est pas utile de déclarer celles sans sSearch-->
         <setting visible="false" id="plugin__4kstreamz" type="bool" label="4kstreamz" default="true"/>
 
         <setting visible="false" id="plugin_adkami_com" type="bool" label="ADKami" default="true"/>
@@ -95,10 +95,6 @@
         <setting visible="false" id="plugin_asia_insane" type="bool" label="Asia Insane" default="true"/>
 
         <setting visible="false" id="plugin_buzzmonclick_com" type="bool" label="BuzzMonClick" default="true"/>
-
-        <setting visible="false" id="plugin_channelstream" type="bool" label="Channel Stream" default="true"/>
-
-        <setting visible="false" id="plugin_cine974" type="bool" label="Ciné 974" default="true"/>
 
         <setting visible="false" id="plugin_cinemay_cc" type="bool" label="Cinemay_cc" default="true"/>
 
@@ -198,15 +194,17 @@
 
         <setting visible="false" id="plugin_otakufr_com" type="bool" label="OtakuFR" default="true"/>
 
-        <setting visible="false" id="plugin_papstream" type="bool" label="PapStream" default="true"/>
-
         <setting visible="false" id="plugin_pastebin" type="bool" label="PasteBin" default="true"/>
 
         <setting visible="false" id="plugin_planet_streaming" type="bool" label="Planet Streaming" default="true"/>
 
+        <setting visible="false" id="plugin_psyplay" type="bool" label="Psy Play" default="true"/>
+
         <setting visible="false" id="plugin_serie_streaminghd" type="bool" label="Série-StreamingHD" default="true"/>
 
         <setting visible="false" id="plugin_series_en_streaming" type="bool" label="Series en Streaming" default="true"/>
+
+        <setting visible="false" id="plugin_series_stream" type="bool" label="Series Stream" default="true"/>
 
         <setting visible="false" id="plugin_skyanimes" type="bool" label="Sky-Animes" default="true"/>
 
@@ -261,6 +259,8 @@
         <setting visible="false" id="plugin_voirfilms_org" type="bool" label="VoirFilms" default="true"/>
 
         <setting visible="false" id="plugin_voirseries_best" type="bool" label="VoirSeries" default="true"/>
+
+        <setting visible="false" id="plugin_vostfree" type="bool" label="Vostfree" default="true"/>
 
         <setting visible="false" id="plugin_wawacity" type="bool" label="Wawacity" default="true"/>
 
