@@ -27,8 +27,6 @@ API_VERS = '2'
 MAXRESULT = addon().getSetting('trakt_number_element')
 
 class cTrakt:
-
-    oOutputParameterHandler = cOutputParameterHandler()
     CONTENT = '0'
     ADDON = addon()
     DIALOG = dialog()
@@ -39,6 +37,7 @@ class cTrakt:
         self.__sType = ''
 
     def getToken(self):
+        oOutputParameterHandler = cOutputParameterHandler()
         oRequestHandler = cRequestHandler(URL_API + 'oauth/device/code')
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
@@ -79,6 +78,7 @@ class cTrakt:
     def search(self):
         oGui = cGui()
 
+        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'https://')
         oOutputParameterHandler.addParameter('type', 'movie')
         oGui.addDir('themoviedb_org', 'showSearchMovie', self.ADDON.VSlang(30423), 'films.png', oOutputParameterHandler)
@@ -93,6 +93,7 @@ class cTrakt:
         # self.getToken()
         oGui = cGui()
 
+        oOutputParameterHandler = cOutputParameterHandler()
         if self.ADDON.getSetting('bstoken') == '':
             VSlog('bstoken invalid')
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
