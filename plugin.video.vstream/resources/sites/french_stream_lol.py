@@ -516,7 +516,7 @@ def showMovieLinks():
         except:
             pass
 
-    sPattern = '<span>\s*<a.*?href="([^"]+).+?hidden="true'
+    sPattern = '<li>\s*<a.*?href="([^"]+).+?hidden="true'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     valide_host = []
