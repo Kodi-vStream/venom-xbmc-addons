@@ -16,6 +16,7 @@ Historique des modifications
 - UrlResolver : compatibilité Matrix
 - TRAKT : Pagination dans les menus
 - TMDB : Affichage d'un QR Code pour activer la clef API
+- Recherche sous Matrix : Insensibilité à la casse des lettres
 
 *** 0.8.6***
 - Sablier réduit pour améliorer les performances de navigation
