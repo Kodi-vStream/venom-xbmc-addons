@@ -144,8 +144,6 @@
 
         <setting visible="false" id="plugin_funeralforamanga" type="bool" label="Funeral for a manga" default="true"/>
 
-        <setting visible="false" id="plugin_gum_gum_streaming_com" type="bool" label="Gum-Gum-Streaming" default="true"/>
-
         <setting visible="false" id="plugin_hds_fm" type="bool" label="Hds-fm" default="true"/>
 
         <setting visible="false" id="plugin_hds_stream" type="bool" label="Hds-stream" default="true"/>
@@ -199,6 +197,8 @@
         <setting visible="false" id="plugin_planet_streaming" type="bool" label="Planet Streaming" default="true"/>
 
         <setting visible="false" id="plugin_psyplay" type="bool" label="Psy Play" default="true"/>
+
+        <setting visible="false" id="plugin_serie_streaming" type="bool" label="Série Streaming" default="true"/>
 
         <setting visible="false" id="plugin_serie_streaminghd" type="bool" label="Série-StreamingHD" default="true"/>
 
