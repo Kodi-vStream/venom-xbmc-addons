@@ -23,7 +23,7 @@ MOVIE_NEWS = (URL_MAIN + 'film-en-streaming', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_VIEWS = (URL_MAIN + 'film-box-office', 'showMovies')
 
-SERIE_NEWS = (URL_MAIN + 'series-en-streming', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'series-streaming', 'showMovies')
 SERIE_GENRES = (True, 'showSeriesGenres')
 
 key_search_movies = '#searchsomemovies'
