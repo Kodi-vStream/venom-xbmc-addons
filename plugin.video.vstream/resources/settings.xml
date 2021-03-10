@@ -273,6 +273,8 @@
         <setting visible="false" id="plugin_zone_telechargement_ws" type="bool" label="Zone Téléchargement.ws" default="true"/>
 
         <setting visible="false" id="plugin_zustream" type="bool" label="ZuStream" default="true"/>
+
+        <setting visible="false" id="plugin_zustream_co" type="bool" label="ZuStream (Séries)" default="true"/>
     </category>
 
     <!-- Enregistrement -->
