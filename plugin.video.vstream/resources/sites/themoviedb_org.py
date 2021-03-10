@@ -379,7 +379,8 @@ def showGenreMovie():
         for i in result['genres']:
             sId, sTitle = i['id'], i['name']
 
-            sTitle = sTitle.encode("utf-8")
+            if not isMatrix():
+                sTitle = sTitle.encode("utf-8")
             sUrl = 'genre/' + str(sId) + '/movies'
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', str(sTitle), 'genres.png', oOutputParameterHandler)
