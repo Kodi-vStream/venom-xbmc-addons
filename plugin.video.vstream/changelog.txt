@@ -12,7 +12,7 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
-*** 0.8.7***
+*** 1.0.0***
 - UrlResolver : compatibilité Matrix
 - TRAKT : Pagination dans les menus
 - TMDB : Affichage d'un QR Code pour activer la clef API
