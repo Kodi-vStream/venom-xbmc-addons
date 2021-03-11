@@ -577,7 +577,7 @@ msgid "Trailer"
 msgstr ""
 
 msgctxt "#30213"
-msgid "Search Similar"
+msgid "Search"
 msgstr ""
 
 msgctxt "#30214"
@@ -1102,4 +1102,8 @@ msgstr ""
 
 msgctxt "#31103"
 msgid "Allow adult content"
+msgstr ""
+
+msgctxt "#31200"
+msgid "Choose the number of items to display"
 msgstr ""

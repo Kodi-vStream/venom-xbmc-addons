@@ -4,7 +4,7 @@ from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.comaddon import progress, addon, dialog, VSupdate, xbmc, VSlog, isMatrix
+from resources.lib.comaddon import progress, addon, dialog, VSupdate, xbmc, isMatrix
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.tmdb import cTMDb
@@ -37,47 +37,36 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', '%s (TMDB)' % addons.VSlang(30330), 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'movie/popular')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30425), 'comments.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'movie/now_playing')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30426), 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'movie/top_rated')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30427), 'notes.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'genre/movie/list')
     oGui.addDir(SITE_IDENTIFIER, 'showGenreMovie', addons.VSlang(30428), 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'tv/popular')
     oGui.addDir(SITE_IDENTIFIER, 'showSeries', addons.VSlang(30429), 'comments.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'tv/on_the_air')
     oGui.addDir(SITE_IDENTIFIER, 'showSeries', addons.VSlang(30430), 'series.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'tv/top_rated')
     oGui.addDir(SITE_IDENTIFIER, 'showSeries', addons.VSlang(30431), 'notes.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'genre/tv/list')
     oGui.addDir(SITE_IDENTIFIER, 'showGenreTV', addons.VSlang(30432), 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'person/popular')
     oGui.addDir(SITE_IDENTIFIER, 'showActors', addons.VSlang(30433), 'actor.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
     oGui.addDir('topimdb', 'load', 'Top Imdb', 'star.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
     oGui.addDir(SITE_IDENTIFIER, 'showFolderList', 'Listes TMDB', 'listes.png', oOutputParameterHandler)
 
@@ -92,11 +81,9 @@ def showSearch():
     oOutputParameterHandler.addParameter('siteUrl', 'search/movie')
     oGui.addDir(SITE_IDENTIFIER, 'showSearchMovie', addons.VSlang(30423), 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'search/tv')
     oGui.addDir(SITE_IDENTIFIER, 'showSearchSerie', addons.VSlang(30424), 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'search/person')
     oGui.addDir(SITE_IDENTIFIER, 'showSearchActor', addons.VSlang(30450), 'search.png', oOutputParameterHandler)
 
@@ -127,55 +114,46 @@ def showMyTmdb():
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oGui.addText(SITE_IDENTIFIER, (addons.VSlang(30306)) % (sUsername))
 
-            oOutputParameterHandler = cOutputParameterHandler()
             # /account/{account_id}/favorite/movies
             oOutputParameterHandler.addParameter('session_id', tmdb_session)
             oOutputParameterHandler.addParameter('siteUrl', 'account/%s/favorite/movies' % int(result['id']))
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30434), 'films.png', oOutputParameterHandler)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             # /account/{account_id}/rated/movies
             oOutputParameterHandler.addParameter('session_id', tmdb_session)
             oOutputParameterHandler.addParameter('siteUrl', 'account/%s/rated/movies' % int(result['id']))
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30435), 'notes.png', oOutputParameterHandler)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             # /account/{account_id}/watchlist/movies
             oOutputParameterHandler.addParameter('session_id', tmdb_session)
             oOutputParameterHandler.addParameter('siteUrl', 'account/%s/watchlist/movies' % int(result['id']))
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30436), 'views.png', oOutputParameterHandler)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             # /account/{account_id}/favorite/tv
             oOutputParameterHandler.addParameter('session_id', tmdb_session)
             oOutputParameterHandler.addParameter('siteUrl', 'account/%s/favorite/tv' % int(result['id']))
             oGui.addDir(SITE_IDENTIFIER, 'showSeries', addons.VSlang(30437), 'series.png', oOutputParameterHandler)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             # /account/{account_id}/rated/tv
             oOutputParameterHandler.addParameter('session_id', tmdb_session)
             oOutputParameterHandler.addParameter('siteUrl', 'account/%s/rated/tv' % int(result['id']))
             oGui.addDir(SITE_IDENTIFIER, 'showSeries', addons.VSlang(30438), 'notes.png', oOutputParameterHandler)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             # /account/{account_id}/watchlist/tv
             oOutputParameterHandler.addParameter('session_id', tmdb_session)
             oOutputParameterHandler.addParameter('siteUrl', 'account/%s/watchlist/tv' % int(result['id']))
             oGui.addDir(SITE_IDENTIFIER, 'showSeries', addons.VSlang(30440), 'views.png', oOutputParameterHandler)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             # /account/{account_id}/rated/tv/episodes
             oOutputParameterHandler.addParameter('session_id', tmdb_session)
             oOutputParameterHandler.addParameter('siteUrl', 'account/%s/rated/tv/episodes' % int(result['id']))
             oGui.addDir(SITE_IDENTIFIER, 'showSeries', addons.VSlang(30439), 'notes.png', oOutputParameterHandler)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             # /account/{account_id}/lists
             oOutputParameterHandler.addParameter('session_id', tmdb_session)
             oOutputParameterHandler.addParameter('siteUrl', 'account/%s/lists' % int(result['id']))
             oGui.addDir(SITE_IDENTIFIER, 'showUserLists', addons.VSlang(30441), 'listes.png', oOutputParameterHandler)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://')
             oGui.addDir(SITE_IDENTIFIER, 'ouTMyTmdb', addons.VSlang(30309), 'listes.png', oOutputParameterHandler)
 
@@ -397,12 +375,13 @@ def showGenreMovie():
     result = grab.getUrl(sUrl)
     total = len(result)
     if (total > 0):
+        oOutputParameterHandler = cOutputParameterHandler()
         for i in result['genres']:
             sId, sTitle = i['id'], i['name']
 
-            sTitle = sTitle.encode("utf-8")
+            if not isMatrix():
+                sTitle = sTitle.encode("utf-8")
             sUrl = 'genre/' + str(sId) + '/movies'
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', str(sTitle), 'genres.png', oOutputParameterHandler)
 
@@ -419,6 +398,7 @@ def showGenreTV():
     result = grab.getUrl(sUrl)
     total = len(result)
     if (total > 0):
+        oOutputParameterHandler = cOutputParameterHandler()
         for i in result['genres']:
             sId, sTitle = i['id'], i['name']
 
@@ -426,7 +406,6 @@ def showGenreTV():
                 sTitle = sTitle.encode("utf-8")
             # sUrl = API_URL + '/genre/' + str(sId) + '/tv'
             sUrl = 'discover/tv'
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('genre', sId)
             oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'genres.png', oOutputParameterHandler)
@@ -449,11 +428,11 @@ def showUserLists():
     result = grab.getUrl(sUrl, iPage, term)
     total = len(result)
     if (total > 0):
+        oOutputParameterHandler = cOutputParameterHandler()
         for i in result['results']:
             sId, sTitle = i['id'], i['name']
 
             # sUrl = API_URL + '/genre/' + str(sId) + '/tv'
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sId)
             oGui.addDir(SITE_IDENTIFIER, 'showLists', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -479,9 +458,8 @@ def showFolderList():
     liste.append(['Films de Noel', '40944'])
     # liste.append(['nom de la liste', 'ID de la liste'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showLists', sTitle, 'listes.png', oOutputParameterHandler)
 
@@ -674,10 +652,10 @@ def showSeries(sSearch=''):
             if (iPage > 0):
                 iNextPage = int(iPage) + 1
                 oOutputParameterHandler = cOutputParameterHandler()
-                if sSearch:
-                    oOutputParameterHandler.addParameter('sSearch', sSearch)
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('page', iNextPage)
+                if sSearch:
+                    oOutputParameterHandler.addParameter('sSearch', sSearch)
                 if (oInputParameterHandler.exist('genre')):
                     oOutputParameterHandler.addParameter('genre', oInputParameterHandler.getValue('genre'))
                 oGui.addNext(SITE_IDENTIFIER, 'showSeries', 'Page ' + str(iNextPage), oOutputParameterHandler)
@@ -733,6 +711,7 @@ def showSeriesSaison():
     if (total > 0):
         total = len(result['seasons'])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
 
         for i in result['seasons']:
             progress_.VSupdate(progress_, total)
@@ -749,7 +728,6 @@ def showSeriesSaison():
 
             sUrl = 'tv/' + str(sId) + '/season/' + str(SSeasonNum)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -831,6 +809,7 @@ def showSeriesEpisode():
     if (total > 0 and 'episodes' in result):
         total = len(result['episodes'])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
 
         for i in result['episodes']:
             progress_.VSupdate(progress_, total)
@@ -851,7 +830,6 @@ def showSeriesEpisode():
 
             sExtraTitle = ' S' + "%02d" % int(sSeason) + 'E' + "%02d" % int(sEpNumber)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sMovieTitle + '|' + sExtraTitle)  # Pour compatibilite Favoris
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -918,6 +896,7 @@ def showActors(sSearch=''):
     if (total > 0):
         total = len(result['results'])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
 
         # récup le nombre de page pour NextPage
         nbrpage = result['total_pages']
@@ -935,7 +914,6 @@ def showActors(sSearch=''):
             else:
                 sThumb = ''
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
@@ -963,13 +941,13 @@ def showActors(sSearch=''):
         if (int(iPage) < int(nbrpage)):
             iNextPage = int(iPage) + 1
             oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('page', iNextPage)
 
             # ajoute param sSearch pour garder le bon format d'url avec grab url
             if sSearch:
                 oOutputParameterHandler.addParameter('sSearch', sSearch)
 
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('page', iNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showActors', 'Page ' + str(iNextPage), oOutputParameterHandler)
 
     view = addons.getSetting('visuel-view')
@@ -995,6 +973,7 @@ def showFilmActor():
     if (total > 0):
         total = len(result['cast'])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
 
         for i in result['cast']:
             progress_.VSupdate(progress_, total)
@@ -1009,7 +988,6 @@ def showFilmActor():
             if not isMatrix():
                 sTitle = sTitle.encode("utf-8")
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://tmdb/%s' % sId)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -1065,6 +1043,7 @@ def showLists():
     if (total > 0):
         total = len(result['items'])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
 
         for i in result['items']:
             progress_.VSupdate(progress_, total)
@@ -1081,7 +1060,6 @@ def showLists():
 
             sDisplayTitle = "%s (%s)" % (sTitle, sVote)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://tmdb/%s' % sId)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)

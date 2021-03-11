@@ -74,55 +74,42 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_WORLD[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_WORLD[1], 'Top Films Mondial', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP250[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP250[1], 'Top 250', 'films.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler = cOutputParameterHandler()
     # oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP2021[0])
     # oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP2021[1], 'Top Films 2021', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP2020[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP2020[1], 'Top Films 2020', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP2019[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP2019[1], 'Top Films 2019', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP2018[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP2018[1], 'Top Films 2018', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP2017[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP2017[1], 'Top Films 2017', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP2016[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP2016[1], 'Top Films 2016', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP2015[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP2015[1], 'Top Films 2015', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP2014[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP2014[1], 'Top Films 2014', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP2013[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP2013[1], 'Top Films 2013', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP2012[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP2012[1], 'Top Films 2012', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP2011[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP2011[1], 'Top Films 2011', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP2010[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP2010[1], 'Top Films 2010', 'films.png', oOutputParameterHandler)
 
@@ -152,6 +139,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -167,7 +155,6 @@ def showMovies(sSearch=''):
             sYear = re.search('([0-9]{4})', aEntry[3]).group(1)
             sDesc = aEntry[5]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'none')
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sYear', sYear)

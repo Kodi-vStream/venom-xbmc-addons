@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'wiflix'
 SITE_NAME = 'Wiflix'
 SITE_DESC = 'Films & Séries en streaming'
 
-URL_MAIN = 'https://www.wiflix.cc/'
+URL_MAIN = 'https://wiflix.online/'
 
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming/', 'showMovies')
 MOVIE_EXCLU = (URL_MAIN + 'film-en-streaming/exclue', 'showMovies')
@@ -41,27 +41,21 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://film')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Films', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://serie')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Séries', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_EXCLU[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_EXCLU[1], 'Films et Séries (Exclues)', 'news.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler = cOutputParameterHandler()
     # oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
     # oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste)', 'az.png', oOutputParameterHandler)
 
@@ -111,8 +105,8 @@ def showGenres():
         # Trie des genres par ordre alphabétique
         TriAlpha = sorted(TriAlpha, key=lambda genre: genre[0])
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for sTitle, sUrl in TriAlpha:
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
         oGui.setEndOfDirectory()
@@ -155,6 +149,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
 
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
@@ -190,7 +185,6 @@ def showMovies(sSearch=''):
 
             sDisplaytitle = '%s [%s] (%s)' % (sTitle, Squal, sLang)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -257,6 +251,7 @@ def showSeries(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
 
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
@@ -273,7 +268,6 @@ def showSeries(sSearch=''):
             sUrl = aEntry[2]
             sDesc = aEntry[4]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -300,7 +294,7 @@ def showEpisodes():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<div class="(ep.+?)"|<a href="([^"]+)" target="x_player">'
+    sPattern = '<div class="(ep.+?)"|<a href="([^"]+)"[^><]+target="x_player">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -350,7 +344,7 @@ def showHosters():
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<a href="\/vd.php\?u=([^"]+)" *target="x_player_wfx"><span>([^<]+)'
+    sPattern = '<a href="\/vd.php\?u=([^"]+)"[^<>]+target="x_player_wfx"><span>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -365,7 +359,7 @@ def showHosters():
                 sHosterUrl = aEntry[0].replace('/wiflix.cc/', '')
             sLang = aEntry[1].replace('2', '').replace('3', '')
             if 'Vost' in aEntry[1]:
-                sDisplaytitle =('%s (%s)') % (sMovieTitle, sLang)
+                sDisplaytitle = ('%s (%s)') % (sMovieTitle, sLang)
             else:
                 sDisplaytitle = sMovieTitle
             oHoster = cHosterGui().checkHoster(sHosterUrl)

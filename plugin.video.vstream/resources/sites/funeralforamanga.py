@@ -59,79 +59,60 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'siteUrl')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Films & Séries', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Récents)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_POPULAR[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_POPULAR[1], 'Animés (Populaires)', 'views.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ANNEES[1], 'Animés (Années)', 'annees.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ALPHA[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ALPHA[1], 'Animés (Alpha)', 'az.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés (VF)', 'vf.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'siteUrl')
     oGui.addDir(SITE_IDENTIFIER, 'showSearchSerie', 'Recherche Séries', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_SERIE_NEWS[1], 'Animés Séries (Récents)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_SERIE_POPULAR[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_SERIE_POPULAR[1], 'Animés Séries (Populaires)', 'views.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_SERIE_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_SERIE_ANNEES[1], 'Animés Séries (Années)', 'annees.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_SERIE_ALPHA[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_SERIE_ALPHA[1], 'Animés Séries (Alpha)', 'az.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_SERIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_SERIE_GENRES[1], 'Animés Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_SERIE_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_SERIE_VOSTFRS[1], 'Animés Séries (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_SERIE_VFS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_SERIE_VFS[1], 'Animés Séries (VF)', 'vf.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'siteUrl')
     oGui.addDir(SITE_IDENTIFIER, 'showSearchMovie', 'Recherche Films', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_MOVIE_NEWS[1], 'Animés Films (Récents)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_MOVIE_POPULAR[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_MOVIE_POPULAR[1], 'Animés Films (Populaires)', 'views.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_MOVIE_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_MOVIE_ANNEES[1], 'Animés Films (Années)', 'annees.png', oOutputParameterHandler)
 
@@ -139,15 +120,12 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', ANIM_MOVIE_ALPHA[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_MOVIE_ALPHA[1], 'Animés Films (Alpha)', 'az.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_MOVIE_GENRES[1], 'Animés Films (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_MOVIE_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_MOVIE_VOSTFRS[1], 'Animés Films (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_MOVIE_VFS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_MOVIE_VFS[1], 'Animés Films (VF)', 'vf.png', oOutputParameterHandler)
 
@@ -171,10 +149,10 @@ def showAllAlpha(sfilter=''):
     url1 = 'videos?sk=a&alpha='
     url2 = '&filter=' + sfilter + '&unlicenced=1&p=1'
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for alpha in listalpha:
         sTitle = str(alpha).upper()
         sUrl = URL_MAIN + url1 + alpha + url2 
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'listes.png', oOutputParameterHandler)
 
@@ -192,10 +170,10 @@ def showSerieYears():
 def showAllYears(sfilter=''):
     oGui = cGui()
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(range(1983, 2022)):
         sYear = str(i)
         url1 = 'videos?sk=c&filter=' + sfilter + '&unlicenced=1&aired-min=' + sYear + '&aired-max=' + sYear + '&p=1'
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + url1)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
     oGui.setEndOfDirectory()
@@ -217,10 +195,10 @@ def showAllGenre(sfilter=''):
 
     url1 = URL_MAIN + 'videos?sk=c&filter=' + sfilter + '&unlicenced=1&genres='
     url2 = '&p=1'
+    oOutputParameterHandler = cOutputParameterHandler()
     for igenre in listegenre:
         sTitle = igenre.capitalize()
         sUrl = url1 + igenre + url2
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -280,6 +258,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -291,7 +270,6 @@ def showMovies(sSearch=''):
             sTitle = aEntry[3] 
             sDisplayTitle = sTitle + ' [' + sType + ']'
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -361,6 +339,7 @@ def showEpisodesxMovies():
 
     bvalid = False
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
                 bvalid = True
@@ -370,7 +349,6 @@ def showEpisodesxMovies():
                 sUrl = URL_MAIN[:-1] + aEntry[1]
                 sTitle = sMovieTitle + ' ' + aEntry[2].replace('Épisode', 'Episode')
 
-                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -396,6 +374,7 @@ def showLinks():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sId = aEntry[0]
             sHost = aEntry[1].replace(' ', '').replace('-', '')
@@ -403,7 +382,6 @@ def showLinks():
             sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
             sUrl2 = URL_MAIN + 'remote/ajax-load_video'
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)

@@ -533,7 +533,6 @@ class cGuiElement:
                 kwargs['season'] = self.__Season
             if (self.__Episode):
                 kwargs['episode'] = self.__Episode
-
             try:
                 meta = TMDb.get_meta(*args, **kwargs)
             except:
@@ -588,7 +587,6 @@ class cGuiElement:
 
         for key, value in meta.items():
             self.addItemValues(key, value)
-
         return
 
     def getItemValues(self):

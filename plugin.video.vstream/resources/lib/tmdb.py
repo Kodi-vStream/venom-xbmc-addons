@@ -10,8 +10,9 @@ import xbmcvfs
 import string
 import webbrowser
 
+from resources.lib.librecaptcha.gui import cInputWindowYesNo
 from resources.lib.util import QuotePlus
-from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix
+from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix, xbmc
 
 try:
     import urllib2
@@ -208,17 +209,22 @@ class cTMDb:
 
         if (total > 0):
             url = 'https://www.themoviedb.org/authenticate/'
-            try:
+            if not xbmc.getCondVisibility('system.platform.android'):
                 #Si possible on ouvre la page automatiquement dans un navigateur internet.
                 webbrowser.open(url + result['request_token'])
-            except:
-                pass
-
-            sText = (self.ADDON.VSlang(30421)) % (url, result['request_token'])
-
-            DIALOG = dialog()
-            if not DIALOG.VSyesno(sText):
-                return False
+                sText = (self.ADDON.VSlang(30421)) % (url, result['request_token'])
+                DIALOG = dialog()
+                if not DIALOG.VSyesno(sText):
+                    return False
+            else:
+                from resources.lib import pyqrcode
+                qr = pyqrcode.create(url + result['request_token'])
+                qr.png('special://home/userdata/addon_data/plugin.video.vstream/qrcode.png', scale=5)
+                oSolver = cInputWindowYesNo(captcha='special://home/userdata/addon_data/plugin.video.vstream/qrcode.png', msg="Scanner le QRCode pour acceder au lien d'autorisation", roundnum=1)
+                retArg = oSolver.get()
+                DIALOG = dialog()
+                if retArg == "N":
+                    return False
 
             result = self._call('authentication/session/new', 'request_token=' + result['request_token'])
 
@@ -238,8 +244,8 @@ class cTMDb:
     def get_idbyname(self, name, year='', mediaType='movie', page=1):
         #Pour les series il faut enlever le numero de l episode et la saison.
         if mediaType == "tv":
-            m = re.search('(?i)(\wpisode\s*([0-9]+))', name)
-            m1 = re.search('(?i)(\waison\s*([0-9]+))', name)
+            m = re.search('(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', name)
+            m1 = re.search('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', name)
             
             name = name.replace(m.group(1), '').replace(m1.group(1), '').replace('+', ' ')
 

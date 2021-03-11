@@ -163,7 +163,7 @@ class Cli(Frontend):
         global Objectif, DimTab
 
         ID = json.dumps(meta).split(',')[0].replace('[','')
-
+        
         f = xbmcvfs.File(STRINGS_PATH + "/data.txt")
         content = f.read()
         f.close()
@@ -172,9 +172,9 @@ class Cli(Frontend):
 
         # Recupere le theme de maniere plus precis.
         if (int(json.dumps(meta).split(',')[3]) * int(json.dumps(meta).split(',')[4]) > 9):
-            Objectif = Objectif[0].encode('utf-8').decode('unicode-escape')
-        else:
             Objectif = Objectif[1].encode('utf-8').decode('unicode-escape')
+        else:
+            Objectif = Objectif[0].encode('utf-8').decode('unicode-escape')
 
         DimTab = [int(json.dumps(meta).split(',')[3]), int(json.dumps(meta).split(u',')[4])]
 

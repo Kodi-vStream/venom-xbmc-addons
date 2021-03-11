@@ -2,7 +2,6 @@
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.hosters.hoster import iHoster
 import urlresolver
-import unicodedata
 
 class cHoster(iHoster):
 
@@ -16,20 +15,6 @@ class cHoster(iHoster):
         return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-
-        # vire accent et '\'
-        try:
-            sDisplayName = unicode(sDisplayName, 'utf-8')  # converti en unicode pour aider aux convertions
-        except:
-            pass
-
-        try:
-            sDisplayName = unicodedata.normalize('NFD', sDisplayName).encode('ascii', 'ignore').decode('unicode_escape')
-            sDisplayName = sDisplayName.encode('utf-8') #on repasse en utf-8
-        except TypeError:
-            sDisplayName = unicodedata.normalize('NFKD', sDisplayName.decode("utf-8")).encode('ASCII', 'ignore')
-            sDisplayName = sDisplayName.decode("utf-8") #on repasse en utf-8
-
         self.__sDisplayName = sDisplayName + ' [COLOR violet]'+ self.__sDisplayName + self.__sRealHost + '[/COLOR]'
 
     def setFileName(self, sFileName):

@@ -25,7 +25,6 @@ USER_AGENT = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/
 headers = {'User-Agent': USER_AGENT, 'Accept': '*/*', 'Connection': 'keep-alive'}
 
 icon = 'tv.png'
-# /home/lordvenom/.kodi/
 # sRootArt = cConfig().getRootArt()
 sRootArt = 'special://home/addons/plugin.video.vstream/resources/art/tv'
 
@@ -46,11 +45,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
     oGui.addDir(SITE_IDENTIFIER, 'showGenres', addons.VSlang(30203) + ' (Genres)', 'music.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
     oGui.addDir(SITE_IDENTIFIER, 'showAZ', addons.VSlang(30203) + ' (A-Z)', 'music.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
     oGui.addDir(SITE_IDENTIFIER, 'showWeb', addons.VSlang(30203), 'music.png', oOutputParameterHandler)
 
@@ -60,30 +57,13 @@ def load():
 def showGenres():
     oGui = cGui()
 
-    liste = []
-    liste.append(['70', '70'])
-    liste.append(['80', '80'])
-    liste.append(['90', '90'])
-    liste.append(['Classic', 'Classic'])
-    liste.append(['Clubbing', 'Clubbing'])
-    liste.append(['Dance', 'Dance'])
-    liste.append(['Electronic', 'Electronic'])
-    liste.append(['Funk', 'Funk'])
-    liste.append(['Hip-Hop', 'Hip-Hop'])
-    liste.append(['Hits', 'Hits'])
-    liste.append(['Jazz', 'Jazz'])
-    liste.append(['Lounge', 'Lounge'])
-    liste.append(['Love', 'Love'])
-    liste.append(['Metal', 'Metal'])
-    liste.append(['News', 'News'])
-    liste.append(['Pop', 'Pop'])
-    liste.append(['Rock', 'Rock'])
-    liste.append(['Slow', 'Slow'])
-    liste.append(['Trance', 'Trance'])
+    liste = [['70', '70'], ['80', '80'], ['90', '90'], ['Classic', 'Classic'], ['Clubbing', 'Clubbing'],
+             ['Dance', 'Dance'], ['Electronic', 'Electronic'], ['Funk', 'Funk'], ['Hip-Hop', 'Hip-Hop'],
+             ['Hits', 'Hits'], ['Jazz', 'Jazz'], ['Lounge', 'Lounge'], ['Love', 'Love'], ['Metal', 'Metal'],
+             ['News', 'News'], ['Pop', 'Pop'], ['Rock', 'Rock'], ['Slow', 'Slow'], ['Trance', 'Trance']]
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sIdent in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', '')
         oOutputParameterHandler.addParameter('ident', sIdent)
         oGui.addDir(SITE_IDENTIFIER, 'showWeb', sTitle, 'genres.png', oOutputParameterHandler)
@@ -93,7 +73,7 @@ def showGenres():
 
 def parseWebM3U():  # Traite les m3u
     playlist = []
-    song = track(None, None, None, None)
+    # song = track(None, None, None, None)
     sFile = 'special://home/addons/plugin.video.vstream/resources/extra/radio.xspf'
 
     if not xbmcvfs.exists(sFile):
@@ -103,10 +83,10 @@ def parseWebM3U():  # Traite les m3u
     sHtmlContent = f.read()
     f.close()
 
-    line = re.compile('<location>(.+?)<.+?<title>(.+?)<.+?<image>(.+?)<.+?<identifier>(.+?)<', re.MULTILINE | re.IGNORECASE | re.DOTALL).findall(sHtmlContent)
+    line = re.compile('<location>([^<]+).+?title>([^<]+).+?image>([^<]+).+?identifier>([^<]+)', re.MULTILINE | re.IGNORECASE | re.DOTALL).findall(sHtmlContent)
 
     if line:
-        total = len(line)
+        # total = len(line)
 
         for result in line:
             # sUrl2 = result[0].replace('\r', '')
@@ -137,12 +117,12 @@ def showWeb():  # Code qui s'occupe de liens TV du Web
         oOutputParameterHandler.addParameter('siteUrl', 'http://')
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]Aucun résultat[/COLOR] ')
     else:
+        oOutputParameterHandler = cOutputParameterHandler()
         for track in playlist:
             sThumb = track.image
             if not sThumb:
                 sThumb = 'tv.png'
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', track.location)
             oOutputParameterHandler.addParameter('sMovieTitle', track.title)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
@@ -172,14 +152,14 @@ def showAZ():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for i in string.digits:
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('AZ', i)
         oGui.addDir(SITE_IDENTIFIER, 'showWeb', i, 'az.png', oOutputParameterHandler)
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for i in string.ascii_uppercase:
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('AZ', i)
         oGui.addDir(SITE_IDENTIFIER, 'showWeb', i, 'az.png', oOutputParameterHandler)

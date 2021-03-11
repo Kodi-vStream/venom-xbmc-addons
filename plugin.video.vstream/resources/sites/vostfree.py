@@ -19,8 +19,7 @@ SITE_DESC = 'anime en streaming'
 URL_MAIN = 'https://vostfree.com/'
 
 URL_SEARCH = (URL_MAIN + '?do=search&subaction=search&speedsearch=1&story=', 'showMovies')
-URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
-URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_ANIMS = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN + 'films-vf-vostfr/', 'showMovies')
@@ -38,19 +37,15 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés (VF)', 'vf.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
@@ -95,6 +90,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
 
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
@@ -126,7 +122,6 @@ def showMovies(sSearch=''):
             if len(aEntry) > 4:
                 sDisplayTitle = sDisplayTitle + ' S' + aEntry[4] + ' E' + aEntry[5]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -230,17 +225,16 @@ def seriesHosters():
             sPattern = '<div class="lien-episode">.+?<b>' + epNumber + '<.+?href="([^"]+).+?<b>([^<]+)<'
             ddlData = oParser.parse(sHtmlContent, sPattern)
 
+            oOutputParameterHandler = cOutputParameterHandler()
             for aEntry2 in ddlData[1]:
                 sTitle = sMovieTitle + ' ' + epNumber + ' ' + aEntry2[1]
                 url = aEntry2[0]
 
                 if 'ouo' in url:
-                    oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', url)
                     oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
                     oGui.addLink(SITE_IDENTIFIER, 'DecryptOuo', sTitle, sThumb, '', oOutputParameterHandler)
-
                 else:
                     sHosterUrl = url
                     oHoster = cHosterGui().checkHoster(sHosterUrl)

@@ -35,27 +35,21 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', AGE_2A4ANS[0])
     oGui.addDir(SITE_IDENTIFIER, AGE_2A4ANS[1], 'Dessins animés 2 à 4 ans', 'enfants.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', VIDEO_EDU2_4[0])
     oGui.addDir(SITE_IDENTIFIER, VIDEO_EDU2_4[1], 'Vidéos éducative 2 à 4 ans', 'enfants.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', AGE_4A6ANS[0])
     oGui.addDir(SITE_IDENTIFIER, AGE_4A6ANS[1], 'Dessins animés 4 à 6 ans', 'enfants.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', VIDEO_EDU4_6[0])
     oGui.addDir(SITE_IDENTIFIER, VIDEO_EDU4_6[1], 'Vidéos éducative 4 à 6 ans', 'enfants.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', AGE_6A8ANS[0])
     oGui.addDir(SITE_IDENTIFIER, AGE_6A8ANS[1], 'Dessins animés 6 à 8 ans', 'enfants.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', VIDEO_EDU6_8[0])
     oGui.addDir(SITE_IDENTIFIER, VIDEO_EDU6_8[1], 'Vidéos éducative 6 à 8 ans', 'enfants.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', COMPIL[0])
     oGui.addDir(SITE_IDENTIFIER, COMPIL[1], 'Compilation dessins animés', 'enfants.png', oOutputParameterHandler)
 
@@ -75,6 +69,7 @@ def showMovies():
     aResult = oParser.parse(sHtml, sPattern)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             if sUrl.endswith('//'):
@@ -83,7 +78,6 @@ def showMovies():
             sThumb = aEntry[1]
             sTitle = sUrl.rsplit('/', 2)[1]  # on prend le titre de l'url plus fiable site bordelique
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addMisc(SITE_IDENTIFIER, 'showEpisode', sTitle, 'enfants.png', sThumb, '', oOutputParameterHandler)
@@ -104,6 +98,7 @@ def showEpisode():
     aResult = oParser.parse(sHtml, sPattern)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
             sUrl = aEntry[0]
@@ -113,7 +108,6 @@ def showEpisode():
             sThumb = aEntry[1]
             sTitle = aEntry[2]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)

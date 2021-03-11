@@ -21,15 +21,14 @@ SITE_DESC = 'Animés en Streaming'
 URL_MAIN = 'https://voiranime.to/'
 
 ANIM_ANIMS = (True, 'load')
-ANIM_NEWS = (URL_MAIN, "showAnimes")
-ANIM_NEWS_VOSTFR = (URL_MAIN + "?filter=subbed", "showAnimes")
-ANIM_NEWS_VF = (URL_MAIN + "?filter=dubbed", "showAnimes")
-ANIM_GENRES = (URL_MAIN + "anime-genre/", "showGenres")
+ANIM_NEWS = (URL_MAIN, 'showAnimes')
+ANIM_VOSTFRS = (URL_MAIN + '?filter=subbed', 'showAnimes')
+ANIM_VFS = (URL_MAIN + '?filter=dubbed', 'showAnimes')
+ANIM_GENRES = (URL_MAIN + 'anime-genre/', 'showGenres')
 ANIM_ALPHA = (URL_MAIN + 'liste-danimes/?start=', 'showAlpha')
 
 FUNCTION_SEARCH = 'showAnimes'
 URL_SEARCH = (URL_MAIN + '?post_type=wp-manga&m_orderby=views', 'showAnimes')
-# URL_SEARCH_SERIES = (URL_SEARCH[0] + '&s=', 'showAnimes')
 URL_SEARCH_ANIMS = (URL_SEARCH[0] + '&s=', 'showAnimes')
 
 URL_SEARCH_VOSTFR = (URL_SEARCH[0] + '&language=vostfr&s=', 'showAnimes')
@@ -41,29 +40,23 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_VOSTFR[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d\'animés [VOSTFR]', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d\'animés (VOSTFR)', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_VF[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d\'animés [VF]', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d\'animés (VF)', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS_VOSTFR[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS_VOSTFR[1], 'Animés (Derniers ajouts) [VOSTFR]', 'news.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS_VF[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS_VF[1], 'Animés (Derniers ajouts) [VF]', 'news.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés (VF)', 'vf.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Par genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ALPHA[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ALPHA[1], 'Animés (Par ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
@@ -72,7 +65,6 @@ def load():
 
 def showSearch():
     oGui = cGui()
-
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         oInputParameterHandler = cInputParameterHandler()
@@ -90,10 +82,10 @@ def showAlpha():
 
     progress_ = progress().VScreate(SITE_NAME)
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for i in range(-1, 27):
         progress_.VSupdate(progress_, 36)
 
-        oOutputParameterHandler = cOutputParameterHandler()
 
         if (i == -1):
             sTitle = 'ALL'
@@ -139,9 +131,8 @@ def showGenres():
     liste.append(['Surnaturel', sUrl + 'supernatural/'])
     liste.append(['Thriller', sUrl + 'thriller/'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showAnimes', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -184,7 +175,7 @@ def showAnimes(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
-
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -210,7 +201,6 @@ def showAnimes(sSearch=''):
 
             sDisplayTitle = '%s (%s)' % (sTitle, sLang)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -263,27 +253,26 @@ def showEpisodes():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
 
         # Dernier épisode
         sUrlEpisode = aResult[1][0][0]
         sTitle = aResult[1][0][1]
-        oOutputParameterHandler = cOutputParameterHandler()
+
         oOutputParameterHandler.addParameter('siteUrl', sUrlEpisode)
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oOutputParameterHandler.addParameter('sDesc', sDesc)
         oOutputParameterHandler.addParameter('sThumb', sThumb)
-
         oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', '===] Dernier épisode [===', '', sThumb, sDesc, oOutputParameterHandler)
 
         # Premier épisode
         sUrlEpisode = aResult[1][-1][0]
         sTitle = aResult[1][-1][1]
-        oOutputParameterHandler = cOutputParameterHandler()
+
         oOutputParameterHandler.addParameter('siteUrl', sUrlEpisode)
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oOutputParameterHandler.addParameter('sDesc', sDesc)
         oOutputParameterHandler.addParameter('sThumb', sThumb)
-
         oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', '===] Premier épisode [===', '', sThumb, sDesc, oOutputParameterHandler)
 
         # Liste des épisodes
@@ -291,12 +280,10 @@ def showEpisodes():
             sUrlEpisode = aEntry[0]
             sTitle = aEntry[1]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrlEpisode)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-
             oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -308,7 +295,6 @@ def showLinks():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    referer = oInputParameterHandler.getValue('referer')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -327,11 +313,11 @@ def showLinks():
     aResult = oParser.parse(sData, sPattern)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
             sTitle = sMovieTitle + aEntry
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sDesc', 'salut')

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# source 42 14012021 https://fr.streamcomplet3.com (clone streamiz)
-
+# source 42 14012021
+return False  # Cloudflare
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -19,10 +19,11 @@ SITE_IDENTIFIER = 'streamcomplet3'
 SITE_NAME = 'Streamcomplet3'
 SITE_DESC = 'Films en streaming.'
 
-URL_MAIN = 'https://fr.streamcomplet3.com/'
+URL_MAIN = 'https://in.streamcomplet3.com/'
+# URL_MAIN = 'https://stream.apkgratuits.com/'  # clone mais aussi sous CF
 
 MOVIE_MOVIE = ('http://', 'load')
-MOVIE_NEWS = (URL_MAIN , 'showMovies')
+MOVIE_NEWS = (URL_MAIN + '6/', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'film/', 'showMovies')
 MOVIE_BOXOFFICE = (URL_MAIN + 'film/box-office/', 'showMovies')
 MOVIE_VOSTFR = (URL_MAIN + 'film/vostfr/', 'showMovies')
@@ -40,23 +41,18 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (les plus vus)', 'views.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'views.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_BOXOFFICE[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_BOXOFFICE[1], 'Films (Box Office)', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VOSTFR[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VOSTFR[1], 'Films (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
@@ -65,7 +61,6 @@ def load():
 
 def showSearch():
     oGui = cGui()
-
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = sSearchText
@@ -76,18 +71,16 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
+
     liste = []
     listegenre = ['action', 'animation', 'aventure', 'comedie', 'drame', 'guerre', 'historique', 'horreur', 'musical',
                   'policier', 'romance', 'fiction', 'thriller', 'western', 'documentaire', 'spectacle']
 
-    # https://fr.streamcomplet3.com/v/film/action/
-    # https://fr.streamcomplet3.com/film/action/
     for igenre in listegenre:
         liste.append([igenre.capitalize(), URL_MAIN + 'film/' + igenre + '/'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -128,6 +121,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -137,7 +131,6 @@ def showMovies(sSearch=''):
             sThumb = aEntry[1]
             sTitle = aEntry[2]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -195,6 +188,7 @@ def showLinks():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry
 
@@ -206,7 +200,6 @@ def showLinks():
 
             sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, hostName)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)

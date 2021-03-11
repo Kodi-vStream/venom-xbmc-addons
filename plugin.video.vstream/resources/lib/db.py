@@ -5,7 +5,7 @@ import xbmcvfs
 
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.util import QuotePlus, Unquote
-from resources.lib.comaddon import dialog, addon, VSlog, VSPath
+from resources.lib.comaddon import dialog, addon, VSlog, VSPath, isMatrix
 
 SITE_IDENTIFIER = 'cDb'
 SITE_NAME = 'DB'
@@ -121,19 +121,23 @@ class cDb:
 
     # Ne pas utiliser cette fonction pour les chemins
     def str_conv(self, data):
-        if isinstance(data, str):
-            # Must be encoded in UTF-8
+        if not isMatrix():
+            if isinstance(data, str):
+                # Must be encoded in UTF-8
+                try:
+                    data = data.decode('utf8')
+                except AttributeError:
+                    pass
+            import unicodedata
+            data = unicodedata.normalize('NFKD', data).encode('ascii', 'ignore')
+            
             try:
-                data = data.decode('utf8')
-            except AttributeError:
+                data = data.decode('string-escape')  # ATTENTION: provoque des bugs pour les chemins a cause du caractere '/'
+            except:
                 pass
-        import unicodedata
-        data = unicodedata.normalize('NFKD', data).encode('ascii', 'ignore')
-        
-        try:
-            data = data.decode('string-escape')  # ATTENTION: provoque des bugs pour les chemins a cause du caractere '/'
-        except:
-            pass
+
+        else:
+            data = data.encode().decode()
 
         return data
 
@@ -204,8 +208,8 @@ class cDb:
 
         site = QuotePlus(meta['site'])
         ex = 'INSERT INTO watched (title, site) VALUES (?, ?)'
-        self.dbcur.execute(ex, (title, site))
         try:
+            self.dbcur.execute(ex, (title, site))
             self.db.commit()
             VSlog('SQL INSERT watched Successfully')
         except Exception:
@@ -255,11 +259,15 @@ class cDb:
         # hoster = meta['hoster']
         point = meta['point']
         ex = "DELETE FROM resume WHERE hoster = '%s'" % site
-        self.dbcur.execute(ex)
-        ex = 'INSERT INTO resume (title, hoster, point) VALUES (?, ?, ?)'
-        self.dbcur.execute(ex, (title, site, point))
+        try:
+            self.dbcur.execute(ex)
+        except Exception:
+            VSlog('SQL ERROR - ' + ex)
+            pass
 
         try:
+            ex = 'INSERT INTO resume (title, hoster, point) VALUES (?, ?, ?)'
+            self.dbcur.execute(ex, (title, site, point))
             self.db.commit()
         except Exception:
             VSlog('SQL ERROR INSERT resume, title = %s' % title)
@@ -388,11 +396,10 @@ class cDb:
         url = QuotePlus(meta['url'])
         sIcon = QuotePlus(meta['icon'])
         sPath = meta['path']
-
         ex = 'INSERT INTO download (title, url, path, cat, icon, size, totalsize, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
-        self.dbcur.execute(ex, (title,url, sPath,meta['cat'],sIcon, '', '', 0))
 
         try:
+            self.dbcur.execute(ex, (title,url, sPath,meta['cat'],sIcon, '', '', 0))
             self.db.commit()
             VSlog('SQL INSERT download Successfully')
             dialog().VSinfo(addon().VSlang(30042), meta['title'])

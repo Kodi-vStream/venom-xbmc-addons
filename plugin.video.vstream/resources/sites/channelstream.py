@@ -39,8 +39,8 @@ def load():
     liste.append(['Sport', 'Chaîne Sportive', 'sport.png'])
     liste.append(['Science et Nature', 'Chaîne axés sur les sciences', 'buzz.png'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sFiltre, sIcon in liste:
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', TV_FRENCH[0])
         oOutputParameterHandler.addParameter('sFiltre', sFiltre)
         oGui.addDir(SITE_IDENTIFIER, TV_FRENCH[1], sTitle, sIcon, oOutputParameterHandler)
@@ -66,6 +66,7 @@ def showMovies():
     EPG = cePg().get_epg('', 'direct')
 
     if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if "+18" not in str(aEntry[2]):
                 sTitle = aEntry[2]
@@ -75,10 +76,8 @@ def showMovies():
 
                 sUrl2 = URL_MAIN + aEntry[0]
                 sThumb = URL_MAIN + '/' + aEntry[1]
-
                 sDesc = getEPG(EPG, sTitle)
 
-                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -202,8 +201,8 @@ def showHoster():
         except:
             pass
 
-        sHosterUrl = 'https:' + m3url + realtoken
-        sHosterUrl += '|User-Agent=' + UA + '&Referer=' + Quote(iframeURL1) + '&Sec-Fetch-Mode=cors&Origin=https://telerium.tv'
+        sHosterUrl = 'https:' + m3url + realtoken + '|User-Agent=' + UA
+        sHosterUrl += '&Referer=' + Quote(iframeURL1) + '&Sec-Fetch-Mode=cors&Origin=https://telerium.tv'
 
     oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
     oGui.addFolder(oGuiElement, oOutputParameterHandler)

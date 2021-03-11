@@ -39,16 +39,13 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines Sport TV', 'sport.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Sports (En direct)', 'replay.png', oOutputParameterHandler)
 
     # menu souvent vide
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Sports (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', CHAINE_TV[0])
     oGui.addDir(SITE_IDENTIFIER, CHAINE_TV[1], 'Chaines TV généralistes', 'tv.png', oOutputParameterHandler)
 
@@ -62,16 +59,13 @@ def showMenuHomeSport():
     oOutputParameterHandler.addParameter('siteUrl', SPORT_TV [0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines Sport TV', 'sport.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Sports (En direct)', 'replay.png', oOutputParameterHandler)
 
     # menu souvent vide
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Sports (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', CHAINE_TV[0])
     oGui.addDir(SITE_IDENTIFIER, CHAINE_TV[1], 'Chaines généralistes TV', 'tv.png', oOutputParameterHandler)
 
@@ -91,8 +85,8 @@ def showGenres():
     liste.append(['Moto', URL_MAIN + '7-moto-gp-streaming-portugal.html'])
     # liste.append( ['Radio', URL_MAIN + '76-ecouter-la-radio-streaming.html'])
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -102,7 +96,6 @@ def showGenres():
 # inactif
 def showSearch():
     oGui = cGui()
-
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH[0] + sSearchText
@@ -134,7 +127,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
-
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -142,7 +135,7 @@ def showMovies(sSearch=''):
 
             sThumb = aEntry[0]
             sUrl2 = aEntry[1]
-            sTitle = aEntry[2].replace(' streaming gratuit', '')
+            sTitle = aEntry[2].replace(' streaming gratuit', '').replace(' foot', '')
             sdesc1 = aEntry[3]
             sdesc2 = aEntry[4]
             sDisplayTitle = sTitle
@@ -160,7 +153,6 @@ def showMovies(sSearch=''):
             if 'http' not in sThumb:
                 sThumb = URL_MAIN[:-1] + sThumb
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
@@ -197,7 +189,7 @@ def showLive():
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
-
+        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -207,7 +199,6 @@ def showLive():
             sUrl2 = aEntry
             sDisplayTitle = sMovieTitle + ' - Lien ' + str(i)
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)

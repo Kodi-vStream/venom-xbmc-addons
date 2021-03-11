@@ -40,10 +40,8 @@ class cUtil:
         str1 = str1.replace('+', ' ').replace('%20', ' ').replace(':', ' ').replace('-', ' ')
         str2 = str2.replace(':', ' ').replace('-', ' ')
         
-        #Inutile avec Python 3.
-        if not isMatrix():
-            str1 = self.CleanName(str1.replace('.', ' '))
-            str2 = self.CleanName(str2.replace('.', ' '))
+        str1 = self.CleanName(str1.replace('.', ' '))
+        str2 = self.CleanName(str2.replace('.', ' '))
 
         i = 0
         list2 = str2.split(' ')     # Comparaison mot à mot
@@ -121,7 +119,7 @@ class cUtil:
         return re.sub('&#?\w+;', fixup, text)
 
     def CleanName(self, name):
-        if not isMatrix:
+        if not isMatrix():
             # vire accent et '\'
             try:
                 name = unicode(name, 'utf-8')  # converti en unicode pour aider aux convertions

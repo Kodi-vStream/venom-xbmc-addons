@@ -54,7 +54,7 @@ class cHoster(iHoster):
 
         api_call = False
 
-        sPattern =  '([$]=.+?\(\)\)\(\);)'
+        sPattern =  '(\$=.+?;)\s*<'
         aResult = re.search(sPattern, sHtmlContent, re.DOTALL)
         if aResult:
             decoded = temp_decode(aResult.group(1))
@@ -69,50 +69,50 @@ class cHoster(iHoster):
         return False, False
 
 def temp_decode(data):
-    startpos = data.find('"\\""+') + 5
-    endpos = data.find('"\\"")())()')
+        startpos = data.find('"\\""+') + 5
+        endpos = data.find('"\\"")())()')
 
-    first_group = data[startpos:endpos]
-    first_group = first_group.replace('$.__+', 't').replace('$._+', 'u').replace('$._$+', 'o')
+        first_group = data[startpos:endpos]
 
-    tmplist = []
-    js = re.search(r'(\$={.+?});', data)
-    if js:
-        js_group = js.group(1)[3:][:-1]
-        second_group = js_group.split(',')
+        pos = re.search(r"(\(!\[\]\+\"\"\)\[.+?\]\+)", first_group)
+        if pos:
+            first_group = first_group.replace(pos.group(1), 'l').replace('$.__+', 't').replace('$._+', 'u').replace('$._$+', 'o')
 
-        i = -1
-        for x in second_group:
-            a, b = x.split(':')
+            tmplist = []
+            js = re.search(r'(\$={.+?});', data)
+            if js:
+                js_group = js.group(1)[3:][:-1]
+                second_group = js_group.split(',')
 
-            if b == '++$':
-                i += 1
-                tmplist.append(("$.{}+".format(a), i))
+                i = -1
+                for x in second_group:
+                    a, b = x.split(':')
 
-            elif b == '(![]+"")[$]':
-                tmplist.append(("$.{}+".format(a), 'false'[i]))
+                    if b == '++$':
+                        i += 1
+                        tmplist.append(("$.{}+".format(a), i))
 
-            elif b == '({}+"")[$]':
-                tmplist.append(("$.{}+".format(a), '[object Object]'[i]))
+                    elif b == '(![]+"")[$]':
+                        tmplist.append(("$.{}+".format(a), 'false'[i]))
 
-            elif b == '($[$]+"")[$]':
-                tmplist.append(("$.{}+".format(a), 'undefined'[i]))
+                    elif b == '({}+"")[$]':
+                        tmplist.append(("$.{}+".format(a), '[object Object]'[i]))
 
-            elif b == '(!""+"")[$]':
-                tmplist.append(("$.{}+".format(a), 'true'[i]))
+                    elif b == '($[$]+"")[$]':
+                        tmplist.append(("$.{}+".format(a), 'undefined'[i]))
 
-        tmplist = sorted(tmplist, key=lambda z: str(z[1]))
-        for x in tmplist:
-            first_group = first_group.replace(x[0], str(x[1]))
+                    elif b == '(!""+"")[$]':
+                        tmplist.append(("$.{}+".format(a), 'true'[i]))
 
-        first_group = first_group.replace('\\"', '\\').replace("\"\\\\\\\\\"", "\\\\").replace('\\"', '\\').replace('"', '').replace("+", "")
+                tmplist = sorted(tmplist, key=lambda z: str(z[1]))
+                for x in tmplist:
+                    first_group = first_group.replace(x[0], str(x[1]))
 
-        pos = re.findall(r"\(!\[\]\)\[.+?\]", first_group)
-        for p in pos:
-            first_group = first_group.replace(p,"l")
+                first_group = first_group.replace('\\"', '\\').replace("\"\\\\\\\\\"", "\\\\") \
+                                         .replace('\\"', '\\').replace('"', '').replace("+", "")
 
-    try:
-        final_data = first_group.encode('ascii').decode('unicode-escape').encode('ascii').decode('unicode-escape')
-        return final_data
-    except:
-        return False
+            try:
+                final_data = first_group.encode('ascii').decode('unicode-escape').encode('ascii').decode('unicode-escape')
+                return final_data
+            except:
+                return False

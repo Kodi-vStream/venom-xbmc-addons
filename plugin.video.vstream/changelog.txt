@@ -4,11 +4,25 @@
 - Support: https://kodi-vstream.github.io/
 ==================================================================================
 ==================================================================================
-- Auteurs : Venom, TmpName, Arias800
-==================================================================================
-Merci au contributeur de la bêta.
-- Razorex/Kodigoal/Chataigne73/Sizanic
+- Auteurs : LordVenom, TmpName, Arias800, Razorex, Sizanic, Yodidon, et Cie
+https://github.com/Kodi-vStream/venom-xbmc-addons/graphs/contributors
 ==================================================================================
 ==================================================================================
+Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
+
+*** 0.8.7***
+- UrlResolver : compatibilité Matrix
+- TRAKT : Pagination dans les menus
+- TMDB : Affichage d'un QR Code pour activer la clef API
+- Recherche sous Matrix : Insensibilité à la casse des lettres
+
+*** 0.8.6***
+- Sablier réduit pour améliorer les performances de navigation
+- Nouvelle clef TMDB pour les Métadonnées
+- Recherche "japAnimes" séparée de la recherche "Séries".
+- De nouvelles sources pour les japAnimes
+- Menu "Dramas" et recherche "Dramas"
+- Autoriser le contenu Adulte (appliquer pour l'instant à certaines catégories Dramas)
+- Permettre l'utilisation de la fenetre d'information du skin
