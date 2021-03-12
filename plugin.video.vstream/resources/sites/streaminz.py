@@ -102,7 +102,7 @@ def showGenres():
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
     sStart = '<span>Genres</span>'
-    sEnd = '<span>Années</span>'
+    sEnd = '<span>Connexion</span>'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
     sPattern = 'taxonomy.+?href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -245,7 +245,7 @@ def showMovies(sSearch=''):
         if sTypeYear:
             sPattern ='<article id="post-\d+".+?class="item ([^"]+).+?img src="([^"]+)" alt="([^"]+).+?(?:|class="quality">([^<]+)<.+?)(?:|class="dtyearfr">([^<]+)<.+?)<a href="([^"]+)">.+?<div class="texto">(.*?)</div>'
         else:
-            sPattern = '<article id="post-\d+".+?img src="([^"]+)" alt="([^"]+).+?(?:|class="quality">([^<]+)<.+?)(?:|class="dtyearfr">([^<]+)<.+?)<a href="([^"]+)">.+?<div class="texto">(.*?)</div>'
+            sPattern = '<article id="post-\d+".+?img data-src="([^"]+)".+?alt="([^"]+).+?(?:|class="quality">([^<]+)<.+?)(?:|class="dtyearfr">([^<]+)<.+?)<a href="([^"]+)">.+?<div class="texto">(.*?)<\/div>'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -389,6 +389,7 @@ def showLink():
     sPattern = "dooplay_player_option.+?data-post='(\d+)'.+?data-nume='(.+?)'>.+?'title'>(.+?)<"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
 
     if (aResult[0] == True):
         # trie par numéro de serveur
@@ -400,6 +401,7 @@ def showLink():
             dtype = 'movie'  # fonctionne pour Film ou Série (pour info: série -> dtype = 'tv')
             dpost = aEntry[0]
             dnum = aEntry[1]
+            
 
             pdata = 'action=doo_player_ajax&post=' + dpost + '&nume=' + dnum + '&type=' + dtype
             sLang = aEntry[2].replace('Serveur', '').replace('Télécharger', '').replace('(', '').replace(')', '')
@@ -410,6 +412,7 @@ def showLink():
                 continue
 
             sTitle = ('%s (%s)') % (sMovieTitle, sLang)
+            sTitle = sTitle + ' serveur#' + dnum
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('referer', sUrl)
