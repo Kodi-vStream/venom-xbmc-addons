@@ -15,7 +15,7 @@ SITE_IDENTIFIER = '_4kstreamz'
 SITE_NAME = '4kstreamz'
 SITE_DESC = 'Films et Séries'
 
-URL_MAIN = 'https://www.4kstreamz.co/'
+URL_MAIN = 'https://wvw.4kstreamz.co/'
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 SERIE_SERIES = (True, 'showMenuTvShows')
