@@ -11,11 +11,6 @@ import urllib
 import xbmcvfs
 import datetime, time
 
-try:
-    import json
-except:
-    import simplejson as json
-
 SITE_IDENTIFIER = 'about'
 SITE_NAME = 'About'
 
@@ -84,8 +79,7 @@ class cAbout:
 
                 sUrl = 'https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/releases/latest'
                 oRequestHandler = cRequestHandler(sUrl)
-                sHtmlContent = oRequestHandler.request()
-                result = json.loads(sHtmlContent)
+                result = oRequestHandler.request(jsonDecode=True)
 
                 # pour test
                 # if (result['tag_name']):
@@ -116,20 +110,13 @@ class cAbout:
 
     def resultGit(self):
         try:
-            import json
-        except:
-            import simplejson as json
-
-        try:
             sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/sites.json'
             oRequestHandler = cRequestHandler(sUrl)
-            sHtmlContent = oRequestHandler.request()
-            result = json.loads(sHtmlContent)
+            result = oRequestHandler.request(jsonDecode=True)
 
             sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/hosts.json'
             oRequestHandler = cRequestHandler(sUrl)
-            sHtmlContent = oRequestHandler.request()
-            result += json.loads(sHtmlContent)
+            result += oRequestHandler.request(jsonDecode=True)
             # filtre trash & _init
             result = filter(lambda x: x['name'] != "trash", result)
             result = filter(lambda x: x['name'] != "__init__.py", result)
@@ -145,6 +132,7 @@ class cAbout:
 
             service_futur = addons.getSetting('service_futur')
             service_version = addons.getSetting('service_version')
+
             if not service_futur:
                 return self.getUpdate()
             if not service_version:
@@ -156,8 +144,7 @@ class cAbout:
             # sUrl = 'https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/compare/0.6.3...0.6.31'
 
             oRequestHandler = cRequestHandler(sUrl)
-            sHtmlContent = oRequestHandler.request()
-            result = json.loads(sHtmlContent)
+            result = oRequestHandler.request(jsonDecode=True)
 
             progress_ = progress()
             progress_.VScreate(addons.VSlang(30015))
@@ -179,7 +166,6 @@ class cAbout:
                         progress_.VSupdate(progress_, total)
 
                         rootpath = self.getRootPath(i['filename'])
-
                         try:
                             self.__download(i['raw_url'], rootpath)
                             # site += 'Add: [B]%s[/B] | Del: [B]%s[/B] | [COLOR green]%s[/COLOR][CR]' % (i['additions'], i['deletions'], i['filename'].encode('utf-8'))
