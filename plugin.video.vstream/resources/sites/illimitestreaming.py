@@ -385,6 +385,7 @@ def showHosters():
 
         tab = aResult[1]
         n = len(tab)/3
+        n = int(n)
         for i in range(n):
 
             sHosterUrl = tab[i][0]
