@@ -4,7 +4,7 @@
 import json
 import re
 
-from resources.lib.comaddon import progress, VSlog, dialog
+from resources.lib.comaddon import progress, VSlog, dialog, addon
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -706,9 +706,9 @@ def RecapchaBypass():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    Token_Alldebrid = cPremiumHandler("alldebrid").getToken()
-
-    if Token_Alldebrid:
+    ADDON = addon()
+    Token_Alldebrid = ADDON.getSetting('hoster_alldebrid_token')
+    if Token_Alldebrid != "":
         sUrl_Bypass = "https://api.alldebrid.com/v4/link/redirector?agent=service&version=1.0-&apikey="
         sUrl_Bypass += Token_Alldebrid + "&link=" + sUrl
 
