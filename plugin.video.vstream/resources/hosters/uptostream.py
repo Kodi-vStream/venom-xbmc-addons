@@ -292,9 +292,6 @@ def decoder(data, fn):
     y = 0
     i = 0
 
-    if not isMatrix():
-        data = data.decode('utf-8')
-
     while i < len(data):
 
         x = (x + 1) % 256
