@@ -12,8 +12,9 @@ try:  # Python 2
 except ImportError:  # Python 3
     import urllib.request as urllib2
     from urllib.error import URLError as UrlError
+    from urllib.parse import urlencode
 
-from resources.lib.comaddon import progress, dialog, addon
+from resources.lib.comaddon import progress, dialog, addon, isMatrix
 from resources.lib.config import GestionCookie
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
@@ -234,7 +235,10 @@ def UptomyAccount():
             upUrl = 'https:' + upUrl
 
         fields = {'urls': '["' + sMediaUrl + '"]'}
-        mpartdata = MPencode(fields)
+        mpartdata = list(MPencode(fields))
+
+        if isMatrix():
+            mpartdata[1] = mpartdata[1].encode("utf-8")
 
         req = urllib2.Request(upUrl, mpartdata[1], headers)
         req.add_header('Content-Type', mpartdata[0].replace(',', ';'))
