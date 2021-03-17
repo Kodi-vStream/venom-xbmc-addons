@@ -274,7 +274,12 @@ def MPencode(fields):
     form_data = []
 
     if fields:
-        for (key, value) in fields.iteritems():
+        try:
+            data = fields.iteritems()
+        except:
+            data = fields.items()
+
+        for (key, value) in data:
             if not hasattr(value, 'read'):
                 itemstr = '--%s\r\nContent-Disposition: form-data; name="%s"\r\n\r\n%s\r\n' % (random_boundary, key, value)
                 form_data.append(itemstr)
@@ -297,7 +302,11 @@ def __randy_boundary(length=10, reshuffle=False):
     import string
     import random
 
-    character_string = string.letters + string.digits
+    if isMatrix():
+        character_string = string.ascii_letters + string.digits
+    else:
+        character_string = string.letters + string.digits
+
     boundary_string = []
     for i in range(0, length):
         rand_index = random.randint(0, len(character_string) - 1)
