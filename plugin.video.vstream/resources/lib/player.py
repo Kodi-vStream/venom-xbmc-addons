@@ -57,7 +57,9 @@ class cPlayer(xbmc.Player):
         oPlaylist.add(oGuiElement.getMediaUrl(), oListItem )
 
     def AddSubtitles(self, files):
-        if isinstance(files, basestring):
+        if len(files) == 1:
+            self.Subtitles_file = files[0]
+        elif isinstance(files, basestring):
             self.Subtitles_file.append(files)
         else:
             self.Subtitles_file = files
@@ -193,7 +195,6 @@ class cPlayer(xbmc.Player):
 
                 except:
                     pass
-
         #xbmc.executebuiltin('Container.Refresh')
 
     def onPlayBackStarted(self):
