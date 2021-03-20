@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-from resources.lib.config import GestionCookie
+
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog, VSlog, addon
 from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.parser import cParser
 from resources.lib.util import QuoteSafe
-import json, re
+
 
 class cHoster(iHoster):
 
@@ -103,48 +103,14 @@ class cHoster(iHoster):
             return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        cookies = GestionCookie().Readcookie("uptobox")
-        import requests, re
 
-        s = requests.Session()
-        s.headers.update({"Cookie": cookies})
+        self.__sUrl = self.__sUrl.replace('uptobox.com/', 'uptostream.com/')
 
-        r = s.get('https://uptobox.com/api/streaming?file_code=' + self.__sUrl.split('/')[3]).json()
-
-        r1 = s.get(r["data"]["user_url"]).text
-        tok = re.search('token.+?;.+?;(.+?)&', r1).group(1)
-
-        r1 = s.post("https://uptobox.com/api/user/pin/validate?token=" + tok,json={"pin":r["data"]["pin"]}).json()
-        s.headers.update({"Referer": "https://uptobox.com/pin?pin=" + r["data"]["pin"]})
-
-        r = s.get(r["data"]["check_url"]).json()["data"]["streamLinks"]
-
-        sPattern = "'(.+?)': {(.+?)}"
-
-        oParser = cParser()
-        aResult = oParser.parse(r, sPattern)
-
-        from resources.lib.comaddon import dialog
-
-        url = []
-        qua = []
-        api_call = False
-
-        for aEntry in aResult[1]:
-            QUAL = aEntry[0]
-            d = re.findall("'(.+?)': '(.+?)'",aEntry[1])
-            for aEntry1 in d:
-                VSlog(aEntry1)
-                url.append(aEntry1[1])
-                qua.append(QUAL  + ' (' + aEntry1[0] + ')')
-
-        # Affichage du tableau
-        api_call = dialog().VSselectqual(qua, url)
-
-        if (api_call):
-             return True, api_call
-
-        return False, False
+        # On redirige vers le hoster uptostream
+        from resources.hosters.uptostream import cHoster
+        oHoster = cHoster()
+        oHoster.setUrl(self.__sUrl)
+        return oHoster.getMediaLink()
 
     def __getMediaLinkByPremiumUser(self):
 
