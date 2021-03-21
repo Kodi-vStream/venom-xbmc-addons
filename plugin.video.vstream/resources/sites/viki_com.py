@@ -5,7 +5,6 @@
 
 import re
 import time
-import json
 from hashlib import sha1
 import hmac
 import binascii
@@ -145,8 +144,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Language', '')
-    sJsonContent = oRequestHandler.request()
-    jsonrsp = json.loads(sJsonContent)
+    jsonrsp = oRequestHandler.request(jsonDecode=True)
 
     if not jsonrsp:
         oGui.addText(SITE_IDENTIFIER)
@@ -240,8 +238,7 @@ def showSaisons():
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Language', '')
-    sJsonContent = oRequestHandler.request()
-    jsonrsp = json.loads(sJsonContent)
+    jsonrsp = oRequestHandler.request(jsonDecode=True)
 
     for episode in range(0, len(jsonrsp['response'])):
         try:
@@ -305,8 +302,7 @@ def showMovieGenre():
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Language', '')
-    sJsonContent = oRequestHandler.request()
-    jsonrsp = json.loads(sJsonContent)
+    jsonrsp = oRequestHandler.request(jsonDecode=True)
 
     oOutputParameterHandler = cOutputParameterHandler()
     for genre in range(0, len(jsonrsp)):
@@ -327,8 +323,7 @@ def showSerieGenre():
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Language', '')
-    sJsonContent = oRequestHandler.request()
-    jsonrsp = json.loads(sJsonContent)
+    jsonrsp = oRequestHandler.request(jsonDecode=True)
 
     oOutputParameterHandler = cOutputParameterHandler()
     for genre in range(0, len(jsonrsp)):
@@ -356,8 +351,8 @@ def showPays(genre):
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Language', '')
-    sJsonContent = oRequestHandler.request()
-    jsonrsp = json.loads(sJsonContent)
+    jsonrsp = oRequestHandler.request(jsonDecode=True)
+
     # site ou il n'y a jamais rien
     sBlaccountryList = ['tw', 'ca', 'us', 'gb', 'th', 'ph', 'es']
 
@@ -421,8 +416,7 @@ def GET_URLS_STREAM(url):
     urlreq = SIGN(url, '/streams.json')
     oRequestHandler = cRequestHandler(urlreq)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
-    sJsonContent = oRequestHandler.request()
-    jsonrsp = json.loads(sJsonContent)
+    jsonrsp = oRequestHandler.request(jsonDecode=True)
 
     testeurl = ''
     testeq = ''
