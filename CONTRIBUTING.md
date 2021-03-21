@@ -13,7 +13,7 @@ Bonjour et merci pour vos encouragements et votre soutien.
 - Une mise à jour du coeur de vStream ce fait 1 fois par mois. Il faut avoir le Repository de vStream pour que cela soit automatique.
 
 Repository vStream:
-https://github.com/Kodi-vStream/venom-xbmc-addons/releases/tag/Repository
+https://github.com/Kodi-vStream/venom-xbmc-addons/tree/Beta/repo/repository.vstream
 
 Wiki vStream:
 https://kodi-vstream.github.io/
