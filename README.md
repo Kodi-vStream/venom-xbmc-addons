@@ -1,4 +1,4 @@
-## A Propos!
+## A Propos !
 
 vStream est un addon pour Kodi qui vous permet de visionner en streaming un grand nombre de sources vidéo (comme la télévision, les films, les séries, les mangas, les documentaires, etc..). Il vous est même possible de télécharger certaines sources, de les mettre en favoris ou de voir la bande annonce. Le tout 100% Français.
 
@@ -8,7 +8,7 @@ vStream est un addon pour Kodi qui vous permet de visionner en streaming un gran
 
 [![images](https://img.shields.io/badge/Communauté-KodiFR-yellowgreen.svg?style=for-the-badge)](http://kodi-fr.rf.gd/index.php)
 
-## Installer!
+## Installer !
 
 Installez d'abord le repository pour installer l'extension et avoir les mises à jour automatique.
 
@@ -23,8 +23,7 @@ Ou télécharger le ZIP :
 
 Installer ensuite l'addon vStream EXCLUSIVEMENT depuis le repository.
 
-
-## Contribuer!
+## Contribuer !
 
 Pour nous proposer de nouvelles sources ou nous rapporter un bug:
 
