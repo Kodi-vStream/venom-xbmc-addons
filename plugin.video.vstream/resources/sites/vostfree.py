@@ -207,7 +207,7 @@ def seriesHosters():
                 playerData = oParser.parse(sHtmlContent, sPattern)[1][0]
 
                 if 'http' not in playerData:
-                    sPattern = 'player_type.*=="new_player_' + aEntry1[1].lower()+ '"\|.+?(?:src=\\\\")([^"]*).*?player_content.*?"([^\\\\"]*)'
+                    sPattern = 'player_type.*=="new_player_' + aEntry1[1].lower()+ '"\|.+?(?:src=\\")([^"]*).*?player_content.*?"([^\\\\"]*)'
                     aResult2 = oParser.parse(playerContent, sPattern)
                     if aResult2[0] == True:
                         sHosterUrl = aResult2[1][0][0] + playerData + aResult2[1][0][1]
