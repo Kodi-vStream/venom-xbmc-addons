@@ -10,7 +10,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 
 
 SITE_IDENTIFIER = 'dpstreamhd'
@@ -148,7 +148,7 @@ def showMovies(sSearch=''):
         sHtmlContent = oRequestHandler.request()
 
     # thumb note ref title
-    sPattern = '<article class="post.+?src=(.+?)\.jpg.+?svg><.i>([^<]+).+?href="([^"]+).+?entry-title">([^<]+)'
+    sPattern = 'class="post.+?src=([^ ]+.jpg) alt.+?svg></i>([^<]+).+?href="([^"]+).+?entry-title">([^<]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -164,11 +164,11 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            sThumb = aEntry[0] + '.jpg'  # bug parfois pas de jpg à revoir ?
-            sDesc = 'note :' + aEntry[1]
+            sThumb = aEntry[0]
+            VSlog(str(sThumb))
+            sDesc = 'Note :' + aEntry[1]
             sUrl2 = aEntry[2]
             sTitle = aEntry[3]
-            sDisplayTitle = sTitle
 
             if 'http' not in sUrl2:
                 sUrl2 = URL_MAIN[:-1] + sUrl2
@@ -179,9 +179,9 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
             if '-serie-' not in sUrl2:
-                oGui.addMovie(SITE_IDENTIFIER, 'showLink', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'showSXE', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSXE', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
