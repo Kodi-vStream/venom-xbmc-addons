@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Arias800
-
-import json
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -20,27 +18,35 @@ SITE_DESC = 'Animés en streaming'
 
 URL_MAIN = 'https://www.neko-sama.fr/'
 
-URL_SEARCH = (URL_MAIN + 'animes-search.json', 'showSearchResult')
-URL_SEARCH_ANIMS = (URL_SEARCH[0], 'showSearchResult')
-FUNCTION_SEARCH = 'showSearchResult'
-
 ANIM_ANIMS = ('http://', 'load')
-ANIM_NEWS = (URL_MAIN + 'anime/', 'showMovies')
+ANIM_NEWS = (URL_MAIN, 'showLastEp')
 ANIM_VFS = (URL_MAIN + 'anime-vf', 'showMovies')
+ANIM_VOSTFRS = (URL_MAIN + 'anime', 'showMovies')
 
+URL_SEARCH = (ANIM_VOSTFRS[0], 'showSearchResult')
+URL_SEARCH_ANIMS = (ANIM_VOSTFRS[0], 'showSearchResult')
+URL_SEARCH_VF = (ANIM_VFS[0], 'showSearchResult')
+
+FUNCTION_SEARCH = 'showSearchResult'
 
 def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMS[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d\'animés (VOSTFR)', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_VF[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d\'animés (VF)', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Dernier ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés (VF)', 'vf.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -112,8 +118,18 @@ def showSearchResult(sSearch):
     oGui = cGui()
     oRequestHandler = cRequestHandler(URL_SEARCH[0])
 
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    searchURL = URL_MAIN + re.search('var urlsearch = "([^"]+)";', sHtmlContent).group(1)
+
     sSearch = sSearch.lower()
-    data = json.loads(oRequestHandler.request())
+
+    oRequestHandler = cRequestHandler(searchURL)
+    data = oRequestHandler.request(jsonDecode=True)
 
     Title, Url, Thumb = parseJson(data, sSearch)
     total = len(Title)
@@ -141,6 +157,44 @@ def showSearchResult(sSearch):
         oGui.setEndOfDirectory()
 
 
+def showLastEp():
+    oGui = cGui()
+    oParser = cParser()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    sPattern = '"episode":"([^"]+)","title":"([^"]+)","url":"([^"]+)",.+?"url_image":"([^"]+)"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
+
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
+        for aEntry in aResult[1]:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
+
+            sUrl2 = URL_MAIN + aEntry[2]
+            sThumb = aEntry[3]
+            sTitle = aEntry[1] + " " + aEntry[0]
+            sDesc = ''
+
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addAnime(SITE_IDENTIFIER, 'seriesHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+
+        progress_.VSclose(progress_)
+
+    oGui.setEndOfDirectory()
+
 def showMovies():
     oGui = cGui()
     oParser = cParser()
@@ -150,7 +204,7 @@ def showMovies():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<a href="([^"]+)"><div class="nekosama-lazy-wrapper">.+?<img src="#" data-src="([^"]+)" alt="([^"]+)"'
+    sPattern = '<a href="([^"]+)"><div class="nekosama-lazy-wrapper">.+?src="([^"]+)" alt="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
