@@ -10,7 +10,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress
 
 
 SITE_IDENTIFIER = 'dpstreamhd'
@@ -165,7 +165,6 @@ def showMovies(sSearch=''):
                 break
 
             sThumb = aEntry[0]
-            VSlog(str(sThumb))
             sDesc = 'Note :' + aEntry[1]
             sUrl2 = aEntry[2]
             sTitle = aEntry[3]
