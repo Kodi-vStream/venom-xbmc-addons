@@ -166,6 +166,7 @@ class cFav:
                     oGuiElement.setMeta(2)
                     oGuiElement.setCat(2)
                 else:
+                    cGui.CONTENT = 'videos'
                     oGuiElement.setMeta(0)
                     oGuiElement.setCat(cat)
                 oGuiElement.setThumbnail(thumbnail)
