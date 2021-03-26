@@ -81,6 +81,9 @@ class cHoster(iHoster):
         api_call = False
         SubTitle = ""
 
+        if premium:
+            self.oPremiumHandler.Authentificate()
+
         cookies = GestionCookie().Readcookie("uptobox")
         import requests, re
 
@@ -109,7 +112,7 @@ class cHoster(iHoster):
 
         for aEntry in aResult[1]:
             QUAL = aEntry[0]
-            d = re.findall("'(.+?)': '(.+?)'",aEntry[1])
+            d = re.findall("'u*(.+?)': u*'(.+?)'",aEntry[1])
             for aEntry1 in d:
                 url.append(aEntry1[1])
                 qua.append(QUAL  + ' (' + aEntry1[0] + ')')
