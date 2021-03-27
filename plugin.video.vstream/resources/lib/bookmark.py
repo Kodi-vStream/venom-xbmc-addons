@@ -208,6 +208,10 @@ class cFav:
         sSite = oInputParameterHandler.getValue('sId') if oInputParameterHandler.exist('sId') else xbmc.getInfoLabel('ListItem.Property(sId)')
         sFav = oInputParameterHandler.getValue('sFav') if oInputParameterHandler.exist('sFav') else xbmc.getInfoLabel('ListItem.Property(sFav)')
 
+        if sTitle == '':
+            self.DIALOG.VSinfo('Error', 'Probleme sur titre')
+            return
+
         meta['siteurl'] = sSiteUrl
         meta['title'] = sTitle
         meta['site'] = sSite
