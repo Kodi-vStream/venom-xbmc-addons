@@ -83,6 +83,9 @@ class cHoster(iHoster):
 
         if premium:
             self.oPremiumHandler.Authentificate()
+        else:
+            dialog().VSok('Ce hoster demande un login, meme gratuit.')
+            return False, False
 
         cookies = GestionCookie().Readcookie("uptobox")
         import requests, re
