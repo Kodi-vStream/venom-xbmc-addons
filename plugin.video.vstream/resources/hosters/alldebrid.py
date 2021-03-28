@@ -78,6 +78,13 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(sUrl_Bypass)
         sHtmlContent = json.loads(oRequest.request())
         
+        if 'error' in sHtmlContent:
+            if sHtmlContent['error']['code'] == 'LINK_HOST_NOT_SUPPORTED':
+                return True, self.__sUrl # si ce type de lien n'est pas pris en charge, le lien n'a peut-être pas besoin d'être débridé
+            else:
+                VSlog('Hoster Alldebrid - Error: ' + sHtmlContent["error"]['code'])
+                return False, False
+        
         api_call = HostURL = sHtmlContent["data"]["link"]
         try:
             mediaDisplay = HostURL.split('/')
