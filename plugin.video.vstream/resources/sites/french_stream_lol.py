@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # source 34 https://french-stream.lol/  french-stream.lol 29112020
-# update 26122020
+# update 28032021
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -10,7 +10,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress  # , VSlog
+from resources.lib.comaddon import progress
 
 
 SITE_IDENTIFIER = 'french_stream_lol'
@@ -51,7 +51,6 @@ SERIE_SERIES = (True, 'showMenuTvShows')
 
 
 def load():
-
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -87,7 +86,7 @@ def load():
     # oGui.addDir(SITE_IDENTIFIER, MOVIE_CAM[1], 'Films (CAM)', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_SERIES[1], 'Recherche Series ', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_SERIES[1], 'Recherche Séries ', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
@@ -144,10 +143,10 @@ def showMenuTvShows():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_SERIES[1], 'Recherche Series ', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_SERIES[1], 'Recherche Séries ', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Series (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
@@ -286,7 +285,10 @@ def showMovies(sSearch=''):
 
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
-            sTitle = aEntry[2]
+            if 'http' not in sThumb:
+                sThumb = URL_MAIN[:-1] + sThumb
+
+            sTitle = aEntry[2].replace('- Saison', ' Saison')  # uniquement pour les séries
 
             if bSearchMovie:
                 if '/serie' in sUrl2:
@@ -295,25 +297,21 @@ def showMovies(sSearch=''):
                 if '/serie' not in sUrl2:
                     continue
 
-            sDisplayTitle = sTitle.replace('- Saison', ' Saison')  # uniquement pour les séries
+            sDisplayTitle = sTitle
             if sSearch and not bSearchMovie and not bSearchSerie:
                 if '/serie' in sUrl2:
                     sDisplayTitle = sDisplayTitle + ' [Série]'
                 else:
                     sDisplayTitle = sDisplayTitle + ' [Film]'
 
-            if 'http' not in sThumb:
-                sThumb = URL_MAIN[:-1] + sThumb
-
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
             if '/serie' not in sUrl2:
                 oGui.addMovie(SITE_IDENTIFIER, 'showMovieLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'ShowEpisodes', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -361,7 +359,7 @@ def __checkForNextPage(sHtmlContent):
     return False, 'none', 'none'
 
 
-def ShowEpisodes():
+def showEpisodes():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -403,15 +401,15 @@ def ShowEpisodes():
                 sRel_Episode = aEntry[2]
                 sEpisode = aEntry[3]
 
-                sDisplayTitle = sMovieTitle.replace('- Saison', ' Saison') + ' ' + sEpisode + ' (' + sLang + ')'
+                sTitle = sMovieTitle.replace('- Saison', ' Saison') + ' ' + sEpisode
+                sDisplayTitle = sTitle + ' (' + sLang + ')'
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oOutputParameterHandler.addParameter('sRel_Episode', sRel_Episode)
                 oOutputParameterHandler.addParameter('sFirst_Url', sFirst_Url)
-                oOutputParameterHandler.addParameter('sDisplayTitle', sDisplayTitle)
 
                 oGui.addEpisode(SITE_IDENTIFIER, 'showSerieLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -430,9 +428,7 @@ def showSerieLinks():
     sDesc = oInputParameterHandler.getValue('sDesc')
     sRel_Episode = oInputParameterHandler.getValue('sRel_Episode')
     sFirst_Url = oInputParameterHandler.getValue('sFirst_Url')
-    sDisplayTitle1 = oInputParameterHandler.getValue('sDisplayTitle')
-
-    # VSlog(sUrl ); VSlog('sRel_Episode=' + sRel_Episode ); VSlog('sFirst_Url=' + sFirst_Url)
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
@@ -446,12 +442,12 @@ def showSerieLinks():
         # le pattern devient alors normalement hs
         if sFirst_Url:
             sUrl2 = sFirst_Url
-            sHost = '[COLOR coral]' + GetHostname(sUrl2) + '[/COLOR]'
+            sHost = '[COLOR coral]' + getHostName(sUrl2) + '[/COLOR]'
 
-            sDisplayTitle = sDisplayTitle1 + ' ' + sHost
+            sDisplayTitle = sMovieTitle + ' ' + sHost
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle1)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('referer', sUrl)
@@ -477,11 +473,11 @@ def showSerieLinks():
                     continue
                     # pass
 
-                sHost = '[COLOR coral]' + GetHostname(sUrl2) + '[/COLOR]'
-                sDisplayTitle = sDisplayTitle1 + ' ' + sHost
+                sHost = '[COLOR coral]' + getHostName(sUrl2) + '[/COLOR]'
+                sDisplayTitle = sMovieTitle + ' ' + sHost
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-                oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle1)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('referer', sUrl)
@@ -539,7 +535,7 @@ def showMovieLinks():
             else:
                 continue
 
-            sHost = '[COLOR coral]' + GetHostname(sUrl2) + '[/COLOR]'
+            sHost = '[COLOR coral]' + getHostName(sUrl2) + '[/COLOR]'
             sDisplayTitle = sTitle + ' ' + sHost
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -548,7 +544,7 @@ def showMovieLinks():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('referer', sUrl)
 
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -570,9 +566,9 @@ def showHosters():
     oGui.setEndOfDirectory()
 
 
-def GetHostname(url):
+def getHostName(url):
     try:
-        # en genral pour liens opsktp url_redirect mais on affiche l'host
+        # en general pour liens opsktp url_redirect mais on affiche l'host
         bValid, sHost = isValidHost(url)
         if bValid:
             pass
