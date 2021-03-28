@@ -215,10 +215,10 @@ def showMovies(sSearch=''):
                 break
 
             sUrl2 = aEntry[0]
-            sThumb = re.sub('/w\d+', '/w342', aEntry[1])
+            sThumb = re.sub('/w\d+/', '/w342/', aEntry[1])
             sTitle = aEntry[2]
-            if 'episode' in sUrl:
-                sTitle = sTitle.replace('Season', 'Saison')
+            if 'episode' in sUrl or '/series/' in sUrl:
+                sTitle = sTitle.replace('- Season', ' Saison').replace('-Season', ' Saison').replace('Season', 'Saison')
             sYear = aEntry[3]
             sDesc = aEntry[4].replace('<p>', '')
 
@@ -232,7 +232,7 @@ def showMovies(sSearch=''):
             if sDesc:
                 sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', sDesc)
 
-            sDisplayTitle = sTitle.replace(' - Season', ' Saison').replace('-Season', ' Saison')
+            sDisplayTitle = sTitle
             if sSearch or 'genre/' in sUrl or 'release-year/' in sUrl:
                 if 'series' in sUrl2:
                     sDisplayTitle = sDisplayTitle + ' [Série]'
@@ -308,7 +308,6 @@ def showSXE():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sYear = oInputParameterHandler.getValue('sYear')
     sDesc = oInputParameterHandler.getValue('sDesc')
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -327,21 +326,19 @@ def showSXE():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
-            sSaison = ''
             if aEntry[0]:
-                sSaison = 'Saison ' + aEntry[0]
-                oGui.addText(SITE_IDENTIFIER, '[COLOR skyblue]' + sSaison + '[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR skyblue]' + 'Saison ' + aEntry[0] + '[/COLOR]')
             else:
                 sUrl = aEntry[1]
                 Ep = aEntry[2]
-                sDisplayTitle = sMovieTitle + sSaison + ' Episode' + Ep
+                sTitle = sMovieTitle.replace('- Saison', ' Saison') + ' Episode' + Ep
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                oOutputParameterHandler.addParameter('sYear', sYear)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-                oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
