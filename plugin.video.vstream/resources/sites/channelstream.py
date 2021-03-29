@@ -7,7 +7,7 @@ import json
 import resources.sites.freebox
 
 
-from resources.lib.comaddon import addon
+from resources.lib.comaddon import addon, isMatrix
 from resources.lib.epg import cePg
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
@@ -58,7 +58,11 @@ def showMovies():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    if isMatrix():
+    	sHtmlContent = sHtmlContent.replace('Ã®','î').replace('Ã©','é')
+
     sHtmlContent = oParser.abParse(sHtmlContent, sFiltre, '<!-- Type Chaîne -->')
+
     sPattern = 'location.href = \'\.(.+?)\'.+?src=\'(.+?)\'.+?<div align="center">(.+?)</div>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -68,8 +72,14 @@ def showMovies():
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            if "+18" not in str(aEntry[2]):
+
+            if "+18" in str(aEntry[2]) and addon().getSetting('contenu_adulte') == 'false':
+            	continue
+            else:
                 sTitle = aEntry[2]
+
+                if "<" in sTitle:
+                	sTitle = sTitle.split('<')[0]
 
                 if 'Canal + Série' in sTitle:
                     sTitle = 'Canal + Séries'
