@@ -494,7 +494,6 @@ class cHosterGui:
                 if aLink[0] :
                     oGuiElement = cGuiElement()
                     oGuiElement.setSiteName(self.SITE_NAME)
-                    oGuiElement.setSiteUrl(siteUrl)
                     oGuiElement.setMediaUrl(aLink[1])
                     oGuiElement.setTitle(sTitle)
                     oGuiElement.getInfoLabel()
