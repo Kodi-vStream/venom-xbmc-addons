@@ -607,7 +607,7 @@ class cTMDb:
         try:
             duration = 0
             if 'runtime' in meta and meta['runtime']:
-                duration = int(meta['runtime'])
+                duration = float(meta['runtime'])
             elif 'episode_run_time' in meta and meta['episode_run_time']:
                 duration = int(meta['episode_run_time'][0])
             
