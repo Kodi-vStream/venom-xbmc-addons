@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # source 34 https://french-stream.lol/  french-stream.lol 29112020
-# update 28032021
+# update 02042021
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -15,7 +15,7 @@ from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'french_stream_lol'
 SITE_NAME = 'French-stream-lol'
-SITE_DESC = ' films et series'
+SITE_DESC = 'Films & séries'
 
 URL_MAIN = 'https://french-stream.lol/'
 
