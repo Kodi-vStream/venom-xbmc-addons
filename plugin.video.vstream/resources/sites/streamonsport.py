@@ -116,7 +116,7 @@ def showMovies(sSearch=''):
     sHtmlContent = oRequestHandler.request()
 
     # THUMB ref title desc1 desc2
-    sPattern = '<img class=".+?<img class=".+?src="([^"]+).+?<a class="game-name".+?href="([^"]+).+?title="([^"]+).+?class="date">([^<]+).+?sct_event_time">([^<]+)'
+    sPattern = '<img class=".+?src="([^"]+).+?<a class="game-name".+?href="([^"]+).+?title="([^"]+).+?class="date">([^<]+).+?sct_event_time">([^<]+)'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -255,16 +255,18 @@ def Showlink():
         sPattern = '<iframe.+?src="([^"]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == False):
+        if (aResult[0] == True):
             # https://embed.telerium.net/embed2.js
             # </iframe> ...src="//telerium.live/embed/'+id+'.html"></iframe>');
             # fichier js pas mis a jour car telerium.live pas valide
+            oRequestHandler = cRequestHandler(aResult[1][0])
+            sHtmlContent = oRequestHandler.request()
             sPattern = 'id=.(\d+).+?embed.telerium.+?<.script>'
             aResult2 = oParser.parse(sHtmlContent, sPattern)
             if (aResult2[0] == True):
                 sUrl2 = 'https://telerium.club/embed/' + aResult2[1][0] + '.html'
 
-        if (aResult[0] == True):
+        if (aResult[0] == False):
             sUrl2 = aResult[1][0]
 
     # pas de pre requete
