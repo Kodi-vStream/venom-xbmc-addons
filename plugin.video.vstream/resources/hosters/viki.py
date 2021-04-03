@@ -79,7 +79,7 @@ class cHoster(iHoster):
             pathsub.append(sub2)
 
             offset = 2
-            numberQ = round((len(aResult[1]) - offset) /2)
+            numberQ = (len(aResult[1])-offset)//2
             for i in range(offset, offset + numberQ):
                 if 'mpd' in aResult[1][i]:
                     if bsupportedMdp:
