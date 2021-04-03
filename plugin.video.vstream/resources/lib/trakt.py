@@ -37,7 +37,6 @@ class cTrakt:
         self.__sType = ''
 
     def getToken(self):
-        oOutputParameterHandler = cOutputParameterHandler()
         oRequestHandler = cRequestHandler(URL_API + 'oauth/device/code')
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/json')
