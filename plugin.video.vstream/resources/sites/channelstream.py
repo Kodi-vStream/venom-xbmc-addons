@@ -23,7 +23,7 @@ SITE_IDENTIFIER = 'channelstream'
 SITE_NAME = 'Channel Stream'
 SITE_DESC = 'iptv'
 
-URL_MAIN = 'https://channelstream.me'
+URL_MAIN = 'https://channelstream.watch'
 
 TV_FRENCH = (URL_MAIN + "/chaine-tv.php", 'showMovies')
 
@@ -199,10 +199,10 @@ def showHoster():
         str2 = aResult[0]
         datetoken = int(getTimer()) * 1000
 
-        jsonUrl = 'https://telerium.live/streams/' + str2 + '/' + str(datetoken) + '.json'
+        jsonUrl = 'https://telerium.digital/streams/' + str2 + '/' + str(datetoken) + '.json'
         tokens = getRealTokenJson(jsonUrl, iframeURL1)
         m3url = tokens['url']
-        nxturl = 'https://telerium.live' + tokens['tokenurl']
+        nxturl = 'https://telerium.digital' + tokens['tokenurl']
 
         realtoken = getRealTokenJson(nxturl, iframeURL1)[10][::-1]
 
