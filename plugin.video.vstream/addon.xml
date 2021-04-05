@@ -13,7 +13,6 @@
         </trycatch>
 
         <import addon="script.module.urlresolver"  version="5.1.1" optional="true"/>
-        <import addon="script.video.F4mProxy" optional="true"/>
         <import addon="script.module.simplejson" version="3.3.0"/>
         <import addon="script.module.requests" version="2.9.1"/>
         <import addon="script.module.dnspython" optional="true"/>

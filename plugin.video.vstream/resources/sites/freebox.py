@@ -20,7 +20,6 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.player import cPlayer
 from resources.lib.util import Unquote, Quote, QuotePlus
 
 SITE_IDENTIFIER = 'freebox'
@@ -62,16 +61,16 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showWeb', addons.VSlang(30332), 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_IPTVSITE)
-    oGui.addDir(SITE_IDENTIFIER, 'showIptvSite', 'Iptv (Sites)', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showIptvSite', 'TV (Sources)', 'tv.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
+    oGui.addDir('radio', 'showWeb', addons.VSlang(30203), 'music.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
     oGui.addDir('radio', 'showGenres', addons.VSlang(30203) + ' (Genres)', 'music.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
     oGui.addDir('radio', 'showAZ', addons.VSlang(30203) + ' (A-Z)', 'music.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
-    oGui.addDir('radio', 'showWeb', addons.VSlang(30203), 'music.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
     oGui.addDir('lsdb', 'load', 'Liveset Database', 'music.png', oOutputParameterHandler)
@@ -89,12 +88,13 @@ def showIptvSite():
         oGui.addText(SITE_IDENTIFIER, "[COLOR red]plugin.video.f4mTester: L'addon n'est pas présent[/COLOR]")
 
     liste = []
-    liste.append(['IptvGratuit', 'iptv_gratuit'])
-    liste.append(['IptvSource', 'iptv_source'])
-    liste.append(['Iptv4Sat', 'iptv_four_sat'])
-    liste.append(['Daily Iptv List', 'daily_iptv_list'])
-    liste.append(['Extinf', 'iptv'])
+    # liste.append(['IptvGratuit', 'iptv_gratuit'])
+    # liste.append(['IptvSource', 'iptv_source'])
+    # liste.append(['Iptv4Sat', 'iptv_four_sat'])
+    # liste.append(['Daily Iptv List', 'daily_iptv_list'])
+    # liste.append(['Extinf', 'iptv'])
     liste.append(['ChannelStream', 'channelstream'])
+    liste.append(['Streamonsport', 'streamonsport'])
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, fName in liste:
@@ -429,6 +429,7 @@ def play__():  # Lancer les liens
         oGuiElement.setThumbnail(sThumbnail)
         oGuiElement.setDescription(sDesc)
 
+        from resources.lib.player import cPlayer
         oPlayer = cPlayer()
         oPlayer.clearPlayList()
         oPlayer.addItemToPlaylist(oGuiElement)
