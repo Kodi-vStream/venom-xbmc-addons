@@ -12,6 +12,11 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 1.1.0***
+- F4mProxy : suppression de la dépendance
+- Sous-titre : Charger automatiquement
+- Uptobox : Meilleure gestion
+
 *** 1.0.0***
 - UrlResolver : compatibilité Matrix
 - TRAKT : Pagination dans les menus
@@ -24,5 +29,5 @@ Historique des modifications
 - Recherche "japAnimes" séparée de la recherche "Séries".
 - De nouvelles sources pour les japAnimes
 - Menu "Dramas" et recherche "Dramas"
-- Autoriser le contenu Adulte (appliquer pour l'instant à certaines catégories Dramas)
+- Autoriser le contenu Adulte
 - Permettre l'utilisation de la fenetre d'information du skin
