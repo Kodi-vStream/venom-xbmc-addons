@@ -19,11 +19,11 @@ SITE_DESC = 'Series et Films en VF ou VOSTFR '
 
 URL_MAIN = 'https://dpstream.ch/'
 
-MOVIE_NEWS = (URL_MAIN + 'film-en-streaming', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'film-streaming', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_VIEWS = (URL_MAIN + 'film-box-office', 'showMovies')
 
-SERIE_NEWS = (URL_MAIN + 'series-streaming', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'serie-streaming', 'showMovies')
 SERIE_GENRES = (True, 'showSeriesGenres')
 
 key_search_movies = '#searchsomemovies'
@@ -266,13 +266,14 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oOutputParameterHandler.addParameter('sYear', sYear)
 
             if sSearch:
                 oGui.addLink(SITE_IDENTIFIER, 'showSelectType', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
             elif SERIE_NEWS[0] not in sUrl:
+                oOutputParameterHandler.addParameter('sYear', sYear)
                 oGui.addMovie(SITE_IDENTIFIER, 'showLink', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
+                sDisplayTitle = sTitle
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -348,7 +349,6 @@ def showSaisons():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sYear = oInputParameterHandler.getValue('sYear')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -377,7 +377,6 @@ def showSaisons():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addEpisode(SITE_IDENTIFIER, 'ShowEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -391,7 +390,6 @@ def ShowEpisodes():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
-    sYear = oInputParameterHandler.getValue('sYear')
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -418,7 +416,6 @@ def ShowEpisodes():
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sYear', sYear)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oGui.addEpisode(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -441,15 +438,13 @@ def showLink():
 
     # dans le cas d'une erreur si serie (pas de controle année et genre)
     if '<meta name=description content="serie' in sHtmlContent and 'episode' not in sUrl:
-        sDisplayTitle = sMovieTitle + '(' + sYear + ')'
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
         oOutputParameterHandler.addParameter('sThumb', sThumb)
         oOutputParameterHandler.addParameter('sDesc', sDesc)
-        oOutputParameterHandler.addParameter('sYear', sYear)
-        oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+        oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sMovieTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
         return
@@ -474,17 +469,14 @@ def showLink():
             sHost = re.sub('\.\w+', '', sHost).capitalize()
             sLang = aEntry[2].upper()
             sUrl2 = URL_MAIN + 'll/captcha?hash=' + sKey
-            sTitle = sMovieTitle
 
-            if sYear:
-                sTitle = sTitle + '(' + sYear + ')'
-
-            sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sLang, sHost)
+            sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('referer', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -497,6 +489,7 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sYear = oInputParameterHandler.getValue('sYear')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()

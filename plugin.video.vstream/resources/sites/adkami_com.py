@@ -17,25 +17,25 @@ SITE_DESC = 'Bienvenue sur ADKami un site Animés, Mangas & Séries en streaming
 URL_MAIN = 'https://www.adkami.com/'
 
 ANIM_ANIMS = (True, 'showAnimMenu')
-ANIM_NEWS = (URL_MAIN + 'anime', 'showMovies')
+ANIM_NEWS = (URL_MAIN + 'anime', 'showSeries')
 ANIM_LIST = (URL_MAIN + 'video?search=&n=&g=&s=&v=&t=0&p=&order=&d1=&d2=&e=&m=&q=&l=', 'showAZ')
-ANIM_VIEWS = (URL_MAIN + 'video?search=&t=0&order=3', 'showMovies')
+ANIM_VIEWS = (URL_MAIN + 'video?search=&t=0&order=3', 'showSeries')
 
 SERIE_SERIES = (True, 'showSerieMenu')
-SERIE_NEWS = (URL_MAIN + 'serie', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'serie', 'showSeries')
 SERIE_LIST = (URL_MAIN + 'video?search=&n=&g=&s=&v=&t=1&p=&order=&d1=&d2=&e=&m=&q=&l=', 'showAZ')
-SERIE_VIEWS = (URL_MAIN + 'video?search=&t=1&order=3', 'showMovies')
+SERIE_VIEWS = (URL_MAIN + 'video?search=&t=1&order=3', 'showSeries')
 
 DRAMA_DRAMAS = (True, 'showDramaMenu')
-DRAMA_NEWS = (URL_MAIN + 'drama', 'showMovies')
+DRAMA_NEWS = (URL_MAIN + 'drama', 'showSeries')
 DRAMA_LIST = (URL_MAIN + 'video?search=&n=&g=&s=&v=&t=5&p=&order=&d1=&d2=&e=&m=&q=&l=', 'showAZ')
-DRAMA_VIEWS = (URL_MAIN + 'video?search=&t=5&order=3', 'showMovies')
+DRAMA_VIEWS = (URL_MAIN + 'video?search=&t=5&order=3', 'showSeries')
 
-URL_SEARCH = (URL_MAIN + 'video?search=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + 'video?t=1&order=0&search=', 'showMovies')
-URL_SEARCH_DRAMAS = (URL_MAIN + 'video?t=5&order=0&search=', 'showMovies')
-URL_SEARCH_ANIMS = (URL_MAIN + 'video?t=0&order=0&search=', 'showMovies')
-FUNCTION_SEARCH = 'showMovies'
+URL_SEARCH = (URL_MAIN + 'video?search=', 'showSeries')
+URL_SEARCH_SERIES = (URL_MAIN + 'video?t=1&order=0&search=', 'showSeries')
+URL_SEARCH_DRAMAS = (URL_MAIN + 'video?t=5&order=0&search=', 'showSeries')
+URL_SEARCH_ANIMS = (URL_MAIN + 'video?t=0&order=0&search=', 'showSeries')
+FUNCTION_SEARCH = 'showSeries'
 
 
 def load():
@@ -114,7 +114,7 @@ def showSearchSerie():
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH_SERIES[0] + sSearchText
-        showMovies(sUrl)
+        showSeries(sUrl)
         oGui.setEndOfDirectory()
         return
 
@@ -125,7 +125,7 @@ def showSearchAnim():
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH_ANIMS[0] + sSearchText
-        showMovies(sUrl)
+        showSeries(sUrl)
         oGui.setEndOfDirectory()
         return
 
@@ -136,7 +136,7 @@ def showSearchDrama():
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH_DRAMAS[0] + sSearchText
-        showMovies(sUrl)
+        showSeries(sUrl)
         oGui.setEndOfDirectory()
         return
 
@@ -147,7 +147,7 @@ def showSearch():
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH[0] + sSearchText
-        showMovies(sUrl)
+        showSeries(sUrl)
         oGui.setEndOfDirectory()
         return
 
@@ -189,7 +189,7 @@ def showGenre():
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -209,7 +209,7 @@ def showAZ():
         sUrl2 = sUrl + str(i)
 
         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] Lettre [COLOR red]' + str(i).upper() + '[/COLOR]', 'az.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showSeries', '[COLOR teal] Lettre [COLOR red]' + str(i).upper() + '[/COLOR]', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -255,7 +255,7 @@ def showNoAlpha():
     oGui.setEndOfDirectory()
 
 
-def showMovies(sSearch=''):
+def showSeries(sSearch=''):
     oGui = cGui()
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
@@ -303,7 +303,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             sNumPage = re.search('page=([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showSeries', 'Page ' + sNumPage, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -356,10 +356,12 @@ def showEpisode():
             oOutputParameterHandler = cOutputParameterHandler()
             for aEntry in aResult[1]:
                 if aEntry[0]:
-                    oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0].capitalize() + '[/COLOR]')
+                    sSaison = aEntry[0].capitalize()
+                    oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + sSaison + '[/COLOR]')
                 else:
                     sUrl = aEntry[1]
-                    sTitle = sMovieTitle + ' ' + aEntry[2]
+                    sEpisode = aEntry[2]
+                    sTitle = sMovieTitle + ' ' + sSaison + ' ' + sEpisode
                     sTitle = re.sub(' vf', ' (VF)', sTitle, re.IGNORECASE)
                     sDisplayTitle = re.sub(' vostfr', ' (VOSTFR)', sTitle, re.IGNORECASE)
                     sTitle = sDisplayTitle.replace(' (VF)', '').replace(' (VOSTFR)', '')

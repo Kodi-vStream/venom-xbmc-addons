@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# source 44 https://funeralforamanga.fr/ 
+# source 44 https://funeralforamanga.fr/
+import re
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -378,7 +379,9 @@ def showLinks():
         for aEntry in aResult[1]:
             sId = aEntry[0]
             sHost = aEntry[1].replace(' ', '').replace('-', '')
+            sHost = re.sub('\.\w+', '', sHost)
             pdata = 'id=' + sId
+            sMovieTitle = re.sub('\[.+?\]', '', sMovieTitle)
             sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
             sUrl2 = URL_MAIN + 'remote/ajax-load_video'
 

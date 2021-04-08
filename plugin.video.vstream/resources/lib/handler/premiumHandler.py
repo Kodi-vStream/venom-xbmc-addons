@@ -44,7 +44,7 @@ class cPremiumHandler:
 
     def Checklogged(self, code):
         if 'uptobox' in self.__sHosterIdentifier:
-            if '//uptobox.com/?op=logout&' in code or 'Success' in code:
+            if '//uptobox.com/logout?' in code or 'Success' in code:
                 return True
 
         if 'onefichier' in self.__sHosterIdentifier:
@@ -72,7 +72,7 @@ class cPremiumHandler:
         post_data = {}
 
         if 'uptobox' in self.__sHosterIdentifier:
-            url = 'https://uptobox.com/?op=login&referer=homepage'
+            url = 'https://uptobox.com/login?referer=register'
             post_data['login'] = self.getUsername()
             post_data['password'] = self.getPassword()
 

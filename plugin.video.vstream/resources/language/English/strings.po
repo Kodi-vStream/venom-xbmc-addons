@@ -729,7 +729,7 @@ msgid "Calendar"
 msgstr ""
 
 msgctxt "#30332"
-msgid "Iptv (official)"
+msgid "TV (Official)"
 msgstr ""
 
 msgctxt "#30340"

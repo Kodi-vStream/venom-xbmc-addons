@@ -19,8 +19,7 @@ SITE_IDENTIFIER = 'streamcomplet3'
 SITE_NAME = 'Streamcomplet3'
 SITE_DESC = 'Films en streaming.'
 
-URL_MAIN = 'https://in.streamcomplet3.com/'
-# URL_MAIN = 'https://stream.apkgratuits.com/'  # clone mais aussi sous CF
+URL_MAIN = 'https://streamcomplet3.org/'
 
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN + '6/', 'showMovies')

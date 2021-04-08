@@ -454,9 +454,9 @@ class cGuiElement:
             'tagline': xbmc.getInfoLabel('ListItem.tagline'),
             'plotoutline': xbmc.getInfoLabel('ListItem.plotoutline'),
             'plot': xbmc.getInfoLabel('ListItem.plot'),
-            'cover_url': xbmc.getInfoLabel('ListItem.Art(thumb)'),
+            'album': xbmc.getInfoLabel('ListItem.Art(thumb)'),
             'backdrop_url': xbmc.getInfoLabel('ListItem.Art(fanart)'),
-            'imdb_id': xbmc.getInfoLabel('ListItem.IMDBNumber'),
+            'imdbnumber': xbmc.getInfoLabel('ListItem.IMDBNumber'),
             'season': xbmc.getInfoLabel('ListItem.season'),
             'episode': xbmc.getInfoLabel('ListItem.episode')
             }
@@ -472,9 +472,9 @@ class cGuiElement:
             self.__sFanart = meta['backdrop_url']
         if 'trailer' in meta and meta['trailer']:
             self.__sTrailer = meta['trailer']
-        if 'cover_url' in meta and meta['cover_url']:
-            self.__sThumbnail = meta['cover_url']
-            self.__sPoster = meta['cover_url']
+        if 'album' in meta and meta['album']:
+            self.__sThumbnail = meta['album']
+            self.__sPoster = meta['album']
 
         return
 

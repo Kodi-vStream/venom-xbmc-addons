@@ -59,7 +59,7 @@ class cHosterGui:
         else:
             oGuiElement.setCat('4')
 
-        # context playlit menu
+        # context playlist menu
         oContext = cContextElement()
         oContext.setFile('cHosterGui')
         oContext.setSiteName(self.SITE_NAME)
@@ -112,7 +112,7 @@ class cHosterGui:
         # bug
         oGui.addHost(oGuiElement, oOutputParameterHandler)
 
-    def checkHoster(self, sHosterUrl):
+    def checkHoster(self, sHosterUrl, debrid = True):
         # securite
         if not sHosterUrl:
             return False
@@ -127,26 +127,28 @@ class cHosterGui:
         except:
             sHostName = sHosterUrl
 
-        # L'user a active l'url resolver ?
-        if self.ADDON.getSetting('UserUrlResolver') == 'true':
-            import urlresolver
-            hmf = urlresolver.HostedMediaFile(url=sHosterUrl)
-            if hmf.valid_url():
-                tmp = self.getHoster('resolver')
-                RH = sHosterUrl.split('/')[2]
-                RH = RH.replace('www.', '')
-                tmp.setRealHost(RH.split('.')[0].upper())
-                return tmp
+        if debrid:
+            # L'user a active l'url resolver ?
+            if self.ADDON.getSetting('UserUrlResolver') == 'true':
+                import urlresolver
+                hmf = urlresolver.HostedMediaFile(url=sHosterUrl)
+                if hmf.valid_url():
+                    tmp = self.getHoster('resolver')
+                    RH = sHosterUrl.split('/')[2]
+                    RH = RH.replace('www.', '')
+                    tmp.setRealHost(RH.split('.')[0].upper())
+                    return tmp
+                
+            # L'user a activé alldebrid ?
+            if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
+                return self.getHoster('alldebrid')
 
-        # L'user a active alldebrid ?
-        if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
-            return self.getHoster('alldebrid')
-
-        if self.ADDON.getSetting('hoster_debridlink_premium') == 'true':
-            if "debrid.link" not in sHosterUrl:
-                return self.getHoster('debrid_link')
-            else:
-                return self.getHoster("lien_direct")
+            # L'user a activé debrid_link ?
+            if self.ADDON.getSetting('hoster_debridlink_premium') == 'true':
+                if "debrid.link" not in sHosterUrl:
+                    return self.getHoster('debrid_link')
+                else:
+                    return self.getHoster("lien_direct")
 
         # Gestion classique
         if ('streamz' in sHostName):
@@ -479,25 +481,36 @@ class cHosterGui:
             oHoster.setUrl(sMediaUrl)
             aLink = oHoster.getMediaLink()
 
-            if aLink[0]:
-                oGuiElement = cGuiElement()
-                oGuiElement.setSiteName(self.SITE_NAME)
-                oGuiElement.setMediaUrl(aLink[1])
-                oGuiElement.setTitle(sTitle)
-                oGuiElement.getInfoLabel()
+            if aLink[0] or aLink[1] : # Le hoster ne sait pas résoudre mais a retourné une autre url
+                if not aLink[0] :   # Voir exemple avec allDebrid qui : return False, URL
+                    oHoster = self.checkHoster(aLink[1], debrid=False)
+                    if oHoster:
+                        oHoster.setFileName(sFileName)
+                        sHosterName = oHoster.getDisplayName()
+                        oDialog.VSinfo(sHosterName, 'Resolve')
+                        oHoster.setUrl(sMediaUrl)
+                        aLink = oHoster.getMediaLink()
 
-                oPlayer = cPlayer()
+                if aLink[0] :
+                    oGuiElement = cGuiElement()
+                    oGuiElement.setSiteName(self.SITE_NAME)
+                    oGuiElement.setMediaUrl(aLink[1])
+                    oGuiElement.setTitle(sTitle)
+                    oGuiElement.getInfoLabel()
+    
+                    from resources.lib.player import cPlayer
+                    oPlayer = cPlayer()
+    
+                    # sous titres ?
+                    if len(aLink) > 2:
+                        oPlayer.AddSubtitles(aLink[2])
+    
+                    return oPlayer.run(oGuiElement, oHoster.getFileName(), aLink[1])
 
-                # sous titres ?
-                if len(aLink) > 2:
-                    oPlayer.AddSubtitles(aLink[2])
+            oDialog.VSerror(self.ADDON.VSlang(30020))
+            return
 
-                oPlayer.run(oGuiElement, oHoster.getFileName(), aLink[1])
-                return
-            else:
-                oDialog.VSerror(self.ADDON.VSlang(30020))
-                return
-        except:
+        except Exception as e:
             oDialog.VSerror(self.ADDON.VSlang(30020))
             return
 

@@ -5,7 +5,6 @@
 
 import re
 import time
-import json
 from hashlib import sha1
 import hmac
 import binascii
@@ -15,7 +14,7 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import progress, VSPath  # , VSlog
+from resources.lib.comaddon import progress, VSPath
 
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0'
@@ -51,7 +50,6 @@ URL_SEARCH_DRAMAS = (URL_SEARCH[0], 'showMovies')
 
 se = 'true'  # activation des sous titres
 # lang = 'en' ou 'fr'
-
 
 def load():
     oGui = cGui()
@@ -145,8 +143,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Language', '')
-    sJsonContent = oRequestHandler.request()
-    jsonrsp = json.loads(sJsonContent)
+    jsonrsp = oRequestHandler.request(jsonDecode=True)
 
     if not jsonrsp:
         oGui.addText(SITE_IDENTIFIER)
@@ -240,8 +237,7 @@ def showSaisons():
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Language', '')
-    sJsonContent = oRequestHandler.request()
-    jsonrsp = json.loads(sJsonContent)
+    jsonrsp = oRequestHandler.request(jsonDecode=True)
 
     for episode in range(0, len(jsonrsp['response'])):
         try:
@@ -305,8 +301,7 @@ def showMovieGenre():
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Language', '')
-    sJsonContent = oRequestHandler.request()
-    jsonrsp = json.loads(sJsonContent)
+    jsonrsp = oRequestHandler.request(jsonDecode=True)
 
     oOutputParameterHandler = cOutputParameterHandler()
     for genre in range(0, len(jsonrsp)):
@@ -327,8 +322,7 @@ def showSerieGenre():
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Language', '')
-    sJsonContent = oRequestHandler.request()
-    jsonrsp = json.loads(sJsonContent)
+    jsonrsp = oRequestHandler.request(jsonDecode=True)
 
     oOutputParameterHandler = cOutputParameterHandler()
     for genre in range(0, len(jsonrsp)):
@@ -356,8 +350,8 @@ def showPays(genre):
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Language', '')
-    sJsonContent = oRequestHandler.request()
-    jsonrsp = json.loads(sJsonContent)
+    jsonrsp = oRequestHandler.request(jsonDecode=True)
+
     # site ou il n'y a jamais rien
     sBlaccountryList = ['tw', 'ca', 'us', 'gb', 'th', 'ph', 'es']
 
@@ -379,11 +373,11 @@ def showPays(genre):
 def SIGN(url, pth):
     timestamp = str(int(time.time()))
     key = 'MM_d*yP@`&1@]@!AVrXf_o-HVEnoTnm$O-ti4[G~$JDI/Dc-&piU&z&5.;:}95=Iad'
-    rawtxt = '/v4/videos/' + url + pth + '?app=100005a&t=' + timestamp + '&site=www.viki.com'
-    hashed = hmac.new(key, rawtxt, sha1)
-    fullurl = 'https://api.viki.io' + rawtxt + '&sig=' + binascii.hexlify(hashed.digest())
+    rawtxt = '/v4/videos/'+url+pth+'?app=100005a&t='+timestamp+'&site=www.viki.com'
+    hashed = hmac.new(key.encode('utf-8'), rawtxt.encode('utf-8'), sha1)
+    signatura = binascii.hexlify(hashed.digest())
+    fullurl = 'https://api.viki.io' + rawtxt+'&sig='+signatura.decode('utf-8')
     return fullurl
-
 
 def GET_SUBTILES(url, subtitle_completion1, subtitle_completion2):
     srtsubs_path1 = VSPath('special://temp/vstream_viki_SubFrench.srt')
@@ -421,8 +415,12 @@ def GET_URLS_STREAM(url):
     urlreq = SIGN(url, '/streams.json')
     oRequestHandler = cRequestHandler(urlreq)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
-    sJsonContent = oRequestHandler.request()
-    jsonrsp = json.loads(sJsonContent)
+    oRequestHandler.addHeaderEntry('authority', 'manifest-viki.viki.io')
+    oRequestHandler.addHeaderEntry('accept', '*/*')
+    oRequestHandler.addHeaderEntry('x-viki-app-ver', '6.0.0')
+    oRequestHandler.addHeaderEntry('origin', 'https://www.viki.com')
+    oRequestHandler.addHeaderEntry('referer', url)
+    jsonrsp = oRequestHandler.request(jsonDecode=True)
 
     testeurl = ''
     testeq = ''
@@ -439,7 +437,6 @@ def GET_URLS_STREAM(url):
     # ajout du teste à enlever + 1 à revoir et
     streamUrlList.append(testeurl)
     validq.append(testeq)
-
     return validq, streamUrlList
 
 

@@ -555,10 +555,10 @@ def showEpisode():
 
     sDesc = ''
     try:
-        sPattern = 'id="s-desc">.+?streaming : (.+?)<'
+        sPattern = 'id="s-desc">.+? : (.+?)<'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
-            sDesc = aResult[1][0]
+            sDesc = re.sub('Résumé.+?$', '', aResult[1][0])
     except:
         pass
 
@@ -576,7 +576,7 @@ def showEpisode():
 
             else:
                 # sId = aEntry[1]
-                sTitle = aEntry[2] + ' ' + sMovieTitle
+                sTitle = aEntry[2] + ' ' + sMovieTitle.replace('- Saison', ' Saison')
                 sData = aEntry[3]
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)

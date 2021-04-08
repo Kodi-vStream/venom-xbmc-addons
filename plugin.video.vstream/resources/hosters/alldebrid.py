@@ -73,10 +73,17 @@ class cHoster(iHoster):
         if Token_Alldebrid:
             sUrl_Bypass = "https://api.alldebrid.com/v4/link/unlock?agent=service&version=1.0-&apikey=" + Token_Alldebrid + "&link=" + self.__sUrl
         else:
-            return False
+            return False, False
 
         oRequest = cRequestHandler(sUrl_Bypass)
         sHtmlContent = json.loads(oRequest.request())
+        
+        if 'error' in sHtmlContent:
+            if sHtmlContent['error']['code'] == 'LINK_HOST_NOT_SUPPORTED':
+                return False, self.__sUrl # si alldebrid ne prend pas en charge ce type de lien, on retourne le lien pour utiliser un autre hoster
+            else:
+                VSlog('Hoster Alldebrid - Error: ' + sHtmlContent["error"]['code'])
+                return False, False
         
         api_call = HostURL = sHtmlContent["data"]["link"]
         try:

@@ -57,7 +57,14 @@ class cPlayer(xbmc.Player):
         oPlaylist.add(oGuiElement.getMediaUrl(), oListItem )
 
     def AddSubtitles(self, files):
-        if isinstance(files, basestring):
+        try:
+            basestring
+        except:
+            basestring = str
+            
+        if len(files) == 1:
+            self.Subtitles_file = files[0]
+        elif isinstance(files, basestring):
             self.Subtitles_file.append(files)
         else:
             self.Subtitles_file = files
@@ -87,12 +94,11 @@ class cPlayer(xbmc.Player):
                 VSlog("Can't load subtitle:" + str(self.Subtitles_file))
 
         player_conf = self.ADDON.getSetting('playerPlay')
-
         #Si lien dash, methode prioritaire
         if sUrl.endswith('.mpd') or sUrl.split('?')[0][-4:] in '.mpd':
             if isKrypton() == True:
                 self.enable_addon('inputstream.adaptive')
-                item.setProperty('inputstreamaddon','inputstream.adaptive')
+                item.setProperty('inputstream','inputstream.adaptive')
                 item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
                 xbmcplugin.setResolvedUrl(sPluginHandle, True, listitem=item)
                 VSlog('Player use inputstream addon')
@@ -193,7 +199,6 @@ class cPlayer(xbmc.Player):
 
                 except:
                     pass
-
         #xbmc.executebuiltin('Container.Refresh')
 
     def onPlayBackStarted(self):

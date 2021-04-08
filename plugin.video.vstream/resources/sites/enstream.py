@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'enstream'
 SITE_NAME = 'Enstream'
 SITE_DESC = 'Regarder tous vos films streaming complets, gratuit et illimité'
 
-URL_MAIN = 'https://vvv.enstream.co/'
+URL_MAIN = 'https://www.enstream.club/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = ('', FUNCTION_SEARCH)
@@ -143,13 +143,13 @@ def showMovies(sSearch=''):
     sHtmlContent = oRequestHandler.request()
 
     if sSearch:
-        sPattern = '<a href="([^"]+)".+?url\((.+?)\).+?<div class="title"> (.+?) </div>'
+        sPattern = '<a href="([^"]+).+?url\((.+?)\).+?<div class="title"> (.+?) </div>'
     elif 'Annee/' in sUrl or '/ABC' in sUrl:
-        sPattern = '<div class="table-movies-content.+?href="([^"]+)".+?url\((.+?)\).+?<.i>.([^<]+)'
+        sPattern = '<div class="table-movies-content.+?href="([^"]+).+?url\((.+?)\).+?<.i>.([^<]+)'
     elif 'genre/' in sUrl:
-        sPattern = 'film-uno.+?href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)'
+        sPattern = 'film-uno.+?href="([^"]+).+?data-src="([^"]+).+?alt="([^"]+)'
     else:
-        sPattern = '<div class="film-uno">.+?<a href="([^"]+)".+?data-src="([^"]+)".+?alt="([^"]+)".+?min.+?·([^<]+).+?short-story">([^<]+)'
+        sPattern = 'class="film-uno".+?href="([^"]+).+?data-src="([^"]+).+?alt="([^"]+).+?min.+?·([^<]+).+?short-story">([^<]*)'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)

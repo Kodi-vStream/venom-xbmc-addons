@@ -7,7 +7,7 @@ import json
 import resources.sites.freebox
 
 
-from resources.lib.comaddon import addon
+from resources.lib.comaddon import addon, isMatrix
 from resources.lib.epg import cePg
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
@@ -23,7 +23,7 @@ SITE_IDENTIFIER = 'channelstream'
 SITE_NAME = 'Channel Stream'
 SITE_DESC = 'iptv'
 
-URL_MAIN = 'https://channelstream.me'
+URL_MAIN = 'https://channelstream.watch'
 
 TV_FRENCH = (URL_MAIN + "/chaine-tv.php", 'showMovies')
 
@@ -58,7 +58,11 @@ def showMovies():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    if isMatrix():
+    	sHtmlContent = sHtmlContent.replace('Ã®','î').replace('Ã©','é')
+
     sHtmlContent = oParser.abParse(sHtmlContent, sFiltre, '<!-- Type Chaîne -->')
+
     sPattern = 'location.href = \'\.(.+?)\'.+?src=\'(.+?)\'.+?<div align="center">(.+?)</div>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -68,8 +72,14 @@ def showMovies():
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            if "+18" not in str(aEntry[2]):
+
+            if "+18" in str(aEntry[2]) and addon().getSetting('contenu_adulte') == 'false':
+            	continue
+            else:
                 sTitle = aEntry[2]
+
+                if "<" in sTitle:
+                	sTitle = sTitle.split('<')[0]
 
                 if 'Canal + Série' in sTitle:
                     sTitle = 'Canal + Séries'
@@ -189,10 +199,10 @@ def showHoster():
         str2 = aResult[0]
         datetoken = int(getTimer()) * 1000
 
-        jsonUrl = 'https://telerium.live/streams/' + str2 + '/' + str(datetoken) + '.json'
+        jsonUrl = 'https://telerium.digital/streams/' + str2 + '/' + str(datetoken) + '.json'
         tokens = getRealTokenJson(jsonUrl, iframeURL1)
         m3url = tokens['url']
-        nxturl = 'https://telerium.live' + tokens['tokenurl']
+        nxturl = 'https://telerium.digital' + tokens['tokenurl']
 
         realtoken = getRealTokenJson(nxturl, iframeURL1)[10][::-1]
 

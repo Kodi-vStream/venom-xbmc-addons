@@ -729,8 +729,8 @@ msgid "Calendar"
 msgstr "Calendrier des sorties VO"
 
 msgctxt "#30332"
-msgid "Iptv (official)"
-msgstr "Iptv (officiel)"
+msgid "TV (Official)"
+msgstr "TV (Officiel)"
 
 msgctxt "#30340"
 msgid "Trakt integration"

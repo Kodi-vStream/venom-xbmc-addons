@@ -375,7 +375,6 @@ def hostersLink():
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     sHosterUrl = sUrl
-    sDisplayMovieTitle = sMovieTitle
 
     if 'oload.tv' in sUrl:  # https://oload.tv/embed/0rRYBdB_3Xw/# #ace attorney vostfr
         oGui.addText(SITE_IDENTIFIER, ' vStream : Accès refusé : Le site Oload.tv n\'est pas sécurisé')
@@ -389,7 +388,7 @@ def hostersLink():
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
     if (oHoster != False):
-        oHoster.setDisplayName(sDisplayMovieTitle)
+        oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 

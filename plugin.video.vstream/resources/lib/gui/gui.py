@@ -222,22 +222,20 @@ class cGui:
 
         oOutputParameterHandler.addParameter('sTitleWatched', oGuiElement.getTitleWatched())
 
-        if oGuiElement.getMeta() in (1, 2, 3, 4):  # Films, Séries, Saga, Animes
-            if cGui.CONTENT in ('movies', 'tvshows', 'episodes'):
+        if sCat:    # 1 = movies, moviePack; 2 = series, animes, episodes; 5 = MISC
+            if oGuiElement.getMeta():
                 self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuba(oGuiElement, oOutputParameterHandler)
+            if not oListItem.getProperty('isBookmark'):
                 self.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
-    
+
+            if sCat in (1, 2):
                 if self.ADDON.getSetting('bstoken') != '':
                     self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
                 if self.ADDON.getSetting('tmdb_account') != '':
                     self.createContexMenuTMDB(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-    
-            elif sCat and sCat == 5:    # MISC
-                self.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
+            self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
         self.listing.append((sItemUrl, oListItem, _isFolder))

@@ -166,6 +166,7 @@ class cFav:
                     oGuiElement.setMeta(2)
                     oGuiElement.setCat(2)
                 else:
+                    cGui.CONTENT = 'videos'
                     oGuiElement.setMeta(0)
                     oGuiElement.setCat(cat)
                 oGuiElement.setThumbnail(thumbnail)
@@ -206,6 +207,10 @@ class cFav:
         sTitle = oInputParameterHandler.getValue('sMovieTitle') if oInputParameterHandler.exist('sMovieTitle') else xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
         sSite = oInputParameterHandler.getValue('sId') if oInputParameterHandler.exist('sId') else xbmc.getInfoLabel('ListItem.Property(sId)')
         sFav = oInputParameterHandler.getValue('sFav') if oInputParameterHandler.exist('sFav') else xbmc.getInfoLabel('ListItem.Property(sFav)')
+
+        if sTitle == '':
+            self.DIALOG.VSinfo('Error', 'Probleme sur titre')
+            return
 
         meta['siteurl'] = sSiteUrl
         meta['title'] = sTitle

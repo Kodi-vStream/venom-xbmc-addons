@@ -4,7 +4,7 @@
 import json
 import re
 
-from resources.lib.comaddon import progress, VSlog, dialog
+from resources.lib.comaddon import progress, VSlog, dialog, addon
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -33,6 +33,7 @@ FUNCTION_SEARCH = 'showMovies'
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_HD1080 = (URL_MAIN + 'films-new-hd/new-bluray-1080p/', 'showMovies')
+MOVIE_NEWS2021 = (URL_MAIN + 'films-new-hd/', 'showMovies')
 # MOVIE_GENRES = (True, 'showGenres')
 # MOVIE_ANNEES = (True, 'showMovieYears')
 
@@ -111,6 +112,9 @@ def showMenuMovies():
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS2021[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS2021[1], 'Nouveauté 2021 HD', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD1080[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_HD1080[1], 'Bluray 1080P', 'films.png', oOutputParameterHandler)
@@ -706,9 +710,9 @@ def RecapchaBypass():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    Token_Alldebrid = cPremiumHandler("alldebrid").getToken()
-
-    if Token_Alldebrid:
+    ADDON = addon()
+    Token_Alldebrid = ADDON.getSetting('hoster_alldebrid_token')
+    if Token_Alldebrid != "":
         sUrl_Bypass = "https://api.alldebrid.com/v4/link/redirector?agent=service&version=1.0-&apikey="
         sUrl_Bypass += Token_Alldebrid + "&link=" + sUrl
 

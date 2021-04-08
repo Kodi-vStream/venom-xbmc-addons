@@ -72,10 +72,10 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  "playerBrand.+?var.+?\'([^\']+)"
+        sPattern =  'vstype.+?var.+?= "(.+?)";'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            url2 = aResult[1][0]
+            url2 = aResult[1][0].replace('" + "',"")
 
             oRequest = cRequestHandler(url2)
             oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
