@@ -14,8 +14,9 @@ Historique des modifications
 
 *** 1.1.0***
 - F4mProxy : suppression de la dépendance
-- Sous-titre : Charger automatiquement
+- Sous-titre : Chargement automatique du premier
 - Uptobox : Meilleure gestion
+- IPTV : Suppression des listes d'IPTV
 
 *** 1.0.0***
 - UrlResolver : compatibilité Matrix
