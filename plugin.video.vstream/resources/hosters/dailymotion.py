@@ -45,7 +45,10 @@ class cHoster(iHoster):
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
         if not "metadata" in self.__sUrl:
-            self.__sUrl = "https://www.dailymotion.com/player/metadata/video/" + self.__sUrl.split('/')[4]
+            if 'embed/video' in self.__sUrl:
+                self.__sUrl = "https://www.dailymotion.com/player/metadata/video/" + self.__sUrl.split('/')[5]
+            else:
+                self.__sUrl = "https://www.dailymotion.com/player/metadata/video/" + self.__sUrl.split('/')[4]                
 
     def checkUrl(self, sUrl):
         return True
