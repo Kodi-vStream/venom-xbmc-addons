@@ -5,7 +5,8 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog, VSPath, isMatrix
 from resources.lib.parser import cParser
-
+import base64
+import json
 
 class cHoster(iHoster):
 
@@ -72,10 +73,11 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  'vstype.+?var.+?= "(.+?)";'
+        sPattern =  'var playerOptsB64 = "(.+?)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            url2 = aResult[1][0].replace('" + "',"")
+            decode = base64.b64decode(aResult[1][0])
+            url2 = json.loads(decode)['url']
 
             oRequest = cRequestHandler(url2)
             oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
