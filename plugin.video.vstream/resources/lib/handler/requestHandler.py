@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-from requests import Session, Request, HTTPError
+from requests import Session, Request, RequestException
 from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix
 
 class cRequestHandler:
@@ -150,6 +150,9 @@ class cRequestHandler:
 
         sContent = ''
 
+        if self.BUG_SSL == True:
+            self.verify = False
+
         if self.__cType == cRequestHandler.REQUEST_TYPE_GET:
             method = "GET"
         else:
@@ -168,6 +171,7 @@ class cRequestHandler:
 
             prepped = _request.prepare()
             self.s.headers.update(self.__aHeaderEntries)
+
             oResponse = self.s.send(prepped, timeout=self.__timeout, allow_redirects=self.redirects, verify=self.verify)
             self.__sResponseHeader = oResponse.headers
             self.__sRealUrl = oResponse.url
@@ -187,11 +191,11 @@ class cRequestHandler:
             else:
                 sContent = oResponse.json()
 
-        except HTTPError as e:
-            if 'CERTIFICATE_VERIFY_FAILED' in str(e.reason) and self.BUG_SSL == False:
+        except RequestException  as e:
+            if 'CERTIFICATE_VERIFY_FAILED' in str(e) and self.BUG_SSL == False:
                 self.BUG_SSL = True
                 return self.__callRequest()
-            elif 'getaddrinfo failed' in str(e.reason) and self.__enableDNS == False:
+            elif 'getaddrinfo failed' in str(e) and self.__enableDNS == False:
                 # Retry with DNS only if addon is present
                 import xbmcvfs
                 if xbmcvfs.exists('special://home/addons/script.module.dnspython/'):
