@@ -330,10 +330,10 @@ class cGuiElement:
     def setDescription(self, sDescription):
         #Py3
         if isMatrix():
-            try:
+            if 'Ã' in sDescription or '\\xc' in sDescription:
                 self.__sDescription = str(sDescription.encode('latin-1'),'utf-8')
-            except:
-                pass
+            else:
+                self.__sDescription = sDescription
         else:
             self.__sDescription = sDescription
 
