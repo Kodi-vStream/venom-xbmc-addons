@@ -8,13 +8,14 @@ import time
 from hashlib import sha1
 import hmac
 import binascii
+import xbmcvfs
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import progress, VSPath
+from resources.lib.comaddon import progress, VSPath, VSlog, isMatrix
 
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0'
@@ -165,8 +166,11 @@ def showMovies(sSearch=''):
                         sThumb = jsonrsp['response'][movie]['images']['poster']['url']  # thumb size 120ko
                         # sThumb = jsonrsp['response'][movie]['images']['atv_cover']['url']  # thumb size 800 ko
                         sUrl2 = URL_API + 'series/' + jsonrsp['response'][movie]['id'] + '/episodes.json?page=1&per_page=50&app=100000a&t=' + str(timestamp)
-                        sDesc = jsonrsp['response'][movie]['descriptions']['fr'].encode('utf-8', 'ignore')
-                        # sDesc = jsonrsp['response'][movie]['descriptions']['en'].encode('utf-8', 'ignore')
+                        
+                        sDesc = jsonrsp['response'][movie]['descriptions']['fr']
+                        
+                        if not isMatrix():
+                            sDesc = sDesc.encode('utf-8', 'ignore')
 
                         oOutputParameterHandler = cOutputParameterHandler()
                         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -380,15 +384,19 @@ def SIGN(url, pth):
     return fullurl
 
 def GET_SUBTILES(url, subtitle_completion1, subtitle_completion2):
-    srtsubs_path1 = VSPath('special://temp/vstream_viki_SubFrench.srt')
-    srtsubs_path2 = VSPath('special://temp/vstream_viki_SubEnglish.srt')
+    srtsubs_path1 = 'special://temp/vstream_viki_SubFrench.srt'
+    srtsubs_path2 = 'special://temp/vstream_viki_SubEnglish.srt'
     try:
         if (int(subtitle_completion1) > 79 and se == 'true'):
             urlreq = SIGN(url, '/subtitles/fr.srt')
             oRequestHandler = cRequestHandler(urlreq)
             oRequestHandler.addHeaderEntry('User-Agent', UA)
             data = oRequestHandler.request()
-            with open(srtsubs_path1, "w") as subfile:
+
+            if isMatrix():
+                data = data.encode('latin-1')
+
+            with xbmcvfs.File(srtsubs_path1, "w") as subfile:
                 subfile.write(data)
 
         if (int(subtitle_completion2) > 0 and se == 'true'):
@@ -396,7 +404,11 @@ def GET_SUBTILES(url, subtitle_completion1, subtitle_completion2):
             oRequestHandler = cRequestHandler(urlreq)
             oRequestHandler.addHeaderEntry('User-Agent', UA)
             data = oRequestHandler.request()
-            with open(srtsubs_path2, "w") as subfile:
+
+            if isMatrix():
+                data = data.encode('latin-1')
+
+            with xbmcvfs.File(srtsubs_path2, "w") as subfile:
                 subfile.write(data)
         else:
             # VSlog('GET_SUBTILES:erreur completion')
