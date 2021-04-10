@@ -149,6 +149,7 @@ def showMovies(sSearch=''):
     if not jsonrsp:
         oGui.addText(SITE_IDENTIFIER)
 
+    oOutputParameterHandler = cOutputParameterHandler()
     if len(jsonrsp['response']) > 0:
         total = len(jsonrsp['response'])
         progress_ = progress().VScreate(SITE_NAME)
@@ -169,14 +170,16 @@ def showMovies(sSearch=''):
                         
                         sDesc = jsonrsp['response'][movie]['descriptions']['fr']
                         
-                        if not isMatrix():
-                            sDesc = sDesc.encode('utf-8', 'ignore')
 
-                        oOutputParameterHandler = cOutputParameterHandler()
                         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                         oOutputParameterHandler.addParameter('sThumb', sThumb)
-                        oOutputParameterHandler.addParameter('sDesc', sDesc)
+
+                        if not isMatrix():
+                            oOutputParameterHandler.addParameter('sDesc', sDesc.encode('utf-8', 'ignore'))
+                        else:
+                            oOutputParameterHandler.addParameter('sDesc', sDesc)
+
                         oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
                     else:
                         if (jsonrsp['response'][movie]['blocked'] == False):
@@ -197,15 +200,19 @@ def showMovies(sSearch=''):
                                 pass
 
                             sDesc = str(mt)
-                            sTitle = str(jsonrsp['response'][movie]['titles']['en'].encode('utf-8', 'ignore'))
+                            sTitle = str(jsonrsp['response'][movie]['titles']['en'])
                             sThumb = str(jsonrsp['response'][movie]['images']['poster']['url'])
                             sUrlApi = str(jsonrsp['response'][movie]['id'] + '@' +
                                           jsonrsp['response'][movie]['images']['poster']['url'] + '@' +
                                           subtitle_completion1 + '@' + subtitle_completion2 + '@' + mt)
 
-                            oOutputParameterHandler = cOutputParameterHandler()
                             oOutputParameterHandler.addParameter('siteUrl', sUrlApi)
-                            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                            
+                            if not isMatrix():
+                                oOutputParameterHandler.addParameter('sMovieTitle', sTitle.encode('utf-8', 'ignore'))
+                            else:
+                                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)  
+
                             oOutputParameterHandler.addParameter('sThumb', sThumb)
                             oOutputParameterHandler.addParameter('sDesc', sDesc)
                             oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
@@ -243,6 +250,7 @@ def showSaisons():
     oRequestHandler.addHeaderEntry('Accept-Language', '')
     jsonrsp = oRequestHandler.request(jsonDecode=True)
 
+    oOutputParameterHandler = cOutputParameterHandler()
     for episode in range(0, len(jsonrsp['response'])):
         try:
             if (jsonrsp['response'][episode]['blocked'] == False):
@@ -267,7 +275,6 @@ def showSaisons():
                            jsonrsp['response'][episode]['images']['poster']['url'] + '@' +
                            subtitle_completion1 + '@' + subtitle_completion2 + '@' + et)
 
-                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
