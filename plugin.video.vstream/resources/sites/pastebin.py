@@ -310,7 +310,7 @@ class PasteContent:
 
     def resolveLink(self, pasteBin, link):
         if not self.movies:
-            return self.HEBERGEUR+link
+            return self.HEBERGEUR+link, 'ori', 'ori'
 
         if 'uptobox' in self.HEBERGEUR:
             # Recherche d'un compte premium valide
