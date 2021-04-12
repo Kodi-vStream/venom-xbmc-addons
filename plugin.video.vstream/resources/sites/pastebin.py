@@ -310,7 +310,7 @@ class PasteContent:
 
     def resolveLink(self, pasteBin, link):
         if not self.movies:
-            return self.HEBERGEUR+link, 'ori', 'ori'
+            return [(self.HEBERGEUR+link, 'ori', 'ori')]
 
         if 'uptobox' in self.HEBERGEUR:
             # Recherche d'un compte premium valide
@@ -340,7 +340,7 @@ class PasteContent:
             else:
                 dialog().VSinfo('Certains liens nécessitent un Compte Premium')
 
-        return self.HEBERGEUR+link, 'ori', 'ori'
+        return [(self.HEBERGEUR+link, 'ori', 'ori')]
 
     def _resolveLink(self, pasteBin, link):
 
@@ -1809,6 +1809,7 @@ def showHosters():
     sRes = aParams['sRes'] if 'sRes' in aParams else None
 
     listRes = getHosterList(siteUrl)
+    oHosterDirect = cHosterGui().getHoster('lien_direct')
 
     for res in sorted(listRes.keys(), key=trie_res):
         displayRes = res.replace('P', 'p').replace('1080p', 'fullHD').replace('720p', 'HD').replace('2160p', '4K')
@@ -1817,17 +1818,21 @@ def showHosters():
             if not sHosterUrl.startswith('http'):
                 sHosterUrl += 'http://' + sHosterUrl
     
-            oHoster = cHosterGui().getHoster('lien_direct')     # Forcement avec cette source
+            if '/dl/' in sHosterUrl or '.download.' in sHosterUrl:
+                oHoster = oHosterDirect
+            else:
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
             
-            sDisplayName = sTitle
-            if displayRes:
-                sDisplayName += ' [%s]' % displayRes
-            if lang:
-                sDisplayName += ' (%s)' % lang
-
-            oHoster.setDisplayName(sDisplayName)
-            oHoster.setFileName(sTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+            if oHoster:
+                sDisplayName = sTitle
+                if displayRes:
+                    sDisplayName += ' [%s]' % displayRes
+                if lang:
+                    sDisplayName += ' (%s)' % lang
+    
+                oHoster.setDisplayName(sDisplayName)
+                oHoster.setFileName(sTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
 
     oGui.setEndOfDirectory()
 
