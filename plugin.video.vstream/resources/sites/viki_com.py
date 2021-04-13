@@ -15,8 +15,7 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import progress, VSPath, VSlog, isMatrix
-
+from resources.lib.comaddon import progress, VSlog, isMatrix
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0'
 SITE_IDENTIFIER = 'viki_com'
@@ -35,7 +34,6 @@ MOVIE_NEWS = (URL_API + 'movies.json?sort=newest_video&page=1&per_page=50&app=10
 MOVIE_RECENT = (URL_API + 'movies.json?sort=views_recent&page=1&per_page=50&app=100000a&t=', 'showMovies')
 MOVIE_POPULAR = (URL_API + 'movies.json?sort=trending&page=1&per_page=50&app=100000a&t=', 'showMovies')
 MOVIE_BEST = (URL_API + 'movies.json?sort=views&page=1&per_page=50&app=100000a&t=', 'showMovies')
-# MOVIE_DATE_CREATED = (URL_API + 'movies.json?sort=created_at&page=1&per_page=50&app=100000a&t=', 'showMovies')
 
 DRAMA_GENRES = (True, 'showSerieGenre')
 DRAMA_PAYS = (True, 'showSeriePays')
@@ -43,14 +41,12 @@ DRAMA_NEWS = (URL_API + 'series.json?sort=newest_video&page=1&per_page=50&app=10
 DRAMA_RECENT = (URL_API + 'series.json?sort=views_recent&page=1&per_page=50&app=100000a&t=', 'showMovies')
 DRAMA_POPULAR = (URL_API + 'series.json?sort=trending&page=1&per_page=50&app=100000a&t=', 'showMovies')
 DRAMA_BEST = (URL_API + 'series.json?sort=views&page=1&per_page=50&app=100000a&t=', 'showMovies')
-# DRAMA_DATE_CREATED = (URL_API + 'series.json?sort=created_at&page=1&per_page=50&app=100000a&t=', 'showMovies')
 
 URL_SEARCH = (URL_API + 'search.json?page=1&per_page=50&app=100000a&term=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH_DRAMAS = (URL_SEARCH[0], 'showMovies')
 
-se = 'true'  # activation des sous titres
-# lang = 'en' ou 'fr'
+se = 'true'
 
 def load():
     oGui = cGui()
@@ -67,7 +63,6 @@ def load():
 
     oGui.setEndOfDirectory()
 
-
 def showMenuMovies():
     oGui = cGui()
 
@@ -75,22 +70,14 @@ def showMenuMovies():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (News)', 'news.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    # oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
-
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_PAYS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_PAYS[1], 'Films (Pays)', 'lang.png', oOutputParameterHandler)
-
-    # no result
-    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_RECENT[0])
-    # oGui.addDir(SITE_IDENTIFIER, MOVIE_RECENT[1], 'Films (Récents)', 'news.png', oOutputParameterHandler)
 
     # 8 results
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_POPULAR[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_POPULAR[1], 'Films (Populaires)', 'views.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def showMenuSeries():
     oGui = cGui()
@@ -116,7 +103,6 @@ def showMenuSeries():
 
     oGui.setEndOfDirectory()
 
-
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
@@ -125,7 +111,6 @@ def showSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
-
 
 def showMovies(sSearch=''):
     oGui = cGui()
@@ -202,7 +187,7 @@ def showMovies(sSearch=''):
                             sDesc = str(mt)
                             sTitle = str(jsonrsp['response'][movie]['titles']['en'])
                             sThumb = str(jsonrsp['response'][movie]['images']['poster']['url'])
-                            sUrlApi = str(jsonrsp['response'][movie]['id'] + '@' +
+                            sUrlApi = str(jsonrsp['response'][movie]["watch_now"]['id'] + '@' +
                                           jsonrsp['response'][movie]['images']['poster']['url'] + '@' +
                                           subtitle_completion1 + '@' + subtitle_completion2 + '@' + mt)
 
@@ -232,7 +217,6 @@ def showMovies(sSearch=''):
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + str(iNumberPage), oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
-
 
 def showSaisons():
     oGui = cGui()
@@ -281,15 +265,12 @@ def showSaisons():
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
-                # VSlog('showSaisons() block = true')
                 pass
 
         except:
-            # VSlog('showSaisons() excepted ')
             pass
 
     if len(jsonrsp['response']) == 0:
-        # VSlog('pas d'episodes')
         pass
 
     if (jsonrsp['more'] == True):
@@ -302,7 +283,6 @@ def showSaisons():
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def showMovieGenre():
     oGui = cGui()
@@ -324,7 +304,6 @@ def showMovieGenre():
 
     oGui.setEndOfDirectory()
 
-
 def showSerieGenre():
     oGui = cGui()
 
@@ -345,14 +324,11 @@ def showSerieGenre():
 
     oGui.setEndOfDirectory()
 
-
 def showMoviePays():
     showPays('movies')
 
-
 def showSeriePays():
     showPays('series')
-
 
 def showPays(genre):
 
@@ -423,7 +399,6 @@ def GET_SUBTILES(url, subtitle_completion1, subtitle_completion2):
         return False
 
 def GET_URLS_STREAM(url):
-    qlist = ['480p', '360p', '240p', 'mpd']  # plus de '480p', '360p', '240p ?
     streamUrlList = []
     validq = []
 
@@ -439,7 +414,7 @@ def GET_URLS_STREAM(url):
 
     testeurl = ''
     testeq = ''
-    for qual in qlist:
+    for qual in jsonrsp:
         basehttp = 'https'
         if qual in jsonrsp:
             if qual == 'mpd':
@@ -476,7 +451,6 @@ def showLinks():
     for item in streamList2:
         dataList.append(item)
 
-    VSlog(sSubPath)
     if sSubPath == "special://temp/vstream_viki_SubEnglish.srt":
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]Les sous-titres Francais ne sont pas encore terminés ce contenu est donc en sous-titrés Anglais.[/COLOR]')
     elif sSubPath == False:
