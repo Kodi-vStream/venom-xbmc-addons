@@ -391,10 +391,9 @@ def SIGN(url, pth):
     return fullurl
 
 def GET_SUBTILES(url, subtitle_completion1, subtitle_completion2):
-    srtsubs_path1 = 'special://temp/vstream_viki_SubFrench.srt'
-    srtsubs_path2 = 'special://temp/vstream_viki_SubEnglish.srt'
-    try:
-        if (int(subtitle_completion1) > 79 and se == 'true'):
+    if (int(subtitle_completion1)) != 0 or (int(subtitle_completion2)) != 0:
+        if (int(subtitle_completion1) == 100 and se == 'true'):
+            srtsubs_path1 = 'special://temp/vstream_viki_SubFrench.srt'
             urlreq = SIGN(url, '/subtitles/fr.srt')
             oRequestHandler = cRequestHandler(urlreq)
             oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -403,10 +402,11 @@ def GET_SUBTILES(url, subtitle_completion1, subtitle_completion2):
             if isMatrix():
                 data = data.encode('latin-1')
 
-            with xbmcvfs.File(srtsubs_path1, "w") as subfile:
+            with xbmcvfs.File("special://temp/vstream_viki_SubFrench.srt", "w") as subfile:
                 subfile.write(data)
 
-        if (int(subtitle_completion2) > 0 and se == 'true'):
+        elif (int(subtitle_completion2) > 0 and se == 'true'):
+            srtsubs_path1 = "special://temp/vstream_viki_SubEnglish.srt"
             urlreq = SIGN(url, '/subtitles/en.srt')
             oRequestHandler = cRequestHandler(urlreq)
             oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -415,16 +415,12 @@ def GET_SUBTILES(url, subtitle_completion1, subtitle_completion2):
             if isMatrix():
                 data = data.encode('latin-1')
 
-            with xbmcvfs.File(srtsubs_path2, "w") as subfile:
+            with xbmcvfs.File("special://temp/vstream_viki_SubEnglish.srt", "w") as subfile:
                 subfile.write(data)
-        else:
-            # VSlog('GET_SUBTILES:erreur completion')
-            pass
-    except:
-        # VSlog('GET_SUBTILES:erreur exception')
-        pass
-    return srtsubs_path1, srtsubs_path2
 
+        return srtsubs_path1
+    else:
+        return False
 
 def GET_URLS_STREAM(url):
     qlist = ['480p', '360p', '240p', 'mpd']  # plus de '480p', '360p', '240p ?
@@ -469,17 +465,22 @@ def showLinks():
     dataList = []
 
     url, thumbnail, sub_pourcent1, sub_pourcent2, stitle = sUrl.split("@")
-    sSubPathFr2, sSubPathEn2 = GET_SUBTILES(url, sub_pourcent1, sub_pourcent2)
+    sSubPath = GET_SUBTILES(url, sub_pourcent1, sub_pourcent2)
     qualityList2, streamList2 = GET_URLS_STREAM(url)
 
-    dataList.append(sSubPathFr2)
-    dataList.append(sSubPathEn2)
+    dataList.append(sSubPath)
 
     for item in qualityList2:
         dataList.append(item)
 
     for item in streamList2:
         dataList.append(item)
+
+    VSlog(sSubPath)
+    if sSubPath == "special://temp/vstream_viki_SubEnglish.srt":
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Les sous-titres Francais ne sont pas encore terminés ce contenu est donc en sous-titrés Anglais.[/COLOR]')
+    elif sSubPath == False:
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Aucun sous-titre n\'est disponible pour ce contenu.[/COLOR]')
 
     oHoster = cHosterGui().checkHoster('viki')
     if (oHoster != False):
