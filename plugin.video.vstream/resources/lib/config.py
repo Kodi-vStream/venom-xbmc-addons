@@ -179,7 +179,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
     # convertion de la durée en secondes -> heure:minutes
     if 'duration' in meta and meta['duration']:
         
-        if isMatrix()
+        if isMatrix():
             duration = meta['duration'] // 60  # En minutes
             durationH = duration // 60 # Nombre d'heures
         else:
