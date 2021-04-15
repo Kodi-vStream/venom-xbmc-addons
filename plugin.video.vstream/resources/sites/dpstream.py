@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # source 26 https://dpstream.ch/  creation 18/10/2020
-# update 26/12/2020
+# update 15/04/2021
 
 import re
 
@@ -223,7 +223,7 @@ def showMovies(sSearch=''):
         sHtmlContent = oRequestHandler.request()
 
     # ref thumb title year
-    sPattern = 'class="item mb-4">.+?ref="([^"]*).+?src=([^\s]*).+?alt="([^"]*).+?muted">([^<]*).*?type">([^<]*)'
+    sPattern = 'class="item mb-4">.+?ref="([^"]*).+?src="([^"]*).+?alt="([^"]*).+?muted">([^<]*).*?type">([^<]*)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -242,7 +242,7 @@ def showMovies(sSearch=''):
 
             sDesc = ''
             sUrl2 = aEntry[0]
-            sThumb = re.sub('/w\d+', '/w342', aEntry[1])
+            sThumb = re.sub('/w\d+/', '/w342/', aEntry[1])
             sTitle = aEntry[2]
             sYear = aEntry[3]
             sType = aEntry[4].lower()
