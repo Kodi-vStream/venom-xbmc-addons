@@ -680,17 +680,25 @@ def showHosters():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        if 'saison' in sUrl:
+            aResult[1].insert(0, ('Episode 1', '', ''))
 
+        ep = ""
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
+                ep = aEntry[0]
             else:
                 sUrl2 = aEntry[1]
-                sTitle = sMovieTitle
+
                 if 'saison' in sUrl:
-                    sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, aEntry[2])
+                    sTitle = sMovieTitle + ep
+                else:
+                    sTitle = sMovieTitle
+
+                if 'saison' in sUrl:
+                    sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, aEntry[2])
                 else:
                     sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, str(aEntry[2]))
 
