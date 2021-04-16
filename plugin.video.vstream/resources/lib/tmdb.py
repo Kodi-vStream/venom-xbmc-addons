@@ -12,7 +12,7 @@ import webbrowser
 
 from resources.lib.librecaptcha.gui import cInputWindowYesNo
 from resources.lib.util import QuotePlus
-from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix, xbmc
+from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix, xbmc, xbmcgui
 
 try:
     import urllib2
@@ -269,14 +269,20 @@ class cTMDb:
         # cherche 1 seul resultat
         if 'total_results' in meta and meta['total_results'] != 0:
             if meta['total_results'] > 1:
-                qua = []
-                url = []
-                for aEntry in meta['results']:
-                   url.append(aEntry["id"])
-                   qua.append(aEntry['name'])
+                listitems = []
 
-                #Affichage du tableau
-                tmdb_id = dialog().VSselectqual(qua, url)
+                listitem = xbmcgui.ListItem()
+                # boucle commit
+                for i in meta['results']:
+                    icon = self.fanart + str(i['backdrop_path'])
+                    login = i["name"]
+                    desc = i["overview"]
+                    listitem = xbmcgui.ListItem(label = login, label2 = desc)
+                    listitem.setArt({'icon': icon, 'thumb': icon})
+                    listitem.setUniqueIDs({'tmdb' : i['id'] }, "tmdb")
+                    listitems.append(listitem)
+
+                tmdb_id = self.Box(listitems)
 
             else:
                 tmdb_id = meta['results'][0]['id']
@@ -1067,3 +1073,31 @@ class cTMDb:
         if genre:
             return genre
         return genreID
+
+    def Box(self, listitems):
+        addons = addon()
+
+        class XMLDialog(xbmcgui.WindowXMLDialog):
+
+            def __init__(self, *args, **kwargs):
+                self.tmdb_id = ""
+
+            def onInit(self):
+                self.container = self.getControl(6)
+                self.button = self.getControl(5)
+                self.getControl(3).setVisible(False)
+                self.getControl(1).setLabel("Choisissez le bon contenu")
+                self.list = self.container.addItems(listitems)
+                self.setFocus(self.container)
+
+            def onClick(self, controlId):
+                self.tmdb_id = self.getControl(controlId).getSelectedItem().getUniqueID('tmdb')
+                self.close()
+
+        path = 'special://home/addons/plugin.video.vstream'
+        wd = XMLDialog('DialogSelect.xml', path, 'Default')
+        wd.doModal()
+        tmdb_id = wd.tmdb_id
+        del wd
+
+        return tmdb_id
