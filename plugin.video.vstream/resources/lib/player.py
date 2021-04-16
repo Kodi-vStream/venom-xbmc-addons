@@ -12,6 +12,11 @@ import xbmcplugin
 #player API
 #http://mirrors.xbmc.org/docs/python-docs/stable/xbmc.html#Player
 
+try:
+    xrange
+except NameError:
+    xrange = range
+
 class cPlayer(xbmc.Player):
 
     ADDON = addon()
@@ -25,12 +30,9 @@ class cPlayer(xbmc.Player):
         self.SubtitleActive = False
 
         oInputParameterHandler = cInputParameterHandler()
-        #aParams = oInputParameterHandler.getAllParameter()
-        #xbmc.log(str(aParams))
 
         self.sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
         self.sTitle = oInputParameterHandler.getValue('sTitle')
-        #self.sSite = oInputParameterHandler.getValue('site')
         self.sSite = oInputParameterHandler.getValue('siteUrl')
         self.sThumbnail = xbmc.getInfoLabel('ListItem.Art(thumb)')
 
@@ -80,10 +82,6 @@ class cPlayer(xbmc.Player):
         item = oGui.createListItem(oGuiElement)
         item.setPath(oGuiElement.getMediaUrl())
 
-        #meta = {'label': oGuiElement.getTitle(), 'title': oGuiElement.getTitle()}
-        #item = xbmcgui.ListItem(path=sUrl, iconImage='DefaultVideo.png', thumbnailImage=self.sThumbnail)
-        #item.setInfo(type='Video', infoLabels=meta)
-
         #Sous titres
         if (self.Subtitles_file):
             try:
@@ -94,6 +92,7 @@ class cPlayer(xbmc.Player):
                 VSlog("Can't load subtitle:" + str(self.Subtitles_file))
 
         player_conf = self.ADDON.getSetting('playerPlay')
+
         #Si lien dash, methode prioritaire
         if sUrl.endswith('.mpd') or sUrl.split('?')[0][-4:] in '.mpd':
             if isKrypton() == True:
@@ -119,16 +118,10 @@ class cPlayer(xbmc.Player):
             VSlog('Player use setResolvedUrl() method')
 
         #Attend que le lecteur demarre, avec un max de 20s
-        if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-            for _ in range(20):
-                if self.playBackEventReceived:
-                    break
-                xbmc.sleep(1000)
-        else:
-            for _ in xrange(20):
-                if self.playBackEventReceived:
-                    break
-                xbmc.sleep(1000)
+        for _ in range(20):
+            if self.playBackEventReceived:
+                break
+            xbmc.sleep(1000)
 
         #active/desactive les sous titres suivant l'option choisie dans la config
         if (self.SubtitleActive):
@@ -140,16 +133,12 @@ class cPlayer(xbmc.Player):
                 dialog().VSinfo('Sous-titres chargés, vous pouvez les activer', 'Sous-Titres', 15)
 
         while self.isPlaying() and not self.forcestop:
-        #while not xbmc.abortRequested:
             try:
                 self.currentTime = self.getTime()
                 self.totalTime = self.getTotalTime()
-
-                #xbmc.log(str(self.currentTime))
-
             except:
                 pass
-                #break
+
             xbmc.sleep(1000)
 
         if not self.playBackStoppedEventReceived:
@@ -158,7 +147,6 @@ class cPlayer(xbmc.Player):
         #Uniquement avec la lecture avec play()
         if (player_conf == '0'):
             r = xbmcplugin.addDirectoryItem(handle=sPluginHandle, url=sUrl, listitem=item, isFolder=False)
-            #xbmcplugin.endOfDirectory(sPluginHandle, True, False, False)
             return r
 
         VSlog('Closing player')
@@ -174,32 +162,34 @@ class cPlayer(xbmc.Player):
     #Attention pas de stop, si on lance une seconde video sans fermer la premiere
     def onPlayBackStopped(self):
         VSlog('player stoped')
-        self.playBackStoppedEventReceived = True
 
-        #calcul le temp de lecture
-        pourcent =  0
-        if self.totalTime > 0:
-            pourcent = float('%.2f' % (self.currentTime / self.totalTime))
-            #Dans le cas ou ont a vu intégralement le contenu, percent = 0.0
-            #Mais on n'a tout de meme terminé donc le temps actuel est egal au temps total.
-            if (pourcent > 0.90) or (pourcent == 0.0 and self.currentTime == self.totalTime):
+        #Declencher ces evenement uniquement en cas d'arrets du stream et pas en cas de buffering.
+        if self.isPlaying() == False:
+            self.playBackStoppedEventReceived = True
 
-                # Marqué VU dans la BDD Vstream
-                cGui().setWatched()
+            #calcul le temp de lecture
+            pourcent =  0
+            if self.totalTime > 0:
+                pourcent = float('%.2f' % (self.currentTime / self.totalTime))
+                #Dans le cas ou ont a vu intégralement le contenu, percent = 0.0
+                #Mais on n'a tout de meme terminé donc le temps actuel est egal au temps total.
+                if (pourcent > 0.90) or (pourcent == 0.0 and self.currentTime == self.totalTime):
 
-                # Marqué VU dans les comptes perso
-                try:
-                    tmdb_session = self.ADDON.getSetting('tmdb_session')
-                    if tmdb_session:
-                        self.__getWatchlist('tmdb')
+                    # Marqué VU dans la BDD Vstream
+                    cGui().setWatched()
 
-                    bstoken = self.ADDON.getSetting('bstoken')
-                    if bstoken:
-                        self.__getWatchlist('trakt')
+                    # Marqué VU dans les comptes perso
+                    try:
+                        tmdb_session = self.ADDON.getSetting('tmdb_session')
+                        if tmdb_session:
+                            self.__getWatchlist('tmdb')
 
-                except:
-                    pass
-        #xbmc.executebuiltin('Container.Refresh')
+                        bstoken = self.ADDON.getSetting('bstoken')
+                        if bstoken:
+                            self.__getWatchlist('trakt')
+
+                    except:
+                        pass
 
     def onPlayBackStarted(self):
         VSlog('player started')
@@ -218,7 +208,6 @@ class cPlayer(xbmc.Player):
             function = getattr(plugins, 'getWatchlist')
             function()
         elif sAction == 'trakt':
-            #plugins = __import__('resources.lib.trakt', fromlist=['cTrakt'])
             plugins = __import__('resources.lib.trakt', fromlist=['trakt']).cTrakt()
             function = getattr(plugins, 'getAction')
             function(Action="SetWatched")
