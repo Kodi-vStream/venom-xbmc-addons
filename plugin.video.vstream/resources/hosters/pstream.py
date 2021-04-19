@@ -3,7 +3,7 @@
 # https://www.pstream.net/e/xxxxx
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, VSPath, isMatrix
+from resources.lib.comaddon import dialog, VSPath, isMatrix, VSlog
 from resources.lib.parser import cParser
 import base64
 import json
@@ -73,10 +73,10 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  'var playerOptsB64 = "(.+?)"'
+        sPattern =  'var playerOptsB64 = "([^;]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            decode = base64.b64decode(aResult[1][0])
+            decode = base64.b64decode(aResult[1][0].replace('" + "',''))
             url2 = json.loads(decode)['url']
 
             oRequest = cRequestHandler(url2)
