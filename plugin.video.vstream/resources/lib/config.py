@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.comaddon import addon, dialog, listitem, xbmc, xbmcgui, VSlog
+from resources.lib.comaddon import addon, dialog, listitem, xbmc, xbmcgui, VSlog, isMatrix
 from resources.lib.tmdb import cTMDb
 from datetime import date, datetime
 
