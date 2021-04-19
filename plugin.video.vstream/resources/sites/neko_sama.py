@@ -265,15 +265,15 @@ def showSaisonEpisodes():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sDesc = ''
     try:
-        sPattern = '<p>([^"]+)</p>'
+        sDesc = ''
+        sPattern = '<p>(.+?)</p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
     except:
         pass
-
+        
     sPattern = '"episode":"([^"]+)".+?"url":"([^"]+)","url_image":"([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
