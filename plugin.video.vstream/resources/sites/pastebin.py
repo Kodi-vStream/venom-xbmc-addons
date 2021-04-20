@@ -1806,10 +1806,8 @@ def showHosters():
     sUrl = siteUrl.replace('+', ' ').replace('|', '+').replace(' & ', ' | ')
     params = sUrl.split('&', 1)[1]
     aParams = dict(param.split('=') for param in params.split('&'))
-    sRes = aParams['sRes'] if 'sRes' in aParams else None
 
     listRes = getHosterList(siteUrl)
-    oHosterDirect = cHosterGui().getHoster('lien_direct')
 
     for res in sorted(listRes.keys(), key=trie_res):
         displayRes = res.replace('P', 'p').replace('1080p', 'fullHD').replace('720p', 'HD').replace('2160p', '4K')
@@ -1818,8 +1816,8 @@ def showHosters():
             if not sHosterUrl.startswith('http'):
                 sHosterUrl += 'http://' + sHosterUrl
     
-            if '/dl/' in sHosterUrl or '.download.' in sHosterUrl:
-                oHoster = oHosterDirect
+            if '/dl/' in sHosterUrl or '.download.' in sHosterUrl or '.uptostream.' in sHosterUrl:
+                oHoster = cHosterGui().getHoster('lien_direct')
             else:
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
             
