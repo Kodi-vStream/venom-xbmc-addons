@@ -346,6 +346,8 @@ def __checkForNextPage(sHtmlContent):
         sNextPage = aResult[1][0]  # minimum requis
         if 'htpp' not in sNextPage:
             sNextPage = URL_MAIN[:-1] + sNextPage
+            if '/31/32/' in sNextPage:  # bug page 31
+                sNextPage = re.sub('/31', '', sNextPage)
         try:
             sNumberNext = re.search('/(\d+)/', sNextPage).group(1)
         except:
