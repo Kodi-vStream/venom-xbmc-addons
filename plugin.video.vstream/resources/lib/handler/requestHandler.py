@@ -204,7 +204,7 @@ class cRequestHandler:
                 else:
                     error_msg = addon().VSlang(30470)
             else:
-                error_msg = "%s (%s),%s" % (addon().VSlang(30205), e.reason, self.__sUrl)
+                error_msg = "%s (%s),%s" % (addon().VSlang(30205), e, self.__sUrl)
 
             dialog().VSerror(error_msg)
             sContent = ''
