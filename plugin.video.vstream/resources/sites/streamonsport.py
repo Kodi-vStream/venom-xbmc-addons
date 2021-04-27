@@ -244,7 +244,7 @@ def Showlink():
     siterefer = oInputParameterHandler.getValue('siterefer')
     sUrl2 = ''
     shosterurl = ''
-
+                	
     if 'allfoot' in sUrl or 'channelstream' in sUrl:
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -255,19 +255,21 @@ def Showlink():
         sPattern = '<iframe.+?src="([^"]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
-            # https://embed.telerium.net/embed2.js
-            # </iframe> ...src="//telerium.live/embed/'+id+'.html"></iframe>');
-            # fichier js pas mis a jour car telerium.live pas valide
+        try:
             oRequestHandler = cRequestHandler(aResult[1][0])
+            oRequestHandler.addHeaderEntry('User-Agent', UA)
+            # oRequestHandler.addHeaderEntry('Referer', siterefer) # a verifier
             sHtmlContent = oRequestHandler.request()
+            sHosterUrl = ''
+            oParser = cParser()
+            sPattern = '<iframe.+?src="([^"]+)'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            sUrl2 = aResult[1][0]
+        except:
             sPattern = 'id=.(\d+).+?embed.telerium.+?<.script>'
             aResult2 = oParser.parse(sHtmlContent, sPattern)
             if (aResult2[0] == True):
                 sUrl2 = 'https://telerium.club/embed/' + aResult2[1][0] + '.html'
-
-        if (aResult[0] == False):
-            sUrl2 = aResult[1][0]
 
     # pas de pre requete
     if 'laylow.cyou' in sUrl:
@@ -296,6 +298,11 @@ def Showlink():
         # a verifier
         if 'laylow' in sUrl2:
             bvalid, shosterurl = Hoster_Laylow(sUrl2, sUrl)
+            if bvalid:
+                sHosterUrl = shosterurl
+
+        if 'cloudstream' in sUrl2:
+            bvalid, shosterurl = Hoster_Cloudstream(sUrl2, sUrl)
             if bvalid:
                 sHosterUrl = shosterurl
 
@@ -374,18 +381,10 @@ def Hoster_Wigistream(url, referer):
     oRequestHandler.addHeaderEntry('Referer', referer)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
-    aResult = re.findall(sPattern, sHtmlContent)
-
+    sPattern = 'source.+?: "(.+?)"'
+    aResult = re.search(sPattern, sHtmlContent).group(1)
     if aResult:
-        sstr = aResult[0]
-        if not sstr.endswith(';'):
-            sstr = sstr + ';'
-        sUnpack = cPacker().unpack(sstr)
-        sPattern = 'source:"(.+?)"'
-        aResult = re.findall(sPattern, sUnpack)
-        if aResult:
-            return True, aResult[0] + '|User-Agent=' + UA + '&Referer=' + Quote(url)
+        return True, aResult + '|User-Agent=' + UA + '&Referer=' + Quote(url)
 
     return False, False
 
@@ -403,6 +402,26 @@ def Hoster_Laylow(url, referer):
 
     return False, False
 
+def Hoster_Cloudstream(url, referer):
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Referer', referer)
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
+    aResult = re.findall(sPattern, sHtmlContent)
+
+    if aResult:
+        sstr = aResult[0]
+        if not sstr.endswith(';'):
+            sstr = sstr + ';'
+        sUnpack = cPacker().unpack(sstr)
+        sPattern = 'source:"(.+?)"'
+        aResult = re.findall(sPattern, sUnpack)
+        if aResult:
+            return True, aResult[0] + '|User-Agent=' + UA + '&Referer=' + Quote(url)
+
+    return False, False
 
 def getRealTokenJson(link, referer):
 
