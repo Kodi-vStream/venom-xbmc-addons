@@ -4,7 +4,6 @@ import xbmcplugin
 import xbmc
 
 from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window
-from resources.lib.db import cDb
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -19,11 +18,15 @@ class cGui:
     CONTENT = 'files'
     searchResults = []
     listing = []
+    episodeListing = [] # Pour gérer l'enchainement des episodes
     ADDON = addon()
 
     if isKrypton():
         CONTENT = 'addons'
 
+    def getEpisodeListing(self):
+        return self.episodeListing
+    
     def addNewDir(self, Type, sId, sFunction, sLabel, sIcon, sThumbnail='', sDesc='', oOutputParameterHandler='', sMeta=0, sCat=None):
         oGuiElement = cGuiElement()
         # dir ou link => CONTENT par défaut = files
@@ -72,7 +75,7 @@ class cGui:
         self.addNewDir('tvshows', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 2, 2)
 
     def addAnime(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
-        self.addNewDir('tvshows', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 4, 2)
+        self.addNewDir('tvshows', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 4, 3)
 
     def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
         if sThumbnail or sDesc:
@@ -91,9 +94,43 @@ class cGui:
         sIcon = sThumbnail
         self.addNewDir('link', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, None)
 
-    # Affichage d'un épisode, sans recherche de Métadonnées, et menu adapté
+    def addSeason(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
+        # Pour gérer l'enchainement des épisodes
+        saisonUrl = oOutputParameterHandler.getValue('siteUrl')
+        oOutputParameterHandler.addParameter('sourceID', sId)
+        oOutputParameterHandler.addParameter('saisonUrl', QuotePlus(saisonUrl))
+        oOutputParameterHandler.addParameter('nextSaisonFunc', sFunction)
+
+        self.addNewDir('episodes', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 4)
+        
+
+        # Pour gérer l'enchainement des épisodes
+        nbSaison = len(self.listing)
+        if nbSaison > 1 and saisonUrl:
+            url, listItem, isFolder = self.listing.pop(nbSaison-2)
+            url += '&nextSaison=%s' % QuotePlus(saisonUrl)
+            self.listing.insert(nbSaison-2, (url, listItem, isFolder)) 
+        return
+
     def addEpisode(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
-        self.addNewDir('episodes', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 2)
+        # Pour gérer l'enchainement des épisodes
+        oInputParameterHandler = cInputParameterHandler()
+        saisonUrl = oInputParameterHandler.getValue('saisonUrl')
+        oOutputParameterHandler.addParameter('saisonUrl', saisonUrl)
+        nextSaisonFunc = oInputParameterHandler.getValue('nextSaisonFunc')
+        oOutputParameterHandler.addParameter('nextSaisonFunc', nextSaisonFunc)
+        oOutputParameterHandler.addParameter('sourceID', sId)
+        siteUrl = oOutputParameterHandler.getValue('siteUrl')
+
+        self.addNewDir('episodes', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 6)
+
+        # Pour gérer l'enchainement des épisodes
+        nbEpisode = len(self.listing)
+        if nbEpisode > 1 and siteUrl:
+            url, listItem, isFolder = self.listing.pop(nbEpisode-2)
+            url += '&nextEpisode=%s' % QuotePlus(siteUrl)
+            self.listing.insert(nbEpisode-2, (url, listItem, isFolder)) 
+        return
 
     # Affichage d'une personne (acteur, réalisateur, ..)
     def addPerson(self, sId, sFunction, sLabel, sIcon, sThumbnail, oOutputParameterHandler=''):
@@ -260,7 +297,6 @@ class cGui:
         oListItem = self.createListItem(oGuiElement)
         oListItem.setProperty('IsPlayable', 'true')
         oListItem.setProperty('Video', 'true')
-        oListItem.addStreamInfo('video', {})
 
         sItemUrl = self.__createItemUrl(oGuiElement, oOutputParameterHandler)
 
@@ -272,7 +308,6 @@ class cGui:
         self.listing.append((sItemUrl, oListItem, False))
 
     def createListItem(self, oGuiElement):
-
         oListItem = listitem(oGuiElement.getTitle())
 
         # voir : https://kodi.wiki/view/InfoLabels
@@ -450,6 +485,10 @@ class cGui:
         if (oOutputParameterHandler == ''):
             oOutputParameterHandler = cOutputParameterHandler()
 
+        # Pour gérer l'enchainement des épisodes
+        oOutputParameterHandler.addParameter('sSeason', oGuiElement.getSeason())
+        oOutputParameterHandler.addParameter('sEpisode', oGuiElement.getEpisode())
+
         sParams = oOutputParameterHandler.getParameterAsUri()
 
         sPluginPath = cPluginHandler().getPluginPath()
@@ -486,7 +525,9 @@ class cGui:
                 elif cGui.CONTENT == 'files' or cGui.CONTENT == 'episodes':
                     xbmc.executebuiltin('Container.SetViewMode(%s)' % self.ADDON.getSetting('default-view'))
 
-        # bug affichage Kodi 18
+        del self.episodeListing[:] # Pour l'enchainement des episodes
+        self.episodeListing.extend(self.listing)
+
         del self.listing[:]
 
     def updateDirectory(self):  # refresh the content
@@ -618,6 +659,7 @@ class cGui:
             meta['title'] = sTitle
             meta['site'] = sSite
 
+            from resources.lib.db import cDb
             db = cDb()
             row = db.get_watched(meta)
             if row:

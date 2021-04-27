@@ -126,6 +126,12 @@ class cGuiElement:
     def getGenre(self):
         return self.__sGenre
 
+    def getSeason(self):
+        return self.__Season
+
+    def getEpisode(self):
+        return self.__Episode
+
     def setMeta(self, sMeta):
         self.__sMeta = sMeta
 
@@ -263,10 +269,12 @@ class cGuiElement:
         if self.__Episode:
             sTitle2 = sTitle2 + 'E' + self.__Episode
 
-        # Titre unique pour pour marquer VU (avec numéro de l'épisode pour les séries)
+        # Titre unique pour marquer VU (avec numéro de l'épisode pour les séries)
         self.__sTitleWatched = self.str_conv(sTitle).replace(' ', '')
         if sTitle2:
+            self.addItemValues('tvshowtitle', self.getSerieTitre(sTitle))
             self.__sTitleWatched += '_' + sTitle2
+        self.addItemValues('originaltitle', self.__sTitleWatched)
 
         if sTitle2:
             sTitle2 = '[COLOR %s]%s[/COLOR] ' % (self.__sDecoColor, sTitle2)
@@ -279,12 +287,19 @@ class cGuiElement:
         # on repasse en utf-8
         if not isMatrix():
             return sTitle2.encode('utf-8')
-        else:
-            return sTitle2
+        return sTitle2
+
+    def getSerieTitre(self, sTitle):
+        serieTitle = re.sub(r'\[.*\]|\(.*\)', r'', sTitle)
+        serieTitle = re.sub('[- –]+$', '', serieTitle)
+        # on repasse en utf-8
+        if not isMatrix():
+            return serieTitle.encode('utf-8')
+        return serieTitle
 
     def getEpisodeTitre(self, sTitle):
 
-        string = re.search('(?i)(e(?:[a-z]+sode\s?)*([0-9]+))', str(sTitle))
+        string = re.search('(?i)(e(?:[a-z]+sode\s?)*([0-9]+))', sTitle)
         if string:
             sTitle = sTitle.replace(string.group(1), '')
             self.__Episode = ('%02d' % int(string.group(2)))
@@ -306,7 +321,7 @@ class cGuiElement:
                 pass
         else:
             try:
-                sTitle = sTitle.strip().decode('utf-8')
+                sTitle = str(sTitle.strip().decode('utf-8'))
             except:
                 pass
 
@@ -593,7 +608,7 @@ class cGuiElement:
         return
 
     def getItemValues(self):
-        self.addItemValues('Title', self.getTitle())
+        self.addItemValues('title', self.getTitle())
 
         # https://kodi.wiki/view/InfoLabels
         # https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#ga0b71166869bda87ad744942888fb5f14
@@ -646,6 +661,7 @@ class cGuiElement:
         # imdbid
         if self.getImdbId():
             self.addItemProperties('ImdbId', str(self.getImdbId()))
+            # self.addItemValues('imdbnumber', str(self.getTmdbId()))
 
         # Utilisation des infos connues si non trouvées
         if not self.getItemValue('plot') and self.getDescription():
@@ -674,8 +690,16 @@ class cGuiElement:
         self.addItemProperties('sCleanTitle', self.getFileName())
         self.addItemProperties('sId', self.getSiteName())
         self.addItemProperties('sFav', self.getFunction())
-        self.addItemProperties('sCat', str(self.getCat()))
         self.addItemProperties('sMeta', str(self.getMeta()))
+
+        sCat = str(self.getCat())
+        if sCat:
+            self.addItemProperties('sCat', sCat)
+            mediatypes = {'1': 'movie', '2': 'tvshow', '3': 'tvshow', '4': 'season', '5': 'video', '6': 'episode'}
+            if sCat in mediatypes:
+                mediatype = mediatypes[sCat]
+                if mediatype:            # video, movie, tvshow, season, episode, musicvideo
+                    self.addItemValues('mediatype', mediatype)
 
         return self.__aItemValues
 

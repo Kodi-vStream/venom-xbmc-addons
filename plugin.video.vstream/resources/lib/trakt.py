@@ -867,15 +867,17 @@ class cTrakt:
         sSeason = oInputParameterHandler.getValue('sSeason')
         sEpisode = oInputParameterHandler.getValue('sEpisode')
 
-        sType = sType.replace('1', 'movies').replace('2', 'shows')
+        sType = sType.replace('1', 'movies').replace('2', 'shows').replace('3', 'shows').replace('4', 'shows').replace('6', 'shows')
 
         # Mettre en vu automatiquement.
         if Action == "SetWatched":
             sTitle = oInputParameterHandler.getValue('sFileName')
 
             if sType == "shows":
-                sSeason = re.search('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))',sTitle).group(2)
-                sEpisode = re.search('(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))',sTitle).group(2)
+                if not sSeason:
+                    sSeason = re.search('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))',sTitle).group(2)
+                if not sEpisode:
+                    sEpisode = re.search('(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))',sTitle).group(2)
             else:
                 sSeason = False
                 sEpisode = False

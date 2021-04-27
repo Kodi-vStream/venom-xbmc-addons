@@ -1738,14 +1738,17 @@ def showSerieSaisons():
             sDisplayTitle = searchTitle + ' - ' + sDisplaySaison
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle) # on ne passe pas le sTitre afin de pouvoir mettre la saison en marque-page
-            oGui.addEpisode(SITE_IDENTIFIER, 'showEpisodesLinks', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'showEpisodesLinks', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
         else:
             for resolution in res:
-                sUrl = siteUrl + '&sSaison=' + sSaison + '&sRes=' + resolution
-                sDisplayTitle = ('%s %s [%s]') % (searchTitle, sDisplaySaison, resolution)
+                sUrl = siteUrl + '&sSaison=' + sSaison
+                sDisplayTitle = ('%s %s') % (searchTitle, sDisplaySaison)
+                if resolution:
+                    sUrl += '&sRes=' + resolution
+                    sDisplayTitle += ' [%s]' % resolution
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle) # on ne passe pas le sTitre afin de pouvoir mettre la saison en marque-page
-                oGui.addEpisode(SITE_IDENTIFIER, 'showEpisodesLinks', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
+                oGui.addSeason(SITE_IDENTIFIER, 'showEpisodesLinks', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

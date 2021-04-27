@@ -1088,6 +1088,15 @@ msgctxt "#30480"
 msgid "Small loading spinner"
 msgstr "Sablier de chargement réduit"
 
+# upnext
+msgctxt "#30505"
+msgid "Would you like to automatically play the next episode?"
+msgstr "Voulez-vous activer l'enchainement des épisodes ?"
+
+msgctxt "#30506"
+msgid "Automatically play the next episode"
+msgstr "Activer l'enchainement des épisodes"
+
 # Alldebrid
 msgctxt "#31000"
 msgid "Multimedia folder URL (Optional)"
@@ -1104,6 +1113,7 @@ msgstr "Utiliser la fenetre d'information du skin"
 msgctxt "#31103"
 msgid "Allow adult content"
 msgstr "Autoriser le contenu pour adultes"
+
 
 msgctxt "#31200"
 msgid "Choose the number of items to display"

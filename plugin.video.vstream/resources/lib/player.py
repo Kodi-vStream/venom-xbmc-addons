@@ -4,7 +4,8 @@
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.comaddon import addon, dialog, xbmc, isKrypton, VSlog
+from resources.lib.upnext import UpNext
+from resources.lib.comaddon import addon, dialog, xbmc, isKrypton, VSlog, addonManager
 import xbmcplugin
 
 #pour les sous titres
@@ -39,6 +40,7 @@ class cPlayer(xbmc.Player):
         self.playBackEventReceived = False
         self.playBackStoppedEventReceived = False
         self.forcestop = False
+        self.multi = False  # Plusieurs vidéos se sont enchainées
 
         VSlog('player initialized')
 
@@ -73,6 +75,11 @@ class cPlayer(xbmc.Player):
 
     def run(self, oGuiElement, sTitle, sUrl):
 
+        # Lancement d'une vidéo sans avoir arretée la précedente
+        if self.isPlaying():
+            self.multi = True
+            self._setWatched() # la vidéo en cours doit être marquée comme VUE
+            
         self.totalTime = 0
         self.currentTime = 0
 
@@ -96,7 +103,7 @@ class cPlayer(xbmc.Player):
         #Si lien dash, methode prioritaire
         if sUrl.endswith('.mpd') or sUrl.split('?')[0][-4:] in '.mpd':
             if isKrypton() == True:
-                self.enable_addon('inputstream.adaptive')
+                addonManager().enableAddon('inputstream.adaptive')
                 item.setProperty('inputstream','inputstream.adaptive')
                 item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
                 xbmcplugin.setResolvedUrl(sPluginHandle, True, listitem=item)
@@ -132,12 +139,19 @@ class cPlayer(xbmc.Player):
                 self.showSubtitles(False)
                 dialog().VSinfo('Sous-titres chargés, vous pouvez les activer', 'Sous-Titres', 15)
 
+        waitingNext = 0
+        
         while self.isPlaying() and not self.forcestop:
             try:
                 self.currentTime = self.getTime()
+            except Exception as err:
+                VSlog("Exception run: {0}".format(err))
+
+            waitingNext += 1
+            if waitingNext == 6: # attendre 10 secondes avant de chercher le prochain épisode d'une série
                 self.totalTime = self.getTotalTime()
-            except:
-                pass
+                self.infotag = self.getVideoInfoTag()
+                UpNext().nextEpisode(oGuiElement)
 
             xbmc.sleep(1000)
 
@@ -161,35 +175,56 @@ class cPlayer(xbmc.Player):
 
     #Attention pas de stop, si on lance une seconde video sans fermer la premiere
     def onPlayBackStopped(self):
-        VSlog('player stoped')
+        VSlog('player stopped')
+        self.playBackStoppedEventReceived = True
 
-        #Declencher ces evenement uniquement en cas d'arrets du stream et pas en cas de buffering.
-        if self.isPlaying() == False:
-            self.playBackStoppedEventReceived = True
+        self._setWatched()
 
-            #calcul le temp de lecture
-            pourcent =  0
+
+    # MARQUER VU
+    # utilise les informations de la vidéo qui vient d'etre lue
+    # qui n'est pas celle qui a été lancée si plusieurs vidéos se sont enchainées
+    def _setWatched(self):
+
+        try:
+            if self.isPlaying():
+                self.totalTime = self.getTotalTime()
+                self.currentTime = self.getTime()
+                self.infotag = self.getVideoInfoTag()
+    
             if self.totalTime > 0:
                 pourcent = float('%.2f' % (self.currentTime / self.totalTime))
-                #Dans le cas ou ont a vu intégralement le contenu, percent = 0.0
-                #Mais on n'a tout de meme terminé donc le temps actuel est egal au temps total.
+    
+                #calcul le temp de lecture
+                # Dans le cas ou ont a vu intégralement le contenu, percent = 0.0
+                # Mais on a tout de meme terminé donc le temps actuel est egal au temps total.
                 if (pourcent > 0.90) or (pourcent == 0.0 and self.currentTime == self.totalTime):
-
-                    # Marqué VU dans la BDD Vstream
-                    cGui().setWatched()
-
-                    # Marqué VU dans les comptes perso
-                    try:
+    
+                    # Marquer VU dans la BDD Vstream
+                    # infotag = self.getVideoInfoTag()
+                    siteUrl = self.infotag.getPath()
+                    sTitleWatched = self.infotag.getOriginalTitle()
+                    if sTitleWatched:
+                        from resources.lib.db import cDb
+                        db = cDb()
+                        meta = {}
+                        meta['title'] = sTitleWatched
+                        meta['site'] = siteUrl
+                        db.insert_watched(meta)
+    
+                    # Marquer VU dans les comptes perso
+                    # NE FONCTIONNE PAS SI PLUSIEURS VIDEOS SE SONT ENCHAINEES (cas des épisodes)
+                    if not self.multi:
                         tmdb_session = self.ADDON.getSetting('tmdb_session')
                         if tmdb_session:
                             self.__getWatchlist('tmdb')
-
+    
                         bstoken = self.ADDON.getSetting('bstoken')
                         if bstoken:
                             self.__getWatchlist('trakt')
-
-                    except:
-                        pass
+        
+        except Exception as err:
+            VSlog("ERROR Player_setWatched : {0}".format(err))
 
     def onPlayBackStarted(self):
         VSlog('player started')
@@ -232,17 +267,3 @@ class cPlayer(xbmc.Player):
         except:
             return False
 
-    def enable_addon(self,addon):
-        #import json
-        #sCheck = {'jsonrpc': '2.0','id': 1,'method': 'Addons.GetAddonDetails','params': {'addonid':'inputstream.adaptive','properties': ['enabled']}}
-        #response = xbmc.executeJSONRPC(json.dumps(sCheck))
-        #data = json.loads(response)
-        #if not 'error' in data.keys():
-        #if data['result']['addon']['enabled'] == False:
-
-        if xbmc.getCondVisibility('System.HasAddon(inputstream.adaptive)') == 0:
-            do_json = '{"jsonrpc":"2.0","id":1,"method":"Addons.SetAddonEnabled","params":{"addonid":"inputstream.adaptive","enabled":true}}'
-            query = xbmc.executeJSONRPC(do_json)
-            VSlog("Activation d'inputstream.adaptive")
-        else:
-            VSlog('inputstream.adaptive déjà activé')

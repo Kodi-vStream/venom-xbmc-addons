@@ -6,7 +6,6 @@ from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.player import cPlayer
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.comaddon import dialog, addon, VSlog
 
@@ -20,6 +19,13 @@ class cHosterGui:
     def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail, bGetRedirectUrl=False):
 
         oInputParameterHandler = cInputParameterHandler()
+
+        # Gestion NextUp
+        siteUrl = oInputParameterHandler.getValue('siteUrl')
+        sourceID = oInputParameterHandler.getValue('sourceID')
+        saisonUrl = oInputParameterHandler.getValue('saisonUrl')
+        nextSaisonFunc = oInputParameterHandler.getValue('nextSaisonFunc')
+        nextEpisode = oInputParameterHandler.getValue('nextEpisode')
 
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(self.SITE_NAME)
@@ -47,7 +53,11 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('sTitleWatched', oGuiElement.getTitleWatched())
         oOutputParameterHandler.addParameter('sTitle', oHoster.getDisplayName())
         oOutputParameterHandler.addParameter('sId', 'cHosterGui')
-        oOutputParameterHandler.addParameter('siteUrl', sMediaUrl)
+        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+        oOutputParameterHandler.addParameter('sourceID', sourceID)
+        oOutputParameterHandler.addParameter('nextEpisode', nextEpisode)
+        oOutputParameterHandler.addParameter('nextSaisonFunc', nextSaisonFunc)
+        oOutputParameterHandler.addParameter('saisonUrl', saisonUrl)
         # oOutputParameterHandler.addParameter('sFav', 'play')
         # oOutputParameterHandler.addParameter('sCat', '4')
 
@@ -457,7 +467,9 @@ class cHosterGui:
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
         bGetRedirectUrl = oInputParameterHandler.getValue('bGetRedirectUrl')
         sFileName = oInputParameterHandler.getValue('sFileName')
-        sTitle = oInputParameterHandler.getValue('title')
+        sTitle = oInputParameterHandler.getValue('sTitle')
+        siteUrl = oInputParameterHandler.getValue('siteUrl')
+        sCat = oInputParameterHandler.getValue('sCat')
 
         if not sTitle:
             sTitle = sFileName
@@ -494,8 +506,10 @@ class cHosterGui:
                 if aLink[0] :
                     oGuiElement = cGuiElement()
                     oGuiElement.setSiteName(self.SITE_NAME)
+                    oGuiElement.setSiteUrl(siteUrl)
                     oGuiElement.setMediaUrl(aLink[1])
                     oGuiElement.setTitle(sTitle)
+                    oGuiElement.setCat(sCat)
                     oGuiElement.getInfoLabel()
     
                     from resources.lib.player import cPlayer
@@ -512,6 +526,8 @@ class cHosterGui:
 
         except Exception as e:
             oDialog.VSerror(self.ADDON.VSlang(30020))
+            import traceback
+            traceback.print_exc()
             return
 
         oGui.setEndOfDirectory()
@@ -540,6 +556,7 @@ class cHosterGui:
             oGuiElement.setMediaUrl(aLink[1])
             oGuiElement.setTitle(oHoster.getFileName())
 
+            from resources.lib.player import cPlayer
             oPlayer = cPlayer()
             oPlayer.addItemToPlaylist(oGuiElement)
             dialog().VSinfo(str(oHoster.getFileName()), 'Playlist')
