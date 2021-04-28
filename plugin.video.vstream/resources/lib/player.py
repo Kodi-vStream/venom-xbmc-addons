@@ -144,14 +144,15 @@ class cPlayer(xbmc.Player):
         while self.isPlaying() and not self.forcestop:
             try:
                 self.currentTime = self.getTime()
+
+                waitingNext += 1
+                if waitingNext == 6: # attendre 10 secondes avant de chercher le prochain épisode d'une série
+                    self.totalTime = self.getTotalTime()
+                    self.infotag = self.getVideoInfoTag()
+                    UpNext().nextEpisode(oGuiElement)
+
             except Exception as err:
                 VSlog("Exception run: {0}".format(err))
-
-            waitingNext += 1
-            if waitingNext == 6: # attendre 10 secondes avant de chercher le prochain épisode d'une série
-                self.totalTime = self.getTotalTime()
-                self.infotag = self.getVideoInfoTag()
-                UpNext().nextEpisode(oGuiElement)
 
             xbmc.sleep(1000)
 
@@ -226,7 +227,8 @@ class cPlayer(xbmc.Player):
         except Exception as err:
             VSlog("ERROR Player_setWatched : {0}".format(err))
 
-    def onPlayBackStarted(self):
+    #def onPlayBackStarted(self):
+    def onAVStarted(self):
         VSlog('player started')
 
         #Si on recoit une nouvelle fois l'event, c'est que ca buggue, on stope tout
