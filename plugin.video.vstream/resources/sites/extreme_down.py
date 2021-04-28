@@ -21,7 +21,7 @@ SITE_IDENTIFIER = 'extreme_down'
 SITE_NAME = '[COLOR violet]Extreme Down[/COLOR]'
 SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
-URL_MAIN = 'https://www.extreme-down.tv/'
+URL_MAIN = 'https://www.extreme-down.live/'
 
 URL_SEARCH = (URL_MAIN + 'index.php?', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0] + 'do=search&subaction=search&titleonly=3&speedsearch=1&story=', 'showMovies')
