@@ -168,7 +168,7 @@ class cTMDb:
                      "premiered TEXT, "\
                      "poster_path TEXT,"\
                      "playcount INTEGER,"\
-                     "overview TEXT, "\
+                     "overview TEXT,"\
                      "UNIQUE(imdb_id, tmdb_id, season)"\
                      ");"
 
@@ -949,7 +949,29 @@ class cTMDb:
                 self.db.commit()
 #                 VSlog('SQL INSERT Successfully')
             except Exception as e:
-                VSlog('SQL ERROR INSERT into table season')
+                if 'no column named overview' in e.message:
+                    self.dbcur.execute("DROP TABLE season")
+                    self.db.commit()
+
+                    ex = "CREATE TABLE IF NOT EXISTS season ("\
+                                 "imdb_id TEXT, "\
+                                 "tmdb_id TEXT, " \
+                                 "season INTEGER, "\
+                                 "year INTEGER,"\
+                                 "premiered TEXT, "\
+                                 "poster_path TEXT,"\
+                                 "playcount INTEGER,"\
+                                 "overview TEXT, "\
+                                 "UNIQUE(imdb_id, tmdb_id, season)"\
+                                 ");"
+                    self.dbcur.execute(ex)
+                    self.db.commit()
+                    VSlog('Table recreated')
+
+                    self.dbcur.execute(sql_select)
+                    matchedrow = self.dbcur.fetchone()
+                else:
+                    VSlog('SQL ERROR INSERT into table season')
                 pass
 
     def get_meta(self, media_type, name, imdb_id='', tmdb_id='', year='', season='', episode='', update=False):
