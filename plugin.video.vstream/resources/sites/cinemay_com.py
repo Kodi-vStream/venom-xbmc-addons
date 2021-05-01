@@ -138,7 +138,7 @@ def showMovies(sSearch=''):
                 # sTitle = aEntry[1]
 
             # Nettoyage du titre
-            sTitle = aEntry[1].replace(' en streaming', '').replace('- Sasion', ' Saison')
+            sTitle = aEntry[1].replace(' en streaming', '').replace('- Saison ', ' S')
             if sTitle.startswith('Film'):
                 sTitle = sTitle.replace('Film ', '')
 
