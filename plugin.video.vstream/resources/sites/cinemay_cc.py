@@ -8,7 +8,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, isMatrix
 
 SITE_IDENTIFIER = 'cinemay_cc'
 SITE_NAME = 'Cinemay_cc'
@@ -238,7 +238,13 @@ def showMovies(sSearch=''):
 
             sDesc = ''
             sThumb = re.sub('/w\d+/', '/w342/', aEntry[0])
-            sTitle = aEntry[1].replace('film en streaming', '').replace('série en streaming', '')
+
+            if isMatrix():
+                sTitle = aEntry[1].encode('latin-1').decode()
+            else:
+                sTitle = aEntry[1]
+
+            sTitle = sTitle.replace('film en streaming', '').replace('série en streaming', '')
             sYear = aEntry[2]
             sUrl2 = aEntry[3]
             sDisplayTitle = sTitle + '(' + sYear + ')'
