@@ -168,6 +168,7 @@ class cTMDb:
                      "premiered TEXT, "\
                      "poster_path TEXT,"\
                      "playcount INTEGER,"\
+                     "overview TEXT, "\
                      "UNIQUE(imdb_id, tmdb_id, season)"\
                      ");"
 
@@ -560,6 +561,7 @@ class cTMDb:
         _meta['backdrop_url'] = ''
         _meta['episode'] = 0
         _meta['playcount'] = 0
+        _meta['season'] = []
 
         if 'title' in meta and meta['title']:
             _meta['title'] = meta['title']
@@ -798,6 +800,12 @@ class cTMDb:
                             _meta['writer'] += ' / '
                         _meta['writer'] += '%s (%s)' % (crew['job'], crew['name'])
 
+        if 'seasons' in meta and meta['seasons']:
+            _meta['season'] = meta['seasons']
+
+        if 's_overview' in meta and meta['s_overview']:
+            _meta['plot'] = meta['s_overview']
+
         return _meta
 
     def _clean_title(self, title):
@@ -824,16 +832,19 @@ class cTMDb:
                     name += 'saga'
                 sql_select = sql_select + ' WHERE title = \'%s\'' % name
 
-        elif media_type == 'tvshow' or media_type == 'anime':
+        elif media_type == 'tvshow' or media_type == 'anime' or media_type == 'season':
 
             sql_select = 'SELECT * FROM tvshow'
             if season:
                 sql_select = 'SELECT *, season.poster_path as s_poster_path, season.premiered as s_premiered, ' \
-                             'season.year as s_year FROM tvshow LEFT JOIN season ON tvshow.imdb_id = season.imdb_id '
+                             'season.year as s_year, season.overview as s_overview FROM tvshow LEFT JOIN season ON tvshow.imdb_id = season.imdb_id '
             if tmdb_id:
                 sql_select = sql_select + ' WHERE tvshow.tmdb_id = \'%s\'' % tmdb_id
             else:
-                sql_select = sql_select + ' WHERE tvshow.title = \'%s\'' % name
+                if season:
+                    sql_select = sql_select + ' WHERE tvshow.title = \'%s\'' %  name
+                else:
+                    sql_select = sql_select + ' WHERE tvshow.title = \'%s\'' %  name
 
             if year:
                 sql_select = sql_select + ' AND tvshow.year = %s' % year
@@ -842,7 +853,6 @@ class cTMDb:
                 sql_select = sql_select + ' AND season.season = \'%s\'' % season
         else:
             return None
-            
 
         try:
             self.dbcur.execute(sql_select)
@@ -897,11 +907,11 @@ class cTMDb:
 
     # Cache pour les séries (et animes)
     def _cache_save_tvshow(self, meta, name, media_type, season, year):
-
         # ecrit les saisons dans la BDD
-        if 'seasons' in meta:
+        if 'season' in meta:
             self._cache_save_season(meta, season)
-            del meta['seasons']
+            #Petite manipulation pour les skin qui affiche le nombre total de saison.
+            meta['season'] = len(meta['season'])
             
         if not year and 'year' in meta:
             year = meta['year']
@@ -924,21 +934,21 @@ class cTMDb:
             pass
 
     def _cache_save_season(self, meta, season):
-
-        for s in meta['seasons']:
+        for s in meta['season']:
             if s['season_number'] != None and ('%02d' % int(s['season_number'])) == season:
                 meta['s_poster_path'] = s['poster_path']
                 meta['s_premiered'] = s['air_date']
                 meta['s_year'] = s['air_date']
+                meta['s_overview'] = s['overview']
 
             try:
-                sql = 'INSERT INTO season (imdb_id, tmdb_id, season, year, premiered, poster_path, playcount) VALUES ' \
-                      '(?, ?, ?, ?, ?, ?, ?) '
-                self.dbcur.execute(sql, (meta['imdb_id'], s['id'], s['season_number'], s['air_date'], s['air_date'], s['poster_path'], 6))
+                sql = 'INSERT INTO season (imdb_id, tmdb_id, season, year, premiered, poster_path, playcount, overview) VALUES ' \
+                      '(?, ?, ?, ?, ?, ?, ?, ?)'
+                self.dbcur.execute(sql, (meta['imdb_id'], s['id'], s['season_number'], s['air_date'], s['air_date'], s['poster_path'], 6, s['overview']))
 
                 self.db.commit()
 #                 VSlog('SQL INSERT Successfully')
-            except Exception:
+            except Exception as e:
                 VSlog('SQL ERROR INSERT into table season')
                 pass
 
@@ -966,7 +976,11 @@ class cTMDb:
 
 #         VSlog('Attempting to retrieve meta data for %s: %s %s %s %s' % (media_type, name, year, imdb_id, tmdb_id))
 
-        # recherche dans la base de données
+        #Obligatoire pour pointer vers les bonnes infos dans la base de données
+        if media_type == "season":
+            name = re.sub('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))(?:(.+?)(?:P|sd)|)','',name)
+
+        # recherche dans la base de données           
         if not update:
             meta = self._cache_search(media_type, self._clean_title(name), tmdb_id, year, season, episode)
             if meta:
