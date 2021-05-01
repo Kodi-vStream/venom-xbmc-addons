@@ -7,6 +7,7 @@ from resources.lib.comaddon import dialog, VSPath, isMatrix, VSlog
 from resources.lib.parser import cParser
 import base64
 import json
+import re
 
 class cHoster(iHoster):
 
@@ -73,10 +74,12 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  'var playerOptsB64 = "([^;]+)'
+        sPattern =  'var playerOptsB64 = (.+?) \+ (.+?);'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            decode = base64.b64decode(aResult[1][0].replace('" + "',''))
+            data = re.search('var '+ str(aResult[1][0][0]) +' = "(.+?)"',sHtmlContent).group(1)
+            data = data + re.search('var '+ str(aResult[1][0][1]) +' = "(.+?)"',sHtmlContent).group(1)
+            decode = base64.b64decode(data)
             url2 = json.loads(decode)['url']
 
             oRequest = cRequestHandler(url2)
