@@ -313,7 +313,7 @@ class cHosterGui:
             return self.getHoster('upvid')
         if ('cloudvid' in sHostName):
             return self.getHoster('cloudvid')
-        if ('clipwatching' in sHostName):
+        if ('clipwatching' in sHostName) or ('highstream' in sHostName):
             return self.getHoster('clipwatching')
         if ('megadrive' in sHostName):
             return self.getHoster('megadrive')
