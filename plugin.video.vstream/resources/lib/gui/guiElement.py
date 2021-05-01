@@ -535,7 +535,7 @@ class cGuiElement:
                 sTitle = sTitle[:-3]
             sTitle = sTitle.strip()
 
-        sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'collection').replace('4', 'anime').replace('7', 'person').replace('8', 'network')
+        sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'collection').replace('4', 'anime').replace('5', 'season').replace('7', 'person').replace('8', 'network')
 
         meta = {}
         if sType:
