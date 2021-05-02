@@ -584,16 +584,16 @@ def showSeriesLinks():
             # * et non pas + car parfois "Saison integrale" pas de chiffre
             saison = re.search('(Saison [0-9]*)', sQual).group(1)
             sQual = re.sub('Saison [0-9]+ ', '', sQual)
-            sMovieTitle = sMovieTitle + ' ' + saison
+            sTitle = sMovieTitle + ' ' + saison
 
-    sDisplayTitle = ('%s (%s)') % (sMovieTitle, sQual)
+    sDisplayTitle = ('%s (%s)') % (sTitle, sQual)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
     oOutputParameterHandler.addParameter('sThumb', sThumb)
     oOutputParameterHandler.addParameter('sDesc', sDesc)
-    oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+    oGui.addSeason(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     sHtmlContent1 = CutQual(sHtmlContent)
     sPattern1 = '<a class="btn-other" href="([^"]+)">([^<]+)</a>'
@@ -605,13 +605,13 @@ def showSeriesLinks():
         for aEntry in aResult1[1]:
             sUrl = aEntry[0]
             sQual = aEntry[1]
-            sDisplayTitle = ('%s [%s]') % (sMovieTitle, sQual)
+            sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     sHtmlContent2 = CutSais(sHtmlContent)
     sPattern2 = '<a class="btn-other" href="([^"]+)">([^<]+)<'
@@ -625,13 +625,13 @@ def showSeriesLinks():
         for aEntry in aResult2[1]:
 
             sUrl = aEntry[0]
-            sTitle = '[COLOR skyblue]' + aEntry[1] + '[/COLOR]'
-
+            sTitle = sMovieTitle + ' ' + aEntry[1].replace('Saison ','S' )
+            
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesLinks', sTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'showSeriesLinks', sTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
