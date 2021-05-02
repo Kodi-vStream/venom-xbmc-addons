@@ -998,12 +998,11 @@ class cTMDb:
 
 #         VSlog('Attempting to retrieve meta data for %s: %s %s %s %s' % (media_type, name, year, imdb_id, tmdb_id))
 
-        #Obligatoire pour pointer vers les bonnes infos dans la base de données
-        if media_type == "season":
-            name = re.sub('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))(?:(.+?)(?:P|sd)|)','',name)
-
         # recherche dans la base de données           
         if not update:
+            #Obligatoire pour pointer vers les bonnes infos dans la base de données
+            if media_type == "season" or "tvshow" or "anime":
+                name = re.sub('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))(?:([^"]+)|)','',name)
             meta = self._cache_search(media_type, self._clean_title(name), tmdb_id, year, season, episode)
             if meta:
                 meta = self._format(meta, name)
