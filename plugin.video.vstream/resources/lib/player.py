@@ -75,7 +75,7 @@ class cPlayer(xbmc.Player):
 
     def run(self, oGuiElement, sTitle, sUrl):
 
-        # Lancement d'une vidéo sans avoir arretée la précedente
+        # Lancement d'une vidéo sans avoir arreté la précedente
         if self.isPlaying():
             self.multi = True
             self._setWatched() # la vidéo en cours doit être marquée comme VUE
@@ -128,6 +128,8 @@ class cPlayer(xbmc.Player):
         for _ in range(20):
             if self.playBackEventReceived:
                 break
+            if self.playBackStoppedEventReceived:
+                return False
             xbmc.sleep(1000)
 
         #active/desactive les sous titres suivant l'option choisie dans la config
@@ -146,7 +148,7 @@ class cPlayer(xbmc.Player):
                 self.currentTime = self.getTime()
 
                 waitingNext += 1
-                if waitingNext == 6: # attendre 10 secondes avant de chercher le prochain épisode d'une série
+                if waitingNext == 8: # attendre un peu avant de chercher le prochain épisode d'une série
                     self.totalTime = self.getTotalTime()
                     self.infotag = self.getVideoInfoTag()
                     UpNext().nextEpisode(oGuiElement)
@@ -165,8 +167,9 @@ class cPlayer(xbmc.Player):
             return r
 
         VSlog('Closing player')
+        return True
 
-    #fonction light servant par exmple pour visualiser les DL ou les chaines de TV
+    #fonction light servant par exemple pour visualiser les DL ou les chaines de TV
     def startPlayer(self, window=False):
         oPlayList = self.__getPlayList()
         self.play(oPlayList, windowed=window)
@@ -206,13 +209,15 @@ class cPlayer(xbmc.Player):
                     siteUrl = self.infotag.getPath()
                     sTitleWatched = self.infotag.getOriginalTitle()
                     if sTitleWatched:
-                        from resources.lib.db import cDb
                         db = cDb()
                         meta = {}
                         meta['title'] = sTitleWatched
                         meta['site'] = siteUrl
                         db.insert_watched(meta)
     
+                        # RAZ du point de reprise
+                        db.del_resume(meta)
+                    
                     # Marquer VU dans les comptes perso
                     # NE FONCTIONNE PAS SI PLUSIEURS VIDEOS SE SONT ENCHAINEES (cas des épisodes)
                     if not self.multi:
@@ -223,7 +228,18 @@ class cPlayer(xbmc.Player):
                         bstoken = self.ADDON.getSetting('bstoken')
                         if bstoken:
                             self.__getWatchlist('trakt')
-        
+
+                # Sauvegarde du point de lecture pour une reprise
+                elif self.currentTime > 180.0:
+                    sTitleWatched = self.infotag.getOriginalTitle()
+                    if sTitleWatched:
+                        db = cDb()
+                        meta = {}
+                        meta['title'] = sTitleWatched
+                        meta['site'] = self.sSite
+                        meta['point'] = self.currentTime
+                        matchedrow = db.insert_resume(meta)
+
         except Exception as err:
             VSlog("ERROR Player_setWatched : {0}".format(err))
 
@@ -237,6 +253,28 @@ class cPlayer(xbmc.Player):
             return
 
         self.playBackEventReceived = True
+
+        # Reprendre la lecture
+        if self.getTime() < 180:  # si supérieur à 3 minutes, la gestion de la reprise est assuré par KODI
+            self.infotag = self.getVideoInfoTag()
+            sTitleWatched = self.infotag.getOriginalTitle()
+            if sTitleWatched:
+                db = cDb()
+                meta = {}
+                meta['title'] = sTitleWatched
+                resumePoint = db.get_resume(meta)
+                if resumePoint:
+                    resumePoint = int (resumePoint)
+                    h = resumePoint/3600
+                    resumePoint = resumePoint-h*3600
+                    m = resumePoint/60
+                    s = resumePoint-m*60
+                    ret = dialog().VSselect(['Reprendre depuis %02d:%02d:%02d' %(h, m, s), 'Lire depuis le début'], 'Reprendre la lecture')
+                    if ret == 0:
+                        self.seekTime(resumePoint)
+                    elif ret == 1:
+                        self.seekTime(0.0)
+
 
     def __getWatchlist(self, sAction):
 

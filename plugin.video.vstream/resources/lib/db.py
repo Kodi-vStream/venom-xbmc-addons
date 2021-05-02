@@ -258,7 +258,7 @@ class cDb:
         site = QuotePlus(meta['site'])
         # hoster = meta['hoster']
         point = meta['point']
-        ex = "DELETE FROM resume WHERE hoster = '%s'" % site
+        ex = "DELETE FROM resume WHERE title = '%s'" % title
         try:
             self.dbcur.execute(ex)
         except Exception:
@@ -274,24 +274,28 @@ class cDb:
             pass
 
     def get_resume(self, meta):
-        # title = self.str_conv(meta['title'])
-        site = QuotePlus(meta['site'])
+        title = self.str_conv(meta['title'])
+        # site = QuotePlus(meta['site'])
 
-        sql_select = "SELECT * FROM resume WHERE hoster = '%s'" % site
+        sql_select = "SELECT point FROM resume WHERE title = '%s'" % title
+        # sql_select = "SELECT * FROM resume WHERE hoster = '%s'" % site
 
         try:
             self.dbcur.execute(sql_select)
-            # matchedrow = self.dbcur.fetchone()
-            matchedrow = self.dbcur.fetchall()
-            return matchedrow
-        except Exception:
-            VSlog('SQL ERROR %s' % sql_select)
+            matchedrow = self.dbcur.fetchone()
+            # matchedrow = self.dbcur.fetchall()
+            if not matchedrow:
+                return 0
+            return float(matchedrow[0])
+        
+        except Exception as e:
+            VSlog('SQL ERROR : %s' % sql_select)
             return None
 
     def del_resume(self, meta):
-        site = QuotePlus(meta['site'])
+        title = QuotePlus(meta['title'])
 
-        sql_select = "DELETE FROM resume WHERE hoster = '%s'" % site
+        sql_select = "DELETE FROM resume WHERE title = '%s'" % title
 
         try:
             self.dbcur.execute(sql_select)
