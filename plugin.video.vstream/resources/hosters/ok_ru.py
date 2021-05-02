@@ -73,6 +73,7 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
+        import requests
 
         v = self.getHostAndIdFromUrl(self.__sUrl)
         sId = v[1]
@@ -82,16 +83,13 @@ class cHoster(iHoster):
         HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0',
                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}
 
-        req = urllib2.Request(web_url, headers=HEADERS)
-        response = urllib2.urlopen(req)
-        sHtmlContent = response.read()
-        response.close()
-
+        St=requests.Session()
+        sHtmlContent = St.get(web_url).content.decode('utf-8')
         oParser = cParser()
 
         sHtmlContent = oParser.abParse(sHtmlContent, 'data-options=', '" data-player-container', 14)
         sHtmlContent = cUtil().removeHtmlTags(sHtmlContent)
-        sHtmlContent = cUtil().unescape(sHtmlContent)  # .decode('utf-8'))
+        sHtmlContent = cUtil().unescape(sHtmlContent)
 
         page = json.loads(sHtmlContent)
         page = json.loads(page['flashvars']['metadata'])
@@ -109,8 +107,7 @@ class cHoster(iHoster):
 
 
         if (api_call):
-            api_call = '%s|User-Agent=%s&Accept=%s' % (api_call, HEADERS['User-Agent'], HEADERS['Accept'])
-            api_call = api_call + '&Referer=' + self.__sUrl + '&Origin=http://ok.ru'
+            api_call = api_call + '|Referer=' + self.__sUrl
             return True, api_call
 
         return False, False
