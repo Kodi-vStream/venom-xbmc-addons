@@ -863,7 +863,7 @@ class cTMDb:
             self.dbcur.execute(sql_select)
             matchedrow = self.dbcur.fetchone()
         except Exception as e:
-            if 'no such column' in str(e):
+            if 'no such column' in str(e) or 'no column named' in str(e):
                 #Pour les serie il faut drop les deux tables.
                 if media_type == "tvshow":
                     self.dbcur.execute("DROP TABLE tvshow")
@@ -920,7 +920,7 @@ class cTMDb:
             self.db.commit()
 #             VSlog('SQL INSERT Successfully')
         except Exception as e:
-            if 'no such column' in str(e):
+            if 'no such column' in str(e) or 'no column named' in str(e):
                 self.__createdb(media_type)
                 VSlog('Table recreated')
 
@@ -955,7 +955,7 @@ class cTMDb:
             self.db.commit()
 #             VSlog('SQL INSERT Successfully')
         except Exception as e:
-            if 'no such column' in str(e):
+            if 'no such column' in str(e) or 'no column named' in str(e):
                 self.__createdb('tvshow')
                 VSlog('Table recreated')
 
@@ -981,7 +981,7 @@ class cTMDb:
                 self.db.commit()
 #                 VSlog('SQL INSERT Successfully')
             except Exception as e:
-                if 'no such column' in str(e):
+                if 'no such column' in str(e) or 'no column named' in str(e):
                     self.__createdb('season')
                     VSlog('Table recreated')
 
