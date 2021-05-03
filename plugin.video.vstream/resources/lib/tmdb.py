@@ -920,7 +920,7 @@ class cTMDb:
             self.db.commit()
 #             VSlog('SQL INSERT Successfully')
         except Exception as e:
-            if 'no such column' in e:
+            if 'no such column' in str(e):
                 self.__createdb(media_type)
                 VSlog('Table recreated')
 
@@ -955,7 +955,7 @@ class cTMDb:
             self.db.commit()
 #             VSlog('SQL INSERT Successfully')
         except Exception as e:
-            if 'no such column' in e:
+            if 'no such column' in str(e):
                 self.__createdb('tvshow')
                 VSlog('Table recreated')
 
@@ -981,7 +981,7 @@ class cTMDb:
                 self.db.commit()
 #                 VSlog('SQL INSERT Successfully')
             except Exception as e:
-                if 'no such column' in e:
+                if 'no such column' in str(e):
                     self.__createdb('season')
                     VSlog('Table recreated')
 
