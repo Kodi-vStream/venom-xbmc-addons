@@ -112,6 +112,7 @@ def showSeries(sSearch=''):
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)     
             oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -166,13 +167,13 @@ def showSaisons():
         sPattern = 'dci-desc">(.+?)</div>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
-            sDesc = aResult[1][0]
+            sDesc = aResult[1][0].split('streaming')[1]
     except:
         pass
 
     # pour ne pas prendre les propositions de la source
-    sStart = 'dci-desc">'
-    sEnd = 'À regarder aussi'
+    sStart = 'dcr-rating">'
+    sEnd = 'regarder aussi'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
 
     sPattern = 'item">.+?href="([^"]+)" title="([^"]+)'
@@ -189,7 +190,7 @@ def showSaisons():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
