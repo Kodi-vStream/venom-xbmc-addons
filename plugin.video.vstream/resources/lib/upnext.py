@@ -252,6 +252,6 @@ class UpNext:
                 return True # addon activé
             else:                          # UpNext non installé, on l'installe et on l'utilise
                 addonManager().installAddon(upnext_id)
-                # ce n'est pris en compte à l'installation de l'addon, il faudra attendre le prchain épisode
+                # ce n'est pas pris en compte à l'installation de l'addon, donc return False, il faudra attendre le prochain épisode
                 return False    
     

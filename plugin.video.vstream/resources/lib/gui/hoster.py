@@ -119,7 +119,6 @@ class cHosterGui:
         # context Library menu
         oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cLibrary', 'cLibrary', 'setLibrary', self.ADDON.VSlang(30324))
 
-        # bug
         oGui.addHost(oGuiElement, oOutputParameterHandler)
 
     def checkHoster(self, sHosterUrl, debrid = True):

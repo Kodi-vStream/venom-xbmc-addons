@@ -14,10 +14,6 @@ import xbmcplugin
 #player API
 #http://mirrors.xbmc.org/docs/python-docs/stable/xbmc.html#Player
 
-try:
-    xrange
-except NameError:
-    xrange = range
 
 class cPlayer(xbmc.Player):
 
