@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-from requests import Session, Request, RequestException
+from requests import Session, Request, RequestException, ConnectionError
 from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix
 
 class cRequestHandler:
@@ -190,6 +190,14 @@ class cRequestHandler:
                             pass
             else:
                 sContent = oResponse.json()
+        except ConnectionError:
+            # Retry with DNS only if addon is present
+            import xbmcvfs
+            if xbmcvfs.exists('special://home/addons/script.module.dnspython/'):
+                self.__enableDNS = True
+                return self.__callRequest()
+            else:
+                error_msg = addon().VSlang(30470)
 
         except RequestException  as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e) and self.BUG_SSL == False:
@@ -208,6 +216,7 @@ class cRequestHandler:
 
             dialog().VSerror(error_msg)
             sContent = ''
+
 
         if oResponse.status_code == 503:
 
@@ -245,7 +254,11 @@ class cRequestHandler:
             import sys
             import dns.resolver
 
-            path = VSPath('special://home/addons/script.module.dnspython/lib/').decode('utf-8')
+            if isMatrix():
+                path = VSPath('special://home/addons/script.module.dnspython/lib/')
+            else:
+                path = VSPath('special://home/addons/script.module.dnspython/lib/').decode('utf-8')
+                             
             if path not in sys.path:
                 sys.path.append(path)
             host = args[0]
