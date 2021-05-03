@@ -30,7 +30,7 @@ class cGuiElement:
         # self.__sRootArt = cConfig().getRootArt()
         self.__sFunctionName = ''
         self.__sRootArt = 'special://home/addons/plugin.video.vstream/resources/art/'
-        self.__sType = 'Video'
+        self.__sType = 'video'
         self.__sMeta = 0
         self.__sPlaycount = 0
         self.__sTrailer = ''
@@ -457,7 +457,7 @@ class cGuiElement:
         meta = {
             'title': xbmc.getInfoLabel('ListItem.title'),
             # 'label': xbmc.getInfoLabel('ListItem.title'),
-            'originaltitle': xbmc.getInfoLabel('ListItem.originaltitle'),
+            # 'originaltitle': xbmc.getInfoLabel('ListItem.originaltitle'),
             'year': xbmc.getInfoLabel('ListItem.year'),
             'genre': xbmc.getInfoLabel('ListItem.genre'),
             'director': xbmc.getInfoLabel('ListItem.director'),
@@ -701,6 +701,10 @@ class cGuiElement:
                 if mediatype:            # video, movie, tvshow, season, episode, musicvideo
                     self.addItemValues('mediatype', mediatype)
 
+        if self.getSeason():
+            self.addItemValues('season', int(self.getSeason()))
+        if self.getEpisode():
+            self.addItemValues('episode', int(self.getEpisode()))
         return self.__aItemValues
 
     def addItemProperties(self, sPropertyKey, mPropertyValue):
