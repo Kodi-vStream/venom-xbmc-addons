@@ -1018,7 +1018,7 @@ class cTMDb:
         # recherche dans la base de données           
         if not update:
             #Obligatoire pour pointer vers les bonnes infos dans la base de données
-            if media_type == "season" or "tvshow" or "anime":
+            if media_type in ("season", "tvshow", "anime"):
                 name = re.sub('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))(?:([^"]+)|)','',name)
             meta = self._cache_search(media_type, self._clean_title(name), tmdb_id, year, season, episode)
             if meta:

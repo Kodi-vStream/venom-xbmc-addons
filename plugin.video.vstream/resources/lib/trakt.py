@@ -867,7 +867,11 @@ class cTrakt:
         sSeason = oInputParameterHandler.getValue('sSeason')
         sEpisode = oInputParameterHandler.getValue('sEpisode')
 
-        sType = sType.replace('1', 'movies').replace('2', 'shows').replace('3', 'shows').replace('4', 'shows').replace('6', 'shows')
+        # Film, serie, anime, saison, episode
+        if sType not in ('1', '2', '3', '4', '8'):
+            return
+        
+        sType = sType.replace('1', 'movies').replace('2', 'shows').replace('3', 'shows').replace('4', 'shows').replace('8', 'shows')
 
         # Mettre en vu automatiquement.
         if Action == "SetWatched":
@@ -1033,10 +1037,9 @@ class cTrakt:
         from resources.lib.tmdb import cTMDb
         grab = cTMDb()
 
-        if sType == 'show' or sType == 'shows':
+        if sType == 'shows':
             sType = 'tv'
-
-        if sType == 'movies':
+        elif sType == 'movies':
             sType = 'movie'
 
         meta = 0

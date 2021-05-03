@@ -68,6 +68,19 @@ class cGui:
         except:
             pass
 
+
+    #    Categorie       sCat          Meta     CONTENT
+    #    Film            1             1        movies
+    #    Serie           2             2        tvshows
+    #    Anime           3             4        tvshows
+    #    Saison          4             5        episodes
+    #    Divers          5             0        videos
+    #    IPTV (Officiel) 6             0        files
+    #    Saga            7             3        movies
+    #    Episodes        8             0        episodes
+    #    Person          /             7        artists
+    #    Nerwork         /             8        files
+
     def addMovie(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
         self.addNewDir('movies', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 1, 1)
 
@@ -85,7 +98,7 @@ class cGui:
         self.addNewDir(type, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 5)
 
     def addMoviePack(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
-        self.addNewDir('movies', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 3, 1)
+        self.addNewDir('movies', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 3, 7)
 
     def addDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler='', sDesc=""):
         self.addNewDir('dir', sId, sFunction, sLabel, sIcon, '', sDesc, oOutputParameterHandler, 0, None)
@@ -93,7 +106,7 @@ class cGui:
     def addLink(self, sId, sFunction, sLabel, sThumbnail, sDesc, oOutputParameterHandler=''):
         sIcon = sThumbnail
         self.addNewDir('link', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, None)
-        
+
     def addSeason(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
         # Pour gérer l'enchainement des épisodes
         saisonUrl = oOutputParameterHandler.getValue('siteUrl')
@@ -122,7 +135,7 @@ class cGui:
         oOutputParameterHandler.addParameter('sourceID', sId)
         siteUrl = oOutputParameterHandler.getValue('siteUrl')
 
-        self.addNewDir('episodes', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 6)
+        self.addNewDir('episodes', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 8)
 
         # Pour gérer l'enchainement des épisodes
         nbEpisode = len(self.listing)
@@ -181,46 +194,6 @@ class cGui:
         oOutputParameterHandler = cOutputParameterHandler()
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
-    # non utiliser depuis le 22/04
-    def addMovieDB(self, sId, sFunction, sLabel, sIcon, sThumbnail, sFanart, oOutputParameterHandler=''):
-
-        cGui.CONTENT = 'movies'
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(sId)
-        oGuiElement.setFunction(sFunction)
-        oGuiElement.setTitle(sLabel)
-        oGuiElement.setIcon(sIcon)
-        oGuiElement.setMeta(1)
-        oGuiElement.setThumbnail(sThumbnail)
-        oGuiElement.setFanart(sFanart)
-        oGuiElement.setCat(7)
-
-        if oOutputParameterHandler.getValue('sMovieTitle'):
-            sTitle = oOutputParameterHandler.getValue('sMovieTitle')
-            oGuiElement.setFileName(sTitle)
-
-        self.addFolder(oGuiElement, oOutputParameterHandler)
-
-    # non utiliser 22/04
-    def addTVDB(self, sId, sFunction, sLabel, sIcon, sThumbnail, sFanart, oOutputParameterHandler=''):
-
-        cGui.CONTENT = 'tvshows'
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(sId)
-        oGuiElement.setFunction(sFunction)
-        oGuiElement.setTitle(sLabel)
-        oGuiElement.setIcon(sIcon)
-        oGuiElement.setMeta(2)
-        oGuiElement.setThumbnail(sThumbnail)
-        oGuiElement.setFanart(sFanart)
-        oGuiElement.setCat(7)
-
-        if oOutputParameterHandler.getValue('sMovieTitle'):
-            sTitle = oOutputParameterHandler.getValue('sMovieTitle')
-            oGuiElement.setFileName(sTitle)
-
-        self.addFolder(oGuiElement, oOutputParameterHandler)
-
     # afficher les liens non playable
     def addFolder(self, oGuiElement, oOutputParameterHandler='', _isFolder=True):
 
@@ -266,13 +239,15 @@ class cGui:
             if not oListItem.getProperty('isBookmark'):
                 self.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
 
-            if sCat in (1, 2):
+            if sCat in (1, 2, 3, 4, 8):
                 if self.ADDON.getSetting('bstoken') != '':
                     self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
                 if self.ADDON.getSetting('tmdb_account') != '':
                     self.createContexMenuTMDB(oGuiElement, oOutputParameterHandler)
+            if sCat in (1, 2, 3):
                 self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
-            self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
+            if sCat != 6:
+                self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
         self.listing.append((sItemUrl, oListItem, _isFolder))
@@ -296,7 +271,7 @@ class cGui:
 
         oListItem = self.createListItem(oGuiElement)
         oListItem.setProperty('IsPlayable', 'true')
-        oListItem.setProperty('Video', 'true')
+        # oListItem.setProperty('Video', 'true')
 
         sItemUrl = self.__createItemUrl(oGuiElement, oOutputParameterHandler)
 
