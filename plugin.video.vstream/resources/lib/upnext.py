@@ -60,7 +60,7 @@ class UpNext:
             if not nextSaisonFunc:
                 return
 
-            sUrl, nextEpisodeUrl = self.getEpisodeFromSaison(sSiteName, nextSaisonFunc, saisonUrl, tvShowTitle, sSaison, sNextEpisode, oInputParameterHandler)
+            sUrl, nextEpisodeUrl = self.getEpisodeFromSaison(tvShowTitle, sSaison, sNextEpisode, oInputParameterHandler)
             if not sUrl:
                 return 
         
@@ -167,18 +167,24 @@ class UpNext:
             VSlog('UpNext : %s' % e)
          
     # Retrouve le prochain épisode d'une série depuis l'url de la saison
-    def getEpisodeFromSaison(self, sSiteName, sFunction, saisonUrl, sSaisonTitle, sSaison, sNextEpisode, oInputParameterHandler):
+    def getEpisodeFromSaison(self, sSaisonTitle, sSaison, sNextEpisode, oInputParameterHandler):
+
+        sSiteName = oInputParameterHandler.getValue('sourceID')
+        nextSaisonFunc = oInputParameterHandler.getValue('nextSaisonFunc')
+        saisonUrl = oInputParameterHandler.getValue('saisonUrl')
+        sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', saisonUrl)
         oOutputParameterHandler.addParameter('sId', sSiteName)
         oOutputParameterHandler.addParameter('sMovieTitle', sSaisonTitle)
-        
+        oOutputParameterHandler.addParameter('sHosterIdentifier', sHosterIdentifier)
+
         try:
             sParams = oOutputParameterHandler.getParameterAsUri()
-            sys.argv[2] = '?site=%s&function=%s&%s' % (sSiteName, sFunction, sParams)
+            sys.argv[2] = '?site=%s&function=%s&%s' % (sSiteName, nextSaisonFunc, sParams)
             plugins = __import__('resources.sites.%s' % sSiteName, fromlist=[sSiteName])
-            function = getattr(plugins, sFunction)
+            function = getattr(plugins, nextSaisonFunc)
             function()
             
         except Exception as e:
@@ -188,10 +194,13 @@ class UpNext:
         for sUrl, listItem, _ in cGui().getEpisodeListing():
             siteUrl, params = sUrl.split('&', 1)
             aParams = dict(param.split('=') for param in params.split('&'))
-            if 'sSeason' in aParams and 'sEpisode' in aParams:
+            if 'sSeason' in aParams:
                 season = aParams['sSeason']
+                if season != sSaison:   # La saison est connue mais ce n'est pas la bonne 
+                    continue
+            if 'sEpisode' in aParams:
                 episode = aParams['sEpisode']
-                if season == sSaison and episode==sNextEpisode:
+                if episode==sNextEpisode:
                     siteUrl = aParams['siteUrl']
                     nextEpisodeURL = aParams['nextEpisode'] if 'nextEpisode' in aParams else None
                     return siteUrl, nextEpisodeURL
