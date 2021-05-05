@@ -586,12 +586,12 @@ def showEpisode():
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-                oGui.addEpisode(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def serieHosters():
+def showSeriesHosters():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
