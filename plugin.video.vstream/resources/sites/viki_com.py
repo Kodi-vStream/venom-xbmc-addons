@@ -153,7 +153,10 @@ def showMovies(sSearch=''):
                         # sThumb = jsonrsp['response'][movie]['images']['atv_cover']['url']  # thumb size 800 ko
                         sUrl2 = URL_API + 'series/' + jsonrsp['response'][movie]['id'] + '/episodes.json?page=1&per_page=50&app=100000a&t=' + str(timestamp)
                         
-                        sDesc = jsonrsp['response'][movie]['descriptions']['fr']
+                        try:
+                            sDesc = jsonrsp['response'][movie]['descriptions']['fr']
+                        except:
+                            sDesc = ''
                         
 
                         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -187,7 +190,7 @@ def showMovies(sSearch=''):
                             sDesc = str(mt)
                             sTitle = str(jsonrsp['response'][movie]['titles']['en'])
                             sThumb = str(jsonrsp['response'][movie]['images']['poster']['url'])
-                            sUrlApi = str(jsonrsp['response'][movie]["watch_now"]['id'] + '@' +
+                            sUrlApi = str(jsonrsp['response'][movie]['id'] + '@' +
                                           jsonrsp['response'][movie]['images']['poster']['url'] + '@' +
                                           subtitle_completion1 + '@' + subtitle_completion2 + '@' + mt)
 
@@ -378,8 +381,9 @@ def GET_SUBTILES(url, subtitle_completion1, subtitle_completion2):
             if isMatrix():
                 data = data.encode('latin-1')
 
-            with xbmcvfs.File("special://temp/vstream_viki_SubFrench.srt", "w") as subfile:
-                subfile.write(data)
+            subfile = xbmcvfs.File("special://temp/vstream_viki_SubFrench.srt", "w")
+            subfile.write(data)
+            subfile.close()
 
         elif (int(subtitle_completion2) > 0 and se == 'true'):
             srtsubs_path1 = "special://temp/vstream_viki_SubEnglish.srt"
@@ -391,8 +395,9 @@ def GET_SUBTILES(url, subtitle_completion1, subtitle_completion2):
             if isMatrix():
                 data = data.encode('latin-1')
 
-            with xbmcvfs.File("special://temp/vstream_viki_SubEnglish.srt", "w") as subfile:
-                subfile.write(data)
+            subfile = xbmcvfs.File("special://temp/vstream_viki_SubEnglish.srt", "w")
+            subfile.write(data)
+            subfile.close()
 
         return srtsubs_path1
     else:
