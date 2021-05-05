@@ -418,6 +418,10 @@ def showSeriesHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sData = oInputParameterHandler.getValue('sData')
+    if not sData:
+        sEpisode = oInputParameterHandler.getValue('sEpisode') # Gestion Up_Next
+        if sEpisode:
+            sData = 'player%d' % int(sEpisode)
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
