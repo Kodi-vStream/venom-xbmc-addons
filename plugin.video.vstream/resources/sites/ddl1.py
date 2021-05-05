@@ -502,6 +502,7 @@ def showSeriesHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
+    sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')    # Gestion UpNext
 
     oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -517,9 +518,15 @@ def showSeriesHosters():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + re.sub('\.\w+', '', aEntry[0]) + '[/COLOR]')
+                sHoster = aEntry[0]
+                if sHosterIdentifier and sHosterIdentifier.lower() != sHoster.lower():
+                    continue
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + re.sub('\.\w+', '', sHoster) + '[/COLOR]')
 
             else:
+                if sHosterIdentifier and sHoster and sHosterIdentifier.lower() != sHoster.lower():
+                    continue
+
                 sUrl2 = aEntry[1]
                 sEpisode = aEntry[2].replace('pisode ', '').replace('FINAL ', '').replace('Télécharger', '')
                 sTitle = sMovieTitle + ' ' + sEpisode
