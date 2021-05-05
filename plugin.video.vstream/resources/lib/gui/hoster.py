@@ -25,6 +25,7 @@ class cHosterGui:
         sourceID = oInputParameterHandler.getValue('sourceID')
         saisonUrl = oInputParameterHandler.getValue('saisonUrl')
         nextSaisonFunc = oInputParameterHandler.getValue('nextSaisonFunc')
+        nextEpisodeFunc = oInputParameterHandler.getValue('nextEpisodeFunc')
         nextEpisode = oInputParameterHandler.getValue('nextEpisode')
 
         oGuiElement = cGuiElement()
@@ -57,6 +58,7 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('sourceID', sourceID)
         oOutputParameterHandler.addParameter('nextEpisode', nextEpisode)
         oOutputParameterHandler.addParameter('nextSaisonFunc', nextSaisonFunc)
+        oOutputParameterHandler.addParameter('nextEpisodeFunc', nextEpisodeFunc)
         oOutputParameterHandler.addParameter('saisonUrl', saisonUrl)
         # oOutputParameterHandler.addParameter('sFav', 'play')
         # oOutputParameterHandler.addParameter('sCat', '4')

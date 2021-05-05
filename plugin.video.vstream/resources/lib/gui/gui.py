@@ -85,6 +85,12 @@ class cGui:
         self.addNewDir('movies', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 1, 1)
 
     def addTV(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
+        # Pour gérer l'enchainement des épisodes
+        saisonUrl = oOutputParameterHandler.getValue('siteUrl')
+        oOutputParameterHandler.addParameter('sourceID', sId)
+        oOutputParameterHandler.addParameter('saisonUrl', QuotePlus(saisonUrl))
+        oOutputParameterHandler.addParameter('nextSaisonFunc', sFunction)
+
         self.addNewDir('tvshows', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 2, 2)
 
     def addAnime(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
@@ -116,13 +122,12 @@ class cGui:
 
         self.addNewDir('episodes', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 5, 4)
         
-
-        # Pour gérer l'enchainement des épisodes
-        nbSaison = len(self.listing)
-        if nbSaison > 1 and saisonUrl:
-            url, listItem, isFolder = self.listing.pop(nbSaison-2)
-            url += '&nextSaison=%s' % QuotePlus(saisonUrl)
-            self.listing.insert(nbSaison-2, (url, listItem, isFolder)) 
+        # # Pour gérer l'enchainement des saisons
+        # nbSaison = len(self.listing)
+        # if nbSaison > 1 and saisonUrl:
+            # url, listItem, isFolder = self.listing.pop(nbSaison-2)
+            # url += '&nextSaison=%s' % QuotePlus(saisonUrl)
+            # self.listing.insert(nbSaison-2, (url, listItem, isFolder)) 
         return
 
     def addEpisode(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
@@ -132,6 +137,7 @@ class cGui:
         oOutputParameterHandler.addParameter('saisonUrl', saisonUrl)
         nextSaisonFunc = oInputParameterHandler.getValue('nextSaisonFunc')
         oOutputParameterHandler.addParameter('nextSaisonFunc', nextSaisonFunc)
+        oOutputParameterHandler.addParameter('nextEpisodeFunc', sFunction)
         oOutputParameterHandler.addParameter('sourceID', sId)
         siteUrl = oOutputParameterHandler.getValue('siteUrl')
 

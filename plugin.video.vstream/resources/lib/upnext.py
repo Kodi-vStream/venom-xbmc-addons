@@ -27,6 +27,10 @@ class UpNext:
             return      
 
         oInputParameterHandler = cInputParameterHandler()
+        nextEpisodeFunc = oInputParameterHandler.getValue('nextEpisodeFunc')
+        if not nextEpisodeFunc:
+            return 
+
         sSiteName = oInputParameterHandler.getValue('sourceID')
         if not sSiteName:
             return 
@@ -56,7 +60,7 @@ class UpNext:
             if not nextSaisonFunc:
                 return
 
-            sUrl, nextEpisodeUrl = self.getEpisodeFromSaison(sSiteName, nextSaisonFunc, saisonUrl, sSaison, sNextEpisode, oInputParameterHandler)
+            sUrl, nextEpisodeUrl = self.getEpisodeFromSaison(sSiteName, nextSaisonFunc, saisonUrl, tvShowTitle, sSaison, sNextEpisode, oInputParameterHandler)
             if not sUrl:
                 return 
         
@@ -68,6 +72,7 @@ class UpNext:
         oOutputParameterHandler.addParameter('sMovieTitle', nextTitle)
         oOutputParameterHandler.addParameter('sTitle', nextTitle)
         oOutputParameterHandler.addParameter('sCat', 6) # épisode
+        oOutputParameterHandler.addParameter('sEpisode', sNextEpisode)
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sId', sSiteName)
         oOutputParameterHandler.addParameter('sourceID', sSiteName)
@@ -75,11 +80,10 @@ class UpNext:
         oOutputParameterHandler.addParameter('nextSaisonFunc', nextSaisonFunc)
         
         try:
-            sFunction = "showHosters"
             sParams = oOutputParameterHandler.getParameterAsUri()
-            sys.argv[2] = '?site=%s&function=%s&title=%s&%s' % (sSiteName, sFunction, nextTitle, sParams)
+            sys.argv[2] = '?site=%s&function=%s&title=%s&%s' % (sSiteName, nextEpisodeFunc, nextTitle, sParams)
             plugins = __import__('resources.sites.%s' % sSiteName, fromlist=[sSiteName])
-            function = getattr(plugins, sFunction)
+            function = getattr(plugins, nextEpisodeFunc)
             function()
             
         except Exception as e:
@@ -110,8 +114,10 @@ class UpNext:
 
             oOutputParameterHandler.addParameter('sFav', 'play')
             oOutputParameterHandler.addParameter('sMediaUrl', str(sMediaUrl))
+            oOutputParameterHandler.addParameter('nextEpisodeFunc', nextEpisodeFunc)
             oOutputParameterHandler.addParameter('nextEpisode', nextEpisodeUrl)
             oOutputParameterHandler.addParameter('sHosterIdentifier', sHosterIdentifier)
+            
             
             sParams = oOutputParameterHandler.getParameterAsUri()
             url = 'plugin://plugin.video.vstream/?site=cHosterGui&function=play&%s' % sParams
@@ -161,11 +167,12 @@ class UpNext:
             VSlog('UpNext : %s' % e)
          
     # Retrouve le prochain épisode d'une série depuis l'url de la saison
-    def getEpisodeFromSaison(self, sSiteName, sFunction, saisonUrl, sSaison, sNextEpisode, oInputParameterHandler):
+    def getEpisodeFromSaison(self, sSiteName, sFunction, saisonUrl, sSaisonTitle, sSaison, sNextEpisode, oInputParameterHandler):
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', saisonUrl)
         oOutputParameterHandler.addParameter('sId', sSiteName)
+        oOutputParameterHandler.addParameter('sMovieTitle', sSaisonTitle)
         
         try:
             sParams = oOutputParameterHandler.getParameterAsUri()
