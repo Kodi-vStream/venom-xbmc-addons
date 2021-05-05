@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
-import xbmcvfs
+import xbmcvfs, json
 
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.util import QuotePlus, Unquote
-from resources.lib.comaddon import dialog, addon, VSlog, VSPath, isMatrix
+from resources.lib.comaddon import dialog, addon, VSlog, VSPath, isMatrix, xbmc
 
 SITE_IDENTIFIER = 'cDb'
 SITE_NAME = 'DB'
@@ -16,9 +16,26 @@ except:
     from pysqlite2 import dbapi2 as sqlite
 
 class cDb:
+    #On chercher le profil courant.
+    request = {
+        "jsonrpc": "2.0",
+        "method": "Profiles.GetCurrentProfile",
+        "params": {
+            "properties": ["thumbnail", "lockmode"]
+        },
+        "id": 1
+    }
 
-    # important seul xbmcvfs peux lire le special
-    DB = 'special://home/userdata/addon_data/plugin.video.vstream/vstream.db'
+    req = json.dumps(request)
+    response = xbmc.executeJSONRPC(req)
+    #On recupere le nom.
+    name = json.loads(response)['result']['label']
+
+    #Le cas par defaut.
+    if name == 'Master user':
+        DB = 'special://home/userdata/addon_data/plugin.video.vstream/vstream.db'
+    else:
+        DB = 'special://home/userdata/profiles/' + name + '/addon_data/plugin.video.vstream/vstream.db'
 
     try:
         REALDB = VSPath(DB).decode('utf-8')
