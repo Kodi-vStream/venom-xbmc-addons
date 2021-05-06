@@ -32,8 +32,6 @@ class UpNext:
 
         oInputParameterHandler = cInputParameterHandler()
         nextEpisodeFunc = oInputParameterHandler.getValue('nextEpisodeFunc')
-        if not nextEpisodeFunc:
-            return 
 
         sSiteName = oInputParameterHandler.getValue('sourceID')
         if not sSiteName:
@@ -85,16 +83,17 @@ class UpNext:
         oOutputParameterHandler.addParameter('nextSaisonFunc', nextSaisonFunc)
         oOutputParameterHandler.addParameter('sLang', sLang)
         
-        try:
-            sParams = oOutputParameterHandler.getParameterAsUri()
-            sys.argv[2] = '?site=%s&function=%s&title=%s&%s' % (sSiteName, nextEpisodeFunc, nextTitle, sParams)
-            plugins = __import__('resources.sites.%s' % sSiteName, fromlist=[sSiteName])
-            function = getattr(plugins, nextEpisodeFunc)
-            function()
-            
-        except Exception as e:
-            VSlog('upnext - could not load site: ' + sSiteName + ' error: ' + str(e))
-            return
+        if nextEpisodeFunc:
+            try:
+                sParams = oOutputParameterHandler.getParameterAsUri()
+                sys.argv[2] = '?site=%s&function=%s&title=%s&%s' % (sSiteName, nextEpisodeFunc, nextTitle, sParams)
+                plugins = __import__('resources.sites.%s' % sSiteName, fromlist=[sSiteName])
+                function = getattr(plugins, nextEpisodeFunc)
+                function()
+                
+            except Exception as e:
+                VSlog('upnext - could not load site: ' + sSiteName + ' error: ' + str(e))
+                return
     
             
         try:
@@ -112,6 +111,16 @@ class UpNext:
                     sHosterID = aParams['sHosterIdentifier']
                     if sHosterID != sHosterIdentifier:
                         continue
+                    
+                    if 'sSeason' in aParams:
+                        season = aParams['sSeason']
+                        if season != sSaison:
+                            continue           # La saison est connue mais ce n'est pas la bonne 
+                    
+                    if 'sEpisode' in aParams:
+                        episode = aParams['sEpisode']
+                        if episode!=sNextEpisode:
+                            continue           # L'épisode est connue mais ce n'est pas le bon
                     
                     break
 
