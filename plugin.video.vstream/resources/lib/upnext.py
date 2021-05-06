@@ -12,6 +12,10 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.util import QuotePlus
 
 
+# Utilisation de l'extension UpNext
+# Documentation : https://github.com/im85288/service.upnext/wiki/Integration
+
+
 class UpNext:
     
     
@@ -72,7 +76,7 @@ class UpNext:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMovieTitle', nextTitle)
         oOutputParameterHandler.addParameter('sTitle', nextTitle)
-        oOutputParameterHandler.addParameter('sCat', 6) # épisode
+        oOutputParameterHandler.addParameter('sCat', 8) # épisode
         oOutputParameterHandler.addParameter('sEpisode', sNextEpisode)
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sId', sSiteName)
