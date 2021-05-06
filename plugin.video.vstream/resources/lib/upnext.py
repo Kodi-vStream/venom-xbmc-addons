@@ -50,6 +50,7 @@ class UpNext:
         saisonUrl = oInputParameterHandler.getValue('saisonUrl')
         nextSaisonFunc = oInputParameterHandler.getValue('nextSaisonFunc')
         sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
+        sLang = oInputParameterHandler.getValue('sLang')
 
         if nextEpisodeUrl:
             sUrl = QuotePlus(nextEpisodeUrl)
@@ -78,6 +79,7 @@ class UpNext:
         oOutputParameterHandler.addParameter('sourceID', sSiteName)
         oOutputParameterHandler.addParameter('saisonUrl', saisonUrl)
         oOutputParameterHandler.addParameter('nextSaisonFunc', nextSaisonFunc)
+        oOutputParameterHandler.addParameter('sLang', sLang)
         
         try:
             sParams = oOutputParameterHandler.getParameterAsUri()
