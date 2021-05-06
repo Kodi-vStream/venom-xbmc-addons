@@ -386,7 +386,6 @@ def showEpisodes():
 
     sLang = ''
     bFind = ''
-    validEntry = ''
 
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
@@ -396,7 +395,6 @@ def showEpisodes():
                 bFind = True
 
             if bFind and aEntry[1]:
-                validEntry = True
                 sFirst_Url = aEntry[1]
                 sRel_Episode = aEntry[2]
                 sEpisode = aEntry[3]
@@ -408,13 +406,11 @@ def showEpisodes():
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
+                oOutputParameterHandler.addParameter('sLang', sLang)
                 oOutputParameterHandler.addParameter('sRel_Episode', sRel_Episode)
                 oOutputParameterHandler.addParameter('sFirst_Url', sFirst_Url)
 
                 oGui.addEpisode(SITE_IDENTIFIER, 'showSerieLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-    if not validEntry:
-        oGui.addText(SITE_IDENTIFIER, '# Aucune  vidéo trouvée #')
 
     oGui.setEndOfDirectory()
 
@@ -426,9 +422,20 @@ def showSerieLinks():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
-    sRel_Episode = oInputParameterHandler.getValue('sRel_Episode')
+    sLang = oInputParameterHandler.getValue('sLang')
     sFirst_Url = oInputParameterHandler.getValue('sFirst_Url')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sRel_Episode = oInputParameterHandler.getValue('sRel_Episode')
+    if not sRel_Episode:
+        numEpisode = oInputParameterHandler.getValue('sEpisode') # Gestion Up_Next
+        if numEpisode:
+            numEpisode = int(numEpisode)
+            if 'VO' in sLang:
+                numEpisode += 32 
+            if numEpisode == 2:
+                sRel_Episode = 'ABCDE'
+            else:
+                sRel_Episode = 'episode%d' % numEpisode
 
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
@@ -441,18 +448,13 @@ def showSerieLinks():
         # dans cas ou il n'y a qu'un seul lien il n'y a pas de reference  dans <div id="episodexx" class="fullsfeature">
         # le pattern devient alors normalement hs
         if sFirst_Url:
-            sUrl2 = sFirst_Url
-            sHost = '[COLOR coral]' + getHostName(sUrl2) + '[/COLOR]'
-
-            sDisplayTitle = sMovieTitle + ' ' + sHost
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('referer', sUrl)
-
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+            sHosterUrl = sFirst_Url
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+        
 
     if (aResult[0] == True):
         html = aResult[1][0]
@@ -461,28 +463,23 @@ def showSerieLinks():
         if (aResulturl[0] == True):
             oOutputParameterHandler = cOutputParameterHandler()
             for aEntry in aResulturl[1]:
-                sUrl2 = aEntry
+                sHosterUrl = aEntry
 
-                if isBlackHost(sUrl2):
+                if isBlackHost(sHosterUrl):
                     continue
 
-                if 'http' not in sUrl2:  # liens naze du site url
+                if 'http' not in sHosterUrl:  # liens naze du site url
                     continue
 
-                if 'hqq.tv' in sUrl2:
+                if 'hqq.tv' in sHosterUrl:
                     continue
                     # pass
 
-                sHost = '[COLOR coral]' + getHostName(sUrl2) + '[/COLOR]'
-                sDisplayTitle = sMovieTitle + ' ' + sHost
-
-                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                oOutputParameterHandler.addParameter('sDesc', sDesc)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oOutputParameterHandler.addParameter('referer', sUrl)
-
-                oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
@@ -492,7 +489,7 @@ def showMovieLinks():
     oInputParameterHandler = cInputParameterHandler()
 
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -521,77 +518,27 @@ def showMovieLinks():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
-            sUrl2 = aEntry
-            if isBlackHost(sUrl2):
+            sHosterUrl = aEntry
+            if isBlackHost(sHosterUrl):
                 continue
 
-            if 'http' not in sUrl2:  # liens nazes du site url
+            if 'http' not in sHosterUrl:  # liens nazes du site url
                 continue
-            if 'hqq.tv' in sUrl2:
+            if 'hqq.tv' in sHosterUrl:
                 continue
 
-            if sUrl2 not in valide_host:  # à cause de l'url par défaut
-                valide_host.append(sUrl2)
+            if sHosterUrl not in valide_host:  # à cause de l'url par défaut
+                valide_host.append(sHosterUrl)
             else:
                 continue
 
-            sHost = '[COLOR coral]' + getHostName(sUrl2) + '[/COLOR]'
-            sDisplayTitle = sTitle + ' ' + sHost
-
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('referer', sUrl)
-
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
-
-
-def showHosters():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumb = oInputParameterHandler.getValue('sThumb')
-
-    sHosterUrl = sUrl
-    oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if (oHoster != False):
-        oHoster.setDisplayName(sMovieTitle)
-        oHoster.setFileName(sMovieTitle)
-        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
-    oGui.setEndOfDirectory()
-
-
-def getHostName(url):
-    try:
-        # en general pour liens opsktp url_redirect mais on affiche l'host
-        bValid, sHost = isValidHost(url)
-        if bValid:
-            pass
-
-        elif 'opsktp' in url:
-            sHost = re.search('http.+?opsktp.+?\/([^\/]+)', url).group(1)
-        elif 'www' not in url:
-            sHost = re.search('http.*?\/\/([^.]*)', url).group(1)
-        else:
-            sHost = re.search('htt.+?\/\/(?:www).([^.]*)', url).group(1)
-    except:
-        sHost = url
-
-    return sHost.capitalize()
-
-
-def isValidHost(url):
-    validHost = ['mystream', 'uptobox', 'fembed', 'vidlox']
-    urlLower = url.lower()
-    for host in validHost:
-        if host.lower() in urlLower:
-            return True, host
-    return False, False
 
 
 def isBlackHost(url):
