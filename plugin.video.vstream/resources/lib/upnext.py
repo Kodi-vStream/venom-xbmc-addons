@@ -48,24 +48,15 @@ class UpNext:
         numEpisode = int(sEpisode)
         sNextEpisode = '%02d' % (numEpisode+1)
 
-        nextEpisodeUrl = oInputParameterHandler.getValue('nextEpisode')
         saisonUrl = oInputParameterHandler.getValue('saisonUrl')
         nextSaisonFunc = oInputParameterHandler.getValue('nextSaisonFunc')
         sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
         sLang = oInputParameterHandler.getValue('sLang')
 
-        if nextEpisodeUrl:
-            sUrl = QuotePlus(nextEpisodeUrl)
-            nextEpisodeUrl = None
-        else:
-            if not saisonUrl:
-                return 
-            if not nextSaisonFunc:
-                return
 
-            sUrl, nextEpisodeUrl = self.getEpisodeFromSaison(tvShowTitle, sSaison, sNextEpisode, oInputParameterHandler)
-            if not sUrl:
-                return 
+        sUrl = self.getEpisodeFromSaison(tvShowTitle, sSaison, sNextEpisode, oInputParameterHandler)
+        if not sUrl:
+            return 
         
 
         nextTitle = tvShowTitle.replace(' & ', ' and ')   # interdit dans un titre
@@ -82,6 +73,7 @@ class UpNext:
         oOutputParameterHandler.addParameter('saisonUrl', saisonUrl)
         oOutputParameterHandler.addParameter('nextSaisonFunc', nextSaisonFunc)
         oOutputParameterHandler.addParameter('sLang', sLang)
+        oOutputParameterHandler.addParameter('sHosterIdentifier', sHosterIdentifier)
         
         if nextEpisodeFunc:
             try:
@@ -95,6 +87,22 @@ class UpNext:
                 VSlog('upnext - could not load site: ' + sSiteName + ' error: ' + str(e))
                 return
     
+        nextLinkFunc = oInputParameterHandler.getValue('nextLinkFunc')
+        if nextLinkFunc:
+            links = cGui().getEpisodeListing()
+            if links[0]:
+                sUrl = links[0][0]
+                try:
+                    siteUrl, sParams = sUrl.split('&', 1)
+                    sys.argv[2] = '?site=%s&%s' % (sSiteName, sParams)
+                    plugins = __import__('resources.sites.%s' % sSiteName, fromlist=[sSiteName])
+                    function = getattr(plugins, nextLinkFunc)
+                    function()
+                    
+                except Exception as e:
+                    VSlog('upnext - could not load site: ' + sSiteName + ' error: ' + str(e))
+                    return
+    
             
         try:
             sMediaUrl = ''
@@ -102,8 +110,10 @@ class UpNext:
                 siteUrl, params = sUrl.split('&', 1)
                 aParams = dict(param.split('=') for param in params.split('&'))
 
-                if 'sMediaUrl' in aParams:
-                    sMediaUrl = aParams['sMediaUrl']
+                if not 'sMediaUrl' in aParams:
+                    continue
+
+                sMediaUrl = aParams['sMediaUrl']
 
                 if sHosterIdentifier:
                     if 'sHosterIdentifier' not in aParams:
@@ -112,17 +122,17 @@ class UpNext:
                     if sHosterID != sHosterIdentifier:
                         continue
                     
-                    if 'sSeason' in aParams:
-                        season = aParams['sSeason']
-                        if season != sSaison:
-                            continue           # La saison est connue mais ce n'est pas la bonne 
+                if 'sSeason' in aParams:
+                    season = aParams['sSeason']
+                    if season != sSaison:
+                        continue           # La saison est connue mais ce n'est pas la bonne 
+                
+                if 'sEpisode' in aParams:
+                    episode = aParams['sEpisode']
+                    if episode != sNextEpisode:
+                        continue           # L'épisode est connue mais ce n'est pas le bon
                     
-                    if 'sEpisode' in aParams:
-                        episode = aParams['sEpisode']
-                        if episode!=sNextEpisode:
-                            continue           # L'épisode est connue mais ce n'est pas le bon
-                    
-                    break
+                break
 
             if not sMediaUrl:
                 return
@@ -130,8 +140,7 @@ class UpNext:
             oOutputParameterHandler.addParameter('sFav', 'play')
             oOutputParameterHandler.addParameter('sMediaUrl', str(sMediaUrl))
             oOutputParameterHandler.addParameter('nextEpisodeFunc', nextEpisodeFunc)
-            oOutputParameterHandler.addParameter('nextEpisode', nextEpisodeUrl)
-            oOutputParameterHandler.addParameter('sHosterIdentifier', sHosterIdentifier)
+            oOutputParameterHandler.addParameter('nextLinkFunc', nextLinkFunc)
             
             
             sParams = oOutputParameterHandler.getParameterAsUri()
@@ -204,7 +213,7 @@ class UpNext:
             
         except Exception as e:
             VSlog('could not load site: ' + sSiteName + ' error: ' + str(e))
-            return None, None
+            return None
 
         for sUrl, listItem, _ in cGui().getEpisodeListing():
             siteUrl, params = sUrl.split('&', 1)
@@ -217,10 +226,9 @@ class UpNext:
                 episode = aParams['sEpisode']
                 if episode==sNextEpisode:
                     siteUrl = aParams['siteUrl']
-                    nextEpisodeURL = aParams['nextEpisode'] if 'nextEpisode' in aParams else None
-                    return siteUrl, nextEpisodeURL
+                    return siteUrl
 
-        return None, None
+        return None
 
     # Envoi des info à l'addon UpNext
     def notifyUpnext(self, data):
