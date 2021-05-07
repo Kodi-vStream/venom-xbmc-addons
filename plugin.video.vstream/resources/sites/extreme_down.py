@@ -520,7 +520,7 @@ def showMoviesLinks():
     oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
     oOutputParameterHandler.addParameter('sThumb', sThumb)
     oOutputParameterHandler.addParameter('sDesc', sDesc)
-    oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+    oGui.addLink(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     # on regarde si dispo dans d'autres qualités
     sPattern = '<a class="btn-other" href="([^<]+)">([^<]+)<'
@@ -538,7 +538,7 @@ def showMoviesLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showLinks', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -593,7 +593,7 @@ def showSeriesLinks():
     oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
     oOutputParameterHandler.addParameter('sThumb', sThumb)
     oOutputParameterHandler.addParameter('sDesc', sDesc)
-    oGui.addSeason(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+    oGui.addSeason(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     sHtmlContent1 = CutQual(sHtmlContent)
     sPattern1 = '<a class="btn-other" href="([^"]+)">([^<]+)</a>'
@@ -611,7 +611,7 @@ def showSeriesLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addSeason(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     sHtmlContent2 = CutSais(sHtmlContent)
     sPattern2 = '<a class="btn-other" href="([^"]+)">([^<]+)<'
@@ -636,7 +636,7 @@ def showSeriesLinks():
     oGui.setEndOfDirectory()
 
 
-def showHosters():
+def showLinks():
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
@@ -644,6 +644,7 @@ def showHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sDesc = oInputParameterHandler.getValue('sDesc')
+    sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')    # Recherche un host donné
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -690,15 +691,19 @@ def showHosters():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
                 ep = aEntry[0]
             else:
+                sHoster = aEntry[2]
+                if sHosterIdentifier and sHoster and sHosterIdentifier.lower() != sHoster.lower():
+                    continue    # filtrage hoster unique
+
                 sUrl2 = aEntry[1]
 
                 if 'saison' in sUrl:
-                    sTitle = sMovieTitle + ep
+                    sTitle = sMovieTitle + ' ' + ep
                 else:
                     sTitle = sMovieTitle
 
                 if 'saison' in sUrl:
-                    sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, aEntry[2])
+                    sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, sHoster)
                 else:
                     sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, str(aEntry[2]))
 
@@ -706,12 +711,15 @@ def showHosters():
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-                oGui.addLink(SITE_IDENTIFIER, 'RecapchaBypass', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+                if 'saison' in sUrl:
+                    oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                else:
+                    oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def RecapchaBypass():
+def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
