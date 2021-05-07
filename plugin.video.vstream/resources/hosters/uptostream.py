@@ -94,6 +94,10 @@ class cHoster(iHoster):
         s.headers.update({"Cookie": cookies})
 
         r = s.get('https://uptobox.com/api/streaming?file_code=' + self.__sUrl.split('/')[3]).json()
+        
+        if r["statusCode"] != 0: # Erreur
+            dialog().VSinfo(r["data"])
+            return False, False
 
         r1 = s.get(r["data"]["user_url"]).text
         tok = re.search('token.+?;.+?;(.+?)&', r1).group(1)
@@ -107,7 +111,6 @@ class cHoster(iHoster):
 
         oParser = cParser()
         aResult = oParser.parse(r["streamLinks"], sPattern)
-        from resources.lib.comaddon import dialog
 
         url = []
         qua = []
