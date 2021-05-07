@@ -447,6 +447,8 @@ class cHosterGui:
             return False
         if ('easyload' in sHostName):
             return self.getHoster('easyload')
+        if ('ninjastream' in sHostName):
+            return self.getHoster('ninjastream')
 
         # Si aucun hebergeur connu on teste les liens directs
         if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8.webm.mkv'):
