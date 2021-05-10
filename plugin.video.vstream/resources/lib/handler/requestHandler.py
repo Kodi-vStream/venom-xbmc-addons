@@ -190,10 +190,11 @@ class cRequestHandler:
                             pass
             else:
                 sContent = oResponse.json()
-        except ConnectionError:
+                
+        except ConnectionError as e:
             # Retry with DNS only if addon is present
             import xbmcvfs
-            if xbmcvfs.exists('special://home/addons/script.module.dnspython/'):
+            if xbmcvfs.exists('special://home/addons/script.module.dnspython/') and self.__enableDNS == False:
                 self.__enableDNS = True
                 return self.__callRequest()
             else:
