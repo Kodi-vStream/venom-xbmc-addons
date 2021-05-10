@@ -820,26 +820,23 @@ def showNetwork():
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
 
     pbContent = PasteContent()
-    movies = []
+    listNetwork = {}
     listeIDs = getPasteList(sUrl, pasteID)
     for pasteBin in listeIDs:
-        moviesBin = pbContent.getLines(pasteBin)
-        movies += moviesBin
-
-    listNetwork = {}
-    for movie in movies:
-        if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
-            continue
-
-        networks = movie[pbContent.NETWORK].strip()
-        if networks != '':
-            networks = eval(networks)
-            if networks:
-                for network in networks:
-                    if ':' in network:
-                        networkId, networkName = network.split(':')
-                        if networkName not in listNetwork:
-                            listNetwork[networkName] = networkId
+        movies = pbContent.getLines(pasteBin)
+        for movie in movies:
+            if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
+                continue
+    
+            networks = movie[pbContent.NETWORK].strip()
+            if networks != '':
+                networks = eval(networks)
+                if networks:
+                    for network in networks:
+                        if ':' in network:
+                            networkId, networkName = network.split(':')
+                            if networkName not in listNetwork:
+                                listNetwork[networkName] = networkId
 
     maxProgress = len(listNetwork)
     progress_ = progress().VScreate(SITE_NAME)
@@ -879,26 +876,23 @@ def showRealisateur():
     numPage = int(numPage)
 
     pbContent = PasteContent()
-    movies = []
+    listReal = {}
     listeIDs = getPasteList(sUrl, pasteID)
     for pasteBin in listeIDs:
-        moviesBin = pbContent.getLines(pasteBin)
-        movies += moviesBin
-
-    listReal = {}
-    for movie in movies:
-        if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
-            continue
-
-        reals = movie[pbContent.DIRECTOR].strip()
-        if reals != '':
-            reals = eval(reals)
-            if reals:
-                for real in reals:
-                    if ':' in real:
-                        realId, realName = real.split(':')
-                        if realName not in listReal:
-                            listReal[realName] = realId
+        movies = pbContent.getLines(pasteBin)
+        for movie in movies:
+            if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
+                continue
+    
+            reals = movie[pbContent.DIRECTOR].strip()
+            if reals != '':
+                reals = eval(reals)
+                if reals:
+                    for real in reals:
+                        if ':' in real:
+                            realId, realName = real.split(':')
+                            if realName not in listReal:
+                                listReal[realName] = realId
 
     nbItem = 0
     index = 0
@@ -953,26 +947,23 @@ def showCast():
         numPage = aParams['numPage']
 
     pbContent = PasteContent()
-    movies = []
+    listActeur = {}
     listeIDs = getPasteList(sUrl, pasteID)
     for pasteBin in listeIDs:
-        moviesBin = pbContent.getLines(pasteBin)
-        movies += moviesBin
-
-    listActeur = {}
-    for movie in movies:
-        if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
-            continue
-
-        acteurs = movie[pbContent.CAST].strip()
-        if acteurs != '':
-            acteurs = eval(acteurs)
-            if acteurs:
-                for acteur in acteurs:
-                    if ':' in acteur:
-                        acteurId, acteurName = acteur.split(':')
-                        if acteurName not in listActeur:
-                            listActeur[acteurName] = acteurId
+        movies = pbContent.getLines(pasteBin)
+        for movie in movies:
+            if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
+                continue
+    
+            acteurs = movie[pbContent.CAST].strip()
+            if acteurs != '':
+                acteurs = eval(acteurs)
+                if acteurs:
+                    for acteur in acteurs:
+                        if ':' in acteur:
+                            acteurId, acteurName = acteur.split(':')
+                            if acteurName not in listActeur:
+                                listActeur[acteurName] = acteurId
 
     # Gestion de la pagination
     if not numItem:
@@ -1036,28 +1027,31 @@ def showGroupes():
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
 
     pbContent = PasteContent()
-    movies = []
-    listeIDs = getPasteList(sUrl, pasteID)
-    for pasteBin in listeIDs:
-        moviesBin = pbContent.getLines(pasteBin)
-        movies += moviesBin
-
     sousGroupe = set()
     groupesPerso = set()
-    for movie in movies:
-        if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
-            continue
-        groupe = movie[pbContent.GROUPES].strip().replace("''", '')
-        if groupe:
-            groupe = eval(groupe)
-            if groupe:
-                for gr in groupe:
-                    if ':' in gr:
-                        grID = gr.split(':')[0]
-                        if grID not in sousGroupe:
-                            sousGroupe.add(grID)
-                    else:
-                        groupesPerso.add(gr)
+    listeIDs = getPasteList(sUrl, pasteID)
+    for pasteBin in listeIDs:
+        movies = pbContent.getLines(pasteBin)
+
+        try:
+            for movie in movies:
+                if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
+                    continue
+                groupe = movie[pbContent.GROUPES].strip().replace("''", '')
+                if groupe:
+                    groupe = eval(groupe)
+                    if groupe:
+                        for gr in groupe:
+                            if ':' in gr:
+                                grID = gr.split(':')[0]
+                                if grID not in sousGroupe:
+                                    sousGroupe.add(grID)
+                            else:
+                                groupesPerso.add(gr)
+        except Exception as e:
+            VSlog('Error in paste : ' + pasteBin)
+            VSlog('Error in media : ' + ';'.join(movie))
+            VSlog('Error : ' + str(e))
 
     groupes = groupesPerso.union(sousGroupe)
     oOutputParameterHandler = cOutputParameterHandler()
@@ -1084,22 +1078,20 @@ def showGroupeDetails():
     sGroupe = aParams['sGroupe'].replace('+', ' ') + ':' if 'sGroupe' in aParams else None
 
     pbContent = PasteContent()
-    movies = []
-    listeIDs = getPasteList(sUrl, pasteID)
-    for pasteBin in listeIDs:
-        moviesBin = pbContent.getLines(pasteBin)
-        movies += moviesBin
-
     groupes = set()
+    
     if sGroupe:
-        for movie in movies:
-            groupe = movie[pbContent.GROUPES].strip().replace("''", '')
-            if groupe:
-                groupe = eval(groupe)
+        listeIDs = getPasteList(sUrl, pasteID)
+        for pasteBin in listeIDs:
+            movies = pbContent.getLines(pasteBin)
+            for movie in movies:
+                groupe = movie[pbContent.GROUPES].strip().replace("''", '')
                 if groupe:
-                    for gr in groupe:
-                        if gr.startswith(sGroupe):
-                            groupes.add(gr)
+                    groupe = eval(groupe)
+                    if groupe:
+                        for gr in groupe:
+                            if gr.startswith(sGroupe):
+                                groupes.add(gr)
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sGroupe in sorted(groupes):
@@ -1126,28 +1118,26 @@ def showSaga():
         numPage = aParams['numPage']
 
     pbContent = PasteContent()
-    movies = []
-    listeIDs = getPasteList(sUrl, pasteID)
-    for pasteBin in listeIDs:
-        moviesBin = pbContent.getLines(pasteBin)
-        movies += moviesBin
-
     sagas = {}
-    for movie in movies:
-        if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
-            continue
+    listeIDs = getPasteList(sUrl, pasteID)
 
-        saga = movie[pbContent.SAISON].strip()
-        if saga != '':
-            sTmdbId = name = saga
-            idName = saga.split(':', 1)
-            if len(idName) > 1:
-                sTmdbId = idName[0]
-                name = idName[1]
-            if sTmdbId.isdigit():
-                sagas[name] = sTmdbId
-            else:
-                sagas[saga] = saga
+    for pasteBin in listeIDs:
+        movies = pbContent.getLines(pasteBin)
+        for movie in movies:
+            if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
+                continue
+    
+            saga = movie[pbContent.SAISON].strip()
+            if saga != '':
+                sTmdbId = name = saga
+                idName = saga.split(':', 1)
+                if len(idName) > 1:
+                    sTmdbId = idName[0]
+                    name = idName[1]
+                if sTmdbId.isdigit():
+                    sagas[name] = sTmdbId
+                else:
+                    sagas[saga] = saga
 
     # Gestion de la pagination
     if not numItem:
@@ -1223,21 +1213,18 @@ def showYears():
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
 
     pbContent = PasteContent()
-    movies = []
+    years = set()
     listeIDs = getPasteList(sUrl, pasteID)
     for pasteBin in listeIDs:
-        moviesBin = pbContent.getLines(pasteBin)
-        movies += moviesBin
-
-    years = set()
-    for line in movies:
-        if pbContent.CAT >= 0 and sMedia not in line[pbContent.CAT]:
-            continue
-
-        year = line[pbContent.YEAR].strip()
-        if not year:
-            year = UNCLASSIFIED
-        years.add(year)
+        movies = pbContent.getLines(pasteBin)
+        for line in movies:
+            if pbContent.CAT >= 0 and sMedia not in line[pbContent.CAT]:
+                continue
+    
+            year = line[pbContent.YEAR].strip()
+            if not year:
+                year = UNCLASSIFIED
+            years.add(year)
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sYear in sorted(years, reverse=True):
@@ -1268,29 +1255,26 @@ def showResolution():
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
 
     pbContent = PasteContent()
-    movies = []
+    resolutions = set()
     listeIDs = getPasteList(sUrl, pasteID)
     for pasteBin in listeIDs:
-        moviesBin = pbContent.getLines(pasteBin)
-        movies += moviesBin
-
-    resolutions = set()
-    for line in movies:
-        if pbContent.CAT >= 0 and sMedia not in line[pbContent.CAT]:
-            continue
-
-        res = line[pbContent.RES].strip()
-        if '[' in res:
-            if res != '[]':
-                res = eval(res)
-                resolutions = resolutions.union(res)
-                if '' in res or len(res) == 0:
-                    resolutions.add(UNCLASSIFIED)
-        else:
-            resolutions.add(res)
-
-        if not res or res == '[]':
-            resolutions.add(UNCLASSIFIED)
+        movies = pbContent.getLines(pasteBin)
+        for line in movies:
+            if pbContent.CAT >= 0 and sMedia not in line[pbContent.CAT]:
+                continue
+    
+            res = line[pbContent.RES].strip()
+            if '[' in res:
+                if res != '[]':
+                    res = eval(res)
+                    resolutions = resolutions.union(res)
+                    if '' in res or len(res) == 0:
+                        resolutions.add(UNCLASSIFIED)
+            else:
+                resolutions.add(res)
+    
+            if not res or res == '[]':
+                resolutions.add(UNCLASSIFIED)
 
     resolutions.discard('')
 
