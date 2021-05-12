@@ -74,44 +74,45 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  'var playerOptsB64 = (.+?) \+ (.+?);'
+        sPattern =  'var playerOptsB64 = (.+?);'
+        aResult = oParser.parse(sHtmlContent, sPattern)[1][0]
+        data = ""
+
+        for aEntry in aResult.split(' + '):
+            data += re.search('var ' + aEntry + '(?:.+?|)=(.+?)";',sHtmlContent).group(1)
+        decode = base64.b64decode(data)
+        url2 = json.loads(decode)['url']
+
+        oRequest = cRequestHandler(url2)
+        oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+        oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+        sHtmlContent = oRequest.request()
+
+        sPattern = "NAME=.([^\"']+).+?https([^#]+)"
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            data = re.search('var '+ str(aResult[1][0][0]) +' = "(.+?)"',sHtmlContent).group(1)
-            data = data + re.search('var '+ str(aResult[1][0][1]) +' = "(.+?)"',sHtmlContent).group(1)
-            decode = base64.b64decode(data)
-            url2 = json.loads(decode)['url']
+            url = []
+            qua = []
+            for aEntry in aResult[1]:
+                urls = 'https' + aEntry[1].strip()
+                qua.append(aEntry[0])
+                url.append(urls.strip())
 
-            oRequest = cRequestHandler(url2)
+            sUrlselect = dialog().VSselectqual(qua, url)
+
+            sUrlselect = sUrlselect.strip()
+            oRequest = cRequestHandler(sUrlselect)
             oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
             oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
             sHtmlContent = oRequest.request()
 
-            sPattern = "NAME=.([^\"']+).+?https([^#]+)"
-            aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
-                url = []
-                qua = []
-                for aEntry in aResult[1]:
-                    urls = 'https' + aEntry[1].strip()
-                    qua.append(aEntry[0])
-                    url.append(urls.strip())
+            if '#EXT' not in sHtmlContent:
+                return False, False
 
-                sUrlselect = dialog().VSselectqual(qua, url)
+            with open(video_pstream_path, "w") as subfile:
+                subfile.write(sHtmlContent)
 
-                sUrlselect = sUrlselect.strip()
-                oRequest = cRequestHandler(sUrlselect)
-                oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-                oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-                sHtmlContent = oRequest.request()
-
-                if '#EXT' not in sHtmlContent:
-                    return False, False
-
-                with open(video_pstream_path, "w") as subfile:
-                    subfile.write(sHtmlContent)
-
-                api_call = video_pstream_path
+            api_call = video_pstream_path
 
         if (api_call):
             return True, api_call
