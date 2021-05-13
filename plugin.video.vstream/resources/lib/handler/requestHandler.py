@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-from requests import Session, Request, RequestException, ConnectionError
+from requests import post, Session, Request, RequestException, ConnectionError
 from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix
+from json import loads, dumps
+from resources.lib.util import urlEncode
 
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
@@ -160,7 +162,7 @@ class cRequestHandler:
 
         try:
             _request = Request(method, self.__sUrl, headers=self.__aHeaderEntries)
-            if method in ['POST', 'PATCH', 'PUT']:
+            if method in ['POST']:
                 _request.data = sParameters
 
             if self.__Cookie:
@@ -220,15 +222,42 @@ class cRequestHandler:
 
 
         if oResponse.status_code == 503:
+            #Default
+            CLOUDPROXY_ENDPOINT = 'http://localhost:8191/v1'
+            try:
+                json_session = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, data=dumps({
+                    'cmd': 'sessions.list'
+                }))
+            except:
+                dialog().VSerror("%s" % ("Page protege par Cloudflare, veuillez executer  FlareSolverr."))
 
-            # Protected by cloudFlare ?
-            from resources.lib import cloudflare
-            if cloudflare.CheckIfActive(sContent):
-                cookies = self.GetCookies()
-                VSlog('Page protegee par cloudflare')
-                CF = cloudflare.CloudflareBypass()
-                sContent = CF.GetHtml(self.__sUrl, sContent, cookies, sParameters, oResponse.headers)
-                self.__sRealUrl, self.__sResponseHeader = CF.GetReponseInfo()
+            #On regarde si une session existe deja.
+            if json_session.json()['sessions']:
+                cloudproxy_session = json_session.json()['sessions'][0]
+            else:
+                json_session = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, data=dumps({
+                    'cmd': 'sessions.create'
+                }))
+                response_session = loads(json_session.text)
+                cloudproxy_session = response_session['session']
+
+            self.__aHeaderEntries['Content-Type'] = 'application/x-www-form-urlencoded' if (method == 'post') else 'application/json'
+
+            #Ont fait une requete.
+            json_response = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, data=dumps({
+                'cmd': 'request.%s' % method.lower(),
+                'url': self.__sUrl,
+                'session': cloudproxy_session,
+                'postData': '%s' % urlEncode(sParameters) if (method.lower() == 'post') else ''
+            }))
+
+            http_code = json_response.status_code
+            response = loads(json_response.text)
+            if 'solution' in response:
+                if self.__sUrl != response['solution']['url']:
+                    self.__sRealUrl = response['solution']['url']
+
+                sContent = response['solution']['response']
 
         if not sContent:
             #Ignorer ces deux codes erreurs.
