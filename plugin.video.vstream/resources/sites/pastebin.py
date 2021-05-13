@@ -779,24 +779,29 @@ def showGenres():
         movies = pbContent.getLines(pasteBin)
 
         for movie in movies:
-            if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
-                continue
-
-            genre = movie[pbContent.GENRES].strip()
-            if not genre or genre == '':
-                genre = "['" + UNCLASSIFIED_GENRE + "']"
-            elif "''" in genre:
-                genre = genre.replace("''", "'" + UNCLASSIFIED_GENRE + "'")
-            genre = eval(genre)
-            if isinstance(genre, int):
-                genre = [genre]
-            if genre:
-                for g in genre:
-                    sDisplayGenre = g
-                    if str(g).isdigit():
-                        sDisplayGenre = tmdb.getGenreFromID(g)
-                    if sDisplayGenre not in genres:
-                        genres[sDisplayGenre] = g
+            try:
+                if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
+                    continue
+    
+                genre = movie[pbContent.GENRES].strip()
+                if not genre or genre == '':
+                    genre = "['" + UNCLASSIFIED_GENRE + "']"
+                elif "''" in genre:
+                    genre = genre.replace("''", "'" + UNCLASSIFIED_GENRE + "'")
+                genre = eval(genre)
+                if isinstance(genre, int):
+                    genre = [genre]
+                if genre:
+                    for g in genre:
+                        sDisplayGenre = g
+                        if str(g).isdigit():
+                            sDisplayGenre = tmdb.getGenreFromID(g)
+                        if sDisplayGenre not in genres:
+                            genres[sDisplayGenre] = g
+            except Exception as e:
+                VSlog('Error in paste : ' + pasteBin)
+                VSlog('Error in media : ' + ';'.join(movie))
+                VSlog('Error : ' + str(e))
 
     genreKeys = genres.keys()
     oOutputParameterHandler = cOutputParameterHandler()
@@ -1033,8 +1038,8 @@ def showGroupes():
     for pasteBin in listeIDs:
         movies = pbContent.getLines(pasteBin)
 
-        try:
-            for movie in movies:
+        for movie in movies:
+            try:
                 if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
                     continue
                 groupe = movie[pbContent.GROUPES].strip().replace("''", '')
@@ -1048,10 +1053,10 @@ def showGroupes():
                                     sousGroupe.add(grID)
                             else:
                                 groupesPerso.add(gr)
-        except Exception as e:
-            VSlog('Error in paste : ' + pasteBin)
-            VSlog('Error in media : ' + ';'.join(movie))
-            VSlog('Error : ' + str(e))
+            except Exception as e:
+                VSlog('Error in paste : ' + pasteBin)
+                VSlog('Error in media : ' + ';'.join(movie))
+                VSlog('Error : ' + str(e))
 
     groupes = groupesPerso.union(sousGroupe)
     oOutputParameterHandler = cOutputParameterHandler()
