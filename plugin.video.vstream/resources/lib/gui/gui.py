@@ -87,7 +87,6 @@ class cGui:
     def addTV(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
         # Pour gérer l'enchainement des épisodes
         saisonUrl = oOutputParameterHandler.getValue('siteUrl')
-        oOutputParameterHandler.addParameter('sourceID', sId)
         oOutputParameterHandler.addParameter('saisonUrl', QuotePlus(saisonUrl))
         oOutputParameterHandler.addParameter('nextSaisonFunc', sFunction)
 
@@ -114,9 +113,6 @@ class cGui:
         oInputParameterHandler = cInputParameterHandler()
         oOutputParameterHandler.addParameter('saisonUrl', oInputParameterHandler.getValue('saisonUrl'))
         oOutputParameterHandler.addParameter('nextSaisonFunc', oInputParameterHandler.getValue('nextSaisonFunc'))
-        oOutputParameterHandler.addParameter('nextEpisodeFunc', oInputParameterHandler.getValue('nextEpisodeFunc'))
-        oOutputParameterHandler.addParameter('nextLinkFunc', sFunction)
-        oOutputParameterHandler.addParameter('sourceID', sId)
 
         sIcon = sThumbnail
         self.addNewDir('link', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, None)
@@ -124,7 +120,6 @@ class cGui:
     def addSeason(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
         # Pour gérer l'enchainement des épisodes
         saisonUrl = oOutputParameterHandler.getValue('siteUrl')
-        oOutputParameterHandler.addParameter('sourceID', sId)
         oOutputParameterHandler.addParameter('saisonUrl', QuotePlus(saisonUrl))
         oOutputParameterHandler.addParameter('nextSaisonFunc', sFunction)
 
@@ -137,9 +132,6 @@ class cGui:
         oInputParameterHandler = cInputParameterHandler()
         oOutputParameterHandler.addParameter('saisonUrl', oInputParameterHandler.getValue('saisonUrl'))
         oOutputParameterHandler.addParameter('nextSaisonFunc', oInputParameterHandler.getValue('nextSaisonFunc'))
-        oOutputParameterHandler.addParameter('nextEpisodeFunc', sFunction)
-        oOutputParameterHandler.addParameter('sourceID', sId)
-        siteUrl = oOutputParameterHandler.getValue('siteUrl')
 
         self.addNewDir('episodes', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 8)
 

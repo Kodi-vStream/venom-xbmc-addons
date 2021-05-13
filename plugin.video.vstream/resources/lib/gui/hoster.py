@@ -22,17 +22,14 @@ class cHosterGui:
 
         # Gestion NextUp
         siteUrl = oInputParameterHandler.getValue('siteUrl')
-        sourceID = oInputParameterHandler.getValue('sourceID')
+        site = oInputParameterHandler.getValue('site')
         saisonUrl = oInputParameterHandler.getValue('saisonUrl')
         nextSaisonFunc = oInputParameterHandler.getValue('nextSaisonFunc')
-        nextEpisodeFunc = oInputParameterHandler.getValue('nextEpisodeFunc')
-        nextLinkFunc = oInputParameterHandler.getValue('nextLinkFunc')
-        nextEpisode = oInputParameterHandler.getValue('nextEpisode')
         sLang = oInputParameterHandler.getValue('sLang')
+        sRes = oInputParameterHandler.getValue('sRes')
 
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(self.SITE_NAME)
-        # oGuiElement.setFunction('showHosterMenu')
         oGuiElement.setFunction('play')
         oGuiElement.setTitle(oHoster.getDisplayName())
         # oGuiElement.setThumbnail(sThumbnail)
@@ -45,7 +42,6 @@ class cHosterGui:
         if sThumbnail:
             oGuiElement.setThumbnail(sThumbnail)
 
-        # oGuiElement.setMeta(1)
         oGuiElement.setIcon('host.png')
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -56,16 +52,14 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('sTitleWatched', oGuiElement.getTitleWatched())
         oOutputParameterHandler.addParameter('sTitle', oHoster.getDisplayName())
         oOutputParameterHandler.addParameter('sLang', sLang)
+        oOutputParameterHandler.addParameter('sRes', sRes)
         oOutputParameterHandler.addParameter('sId', 'cHosterGui')
         oOutputParameterHandler.addParameter('siteUrl', siteUrl)
-        oOutputParameterHandler.addParameter('sourceID', sourceID)
-        oOutputParameterHandler.addParameter('nextEpisode', nextEpisode)
+        
+        # gestion NextUp
+        oOutputParameterHandler.addParameter('sourceName', site)    # source d'origine
         oOutputParameterHandler.addParameter('nextSaisonFunc', nextSaisonFunc)
-        oOutputParameterHandler.addParameter('nextEpisodeFunc', nextEpisodeFunc)
-        oOutputParameterHandler.addParameter('nextLinkFunc', nextLinkFunc)
         oOutputParameterHandler.addParameter('saisonUrl', saisonUrl)
-        # oOutputParameterHandler.addParameter('sFav', 'play')
-        # oOutputParameterHandler.addParameter('sCat', '4')
 
         # nouveaux pour la lecture.
         if oInputParameterHandler.exist('sCat'):
