@@ -41,6 +41,7 @@ class cHoster(iHoster):
         self.__sUrl = str(sUrl)
         self.__sUrl = self.__sUrl.replace('iframe/', '')
         self.__sUrl = self.__sUrl.replace('http:', 'https:')
+        self.__sUrl = self.__sUrl.split('?aff_id')[0]
 
     def checkSubtitle(self, sHtmlContent):
         oParser = cParser()
