@@ -287,7 +287,6 @@ def showLinks():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
-    sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')    # Recherche un host donné
 
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
@@ -314,9 +313,6 @@ def showLinks():
             pdata = 'action=doo_player_ajax&post=' + dpost + '&nume=' + dnum + '&type=' + dtype
 
             sHoster = aEntry[2].capitalize()
-            if sHosterIdentifier and sHosterIdentifier.capitalize() != sHoster:
-                continue
-
             # trie des hosters
             # oHoster = cHosterGui().checkHoster(sHoster)
             # if not oHoster:

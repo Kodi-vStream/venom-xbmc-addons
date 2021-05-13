@@ -644,7 +644,6 @@ def showLinks():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sDesc = oInputParameterHandler.getValue('sDesc')
-    sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')    # Recherche un host donné
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -691,10 +690,6 @@ def showLinks():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
                 ep = aEntry[0]
             else:
-                sHoster = aEntry[2]
-                if sHosterIdentifier and sHoster and sHosterIdentifier.lower() != sHoster.lower():
-                    continue    # filtrage hoster unique
-
                 sUrl2 = aEntry[1]
 
                 if 'saison' in sUrl:
@@ -703,7 +698,7 @@ def showLinks():
                     sTitle = sMovieTitle
 
                 if 'saison' in sUrl:
-                    sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, sHoster)
+                    sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, aEntry[2])
                 else:
                     sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, str(aEntry[2]))
 
