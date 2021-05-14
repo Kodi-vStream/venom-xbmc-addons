@@ -335,8 +335,6 @@ def showLinks():
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
-    sSearchLang = oInputParameterHandler.getValue('sLang')
-    sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')    # Recherche un host donné
 
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
@@ -358,14 +356,9 @@ def showLinks():
                 sLang = aEntry[0].upper()
 
             if aEntry[1]:
-                if sSearchLang and sSearchLang.upper() != sLang:
-                    continue    # rechercher une langue en particulier
-                
                 dataUrl = aEntry[1]
                 dataCode = aEntry[2]
                 sHost = aEntry[3].capitalize()
-                if sHosterIdentifier and sHosterIdentifier.capitalize() != sHost:
-                    continue    # filtrage hoster unique
                 if isBlackHost(sHost):
                     continue
 
@@ -375,6 +368,7 @@ def showLinks():
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('sHost', sHost)
                 oOutputParameterHandler.addParameter('sLang', sLang)
                 oOutputParameterHandler.addParameter('referer', sUrl)
                 oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
@@ -393,8 +387,6 @@ def showLinks():
                 dataUrl = aEntry[1]
                 dataCode = aEntry[2]
                 sHost = aEntry[3].capitalize()
-                if sHosterIdentifier and sHosterIdentifier.capitalize() != sHost:
-                    continue    # filtrage hoster unique
 
                 sUrl2 = URL_MAIN + 'Players.php?PPl=' + dataUrl + 'CData=' + dataCode
 
@@ -404,6 +396,7 @@ def showLinks():
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('sHost', sHost)
                 oOutputParameterHandler.addParameter('sLang', sLang)
                 oOutputParameterHandler.addParameter('referer', sUrl)
                 oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
