@@ -243,7 +243,7 @@ def showMovies(sSearch=''):
             sDesc = ''
             sUrl2 = aEntry[0]
             sThumb = re.sub('/w\d+/', '/w342/', aEntry[1])
-            sTitle = aEntry[2]
+            sTitle = aEntry[2].split(' en streaming')[0].split('streaming | ')[1]
             sYear = aEntry[3]
             sType = aEntry[4].lower()
 
