@@ -298,10 +298,12 @@ def showSeries():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        sLang = ''
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:  # Affichage de la langue
-                oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + aEntry[0] + '[/COLOR]')
+                sLang = aEntry[0]
+                oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + sLang + '[/COLOR]')
             else:
                 # on vire le double affichage de la saison
                 sMovieTitle = re.sub('- Saison \d+', '', sMovieTitle)
@@ -312,6 +314,7 @@ def showSeries():
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sData', sData)
+                oOutputParameterHandler.addParameter('sLang', sLang)
                 oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -418,10 +421,6 @@ def showSeriesHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sData = oInputParameterHandler.getValue('sData')
-    if not sData:
-        sEpisode = oInputParameterHandler.getValue('sEpisode') # Gestion Up_Next
-        if sEpisode:
-            sData = 'player%d' % int(sEpisode)
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
