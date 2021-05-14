@@ -51,7 +51,7 @@ class UpNext:
             if not sEpisode:
                 return  # impossible de déterminer l'épisode courant
         
-        sMovieTitle = tvShowTitle if 'saison' in tvShowTitle else tvShowTitle + ' S' + sSaison
+        sMovieTitle = tvShowTitle if 'Saison' in tvShowTitle else tvShowTitle + ' S' + sSaison
         numEpisode = int(sEpisode)
         sNextEpisode = '%02d' % (numEpisode+1)
         
@@ -68,6 +68,7 @@ class UpNext:
         
         sFileName = tvShowTitle.replace(' & ', ' and ')   # interdit dans un titre
         sFileName += ' - ' + 'S%sE%s' %(sSaison, sNextEpisode)
+        
         try:
             if not sMediaUrl:
                 return
@@ -110,9 +111,9 @@ class UpNext:
                         'thumb': sThumbnail,
                         'tvshow.clearart': '',
                         'tvshow.clearlogo': '',
-                        'tvshow.fanart': guiElement.getFanart(),
+                        'tvshow.fanart': '',
                         'tvshow.landscape': '',
-                        'tvshow.poster': guiElement.getPoster(),
+                        'tvshow.poster': '',
                     },
                 ),
                 next_episode = dict(
@@ -128,7 +129,7 @@ class UpNext:
                         'tvshow.clearart': '',
                         'tvshow.clearlogo': '',
                         'tvshow.fanart': sThumbnail,#guiElement.getFanart(),
-                        'tvshow.landscape': '',
+                        'tvshow.landscape': guiElement.getPoster(),
                         'tvshow.poster': guiElement.getPoster(),
                     },
                 ),
