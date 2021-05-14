@@ -390,9 +390,6 @@ class cGuiElement:
         return self.__sFanart
 
     def setIcon(self, sIcon):
-        if not sIcon:
-            self.__sIcon = ''
-            return
         try:
             self.__sIcon = unicode(sIcon, 'utf-8')
         except:
@@ -538,7 +535,7 @@ class cGuiElement:
                 sTitle = sTitle[:-3]
             sTitle = sTitle.strip()
 
-        sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'collection').replace('4', 'anime').replace('5', 'season').replace('7', 'person').replace('8', 'network')
+        sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'collection').replace('4', 'anime').replace('5', 'season').replace('6', 'episode').replace('7', 'person').replace('8', 'network')
 
         meta = {}
         if sType:
@@ -606,18 +603,6 @@ class cGuiElement:
         if 'trailer' in meta and meta['trailer']:
             self.__sTrailer = meta['trailer']
 
-        if 's_overview' in meta:
-            meta.pop('s_overview')
-
-        if 's_poster_path' in meta:
-            meta.pop('s_poster_path')
-
-        if 's_premiered' in meta:
-            meta.pop('s_premiered')
-
-        if 's_year' in meta:
-            meta.pop('s_year')
-            
         for key, value in meta.items():
             self.addItemValues(key, value)
         return
@@ -710,7 +695,7 @@ class cGuiElement:
         sCat = str(self.getCat())
         if sCat:
             self.addItemProperties('sCat', sCat)
-            mediatypes = {'1': 'movie', '2': 'tvshow', '3': 'tvshow', '4': 'season', '5': 'video', '6': 'video', '7': 'season', '8': 'episode'}
+            mediatypes = {'1': 'movie', '2': 'tvshow', '3': 'tvshow', '4': 'season', '5': 'video', '6': 'video', '7': 'movie', '8': 'episode'}
             if sCat in mediatypes:
                 mediatype = mediatypes[sCat]
                 if mediatype:            # video, movie, tvshow, season, episode, musicvideo
