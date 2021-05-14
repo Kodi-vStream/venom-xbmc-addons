@@ -606,6 +606,18 @@ class cGuiElement:
         if 'trailer' in meta and meta['trailer']:
             self.__sTrailer = meta['trailer']
 
+        if 's_overview' in meta:
+            meta.pop('s_overview')
+
+        if 's_poster_path' in meta:
+            meta.pop('s_poster_path')
+
+        if 's_premiered' in meta:
+            meta.pop('s_premiered')
+
+        if 's_year' in meta:
+            meta.pop('s_year')
+            
         for key, value in meta.items():
             self.addItemValues(key, value)
         return
