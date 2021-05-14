@@ -182,7 +182,7 @@ class UpNext:
             if 'sThumb' in aParams and aParams['sThumb']:
                 sThumb = aParams['sThumb']
             if 'sDesc' in aParams and aParams['sDesc']:
-                sThumb = aParams['sDesc']
+                sDesc = aParams['sDesc']
 
             if sMediaUrl:
                 return sMediaUrl, sTitle, sDesc, sThumb
