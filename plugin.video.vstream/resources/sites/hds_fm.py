@@ -414,6 +414,7 @@ def ShowEpisodes():
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
+                oOutputParameterHandler.addParameter('sLang', sLang)
                 oOutputParameterHandler.addParameter('sRel_Episode', sRel_Episode)
                 oOutputParameterHandler.addParameter('sFirst_Url', sFirst_Url)
 
@@ -433,12 +434,6 @@ def showSeriesHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
     sRel_Episode = oInputParameterHandler.getValue('sRel_Episode')
-    if not sRel_Episode:
-        sEpisode = oInputParameterHandler.getValue('sEpisode') # Gestion Up_Next
-        if sEpisode:
-            sRel_Episode = 'episode%d' % int(sEpisode)
-        else:
-            sRel_Episode = 'episode.'
     sFirst_Url = oInputParameterHandler.getValue('sFirst_Url')
 
     oParser = cParser()
