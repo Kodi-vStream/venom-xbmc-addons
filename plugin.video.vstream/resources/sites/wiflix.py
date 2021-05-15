@@ -270,6 +270,7 @@ def showSeries(sSearch=''):
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sLang', sLang)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sDisplaytitle, '', sThumb, sDesc, oOutputParameterHandler)
 
