@@ -50,7 +50,7 @@ class UpNext:
             sEpisode = str(guiElement.getEpisode())
             if not sEpisode:
                 return  # impossible de déterminer l'épisode courant
-        
+
         sMovieTitle = tvShowTitle if 'Saison' in tvShowTitle else tvShowTitle + ' S' + sSaison
         numEpisode = int(sEpisode)
         sNextEpisode = '%02d' % (numEpisode+1)
@@ -153,7 +153,6 @@ class UpNext:
 
         sMediaUrl = ''
         for sUrl, listItem, isFolder in cGui().getEpisodeListing():
-            #siteUrl, sParams = sUrl.split('?', 1)
             sParams = sUrl.split('?', 1)[1]
             aParams = dict(param.split('=') for param in sParams.split('&'))
 
@@ -162,8 +161,7 @@ class UpNext:
                 continue
 
             sMediaUrl = aParams['sMediaUrl'] if 'sMediaUrl' in aParams else None
-            sTitle =  aParams['sTitle'] if 'sTitle' in aParams else None
-                    # retourne au moins un lien si on ne trouve pas le bon
+            sTitle =  UnquotePlus(aParams['sTitle']) if 'sTitle' in aParams else None
 
             if 'sHost' in aParams and aParams['sHost'].lower() != sHosterIdentifier.lower():
                 continue
@@ -181,9 +179,9 @@ class UpNext:
                 continue           # L'épisode est connue mais ce n'est pas le bon
 
             if 'sThumb' in aParams and aParams['sThumb']:
-                sThumb = aParams['sThumb']
+                sThumb = UnquotePlus(aParams['sThumb'])
             if 'sDesc' in aParams and aParams['sDesc']:
-                sDesc = aParams['sDesc']
+                sDesc = UnquotePlus(aParams['sDesc'])
 
             if sMediaUrl:
                 return sMediaUrl, sTitle, sDesc, sThumb
