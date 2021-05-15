@@ -355,16 +355,17 @@ def showLink():
             dpost = aEntry[0]
             dnum = aEntry[1]
             pdata = 'action=doo_player_ajax&post=' + dpost + '&nume=' + dnum + '&type=' + dtype
-            sTitle = aEntry[2].replace('Serveur', '').replace('Télécharger', '').replace('(', '').replace(')', '')
+            sHost = aEntry[2].replace('Serveur', '').replace('Télécharger', '').replace('(', '').replace(')', '')
 
-            if 'VIP - ' in sTitle:  # Les liens VIP ne fonctionnent pas
+            if 'VIP - ' in sHost:  # Les liens VIP ne fonctionnent pas
                 continue
 
-            sTitle = ('%s [%s]') % (sMovieTitle, sTitle)
+            sTitle = ('%s [%s]') % (sMovieTitle, sHost)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('referer', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sHost', sHost)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('pdata', pdata)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
