@@ -38,7 +38,7 @@ class UpNext:
             return 
 
         # La saison
-        sSaison = oInputParameterHandler.getValue('sSaison')
+        sSaison = oInputParameterHandler.getValue('sSeason')
         if not sSaison:
             sSaison = str(guiElement.getSeason())
             if not sSaison:
@@ -51,9 +51,11 @@ class UpNext:
             if not sEpisode:
                 return  # impossible de déterminer l'épisode courant
 
-        sMovieTitle = tvShowTitle if 'Saison' in tvShowTitle else tvShowTitle + ' S' + sSaison
+        sMovieTitle = tvShowTitle #if 'Saison' in tvShowTitle else tvShowTitle + ' S' + sSaison
+
         numEpisode = int(sEpisode)
-        sNextEpisode = '%02d' % (numEpisode+1)
+        nextEpisode = numEpisode+1
+        sNextEpisode = '%02d' % nextEpisode
         
         saisonUrl = oInputParameterHandler.getValue('saisonUrl')
         oOutputParameterHandler = cOutputParameterHandler()
@@ -64,15 +66,14 @@ class UpNext:
         sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
         nextSaisonFunc = oInputParameterHandler.getValue('nextSaisonFunc')
         sLang = oInputParameterHandler.getValue('sLang')
-        sMediaUrl, nextTitle, sDesc, sThumb = self.getMediaUrl(sSiteName, nextSaisonFunc, sParams, sSaison, sNextEpisode, sLang, sHosterIdentifier)
-        
-        sFileName = tvShowTitle.replace(' & ', ' and ')   # interdit dans un titre
-        sFileName += ' - ' + 'S%sE%s' %(sSaison, sNextEpisode)
-        
+
         try:
+            sMediaUrl, nextTitle, sDesc, sThumb = self.getMediaUrl(sSiteName, nextSaisonFunc, sParams, int(sSaison), nextEpisode, sLang, sHosterIdentifier)
             if not sMediaUrl:
                 return
-
+            
+            sFileName = tvShowTitle.replace(' & ', ' and ')   # interdit dans un titre
+            sFileName += ' - ' + 'S%sE%s' %(sSaison, sNextEpisode)
             nextTitle = UnquotePlus(nextTitle)
             if sLang:
                 nextTitle += ' (%s)' %sLang
@@ -88,7 +89,7 @@ class UpNext:
             oOutputParameterHandler.addParameter('sMediaUrl', str(sMediaUrl))
             oOutputParameterHandler.addParameter('saisonUrl', saisonUrl)
             oOutputParameterHandler.addParameter('nextSaisonFunc', nextSaisonFunc)
-            oOutputParameterHandler.addParameter('sSaison', sSaison)
+            oOutputParameterHandler.addParameter('sSeason', sSaison)
             oOutputParameterHandler.addParameter('sEpisode', sNextEpisode)
             oOutputParameterHandler.addParameter('sLang', sLang)
             
@@ -117,7 +118,7 @@ class UpNext:
                     },
                 ),
                 next_episode = dict(
-                    episodeid = numEpisode+1,
+                    episodeid = nextEpisode,
                     tvshowid = 0,
                     showtitle = tvShowTitle,
                     season = sSaison, #déjà dans le titre    
@@ -140,7 +141,7 @@ class UpNext:
         except Exception as e:
             VSlog('UpNext : %s' % e)
          
-    def getMediaUrl(self, sSiteName, sFunction, sParams, sSaison, sEpisode, sLang, sHosterIdentifier, sTitle = '', sDesc = '', sThumb = ''):
+    def getMediaUrl(self, sSiteName, sFunction, sParams, iSaison, iEpisode, sLang, sHosterIdentifier, sTitle = '', sDesc = '', sThumb = ''):
 
         try:
             sys.argv[2] = '?%s' % sParams
@@ -169,13 +170,13 @@ class UpNext:
             if 'sHosterIdentifier' in aParams and aParams['sHosterIdentifier'] != sHosterIdentifier:
                 continue
                 
-            if sLang and 'sLang' in aParams and aParams['sLang'] != sLang:
+            if sLang and 'sLang' in aParams and UnquotePlus(aParams['sLang']) != sLang:
                 continue           # La langue est connue mais ce n'est pas la bonne
 
-            if 'sSeason' in aParams and aParams['sSeason'] != sSaison:
+            if 'sSeason' in aParams and aParams['sSeason'] and int(aParams['sSeason']) != iSaison:
                 continue           # La saison est connue mais ce n'est pas la bonne
             
-            if 'sEpisode' in aParams and aParams['sEpisode'] != sEpisode:
+            if 'sEpisode' in aParams and aParams['sEpisode'] and int(aParams['sEpisode']) != iEpisode:
                 continue           # L'épisode est connue mais ce n'est pas le bon
 
             if 'sThumb' in aParams and aParams['sThumb']:
@@ -187,7 +188,7 @@ class UpNext:
                 return sMediaUrl, sTitle, sDesc, sThumb
     
             # if sFunction != 'play':
-            return self.getMediaUrl(sSiteName, sFunction, sParams, sSaison, sEpisode, sLang, sHosterIdentifier, sTitle, sDesc, sThumb)
+            return self.getMediaUrl(sSiteName, sFunction, sParams, iSaison, iEpisode, sLang, sHosterIdentifier, sTitle, sDesc, sThumb)
 
         if sMediaUrl:    # si on n'a pas trouvé le bon host on en retourne un autre, il pourrait fonctionner
             return sMediaUrl, sTitle, sDesc, sThumb
