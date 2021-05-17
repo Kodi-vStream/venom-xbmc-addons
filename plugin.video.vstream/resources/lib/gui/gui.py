@@ -62,6 +62,8 @@ class cGui:
         if oOutputParameterHandler.getValue('sMovieTitle'):
             sTitle = oOutputParameterHandler.getValue('sMovieTitle')
             oGuiElement.setFileName(sTitle)
+        else:
+            oGuiElement.setFileName(sLabel)
 
         try:
             self.addFolder(oGuiElement, oOutputParameterHandler)

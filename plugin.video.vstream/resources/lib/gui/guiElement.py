@@ -292,6 +292,10 @@ class cGuiElement:
     def getSerieTitre(self, sTitle):
         serieTitle = re.sub(r'\[.*\]|\(.*\)', r'', sTitle)
         serieTitle = re.sub('[- –]+$', '', serieTitle)
+        
+        if '|' in serieTitle:
+            serieTitle = serieTitle[:serieTitle.index('|')]
+        
         # on repasse en utf-8
         if not isMatrix():
             return serieTitle.encode('utf-8')
