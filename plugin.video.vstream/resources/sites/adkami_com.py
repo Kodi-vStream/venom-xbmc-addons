@@ -340,7 +340,7 @@ def showEpisode():
         sPattern = '<p class="description.+?">([^<]+)<a title'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            sDesc = aResult[1][0][1]
+            sDesc = aResult[1][0]
             sDesc = sDesc.replace('<br />', '')
     except:
         pass
@@ -367,19 +367,27 @@ def showEpisode():
                     sTitle = sMovieTitle + ' ' + sSaison + ' ' + sEpisode
                     sTitle = re.sub(' vf', ' (VF)', sTitle, re.IGNORECASE)
                     sDisplayTitle = re.sub(' vostfr', ' (VOSTFR)', sTitle, re.IGNORECASE)
+                    
+                    sLang = ''
+                    if '(VOSTFR)' in sDisplayTitle:
+                        sLang = 'VOSTFR'
+                    elif '(VF)' in sDisplayTitle:
+                        sLang = 'VF'
+                        
                     sTitle = sDisplayTitle.replace(' (VF)', '').replace(' (VOSTFR)', '')
 
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
                     oOutputParameterHandler.addParameter('sDesc', sDesc)
+                    oOutputParameterHandler.addParameter('sLang', sLang)
 
-                    oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
+                    oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def showLinks():
+def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -424,25 +432,7 @@ def showLinks():
         else:
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, 'Inconnu')
 
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-        oOutputParameterHandler.addParameter('sThumb', sThumb)
-        oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
-
-def showHosters():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-
-    # bidouille facile
-    sUrl = sUrl.replace('plus', '+')
-    sHosterUrl = sUrl
-
-    if sHosterUrl:
+        sHosterUrl = sUrl.replace('plus', '+')
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
             oHoster.setDisplayName(sMovieTitle)
