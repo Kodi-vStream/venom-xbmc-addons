@@ -100,7 +100,7 @@ def showAnimes():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME, large=True)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
@@ -159,6 +159,7 @@ def showEpisodes():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
+    sSaison = ''
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
@@ -169,12 +170,17 @@ def showEpisodes():
                 break
 
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
-
+                sSaison = aEntry[0]
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + sSaison + '[/COLOR]')
+                if ':' in sSaison:
+                    sSaison = sSaison[:sSaison.index(':')]
+                sSaison = sSaison.capitalize().strip()
             else:
-                sTitle = aEntry[2]
-                aUrl = aEntry[1]
+                sTitle = aEntry[2].replace('•', '').strip()
+                if sSaison:
+                    sTitle += ' ' + sSaison
 
+                aUrl = aEntry[1]
                 oOutputParameterHandler.addParameter('siteUrl', aUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
