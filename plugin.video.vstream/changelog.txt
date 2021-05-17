@@ -17,7 +17,6 @@ Historique des modifications
 - Métadonnées : plus d'informations média pour les films et compatibilité avec plus de skins
 - Métadonnées : informations média (pochette et description) pour les saisons
 - Reprise d'un média commencé, quelque soit la source
-- Trakt : Compatibilité complète avec l'addon Trakt (reprise entre équipements)
 
 
 *** 1.1.0***
