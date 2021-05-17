@@ -118,6 +118,8 @@ class cGui:
         oInputParameterHandler = cInputParameterHandler()
         oOutputParameterHandler.addParameter('saisonUrl', oInputParameterHandler.getValue('saisonUrl'))
         oOutputParameterHandler.addParameter('nextSaisonFunc', oInputParameterHandler.getValue('nextSaisonFunc'))
+        if not oOutputParameterHandler.getValue('sLang'):
+            oOutputParameterHandler.addParameter('sLang', oInputParameterHandler.getValue('sLang'))
 
         sIcon = sThumbnail
         self.addNewDir('link', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, None)
@@ -137,6 +139,8 @@ class cGui:
         oInputParameterHandler = cInputParameterHandler()
         oOutputParameterHandler.addParameter('saisonUrl', oInputParameterHandler.getValue('saisonUrl'))
         oOutputParameterHandler.addParameter('nextSaisonFunc', oInputParameterHandler.getValue('nextSaisonFunc'))
+        if not oOutputParameterHandler.getValue('sLang'):
+            oOutputParameterHandler.addParameter('sLang', oInputParameterHandler.getValue('sLang'))
 
         self.addNewDir('episodes', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 8)
 
