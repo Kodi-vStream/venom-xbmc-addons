@@ -338,15 +338,15 @@ def showEpisodesxMovies():
     sPattern = sPattern
     aResult = oParser.parse(sHtmlContent1, sPattern)
 
-    bvalid = False
+    sLang = ''
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
-                bvalid = True
+                sLang = aEntry[0]
                 continue
 
-            if bvalid:
+            if sLang:
                 sUrl = URL_MAIN[:-1] + aEntry[1]
                 sTitle = sMovieTitle + ' ' + aEntry[2].replace('Épisode', 'Episode')
 
@@ -354,6 +354,7 @@ def showEpisodesxMovies():
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
+                oOutputParameterHandler.addParameter('sLang', sLang)
                 oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -388,6 +389,7 @@ def showLinks():
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sHost', sHost)
             oOutputParameterHandler.addParameter('siteRefer', sUrl)
             oOutputParameterHandler.addParameter('pdata', pdata)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
