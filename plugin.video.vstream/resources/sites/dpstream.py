@@ -367,7 +367,7 @@ def showSaisons():
 
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in reversed(aResult[1]):
+        for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
             saison = aEntry[1]
 
