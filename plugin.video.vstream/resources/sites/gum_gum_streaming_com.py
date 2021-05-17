@@ -130,6 +130,7 @@ def showEpisodes():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    sSerieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -176,16 +177,18 @@ def showEpisodes():
                     sSaison = sSaison[:sSaison.index(':')]
                 sSaison = sSaison.capitalize().strip()
             else:
-                sTitle = aEntry[2].replace('•', '').strip()
+                sDisplayTitle = aEntry[2].replace('•', '').strip()
                 if sSaison:
-                    sTitle += ' ' + sSaison
+                    sDisplayTitle += ' ' + sSaison
+                
+                sTitle = sSerieTitle +' | ' + sDisplayTitle 
 
                 aUrl = aEntry[1]
                 oOutputParameterHandler.addParameter('siteUrl', aUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
