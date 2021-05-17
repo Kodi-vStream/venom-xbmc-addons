@@ -591,6 +591,7 @@ class cTMDb:
         _meta['cover_url'] = ''
         _meta['backdrop_path'] = ''
         _meta['backdrop_url'] = ''
+        _meta['still_path']= ''
         _meta['episode'] = 0
         _meta['playcount'] = 0
         _meta['season'] = []
@@ -769,7 +770,9 @@ class cTMDb:
             _meta['cover_url'] = self.poster + str(_meta['poster_path'])
             _meta['backdrop_path'] = _meta['poster_path']
             _meta['backdrop_url'] = self.fanart + str(_meta['backdrop_path'])
-
+        elif 'still_path' in meta:#pour les episodes
+            _meta['poster_path'] = meta['still_path']
+            _meta['cover_url'] = self.poster + str(_meta['poster_path'])
 
         # special saisons
         if 's_poster_path' in meta and meta['s_poster_path']:
@@ -1048,9 +1051,10 @@ class cTMDb:
             if media_type in ("season", "tvshow", "anime","episode"):
                 name = re.sub('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))(?:([^"]+)|)','',name)
             meta = self._cache_search(media_type, self._clean_title(name), tmdb_id, year, season, episode)
-            if media_type == 'episode':
-                tmdb_id = meta['tmdb_id']
-                meta = self.search_episode_id(tmdb_id,season,episode)
+            if episode:
+                if media_type == 'episode':
+                    tmdb_id = meta['tmdb_id']
+                    meta = self.search_episode_id(tmdb_id,season,episode)
             
             if meta:
                 meta = self._format(meta, name)
