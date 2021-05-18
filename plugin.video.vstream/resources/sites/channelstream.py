@@ -34,15 +34,18 @@ def load():
     oGui = cGui()
 
     liste = []
-    liste.append(['Généralistes', 'Chaîne de télévision généraliste', 'tv.png'])
-    liste.append(['Cinéma', 'Chaîne consacrée aux Film', 'films.png'])
-    liste.append(['Sport', 'Chaîne Sportive', 'sport.png'])
-    liste.append(['Science et Nature', 'Chaîne axés sur les sciences', 'buzz.png'])
+    liste.append(['Généralistes', 'Chaîne de télévision généraliste', 'tv.png', False])
+    liste.append(['Cinéma', 'Chaîne consacrée aux Film', 'films.png', False])
+    liste.append(['Sport', 'Chaîne Sportive', 'sport.png', False])
+    liste.append(['Science et Nature', 'Chaîne axés sur les sciences', 'buzz.png', False])
+    if addon().getSetting('contenu_adulte') == 'true':
+        liste.append(['Adultes', 'Chaîne consacrée aux Film', 'buzz.png', True])
 
     oOutputParameterHandler = cOutputParameterHandler()
-    for sTitle, sFiltre, sIcon in liste:
+    for sTitle, sFiltre, sIcon, bAdulte in liste:
         oOutputParameterHandler.addParameter('siteUrl', TV_FRENCH[0])
         oOutputParameterHandler.addParameter('sFiltre', sFiltre)
+        oOutputParameterHandler.addParameter('bAdulte', bAdulte)
         oGui.addDir(SITE_IDENTIFIER, TV_FRENCH[1], sTitle, sIcon, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -55,11 +58,12 @@ def showMovies():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sFiltre = oInputParameterHandler.getValue('sFiltre')
+    bAdulte = oInputParameterHandler.getValue('bAdulte')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     if isMatrix():
-    	sHtmlContent = sHtmlContent.replace('Ã®','î').replace('Ã©','é')
+        sHtmlContent = sHtmlContent.replace('Ã®','î').replace('Ã©','é')
 
     sHtmlContent = oParser.abParse(sHtmlContent, sFiltre, '<!-- Type Chaîne -->')
 
@@ -73,26 +77,29 @@ def showMovies():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
-            if "+18" in str(aEntry[2]) and addon().getSetting('contenu_adulte') == 'false':
-            	continue
-            else:
-                sTitle = aEntry[2]
+            # Trie des chaines adultes 
+            if "+18" in str(aEntry[2]):
+                if not bAdulte:
+                    continue
+            elif bAdulte:
+                continue
 
-                if "<" in sTitle:
-                	sTitle = sTitle.split('<')[0]
+            sTitle = aEntry[2]
+            if "<" in sTitle:
+                sTitle = sTitle.split('<')[0]
 
-                if 'Canal + Série' in sTitle:
-                    sTitle = 'Canal + Séries'
+            if 'Canal + Série' in sTitle:
+                sTitle = 'Canal + Séries'
 
-                sUrl2 = URL_MAIN + aEntry[0]
-                sThumb = URL_MAIN + '/' + aEntry[1]
-                sDesc = getEPG(EPG, sTitle)
+            sUrl2 = URL_MAIN + aEntry[0]
+            sThumb = URL_MAIN + '/' + aEntry[1]
+            sDesc = getEPG(EPG, sTitle)
 
-                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-                oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
