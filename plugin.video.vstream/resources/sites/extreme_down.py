@@ -96,7 +96,7 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuAutre', 'Autres', 'tv.png', oOutputParameterHandler)
 
-    if not cPremiumHandler("alldebrid").getToken():
+    if not addon().getSetting('hoster_alldebrid_token'):
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
         oGui.addDir(SITE_IDENTIFIER, 'getToken', '[COLOR red]Les utilisateurs d\'Alldebrid cliquez ici.[/COLOR]', 'films.png', oOutputParameterHandler)
 
@@ -435,7 +435,7 @@ def showMovies(sSearch=''):
 
             if sCat == 3 or sMisc:
                 oGui.addMisc(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-            elif sCat == 1 or '/films-' in siteUrl or '/manga-films/' in siteUrl:
+            elif sCat == 1 or '/films' in siteUrl or '/manga-films/' in siteUrl:
                 oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             elif sCat == 4 or '/mangas/' in siteUrl:
                 oGui.addAnime(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
@@ -721,8 +721,7 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    ADDON = addon()
-    Token_Alldebrid = ADDON.getSetting('hoster_alldebrid_token')
+    Token_Alldebrid = addon().getSetting('hoster_alldebrid_token')
     if Token_Alldebrid != "":
         sUrl_Bypass = "https://api.alldebrid.com/v4/link/redirector?agent=service&version=1.0-&apikey="
         sUrl_Bypass += Token_Alldebrid + "&link=" + sUrl
