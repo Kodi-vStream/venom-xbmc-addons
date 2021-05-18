@@ -160,6 +160,8 @@ class cRequestHandler:
         else:
             method = "POST"
 
+
+        oResponse = None
         try:
             _request = Request(method, self.__sUrl, headers=self.__aHeaderEntries)
             if method in ['POST']:
@@ -221,7 +223,7 @@ class cRequestHandler:
             sContent = ''
 
 
-        if oResponse.status_code == 503:
+        if oResponse and oResponse.status_code == 503:
             #Default
             CLOUDPROXY_ENDPOINT = 'http://localhost:8191/v1'
             try:
@@ -259,7 +261,7 @@ class cRequestHandler:
 
                 sContent = response['solution']['response']
 
-        if not sContent:
+        if oResponse and not sContent:
             #Ignorer ces deux codes erreurs.
             ignoreStatus = [200,302]
             if oResponse.status_code not in ignoreStatus:
