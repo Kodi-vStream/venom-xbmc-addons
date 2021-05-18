@@ -648,8 +648,8 @@ def showSeriesHosters():
     # Pour les series on fait l'inverse des films on vire les liens premiums
     if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent or 'premium' in sHtmlContent:
         sHtmlContent = CutPremiumlinks(sHtmlContent)
-        
-    sPattern = '<div style="font-weight.+?</span>([^<]+)</div>|<a class="btnToLink".+?href="([^"]+)">.+?/span>([^<]+)</a>'
+
+    sPattern = '<div style="font-weight.+?</span>([^<]+)</div>|<a class="btnToLink".+?href="([^"]+)".+?Episode ([0-9]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -661,9 +661,8 @@ def showSeriesHosters():
                 else:
                     oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
             else:
-                sName = aEntry[2]
+                sName = 'E' + aEntry[2]
                 sName = sName.replace('Télécharger', '')
-                sName = sName.replace('pisodes', 'pisode')
                 sUrl2 = aEntry[1]
                 sTitle = sMovieTitle + ' ' + sName
 
