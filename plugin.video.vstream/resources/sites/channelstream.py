@@ -34,12 +34,12 @@ def load():
     oGui = cGui()
 
     liste = []
-    liste.append(['Généralistes', 'Chaîne de télévision généraliste', 'tv.png', False])
+    liste.append(['Généraliste', 'Chaîne de télévision généraliste', 'tv.png', False])
     liste.append(['Cinéma', 'Chaîne consacrée aux Film', 'films.png', False])
     liste.append(['Sport', 'Chaîne Sportive', 'sport.png', False])
     liste.append(['Science et Nature', 'Chaîne axés sur les sciences', 'buzz.png', False])
     if addon().getSetting('contenu_adulte') == 'true':
-        liste.append(['Adultes', 'Chaîne consacrée aux Film', 'buzz.png', True])
+        liste.append(['Adulte', 'Chaîne consacrée aux Film', 'buzz.png', True])
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sFiltre, sIcon, bAdulte in liste:
