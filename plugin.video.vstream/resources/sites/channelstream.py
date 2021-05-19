@@ -71,7 +71,10 @@ def showMovies():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    EPG = cePg().get_epg('', 'direct')
+    try:
+        EPG = cePg().get_epg('', 'direct')
+    except:
+         EPG = ""
 
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
@@ -116,24 +119,33 @@ def showHoster():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    info = cePg().getChannelEpg(sTitle)
-    sDesc = info['plot']
+    try:
+        info = cePg().getChannelEpg(sTitle)
+        sDesc = info['plot']
 
-    sMovieTitle = info['title']
-    if not sMovieTitle:
+        sMovieTitle = info['title']
+        if not sMovieTitle:
+            sMovieTitle = sTitle
+
+        sMeta = 0
+        sCat = info['media_type']
+        if sCat:
+            if 'Film' in sCat:
+                sMeta = 1
+            if 'Série' in sCat:
+                sMeta = 2
+        sYear = info['year']
+        coverUrl = info['cover_url']
+        if coverUrl:
+            sThumb = coverUrl
+
+    except:
         sMovieTitle = sTitle
-
-    sMeta = 0
-    sCat = info['media_type']
-    if sCat:
-        if 'Film' in sCat:
-            sMeta = 1
-        if 'Série' in sCat:
-            sMeta = 2
-    sYear = info['year']
-    coverUrl = info['cover_url']
-    if coverUrl:
-        sThumb = coverUrl
+        info = ""
+        sYear = ""
+        coverUrl = sThumb
+        sDesc = ""
+        sMeta = 0
 
     # Double Iframe a passer.
     sPattern = '<iframe.+?src="([^"]+)"'
