@@ -8,6 +8,7 @@ from resources.lib.parser import cParser
 import base64
 import json
 import re
+import os
 
 class cHoster(iHoster):
 
@@ -62,11 +63,7 @@ class cHoster(iHoster):
         api_call = ''
         url = self.__sUrl
 
-        pathfile = 'special://temp/video_pstream.m3u8'
-        if not isMatrix():
-            video_pstream_path = VSPath(pathfile).decode('utf-8')
-        else:
-            video_pstream_path = VSPath(pathfile)
+        video_pstream_path = self.getTempFile()
 
         oRequest = cRequestHandler(url)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
@@ -118,3 +115,31 @@ class cHoster(iHoster):
             return True, api_call
 
         return False, False
+    
+    def getTempFile(self):
+        # le nom doit changer pour garantir l'enchainement des épisodes
+        # il faut tourner sur au moins trois fichiers car on ne peut pas supprimer le fichier en cours
+        pathFile1 = VSPath('special://temp/video_pstream1.m3u8')
+        pathFile2 = VSPath('special://temp/video_pstream2.m3u8')
+        pathFile3 = VSPath('special://temp/video_pstream3.m3u8')
+        if not isMatrix():
+            pathFile1 = pathFile1.decode('utf-8')
+            pathFile2 = pathFile2.decode('utf-8')
+            pathFile3 = pathFile3.decode('utf-8')
+
+        if not os.path.exists(pathFile1):
+            if os.path.exists(pathFile2):
+                os.remove(pathFile2)
+            return pathFile1
+        if not os.path.exists(pathFile2):
+            if os.path.exists(pathFile3):
+                os.remove(pathFile3)
+            return pathFile2
+        if not os.path.exists(pathFile3):
+            if os.path.exists(pathFile1):
+                os.remove(pathFile1)
+            return pathFile3
+
+        if os.path.exists(pathFile2):
+            os.remove(pathFile2)
+        return pathFile1
