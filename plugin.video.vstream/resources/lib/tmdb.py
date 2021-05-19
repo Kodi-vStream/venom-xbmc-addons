@@ -773,6 +773,8 @@ class cTMDb:
         elif 'still_path' in meta:#pour les episodes
             _meta['poster_path'] = meta['still_path']
             _meta['cover_url'] = self.poster + str(_meta['poster_path'])
+            _meta['backdrop_path'] = _meta['poster_path']
+            _meta['backdrop_url'] = self.fanart + str(_meta['backdrop_path'])
 
         # special saisons
         if 's_poster_path' in meta and meta['s_poster_path']:
@@ -1040,8 +1042,8 @@ class cTMDb:
         Returns:
             DICT of meta data or None if cannot be found.
         """
-
         name = re.sub(" +", " ", name)  # nettoyage du titre
+        nameToEp = name
 
 #         VSlog('Attempting to retrieve meta data for %s: %s %s %s %s' % (media_type, name, year, imdb_id, tmdb_id))
 
@@ -1051,10 +1053,16 @@ class cTMDb:
             if media_type in ("season", "tvshow", "anime","episode"):
                 name = re.sub('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))(?:([^"]+)|)','',name)
             meta = self._cache_search(media_type, self._clean_title(name), tmdb_id, year, season, episode)
-            if episode:
-                if media_type == 'episode':
-                    tmdb_id = meta['tmdb_id']
-                    meta = self.search_episode_id(tmdb_id,season,episode)
+            
+            if media_type == 'episode':
+                if not episode:
+                    ep = re.search('(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', nameToEp)
+                    sa = re.search('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', nameToEp)
+                    episode = ep.group(2)
+                    season = sa.group(2)
+                    
+                tmdb_id = meta['tmdb_id']
+                meta = self.search_episode_id(tmdb_id,season,episode)
             
             if meta:
                 meta = self._format(meta, name)
