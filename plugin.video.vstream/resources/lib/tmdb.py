@@ -506,7 +506,12 @@ class cTMDb:
         result = self._call('tv/' + str(show_id), append_to_response)
         result['tmdb_id'] = show_id
         return result
-
+    
+    def search_episode_id(self, show_id,season,episode, append_to_response='append_to_response=external_ids,videos,credits'):
+        result = self._call('tv/' + str(show_id)+ '/season/'+str(season)+'/episode/'+str(episode) , append_to_response)
+        result['tmdb_id'] = show_id
+        return result
+    
     # Get the basic informations for a specific collection id.
     def search_collection_id(self, collection_id):
         result = self._call('collection/' + str(collection_id))
@@ -564,6 +569,7 @@ class cTMDb:
         _meta['cover_url'] = ''
         _meta['backdrop_path'] = ''
         _meta['backdrop_url'] = ''
+        _meta['still_path']= ''
         _meta['episode'] = 0
         _meta['playcount'] = 0
         _meta['season'] = []
@@ -742,7 +748,11 @@ class cTMDb:
             _meta['cover_url'] = self.poster + str(_meta['poster_path'])
             _meta['backdrop_path'] = _meta['poster_path']
             _meta['backdrop_url'] = self.fanart + str(_meta['backdrop_path'])
-
+        elif 'still_path' in meta:#pour les episodes
+            _meta['poster_path'] = meta['still_path']
+            _meta['cover_url'] = self.poster + str(_meta['poster_path'])
+            _meta['backdrop_path'] = _meta['poster_path']
+            _meta['backdrop_url'] = self.fanart + str(_meta['backdrop_path'])
 
         # special saisons
         if 's_poster_path' in meta and meta['s_poster_path']:
@@ -840,7 +850,7 @@ class cTMDb:
                     name += 'saga'
                 sql_select = sql_select + ' WHERE title = \'%s\'' % name
 
-        elif media_type == 'tvshow' or media_type == 'anime' or media_type == 'season':
+        elif media_type == 'tvshow' or media_type == 'anime' or media_type == 'season' or media_type == 'episode':
 
             sql_select = 'SELECT * FROM tvshow'
             if season:
@@ -1012,15 +1022,24 @@ class cTMDb:
         """
 
         name = re.sub(" +", " ", name)  # nettoyage du titre
-
+        nameToEp = name
 #         VSlog('Attempting to retrieve meta data for %s: %s %s %s %s' % (media_type, name, year, imdb_id, tmdb_id))
 
         # recherche dans la base de données           
         if not update:
             #Obligatoire pour pointer vers les bonnes infos dans la base de données
-            if media_type in ("season", "tvshow", "anime"):
+            if media_type in ("season", "tvshow", "anime", "episode"):
                 name = re.sub('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))(?:([^"]+)|)','',name)
             meta = self._cache_search(media_type, self._clean_title(name), tmdb_id, year, season, episode)
+            if media_type == 'episode':
+                if not episode: #pour la fenetre information pas gérée par le skin
+                    ep = re.search('(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', nameToEp)
+                    sa = re.search('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', nameToEp)
+                    episode = ep.group(2)
+                    season = sa.group(2)
+                    
+                tmdb_id = meta['tmdb_id']
+                meta = self.search_episode_id(tmdb_id,season,episode)
             if meta:
                 meta = self._format(meta, name)
                 return meta
@@ -1037,6 +1056,12 @@ class cTMDb:
                 meta = self.search_tvshow_id(tmdb_id)
             elif name:
                 meta = self.search_tvshow_name(name, year)
+        elif media_type == 'episode':
+            if tmdb_id:
+                meta = self.search_episode_id(tmdb_id,season,episode)
+            elif name:
+                tmdb_id = self.get_idbyname(name, year, mediaType='tv')
+                meta = self.get_idbyname(name,year,mediaType)
         elif media_type == 'anime':
             if tmdb_id:
                 meta = self.search_tvshow_id(tmdb_id)
