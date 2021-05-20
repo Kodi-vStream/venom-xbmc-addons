@@ -7,6 +7,7 @@ import sys
 from base64 import b64encode
 from resources.lib.comaddon import dialog, addon, addonManager, VSlog, isMatrix
 from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.util import UnquotePlus
@@ -163,8 +164,13 @@ class UpNext:
             sMediaUrl = aParams['sMediaUrl'] if 'sMediaUrl' in aParams else None
             sTitle =  UnquotePlus(aParams['sTitle']) if 'sTitle' in aParams else None
 
-            if 'sHost' in aParams and aParams['sHost'].lower() != sHosterIdentifier.lower():
-                continue
+            if 'sHost' in aParams and aParams['sHost']:
+                oHoster = cHosterGui().checkHoster(aParams['sHost'])
+                if not oHoster:
+                    continue
+                hostName = oHoster.getPluginIdentifier()
+                if hostName != sHosterIdentifier:
+                    continue
             
             if 'sHosterIdentifier' in aParams and aParams['sHosterIdentifier'] != sHosterIdentifier:
                 continue
