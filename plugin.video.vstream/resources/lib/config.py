@@ -148,7 +148,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
     
 
     # Sinon on gere par vStream via la lib TMDB
-    sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'collection').replace('4', 'anime')
+    sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'collection').replace('4', 'anime').replace('6', 'episode')
 
     try:
         meta = cTMDb().get_meta(sType, sFileName, tmdb_id = xbmc.getInfoLabel('ListItem.Property(TmdbId)'), year = year)
