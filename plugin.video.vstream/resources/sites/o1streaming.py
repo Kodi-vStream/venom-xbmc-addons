@@ -206,7 +206,7 @@ def showSaisons():
 
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in reversed(aResult[1]):
+        for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
             saison = aEntry[1]
 
@@ -216,7 +216,7 @@ def showSaisons():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oGui.addEpisode(SITE_IDENTIFIER, 'ShowEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'ShowEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
