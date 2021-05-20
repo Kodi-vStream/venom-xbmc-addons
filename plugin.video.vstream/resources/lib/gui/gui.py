@@ -144,7 +144,7 @@ class cGui:
         if not oOutputParameterHandler.getValue('sLang'):
             oOutputParameterHandler.addParameter('sLang', oInputParameterHandler.getValue('sLang'))
 
-        self.addNewDir('episodes', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 8)
+        self.addNewDir('episodes', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 6, 2)
 
         return
 
