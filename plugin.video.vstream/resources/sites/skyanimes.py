@@ -183,7 +183,7 @@ def showSeries():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME, large=(total>50))
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
