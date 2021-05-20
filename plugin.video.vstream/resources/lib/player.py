@@ -270,6 +270,8 @@ class cPlayer(xbmc.Player):
                         self.seekTime(resumePoint)
                     elif ret == 1:
                         self.seekTime(0.0)
+                        # RAZ du point de reprise
+                        db.del_resume(meta)
 
 
     def __getWatchlist(self, sAction):
