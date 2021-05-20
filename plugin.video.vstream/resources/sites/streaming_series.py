@@ -195,7 +195,7 @@ def showEpisodes():
         for aEntry in aResult[1]:
 
             sUrl = aEntry[0]
-            sTitle = 'Episode ' + aEntry[1] + sMovieTitle
+            sTitle = sMovieTitle + ' Episode ' + aEntry[1] 
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -221,6 +221,7 @@ def showLinks():
     sHtmlContent = oRequest.request()
     sPattern = '<span class="lg">([^<]+)<|<span class="myLecteur">.+?<b>([^<]+)</b>.+?href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    sLang = ''
 
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
@@ -228,7 +229,8 @@ def showLinks():
 
             # langue
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
+                sLang = aEntry[0].replace('(', ' - ').replace(')', '')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + sLang + '[/COLOR]')
             # hote
             else:
                 sHost = aEntry[1]
@@ -237,7 +239,9 @@ def showLinks():
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                oOutputParameterHandler.addParameter('sThumb', sThumb )
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('sLang', sLang)
+                oOutputParameterHandler.addParameter('sHost', sHost)
 
                 oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
