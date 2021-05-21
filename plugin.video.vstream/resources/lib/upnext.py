@@ -65,7 +65,7 @@ class UpNext:
         sLang = oInputParameterHandler.getValue('sLang')
 
         try:
-            sMediaUrl, nextTitle, sDesc, sThumb = self.getMediaUrl(sSiteName, nextSaisonFunc, sParams, sSaison, nextEpisode, sLang, sHosterIdentifier)
+            sHosterIdentifier, sMediaUrl, nextTitle, sDesc, sThumb = self.getMediaUrl(sSiteName, nextSaisonFunc, sParams, sSaison, nextEpisode, sLang, sHosterIdentifier)
             if not sMediaUrl:
                 return
             
@@ -150,7 +150,7 @@ class UpNext:
             function()
         except Exception as e:
             VSlog('could not load site: ' + sSiteName + ' error: ' + str(e))
-            return None, None, None, None
+            return None, None, None, None, None
 
         sMediaUrl = ''
         for sUrl, listItem, isFolder in cGui().getEpisodeListing():
@@ -161,20 +161,6 @@ class UpNext:
             if sFunction == 'DoNothing':
                 continue
 
-            sMediaUrl = aParams['sMediaUrl'] if 'sMediaUrl' in aParams else None
-            sTitle =  UnquotePlus(aParams['sTitle']) if 'sTitle' in aParams else None
-
-            if 'sHost' in aParams and aParams['sHost']:
-                oHoster = cHosterGui().checkHoster(aParams['sHost'])
-                if not oHoster:
-                    continue
-                hostName = oHoster.getPluginIdentifier()
-                if hostName != sHosterIdentifier:
-                    continue
-            
-            if 'sHosterIdentifier' in aParams and aParams['sHosterIdentifier'] != sHosterIdentifier:
-                continue
-                
             if sLang and 'sLang' in aParams and UnquotePlus(aParams['sLang']) != sLang:
                 continue           # La langue est connue mais ce n'est pas la bonne
 
@@ -184,21 +170,37 @@ class UpNext:
             if 'sEpisode' in aParams and aParams['sEpisode'] and int(aParams['sEpisode']) != iEpisode:
                 continue           # L'épisode est connue mais ce n'est pas le bon
 
+            sMediaUrl = aParams['sMediaUrl'] if 'sMediaUrl' in aParams else None
+            sTitle =  UnquotePlus(aParams['sTitle']) if 'sTitle' in aParams else None
+            if 'sHost' in aParams and aParams['sHost']:
+                oHoster = cHosterGui().checkHoster(aParams['sHost'])
+                if not oHoster:
+                    continue
+                hostName = oHoster.getPluginIdentifier()
+                if hostName != sHosterIdentifier:
+                    continue
+            
+            hostName = sHosterIdentifier
+            if 'sHosterIdentifier' in aParams:
+                hostName = aParams['sHosterIdentifier']
+                if hostName != sHosterIdentifier:
+                    continue
+                
             if 'sThumb' in aParams and aParams['sThumb']:
                 sThumb = UnquotePlus(aParams['sThumb'])
             if 'sDesc' in aParams and aParams['sDesc']:
                 sDesc = UnquotePlus(aParams['sDesc'])
 
             if sMediaUrl:
-                return sMediaUrl, sTitle, sDesc, sThumb
+                return hostName, sMediaUrl, sTitle, sDesc, sThumb
     
             # if sFunction != 'play':
             return self.getMediaUrl(sSiteName, sFunction, sParams, sSaison, iEpisode, sLang, sHosterIdentifier, sTitle, sDesc, sThumb)
 
         if sMediaUrl:    # si on n'a pas trouvé le bon host on en retourne un autre, il pourrait fonctionner
-            return sMediaUrl, sTitle, sDesc, sThumb
+            return hostName, sMediaUrl, sTitle, sDesc, sThumb
 
-        return None, None, None, None
+        return None, None, None, None, None
 
 
     # Envoi des info à l'addon UpNext
