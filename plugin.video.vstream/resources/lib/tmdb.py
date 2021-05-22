@@ -864,7 +864,7 @@ class cTMDb:
             sql_select = 'SELECT * FROM tvshow'
             if media_type == 'episode':
                 sql_select = 'SELECT *, episode.poster_path as s_poster_path, episode.premiered as s_premiered, '\
-                    'episode.year as s_year, episode.overview as s_overview FROM tvshow LEFT JOIN episode ON tvshow.title = \'%s\'' %  name
+                    'episode.year as s_year, episode.overview as s_overview FROM tvshow LEFT JOIN episode ON episode.title = \'%s\'' %  name
                 sql_select += 'AND episode.season = \'%s\' AND episode.episode = \'%s\'' % (season,episode)
 
             elif season:
