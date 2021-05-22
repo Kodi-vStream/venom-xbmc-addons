@@ -1077,16 +1077,27 @@ class cTMDb:
             meta = self._cache_search(media_type, self._clean_title(name), tmdb_id, year, season, episode)
 
             if media_type == 'episode':
-                if meta['episode'] is not None:
-                    meta = self._format(meta, name)
-                    return meta
+                try:
+                    if meta['episode'] is not None:
+                        meta = self._format(meta, name)
+                        return meta
+                except:
+                    pass
+
             elif meta:
                 meta = self._format(meta, name)
-                return meta                
+                return meta   
 
         # recherche online
         if media_type != 'episode':
             meta = {}
+        else:
+            #Fenetre info de Vstream si tmdb_id n'existe pas
+            try:
+                meta['tmdb_id']
+            except:
+                meta = {}
+                meta.update({"tmdb_id": self.search_tvshow_name(name, year)['tmdb_id']})
 
         if media_type == 'movie':
             if tmdb_id:
