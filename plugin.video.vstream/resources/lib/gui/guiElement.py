@@ -622,6 +622,12 @@ class cGuiElement:
         if 's_year' in meta:
             meta.pop('s_year')
             
+        if 'still_path' in meta:
+            meta.pop('still_path')
+
+        if 'showid' in meta:
+            meta.pop('showid')
+            
         for key, value in meta.items():
             self.addItemValues(key, value)
         return
