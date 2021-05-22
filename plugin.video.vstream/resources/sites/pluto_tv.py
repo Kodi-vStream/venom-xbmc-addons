@@ -151,6 +151,7 @@ def showVOD():
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
             if aEntry["type"] == "series":
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             elif aEntry["type"] == "Anime":
                 oGui.addAnime(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
