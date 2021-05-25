@@ -387,8 +387,8 @@
 
         <setting label="Alldebrid" type="lsep"/>
         <setting type="sep"/>
-        <setting id="hoster_alldebrid_premium" type="bool" label="30403" default="false"/>
-        <setting id="hoster_alldebrid_token" type="text" label="30328" default=""/>
+        <setting id="hoster_alldebrid_premium" type="bool" label="30333" default="false"/>
+        <setting id="hoster_alldebrid_token" type="text" label="30334" default=""/>
         <setting id="urlmain_alldebrid" type="text" label="31000" default=""/>
 
         <setting label="Uptobox" type="lsep"/>
