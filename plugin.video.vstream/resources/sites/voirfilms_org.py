@@ -435,6 +435,8 @@ def showLinks():
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sHost', sHost)
+            oOutputParameterHandler.addParameter('sLang', sLang)
 
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
 
@@ -461,6 +463,8 @@ def showLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('siteReferer', sUrl)
+            oOutputParameterHandler.addParameter('sHost', sHost)
+            oOutputParameterHandler.addParameter('sLang', sLang)
             oGui.addLink(SITE_IDENTIFIER, 'showHostersDL', sTitle, sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -517,7 +521,7 @@ def showS_E():
             if '-episode-' in sUrl2 or '/anime' in sUrl:
                 oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addEpisode(SITE_IDENTIFIER, 'showS_E', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addSeason(SITE_IDENTIFIER, 'showS_E', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
