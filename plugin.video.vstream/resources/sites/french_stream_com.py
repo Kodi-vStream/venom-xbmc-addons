@@ -601,10 +601,6 @@ def showSeriesHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sData = oInputParameterHandler.getValue('sData')
-    if not sData:
-        sEpisode = oInputParameterHandler.getValue('sEpisode') # Gestion Up_Next
-        if sEpisode:
-            sData = 'episode%d' % int(sEpisode)
 
     # if sData == 'episode1': #episode final au lieu du 1er donc pour le moment
         # return
