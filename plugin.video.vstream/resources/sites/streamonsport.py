@@ -5,6 +5,7 @@
 import base64
 import json
 import re
+import time
 from datetime import datetime, timedelta
 from resources.lib.comaddon import progress
 from resources.lib.gui.gui import cGui
@@ -116,7 +117,7 @@ def showMovies(sSearch=''):
     sHtmlContent = oRequestHandler.request()
 
     # THUMB ref title desc1 desc2
-    sPattern = '<img class=".+?src="([^"]+).+?<a class="game-name".+?href="([^"]+).+?title="([^"]+).+?class="date">([^<]+).+?sct_event_time">([^<]+)'
+    sPattern = '<img class=".+?src="([^"]+).+?<a class="game-name".+?href="([^"]+).+?title="([^"]+).+?data-time="([^"]*)"></time> · ([^<]+) <'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -136,12 +137,21 @@ def showMovies(sSearch=''):
             sThumb = aEntry[0]
             sUrl2 = aEntry[1]
             sTitle = aEntry[2].replace(' streaming gratuit', '').replace(' foot', '')
-            sdesc1 = aEntry[3]
-            sdesc2 = aEntry[4]
-            sDisplayTitle = sTitle
+            sDate = aEntry[3]
+            sdesc1 = aEntry[4]
+            
             bChaine = False
             if sUrl != CHAINE_TV[0] and sUrl != SPORT_TV[0]:
-                sDisplayTitle = sTitle + '-' + sdesc1 + '-' + sdesc2
+                sDisplayTitle = sTitle
+                if sdesc1:
+                    sDisplayTitle += ' - ' + sdesc1
+                if sDate:
+                    try:
+                        d = datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S+02:00')[0:6]))
+                        sDate = d.strftime("%d/%m/%y %H:%M")
+                    except Exception as e:
+                        pass
+                    sDisplayTitle += ' - ' + sDate
             else:
                 bChaine = True
                 sTitle = sTitle.upper()
@@ -244,7 +254,7 @@ def Showlink():
     siterefer = oInputParameterHandler.getValue('siterefer')
     sUrl2 = ''
     shosterurl = ''
-                	
+                    
     if 'allfoot' in sUrl or 'channelstream' in sUrl:
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
