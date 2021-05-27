@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'wiflix'
 SITE_NAME = 'Wiflix'
 SITE_DESC = 'Films & Séries en streaming'
 
-URL_MAIN = 'https://wiflix.online/'
+URL_MAIN = 'https://wiflix.club/'
 
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming/', 'showMovies')
 MOVIE_EXCLU = (URL_MAIN + 'film-en-streaming/exclue', 'showMovies')
@@ -295,7 +295,7 @@ def showEpisodes():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<div class="(ep.+?)"|<a href="([^"]+)"[^><]+target="x_player">'
+    sPattern = '<div class="(ep.+?)"|<a href="([^"]+)"[^><]+target="x_player"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 

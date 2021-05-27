@@ -71,11 +71,11 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  'var playerOptsB64 = (.+?);'
+        sPattern =  'concat\((.+?)\)'
         aResult = oParser.parse(sHtmlContent, sPattern)[1][0]
         data = ""
 
-        for aEntry in aResult.split(' + '):
+        for aEntry in aResult.split(','):
             data += re.search('var ' + aEntry + '(?:.+?|)=(.+?)";',sHtmlContent).group(1)
         decode = base64.b64decode(data)
         url2 = json.loads(decode)['url']
