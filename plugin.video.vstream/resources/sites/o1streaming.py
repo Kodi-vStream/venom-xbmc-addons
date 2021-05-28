@@ -117,9 +117,6 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
-        oGui.addText(SITE_IDENTIFIER)
-
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
@@ -151,7 +148,7 @@ def showMovies(sSearch=''):
             if '/series/' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -201,9 +198,6 @@ def showSaisons():
     sPattern = 'choose-season.+?ref="([^"]+).+?inline">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
-        oGui.addText(SITE_IDENTIFIER)
-
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
@@ -235,9 +229,6 @@ def ShowEpisodes():
     sPattern = '<h2 class="entry-title">([^><]+).+?<a href="([^"]+)" class="lnk-blk">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
-        oGui.addText(SITE_IDENTIFIER)
-
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
@@ -248,10 +239,52 @@ def ShowEpisodes():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
+
+def showLinks():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    oParser = cParser()
+
+    numUrl = 0
+    sPatternUrl = '<iframe (?:data-)*src="([^"]+)"'
+    aResultUrl = oParser.parse(sHtmlContent, sPatternUrl)
+    if (aResultUrl[0] == True):
+        sPatternHost = '<a class="btn(| on)" href="(.+?)".+?<span class="server">([^<]+) <'
+        aResultHost = oParser.parse(sHtmlContent, sPatternHost)
+        if (aResultHost[0] == True):
+            oOutputParameterHandler = cOutputParameterHandler()
+            for aEntry in aResultHost[1]:
+                sUrl2 = aResultUrl[1][numUrl]
+                numUrl += 1
+                sHost = aEntry[2]
+                sLang = 'VF'
+                if '-VOSTFR' in sHost:
+                    sLang = 'VOSTFR'
+                sHost = sHost.replace('VF', '').replace('VOSTFR', '')
+                
+                oHoster = cHosterGui().checkHoster(sHost)
+                if (oHoster != False):
+                    sDisplayTitle = ('%s [COLOR coral]%s[/COLOR] (%s)') % (sMovieTitle, sHost, sLang)
+                    oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+                    oOutputParameterHandler.addParameter('sThumb', sThumb)
+                    oOutputParameterHandler.addParameter('sDesc', sDesc)
+                    oOutputParameterHandler.addParameter('sHost', sHost)
+                    oOutputParameterHandler.addParameter('sLang', sLang)
+                    oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                    oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, '', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
 
 def showHosters():
     oGui = cGui()
@@ -263,12 +296,8 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
-    sPattern = '<iframe (?:data-)*src="([^"]+)"'
-
+    sPattern = '<iframe.+?src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == False):
-        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
