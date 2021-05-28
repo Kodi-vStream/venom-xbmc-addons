@@ -12,7 +12,7 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
-*** 1.1.1***
+*** 1.2.0***
 - UpNext : Enchainement automatique des épisodes
 - Métadonnées : plus d'informations média pour les films et compatibilité avec plus de skins
 - Métadonnées : informations média (pochette et description) pour les saisons
