@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'streaminz'
 SITE_NAME = 'Streaminz'
 SITE_DESC = ' films, de séries et de mangas en streaming VF et VOSTFR complets'
 
-URL_MAIN = 'https://www.streaminz.xyz/'
+URL_MAIN = 'https://www.streaminz.cc/'
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
