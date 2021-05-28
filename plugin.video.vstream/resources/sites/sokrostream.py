@@ -186,7 +186,7 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<iframe src="([^"]+)'
+    sPattern = '<iframe .+? src="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
