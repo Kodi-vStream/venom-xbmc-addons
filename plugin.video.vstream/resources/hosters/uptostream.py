@@ -93,7 +93,7 @@ class cHoster(iHoster):
         s = requests.Session()
         s.headers.update({"Cookie": cookies})
 
-        r = s.get('https://uptobox.com/api/streaming?file_code=' + self.__sUrl.split('/')[3]).json()
+        r = s.get('https://uptobox.com/api/streaming?file_code=' + self.__sUrl.split('/')[-1]).json()
         
         if r["statusCode"] != 0: # Erreur
             dialog().VSinfo(r["data"])
