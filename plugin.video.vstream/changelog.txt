@@ -14,9 +14,9 @@ Historique des modifications
 
 *** 1.2.0***
 - UpNext : Enchainement automatique des épisodes
+- Reprise d'un média commencé, même en changeant de source
 - Métadonnées : plus d'informations média pour les films et compatibilité avec plus de skins
 - Métadonnées : informations média (pochette et description) pour les saisons
-- Reprise d'un média commencé, quelque soit la source
 
 
 *** 1.1.0***
