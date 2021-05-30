@@ -11,9 +11,7 @@ from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 from resources.lib.comaddon import dialog
 from resources.lib.util import Unquote, Quote
-
-URL_MAIN = 'https://www.youtube.com/get_video_info?video_id='
-
+from resources.lib.config import GestionCookie
 
 class cHoster(iHoster):
 
@@ -58,16 +56,6 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = sUrl
-        self.__sUrl = self.__sUrl.rsplit('/', 1)[1]
-        self.__sUrl = self.__sUrl.replace('watch?v=', '')
-        self.__sUrl = self.__sUrl.replace('?rel=0', '')
-        self.__sUrl = self.__sUrl.replace('&cc_load_policy=1', '')
-        self.__sUrl = self.__sUrl.replace('?', '').replace('&', '')
-        self.__sUrl = self.__sUrl.replace('feature=oembed', '')
-        self.__sUrl = self.__sUrl.replace('autoplay=1', '')
-        self.__sUrl = self.__sUrl.replace('autohide=1', '')
-        self.__sUrl = self.__sUrl.replace('autoplay=', '')
-        self.__sUrl = self.__sUrl.replace('autohide=', '')
 
     def checkUrl(self, sUrl):
         return True
@@ -87,9 +75,14 @@ class cHoster(iHoster):
         api_call = ''
 
         oParser = cParser()
-        oRequestHandler = cRequestHandler(URL_MAIN + self.__sUrl)
-        sHtml = Unquote(oRequestHandler.request())
+
+        oRequestHandler = cRequestHandler(self.__sUrl)
+        oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)')
+        oRequestHandler.addHeaderEntry('Cookie', GestionCookie().Readcookie("youtube"))        
+        sHtml = Unquote(str(oRequestHandler.request()))
+
         sHtmlContent = sHtml[7 + sHtml.find('formats'):sHtml.rfind('adaptiveFormats')]
+
         sPattern = '"url":"([^"]+)".+?"qualityLabel":"([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -98,7 +91,7 @@ class cHoster(iHoster):
             qua = [] 
             for aEntry in aResult[1]:
                 #Py3 a besoin de la deuxieme version, je laisse le 1er replace au cas où pour Py2
-                url.append(aEntry[0].replace("\u0026","&").replace("\\u0026","&"))
+                url.append(aEntry[0].replace('/&','&').replace("\u0026","&").replace("\\\\u0026","&"))
                 qua.append(aEntry[1])
 
             if url:
