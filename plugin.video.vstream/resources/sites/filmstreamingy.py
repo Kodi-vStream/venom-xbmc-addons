@@ -15,9 +15,9 @@ SITE_IDENTIFIER = 'filmstreamingy'
 SITE_NAME = 'FilmStreamingY'
 SITE_DESC = 'stream HD, streaming Sans pub, streaming vf'
 
-URL_MAIN = 'https://vvv.film-streamingy.com/'
+URL_MAIN = 'https://www.film-streamingi.com/'
 
-URL_SEARCH_MOVIES = (URL_MAIN + '/?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_MOVIE = (True, 'load')
@@ -126,7 +126,7 @@ def showMovies(sSearch=''):
 
             sUrl2 = aEntry[0]
             sQual = aEntry[1]
-            sThumb = re.sub('/w\d+', '/w342', aEntry[2])
+            sThumb = re.sub('/w\d+/', '/w342/', aEntry[2])
             sTitle = aEntry[3].replace(' en streaming', '').replace(' en Streaming', '').replace(' Streaming', '')\
                               .replace(' streaming', '').replace(' Straming', '').replace('Version Francais', 'VF')
             sYear = aEntry[4]

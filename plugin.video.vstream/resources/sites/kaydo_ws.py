@@ -23,7 +23,7 @@ SITE_DESC = 'Site de streaming en HD'
 URL_MAIN = 'https://hdss.la/'
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
-MOVIE_NEWS = (URL_MAIN + 'films-z/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_COMMENTS = (URL_MAIN + 'populaires/', 'showMovies')
 MOVIE_NOTES = (URL_MAIN + 'mieux-notes/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
@@ -370,7 +370,9 @@ def showHosters():
 
             # sPost = decode(aResult[1][0])
             # t[::-1] renvoie la chaine t dans l'ordre inverse, identique à decode(t)
-            sPost = aResult[1][0][::-1]
+            sPost = None
+            if aResult[1]:
+                sPost = aResult[1][0][::-1]
 
             if sPost:
 

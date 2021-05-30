@@ -567,11 +567,13 @@ def showEpisode():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
+    sLang = ''
     if (aResult):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult:
 
             if aEntry[0]:
+                sLang = aEntry[0]
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
 
             else:
@@ -581,17 +583,17 @@ def showEpisode():
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sData', sData)
-                # oOutputParameterHandler.addParameter('sId', sId)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
+                oOutputParameterHandler.addParameter('sLang', sLang)
 
-                oGui.addEpisode(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def serieHosters():
+def showSeriesHosters():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -599,6 +601,7 @@ def serieHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sData = oInputParameterHandler.getValue('sData')
+
     # if sData == 'episode1': #episode final au lieu du 1er donc pour le moment
         # return
     oRequestHandler = cRequestHandler(sUrl)

@@ -517,7 +517,8 @@ def showSeriesHosters():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + re.sub('\.\w+', '', aEntry[0]) + '[/COLOR]')
+                sHoster = aEntry[0]
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + re.sub('\.\w+', '', sHoster) + '[/COLOR]')
 
             else:
                 sUrl2 = aEntry[1]
@@ -534,6 +535,7 @@ def showSeriesHosters():
                 else:
                     oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                    oOutputParameterHandler.addParameter('sHost', sHoster)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
                     oGui.addEpisode(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 

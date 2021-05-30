@@ -238,12 +238,14 @@ def showLinks():
 
     sPattern = '<span class="lg">(.+?)</span>|myLecteur">Lecteur (?:<b>)*([a-z]+)(?:</b>)* *:</span> <a href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
+    sLang = ''
+ 
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
-                sLang = aEntry[0].replace('Langue(', 'Langue (')
+                # sLang = aEntry[0].replace('Langue(', 'Langue -')
+                sLang = aEntry[0].replace('(', '- ').replace(')', '').strip()
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + sLang + '[/COLOR]')
             else:
                 sHost = aEntry[1].capitalize()
@@ -256,6 +258,8 @@ def showLinks():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('sLang', sLang)
+                oOutputParameterHandler.addParameter('sHost', sHost)
                 oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()

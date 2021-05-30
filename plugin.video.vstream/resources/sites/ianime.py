@@ -280,6 +280,7 @@ def ShowAlpha2():
 
     oRequestHandler = cRequestHandler(sUrl2)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
     sHtmlContent = oRequestHandler.request()
 
     if 'HTML/JavaScript Encoder' in sHtmlContent:
@@ -307,6 +308,7 @@ def ShowAlpha(url=None):
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
     sHtmlContent = oRequestHandler.request()
 
     if 'HTML/JavaScript Encoder' in sHtmlContent:

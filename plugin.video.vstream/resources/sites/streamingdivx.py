@@ -1,3 +1,4 @@
+return False  # 21/05/2021
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
@@ -222,7 +223,7 @@ def showSaisons():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showEp', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'showEp', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -304,15 +305,17 @@ def showLinks():
             if not oHoster:
                 continue
 
-            sLang = aEntry[3].split('/')[-1].replace('.png', '').replace('?ver=41', '')
+            sLang = aEntry[3].split('/')[-1].replace('.png', '').replace('?ver=41', '').upper()
 
-            sDisplayTitle = ('%s (%s) [COLOR %s]%s[/COLOR]') % (sMovieTitle, sLang.upper(), sColor, sHost)
+            sDisplayTitle = ('%s (%s) [COLOR %s]%s[/COLOR]') % (sMovieTitle, sLang, sColor, sHost)
 
             oOutputParameterHandler.addParameter('datanum', aEntry[0])
             oOutputParameterHandler.addParameter('datacode', aEntry[1])
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sLang', sLang)
+            oOutputParameterHandler.addParameter('sHost', sHost)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()

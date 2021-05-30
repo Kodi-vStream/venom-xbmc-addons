@@ -207,8 +207,9 @@ class cClear:
                     dbcur.close()
                     db.close()
                     self.DIALOG.VSok(self.ADDON.VSlang(30090))
-                except:
+                except Exception as err:
                     self.DIALOG.VSerror(self.ADDON.VSlang(30091))
+                    VSlog("Exception runscript sql_drop: {0}".format(err))
             return
 
         elif (env == 'xbmc'):

@@ -196,7 +196,7 @@ def showMovies2():  # affiche les matchs en direct depuis la section showMovie
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME, large=True)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)

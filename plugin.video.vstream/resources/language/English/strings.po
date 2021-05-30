@@ -732,6 +732,14 @@ msgctxt "#30332"
 msgid "TV (Official)"
 msgstr ""
 
+msgctxt "#30333"
+msgid "Activate Premium"
+msgstr ""
+
+msgctxt "#30334"
+msgid "Free or Premium Token"
+msgstr ""
+
 msgctxt "#30340"
 msgid "Trakt integration"
 msgstr ""
@@ -1088,6 +1096,15 @@ msgctxt "#30480"
 msgid "Small loading spinner"
 msgstr ""
 
+# upnext
+msgctxt "#30505"
+msgid "Would you like to automatically play the next episode?"
+msgstr ""
+
+msgctxt "#30506"
+msgid "Automatically play the next episode"
+msgstr ""
+
 msgctxt "#31000"
 msgid "Multimedia folder URL (Optional)"
 msgstr ""
@@ -1100,9 +1117,11 @@ msgctxt "#31102"
 msgid "Use the skin display for the information windows"
 msgstr ""
 
+
 msgctxt "#31103"
 msgid "Allow adult content"
 msgstr ""
+
 
 msgctxt "#31200"
 msgid "Choose the number of items to display"

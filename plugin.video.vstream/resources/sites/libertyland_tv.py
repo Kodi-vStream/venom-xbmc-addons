@@ -441,6 +441,8 @@ def showLinks():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sLang', sLang)
+            oOutputParameterHandler.addParameter('sHost', sHost)
             oOutputParameterHandler.addParameter('sType', sType)
             oOutputParameterHandler.addParameter('idMov', idMov)
             oOutputParameterHandler.addParameter('idHeb', idHeb)

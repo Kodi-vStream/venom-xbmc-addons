@@ -199,6 +199,7 @@ def showSXE():
 
     sPattern = '<h3 id="Saison-(\d+)|<a href="([^"]+)">épisode.(\d+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    sSaison = ''
 
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
@@ -209,11 +210,11 @@ def showSXE():
             else:
                 sUrl = aEntry[1]
                 Ep = aEntry[2]
-                sTitle = sMovieTitle + ' Episode' + Ep
+                sTitle = sMovieTitle + ' ' + sSaison + ' Episode ' + Ep
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -256,6 +257,7 @@ def showLinks():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('siteReferer', sUrl)
             oOutputParameterHandler.addParameter('sLang', sLang)
+            oOutputParameterHandler.addParameter('sHost', sHostname)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayName, sThumb, sDesc, oOutputParameterHandler)
 
     sPattern = '(?:class="players">|</a>)\s*<a href="([^"]+)".+?<li class="player".+?langue-s">([^<]+).+?<span class="p-name">([^"]+)</span>'
@@ -282,6 +284,7 @@ def showLinks():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('siteReferer', sUrl)
             oOutputParameterHandler.addParameter('sLang', sLang)
+            oOutputParameterHandler.addParameter('sHost', sHostname)
             oGui.addLink(SITE_IDENTIFIER, 'showHostersDL', sDisplayTitle, sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()

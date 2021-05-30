@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-import io
 import re
 import string
-import sys
-from zipfile import ZipFile
-
-import xbmc
 import xbmcplugin
 import xbmcvfs
 
@@ -20,7 +15,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import Unquote, Quote, QuotePlus
+from resources.lib.util import Unquote
 
 SITE_IDENTIFIER = 'freebox'
 SITE_NAME = '[COLOR orange]Télévision Direct/Stream[/COLOR]'
@@ -34,14 +29,9 @@ MOVIE_IPTVSITE = (True, 'showIptvSite')
 
 UA = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
 
-headers = {'User-Agent': UA, 'Accept': '*/*', 'Connection': 'keep-alive'}
-
 icon = 'tv.png'
-# /home/lordvenom/.kodi/
-# sRootArt = cConfig().getRootArt()
 sRootArt = 'special://home/addons/plugin.video.vstream/resources/art/tv'
 ADDON = addon()
-
 
 class track:
     def __init__(self, length, title, path, icon, data=''):
@@ -50,7 +40,6 @@ class track:
         self.path = path
         self.icon = icon
         self.data = data
-
 
 def load():
     oGui = cGui()
@@ -81,18 +70,7 @@ def load():
 def showIptvSite():
     oGui = cGui()
 
-    # test f4mTester
-    sPath = 'special://home/addons/plugin.video.f4mTester/default.py'
-
-    if not xbmcvfs.exists(sPath) and not xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-        oGui.addText(SITE_IDENTIFIER, "[COLOR red]plugin.video.f4mTester: L'addon n'est pas présent[/COLOR]")
-
     liste = []
-    # liste.append(['IptvGratuit', 'iptv_gratuit'])
-    # liste.append(['IptvSource', 'iptv_source'])
-    # liste.append(['Iptv4Sat', 'iptv_four_sat'])
-    # liste.append(['Daily Iptv List', 'daily_iptv_list'])
-    # liste.append(['Extinf', 'iptv'])
     liste.append(['ChannelStream', 'channelstream'])
     liste.append(['Streamonsport', 'streamonsport'])
 
@@ -104,66 +82,20 @@ def showIptvSite():
     oGui.setEndOfDirectory()
 
 
-def getHtml(sUrl, data=None):  # S'occupe des requetes
-    oRequestHandler = cRequestHandler(sUrl)
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    data = oRequestHandler.request()
-    return data
-
-
-def parseM3U(sUrl=None, infile=None):  # Traite les m3u local
+def parseM3U(sUrl=None):  # Traite les m3u local
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    if infile is None:
-        if 'iptv4sat' in sUrl or '.zip' in sUrl:
-            sHtmlContent = getHtml(sUrl)
-            zip_files = ZipFile(io.BytesIO(sHtmlContent))
-            files = zip_files.namelist()
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            for Title in files:
-                oOutputParameterHandler.addParameter('sMovieTitle', Title)
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-
-                oGui.addDir(SITE_IDENTIFIER, 'unZip', Title, 'tv.png', oOutputParameterHandler)
-
-            oGui.setEndOfDirectory()
-            return
-
-        elif '#EXTM3U' not in sUrl:
-
-            oRequestHandler = cRequestHandler(sUrl)
-            oRequestHandler.addHeaderEntry('User-Agent', UA)
-            inf = oRequestHandler.request()
-
-            if 'drive.google' in inf:
-                inf = unGoogleDrive(inf)
-
-            inf = inf.split('\n')
-        else:
-            inf = infile
-
-    else:
-        inf = infile
-
-    try:
-        line = inf.readline()  # Local variable 'line' value is not used ??
-    except:
-        pass
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    inf = oRequestHandler.request().split('\n')
 
     playlist = []
     song = track(None, None, None, None)
     ValidEntry = False
 
     for line in inf:
-        if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-            try:
-                line = line.decode('utf-8')
-            except AttributeError:
-                pass
-
         line = line.strip()
         if line.startswith('#EXTINF:'):
             length, title = line.split('#EXTINF:')[1].split(',', 1)
@@ -182,24 +114,15 @@ def parseM3U(sUrl=None, infile=None):  # Traite les m3u local
                 playlist.append(song)
                 song = track(None, None, None, None)
 
-    try:
-        inf.close()
-    except:
-        pass
-
     return playlist
-
 
 def showWeb(infile=None):  # Code qui s'occupe de liens TV du Web
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
 
-    if infile is None:
-        sUrl = oInputParameterHandler.getValue('siteUrl')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
-        playlist = parseM3U(sUrl=sUrl)
-    else:
-        playlist = parseM3U(infile=infile)
+    playlist = parseM3U(sUrl=sUrl)
 
     if oInputParameterHandler.exist('AZ'):
         sAZ = oInputParameterHandler.getValue('AZ')
@@ -226,10 +149,6 @@ def showWeb(infile=None):  # Code qui s'occupe de liens TV du Web
 
             # les + ne peuvent pas passer
             url2 = track.path.replace('+', 'P_L_U_S')
-            if not xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-                if '[' not in url2 and ']' not in url2 and '.m3u8' not in url2 and 'dailymotion' not in url2:
-                    url2 = 'plugin://plugin.video.f4mTester/?url=' + QuotePlus(url2)
-                    url2 += '&amp;streamtype=TSDOWNLOADER&name=' + Quote(track.title)
 
             thumb = '/'.join([sRootArt, sThumb])
 
@@ -252,7 +171,6 @@ def showWeb(infile=None):  # Code qui s'occupe de liens TV du Web
             oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
             oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
             oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'enregistrement', 'Enregistrement')
-            oGui.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -399,28 +317,10 @@ def play__():  # Lancer les liens
     # Special url with tag
     if '[' in sUrl and ']' in sUrl:
         sUrl = GetRealUrl(sUrl)
-    elif not xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-        stype = ''
-        if '.ts' in sUrl:
-            stype = 'TSDOWNLOADER'
-        elif '.m3u' in sUrl:
-            pass
-        if stype:
-            from F4mProxy import f4mProxyHelper
-            f4mp = f4mProxyHelper()
-            xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=True)
-            f4mp.playF4mLink(sUrl, sTitle, proxy=None, use_proxy_for_chunks=False, maxbitrate=0, simpleDownloader=True
-                                 , auth=None, streamtype=stype, setResolved=True, swf=None, callbackpath=''
-                                 , callbackparam='', iconImage=sThumbnail)
-            return
-
-    if 'f4mTester' in sUrl:
-        xbmc.executebuiltin('XBMC.RunPlugin(' + sUrl + ')')
-        return
 
     # Bug specifique au flux france TV
     # eof detectedL
-    elif 'ftven.fr' in sUrl:
+    if 'ftven.fr' in sUrl:
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(SITE_IDENTIFIER)
         oGuiElement.setTitle(sTitle)
@@ -449,13 +349,9 @@ def play__():  # Lancer les liens
 """
 Fonction diverse:
 #   - GetRealUrl = Regex pour Iptv(Officiel)
-#   - DecodeEmail = Decode les email coder par Cloudflare pour extinf
-#   - unZip = Extrait les un fichier specific dans une archive zip
-#   - unGoogleDrive = Recupere le fichier video quand il est heberger sur GoogleDrive
 #   - showDailymotionStream = Lis les liens de streaming de Daylimotion qui sont speciaux
 #   - getBrightcoveKey = Recupere le token pour les liens proteger par Brightcove (RMC Decouvert par exemple)
 """
-
 
 def GetRealUrl(chain):
     oParser = cParser()
@@ -507,12 +403,6 @@ def GetRealUrl(chain):
 
     return url
 
-
-def openwindows():
-    xbmc.executebuiltin('ActivateWindow(%d, return)' % 10601)
-    return
-
-
 def decodeNrj(d):
     oRequestHandler = cRequestHandler(d)
     sHtmlContent = oRequestHandler.request()
@@ -529,66 +419,38 @@ def decodeNrj(d):
 
     return dataUrl
 
-
-def decodeEmail(e):
-    head, e = e.split('a href=')
-    e, rest = e.split('</a>')
-    e = re.search('data-cfemail="(.+?)"', e).group(1)
-    de = ''
-    k = int(e[:2], 16)
-
-    for i in range(2, len(e)-1, 2):
-        de += chr(int(e[i:i+2], 16) ^ k)
-
-    return head + str(de) + rest
-
-
-def unZip():
-    oInputParameterHandler = cInputParameterHandler()
-    Title = oInputParameterHandler.getValue('sMovieTitle')
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    sHtmlContent = getHtml(sUrl)
-    zip_files = ZipFile(io.BytesIO(sHtmlContent))
-    files = zip_files.namelist()
-    pos = files.index(Title)
-    with zip_files.open(files[pos]) as f:
-        sHtmlContent = []
-        for line in f:
-            sHtmlContent.append(line)
-        inf = sHtmlContent
-
-    showWeb(inf)
-
-
-def unGoogleDrive (infile):
-    ids = re.findall('<a href="https://drive.google.com/file/d/([^"]+)/view', infile)[0]
-    url = 'https://drive.google.com/uc?id=' + ids + '&export=download'
-    inf = getHtml(url)
-
-    return inf
-
-
 def getBrightcoveKey(sUrl):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     if "rmcdecouverte" in sUrl:
-        result = re.search('data-account="(.+?)" data-player="(.+?)".+?data-video-id="(.+?)"', sHtmlContent)
+        url = re.search('<script type="application/javascript" src="([^"]+)"></script>', sHtmlContent).group(1) 
+
+        oRequestHandler = cRequestHandler("https://" + sUrl.split('/')[2] + url)
+        sHtmlContent = oRequestHandler.request()
+        result = re.search('N="([^"]+)",y="([^"]+)"\)', sHtmlContent)
+        player = result.group(1)
+        video = result.group(2)
+
+        oRequestHandler = cRequestHandler("https://static.bfmtv.com/ressources/next-player/cleo-player/playerBridge.js")
+        sHtmlContent = oRequestHandler.request().lower()
+
+        ID = sUrl.split('/')[2].split('.')[0]
+        account = re.search("\n(.+?): '" + ID + "'", sHtmlContent).group(1).replace('            ','')
+
     else:
         result = re.search('<div class="video_block" id="video_player_.+?" accountid="([^"]+)" playerid="([^"]+)" videoid="([^"]+)"', sHtmlContent)
 
-    account = result.group(1)
-    player = result.group(2)
-    video = result.group(3)
+        account = result.group(1)
+        player = result.group(2)
+        video = result.group(3)
 
     url = 'http://players.brightcove.net/%s/%s_default/index.min.js' % (account, player)
-
     oRequestHandler = cRequestHandler(url)
     sHtmlContent = oRequestHandler.request()
     policyKey = re.search('policyKey:"(.+?)"', sHtmlContent).group(1)
 
-    url = "https://edge.api.brightcove.com/playback/v1/accounts/" + account + "/videos/" + video
+    url = "https://edge.api.brightcove.com/playback/v1/accounts/%s/videos/%s" %(account, video)
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('Accept', "application/json;pk=" + policyKey)
     sHtmlContent = oRequestHandler.request()

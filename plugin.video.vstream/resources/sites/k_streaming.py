@@ -329,7 +329,7 @@ def showSaisons():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addSaison(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -372,21 +372,22 @@ def showEpisodes():
         for aEntry in ListeUrl:
 
             sUrl = aEntry[0]
-            sTitle = sMovieTitle.replace(' - Saison', ' Saison') + aEntry[1].replace('Part', 'Episode')
+            sTitle = sMovieTitle.replace(' - Saison', ' Saison') + ' ' + aEntry[1].replace('Part', 'Episode')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     # si un seul episode
     else:
+        sTitle = sMovieTitle + ' episode 1 '
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle + 'episode 1 ')
+        oOutputParameterHandler.addParameter('sMovieTitle', )
         oOutputParameterHandler.addParameter('sThumb', sThumb)
-        oGui.addTV(SITE_IDENTIFIER, 'showHosters', sMovieTitle + ' episode 1 ', '', sThumb, sDesc, oOutputParameterHandler)
+        oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

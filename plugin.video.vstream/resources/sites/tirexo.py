@@ -14,73 +14,16 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-
-# from test.test_socket import try_address
-
+from resources.lib.util import cUtil
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
 
 SITE_IDENTIFIER = 'tirexo'
 SITE_NAME = '[COLOR violet]Tirexo[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
-# URL_HOST = 'https://www2.tirexo.ai/'
-
-
-# def getURL():
-    # oParser = cParser()
-    # oRequestHandler = cRequestHandler(URL_HOST)
-    # oRequestHandler.addHeaderEntry('User-Agent', UA)
-    # sHtmlContent = oRequestHandler.request()
-
-    # sPattern = '<a class="full-wrap clearfix btn btn-danger" href="([^"]+)">Acc&eacute;der au site</a></div>'
-    # aResult = oParser.parse(sHtmlContent, sPattern)
-    # if aResult[0]:
-        # return aResult[1][0]
-
-
-#def GetURL_MAIN():
-    #ADDON = addon()
-    #oInputParameterHandler = cInputParameterHandler()
-    #sUrl = oInputParameterHandler.getValue('siteUrl')
-    #Sources = oInputParameterHandler.getValue('function')
-
-    # z = oInputParameterHandler.getAllParameter()
-    # VSlog(z)
-
-    # quand vstream load tous les sites on passe >> globalSources
-    # quand vstream load a partir du menu home on passe >> callplugin
-    # quand vstream fabrique une liste de plugin pour menu(load site globalRun and call function search) >> search
-    # quand l'url ne contient pas celle déjà enregistrer dans settings et que c'est pas dlprotect on active.
-    #if not (Sources == 'callpluging' or Sources == 'globalSources' or Sources == 'search') and not ADDON.getSetting('Tirexo')[6:] in sUrl and not 'dl-protect.' in sUrl and not 'zt-protect.' in sUrl:
-        #MemorisedHost = getURL()
-        #if MemorisedHost is not None and MemorisedHost != '' :
-            #if not 'cf_chl_jschl_tk' in MemorisedHost:
-                #ADDON.setSetting('Tirexo', MemorisedHost)
-                #VSlog("Tirexo url  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('Tirexo'))
-        #else:
-            #ADDON.setSetting('Tirexo', URL_HOST)
-            #VSlog("Url non changer car égal à None le site peux être surcharger utilisation de >> ADDON.getSetting('Tirexo')")
-
-        #return ADDON.getSetting('Tirexo')
-    #else:
-        # si pas de zt dans settings on récup l'url une fois dans le site
-        #if not ADDON.getSetting('Tirexo') and not (Sources == 'callpluging' or Sources == 'globalSources' or Sources == 'search'):
-            #MemorisedHost = getURL()
-            #if MemorisedHost is not None and MemorisedHost != '':
-                #if not 'cf_chl_jschl_tk' in MemorisedHost:
-                    #ADDON.setSetting('Tirexo', MemorisedHost)
-                    #VSlog("Tirexo url vide  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('Tirexo'))
-            #else:
-                #ADDON.setSetting('Tirexo', URL_HOST)
-                #VSlog("Url non changer car égal à None le site peux être surcharger utilisation de >> ADDON.getSetting('Tirexo')")
-
-            #return ADDON.getSetting('Tirexo')
-        #else:
-            #VSlog("Tirexo pas besoin d'url")
-            #return ADDON.getSetting('Tirexo')
 
 # Teste pour le moment avec une url fixe.
-URL_MAIN = "https://www2.tirexo.ai/"
+URL_MAIN = "https://www2.tirexo.club/"
 # URL_MAIN = "https://www.tirexo......./"  # Les regex sont différentes mais il n'y a pas cloudflare
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=1&result_from=1&story=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=15&story=', 'showMovies')
@@ -139,181 +82,10 @@ TV_NEWS = (URL_MAIN + 'emissions-tv-documentaires/souscate_doc-Émissions+TV/', 
 SPECT_NEWS = (URL_MAIN + 'emissions-tv-documentaires/souscate_doc-Spectacle/', 'showMovies')
 CONCERT_NEWS = (URL_MAIN + 'musiques-mp3-gratuite/souscat_music-Concerts/', 'showMovies')
 
-
-# bypass cloudflare avec Selenium
-
-def redi(url):  # Pour la redirection avec /link
-    if url:
-        try:  # On passe par la méthode request quand cloudflare n'est pas présent
-            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0',
-                       'Content-Type': 'text/html; charset=UTF-8',
-                       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                       'Accept-encoding': 'gzip, deflate, br',
-                       'Accept-language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7,nl;q=0.6,it;q=0.5,es;q=0.4,de;q=0.3'}
-            r = requests.get(url, allow_redirects=False, headers=headers)
-            r.status_code
-            r.url
-            result = r.headers['location']
-            return result
-        except:
-            pass
-
-    try:
-        from selenium import webdriver
-        from selenium.webdriver.common.driver_utils import get_driver_path
-        from selenium.webdriver.support.ui import WebDriverWait
-        from selenium.webdriver import Chrome
-        from selenium.webdriver.chrome.options import Options
-
-        # from selenium.webdriver.firefox.options import Options
-        # from selenium.webdriver import Firefox
-
-        # from selenium.webdriver.common.by import By
-        # from selenium.webdriver.support import expected_conditions as EC
-
-        VSlog("Chargement Selenium ok")
-
-    except:
-        pass
-    driverPath = get_driver_path('chromedriver')
-    options = Options()
-    options.headless = True
-    browser = webdriver.Chrome(driverPath, options=options)
-    browser.get(url)
-
-    # On attends la redirection
-    wait = WebDriverWait(browser, 10)
-    wait.until(lambda driver: browser.current_url != url)
-
-    current_url = browser.current_url
-
-    browser.close()
-    print(current_url)
-    return current_url
-
-
-def resolvenocloudflare(url, cookie):  # Méthode classique
-    oRequestHandler = cRequestHandler(url)
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    if cookie:
-        oRequestHandler.addHeaderEntry('Cookie', cookie)
-    # oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-    sHtmlContent = oRequestHandler.request()
-    return sHtmlContent
-
-
-def cloudflare(url):  # Bypass cloudflare avec selenium
-
-    if url:  # On passe par la méthode classique en cas ou cloudflare n'est pas présent
-        try:
-            c = GestionCookie().Readcookie('tirexo_com')  # On lie le cookie enregistré
-            sHtmlContent = resolvenocloudflare(url, c)  # On passe par la fonction resolvenocloudflare avec l'url et le cookie
-            VSlog("cookies encore valables")  # Un log en cas que le cookie est valide
-            return sHtmlContent  # On renvoie le contenu html de l'url qui a été validé
-        except:  # En cas d'exception /ou erreur
-            pass  # On ignore et on passe le code précédent si le cookie n'est plus valide
-
-    try:
-        from selenium import webdriver
-        from selenium.webdriver.common.driver_utils import get_driver_path
-        from selenium.webdriver.support.ui import WebDriverWait
-        from selenium.webdriver import Chrome
-        from selenium.webdriver.chrome.options import Options
-        from selenium.webdriver import DesiredCapabilities
-
-        # from selenium.webdriver.firefox.options import Options
-        # from selenium.webdriver import Firefox
-
-        # from selenium.webdriver.common.by import By
-        # from selenium.webdriver.support import expected_conditions as EC
-
-        VSlog("Chargement Selenium ok")
-
-    except:
-        pass
-
-    CloudflarePassed = False
-
-    if True:
-        driverPath = get_driver_path('chromedriver')
-        options = Options()
-
-        # options.add_argument("headless")
-        # options.add_argument("window-size=1920,1080")
-        options.add_argument("'user-agent={}".format(UA))
-        # options.add_argument("disable-gpu")
-
-        capabilities = DesiredCapabilities.CHROME.copy()
-        capabilities['acceptSslCerts'] = True
-        capabilities['acceptInsecureCerts'] = True
-
-        browser = webdriver.Chrome(driverPath, options=options, desired_capabilities=capabilities)
-    else:
-        path = r"C:\Users\XXXX\AppData\Roaming\Kodi\addons\script.module.selenium\bin\geckodriver\win32\geckodriver\geckodriver.exe"
-        # path sert pour firefox
-        browser = webdriver.Firefox(executable_path=path, options=options, log_path="")
-
-    browser.get(url)
-
-    # On boucle si Cloudflare n'est pas résolu.
-    # On loop que 3 fois maxi.
-    loop = 0
-    while (CloudflarePassed == False):
-        if loop > 3:
-            break
-
-        # On se sert du cookie pour voir si Cloudflare est résolu
-        Cookies = browser.get_cookies()
-        if "cf_clearance" in str(Cookies):
-            break
-
-        # Si pas de protection CF
-        if 'Checking your browser before accessing' not in browser.page_source:
-            break
-
-        # On récupere le timeout de maniere dynamique
-        try:
-            time.sleep(float(re.search(r'submit\(\);\r?\n\s*},\s*([0-9]+)',
-                                       browser.page_source).group(1)) / float(1000) + 1)
-
-        except:
-            # Sauf sur la nouvelle version où il n'est pas présent
-            time.sleep(6)
-
-        VSlog("loop : " + str(loop))
-
-        loop = loop + 1
-
-    VSlog("""Cloudflare Passed, Cookie : """ + str({cookie['name']: cookie['value'] for cookie in browser.get_cookies()})
-          + """\n User Agent : """ + browser.execute_script("return navigator.userAgent"))
-
-    # Sauvegarde des cookies
-    c = ""
-    for cookie in browser.get_cookies():
-        c = c + cookie['name'] + '=' + cookie['value'] + ';'
-    c = str(c[:-1])
-
-    GestionCookie().SaveCookie('tirexo_com', c)
-
-    page_source = (browser.page_source).encode('utf-8', errors='replace')
-    browser.close()
-
-    return page_source
-
-
-def showInstall():
-    xbmc.executebuiltin('InstallAddon(script.module.selenium)')
-
-
 def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    # oGui.addDir(SITE_IDENTIFIER, 'showDetail', '[COLOR red]Explication pour le site[/COLOR]', 'films.png', oOutputParameterHandler)
-
-    # oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    # oGui.addDir(SITE_IDENTIFIER, 'showInstall', '[COLOR blue]Cliquer ici pour installer selenium[/COLOR]', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuMovies', 'Films', 'films.png', oOutputParameterHandler)
@@ -499,38 +271,6 @@ def showMenuAutres():
     oGui.setEndOfDirectory()
 
 
-def showDetail():
-    dialog().VStextView(desc="""Explication pour le changement:
-Nous avons remarqué que ces derniers temps nous avons beaucoup de problèmes avec cloudflare.
-C'est pourquoi nous avons changé de méthode pour passer la protection.
-Nous utiliserons votre navigateur afin de récupérer le bon contenu du site et non cloudflare
-En aucun cas nous n'utiliseront vos données confidentielles.
-
-
-- Pour avoir plus d'information rendez vous sur notre github officiel:
-https://github.com/Kodi-vStream/venom-xbmc-addons.
-- Pour l'installation et le fonctionnement de Selenium:
-https://github.com/Kodi-vStream/venom-xbmc-addons/issues/2948.
-
-
-Le fonctionnement:
-Une fenêtre va s'ouvrir pour ouvrir un serveur local(et aussi le navigateur de temps en temps) et récupérer le contenu
-du site. Veuillez ne pas le(s) fermer(s) il(s) se fermera(ont) automatiquement.
-Pour le navigateur nous passons par Google Chrome car c'est le plus simple à configurer malheureusement.
-Si vous n'avez pas Google Chrome alors ça ne fonctionnera pas donc je vous conseille de l'installer à jour important !!!
-Veuillez noter que nous réfléchissons à une solution pour utiliser les autres navigateurs
-
-
-PS:
-Si Jamais de temps en temps ça ne passe pas retentez une deuxième fois.
-Veuillez noter aussi qu'il vous faut un ordinateur Windows ou linux (Mac est incompatible pour l'instant).
-Pour les appareils de types Android, Ios, Libreelec, Xbox et autres ne sont pas compatible avec Selenium et c'est
-impossible de résoudre ce problème désolé.
-
-                                        Merci d'avoir lu notre explication
-                                        Vive vStream !!!!""", title="Fonctionnement du site")
-
-
 def showSearch():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -548,7 +288,7 @@ def showGenre():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    URL_MOVIES = URL_MAIN + sUrl + 'genre-'
+    URL_MOVIES = URL_MAIN + sUrl + '?do=cat&category=telecharger-series&genre='
 
     listeGenres = ['Action', 'Animation', 'Arts Martiaux', 'Aventure', 'Biopic', 'Bollywood', 'Comédie Dramatique',
                    'Comédie Musicale', 'Comédie', 'Documentaire', 'Drame', 'Epouvante-horreur', 'Espionnage',
@@ -557,7 +297,7 @@ def showGenre():
 
     oOutputParameterHandler = cOutputParameterHandler()
     for genre in listeGenres:
-        oOutputParameterHandler.addParameter('siteUrl', URL_MOVIES + genre.replace(' ', '%20') + '/')
+        oOutputParameterHandler.addParameter('siteUrl', URL_MOVIES + genre.replace(' ', '%20'))
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', genre, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -650,7 +390,7 @@ def showMovies(sSearch=''):
             if (sNextPage != False):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-                number = re.search('/page/([0-9]+)', sNextPage).group(1)
+                number = re.search('cstart=([0-9]+)', sNextPage).group(1)
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
 
     if not sSearch:
@@ -664,7 +404,7 @@ def __checkForNextPage(sHtmlContent):
     if (aResult[0] == True):
         nextPage = aResult[1][0]
         if not nextPage.startswith('https'):
-            nextPage = URL_MAIN[:-1] + nextPage
+            nextPage = URL_MAIN[:-1] + '/' + nextPage
         return nextPage
     return False
 
@@ -731,7 +471,7 @@ def showMoviesLinks():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
@@ -745,51 +485,31 @@ def showMoviesLinks():
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles pour ce film:[/COLOR]')
 
     # récupération du Synopsis
-    sPattern = '<span data-slice="200" itemprop="description">(.+?)</span>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0]:
-        sDesc = aResult[1][0]
-        sDesc = sDesc.replace('<span>', '').replace('</span>', '')
-        sDesc = sDesc.replace('<b>', '').replace('</b>', '')
-        sDesc = sDesc.replace('<i>', '').replace('</i>', '')
-        sDesc = sDesc.replace('<br>', '').replace('<br />', '')
-
-    # on recherche d'abord la qualité courante
-    sPattern = 'couleur-qualitesz"> *Qualité (.+?) <.+?"couleur-languesz">(.+?)</span>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    sTitle = sMovieTitle
-    if (aResult[0]):
-        sQual = aResult[1][0][0]
-        sLang = aResult[1][0][1]
-        sTitle = ('%s [%s] (%s)') % (sMovieTitle, sQual, sLang)
-
-    # On ajoute le lien même si on n'a pas réussi à déterminer la qualité
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', sUrl)
-    oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-    oOutputParameterHandler.addParameter('sThumb', sThumb)
-    oOutputParameterHandler.addParameter('sDesc', sDesc)
-
-    oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
+    try:
+        sPattern = '<h3 class="">Description</h3>(.+?)</h3>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sDesc = aResult[1][0]
+    except:
+        pass
 
     # on regarde si dispo dans d'autres qualités
-    sPattern = '<a href="([^"]+)"><span class="otherquality">.+?<b>([^<>]+)</b>.+?<b>([^<>]+)</b>'
+    sPattern = '<option value="(.+?)".+?</span>(.+?) \((.+?)\)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            sUrl2 = aEntry[0]
             sQual = aEntry[1]
             sLang = aEntry[2]
-            sTitle = ('%s [%s] %s') % (sMovieTitle, sQual, sLang)
+            sDisplayTitle = ('%s [%s] %s') % (sTitle, sQual, sLang)
 
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            sUrl = "https://www2.tirexo.ai/?subaction=get_links&version=" + aEntry[0]
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     # Qualité STREAMING
     sPattern = '<a rel=\'nofollow\' class=\'streaming\' href="([^"]+?)"'
@@ -828,87 +548,56 @@ def showSeriesLinks():
 
     # récupération du Synopsis
     try:
-        sPattern = '<span data-slice="200" itemprop="description">(.+?)</span>'
+        sPattern = '<h3 class="">Description</h3>(.+?)</h3>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
-            sDesc = sDesc.replace('<span>', '').replace('</span>', '')
-            sDesc = sDesc.replace('<b>', '').replace('</b>', '')
-            sDesc = sDesc.replace('<i>', '').replace('</i>', '')
-            sDesc = sDesc.replace('<br>', '').replace('<br />', '')
     except:
         pass
 
     # Mise à jour du titre
-    sPattern = '<h2>T.+?charger <b itemprop="name">(.+?)</b>.+?>(.+?)</span>'
+    sPattern = '<h3 class="p-2">(.+?)</h3>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sTitle = sMovieTitle
-    if (aResult[0]):
-        sTitle = aResult[1][0][0] + " " + aResult[1][0][1]
-
-    numSaison = str(aResult[1][0][1]).lower().replace("saison", "").strip()
-    saisons = []
-    saisons.append(numSaison)
-
-    # on recherche d'abord la qualité courante
-    sPattern = 'couleur-qualitesz">Qualit.+? (.+?) <.+?couleur-languesz">(.+?)</span><br>.+?"couleur-seriesz">(.+?)\['
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    sDisplayTitle = sTitle
-    if (aResult[0]):
-        sQual = aResult[1][0][0]
-        sLang = aResult[1][0][1]
-        sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', sUrl)
-    oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-    oOutputParameterHandler.addParameter('sThumb', sThumb)
-    oOutputParameterHandler.addParameter('sDesc', sDesc)
-    oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     # on regarde si dispo dans d'autres qualités
     sHtmlContent1 = CutQual(sHtmlContent)
-    sPattern1 = '<a href="([^"]+)"><span class="otherquality">.+?<b>([^"]+)</b>.+?<b>([^"]+)</b>.+?<b> (.+?)<'
-    aResult1 = oParser.parse(sHtmlContent1, sPattern1)
 
-    otherSaison = False
+    sPattern1 = 'value="(.+?)".+?/span>(.+?) \(.+?\) (.+?) \((.+?)\)'
+    aResult1 = oParser.parse(sHtmlContent1, sPattern1)
 
     if (aResult1[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult1[1]:
-            # Si saison différente
-            sSaison = aEntry[1].strip()
-            if numSaison != sSaison:
-                otherSaison = True
-                continue
-
+            sTitle = sTitle + ' ' + aEntry[1]
             sQual = aEntry[2]
             sLang = aEntry[3]
             sDisplayTitle = ('%s [%s] %s') % (sTitle, sQual, sLang)
 
-            sUrl = aEntry[0]
+            sUrl = "https://www2.tirexo.ai/?subaction=get_links&version=" + aEntry[0]
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
-    # on regarde si dispo d'autres saisons
-    if (otherSaison):
 
-        # Affichage du titre
-        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Autres saisons disponibles pour cette série :[/COLOR]')
+    # Affichage du titre
+    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Autres saisons disponibles pour cette série :[/COLOR]')
 
+    # on regarde si dispo dans d'autres saison
+    sHtmlContent1 = CutSais(sHtmlContent)
+
+    sPattern1 = '<option value="([^"]+)".+?</span>([^<]+)<'
+    aResult1 = oParser.parse(sHtmlContent1, sPattern1)
+
+    if (aResult1[0] == True):
         # Une ligne par saison, pas besoin d'afficher les qualités ici
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult1[1]:
 
-            sSaison = aEntry[1].strip()
-            if sSaison in saisons:
-                continue
-            saisons.append(sSaison)
+            sSaison = aEntry[1]
             sSaison = 'Saison ' + sSaison
             sDisplayTitle = ('%s %s') % (sMovieTitle, sSaison)
 
@@ -918,7 +607,7 @@ def showSeriesLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -930,8 +619,6 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
-    # oGui.addText(SITE_IDENTIFIER, '[COLOR blue]Veuillez attendre que le navigateur se ferme tout seul [/COLOR]')
-    # oGui.addText(SITE_IDENTIFIER, '[COLOR blue]Pour qu\'il puisse récupérer automatiquement le bon lien [/COLOR]')
 
     oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -939,36 +626,28 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-
-    # Ajout des liens DL
-    # Gere si un Hoster propose plusieurs liens
-    # Retire les resultats proposés en plusieurs parties (ce sont des .rar)
-    sPattern = '<th scope="col" class="no-sort"><img src=.+?>([^<]+)</th>|class=\'download\'.+?href=\'([^\']+)\'>T.+?charger <'
+    sPattern = '\?domain=(.+?)\.|\"download\".+?href=\"([^>]+)\">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    # VSlog(aResult)
 
     if (aResult[0] == True):
-        oOutputParameterHandler = cOutputParameterHandler()
+
         for aEntry in aResult[1]:
+            if aEntry[0]:
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + re.sub('\.\w+', '', aEntry[0]) + '[/COLOR]')
 
-            sHoster = re.sub('\.\w+', '', aEntry[0])
+            else:
+                if not "Streaming" in aEntry[2]:
+                    sUrl2 = URL_MAIN[:-1] + aEntry[1]
+                    sTitle = sMovieTitle
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+                    oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                    oOutputParameterHandler.addParameter('sThumb', sThumb)                 
+                    oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
-            # filtrer les hosts connus
-            oHoster = cHosterGui().checkHoster(sHoster)
-            if not oHoster:
-                continue
-
-            sUrl2 = URL_MAIN[:-1] + aEntry[1]
-            sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHoster)
-
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sTitle, sThumb, sDesc, oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
+        oGui.setEndOfDirectory()
+    else:
+        showHosters()
 
 def showHostersLink():
     oGui = cGui()
@@ -1010,16 +689,13 @@ def showSeriesHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
 
-    # oGui.addText(SITE_IDENTIFIER, '[COLOR blue]Veuillez attendre que le navigateur se ferme tout seul [/COLOR]')
-    # oGui.addText(SITE_IDENTIFIER, '[COLOR blue]Pour qu\'il puisse récupérer automatiquement le bon lien [/COLOR]')
-
     oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<th scope="col" class="no-sort"><img alt=.+?>([^<>]+)</th>|href=\'([^\']+?)\'>Episode ([^>]+)<'
+    sPattern = '\?domain=(.+?)\.|\"download\".+?href=\"([^>]+)\">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -1029,16 +705,17 @@ def showSeriesHosters():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + re.sub('\.\w+', '', aEntry[0]) + '[/COLOR]')
 
             else:
-                sUrl2 = URL_MAIN[:-1] + aEntry[1]
-                sTitle = sMovieTitle + ' E' + aEntry[2].replace('FINAL ', '')
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sTitle, sThumb, sDesc, oOutputParameterHandler)
+                if not "Streaming" in aEntry[2]:
+                    sUrl2 = URL_MAIN[:-1] + aEntry[1]
+                    sTitle = sMovieTitle + ' ' + aEntry[2].replace('FINAL ', '')
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+                    oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                    oOutputParameterHandler.addParameter('sThumb', sThumb)                 
+                    oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
-    else:   # certains films mals classés apparaissent dans les séries
+    else:
         showHosters()
 
 
@@ -1051,40 +728,12 @@ def Display_protected_link():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    # Ne marche pas
-    if (False):
-        code = {'123455600123455602123455610123455615': 'http://uptobox.com/',
-                '1234556001234556071234556111234556153': 'http://turbobit.net/',
-                '123455600123455605123455615': 'http://ul.to/',
-                '123455600123455608123455610123455615': 'http://nitroflare.com/',
-                '123455601123455603123455610123455615123455617': 'https://1fichier.com/?',
-                '123455600123455606123455611123455615': 'http://rapidgator.net/'}
-
-        for k in code:
-            match = re.search(k + '(.+)$', sUrl)
-            if match:
-                sHosterUrl = code[k] + match.group(1)
-                sHosterUrl = sHosterUrl.replace('123455615', '/')
-                oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
-                    oHoster.setDisplayName(sMovieTitle)
-                    oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-                oGui.setEndOfDirectory()
-                return
-
     if 'link' in sUrl:
-        # Temporairement car la flemme de se battre avec les redirections
-        # oRequestHandler = cRequestHandler(sUrl)
-        # oRequestHandler.addHeaderEntry('User-Agent', UA)
         oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
-        oRequestHandler.addHeaderEntry('User-Agent', UA)
-        oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-        oRequestHandler.request()
+        oRequestHandler.addHeaderEntry('User-Agent', UA)   
+        sHtmlContent = oRequestHandler.request()
         sUrl = oRequestHandler.getRealUrl()
-        # VSlog(sUrl)
 
-    if "journaldupirate" in sUrl:
         sHtmlContent = DecryptDlProtecte(sUrl)
         # VSlog(sHtmlContent)
 
@@ -1130,7 +779,7 @@ def Display_protected_link():
 
 def CutQual(sHtmlContent):
     oParser = cParser()
-    sPattern = 'Qualit.+?galement disponibles pour cette saison:</span><br>(.+?)</div>'
+    sPattern = '<select id="qualite" name="qualite" class="form-control">(.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0]):
         return aResult[1][0]
@@ -1142,77 +791,14 @@ def CutQual(sHtmlContent):
 
 def CutSais(sHtmlContent):
     oParser = cParser()
-    sPattern = '"otherversionsspan">Saisons.+?galement disponibles pour cette série:(.+?)</div>'
+    sPattern = '<select id="saison".+?class="form-control">(.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0]):
         return aResult[1][0]
     return ''
 
 
-def DecryptDlProtecte(url):  # Passe par Selenium
-    VSlog('DecryptDlProtecte : ' + url)
-
-    if not (url):
-        return ''
-    try:
-        from selenium import webdriver
-        from selenium.webdriver.common.driver_utils import get_driver_path
-        from selenium.webdriver.support.ui import WebDriverWait
-        from selenium.webdriver import Chrome
-        from selenium.webdriver.chrome.options import Options
-        from selenium.webdriver.common.by import By
-        from selenium.webdriver.support import expected_conditions as EC
-
-        # from selenium.webdriver.firefox.options import Options
-        # from selenium.webdriver import Firefox
-
-        VSlog("Chargement Selenium ok")
-
-    except:
-        pass
-
-    """ Selenium est désactivé car dl protect ne l'utilise plus mais laissé le code quand même"""
-
-    # CloudflarePassed = False
-    # driverPath = get_driver_path('chromedriver')
-    # options = Options()
-    # options.headless = True # Faut le laisser comme ça sinon ça ne fonctionne pas
-    # browser = webdriver.Chrome(driverPath, options=options)
-    # browser.get(url)
-
-    # On boucle si Cloudflare n'est pas résolu.
-    # On loop que 3 fois maxi.
-    # loop = 0
-    # while CloudflarePassed == False:
-        # if loop > 3:
-            # break
-
-        # On se sert du cookie pour voir si Cloudflare est résolu
-        # Cookies = browser.get_cookies()
-        # if "cf_clearance" in str(Cookies):
-            # break
-
-        # On récupere le timeout de maniere dynamique
-    # try:
-        # time.sleep(float(
-                    # re.search(
-                        # r'submit\(\);\r?\n\s*},\s*([0-9]+)',
-                        # browser.page_source
-                    # ).group(1)
-                # ) / float(1000) + 1)
-
-    # except:
-        # Sauf sur la nouvelle version où il n'est pas présent
-        # time.sleep(6)
-
-    # loop = loop + 1
-
-    # browser.find_element(By.NAME, "submit").click()
-    # page_source = (browser.page_source).encode('utf-8', errors='replace')
-    # browser.close()
-    # print(page_source)
-    # VSlog(page_source)
-    # return page_source
+def DecryptDlProtecte(url):
 
     """ Nouvelle méthode pour dl protect qui passe par requests"""
     s = requests.Session()
@@ -1240,33 +826,6 @@ def DecryptDlProtecte(url):  # Passe par Selenium
 
     sHtmlContent = oRequestHandler.request()
 
-    return sHtmlContent
-
-
-def exectProtect(cookies, url):  # Ne sert plus
-    # Tout ca a virer et utiliser oRequestHandler.addMultipartFiled('sess_id': sId, 'upload_type': 'url', 'srv_tmp_url': sTmp) quand ca marchera
-    import string
-    _BOUNDARY_CHARS = string.digits
-    boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(30))
-    multipart_form_data = {'hidden': 'continuer'}
-    data, headersMulti = encode_multipart(multipart_form_data, {}, boundary)
-
-    # 2 eme requete pour avoir le lien
-    oRequestHandler = cRequestHandler(url)
-    oRequestHandler.setRequestType(1)
-    oRequestHandler.addHeaderEntry('Host', url.split('/')[2])
-    oRequestHandler.addHeaderEntry('Referer', url)
-    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    oRequestHandler.addHeaderEntry('Content-Length', headersMulti['Content-Length'])
-    oRequestHandler.addHeaderEntry('Content-Type', headersMulti['Content-Type'])
-    oRequestHandler.addHeaderEntry('Cookie', cookies)
-    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-
-    oRequestHandler.addParametersLine(data)
-
-    sHtmlContent = oRequestHandler.request()
     return sHtmlContent
 
 # ******************************************************************************

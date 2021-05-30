@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'kstreamingfilm'
 SITE_NAME = 'K Streaming Film'
 SITE_DESC = 'Films en streaming français sur internet.'
 
-URL_MAIN = 'https://filmstreamz.xyz/'
+URL_MAIN = 'https://kstreamingfilm.com/'
 
 MOVIE_MOVIE = (True, 'load')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')

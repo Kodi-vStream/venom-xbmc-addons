@@ -145,16 +145,21 @@ def showVOD():
                 sTitle = sTitle.encode('utf8')
                 sDesc = sDesc.encode('utf8')
 
-            oOutputParameterHandler.addParameter('sID', ids)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
             if aEntry["type"] == "series":
+                sUrl = "https://service-vod.clusters.pluto.tv/v3/vod/series/" + ids + "/seasons?includeItems=true&deviceType=web"
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             elif aEntry["type"] == "Anime":
+                sUrl = "https://service-vod.clusters.pluto.tv/v3/vod/series/" + ids + "/seasons?includeItems=true&deviceType=web"
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oGui.addAnime(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
+                siteUrl = "https://service-stitcher.clusters.pluto.tv/stitch/hls/episode/" + ids + "/master.m3u8"
+                oOutputParameterHandler.addParameter('siteUrl', siteUrl)
                 oGui.addMovie(SITE_IDENTIFIER, 'seriesHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -166,12 +171,10 @@ def ShowSerieSaisonEpisodes():
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
-    sID = oInputParameterHandler.getValue('sID')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sDesc = oInputParameterHandler.getValue('sDesc')
-
-    sUrl = "https://service-vod.clusters.pluto.tv/v3/vod/series/" + sID + "/seasons?includeItems=true&deviceType=web"
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -184,7 +187,8 @@ def ShowSerieSaisonEpisodes():
                 sTitle = sMovieTitle + " S" + str(a["season"]) + " E" + str(a["number"])
                 sID = a["_id"]
 
-                oOutputParameterHandler.addParameter('sID', sID)
+                siteUrl = "https://service-stitcher.clusters.pluto.tv/stitch/hls/episode/" + sID + "/master.m3u8"
+                oOutputParameterHandler.addParameter('siteUrl', siteUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oGui.addEpisode(SITE_IDENTIFIER, 'seriesHosters', sTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
@@ -220,18 +224,18 @@ def showHosters():
 def seriesHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    sID = oInputParameterHandler.getValue('sID')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     clientID, deviceID, sid = getData()
 
-    sHosterUrl = "https://service-stitcher.clusters.pluto.tv/stitch/hls/episode/" + sID
-    sHosterUrl += "/master.m3u8?appName=web&appVersion=5.14.0-0f5ca04c21649b8c8aad4e56266a23b96d73b83a&deviceDNT=false"
+    sHosterUrl = sUrl
+    sHosterUrl += "?appName=web&appVersion=5.14.0-0f5ca04c21649b8c8aad4e56266a23b96d73b83a&deviceDNT=false"
     sHosterUrl += "&deviceId=" + deviceID + "&deviceMake=Firefox&deviceModel=web&deviceType=web&deviceVersion=87.0"
     sHosterUrl += "&includeExtendedEvents=false&marketingRegion=FR&sid=" + sid + "&serverSideAds=true"
 
-    oHoster = cHosterGui().checkHoster(sHosterUrl)
+    oHoster = cHosterGui().checkHoster(sUrl)
     if (oHoster != False):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)

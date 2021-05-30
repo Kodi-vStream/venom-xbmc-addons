@@ -544,7 +544,7 @@ def showMovies(sSearch=''):
 
             progress_.VSclose(progress_)
 
-            if (iPage > 0):
+            if (int(iPage) > 0):
                 iNextPage = int(iPage) + 1
                 oOutputParameterHandler = cOutputParameterHandler()
                 if sSearch:
@@ -649,7 +649,7 @@ def showSeries(sSearch=''):
 
             progress_.VSclose(progress_)
 
-            if (iPage > 0):
+            if (int(iPage) > 0):
                 iNextPage = int(iPage) + 1
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)

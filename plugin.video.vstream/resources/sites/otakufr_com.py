@@ -234,13 +234,14 @@ def showEpisodes():
     if (aResult[0] == True):
         sThumb = aResult[1][0]
 
-    sPattern = '(?:right">|<\\/a>)\\s*<a href="(https.+?\\/episode\\/.+?)".+?list-group-item.+?item-action">([^<]+)'
+    sPattern = '(?:right">|<\\/a>)\\s*<a href="(https.+?\\/episode\\/.+?)".+?list-group-item.+?item-action">([^<]+)(?:Vostfr|Vf)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in reversed(aResult[1]):
             sUrl = aEntry[0]
-            sTitle = aEntry[1]
+            Ep = aEntry[1].split(' ')[-2]
+            sTitle = aEntry[1].replace(Ep,'') + ' E' + Ep
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)

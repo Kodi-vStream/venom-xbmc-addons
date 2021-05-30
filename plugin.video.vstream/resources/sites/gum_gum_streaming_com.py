@@ -100,7 +100,7 @@ def showAnimes():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME, large=True)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
@@ -130,6 +130,7 @@ def showEpisodes():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    sSerieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -159,6 +160,7 @@ def showEpisodes():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
+    sSaison = ''
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
@@ -169,17 +171,24 @@ def showEpisodes():
                 break
 
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
-
+                sSaison = aEntry[0]
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + sSaison + '[/COLOR]')
+                if ':' in sSaison:
+                    sSaison = sSaison[:sSaison.index(':')]
+                sSaison = sSaison.capitalize().strip()
             else:
-                sTitle = aEntry[2]
-                aUrl = aEntry[1]
+                sDisplayTitle = aEntry[2].replace('•', '').strip()
+                if sSaison:
+                    sDisplayTitle += ' ' + sSaison
+                
+                sTitle = sSerieTitle +' | ' + sDisplayTitle 
 
+                aUrl = aEntry[1]
                 oOutputParameterHandler.addParameter('siteUrl', aUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

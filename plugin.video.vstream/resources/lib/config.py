@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.comaddon import addon, dialog, listitem, xbmc, xbmcgui
+from resources.lib.comaddon import addon, dialog, listitem, xbmc, xbmcgui, VSlog, isMatrix
 from resources.lib.tmdb import cTMDb
 from datetime import date, datetime
 
@@ -178,8 +178,14 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
          
     # convertion de la durée en secondes -> heure:minutes
     if 'duration' in meta and meta['duration']:
-        duration = meta['duration']/60  # En minutes
-        durationH = duration/60 # Nombre d'heures
+        
+        if isMatrix():
+            duration = meta['duration'] // 60  # En minutes
+            durationH = duration // 60 # Nombre d'heures
+        else:
+            duration = meta['duration'] / 60  # En minutes
+            durationH = duration / 60 # Nombre d'heures
+
         meta['durationH'] = durationH
         #Le resultat doit obligatoirement etre un int sous Py3.
         meta['durationM'] = '{:02d}'.format(int(duration - 60*durationH))

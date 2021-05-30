@@ -14,7 +14,7 @@ import xbmcvfs
 import xbmcgui
 import xbmc
 
-from resources.lib.comaddon import addon, dialog, progress, VSlog, VSupdate, VSPath
+from resources.lib.comaddon import addon, dialog, progress, VSlog, VSupdate, VSPath, isMatrix
 from resources.lib.db import cDb
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
@@ -364,7 +364,8 @@ class cDownload:
         sPluginPath = cPluginHandler().getPluginPath()
         sItemUrl = '%s?site=%s&function=%s&title=%s' % (sPluginPath, SITE_IDENTIFIER, 'StartDownloadList', 'title')
         # meta = {'title': 'Démarrer la liste'}
-        item = xbmcgui.ListItem('Démarrer la liste', iconImage='special://home/addons/plugin.video.vstream/resources/art/download.png')
+        item = xbmcgui.ListItem('Démarrer la liste')
+        item.setArt({'icon':'special://home/addons/plugin.video.vstream/resources/art/download.png'})
 
         # item.setInfo(type='Video', infoLabels=meta)
         # item.setProperty('Video', 'false')
@@ -532,6 +533,7 @@ class cDownload:
 
         row = cDb().get_download()
 
+        oOutputParameterHandler = cOutputParameterHandler()
         for data in row:
 
             title = data[1]
@@ -539,6 +541,7 @@ class cDownload:
             path = data[3]
             # cat = data[4]
             thumbnail = UnquotePlus(data[5])
+
             # The url is unicode format ? Not managed yet
             try:
                 thumbnail = str(thumbnail)
@@ -549,7 +552,6 @@ class cDownload:
             totalsize = data[7]
             status = data[8]
 
-            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sUrl', url)
             oOutputParameterHandler.addParameter('sMovieTitle', title)
             oOutputParameterHandler.addParameter('sThumbnail', thumbnail)
@@ -563,7 +565,15 @@ class cDownload:
             elif status == '2':
                 sStatus = '[COLOR=green][Fini] [/COLOR]'
 
+
             if size:
+                
+                if isMatrix():
+                    try:
+                        title = title.decode()
+                    except:
+                        pass
+
                 sTitle = sStatus + title + ' (' + self.__formatFileSize(size) + '/' + self.__formatFileSize(totalsize) + ')'
             else:
                 sTitle = sStatus + title

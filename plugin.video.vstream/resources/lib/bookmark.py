@@ -52,43 +52,33 @@ class cFav:
         # Comptages des marque-pages
         row = cDb().get_bookmark()
 
-        compt = [0, 0, 0, 0, 0, 0, 0, 0]
+        compt = [0, 0, 0, 0, 0, 0, 0, 0, 0]
         for i in row:
             compt[int(i[5])] = compt[int(i[5])] + 1
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '1')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30120), str(compt[1])), 'mark.png', oOutputParameterHandler)
+        total = compt[1] + compt[7]
+        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30120), str(total)), 'mark.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '2')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s/%s (%s)') % (self.ADDON.VSlang(30121), self.ADDON.VSlang(30122), str(compt[2])), 'mark.png', oOutputParameterHandler)
-
-        # oOutputParameterHandler = cOutputParameterHandler()
-        # oOutputParameterHandler.addParameter('sCat', '3')
-        # oGui.addDir(SITE_IDENTIFIER, 'getFav()', 'Pages', 'news.png', oOutputParameterHandler)
+        total = compt[2] + compt[3] + compt[4] + compt[8]
+        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s/%s (%s)') % (self.ADDON.VSlang(30121), self.ADDON.VSlang(30122), str(total)), 'mark.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '6')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30332), str(compt[6])), 'mark.png', oOutputParameterHandler)
-
-        # oOutputParameterHandler = cOutputParameterHandler()
-        # oOutputParameterHandler.addParameter('sCat', '7')
-        # oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30088), str(compt[7])), 'mark.png', oOutputParameterHandler)
+        total = compt[6]
+        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30332), str(total)), 'mark.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
-        total = compt[3] + compt[4] + compt[5]
+        oOutputParameterHandler.addParameter('sCat', '5')
+        total = compt[5]
         oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30410), str(total)), 'mark.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sAll', 'true')
         oGui.addDir(SITE_IDENTIFIER, 'delBookmark', self.ADDON.VSlang(30209), 'trash.png', oOutputParameterHandler)
-
-        # A virer dans les versions future, pour le moment c'est juste pr supprimer les liens bugges
-        if compt[0] > 0:
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('sCat', '0')
-            oGui.addDir(SITE_IDENTIFIER, 'getFav', '[COLOR red]Erreur /!\ lien à supprimer!!! (' + str(compt[0]) + ')[/COLOR]', 'mark.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -100,10 +90,24 @@ class cFav:
 
         if (oInputParameterHandler.exist('sCat')):
             sCat = oInputParameterHandler.getValue('sCat')
-            gen = (x for x in row if x[5] in sCat)
+
+            # Série, Animes, Saison et Episodes sont visibles dans les marques-page "Séries"
+            catList = ('2', '3', '4', '8')
+            if sCat in catList:
+                sCat = 2
+                cGui.CONTENT = 'tvshows'
+            else:
+                catList = ('1', '7')    # films, saga
+                cGui.CONTENT = 'movies'
+                if sCat in catList:
+                    sCat = 1
+                else:
+                    catList = sCat
+                    cGui.CONTENT = 'videos'
+            gen = (x for x in row if x[5] in catList)
         else:
-            sCat = '5'
-            gen = (x for x in row if x[5] not in ('1', '2', '6'))
+            oGui.setEndOfDirectory()
+            return
 
         for data in gen:
 
@@ -157,16 +161,31 @@ class cFav:
                 oGuiElement.setTitle(title)
                 oGuiElement.setFileName(title)
                 oGuiElement.setIcon("mark.png")
-                if (cat  == '1'):
-                    cGui.CONTENT = 'movies'
+                if (cat  == '1'):           # Films
                     oGuiElement.setMeta(1)
                     oGuiElement.setCat(1)
-                elif (cat == '2'):
-                    cGui.CONTENT = 'tvshows'
+                elif (cat == '2'):          # Séries 
                     oGuiElement.setMeta(2)
                     oGuiElement.setCat(2)
+                elif (cat == '3'):          # Anime
+                    oGuiElement.setMeta(4)
+                    oGuiElement.setCat(3)
+                elif (cat == '4'):          # Saisons
+                    oGuiElement.setMeta(5)
+                    oGuiElement.setCat(4)
+                elif (cat == '5'):          # Divers
+                    oGuiElement.setMeta(0)
+                    oGuiElement.setCat(5)
+                elif (cat == '6'):          # TV (Officiel)
+                    oGuiElement.setMeta(0)
+                    oGuiElement.setCat(6)
+                elif (cat == '7'):          # Saga
+                    oGuiElement.setMeta(3)
+                    oGuiElement.setCat(7)
+                elif (cat == '8'):          # Episodes
+                    oGuiElement.setMeta(0)
+                    oGuiElement.setCat(8)
                 else:
-                    cGui.CONTENT = 'videos'
                     oGuiElement.setMeta(0)
                     oGuiElement.setCat(cat)
                 oGuiElement.setThumbnail(thumbnail)
@@ -197,7 +216,8 @@ class cFav:
         oInputParameterHandler = cInputParameterHandler()
 
         sCat = oInputParameterHandler.getValue('sCat') if oInputParameterHandler.exist('sCat') else xbmc.getInfoLabel('ListItem.Property(sCat)')
-        if int(sCat) not in (1, 2, 5):
+        iCat = int(sCat)
+        if iCat<1 or iCat>8:
             self.DIALOG.VSinfo('Error', self.ADDON.VSlang(30038))
             return
 

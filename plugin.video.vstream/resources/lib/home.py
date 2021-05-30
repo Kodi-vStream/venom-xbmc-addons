@@ -9,7 +9,6 @@ from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.siteHandler import cSiteHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.db import cDb
 from resources.lib.comaddon import addon, window
 
 SITE_IDENTIFIER = 'cHome'
@@ -111,8 +110,11 @@ class cHome:
         else:
             return False
 
-    def showSearch(self, searchtext=cInputParameterHandler().getValue('searchtext')):
+    def showSearch(self, searchtext=None):
 
+        if not searchtext:
+            searchtext=cInputParameterHandler().getValue('searchtext')
+        
         if not searchtext:
             return self.showSearchText()
 
@@ -412,6 +414,7 @@ class cHome:
     def showHistory(self):
         oGui = cGui()
 
+        from resources.lib.db import cDb
         row = cDb().get_history()
         if row:
             oGui.addText(SITE_IDENTIFIER, self.addons.VSlang(30416))
@@ -453,6 +456,7 @@ class cHome:
         oGui.setEndOfDirectory()
 
     def delSearch(self):
+        from resources.lib.db import cDb
         cDb().del_history()
         return True
 

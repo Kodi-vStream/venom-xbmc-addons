@@ -224,7 +224,7 @@ def showSaisons():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -285,7 +285,7 @@ def showHoster():
         for aEntry in aResult[1]:
 
             sDataUrl = aEntry[0]
-            sHost = aEntry[1].capitalize()
+            sHost = aEntry[1].capitalize().strip()
             sLang = aEntry[2].upper()
 
             # filtrage des hosters
@@ -298,6 +298,8 @@ def showHoster():
 
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sLang', sLang)
+            oOutputParameterHandler.addParameter('sHost', sHost)
             oOutputParameterHandler.addParameter('siteUrl', lien)
             oOutputParameterHandler.addParameter('referer', sUrl)
 

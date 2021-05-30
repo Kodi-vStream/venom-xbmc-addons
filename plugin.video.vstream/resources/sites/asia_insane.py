@@ -312,7 +312,7 @@ def ShowSerieEpisodes():
 
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            sTitle = sMovieTitle + "E" + aEntry[1]
+            sTitle = sMovieTitle + " E" + aEntry[1]
             sUrl2 = aEntry[0]
 
             if not sUrl2.startswith('http'):

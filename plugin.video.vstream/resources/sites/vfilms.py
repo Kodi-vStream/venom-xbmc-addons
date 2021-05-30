@@ -14,8 +14,8 @@ SITE_IDENTIFIER = 'vfilms'
 SITE_NAME = 'VFilms'
 SITE_DESC = 'Regarder tous vos films streaming complets, gratuit et illimité'
 
-URL_MAIN = 'https://www.vfilms.biz/'
-# URL_MAIN = 'https://www.vfilms.ws/'
+# URL_MAIN = 'https://www.vfilms.biz/'
+URL_MAIN = 'https://www.vfilms.ws/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + 'index.php?story=', FUNCTION_SEARCH)

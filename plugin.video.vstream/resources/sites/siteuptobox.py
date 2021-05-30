@@ -268,7 +268,10 @@ def UptomyAccount():
             dialog.create(SITE_NAME, 'Transfert de fichiers sur votre compte Uptobox')
 
             for aEntry in aResult[1]:
-                dialog.update(int(aEntry) * 100 / int(total), 'Upload en cours...')
+                if isMatrix():
+                    dialog.update(int(aEntry) * 100 // int(total), 'Upload en cours...')
+                else:
+                    dialog.update(int(aEntry) * 100 / int(total), 'Upload en cours...')
 
                 xbmc.sleep(500)
             dialog.close()

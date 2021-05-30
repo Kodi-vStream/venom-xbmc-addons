@@ -321,7 +321,7 @@ def seriesHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<iframe.*?src="([^"]+)'
+    sPattern = 'iframe loading.+?src="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 

@@ -308,7 +308,7 @@ def showMovies(sSearch=''):
 
                 oGui.addTV(SITE_IDENTIFIER, 'ShowEpisodes', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showMovieLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -346,6 +346,8 @@ def __checkForNextPage(sHtmlContent):
         sNextPage = aResult[1][0]  # minimum requis
         if 'htpp' not in sNextPage:
             sNextPage = URL_MAIN[:-1] + sNextPage
+            if '/31/32/' in sNextPage:  # bug page 31
+                sNextPage = re.sub('/31', '', sNextPage)
         try:
             sNumberNext = re.search('/(\d+)/', sNextPage).group(1)
         except:
@@ -412,10 +414,11 @@ def ShowEpisodes():
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
+                oOutputParameterHandler.addParameter('sLang', sLang)
                 oOutputParameterHandler.addParameter('sRel_Episode', sRel_Episode)
                 oOutputParameterHandler.addParameter('sFirst_Url', sFirst_Url)
 
-                oGui.addEpisode(SITE_IDENTIFIER, 'showSerieLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     if not validEntry:
         oGui.addText(SITE_IDENTIFIER, '# Aucune vidéo trouvée #')
@@ -423,7 +426,7 @@ def ShowEpisodes():
     oGui.setEndOfDirectory()
 
 
-def showSerieLinks():
+def showSeriesHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -448,21 +451,18 @@ def showSerieLinks():
             sHost = '[COLOR coral]' + getHostName(sUrl2) + '[/COLOR]'
 
             sDisplayTitle = sMovieTitle + ' ' + sHost
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('referer', sUrl)
-
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+            sHosterUrl = sUrl2
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     if (aResult[0] == True):
         html = aResult[1][0]
         sPattern = 'href="([^"]+).*?aria-hidden'
         aResulturl = oParser.parse(html, sPattern)
         if (aResulturl[0] == True):
-            oOutputParameterHandler = cOutputParameterHandler()
             for aEntry in aResulturl[1]:
                 sUrl2 = aEntry
                 sHost = getHostName(sUrl2)
@@ -482,18 +482,18 @@ def showSerieLinks():
                 sHost = '[COLOR coral]' + sHost + '[/COLOR]'
                 sDisplayTitle = sMovieTitle + ' ' + sHost
 
-                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                oOutputParameterHandler.addParameter('sDesc', sDesc)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oOutputParameterHandler.addParameter('referer', sUrl)
-
-                oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+                sHosterUrl = sUrl2
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                
 
     oGui.setEndOfDirectory()
 
 
-def showMovieLinks():
+def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -533,35 +533,13 @@ def showMovieLinks():
             if 'hqq.tv' in sUrl2:
                 continue
 
-            if 'www' in sHost.lower():
-                sHost = getHostName(sUrl2)
 
-            sDisplayTitle = sTitle + ' ' + '[COLOR coral]' + sHost + '[/COLOR]'
-
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('referer', sUrl)
-
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
-    oGui.setEndOfDirectory()
-
-
-def showHosters():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumb = oInputParameterHandler.getValue('sThumb')
-
-    sHosterUrl = sUrl
-    oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if (oHoster != False):
-        oHoster.setDisplayName(sMovieTitle)
-        oHoster.setFileName(sMovieTitle)
-        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
+            sHosterUrl = sUrl2
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sTitle)
+                oHoster.setFileName(sTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
     oGui.setEndOfDirectory()
 
 

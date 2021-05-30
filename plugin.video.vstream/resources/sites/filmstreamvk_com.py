@@ -269,7 +269,7 @@ def showSxE():
                 SxE = re.sub('(\d+) - (\d+)', 'saison \g<1> Episode \g<2>', aEntry[1])
                 sTitle = sMovieTitle + ' ' + SxE
 
-                sDisplaytitle = sMovieTitle + ' ' + re.sub('saison \d+ ', '', SxE)
+                sDisplaytitle = sTitle # "MARQUER LU" à besoin de la saison et de l'épisode # sMovieTitle + ' ' + re.sub('saison \d+ ', '', SxE)
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -312,12 +312,11 @@ def showLinks():
             dnum = aEntry[1]
             pdata = 'action=doo_player_ajax&post=' + dpost + '&nume=' + dnum + '&type=' + dtype
 
-            sHoster = aEntry[2].capitalize()
-
             # trie des hosters
-            # oHoster = cHosterGui().checkHoster(sHoster)
-            # if not oHoster:
-                # continue
+            sHoster = aEntry[2].capitalize()
+            oHoster = cHosterGui().checkHoster(sHoster)
+            if not oHoster:
+                continue
 
             sDisplaytitle = '%s [COLOR coral]%s[/COLOR]' % (sMovieTitle, sHoster)
 
@@ -327,6 +326,7 @@ def showLinks():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('pdata', pdata)
+            oOutputParameterHandler.addParameter('sHost', sHoster)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplaytitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()

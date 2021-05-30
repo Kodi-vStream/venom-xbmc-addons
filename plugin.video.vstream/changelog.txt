@@ -12,8 +12,15 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 1.2.0***
+- UpNext : Enchainement automatique des épisodes
+- Reprise d'un média commencé, même en changeant de source
+- Métadonnées : plus d'informations média pour les films et compatibilité avec plus de skins
+- Métadonnées : informations média (pochette et description) pour les saisons
+
+
 *** 1.1.0***
-- F4mProxy : suppression de la dépendance
+- F4mProxy : Suppression de la dépendance
 - Sous-titre : Chargement automatique du premier
 - Uptobox : Meilleure gestion
 - IPTV : Suppression des listes d'IPTV

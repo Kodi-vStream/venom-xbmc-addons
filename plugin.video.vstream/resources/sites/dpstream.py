@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # source 26 https://dpstream.ch/  creation 18/10/2020
-# update 26/12/2020
+# update 15/04/2021
 
 import re
 
@@ -223,7 +223,7 @@ def showMovies(sSearch=''):
         sHtmlContent = oRequestHandler.request()
 
     # ref thumb title year
-    sPattern = 'class="item mb-4">.+?ref="([^"]*).+?src=([^\s]*).+?alt="([^"]*).+?muted">([^<]*).*?type">([^<]*)'
+    sPattern = 'class="item mb-4">.+?ref="([^"]*).+?src="([^"]*).+?alt="([^"]*).+?muted">([^<]*).*?type">([^<]*)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -242,8 +242,8 @@ def showMovies(sSearch=''):
 
             sDesc = ''
             sUrl2 = aEntry[0]
-            sThumb = re.sub('/w\d+', '/w342', aEntry[1])
-            sTitle = aEntry[2]
+            sThumb = re.sub('/w\d+/', '/w342/', aEntry[1])
+            sTitle = aEntry[2].split(' en streaming')[0].split('streaming | ')[1]
             sYear = aEntry[3]
             sType = aEntry[4].lower()
 
@@ -367,7 +367,7 @@ def showSaisons():
 
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in reversed(aResult[1]):
+        for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
             saison = aEntry[1]
 
@@ -377,7 +377,7 @@ def showSaisons():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oGui.addEpisode(SITE_IDENTIFIER, 'ShowEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'ShowEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -477,6 +477,8 @@ def showLink():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sYear', sYear)
+            oOutputParameterHandler.addParameter('sHost', sHost)
+            oOutputParameterHandler.addParameter('sLang', sLang)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()

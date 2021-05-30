@@ -166,7 +166,7 @@ def searchSerie(sSearch):
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oGui.addDir(SITE_IDENTIFIER, 'showS_E', sTitle, 'series.png', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showS_E', sTitle, '', 'series.png', '', oOutputParameterHandler)
 
 
 def showGenres():
@@ -334,7 +334,7 @@ def showS_E():
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
-                    oGui.addEpisode(SITE_IDENTIFIER, 'showS_E', sTitle, '', sThumb, '', oOutputParameterHandler)
+                    oGui.addSeason(SITE_IDENTIFIER, 'showS_E', sTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -378,6 +378,8 @@ def showLink():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sHost', sHost)
+            oOutputParameterHandler.addParameter('sLang', sLang)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()

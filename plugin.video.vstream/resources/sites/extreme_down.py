@@ -21,7 +21,7 @@ SITE_IDENTIFIER = 'extreme_down'
 SITE_NAME = '[COLOR violet]Extreme Down[/COLOR]'
 SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
-URL_MAIN = 'https://www.extreme-down.tv/'
+URL_MAIN = 'https://www.extreme-down.live/'
 
 URL_SEARCH = (URL_MAIN + 'index.php?', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0] + 'do=search&subaction=search&titleonly=3&speedsearch=1&story=', 'showMovies')
@@ -96,7 +96,7 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuAutre', 'Autres', 'tv.png', oOutputParameterHandler)
 
-    if not cPremiumHandler("alldebrid").getToken():
+    if not addon().getSetting('hoster_alldebrid_token'):
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
         oGui.addDir(SITE_IDENTIFIER, 'getToken', '[COLOR red]Les utilisateurs d\'Alldebrid cliquez ici.[/COLOR]', 'films.png', oOutputParameterHandler)
 
@@ -435,7 +435,7 @@ def showMovies(sSearch=''):
 
             if sCat == 3 or sMisc:
                 oGui.addMisc(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-            elif sCat == 1 or '/films-' in siteUrl or '/manga-films/' in siteUrl:
+            elif sCat == 1 or '/films' in siteUrl or '/manga-films/' in siteUrl:
                 oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             elif sCat == 4 or '/mangas/' in siteUrl:
                 oGui.addAnime(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
@@ -520,7 +520,7 @@ def showMoviesLinks():
     oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
     oOutputParameterHandler.addParameter('sThumb', sThumb)
     oOutputParameterHandler.addParameter('sDesc', sDesc)
-    oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+    oGui.addLink(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     # on regarde si dispo dans d'autres qualités
     sPattern = '<a class="btn-other" href="([^<]+)">([^<]+)<'
@@ -538,7 +538,7 @@ def showMoviesLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showLinks', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -584,16 +584,16 @@ def showSeriesLinks():
             # * et non pas + car parfois "Saison integrale" pas de chiffre
             saison = re.search('(Saison [0-9]*)', sQual).group(1)
             sQual = re.sub('Saison [0-9]+ ', '', sQual)
-            sMovieTitle = sMovieTitle + ' ' + saison
+            sTitle = sMovieTitle + ' ' + saison
 
-    sDisplayTitle = ('%s (%s)') % (sMovieTitle, sQual)
+    sDisplayTitle = ('%s (%s)') % (sTitle, sQual)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
     oOutputParameterHandler.addParameter('sThumb', sThumb)
     oOutputParameterHandler.addParameter('sDesc', sDesc)
-    oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+    oGui.addSeason(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     sHtmlContent1 = CutQual(sHtmlContent)
     sPattern1 = '<a class="btn-other" href="([^"]+)">([^<]+)</a>'
@@ -605,13 +605,13 @@ def showSeriesLinks():
         for aEntry in aResult1[1]:
             sUrl = aEntry[0]
             sQual = aEntry[1]
-            sDisplayTitle = ('%s [%s]') % (sMovieTitle, sQual)
+            sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     sHtmlContent2 = CutSais(sHtmlContent)
     sPattern2 = '<a class="btn-other" href="([^"]+)">([^<]+)<'
@@ -625,18 +625,18 @@ def showSeriesLinks():
         for aEntry in aResult2[1]:
 
             sUrl = aEntry[0]
-            sTitle = '[COLOR skyblue]' + aEntry[1] + '[/COLOR]'
-
+            sTitle = sMovieTitle + ' ' + aEntry[1].replace('Saison ','S' )
+            
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesLinks', sTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'showSeriesLinks', sTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def showHosters():
+def showLinks():
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
@@ -680,17 +680,25 @@ def showHosters():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        if 'saison' in sUrl:
+            aResult[1].insert(0, ('Episode 1', '', ''))
 
+        ep = ""
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
+                ep = aEntry[0]
             else:
                 sUrl2 = aEntry[1]
-                sTitle = sMovieTitle
+
                 if 'saison' in sUrl:
-                    sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, aEntry[2])
+                    sTitle = sMovieTitle + ' ' + ep
+                else:
+                    sTitle = sMovieTitle
+
+                if 'saison' in sUrl:
+                    sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, aEntry[2])
                 else:
                     sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, str(aEntry[2]))
 
@@ -698,20 +706,22 @@ def showHosters():
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-                oGui.addLink(SITE_IDENTIFIER, 'RecapchaBypass', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+                if 'saison' in sUrl:
+                    oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                else:
+                    oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def RecapchaBypass():
+def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    ADDON = addon()
-    Token_Alldebrid = ADDON.getSetting('hoster_alldebrid_token')
+    Token_Alldebrid = addon().getSetting('hoster_alldebrid_token')
     if Token_Alldebrid != "":
         sUrl_Bypass = "https://api.alldebrid.com/v4/link/redirector?agent=service&version=1.0-&apikey="
         sUrl_Bypass += Token_Alldebrid + "&link=" + sUrl

@@ -101,6 +101,7 @@ def showAnimes(sSearch=''):
             Page = oInputParameterHandler.getValue('Page')
 
     oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.disableSSL()
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
@@ -166,6 +167,7 @@ def showOst():
         Page = oInputParameterHandler.getValue('Page')
 
     oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.disableSSL()
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
@@ -217,6 +219,7 @@ def showEpisodes():
     sDesc = oInputParameterHandler.getValue('sDesc')
 
     oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.disableSSL()
     sHtmlContent = oRequestHandler.request()
 
     # On recupere l'id de l'anime dans l'url
@@ -268,6 +271,7 @@ def showMusic():
 
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.disableSSL()
     sHtmlContent = oRequestHandler.request()
     sPattern = '<div data-track-file="([^"]+)".+?data-track-name="([^"]+)".+?"><span.+?>([^<]+)</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)

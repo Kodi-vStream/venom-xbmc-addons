@@ -2,6 +2,7 @@
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 
 import xbmcaddon, xbmcgui, xbmc, xbmcplugin, xbmcvfs 
+import json
 
 """System d'importation
 
@@ -301,8 +302,47 @@ def isMatrix():
 
 #Transforme les "special" en chemin normal.
 def VSPath(pathSpecial):
-    if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
+    if isMatrix():
         path = xbmcvfs.translatePath(pathSpecial)
     else:
         path = xbmc.translatePath(pathSpecial)
     return path
+
+
+class addonManager:
+
+    # Demande l'installation d'un addon
+    def installAddon(self, addon_id):
+        xbmc.executebuiltin('InstallAddon(%s)' % addon_id, True)
+
+    # Vérifie la présence d'un addon
+    def isAddonExists(self, addon_id):
+        return xbmc.getCondVisibility('System.HasAddon(%s)' % addon_id) == 0
+
+    # Active/desactive un addon
+    def enableAddon(self, addon_id, enable = 'True'):
+        # if enable=='True' and xbmc.getCondVisibility('System.HasAddon(%s)' % addon_id) == 0:
+            # VSlog('%s déjà activé'  %addon_id)
+            # return True
+    
+        request = {
+            "jsonrpc": "2.0",
+            "method": "Addons.SetAddonEnabled",
+            "params": {
+                "addonid": "%s" % addon_id,
+                "enabled": enable == 'True'
+            },
+            "id": 1
+        }
+    
+        req = json.dumps(request)
+        response = xbmc.executeJSONRPC(req)
+        response = json.loads(response)
+        try:
+            VSlog("Activation de " + addon_id)
+            VSlog("response = " + str(response))
+            return response['result'] == 'OK'
+        except KeyError:
+            VSlog('enable_addon received an unexpected response - ' + addon_id, xbmc.LOGERROR)
+            return False
+    

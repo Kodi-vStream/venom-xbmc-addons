@@ -319,13 +319,11 @@ def showSxE():
                 SxE = re.sub('(\d+) - (\d+)', 'saison \g<1> Episode \g<2>', aEntry[1])
                 sTitle = sMovieTitle + ' ' + SxE
 
-                sDisplaytitle = sMovieTitle + ' ' + re.sub('saison \d+ ', '', SxE)
-
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
-                oGui.addEpisode(SITE_IDENTIFIER, 'showLink', sDisplaytitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addEpisode(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -355,16 +353,17 @@ def showLink():
             dpost = aEntry[0]
             dnum = aEntry[1]
             pdata = 'action=doo_player_ajax&post=' + dpost + '&nume=' + dnum + '&type=' + dtype
-            sTitle = aEntry[2].replace('Serveur', '').replace('Télécharger', '').replace('(', '').replace(')', '')
+            sLang = aEntry[2].replace('Serveur', '').replace('Télécharger', '').replace('(', '').replace(')', '')
 
-            if 'VIP - ' in sTitle:  # Les liens VIP ne fonctionnent pas
+            if 'VIP - ' in sLang:  # Les liens VIP ne fonctionnent pas
                 continue
 
-            sTitle = ('%s [%s]') % (sMovieTitle, sTitle)
+            sTitle = ('%s [%s]') % (sMovieTitle, sLang)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('referer', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sLang', sLang)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('pdata', pdata)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)

@@ -15,7 +15,7 @@ SITE_IDENTIFIER = '_4kstreamz'
 SITE_NAME = '4kstreamz'
 SITE_DESC = 'Films et Séries'
 
-URL_MAIN = 'https://wvw.4kstreamz.co/'
+URL_MAIN = 'https://www.4kstreamz.net/'
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 SERIE_SERIES = (True, 'showMenuTvShows')
@@ -276,7 +276,7 @@ def showSaisons():
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sYear', sYear)
-            oGui.addEpisode(SITE_IDENTIFIER, 'ShowEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'ShowEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -368,6 +368,8 @@ def showLinks():
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('sHost', sHost)
+                oOutputParameterHandler.addParameter('sLang', sLang)
                 oOutputParameterHandler.addParameter('referer', sUrl)
                 oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
@@ -385,6 +387,7 @@ def showLinks():
                 dataUrl = aEntry[1]
                 dataCode = aEntry[2]
                 sHost = aEntry[3].capitalize()
+
                 sUrl2 = URL_MAIN + 'Players.php?PPl=' + dataUrl + 'CData=' + dataCode
 
                 sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sLang, sHost)
@@ -393,6 +396,8 @@ def showLinks():
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('sHost', sHost)
+                oOutputParameterHandler.addParameter('sLang', sLang)
                 oOutputParameterHandler.addParameter('referer', sUrl)
                 oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
     oGui.setEndOfDirectory()

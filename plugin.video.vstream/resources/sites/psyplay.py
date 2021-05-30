@@ -15,9 +15,9 @@ SITE_IDENTIFIER = 'psyplay'
 SITE_NAME = 'Psy Play'
 SITE_DESC = 'stream HD, streaming Sans pub, streaming vf'
 
-URL_MAIN = 'https://vww.bonstreaming.com/'
+URL_MAIN = 'https://www.bonstreamings.com/'
 
-URL_SEARCH_MOVIES = (URL_MAIN + '/?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_MOVIE = (True, 'load')
@@ -168,7 +168,7 @@ def showMovies(sSearch=''):
 
             sUrl2 = aEntry[0]
             sQual = aEntry[1]
-            sThumb = re.sub('/w\d+', '/w342', aEntry[2])
+            sThumb = re.sub('/w\d+/', '/w342/', aEntry[2])
             sTitle = aEntry[3].replace(' en streaming', '').replace(' en Streaming', '').replace(' Streaming', '')\
                               .replace(' streaming', '').replace(' Straming', '').replace('Version Francais', 'VF')
             if '/series' in sUrl2:
@@ -250,7 +250,6 @@ def showSaisons():
 
             sUrl = aEntry[0]
             sTitle = sMovieTitle + aEntry[1]
-            # sTitle = re.sub('- Saison \d+', '', sTitle)  # double affichage de la saison
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
