@@ -222,8 +222,7 @@ class cRequestHandler:
             dialog().VSerror(error_msg)
             sContent = ''
 
-
-        if oResponse and oResponse.status_code in 503 or 403:
+        if oResponse.status_code in [503,403]:
             #Default
             CLOUDPROXY_ENDPOINT = 'http://localhost:8191/v1'
             try:
