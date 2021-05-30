@@ -184,7 +184,7 @@ class cRequestHandler:
                 sContent = oResponse.content
 
                 #Necessaire pour Python 3
-                if isMatrix():
+                if isMatrix() and not 'youtube' in oResponse.url:
                     try:
                        sContent = sContent.decode('unicode-escape')
                     except:
