@@ -194,7 +194,7 @@ class cRequestHandler:
                             pass
             else:
                 sContent = oResponse.json()
-                
+
         except ConnectionError as e:
             # Retry with DNS only if addon is present
             import xbmcvfs
@@ -223,7 +223,7 @@ class cRequestHandler:
             sContent = ''
 
 
-        if oResponse and oResponse.status_code == 503:
+        if oResponse and oResponse.status_code in 503 or 403:
             #Default
             CLOUDPROXY_ENDPOINT = 'http://localhost:8191/v1'
             try:
