@@ -2,7 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 
-from resources.lib.comaddon import addon, dialog
+from resources.lib.comaddon import addon, dialog, VSlog
 from resources.lib.config import GestionCookie
 from resources.lib.parser import cParser
 
