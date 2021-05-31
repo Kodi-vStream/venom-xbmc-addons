@@ -117,7 +117,7 @@ def showMovies(sSearch=''):
     sHtmlContent = oRequestHandler.request()
 
     # THUMB ref title desc1 desc2
-    sPattern = '<img class=".+?src="([^"]+).+?<a class="game-name".+?href="([^"]+).+?title="([^"]+).+?data-time="([^"]*)"></time> · ([^<]+) <'
+    sPattern = '<img class=".+?src="([^"]+)".+?href="([^"]+).+?<span>([^<]+)<.+?data-time="(?:([^<]+)|)".+?>([^<]+)'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
