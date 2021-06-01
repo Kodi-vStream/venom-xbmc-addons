@@ -7,7 +7,7 @@ from resources.hosters.youtube import cHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.player import cPlayer
-from resources.lib.comaddon import addon, dialog
+from resources.lib.comaddon import addon, dialog, VSlog
 from resources.lib.tmdb import cTMDb
 from resources.lib.util import QuotePlus
 from resources.lib.config import GestionCookie
@@ -115,8 +115,11 @@ class cShowBA:
 
                 headers.update({"Cookie":cook})
                 sHtmlContent = requests.get(url, params={'search_query': sTitle}, headers=headers).text
+            try:
+                result = re.search('"contents":\[{"videoRenderer":{"videoId":"([^"]+)', str(sHtmlContent)).group(1)
+            except:
+                result = re.search('"contents":\[{"videoRenderer":{"videoId":"([^"]+)', sHtmlContent.encode('utf-8')).group(1)
 
-            result = re.search('"contents":\[{"videoRenderer":{"videoId":"([^"]+)', str(sHtmlContent)).group(1)
             if result:
                 # Premiere video trouvée
                 urlTrailer = 'https://www.youtube.com/watch?v=' + result
@@ -127,6 +130,7 @@ class cShowBA:
             hote.setUrl(urlTrailer)
             hote.setResolution('720p')
             api_call = hote.getMediaLink()[1]
+            
             if not api_call:
                 return
 
