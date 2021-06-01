@@ -71,7 +71,7 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  'concat\((.+?)\)'
+        sPattern =  'B64.+?(?:\(|\[)(.+?)(?:\)|\]).+?;'
         aResult = oParser.parse(sHtmlContent, sPattern)[1][0]
         data = ""
 
