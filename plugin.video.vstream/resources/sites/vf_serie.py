@@ -236,7 +236,7 @@ def showHoster():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = 'Opt1"><iframe.+?src="([^"]+)'
+    sPattern = 'class="TPlayerTb.+?src="([^"]+)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0] is True:
