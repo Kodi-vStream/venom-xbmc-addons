@@ -228,8 +228,8 @@ class cHosterGui:
             return self.getHoster('speedvideo')
         if ('speedvid' in sHostName):
             return self.getHoster('speedvid')
-        if ('netu' in sHostName) or ('hqq' in sHostName) or ('waaw' in sHostName) or ('vizplay' in sHostName):
-            return self.getHoster('netu')
+        #if ('netu' in sHostName) or ('hqq' in sHostName) or ('waaw' in sHostName) or ('vizplay' in sHostName):
+        #    return self.getHoster('netu')
         if ('upstream' in sHostName):
             return self.getHoster('upstream')
         if ('mail.ru' in sHostName):
