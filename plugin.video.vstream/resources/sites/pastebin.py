@@ -1241,7 +1241,7 @@ def showYears():
 
 # Trie des résolutions
 def trie_res(key):
-    resOrder = ['8K', '4K', '1080P', '720P', '576P', '540P', '480P', '360P']
+    resOrder = ['8K', '4K', '2160P', '1080P', '720P', '576P', '540P', '480P', '360P']
     if key == UNCLASSIFIED:
         return 20
     key = key.replace('p', 'P')
