@@ -1033,7 +1033,7 @@ msgid "Always ask me"
 msgstr ""
 
 msgctxt "#30453"
-msgid "Continue streaming via Uptostream"
+msgid "Continue streaming via UpToStream"
 msgstr ""
 
 msgctxt "#30454"

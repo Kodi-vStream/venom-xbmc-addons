@@ -1030,11 +1030,11 @@ msgstr "Mode par defaut"
 
 msgctxt "#30452"
 msgid "Always ask me"
-msgstr "Toujours me demander"
+msgstr "Proposer les deux modes"
 
 msgctxt "#30453"
-msgid "Continue streaming via Uptostream"
-msgstr "Passer en Streaming via Uptostream"
+msgid "Continue streaming via UpToStream"
+msgstr "Passer en Streaming via UpToStream"
 
 msgctxt "#30454"
 msgid "Continue direct via UpToBox"
