@@ -12,11 +12,10 @@
             </catch>
         </trycatch>
 
-        <import addon="script.module.urlresolver"  version="5.1.1" optional="true"/>
-        <import addon="script.module.simplejson" version="3.3.0"/>
-        <import addon="script.module.requests" version="2.9.1"/>
+        <import addon="script.module.urlresolver"optional="true"/>
+        <import addon="script.module.requests"/>
         <import addon="script.module.dnspython" optional="true"/>
-        <import addon="repository.vstream" version="0.0.3"/>
+        <import addon="repository.vstream"/>
         <import addon="script.module.selenium" optional="true"/>
         <!-- Pour le DEBUG        <import addon="script.module.pydevd" version="4.4.0"/> -->
     </requires>

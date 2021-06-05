@@ -3,7 +3,7 @@
 import xbmcplugin
 import xbmc
 
-from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window
+from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window, VSlog
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -290,8 +290,47 @@ class cGui:
     def createListItem(self, oGuiElement):
         oListItem = listitem(oGuiElement.getTitle())
 
-        # voir : https://kodi.wiki/view/InfoLabels
-        oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
+        videoInfoTag = oListItem.getVideoInfoTag()
+
+        #Supprime les elements vide, pour ajouter les valeurs par defaut.
+        data = {key:val for key, val in oGuiElement.getItemValues().items() if val != ""}
+
+        videoInfoTag.setMediaType(oGuiElement.getType())
+        videoInfoTag.setTitle(data['title'])  
+        if not cGui.CONTENT == "addons": 
+            videoInfoTag.setOriginalTitle(data.get('originaltitle'))
+            videoInfoTag.setPlot(data.get('plot'))
+            videoInfoTag.setPlotOutline(data.get('plotoutline'))
+            videoInfoTag.setYear(data.get('year',0))       
+            videoInfoTag.setRating(float(data.get('rating',0.0)))
+            videoInfoTag.setMpaa(data.get('mpaa'))
+            try:
+                videoInfoTag.setDuration(data['duration'])       
+            except:
+                pass
+            videoInfoTag.setPlaycount(data.get('playcount',0))
+            videoInfoTag.setCountries(data.get('country',[""]))
+            videoInfoTag.setTrailer(data.get('trailer'))
+            videoInfoTag.setTagLine(data.get('tagline'))
+            videoInfoTag.setStudios(list(data.get('studio','').split("/")))
+            videoInfoTag.setWriters(list(data.get('writer','').split("/")))
+            videoInfoTag.setDirectors(list(data.get('director','').split("/")))
+
+            if cGui.CONTENT == "tvshows":
+                videoInfoTag.setSeason(data.get('season',0))
+
+            try:
+                credits = eval(data.get('credits'))['cast']
+            except:
+                credits = None
+
+            cast = []
+            if credits is not None:
+                for actor in credits:
+                    thumbnail = actor['profile_path']
+                    cast.append(xbmc.Actor(actor['name'], actor['character'], actor['order'], thumbnail))
+                videoInfoTag.setCast(cast)
+
         oListItem.setArt({'poster': oGuiElement.getPoster(),
                           'thumb': oGuiElement.getThumbnail(),
                           'icon': oGuiElement.getIcon(),
