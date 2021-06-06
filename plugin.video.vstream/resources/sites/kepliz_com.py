@@ -1,16 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
-# 06/02/21
-return False 
-
 import re
-try:  # Python 2
-    from urllib2 import URLError as UrlError
-
-except ImportError:  # Python 3
-    from urllib.error import URLError as UrlError
-
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -30,7 +21,7 @@ SITE_DESC = 'Films en streaming'
 
 # Source compatible avec les clones : toblek, bofiaz, nimvon
 # mais pas compatible avec les clones, qui ont une redirection direct : sajbo, trozam, radego
-URL_HOST = 'http://www.wonior.com/'
+URL_HOST = 'http://www.wavob.com/'
 URL_MAIN = 'URL_MAIN'
 
 # pour l'addon
@@ -125,7 +116,7 @@ def showMovies(sSearch=''):
     if 'searchword=' in sUrl:
         sPattern = '<h4><a href="\/[0-9a-zA-Z]+\/(.+?)"  >(.+?)<'
     else:
-        sPattern = '<span style="list-style-type:none;" >.+? href="\/[0-9a-zA-Z]+\/(.+?)">(.+?)</a>'
+        sPattern = '<span style="list-style-type:none;" >.+? href="\/[0-9a-zA-Z]+\/([^"]+)">(.+?)\((.+?)\).+?<i>(.+?)</i>'
 
     # L'url change tres souvent donc faut la retrouver
     oRequestHandler = cRequestHandler(URL_HOST)
@@ -160,16 +151,14 @@ def showMovies(sSearch=''):
                 break
 
             sUrl2 = aEntry[0]
-            sTitle = aEntry[1]
-            sTitle = re.sub('<font color="#[0-9a-f]{6}" *><i>HD</i></font>', '[HD]', sTitle)
+            sYear = aEntry[2]
 
-            # not found better way
-            # sTitle = unicode(sTitle, errors='replace')
-            # sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
+            sTitle = ("%s [%s]") % (aEntry[1], aEntry[3])
 
             oOutputParameterHandler.addParameter('siteUrl', sMainUrl + sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', aEntry[1])
             oOutputParameterHandler.addParameter('sMainUrl', sMainUrl)
+            oOutputParameterHandler.addParameter('sYear', sYear)
 
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', '', '', oOutputParameterHandler)
 
@@ -202,7 +191,8 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMainUrl = oInputParameterHandler.getValue('sMainUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-
+    sYear = oInputParameterHandler.getValue('sYear')
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -218,160 +208,22 @@ def showHosters():
         sThumb = aResult[1][0][0]
         sDesc = cUtil().unescape(aResult[1][0][1])
 
-    # Recuperation info lien du stream.
-    sLink = None
-    sPostUrl = None
-
-    # Format classique
-    sPattern = 'GRUDALpluginsphp\("player1",{link:"([^"]+)"}\);'
+    sPattern = '<iframe src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0]):
+
+        sMovieTitle = sMovieTitle.replace(' [HD]', '')
         sLink = aResult[1][0]
-        sPattern = '\/plugins\/([0-9a-zA-Z]+)\/plugins\/GRUDALpluginsphp.js"></script>'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0]):
-            sPostUrl = sMainUrl + 'plugins/' + aResult[1][0] + '/plugins/GRUDALpluginsphp.php'
+        if sLink.startswith('/'):
+            sLink = URL_HOST[:-1] + sLink
 
-        if (sLink and sPostUrl):
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sLink', sLink)
+        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
 
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sLink', sLink)
-            oOutputParameterHandler.addParameter('sPostUrl', sPostUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-
-            oGui.addLink(SITE_IDENTIFIER, 'showHostersLink', sMovieTitle, sThumb, sDesc, oOutputParameterHandler)
-
-    # Format rare
-    if not sLink:
-
-        sPattern = '<iframe src= *(?:"|)([^<>"]+\/player\.php\?id=.+?)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0]):
-
-            sMovieTitle = sMovieTitle.replace(' [HD]', '')
-            sLink = aResult[1][0]
-            if sLink.startswith('/'):
-                sLink = URL_HOST[:-1] + sLink
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('sLink', sLink)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-
-            oGui.addLink(SITE_IDENTIFIER, 'showHostersLink2', sMovieTitle, sThumb, sDesc, oOutputParameterHandler)
-
-    # news Format
-    if not sLink:
-
-        sPattern = '<iframe src="([^"]+)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0]):
-
-            sMovieTitle = sMovieTitle.replace(' [HD]', '')
-            sLink = aResult[1][0]
-            if sLink.startswith('/'):
-                sLink = URL_HOST[:-1] + sLink
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('sLink', sLink)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-
-            oGui.addLink(SITE_IDENTIFIER, 'showHostersLink3', sMovieTitle, sThumb, sDesc, oOutputParameterHandler)
+        oGui.addLink(SITE_IDENTIFIER, 'showHostersLink3', sMovieTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
-
-def showHostersLink():
-    oGui = cGui()
-    oParser = cParser()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sLink = oInputParameterHandler.getValue('sLink')
-    sPostUrl = oInputParameterHandler.getValue('sPostUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-
-    oRequestHandler = cRequestHandler(sPostUrl)
-    oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Host', sUrl.split('/')[2])
-    oRequestHandler.addHeaderEntry('Referer', sUrl)
-    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-    oRequestHandler.addHeaderEntry('Content-Type',  "application/x-www-form-urlencoded; charset=UTF-8'")
-    oRequestHandler.addParameters('link', sLink)
-    data = oRequestHandler.request()
-
-    sPattern = '"link":"([^"]+?)","label":"([^"]+?)"'
-    aResult = oParser.parse(data, sPattern)
-
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-
-            sLink = aEntry[0]
-            sQual = aEntry[1]
-            sTitle = sMovieTitle + ' [' + sQual + ']'
-
-            sHosterUrl = sLink
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-
-            if (oHoster != False):
-                oHoster.setDisplayName(sTitle)
-                oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
-
-    oGui.setEndOfDirectory()
-
-
-def showHostersLink2():
-    oGui = cGui()
-    oParser = cParser()
-    oInputParameterHandler = cInputParameterHandler()
-    sLink = oInputParameterHandler.getValue('sLink')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-
-    oRequestHandler = cRequestHandler(sLink)
-    data = oRequestHandler.request()
-
-    sPattern = '"file":"([^"]+)","type":"mp4","label":"([^"]+)"'
-    aResult = oParser.parse(data, sPattern)
-
-    if (aResult[0] == True):
-
-        for aEntry in aResult[1]:
-
-            sLink2 = aEntry[0].replace('\/', '/')
-            sQual = aEntry[1]
-            sTitle = sMovieTitle + ' [' + sQual + ']'
-
-            oRequestHandler = cRequestHandler(sLink2)
-            oRequestHandler.addHeaderEntry('User-Agent', UA)
-            oRequestHandler.addHeaderEntry('Referer', sLink)
-            oRequestHandler.addHeaderEntry('Accept', 'video/webm,video/ogg,video/*;q=0.9,application/ogg;q=0.7,audio/*;q=0.6,*/*;q=0.5')
-            oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-            oRequestHandler.addHeaderEntry('Range', 'bytes=0-')
-
-            try:
-                data = oRequestHandler.request()
-                sLink2 = oRequestHandler.getRealUrl()
-
-                sHosterUrl = str(sLink2)
-                oHoster = cHosterGui().getHoster('lien_direct')
-                # data = response.read()
-
-            except UrlError as e:
-                sLink2 = e.geturl()
-                sHosterUrl = sLink2
-                oHoster = cHosterGui().checkHoster(sHosterUrl)
-
-            if (oHoster != False):
-                oHoster.setDisplayName(sTitle)
-                oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
-
-    oGui.setEndOfDirectory()
-
 
 def showHostersLink3():
     oGui = cGui()
@@ -384,74 +236,42 @@ def showHostersLink3():
     data = oRequestHandler.request()
 
     # Recherche du premier lien
-    sPattern = 'href=["\'](http[^"\']+)["\']'
+    sPattern = '\?>.+?<iframe src="([^"]+)"'
     aResult = oParser.parse(data, sPattern)
 
     # Si il existe, suivi du lien
     if ( aResult[0] == True ):
-        # VSlog(aResult[1][0])
-        # sLink = sLink.rsplit('/', 1)[0] # supprime la dernière partie de l'url de l'iframe
-        # VSlog(sLink)
-        # href = sLink + '/' + aResult[1][0] # concaténation du résultat avec le href trouvé via regex
-        # VSlog(href)
-
-        # VSlog(aResult[1][0])
         oRequestHandler = cRequestHandler(aResult[1][0])
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         oRequestHandler.addHeaderEntry('Referer', sLink)
-        oRequestHandler.addHeaderEntry('Accept', 'video/webm,video/ogg,video/*;q=0.9,application/ogg;q=0.7,audio/*;q=0.6,*/*;q=0.5')
-        oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-        oRequestHandler.addHeaderEntry('Range', 'bytes=0-')
         data = oRequestHandler.request()
 
-    # VSlog(data)
+    # Recherche du premier lien
+    sPattern = 'href=\'([^"]+)\''
+    aResult = oParser.parse(data, sPattern)
 
-    sPattern = '(?:file)|(?:src):\s*[\'"](.+?)[\'"].+?label:\s*[\'"](.+?)[\'"]'
+    # Si il existe, suivi du lien
+    if ( aResult[0] == True ):
+        oRequestHandler = cRequestHandler(aResult[1][0])
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Referer', sLink)
+        data = oRequestHandler.request()
+
+    sPattern = 'playsinline.+?src="([^"]+)"'
     aResult = oParser.parse(data, sPattern)
 
     if (aResult[0] == True):
 
         for aEntry in aResult[1]:
 
-            sLink2 = aEntry[0].replace('\/', '/')
-            sQual = aEntry[1]
-            sTitle = sMovieTitle.replace(' [HD]', '')
-            sTitle = sTitle + '[' + sQual + '] '
+            sLink2 = aEntry.replace('\/', '/')
+            sQual = ""
 
-            if (False):
-
-                oRequestHandler = cRequestHandler(sLink2)
-                oRequestHandler.addHeaderEntry('User-Agent', UA)
-                oRequestHandler.addHeaderEntry('Referer', sLink)
-                oRequestHandler.addHeaderEntry('Accept', 'video/webm,video/ogg,video/*;q=0.9,application/ogg;q=0.7,audio/*;q=0.6,*/*;q=0.5')
-                oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-                oRequestHandler.addHeaderEntry('Range', 'bytes=0-')
-
-                try:
-                    data = oRequestHandler.request()
-                    sLink2 = oRequestHandler.getRealUrl()
-
-                    sHosterUrl = str(sLink2)
-                    oHoster = cHosterGui().getHoster('lien_direct')
-                    # data = response.read()
-
-                except UrlError as e:
-                    sLink2 = e.geturl()
-                    sHosterUrl = str(sLink2)
-                    oHoster = cHosterGui().checkHoster(sHosterUrl)
-
-            elif "amazonaws.com" in sLink2:
-                sHosterUrl = str(sLink2)
-                oHoster = cHosterGui().getHoster('lien_direct')
-            else:
-                sHosterUrl = str(sLink2)
-                oHoster = cHosterGui().checkHoster(sHosterUrl)
-
-            # VSlog(sHosterUrl)
+            oHoster = cHosterGui().checkHoster("mp4")
 
             if (oHoster != False):
-                oHoster.setDisplayName(sTitle)
-                oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, "http://127.0.0.1:2424?u="+sLink2, '')
 
     oGui.setEndOfDirectory()
