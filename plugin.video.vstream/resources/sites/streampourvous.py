@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-
-import json
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -424,7 +422,7 @@ def showHosters():
 
     sUrl = sUrl + pdata
     oRequest = cRequestHandler(sUrl)
-    sHtmlContent = json.loads(oRequest.request())["embed_url"]
+    sHtmlContent = oRequest.request(jsonDecode=True)["embed_url"]
     if 'dood' in sHtmlContent or 'evoload' in sHtmlContent:
         sPattern = '(http.+?)$'
     else:
