@@ -294,7 +294,6 @@ class cGui:
             oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
         else:
             videoInfoTag = oListItem.getVideoInfoTag()
-
             #Supprime les elements vide, pour ajouter les valeurs par defaut.
             data = {key:val for key, val in oGuiElement.getItemValues().items() if val != ""}
 
@@ -304,14 +303,11 @@ class cGui:
                 videoInfoTag.setOriginalTitle(data.get('originaltitle'))
                 videoInfoTag.setPlot(data.get('plot'))
                 videoInfoTag.setPlotOutline(data.get('plotoutline'))
-                videoInfoTag.setYear(data.get('year',0))       
+                videoInfoTag.setYear(int(data.get('year',0)))       
                 videoInfoTag.setRating(float(data.get('rating',0.0)))
                 videoInfoTag.setMpaa(data.get('mpaa'))
-                try:
-                    videoInfoTag.setDuration(data['duration'])       
-                except:
-                    pass
-                videoInfoTag.setPlaycount(data.get('playcount',0))
+                videoInfoTag.setDuration(int(data.get('duration',0)))     
+                videoInfoTag.setPlaycount(int(data.get('playcount',0)))
                 videoInfoTag.setCountries(data.get('country',[""]))
                 videoInfoTag.setTrailer(data.get('trailer'))
                 videoInfoTag.setTagLine(data.get('tagline'))
@@ -320,7 +316,10 @@ class cGui:
                 videoInfoTag.setDirectors(list(data.get('director','').split("/")))
 
                 if cGui.CONTENT == "tvshows":
-                    videoInfoTag.setSeason(data.get('season',0))
+                    if data.get('season') == []:
+                        videoInfoTag.setSeason(0)
+                    else:
+                        videoInfoTag.setSeason(int(data.get('season',0)))
 
                 try:
                     credits = eval(data.get('credits'))['cast']
