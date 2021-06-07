@@ -306,7 +306,11 @@ class cGui:
                 videoInfoTag.setYear(int(data.get('year',0)))       
                 videoInfoTag.setRating(float(data.get('rating',0.0)))
                 videoInfoTag.setMpaa(data.get('mpaa'))
-                videoInfoTag.setDuration(int(data.get('duration',0)))     
+                try:
+                    videoInfoTag.setDuration(int(data.get('duration',0)))     
+                except:
+                    #Pour convertir le temps en seconde.
+                    videoInfoTag.setDuration(sum(x * int(t) for x, t in zip([3600, 60, 1], data.get('duration').split(":"))))
                 videoInfoTag.setPlaycount(int(data.get('playcount',0)))
                 videoInfoTag.setCountries(data.get('country',[""]))
                 videoInfoTag.setTrailer(data.get('trailer'))
