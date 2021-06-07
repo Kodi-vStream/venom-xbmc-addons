@@ -80,7 +80,7 @@ if __name__ == '__main__':
     service()
 
     #Code by sviet2k
-    if addon().getSetting('plugin_kepliz_com') == "true":
+    if addon().getSetting('plugin_kepliz_com') == "true" or addon().getSetting('plugin_kaydo_ws') == "true":
         address = '127.0.0.1'  # Localhost
         port = 2424
         server_inst = TCPServer((address, port), ProxyHTTPRequestHandler)
