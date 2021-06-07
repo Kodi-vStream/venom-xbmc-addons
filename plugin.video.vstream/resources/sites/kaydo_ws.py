@@ -27,7 +27,7 @@ MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_COMMENTS = (URL_MAIN + 'populaires/', 'showMovies')
 MOVIE_NOTES = (URL_MAIN + 'mieux-notes/', 'showMovies')
-MOVIE_GENRES = (True, 'showMovieGenres')
+MOVIE_GENRES = (URL_MAIN, 'showMovieGenres')
 MOVIE_LIST = (True, 'showAlpha')
 
 SERIE_SERIES = (True, 'showMenuTvShows')
@@ -60,6 +60,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films et Séries (Genres)', 'genres.png', oOutputParameterHandler)
+
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
@@ -68,9 +71,6 @@ def load():
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'notes.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Par lettre)', 'az.png', oOutputParameterHandler)
@@ -172,32 +172,28 @@ def showSearch():
 def showMovieGenres():
     oGui = cGui()
 
-    liste = []
-    liste.append(['Action', URL_MAIN + 'actionn/'])
-    liste.append(['Animation', URL_MAIN + 'animation/'])
-    liste.append(['Aventure', URL_MAIN + 'aventure/'])
-    liste.append(['Comédie', URL_MAIN + 'comedie/'])
-    liste.append(['Crime',URL_MAIN + 'crime/'])
-    liste.append(['Documentaire',URL_MAIN + 'documentaire/'])
-    liste.append(['Drame', URL_MAIN + 'drame/'])
-    liste.append(['Etranger', URL_MAIN + 'etranger/'])
-    liste.append(['Fantastique', URL_MAIN + 'fantastique/'])
-    liste.append(['Famille', URL_MAIN + 'familial/'])
-    liste.append(['Guerre', URL_MAIN + 'guerre/' ])
-    liste.append(['Historique', URL_MAIN + 'histoire/'])
-    liste.append(['Horreur',URL_MAIN + 'horreur/'])
-    liste.append(['Musical', URL_MAIN + 'musique/'])
-    liste.append(['Mystere',URL_MAIN + 'mystere/'])
-    liste.append(['Romance', URL_MAIN + 'romance/'])
-    liste.append(['Science Fiction', URL_MAIN + 'science-fiction/'])
-    liste.append(['Telefilm', URL_MAIN + 'telefilm/'])
-    liste.append(['Thriller', URL_MAIN + 'thriller/'])
-    liste.append(['Western', URL_MAIN + 'western/'])
+    oInputParameterHandler = cInputParameterHandler()
+    siteUrl = oInputParameterHandler.getValue('siteUrl')
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+    oRequestHandler = cRequestHandler(siteUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    oParser = cParser()
+    sHtmlContent = oParser.abParse(sHtmlContent, '"AAIco-movie_creation">Genres</label>', '</div>')
+    sPattern = 'data-val="([^"]+)" data-value="([^"]+)"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
+        for aEntry in aResult[1]:
+            sGenre = aEntry[0]
+            if sGenre in ('random', 'Uncategorized'):
+                continue
+            sFilter = aEntry[1]
+            sUrl = siteUrl + '?s=trfilter&trfilter=1&geners%5B%5D=' + sFilter
+
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sGenre, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
