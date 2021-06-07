@@ -3,6 +3,7 @@
 
 import re
 import base64
+import time
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -10,7 +11,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 from resources.lib.util import Noredirection
 
 # copie du site http://www.kaydo.ws/
@@ -122,33 +123,33 @@ def showAlpha():
     oGui = cGui()
 
     liste = []
-    liste.append(['#', URL_MAIN + 'letters/0-9/'])
-    liste.append(['A', URL_MAIN + 'letters/a/'])
-    liste.append(['B', URL_MAIN + 'letters/b/'])
-    liste.append(['C', URL_MAIN + 'letters/c/'])
-    liste.append(['D', URL_MAIN + 'letters/d/'])
-    liste.append(['E', URL_MAIN + 'letters/e/'])
-    liste.append(['F', URL_MAIN + 'letters/f/'])
-    liste.append(['G', URL_MAIN + 'letters/g/'])
-    liste.append(['H', URL_MAIN + 'letters/h/'])
-    liste.append(['I', URL_MAIN + 'letters/i/'])
-    liste.append(['J', URL_MAIN + 'letters/j/'])
-    liste.append(['K', URL_MAIN + 'letters/k/'])
-    liste.append(['L', URL_MAIN + 'letters/l/'])
-    liste.append(['M', URL_MAIN + 'letters/m/'])
-    liste.append(['N', URL_MAIN + 'letters/n/'])
-    liste.append(['O', URL_MAIN + 'letters/o/'])
-    liste.append(['P', URL_MAIN + 'letters/p/'])
-    liste.append(['Q', URL_MAIN + 'letters/q/'])
-    liste.append(['R', URL_MAIN + 'letters/r/'])
-    liste.append(['S', URL_MAIN + 'letters/s/'])
-    liste.append(['T', URL_MAIN + 'letters/t/'])
-    liste.append(['U', URL_MAIN + 'letters/u/'])
-    liste.append(['V', URL_MAIN + 'letters/v/'])
-    liste.append(['W', URL_MAIN + 'letters/w/'])
-    liste.append(['X', URL_MAIN + 'letters/x/'])
-    liste.append(['Y', URL_MAIN + 'letters/y/'])
-    liste.append(['Z', URL_MAIN + 'letters/z/'])
+    liste.append(['#', URL_MAIN + 'letter/0-9/'])
+    liste.append(['A', URL_MAIN + 'letter/a/'])
+    liste.append(['B', URL_MAIN + 'letter/b/'])
+    liste.append(['C', URL_MAIN + 'letter/c/'])
+    liste.append(['D', URL_MAIN + 'letter/d/'])
+    liste.append(['E', URL_MAIN + 'letter/e/'])
+    liste.append(['F', URL_MAIN + 'letter/f/'])
+    liste.append(['G', URL_MAIN + 'letter/g/'])
+    liste.append(['H', URL_MAIN + 'letter/h/'])
+    liste.append(['I', URL_MAIN + 'letter/i/'])
+    liste.append(['J', URL_MAIN + 'letter/j/'])
+    liste.append(['K', URL_MAIN + 'letter/k/'])
+    liste.append(['L', URL_MAIN + 'letter/l/'])
+    liste.append(['M', URL_MAIN + 'letter/m/'])
+    liste.append(['N', URL_MAIN + 'letter/n/'])
+    liste.append(['O', URL_MAIN + 'letter/o/'])
+    liste.append(['P', URL_MAIN + 'letter/p/'])
+    liste.append(['Q', URL_MAIN + 'letter/q/'])
+    liste.append(['R', URL_MAIN + 'letter/r/'])
+    liste.append(['S', URL_MAIN + 'letter/s/'])
+    liste.append(['T', URL_MAIN + 'letter/t/'])
+    liste.append(['U', URL_MAIN + 'letter/u/'])
+    liste.append(['V', URL_MAIN + 'letter/v/'])
+    liste.append(['W', URL_MAIN + 'letter/w/'])
+    liste.append(['X', URL_MAIN + 'letter/x/'])
+    liste.append(['Y', URL_MAIN + 'letter/y/'])
+    liste.append(['Z', URL_MAIN + 'letter/z/'])
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
@@ -210,7 +211,7 @@ def showMovies(sSearch=''):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    if URL_MAIN + 'letters/' in sUrl:
+    if URL_MAIN + 'letter/' in sUrl:
         sPattern = '<td class="MvTbImg">.+?href="([^"]+).+?src="([^"]*).+?class="MvTbTtl.+?<strong>([^<]*).+?<td>([^<]*).+?Qlty">([^<]+).+?<td>([^<]*)'
     else:
         sPattern = 'class="TPost C".+?href="([^"]+).+?src="([^"]*).+?Title">([^<]+).+?(?:|Year">([^<]*).+?)(?:|Qlty">([^<]*).+?)Description"><p>([^<]+)'
@@ -356,65 +357,24 @@ def showHosters():
             oRequestHandler = cRequestHandler(site)
             sHtmlContent = oRequestHandler.request()
 
-            # Recuperation de l'url suivante
-            sPattern1 = '<div class="Video"><iframe.+?src="([^"]+)"'
-            aResult = oParser.parse(sHtmlContent, sPattern1)
+            url = re.search('"Video".+?src="(.+?)"', sHtmlContent).group(1)
 
-            Url = aResult[1][0][:-1]
-            oRequestHandler = cRequestHandler(Url)
+            oRequestHandler = cRequestHandler(url)
             sHtmlContent = oRequestHandler.request()
 
-            # Recuperation de l'id
-            sPattern1 = "var id.+?'([^']+)'"
-            aResult = oParser.parse(sHtmlContent, sPattern1)
+            lastUrl = 'https://' + url.split('/')[2] + '/playlist/' + url.split('id=')[1] + "/" + str(round(time.time() * 1000)) + ".m3u8"
 
-            # sPost = decode(aResult[1][0])
-            # t[::-1] renvoie la chaine t dans l'ordre inverse, identique à decode(t)
-            sPost = None
-            if aResult[1]:
-                sPost = aResult[1][0][::-1]
+            oRequestHandler = cRequestHandler(lastUrl)
+            sHtmlContent = oRequestHandler.request()
+            url = re.search('RESOLUTION.+?\n(.+?)\n', sHtmlContent).group(1)
 
-            if sPost:
+            sHosterUrl = 'http://127.0.0.1:2424?u=https://' + lastUrl.split('/')[2] + url
 
-                sUrl1 = URL_MAIN + '?trhidee=1&trfex=' + sPost
-
-                oRequestHandler = cRequestHandler(sUrl1)
-                oRequestHandler.addHeaderEntry('Referer', Url)
-                oRequestHandler.addHeaderEntry('User-Agent', UA)
-                oRequestHandler.request()
-
-                sHosterUrl = oRequestHandler.getRealUrl()
-
-                if sHosterUrl == sUrl1:
-                    opener = Noredirection()
-                    opener.addheaders = [('User-Agent', UA)]
-                    opener.addheaders = [('Referer', Url)]
-                    response = opener.open(sUrl1)
-                    sHtmlContent = response.read()
-                    getreal = sUrl1
-                    if response.code == 302:
-                        getreal = response.headers['Location']
-                    response.close()
-                    sHosterUrl = getreal
-
-                # https://lb.hdsto.me/hls/xxx.playlist.m3u8
-                # https://lb.hdsto.me/public/dist/index.html?id=xxx
-
-                if 'public/dist' in sHosterUrl:
-                    sHosterUrl = 'https://' + sHosterUrl.split('/')[2] + '/hls/' + sHosterUrl.split('id=')[1]
-                    sHosterUrl += '/' + sHosterUrl.split('id=')[1] + '.m3u8'
-
-                    oRequestHandler = cRequestHandler(sHosterUrl)
-                    oRequestHandler.addHeaderEntry('Referer', Url)
-                    sHtmlContent = oRequestHandler.request()
-
-                    sHosterUrl = oRequestHandler.getRealUrl()
-
-                oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
-                    oHoster.setDisplayName(sMovieTitle)
-                    oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
