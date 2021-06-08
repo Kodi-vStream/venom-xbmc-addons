@@ -26,12 +26,12 @@ URL_MAIN = 'URL_MAIN'
 
 # pour l'addon
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'index.php?option=com_content&view=category&id=29&Itemid=7', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'c/wavob/29/0', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_HD = (URL_MAIN, 'showMovies')
 
-DOC_NEWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=26', 'showMovies')
-SHOW_SHOWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=3', 'showMovies')
+DOC_NEWS = (URL_MAIN + 'c/wavob/26/0', 'showMovies')
+SHOW_SHOWS = (URL_MAIN + 'c/wavob/3/0', 'showMovies')
 
 URL_SEARCH = ('', 'showMovies')
 URL_SEARCH_MOVIES = ('', 'showMovies')
@@ -50,7 +50,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films (A l\'affiche)', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
@@ -78,22 +78,24 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append(['A l\'affiche', URL_MAIN + 'index.php?option=com_content&view=category&id=29'])
-    liste.append(['Action', URL_MAIN + 'index.php?option=com_content&view=category&id=1'])
-    liste.append(['Animation', URL_MAIN + 'index.php?option=com_content&view=category&id=2'])
-    liste.append(['Aventure', URL_MAIN + 'index.php?option=com_content&view=category&id=4'])
-    liste.append(['Comédie', URL_MAIN + 'index.php?option=com_content&view=category&id=6'])
-    liste.append(['Documentaires', URL_MAIN + 'index.php?option=com_content&view=category&id=26'])
-    liste.append(['Drame', URL_MAIN + 'index.php?option=com_content&view=category&id=7'])
-    liste.append(['Epouvante Horreur', URL_MAIN + 'index.php?option=com_content&view=category&id=9'])
-    liste.append(['Fantastique', URL_MAIN + 'index.php?option=com_content&view=category&id=8'])
-    liste.append(['Policier', URL_MAIN + 'index.php?option=com_content&view=category&id=10'])
-    liste.append(['Science Fiction', URL_MAIN + 'index.php?option=com_content&view=category&id=11'])
-    liste.append(['Spectacle', URL_MAIN + 'index.php?option=com_content&view=category&id=3'])
-    liste.append(['Thriller', URL_MAIN + 'index.php?option=com_content&view=category&id=12'])
+    liste.append(['A l\'affiche', 29])
+    liste.append(['Action', 1])
+    liste.append(['Animation', 2])
+    liste.append(['Aventure', 4])
+    # liste.append(['Biographie', 5])  # aucun
+    liste.append(['Comédie', 6])
+    liste.append(['Documentaires', 26])
+    liste.append(['Drame', 7])
+    liste.append(['Epouvante Horreur', 9])
+    liste.append(['Fantastique', 8])
+    liste.append(['Policier', 10])
+    liste.append(['Science Fiction', 11])
+    liste.append(['Spectacle', 3])
+    liste.append(['Thriller', 12])
 
     oOutputParameterHandler = cOutputParameterHandler()
-    for sTitle, sUrl in liste:
+    for sTitle, iGenre in liste:
+        sUrl = URL_MAIN + 'c/wavob/%d/0' %iGenre
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -104,38 +106,38 @@ def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
 
-    if sSearch:
-        # limite de caractere sinon bug de la recherche
-        sSearch = sSearch[:20]
-        sUrl = URL_MAIN + 'index.php?ordering=&searchphrase=all&option=com_search&searchword=' + sSearch.replace(' ', '+')
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    # En cas de recherche direct OU lors de la navigation dans les differentes pages de résultats d'une recherche
-    if 'searchword=' in sUrl:
-        sPattern = '<h4><a href="\/[0-9a-zA-Z]+\/(.+?)"  >(.+?)<'
-    else:
-        sPattern = '<span style="list-style-type:none;" >.+? href="\/[0-9a-zA-Z]+\/([^"]+)">(.+?)\((.+?)\).+?<i>(.+?)</i>'
-
     # L'url change tres souvent donc faut la retrouver
     oRequestHandler = cRequestHandler(URL_HOST)
     data = oRequestHandler.request()
-
     aResult = oParser.parse(data, '<a.+?href="(/*[0-9a-zA-Z]+)"')  # Compatible avec plusieurs clones
+    if not aResult[0]:
+        return   # Si ca ne marche pas, pas la peine de continuer
 
-    if aResult[0]:
-        # memorisation pour la suite
-        sMainUrl = URL_HOST + aResult[1][0] + '/'
-        # correction de l'url
-        sUrl = sUrl.replace('URL_MAIN', sMainUrl)
+    # memorisation pour la suite
+    sMainUrl = URL_HOST + aResult[1][0] + '/'
+    # correction de l'url
+    
+    # En cas de recherche direct OU lors de la navigation dans les differentes pages de résultats d'une recherche
+    if sSearch:
+        sSearch = sSearch[:20]      # limite de caractere sinon bug de la recherche
+        oRequestHandler = cRequestHandler(sMainUrl + 'home/wavob/')
+        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+        oRequestHandler.addParameters('searchword', sSearch.replace(' ', '+'))
+        sABPattern = '<div class="column24"'
+        # sUrl = URL_MAIN + 'index.php?ordering=&searchphrase=all&option=com_search&searchword=' + sSearch.replace(' ', '+')
     else:
-        # Si ca marche pas, pas la peine de continuer
-        return
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('siteUrl')
+        if sUrl == URL_MAIN:        # page d'acceuil
+            sABPattern = '<div class="column1"'
+        else:
+            sABPattern = '<div class="column20"'
+        sUrl = sUrl.replace(URL_MAIN, sMainUrl)
+        oRequestHandler = cRequestHandler(sUrl)
 
-    oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
+    sHtmlContent = oParser.abParse(sHtmlContent, sABPattern, '<div class="column2"')
+    sPattern = '<span style="list-style-type:none;" >.+? href="\/[0-9a-zA-Z]+\/([^"]+)">(.+?)\((.+?)\).+?>(<i>(.+?)<\/i>|)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -153,10 +155,10 @@ def showMovies(sSearch=''):
             sUrl2 = aEntry[0]
             sYear = aEntry[2]
 
-            sTitle = ("%s [%s]") % (aEntry[1], aEntry[3])
+            sTitle = ("%s (%s) [%s]") % (aEntry[1], sYear, aEntry[4])
 
             oOutputParameterHandler.addParameter('siteUrl', sMainUrl + sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', aEntry[1])
+            oOutputParameterHandler.addParameter('sMovieTitle', aEntry[1].strip())
             oOutputParameterHandler.addParameter('sMainUrl', sMainUrl)
             oOutputParameterHandler.addParameter('sYear', sYear)
 
@@ -167,7 +169,7 @@ def showMovies(sSearch=''):
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sMainUrl + sNextPage)
+            oOutputParameterHandler.addParameter('siteUrl', URL_HOST + sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Suivant', oOutputParameterHandler)
 
     if not sSearch:
@@ -175,7 +177,7 @@ def showMovies(sSearch=''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a href="\/[0-9a-zA-Z]+\/([^"]+)" title="Suivant">'
+    sPattern = 'href="([^"]+)"><img style="position:relative;" +src="data:image'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
