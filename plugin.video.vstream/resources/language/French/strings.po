@@ -366,7 +366,7 @@ msgstr "Nettoyage du cache vStream, Réussi"
 
 msgctxt "#30090"
 msgid "Suppression Database, Successful"
-msgstr "Suppression BDD, Réussi"
+msgstr "Réinitialisation des données : Réussi"
 
 msgctxt "#30091"
 msgid "Suppression Database, Error"

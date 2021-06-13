@@ -701,9 +701,11 @@ class cGuiElement:
                 # self.addItemValues('trailer', self.getDefaultTrailer())
 
         # Used only if there is data in db, overwrite getMetadonne()
-        w = self.getWatched()
-        if w == 1:
-            self.addItemValues('playcount', w)
+        sCat = str(self.getCat())
+        if sCat and sCat != 6:  # Pas besoin de vérifier si pas média
+            w = self.getWatched()
+            if w == 1:
+                self.addItemValues('playcount', w)
 
         self.addItemProperties('siteUrl', self.getSiteUrl())
         self.addItemProperties('sCleanTitle', self.getFileName())
@@ -711,7 +713,6 @@ class cGuiElement:
         self.addItemProperties('sFav', self.getFunction())
         self.addItemProperties('sMeta', str(self.getMeta()))
 
-        sCat = str(self.getCat())
         if sCat:
             self.addItemProperties('sCat', sCat)
             mediatypes = {'1': 'movie', '2': 'tvshow', '3': 'tvshow', '4': 'season', '5': 'video', '6': 'video', '7': 'season', '8': 'episode'}

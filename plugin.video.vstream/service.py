@@ -70,7 +70,6 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
             res = res.replace('http','http://127.0.0.1:2424?u=http')
             if isMatrix(): res = res.encode()
         ret = res
-        self.send_response(200)
         self.send_header('Content-Length', len(ret))
         self.send_header('Content-Type', 'application/vnd.apple.mpegurl')
         self.end_headers()
