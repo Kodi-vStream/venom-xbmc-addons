@@ -590,17 +590,17 @@ class cTMDb:
             _meta['premiered'] = meta['release_date']
         elif 'first_air_date' in meta:
             _meta['premiered'] = meta['first_air_date']
-        elif 'premiered' in meta and meta['premiered']:
-            _meta['premiered'] = meta['premiered']
         elif 's_premiered' in meta and meta['s_premiered']:
             _meta['premiered'] = meta['s_premiered']
+        elif 'premiered' in meta and meta['premiered']:
+            _meta['premiered'] = meta['premiered']
         elif 'air_date' in meta and meta['air_date']:
             _meta['premiered'] = meta['air_date']
 
-        if 'year' in meta:
-            _meta['year'] = meta['year']
-        elif 's_year' in meta:
+        if 's_year' in meta and meta['s_year']:
             _meta['year'] = meta['s_year']
+        elif 'year' in meta and meta['year']:
+            _meta['year'] = meta['year']
         else:
             try:
                 if 'premiered' in _meta and _meta['premiered']:
@@ -630,7 +630,9 @@ class cTMDb:
         except:
             _meta['duration'] = 0
 
-        if 'overview' in meta and meta['overview']:
+        if 's_overview' in meta and meta['s_overview']: # saison
+            _meta['plot'] = meta['s_overview']
+        elif 'overview' in meta and meta['overview']:  # film ou série
             _meta['plot'] = meta['overview']
         elif 'parts' in meta: # Il s'agit d'une collection, on récupere le plot du premier film
             _meta['plot'] = meta['parts'][0]['overview']
@@ -811,9 +813,6 @@ class cTMDb:
         if 'seasons' in meta and meta['seasons']:
             _meta['season'] = meta['seasons']
 
-        if 's_overview' in meta and meta['s_overview']:
-            _meta['plot'] = meta['s_overview']
-
         return _meta
 
     def _clean_title(self, title):
@@ -909,7 +908,7 @@ class cTMDb:
             
         if not year and 'year' in meta:
             year = meta['year']
-            
+        
         # sauvegarde movie dans la BDD
         # year n'est pas forcement l'année du film mais l'année utilisée pour la recherche
         try:
@@ -969,9 +968,14 @@ class cTMDb:
         for s in meta['season']:
             if s['season_number'] != None and ('%02d' % int(s['season_number'])) == season:
                 meta['s_poster_path'] = s['poster_path']
+                meta['s_overview'] = s['overview']
                 meta['s_premiered'] = s['air_date']
                 meta['s_year'] = s['air_date']
-                meta['s_overview'] = s['overview']
+                try:
+                    if 's_premiered' in meta and meta['s_premiered']:
+                        meta['s_year'] = int(meta['s_premiered'][:4])
+                except:
+                    pass
 
             try:
                 sql = 'INSERT or IGNORE INTO season (imdb_id, tmdb_id, season, year, premiered, poster_path, playcount, overview) VALUES ' \
