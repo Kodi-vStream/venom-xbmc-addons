@@ -313,11 +313,11 @@ def showMovies(sSearch=''):
         sUrl = sSearch
 
     if sSearch or "index" in sUrl:  # en mode recherche
-        sPattern = 'class="mov-t nowrap" href="(https://www.tirexo.pro/films.+?|https://www.tirexo.pro/telecharger-series.+?|https://www.tirexo.pro/animes.+?|https://www.tirexo.pro/emissions-tv-documentaires.+?)" title="([^"]+).+?data-content="([^"]+).+?<img src="/([^"]+).+?<div style="height: 51px" class="mov-c nowrap'
+        sPattern = 'class="mov-t nowrap" href="(.+?tirexo.+?/films.+?|https://.+?tirexo.+?/telecharger-series.+?|https://.+?tirexo.+?/animes.+?|https://www.tirexo.club/emissions-tv-documentaires.+?)" title="([^"]+).+?data-content="([^"]+).+?<img src="/([^"]+).+?<div style="height: 51px" class="mov-c nowrap'
     elif 'collections/' in sUrl:
         sPattern = 'class="mov-t nowrap" href=".+?<img src="\/([^"]+)" width="200px" height="320px" title="([^"]+).+?data-link="([^"]+)'
     else:
-        sPattern = 'class="mov-t nowrap" href="([^"]+)">  <.+?data-content="([^"]+).+?img src="([^"]+).+?title="([^"]+)'
+        sPattern = 'class="mov-t nowrap" href="([^"]+)">.+?<.+?data-content="([^"]+).+?img src="([^"]+).+?title="([^"]+)'
 
     oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
