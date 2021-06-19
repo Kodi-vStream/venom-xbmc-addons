@@ -110,7 +110,7 @@ class cPremiumHandler:
         head = oRequestHandler.getResponseHeader()
 
         if 'uptobox' in self.__sHosterIdentifier:
-            if 'xfss' in head['Set-Cookie']:
+            if 'Set-Cookie' in head and 'xfss' in head['Set-Cookie']:
                 self.isLogin = True
             else:
                 self.DIALOG.VSinfo('Authentification rate', self.__sDisplayName)
