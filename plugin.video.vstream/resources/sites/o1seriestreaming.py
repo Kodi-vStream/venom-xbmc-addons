@@ -10,13 +10,13 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 
 SITE_IDENTIFIER = 'o1seriestreaming'
 SITE_NAME = '01 Série Streaming'
 SITE_DESC = 'Films et Séries en streaming VF et VOSTFR'
 
-URL_MAIN = 'https://01seriestreaming.com/'
+URL_MAIN = 'https://wwv.33seriestreaming.com/'
 
 # Sous menus
 MOVIE_MOVIE = (True, 'showMenuMovies')
@@ -254,8 +254,41 @@ def __checkForNextPage(sHtmlContent):
         return sNextPage, sPaging
     return False, 'none'
 
-
 def showSaisons():
+    oGui = cGui()
+    oParser = cParser()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sYear = oInputParameterHandler.getValue('sYear')
+    sDesc = oInputParameterHandler.getValue('sDesc')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = "<div class='custom-sc'><a href=([^<>]+)>.+?<img class='thumb' src='([^']+)' alt='([^']+)'"
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
+        for aEntry in aResult[1]:
+            sUrl2 = aEntry[0]
+            sThumb = aEntry[1]
+            sSais = aEntry[2]
+
+            sTitle = sSais
+
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sYear', sYear)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showSaisonsEP', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showSaisonsEP():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -272,7 +305,7 @@ def showSaisons():
     if (aResult[0] == True):
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
 
-    sPattern = "<div class='imagen'><img src='([^']+)'.+?<div class='numerando'>(\d+) - (\d+)<.+?<a href='([^']+)'>([^<>]+)"
+    sPattern = "<div class='imagen'><img src='([^']+)'.+?<div class='numerando'>([^<>]+)<.+?<a href='([^']+)'>([^<>]+)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -284,12 +317,11 @@ def showSaisons():
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            sUrl2 = aEntry[3]
+            sUrl2 = aEntry[2]
             sThumb = aEntry[0]
-            sEp = aEntry[2]
-            sSais = aEntry[1]
+            sEp = aEntry[1]
 
-            sTitle = ("%s S%sE%s") % (sMovieTitle, sSais, sEp)
+            sTitle = sMovieTitle + ' ' + sEp
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -299,7 +331,6 @@ def showSaisons():
             oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def showHosters():
     oGui = cGui()
