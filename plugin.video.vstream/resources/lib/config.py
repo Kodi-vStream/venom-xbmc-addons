@@ -178,16 +178,9 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
          
     # convertion de la durée en secondes -> heure:minutes
     if 'duration' in meta and meta['duration']:
-        
-        if isMatrix():
-            duration = meta['duration'] // 60  # En minutes
-            durationH = duration // 60 # Nombre d'heures
-        else:
-            duration = meta['duration'] / 60  # En minutes
-            durationH = duration / 60 # Nombre d'heures
-
-        meta['durationH'] = durationH
-        #Le resultat doit obligatoirement etre un int sous Py3.
+        duration = meta['duration'] // 60  # En minutes
+        durationH = duration // 60 # Nombre d'heures
+        meta['durationH'] = '{:02d}'.format(int(durationH))
         meta['durationM'] = '{:02d}'.format(int(duration - 60*durationH))
     else:
         meta['durationH'] = 0

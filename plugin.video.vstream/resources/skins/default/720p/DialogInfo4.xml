@@ -323,9 +323,18 @@
 				
 				<control type="label" id="1">
 					<description>header label</description>
+					<top>-50</top>
 					<height>20</height>
 					<font>font12_title</font>
 					<label>[B][UPPERCASE]$INFO[Window.Property(title)][/UPPERCASE][/B]</label>
+					<shadowcolor>black</shadowcolor>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="label">
+					<description>header label</description>
+					<height>20</height>
+					<font>font12_title</font>
+					<label>[B]$INFO[Window.Property(tagline)][/B]</label>
 					<shadowcolor>black</shadowcolor>
 					<textcolor>white</textcolor>
 				</control>
