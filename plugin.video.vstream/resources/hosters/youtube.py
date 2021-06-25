@@ -9,9 +9,10 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
-from resources.lib.comaddon import dialog
+from resources.lib.comaddon import dialog, isMatrix
 from resources.lib.util import Unquote, Quote
 from resources.lib.config import GestionCookie
+import re, requests
 
 class cHoster(iHoster):
 
@@ -71,18 +72,21 @@ class cHoster(iHoster):
         else:
             return self.__getMediaLinkForGuest2()
 
+    def deescape(self, escaped):
+        if isMatrix():
+            return escaped.encode().decode('unicode_escape')
+        else:
+            return escaped.decode('string_escape')
+
     def __getMediaLinkForGuest(self):
         api_call = ''
 
         oParser = cParser()
 
-        oRequestHandler = cRequestHandler(self.__sUrl)
-        oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)')
-        oRequestHandler.addHeaderEntry('Cookie', GestionCookie().Readcookie("youtube"))        
-        sHtml = Unquote(str(oRequestHandler.request()))
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36'}
+        sHtml = Unquote(requests.get(self.__sUrl, cookies={'CONSENT': GestionCookie().Readcookie("youtube")}, headers=headers).text)
 
-        sHtmlContent = sHtml[7 + sHtml.find('formats'):sHtml.rfind('adaptiveFormats')]
-
+        sHtmlContent = self.deescape(sHtml[7 + sHtml.find('formats'):sHtml.rfind('adaptiveFormats')])
         sPattern = '"url":"([^"]+)".+?"qualityLabel":"([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -110,19 +114,28 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest2(self):
         api_call = ''
 
-        oParser = cParser()
-        pdata = 'url=' + Quote('https://www.youtube.com/embed/' + self.__sUrl) + '&submit=1'
-
-        oRequest = cRequestHandler('https://ytoffline.net/fr/validate/')
-        oRequest.setRequestType(1)
+        oRequest = cRequestHandler('https://ytoffline.net/fr1')
         oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
-        oRequest.addHeaderEntry('Referer', 'https://ytoffline.net/fr/download/?url=https://www.youtube.com/embed/' + self.__sUrl)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+        sHtmlContent = oRequest.request()
 
+        tok = re.search('id="token" value="(.+?)"',sHtmlContent).group(1)
+
+        oParser = cParser()
+        pdata = 'url=' + Quote(self.__sUrl) + '&token=' + tok
+
+        oRequest = cRequestHandler('https://ytoffline.net/fr1/download/')
+        oRequest.setRequestType(1)
+        oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
+        oRequest.addHeaderEntry('Accept-Encoding','gzip, deflate')
+        oRequest.addHeaderEntry('Content-Type','application/x-www-form-urlencoded; charset=UTF-8')
+        oRequest.addHeaderEntry('Content-Length',len(pdata))
+        oRequest.addHeaderEntry('Referer','https://ytoffline.net/fr1/')
         oRequest.addParametersLine(pdata)
 
         sHtmlContent = oRequest.request()
+
         sHtmlContent1 = oParser.abParse(sHtmlContent, '<div id="mp4" class="display-block tabcontent">', '<div id="audio" class="tabcontent">')
         sPattern = '<td>([^<]+)<small>.+?data-href="([^"]+)"'
         aResult = oParser.parse(sHtmlContent1, sPattern)
