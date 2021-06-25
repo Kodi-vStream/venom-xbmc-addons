@@ -95,12 +95,11 @@ class cShowBA:
                 
         # Sinon recherche dans youtube
         if not urlTrailer:
-            headers = {'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
-                        'Cookie': GestionCookie().Readcookie("youtube")}
+            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36'}
 
             url = 'https://www.youtube.com/results'
 
-            sHtmlContent = requests.get(url, params={'search_query': sTitle}, headers=headers).text
+            sHtmlContent = requests.get(url, params={'search_query': sTitle}, cookies={'CONSENT': GestionCookie().Readcookie("youtube")}, headers=headers).text
                 
             if "Proposer des services et s'assurer" in sHtmlContent:
                 data = re.search('<form action=(.+?)Accepter',sHtmlContent).group(1)
@@ -110,11 +109,10 @@ class cShowBA:
                     d.update({data[0]:data[1]})
                 cook = requests.post("https://consent.youtube.com/s", params=d, headers=headers, allow_redirects=False).cookies
 
-                cook = "CONSENT=" + str(dict(cook)["CONSENT"])
-                GestionCookie().SaveCookie('youtube', cook)
+                GestionCookie().SaveCookie('youtube', str(dict(cook)["CONSENT"]))
 
-                headers.update({"Cookie":cook})
-                sHtmlContent = requests.get(url, params={'search_query': sTitle}, headers=headers).text
+                sHtmlContent = requests.get(url, params={'search_query': sTitle}, cookies={'CONSENT': str(dict(cook)["CONSENT"])}, headers=headers).text
+
             try:
                 result = re.search('"contents":\[{"videoRenderer":{"videoId":"([^"]+)', str(sHtmlContent)).group(1)
             except:
