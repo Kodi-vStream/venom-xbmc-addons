@@ -1,6 +1,7 @@
-return False  # 21/05/2021
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+return False  # 21/05/2021
 
 import re
 
