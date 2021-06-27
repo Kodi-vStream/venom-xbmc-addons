@@ -46,7 +46,7 @@ class cShowBA:
                 pass
 
     def SetMetaType(self, metaType):
-        self.metaType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'movie').replace('4', 'tvshow')
+        self.metaType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'movie').replace('4', 'tvshow').replace('5', 'tvshow').replace('6', 'tvshow')
 
     def SearchBA_old(self):
         url = 'https://www.googleapis.com/youtube/v3/search?part=id,snippet&q=%s&maxResults=1&relevanceLanguage=fr&key=%s' % (self.search, self.key)

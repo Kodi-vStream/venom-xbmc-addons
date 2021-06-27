@@ -47,6 +47,14 @@ class cGui:
         oGuiElement.setMeta(sMeta)
         oGuiElement.setDescription(sDesc)
 
+        # Si pas d'id TMDB on recupère  le précedent
+        if sMeta:
+            if not oOutputParameterHandler.getValue('sTmdbId'):
+                oInputParameterHandler = cInputParameterHandler()
+                sTmdbID = oInputParameterHandler.getValue('sTmdbId')
+                if sTmdbID:
+                    oOutputParameterHandler.addParameter('sTmdbId', sTmdbID)
+            
         if sCat is not None:
             oGuiElement.setCat(sCat)
             
@@ -67,19 +75,19 @@ class cGui:
 
         try:
             self.addFolder(oGuiElement, oOutputParameterHandler)
-        except:
+        except Exception as e:
             pass
 
 
     #    Categorie       sCat          Meta     CONTENT
     #    Film            1             1        movies
     #    Serie           2             2        tvshows
+    #    Episodes        2             6        episodes
     #    Anime           3             4        tvshows
     #    Saison          4             5        episodes
     #    Divers          5             0        videos
     #    IPTV (Officiel) 6             0        files
     #    Saga            7             3        movies
-    #    Episodes        8             0        episodes
     #    Person          /             7        artists
     #    Nerwork         /             8        files
 
@@ -146,7 +154,7 @@ class cGui:
         if not oOutputParameterHandler.getValue('sLang'):
             oOutputParameterHandler.addParameter('sLang', oInputParameterHandler.getValue('sLang'))
 
-        self.addNewDir('episodes', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 8)
+        self.addNewDir('episodes', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 6, 2)
 
         return
 
@@ -288,18 +296,27 @@ class cGui:
         self.listing.append((sItemUrl, oListItem, False))
 
     def createListItem(self, oGuiElement):
-        oListItem = listitem(oGuiElement.getTitle())
+
+        # Enleve les elements vides
+        data = {key:val for key, val in oGuiElement.getItemValues().items() if val != ""}
+
+        itemTitle = oGuiElement.getTitle()
+        if oGuiElement.getMeta() == 6 and data.get('tagline'): # Nom de l'épisode
+            itemTitle += ' - ' + data.get('tagline')
+            data['title'] = itemTitle   # kodi 19
+
+        oListItem = listitem(itemTitle)
+
         if xbmc.getInfoLabel('system.buildversion')[0:2] < '20':
             # voir : https://kodi.wiki/view/InfoLabels
-            oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
+            oListItem.setInfo(oGuiElement.getType(), data)
         else:
             videoInfoTag = oListItem.getVideoInfoTag()
-            #Supprime les elements vide, pour ajouter les valeurs par defaut.
-            data = {key:val for key, val in oGuiElement.getItemValues().items() if val != ""}
 
+            # gestion des valeurs par defaut si non renseignées
             videoInfoTag.setMediaType(oGuiElement.getType())
-            videoInfoTag.setTitle(data['title'])  
-            if not cGui.CONTENT == "addons": 
+            videoInfoTag.setTitle(itemTitle)
+            if oGuiElement.getMeta():
                 videoInfoTag.setOriginalTitle(data.get('originaltitle'))
                 videoInfoTag.setPlot(data.get('plot'))
                 videoInfoTag.setPlotOutline(data.get('plotoutline'))
@@ -319,11 +336,10 @@ class cGui:
                 videoInfoTag.setWriters(list(data.get('writer','').split("/")))
                 videoInfoTag.setDirectors(list(data.get('director','').split("/")))
 
-                if cGui.CONTENT == "tvshows":
-                    if data.get('season') == []:
-                        videoInfoTag.setSeason(0)
-                    else:
-                        videoInfoTag.setSeason(int(data.get('season',0)))
+                if oGuiElement.getMeta() == 5:  # saison
+                    videoInfoTag.setSeason(int(data.get('season',0)))
+                elif oGuiElement.getMeta() == 6:  # episode
+                    videoInfoTag.setEpisode(int(data.get('episode',0)))
 
                 try:
                     credits = eval(data.get('credits'))['cast']
@@ -509,6 +525,9 @@ class cGui:
     def __createItemUrl(self, oGuiElement, oOutputParameterHandler=''):
         if (oOutputParameterHandler == ''):
             oOutputParameterHandler = cOutputParameterHandler()
+
+        # On descend l'id TMDB dans les saisons et les épisodes
+        oOutputParameterHandler.addParameter('sTmdbId', oGuiElement.getTmdbId())
 
         # Pour gérer l'enchainement des épisodes
         oOutputParameterHandler.addParameter('sSeason', oGuiElement.getSeason())

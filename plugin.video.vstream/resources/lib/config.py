@@ -148,18 +148,15 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
     
 
     # Sinon on gere par vStream via la lib TMDB
-    sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'collection').replace('4', 'anime')
+    sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'collection').replace('4', 'anime').replace('5', 'season').replace('6', 'episode')
 
     try:
-        meta = cTMDb().get_meta(sType, sFileName, tmdb_id = xbmc.getInfoLabel('ListItem.Property(TmdbId)'), year = year)
-        try:
-            meta['plot'] = str(meta['plot'].encode('latin-1'), 'utf-8')
-        except:
-            pass
+        season = xbmc.getInfoLabel('ListItem.Season')
+        episode = xbmc.getInfoLabel('ListItem.Episode')
+        meta = cTMDb().get_meta(sType, sFileName, tmdb_id = xbmc.getInfoLabel('ListItem.Property(TmdbId)'), year = year, season = season, episode = episode)
     except:
         DIALOG.VSok("Veuillez vider le cache des métadonnées Paramètre - outils - 'vider le cache de vStream'")
         pass
-        
 
     # si rien ne marche
     if (not meta['imdb_id'] and not meta['tmdb_id'] and not meta['tvdb_id']):
@@ -169,6 +166,13 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
         DIALOG.VSinfo(ADDON.VSlang(30204))
         return
 
+    # convertion plot si necessaire
+    try:
+        if meta['plot']:
+            meta['plot'] = str(meta['plot'].encode('latin-1'), 'utf-8')
+    except Exception as e:
+        pass
+    
     # convertion de la date au format JJ/MM/AAAA
     if 'premiered' in meta and meta['premiered']:
         releaseDate = datetime(*(time.strptime(meta['premiered'], '%Y-%m-%d')[0:6]))
@@ -224,8 +228,6 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
 #            self.getControl(50).reset()
             
             if 'credits' in meta and meta['credits']:
-                cast = []
-                crew = []
 
                 #Decodage python 3
                 try:
@@ -247,7 +249,6 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                         listitem_.setProperty('id', str(sid))
                         listitem_.setArt({'icon':sicon})
                         listitems.append(listitem_)
-                        cast.append(slabel.encode('ascii', 'ignore'))
                     self.getControl(50).addItems(listitems)
                 except:
                     pass
@@ -266,11 +267,28 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                         listitem_.setProperty('id', str(sid))
                         listitem_.setArt({'icon':sicon})
                         listitems2.append(listitem_)
-                        crew.append(slabel.encode('ascii', 'ignore'))
                     self.getControl(5200).addItems(listitems2)
                 except:
                     pass
 
+            listitems3 = []
+            if 'guest_stars'in meta and meta['guest_stars']: # dans certains épisodes
+                #Decodage python 3
+                data = eval(meta['guest_stars'])
+                for guest in data:
+                    slabel = guest['name']
+                    slabel2 = guest['character']
+                    if guest['profile_path']:
+                        sicon = self.poster+str(guest['profile_path'])
+                    else :
+                        sicon = self.none_poster % slabel
+                    sid = guest['id']
+                    listitem_ = listitem(label=slabel, label2=slabel2)
+                    listitem_.setProperty('id', str(sid))
+                    listitem_.setArt({'icon':sicon})
+                    listitems3.append(listitem_)
+                self.getControl(50).addItems(listitems3)
+                
             # try:
             #     for slabel, slabel2, sicon, sid in meta['cast']:
             #         listitem_ = listitem(label=slabel, label2=slabel2, iconImage=sicon)
@@ -355,6 +373,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                 cBA = cShowBA()
                 cBA.SetSearch(sFileName)
                 cBA.SetYear(year)
+                cBA.SetMetaType(metaType)
                 cBA.SetTrailerUrl(self.getProperty('trailer'))
                 cBA.SearchBA(True)
                 return
