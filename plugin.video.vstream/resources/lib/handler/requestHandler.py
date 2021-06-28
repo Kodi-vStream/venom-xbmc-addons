@@ -226,6 +226,9 @@ class cRequestHandler:
             if not "Forbidden" in sContent:
                 #Default
                 CLOUDPROXY_ENDPOINT = 'http://localhost:8191/v1'
+
+                json_session = False
+
                 try:
                     json_session = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, data=dumps({
                         'cmd': 'sessions.list'
@@ -233,33 +236,34 @@ class cRequestHandler:
                 except:
                     dialog().VSerror("%s" % ("Page protege par Cloudflare, veuillez executer  FlareSolverr."))
 
-                #On regarde si une session existe deja.
-                if json_session.json()['sessions']:
-                    cloudproxy_session = json_session.json()['sessions'][0]
-                else:
-                    json_session = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, data=dumps({
-                        'cmd': 'sessions.create'
+                if json_session:
+                    #On regarde si une session existe deja.
+                    if json_session.json()['sessions']:
+                        cloudproxy_session = json_session.json()['sessions'][0]
+                    else:
+                        json_session = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, data=dumps({
+                            'cmd': 'sessions.create'
+                        }))
+                        response_session = loads(json_session.text)
+                        cloudproxy_session = response_session['session']
+
+                    self.__aHeaderEntries['Content-Type'] = 'application/x-www-form-urlencoded' if (method == 'post') else 'application/json'
+
+                    #Ont fait une requete.
+                    json_response = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, data=dumps({
+                        'cmd': 'request.%s' % method.lower(),
+                        'url': self.__sUrl,
+                        'session': cloudproxy_session,
+                        'postData': '%s' % urlEncode(sParameters) if (method.lower() == 'post') else ''
                     }))
-                    response_session = loads(json_session.text)
-                    cloudproxy_session = response_session['session']
 
-                self.__aHeaderEntries['Content-Type'] = 'application/x-www-form-urlencoded' if (method == 'post') else 'application/json'
+                    http_code = json_response.status_code
+                    response = loads(json_response.text)
+                    if 'solution' in response:
+                        if self.__sUrl != response['solution']['url']:
+                            self.__sRealUrl = response['solution']['url']
 
-                #Ont fait une requete.
-                json_response = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, data=dumps({
-                    'cmd': 'request.%s' % method.lower(),
-                    'url': self.__sUrl,
-                    'session': cloudproxy_session,
-                    'postData': '%s' % urlEncode(sParameters) if (method.lower() == 'post') else ''
-                }))
-
-                http_code = json_response.status_code
-                response = loads(json_response.text)
-                if 'solution' in response:
-                    if self.__sUrl != response['solution']['url']:
-                        self.__sRealUrl = response['solution']['url']
-
-                    sContent = response['solution']['response']
+                        sContent = response['solution']['response']
 
         if oResponse and not sContent:
             #Ignorer ces deux codes erreurs.
