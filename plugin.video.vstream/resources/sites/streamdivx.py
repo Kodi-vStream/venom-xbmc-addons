@@ -30,6 +30,7 @@ MOVIE_ANNEES = (True, 'showMovieYears')
 
 def load():
     oGui = cGui()
+    oGui.addText(SITE_IDENTIFIER, 'Information: Modification des DNS obligatoire pour utiliser cette source.')
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
