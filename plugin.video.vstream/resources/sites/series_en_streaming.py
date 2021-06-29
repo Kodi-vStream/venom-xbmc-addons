@@ -43,6 +43,7 @@ FUNCTION_SEARCH = 'showMovies'
 
 def load():
     oGui = cGui()
+    oGui.addText(SITE_IDENTIFIER, 'Information: Modification des DNS obligatoire pour utiliser cette source.')
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -239,7 +240,7 @@ def showLinks():
     sPattern = '<span class="lg">(.+?)</span>|myLecteur">Lecteur (?:<b>)*([a-z]+)(?:</b>)* *:</span> <a href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sLang = ''
- 
+
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
