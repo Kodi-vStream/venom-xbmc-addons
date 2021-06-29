@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'filmstreamingy'
 SITE_NAME = 'FilmStreamingY'
 SITE_DESC = 'stream HD, streaming Sans pub, streaming vf'
 
-URL_MAIN = 'https://www.film-streamingi.com/'
+URL_MAIN = "https://www.film-streaminge.com/"
 
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
