@@ -6,16 +6,18 @@
 # http://www.youtube-nocookie.com/v/etc...
 # https://youtu.be/etc...
 
-from resources.lib.handler.requestHandler import cRequestHandler
+import re
+import requests
+
 from resources.hosters.hoster import iHoster
-from resources.lib.parser import cParser
 from resources.lib.comaddon import dialog, isMatrix
-from resources.lib.util import Unquote, Quote
 from resources.lib.config import GestionCookie
-import re, requests
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.parser import cParser
+from resources.lib.util import Unquote, Quote
+
 
 class cHoster(iHoster):
-
     def __init__(self):
         self.__sDisplayName = 'Youtube'
         self.__sFileName = self.__sDisplayName
@@ -80,10 +82,11 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         api_call = ''
+        UA = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36'
 
         oParser = cParser()
 
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36'}
+        headers = {'User-Agent': UA}
         sHtml = Unquote(requests.get(self.__sUrl, cookies={'CONSENT': GestionCookie().Readcookie("youtube")}, headers=headers).text)
 
         sHtmlContent = self.deescape(sHtml[7 + sHtml.find('formats'):sHtml.rfind('adaptiveFormats')])
@@ -94,8 +97,8 @@ class cHoster(iHoster):
             url = []
             qua = [] 
             for aEntry in aResult[1]:
-                #Py3 a besoin de la deuxieme version, je laisse le 1er replace au cas où pour Py2
-                url.append(aEntry[0].replace('/&','&').replace("\u0026","&").replace("\\\\u0026","&"))
+                # Py3 a besoin de la deuxieme version, je laisse le 1er replace au cas où pour Py2
+                url.append(aEntry[0].replace('/&', '&').replace("\\\\u0026", "&").replace("\u0026", "&"))
                 qua.append(aEntry[1])
 
             if url:
@@ -120,23 +123,26 @@ class cHoster(iHoster):
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         sHtmlContent = oRequest.request()
 
-        tok = re.search('id="token" value="(.+?)"',sHtmlContent).group(1)
+        tok = re.search('id="token" value="(.+?)"', sHtmlContent).group(1)
+        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
 
         oParser = cParser()
         pdata = 'url=' + Quote(self.__sUrl) + '&token=' + tok
 
         oRequest = cRequestHandler('https://ytoffline.net/fr1/download/')
         oRequest.setRequestType(1)
-        oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
-        oRequest.addHeaderEntry('Accept-Encoding','gzip, deflate')
-        oRequest.addHeaderEntry('Content-Type','application/x-www-form-urlencoded; charset=UTF-8')
-        oRequest.addHeaderEntry('Content-Length',len(pdata))
-        oRequest.addHeaderEntry('Referer','https://ytoffline.net/fr1/')
+        oRequest.addHeaderEntry('User-Agent', UA)
+        oRequest.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
+        oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+        oRequest.addHeaderEntry('Content-Length', len(pdata))
+        oRequest.addHeaderEntry('Referer', 'https://ytoffline.net/fr1/')
         oRequest.addParametersLine(pdata)
 
         sHtmlContent = oRequest.request()
 
-        sHtmlContent1 = oParser.abParse(sHtmlContent, '<div id="mp4" class="display-block tabcontent">', '<div id="audio" class="tabcontent">')
+        sStart = '<div id="mp4" class="display-block tabcontent">'
+        sEnd = '<div id="audio" class="tabcontent">'
+        sHtmlContent1 = oParser.abParse(sHtmlContent, sStart, sEnd)
         sPattern = '<td>([^<]+)<small>.+?data-href="([^"]+)"'
         aResult = oParser.parse(sHtmlContent1, sPattern)
 
