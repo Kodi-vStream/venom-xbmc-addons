@@ -180,7 +180,7 @@ class cRequestHandler:
             self.__sResponseHeader = oResponse.headers
             self.__sRealUrl = oResponse.url
 
-            if jsonDecode==False:
+            if jsonDecode == False:
                 sContent = oResponse.content
 
                 #Necessaire pour Python 3
@@ -222,54 +222,55 @@ class cRequestHandler:
             dialog().VSerror(error_msg)
             sContent = ''
 
-        if oResponse.status_code in [503,403]:
-            if not "Forbidden" in sContent:
-                #Default
-                CLOUDPROXY_ENDPOINT = 'http://localhost:8191/v1'
+        if oResponse:
+            if oResponse.status_code in [503,403]:
+                if not "Forbidden" in sContent:
+                    #Default
+                    CLOUDPROXY_ENDPOINT = 'http://localhost:8191/v1'
 
-                json_session = False
+                    json_session = False
 
-                try:
-                    json_session = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, data=dumps({
-                        'cmd': 'sessions.list'
-                    }))
-                except:
-                    dialog().VSerror("%s" % ("Page protege par Cloudflare, veuillez executer  FlareSolverr."))
-
-                if json_session:
-                    #On regarde si une session existe deja.
-                    if json_session.json()['sessions']:
-                        cloudproxy_session = json_session.json()['sessions'][0]
-                    else:
+                    try:
                         json_session = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, data=dumps({
-                            'cmd': 'sessions.create'
+                            'cmd': 'sessions.list'
                         }))
-                        response_session = loads(json_session.text)
-                        cloudproxy_session = response_session['session']
+                    except:
+                        dialog().VSerror("%s" % ("Page protege par Cloudflare, veuillez executer  FlareSolverr."))
 
-                    self.__aHeaderEntries['Content-Type'] = 'application/x-www-form-urlencoded' if (method == 'post') else 'application/json'
+                    if json_session:
+                        #On regarde si une session existe deja.
+                        if json_session.json()['sessions']:
+                            cloudproxy_session = json_session.json()['sessions'][0]
+                        else:
+                            json_session = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, data=dumps({
+                                'cmd': 'sessions.create'
+                            }))
+                            response_session = loads(json_session.text)
+                            cloudproxy_session = response_session['session']
 
-                    #Ont fait une requete.
-                    json_response = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, data=dumps({
-                        'cmd': 'request.%s' % method.lower(),
-                        'url': self.__sUrl,
-                        'session': cloudproxy_session,
-                        'postData': '%s' % urlEncode(sParameters) if (method.lower() == 'post') else ''
-                    }))
+                        self.__aHeaderEntries['Content-Type'] = 'application/x-www-form-urlencoded' if (method == 'post') else 'application/json'
 
-                    http_code = json_response.status_code
-                    response = loads(json_response.text)
-                    if 'solution' in response:
-                        if self.__sUrl != response['solution']['url']:
-                            self.__sRealUrl = response['solution']['url']
+                        #Ont fait une requete.
+                        json_response = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, data=dumps({
+                            'cmd': 'request.%s' % method.lower(),
+                            'url': self.__sUrl,
+                            'session': cloudproxy_session,
+                            'postData': '%s' % urlEncode(sParameters) if (method.lower() == 'post') else ''
+                        }))
 
-                        sContent = response['solution']['response']
+                        http_code = json_response.status_code
+                        response = loads(json_response.text)
+                        if 'solution' in response:
+                            if self.__sUrl != response['solution']['url']:
+                                self.__sRealUrl = response['solution']['url']
 
-        if oResponse and not sContent:
-            #Ignorer ces deux codes erreurs.
-            ignoreStatus = [200,302]
-            if oResponse.status_code not in ignoreStatus:
-                dialog().VSerror("%s (%d),%s" % (addon().VSlang(30205), oResponse.status_code, self.__sUrl))
+                            sContent = response['solution']['response']
+
+            if oResponse and not sContent:
+                #Ignorer ces deux codes erreurs.
+                ignoreStatus = [200,302]
+                if oResponse.status_code not in ignoreStatus:
+                    dialog().VSerror("%s (%d),%s" % (addon().VSlang(30205), oResponse.status_code, self.__sUrl))
 
         if sContent:
             if (self.__bRemoveNewLines == True):
