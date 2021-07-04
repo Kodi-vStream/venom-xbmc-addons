@@ -582,7 +582,7 @@ class cTMDb:
         _meta['episode'] = 0
         _meta['seasons'] = []
         _meta['nbseasons'] = 0
-        _meta['guest_stars'] = []
+        _meta['guest_stars'] = ''
 
         if 'title' in meta and meta['title']:
             _meta['title'] = meta['title']
