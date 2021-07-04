@@ -82,12 +82,12 @@ class cGui:
     #    Categorie       sCat          Meta     CONTENT
     #    Film            1             1        movies
     #    Serie           2             2        tvshows
-    #    Episodes        2             6        episodes
     #    Anime           3             4        tvshows
     #    Saison          4             5        episodes
     #    Divers          5             0        videos
     #    IPTV (Officiel) 6             0        files
     #    Saga            7             3        movies
+    #    Episodes        8             6        episodes
     #    Person          /             7        artists
     #    Nerwork         /             8        files
 
@@ -154,7 +154,7 @@ class cGui:
         if not oOutputParameterHandler.getValue('sLang'):
             oOutputParameterHandler.addParameter('sLang', oInputParameterHandler.getValue('sLang'))
 
-        self.addNewDir('episodes', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 6, 2)
+        self.addNewDir('episodes', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 6, 8)
 
         return
 
