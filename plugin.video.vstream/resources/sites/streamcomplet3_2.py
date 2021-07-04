@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-return False
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -16,7 +15,7 @@ SITE_IDENTIFIER = 'streamcomplet3_2'
 SITE_NAME = 'Streamcomplet3 (2)'
 SITE_DESC = 'Films en streaming.'
 
-URL_MAIN = 'https://streamcomplet3.net/'
+URL_MAIN = 'https://streamcomplet3.tv/'
 
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
