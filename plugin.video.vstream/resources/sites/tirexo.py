@@ -313,11 +313,11 @@ def showMovies(sSearch=''):
         sUrl = sSearch
 
     if sSearch or "index" in sUrl:  # en mode recherche
-        sPattern = 'class="mov-t nowrap" href="(https://www.tirexo.pro/films.+?|https://www.tirexo.pro/telecharger-series.+?|https://www.tirexo.pro/animes.+?|https://www.tirexo.pro/emissions-tv-documentaires.+?)" title="([^"]+).+?data-content="([^"]+).+?<img src="/([^"]+).+?<div style="height: 51px" class="mov-c nowrap'
+        sPattern = 'class="mov-t nowrap" href="(.+?films.+?|.+?series.+?|.+?animes.+?|.+?emissions-tv-documentaires.+?)" title="([^"]+).+?data-content="([^"]+).+?<img src="/([^"]+).+?<div style="height: 51px" class="mov-c nowrap'
     elif 'collections/' in sUrl:
         sPattern = 'class="mov-t nowrap" href=".+?<img src="\/([^"]+)" width="200px" height="320px" title="([^"]+).+?data-link="([^"]+)'
     else:
-        sPattern = 'class="mov-t nowrap" href="([^"]+)">  <.+?data-content="([^"]+).+?img src="([^"]+).+?title="([^"]+)'
+        sPattern = 'data-content="([^"]+).+?title="([^"]+).+?img src="([^"]+).+?href="([^"]+)"'
 
     oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -348,10 +348,10 @@ def showMovies(sSearch=''):
                 sDesc = aEntry[2]
                 sThumb = URL_MAIN + aEntry[3]
             else:
-                sUrl2 = aEntry[0]
-                sDesc = aEntry[1]
+                sUrl2 = aEntry[3]
+                sDesc = aEntry[0]
                 sThumb = URL_MAIN + aEntry[2]
-                sTitle = aEntry[3]
+                sTitle = aEntry[1]
 
                 # Enlever les films en doublons (même titre)
                 # il s'agit du même film dans une autre qualité qu'on retrouvera au moment du choix de la qualité

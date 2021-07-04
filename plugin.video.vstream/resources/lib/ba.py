@@ -1,22 +1,16 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-
-try:  # Python 2
-    import urllib2
-
-except ImportError:  # Python 3
-    import urllib.request as urllib2
-
-import ssl
 import re
+import requests
 
 from resources.hosters.youtube import cHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.player import cPlayer
-from resources.lib.comaddon import addon, dialog
+from resources.lib.comaddon import addon, dialog, VSlog
 from resources.lib.tmdb import cTMDb
 from resources.lib.util import QuotePlus
+from resources.lib.config import GestionCookie
 
 try:
     import json
@@ -52,20 +46,12 @@ class cShowBA:
                 pass
 
     def SetMetaType(self, metaType):
-        self.metaType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'movie').replace('4', 'tvshow')
+        self.metaType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'movie').replace('4', 'tvshow').replace('5', 'tvshow').replace('6', 'tvshow')
 
     def SearchBA_old(self):
         url = 'https://www.googleapis.com/youtube/v3/search?part=id,snippet&q=%s&maxResults=1&relevanceLanguage=fr&key=%s' % (self.search, self.key)
-        req = urllib2.Request(url)
-
-        try:
-            gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-            response = urllib2.urlopen(req, context=gcontext)
-        except:
-            response = urllib2.urlopen(req)
-        sHtmlContent = response.read()
-        result = json.loads(sHtmlContent)
-        response.close()
+        oRequestHandler = cRequestHandler(url)        
+        sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
         try:
             ids = result['items'][0]['id']['videoId']
@@ -109,15 +95,32 @@ class cShowBA:
                 
         # Sinon recherche dans youtube
         if not urlTrailer:
-            urlTrailer2 = 'https://www.youtube.com/results?q=' + QuotePlus(sTitle) + '&sp=EgIYAQ%253D%253D'
-            
-            oRequestHandler = cRequestHandler(urlTrailer2)
-            sHtmlContent = oRequestHandler.request()
-    
-            listResult = re.findall('"url":"\/watch\?v=([^"]+)"', sHtmlContent)
-            if listResult:
+            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36'}
+
+            url = 'https://www.youtube.com/results'
+
+            sHtmlContent = requests.get(url, params={'search_query': sTitle}, cookies={'CONSENT': GestionCookie().Readcookie("youtube")}, headers=headers).text
+                
+            if "Proposer des services et s'assurer" in sHtmlContent:
+                data = re.search('<form action=(.+?)Accepter',sHtmlContent).group(1)
+                post_data = re.findall('<input type="hidden" name="(.+?)" value="(.+?)"',data)
+                d = {}
+                for data in post_data:
+                    d.update({data[0]:data[1]})
+                cook = requests.post("https://consent.youtube.com/s", params=d, headers=headers, allow_redirects=False).cookies
+
+                GestionCookie().SaveCookie('youtube', str(dict(cook)["CONSENT"]))
+
+                sHtmlContent = requests.get(url, params={'search_query': sTitle}, cookies={'CONSENT': str(dict(cook)["CONSENT"])}, headers=headers).text
+
+            try:
+                result = re.search('"contents":\[{"videoRenderer":{"videoId":"([^"]+)', str(sHtmlContent)).group(1)
+            except:
+                result = re.search('"contents":\[{"videoRenderer":{"videoId":"([^"]+)', sHtmlContent.encode('utf-8')).group(1)
+
+            if result:
                 # Premiere video trouvée
-                urlTrailer = 'http://www.youtube.com/watch?v=' + listResult[0]
+                urlTrailer = 'https://www.youtube.com/watch?v=' + result
 
         # BA trouvée
         if urlTrailer:
@@ -125,6 +128,7 @@ class cShowBA:
             hote.setUrl(urlTrailer)
             hote.setResolution('720p')
             api_call = hote.getMediaLink()[1]
+            
             if not api_call:
                 return
 

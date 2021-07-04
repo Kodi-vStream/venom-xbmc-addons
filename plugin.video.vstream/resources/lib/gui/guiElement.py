@@ -32,11 +32,8 @@ class cGuiElement:
         self.__sRootArt = 'special://home/addons/plugin.video.vstream/resources/art/'
         self.__sType = 'video'
         self.__sMeta = 0
-        self.__sPlaycount = 0
         self.__sTrailer = ''
         self.__sMetaAddon = addons.getSetting('meta-view')
-        self.__sImdb = ''
-        self.__sTmdb = ''
         self.__sMediaUrl = ''
         self.__sSiteUrl = ''
         # contient le titre qui sera coloré
@@ -542,7 +539,13 @@ class cGuiElement:
                 sTitle = sTitle[:-3]
             sTitle = sTitle.strip()
 
-        sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'collection').replace('4', 'anime').replace('5', 'season').replace('7', 'person').replace('8', 'network')
+        # tvshow
+        if metaType in (2, 4, 5, 6):
+            tvshowtitle = self.getItemValue('tvshowtitle')
+            if tvshowtitle:
+                sTitle =  tvshowtitle
+                   
+        sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'collection').replace('4', 'anime').replace('5', 'season').replace('6', 'episode').replace('7', 'person').replace('8', 'network')
 
         meta = {}
         if sType:
@@ -622,8 +625,23 @@ class cGuiElement:
         if 's_year' in meta:
             meta.pop('s_year')
             
+        if 'still_path' in meta:
+            meta.pop('still_path')
+
+        if 'seasons' in meta:
+            meta.pop('seasons')
+        
+        if 'guest_stars' in meta:
+            meta.pop('guest_stars')
+        
+        if 'nbseasons' in meta:
+            nbSeasons = meta.pop('nbseasons')
+            if nbSeasons>0:
+                self.addItemProperties('TotalSeasons', nbSeasons)
+
         for key, value in meta.items():
             self.addItemValues(key, value)
+            
         return
 
     def getItemValues(self):
@@ -675,7 +693,7 @@ class cGuiElement:
         # tmdbid
         if self.getTmdbId():
             self.addItemProperties('TmdbId', str(self.getTmdbId()))
-            self.addItemValues('DBID', str(self.getTmdbId()))
+            # only for library content : self.addItemValues('DBID', str(self.getTmdbId()))
 
         # imdbid
         if self.getImdbId():
@@ -701,9 +719,11 @@ class cGuiElement:
                 # self.addItemValues('trailer', self.getDefaultTrailer())
 
         # Used only if there is data in db, overwrite getMetadonne()
-        w = self.getWatched()
-        if w == 1:
-            self.addItemValues('playcount', w)
+        sCat = str(self.getCat())
+        if sCat and sCat != 6:  # Pas besoin de vérifier si pas média
+            w = self.getWatched()
+            if w == 1:
+                self.addItemValues('playcount', w)
 
         self.addItemProperties('siteUrl', self.getSiteUrl())
         self.addItemProperties('sCleanTitle', self.getFileName())
@@ -711,19 +731,19 @@ class cGuiElement:
         self.addItemProperties('sFav', self.getFunction())
         self.addItemProperties('sMeta', str(self.getMeta()))
 
-        sCat = str(self.getCat())
         if sCat:
             self.addItemProperties('sCat', sCat)
             mediatypes = {'1': 'movie', '2': 'tvshow', '3': 'tvshow', '4': 'season', '5': 'video', '6': 'video', '7': 'season', '8': 'episode'}
-            if sCat in mediatypes:
-                mediatype = mediatypes[sCat]
-                if mediatype:            # video, movie, tvshow, season, episode, musicvideo
-                    self.addItemValues('mediatype', mediatype)
+            if sCat in mediatypes.keys():
+                mediatype = mediatypes.get(sCat)
+                self.addItemValues('mediatype', mediatype) # video, movie, tvshow, season, episode, musicvideo
 
         if self.getSeason():
             self.addItemValues('season', int(self.getSeason()))
+
         if self.getEpisode():
             self.addItemValues('episode', int(self.getEpisode()))
+
         return self.__aItemValues
 
     def addItemProperties(self, sPropertyKey, mPropertyValue):

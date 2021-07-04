@@ -205,6 +205,29 @@ class PasteCache:
             VSlog('************* Error deleting from %s db: %s' % (SITE_IDENTIFIER, e), 4)
             return None
 
+    # Suprimer tout le cache
+    def delete(self):
+        VSlog('PasteCache - delete')
+        
+        # sql_select = "SELECT paste_id FROM %s" % SITE_IDENTIFIER
+        # try:
+            # self.dbcur.execute(sql_select)
+            # matchedrow = self.dbcur.fetchall()
+            # if not matchedrow:
+                # return False  # Rien à supprimer
+        # except Exception as e:
+            # VSlog('SQL ERROR : %s' % sql_select)
+            # return False
+        
+        try:
+            sql_delete = 'DELETE FROM %s' % SITE_IDENTIFIER
+            self.dbcur.execute(sql_delete)
+            self.db.commit()
+        except Exception as e:
+            VSlog('************* Error deleting from %s db: %s' % (SITE_IDENTIFIER, e), 4)
+            return False
+        return True
+
 # Exemple
 # CAT; TMDB; TITLE; SAISON; YEAR; GENRES; URLS=https://uptobox.com/
 # film;714;Demain ne meurt jamais;James BOND;1997;['Action', 'Aventure', 'Thriller'];['nwxxxx','nwYYzz']
@@ -447,6 +470,10 @@ def load():
     if not xbmc.getCondVisibility('Window.IsActive(home)'):
         oOutputParameterHandler = cOutputParameterHandler()
         oGui.addDir(SITE_IDENTIFIER, 'addPasteName', '[COLOR coral]Ajouter un dossier %s[/COLOR]' % SITE_NAME, 'listes.png', oOutputParameterHandler)
+
+    # Menu pour raffraichir tout le cache
+    oOutputParameterHandler = cOutputParameterHandler()
+    oGui.addDir(SITE_IDENTIFIER, 'refreshAllPaste', '[COLOR coral]Mettre à jour tous les contenus[/COLOR]', 'download.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -1241,7 +1268,7 @@ def showYears():
 
 # Trie des résolutions
 def trie_res(key):
-    resOrder = ['8K', '4K', '1080P', '720P', '576P', '540P', '480P', '360P']
+    resOrder = ['8K', '4K', '2160P', '1080P', '720P', '576P', '540P', '480P', '360P']
     if key == UNCLASSIFIED:
         return 20
     key = key.replace('p', 'P')
@@ -2097,6 +2124,22 @@ def refreshPaste():
             cache.remove(pasteBin)
 
     dialog().VSinfo(addons.VSlang(30014))
+
+
+# Forcer la mise à jour de tous les dossiers PasteBin
+def refreshAllPaste():
+    oGui = cGui()
+    oGui.addText(SITE_IDENTIFIER, '[COLOR teal]Mise à jour des contenus  ..... [/COLOR]', 'download.png')
+    oGui.setEndOfDirectory()
+    
+    xbmc.sleep(1000) # laisser le temps de voir que l'action a bien été prise en compte
+    
+    # le skin peut rappeler la fonction une deuxième fois, ne pas prendre en compte en vérifiant si on est revenu sur la home
+    if not xbmc.getCondVisibility('Window.IsActive(home)'):
+        PasteCache().delete()
+        dialog().VSinfo(addon().VSlang(30014))
+        xbmc.sleep(1000)
+        xbmc.executebuiltin('Action(Back)')
 
 
 # Retirer tous les dossiers PasteBin

@@ -366,7 +366,7 @@ msgstr "Nettoyage du cache vStream, Réussi"
 
 msgctxt "#30090"
 msgid "Suppression Database, Successful"
-msgstr "Suppression BDD, Réussi"
+msgstr "Réinitialisation des données : Réussi"
 
 msgctxt "#30091"
 msgid "Suppression Database, Error"
@@ -1030,11 +1030,11 @@ msgstr "Mode par defaut"
 
 msgctxt "#30452"
 msgid "Always ask me"
-msgstr "Toujours me demander"
+msgstr "Proposer les deux modes"
 
 msgctxt "#30453"
-msgid "Continue streaming via Uptostream"
-msgstr "Passer en Streaming via Uptostream"
+msgid "Continue streaming via UpToStream"
+msgstr "Passer en Streaming via UpToStream"
 
 msgctxt "#30454"
 msgid "Continue direct via UpToBox"

@@ -1,6 +1,18 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
+"""
+Pour rappel.
+Problème avec les DNS en ipv6 il faut utiliser les suivantes
+CloudFlare DNS:
+Préféré : 2606:4700:4700::1111
+Auxiliaire : 2606:4700:4700::1001
+Ou:
+Google DNS:
+Préféré : 2001:4860:4860::8888
+Auxiliaire : 2001:4860:4860::8844
+"""
+
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -30,6 +42,7 @@ MOVIE_ANNEES = (True, 'showMovieYears')
 
 def load():
     oGui = cGui()
+    oGui.addText(SITE_IDENTIFIER, 'Information: Modification des DNS obligatoire pour utiliser cette source.')
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])

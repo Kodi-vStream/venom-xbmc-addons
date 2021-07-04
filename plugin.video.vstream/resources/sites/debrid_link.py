@@ -53,17 +53,17 @@ def showLiens(sSearch=''):
 
     Token_debrid_link = "Bearer " + addon().getSetting('hoster_debridlink_token')
     oRequestHandler = cRequestHandler(sUrl)
-    oRequestHandler.addHeaderEntry('Accept','application/json')
+    oRequestHandler.addHeaderEntry('Accept', 'application/json')
     oRequestHandler.addHeaderEntry('Authorization', Token_debrid_link)
     r = json.loads(oRequestHandler.request())
 
     if (r["success"] == False):
         oGui.addText(SITE_IDENTIFIER)
-        if r["error"] == 'badToken':
+        if (r["error"] == 'badToken'):
             New_token = RenewToken()
 
             oRequestHandler = cRequestHandler(sUrl)
-            oRequestHandler.addHeaderEntry('Accept','application/json')
+            oRequestHandler.addHeaderEntry('Accept', 'application/json')
             oRequestHandler.addHeaderEntry('Authorization', New_token)
             r = json.loads(oRequestHandler.request())
 

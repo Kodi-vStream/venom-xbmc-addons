@@ -17,6 +17,7 @@ SITE_NAME = 'Streaminz'
 SITE_DESC = ' films, de séries et de mangas en streaming VF et VOSTFR complets'
 
 URL_MAIN = 'https://www.streaminz.cc/'
+# Clone "https://www.showstream.xyz/"
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
@@ -238,14 +239,14 @@ def showMovies(sSearch=''):
     oParser = cParser()
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
-        sPattern = 'class="image">.+?<a href="([^"]+).+?<img src="([^"]+)" alt="([^"]+).+?class="([^"]+).+?<p>(.+?)</p>'
+        sPattern = 'class="image">.+?<a href="([^"]+).+?<img src="([^"]+)" alt="([^"]+).+?class="([^"]+).+?<p>(.+?)</p'
         sType = oParser.parseSingleResult(sUrl, '\?post_types=(.+?)&')  # pour filtrage entre film et série
     else:
         sTypeYear = oInputParameterHandler.getValue('sTypeYear')
         if sTypeYear:
-            sPattern ='<article id="post-\d+".+?class="item ([^"]+).+?img src="([^"]+)" alt="([^"]+).+?(?:|class="quality">([^<]+)<.+?)(?:|class="dtyearfr">([^<]+)<.+?)<a href="([^"]+)">.+?<div class="texto">(.*?)</div>'
+            sPattern = '<article id="post-\d+".+?class="item ([^"]+).+?img src="([^"]+)" alt="([^"]+).+?(?:|class="quality">([^<]+).+?)(?:|class="dtyearfr">([^<]+).+?)<a href="([^"]+).+?class="texto">(.*?)</div>'
         else:
-            sPattern = '<article id="post-\d+".+?img data-src="([^"]+)".+?alt="([^"]+).+?(?:|class="quality">([^<]+)<.+?)(?:|class="dtyearfr">([^<]+)<.+?)<a href="([^"]+)">.+?<div class="texto">(.*?)<\/div>'
+            sPattern = '<article id="post-\d+".+?data-src="([^"]+).+?alt="([^"]+).+?(?:|class="quality">([^<]+).+?)(?:|class="dtyearfr">([^<]+).+?)<a href="([^"]+).+?class="texto">(.*?)</div'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -320,24 +321,27 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
     if not sSearch:
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<link rel="next" href="([^"]+)"'
+    sPattern = '<span>Page .+?de (\d+).+?resppages\'><a href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return aResult[1][0]
+        sNumberMax = aResult[1][0][0]
+        sNextPage = aResult[1][0][1]
+        sNumberNext = re.search('page/([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    return False
+    return False, False
 
 
 def showSxE():
@@ -350,7 +354,7 @@ def showSxE():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = "<span class='title'>(.+?)<i>|class='numerando'>(.+?)</div><div class='episodiotitle'><a href='([^']+)'"
+    sPattern = "<span class='title'>(.+?)<i>|class='numerando'>(.+?)</div><div class='episodiotitle'><a href='([^']+)"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -365,13 +369,13 @@ def showSxE():
                 SxE = re.sub('(\d+) - (\d+)', 'saison \g<1> Episode \g<2>', aEntry[1])
                 sTitle = sMovieTitle + ' ' + SxE
 
-                sDisplaytitle = sMovieTitle + ' ' + re.sub('saison \d+ ', '', SxE)
+                sDisplayTitle = sMovieTitle + ' ' + re.sub('saison \d+ ', '', SxE)
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
-                oGui.addEpisode(SITE_IDENTIFIER, 'showLink', sDisplaytitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addEpisode(SITE_IDENTIFIER, 'showLink', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -389,7 +393,6 @@ def showLink():
     sPattern = "dooplay_player_option.+?data-post='(\d+)'.+?data-nume='(.+?)'>.+?'title'>(.+?)<"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
 
     if (aResult[0] == True):
         # trie par numéro de serveur
@@ -401,7 +404,6 @@ def showLink():
             dtype = 'movie'  # fonctionne pour Film ou Série (pour info: série -> dtype = 'tv')
             dpost = aEntry[0]
             dnum = aEntry[1]
-            
 
             pdata = 'action=doo_player_ajax&post=' + dpost + '&nume=' + dnum + '&type=' + dtype
             sLang = aEntry[2].replace('Serveur', '').replace('Télécharger', '').replace('(', '').replace(')', '')
@@ -471,7 +473,7 @@ def showHosters():
                 aResult = oParser.parse(sHtmlContent2, sPattern)
                 for aEntry2 in aResult[1]:
                     sHosterUrl = 'https://waaw.to' + aEntry2
-            
+
             # voir si filtrage ou non car parfois le lien mp4 créé un blocage
             if 'streaminz.ml' in sHosterUrl:
                 sid = sHosterUrl.split('/')[-1]
@@ -484,7 +486,7 @@ def showHosters():
                 oRequest.addParametersLine(postdata)
                 sHtmlContent2 = oRequest.request()
                 oParser = cParser()
-                sPattern ='"data".+?file.+?"([^"]*).+?type.+?"([^"]*)'
+                sPattern = '"data".+?file.+?"([^"]*).+?type.+?"([^"]*)'
                 aResult = oParser.parse(sHtmlContent2, sPattern)
                 if (aResult[0] == True):
                     sHosterUrl = aResult[1][0][0] + '.' + aResult[1][0][1]

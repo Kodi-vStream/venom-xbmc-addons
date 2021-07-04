@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'vf_film'
 SITE_NAME = 'VF Film'
 SITE_DESC = 'Regarder tous vos films streaming complets, gratuit et illimité'
 
-URL_MAIN = 'https://vf-film.vip/'
+URL_MAIN = "https://vf-film.org/"
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + '?s=', FUNCTION_SEARCH)
@@ -191,7 +191,7 @@ def showHoster():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = 'Opt1"><iframe.+?src="([^"]+)'
+    sPattern = 'class="TPlayerTb.+?src="([^"]+)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0] is True:

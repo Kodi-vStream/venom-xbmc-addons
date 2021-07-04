@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'vf_serie'
 SITE_NAME = 'VF Série'
 SITE_DESC = 'Regarder tous vos films streaming complets, gratuit et illimité'
 
-URL_MAIN = 'https://vf-serie.vip/'
+URL_MAIN = "https://vf-serie.org/"
 
 FUNCTION_SEARCH = 'showSeries'
 URL_SEARCH = (URL_MAIN + '?s=', FUNCTION_SEARCH)
@@ -236,7 +236,7 @@ def showHoster():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = 'Opt1"><iframe.+?src="([^"]+)'
+    sPattern = 'class="TPlayerTb.+?src="([^"]+)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0] is True:

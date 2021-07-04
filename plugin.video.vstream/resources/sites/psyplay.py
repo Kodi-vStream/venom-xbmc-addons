@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'psyplay'
 SITE_NAME = 'Psy Play'
 SITE_DESC = 'stream HD, streaming Sans pub, streaming vf'
 
-URL_MAIN = 'https://www.bonstreamings.com/'
+URL_MAIN = "https://wwv.bonstreamingp.com/"
 
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'

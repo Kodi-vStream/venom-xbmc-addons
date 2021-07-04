@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'french_stream_lol'
 SITE_NAME = 'French-stream-lol'
 SITE_DESC = 'Films & séries'
 
-URL_MAIN = 'https://french-stream.lol/'
+URL_MAIN = 'https://french-stream.re/'
 
 MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')

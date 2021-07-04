@@ -1,4 +1,3 @@
-return False  # 21/05/2021
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
@@ -19,7 +18,7 @@ SITE_IDENTIFIER = 'streamingdivx'
 SITE_NAME = 'Streamingdivx'
 SITE_DESC = 'Films VF en streaming.'
 
-URL_MAIN = 'https://ww1.streamingdivx.ws/'
+URL_MAIN = 'https://wvw.streamingdivx.stream/'
 
 MOVIE_NEWS = (URL_MAIN + 'films.html', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenres')

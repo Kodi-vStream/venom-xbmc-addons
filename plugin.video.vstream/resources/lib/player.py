@@ -130,13 +130,12 @@ class cPlayer(xbmc.Player):
             xbmc.sleep(1000)
 
         #active/desactive les sous titres suivant l'option choisie dans la config
-        if (self.SubtitleActive):
+        if self.getAvailableSubtitleStreams():
             if (self.ADDON.getSetting('srt-view') == 'true'):
                 self.showSubtitles(True)
-                dialog().VSinfo('Sous-titres chargés', 'Sous-Titres', 5)
             else:
                 self.showSubtitles(False)
-                dialog().VSinfo('Sous-titres chargés, vous pouvez les activer', 'Sous-Titres', 15)
+                dialog().VSinfo('Des sous-titres sont disponibles', 'Sous-Titres', 4)
 
         waitingNext = 0
         

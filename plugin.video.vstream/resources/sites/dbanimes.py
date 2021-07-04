@@ -245,9 +245,16 @@ def showEpisodes():
 
     sPattern = '(?:<p>|a>)\s<a href=([^\s]+).+?title=.+?>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if aResult[0] == True:
+        total = len(aResult[1])
+        progress_ = progress().VScreate(SITE_NAME, large = total>50)
+
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
             sUrl = aEntry[0]
             sEpisode = aEntry[1]
             sTitle = sMovieTitle + ' ' + sEpisode
@@ -261,6 +268,8 @@ def showEpisodes():
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
+        progress_.VSclose(progress_)
+        
     oGui.setEndOfDirectory()
 
 
