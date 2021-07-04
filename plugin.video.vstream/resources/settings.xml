@@ -103,8 +103,6 @@
 
         <setting visible="false" id="plugin_cinemay_com" type="bool" label="Cinemay" default="true"/>
 
-<!-- OUT le 07/03/21         <setting visible="false" id="plugin_cinemegatoil_org" type="bool" label="Cinemegatoil" default="true"/>
- -->
         <setting visible="false" id="plugin_cinemey" type="bool" label="Cinemey" default="true"/>
 
         <setting visible="false" id="plugin_dbanimes" type="bool" label="DBanimes" default="true"/>
@@ -117,16 +115,12 @@
 
         <setting visible="false" id="plugin_dpstreamhd" type="bool" label="DpStream HD" default="true"/>
 
-<!-- CloudFlare 15/01/21        <setting visible="false" id="plugin_dpstreaming" type="bool" label="DP Streaming" default="true"/>
- -->
         <setting visible="false" id="plugin_enstream_series" type="bool" label="Enstream (Séries)" default="true"/>
 
         <setting visible="false" id="plugin_enstream" type="bool" label="Enstream" default="true"/>
 
         <setting visible="false" id="plugin_extreme_down" type="bool" label="ExtremeDown" default="true"/>
 
-<!-- CloudFlare 26/11/20      <setting visible="false" id="plugin_filmoflix" type="bool" label="Filmoflix" default="true"/>
- -->
         <setting visible="false" id="plugin_filmspourenfants" type="bool" label="Films pour Enfants" default="true"/>
 
         <setting visible="false" id="plugin_filmstoon_pro" type="bool" label="Films Toon" default="true"/>
@@ -145,9 +139,9 @@
 
         <setting visible="false" id="plugin_funeralforamanga" type="bool" label="Funeral for a manga" default="true"/>
 
-        <setting visible="false" id="plugin_hds_fm" type="bool" label="Hds-fm" default="true"/>
-
         <setting visible="false" id="gum_gum_streaming_com" type="bool" label="Gum-Gum-Streaming" default="true"/>
+
+        <setting visible="false" id="plugin_hds_fm" type="bool" label="Hds-fm" default="true"/>
 
         <setting visible="false" id="plugin_hds_stream" type="bool" label="Hds-stream" default="true"/>
 
@@ -201,8 +195,6 @@
 
         <setting visible="false" id="plugin_serie_streaming" type="bool" label="Série Streaming" default="true"/>
 
-<!-- 13/02/21         <setting visible="false" id="plugin_serie_streaminghd" type="bool" label="Série-StreamingHD" default="true"/>
- -->
         <setting visible="false" id="plugin_series_en_streaming" type="bool" label="Series en Streaming" default="true"/>
 
         <setting visible="false" id="plugin_series_stream" type="bool" label="Series Stream" default="true"/>
@@ -225,16 +217,10 @@
 
         <setting visible="false" id="plugin_streamdivx" type="bool" label="StreamDivx" default="true"/>
 
-<!-- 12/02/21 Netu        <setting visible="false" id="plugin_streaming_planet" type="bool" label="Streaming-Planet" default="true"/> -->
-
         <setting visible="false" id="plugin_streaming_series" type="bool" label="Streaming-Series" default="true"/>
 
-<!-- 21/05/2021         <setting visible="false" id="plugin_streamingdivx" type="bool" label="StreamingDivx" default="true"/>
- -->
         <setting visible="false" id="plugin_streaminz" type="bool" label="Streaminz" default="true"/>
 
-<!-- 14/01/21        <setting visible="false" id="plugin_streamiz" type="bool" label="Streamiz" default="true"/>
- -->
         <setting visible="false" id="plugin_streampourvous" type="bool" label="Streampourvous" default="true"/>
 
         <setting visible="false" id="plugin_telecharger_streaming" type="bool" label="Télécharger-streaming" default="true"/>
