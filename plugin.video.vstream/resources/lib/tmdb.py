@@ -582,6 +582,7 @@ class cTMDb:
         _meta['episode'] = 0
         _meta['seasons'] = []
         _meta['nbseasons'] = 0
+        _meta['guest_stars'] = []
 
         if 'title' in meta and meta['title']:
             _meta['title'] = meta['title']
@@ -774,7 +775,10 @@ class cTMDb:
             _meta['backdrop_url'] = self.fanart + str(_meta['backdrop_path'])
 
         if 's_title' in meta and meta['s_title']:   # Titre d'un episode
-            _meta['tagline'] = meta['s_title']
+            tvLine = meta['s_title']
+            if not isMatrix():
+                tvLine = tvLine.encode('utf-8')
+            _meta['tagline'] = tvLine
         elif 'tagline' in meta and meta['tagline']:
             _meta['tagline'] = meta['tagline']
 
@@ -890,19 +894,18 @@ class cTMDb:
                 sql_select = sql_select + ' WHERE tvshow.tmdb_id = \'%s\'' % tmdb_id
             else:
                 sql_select = sql_select + ' WHERE tvshow.title = \'%s\'' %  name
-                if year:
-                    sql_select = sql_select + ' AND tvshow.year = %s' % year
     
             sql_select = sql_select + ' AND season.season = \'%s\'' % season
 
         elif media_type == 'episode':
-            if not tmdb_id: # tmdb_id obligatoire, si il n'y en a pas c'est qu'on ne connait pas la série de toute façon
-                return None
             sql_select = 'SELECT *, episode.title as s_title, episode.poster_path as s_poster_path, episode.premiered as s_premiered, '\
                 'episode.guest_stars, episode.year as s_year, episode.overview as s_overview, '\
                 'episode.director as s_director, episode.writer as s_writer, episode.vote_average as s_vote_average, episode.vote_count as s_vote_count '\
                 'FROM tvshow LEFT JOIN episode ON tvshow.tmdb_id = episode.tmdb_id'
-            sql_select += ' WHERE tvshow.tmdb_id = \'%s\'' % tmdb_id
+            if tmdb_id:
+                sql_select += ' WHERE tvshow.tmdb_id = \'%s\'' % tmdb_id
+            else:
+                sql_select += ' WHERE tvshow.title = \'%s\'' % name
             sql_select += ' AND episode.season = \'%s\' AND episode.episode = \'%s\'' % (season,episode)
         else:
             return None
@@ -1114,7 +1117,7 @@ class cTMDb:
         if not update:
             #Obligatoire pour pointer vers les bonnes infos dans la base de données
             if not tmdb_id:
-                if media_type in ("season", "tvshow", "anime"):
+                if media_type in ("season", "tvshow", "anime", "episode"):
                     name = re.sub('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))(?:([^"]+)|)','',name)
 
             meta = self._cache_search(media_type, self._clean_title(name), tmdb_id, year, season, episode)
