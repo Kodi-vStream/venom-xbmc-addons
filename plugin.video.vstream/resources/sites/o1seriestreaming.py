@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# source 45b  15022021 'https://01seriestreaming.com/' redirect source 45 https://hds-streamingvf.org/ 07022021
+# source 45b  06072021 'https://01seriestreaming.com/' redirect source 45 https://hds-streamingvf.org/ 07022021
 # changements mineurs dans le code mais changemement nom et logo
 import re
 
@@ -10,13 +10,13 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'o1seriestreaming'
 SITE_NAME = '01 Série Streaming'
 SITE_DESC = 'Films et Séries en streaming VF et VOSTFR'
 
-URL_MAIN = 'https://wwv.33seriestreaming.com/'
+URL_MAIN = "https://wwv.33seriestreaming.com/"
 
 # Sous menus
 MOVIE_MOVIE = (True, 'showMenuMovies')
@@ -254,6 +254,7 @@ def __checkForNextPage(sHtmlContent):
         return sNextPage, sPaging
     return False, 'none'
 
+
 def showSaisons():
     oGui = cGui()
     oParser = cParser()
@@ -276,7 +277,7 @@ def showSaisons():
             sThumb = aEntry[1]
             sSais = aEntry[2]
 
-            sTitle = sSais
+            sTitle = sMovieTitle + ' ' + sSais
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -299,7 +300,7 @@ def showSaisonsEP():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     sPattern = 'property="og:description".+?content="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -319,7 +320,7 @@ def showSaisonsEP():
         for aEntry in aResult[1]:
             sUrl2 = aEntry[2]
             sThumb = aEntry[0]
-            sEp = aEntry[1]
+            sEp = re.sub(' - ', ' ', aEntry[1])
 
             sTitle = sMovieTitle + ' ' + sEp
 
@@ -331,6 +332,7 @@ def showSaisonsEP():
             oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showHosters():
     oGui = cGui()
