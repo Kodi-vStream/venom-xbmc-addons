@@ -225,7 +225,7 @@ class cRequestHandler:
             dialog().VSerror(error_msg)
             sContent = ''
 
-        if oResponse:
+        if oResponse != None:
             if oResponse.status_code in [503,403]:
                 if not "Forbidden" in sContent:
                     #Default
