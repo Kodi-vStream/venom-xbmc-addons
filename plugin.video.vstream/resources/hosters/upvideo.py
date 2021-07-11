@@ -6,7 +6,8 @@ from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.hunter import hunter
 from resources.lib.comaddon import VSlog
-
+import re
+import base64
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -51,22 +52,37 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
         api_call = False
         oParser = cParser()
+        sPattern = 'return decodeURIComponent\(escape\(r\)\)}\("([^,]+)",([^,]+),"([^,]+)",([^,]+),([^,]+),([^,\))]+)\)'
 
         oRequest = cRequestHandler(self.__sUrl)
+        oRequest.addHeaderEntry('Cookie', 'popads2=opened')
         sHtmlContent = oRequest.request()
         
-        sPattern = 'return decodeURIComponent\(escape\(r\)\)}\("([^,]+)",([^,]+),"([^,]+)",([^,]+),([^,]+),([^,\))]+)\)'
         aResult = oParser.parse(sHtmlContent, sPattern)
         
+        #Get decode page
+        #oRequest = cRequestHandler("https://upvideo.to/assets/js/tabber.js")
+        #oRequest.addHeaderEntry('Referer', self.__sUrl)
+        #sHtmlContent2 = oRequest.request()
+        #aResult2 = oParser.parse(sHtmlContent2, sPattern)
+
+        #if (aResult2[0] == True):
+        #    j = aResult2[1][0]
+        #    decoder = hunter(j[0],int(j[1]),j[2],int(j[3]),int(j[4]),int(j[5]))
+        #    VSlog("Decoder ok")
+            
         if (aResult[0] == True):
             l = aResult[1]
             for j in l:
-                VSlog(hunter(j[0],int(j[1]),j[2],int(j[3]),int(j[4]),int(j[5])))
-
-            aResult2 = oParser.parse(sHtmlContent, sPattern1)
-            if (aResult2[0] == True):
-                sUrl = aResult[1][0]
-
+                data = hunter(j[0],int(j[1]),j[2],int(j[3]),int(j[4]),int(j[5]))
+                if "bcfdafaadffc" in data:                    
+                    r = re.search('var ddfffaacffaa *= *"([^"]+)" *;', data)
+                    if not r:
+                        VSlog('er2')
+                    v2 = r.group(1)
+                    
+                    v4 = v2.replace("NGY2YWNhZDlhZDYwNTBlNjBmYWVhZTI2MWRhODZiNTg", "");
+                    api_call = base64.b64decode(v4)
 
         if (api_call):
             return True, api_call
