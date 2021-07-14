@@ -2,6 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # source 26 https://dpstream.ch/  creation 18/10/2020
 # update 15/04/2021
+return False
 
 import re
 
