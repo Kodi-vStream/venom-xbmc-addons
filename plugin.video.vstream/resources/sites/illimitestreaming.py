@@ -329,6 +329,16 @@ def __checkForNextPage(sHtmlContent):
         sPaging = sNumberNext + '/' + sNumberMax
         return sNextPage, sPaging
 
+    # for the tvshows and the last page of movies
+    sPattern = "class='active'><a class=''>\d+</a></li><li><a rel='nofollow' class='page larger' href='([^\']+).+?>(\d+)</a></li></ul"
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        sNextPage = aResult[1][0][0]
+        sNumberMax = aResult[1][0][1]
+        sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
+
     return False, 'none'
 
 
