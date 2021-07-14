@@ -352,6 +352,8 @@ class cHosterGui:
             return self.getHoster('jetload')
         if ('dustreaming' in sHostName):
             return self.getHoster('dustreaming')
+        if ('vupload' in sHostName):
+            return self.getHoster('vupload')
 
         # frenchvid et clone
         if ('french-vid' in sHostName) or ('yggseries' in sHostName):
