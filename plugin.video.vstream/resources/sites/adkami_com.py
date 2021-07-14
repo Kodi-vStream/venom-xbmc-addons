@@ -8,7 +8,9 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, isMatrix
+from resources.lib.comaddon import progress, isMatrix, VSlog
+
+import re
 
 SITE_IDENTIFIER = 'adkami_com'
 SITE_NAME = 'ADKami'
@@ -268,19 +270,21 @@ def showSeries(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    oParser = cParser()
     sPattern = 'data-original="([^"]+)".+?class="top">.+?<a href="([^"]+)">.+?<span class="title">([^<]+)'
-    aResult = oParser.parse(sHtmlContent, sPattern)
+    #oParser = cParser()
+    #aResult = oParser.parse(sHtmlContent, sPattern)
+    aResult = re.findall(sPattern, sHtmlContent, re.DOTALL)
+    
+    VSlog(aResult)
 
-    if (aResult[0] == False):
+    if not aResult:
         oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
-        total = len(aResult[1])
+    else:
+        total = len(aResult)
         progress_ = progress().VScreate(SITE_NAME, large=total>50)
         oOutputParameterHandler = cOutputParameterHandler()
 
-        for aEntry in aResult[1]:
+        for aEntry in aResult:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
