@@ -71,14 +71,24 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  'B64.+?(?:\(|\[)(.+?)(?:\)|\]).+?;'
+        sPattern =  '<script type="text\/javascript">\s*(var[^<>]+?)<'
         aResult = oParser.parse(sHtmlContent, sPattern)[1][0]
         data = ""
-
-        for aEntry in aResult.split(','):
-            data += re.search('var ' + aEntry + '(?:.+?|)=(.+?)";',sHtmlContent).group(1)
-        decode = base64.b64decode(data)
-        url2 = json.loads(decode)['url']
+        
+        code = ''
+        sPattern2 =  '(?:.+?|)="(.+?)"'
+        aResult2 = oParser.parse(aResult, sPattern2)
+        if aResult2[0]:
+            for i in aResult2[1]:
+                code += i
+            code = base64.b64decode(code)
+            
+        sPattern2 =  '"url":"([^"]+)"'
+        aResult2 = oParser.parse(code, sPattern2)
+        if aResult2[0]:
+            url2 = aResult2[1][0]
+        else:
+            return False, False
 
         oRequest = cRequestHandler(url2)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
