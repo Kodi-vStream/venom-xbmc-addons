@@ -316,7 +316,7 @@ class cGui:
             # gestion des valeurs par defaut si non renseignées
             videoInfoTag.setMediaType(oGuiElement.getType())
             videoInfoTag.setTitle(itemTitle)
-            if oGuiElement.getMeta():
+            try:
                 videoInfoTag.setOriginalTitle(data.get('originaltitle'))
                 videoInfoTag.setPlot(data.get('plot'))
                 videoInfoTag.setPlotOutline(data.get('plotoutline'))
@@ -336,10 +336,8 @@ class cGui:
                 videoInfoTag.setWriters(list(data.get('writer','').split("/")))
                 videoInfoTag.setDirectors(list(data.get('director','').split("/")))
 
-                if oGuiElement.getMeta() == 5:  # saison
-                    videoInfoTag.setSeason(int(data.get('season',0)))
-                elif oGuiElement.getMeta() == 6:  # episode
-                    videoInfoTag.setEpisode(int(data.get('episode',0)))
+                videoInfoTag.setSeason(int(data.get('season',0)))
+                videoInfoTag.setEpisode(int(data.get('episode',0)))
 
                 try:
                     credits = eval(data.get('credits'))['cast']
@@ -352,7 +350,8 @@ class cGui:
                         thumbnail = actor['profile_path']
                         cast.append(xbmc.Actor(actor['name'], actor['character'], actor['order'], thumbnail))
                     videoInfoTag.setCast(cast)
-
+            except:
+                pass
         oListItem.setArt({'poster': oGuiElement.getPoster(),
                           'thumb': oGuiElement.getThumbnail(),
                           'icon': oGuiElement.getIcon(),
