@@ -75,18 +75,28 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent, sPattern)[1][0]
         data = ""
         
-        code = ''
-        sPattern2 =  '(?:.+?|)="(.+?)"'
-        aResult2 = oParser.parse(aResult, sPattern2)
-        if aResult2[0]:
-            for i in aResult2[1]:
-                code += i
-            code = base64.b64decode(code)
-            
-        sPattern2 =  '"url":"([^"]+)"'
-        aResult2 = oParser.parse(code, sPattern2)
-        if aResult2[0]:
-            url2 = aResult2[1][0]
+        sPattern =  '(?:\[(.+?)\])'
+        aResult1 = oParser.parse(aResult, sPattern)
+        if aResult1[0]:
+            for i in aResult1[1]:
+                if ',' in i:
+                    aResult1[1].remove(i)
+                    [aResult1[1].append(x) for x in i.split(",")]
+                code = ''
+                sPattern2 =  'var '+i+'="(.+?)"'
+                aResult2 = oParser.parse(aResult, sPattern2)
+                if aResult2[0]:
+                    code += aResult2[1][0]
+
+            if isMatrix():
+                code = base64.b64decode(code).decode('ascii')
+            else:
+                code = base64.b64decode(code)    
+
+            if not code.startswith("{"):
+                code = '{"'+code        
+
+            url2 = json.loads(code)['url']
         else:
             return False, False
 
