@@ -19,7 +19,7 @@ Puis "installer depuis un fichier zip" le repository depuis cette nouvelle sourc
 
 Ou télécharger le ZIP :
 
-[![images](https://img.shields.io/badge/T%C3%A9l%C3%A9charger-Repository-blue.svg?style=for-the-badge)](https://github.com/Kodi-vStream/venom-xbmc-addons/releases/tag/0.0.3)
+[![images](https://img.shields.io/badge/T%C3%A9l%C3%A9charger-Repository-blue.svg?style=for-the-badge)](https://github.com/Kodi-vStream/venom-xbmc-addons/releases)
 
 Installer ensuite l'addon vStream EXCLUSIVEMENT depuis le repository.
 
