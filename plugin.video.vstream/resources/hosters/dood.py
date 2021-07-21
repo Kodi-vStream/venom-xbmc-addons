@@ -67,8 +67,7 @@ class cHoster(iHoster):
         return ''
 
     def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
-        self.__sUrl = self.__sUrl.replace('/d/','/e/')
+        self.__sUrl = str(sUrl).replace('/e/','/d/')
 
     def checkUrl(self, sUrl):
         return True
@@ -95,34 +94,17 @@ class cHoster(iHoster):
         
         oParser = cParser()
         
-        possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-        fin_url = ''.join(random.choice(possible) for _ in range(10))
-        
-        sPattern = 'return a\+"(\?token=[^"]+)"'
-        d = oParser.parse(sHtmlContent, sPattern)[1][0]
-        
-        fin_url = fin_url + d + str(int(1000*time.time()))
-        
-        sPattern = "\$\.get\('(\/pass_md5[^']+)"
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        url2 = 'https://' + urlDonwload.split('/')[2] + aResult[1][0]
-        
-        #VSlog(url2)
-        
-        oRequest = cRequestHandler(url2)
+        sPattern = 'Download video.+?a href="([^"]+)"'
+        d = "https://" + self.__sUrl.split('/')[2] + oParser.parse(sHtmlContent, sPattern)[1][0]
+
+        oRequest = cRequestHandler(d)
         oRequest.addHeaderEntry('User-Agent', UA)
-        oRequest.addHeaderEntry('Referer', urlDonwload)
-        sHtmlContent = oRequest.request()
-        
-        #VSlog(sHtmlContent)
-        
-        #api_call = compute(sHtmlContent) + fin_url
-        api_call = sHtmlContent + fin_url
-        
-        #VSlog(api_call)
+        sHtmlContent = oRequest.request() 
+
+        sPattern = "window\.open\('(.+?)'"
+        api_call = oParser.parse(sHtmlContent, sPattern)[1][0]
 
         if (api_call):
-            api_call = api_call + '|Referer=' + urlDonwload
-            return True, api_call
+            return True, api_call + '|Referer=https://dood.la/'
 
         return False, False
