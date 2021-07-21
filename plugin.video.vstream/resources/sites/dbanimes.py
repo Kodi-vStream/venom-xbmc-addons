@@ -284,7 +284,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<iframe.*?src="*([^"\s]+)'
+    sPattern = '<li class=streamer>.+?<iframe.*?src="*([^"\s]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     i = 0
     if aResult[0] == True:
