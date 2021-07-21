@@ -4,20 +4,9 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import VSlog
-
-import time, random, base64
+from resources.lib.comaddon import VSlog, isNexus
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0'
-
-def compute(s):
-    a = s.replace("/","1")
-    a = base64.b64decode(a)
-    a = a.replace("/","Z")
-    a = base64.b64decode(a)
-    a = a.replace("@","a")
-    a = base64.b64decode(a)
-    return a
 
 class cHoster(iHoster):
 
@@ -86,12 +75,16 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
         api_call = False
 
-        oRequest = cRequestHandler(self.__sUrl)
-        oRequest.addHeaderEntry('User-Agent', UA)
-        sHtmlContent = oRequest.request()
-        
-        urlDonwload = oRequest.getRealUrl()
-        
+        headers = {'User-Agent': UA}
+        if isNexus():
+            import urllib.request as urllib
+        else:
+            import urllib
+
+        req = urllib.Request(self.__sUrl, None, headers)
+        with urllib.urlopen(req) as response:
+           sHtmlContent = response.read()
+
         oParser = cParser()
         
         sPattern = 'Download video.+?a href="([^"]+)"'
@@ -99,6 +92,7 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(d)
         oRequest.addHeaderEntry('User-Agent', UA)
+        oRequest.addHeaderEntry('Referer', self.__sUrl)
         sHtmlContent = oRequest.request() 
 
         sPattern = "window\.open\('(.+?)'"
