@@ -4,7 +4,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import VSlog, isNexus
+from resources.lib.comaddon import VSlog, isMatrix
 
 import time
 
@@ -78,7 +78,7 @@ class cHoster(iHoster):
         api_call = False
 
         headers = {'User-Agent': UA}
-        if isNexus():
+        if isMatrix():
             import urllib.request as urllib
         else:
             import urllib
