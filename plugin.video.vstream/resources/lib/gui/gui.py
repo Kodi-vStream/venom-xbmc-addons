@@ -3,7 +3,7 @@
 import xbmcplugin
 import xbmc
 
-from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window, VSlog
+from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window, VSlog, isNexus
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -307,7 +307,7 @@ class cGui:
 
         oListItem = listitem(itemTitle)
 
-        if xbmc.getInfoLabel('system.buildversion')[0:2] < '20':
+        if not isNexus:
             # voir : https://kodi.wiki/view/InfoLabels
             oListItem.setInfo(oGuiElement.getType(), data)
         else:
@@ -335,7 +335,7 @@ class cGui:
                 videoInfoTag.setStudios(list(data.get('studio','').split("/")))
                 videoInfoTag.setWriters(list(data.get('writer','').split("/")))
                 videoInfoTag.setDirectors(list(data.get('director','').split("/")))
-
+                videoInfoTag.setGenres(''.join(data.get('genre',[""])).split('/'))
                 videoInfoTag.setSeason(int(data.get('season',0)))
                 videoInfoTag.setEpisode(int(data.get('episode',0)))
 
@@ -350,8 +350,9 @@ class cGui:
                         thumbnail = actor['profile_path']
                         cast.append(xbmc.Actor(actor['name'], actor['character'], actor['order'], thumbnail))
                     videoInfoTag.setCast(cast)
-            except:
+            except Exception as e:
                 pass
+                
         oListItem.setArt({'poster': oGuiElement.getPoster(),
                           'thumb': oGuiElement.getThumbnail(),
                           'icon': oGuiElement.getIcon(),
