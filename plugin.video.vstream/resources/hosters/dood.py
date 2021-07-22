@@ -58,7 +58,7 @@ class cHoster(iHoster):
         return ''
 
     def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl).replace('/e/','/d/')
+        self.__sUrl = str(sUrl).replace('/e/','/d/').replace('doodstream.com','dood.la')
 
     def checkUrl(self, sUrl):
         return True
@@ -93,10 +93,15 @@ class cHoster(iHoster):
         sPattern = 'Download video.+?a href="([^"]+)"'
         d = "https://" + self.__sUrl.split('/')[2] + oParser.parse(sHtmlContent, sPattern)[1][0]
 
-        oRequest = cRequestHandler(d)
-        oRequest.addHeaderEntry('User-Agent', UA)
-        oRequest.addHeaderEntry('Referer', self.__sUrl)
-        sHtmlContent = oRequest.request() 
+        headers.update({'Referer': self.__sUrl})
+        req = urllib.Request(d, None, headers)
+        with urllib.urlopen(req) as response:
+           sHtmlContent = response.read()
+
+        try:
+            sHtmlContent = sHtmlContent.decode('utf8')
+        except:
+            pass
 
         sPattern = "window\.open\('(.+?)'"
         api_call = oParser.parse(sHtmlContent, sPattern)[1][0]
