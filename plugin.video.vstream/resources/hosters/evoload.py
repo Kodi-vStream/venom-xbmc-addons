@@ -53,6 +53,11 @@ class cHoster(iHoster):
 
         code = self.__sUrl.split('/')[-1]
 
+        headers = {'User-Agent': UA,
+            'Accept': 'application/json, text/plain, */*',
+            'Origin': 'https://evoload.io',
+            'Referer': 'https://evoload.io/'}
+
         headers1 = {'user-agent':UA,
                    'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8'
                     }
@@ -65,7 +70,7 @@ class cHoster(iHoster):
 
         s = requests.session()
         
-        crsv = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(11))
+        crsv = requests.get('https://csrv.evosrv.com/captcha?m412548', headers=headers).text
 
         html = s.get(self.__sUrl, headers=headers1).text
         passe = re.search('<div id="captcha_pass" value="(.+?)"></div>',html).group(1)
@@ -74,12 +79,13 @@ class cHoster(iHoster):
 
         req = s.post(sUrlSecurePlayer, data=post, headers=headers2)
         response = str(req.content)
+
         sPattern = 'stream.+?src.+?"(https.+?)"'
         aResult = re.findall(sPattern, response)
         if aResult:
             api_call = aResult[0]
 
         if (api_call):
-            return True, api_call
+            return True, api_call + '|User-Agent=' + UA
 
         return False, False
