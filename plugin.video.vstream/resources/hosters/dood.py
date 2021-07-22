@@ -6,6 +6,8 @@ from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import VSlog, isNexus
 
+import time
+
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0'
 
 class cHoster(iHoster):
@@ -87,6 +89,7 @@ class cHoster(iHoster):
 
         oParser = cParser()
         
+        time.sleep(6)
         sPattern = 'Download video.+?a href="([^"]+)"'
         d = "https://" + self.__sUrl.split('/')[2] + oParser.parse(sHtmlContent, sPattern)[1][0]
 
