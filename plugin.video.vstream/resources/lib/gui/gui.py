@@ -307,9 +307,10 @@ class cGui:
 
         oListItem = listitem(itemTitle)
 
-        if not isNexus:
+        if not isNexus():
             # voir : https://kodi.wiki/view/InfoLabels
             oListItem.setInfo(oGuiElement.getType(), data)
+            
         else:
             videoInfoTag = oListItem.getVideoInfoTag()
 
