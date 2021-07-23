@@ -8,7 +8,7 @@ from resources.lib.comaddon import dialog, VSlog
 from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.parser import cParser
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.util import urlEncode
+
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
 
 class cHoster(iHoster):
