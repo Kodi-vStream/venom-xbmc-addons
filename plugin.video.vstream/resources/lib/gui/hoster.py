@@ -308,7 +308,7 @@ class cHosterGui:
             return self.getHoster('giga')
         if ('vidbom' in sHostName):
             return self.getHoster('vidbom')
-        if ('upvideo' in sHostName):
+        if ('upvideo' in sHostName) or ('streamon' in sHostName):
             return self.getHoster('upvideo')
         if ('upvid' in sHostName):
             return self.getHoster('upvid')
