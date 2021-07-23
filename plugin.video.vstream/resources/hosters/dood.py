@@ -4,7 +4,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import VSlog, isMatrix
+from resources.lib.comaddon import VSlog, isMatrix, xbmc
 
 import time
 
@@ -78,14 +78,19 @@ class cHoster(iHoster):
         api_call = False
 
         headers = {'User-Agent': UA}
-        if isMatrix():
-            import urllib.request as urllib
+        if xbmc.getCondVisibility('system.platform.android'):
+            oRequest = cRequestHandler(self.__sUrl)
+            oRequest.addHeaderEntry('User-Agent', UA)
+            sHtmlContent = oRequest.request()
         else:
-            import urllib
+            if isMatrix():
+                import urllib.request as urllib
+            else:
+                import urllib
 
-        req = urllib.Request(self.__sUrl, None, headers)
-        with urllib.urlopen(req) as response:
-           sHtmlContent = response.read()
+            req = urllib.Request(self.__sUrl, None, headers)
+            with urllib.urlopen(req) as response:
+               sHtmlContent = response.read()
 
         oParser = cParser()
         
@@ -94,9 +99,15 @@ class cHoster(iHoster):
         d = "https://" + self.__sUrl.split('/')[2] + oParser.parse(sHtmlContent, sPattern)[1][0]
 
         headers.update({'Referer': self.__sUrl})
-        req = urllib.Request(d, None, headers)
-        with urllib.urlopen(req) as response:
-           sHtmlContent = response.read()
+        if xbmc.getCondVisibility('system.platform.android'):
+            oRequest = cRequestHandler(d)
+            oRequest.addHeaderEntry('User-Agent', UA)
+            oRequest.addHeaderEntry('Referer', self.__sUrl)
+            sHtmlContent = oRequest.request()
+        else:
+            req = urllib.Request(d, None, headers)
+            with urllib.urlopen(req) as response:
+               sHtmlContent = response.read()
 
         try:
             sHtmlContent = sHtmlContent.decode('utf8')
