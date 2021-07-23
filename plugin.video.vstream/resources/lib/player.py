@@ -125,12 +125,10 @@ class cPlayer(xbmc.Player):
         for _ in range(20):
             if self.playBackEventReceived:
                 break
-            if self.playBackStoppedEventReceived:
-                return False
             xbmc.sleep(1000)
 
         #active/desactive les sous titres suivant l'option choisie dans la config
-        if self.getAvailableSubtitleStreams():
+        if self.isPlaying and self.getAvailableSubtitleStreams():
             if (self.ADDON.getSetting('srt-view') == 'true'):
                 self.showSubtitles(True)
             else:
