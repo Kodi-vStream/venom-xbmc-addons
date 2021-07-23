@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-import re
+import urllib2, re
 
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog, VSlog
 from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.parser import cParser
 from resources.lib.handler.requestHandler import cRequestHandler
-
+from resources.lib.util import urlEncode
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
 
 class cHoster(iHoster):
@@ -177,7 +177,7 @@ class cHoster(iHoster):
                 request = urllib2.Request(url, urlEncode(data), headers)
                 try:
                     response = urllib2.urlopen(request)
-                except UrlError as e:
+                except urllib2.URLError as e:
                     VSlog(e.read())
                     VSlog(e.reason)
                 # Par défaut on suit la redirection (code: 302 + entête 'Location') dans la réponse
