@@ -410,6 +410,11 @@ def showHosters():
 
             sTitle = ('%s [%s] (%s)') % (sMovieTitle, sQual, sLang)
 
+            # Petit hack pour conserver le nom de domaine du site
+            # necessaire pour userload.
+            if 'userload' in sHosterUrl:
+                sHosterUrl = sHosterUrl + "|Referer=" + URL_MAIN
+        
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sTitle)
