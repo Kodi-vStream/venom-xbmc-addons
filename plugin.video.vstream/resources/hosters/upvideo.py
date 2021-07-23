@@ -5,7 +5,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.hunter import hunter
-from resources.lib.comaddon import VSlog
+from resources.lib.comaddon import VSlog, isMatrix
 import re
 import base64
 
@@ -75,14 +75,16 @@ class cHoster(iHoster):
             l = aResult[1]
             for j in l:
                 data = hunter(j[0],int(j[1]),j[2],int(j[3]),int(j[4]),int(j[5]))
-                if "bcfdafaadffc" in data:                    
-                    r = re.search('var ddfffaacffaa *= *"([^"]+)" *;', data)
+                if "fcbbbdddebad" in data:                    
+                    r = re.search('var fcbbbdddebad *= *"([^"]+)" *;', data)
                     if not r:
                         VSlog('er2')
-                    v2 = r.group(1)
-                    
-                    v4 = v2.replace("NGY2YWNhZDlhZDYwNTBlNjBmYWVhZTI2MWRhODZiNTg", "");
-                    api_call = base64.b64decode(v4)
+                    v2 = r.group(1).split('aHR0')[1].split('YTk0NT')[0]
+
+                    if isMatrix():
+                        api_call = "htt" + (base64.b64decode(v2).decode())
+                    else:
+                        api_call = "htt" + base64.b64decode(v2)
 
         if (api_call):
             return True, api_call
