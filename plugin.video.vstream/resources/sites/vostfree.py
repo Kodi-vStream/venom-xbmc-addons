@@ -8,7 +8,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
 
@@ -207,12 +207,13 @@ def seriesHosters():
                 playerData = oParser.parse(sHtmlContent, sPattern)[1][0]
 
                 if 'http' not in playerData:
-                    sPattern = 'player_type.*=="new_player_' + aEntry1[1].lower()+ '"\|.+?(?:src=\\")([^"]*).*?player_content.*?"([^\\\\"]*)'
+                    sPattern = 'player_type[^;]*=="new_player_' + aEntry1[1].lower()+ '"\|.+?(?:src=\\\\")([^"]*).*?player_content.*?"([^\\\\"]*)'
                     aResult2 = oParser.parse(playerContent, sPattern)
                     if aResult2[0] == True:
                         sHosterUrl = aResult2[1][0][0] + playerData + aResult2[1][0][1]
                         if 'http' not in sHosterUrl:
                             sHosterUrl = 'https:' + sHosterUrl
+
                 else:
                     sHosterUrl = playerData
 
