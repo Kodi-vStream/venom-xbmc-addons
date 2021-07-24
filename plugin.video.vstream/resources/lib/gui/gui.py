@@ -3,7 +3,7 @@
 import xbmcplugin
 import xbmc
 
-from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window, VSlog
+from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window, VSlog, isNexus
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -307,16 +307,17 @@ class cGui:
 
         oListItem = listitem(itemTitle)
 
-        if xbmc.getInfoLabel('system.buildversion')[0:2] < '20':
+        if not isNexus():
             # voir : https://kodi.wiki/view/InfoLabels
             oListItem.setInfo(oGuiElement.getType(), data)
+            
         else:
             videoInfoTag = oListItem.getVideoInfoTag()
 
             # gestion des valeurs par defaut si non renseignées
             videoInfoTag.setMediaType(oGuiElement.getType())
             videoInfoTag.setTitle(itemTitle)
-            if oGuiElement.getMeta():
+            try:
                 videoInfoTag.setOriginalTitle(data.get('originaltitle'))
                 videoInfoTag.setPlot(data.get('plot'))
                 videoInfoTag.setPlotOutline(data.get('plotoutline'))
@@ -335,11 +336,9 @@ class cGui:
                 videoInfoTag.setStudios(list(data.get('studio','').split("/")))
                 videoInfoTag.setWriters(list(data.get('writer','').split("/")))
                 videoInfoTag.setDirectors(list(data.get('director','').split("/")))
-
-                if oGuiElement.getMeta() == 5:  # saison
-                    videoInfoTag.setSeason(int(data.get('season',0)))
-                elif oGuiElement.getMeta() == 6:  # episode
-                    videoInfoTag.setEpisode(int(data.get('episode',0)))
+                videoInfoTag.setGenres(''.join(data.get('genre',[""])).split('/'))
+                videoInfoTag.setSeason(int(data.get('season',0)))
+                videoInfoTag.setEpisode(int(data.get('episode',0)))
 
                 try:
                     credits = eval(data.get('credits'))['cast']
@@ -352,7 +351,9 @@ class cGui:
                         thumbnail = actor['profile_path']
                         cast.append(xbmc.Actor(actor['name'], actor['character'], actor['order'], thumbnail))
                     videoInfoTag.setCast(cast)
-
+            except Exception as e:
+                pass
+                
         oListItem.setArt({'poster': oGuiElement.getPoster(),
                           'thumb': oGuiElement.getThumbnail(),
                           'icon': oGuiElement.getIcon(),

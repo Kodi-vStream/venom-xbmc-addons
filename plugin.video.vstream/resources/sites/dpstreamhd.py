@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# source 22
 
 import re
 
@@ -26,7 +25,7 @@ FUNCTION_SEARCH = 'showMovies'
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_NEWS = (URL_MAIN + 'films-en-streaming', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
-MOVIE_VIEWS = (URL_MAIN + 'box-office', 'showMovies')
+MOVIE_VIEWS = (URL_MAIN + 'film-box-office-2021', 'showMovies')
 
 SERIE_SERIES = (True, 'showMenuSeries')
 SERIE_NEWS = (URL_MAIN + 'series-en-streaming', 'showMovies')

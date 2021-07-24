@@ -85,19 +85,12 @@ class cHoster(iHoster):
             url = baseUrl + self.__sUrl.rsplit('/', 1)[1]
             postdata = 'r=' + QuotePlus(self.__sUrl) + '&d=' + baseUrl.replace('https://', '').replace('/api/source/', '')
 
-        VSlog(url)
         oRequest = cRequestHandler(url)
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
-        # oRequest.addHeaderEntry('Accept', '*/*')
-        # oRequest.addHeaderEntry('Accept-Encoding','gzip, deflate, br')
-        # oRequest.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-        # oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
         oRequest.addHeaderEntry('Referer',self.__sUrl)
         oRequest.addParametersLine(postdata)
         sHtmlContent = oRequest.request()
-
-        VSlog(sHtmlContent)
 
         page = json.loads(sHtmlContent)
         if page:
@@ -111,6 +104,13 @@ class cHoster(iHoster):
                 api_call = dialog().VSselectqual(qua, url)
 
         if (api_call):
-            return True, api_call
+            oRequest = cRequestHandler(api_call)
+            oRequest.addHeaderEntry('Host','fvs.io')
+            oRequest.addHeaderEntry('User-Agent', UA)
+            sHtmlContent = oRequest.request()
+            api_call = oRequest.getRealUrl()
+            if '::/' in api_call:
+                dialog().VSinfo('Desactiver l\'IPV6 sur votre appareil', 'Lecture impossible', 4)
+            return True, api_call  + '|User-Agent=' + UA
 
         return False, False

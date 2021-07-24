@@ -204,6 +204,9 @@ class cRequestHandler:
             else:
                 error_msg = addon().VSlang(30470)
 
+            dialog().VSerror(error_msg)
+            sContent = ''
+
         except RequestException  as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e) and self.BUG_SSL == False:
                 self.BUG_SSL = True
@@ -222,7 +225,7 @@ class cRequestHandler:
             dialog().VSerror(error_msg)
             sContent = ''
 
-        if oResponse:
+        if oResponse != None:
             if oResponse.status_code in [503,403]:
                 if not "Forbidden" in sContent:
                     #Default

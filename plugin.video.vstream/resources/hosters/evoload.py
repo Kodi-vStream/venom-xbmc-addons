@@ -1,13 +1,13 @@
 #coding: utf-8
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 # https://evoload.io/e/xxxxxx
-# référence https://github.com/addon-lab/addon-lab_resolver_Project
 
+from resources.hosters.hoster import iHoster
+from resources.lib.comaddon import VSlog
 import requests
 import re
-# from resources.lib.handler.requestHandler import cRequestHandler
-# from resources.lib.parser import cParser
-from resources.hosters.hoster import iHoster
+import string
+import random
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
 
@@ -48,15 +48,15 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-
         api_call = ''
-        url = self.__sUrl
-        key = "6Ldv2fYUAAAAALstHex35R1aDDYakYO85jt0ot-c"
-        co = "aHR0cHM6Ly9ldm9sb2FkLmlvOjQ0Mw.."
-        loc = "https://evoload.io"
         sUrlSecurePlayer = "https://evoload.io/SecurePlayer"
 
-        code = url.split('/')[-1]
+        code = self.__sUrl.split('/')[-1]
+
+        headers = {'User-Agent': UA,
+            'Accept': 'application/json, text/plain, */*',
+            'Origin': 'https://evoload.io',
+            'Referer': 'https://evoload.io/'}
 
         headers1 = {'user-agent':UA,
                    'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8'
@@ -65,80 +65,27 @@ class cHoster(iHoster):
         headers2 = {'user-agent':UA,
                    'Accept':'Accept: application/json, text/plain, */*',
                    'Content-Type':'application/json;charset=utf-8',
-                   'Referer':url
+                   'Referer':self.__sUrl
                     }
 
         s = requests.session()
-        s.get(url, headers=headers1)
+        
+        crsv = requests.get('https://csrv.evosrv.com/captcha?m412548', headers=headers).text
 
-        bvalid, token = get_token(key, co, loc)
-        if bvalid:
-            post = '{"code":"' + code + '","token":"' + token + '"}'
-            req = s.post(sUrlSecurePlayer, data=post, headers=headers2)
-            response = str(req.content)
-            sPattern = 'stream.+?src.+?"(https.+?)"'
-            aResult = re.findall(sPattern, response)
-            if aResult:
-                api_call = aResult[0]
+        html = s.get(self.__sUrl, headers=headers1).text
+        passe = re.search('<div id="captcha_pass" value="(.+?)"></div>',html).group(1)
+
+        post = '{"code":"' + code + '","csrv_token":"'+crsv+'","pass":"' + passe + '","token":"ok"}'
+
+        req = s.post(sUrlSecurePlayer, data=post, headers=headers2)
+        response = str(req.content)
+
+        sPattern = 'stream.+?src.+?"(https.+?)"'
+        aResult = re.findall(sPattern, response)
+        if aResult:
+            api_call = aResult[0]
 
         if (api_call):
-            return True, api_call
+            return True, api_call + '|User-Agent=' + UA
 
         return False, False
-
-
-def get_token(site_key, co, loc):
-
-    sa = ''
-    cb = '123456789'
-    headers1 = {'user-agent':UA,
-               'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-               'Content-Type':'application/x-www-form-urlencoded;charset=utf-8',
-               'Referer':loc
-                }
-
-    url1 = 'https://www.google.com/recaptcha/api.js'
-    s = requests.session()
-    req = s.get(url1, headers=headers1)
-    data = req.text
-
-    aresult = re.findall("releases\/(.*?)\/", data)
-    if aresult:
-        v = aresult[0]
-    else:
-        return False, False
-
-    url2 = "https://www.google.com/recaptcha/api2/anchor?ar=1&k=" + site_key + "&co=" + co + "&hl=ro&v=" + v + "&size=invisible&cb=" + cb
-
-    req = s.get(url2)
-    data = req.text
-    data = data.replace('\x22', '')
-
-    aresult = re.findall("recaptcha-token.*?=(.*?)>", data)
-    if aresult:
-        c = aresult[0]
-    else:
-        return False, False
-
-    url3 = "https://www.google.com/recaptcha/api2/reload?k=" + site_key
-
-    post_data = {'v':v,
-       'reason':'q',
-       'k':site_key,
-       'c':c,
-       'sa':sa,
-       'co':co}
-
-    headers2 = {'user-agent':UA,
-               'Accept':'*/*',
-               'Content-Type':'application/x-www-form-urlencoded;charset=utf-8',
-               'Referer':url2
-                }
-
-    req_url3 = s.post(url3, data=post_data, headers=headers2)
-    data = req_url3.text
-    aresult = re.findall("resp\",\"(.*?)\"", data)
-    if aresult:
-        token  = aresult[0]
-        return True, token
-    return False, False

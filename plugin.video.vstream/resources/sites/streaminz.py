@@ -246,7 +246,7 @@ def showMovies(sSearch=''):
         if sTypeYear:
             sPattern = '<article id="post-\d+".+?class="item ([^"]+).+?img src="([^"]+)" alt="([^"]+).+?(?:|class="quality">([^<]+).+?)(?:|class="dtyearfr">([^<]+).+?)<a href="([^"]+).+?class="texto">(.*?)</div>'
         else:
-            sPattern = '<article id="post-\d+".+?data-src="([^"]+).+?alt="([^"]+).+?(?:|class="quality">([^<]+).+?)(?:|class="dtyearfr">([^<]+).+?)<a href="([^"]+).+?class="texto">(.*?)</div'
+            sPattern = '<article id="post-\d+".+?img src="([^"]+).+?alt="([^"]+).+?(?:|class="quality">([^<]+).+?)(?:|class="dtyearfr">([^<]+).+?)<a href="([^"]+).+?class="texto">(.*?)</div'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -457,14 +457,14 @@ def showHosters():
     if aResult:
         for aEntry in aResult:
 
-            sHosterUrl = aEntry
+            sHosterUrl = aEntry.replace("\\", '')
             if 'youtube' in sHosterUrl:
                 continue
             if 'dood' in sHosterUrl:
-                sHosterUrl = sHosterUrl.replace("\\", '')
+                sHosterUrl = sHosterUrl
 
             if 'club' in sHosterUrl:
-                sHosterUrl = sHosterUrl.replace("\\", '')
+                sHosterUrl = sHosterUrl
                 oRequest = cRequestHandler(sHosterUrl)
                 oParser = cParser()
                 sHtmlContent2 = oRequest.request()
@@ -477,7 +477,7 @@ def showHosters():
             # voir si filtrage ou non car parfois le lien mp4 créé un blocage
             if 'streaminz.ml' in sHosterUrl:
                 sid = sHosterUrl.split('/')[-1]
-                sHosterUrl = sHosterUrl.replace('\\', '')
+                sHosterUrl = sHosterUrl
                 postdata = 'r=&d=streaminz.ml'
                 urlapi = 'https://streaminz.ml/api/source/' + sid
                 oRequest = cRequestHandler(urlapi)

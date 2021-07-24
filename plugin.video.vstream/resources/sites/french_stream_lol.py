@@ -10,7 +10,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 
 
 SITE_IDENTIFIER = 'french_stream_lol'
@@ -299,7 +299,7 @@ def showMovies(sSearch=''):
 
             sDisplayTitle = sTitle
             if sSearch and not bSearchMovie and not bSearchSerie:
-                if '/serie' in sUrl2:
+                if '/serie' in sUrl2 or 'serie/' in sUrl or '/serie' in sUrl:
                     sDisplayTitle = sDisplayTitle + ' [Série]'
                 else:
                     sDisplayTitle = sDisplayTitle + ' [Film]'
@@ -308,10 +308,10 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if '/serie' not in sUrl2:
-                oGui.addMovie(SITE_IDENTIFIER, 'showMovieLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-            else:
+            if '/serie' in sUrl2 or 'serie/' in sUrl or '/serie' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+            else:
+                oGui.addMovie(SITE_IDENTIFIER, 'showMovieLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 

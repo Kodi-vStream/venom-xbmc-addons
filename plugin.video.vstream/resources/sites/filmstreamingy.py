@@ -23,7 +23,7 @@ FUNCTION_SEARCH = 'showMovies'
 MOVIE_MOVIE = (True, 'load')
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming-13', 'showMovies')
 MOVIE_SANTA = (URL_MAIN + 'liste-de-films-de-noel', 'showMovies')
-MOVIE_NOTES = (URL_MAIN + 'top-films-streaming-12', 'showMovies')
+MOVIE_NOTES = (URL_MAIN + 'top-films-streaming-13', 'showMovies')
 MOVIE_IMDB = (URL_MAIN + 'top-imdb', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
@@ -79,7 +79,7 @@ def showGenres():
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            if ('liste-de-films-de-noel'  in aEntry[0]) or ('top-films-streaming-12'  in aEntry[0]):
+            if ('liste-de-films-de-noel'  in aEntry[0]) or ('top-films-streaming-'  in aEntry[0]):
                 continue
 
             sUrl = aEntry[0]

@@ -300,6 +300,16 @@ def isMatrix():
     except:
         return False
 
+def isNexus():
+    try:
+        version = xbmc.getInfoLabel('system.buildversion')
+        if version[0:2] >= '20':
+            return True
+        else:
+            return False
+    except:
+        return False
+
 #Transforme les "special" en chemin normal.
 def VSPath(pathSpecial):
     if isMatrix():

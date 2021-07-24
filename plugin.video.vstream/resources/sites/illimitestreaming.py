@@ -309,24 +309,37 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
     if not sSearch:
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('/page/([0-9]+)', sNextPage).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies',  'Page ' + number, oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies',  'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<li class=\'active\'>.+?href=\'([^\']+)'
+    sPattern = '<li class=\'active\'>.+?href=\'([^\']+).+?/(\d+)/\'>Dernière'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return aResult[1][0]
+        sNextPage = aResult[1][0][0]
+        sNumberMax = aResult[1][0][1]
+        sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    return False
+    # for the tvshows and the last page of movies
+    sPattern = "class='active'><a class=''>\d+</a></li><li><a rel='nofollow' class='page larger' href='([^\']+).+?>(\d+)</a></li></ul"
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        sNextPage = aResult[1][0][0]
+        sNumberMax = aResult[1][0][1]
+        sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
+
+    return False, 'none'
 
 
 def showSxE():
@@ -388,7 +401,7 @@ def showHosters():
 
         tab = aResult[1]
         n = len(tab)//3
-        
+
         for i in range(n):
 
             sHosterUrl = tab[i][0]
@@ -397,6 +410,11 @@ def showHosters():
 
             sTitle = ('%s [%s] (%s)') % (sMovieTitle, sQual, sLang)
 
+            # Petit hack pour conserver le nom de domaine du site
+            # necessaire pour userload.
+            if 'userload' in sHosterUrl:
+                sHosterUrl = sHosterUrl + "|Referer=" + URL_MAIN
+        
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sTitle)
