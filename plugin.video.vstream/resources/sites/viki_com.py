@@ -2,13 +2,12 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # source 05 10072020
 # update 15012021 - uniquement format mpd disponible
+#Based on https://github.com/yt-dlp/yt-dlp/blob/master/yt_dlp/extractor/viki.py
 
 import re
 import time
-from hashlib import sha1
+import hashlib
 import hmac
-import binascii
-import xbmcvfs
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -16,6 +15,12 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.comaddon import progress, VSlog, isMatrix
+
+_DEVICE_ID = '86085977d'  # used for android api
+_APP = '100005a'
+_APP_VERSION = '6.11.3'
+_APP_SECRET = 'd96704b180208dbb2efa30fe44c48bd8690441af9f567ba8fd710a72badc85198f7472'
+Base_API = 'https://api.viki.io%s'
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0'
 SITE_IDENTIFIER = 'viki_com'
@@ -171,16 +176,6 @@ def showMovies(sSearch=''):
                         oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
                     else:
                         if (jsonrsp['response'][movie]['blocked'] == False):
-                            subtitle_completion1 = '0'
-                            try:
-                                subtitle_completion1 = str(jsonrsp['response'][movie]['subtitle_completions']['fr'])
-                            except:
-                                pass
-                            subtitle_completion2 = '0'
-                            try:
-                                subtitle_completion2 = str(jsonrsp['response'][movie]['subtitle_completions']['en'])
-                            except:
-                                pass
                             mt = ''
                             try:
                                 mt = jsonrsp['response'][movie]['titles']['fr']
@@ -191,8 +186,7 @@ def showMovies(sSearch=''):
                             sTitle = str(jsonrsp['response'][movie]['titles']['en'])
                             sThumb = str(jsonrsp['response'][movie]['images']['poster']['url'])
                             sUrlApi = str(jsonrsp['response'][movie]['id'] + '@' +
-                                          jsonrsp['response'][movie]['images']['poster']['url'] + '@' +
-                                          subtitle_completion1 + '@' + subtitle_completion2 + '@' + mt)
+                                          jsonrsp['response'][movie]['images']['poster']['url'] + '@' + mt)
 
                             oOutputParameterHandler.addParameter('siteUrl', sUrlApi)
                             
@@ -241,16 +235,6 @@ def showSaisons():
     for episode in range(0, len(jsonrsp['response'])):
         try:
             if (jsonrsp['response'][episode]['blocked'] == False):
-                subtitle_completion1 = '0'
-                try:
-                    subtitle_completion1 = str(jsonrsp['response'][episode]['subtitle_completions']['fr'])
-                except:
-                    pass
-                subtitle_completion2 = '0'
-                try:
-                    subtitle_completion2 = str(jsonrsp['response'][episode]['subtitle_completions']['en'])
-                except:
-                    pass
                 et = ''
                 try:
                     et = jsonrsp['response'][episode]['titles']['en']
@@ -259,8 +243,7 @@ def showSaisons():
 
                 sTitle = jsonrsp['response'][episode]['container']['titles']['en'] + ' Episode ' + str(jsonrsp['response'][episode]['number'])
                 sUrl = str(jsonrsp['response'][episode]['id'] + '@' +
-                           jsonrsp['response'][episode]['images']['poster']['url'] + '@' +
-                           subtitle_completion1 + '@' + subtitle_completion2 + '@' + et)
+                           jsonrsp['response'][episode]['images']['poster']['url'] + '@' + et)
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -358,81 +341,40 @@ def showPays(genre):
 
     oGui.setEndOfDirectory()
 
-
 # Signature des demandes au nom de Flash player
-def SIGN(url, pth):
-    timestamp = str(int(time.time()))
-    key = 'MM_d*yP@`&1@]@!AVrXf_o-HVEnoTnm$O-ti4[G~$JDI/Dc-&piU&z&5.;:}95=Iad'
-    rawtxt = '/v4/videos/'+url+pth+'?app=100005a&t='+timestamp+'&site=www.viki.com'
-    hashed = hmac.new(key.encode('utf-8'), rawtxt.encode('utf-8'), sha1)
-    signatura = binascii.hexlify(hashed.digest())
-    fullurl = 'https://api.viki.io' + rawtxt+'&sig='+signatura.decode('utf-8')
-    return fullurl
-
-def GET_SUBTILES(url, subtitle_completion1, subtitle_completion2):
-    if (int(subtitle_completion1)) != 0 or (int(subtitle_completion2)) != 0:
-        if (int(subtitle_completion1) == 100 and se == 'true'):
-            srtsubs_path1 = 'special://temp/vstream_viki_SubFrench.srt'
-            urlreq = SIGN(url, '/subtitles/fr.srt')
-            oRequestHandler = cRequestHandler(urlreq)
-            oRequestHandler.addHeaderEntry('User-Agent', UA)
-            data = oRequestHandler.request()
-
-            if isMatrix():
-                data = data.encode('latin-1')
-
-            subfile = xbmcvfs.File("special://temp/vstream_viki_SubFrench.srt", "w")
-            subfile.write(data)
-            subfile.close()
-
-        elif (int(subtitle_completion2) > 0 and se == 'true'):
-            srtsubs_path1 = "special://temp/vstream_viki_SubEnglish.srt"
-            urlreq = SIGN(url, '/subtitles/en.srt')
-            oRequestHandler = cRequestHandler(urlreq)
-            oRequestHandler.addHeaderEntry('User-Agent', UA)
-            data = oRequestHandler.request()
-
-            if isMatrix():
-                data = data.encode('latin-1')
-
-            subfile = xbmcvfs.File("special://temp/vstream_viki_SubEnglish.srt", "w")
-            subfile.write(data)
-            subfile.close()
-
-        return srtsubs_path1
-    else:
-        return False
+def SIGN(pth, version=4):
+    timestamp = int(time.time())
+    rawtxt = f'/v{version}/{pth}?drms=dt1,dt2&device_id={_DEVICE_ID}&app={_APP}'
+    sig = hmac.new(
+        _APP_SECRET.encode('ascii'), f'{rawtxt}&t={timestamp}'.encode('ascii'), hashlib.sha1).hexdigest()
+    return Base_API % rawtxt, timestamp, sig
 
 def GET_URLS_STREAM(url):
     streamUrlList = []
     validq = []
 
-    urlreq = SIGN(url, '/streams.json')
+    urlreq, timestamp, sig = SIGN('playback_streams/'+url+'.json',5)
     oRequestHandler = cRequestHandler(urlreq)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('authority', 'manifest-viki.viki.io')
-    oRequestHandler.addHeaderEntry('accept', '*/*')
-    oRequestHandler.addHeaderEntry('x-viki-app-ver', '6.0.0')
+    oRequestHandler.addHeaderEntry('X-Viki-manufacturer', 'vivo')
+    oRequestHandler.addHeaderEntry('X-Viki-device-model', 'vivo 1606')
+    oRequestHandler.addHeaderEntry('X-Viki-device-os-ver', '6.0.1')
+    oRequestHandler.addHeaderEntry('X-Viki-connection-type', 'WIFI')
+    oRequestHandler.addHeaderEntry('X-Viki-carrier', '')
+    oRequestHandler.addHeaderEntry('X-Viki-as-id', '100005a-1625321982-3932')
+    oRequestHandler.addHeaderEntry('timestamp', str(timestamp))
+    oRequestHandler.addHeaderEntry('signature', str(sig))
+    oRequestHandler.addHeaderEntry('x-viki-app-ver', _APP_VERSION)
     oRequestHandler.addHeaderEntry('origin', 'https://www.viki.com')
-    oRequestHandler.addHeaderEntry('referer', url)
-    jsonrsp = oRequestHandler.request(jsonDecode=True)
+    jsonrsp = oRequestHandler.request(jsonDecode=True)['main']
 
     testeurl = ''
     testeq = ''
     for qual in jsonrsp:
-        basehttp = 'https'
-        if qual in jsonrsp:
-            if qual == 'mpd':
-                basehttp = 'http'
-            streamUrlList.append(jsonrsp[qual][basehttp]['url'])
-            validq.append(qual)
-            testeurl = jsonrsp[qual][basehttp]['url']
-            testeq = qual
+        streamUrlList.append(qual['url'])
 
-    # ajout du teste à enlever + 1 à revoir et
     streamUrlList.append(testeurl)
-    validq.append(testeq)
-    return validq, streamUrlList
+    return streamUrlList
 
 
 def showLinks():
@@ -444,22 +386,15 @@ def showLinks():
     sThumb = oInputParameterHandler.getValue('sThumb')
     dataList = []
 
-    url, thumbnail, sub_pourcent1, sub_pourcent2, stitle = sUrl.split("@")
-    sSubPath = GET_SUBTILES(url, sub_pourcent1, sub_pourcent2)
-    qualityList2, streamList2 = GET_URLS_STREAM(url)
+    url, thumbnail, stitle = sUrl.split("@")
 
-    dataList.append(sSubPath)
-
-    for item in qualityList2:
-        dataList.append(item)
+    streamList2 = GET_URLS_STREAM(url)
 
     for item in streamList2:
         dataList.append(item)
 
-    if sSubPath == "special://temp/vstream_viki_SubEnglish.srt":
-        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Les sous-titres Francais ne sont pas encore terminés ce contenu est donc en sous-titrés Anglais.[/COLOR]')
-    elif sSubPath == False:
-        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Aucun sous-titre n\'est disponible pour ce contenu.[/COLOR]')
+    #Conversion en str pour pouvoir facilement le manipuler dans le hoster.
+    dataList = ','.join(dataList)
 
     oHoster = cHosterGui().checkHoster('viki')
     if (oHoster != False):
