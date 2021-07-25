@@ -18,7 +18,7 @@ SITE_IDENTIFIER = 'mystream_zone'
 SITE_NAME = 'My Stream'
 SITE_DESC = 'Films et Series en Streaming'
 
-URL_MAIN = 'https://www2.mystream.zone/'
+URL_MAIN = 'https://www3.mystream.zone/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
