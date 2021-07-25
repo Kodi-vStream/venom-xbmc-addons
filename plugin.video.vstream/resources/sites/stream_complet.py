@@ -19,7 +19,7 @@ SITE_DESC = 'Voir les meilleurs films en version française'
 # URL_MAIN = 'https://v7.stream-complet.co/' 
 # url de redirection => www.stream-complet.biz
 
-URL_MAIN = 'https://www.stream-complet.biz/'
+URL_MAIN = 'https://w1.stream-complet.biz/'
 
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -197,7 +197,7 @@ def showSXE():
     if (aResultDesc[0] == True):
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', aResultDesc[1][0])
 
-    sPattern = '<h3 id="Saison-(\d+)|<a href="([^"]+)">épisode.(\d+)'
+    sPattern = '<h3 id="Saison-(\d+)|<a href="([^"]+)">.+?pisode.(\d+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sSaison = ''
 
@@ -301,7 +301,7 @@ def showHosters():
 
     sDisplayName = ('%s (%s)') % (sMovieTitle, sLang)
 
-    if 'sstatic.co/' in sUrl:
+    if 'sstatic' in sUrl:
         sUrl1 = sUrl + '/ajax'
         oRequestHandler = cRequestHandler(sUrl1)
         oRequestHandler.addHeaderEntry('Referer', sUrl)
