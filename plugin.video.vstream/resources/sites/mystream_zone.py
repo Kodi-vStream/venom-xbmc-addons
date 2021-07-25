@@ -11,14 +11,13 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 import re
 import string
-import json
 
 TimeOut = 10  # requetes avec time out utilisées seulement dans show movies : on attends plus 30s
 SITE_IDENTIFIER = 'mystream_zone'
 SITE_NAME = 'My Stream'
 SITE_DESC = 'Films et Series en Streaming'
 
-URL_MAIN = 'https://www2.mystream.zone/'
+URL_MAIN = 'https://www3.mystream.zone/'
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
@@ -280,7 +279,7 @@ def showMovies(sSearch=''):
         try:
             oRequestHandler = cRequestHandler(sUrl)
             oRequestHandler.setTimeout(TimeOut)
-            sJsonContent = oRequestHandler.request()
+            sJsonContent = oRequestHandler.request(jsonDecode=True)
         except Exception as e:
             if str(e) == "('The read operation timed out',)":
                 oGui.addText(SITE_IDENTIFIER, 'site Inaccessible')
@@ -291,7 +290,6 @@ def showMovies(sSearch=''):
                 oGui.setEndOfDirectory()
                 return
 
-        jsonrsp = json.loads(sJsonContent)
         oOutputParameterHandler = cOutputParameterHandler()
         for i, idict in jsonrsp.items():
             sTitle = str(jsonrsp[i]['title'].encode('utf-8', 'ignore')).replace(' mystream', '')  # I Know This Much Is True mystream
@@ -799,7 +797,7 @@ def hostersLink():
     oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
     oRequest.addParametersLine(pdata)
     sHtmlContent = oRequest.request()
-    sPattern = '(http[^"]+)'
+    sPattern = "src='([^']+)'"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):

@@ -17,9 +17,9 @@ SITE_IDENTIFIER = 'french_stream_lol'
 SITE_NAME = 'French-stream-lol'
 SITE_DESC = 'Films & séries'
 
-URL_MAIN = 'https://french-stream.re/'
+URL_MAIN = 'https://french-stream.at/'
 
-MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'xfsearch/qualit/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 MOVIE_VOSTFR = (URL_MAIN + 'film/vostfr/', 'showMovies')
 
@@ -30,7 +30,7 @@ MOVIE_HDLIGHT = (URL_MAIN + 'xfsearch/qualit/HDLight/', 'showMovies')
 MOVIE_DVD = (URL_MAIN + 'xfsearch/qualit/DVDSCR/', 'showMovies')
 MOVIE_CAM = (URL_MAIN + 'xfsearch/qualit/CAM/', 'showMovies')
 
-SERIE_NEWS = (URL_MAIN + 'serie/', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'xfsearch/version-serie/', 'showMovies')
 SERIE_GENRES = (True, 'showSerieGenres')
 SERIE_VFS = (URL_MAIN + 'serie/serie-en-vf-streaming/', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'serie/serie-en-vostfr-streaming/', 'showMovies')
@@ -237,6 +237,8 @@ def showMovies(sSearch=''):
 
     oGui = cGui()
     oParser = cParser()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     bSearchMovie = False
     bSearchSerie = False
@@ -262,9 +264,6 @@ def showMovies(sSearch=''):
         sHtmlContent = oRequest.request()
 
     else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
-
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 

@@ -23,8 +23,8 @@ SITE_NAME = '[COLOR violet]Tirexo[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
 
 # Teste pour le moment avec une url fixe.
-URL_MAIN = "https://www.tirexo.work/"
-# URL_MAIN = "https://www.tirexo......./"  # Les regex sont différentes mais il n'y a pas cloudflare
+URL_MAIN = "https://www2.tirexo.work/"
+
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=1&result_from=1&story=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=15&story=', 'showMovies')
 URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=32&story=', 'showMovies')
@@ -483,7 +483,7 @@ def showMoviesLinks():
 
     # récupération du Synopsis
     try:
-        sPattern = '<h3 class="">Description</h3>(.+?)</h3>'
+        sPattern = '<h3 class="">Description</h3>(.+?)</div>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
@@ -491,7 +491,7 @@ def showMoviesLinks():
         pass
 
     # on regarde si dispo dans d'autres qualités
-    sPattern = "option value='(.+?)'>.+?<b>(.+?)</b>.+?<b> \((.+?)\)"
+    sPattern = "option value='(.+?)'.+?<b>(.+?)</b>.+?<b> \((.+?)\)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -499,7 +499,7 @@ def showMoviesLinks():
         for aEntry in aResult[1]:
             sQual = aEntry[1]
             sLang = aEntry[2]
-            sDisplayTitle = ('%s [%s] %s') % (sTitle, sQual, sLang)
+            sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
 
             sUrl = "https://www2.tirexo.club/?subaction=get_links&version=" + aEntry[0]
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -570,7 +570,7 @@ def showSeriesLinks():
             sTitle = sMovieTitle + ' ' + aEntry[1].replace('<b>','')
             sQual = aEntry[2]
             sLang = aEntry[3]
-            sDisplayTitle = ('%s [%s] %s') % (sTitle, sQual, sLang)
+            sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
 
             sUrl = "https://www2.tirexo.club/?subaction=get_links&version=" + aEntry[0]
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
