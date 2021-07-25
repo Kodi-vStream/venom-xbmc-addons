@@ -10,7 +10,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, isMatrix
 from resources.lib.util import cUtil
 
 
@@ -235,6 +235,10 @@ def showEpisodes():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in sorted(aResult[1], key=lambda aResult: aResult[1]):
             sQual = aEntry[2]
+
+            if isMatrix():
+                sQual = sQual.encode('latin-1').decode()
+
             # Changemement de formats ...x... -> ....P
             if '1920×' in sQual or '1440×' in sQual or '1904×' in sQual:
                 sQual = re.sub('(\d+×\d+)px', '[1080P]', sQual)
@@ -331,6 +335,6 @@ def showHosters():
     if (oHoster != False):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
-        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+        cHosterGui().showHoster(oGui, oHoster, sHosterUrl + "|verifypeer=false", sThumb)
 
     oGui.setEndOfDirectory()
