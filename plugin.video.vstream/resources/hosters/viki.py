@@ -51,90 +51,27 @@ class cHoster(iHoster):
 
     
     def __getMediaLinkForGuest(self, api_call=None):
-
         
         # lesite ne fournit plus que du Mdp plus de format ['480p','360p','240p',
         sUrl = self.__sUrl
         # srtsubs_path = xbmc.translatePath('special://temp/vikir.English.srt')
         # Methode 1 on recoit une liste sUrl=[ urlstream,sub,q1,q2...urlq1,urlq2
-        
-        
-        # if false sub=french
-        bSelectSub = False
-        # https://manifest-viki.viki.io/v1/1159945v/limelight/domain_4/mpd/normal/viki/high/mpd_mob/ww/na/manifest.mpd?
-        bsupportedMdp = True # manifest.mpd
 
-        url = []
-        qual = []
-        pathsub = []
-        namesub = ['French', 'English']
+        sUrl = tuple(map(str, sUrl.split(',')))
 
-        oParser = cParser()
-        sPattern = ".'([^']*)"
-        aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
-            sub1 = aResult[1][0]
-            sub2 = aResult[1][1]
-            pathsub.append(sub1)
-            pathsub.append(sub2)
-
-            offset = 2
-            numberQ = (len(aResult[1])-offset)//2
-            for i in range(offset, offset + numberQ):
-                if 'mpd' in aResult[1][i]:
-                    if bsupportedMdp:
-                        qual.append(aResult[1][i] + ' !')
-                    continue
-
-                qual.append(aResult[1][i])
-            for i in range(offset + numberQ, len(aResult[1])):
-                if 'manifest.mpd' in aResult[1][i]:
-                    if bsupportedMdp:
-                        url.append(aResult[1][i])
-                    continue
-                url.append(aResult[1][i])
-
-            sub = sub1
-            if bSelectSub:
-                pathsub.append('')
-                namesub.append('None')
-                sub = self.mydialog().VSselect(namesub, pathsub, 'Viki Select subtile :')
-
-            
-            # a revoir avec tous les formats
-            if len(url) == 2:
-                if 'mpd?'  in url[0] and 'mpd?' in url[1]:
-                    api_call = url[0]
-                    
-            else:  
-                api_call = self.mydialog().VSselect(qual, url, 'Viki Select quality :')
-            # api_call = self.VSselectsub(qual, url)
-
-            if api_call:
-                if sub:
-                    return True, api_call, sub
-                else:
-                    return True, api_call
-
-            else:  # user canceled !# file not found
-                return False, False
-
-        # Methode 2 on recoit une chaine sUrl=urlstream + ';' urlsub
-        if ';' in sUrl:
-            sUrl, sub = sUrl.split(';')
-            api_call = sUrl
-            if api_call:
-                return True, api_call, sub
+        if len(sUrl) == 2:
+            api_call = sUrl[0]
         else:
+            url = []
+            qual = []
+            for a in sUrl:
+                url.append(a)
+                qu = re.search('max_res=(\d+)',a).group(1)
+                qual.append(qu)
+            api_call = self.mydialog().VSselect(qual, url, 'Viki Select quality :')
 
-            # VSlog('hoster vikki no find sub : use ";" to split url and sub')
-            api_call = sUrl
-            if api_call:
-                return True, api_call
-
-        # api_call = "https://cloudfront.viki.net/1133753v/dash/1133753v_dash_high_480p_2d3e72_1809180448_track1_dashinit.mp4"
-
-        # jamais atteint
+        if api_call:
+            return True, api_call
         return False, False
 
     class mydialog(xbmcgui.Dialog):
