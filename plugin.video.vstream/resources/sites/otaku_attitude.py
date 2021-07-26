@@ -125,7 +125,7 @@ def showAnimes(sSearch=''):
                 break
 
             sUrl2 = URL_MAIN + aEntry[0]
-            sThumb = aEntry[1]
+            sThumb = aEntry[1] + "|verifypeer=false"
             sTitle = aEntry[2].replace('-...', '').replace('...', '').replace('!', ' !')
             sDesc = aEntry[3]
 
