@@ -311,7 +311,7 @@ def showMp3():
     if (oHoster != False):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
-        cHosterGui().showHoster(oGui, oHoster, mp3Url, sThumb)
+        cHosterGui().showHoster(oGui, oHoster, mp3Url + "|verifypeer=false", sThumb)
 
     oGui.setEndOfDirectory()
 
