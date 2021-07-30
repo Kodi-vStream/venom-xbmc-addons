@@ -482,13 +482,14 @@ def showMoviesLinks():
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles pour ce film:[/COLOR]')
 
     # récupération du Synopsis
-    try:
-        sPattern = '<h3 class="">Description</h3>(.+?)</div>'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0]:
-            sDesc = aResult[1][0]
-    except:
-        pass
+    if not sDesc:
+        try:
+            sPattern = '<h3 class="">Description</h3>(.+?)</div>'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if aResult[0]:
+                sDesc = aResult[1][0]
+        except:
+            pass
 
     # on regarde si dispo dans d'autres qualités
     sPattern = "option value='(.+?)'.+?<b>(.+?)</b>.+?<b> \((.+?)\)"
@@ -501,7 +502,7 @@ def showMoviesLinks():
             sLang = aEntry[2]
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
 
-            sUrl = "https://www2.tirexo.club/?subaction=get_links&version=" + aEntry[0]
+            sUrl = URL_MAIN + "?subaction=get_links&version=" + aEntry[0]
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -572,7 +573,7 @@ def showSeriesLinks():
             sLang = aEntry[3]
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
 
-            sUrl = "https://www2.tirexo.club/?subaction=get_links&version=" + aEntry[0]
+            sUrl = URL_MAIN + "?subaction=get_links&version=" + aEntry[0]
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
