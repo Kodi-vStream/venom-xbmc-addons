@@ -61,13 +61,15 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('nextSaisonFunc', nextSaisonFunc)
         oOutputParameterHandler.addParameter('saisonUrl', saisonUrl)
 
-        # nouveaux pour la lecture.
+        # Catégorie de lecture
         if oInputParameterHandler.exist('sCat'):
             sCat = oInputParameterHandler.getValue('sCat')
-            oGuiElement.setCat(sCat)
-            oOutputParameterHandler.addParameter('sCat', sCat)
+            if sCat == '4': # Si on vient de passer par un menu "Saison" ...
+               sCat = '8'   #     ...  On est maintenant au niveau "Episode"
         else:
-            oGuiElement.setCat('4')
+            sCat = '5'     # Divers
+        oGuiElement.setCat(sCat)
+        oOutputParameterHandler.addParameter('sCat', sCat)
 
         # context playlist menu
         oContext = cContextElement()
