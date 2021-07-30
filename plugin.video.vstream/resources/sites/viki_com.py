@@ -35,19 +35,19 @@ DRAMA_DRAMAS = (True, 'load')
 # il n'existe qu'une vingtaine de films
 MOVIE_GENRES = (True, 'showMovieGenre')
 MOVIE_PAYS = (True, 'showMoviePays')
-MOVIE_NEWS = (URL_API + 'movies.json?sort=newest_video&page=1&per_page=50&app=100000a&t=', 'showMovies')
-MOVIE_RECENT = (URL_API + 'movies.json?sort=views_recent&page=1&per_page=50&app=100000a&t=', 'showMovies')
-MOVIE_POPULAR = (URL_API + 'movies.json?sort=trending&page=1&per_page=50&app=100000a&t=', 'showMovies')
-MOVIE_BEST = (URL_API + 'movies.json?sort=views&page=1&per_page=50&app=100000a&t=', 'showMovies')
+MOVIE_NEWS = (URL_API + 'movies.json?sort=newest_video&page=1&per_page=50&app=' + _APP + '&t=', 'showMovies')
+MOVIE_RECENT = (URL_API + 'movies.json?sort=views_recent&page=1&per_page=50&app=' + _APP + '&t=', 'showMovies')
+MOVIE_POPULAR = (URL_API + 'movies.json?sort=trending&page=1&per_page=50&app=' + _APP + '&t=', 'showMovies')
+MOVIE_BEST = (URL_API + 'movies.json?sort=views&page=1&per_page=50&app=' + _APP + '&t=', 'showMovies')
 
 DRAMA_GENRES = (True, 'showSerieGenre')
 DRAMA_PAYS = (True, 'showSeriePays')
-DRAMA_NEWS = (URL_API + 'series.json?sort=newest_video&page=1&per_page=50&app=100000a&t=', 'showMovies')
-DRAMA_RECENT = (URL_API + 'series.json?sort=views_recent&page=1&per_page=50&app=100000a&t=', 'showMovies')
-DRAMA_POPULAR = (URL_API + 'series.json?sort=trending&page=1&per_page=50&app=100000a&t=', 'showMovies')
-DRAMA_BEST = (URL_API + 'series.json?sort=views&page=1&per_page=50&app=100000a&t=', 'showMovies')
+DRAMA_NEWS = (URL_API + 'series.json?sort=newest_video&page=1&per_page=50&app=' + _APP + '&t=', 'showMovies')
+DRAMA_RECENT = (URL_API + 'series.json?sort=views_recent&page=1&per_page=50&app=' + _APP + '&t=', 'showMovies')
+DRAMA_POPULAR = (URL_API + 'series.json?sort=trending&page=1&per_page=50&app=' + _APP + '&t=', 'showMovies')
+DRAMA_BEST = (URL_API + 'series.json?sort=views&page=1&per_page=50&app=' + _APP + '&t=', 'showMovies')
 
-URL_SEARCH = (URL_API + 'search.json?page=1&per_page=50&app=100000a&term=', 'showMovies')
+URL_SEARCH = (URL_API + 'search.json?page=1&per_page=50&app=' + _APP + '&term=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH_DRAMAS = (URL_SEARCH[0], 'showMovies')
 
@@ -156,7 +156,7 @@ def showMovies(sSearch=''):
                         # sTitle = jsonrsp['response'][movie]['titles']['fr']  # résultats melangés en/fr
                         sThumb = jsonrsp['response'][movie]['images']['poster']['url']  # thumb size 120ko
                         # sThumb = jsonrsp['response'][movie]['images']['atv_cover']['url']  # thumb size 800 ko
-                        sUrl2 = URL_API + 'series/' + jsonrsp['response'][movie]['id'] + '/episodes.json?page=1&per_page=50&app=100000a&t=' + str(timestamp)
+                        sUrl2 = URL_API + 'series/' + jsonrsp['response'][movie]['id'] + '/episodes.json?page=1&per_page=50&app=' + _APP + '&t=' + str(timestamp)
                         
                         try:
                             sDesc = jsonrsp['response'][movie]['descriptions']['fr']
@@ -263,7 +263,7 @@ def showSaisons():
         getpage = re.compile('(.+?)page=(.+?)&per_page').findall(url)
         for frontUrl, page in getpage:
             newPage = int(page) + 1
-            url = frontUrl + 'page=' + str(newPage) + '&per_page=50&app=100000a&t=' + timestamp
+            url = frontUrl + 'page=' + str(newPage) + '&per_page=50&app=' + _APP + '&t=' + timestamp
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', url)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page', oOutputParameterHandler)
@@ -274,7 +274,7 @@ def showMovieGenre():
     oGui = cGui()
 
     sGenre = 'movies'
-    url = URL_API + 'videos/genres.json?app=100000a'
+    url = URL_API + 'videos/genres.json?app=' + _APP + ''
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Language', '')
@@ -283,7 +283,7 @@ def showMovieGenre():
     oOutputParameterHandler = cOutputParameterHandler()
     for genre in range(0, len(jsonrsp)):
         typeGenre = jsonrsp[genre]['name']['fr']  # or jsonrsp[genre]['name']['en']
-        urlGenre = URL_API + sGenre + '.json?sort=newest_video&page=1&per_page=50&app=100000a&genre=' + jsonrsp[genre]['id'] + '&t='
+        urlGenre = URL_API + sGenre + '.json?sort=newest_video&page=1&per_page=50&app=' + _APP + '&genre=' + jsonrsp[genre]['id'] + '&t='
 
         oOutputParameterHandler.addParameter('siteUrl', urlGenre)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', typeGenre.capitalize(), 'genres.png', oOutputParameterHandler)
@@ -294,7 +294,7 @@ def showSerieGenre():
     oGui = cGui()
 
     sGenre = 'series'
-    url = URL_API + 'videos/genres.json?app=100000a'
+    url = URL_API + 'videos/genres.json?app=' + _APP + ''
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Language', '')
@@ -302,7 +302,7 @@ def showSerieGenre():
 
     oOutputParameterHandler = cOutputParameterHandler()
     for genre in range(0, len(jsonrsp)):
-        urlGenre = URL_API + sGenre + '.json?sort=newest_video&page=1&per_page=50&app=100000a&genre=' + jsonrsp[genre]['id'] + '&t='
+        urlGenre = URL_API + sGenre + '.json?sort=newest_video&page=1&per_page=50&app=' + _APP + '&genre=' + jsonrsp[genre]['id'] + '&t='
         typeGenre = jsonrsp[genre]['name']['fr']
 
         oOutputParameterHandler.addParameter('siteUrl', urlGenre)
@@ -319,25 +319,18 @@ def showSeriePays():
 def showPays(genre):
 
     oGui = cGui()
-    url = URL_API + 'videos/countries.json?app=100000a'
+    url = URL_API + 'videos/countries.json?app=' + _APP + ''
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Accept-Language', '')
     jsonrsp = oRequestHandler.request(jsonDecode=True)
 
-    # site ou il n'y a jamais rien
-    sBlaccountryList = ['tw', 'ca', 'us', 'gb', 'th', 'ph', 'es']
-
     oOutputParameterHandler = cOutputParameterHandler()
     for country, subdict in jsonrsp.items():
-        if country in sBlaccountryList:
-            continue
-
-        else:
-            urlcountry = URL_API + genre + '.json?sort=newest_video&page=1&per_page=50&app=100000a&origin_country=' + country + '&t='
-            country = jsonrsp[country]['name']['en']
-            oOutputParameterHandler.addParameter('siteUrl', urlcountry)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', country.capitalize(), 'genres.png', oOutputParameterHandler)
+        urlcountry = URL_API + genre + '.json?sort=newest_video&page=1&per_page=50&app=' + _APP + '&origin_country=' + country + '&t='
+        country = jsonrsp[country]['name']['en']
+        oOutputParameterHandler.addParameter('siteUrl', urlcountry)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', country.capitalize(), 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

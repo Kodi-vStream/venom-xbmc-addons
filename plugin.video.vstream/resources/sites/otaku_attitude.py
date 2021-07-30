@@ -125,7 +125,7 @@ def showAnimes(sSearch=''):
                 break
 
             sUrl2 = URL_MAIN + aEntry[0]
-            sThumb = aEntry[1]
+            sThumb = aEntry[1] + "|verifypeer=false"
             sTitle = aEntry[2].replace('-...', '').replace('...', '').replace('!', ' !')
             sDesc = aEntry[3]
 
@@ -311,7 +311,7 @@ def showMp3():
     if (oHoster != False):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
-        cHosterGui().showHoster(oGui, oHoster, mp3Url, sThumb)
+        cHosterGui().showHoster(oGui, oHoster, mp3Url + "|verifypeer=false", sThumb)
 
     oGui.setEndOfDirectory()
 

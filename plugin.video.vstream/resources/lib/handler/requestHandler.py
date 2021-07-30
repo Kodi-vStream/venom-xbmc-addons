@@ -198,14 +198,17 @@ class cRequestHandler:
         except ConnectionError as e:
             # Retry with DNS only if addon is present
             import xbmcvfs
-            if xbmcvfs.exists('special://home/addons/script.module.dnspython/') and self.__enableDNS == False:
-                self.__enableDNS = True
-                return self.__callRequest()
+            if self.__enableDNS == False:
+                if xbmcvfs.exists('special://home/addons/script.module.dnspython/'):
+                    self.__enableDNS = True
+                    return self.__callRequest()
+                else:
+                    error_msg = addon().VSlang(30470)
+                    dialog().VSerror(error_msg)
+                    sContent = ''
             else:
-                error_msg = addon().VSlang(30470)
-
-            dialog().VSerror(error_msg)
-            sContent = ''
+                sContent = ''
+                return False
 
         except RequestException  as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e) and self.BUG_SSL == False:
