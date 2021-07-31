@@ -14,7 +14,7 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import progress, VSlog, isMatrix
+from resources.lib.comaddon import progress, VSlog, isMatrix, dialog
 
 _DEVICE_ID = '86085977d'  # used for android api
 _APP = '100005a'
@@ -148,58 +148,51 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
+            if jsonrsp['response'][movie]['type'] == "movie":
+                try:
+                    sTitle = jsonrsp['response'][movie]['container']['titles']['fr']
+                except:
+                    sTitle = jsonrsp['response'][movie]['container']['titles']['en']
+
+                try:
+                    sThumb = jsonrsp['response'][movie]['container']['images']['atv_cover']['url']
+                except:
+                    sThumb = jsonrsp['response'][movie]['container']['images']['poster']['url'] 
+
+                sUrl2 = jsonrsp['response'][movie]['id']
+
+            else:
+                sUrl2 = URL_API + 'series/' + jsonrsp['response'][movie]['id'] + '/episodes.json?page=1&per_page=50&app=' + _APP + '&t=' + str(timestamp)
+
+                try:
+                    sTitle = jsonrsp['response'][movie]['titles']['fr']
+                except:
+                    sTitle = jsonrsp['response'][movie]['titles']['en']
+
+                try:
+                    sThumb = jsonrsp['response'][movie]['images']['atv_cover']['url']
+                except:
+                    sThumb = jsonrsp['response'][movie]['images']['poster']['url']   
+
             try:
-                if (jsonrsp['response'][movie]['flags']['licensed'] == True):
-                    if jsonrsp['response'][movie]['type'] == 'series':
-
-                        sTitle = jsonrsp['response'][movie]['titles']['en']
-                        # sTitle = jsonrsp['response'][movie]['titles']['fr']  # résultats melangés en/fr
-                        sThumb = jsonrsp['response'][movie]['images']['poster']['url']  # thumb size 120ko
-                        # sThumb = jsonrsp['response'][movie]['images']['atv_cover']['url']  # thumb size 800 ko
-                        sUrl2 = URL_API + 'series/' + jsonrsp['response'][movie]['id'] + '/episodes.json?page=1&per_page=50&app=' + _APP + '&t=' + str(timestamp)
-                        
-                        try:
-                            sDesc = jsonrsp['response'][movie]['descriptions']['fr']
-                        except:
-                            sDesc = ''
-                        
-
-                        oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-                        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                        oOutputParameterHandler.addParameter('sThumb', sThumb)
-
-                        if not isMatrix():
-                            oOutputParameterHandler.addParameter('sDesc', sDesc.encode('utf-8', 'ignore'))
-                        else:
-                            oOutputParameterHandler.addParameter('sDesc', sDesc)
-
-                        oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-                    else:
-                        if (jsonrsp['response'][movie]['blocked'] == False):
-                            mt = ''
-                            try:
-                                mt = jsonrsp['response'][movie]['titles']['fr']
-                            except:
-                                pass
-
-                            sDesc = str(mt)
-                            sTitle = str(jsonrsp['response'][movie]['titles']['en'])
-                            sThumb = str(jsonrsp['response'][movie]['images']['poster']['url'])
-                            sUrlApi = str(jsonrsp['response'][movie]['id'] + '@' +
-                                          jsonrsp['response'][movie]['images']['poster']['url'] + '@' + mt)
-
-                            oOutputParameterHandler.addParameter('siteUrl', sUrlApi)
-                            
-                            if not isMatrix():
-                                oOutputParameterHandler.addParameter('sMovieTitle', sTitle.encode('utf-8', 'ignore'))
-                            else:
-                                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)  
-
-                            oOutputParameterHandler.addParameter('sThumb', sThumb)
-                            oOutputParameterHandler.addParameter('sDesc', sDesc)
-                            oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                sDesc = jsonrsp['response'][movie]['descriptions']['fr']
             except:
-                pass
+                sDesc = ''
+
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+                
+            if not isMatrix():
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle.encode('utf-8', 'ignore'))
+            else:
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)  
+
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+
+            if jsonrsp['response'][movie]['type'] == "movie":
+                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            else:
+                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -242,8 +235,8 @@ def showSaisons():
                     pass
 
                 sTitle = jsonrsp['response'][episode]['container']['titles']['en'] + ' Episode ' + str(jsonrsp['response'][episode]['number'])
-                sUrl = str(jsonrsp['response'][episode]['id'] + '@' +
-                           jsonrsp['response'][episode]['images']['poster']['url'] + '@' + et)
+                sUrl = jsonrsp['response'][episode]['id']
+                sThumb = jsonrsp['response'][episode]['images']['poster']['url'] + '@' + et
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -359,7 +352,13 @@ def GET_URLS_STREAM(url):
     oRequestHandler.addHeaderEntry('signature', str(sig))
     oRequestHandler.addHeaderEntry('x-viki-app-ver', _APP_VERSION)
     oRequestHandler.addHeaderEntry('origin', 'https://www.viki.com')
-    jsonrsp = oRequestHandler.request(jsonDecode=True)['main']
+    jsonrsp = oRequestHandler.request(jsonDecode=True)
+
+    try:
+        jsonrsp = jsonrsp['main']
+    except:
+        dialog().VSinfo("Contenu payant", 'An error occurred')
+        return False
 
     testeurl = ''
     testeq = ''
@@ -379,9 +378,7 @@ def showLinks():
     sThumb = oInputParameterHandler.getValue('sThumb')
     dataList = []
 
-    url, thumbnail, stitle = sUrl.split("@")
-
-    streamList2 = GET_URLS_STREAM(url)
+    streamList2 = GET_URLS_STREAM(sUrl)
 
     for item in streamList2:
         dataList.append(item)
