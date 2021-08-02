@@ -42,6 +42,10 @@
 		        <label>$ADDON[plugin.video.vstream 30412]</label>
 				<visible>Window.IsVisible(home) + ListItem.Property(isBookmark)</visible>
             </item>
+            <item library="resources/lib/gui/menuDelViewing.py">
+		        <label>$ADDON[plugin.video.vstream 30412]</label>
+				<visible>Window.IsVisible(home) + ListItem.Property(isViewing)</visible>
+            </item>
 		</menu>
     </extension>
 

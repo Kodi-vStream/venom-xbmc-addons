@@ -80,7 +80,7 @@ class cGui:
             oGuiElement.setFileName(sLabel)
 
         try:
-            self.addFolder(oGuiElement, oOutputParameterHandler)
+            return self.addFolder(oGuiElement, oOutputParameterHandler)
         except Exception as e:
             pass
 
@@ -98,7 +98,7 @@ class cGui:
     #    Nerwork         /             8        files
 
     def addMovie(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
-        self.addNewDir('movies', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 1, 1)
+        return self.addNewDir('movies', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 1, 1)
 
     def addTV(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
         # Pour gérer l'enchainement des épisodes
@@ -107,7 +107,7 @@ class cGui:
             oOutputParameterHandler.addParameter('saisonUrl', QuotePlus(saisonUrl))
             oOutputParameterHandler.addParameter('nextSaisonFunc', sFunction)
 
-        self.addNewDir('tvshows', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 2, 2)
+        return self.addNewDir('tvshows', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 2, 2)
 
     def addAnime(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
         # Pour gérer l'enchainement des épisodes
@@ -116,20 +116,20 @@ class cGui:
             oOutputParameterHandler.addParameter('saisonUrl', QuotePlus(saisonUrl))
             oOutputParameterHandler.addParameter('nextSaisonFunc', sFunction)
 
-        self.addNewDir('tvshows', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 4, 3)
+        return self.addNewDir('tvshows', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 4, 3)
 
     def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
         if sThumbnail or sDesc:
             type = 'videos'
         else:
             type = 'files'
-        self.addNewDir(type, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 5)
+        return self.addNewDir(type, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 5)
 
     def addMoviePack(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
-        self.addNewDir('movies', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 3, 7)
+        return self.addNewDir('movies', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 3, 7)
 
     def addDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler='', sDesc=""):
-        self.addNewDir('dir', sId, sFunction, sLabel, sIcon, '', sDesc, oOutputParameterHandler, 0, None)
+        return self.addNewDir('dir', sId, sFunction, sLabel, sIcon, '', sDesc, oOutputParameterHandler, 0, None)
 
     def addLink(self, sId, sFunction, sLabel, sThumbnail, sDesc, oOutputParameterHandler=''):
         # Pour gérer l'enchainement des épisodes
@@ -139,8 +139,12 @@ class cGui:
         if not oOutputParameterHandler.getValue('sLang'):
             oOutputParameterHandler.addParameter('sLang', oInputParameterHandler.getValue('sLang'))
 
+        # # Affichage du pourcentage de lecture en cours, non utilisé car pas très eronomique au niveau des liens lorsqu'il y a beaucoup de liens
+        # oOutputParameterHandler.addParameter('ResumeTime', oInputParameterHandler.getValue('ResumeTime'))
+        # oOutputParameterHandler.addParameter('TotalTime', oInputParameterHandler.getValue('TotalTime'))
+
         sIcon = sThumbnail
-        self.addNewDir('link', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, None)
+        return self.addNewDir('link', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, None)
 
     def addSeason(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
         # Pour gérer l'enchainement des épisodes
@@ -148,9 +152,7 @@ class cGui:
         oOutputParameterHandler.addParameter('saisonUrl', QuotePlus(saisonUrl))
         oOutputParameterHandler.addParameter('nextSaisonFunc', sFunction)
 
-        self.addNewDir('episodes', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 5, 4)
-        
-        return
+        return self.addNewDir('episodes', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 5, 4)
 
     def addEpisode(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
         # Pour gérer l'enchainement des épisodes
@@ -160,21 +162,19 @@ class cGui:
         if not oOutputParameterHandler.getValue('sLang'):
             oOutputParameterHandler.addParameter('sLang', oInputParameterHandler.getValue('sLang'))
 
-        self.addNewDir('episodes', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 6, 8)
-
-        return
+        return self.addNewDir('episodes', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 6, 8)
 
     # Affichage d'une personne (acteur, réalisateur, ..)
     def addPerson(self, sId, sFunction, sLabel, sIcon, sThumbnail, oOutputParameterHandler=''):
         sThumbnail = ''
         sDesc = ''
-        self.addNewDir('artists', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 7, None)
+        return self.addNewDir('artists', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 7, None)
 
     # Affichage d'un réseau de distribution du média
     def addNetwork(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler=''):
         sThumbnail = ''
         sDesc = ''
-        self.addNewDir('files', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 8, None)
+        return self.addNewDir('files', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 8, None)
 
     def addNext(self, sId, sFunction, sLabel, oOutputParameterHandler):
         oGuiElement = cGuiElement()
@@ -188,7 +188,7 @@ class cGui:
 
         self.createContexMenuPageSelect(oGuiElement, oOutputParameterHandler)
         self.createContexMenuViewBack(oGuiElement, oOutputParameterHandler)
-        self.addFolder(oGuiElement, oOutputParameterHandler)
+        return self.addFolder(oGuiElement, oOutputParameterHandler)
 
     # utiliser oGui.addText(SITE_IDENTIFIER)
     def addNone(self, sId):
@@ -211,7 +211,7 @@ class cGui:
         oGuiElement.setMeta(0)
 
         oOutputParameterHandler = cOutputParameterHandler()
-        self.addFolder(oGuiElement, oOutputParameterHandler)
+        return self.addFolder(oGuiElement, oOutputParameterHandler)
 
     # afficher les liens non playable
     def addFolder(self, oGuiElement, oOutputParameterHandler='', _isFolder=True):
@@ -273,18 +273,29 @@ class cGui:
         
         # Vider les paramètres pour être recyclé
         oOutputParameterHandler.clearParameter()
+        
+        return oListItem
 
     # affiche les liens playable
     def addHost(self, oGuiElement, oOutputParameterHandler=''):
         oInputParameterHandler = cInputParameterHandler()
+
+        # # Affichage du pourcentage de lecture en cours, non utilisé car pas très eronomique au niveau des liens lorsqu'il y a beaucoup de liens
+        # resumeTime = oInputParameterHandler.getValue('ResumeTime')
+        # if resumeTime:
+            # oGuiElement.setResumeTime(resumeTime)
+            # oGuiElement.setTotalTime(oInputParameterHandler.getValue('TotalTime'))
+        
         cGui.CONTENT = 'files'
 
         if oOutputParameterHandler.getValue('siteUrl'):
             sSiteUrl = oOutputParameterHandler.getValue('siteUrl')
             oGuiElement.setSiteUrl(sSiteUrl)
 
-        # On récupere le sCat du fichier précédent.
-        sCat = oInputParameterHandler.getValue('sCat')
+        sCat = oOutputParameterHandler.getValue('sCat')
+        if not sCat:
+            # On récupere le sCat du niveau précédent
+            sCat = oInputParameterHandler.getValue('sCat')
         if sCat:
             oGuiElement.setCat(sCat)
 
@@ -307,7 +318,7 @@ class cGui:
 
         itemTitle = oGuiElement.getTitle()
         if oGuiElement.getMeta() == 6 and data.get('tagline'): # Nom de l'épisode
-            itemTitle += ' - ' + data.get('tagline')
+            itemTitle += ' - ' + str(data.get('tagline'))
             data['title'] = itemTitle   # kodi 19
 
         oListItem = listitem(itemTitle)
@@ -485,22 +496,8 @@ class cGui:
         aContextMenus = []
 
         # Menus classiques reglés a la base
-        if len(oGuiElement.getContextItems()) > 0:
-            for oContextItem in oGuiElement.getContextItems():
-                oOutputParameterHandler = oContextItem.getOutputParameterHandler()
-                sParams = oOutputParameterHandler.getParameterAsUri()
-                sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-                aContextMenus += [(oContextItem.getTitle(), 'RunPlugin(%s)' % sTest)]
-
-            oListItem.addContextMenuItems(aContextMenus, True)
-
-        return oListItem
-
-    def __ContextMenu(self, oGuiElement, oListItem):
-        sPluginPath = cPluginHandler().getPluginPath()
-        aContextMenus = []
-
-        if len(oGuiElement.getContextItems()) > 0:
+        nbContextMenu = len(oGuiElement.getContextItems())
+        if nbContextMenu > 0:
             for oContextItem in oGuiElement.getContextItems():
                 oOutputParameterHandler = oContextItem.getOutputParameterHandler()
                 sParams = oOutputParameterHandler.getParameterAsUri()
@@ -508,23 +505,38 @@ class cGui:
                 aContextMenus += [(oContextItem.getTitle(), 'RunPlugin(%s)' % sTest)]
 
             oListItem.addContextMenuItems(aContextMenus)
-
+        oListItem.setProperty('nbcontextmenu', str(nbContextMenu))
         return oListItem
 
-    def __ContextMenuPlay(self, oGuiElement, oListItem):
-        sPluginPath = cPluginHandler().getPluginPath()
-        aContextMenus = []
-
-        if len(oGuiElement.getContextItems()) > 0:
-            for oContextItem in oGuiElement.getContextItems():
-                oOutputParameterHandler = oContextItem.getOutputParameterHandler()
-                sParams = oOutputParameterHandler.getParameterAsUri()
-                sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-                aContextMenus += [(oContextItem.getTitle(), 'RunPlugin(%s)' % sTest)]
-
-            oListItem.addContextMenuItems(aContextMenus)
-
-        return oListItem
+    # def __ContextMenu(self, oGuiElement, oListItem):
+        # sPluginPath = cPluginHandler().getPluginPath()
+        # aContextMenus = []
+        #
+        # if len(oGuiElement.getContextItems()) > 0:
+            # for oContextItem in oGuiElement.getContextItems():
+                # oOutputParameterHandler = oContextItem.getOutputParameterHandler()
+                # sParams = oOutputParameterHandler.getParameterAsUri()
+                # sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
+                # aContextMenus += [(oContextItem.getTitle(), 'RunPlugin(%s)' % sTest)]
+                #
+            # oListItem.addContextMenuItems(aContextMenus)
+            #
+        # return oListItem
+        #
+    # def __ContextMenuPlay(self, oGuiElement, oListItem):
+        # sPluginPath = cPluginHandler().getPluginPath()
+        # aContextMenus = []
+        #
+        # if len(oGuiElement.getContextItems()) > 0:
+            # for oContextItem in oGuiElement.getContextItems():
+                # oOutputParameterHandler = oContextItem.getOutputParameterHandler()
+                # sParams = oOutputParameterHandler.getParameterAsUri()
+                # sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
+                # aContextMenus += [(oContextItem.getTitle(), 'RunPlugin(%s)' % sTest)]
+                #
+            # oListItem.addContextMenuItems(aContextMenus)
+            #
+        # return oListItem
 
     def __createItemUrl(self, oGuiElement, oOutputParameterHandler=''):
         if (oOutputParameterHandler == ''):
@@ -550,7 +562,7 @@ class cGui:
 
     def setEndOfDirectory(self, ForceViewMode=False):
         iHandler = cPluginHandler().getPluginHandle()
-        # modif 22/06
+
         if not self.listing:
             self.addText('cGui')
 
@@ -700,12 +712,15 @@ class cGui:
             oInputParameterHandler = cInputParameterHandler()
             sSite = oInputParameterHandler.getValue('siteUrl')
             sTitle = oInputParameterHandler.getValue('sTitleWatched')
+            sCat = oInputParameterHandler.getValue('sCat')
             if not sTitle:
                 return
 
             meta = {}
             meta['title'] = sTitle
+            meta['titleWatched'] = sTitle
             meta['site'] = sSite
+            meta['cat'] = sCat
 
             from resources.lib.db import cDb
             db = cDb()
@@ -715,6 +730,7 @@ class cGui:
                 db.del_resume(meta)
             else:
                 db.insert_watched(meta)
+                db.del_viewing(meta)
             # To test
             # updateDirectory()
 
@@ -722,8 +738,7 @@ class cGui:
             # Use kodi buildin feature
             xbmc.executebuiltin('Action(ToggleWatched)')
 
-        # Not usefull ?
-        # updateDirectory()
+        self.updateDirectory()
 
     def showKeyBoard(self, sDefaultText='', heading=''):
         keyboard = xbmc.Keyboard(sDefaultText)

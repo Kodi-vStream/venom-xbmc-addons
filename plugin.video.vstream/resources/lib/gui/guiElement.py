@@ -42,6 +42,9 @@ class cGuiElement:
         self.__sCleanTitle = ''
         # titre considéré Vu
         self.__sTitleWatched = ''
+        self.__ResumeTime = 0   # Durée déjà lue de la vidéo
+        self.__TotalTime = 0    # Durée totale de la vidéo
+        
         # contient le titre modifié pour BDD
         self.__sFileName = ''
         self.__sDescription = ''
@@ -128,6 +131,18 @@ class cGuiElement:
 
     def getEpisode(self):
         return self.__Episode
+
+    def setTotalTime(self, data):
+        self.__TotalTime = data
+
+    def getTotalTime(self):
+        return self.__TotalTime
+
+    def setResumeTime(self, data):
+        self.__ResumeTime = data
+
+    def getResumeTime(self):
+        return self.__ResumeTime
 
     def setMeta(self, sMeta):
         self.__sMeta = sMeta
@@ -426,6 +441,7 @@ class cGuiElement:
         meta = {}
         meta['title'] = self.getTitleWatched()
         meta['site'] = self.getSiteUrl()
+        meta['cat'] = self.getCat()
 
         data = self.DB.get_watched(meta)
         return data
@@ -535,8 +551,10 @@ class cGuiElement:
             sTitle = sTitle.strip()
             if sTitle.endswith(' les'):
                 sTitle = sTitle[:-4]
-            if sTitle.endswith(' la') or sTitle.endswith(' l') :
+            elif sTitle.endswith(' la') :
                 sTitle = sTitle[:-3]
+            elif sTitle.endswith(' l') :
+                sTitle = sTitle[:-2]
             sTitle = sTitle.strip()
 
         # tvshow
@@ -720,7 +738,7 @@ class cGuiElement:
 
         # Used only if there is data in db, overwrite getMetadonne()
         sCat = str(self.getCat())
-        if sCat and sCat != 6:  # Pas besoin de vérifier si pas média
+        if sCat and int(sCat) in(1, 2, 3, 4, 5, 8):  # Vérifier seulement si de type média
             w = self.getWatched()
             if w == 1:
                 self.addItemValues('playcount', w)
@@ -730,6 +748,8 @@ class cGuiElement:
         self.addItemProperties('sId', self.getSiteName())
         self.addItemProperties('sFav', self.getFunction())
         self.addItemProperties('sMeta', str(self.getMeta()))
+        self.addItemProperties('resumetime', self.getResumeTime())
+        self.addItemProperties('totaltime', self.getTotalTime())
 
         if sCat:
             self.addItemProperties('sCat', sCat)

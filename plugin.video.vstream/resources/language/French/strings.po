@@ -158,7 +158,7 @@ msgstr "Pas possible pour ce site"
 
 msgctxt "#30038"
 msgid "Bookmarking not possible for this link"
-msgstr "Mise en Marque-page pas possible pour ce lien"
+msgstr "Mise en Marque-page impossible pour ce lien"
 
 msgctxt "#30039"
 msgid "Download List"
@@ -503,6 +503,10 @@ msgstr "Recherche (Dramas)"
 msgctxt "#30124"
 msgid "Dramas"
 msgstr "Dramas"
+
+msgctxt "#30125"
+msgid "Continue watching"
+msgstr "En cours de visionnage"
 
 msgctxt "#30127"
 msgid "Tools"

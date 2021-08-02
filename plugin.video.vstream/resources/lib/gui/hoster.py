@@ -27,6 +27,8 @@ class cHosterGui:
         nextSaisonFunc = oInputParameterHandler.getValue('nextSaisonFunc')
         sLang = oInputParameterHandler.getValue('sLang')
         sRes = oInputParameterHandler.getValue('sRes')
+        sFav = oInputParameterHandler.getValue('sFav')
+        sTmdbId = oInputParameterHandler.getValue('sTmdbId')
 
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(self.SITE_NAME)
@@ -55,9 +57,11 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('sRes', sRes)
         oOutputParameterHandler.addParameter('sId', 'cHosterGui')
         oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+        oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
         
         # gestion NextUp
         oOutputParameterHandler.addParameter('sourceName', site)    # source d'origine
+        oOutputParameterHandler.addParameter('sourceFav', sFav)    # source d'origine
         oOutputParameterHandler.addParameter('nextSaisonFunc', nextSaisonFunc)
         oOutputParameterHandler.addParameter('saisonUrl', saisonUrl)
 

@@ -250,6 +250,24 @@ class listitem(xbmcgui.ListItem):
     def __init__(self, label = '', label2 = '', iconImage = '', thumbnailImage = '', path = ''):
         pass
 
+    # Permet l'ajout d'un menu après la création d'un item
+    def addMenu(self, sFile, sFunction, sTitle, oOutputParameterHandler = False):
+        sPluginPath = 'plugin://plugin.video.vstream/' # cPluginHandler().getPluginPath()
+        nbContextMenu = self.getProperty('nbcontextmenu')
+        nbContextMenu = int(nbContextMenu) if nbContextMenu else 0
+        
+        sUrl = '%s?site=%s&function=%s' % (sPluginPath, sFile, sFunction)
+        if oOutputParameterHandler:
+            sUrl += '&%s' % oOutputParameterHandler.getParameterAsUri()
+        
+        property = 'contextmenulabel(%d)' % nbContextMenu
+        self.setProperty(property, sTitle);
+
+        property = 'contextmenuaction(%d)' % nbContextMenu
+        self.setProperty(property, 'RunPlugin(%s)' % sUrl);
+        
+        self.setProperty('nbcontextmenu', str(nbContextMenu+1))
+
 """
 from resources.lib.comaddon import VSlog
 VSlog('testtttttttttttt')
