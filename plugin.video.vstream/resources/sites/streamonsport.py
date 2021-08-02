@@ -300,7 +300,7 @@ def Showlink():
             if bvalid:
                 sHosterUrl = shosterurl
 
-        if 'wigistream' in sUrl2:
+        if 'wigistream' or 'cloudstream' in sUrl2:
             bvalid, shosterurl = Hoster_Wigistream(sUrl2, sUrl)
             if bvalid:
                 sHosterUrl = shosterurl
@@ -308,11 +308,6 @@ def Showlink():
         # a verifier
         if 'laylow' in sUrl2:
             bvalid, shosterurl = Hoster_Laylow(sUrl2, sUrl)
-            if bvalid:
-                sHosterUrl = shosterurl
-
-        if 'cloudstream' in sUrl2:
-            bvalid, shosterurl = Hoster_Cloudstream(sUrl2, sUrl)
             if bvalid:
                 sHosterUrl = shosterurl
 
@@ -391,10 +386,18 @@ def Hoster_Wigistream(url, referer):
     oRequestHandler.addHeaderEntry('Referer', referer)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'source.+?: "(.+?)"'
-    aResult = re.search(sPattern, sHtmlContent).group(1)
+    sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
+    aResult = re.findall(sPattern, sHtmlContent)
+
     if aResult:
-        return True, aResult + '|User-Agent=' + UA + '&Referer=' + Quote(url)
+        sstr = aResult[0]
+        if not sstr.endswith(';'):
+            sstr = sstr + ';'
+        sUnpack = cPacker().unpack(sstr)
+        sPattern = 'src="(.+?)"'
+        aResult = re.findall(sPattern, sUnpack)
+        if aResult:
+            return True, aResult[0] + '|User-Agent=' + UA + '&Referer=' + Quote(url)
 
     return False, False
 
@@ -409,27 +412,6 @@ def Hoster_Laylow(url, referer):
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         return True, aResult[0] + '|User-Agent=' + UA + '&Referer=' + Quote(url)
-
-    return False, False
-
-def Hoster_Cloudstream(url, referer):
-    oRequestHandler = cRequestHandler(url)
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Referer', referer)
-    sHtmlContent = oRequestHandler.request()
-
-    sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
-    aResult = re.findall(sPattern, sHtmlContent)
-
-    if aResult:
-        sstr = aResult[0]
-        if not sstr.endswith(';'):
-            sstr = sstr + ';'
-        sUnpack = cPacker().unpack(sstr)
-        sPattern = 'source:"(.+?)"'
-        aResult = re.findall(sPattern, sUnpack)
-        if aResult:
-            return True, aResult[0] + '|User-Agent=' + UA + '&Referer=' + Quote(url)
 
     return False, False
 
