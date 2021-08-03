@@ -29,11 +29,9 @@ class cGui:
     
     def addNewDir(self, Type, sId, sFunction, sLabel, sIcon, sThumbnail='', sDesc='', oOutputParameterHandler='', sMeta=0, sCat=None):
         oGuiElement = cGuiElement()
-        oInputParameterHandler = cInputParameterHandler()
         # dir ou link => CONTENT par défaut = files
         if Type != 'dir' and Type != 'link':
             cGui.CONTENT = Type
-
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
         oGuiElement.setTitle(sLabel)
@@ -46,11 +44,13 @@ class cGui:
             oGuiElement.setThumbnail(sThumbnail)
             oGuiElement.setPoster(sThumbnail)
 
+        oGuiElement.setMeta(sMeta)
         oGuiElement.setDescription(sDesc)
 
-        # Si pas d'id TMDB on recupère  le précedent
+        # Si pas d'id TMDB on recupère le précedent
         if sMeta:
             if not oOutputParameterHandler.getValue('sTmdbId'):
+                oInputParameterHandler = cInputParameterHandler()
                 sTmdbID = oInputParameterHandler.getValue('sTmdbId')
                 if sTmdbID:
                     oOutputParameterHandler.addParameter('sTmdbId', sTmdbID)
@@ -59,22 +59,26 @@ class cGui:
             oGuiElement.setCat(sCat)
             
         # Pour addLink on recupere le sCat precedent.
-        if Type == 'link':
+        elif Type == 'link':
+            oInputParameterHandler = cInputParameterHandler()
             sCat = oInputParameterHandler.getValue('sCat')
             if sCat:
                 oGuiElement.setCat(sCat)
-            
-            sMeta = oInputParameterHandler.getValue('sMeta')
-            if sMeta:
-                oGuiElement.setMeta(sMeta)
-        else:
-            oOutputParameterHandler.addParameter('sMeta', sMeta)
-            oGuiElement.setMeta(sMeta)
 
         oOutputParameterHandler.addParameter('sFav', sFunction)
 
-        if oOutputParameterHandler.getValue('sMovieTitle'):
-            sTitle = oOutputParameterHandler.getValue('sMovieTitle')
+        resumeTime = oOutputParameterHandler.getValue('ResumeTime')
+        if resumeTime:
+            oGuiElement.setResumeTime(resumeTime)
+            oGuiElement.setTotalTime(oOutputParameterHandler.getValue('TotalTime'))
+
+        # Lecture en cours
+        isViewing = oOutputParameterHandler.getValue('isViewing')
+        if isViewing:
+            oGuiElement.addItemProperties('isViewing', True)
+
+        sTitle = oOutputParameterHandler.getValue('sMovieTitle')
+        if sTitle:
             oGuiElement.setFileName(sTitle)
         else:
             oGuiElement.setFileName(sLabel)
@@ -331,43 +335,50 @@ class cGui:
             videoInfoTag = oListItem.getVideoInfoTag()
 
             # gestion des valeurs par defaut si non renseignées
-            videoInfoTag.setMediaType(data.get('mediatype'))
+            videoInfoTag.setMediaType(oGuiElement.getType())
             videoInfoTag.setTitle(itemTitle)
-            videoInfoTag.setOriginalTitle(data.get('originaltitle'))
-            videoInfoTag.setPlot(data.get('plot'))
-            videoInfoTag.setPlotOutline(data.get('plotoutline'))
-            videoInfoTag.setYear(int(data.get('year',0)))       
-            videoInfoTag.setRating(float(data.get('rating',0.0)))
-            videoInfoTag.setMpaa(data.get('mpaa'))
             try:
-                videoInfoTag.setDuration(int(data.get('duration',0)))     
-            except:
-                #Pour convertir le temps en seconde.
-                videoInfoTag.setDuration(sum(x * int(t) for x, t in zip([3600, 60, 1], data.get('duration').split(":"))))
+                videoInfoTag.setOriginalTitle(data.get('originaltitle'))
+                videoInfoTag.setPlot(data.get('plot'))
+                videoInfoTag.setPlotOutline(data.get('plotoutline'))
+                videoInfoTag.setYear(int(data.get('year',0)))       
+                videoInfoTag.setRating(float(data.get('rating',0.0)))
+                videoInfoTag.setMpaa(data.get('mpaa'))
+                try:
+                    videoInfoTag.setDuration(int(data.get('duration',0)))     
+                except:
+                    #Pour convertir le temps en seconde.
+                    videoInfoTag.setDuration(sum(x * int(t) for x, t in zip([3600, 60, 1], data.get('duration').split(":"))))
+                videoInfoTag.setPlaycount(int(data.get('playcount',0)))
+                videoInfoTag.setCountries(data.get('country',[""]))
+                videoInfoTag.setTrailer(data.get('trailer'))
+                videoInfoTag.setTagLine(data.get('tagline'))
+                videoInfoTag.setStudios(list(data.get('studio','').split("/")))
+                videoInfoTag.setWriters(list(data.get('writer','').split("/")))
+                videoInfoTag.setDirectors(list(data.get('director','').split("/")))
+                videoInfoTag.setGenres(''.join(data.get('genre',[""])).split('/'))
+                videoInfoTag.setSeason(int(data.get('season',0)))
+                videoInfoTag.setEpisode(int(data.get('episode',0)))
 
-            videoInfoTag.setPlaycount(int(data.get('playcount',0)))
-            videoInfoTag.setCountries(data.get('country',[""]))
-            videoInfoTag.setTrailer(data.get('trailer'))
-            videoInfoTag.setTagLine(data.get('tagline'))
-            videoInfoTag.setStudios(list(data.get('studio','').split("/")))
-            videoInfoTag.setWriters(list(data.get('writer','').split("/")))
-            videoInfoTag.setDirectors(list(data.get('director','').split("/")))
-            videoInfoTag.setGenres(''.join(data.get('genre',[""])).split('/'))
-            videoInfoTag.setSeason(int(data.get('season',0)))
-            videoInfoTag.setEpisode(int(data.get('episode',0)))
+                # TODO Gestion du pourcentage de lecture
+                # v20 Python API changes:
+                # ResumeTime and TotalTime deprecated. Use InfoTagVideo.setResumePoint() instead.
 
-            try:
-                credits = eval(data.get('credits'))['cast']
-            except:
-                credits = None
 
-            cast = []
-            if credits is not None:
-                for actor in credits:
-                    thumbnail = actor['profile_path']
-                    cast.append(xbmc.Actor(actor['name'], actor['character'], actor['order'], thumbnail))
-                videoInfoTag.setCast(cast)
-            
+                try:
+                    credits = eval(data.get('credits'))['cast']
+                except:
+                    credits = None
+
+                cast = []
+                if credits is not None:
+                    for actor in credits:
+                        thumbnail = actor['profile_path']
+                        cast.append(xbmc.Actor(actor['name'], actor['character'], actor['order'], thumbnail))
+                    videoInfoTag.setCast(cast)
+            except Exception as e:
+                pass
+
         oListItem.setArt({'poster': oGuiElement.getPoster(),
                           'thumb': oGuiElement.getThumbnail(),
                           'icon': oGuiElement.getIcon(),
