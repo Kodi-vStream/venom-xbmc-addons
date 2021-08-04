@@ -104,13 +104,15 @@ class cPlayer(xbmc.Player):
                 VSlog("Can't load subtitle:" + str(self.Subtitles_file))
 
         player_conf = self.ADDON.getSetting('playerPlay')
-
         #Si lien dash, methode prioritaire
-        if sUrl.endswith('.mpd') or sUrl.split('?')[0][-4:] in '.mpd':
+        if sUrl.endswith('.mpd') or sUrl.split('?')[0][-4:] in '.mpd' or "pstream" in sUrl:
             if isKrypton() == True:
                 addonManager().enableAddon('inputstream.adaptive')
                 item.setProperty('inputstream','inputstream.adaptive')
-                item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
+                if '.m3u8' in sUrl:
+                    item.setProperty('inputstream.adaptive.manifest_type', 'hls') 
+                else:
+                    item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
                 xbmcplugin.setResolvedUrl(sPluginHandle, True, listitem=item)
                 VSlog('Player use inputstream addon')
             else:
