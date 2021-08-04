@@ -71,34 +71,23 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  '<script type="text\/javascript">\s*(var[^<>]+?)<'
-        aResult = oParser.parse(sHtmlContent, sPattern)[1][0]
-        data = ""
-        
-        sPattern =  '(?:\[(.+?)\])'
-        aResult1 = oParser.parse(aResult, sPattern)
-        if aResult1[0]:
-            for i in aResult1[1]:
-                if ',' in i:
-                    aResult1[1].remove(i)
-                    [aResult1[1].append(x) for x in i.split(",")]
-                code = ''
-                sPattern2 =  'var '+i+'="(.+?)"'
-                aResult2 = oParser.parse(aResult, sPattern2)
-                if aResult2[0]:
-                    code += aResult2[1][0]
+        sPattern =  '<script type="text/javascript" src="(.+?)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)[1][1]
 
-            if isMatrix():
-                code = base64.b64decode(code).decode('ascii')
-            else:
-                code = base64.b64decode(code)    
+        oRequest = cRequestHandler(aResult)
+        oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+        oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+        sHtmlContent = oRequest.request()
 
-            if not code.startswith("{"):
-                code = '{"'+code        
+        sPattern =  'atob\("(.+?)"'
+        code = oParser.parse(sHtmlContent, sPattern)[1][0]
 
-            url2 = json.loads(code)['url']
+        if isMatrix():
+            code = base64.b64decode(code).decode('ascii')
         else:
-            return False, False
+            code = base64.b64decode(code)
+
+        url2 = json.loads(code)['url']
 
         oRequest = cRequestHandler(url2)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
