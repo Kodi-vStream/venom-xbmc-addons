@@ -39,6 +39,8 @@ class cPlayer(xbmc.Player):
         self.sFav = oInputParameterHandler.getValue('sourceFav')
         self.saisonUrl = oInputParameterHandler.getValue('saisonUrl')
         self.nextSaisonFunc = oInputParameterHandler.getValue('nextSaisonFunc')
+        self.movieUrl = oInputParameterHandler.getValue('movieUrl')
+        self.movieFunc = oInputParameterHandler.getValue('movieFunc')
         self.sTmdbId = oInputParameterHandler.getValue('sTmdbId')
 
         self.playBackEventReceived = False
@@ -273,8 +275,8 @@ class cPlayer(xbmc.Player):
                         else:   # Lecture d'un film
                             meta['title'] = self.sTitle
                             meta['titleWatched'] = sTitleWatched
-                            meta['siteurl'] = self.sSite
-                            meta['fav'] = self.sFav
+                            meta['siteurl'] = self.movieUrl
+                            meta['fav'] = self.movieFunc
                             
                         db.insert_viewing(meta)
                         

@@ -46,14 +46,6 @@ class cGui:
 
         oGuiElement.setDescription(sDesc)
 
-        # Si pas d'id TMDB on recupère le précedent
-        if sMeta:
-            if not oOutputParameterHandler.getValue('sTmdbId'):
-                oInputParameterHandler = cInputParameterHandler()
-                sTmdbID = oInputParameterHandler.getValue('sTmdbId')
-                if sTmdbID:
-                    oOutputParameterHandler.addParameter('sTmdbId', sTmdbID)
-            
         if sCat is not None:
             oGuiElement.setCat(sCat)
             
@@ -71,6 +63,13 @@ class cGui:
             oOutputParameterHandler.addParameter('sMeta', sMeta)
             oGuiElement.setMeta(sMeta)
 
+        # Si pas d'id TMDB on recupère le précedent
+        if not oOutputParameterHandler.getValue('sTmdbId'):
+            oInputParameterHandler = cInputParameterHandler()
+            sTmdbID = oInputParameterHandler.getValue('sTmdbId')
+            if sTmdbID:
+                oOutputParameterHandler.addParameter('sTmdbId', sTmdbID)
+            
         oOutputParameterHandler.addParameter('sFav', sFunction)
 
         resumeTime = oOutputParameterHandler.getValue('ResumeTime')
@@ -108,6 +107,9 @@ class cGui:
     #    Nerwork         /             8        files
 
     def addMovie(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
+        movieUrl = oOutputParameterHandler.getValue('siteUrl')
+        oOutputParameterHandler.addParameter('movieUrl', QuotePlus(movieUrl))
+        oOutputParameterHandler.addParameter('movieFunc', sFunction)
         return self.addNewDir('movies', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 1, 1)
 
     def addTV(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
@@ -146,6 +148,9 @@ class cGui:
         oInputParameterHandler = cInputParameterHandler()
         oOutputParameterHandler.addParameter('saisonUrl', oInputParameterHandler.getValue('saisonUrl'))
         oOutputParameterHandler.addParameter('nextSaisonFunc', oInputParameterHandler.getValue('nextSaisonFunc'))
+        oOutputParameterHandler.addParameter('movieUrl', oInputParameterHandler.getValue('movieUrl'))
+        oOutputParameterHandler.addParameter('movieFunc', oInputParameterHandler.getValue('movieFunc'))
+        
         if not oOutputParameterHandler.getValue('sLang'):
             oOutputParameterHandler.addParameter('sLang', oInputParameterHandler.getValue('sLang'))
 
@@ -574,7 +579,7 @@ class cGui:
 
         return sItemUrl
 
-    def setEndOfDirectory(self, ForceViewMode=False):
+    def setEndOfDirectory(self, forceViewMode=False):
         iHandler = cPluginHandler().getPluginHandle()
 
         if not self.listing:
@@ -587,8 +592,8 @@ class cGui:
         xbmcplugin.endOfDirectory(iHandler, succeeded=True, cacheToDisc=True)
         # reglage vue
         # 50 = liste / 51 grande liste / 500 icone / 501 gallerie / 508 fanart /
-        if ForceViewMode:
-            xbmc.executebuiltin('Container.SetViewMode(' + str(ForceViewMode) + ')')
+        if forceViewMode:
+            xbmc.executebuiltin('Container.SetViewMode(' + str(forceViewMode) + ')')
         else:
             if self.ADDON.getSetting('active-view') == 'true':
                 if cGui.CONTENT == 'movies' or  cGui.CONTENT == 'artists':

@@ -25,6 +25,8 @@ class cHosterGui:
         site = oInputParameterHandler.getValue('site')
         saisonUrl = oInputParameterHandler.getValue('saisonUrl')
         nextSaisonFunc = oInputParameterHandler.getValue('nextSaisonFunc')
+        movieUrl = oInputParameterHandler.getValue('movieUrl')
+        movieFunc = oInputParameterHandler.getValue('movieFunc')
         sLang = oInputParameterHandler.getValue('sLang')
         sRes = oInputParameterHandler.getValue('sRes')
         sFav = oInputParameterHandler.getValue('sFav')
@@ -64,6 +66,10 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('sourceFav', sFav)    # source d'origine
         oOutputParameterHandler.addParameter('nextSaisonFunc', nextSaisonFunc)
         oOutputParameterHandler.addParameter('saisonUrl', saisonUrl)
+
+        # gestion Lecture en cours
+        oOutputParameterHandler.addParameter('movieUrl', movieUrl)
+        oOutputParameterHandler.addParameter('movieFunc', movieFunc)
 
         # Catégorie de lecture
         if oInputParameterHandler.exist('sCat'):
