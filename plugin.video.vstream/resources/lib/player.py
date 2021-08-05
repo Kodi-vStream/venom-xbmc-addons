@@ -271,14 +271,24 @@ class cPlayer(xbmc.Player):
                                 meta['titleWatched'] = tvShowTitle
                             meta['siteurl'] = self.saisonUrl
                             meta['fav'] = self.nextSaisonFunc
-                            # meta['episode'] = sEpisode
+                            db.insert_viewing(meta)
                         else:   # Lecture d'un film
-                            meta['title'] = self.sTitle
-                            meta['titleWatched'] = sTitleWatched
-                            meta['siteurl'] = self.movieUrl
-                            meta['fav'] = self.movieFunc
                             
-                        db.insert_viewing(meta)
+                            # les 'divers' de moins de 45 minutes peuvent être de type 'adultes'
+                            # pas de sauvegarde en attendant mieux
+                            if self.sCat == '5' and self.totalTime < 2700:
+                                pass
+                            else:
+                                meta['title'] = self.sTitle
+                                meta['titleWatched'] = sTitleWatched
+                                if self.movieUrl and self.movieFunc:
+                                    meta['siteurl'] = self.movieUrl
+                                    meta['fav'] = self.movieFunc
+                                else:
+                                    meta['siteurl'] = self.sSite
+                                    meta['fav'] = self.sFav
+                            
+                                db.insert_viewing(meta)
                         
 
         except Exception as err:

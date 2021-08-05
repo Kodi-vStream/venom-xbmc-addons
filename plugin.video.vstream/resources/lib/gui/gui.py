@@ -135,6 +135,9 @@ class cGui:
             type = 'videos'
         else:
             type = 'files'
+        movieUrl = oOutputParameterHandler.getValue('siteUrl')
+        oOutputParameterHandler.addParameter('movieUrl', QuotePlus(movieUrl))
+        oOutputParameterHandler.addParameter('movieFunc', sFunction)
         return self.addNewDir(type, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, 5)
 
     def addMoviePack(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
