@@ -44,7 +44,6 @@ class cGui:
             oGuiElement.setThumbnail(sThumbnail)
             oGuiElement.setPoster(sThumbnail)
 
-        oGuiElement.setMeta(sMeta)
         oGuiElement.setDescription(sDesc)
 
         # Si pas d'id TMDB on recupère le précedent
@@ -58,12 +57,19 @@ class cGui:
         if sCat is not None:
             oGuiElement.setCat(sCat)
             
-        # Pour addLink on recupere le sCat precedent.
-        elif Type == 'link':
+        # Pour addLink on recupere le sCat et sMeta precedent.
+        if Type == 'link':
             oInputParameterHandler = cInputParameterHandler()
             sCat = oInputParameterHandler.getValue('sCat')
             if sCat:
                 oGuiElement.setCat(sCat)
+
+            sMeta = oInputParameterHandler.getValue('sMeta')
+            if sMeta:
+                oGuiElement.setMeta(sMeta)
+        else:
+            oOutputParameterHandler.addParameter('sMeta', sMeta)
+            oGuiElement.setMeta(sMeta)
 
         oOutputParameterHandler.addParameter('sFav', sFunction)
 
@@ -335,49 +341,46 @@ class cGui:
             videoInfoTag = oListItem.getVideoInfoTag()
 
             # gestion des valeurs par defaut si non renseignées
-            videoInfoTag.setMediaType(oGuiElement.getType())
+            videoInfoTag.setMediaType(data.get('mediatype'))
             videoInfoTag.setTitle(itemTitle)
+            videoInfoTag.setOriginalTitle(data.get('originaltitle'))
+            videoInfoTag.setPlot(data.get('plot'))
+            videoInfoTag.setPlotOutline(data.get('plotoutline'))
+            videoInfoTag.setYear(int(data.get('year',0)))       
+            videoInfoTag.setRating(float(data.get('rating',0.0)))
+            videoInfoTag.setMpaa(data.get('mpaa'))
             try:
-                videoInfoTag.setOriginalTitle(data.get('originaltitle'))
-                videoInfoTag.setPlot(data.get('plot'))
-                videoInfoTag.setPlotOutline(data.get('plotoutline'))
-                videoInfoTag.setYear(int(data.get('year',0)))       
-                videoInfoTag.setRating(float(data.get('rating',0.0)))
-                videoInfoTag.setMpaa(data.get('mpaa'))
-                try:
-                    videoInfoTag.setDuration(int(data.get('duration',0)))     
-                except:
-                    #Pour convertir le temps en seconde.
-                    videoInfoTag.setDuration(sum(x * int(t) for x, t in zip([3600, 60, 1], data.get('duration').split(":"))))
-                videoInfoTag.setPlaycount(int(data.get('playcount',0)))
-                videoInfoTag.setCountries(data.get('country',[""]))
-                videoInfoTag.setTrailer(data.get('trailer'))
-                videoInfoTag.setTagLine(data.get('tagline'))
-                videoInfoTag.setStudios(list(data.get('studio','').split("/")))
-                videoInfoTag.setWriters(list(data.get('writer','').split("/")))
-                videoInfoTag.setDirectors(list(data.get('director','').split("/")))
-                videoInfoTag.setGenres(''.join(data.get('genre',[""])).split('/'))
-                videoInfoTag.setSeason(int(data.get('season',0)))
-                videoInfoTag.setEpisode(int(data.get('episode',0)))
+                videoInfoTag.setDuration(int(data.get('duration',0)))     
+            except:
+                #Pour convertir le temps en seconde.
+                videoInfoTag.setDuration(sum(x * int(t) for x, t in zip([3600, 60, 1], data.get('duration').split(":"))))
+            videoInfoTag.setPlaycount(int(data.get('playcount',0)))
+            videoInfoTag.setCountries(data.get('country',[""]))
+            videoInfoTag.setTrailer(data.get('trailer'))
+            videoInfoTag.setTagLine(data.get('tagline'))
+            videoInfoTag.setStudios(list(data.get('studio','').split("/")))
+            videoInfoTag.setWriters(list(data.get('writer','').split("/")))
+            videoInfoTag.setDirectors(list(data.get('director','').split("/")))
+            videoInfoTag.setGenres(''.join(data.get('genre',[""])).split('/'))
+            videoInfoTag.setSeason(int(data.get('season',0)))
+            videoInfoTag.setEpisode(int(data.get('episode',0)))
 
-                # TODO Gestion du pourcentage de lecture
-                # v20 Python API changes:
-                # ResumeTime and TotalTime deprecated. Use InfoTagVideo.setResumePoint() instead.
+            # TODO Gestion du pourcentage de lecture
+            # v20 Python API changes:
+            # ResumeTime and TotalTime deprecated. Use InfoTagVideo.setResumePoint() instead.
 
 
-                try:
-                    credits = eval(data.get('credits'))['cast']
-                except:
-                    credits = None
+            try:
+                credits = eval(data.get('credits'))['cast']
+            except:
+                credits = None
 
-                cast = []
-                if credits is not None:
-                    for actor in credits:
-                        thumbnail = actor['profile_path']
-                        cast.append(xbmc.Actor(actor['name'], actor['character'], actor['order'], thumbnail))
-                    videoInfoTag.setCast(cast)
-            except Exception as e:
-                pass
+            cast = []
+            if credits is not None:
+                for actor in credits:
+                    thumbnail = actor['profile_path']
+                    cast.append(xbmc.Actor(actor['name'], actor['character'], actor['order'], thumbnail))
+                videoInfoTag.setCast(cast)
 
         oListItem.setArt({'poster': oGuiElement.getPoster(),
                           'thumb': oGuiElement.getThumbnail(),
