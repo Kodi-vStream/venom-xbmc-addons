@@ -10,7 +10,10 @@ import base64
 import json
 import re
 
-headers = {"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0"
+
+headers = {'User-Agent': UA,
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
     "Accept-Language": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3"}
 
 class cHoster(iHoster):
@@ -66,7 +69,8 @@ class cHoster(iHoster):
         api_call = ''
         url = self.__sUrl
 
-        oRequest = cRequestHandler(url)      
+        oRequest = cRequestHandler(url)  
+        oRequest.addHeaderEntry('User-Agent', UA)    
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         sHtmlContent = oRequest.request()
@@ -76,17 +80,21 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent, sPattern)[1][1]
 
         oRequest = cRequestHandler(aResult)
+        oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         sHtmlContent = oRequest.request()
 
         sPattern =  'atob\("(.+?)"'
-        code = oParser.parse(sHtmlContent, sPattern)[1][0]
+        code = oParser.parse(sHtmlContent, sPattern)
 
-        if isMatrix():
-            code = base64.b64decode(code).decode('ascii')
-        else:
-            code = base64.b64decode(code)
+        for i in code[1]:
+            if "ey" in str(i):
+                if isMatrix():
+                    code = base64.b64decode(i).decode('ascii')
+                else:
+                    code = base64.b64decode(i)
+                break
 
         api_call = json.loads(code)['url']
 
