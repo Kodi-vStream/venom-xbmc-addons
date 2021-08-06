@@ -264,18 +264,25 @@ class cDb:
     def get_watched(self, meta):
         title = meta['title']
         if not title:
-            return None
+            return False
         cat = meta['cat'] if 'cat' in meta else '1'
 
-        sql_select = "SELECT * FROM watched WHERE title = '%s' and cat = '%s'" % (title, cat)
+        sql_select = "SELECT * FROM watched WHERE title = '%s'" % title
 
         try:
             self.dbcur.execute(sql_select)
-            # matchedrow = self.dbcur.fetchone()
             matchedrow = self.dbcur.fetchall()
+            
+            # Gestion des homonymes films / séries
+            # Si la cat est enregistrée, on vérifie si c'est la même
+            for data in matchedrow:
+                matchedcat = data['cat']
+                if matchedcat:
+                    return int(matchedcat) == int(cat)
+            
             if matchedrow:
-                return 1
-            return 0
+                return True
+            return False
         except Exception as e:
             if 'no such column' in str(e) or 'no column named' in str(e) or 'no such table' in str(e) :
                 # Deuxieme tentative, sans la cat
@@ -284,7 +291,7 @@ class cDb:
                 return 1 if self.dbcur.fetchall() else 0
             else:
                 VSlog('SQL ERROR %s' % sql_select)
-            return None
+            return False
 
     def del_watched(self, meta):
         title = meta['title']
