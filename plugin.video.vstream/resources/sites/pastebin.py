@@ -1832,7 +1832,7 @@ def showEpisodesLinks(siteUrl=''):
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    sTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sTitle = oInputParameterHandler.getValue('sMovieTitle').replace(' | ', ' & ')
     siteUrl = oInputParameterHandler.getValue('siteUrl')
 
     sUrl = siteUrl.replace('+', ' ').replace('|', '+').replace(' & ', ' | ')
