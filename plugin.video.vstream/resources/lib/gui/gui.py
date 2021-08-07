@@ -173,10 +173,17 @@ class cGui:
         return self.addNewDir('episodes', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 5, 4)
 
     def addEpisode(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
-        # Pour gérer l'enchainement des épisodes
+        
+        # Pour gérer l'enchainement des épisodes, l'URL de la saison
         oInputParameterHandler = cInputParameterHandler()
-        oOutputParameterHandler.addParameter('saisonUrl', oInputParameterHandler.getValue('saisonUrl'))
-        oOutputParameterHandler.addParameter('nextSaisonFunc', oInputParameterHandler.getValue('nextSaisonFunc'))
+        saisonUrl = oInputParameterHandler.getValue('saisonUrl')
+        if saisonUrl:   # Retenu depuis "addSeason"
+            oOutputParameterHandler.addParameter('saisonUrl', saisonUrl)
+            oOutputParameterHandler.addParameter('nextSaisonFunc', oInputParameterHandler.getValue('nextSaisonFunc'))
+        else:           # calculé depuis l'url qui nous a emmené ici sans passé par addSeason
+            oOutputParameterHandler.addParameter('saisonUrl', oInputParameterHandler.getValue('siteUrl'))
+            oOutputParameterHandler.addParameter('nextSaisonFunc', oInputParameterHandler.getValue('function'))
+        
         if not oOutputParameterHandler.getValue('sLang'):
             oOutputParameterHandler.addParameter('sLang', oInputParameterHandler.getValue('sLang'))
 
