@@ -85,7 +85,7 @@ class cHoster(iHoster):
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         sHtmlContent = oRequest.request()
 
-        sPattern =  'parseJSON.+?ey(.+?)"'
+        sPattern =  '(?:parseJSON|atob).+?ey(.+?)"'
         code = oParser.parse(sHtmlContent, sPattern)
 
         for i in code[1]:
