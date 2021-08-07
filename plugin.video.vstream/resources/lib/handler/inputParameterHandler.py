@@ -11,7 +11,8 @@ class cInputParameterHandler:
     def __init__(self):
         aParams = dict()
         if len(sys.argv) >= 2 and len(sys.argv[2])>0:
-            aParams = dict(part.split('=') for part in sys.argv[2][1:].split('&'))
+            args = sys.argv[2].replace(' & ', ' ')
+            aParams = dict(part.split('=') for part in args[1:].split('&'))
 
         self.__aParams = aParams
 
