@@ -137,8 +137,6 @@ class cPlayer(xbmc.Player):
         for _ in range(20):
             if self.playBackEventReceived:
                 break
-            if self.playBackStoppedEventReceived:
-                return False
             xbmc.sleep(1000)
 
         #active/desactive les sous titres suivant l'option choisie dans la config
@@ -188,6 +186,10 @@ class cPlayer(xbmc.Player):
     #Attention pas de stop, si on lance une seconde video sans fermer la premiere
     def onPlayBackStopped(self):
         VSlog('player stopped')
+        
+        # reçu deux fois, on n'en prend pas compte
+        if self.playBackStoppedEventReceived:
+            return
         self.playBackStoppedEventReceived = True
 
         self._setWatched()
@@ -306,7 +308,7 @@ class cPlayer(xbmc.Player):
         self.playBackEventReceived = True
 
         # Reprendre la lecture
-        if self.getTime() < 180:  # si supérieur à 3 minutes, la gestion de la reprise est assuré par KODI
+        if self.isPlayingVideo() and self.getTime() < 180:  # si supérieur à 3 minutes, la gestion de la reprise est assuré par KODI
             self.infotag = self.getVideoInfoTag()
             sTitleWatched = self.infotag.getOriginalTitle()
             if sTitleWatched:
