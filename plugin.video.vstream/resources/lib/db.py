@@ -485,7 +485,7 @@ class cDb:
 
         try:
             ex = 'INSERT INTO viewing (tmdb_id, title_id, title, siteurl, site, fav, cat, season) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
-            self.dbcur.execute(ex, (meta['sTmdbId'], titleWatched, title, siteurl, meta['site'], meta['fav'], cat, saison))
+            self.dbcur.execute(ex, (sTmdbId, titleWatched, title, siteurl, meta['site'], meta['fav'], cat, saison))
             self.db.commit()
 
             VSlog('SQL INSERT viewing Successfully')
