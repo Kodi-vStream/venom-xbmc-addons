@@ -13,6 +13,8 @@ except ImportError:
 
 import unicodedata
 import re
+import string
+
 # function util n'utilise pas xbmc, xbmcgui, xbmcaddon ect...
 
 class cUtil:
@@ -71,23 +73,23 @@ class cUtil:
 
         return str(iMinutes) + ':' + str(iSeconds)
 
-    def DecoTitle2(self, string):
-
-        # on vire ancienne deco en cas de bug
-        string = re.sub('\[\/*COLOR.*?\]', '', str(string))
-
-        # pr les tag Crochet
-        string = re.sub('([\[].+?[\]])',' [COLOR coral]\\1[/COLOR] ', string)
-        # pr les tag parentheses
-        string = re.sub('([\(](?![0-9]{4}).{1,7}[\)])', ' [COLOR coral]\\1[/COLOR] ', string)
-        # pr les series
-        string = self.FormatSerie(string)
-        string = re.sub('(?i)(.*) ((?:[S|E][0-9\.\-\_]+){1,2})', '\\1 [COLOR coral]\\2[/COLOR] ', string)
-
-        # vire doubles espaces
-        string = re.sub(' +', ' ', string)
-
-        return string
+    # def DecoTitle2(self, string):
+    #
+        # # on vire ancienne deco en cas de bug
+        # string = re.sub('\[\/*COLOR.*?\]', '', str(string))
+        #
+        # # pr les tag Crochet
+        # string = re.sub('([\[].+?[\]])',' [COLOR coral]\\1[/COLOR] ', string)
+        # # pr les tag parentheses
+        # string = re.sub('([\(](?![0-9]{4}).{1,7}[\)])', ' [COLOR coral]\\1[/COLOR] ', string)
+        # # pr les series
+        # string = self.FormatSerie(string)
+        # string = re.sub('(?i)(.*) ((?:[S|E][0-9\.\-\_]+){1,2})', '\\1 [COLOR coral]\\2[/COLOR] ', string)
+        #
+        # # vire doubles espaces
+        # string = re.sub(' +', ' ', string)
+        #
+        # return string
 
     def unescape(self, text):
         def fixup(m):
@@ -117,6 +119,31 @@ class cUtil:
 
             return text  # leave as is
         return re.sub('&#?\w+;', fixup, text)
+
+    def titleWatched(self, title):
+        if not isMatrix():
+            if isinstance(title, str):
+                # Must be encoded in UTF-8
+                try:
+                    title = title.decode('utf8')
+                except AttributeError:
+                    pass
+
+            title = unicodedata.normalize('NFKD', title).encode('ascii', 'ignore')
+
+        # cherche la saison et episode puis les balises [color]titre[/color]
+        # title, saison = self.getSaisonTitre(title)
+        # title, episode = self.getEpisodeTitre(title)
+        # supprimer les balises
+        title = re.sub(r'\[.*\]|\(.*\)', r'', str(title))
+        title = title.replace('VF', '').replace('VOSTFR', '').replace('FR', '')
+        # title = re.sub(r'[0-9]+?', r'', str(title))
+        title = title.replace('-', ' ')  # on garde un espace pour que Orient-express ne devienne pas Orientexpress pour la recherche tmdb
+        title = title.replace('Saison', '').replace('saison', '').replace('Season', '').replace('Episode', '').replace('episode', '')
+        title = re.sub('[^%s]' % (string.ascii_lowercase + string.digits), ' ', title.lower())
+        # title = QuotePlus(title)
+        # title = title.decode('string-escape')
+        return title
 
     def CleanName(self, name):
         if not isMatrix():
@@ -202,6 +229,30 @@ class cUtil:
 
         # reconvertion utf-8
         return string.encode('utf-8')
+
+    def getSerieTitre(self, sTitle):
+        serieTitle = re.sub(r'\[.*\]|\(.*\)', r'', sTitle)
+        serieTitle = re.sub('[- –]+$', '', serieTitle)
+        
+        if '|' in serieTitle:
+            serieTitle = serieTitle[:serieTitle.index('|')]
+        
+        # on repasse en utf-8
+        if not isMatrix():
+            return serieTitle.encode('utf-8')
+        return serieTitle
+
+    def getEpisodeTitre(self, sTitle):
+
+        string = re.search('(?i)(e(?:[a-z]+sode\s?)*([0-9]+))', sTitle)
+        if string:
+            sTitle = sTitle.replace(string.group(1), '')
+            self.__Episode = ('%02d' % int(string.group(2)))
+            sTitle = '%s [COLOR %s]E%s[/COLOR]' % (sTitle, self.__sDecoColor, self.__Episode)
+            self.addItemValues('Episode', self.__Episode)
+            return sTitle, True
+
+        return sTitle, False
 
     def EvalJSString(self, s):
         s = s.replace(' ', '')

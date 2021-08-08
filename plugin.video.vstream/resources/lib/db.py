@@ -473,9 +473,8 @@ class cDb:
         titleWatched = self.str_conv(meta['titleWatched'])
         siteurl = QuotePlus(meta['siteurl'])
         cat = meta['cat']
-        saison = ''
-        if 'season' in meta:
-            saison = meta['season']
+        saison = meta['season'] if 'season' in meta else '' 
+        sTmdbId = meta['sTmdbId'] if 'sTmdbId' in meta else ''
             
         ex = "DELETE FROM viewing WHERE title_id = '%s' and cat = '%s'" % (titleWatched, cat)
         try:

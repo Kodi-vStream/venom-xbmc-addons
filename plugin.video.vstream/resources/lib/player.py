@@ -7,7 +7,7 @@ from resources.lib.gui.gui import cGui
 from resources.lib.upnext import UpNext
 from resources.lib.comaddon import addon, dialog, xbmc, isKrypton, VSlog, addonManager
 from resources.lib.db import cDb
-from resources.lib.util import Unquote
+from resources.lib.util import cUtil, Unquote
 import xbmcplugin
 
 #pour les sous titres
@@ -209,6 +209,8 @@ class cPlayer(xbmc.Player):
             if self.totalTime > 0:
                 pourcent = float('%.2f' % (self.currentTime / self.totalTime))
     
+                saisonViewing = False
+                
                 #calcul le temp de lecture
                 # Dans le cas ou ont a vu intégralement le contenu, percent = 0.0
                 # Mais on a tout de meme terminé donc le temps actuel est egal au temps total.
@@ -231,6 +233,8 @@ class cPlayer(xbmc.Player):
                             meta['titleWatched'] = sTitleWatched
                             meta['cat'] = self.sCat
                             db.del_viewing(meta)
+                        elif self.sCat == '8':      # A la fin de la lecture d'un episode, on met la saison en "Lecture en cours" 
+                            saisonViewing = True
                     
                     # Marquer VU dans les comptes perso
                     # NE FONCTIONNE PAS SI PLUSIEURS VIDEOS SE SONT ENCHAINEES (cas des épisodes)
@@ -262,18 +266,7 @@ class cPlayer(xbmc.Player):
                         
                         # Lecture d'un épisode, on sauvegarde la saison 
                         if self.sCat == '8':
-                            meta['cat'] = '4'  # saison
-                            tvShowTitle = self.tvShowTitle.lower().replace(' ', '')
-                            if self.sSaison:
-                                meta['season'] = self.sSaison
-                                meta['title'] = self.tvShowTitle + " S" + self.sSaison
-                                meta['titleWatched'] = tvShowTitle + "_S" + self.sSaison
-                            else:
-                                meta['title'] = self.tvShowTitle
-                                meta['titleWatched'] = tvShowTitle
-                            meta['siteurl'] = self.saisonUrl
-                            meta['fav'] = self.nextSaisonFunc
-                            db.insert_viewing(meta)
+                            saisonViewing = True
                         else:   # Lecture d'un film
                             
                             # les 'divers' de moins de 45 minutes peuvent être de type 'adultes'
@@ -291,7 +284,23 @@ class cPlayer(xbmc.Player):
                                     meta['fav'] = self.sFav
                             
                                 db.insert_viewing(meta)
-                        
+                    
+                # Lecture d'un épisode, on met la saison "En cours de lecture"
+                if saisonViewing:
+                    meta['cat'] = '4'  # saison
+                    meta['sTmdbId'] = self.sTmdbId
+                    tvShowTitle = cUtil().titleWatched(self.tvShowTitle).replace(' ', '')
+                    if self.sSaison:
+                        meta['season'] = self.sSaison
+                        meta['title'] = self.tvShowTitle + " S" + self.sSaison
+                        meta['titleWatched'] = tvShowTitle + "_S" + self.sSaison
+                    else:
+                        meta['title'] = self.tvShowTitle
+                        meta['titleWatched'] = tvShowTitle
+                    meta['site'] = self.sSource
+                    meta['siteurl'] = self.saisonUrl
+                    meta['fav'] = self.nextSaisonFunc
+                    db.insert_viewing(meta)
 
         except Exception as err:
             VSlog("ERROR Player_setWatched : {0}".format(err))

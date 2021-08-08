@@ -2,19 +2,17 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Venom.
 import re
-import string
 import unicodedata
 
 from resources.lib.comaddon import addon, xbmc, isMatrix, VSlog
 from resources.lib.db import cDb
-from resources.lib.util import QuoteSafe
-import random
+from resources.lib.util import cUtil, QuoteSafe
 
 # rouge E26543
 # jaune F7D571
 # bleu clair 87CEEC  ou skyblue / hoster
 # vert 37BCB5
-# bleu foncer 08435A / non utiliser
+# bleu foncé 08435A / non utilisé
 
 
 class cGuiElement:
@@ -172,7 +170,7 @@ class cGuiElement:
         if isMatrix():
             self.__sFileName = sFileName
         else:
-            self.__sFileName = self.str_conv(sFileName)
+            self.__sFileName = cUtil().titleWatched(sFileName)
 
     def getFileName(self):
         return self.__sFileName
@@ -282,9 +280,9 @@ class cGuiElement:
             sTitle2 = sTitle2 + 'E' + self.__Episode
 
         # Titre unique pour marquer VU (avec numéro de l'épisode pour les séries)
-        self.__sTitleWatched = self.str_conv(sTitle).replace(' ', '')
+        self.__sTitleWatched = cUtil().titleWatched(sTitle).replace(' ', '')
         if sTitle2:
-            self.addItemValues('tvshowtitle', self.getSerieTitre(sTitle))
+            self.addItemValues('tvshowtitle', cUtil().getSerieTitre(sTitle))
             self.__sTitleWatched += '_' + sTitle2
         self.addItemValues('originaltitle', self.__sTitleWatched)
 
@@ -300,30 +298,6 @@ class cGuiElement:
         if not isMatrix():
             return sTitle2.encode('utf-8')
         return sTitle2
-
-    def getSerieTitre(self, sTitle):
-        serieTitle = re.sub(r'\[.*\]|\(.*\)', r'', sTitle)
-        serieTitle = re.sub('[- –]+$', '', serieTitle)
-        
-        if '|' in serieTitle:
-            serieTitle = serieTitle[:serieTitle.index('|')]
-        
-        # on repasse en utf-8
-        if not isMatrix():
-            return serieTitle.encode('utf-8')
-        return serieTitle
-
-    def getEpisodeTitre(self, sTitle):
-
-        string = re.search('(?i)(e(?:[a-z]+sode\s?)*([0-9]+))', sTitle)
-        if string:
-            sTitle = sTitle.replace(string.group(1), '')
-            self.__Episode = ('%02d' % int(string.group(2)))
-            sTitle = '%s [COLOR %s]E%s[/COLOR]' % (sTitle, self.__sDecoColor, self.__Episode)
-            self.addItemValues('Episode', self.__Episode)
-            return sTitle, True
-
-        return sTitle, False
 
     def setTitle(self, sTitle):
         #Convertie les bytes en strs pour le replace.
@@ -446,32 +420,6 @@ class cGuiElement:
         data = self.DB.get_watched(meta)
         return data
 
-    def str_conv(self, data):
-        # Pas d'autre solution pour le moment que de faire comme ca.
-        if not isMatrix():
-            if isinstance(data, str):
-                # Must be encoded in UTF-8
-                try:
-                    data = data.decode('utf8')
-                except AttributeError:
-                    pass
-
-            data = unicodedata.normalize('NFKD', data).encode('ascii', 'ignore')
-
-        # cherche la saison et episode puis les balises [color]titre[/color]
-        # data, saison = self.getSaisonTitre(data)
-        # data, episode = self.getEpisodeTitre(data)
-        # supprimer les balises
-        data = re.sub(r'\[.*\]|\(.*\)', r'', str(data))
-        data = data.replace('VF', '').replace('VOSTFR', '').replace('FR', '')
-        # data = re.sub(r'[0-9]+?', r'', str(data))
-        data = data.replace('-', ' ')  # on garde un espace pour que Orient-express ne devienne pas Orientexpress pour la recherche tmdb
-        data = data.replace('Saison', '').replace('saison', '').replace('Season', '').replace('Episode', '').replace('episode', '')
-        data = re.sub('[^%s]' % (string.ascii_lowercase + string.digits), ' ', data.lower())
-        # data = QuotePlus(data)
-
-        # data = data.decode('string-escape')
-        return data
 
     def getInfoLabel(self):
         meta = {
@@ -779,6 +727,7 @@ class cGuiElement:
     
     # Des vidéos pour remplacer des bandes annnonces manquantes
     def getDefaultTrailer(self):
+        import random
         from resources.lib.tmdb import cTMDb
         trailers = ['WWkYjM3ZXxU',
                     'LpvKI7I5rF4',
