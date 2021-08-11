@@ -445,7 +445,7 @@ msgid "Children"
 msgstr ""
 
 msgctxt "#30110"
-msgid "Database to be delete"
+msgid "Database to delete"
 msgstr ""
 
 msgctxt "#30111"
@@ -502,6 +502,10 @@ msgstr ""
 
 msgctxt "#30124"
 msgid "Dramas"
+msgstr ""
+
+msgctxt "#30125"
+msgid "Continue watching"
 msgstr ""
 
 msgctxt "#30127"

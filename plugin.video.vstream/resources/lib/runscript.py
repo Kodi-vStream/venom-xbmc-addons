@@ -175,7 +175,7 @@ class cClear:
             return
 
         elif (env == 'clean'):
-            liste = ['Historiques', 'Lecture en cours', 'Marqués vues', 'Marque-Pages', 'Téléchargements']
+            liste = ['Historiques des recherches', 'Marque-Pages', 'En cours de lecture', 'Niveau de lecture', 'Marqués vues', 'Téléchargements']
             ret = self.DIALOG.VSselect(liste, self.ADDON.VSlang(30110))
             cached_DB = "special://home/userdata/addon_data/plugin.video.vstream/vstream.db"
             # important seul xbmcvfs peux lire le special
@@ -191,12 +191,14 @@ class cClear:
                 if ret == 0:
                     sql_drop = 'DELETE FROM history'
                 elif ret == 1:
-                    sql_drop = 'DELETE FROM resume'
-                elif ret == 2:
-                    sql_drop = 'DELETE FROM watched'
-                elif ret == 3:
                     sql_drop = 'DELETE FROM favorite'
+                elif ret == 2:
+                    sql_drop = 'DELETE FROM viewing'
+                elif ret == 3:
+                    sql_drop = 'DELETE FROM resume'
                 elif ret == 4:
+                    sql_drop = 'DELETE FROM watched'
+                elif ret == 5:
                     sql_drop = 'DELETE FROM download'
 
                 try:

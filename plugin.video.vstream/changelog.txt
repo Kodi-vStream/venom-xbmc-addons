@@ -12,6 +12,9 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 1.4.0***
+- En cours de lecture : ajout d'une section avec les médias commencés
+
 *** 1.3.0***
 - Métadonnées : informations média pour les épisodes
 

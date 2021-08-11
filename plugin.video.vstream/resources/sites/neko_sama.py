@@ -312,7 +312,7 @@ def showSeriesHosters():
             sHosterUrl = aEntry
             # Enleve les faux liens
             # if 'openload' in aEntry or '.mp4' not in aEntry:
-            if 'openload' in aEntry or 'mystream.to' in aEntry:
+            if 'openload' in aEntry or 'mystream.to' in aEntry or "streamtape" in aEntry:
                 continue
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)

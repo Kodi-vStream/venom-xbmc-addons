@@ -18,7 +18,7 @@ SITE_IDENTIFIER = 'streamingdivx'
 SITE_NAME = 'Streamingdivx'
 SITE_DESC = 'Films VF en streaming.'
 
-URL_MAIN = 'https://wvw.streamingdivx.stream/'
+URL_MAIN = 'https://www.streamingdivx.ninja/'
 
 MOVIE_NEWS = (URL_MAIN + 'films.html', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenres')
@@ -335,9 +335,14 @@ def showHosters():
     # oRequest.setRequestType(1)
     oRequest.addHeaderEntry('User-Agent', UA)
     oRequest.addHeaderEntry('Referer', sReferer)
-    oRequest.request()
+    sHtmlContent = oRequest.request()
 
     sHosterUrl = oRequest.getRealUrl()
+    if URL_MAIN in sHosterUrl:
+        oParser = cParser()
+        sPattern2 = 'href="(.+?)"'
+        sHosterUrl = oParser.parse(sHtmlContent, sPattern2)[1][0]
+
     oHoster = cHosterGui().checkHoster(sHosterUrl)
     if (oHoster != False):
         oHoster.setDisplayName(sMovieTitle)

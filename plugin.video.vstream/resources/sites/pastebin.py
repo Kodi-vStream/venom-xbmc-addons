@@ -184,10 +184,10 @@ class PasteCache:
             pass
 
     # Suprimer une entrée
-    def remove(self, ID):
+    def remove(self, pasteID):
 
         try:
-            sql_delete = 'DELETE FROM %s WHERE paste_id = \'%s\'' % (SITE_IDENTIFIER, ID)
+            sql_delete = 'DELETE FROM %s WHERE paste_id = \'%s\'' % (SITE_IDENTIFIER, pasteID)
             self.dbcur.execute(sql_delete)
             self.db.commit()
         except Exception as e:
@@ -471,7 +471,7 @@ def load():
         oOutputParameterHandler = cOutputParameterHandler()
         oGui.addDir(SITE_IDENTIFIER, 'addPasteName', '[COLOR coral]Ajouter un dossier %s[/COLOR]' % SITE_NAME, 'listes.png', oOutputParameterHandler)
 
-    # Menu pour raffraichir tout le cache
+    # Menu pour raffraichir le cache
     oOutputParameterHandler = cOutputParameterHandler()
     oGui.addDir(SITE_IDENTIFIER, 'refreshAllPaste', '[COLOR coral]Mettre à jour tous les contenus[/COLOR]', 'download.png', oOutputParameterHandler)
 
@@ -1267,14 +1267,27 @@ def showYears():
     oGui.setEndOfDirectory()
 
 # Trie des résolutions
+resOrder = ['8K', '4K', '2160P', '1080P', '720P', 'SD', '576P', '540P', '480P', '360P']
 def trie_res(key):
-    resOrder = ['8K', '4K', '2160P', '1080P', '720P', '576P', '540P', '480P', '360P']
     if key == UNCLASSIFIED:
-        return 20
+        return 100  # En dernier
     key = key.replace('p', 'P')
-    if key not in resOrder:
-        resOrder.append(key)
-    return resOrder.index(key)
+        
+    if key in resOrder:
+        return resOrder.index(key)
+        
+    for res in resOrder:
+        if key.find(res) >= 0:
+            idx = resOrder.index(res)+1
+            resOrder.insert(idx, key)
+            return idx
+        if res.find(key) >= 0:
+            idx = resOrder.index(res)+1
+            resOrder.insert(idx, key)
+            return idx
+
+    resOrder.append(key)
+    return len(resOrder)-1
 
 def showResolution():
     oGui = cGui()
@@ -1819,7 +1832,7 @@ def showEpisodesLinks(siteUrl=''):
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    sTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sTitle = oInputParameterHandler.getValue('sMovieTitle').replace(' | ', ' & ')
     siteUrl = oInputParameterHandler.getValue('siteUrl')
 
     sUrl = siteUrl.replace('+', ' ').replace('|', '+').replace(' & ', ' | ')
@@ -1869,6 +1882,9 @@ def getHosterList(siteUrl):
     searchEpisode = aParams['sEpisode'] if 'sEpisode' in aParams else None
     idTMDB = aParams['idTMDB'] if 'idTMDB' in aParams else None
     searchTitle = aParams['sTitle'].replace(' | ', ' & ')
+
+    if sRes == UNCLASSIFIED:
+        sRes= ''
 
     pbContent = PasteContent()
     listEpisodes = []

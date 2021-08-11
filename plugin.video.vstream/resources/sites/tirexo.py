@@ -23,8 +23,8 @@ SITE_NAME = '[COLOR violet]Tirexo[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
 
 # Teste pour le moment avec une url fixe.
-URL_MAIN = "https://www2.tirexo.club/"
-# URL_MAIN = "https://www.tirexo......./"  # Les regex sont différentes mais il n'y a pas cloudflare
+URL_MAIN = "https://www2.tirexo.work/"
+
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=1&result_from=1&story=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=15&story=', 'showMovies')
 URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=32&story=', 'showMovies')
@@ -317,7 +317,7 @@ def showMovies(sSearch=''):
     elif 'collections/' in sUrl:
         sPattern = 'class="mov-t nowrap" href=".+?<img src="\/([^"]+)" width="200px" height="320px" title="([^"]+).+?data-link="([^"]+)'
     else:
-        sPattern = 'data-content="([^"]+).+?title="([^"]+).+?img src="([^"]+).+?href="([^"]+)"'
+        sPattern = 'data-content="([^"]+)".+?img src="([^"]+).+?title="([^"]+).+?"mov-t nowrap" href="([^"]+)"'
 
     oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -325,7 +325,6 @@ def showMovies(sSearch=''):
     sHtmlContent = oRequestHandler.request()
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    # VSlog(aResult)
 
     titles = set()
     if (aResult[0] == True):
@@ -350,8 +349,8 @@ def showMovies(sSearch=''):
             else:
                 sUrl2 = aEntry[3]
                 sDesc = aEntry[0]
-                sThumb = URL_MAIN + aEntry[2]
-                sTitle = aEntry[1]
+                sThumb = URL_MAIN + aEntry[1]
+                sTitle = aEntry[2]
 
                 # Enlever les films en doublons (même titre)
                 # il s'agit du même film dans une autre qualité qu'on retrouvera au moment du choix de la qualité
@@ -386,7 +385,7 @@ def showMovies(sSearch=''):
                 number = re.search('([0-9]+)', aResult[1][0]).group(1)
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
         else:
-            sNextPage = __checkForNextPage(sHtmlContent)
+            sNextPage = __checkForNextPage(sHtmlContent, sUrl)
             if (sNextPage != False):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
@@ -397,14 +396,12 @@ def showMovies(sSearch=''):
         oGui.setEndOfDirectory()
 
 
-def __checkForNextPage(sHtmlContent):
+def __checkForNextPage(sHtmlContent, sUrl):
     oParser = cParser()
     sPattern = 'href="([^"]+)"><span class="fa fa-arrow-right">'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        nextPage = aResult[1][0]
-        if not nextPage.startswith('https'):
-            nextPage = URL_MAIN[:-1] + '/' + nextPage
+        nextPage = re.sub('\?cstart=(\d+)', "", sUrl) + aResult[1][0]
         return nextPage
     return False
 
@@ -485,16 +482,17 @@ def showMoviesLinks():
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles pour ce film:[/COLOR]')
 
     # récupération du Synopsis
-    try:
-        sPattern = '<h3 class="">Description</h3>(.+?)</h3>'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0]:
-            sDesc = aResult[1][0]
-    except:
-        pass
+    if not sDesc:
+        try:
+            sPattern = '<h3 class="">Description</h3>(.+?)</div>'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if aResult[0]:
+                sDesc = aResult[1][0]
+        except:
+            pass
 
     # on regarde si dispo dans d'autres qualités
-    sPattern = '<option value="(.+?)".+?</span>(.+?) \((.+?)\)'
+    sPattern = "option value='(.+?)'.+?<b>(.+?)</b>.+?<b> \((.+?)\)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -502,9 +500,9 @@ def showMoviesLinks():
         for aEntry in aResult[1]:
             sQual = aEntry[1]
             sLang = aEntry[2]
-            sDisplayTitle = ('%s [%s] %s') % (sTitle, sQual, sLang)
+            sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
 
-            sUrl = "https://www2.tirexo.ai/?subaction=get_links&version=" + aEntry[0]
+            sUrl = URL_MAIN + "?subaction=get_links&version=" + aEntry[0]
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -548,7 +546,7 @@ def showSeriesLinks():
 
     # récupération du Synopsis
     try:
-        sPattern = '<h3 class="">Description</h3>(.+?)</h3>'
+        sPattern = '<h3 class="">Description</h3>(.+?)</div>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
@@ -564,18 +562,18 @@ def showSeriesLinks():
     # on regarde si dispo dans d'autres qualités
     sHtmlContent1 = CutQual(sHtmlContent)
 
-    sPattern1 = 'value="(.+?)".+?/span>(.+?) \(.+?\) (.+?) \((.+?)\)'
+    sPattern1 = "value='(.+?)'.+?>(.+?)</b>.+?<b>(.+?)</b>.+?<b> \((.+?)\)"
     aResult1 = oParser.parse(sHtmlContent1, sPattern1)
 
     if (aResult1[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult1[1]:
-            sTitle = sTitle + ' ' + aEntry[1]
+            sTitle = sMovieTitle + ' ' + aEntry[1].replace('<b>','')
             sQual = aEntry[2]
             sLang = aEntry[3]
-            sDisplayTitle = ('%s [%s] %s') % (sTitle, sQual, sLang)
+            sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
 
-            sUrl = "https://www2.tirexo.ai/?subaction=get_links&version=" + aEntry[0]
+            sUrl = URL_MAIN + "?subaction=get_links&version=" + aEntry[0]
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -589,7 +587,7 @@ def showSeriesLinks():
     # on regarde si dispo dans d'autres saison
     sHtmlContent1 = CutSais(sHtmlContent)
 
-    sPattern1 = '<option value="([^"]+)".+?</span>([^<]+)<'
+    sPattern1 = '<option value="([^"]+)">([^<]+)<'
     aResult1 = oParser.parse(sHtmlContent1, sPattern1)
 
     if (aResult1[0] == True):
@@ -598,7 +596,6 @@ def showSeriesLinks():
         for aEntry in aResult1[1]:
 
             sSaison = aEntry[1]
-            sSaison = 'Saison ' + sSaison
             sDisplayTitle = ('%s %s') % (sMovieTitle, sSaison)
 
             sUrl = aEntry[0]
@@ -626,7 +623,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '\?domain=(.+?)\.|\"download\".+?href=\"([^>]+)\">([^<]+)'
+    sPattern = "\?domain=(.+?)\.|'download'.+?href='([^>]+)'>([^<]+)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -695,7 +692,7 @@ def showSeriesHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '\?domain=(.+?)\.|\"download\".+?href=\"([^>]+)\">([^<]+)'
+    sPattern = "\?domain=(.+?)\.|'download' rel=.+?href='([^']+)'>([^<]+)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):

@@ -20,7 +20,7 @@ SITE_IDENTIFIER = 'ddl1'
 SITE_NAME = '[COLOR violet]DDL[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
 
-URL_MAIN = "https://www.ddl-best.com/"
+URL_MAIN = "https://www.ddl-best.net/"
 URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&story=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')

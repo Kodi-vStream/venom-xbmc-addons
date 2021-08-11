@@ -10,16 +10,16 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 
 
 SITE_IDENTIFIER = 'french_stream_lol'
 SITE_NAME = 'French-stream-lol'
 SITE_DESC = 'Films & séries'
 
-URL_MAIN = 'https://french-stream.re/'
+URL_MAIN = 'https://french-stream.at/'
 
-MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'xfsearch/qualit/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 MOVIE_VOSTFR = (URL_MAIN + 'film/vostfr/', 'showMovies')
 
@@ -30,7 +30,7 @@ MOVIE_HDLIGHT = (URL_MAIN + 'xfsearch/qualit/HDLight/', 'showMovies')
 MOVIE_DVD = (URL_MAIN + 'xfsearch/qualit/DVDSCR/', 'showMovies')
 MOVIE_CAM = (URL_MAIN + 'xfsearch/qualit/CAM/', 'showMovies')
 
-SERIE_NEWS = (URL_MAIN + 'serie/', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'xfsearch/version-serie/', 'showMovies')
 SERIE_GENRES = (True, 'showSerieGenres')
 SERIE_VFS = (URL_MAIN + 'serie/serie-en-vf-streaming/', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'serie/serie-en-vostfr-streaming/', 'showMovies')
@@ -237,6 +237,8 @@ def showMovies(sSearch=''):
 
     oGui = cGui()
     oParser = cParser()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     bSearchMovie = False
     bSearchSerie = False
@@ -262,9 +264,6 @@ def showMovies(sSearch=''):
         sHtmlContent = oRequest.request()
 
     else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
-
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
@@ -299,7 +298,7 @@ def showMovies(sSearch=''):
 
             sDisplayTitle = sTitle
             if sSearch and not bSearchMovie and not bSearchSerie:
-                if '/serie' in sUrl2:
+                if '/serie' in sUrl2 or 'serie/' in sUrl or '/serie' in sUrl:
                     sDisplayTitle = sDisplayTitle + ' [Série]'
                 else:
                     sDisplayTitle = sDisplayTitle + ' [Film]'
@@ -308,10 +307,10 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if '/serie' not in sUrl2:
-                oGui.addMovie(SITE_IDENTIFIER, 'showMovieLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-            else:
+            if '/serie' in sUrl2 or 'serie/' in sUrl or '/serie' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+            else:
+                oGui.addMovie(SITE_IDENTIFIER, 'showMovieLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 

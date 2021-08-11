@@ -22,8 +22,8 @@ ANIM_VOSTFRS = (URL_MAIN + 'anime/', 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'anime/', 'showMovies')
 ANIM_MOVIES = (URL_MAIN + 'statu/films/', 'showMovies')
 ANIM_LIST = (URL_MAIN + 'liste/a/', 'showAlpha')
-ANIM_GENRES = (True, 'ShowGenre')
-ANIM_NEWS_EPISODES = (URL_MAIN, 'showMovies')  # revoir libellé des urls ANIM_NEWS ANIM_NEWS_EPISODES
+ANIM_GENRES = (True, 'showGenres')
+ANIM_LAST_EPISODES = (URL_MAIN, 'showMovies')
 key_serie = '?key_serie&s='
 key_film = '?key_film&s='
 
@@ -47,8 +47,8 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS_EPISODES[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS_EPISODES[1], 'Animés (Derniers épisodes)', 'news.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_LAST_EPISODES[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_LAST_EPISODES[1], 'Animés (Derniers épisodes)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'siteUrl')
     oGui.addDir(SITE_IDENTIFIER, 'showSearchMovie', 'Recherche Films', 'search.png', oOutputParameterHandler)
@@ -65,7 +65,7 @@ def load():
     oGui.setEndOfDirectory()
 
 
-def ShowGenre():
+def showGenres():
     oGui = cGui()
 
     listegenre = ['action', 'aventure', 'comedie', 'crime', 'drame', 'family', 'fantastique', 'josei', 'musical',
@@ -207,7 +207,7 @@ def showMovies(sSearch=''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '(\d+)</a></li><li><a class="next page-numbers".+?href=([^\s]+)'
+    sPattern = '(\d+)</a></li> <li><a class="next page-numbers" href=([^\s]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -232,7 +232,7 @@ def showEpisodes():
     sHtmlContent = oRequestHandler.request()
 
     sDesc = ''
-    sPattern = 'Synopsis\s*:(.*?)(?:<\/p>|<\/div>)'
+    sPattern = 'Synopsis\s*:(.*?)(?:</p>|</div>)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0] == True:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', cleanDesc(aResult[1][0]))
@@ -248,7 +248,7 @@ def showEpisodes():
 
     if aResult[0] == True:
         total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME, large = total>50)
+        progress_ = progress().VScreate(SITE_NAME, large=total > 50)
 
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
@@ -269,7 +269,7 @@ def showEpisodes():
             oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
-        
+
     oGui.setEndOfDirectory()
 
 
@@ -284,7 +284,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<iframe.*?src="*([^"\s]+)'
+    sPattern = '<li class=streamer>.+?<iframe.*?src="*([^"\s]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     i = 0
     if aResult[0] == True:

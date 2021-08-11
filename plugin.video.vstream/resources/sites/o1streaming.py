@@ -121,7 +121,7 @@ def showMovies(sSearch=''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'class="entry-header"><h2 class="entry-title">([^<>]+).+?src="([^"]+).+?class="year">([^<]+)<.+?<a href="([^"]+)"'
+    sPattern = 'entry-header"><h2 class="entry-title">([^<]+).+?src="([^"]+).+?class="year">([^<]+).+?<a href="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -142,7 +142,7 @@ def showMovies(sSearch=''):
             sTitle = aEntry[0]
 
             s = sTitle
-            if ('/release/' in sUrl or sSearch):
+            if '/release/' in sUrl or sSearch:
                 if '/serie' in sUrl2:
                     s = s + ' [Série] '
                 else:
@@ -283,8 +283,8 @@ def showLinks():
                 sLang = 'VF'
                 if '-VOSTFR' in sHost:
                     sLang = 'VOSTFR'
-                sHost = sHost.replace('VF', '').replace('VOSTFR', '')
-                
+                sHost = sHost.replace('VF', '').replace('VOSTFR', '').replace(' -', '')
+
                 oHoster = cHosterGui().checkHoster(sHost)
                 if (oHoster != False):
                     sDisplayTitle = ('%s [COLOR coral]%s[/COLOR] (%s)') % (sMovieTitle, sHost, sLang)
@@ -297,6 +297,7 @@ def showLinks():
                     oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showHosters():
     oGui = cGui()

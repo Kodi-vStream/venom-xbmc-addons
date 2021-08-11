@@ -56,11 +56,9 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
     protocol_version = 'HTTP/1.0'
 
     def do_GET(self):
-        VSlog('=====Start Server url : %s' % self.path)
         p = urlparse(self.path)
         q = dict(parse_qsl(p.query))
         url = q['u']
-        VSlog("==== url: " + url)
         
         if '?msKey=' in url: # Remove the PNG header
             res = requests.get(url).content[8:]
@@ -70,6 +68,7 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
             res = res.replace('http','http://127.0.0.1:2424?u=http')
             if isMatrix(): res = res.encode()
         ret = res
+        self.send_response_only(200)
         self.send_header('Content-Length', len(ret))
         self.send_header('Content-Type', 'application/vnd.apple.mpegurl')
         self.end_headers()
@@ -80,6 +79,7 @@ if __name__ == '__main__':
 
     #Code by sviet2k
     if addon().getSetting('plugin_kepliz_com') == "true" or addon().getSetting('plugin_kaydo_ws') == "true":
+        VSlog("Server Start")
         address = '127.0.0.1'  # Localhost
         port = 2424
         server_inst = TCPServer((address, port), ProxyHTTPRequestHandler)

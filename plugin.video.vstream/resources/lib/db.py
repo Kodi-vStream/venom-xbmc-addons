@@ -75,9 +75,11 @@ class cDb:
         except Exception:
             pass
 
-    def _create_tables(self):
+    def _create_tables(self, dropTable = ''):
 
-        # sql_create2 = 'DROP TABLE history'
+        if dropTable != '':
+            self.dbcur.execute("DROP TABLE IF EXISTS " + dropTable)
+            self.db.commit()
 
         ''' Create table '''
         sql_create = "CREATE TABLE IF NOT EXISTS history ("\
@@ -97,6 +99,7 @@ class cDb:
                         "title TEXT, "\
                         "hoster TEXT, "\
                         "point TEXT, "\
+                        "total TEXT, "\
                         "UNIQUE(title, hoster)"\
                         ");"
         self.dbcur.execute(sql_create)
@@ -104,8 +107,8 @@ class cDb:
         sql_create = "CREATE TABLE IF NOT EXISTS watched ("\
                         "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
                         "title TEXT, "\
-                        "site TEXT, "\
-                        "UNIQUE(title, site)"\
+                        "cat TEXT, "\
+                        "UNIQUE(title)"\
                         ");"
         self.dbcur.execute(sql_create)
 
@@ -119,6 +122,20 @@ class cDb:
                         "icon TEXT, "\
                         "fanart TEXT, "\
                         "UNIQUE(title, site)"\
+                        ");"
+        self.dbcur.execute(sql_create)
+
+        sql_create = "CREATE TABLE IF NOT EXISTS viewing ("\
+                        "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
+                        "tmdb_id TEXT, "\
+                        "title_id TEXT, "\
+                        "title TEXT, "\
+                        "siteurl TEXT, "\
+                        "site TEXT, "\
+                        "fav TEXT, "\
+                        "cat TEXT, "\
+                        "season integer, "\
+                        "UNIQUE (title_id)"\
                         ");"
         self.dbcur.execute(sql_create)
 
@@ -224,35 +241,57 @@ class cDb:
         title = meta['title']
         if not title:
             return
+        cat = meta['cat'] if 'cat' in meta else '1'
 
-        site = QuotePlus(meta['site'])
-        ex = 'INSERT INTO watched (title, site) VALUES (?, ?)'
+        ex = 'INSERT INTO watched (title, cat) VALUES (?, ?)'
         try:
-            self.dbcur.execute(ex, (title, site))
+            self.dbcur.execute(ex, (title, cat))
             self.db.commit()
             VSlog('SQL INSERT watched Successfully')
-        except Exception:
-            VSlog('SQL ERROR INSERT watched : title = %s, site = %s' % (title, site) )
-            pass
+        except Exception as e:
+            if 'no such column' in str(e) or 'no column named' in str(e) or 'no such table' in str(e) :
+                if 'named cat' in str(e): # ajout nouvelle colonne 'cat'
+                    self.dbcur.execute("ALTER TABLE watched add column cat TEXT")
+                    self.db.commit()
+                    VSlog('Table recreated : watched')
+    
+                    # Deuxieme tentative
+                    self.dbcur.execute(ex, (title, cat))
+                    self.db.commit()
+            else:
+                VSlog('SQL ERROR INSERT watched : title = %s' % e )
 
     def get_watched(self, meta):
         title = meta['title']
         if not title:
-            return None
+            return False
+        cat = meta['cat'] if 'cat' in meta else '1'
 
         sql_select = "SELECT * FROM watched WHERE title = '%s'" % title
 
         try:
             self.dbcur.execute(sql_select)
-            # matchedrow = self.dbcur.fetchone()
             matchedrow = self.dbcur.fetchall()
-
+            
+            # Gestion des homonymes films / séries
+            # Si la cat est enregistrée, on vérifie si c'est la même
+            for data in matchedrow:
+                matchedcat = data['cat']
+                if matchedcat:
+                    return int(matchedcat) == int(cat)
+            
             if matchedrow:
-                return 1
-            return 0
+                return True
+            return False
         except Exception as e:
-            VSlog('SQL ERROR %s' % sql_select)
-            return None
+            if 'no such column' in str(e) or 'no column named' in str(e) or 'no such table' in str(e) :
+                # Deuxieme tentative, sans la cat
+                sql_select = "SELECT * FROM watched WHERE title = '%s'" % title
+                self.dbcur.execute(sql_select)
+                return 1 if self.dbcur.fetchall() else 0
+            else:
+                VSlog('SQL ERROR %s' % sql_select)
+            return False
 
     def del_watched(self, meta):
         title = meta['title']
@@ -275,8 +314,8 @@ class cDb:
     def insert_resume(self, meta):
         title = self.str_conv(meta['title'])
         site = QuotePlus(meta['site'])
-        # hoster = meta['hoster']
         point = meta['point']
+        total = meta['total']
         ex = "DELETE FROM resume WHERE title = '%s'" % title
         try:
             self.dbcur.execute(ex)
@@ -285,31 +324,41 @@ class cDb:
             pass
 
         try:
-            ex = 'INSERT INTO resume (title, hoster, point) VALUES (?, ?, ?)'
-            self.dbcur.execute(ex, (title, site, point))
+            ex = 'INSERT INTO resume (title, hoster, point, total) VALUES (?, ?, ?, ?)'
+            self.dbcur.execute(ex, (title, site, point, total))
             self.db.commit()
-        except Exception:
-            VSlog('SQL ERROR INSERT resume, title = %s' % title)
-            pass
+        except Exception as e:
+            if 'no such column' in str(e) or 'no column named' in str(e) or 'no such table' in str(e) :
+                self._create_tables('resume')
+                VSlog('Table recreated : resume')
+
+                # Deuxieme tentative
+                self.dbcur.execute(ex, (title, site, point, total))
+                self.db.commit()
+            else:
+                VSlog('SQL ERROR INSERT : %s' % e)
 
     def get_resume(self, meta):
         title = self.str_conv(meta['title'])
         # site = QuotePlus(meta['site'])
 
-        sql_select = "SELECT point FROM resume WHERE title = '%s'" % title
-        # sql_select = "SELECT * FROM resume WHERE hoster = '%s'" % site
+        sql_select = "SELECT point, total FROM resume WHERE title = '%s'" % title
 
         try:
             self.dbcur.execute(sql_select)
             matchedrow = self.dbcur.fetchone()
             # matchedrow = self.dbcur.fetchall()
             if not matchedrow:
-                return 0
-            return float(matchedrow[0])
+                return False, False
+            return float(matchedrow[0]), float(matchedrow[1])
         
         except Exception as e:
-            VSlog('SQL ERROR : %s' % sql_select)
-            return None
+            if 'no such column' in str(e) or 'no column named' in str(e) :
+                self._create_tables('resume')
+                VSlog('Table recreated : resume')
+            else:
+                VSlog('SQL ERROR : %s' % e)
+        return False, False
 
     def del_resume(self, meta):
         title = QuotePlus(meta['title'])
@@ -413,6 +462,89 @@ class cDb:
             except Exception:
                 VSlog('SQL ERROR %s' % sql_delete)
         return False
+
+    # ***********************************
+    #   InProgress fonctions
+    # ***********************************
+
+    def insert_viewing(self, meta):
+
+        title = self.str_conv(meta['title'])
+        titleWatched = self.str_conv(meta['titleWatched'])
+        siteurl = QuotePlus(meta['siteurl'])
+        cat = meta['cat']
+        saison = meta['season'] if 'season' in meta else '' 
+        sTmdbId = meta['sTmdbId'] if 'sTmdbId' in meta else ''
+            
+        ex = "DELETE FROM viewing WHERE title_id = '%s' and cat = '%s'" % (titleWatched, cat)
+        try:
+            self.dbcur.execute(ex)
+        except Exception:
+            VSlog('SQL ERROR - ' + ex)
+            pass
+
+        try:
+            ex = 'INSERT INTO viewing (tmdb_id, title_id, title, siteurl, site, fav, cat, season) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+            self.dbcur.execute(ex, (sTmdbId, titleWatched, title, siteurl, meta['site'], meta['fav'], cat, saison))
+            self.db.commit()
+
+            VSlog('SQL INSERT viewing Successfully')
+        except Exception as e:
+            if 'no such column' in str(e) or 'no column named' in str(e) or 'no such table' in str(e) :
+                self._create_tables('viewing')
+                VSlog('Table recreated : viewing')
+
+                # Deuxieme tentative
+                self.dbcur.execute(ex, (meta['sTmdbId'], titleWatched, title, siteurl, meta['site'], meta['fav'], meta['cat'], saison, episode))
+                self.db.commit()
+            else:
+                VSlog('SQL ERROR INSERT : %s' % e)
+            pass
+
+
+    def get_viewing(self):
+        sql_select = "SELECT * FROM viewing group by title order by addon_id DESC"
+
+        try:
+            self.dbcur.execute(sql_select)
+            matchedrow = self.dbcur.fetchall()
+            return matchedrow
+        
+        except Exception as e:
+            VSlog('SQL ERROR : %s' % sql_select)
+            return None
+
+
+    def del_viewing(self, meta):
+        sTitleWatched = meta['titleWatched'] if 'titleWatched' in meta else None
+        
+        sql_deleteCat = ""
+        if not sTitleWatched:       # delete all
+            sql_delete = "DELETE FROM viewing"
+        else:
+            sql_deleteTitle = "DELETE FROM viewing WHERE title_id = '%s'" % sTitleWatched
+            if 'cat' in meta:
+                sql_deleteCat = " and cat = '%s'" %meta['cat']
+            sql_delete = sql_deleteTitle + sql_deleteCat
+        
+        update = 0
+        from resources.lib.gui.gui import cGui
+        try:
+            self.dbcur.execute(sql_delete)
+            self.db.commit()
+            update = self.db.total_changes
+
+            # si pas trouvé, on essaie sans la cat, juste le titre
+            if not update and sql_deleteCat:
+                del meta['cat']
+                return self.del_viewing(meta)
+            
+            return True
+        except Exception as e:
+            VSlog('SQL ERROR %s, error = %s' % (sql_delete, e))
+        
+        return update
+
 
     # ***********************************
     #   Download fonctions

@@ -1,10 +1,12 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #Votre pseudo
+#Ne pas passer par la version de téléchargement.
+#Tout les liens ne sont pas téléchargeable.
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import VSlog
+from resources.lib.comaddon import VSlog, isMatrix, xbmc
 
 import time, random, base64
 
@@ -67,8 +69,7 @@ class cHoster(iHoster):
         return ''
 
     def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
-        self.__sUrl = self.__sUrl.replace('/d/','/e/')
+        self.__sUrl = str(sUrl).replace('/d/','/e/').replace('doodstream.com','dood.la')
 
     def checkUrl(self, sUrl):
         return True
@@ -87,12 +88,28 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
         api_call = False
 
-        oRequest = cRequestHandler(self.__sUrl)
-        oRequest.addHeaderEntry('User-Agent', UA)
-        sHtmlContent = oRequest.request()
-        
-        urlDonwload = oRequest.getRealUrl()
-        
+        headers = {'User-Agent': UA}
+        if xbmc.getCondVisibility('system.platform.android'):
+            oRequest = cRequestHandler(self.__sUrl)
+            oRequest.addHeaderEntry('User-Agent', UA)
+            sHtmlContent = oRequest.request()
+            urlDonwload = oRequest.getRealUrl()
+        else:
+            if isMatrix():
+                import urllib.request as urllib
+            else:
+                import urllib
+
+            req = urllib.Request(self.__sUrl, None, headers)
+            with urllib.urlopen(req) as response:
+               sHtmlContent = response.read()
+               urlDonwload = response.geturl()
+
+        try:
+            sHtmlContent = sHtmlContent.decode('utf8')
+        except:
+            pass
+
         oParser = cParser()
         
         possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
@@ -106,17 +123,23 @@ class cHoster(iHoster):
         sPattern = "\$\.get\('(\/pass_md5[^']+)"
         aResult = oParser.parse(sHtmlContent, sPattern)
         url2 = 'https://' + urlDonwload.split('/')[2] + aResult[1][0]
-        
-        #VSlog(url2)
-        
-        oRequest = cRequestHandler(url2)
-        oRequest.addHeaderEntry('User-Agent', UA)
-        oRequest.addHeaderEntry('Referer', urlDonwload)
-        sHtmlContent = oRequest.request()
-        
-        #VSlog(sHtmlContent)
-        
-        #api_call = compute(sHtmlContent) + fin_url
+
+        headers.update({'Referer': urlDonwload})
+        if xbmc.getCondVisibility('system.platform.android'):
+            oRequest = cRequestHandler(url2)
+            oRequest.addHeaderEntry('User-Agent', UA)
+            oRequest.addHeaderEntry('Referer', urlDonwload)
+            sHtmlContent = oRequest.request()
+        else:
+            req = urllib.Request(url2, None, headers)
+            with urllib.urlopen(req) as response:
+               sHtmlContent = response.read()
+
+        try:
+            sHtmlContent = sHtmlContent.decode('utf8')
+        except:
+            pass
+
         api_call = sHtmlContent + fin_url
         
         #VSlog(api_call)

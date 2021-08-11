@@ -25,8 +25,12 @@ class cHosterGui:
         site = oInputParameterHandler.getValue('site')
         saisonUrl = oInputParameterHandler.getValue('saisonUrl')
         nextSaisonFunc = oInputParameterHandler.getValue('nextSaisonFunc')
+        movieUrl = oInputParameterHandler.getValue('movieUrl')
+        movieFunc = oInputParameterHandler.getValue('movieFunc')
         sLang = oInputParameterHandler.getValue('sLang')
         sRes = oInputParameterHandler.getValue('sRes')
+        sFav = oInputParameterHandler.getValue('sFav')
+        sTmdbId = oInputParameterHandler.getValue('sTmdbId')
 
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(self.SITE_NAME)
@@ -55,19 +59,27 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('sRes', sRes)
         oOutputParameterHandler.addParameter('sId', 'cHosterGui')
         oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+        oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
         
         # gestion NextUp
         oOutputParameterHandler.addParameter('sourceName', site)    # source d'origine
+        oOutputParameterHandler.addParameter('sourceFav', sFav)    # source d'origine
         oOutputParameterHandler.addParameter('nextSaisonFunc', nextSaisonFunc)
         oOutputParameterHandler.addParameter('saisonUrl', saisonUrl)
 
-        # nouveaux pour la lecture.
+        # gestion Lecture en cours
+        oOutputParameterHandler.addParameter('movieUrl', movieUrl)
+        oOutputParameterHandler.addParameter('movieFunc', movieFunc)
+
+        # Catégorie de lecture
         if oInputParameterHandler.exist('sCat'):
             sCat = oInputParameterHandler.getValue('sCat')
-            oGuiElement.setCat(sCat)
-            oOutputParameterHandler.addParameter('sCat', sCat)
+            if sCat == '4': # Si on vient de passer par un menu "Saison" ...
+               sCat = '8'   #     ...  On est maintenant au niveau "Episode"
         else:
-            oGuiElement.setCat('4')
+            sCat = '5'     # Divers
+        oGuiElement.setCat(sCat)
+        oOutputParameterHandler.addParameter('sCat', sCat)
 
         # context playlist menu
         oContext = cContextElement()
@@ -308,6 +320,8 @@ class cHosterGui:
             return self.getHoster('giga')
         if ('vidbom' in sHostName):
             return self.getHoster('vidbom')
+        if ('upvideo' in sHostName) or ('streamon' in sHostName):
+            return self.getHoster('upvideo')
         if ('upvid' in sHostName):
             return self.getHoster('upvid')
         if ('cloudvid' in sHostName):
@@ -350,6 +364,8 @@ class cHosterGui:
             return self.getHoster('jetload')
         if ('dustreaming' in sHostName):
             return self.getHoster('dustreaming')
+        if ('vupload' in sHostName):
+            return self.getHoster('vupload')
 
         # frenchvid et clone
         if ('french-vid' in sHostName) or ('yggseries' in sHostName):
@@ -445,6 +461,8 @@ class cHosterGui:
             return self.getHoster('easyload')
         if ('ninjastream' in sHostName):
             return self.getHoster('ninjastream')
+        if ('megaup' in sHostName):
+            return self.getHoster('megaup')            
 
         # Si aucun hebergeur connu on teste les liens directs
         if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8.webm.mkv'):

@@ -206,10 +206,9 @@ def showHosters():
     # sPost = oInputParameterHandler.getValue('sPost')
 
     oRequestHandler = cRequestHandler(sUrl)
-    # oRequestHandler.setRequestType(1)
-    # oRequestHandler.addParameters('levideo', sPost)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<a href="([^"]+)" target="iframe.+?"'
+    
+    sPattern = '<iframe src="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 

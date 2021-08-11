@@ -137,6 +137,9 @@ class main:
             if isFav(sSiteName, sFunction):
                 return
 
+            if isViewing(sSiteName, sFunction):
+                return
+
             if isLibrary(sSiteName, sFunction):
                 return
 
@@ -255,6 +258,15 @@ def isFav(sSiteName, sFunction):
         from resources.lib.bookmark import cFav
         oFav = cFav()
         exec("oFav." + sFunction + "()")
+        return True
+    return False
+
+
+def isViewing(sSiteName, sFunction):
+    if sSiteName == 'cViewing':
+        from resources.lib.viewing import cViewing
+        oViewing = cViewing()
+        exec("oViewing." + sFunction + "()")
         return True
     return False
 

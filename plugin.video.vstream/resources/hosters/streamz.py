@@ -86,6 +86,8 @@ class cHoster(iHoster):
         oRequest.addHeaderEntry('User-Agent', UA)
         JScode = oRequest.request()
         
+        JScode = JScode.replace(' ','')
+        
         r = "if\(\$\.adblock!=null\){\$\.get\('([^']+)',{([^}]+)}"
         aResult = oParser.parse(JScode, r)
         

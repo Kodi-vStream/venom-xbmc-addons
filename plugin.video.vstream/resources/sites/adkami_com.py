@@ -8,7 +8,9 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, isMatrix
+from resources.lib.comaddon import progress, isMatrix, VSlog
+
+import re
 
 SITE_IDENTIFIER = 'adkami_com'
 SITE_NAME = 'ADKami'
@@ -268,19 +270,21 @@ def showSeries(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    oParser = cParser()
     sPattern = 'data-original="([^"]+)".+?class="top">.+?<a href="([^"]+)">.+?<span class="title">([^<]+)'
-    aResult = oParser.parse(sHtmlContent, sPattern)
+    #oParser = cParser()
+    #aResult = oParser.parse(sHtmlContent, sPattern)
+    aResult = re.findall(sPattern, sHtmlContent, re.DOTALL)
+    
+    VSlog(aResult)
 
-    if (aResult[0] == False):
+    if not aResult:
         oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
-        total = len(aResult[1])
+    else:
+        total = len(aResult)
         progress_ = progress().VScreate(SITE_NAME, large=total>50)
         oOutputParameterHandler = cOutputParameterHandler()
 
-        for aEntry in aResult[1]:
+        for aEntry in aResult:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
@@ -412,6 +416,7 @@ def showHosters():
     
     oOutputParameterHandler = cOutputParameterHandler()
     for aEntry in aResult[1]:
+        sHost = ''
         sUrl = aEntry.replace('+', 'plus')
         if 'youtube' in sUrl and not 'hl=fr' in sUrl:
             sUrl = decodex(sUrl)
@@ -419,10 +424,11 @@ def showHosters():
         if sUrl.startswith('//'):
             sUrl = 'https:' + sUrl
 
-        if 'www.' in sUrl:
-            sHost = sUrl.split("/")[2].split('.')[1]
-        else:
-            sHost = sUrl.split("/")[2].split('.')[0]
+        if sUrl:
+            if 'www.' in sUrl:
+                sHost = sUrl.split("/")[2].split('.')[1]
+            else:
+                sHost = sUrl.split("/")[2].split('.')[0]
 
         if sHost:
             if "crunchyroll" in str(sHost) or "wakanim" in str(sHost) or "animedigitalnetwork" in str(sHost):
@@ -445,17 +451,30 @@ def showHosters():
 def decodex(x):
     from itertools import chain
     import base64
+    
+    x = x.replace('https://www.youtube.com/embed/', '')
 
-    e = base64.b64decode(x.replace('https://www.youtube.com/embed/', ''))
-    t = ''
-    r = "ETEfazefzeaZa13MnZEe"
-    a = 0
+    missing_padding = len(x) % 4
+    if missing_padding:
+        x += '=' * (4 - missing_padding)
+        
+    VSlog(x)
+    
+    try:
+        e = base64.b64decode(x)
+        t = ''
+        r = "ETEfazefzeaZa13MnZEe"
+        a = 0
 
-    px = chain(e)
-    for y in list(px):
-        if isMatrix():
-            t += chr(int(175 ^ y) - ord(r[a]))
-        else:
-            t += chr(int(175 ^ ord(y[0])) - ord(r[a]))
-        a = 0 if a > len(r) - 2 else a + 1
-    return t
+        px = chain(e)
+        for y in list(px):
+            if isMatrix():
+                t += chr(int(175 ^ y) - ord(r[a]))
+            else:
+                t += chr(int(175 ^ ord(y[0])) - ord(r[a]))
+            a = 0 if a > len(r) - 2 else a + 1
+        return t
+    except:
+        return ''
+        
+    return ''

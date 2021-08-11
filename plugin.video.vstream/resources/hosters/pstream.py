@@ -5,10 +5,16 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog, VSPath, isMatrix, VSlog
 from resources.lib.parser import cParser
+from resources.lib.util import urlEncode
 import base64
 import json
 import re
-import os
+
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0"
+
+headers = {'User-Agent': UA,
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+    "Accept-Language": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3"}
 
 class cHoster(iHoster):
 
@@ -63,83 +69,38 @@ class cHoster(iHoster):
         api_call = ''
         url = self.__sUrl
 
-        video_pstream_path = self.getTempFile()
-
-        oRequest = cRequestHandler(url)
+        oRequest = cRequestHandler(url)  
+        oRequest.addHeaderEntry('User-Agent', UA)    
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  'B64.+?(?:\(|\[)(.+?)(?:\)|\]).+?;'
-        aResult = oParser.parse(sHtmlContent, sPattern)[1][0]
-        data = ""
+        sPattern =  '<script type="text/javascript" src="(.+?)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)[1][1]
 
-        for aEntry in aResult.split(','):
-            data += re.search('var ' + aEntry + '(?:.+?|)=(.+?)";',sHtmlContent).group(1)
-        decode = base64.b64decode(data)
-        url2 = json.loads(decode)['url']
-
-        oRequest = cRequestHandler(url2)
+        oRequest = cRequestHandler(aResult)
+        oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         sHtmlContent = oRequest.request()
 
-        sPattern = "NAME=.([^\"']+).+?https([^#]+)"
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            url = []
-            qua = []
-            for aEntry in aResult[1]:
-                urls = 'https' + aEntry[1].strip()
-                qua.append(aEntry[0])
-                url.append(urls.strip())
+        sPattern =  '(?:parseJSON|atob).+?ey(.+?)"'
+        code = oParser.parse(sHtmlContent, sPattern)
 
-            sUrlselect = dialog().VSselectqual(qua, url)
+        for i in code[1]:
+            try:
+                if isMatrix():
+                    code = base64.b64decode("ey" + i).decode('ascii')
+                else:
+                    code = base64.b64decode("ey" + i)
+                break
+            except:
+                pass
 
-            sUrlselect = sUrlselect.strip()
-            oRequest = cRequestHandler(sUrlselect)
-            oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-            oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-            sHtmlContent = oRequest.request()
-
-            if '#EXT' not in sHtmlContent:
-                return False, False
-
-            with open(video_pstream_path, "w") as subfile:
-                subfile.write(sHtmlContent)
-
-            api_call = video_pstream_path
+        api_call = json.loads(code)['url']
 
         if (api_call):
-            return True, api_call
+            return True, api_call + '|' + urlEncode(headers)
 
         return False, False
-    
-    def getTempFile(self):
-        # le nom doit changer pour garantir l'enchainement des épisodes
-        # il faut tourner sur au moins trois fichiers car on ne peut pas supprimer le fichier en cours
-        pathFile1 = VSPath('special://temp/video_pstream1.m3u8')
-        pathFile2 = VSPath('special://temp/video_pstream2.m3u8')
-        pathFile3 = VSPath('special://temp/video_pstream3.m3u8')
-        if not isMatrix():
-            pathFile1 = pathFile1.decode('utf-8')
-            pathFile2 = pathFile2.decode('utf-8')
-            pathFile3 = pathFile3.decode('utf-8')
-
-        if not os.path.exists(pathFile1):
-            if os.path.exists(pathFile2):
-                os.remove(pathFile2)
-            return pathFile1
-        if not os.path.exists(pathFile2):
-            if os.path.exists(pathFile3):
-                os.remove(pathFile3)
-            return pathFile2
-        if not os.path.exists(pathFile3):
-            if os.path.exists(pathFile1):
-                os.remove(pathFile1)
-            return pathFile3
-
-        if os.path.exists(pathFile2):
-            os.remove(pathFile2)
-        return pathFile1
