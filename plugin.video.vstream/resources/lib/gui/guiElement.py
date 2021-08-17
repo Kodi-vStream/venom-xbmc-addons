@@ -23,7 +23,7 @@ class cGuiElement:
 
     def __init__(self):
 
-        addons = addon()
+        self.addons = addon()
         
         # self.__sRootArt = cConfig().getRootArt()
         self.__sFunctionName = ''
@@ -31,7 +31,7 @@ class cGuiElement:
         self.__sType = 'video'
         self.__sMeta = 0
         self.__sTrailer = ''
-        self.__sMetaAddon = addons.getSetting('meta-view')
+        self.__sMetaAddon = self.addons.getSetting('meta-view')
         self.__sMediaUrl = ''
         self.__sSiteUrl = ''
         # contient le titre qui sera coloré
@@ -53,8 +53,9 @@ class cGuiElement:
         self.__Episode = ''
         self.__sIcon = self.DEFAULT_FOLDER_ICON
         self.__sFanart = 'special://home/addons/plugin.video.vstream/fanart.jpg'
-        self.__sDecoColor = addons.getSetting('deco_color')
-
+        self.__sDecoColor = self.addons.getSetting('deco_color')
+        self.poster = 'https://image.tmdb.org/t/p/%s' % self.addons.getSetting('poster_tmdb')
+        self.fanart = 'https://image.tmdb.org/t/p/%s' % self.addons.getSetting('backdrop_tmdb')
         # For meta search
         # TmdbId the movie database https://developers.themoviedb.org/
         self.__TmdbId = ''
@@ -568,6 +569,8 @@ class cGuiElement:
             meta.pop('backdrop_path')
 
         if 'poster_path' in meta:
+            if not meta['poster_path'].startswith('http'):
+                meta['cover_url'] = self.poster + meta['poster_path']
             meta.pop('poster_path')
 
         if 'cover_url' in meta:
@@ -578,18 +581,6 @@ class cGuiElement:
 
         if 'trailer' in meta and meta['trailer']:
             self.__sTrailer = meta['trailer']
-
-        if 's_overview' in meta:
-            meta.pop('s_overview')
-
-        if 's_poster_path' in meta:
-            meta.pop('s_poster_path')
-
-        if 's_premiered' in meta:
-            meta.pop('s_premiered')
-
-        if 's_year' in meta:
-            meta.pop('s_year')
             
         if 'still_path' in meta:
             meta.pop('still_path')
@@ -604,6 +595,12 @@ class cGuiElement:
             nbSeasons = meta.pop('nbseasons')
             if nbSeasons>0:
                 self.addItemProperties('TotalSeasons', nbSeasons)
+
+        if 'vote' in meta:
+            meta.pop('vote')
+
+        if 'runtime' in meta:
+            meta.pop('runtime')
 
         for key, value in meta.items():
             self.addItemValues(key, value)
