@@ -277,9 +277,18 @@ def showSaisonEpisodes():
     sPattern = '"episode":"([^"]+)".+?"url":"([^"]+)","url_image":"([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
+
     if (aResult[0] == True):
+        total = len(aResult[1])
+        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
+
             sTitle = sMovieTitle + ' ' + aEntry[0].replace('Ep. ', 'E')
             sUrl2 = URL_MAIN + aEntry[1].replace('\\/', '/')
             sThumb = aEntry[2]
