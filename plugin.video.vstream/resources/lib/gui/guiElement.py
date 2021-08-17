@@ -535,7 +535,7 @@ class cGuiElement:
 
         else:
             return
-
+            
         meta['title'] = self.getTitle()
 
         if 'media_type' in meta:
@@ -568,7 +568,7 @@ class cGuiElement:
         if 'backdrop_path' in meta:
             meta.pop('backdrop_path')
 
-        if 'poster_path' in meta:
+        if 'poster_path' in meta and meta['poster_path'] != "":
             if not meta['poster_path'].startswith('http'):
                 meta['cover_url'] = self.poster + meta['poster_path']
             meta.pop('poster_path')
