@@ -13,10 +13,7 @@ from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix, xbmc,
 from resources.lib.librecaptcha.gui import cInputWindowYesNo
 from resources.lib.util import QuotePlus
 
-try:
-    import urllib2
-except ImportError:
-    import urllib.request as urllib2 
+from resources.lib.handler.requestHandler import cRequestHandler 
 
 try:
     from sqlite3 import dbapi2 as sqlite
@@ -117,10 +114,10 @@ class cTMDb:
                      "writer TEXT, "\
                      "tagline TEXT, "\
                      "credits TEXT,"\
-                     "vote_average FLOAT, "\
-                     "vote_count TEXT, "\
+                     "rating FLOAT, "\
+                     "vote TEXT, "\
                      "runtime TEXT, "\
-                     "overview TEXT,"\
+                     "plot TEXT,"\
                      "mpaa TEXT, "\
                      "premiered TEXT, "\
                      "genre TEXT, "\
@@ -145,10 +142,10 @@ class cTMDb:
                      "director TEXT, "\
                      "writer TEXT, "\
                      "credits TEXT,"\
-                     "vote_average FLOAT, "\
-                     "vote_count TEXT, "\
+                     "rating FLOAT, "\
+                     "vote TEXT, "\
                      "runtime TEXT, "\
-                     "overview TEXT,"\
+                     "plot TEXT,"\
                      "mpaa TEXT, "\
                      "premiered TEXT, "\
                      "genre TEXT, "\
@@ -173,7 +170,7 @@ class cTMDb:
                      "year INTEGER,"\
                      "premiered TEXT, "\
                      "poster_path TEXT,"\
-                     "overview TEXT,"\
+                     "plot TEXT,"\
                      "UNIQUE(tmdb_id, season)"\
                      ");"
         try:
@@ -191,10 +188,11 @@ class cTMDb:
                      "director TEXT, "\
                      "writer TEXT, "\
                      "guest_stars TEXT, "\
-                     "overview TEXT, "\
-                     "vote_average FLOAT, "\
-                     "vote_count TEXT, "\
+                     "plot TEXT, "\
+                     "rating FLOAT, "\
+                     "vote TEXT, "\
                      "premiered TEXT, "\
+                     "tagline TEXT, "\
                      "poster_path TEXT, "\
                      "UNIQUE(tmdb_id, season, episode)"\
                      ");"
@@ -888,8 +886,8 @@ class cTMDb:
                     sql_select = sql_select + ' AND tvshow.year = %s' % year
 
         elif media_type == 'season':
-            sql_select = 'SELECT *, season.poster_path as s_poster_path, season.premiered as s_premiered, ' \
-                             'season.year as s_year, season.overview as s_overview FROM tvshow LEFT JOIN season ON tvshow.tmdb_id = season.tmdb_id'
+            sql_select = 'SELECT *, season.poster_path, season.premiered, ' \
+                             'season.year, season.plot FROM season LEFT JOIN tvshow ON season.tmdb_id = tvshow.tmdb_id'
             if tmdb_id:
                 sql_select = sql_select + ' WHERE tvshow.tmdb_id = \'%s\'' % tmdb_id
             else:
@@ -898,10 +896,10 @@ class cTMDb:
             sql_select = sql_select + ' AND season.season = \'%s\'' % season
 
         elif media_type == 'episode':
-            sql_select = 'SELECT *, episode.title as s_title, episode.poster_path as s_poster_path, episode.premiered as s_premiered, '\
-                'episode.guest_stars, episode.year as s_year, episode.overview as s_overview, '\
-                'episode.director as s_director, episode.writer as s_writer, episode.vote_average as s_vote_average, episode.vote_count as s_vote_count '\
-                'FROM tvshow LEFT JOIN episode ON tvshow.tmdb_id = episode.tmdb_id'
+            sql_select = 'SELECT *, episode.title, episode.poster_path, episode.premiered, '\
+                'episode.guest_stars, episode.year, episode.plot, '\
+                'episode.director, episode.writer, episode.rating, episode.vote '\
+                'FROM episode LEFT JOIN tvshow ON episode.tmdb_id = tvshow.tmdb_id'
             if tmdb_id:
                 sql_select += ' WHERE tvshow.tmdb_id = \'%s\'' % tmdb_id
             else:
@@ -971,10 +969,10 @@ class cTMDb:
         # sauvegarde movie dans la BDD
         # year n'est pas forcement l'année du film mais l'année utilisée pour la recherche
         try:
-            sql = 'INSERT or IGNORE INTO %s (imdb_id, tmdb_id, title, year, credits, writer, director, tagline, vote_average, vote_count, runtime, ' \
-                  'overview, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path) ' \
+            sql = 'INSERT or IGNORE INTO %s (imdb_id, tmdb_id, title, year, credits, writer, director, tagline, rating, vote, runtime, ' \
+                  'plot, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path) ' \
                   'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' % media_type
-            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(runtime), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path']))
+            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(runtime), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['cover_url'], meta['trailer'], meta['backdrop_url']))
             self.db.commit()
 #             VSlog('SQL INSERT Successfully')
         except Exception as e:
@@ -983,7 +981,7 @@ class cTMDb:
                 VSlog('Table recreated')
 
                 # Deuxieme tentative
-                self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(runtime), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path']))
+                self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(runtime), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['cover_url'], meta['trailer'], meta['backdrop_url']))
                 self.db.commit()
             else:
                 VSlog('SQL ERROR INSERT into table ' + media_type)
@@ -1007,10 +1005,10 @@ class cTMDb:
             
         # sauvegarde tvshow dans la BDD
         try:
-            sql = 'INSERT or IGNORE INTO tvshow (imdb_id, tmdb_id, title, year, credits, writer, director, vote_average, vote_count, runtime, ' \
-                  'overview, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path, nbseasons) ' \
+            sql = 'INSERT or IGNORE INTO tvshow (imdb_id, tmdb_id, title, year, credits, writer, director, rating, vote, runtime, ' \
+                  'plot, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path, nbseasons) ' \
                   'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['rating'], meta['votes'], runtime, meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta['nbseasons']))
+            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['rating'], meta['votes'], runtime, meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['cover_url'], meta['trailer'], meta['backdrop_url'], meta['nbseasons']))
             self.db.commit()
         except Exception as e:
             if 'no such column' in str(e) or 'no column named' in str(e):
@@ -1018,7 +1016,7 @@ class cTMDb:
                 VSlog('Table recreated')
 
                 # Deuxieme tentative
-                self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['rating'], meta['votes'], runtime, meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta['nbseasons']))
+                self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['rating'], meta['votes'], runtime, meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['cover_url'], meta['trailer'], meta['backdrop_url'], meta['nbseasons']))
                 self.db.commit()
             else:
                 VSlog('SQL ERROR INSERT into table tvshow')
@@ -1054,10 +1052,9 @@ class cTMDb:
             plot = meta['plot']
 
         try:
-            sql = 'INSERT or IGNORE INTO season (tmdb_id, season, year, premiered, poster_path, overview) VALUES ' \
+            sql = 'INSERT or IGNORE INTO season (tmdb_id, season, year, premiered, poster_path, plot) VALUES ' \
                   '(?, ?, ?, ?, ?, ?)'
             self.dbcur.execute(sql, (meta['tmdb_id'], season, s_year, premiered, meta['poster_path'], plot))
-            # self.dbcur.execute(sql, (meta['tmdb_id'], s['season_number'], s_year, s['air_date'], s['poster_path'], 0, s['overview']))
             self.db.commit()
         except Exception as e:
             if 'no such column' in str(e) or 'no column named' in str(e):
@@ -1073,9 +1070,9 @@ class cTMDb:
 
     def _cache_save_episode(self, meta, season, episode):
         try:
-            sql = 'INSERT or IGNORE INTO episode (tmdb_id, season, episode, year, title, premiered, poster_path, overview, vote_average, vote_count, director, writer, guest_stars) VALUES ' \
-                  '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-            self.dbcur.execute(sql, (meta['tmdb_id'], season, episode, meta['year'], meta['title'], meta['premiered'], meta['poster_path'], meta['plot'], meta['rating'], meta['votes'], meta['director'], meta['writer'], meta['guest_stars']))
+            sql = 'INSERT or IGNORE INTO episode (tmdb_id, season, episode, year, title, premiered, poster_path, plot, rating, vote, director, writer, guest_stars, tagline) VALUES ' \
+                  '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            self.dbcur.execute(sql, (meta['tmdb_id'], season, episode, meta['year'], meta['title'], meta['premiered'], meta['poster_path'], meta['plot'], meta['rating'], meta['votes'], meta['director'], meta['writer'], ''.join(meta.get('guest_stars',"")),meta.get("tagline","")))
             self.db.commit()
         except Exception as e:
             if 'no such column' in str(e) or 'no column named' in str(e):
@@ -1083,7 +1080,7 @@ class cTMDb:
                 VSlog('Table recreated')
 
                 # Deuxieme tentative
-                self.dbcur.execute(sql, (meta['tmdb_id'], season, episode, meta['year'], meta['title'], meta['premiered'], meta['poster_path'], meta['plot'], meta['rating'], meta['votes'], meta['director'], meta['writer'], meta['guest_stars']))
+                self.dbcur.execute(sql, (meta['tmdb_id'], season, episode, meta['year'], meta['title'], meta['premiered'], meta['poster_path'], meta['plot'], meta['rating'], meta['votes'], meta['director'], meta['writer'], ''.join(meta.get('guest_stars',"")),meta.get("tagline","")))
                 self.db.commit()
             else:
                 VSlog('SQL ERROR INSERT into table episode')
@@ -1122,7 +1119,6 @@ class cTMDb:
 
             meta = self._cache_search(media_type, self._clean_title(name), tmdb_id, year, season, episode)
             if meta:
-                meta = self._format(meta, name)
                 return meta
 
         # recherche online
@@ -1192,27 +1188,9 @@ class cTMDb:
             url += '&%s' % append_to_response
 
         #On utilise requests car urllib n'arrive pas a certain moment a ouvrir le json.    
-        import requests
-        data = requests.get(url).json()
+        oRequestHandler = cRequestHandler(url)
+        data = oRequestHandler.request(jsonDecode=True)
         
-        return data
-
-    def getPostUrl(self, action, post):
-
-        tmdb_session = self.ADDON.getSetting('tmdb_session')
-        if not tmdb_session:
-            return
-
-        sUrl = '%s%s?api_key=%s&session_id=%s' % (self.URL, action, self.api_key, tmdb_session)
-        try:
-            sPost = json.dumps(post).encode('utf-8')
-        except:
-            sPost = json.dumps(post)
-
-        headers = {'Content-Type': 'application/json'}
-        req = urllib2.Request(sUrl, sPost, headers)
-        response = urllib2.urlopen(req)
-        data = json.loads(response.read())
         return data
 
     # retourne la liste des genres en Texte, à partir des IDs
