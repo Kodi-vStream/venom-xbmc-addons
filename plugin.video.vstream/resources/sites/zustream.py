@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'zustream'
 SITE_NAME = 'ZuStream'
 SITE_DESC = 'Retrouvez un énorme répertoire de films, de séries et de mangas en streaming VF et VOSTFR complets'
 
-URL_MAIN = 'https://www.zustream.lol/'
+URL_MAIN = 'https://www.zustream.org/'
 
 MOVIE_MOVIE = (True, 'showMenuFilms')
 MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
@@ -255,7 +255,7 @@ def showMovies(sSearch=''):
                 sDesc = utils.unescape(sDesc).encode('utf-8')    # retire les balises HTML
             except:
                 pass
-                
+
             sDisplayTitle = ('%s (%s) (%s)') % (sTitle, sLang, sYear)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
