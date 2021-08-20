@@ -100,18 +100,6 @@ class cShowBA:
             url = 'https://www.youtube.com/results'
 
             sHtmlContent = requests.get(url, params={'search_query': sTitle}, cookies={'CONSENT': GestionCookie().Readcookie("youtube")}, headers=headers).text
-                
-            if "Proposer des services et s'assurer" in sHtmlContent:
-                data = re.search('<form action=(.+?)Accepter',sHtmlContent).group(1)
-                post_data = re.findall('<input type="hidden" name="(.+?)" value="(.+?)"',data)
-                d = {}
-                for data in post_data:
-                    d.update({data[0]:data[1]})
-                cook = requests.post("https://consent.youtube.com/s", params=d, headers=headers, allow_redirects=False).cookies
-
-                GestionCookie().SaveCookie('youtube', str(dict(cook)["CONSENT"]))
-
-                sHtmlContent = requests.get(url, params={'search_query': sTitle}, cookies={'CONSENT': str(dict(cook)["CONSENT"])}, headers=headers).text
 
             try:
                 result = re.search('"contents":\[{"videoRenderer":{"videoId":"([^"]+)', str(sHtmlContent)).group(1)
