@@ -589,7 +589,7 @@ class cGuiElement:
             if nbSeasons>0:
                 self.addItemProperties('TotalSeasons', nbSeasons)
 
-        if 'credits' in meta:
+        if meta.get('credits') != "":
             strmeta = str(meta['credits'])  
             listCredits = eval(strmeta)
 
