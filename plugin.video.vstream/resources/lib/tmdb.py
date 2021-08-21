@@ -6,7 +6,6 @@
 
 #Todo list :
 # - Corriger le nombre de saison pour les série, ne s'affiche pas.
-
 import re
 import string
 import webbrowser
@@ -766,7 +765,7 @@ class cTMDb:
         elif media_type == 'episode':
             sql_select = 'SELECT *, episode.title, episode.poster_path, episode.premiered, '\
                 'episode.guest_stars, episode.year, episode.plot, '\
-                'episode.director, episode.writer, episode.rating, episode.vote '\
+                'episode.director, episode.writer, episode.rating, episode.votes '\
                 'FROM episode LEFT JOIN tvshow ON episode.tmdb_id = tvshow.tmdb_id'
             if tmdb_id:
                 sql_select += ' WHERE tvshow.tmdb_id = \'%s\'' % tmdb_id
