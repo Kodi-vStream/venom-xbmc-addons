@@ -481,13 +481,13 @@ class cTMDb:
         return meta
 
     # Get the basic movie information for a specific movie id.
-    def search_movie_id(self, movie_id, append_to_response='append_to_response=trailers,credits'):
+    def search_movie_id(self, movie_id, append_to_response='append_to_response=trailers,credits,release_dates'):
         result = self._call('movie/' + str(movie_id), append_to_response)
         result['tmdb_id'] = movie_id
         return result  # obj(**self._call('movie/' + str(movie_id), append_to_response))
 
     # Get the primary information about a TV series by id.
-    def search_tvshow_id(self, show_id, append_to_response='append_to_response=external_ids,videos,credits'):
+    def search_tvshow_id(self, show_id, append_to_response='append_to_response=external_ids,videos,credits,release_dates'):
         result = self._call('tv/' + str(show_id), append_to_response)
         result['tmdb_id'] = show_id
         return result
@@ -565,7 +565,7 @@ class cTMDb:
             'episode' : meta.get('episode_number',0),
             'seasons' :  meta.get('season_number',0) if meta.get('season_number') else meta.get('seasons',[]),
             'nbseasons' : len(meta.get('seasons',[])),
-            'guest_stars' : str(meta.get('guest_stars',[]))
+            'guest_stars' : str(meta.get('guest_stars',[])),
             }
 
         try:
@@ -706,6 +706,20 @@ class cTMDb:
                         if _meta['writer'] != '':
                             _meta['writer'] += ' / '
                         _meta['writer'] += '%s (%s)' % (crew['job'], crew['name'])
+
+        if _meta["mpaa"] == "":
+            try:
+                cert = meta['release_dates']
+                if len(cert['results']) >0:
+                    for data in cert['results']:
+                        if 'fr' in data['iso_3166_1']:
+                            _meta['mpaa'] = data['release_dates'][0]['certification']
+                            break
+                    if not _meta['mpaa']:
+                        _meta['mpaa'] = cert['results'][0]['release_dates'][0]['certification']
+            except:
+                pass
+
         return _meta
 
     def _clean_title(self, title):
@@ -827,7 +841,7 @@ class cTMDb:
             sql = 'INSERT or IGNORE INTO %s (imdb_id, tmdb_id, title, year, credits, writer, director, tagline, rating, vote, runtime, ' \
                   'plot, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path) ' \
                   'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' % media_type
-            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(runtime), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['cover_url'], meta['trailer'], meta['backdrop_url']))
+            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(runtime), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path']))
             self.db.commit()
 #             VSlog('SQL INSERT Successfully')
         except Exception as e:
@@ -837,7 +851,7 @@ class cTMDb:
                 VSlog('Table recreated')
 
                 # Deuxieme tentative
-                self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(runtime), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['cover_url'], meta['trailer'], meta['backdrop_url']))
+                self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(runtime), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path']))
                 self.db.commit()
             else:
                 VSlog('SQL ERROR INSERT into table ' + media_type)
@@ -866,6 +880,7 @@ class cTMDb:
             self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['rating'], meta['votes'], runtime, meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta['nbseasons']))
             self.db.commit()
         except Exception as e:
+            VSlog(str(e))
             if 'no such column' in str(e) or 'no column named' in str(e):
                 self.__createdb('tvshow')
                 VSlog('Table recreated')
