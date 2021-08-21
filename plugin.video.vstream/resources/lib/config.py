@@ -308,12 +308,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
             # self.getControl(49).setVisible(True)
             # self.getControl(2).setImage(meta['cover_url'])
             # self.getControl(3).setLabel(meta['rating'])
-            
-            if 'rating' not in meta or meta['rating'] == 0:
-                meta['rating'] = '-'
-            if 'vote' not in meta or meta['vote'] == '0':
-                meta['vote'] = '-'
- 
+
 
             for prop in meta:
                 #Py3 unicode == str.
