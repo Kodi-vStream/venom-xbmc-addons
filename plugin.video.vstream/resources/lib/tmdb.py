@@ -102,11 +102,14 @@ class cTMDb:
             pass
 
     def __createdb(self, dropTable=''):
-        #Permets de detruire une table pour la recreer de zero.
-        if dropTable != '':
-            self.dbcur.execute("DROP TABLE " + dropTable)
-            self.db.commit()
-
+        try:
+            #Permets de detruire une table pour la recreer de zero.
+            if dropTable != '':
+                self.dbcur.execute("DROP TABLE " + dropTable)
+                self.db.commit()
+        except:
+            pass
+            
         sql_create = "CREATE TABLE IF NOT EXISTS movie ("\
                      "imdb_id TEXT, "\
                      "tmdb_id TEXT, "\
@@ -135,6 +138,36 @@ class cTMDb:
             VSlog('table movie creee')
         except:
             VSlog('Error: Cannot create table movie')
+
+        sql_create = "CREATE TABLE IF NOT EXISTS saga ("\
+                     "imdb_id TEXT, "\
+                     "tmdb_id TEXT, "\
+                     "title TEXT, "\
+                     "year INTEGER,"\
+                     "director TEXT, "\
+                     "writer TEXT, "\
+                     "tagline TEXT, "\
+                     "credits TEXT,"\
+                     "rating FLOAT, "\
+                     "votes TEXT, "\
+                     "duration INTEGER, "\
+                     "plot TEXT,"\
+                     "mpaa TEXT, "\
+                     "premiered TEXT, "\
+                     "genre TEXT, "\
+                     "studio TEXT,"\
+                     "status TEXT,"\
+                     "poster_path TEXT, "\
+                     "trailer TEXT, "\
+                     "backdrop_path TEXT,"\
+                     "UNIQUE(tmdb_id)"\
+                     ");"
+        try:
+            self.dbcur.execute(sql_create)
+            VSlog('table saga creee')
+        except:
+            VSlog('Error: Cannot create table saga')
+
 
         sql_create = "CREATE TABLE IF NOT EXISTS tvshow ("\
                      "imdb_id TEXT, "\
@@ -735,7 +768,7 @@ class cTMDb:
                     sql_select = sql_select + ' AND year = %s' % year
 
         elif media_type == 'collection':
-            sql_select = 'SELECT * FROM movie'
+            sql_select = 'SELECT * FROM saga'
             if tmdb_id:
                 sql_select = sql_select + ' WHERE tmdb_id = \'%s\'' % tmdb_id
             else:
@@ -821,10 +854,9 @@ class cTMDb:
 
         # cache des collections
         elif media_type == 'collection':
-            media_type = 'movie'    # On utilise la même table que pour les films
+            media_type = 'saga'
             if not name.endswith('saga'):
                 name += 'saga'
-                
             
         if not year and 'year' in meta:
             year = meta['year']
@@ -840,7 +872,7 @@ class cTMDb:
 #             VSlog('SQL INSERT Successfully')
         except Exception as e:
             VSlog(str(e))
-            if 'no such column' in str(e) or 'no column named' in str(e):
+            if 'no such column' in str(e) or 'no column named' in str(e) or "no such table" in str(e):
                 self.__createdb(media_type)
                 VSlog('Table recreated')
 
