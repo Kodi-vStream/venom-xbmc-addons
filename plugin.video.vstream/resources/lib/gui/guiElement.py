@@ -595,6 +595,12 @@ class cGuiElement:
         if 'runtime' in meta:
             meta.pop('runtime')
 
+        if 'credits' in meta:
+            strmeta = str(meta['credits'])  
+            listCredits = eval(strmeta)
+
+            casts = listCredits['cast']
+
         for key, value in meta.items():
             self.addItemValues(key, value)
             
