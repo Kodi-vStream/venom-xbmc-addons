@@ -568,13 +568,13 @@ class cTMDb:
             return network
         return {}
 
-    def _format(self, meta, name, media_type):
+    def _format(self, meta, name, media_type=""):
         _meta = {
             'imdb_id': meta.get('imdb_id',""),
-            'tmdb_id': meta['tmdb_id'],
+            'tmdb_id': meta.get('tmdb_id',"") if meta.get('tmdb_id') else meta.get('id'),
             'tvdb_id': "",
-            "title" : name,
-            'media_type': media_type,
+            "title" : meta.get('title') if meta.get('title') else meta.get('name',""),
+            'media_type': meta.get('media_type',"") if media_type == "" else media_type,
             'rating': meta.get('s_vote_average',0.0) if meta.get('s_vote_average') else meta.get('vote_average',0.0),
             'votes': meta.get('s_vote_count',0) if meta.get('s_vote_count') else meta.get('vote_count',0),
             'duration': (int(meta.get('episode_run_time',0)[0]) if meta.get('episode_run_time',0) else meta.get('runtime',0))*60,
@@ -699,7 +699,7 @@ class cTMDb:
         elif 'file_path' in meta: # il s'agit d'un network
             _meta['poster_path'] = self.poster + str(meta['file_path'])
             _meta['backdrop_path'] = self.fanart + str(meta['file_path'])
-        elif 'still_path' in meta: # pour les episodes
+        elif meta['still_path']: # pour les episodes
             _meta['poster_path'] = self.poster + meta['still_path']
             _meta['backdrop_path'] = self.fanart + meta['still_path']
 
