@@ -7,7 +7,7 @@ from resources.lib.gui.contextElement import cContextElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import dialog, addon, VSlog
+from resources.lib.comaddon import dialog, addon, VSlog, xbmc
 
 
 class cHosterGui:
@@ -48,13 +48,18 @@ class cHosterGui:
 
         oGuiElement.setIcon('host.png')
 
+        if xbmc.getInfoLabel('ListItem.tagline'):
+            title = xbmc.getInfoLabel('ListItem.tagline')
+        else:
+            title = oHoster.getDisplayName()
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
         oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
         oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
         oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
         oOutputParameterHandler.addParameter('sTitleWatched', oGuiElement.getTitleWatched())
-        oOutputParameterHandler.addParameter('sTitle', oHoster.getDisplayName())
+        oOutputParameterHandler.addParameter('sTitle', title)
         oOutputParameterHandler.addParameter('sLang', sLang)
         oOutputParameterHandler.addParameter('sRes', sRes)
         oOutputParameterHandler.addParameter('sId', 'cHosterGui')
@@ -131,7 +136,7 @@ class cHosterGui:
         # context Library menu
         oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cLibrary', 'cLibrary', 'setLibrary', self.ADDON.VSlang(30324))
 
-        oGui.addHost(oGuiElement, oOutputParameterHandler)
+        oGui.addFolder(oGuiElement, oOutputParameterHandler, False)
 
     def checkHoster(self, sHosterUrl, debrid = True):
         # securite

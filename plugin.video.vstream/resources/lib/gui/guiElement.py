@@ -515,28 +515,33 @@ class cGuiElement:
         sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'collection').replace('4', 'anime').replace('5', 'season').replace('6', 'episode').replace('7', 'person').replace('8', 'network')
 
         meta = {}
-        if sType:
-            args = (sType, sTitle)
-            kwargs = {}
-            if (self.__ImdbId):
-                kwargs['imdb_id'] = self.__ImdbId
-            if (self.__TmdbId):
-                kwargs['tmdb_id'] = self.__TmdbId
-            if (self.__Year):
-                kwargs['year'] = self.__Year
-            if (self.__Season):
-                kwargs['season'] = self.__Season
-            if (self.__Episode):
-                kwargs['episode'] = self.__Episode
-            try:
-                meta = TMDb.get_meta(*args, **kwargs)
-            except:
-                pass
+        try:
+            if sType:
+                args = (sType, sTitle)
+                kwargs = {}
+                if (self.__ImdbId):
+                    kwargs['imdb_id'] = self.__ImdbId
+                if (self.__TmdbId):
+                    kwargs['tmdb_id'] = self.__TmdbId
+                if (self.__Year):
+                    kwargs['year'] = self.__Year
+                if (self.__Season):
+                    kwargs['season'] = self.__Season
+                if (self.__Episode):
+                    kwargs['episode'] = self.__Episode
 
-        else:
+                meta = TMDb.get_meta(*args, **kwargs)
+                if not meta:
+                    return
+            else:
+                return
+        except:
             return
-            
-        meta['title'] = self.getTitle()
+
+        if str(metaType) != "6":
+            meta['title'] = self.getTitle()
+        else:
+            meta['title'] = meta['tagline']
 
         if 'media_type' in meta:
             meta.pop('media_type')
@@ -556,35 +561,23 @@ class cGuiElement:
 #             self.__TvdbId = meta['tvdb_id']
             meta.pop('tvdb_id')
 
-        # Si fanart trouvé dans les meta alors on l'utilise, sinon on n'en met pas
-        if 'backdrop_url' in meta:
-            url = meta.pop('backdrop_url')
+        if 'backdrop_path' in meta:
+            url = meta.pop('backdrop_path')
             if url:
                 self.addItemProperties('fanart_image', url)
                 self.__sFanart = url
             else:
                 self.addItemProperties('fanart_image', '')
 
-        if 'backdrop_path' in meta:
-            meta.pop('backdrop_path')
-
-        if 'poster_path' in meta and meta['poster_path'] != "":
-            if not meta['poster_path'].startswith('http'):
-                meta['cover_url'] = self.poster + meta['poster_path']
-            meta.pop('poster_path')
-
-        if 'cover_url' in meta:
-            cover = meta.pop('cover_url')
-            if cover:
-                self.__sThumbnail = cover
-                self.__sPoster = cover
+        if 'poster_path' in meta:
+            url = meta.pop('poster_path')
+            if url:
+                self.__sThumbnail = url
+                self.__sPoster = url
 
         if 'trailer' in meta and meta['trailer']:
             self.__sTrailer = meta['trailer']
             
-        if 'still_path' in meta:
-            meta.pop('still_path')
-
         if 'seasons' in meta:
             meta.pop('seasons')
         
@@ -596,11 +589,11 @@ class cGuiElement:
             if nbSeasons>0:
                 self.addItemProperties('TotalSeasons', nbSeasons)
 
-        if 'vote' in meta:
-            meta.pop('vote')
+        if meta.get('credits') != "":
+            strmeta = str(meta['credits'])  
+            listCredits = eval(strmeta)
 
-        if 'runtime' in meta:
-            meta.pop('runtime')
+            casts = listCredits['cast']
 
         for key, value in meta.items():
             self.addItemValues(key, value)

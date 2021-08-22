@@ -240,6 +240,8 @@ class cGui:
 
     # afficher les liens non playable
     def addFolder(self, oGuiElement, oOutputParameterHandler='', _isFolder=True):
+        if _isFolder == False:
+            cGui.CONTENT = 'files'
 
         # recherche append les reponses
         if window(10101).getProperty('search') == 'true':
@@ -257,7 +259,7 @@ class cGui:
                 value = oOutputParameterHandler.getValue(sParam)
                 if value:
                     callback(value)
- 
+
         except AttributeError:
             for sParam, callback in params.items():
                 value = oOutputParameterHandler.getValue(sParam)
@@ -265,7 +267,11 @@ class cGui:
                     callback(value)
 
         oListItem = self.createListItem(oGuiElement)
-        oListItem.setProperty('IsPlayable', 'false')
+
+        if _isFolder == False:
+            oListItem.setProperty('IsPlayable', 'true')
+        else:
+            oListItem.setProperty('IsPlayable', 'false')            
 
         sCat = oGuiElement.getCat()
         if sCat:
@@ -297,54 +303,18 @@ class cGui:
         self.listing.append((sItemUrl, oListItem, _isFolder))
         
         # Vider les paramètres pour être recyclé
-        oOutputParameterHandler.clearParameter()
-        
+        oOutputParameterHandler.clearParameter()        
         return oListItem
-
-    # affiche les liens playable
-    def addHost(self, oGuiElement, oOutputParameterHandler=''):
-        oInputParameterHandler = cInputParameterHandler()
-
-        # # Affichage du pourcentage de lecture en cours, non utilisé car pas très eronomique au niveau des liens lorsqu'il y a beaucoup de liens
-        # resumeTime = oInputParameterHandler.getValue('ResumeTime')
-        # if resumeTime:
-            # oGuiElement.setResumeTime(resumeTime)
-            # oGuiElement.setTotalTime(oInputParameterHandler.getValue('TotalTime'))
-        
-        cGui.CONTENT = 'files'
-
-        if oOutputParameterHandler.getValue('siteUrl'):
-            sSiteUrl = oOutputParameterHandler.getValue('siteUrl')
-            oGuiElement.setSiteUrl(sSiteUrl)
-
-        sCat = oOutputParameterHandler.getValue('sCat')
-        if not sCat:
-            # On récupere le sCat du niveau précédent
-            sCat = oInputParameterHandler.getValue('sCat')
-        if sCat:
-            oGuiElement.setCat(sCat)
-
-        oListItem = self.createListItem(oGuiElement)
-        oListItem.setProperty('IsPlayable', 'true')
-        # oListItem.setProperty('Video', 'true')
-
-        sItemUrl = self.__createItemUrl(oGuiElement, oOutputParameterHandler)
-
-        oOutputParameterHandler.addParameter('sTitleWatched', oGuiElement.getTitleWatched())
-        self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-
-        oListItem = self.__createContextMenu(oGuiElement, oListItem)
-
-        self.listing.append((sItemUrl, oListItem, False))
 
     def createListItem(self, oGuiElement):
         # Enleve les elements vides
         data = {key:val for key, val in oGuiElement.getItemValues().items() if val != ""}
 
         itemTitle = oGuiElement.getTitle()
-        if oGuiElement.getMeta() == 6 and data.get('tagline'): # Nom de l'épisode
-            itemTitle += ' - ' + str(data.get('tagline'))
-            data['title'] = itemTitle   # kodi 19
+
+        if int(oGuiElement.getMeta()) == 6: # Nom de l'épisode
+            if cGui.CONTENT != "episodes":
+                data['title'] = data['title'] + " " + itemTitle.split(data['tvshowtitle'])[1]
 
         oListItem = listitem(itemTitle)
 

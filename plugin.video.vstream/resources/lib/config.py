@@ -227,7 +227,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
             self.setFocusId(9000)
 
 #            self.getControl(50).reset()
-            
+
             if 'credits' in meta and meta['credits']:
 
                 #Decodage python 3
@@ -308,12 +308,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
             # self.getControl(49).setVisible(True)
             # self.getControl(2).setImage(meta['cover_url'])
             # self.getControl(3).setLabel(meta['rating'])
-            
-            if 'rating' not in meta or meta['rating'] == 0:
-                meta['rating'] = '-'
-            if 'votes' not in meta or meta['votes'] == '0':
-                meta['votes'] = '-'
- 
+
 
             for prop in meta:
                 #Py3 unicode == str.
