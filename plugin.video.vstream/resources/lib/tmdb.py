@@ -586,11 +586,11 @@ class cTMDb:
             'credits' : '',
             'director' : meta.get('s_director',"") if meta.get('s_director') else meta.get('director',""),
             'writer' : meta.get('s_writer',"") if meta.get('s_writer') else meta.get('writer',""),
-            'poster_path' : self.poster + ''.join([meta.get(key,"") for key in ['poster_path', 'still_path', 'file_path','profile_path']]),
-            'backdrop_path' : self.fanart + ''.join([meta.get(key,"") for key in ['backdrop_path', 'still_path', 'file_path','profile_path']]),
+            'poster_path' : ''.join([meta.get(key,"") for key in ['poster_path', 'still_path', 'file_path','profile_path']]),
+            'backdrop_path' : ''.join([meta.get(key,"") for key in ['backdrop_path', 'still_path', 'file_path','profile_path']]),
             'episode' : meta.get('episode_number',0),
             'seasons' :  meta.get('season_number',0) if meta.get('season_number') else meta.get('seasons',[]),
-            'nbseasons' : len(meta.get('seasons',[])),
+            'nbseasons' : meta.get('number_of_seasons',""),
             'guest_stars' : str(meta.get('guest_stars',[])),
             }
 
@@ -726,6 +726,12 @@ class cTMDb:
                         _meta['mpaa'] = cert['results'][0]['release_dates'][0]['certification']
             except:
                 pass
+
+        if _meta['poster_path']:
+            _meta['poster_path'] = self.poster + _meta['poster_path']
+
+        if _meta['backdrop_path']:
+            _meta['backdrop_path'] = self.fanart + _meta['backdrop_path']
 
         return _meta
 
