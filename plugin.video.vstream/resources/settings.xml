@@ -38,8 +38,10 @@
         <setting id="active-view" type="bool" label="30408" default="false"/>
         <setting id="default-view" type="number" label="30406" default="50" enable="eq(-1,true)"/>
         <setting id="accueil-view" type="number" label="30407" default="500" enable="eq(-2,true)"/>
-        <setting id="movie-view" type="number" label="30404" default="500" enable="eq(-3,true)"/>
-        <setting id="serie-view" type="number" label="30405" default="500" enable="eq(-4,true)"/>
+        <setting id="movies-view" type="number" label="30404" default="500" enable="eq(-3,true)"/>
+        <setting id="tvshows-view" type="number" label="30405" default="500" enable="eq(-4,true)"/>
+        <setting id="seasons-view" type="number" label="31201" default="500" enable="eq(-5,true)"/>
+        <setting id="episodes-view" type="number" label="31202" default="500" enable="eq(-6,true)"/>
     </category>
 
     <!-- A propos/sources -->
