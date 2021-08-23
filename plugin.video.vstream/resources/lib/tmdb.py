@@ -574,7 +574,7 @@ class cTMDb:
             'rating': meta.get('s_vote_average',0.0) if meta.get('s_vote_average') else meta.get('vote_average',0.0),
             'votes': meta.get('s_vote_count',0) if meta.get('s_vote_count') else meta.get('vote_count',0),
             'duration': (int(meta.get('episode_run_time',0)[0]) if meta.get('episode_run_time',0) else meta.get('runtime',0))*60,
-            'plot': meta['s_overview'] if meta.get('s_overview')  else meta.get('overview',""),
+            'plot':  meta.get['s_overview',""] if meta.get('s_overview')  else meta.get('overview',""),
             'mpaa': meta.get('mpaa',""),
             'premiered': meta.get('s_premiered',"") if meta.get('s_premiered') else meta.get('first_air_date',""),
             'year': meta.get('s_year',0) if meta.get('s_year') else meta.get('year',0),
@@ -586,8 +586,8 @@ class cTMDb:
             'credits' : '',
             'director' : meta.get('s_director',"") if meta.get('s_director') else meta.get('director',""),
             'writer' : meta.get('s_writer',"") if meta.get('s_writer') else meta.get('writer',""),
-            'poster_path' : ''.join([meta.get(key,"") for key in ['poster_path', 'still_path', 'file_path','profile_path']]),
-            'backdrop_path' : ''.join([meta.get(key,"") for key in ['backdrop_path', 'still_path', 'file_path','profile_path']]),
+            'poster_path' : ''.join([meta.get(key,"") for key in ['poster_path', 'still_path', 'file_path','profile_path'] if meta.get(key) != None]),
+            'backdrop_path' : ''.join([meta.get(key,"") for key in ['backdrop_path', 'still_path', 'file_path','profile_path'] if meta.get(key) != None]),
             'episode' : meta.get('episode_number',0),
             'seasons' :  meta.get('season_number',0) if meta.get('season_number') else meta.get('seasons',[]),
             'nbseasons' : meta.get('number_of_seasons',""),
@@ -732,7 +732,7 @@ class cTMDb:
 
         if _meta['backdrop_path']:
             _meta['backdrop_path'] = self.fanart + _meta['backdrop_path']
-
+            
         return _meta
 
     def _clean_title(self, title):
