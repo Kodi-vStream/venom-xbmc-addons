@@ -282,22 +282,27 @@ class cGui:
 
         oOutputParameterHandler.addParameter('sTitleWatched', oGuiElement.getTitleWatched())
 
-        if sCat:    # 1 = movies, moviePack; 2 = series, animes, episodes; 5 = MISC
-            if oGuiElement.getMeta():
-                self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuba(oGuiElement, oOutputParameterHandler)
-            if not oListItem.getProperty('isBookmark'):
-                self.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
+        oListItem = self.__createContextMenu(oGuiElement, oListItem)
 
-            if sCat in (1, 2, 3, 4, 8):
-                if self.ADDON.getSetting('bstoken') != '':
-                    self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
-                if self.ADDON.getSetting('tmdb_account') != '':
-                    self.createContexMenuTMDB(oGuiElement, oOutputParameterHandler)
-            if sCat in (1, 2, 3):
-                self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
-            if sCat != 6:
-                self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
+        if _isFolder == True:
+            if sCat:    # 1 = movies, moviePack; 2 = series, animes, episodes; 5 = MISC
+                if oGuiElement.getMeta():
+                    self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
+                    self.createContexMenuba(oGuiElement, oOutputParameterHandler)
+                if not oListItem.getProperty('isBookmark'):
+                    self.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
+
+                if sCat in (1, 2, 3, 4, 8):
+                    if self.ADDON.getSetting('bstoken') != '':
+                        self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
+                    if self.ADDON.getSetting('tmdb_account') != '':
+                        self.createContexMenuTMDB(oGuiElement, oOutputParameterHandler)
+                if sCat in (1, 2, 3):
+                    self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
+                if sCat != 6:
+                    self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
+        else:
+            self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
         self.listing.append((sItemUrl, oListItem, _isFolder))
@@ -507,36 +512,6 @@ class cGui:
         oListItem.setProperty('nbcontextmenu', str(nbContextMenu))
         return oListItem
 
-    # def __ContextMenu(self, oGuiElement, oListItem):
-        # sPluginPath = cPluginHandler().getPluginPath()
-        # aContextMenus = []
-        #
-        # if len(oGuiElement.getContextItems()) > 0:
-            # for oContextItem in oGuiElement.getContextItems():
-                # oOutputParameterHandler = oContextItem.getOutputParameterHandler()
-                # sParams = oOutputParameterHandler.getParameterAsUri()
-                # sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-                # aContextMenus += [(oContextItem.getTitle(), 'RunPlugin(%s)' % sTest)]
-                #
-            # oListItem.addContextMenuItems(aContextMenus)
-            #
-        # return oListItem
-        #
-    # def __ContextMenuPlay(self, oGuiElement, oListItem):
-        # sPluginPath = cPluginHandler().getPluginPath()
-        # aContextMenus = []
-        #
-        # if len(oGuiElement.getContextItems()) > 0:
-            # for oContextItem in oGuiElement.getContextItems():
-                # oOutputParameterHandler = oContextItem.getOutputParameterHandler()
-                # sParams = oOutputParameterHandler.getParameterAsUri()
-                # sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-                # aContextMenus += [(oContextItem.getTitle(), 'RunPlugin(%s)' % sTest)]
-                #
-            # oListItem.addContextMenuItems(aContextMenus)
-            #
-        # return oListItem
-
     def __createItemUrl(self, oGuiElement, oOutputParameterHandler=''):
         if (oOutputParameterHandler == ''):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -578,10 +553,10 @@ class cGui:
             if self.ADDON.getSetting('active-view') == 'true':
                 if cGui.CONTENT == 'movies' or  cGui.CONTENT == 'artists':
                     # xbmc.executebuiltin('Container.SetViewMode(507)')
-                    xbmc.executebuiltin('Container.SetViewMode(%s)' % self.ADDON.getSetting('movie-view'))
-                elif cGui.CONTENT == 'tvshows':
-                    xbmc.executebuiltin('Container.SetViewMode(%s)' % self.ADDON.getSetting('serie-view'))
-                elif cGui.CONTENT == 'files' or cGui.CONTENT == 'episodes':
+                    xbmc.executebuiltin('Container.SetViewMode(%s)' % self.ADDON.getSetting('movies-view'))
+                elif cGui.CONTENT in ['tvshows','seasons','episodes']:
+                    xbmc.executebuiltin('Container.SetViewMode(%s)' % self.ADDON.getSetting(cGui.CONTENT + '-view'))               
+                elif cGui.CONTENT == 'files':
                     xbmc.executebuiltin('Container.SetViewMode(%s)' % self.ADDON.getSetting('default-view'))
 
         del self.episodeListing[:] # Pour l'enchainement des episodes
