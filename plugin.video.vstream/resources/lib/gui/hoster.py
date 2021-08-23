@@ -9,6 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.comaddon import dialog, addon, VSlog, xbmc
 
+import re
 
 class cHosterGui:
 
@@ -17,7 +18,7 @@ class cHosterGui:
 
     # step 1 - bGetRedirectUrl in ein extra optionsObject verpacken
     def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail, bGetRedirectUrl=False):
-
+        oOutputParameterHandler = cOutputParameterHandler()
         oInputParameterHandler = cInputParameterHandler()
 
         # Gestion NextUp
@@ -36,10 +37,20 @@ class cHosterGui:
         oGuiElement.setSiteName(self.SITE_NAME)
         oGuiElement.setFunction('play')
         oGuiElement.setTitle(oHoster.getDisplayName())
-        # oGuiElement.setThumbnail(sThumbnail)
-        # if (oInputParameterHandler.exist('sMeta')):
-            # sMeta = oInputParameterHandler.getValue('sMeta')
-            # oGuiElement.setMeta(int(sMeta))
+
+        # Catégorie de lecture
+        if oInputParameterHandler.exist('sCat'):
+            sCat = oInputParameterHandler.getValue('sCat')
+            if sCat == '4': # Si on vient de passer par un menu "Saison" ...
+               sCat = '8'   #     ...  On est maintenant au niveau "Episode"
+        else:
+            sCat = '5'     # Divers
+        oGuiElement.setCat(sCat)
+        oOutputParameterHandler.addParameter('sCat', sCat)
+
+        if (oInputParameterHandler.exist('sMeta')):
+            sMeta = oInputParameterHandler.getValue('sMeta')
+            oGuiElement.setMeta(int(sMeta))
 
         oGuiElement.setFileName(oHoster.getFileName())
         oGuiElement.getInfoLabel()
@@ -50,10 +61,11 @@ class cHosterGui:
 
         if xbmc.getInfoLabel('ListItem.tagline'):
             title = xbmc.getInfoLabel('ListItem.tagline')
+        elif sCat == "1":
+            title = re.sub('\[.*\]|\(.*\)','', oHoster.getDisplayName())
         else:
             title = oHoster.getDisplayName()
 
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
         oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
         oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
@@ -75,16 +87,6 @@ class cHosterGui:
         # gestion Lecture en cours
         oOutputParameterHandler.addParameter('movieUrl', movieUrl)
         oOutputParameterHandler.addParameter('movieFunc', movieFunc)
-
-        # Catégorie de lecture
-        if oInputParameterHandler.exist('sCat'):
-            sCat = oInputParameterHandler.getValue('sCat')
-            if sCat == '4': # Si on vient de passer par un menu "Saison" ...
-               sCat = '8'   #     ...  On est maintenant au niveau "Episode"
-        else:
-            sCat = '5'     # Divers
-        oGuiElement.setCat(sCat)
-        oOutputParameterHandler.addParameter('sCat', sCat)
 
         # context playlist menu
         oContext = cContextElement()
