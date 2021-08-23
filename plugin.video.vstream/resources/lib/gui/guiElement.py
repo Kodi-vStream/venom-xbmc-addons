@@ -585,7 +585,7 @@ class cGuiElement:
             meta.pop('guest_stars')
         
         if 'nbseasons' in meta:
-            self.__Season = meta.pop('nbseasons')r
+            self.__Season = meta.pop('nbseasons')
 
         for key, value in meta.items():
             self.addItemValues(key, value)
