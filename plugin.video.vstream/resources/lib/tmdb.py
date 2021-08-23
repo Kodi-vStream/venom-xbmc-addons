@@ -2,10 +2,6 @@
 # Code de depart par AnthonyBloomer
 # Modif pour vStream
 # https://github.com/Kodi-vStream/venom-xbmc-addons/
-
-
-#Todo list :
-# - Corriger le nombre de saison pour les série, ne s'affiche pas.
 import re
 import string
 import webbrowser
@@ -590,9 +586,8 @@ class cTMDb:
             'credits' : '',
             'director' : meta.get('s_director',"") if meta.get('s_director') else meta.get('director',""),
             'writer' : meta.get('s_writer',"") if meta.get('s_writer') else meta.get('writer',""),
-            'poster_path' : '',
-            'backdrop_path' : '',
-            'still_path' : '',
+            'poster_path' : self.poster + ''.join([meta.get(key,"") for key in ['poster_path', 'still_path', 'file_path','profile_path']]),
+            'backdrop_path' : self.fanart + ''.join([meta.get(key,"") for key in ['backdrop_path', 'still_path', 'file_path','profile_path']]),
             'episode' : meta.get('episode_number',0),
             'seasons' :  meta.get('season_number',0) if meta.get('season_number') else meta.get('seasons',[]),
             'nbseasons' : len(meta.get('seasons',[])),
@@ -683,26 +678,6 @@ class cTMDb:
             except:
                 pass
 
-        if 'backdrop_path' in meta and meta['backdrop_path']:
-            _meta['backdrop_path'] = self.fanart + str(meta['backdrop_path'])
-        elif 'parts' in meta:   # Il s'agit d'une collection, on récupere le backdrop du dernier film 
-            _meta['backdrop_path'] = self.fanart + meta['parts'][len(meta['parts'])-1]['backdrop_path']
-
-        if 's_poster_path' in meta and meta['s_poster_path']:   # saisons
-            _meta['poster_path'] = self.poster + str(meta['s_poster_path'])
-        elif 'poster_path' in meta and meta['poster_path']:
-            _meta['poster_path'] = self.poster + str(meta['poster_path'])
-        elif 'parts' in meta:   # Il s'agit d'une collection, on récupere le poster du dernier film
-            _meta['poster_path'] = self.fanart + meta['parts'][len(meta['parts'])-1]['poster_path']
-        elif 'profile_path' in meta: # il s'agit d'une personne
-            _meta['profile_path'] = self.poster + str(meta['profile_path'])
-        elif 'file_path' in meta: # il s'agit d'un network
-            _meta['poster_path'] = self.poster + str(meta['file_path'])
-            _meta['backdrop_path'] = self.fanart + str(meta['file_path'])
-        elif meta['still_path']: # pour les episodes
-            _meta['poster_path'] = self.poster + meta['still_path']
-            _meta['backdrop_path'] = self.fanart + meta['still_path']
-
         crews = []
         if 'credits' in meta and meta['credits']:
             
@@ -715,10 +690,11 @@ class cTMDb:
             if len(casts) > 0:
                 if 'crew' in listCredits:
                     crews = listCredits['crew']
+
                 if len(crews)>0:
-                    _meta['credits'] = "{u'cast': " + str(casts) + ", u'crew': "+str(crews) + "}"
+                    _meta['credits'] = "{'cast': " + str(casts) + ", 'crew': "+str(crews) + "}"
                 else:
-                    _meta['credits'] = "{u'cast': " + str(casts) + '}'
+                    _meta['credits'] = "{'cast': " + str(casts) + '}'
 
         # Pas dans le cache, à récupérer depuis TMDB 
         if not _meta['director'] and not _meta['writer']:
