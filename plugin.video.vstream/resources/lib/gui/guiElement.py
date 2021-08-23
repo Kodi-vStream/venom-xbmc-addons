@@ -585,15 +585,7 @@ class cGuiElement:
             meta.pop('guest_stars')
         
         if 'nbseasons' in meta:
-            nbSeasons = meta.pop('nbseasons')
-            if nbSeasons>0:
-                self.addItemProperties('TotalSeasons', nbSeasons)
-
-        if meta.get('credits') != "":
-            strmeta = str(meta['credits'])  
-            listCredits = eval(strmeta)
-
-            casts = listCredits['cast']
+            self.__Season = meta.pop('nbseasons')r
 
         for key, value in meta.items():
             self.addItemValues(key, value)
@@ -714,17 +706,3 @@ class cGuiElement:
 
     def getContextItems(self):
         return self.__aContextElements
-    
-    # Des vidéos pour remplacer des bandes annnonces manquantes
-    def getDefaultTrailer(self):
-        import random
-        from resources.lib.tmdb import cTMDb
-        trailers = ['WWkYjM3ZXxU',
-                    'LpvKI7I5rF4',
-                    'svTVRDgI08Y',
-                    'DUpVqwceQaA',
-                    'mnsMnskJ3cQ',
-                    'M0_vxs6FPbQ']
-
-        trailer_id = random.choice(trailers)
-        return cTMDb.URL_TRAILER % trailer_id
