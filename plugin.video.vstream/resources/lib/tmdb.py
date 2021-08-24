@@ -202,6 +202,7 @@ class cTMDb:
                      "premiered TEXT, "\
                      "poster_path TEXT,"\
                      "plot TEXT,"\
+                     "episode INTEGER,"\
                      "UNIQUE(tmdb_id, season)"\
                      ");"
         try:
@@ -930,9 +931,9 @@ class cTMDb:
             fanart = ""
 
         try:
-            sql = 'INSERT or IGNORE INTO season (tmdb_id, season, year, premiered, poster_path, plot) VALUES ' \
-                  '(?, ?, ?, ?, ?, ?)'
-            self.dbcur.execute(sql, (meta['tmdb_id'], season, s_year, premiered, fanart, plot))
+            sql = 'INSERT or IGNORE INTO season (tmdb_id, season, year, premiered, poster_path, plot, episode) VALUES ' \
+                  '(?, ?, ?, ?, ?, ?, ?)'
+            self.dbcur.execute(sql, (meta['tmdb_id'], season, s_year, premiered, fanart, plot, meta.get('episode_count',0)))
             self.db.commit()
         except Exception as e:
             VSlog(str(e))
@@ -941,7 +942,7 @@ class cTMDb:
                 VSlog('Table recreated')
 
                 # Deuxieme tentative
-                self.dbcur.execute(sql, (meta['tmdb_id'], season, s_year, premiered, self.poster + meta['poster_path'], plot))
+                self.dbcur.execute(sql, (meta['tmdb_id'], season, s_year, premiered, fanart, plot, meta.get('episode_count',0)))
                 self.db.commit()
             else:
                 VSlog('SQL ERROR INSERT into table season')
