@@ -4,7 +4,7 @@
 import re
 import unicodedata
 
-from resources.lib.comaddon import addon, xbmc, isMatrix, VSlog
+from resources.lib.comaddon import addon, xbmc, isMatrix, VSlog, isNexus
 from resources.lib.db import cDb
 from resources.lib.util import cUtil, QuoteSafe
 
@@ -677,9 +677,13 @@ class cGuiElement:
         self.addItemProperties('sId', self.getSiteName())
         self.addItemProperties('sFav', self.getFunction())
         self.addItemProperties('sMeta', str(self.getMeta()))
-        self.addItemProperties('resumetime', self.getResumeTime())
-        self.addItemProperties('totaltime', self.getTotalTime())
-
+        if isNexus():
+            self.addItemValues('resumetime', self.getResumeTime())
+            self.addItemValues('totaltime', self.getTotalTime())
+        else:
+            self.addItemProperties('resumetime', self.getResumeTime())
+            self.addItemProperties('totaltime', self.getTotalTime())
+            
         if sCat:
             self.addItemProperties('sCat', sCat)
             mediatypes = {'1': 'movie', '2': 'tvshow', '3': 'tvshow', '4': 'season', '5': 'video', '6': 'video', '7': 'season', '8': 'episode'}
