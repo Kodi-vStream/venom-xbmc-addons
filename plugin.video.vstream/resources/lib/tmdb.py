@@ -580,7 +580,7 @@ class cTMDb:
             'premiered': meta.get('s_premiered',"") if meta.get('s_premiered') else meta.get('first_air_date',""),
             'year': meta.get('s_year',0) if meta.get('s_year') else meta.get('year',0),
             'trailer': '',
-            'tagline': meta.get('name') if media_type == "episode" else "",
+            'tagline': meta.get('name') if media_type == "episode" else meta.get('tagline'),
             'genre': '',
             'studio': "",
             'status': meta.get('status',""),
@@ -590,7 +590,7 @@ class cTMDb:
             'poster_path' : ''.join([meta.get(key,"") for key in ['poster_path', 'still_path', 'file_path','profile_path'] if meta.get(key) != None]),
             'backdrop_path' : ''.join([meta.get(key,"") for key in ['backdrop_path', 'still_path', 'file_path','profile_path'] if meta.get(key) != None]),
             'episode' : meta.get('episode_number',0),
-            'seasons' :  meta.get('season_number',0) if meta.get('season_number') else meta.get('seasons',[]),
+            'season' :  meta.get('season_number',0) if meta.get('season_number') else meta.get('seasons',[]),
             'nbseasons' : meta.get('number_of_seasons',""),
             'guest_stars' : str(meta.get('guest_stars',[])),
             }
@@ -869,7 +869,7 @@ class cTMDb:
     # Cache pour les séries (et animes)
     def _cache_save_tvshow(self, meta, name, season, year):
         # Ecrit les saisons dans le cache
-        for s_meta in meta['seasons']:
+        for s_meta in meta['season']:
             s_meta['tmdb_id'] = meta['tmdb_id']
             self._cache_save_season(s_meta, season)
 
