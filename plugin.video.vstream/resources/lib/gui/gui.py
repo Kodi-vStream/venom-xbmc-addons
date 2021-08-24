@@ -332,10 +332,11 @@ class cGui:
 
             # gestion des valeurs par defaut si non renseignées
             videoInfoTag.setMediaType(data.get('mediatype'))
-            videoInfoTag.setTitle(itemTitle)
+            videoInfoTag.setTitle(data.get('title',""))
+            videoInfoTag.setTvShowTitle(data.get('tvshowtitle',''))
             videoInfoTag.setOriginalTitle(data.get('originaltitle'))
             videoInfoTag.setPlot(data.get('plot'))
-            videoInfoTag.setPlotOutline(data.get('plotoutline'))
+            videoInfoTag.setPlotOutline(data.get('tagline'))
             videoInfoTag.setYear(int(data.get('year',0)))       
             videoInfoTag.setRating(float(data.get('rating',0.0)))
             videoInfoTag.setMpaa(data.get('mpaa'))
@@ -343,7 +344,7 @@ class cGui:
                 videoInfoTag.setDuration(int(data.get('duration',0)))     
             except:
                 #Pour convertir le temps en seconde.
-                videoInfoTag.setDuration(sum(x * int(t) for x, t in zip([3600, 60, 1], data.get('duration').split(":"))))
+                videoInfoTag.setDuration(sum(x * int(t) for x, t in zip([1, 60, 3600], reversed(data.get('duration','').split(":")))))
             videoInfoTag.setPlaycount(int(data.get('playcount',0)))
             videoInfoTag.setCountries(data.get('country',[""]))
             videoInfoTag.setTrailer(data.get('trailer'))
@@ -355,8 +356,8 @@ class cGui:
             videoInfoTag.setSeason(int(data.get('season',0)))
             videoInfoTag.setEpisode(int(data.get('episode',0)))
             videoInfoTag.setResumePoint(data.get("resumetime",0))
-
-
+            videoInfoTag.getResumeTimeTotal(data.get('totaltime',0))
+        
             try:
                 credits = eval(data.get('credits'))['cast']
             except:
