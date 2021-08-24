@@ -577,15 +577,12 @@ class cGuiElement:
 
         if 'trailer' in meta and meta['trailer']:
             self.__sTrailer = meta['trailer']
-            
-        if 'seasons' in meta:
-            meta.pop('seasons')
         
         if 'guest_stars' in meta:
             meta.pop('guest_stars')
         
         if 'nbseasons' in meta:
-            self.__Season = meta.pop('nbseasons')
+            meta['season'] = meta.pop('nbseasons')
 
         for key, value in meta.items():
             self.addItemValues(key, value)
