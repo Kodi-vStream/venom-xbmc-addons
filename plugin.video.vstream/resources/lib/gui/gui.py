@@ -354,10 +354,7 @@ class cGui:
             videoInfoTag.setGenres(''.join(data.get('genre',[""])).split('/'))
             videoInfoTag.setSeason(int(data.get('season',0)))
             videoInfoTag.setEpisode(int(data.get('episode',0)))
-
-            # TODO Gestion du pourcentage de lecture
-            # v20 Python API changes:
-            # ResumeTime and TotalTime deprecated. Use InfoTagVideo.setResumePoint() instead.
+            videoInfoTag.setResumePoint(data.get("resumetime",0))
 
 
             try:
