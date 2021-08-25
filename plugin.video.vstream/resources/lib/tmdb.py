@@ -706,7 +706,7 @@ class cTMDb:
         # Pas dans le cache, à récupérer depuis TMDB 
         if not _meta['director'] and not _meta['writer']:
             crews = []
-            if meta['credits']['crew']: # cas des épisodes
+            if "credits" in meta: # cas des épisodes
                 crews = eval(str(meta['credits']['crew']))
 
             if len(crews) > 0:
