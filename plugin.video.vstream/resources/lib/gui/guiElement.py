@@ -584,6 +584,20 @@ class cGuiElement:
         if 'nbseasons' in meta:
             meta['season'] = meta.pop('nbseasons')
 
+        # Retrait des tags intermédiaires
+        if 'vote' in meta:
+            meta.pop('vote')
+        if 'runtime' in meta:
+            meta.pop('runtime')
+        if 'crew' in meta:
+            meta.pop('crew')
+        if 'overview' in meta:
+            meta.pop('overview')
+        if 'vote_average' in meta:
+            meta.pop('vote_average')
+        if 'vote_count' in meta:
+            meta.pop('vote_count')
+
         for key, value in meta.items():
             self.addItemValues(key, value)
             
