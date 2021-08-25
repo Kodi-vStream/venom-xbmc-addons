@@ -114,6 +114,7 @@ class cTMDb:
                      "writer TEXT, "\
                      "tagline TEXT, "\
                      "cast TEXT,"\
+                     "crew TEXT,"\
                      "rating FLOAT, "\
                      "votes TEXT, "\
                      "duration INTEGER, "\
@@ -143,6 +144,7 @@ class cTMDb:
                      "writer TEXT, "\
                      "tagline TEXT, "\
                      "cast TEXT,"\
+                     "crew TEXT,"\
                      "rating FLOAT, "\
                      "votes TEXT, "\
                      "duration INTEGER, "\
@@ -172,6 +174,7 @@ class cTMDb:
                      "director TEXT, "\
                      "writer TEXT, "\
                      "cast TEXT,"\
+                     "crew TEXT,"\
                      "rating FLOAT, "\
                      "votes TEXT, "\
                      "duration INTEGER, "\
@@ -584,6 +587,7 @@ class cTMDb:
             'studio': "",
             'status': meta.get('status',""),
             'cast' : '',
+            'crew' : '',
             'director' : meta.get('s_director',"") if meta.get('s_director') else meta.get('director',""),
             'writer' : meta.get('s_writer',"") if meta.get('s_writer') else meta.get('writer',""),
             'poster_path' : ''.join([meta.get(key,"") for key in ['poster_path', 'still_path', 'file_path','profile_path'] if meta.get(key) != None]),
@@ -694,6 +698,7 @@ class cTMDb:
                         cast_item['role'] = u'{} / {}'.format(cast_item['role'], i['character'])
                 if not cast_item:
                     cast_item = {
+                        'id' : i.get('id'),
                         'name': i.get('name'),
                         'character': i.get('character'),
                         'order': i.get('order')}
@@ -708,6 +713,7 @@ class cTMDb:
             crews = []
             if "credits" in meta: # cas des épisodes
                 crews = eval(str(meta['credits']['crew']))
+                _meta['crew'] = json.dumps(crews)
 
             if len(crews) > 0:
                 for crew in crews:
@@ -853,10 +859,10 @@ class cTMDb:
         # sauvegarde movie dans la BDD
         # year n'est pas forcement l'année du film mais l'année utilisée pour la recherche
         try:
-            sql = 'INSERT or IGNORE INTO %s (imdb_id, tmdb_id, title, year, cast, writer, director, tagline, rating, votes, duration, ' \
+            sql = 'INSERT or IGNORE INTO %s (imdb_id, tmdb_id, title, year, cast, crew, writer, director, tagline, rating, votes, duration, ' \
                   'plot, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path) ' \
-                  'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' % media_type
-            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(meta['duration']), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path']))
+                  'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' % media_type
+            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(meta['duration']), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path']))
             self.db.commit()
 #             VSlog('SQL INSERT Successfully')
         except Exception as e:
@@ -866,7 +872,7 @@ class cTMDb:
                 VSlog('Table recreated')
 
                 # Deuxieme tentative
-                self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(meta['duration']), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path']))
+                self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(meta['duration']), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path']))
                 self.db.commit()
             else:
                 VSlog('SQL ERROR INSERT into table ' + media_type)
@@ -884,10 +890,10 @@ class cTMDb:
 
         # sauvegarde tvshow dans la BDD
         try:
-            sql = 'INSERT or IGNORE INTO tvshow (imdb_id, tmdb_id, title, year, cast, writer, director, rating, votes, duration, ' \
+            sql = 'INSERT or IGNORE INTO tvshow (imdb_id, tmdb_id, title, year, cast, crew, writer, director, rating, votes, duration, ' \
                   'plot, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path, nbseasons) ' \
-                  'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['writer'], meta['director'], meta['rating'], meta['votes'], meta['duration'], meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta['nbseasons']))
+                  'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['rating'], meta['votes'], meta['duration'], meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta['nbseasons']))
             self.db.commit()
         except Exception as e:
             VSlog(str(e))
@@ -896,7 +902,7 @@ class cTMDb:
                 VSlog('Table recreated')
 
                 # Deuxieme tentative
-                self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['writer'], meta['director'], meta['rating'], meta['votes'], meta['duration'], meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta['nbseasons']))
+                self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['rating'], meta['votes'], meta['duration'], meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta['nbseasons']))
                 self.db.commit()
             else:
                 VSlog('SQL ERROR INSERT into table tvshow')
