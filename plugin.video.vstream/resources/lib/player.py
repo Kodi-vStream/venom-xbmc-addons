@@ -30,7 +30,9 @@ class cPlayer(xbmc.Player):
 
         oInputParameterHandler = cInputParameterHandler()
         self.sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
-        self.sTitle = Unquote(oInputParameterHandler.getValue('sFileName'))
+        self.sTitle = oInputParameterHandler.getValue('sFileName')
+        if self.sTitle:
+            self.sTitle = Unquote(self.sTitle)
         self.sCat  = oInputParameterHandler.getValue('sCat')
         self.sSaison = oInputParameterHandler.getValue('sSeason')
         

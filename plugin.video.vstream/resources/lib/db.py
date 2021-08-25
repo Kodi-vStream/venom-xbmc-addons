@@ -468,6 +468,11 @@ class cDb:
     # ***********************************
 
     def insert_viewing(self, meta):
+        
+        if not 'title' in meta:
+            return
+        if not 'siteurl' in meta:
+            return
 
         title = self.str_conv(meta['title'])
         titleWatched = self.str_conv(meta['titleWatched'])
