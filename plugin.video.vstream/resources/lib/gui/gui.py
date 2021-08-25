@@ -2,6 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import xbmcplugin
 import xbmc
+import json
 
 from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window, VSlog, isNexus
 from resources.lib.gui.contextElement import cContextElement
@@ -306,7 +307,7 @@ class cGui:
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
         self.listing.append((sItemUrl, oListItem, _isFolder))
-        
+
         # Vider les paramètres pour être recyclé
         oOutputParameterHandler.clearParameter()        
         return oListItem
@@ -323,10 +324,21 @@ class cGui:
 
         oListItem = listitem(itemTitle)
 
+        if data.get('cast'):
+            credits = json.loads(data['cast'])
+            data['cast'] = []
+            for i in credits:
+                if isNexus():
+                    data['cast'].append(xbmc.Actor(i['name'], i['character'], i['order'], i.get('thumbnail',"")))
+                else:
+                    data['cast'].append((i['name'], i['character'], i['order'], i.get('thumbnail',"")))
+        else:
+            credits = None
+
         if not isNexus():
             # voir : https://kodi.wiki/view/InfoLabels
             oListItem.setInfo(oGuiElement.getType(), data)
-            
+
         else:
             videoInfoTag = oListItem.getVideoInfoTag()
 
@@ -355,20 +367,9 @@ class cGui:
             videoInfoTag.setGenres(''.join(data.get('genre',[""])).split('/'))
             videoInfoTag.setSeason(int(data.get('season',0)))
             videoInfoTag.setEpisode(int(data.get('episode',0)))
-            videoInfoTag.setResumePoint(data.get("resumetime",0))
-            videoInfoTag.getResumeTimeTotal(data.get('totaltime',0))
-        
-            try:
-                credits = eval(data.get('credits'))['cast']
-            except:
-                credits = None
+            videoInfoTag.setResumePoint(float(data.get('resumetime',0.0)), float(data.get('totaltime',0.0)))
 
-            cast = []
-            if credits is not None:
-                for actor in credits:
-                    thumbnail = actor['profile_path']
-                    cast.append(xbmc.Actor(actor['name'], actor['character'], actor['order'], thumbnail))
-                videoInfoTag.setCast(cast)
+            videoInfoTag.setCast(data.get('cast',[]))
 
         oListItem.setArt({'poster': oGuiElement.getPoster(),
                           'thumb': oGuiElement.getThumbnail(),
