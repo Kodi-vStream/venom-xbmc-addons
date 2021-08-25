@@ -6,6 +6,7 @@ import re
 import string
 import webbrowser
 import xbmcvfs
+import json
 
 from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix, xbmc, xbmcgui
 from resources.lib.librecaptcha.gui import cInputWindowYesNo
@@ -78,8 +79,6 @@ class cTMDb:
 
         try:
             if not xbmcvfs.exists(self.CACHE):
-                # f = open(self.cache, 'w')
-                # f.close()
                 self.db = sqlite.connect(self.REALCACHE)
                 self.db.row_factory = sqlite.Row
                 self.dbcur = self.db.cursor()
@@ -114,7 +113,7 @@ class cTMDb:
                      "director TEXT, "\
                      "writer TEXT, "\
                      "tagline TEXT, "\
-                     "credits TEXT,"\
+                     "cast TEXT,"\
                      "rating FLOAT, "\
                      "votes TEXT, "\
                      "duration INTEGER, "\
@@ -143,7 +142,7 @@ class cTMDb:
                      "director TEXT, "\
                      "writer TEXT, "\
                      "tagline TEXT, "\
-                     "credits TEXT,"\
+                     "cast TEXT,"\
                      "rating FLOAT, "\
                      "votes TEXT, "\
                      "duration INTEGER, "\
@@ -172,7 +171,7 @@ class cTMDb:
                      "year INTEGER,"\
                      "director TEXT, "\
                      "writer TEXT, "\
-                     "credits TEXT,"\
+                     "cast TEXT,"\
                      "rating FLOAT, "\
                      "votes TEXT, "\
                      "duration INTEGER, "\
@@ -575,7 +574,7 @@ class cTMDb:
             'rating': meta.get('s_vote_average',0.0) if meta.get('s_vote_average') else meta.get('vote_average',0.0),
             'votes': meta.get('s_vote_count',0) if meta.get('s_vote_count') else meta.get('vote_count',0),
             'duration': (int(meta.get('episode_run_time',0)[0]) if meta.get('episode_run_time',0) else meta.get('runtime',0))*60,
-            'plot':  meta.get['s_overview',""] if meta.get('s_overview')  else meta.get('overview',""),
+            'plot':  ''.join([meta.get(key,"") for key in ['s_overview', 'overview', 'biography'] if meta.get(key) != None]),
             'mpaa': meta.get('mpaa',""),
             'premiered': meta.get('s_premiered',"") if meta.get('s_premiered') else meta.get('first_air_date',""),
             'year': meta.get('s_year',0) if meta.get('s_year') else meta.get('year',0),
@@ -584,7 +583,7 @@ class cTMDb:
             'genre': '',
             'studio': "",
             'status': meta.get('status',""),
-            'credits' : '',
+            'cast' : '',
             'director' : meta.get('s_director',"") if meta.get('s_director') else meta.get('director',""),
             'writer' : meta.get('s_writer',"") if meta.get('s_writer') else meta.get('writer',""),
             'poster_path' : ''.join([meta.get(key,"") for key in ['poster_path', 'still_path', 'file_path','profile_path'] if meta.get(key) != None]),
@@ -679,28 +678,36 @@ class cTMDb:
             except:
                 pass
 
-        crews = []
         if 'credits' in meta and meta['credits']:
-            
-            # Transformation compatible pour lecture depuis le cache et retour de TMDB
-            strmeta = str(meta['credits'])  
-            listCredits = eval(strmeta)
-
-            casts = listCredits['cast']
-            
-            if len(casts) > 0:
-                if 'crew' in listCredits:
-                    crews = listCredits['crew']
-
-                if len(crews)>0:
-                    _meta['credits'] = "{'cast': " + str(casts) + ", 'crew': "+str(crews) + "}"
-                else:
-                    _meta['credits'] = "{'cast': " + str(casts) + '}'
+            #Code from https://github.com/jurialmunkey/plugin.video.themoviedb.helper/blob/matrix/resources/lib/tmdb/mapping.py
+            cast_list = []
+            if meta.get('credits', {}).get('cast'):
+                cast_list += meta['credits']['cast']
+            cast = []
+            cast_item = None
+            for i in sorted(cast_list, key=lambda k: k.get('order', 0)):
+                if cast_item:
+                    if cast_item.get('name') != i.get('name'):
+                        cast.append(cast_item)
+                        cast_item = None
+                    elif i.get('character'):
+                        cast_item['role'] = u'{} / {}'.format(cast_item['role'], i['character'])
+                if not cast_item:
+                    cast_item = {
+                        'name': i.get('name'),
+                        'character': i.get('character'),
+                        'order': i.get('order')}
+                    if i.get('profile_path'):
+                        cast_item['thumbnail'] = self.poster + i['profile_path']
+            if cast_item:
+                cast.append(cast_item)
+            _meta['cast'] = json.dumps(cast)
 
         # Pas dans le cache, à récupérer depuis TMDB 
         if not _meta['director'] and not _meta['writer']:
-            if 'crew' in meta and meta['crew']: # cas des épisodes
-                crews = eval(str(meta['crew']))
+            crews = []
+            if meta['credits']['crew']: # cas des épisodes
+                crews = eval(str(meta['credits']['crew']))
 
             if len(crews) > 0:
                 for crew in crews:
@@ -733,7 +740,6 @@ class cTMDb:
 
         if _meta['backdrop_path']:
             _meta['backdrop_path'] = self.fanart + _meta['backdrop_path']
-            
         return _meta
 
     def _clean_title(self, title):
@@ -847,10 +853,10 @@ class cTMDb:
         # sauvegarde movie dans la BDD
         # year n'est pas forcement l'année du film mais l'année utilisée pour la recherche
         try:
-            sql = 'INSERT or IGNORE INTO %s (imdb_id, tmdb_id, title, year, credits, writer, director, tagline, rating, votes, duration, ' \
+            sql = 'INSERT or IGNORE INTO %s (imdb_id, tmdb_id, title, year, cast, writer, director, tagline, rating, votes, duration, ' \
                   'plot, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path) ' \
                   'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' % media_type
-            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(meta['duration']), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path']))
+            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(meta['duration']), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path']))
             self.db.commit()
 #             VSlog('SQL INSERT Successfully')
         except Exception as e:
@@ -860,7 +866,7 @@ class cTMDb:
                 VSlog('Table recreated')
 
                 # Deuxieme tentative
-                self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(meta['duration']), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path']))
+                self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(meta['duration']), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path']))
                 self.db.commit()
             else:
                 VSlog('SQL ERROR INSERT into table ' + media_type)
@@ -878,10 +884,10 @@ class cTMDb:
 
         # sauvegarde tvshow dans la BDD
         try:
-            sql = 'INSERT or IGNORE INTO tvshow (imdb_id, tmdb_id, title, year, credits, writer, director, rating, votes, duration, ' \
+            sql = 'INSERT or IGNORE INTO tvshow (imdb_id, tmdb_id, title, year, cast, writer, director, rating, votes, duration, ' \
                   'plot, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path, nbseasons) ' \
                   'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['rating'], meta['votes'], meta['duration'], meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta['nbseasons']))
+            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['writer'], meta['director'], meta['rating'], meta['votes'], meta['duration'], meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta['nbseasons']))
             self.db.commit()
         except Exception as e:
             VSlog(str(e))
@@ -890,7 +896,7 @@ class cTMDb:
                 VSlog('Table recreated')
 
                 # Deuxieme tentative
-                self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['credits'], meta['writer'], meta['director'], meta['rating'], meta['votes'], meta['duration'], meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta['nbseasons']))
+                self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['writer'], meta['director'], meta['rating'], meta['votes'], meta['duration'], meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta['nbseasons']))
                 self.db.commit()
             else:
                 VSlog('SQL ERROR INSERT into table tvshow')
