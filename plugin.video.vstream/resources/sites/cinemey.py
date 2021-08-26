@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # source 27 https://cinemey.com/
-# return False  # HS voir https://cinemay.cc/ memes films et series
+return False  # HS voir https://cinemay.cc/ memes films et series
 
 import re
 import xbmc
