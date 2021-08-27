@@ -597,6 +597,9 @@ class cGuiElement:
             meta.pop('vote_average')
         if 'vote_count' in meta:
             meta.pop('vote_count')
+        if 'backdrop_url' in meta:
+            meta.pop('backdrop_url')
+            
 
         for key, value in meta.items():
             self.addItemValues(key, value)

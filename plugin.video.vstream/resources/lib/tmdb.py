@@ -4,12 +4,10 @@
 # https://github.com/Kodi-vStream/venom-xbmc-addons/
 import re
 import string
-import webbrowser
 import xbmcvfs
 import json
 
 from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix, xbmc, xbmcgui
-from resources.lib.librecaptcha.gui import cInputWindowYesNo
 from resources.lib.util import QuotePlus
 from resources.lib.handler.requestHandler import cRequestHandler
 
@@ -249,6 +247,7 @@ class cTMDb:
             url = 'https://www.themoviedb.org/authenticate/'
             if not xbmc.getCondVisibility('system.platform.android'):
                 # Si possible on ouvre la page automatiquement dans un navigateur internet.
+                import webbrowser
                 webbrowser.open(url + result['request_token'])
                 sText = (self.ADDON.VSlang(30421)) % (url, result['request_token'])
                 DIALOG = dialog()
@@ -256,6 +255,7 @@ class cTMDb:
                     return False
             else:
                 from resources.lib import pyqrcode
+                from resources.lib.librecaptcha.gui import cInputWindowYesNo
                 qr = pyqrcode.create(url + result['request_token'])
                 qr.png('special://home/userdata/addon_data/plugin.video.vstream/qrcode.png', scale=5)
                 oSolver = cInputWindowYesNo(captcha='special://home/userdata/addon_data/plugin.video.vstream/qrcode.png', msg="Scanner le QRCode pour acceder au lien d'autorisation", roundnum=1)

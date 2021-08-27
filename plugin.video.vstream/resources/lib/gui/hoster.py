@@ -6,7 +6,6 @@ from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.comaddon import dialog, addon, VSlog, xbmc
 
 import re
@@ -588,6 +587,7 @@ class cHosterGui:
         oGui.setEndOfDirectory()
 
     def __getRedirectUrl(self, sUrl):
+        from resources.lib.handler.requestHandler import cRequestHandler
         oRequest = cRequestHandler(sUrl)
         oRequest.request()
         return oRequest.getRealUrl()
