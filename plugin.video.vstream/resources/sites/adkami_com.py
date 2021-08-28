@@ -403,19 +403,27 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
+
+    sPattern = '<div class="video-iframe.+?url="([^"]+)"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if not aResult[0]:
+        sPattern = 'class="video-video">.+?src="([^"]+)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+            
     if "crunchyroll" in str(sHtmlContent) or "wakanim" in str(sHtmlContent) or "animedigitalnetwork" in str(sHtmlContent):
         sPattern = 'encrypted-media.+?src="([^"]+)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-
-    else:
-        sPattern = '<div class="video-iframe.+?url="([^"]+)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+        aResult2 = oParser.parse(sHtmlContent, sPattern)
+        
         if not aResult[0]:
-            sPattern = 'class="video-video">.+?src="([^"]+)"'
-            aResult = oParser.parse(sHtmlContent, sPattern)
+            aResult = aResult2
+        else:
+            if aResult2[0]:
+                f =  aResult[1] + aResult2[1]
+                aResult[1] = f
     
     oOutputParameterHandler = cOutputParameterHandler()
     for aEntry in aResult[1]:
+
         sHost = ''
         sUrl = aEntry.replace('+', 'plus')
         if 'youtube' in sUrl and not 'hl=fr' in sUrl:
