@@ -58,7 +58,7 @@ class cHosterGui:
 
         oGuiElement.setIcon('host.png')
 
-        if xbmc.getInfoLabel('ListItem.tagline'):
+        if sCat == "6":
             title = xbmc.getInfoLabel('ListItem.tagline')
         elif sCat == "1":
             title = re.sub('\[.*\]|\(.*\)','', oHoster.getDisplayName())
