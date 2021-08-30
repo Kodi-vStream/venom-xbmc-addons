@@ -443,7 +443,7 @@ class cHome:
             oGuiElement.setFileName(sTitle)
             oGuiElement.setCat(sCat)
             oGuiElement.setIcon('search.png')
-            oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, 'cHome', 'delSearch', self.addons.VSlang(30412))
+            oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, 'cHome', 'delSearch', self.addons.VSlang(30412))
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         if row:
