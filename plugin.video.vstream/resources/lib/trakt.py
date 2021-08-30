@@ -966,7 +966,7 @@ class cTrakt:
             oOutputParameterHandler.addParameter('sReload', True)
             # oOutputParameterHandler.addParameter('sImdb', oGuiElement.getImdbId())
             oOutputParameterHandler.addParameter('sTmdbId', oGuiElement.getTmdbId())
-            oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cTrakt', 'cTrakt', 'getAction', sTitle)
+            oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, 'cTrakt', 'cTrakt', 'getAction', sTitle)
         return
 
     def showHosters(self):
