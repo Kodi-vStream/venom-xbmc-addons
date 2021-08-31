@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'zustream_co'
 SITE_NAME = 'ZuStream (Séries)'
 SITE_DESC = 'ZuStream.Co : 1er site Serie Streaming GRATUIT 2020 en français.'
 
-URL_MAIN = 'https://www.zustream.co/'
+URL_MAIN = 'https://wwv.zustream.co/'
 
 SERIE_SERIES = (True, 'load')
 SERIE_NEWS = (URL_MAIN + 'list-series.html', 'showSeries')
