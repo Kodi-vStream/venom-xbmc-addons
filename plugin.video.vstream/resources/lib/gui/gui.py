@@ -318,8 +318,10 @@ class cGui:
 
         itemTitle = oGuiElement.getTitle()
 
-        if oGuiElement.getMeta() == 6:  # Nom de l'épisode
-            if cGui.CONTENT != "episodes":
+        #Obligatoire de convertir sous Kodi 20 pour le moment.
+        if int(oGuiElement.getMeta()) == 6:  # Nom de l'épisode
+            #Evite la duplication du nom de l'hebergeur.
+            if cGui.CONTENT != "files" or cGui.CONTENT != "episodes":
                 data['title'] = data['title'] + " " + itemTitle.split(data['tvshowtitle'])[1]
 
         oListItem = listitem(itemTitle)
