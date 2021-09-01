@@ -3,9 +3,7 @@
 
 import re
 
-
 class cParser:
-
     def parseSingleResult(self, sHtmlContent, sPattern):
         aMatches = re.compile(sPattern).findall(sHtmlContent)
         if (len(aMatches) == 1):
@@ -30,10 +28,9 @@ class cParser:
         sHtmlContent = self.__replaceSpecialCharacters(str(sHtmlContent))
         aMatches = re.compile(sPattern, re.IGNORECASE).findall(sHtmlContent)
 
-        # extrait la page html après retraitement vStream
-        # fh = open('c:\\test.txt', "w")
-        # fh.write(sHtmlContent)
-        # fh.close()
+        if "episode" in str(aMatches):
+            natsort = lambda s: [int(t) if t.isdigit() else t.lower() for t in re.split('(\d+)', s[1])]
+            aMatches = sorted(aMatches, key=natsort)
 
         if (len(aMatches) >= iMinFoundValue):
             return True, aMatches
