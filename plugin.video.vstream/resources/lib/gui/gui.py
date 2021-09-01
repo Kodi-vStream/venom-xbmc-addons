@@ -4,7 +4,7 @@ import xbmcplugin
 import xbmc
 import json
 
-from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window, isNexus
+from resources.lib.comaddon import listitem, addon, dialog, window, isKrypton, isNexus
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -319,9 +319,8 @@ class cGui:
         itemTitle = oGuiElement.getTitle()
 
         try:
-            #Obligatoire de convertir sous Kodi 20 pour le moment.
-            if int(oGuiElement.getMeta()) == 6 and oGuiElement.getMetaAddon() == 'true':# Nom de l'épisode
-                #Evite la duplication du nom de l'hebergeur.
+            # Obligatoire de convertir sous Kodi 20 pour le moment.
+            if int(oGuiElement.getMeta()) == 6 and oGuiElement.getMetaAddon() == 'true':  # Nom de l'épisode
                 if cGui.CONTENT != "episodes":
                     data['title'] = data['title'] + " " + itemTitle.split(data['tvshowtitle'])[1]
         except:
@@ -329,7 +328,7 @@ class cGui:
 
         try:
             if data.get('duration'):
-                #Convertion en seconde, utile pour le lien final.
+                # Convertion en seconde, utile pour le lien final.
                 data['duration'] = (sum(x * int(t) for x, t in zip([1, 60, 3600], reversed(data.get('duration', '').split(":")))))
         except:
             pass
@@ -355,20 +354,20 @@ class cGui:
             videoInfoTag = oListItem.getVideoInfoTag()
 
             # gestion des valeurs par defaut si non renseignées
-            videoInfoTag.setMediaType(data.get('mediatype',""))
+            videoInfoTag.setMediaType(data.get('mediatype', ""))
             videoInfoTag.setTitle(data.get('title', ""))
             videoInfoTag.setTvShowTitle(data.get('tvshowtitle', ''))
-            videoInfoTag.setOriginalTitle(data.get('originaltitle',""))
-            videoInfoTag.setPlot(data.get('plot',""))
-            videoInfoTag.setPlotOutline(data.get('tagline',""))
+            videoInfoTag.setOriginalTitle(data.get('originaltitle', ""))
+            videoInfoTag.setPlot(data.get('plot', ""))
+            videoInfoTag.setPlotOutline(data.get('tagline', ""))
             videoInfoTag.setYear(int(data.get('year', 0)))
             videoInfoTag.setRating(float(data.get('rating', 0.0)))
             videoInfoTag.setMpaa(data.get('mpaa',""))
             videoInfoTag.setDuration(int(data.get('duration', 0)))
             videoInfoTag.setPlaycount(int(data.get('playcount', 0)))
             videoInfoTag.setCountries(data.get('country', [""]))
-            videoInfoTag.setTrailer(data.get('trailer',""))
-            videoInfoTag.setTagLine(data.get('tagline',""))
+            videoInfoTag.setTrailer(data.get('trailer', ""))
+            videoInfoTag.setTagLine(data.get('tagline', ""))
             videoInfoTag.setStudios(list(data.get('studio', '').split("/")))
             videoInfoTag.setWriters(list(data.get('writer', '').split("/")))
             videoInfoTag.setDirectors(list(data.get('director', '').split("/")))
