@@ -239,10 +239,7 @@ def showMovies(sSearch=''):
             sDesc = ''
             sThumb = re.sub('/w\d+/', '/w342/', aEntry[0])
 
-            if isMatrix():
-                sTitle = aEntry[1].encode('latin-1').decode()
-            else:
-                sTitle = aEntry[1]
+            sTitle = aEntry[1]
 
             sTitle = sTitle.replace('film en streaming', '').replace('série en streaming', '')
             sYear = aEntry[2]
