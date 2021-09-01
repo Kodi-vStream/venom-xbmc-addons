@@ -441,8 +441,8 @@ class cGuiElement:
             'tagline': xbmc.getInfoLabel('ListItem.tagline'),
             'plotoutline': xbmc.getInfoLabel('ListItem.plotoutline'),
             'plot': xbmc.getInfoLabel('ListItem.plot'),
-            'album': xbmc.getInfoLabel('ListItem.Art(thumb)'),
-            'backdrop_url': xbmc.getInfoLabel('ListItem.Art(fanart)'),
+            'poster_path': xbmc.getInfoLabel('ListItem.Art(thumb)'),
+            'backdrop_path': xbmc.getInfoLabel('ListItem.Art(fanart)'),
             'imdbnumber': xbmc.getInfoLabel('ListItem.IMDBNumber'),
             'season': xbmc.getInfoLabel('ListItem.season'),
             'episode': xbmc.getInfoLabel('ListItem.episode')
@@ -451,17 +451,21 @@ class cGuiElement:
         if 'title' in meta and meta['title']:
             meta['title'] = self.getTitle()
 
-        for key, value in meta.items():
-            self.addItemValues(key, value)
-
-        if 'backdrop_url' in meta and meta['backdrop_url']:
-            self.addItemProperties('fanart_image', meta['backdrop_url'])
-            self.__sFanart = meta['backdrop_url']
+        if 'backdrop_path' in meta and meta['backdrop_path']:
+            url = meta.pop('backdrop_path')
+            self.addItemProperties('fanart_image', url)
+            self.__sFanart = url
+            
         if 'trailer' in meta and meta['trailer']:
             self.__sTrailer = meta['trailer']
-        if 'album' in meta and meta['album']:
-            self.__sThumbnail = meta['album']
-            self.__sPoster = meta['album']
+
+        if 'poster_path' in meta and meta['poster_path']:
+            url = meta.pop('poster_path')
+            self.__sThumbnail = url
+            self.__sPoster = url
+
+        for key, value in meta.items():
+            self.addItemValues(key, value)
 
         return
 
@@ -557,8 +561,6 @@ class cGuiElement:
                 self.__TmdbId = tmdb_id
 
         if 'tvdb_id' in meta:
-#            if meta['tvdb_id']:
-#             self.__TvdbId = meta['tvdb_id']
             meta.pop('tvdb_id')
 
         if 'backdrop_path' in meta:
@@ -600,7 +602,6 @@ class cGuiElement:
         if 'backdrop_url' in meta:
             meta.pop('backdrop_url')
             
-
         for key, value in meta.items():
             self.addItemValues(key, value)
             
@@ -671,8 +672,8 @@ class cGuiElement:
             self.addItemValues('genre', self.getGenre())
         # if not self.getItemValue('cover_url') and self.getThumbnail():
             # self.addItemValues('cover_url', self.getThumbnail())
-        # if not self.getItemValue('backdrop_url') and self.getPoster():
-            # self.addItemValues('backdrop_url', self.getPoster())
+        # if not self.getItemValue('backdrop_path') and self.getPoster():
+            # self.addItemValues('backdrop_path', self.getPoster())
         if not self.getItemValue('trailer'):
             if self.getTrailer():
                 self.addItemValues('trailer', self.getTrailer())
