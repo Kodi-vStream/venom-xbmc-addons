@@ -445,7 +445,8 @@ class cGuiElement:
             'backdrop_path': xbmc.getInfoLabel('ListItem.Art(fanart)'),
             'imdbnumber': xbmc.getInfoLabel('ListItem.IMDBNumber'),
             'season': xbmc.getInfoLabel('ListItem.season'),
-            'episode': xbmc.getInfoLabel('ListItem.episode')
+            'episode': xbmc.getInfoLabel('ListItem.episode'),
+            'tvshowtitle': xbmc.getInfoLabel('ListItem.tvshowtitle')
             }
 
         if 'title' in meta and meta['title']:
@@ -541,11 +542,6 @@ class cGuiElement:
                 return
         except:
             return
-
-        if str(metaType) != "6":
-            meta['title'] = self.getTitle()
-        else:
-            meta['title'] = meta['tagline']
 
         if 'media_type' in meta:
             meta.pop('media_type')
