@@ -185,7 +185,14 @@ class cRequestHandler:
 
                 #Necessaire pour Python 3
                 if isMatrix() and not 'youtube' in oResponse.url:
-                    sContent = sContent.decode()
+                    try:
+                       sContent = sContent.decode()
+                    except:
+                        #Decodage minimum obligatoire.
+                        try:
+                            sContent = sContent.decode('unicode-escape')
+                        except:
+                            pass
             else:
                 sContent = oResponse.json()
 
