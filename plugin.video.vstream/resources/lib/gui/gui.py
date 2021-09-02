@@ -318,13 +318,14 @@ class cGui:
 
         itemTitle = oGuiElement.getTitle()
 
-        try:
-            # Obligatoire de convertir sous Kodi 20 pour le moment.
-            if int(oGuiElement.getMeta()) == 6 and oGuiElement.getMetaAddon() == 'true':  # Nom de l'épisode
-                if cGui.CONTENT == "addons":
-                    data['title'] = data['title'] + " " + itemTitle.split(data['tvshowtitle'])[1]
-        except:
-            pass
+        # Obligatoire de convertir sous Kodi 20 pour le moment.
+        if int(oGuiElement.getMeta()) == 6 and oGuiElement.getMetaAddon() == 'true':  # Nom de l'épisode
+            if cGui.CONTENT != "episodes":
+                data['title'] = data['title'] + " " + itemTitle.split(data['tvshowtitle'])[1]
+        else:
+            #Permets d'afficher toutes les informations pour les films.
+            data['title'] = itemTitle
+
 
         try:
             if data.get('duration'):
