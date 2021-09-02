@@ -321,7 +321,7 @@ class cGui:
         try:
             # Obligatoire de convertir sous Kodi 20 pour le moment.
             if int(oGuiElement.getMeta()) == 6 and oGuiElement.getMetaAddon() == 'true':  # Nom de l'épisode
-                if cGui.CONTENT != "episodes":
+                if cGui.CONTENT == "addons":
                     data['title'] = data['title'] + " " + itemTitle.split(data['tvshowtitle'])[1]
         except:
             pass
