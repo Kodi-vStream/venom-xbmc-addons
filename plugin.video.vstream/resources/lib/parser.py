@@ -28,7 +28,8 @@ class cParser:
         sHtmlContent = self.__replaceSpecialCharacters(str(sHtmlContent))
         aMatches = re.compile(sPattern, re.IGNORECASE).findall(sHtmlContent)
 
-        if "episode" in str(aMatches):
+        #Exclusion de French-Stream lol, dysfonctionne totalement
+        if "episode" in str(aMatches) and not "ABCDE" in str(aMatches):
             natsort = lambda s: [int(t) if t.isdigit() else t.lower() for t in re.split('(\d+)', s[1])]
             aMatches = sorted(aMatches, key=natsort)
 
