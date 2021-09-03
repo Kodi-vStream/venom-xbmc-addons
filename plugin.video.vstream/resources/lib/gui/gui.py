@@ -320,7 +320,10 @@ class cGui:
 
         # Obligatoire de convertir sous Kodi 20 pour le moment.
         if int(oGuiElement.getMeta()) == 6 and oGuiElement.getMetaAddon() == 'true':  # Nom de l'épisode
+            try:
                 data['title'] = data['title'] + " " + itemTitle.split(data['tvshowtitle'])[1]
+            except:
+                pass
         else:
             #Permets d'afficher toutes les informations pour les films.
             data['title'] = itemTitle
