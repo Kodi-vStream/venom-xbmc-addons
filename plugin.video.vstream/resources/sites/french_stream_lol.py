@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'french_stream_lol'
 SITE_NAME = 'French-stream-lol'
 SITE_DESC = 'Films & séries'
 
-URL_MAIN = 'https://french-stream.ink/'
+URL_MAIN = 'https://french-stream.re/'
 
 MOVIE_NEWS = (URL_MAIN + 'xfsearch/qualit/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
@@ -329,9 +329,6 @@ def __checkForNextPage(sHtmlContent):
     sNumberNext = ''
     sNumberMax = ''
     sNumPage = ''
-
-    if '<span class="pnext"><a href="' not in sHtmlContent:
-        return False, 'none', 'none'
 
     sPattern = '(\d+)<.a>\s*<.span>\s*<span class="pnext">'
     aResult = oParser.parse(sHtmlContent, sPattern)
