@@ -23,7 +23,7 @@ SITE_NAME = '[COLOR violet]Tirexo[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
 
 # Teste pour le moment avec une url fixe.
-URL_MAIN = "https://www.tirexo.vip/"
+URL_MAIN = "https://www2.tirexo.work/"
 
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=1&result_from=1&story=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=15&story=', 'showMovies')
