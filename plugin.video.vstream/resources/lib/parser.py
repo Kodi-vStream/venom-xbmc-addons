@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-
+from operator import itemgetter
 import re
 
 class cParser:
+
+    def sorted_nicely(self, l, key):
+        """ Sort the given iterable in the way that humans expect."""
+        convert = lambda text: int(text) if text.isdigit() else text
+        alphanum_key = lambda item: [ convert(c) for c in re.split('([0-9]+)', key(item)) ]
+        return sorted(l, key = alphanum_key)
+
     def parseSingleResult(self, sHtmlContent, sPattern):
         aMatches = re.compile(sPattern).findall(sHtmlContent)
         if (len(aMatches) == 1):
@@ -28,10 +35,20 @@ class cParser:
         sHtmlContent = self.__replaceSpecialCharacters(str(sHtmlContent))
         aMatches = re.compile(sPattern, re.IGNORECASE).findall(sHtmlContent)
 
-        #Exclusion de French-Stream lol, dysfonctionne totalement
-        if "episode" in str(aMatches) and not "ABCDE" in str(aMatches):
-            natsort = lambda s: [int(t) if t.isdigit() else t.lower() for t in re.split('(\d+)', s[1])]
-            aMatches = sorted(aMatches, key=natsort)
+        #Source non compatible avec le tri :
+        #- Celle qui utilise oGui.
+        #- Celle qui se base sur l'ordre des tuple pour ajouter du texte (voir hds_fm).
+        #- French-Stream lol a cause des valeurs random sur le site comme "ABCDE".
+        try:
+            if "episode" in str(aMatches) and not aMatches[0][1] == "" and not "ABCDE" in str(aMatches):
+                if aMatches[1][0] and not "/" in str(aMatches[1][0]):
+                    aMatches = self.sorted_nicely(aMatches, itemgetter(0))
+                elif aMatches[1][1] and not "/" in str(aMatches[1][1]):
+                    aMatches = self.sorted_nicely(aMatches, itemgetter(1))
+                else:
+                    aMatches = self.sorted_nicely(aMatches, itemgetter(2))                 
+        except Exception as e:
+            pass
 
         if (len(aMatches) >= iMinFoundValue):
             return True, aMatches
