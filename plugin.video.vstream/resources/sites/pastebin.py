@@ -8,19 +8,12 @@ import xbmcvfs
 
 from resources.lib.comaddon import progress, addon, dialog, VSlog, VSPath, isMatrix
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.util import Quote, cUtil, Unquote
 from resources.lib.tmdb import cTMDb
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.premiumHandler import cPremiumHandler
-
-try:
-    import urllib2
-except ImportError:
-    import urllib.request as urllib2
 
 try:
     from sqlite3 import dbapi2 as sqlite
@@ -284,6 +277,7 @@ class PasteContent:
     # 4 = uptobox + uptostream
     def getUptoStream(self):
         if not self.upToStream:
+            from resources.lib.handler.premiumHandler import cPremiumHandler
             if not cPremiumHandler('uptobox').isPremiumModeAvailable():
                 self.upToStream = 2 # forcer une valeur pour ne pas retester
             else:
@@ -337,6 +331,7 @@ class PasteContent:
 
         if 'uptobox' in self.HEBERGEUR:
             # Recherche d'un compte premium valide
+            from resources.lib.handler.premiumHandler import cPremiumHandler
             links = None
             if not self.keyUpto and not self.keyAlld and not self.keyReald:
                 self.keyUpto = cPremiumHandler('uptobox').getToken()
@@ -396,6 +391,7 @@ class PasteContent:
             pass
 
         if not hasMovies:
+            from resources.lib.handler.requestHandler import cRequestHandler
             oRequestHandler = cRequestHandler(URL_MAIN + pasteBin)
             oRequestHandler.setTimeout(4)
             sContent = oRequestHandler.request()
@@ -1425,11 +1421,17 @@ def showMovies(sSearch=''):
     if not numPage and 'numPage' in aParams:
         numPage = aParams['numPage']
 
+    if bRandom:
+        numItem = 0
+    else:
+        numItem = int(numItem) if numItem else 0
+
     pbContent = PasteContent()
     movies = []
     pasteLen = []
     pasteMaxLen = []
     maxlen = 0
+
     listeIDs = getPasteList(sUrl, pasteID)
 
     for pasteBin in listeIDs:
@@ -1443,7 +1445,10 @@ def showMovies(sSearch=''):
     if (bNews or sYear or sGenre or sRes) and len(listeIDs) > 1:
         moviesNews = []
         i = j = k = 0
-        lenMovie = len(movies)
+        if bNews:   # Si pas de tris, pas besoin de mixer plus qu'on peut en afficher
+            lenMovie = min(len(movies), numItem + ITEM_PAR_PAGE + 1 )
+        else:
+            lenMovie = len(movies)
         while k < lenMovie:
             if i < pasteMaxLen[j]:
                 moviesNews.append(movies[i])
@@ -1469,10 +1474,6 @@ def showMovies(sSearch=''):
         movies = sorted(movies, key=lambda line: line[pbContent.YEAR], reverse=True)
 
     # Gestion de la pagination
-    if not numItem:
-        numItem = 0
-    else:
-        numItem = int(numItem)
     numPage = int(numPage)
     if numPage > 1 and numItem == 0:  # choix d'une page
         numItem = (numPage-1) * ITEM_PAR_PAGE
@@ -1481,7 +1482,6 @@ def showMovies(sSearch=''):
             numItem = (numPage-1) * ITEM_PAR_PAGE
 
     if bRandom:
-        numItem = 0
         # Génération d'indices aléatoires, ajout de deux indices car les doublons aléatoires sont rassemblés
         randoms = [random.randint(0, len(movies)) for _ in range(ITEM_PAR_PAGE+2)]
 
