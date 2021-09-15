@@ -2,7 +2,6 @@
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 
 import xbmcaddon, xbmcgui, xbmc, xbmcplugin, xbmcvfs 
-import json
 import time
 """System d'importation
 
@@ -438,6 +437,7 @@ class addonManager:
 
     # Active/desactive un addon
     def enableAddon(self, addon_id, enable = 'True'):
+        import json
         # if enable=='True' and xbmc.getCondVisibility('System.HasAddon(%s)' % addon_id) == 0:
             # VSlog('%s déjà activé'  %addon_id)
             # return True
