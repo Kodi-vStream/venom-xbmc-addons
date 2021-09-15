@@ -373,11 +373,13 @@ class PasteContent:
         elif self.keyReald:
             links, status = self._getCrypt().resolveLink(pasteBin, link, self.keyReald, 1)
 
-        if status == 'ok' and links and len(links)>0:
+        if status != 'ok':  # Certains liens en erreur
+            err = 'Erreur : ' + str(status)
+            VSlog(err)
+
+        if links and len(links)>0:
             return links
         
-        err = 'Erreur : ' + str(status)
-        VSlog(err)
 
     def _decompress(self, pasteBin):
 
