@@ -198,7 +198,8 @@ class cRequestHandler:
 
         except ConnectionError as e:
             # Retry with DNS only if addon is present
-            if 'getaddrinfo failed' in str(e) and self.__enableDNS == False:
+            if 'getaddrinfo failed' in str(e) or 'Failed to establish a new connection' in str(e) and self.__enableDNS == False:
+                # Retry with DNS only if addon is present
                 import xbmcvfs
                 if xbmcvfs.exists('special://home/addons/script.module.dnspython/'):
                     self.__enableDNS = True
