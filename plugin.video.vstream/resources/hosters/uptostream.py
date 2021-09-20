@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-import re
-import json
 
 from resources.lib.config import GestionCookie
 from resources.hosters.hoster import iHoster
@@ -11,7 +9,7 @@ from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import Unquote
-import requests, re
+import json, requests, re
 
 class cHoster(iHoster):
 
