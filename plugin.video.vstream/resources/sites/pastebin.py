@@ -1210,8 +1210,6 @@ def showSaga():
 
         sDisplaySaga = sSagaName
         sSagaName = sSagaName.replace('[', '').replace(']', '')  # Exemple pour le film [REC], les crochets sont génant pour certaines fonctions
-        if not sSagaName.lower().endswith('saga'):
-            sSagaName = sSagaName + " Saga"
         oOutputParameterHandler.addParameter('sMovieTitle', sSagaName)
 
         oGui.addMoviePack(SITE_IDENTIFIER, 'showMovies', sDisplaySaga, 'genres.png', '', '', oOutputParameterHandler)

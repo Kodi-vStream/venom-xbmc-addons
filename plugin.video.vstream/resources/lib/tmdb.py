@@ -132,26 +132,11 @@ class cTMDb:
             VSlog('Error: Cannot create table movie')
 
         sql_create = "CREATE TABLE IF NOT EXISTS saga ("\
-                     "imdb_id TEXT, "\
                      "tmdb_id TEXT, "\
                      "title TEXT, "\
-                     "year INTEGER, "\
-                     "director TEXT, "\
-                     "writer TEXT, "\
-                     "tagline TEXT, "\
-                     "cast TEXT, "\
-                     "crew TEXT, "\
-                     "rating FLOAT, "\
-                     "votes TEXT, "\
-                     "duration INTEGER, "\
                      "plot TEXT, "\
-                     "mpaa TEXT, "\
-                     "premiered TEXT, "\
                      "genre TEXT, "\
-                     "studio TEXT, "\
-                     "status TEXT, "\
                      "poster_path TEXT, "\
-                     "trailer TEXT, "\
                      "backdrop_path TEXT, "\
                      "UNIQUE(tmdb_id)"\
                      ");"
@@ -389,12 +374,7 @@ class cTMDb:
                     for searchCollec in meta['results']:
                         cleanTitleTMDB = self._clean_title(searchCollec['name'])
                         cleanTitleSearch = self._clean_title(name)
-                        if not cleanTitleSearch.endswith('saga'):
-                            cleanTitleSearch += 'saga'
                         if cleanTitleTMDB == cleanTitleSearch:
-                            collection = searchCollec
-                            break
-                        elif (cleanTitleSearch + 'saga') == cleanTitleTMDB:
                             collection = searchCollec
                             break
                     # sinon, le premier qui n'est pas du genre animation
@@ -759,8 +739,6 @@ class cTMDb:
             if tmdb_id:
                 sql_select = sql_select + ' WHERE tmdb_id = \'%s\'' % tmdb_id
             else:
-                if not name.endswith('saga'):
-                    name += 'saga'
                 sql_select = sql_select + ' WHERE title = \'%s\'' % name
 
         elif media_type == 'tvshow' or media_type == 'anime':
@@ -827,11 +805,15 @@ class cTMDb:
         if media_type in ('person', 'network'):
             return
 
-        # cache des séries et animes
-        if media_type == 'tvshow' or media_type == 'anime':
-            return self._cache_save_tvshow(meta, name, season, year)
+        # cache des films
+        if media_type == 'movie':
+            return self._cache_save_movie(meta, name, year)
 
         # cache des séries et animes
+        elif media_type == 'tvshow' or media_type == 'anime':
+            return self._cache_save_tvshow(meta, name, season, year)
+
+        # cache des saisons
         if media_type == "season":
             return self._cache_save_season(meta, season)
 
@@ -841,33 +823,34 @@ class cTMDb:
 
         # cache des collections
         elif media_type == 'collection':
-            media_type = 'saga'
-            if not name.endswith('saga'):
-                name += 'saga'
+            return self._cache_save_collection(meta, name)
 
+            
+            
+    # sauvegarde movie dans la BDD
+    def _cache_save_movie(self, meta, name, year):
+        # year n'est pas forcement l'année du film mais l'année utilisée pour la recherche
         if not year and 'year' in meta:
             year = meta['year']
 
-        # sauvegarde movie dans la BDD
-        # year n'est pas forcement l'année du film mais l'année utilisée pour la recherche
         try:
-            sql = 'INSERT or IGNORE INTO %s (imdb_id, tmdb_id, title, year, cast, crew, writer, director, tagline, rating, votes, duration, ' \
+            sql = 'INSERT or IGNORE INTO movie (imdb_id, tmdb_id, title, year, cast, crew, writer, director, tagline, rating, votes, duration, ' \
                   'plot, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path) ' \
-                  'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' % media_type
+                  'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
             self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(meta['duration']), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path']))
             self.db.commit()
             # VSlog('SQL INSERT Successfully')
         except Exception as e:
             VSlog(str(e))
             if 'no such column' in str(e) or 'no column named' in str(e) or "no such table" in str(e):
-                self.__createdb(media_type)
+                self.__createdb('movie')
                 VSlog('Table recreated')
 
                 # Deuxieme tentative
                 self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(meta['duration']), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path']))
                 self.db.commit()
             else:
-                VSlog('SQL ERROR INSERT into table ' + media_type)
+                VSlog('SQL ERROR INSERT into table movie')
             pass
 
     # Cache pour les séries (et animes)
@@ -900,6 +883,7 @@ class cTMDb:
                 VSlog('SQL ERROR INSERT into table tvshow')
             pass
 
+    # Cache pour les saisons
     def _cache_save_season(self, meta, season):
         if 'air_date' in meta and meta['air_date']:
             premiered = meta['air_date']
@@ -951,6 +935,7 @@ class cTMDb:
                 VSlog('SQL ERROR INSERT into table season')
             pass
 
+    # Cache pour les épisodes
     def _cache_save_episode(self, meta, season, episode):
         try:
             sql = 'INSERT or IGNORE INTO episode (tmdb_id, season, episode, year, title, premiered, poster_path, plot, rating, votes, director, writer, guest_stars, tagline) VALUES ' \
@@ -968,6 +953,26 @@ class cTMDb:
                 self.db.commit()
             else:
                 VSlog('SQL ERROR INSERT into table episode')
+            pass
+
+    # Cache pour les sagas
+    def _cache_save_collection(self, meta, name):
+        try:
+            sql = 'INSERT or IGNORE INTO saga (tmdb_id, title, plot, genre, poster_path, backdrop_path) VALUES ' \
+                  '(?, ?, ?, ?, ?, ?)'
+            self.dbcur.execute(sql, (meta['tmdb_id'], name, meta['plot'], meta['genre'], meta['poster_path'], meta["backdrop_path"]))
+            self.db.commit()
+        except Exception as e:
+            VSlog(str(e))
+            if 'no such column' in str(e) or 'no column named' in str(e) or "no such table" in str(e):
+                self.__createdb('saga')
+                VSlog('Table recreated')
+
+                # Deuxieme tentative
+                self.dbcur.execute(sql, (meta['tmdb_id'], name, meta['plot'], meta['genre'], meta['poster_path'], meta["backdrop_path"]))
+                self.db.commit()
+            else:
+                VSlog('SQL ERROR INSERT into table saga')
             pass
 
     def get_meta(self, media_type, name, imdb_id='', tmdb_id='', year='', season='', episode='', update=False):
