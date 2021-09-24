@@ -1445,18 +1445,17 @@ def showMovies(sSearch=''):
     if (bNews or sYear or sGenre or sRes) and len(listeIDs) > 1:
         moviesNews = []
         i = j = k = 0
-        if bNews:   # Si pas de tris, pas besoin de mixer plus qu'on peut en afficher
-            lenMovie = min(len(movies), numItem + ITEM_PAR_PAGE + 1 )
-        else:
-            lenMovie = len(movies)
-        while k < lenMovie:
+        nbMovies = lenMovies = len(movies)
+        if bNews:   # Si pas de tris, pas besoin de mixer plus qu'on peut en afficher (marge pour gérer les doublons)
+            nbMovies = min(lenMovies, numItem + 1.5*ITEM_PAR_PAGE )
+        while k < nbMovies:
             if i < pasteMaxLen[j]:
                 moviesNews.append(movies[i])
                 k += 1
             i += pasteLen[j]
             j += 1
             if j >= len(pasteMaxLen):
-                i = (i % lenMovie) + 1
+                i = (i % lenMovies) + 1
                 j=0
 
         movies = moviesNews
