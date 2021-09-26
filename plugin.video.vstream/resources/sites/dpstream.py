@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# source 26 https://dpstream.ch/  creation 18/10/2020
 # update 15/04/2021
-return False
+# return False
 
 import re
 
@@ -18,7 +17,7 @@ SITE_IDENTIFIER = 'dpstream'
 SITE_NAME = 'DpStream'
 SITE_DESC = 'Series et Films en VF ou VOSTFR '
 
-URL_MAIN = 'https://dpstream.ch/'
+URL_MAIN = "https://dpstream.io/"
 
 MOVIE_NEWS = (URL_MAIN + 'film-streaming', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
