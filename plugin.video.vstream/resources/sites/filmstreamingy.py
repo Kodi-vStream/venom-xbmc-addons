@@ -130,7 +130,7 @@ def showMovies(sSearch=''):
             sTitle = aEntry[3].replace(' en streaming', '').replace(' en Streaming', '').replace(' Streaming', '')\
                               .replace(' streaming', '').replace(' Straming', '').replace('Version Francais', 'VF')
             sYear = aEntry[4]
-            sDesc = aEntry[5].replace('<p>', '').replace('&#8220;', '"').replace('&#8221;', '"')
+            sDesc = aEntry[5].replace('<p>', '')
 
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sYear)
 
