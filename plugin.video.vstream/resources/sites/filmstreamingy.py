@@ -33,7 +33,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Film', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
@@ -106,7 +106,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'ml-item">.+?href="([^"]+).+?(?:|quality">([^<]*).+?)-src="([^"]+).+?alt="([^"]+).+?(?:|tag">([^<]*).+?)desc">(.*?)</'
+    sPattern = 'item">.+?href="([^"]+).+?(?:|quality">([^<]*).+?)src="(http[^"]+).+?alt="([^"]+).+?(?:|tag">([^<]*).+?)desc">(.*?)</'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
