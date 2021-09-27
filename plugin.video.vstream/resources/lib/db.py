@@ -404,7 +404,7 @@ class cDb:
 
     def get_bookmark(self):
 
-        sql_select = 'SELECT * FROM favorite'
+        sql_select = 'SELECT * FROM favorite order by addon_id desc'
 
         try:
             self.dbcur.execute(sql_select)
