@@ -548,7 +548,7 @@ class cTMDb:
             'duration': (int(meta.get('episode_run_time', 0)[0]) if meta.get('episode_run_time', 0) else meta.get('runtime', 0))*60,
             'plot':  ''.join([meta.get(key, "") for key in ['s_overview', 'overview', 'biography'] if meta.get(key) != None]),
             'mpaa': meta.get('mpaa', ""),
-            'premiered': meta.get('s_premiered', "") if meta.get('s_premiered') else meta.get('release_date', "") if meta.get('release_date') else meta.get('first_air_date', ""), 
+            'premiered': meta.get('s_premiered', "") if meta.get('s_premiered') else meta.get('release_date', "") if meta.get('release_date') else meta.get('first_air_date', "") if meta.get('first_air_date') else meta.get('air_date', ""),
             'year': meta.get('s_year', 0) if meta.get('s_year') else meta.get('year', 0),
             'trailer': '',
             'tagline': meta.get('name') if media_type == "episode" else meta.get('tagline'),
@@ -683,9 +683,11 @@ class cTMDb:
         # Pas dans le cache, à récupérer depuis TMDB
         if not _meta['director'] and not _meta['writer']:
             crews = []
-            if "credits" in meta:  # cas des épisodes
+            if "credits" in meta:
                 crews = eval(str(meta['credits']['crew']))
                 _meta['crew'] = json.dumps(crews)
+            elif "crew" in meta: # cas des épisodes
+                crews = eval(str(meta['crew']))
 
             if len(crews) > 0:
                 for crew in crews:
