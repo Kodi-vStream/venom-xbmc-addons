@@ -1401,7 +1401,7 @@ def showMovies(sSearch=''):
     if 'sSaga' in aParams:
         sSaga = aParams['sSaga'].replace(' | ', ' & ')
     if 'sGroupe' in aParams:
-        sGroupe = aParams['sGroupe'].replace(' | ', ' & ')
+        sGroupe = "'" + aParams['sGroupe'].replace(' | ', ' & ') + "'"
     if 'sYear' in aParams:
         sYear = aParams['sYear']
     if 'sRes' in aParams:
@@ -1447,7 +1447,11 @@ def showMovies(sSearch=''):
         i = j = k = 0
         nbMovies = lenMovies = len(movies)
         if bNews:   # Si pas de tris, pas besoin de mixer plus qu'on peut en afficher (marge pour gérer les doublons)
-            nbMovies = min(lenMovies, numItem + 1.5*ITEM_PAR_PAGE )
+            if 'film' in sMedia or 'divers' in sMedia:
+                nbMovies = min(lenMovies, numItem + 1.5*ITEM_PAR_PAGE )
+            else:
+                nbMovies = min(lenMovies, numItem + 3*ITEM_PAR_PAGE )   # beaucoup de doublons de séries à cause des saisons
+
         while k < nbMovies:
             if i < pasteMaxLen[j]:
                 moviesNews.append(movies[i])
@@ -1507,6 +1511,16 @@ def showMovies(sSearch=''):
         if pbContent.CAT >=0 and sMedia not in movie[pbContent.CAT]:
             continue
 
+        # Filtrage par liste
+        if sGroupe and pbContent.GROUPES >= 0:
+            groupes = movie[pbContent.GROUPES].strip()
+            if not groupes or groupes == '[]':
+                continue
+            # groupes = eval(groupes)
+            groupes = groupes.replace('"', "'")
+            if sGroupe not in groupes:
+                continue
+
         # Filtrage par saga
         if sSaga and sSaga != movie[pbContent.SAISON].strip():
             continue
@@ -1546,17 +1560,8 @@ def showMovies(sSearch=''):
             listNetwork = movie[pbContent.NETWORK].strip()
             if not listNetwork:
                 continue
-            listNetwork = eval(listNetwork)
+            # listNetwork = eval(listNetwork)
             if sNetwork not in listNetwork:
-                continue
-
-        # Filtrage par groupe
-        if sGroupe and pbContent.GROUPES >= 0:
-            groupes = movie[pbContent.GROUPES].strip()
-            if not groupes:
-                continue
-            groupes = eval(groupes)
-            if sGroupe not in groupes:
                 continue
 
         # Filtrage par titre
