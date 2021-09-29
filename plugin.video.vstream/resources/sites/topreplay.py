@@ -20,12 +20,13 @@ SITE_IDENTIFIER = 'topreplay'
 SITE_NAME = 'TopReplay'
 SITE_DESC = 'Replay TV'
 
-URL_MAIN = 'https://www.topreplay.video'
+URL_MAIN = "https://topreplay.cc/"
 URL_SEARCH = (URL_MAIN + '/?s=', 'showMovies')
 URL_SEARCH_MISC = (URL_MAIN + '/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-REPLAYTV_GENRES = (True, 'showGenre')
+REPLAYTV_GENRES = (True, 'showGenres')
+REPLAYTV_TVSHOWS = (True, 'showTvShows')
 REPLAYTV_NEWS = (URL_MAIN, 'showMovies')
 REPLAYTV_REPLAYTV = ('http://', 'load')
 
@@ -43,6 +44,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_GENRES[1], 'Genres', 'replay.png', oOutputParameterHandler)
 
+    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_TVSHOWS[0])
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_TVSHOWS[1], 'Emissions TV', 'tv.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
 
 
@@ -56,18 +60,18 @@ def showSearch():
         return
 
 
-def showGenre():
+def showGenres():
     oGui = cGui()
     oParser = cParser()
 
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
-    sStart = 'class="main-menu menu bsm-pure clearfix">'
-    sEnd = '<span class="menu-handler">'
-    reducesHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
+    sStart = 'Categories</h4>'
+    sEnd = 'ÉMISSIONS TV'
+    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
 
-    sPattern = '<a href="([^"]+)">([^<]+)</a>'
-    aResult = oParser.parse(reducesHtmlContent, sPattern)
+    sPattern = 'href="([^"]+)"><span class="category-text">([^<]+)'
+    aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
@@ -77,10 +81,44 @@ def showGenre():
             if progress_.iscanceled():
                 break
 
+            sUrl = aEntry[0]
             sTitle = aEntry[1]
             if 'Contactez' in sTitle:
                 continue
+
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'replay.png', oOutputParameterHandler)
+
+        progress_.VSclose(progress_)
+
+    oGui.setEndOfDirectory()
+
+
+def showTvShows():
+    oGui = cGui()
+    oParser = cParser()
+
+    oRequestHandler = cRequestHandler(URL_MAIN)
+    sHtmlContent = oRequestHandler.request()
+    sStart = 'ÉMISSIONS TV'
+    sEnd = '</div></div> </aside>'
+    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
+
+    sPattern = 'href="([^"]+)">([^<]+)</a>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
+        for aEntry in aResult[1]:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
+
             sUrl = aEntry[0]
+            sTitle = aEntry[1]
+            if 'Contactez' in sTitle:
+                continue
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'replay.png', oOutputParameterHandler)
@@ -100,7 +138,7 @@ def showMovies(sSearch=''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'data-src="([^"]+)".+?class="title"> *<a href="([^"]+)".+?class="post-title post-url">([^<]+)</a>'
+    sPattern = 'meta-image".+?href="([^"]+)" title="([^"]+).+?src="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -110,9 +148,9 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            sThumb = aEntry[0]
-            sUrl = aEntry[1]
-            sTitle = aEntry[2]
+            sUrl = aEntry[0]
+            sTitle = aEntry[1]
+            sThumb = aEntry[2]
             if 'Générateur compte' in sTitle:
                 continue
 
@@ -133,13 +171,22 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = 'class=\'pages\'>Page.+?sur ([^<]+)<.+?<a class="nextpostslink" rel="next" href="([^"]+)'
+    sPattern = 'title>TopReplay - Page [\d+] sur (\d+).+?href="([^"]+)"\s*>Chargez plus'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('/page/([0-9]+)', sNextPage).group(1)
         sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
+
+    # premiere page
+    sPattern = 'href="([^"]+)"\s*>Chargez plus'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        sNextPage = aResult[1][0]
+        sNumberNext = re.search('/page/([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext
         return sNextPage, sPaging
 
     return False, 'none'
@@ -156,7 +203,7 @@ def showLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<a href="(https://mon-tele.com/.+?)".+?>([^<]+)'
+    sPattern = 'href="([^<]+)" target="_blank"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -166,7 +213,7 @@ def showLinks():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sHosterUrl = aEntry[0]
-            sTitle = sMovieTitle + ' ' + aEntry[1]
+            sTitle = sMovieTitle
 
             oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
