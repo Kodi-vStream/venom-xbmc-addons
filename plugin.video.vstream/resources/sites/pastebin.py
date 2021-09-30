@@ -1443,18 +1443,26 @@ def showMovies(sSearch=''):
 
     # si plusieurs pastes, on les parcourt en parallèle
     if (bNews or sYear or sGenre or sRes) and len(listeIDs) > 1:
+        listName = set()
         moviesNews = []
         i = j = k = 0
-        nbMovies = lenMovies = len(movies)
-        if bNews:   # Si pas de tris, pas besoin de mixer plus qu'on peut en afficher (marge pour gérer les doublons)
-            if 'film' in sMedia or 'divers' in sMedia:
-                nbMovies = min(lenMovies, numItem + 1.5*ITEM_PAR_PAGE )
-            else:
-                nbMovies = min(lenMovies, numItem + 3*ITEM_PAR_PAGE )   # beaucoup de doublons de séries à cause des saisons
+        lenMovies = len(movies)
+        if bNews:   # Si pas de tris, pas besoin de récupérer plus qu'on ne peut en afficher
+            nbMoviesNewsMax = min(lenMovies, numItem + ITEM_PAR_PAGE + 1 )
+            nbMoviesNews = 0
 
-        while k < nbMovies:
+        while k < lenMovies:
             if i < pasteMaxLen[j]:
-                moviesNews.append(movies[i])
+                if bNews:
+                    movieName = movies[i][pbContent.TITLE]
+                    if movieName not in listName:        # trie des séries en doublons (à cause des saisons)
+                        listName.add(movieName)
+                        moviesNews.append(movies[i])
+                        nbMoviesNews += 1
+                        if nbMoviesNews == nbMoviesNewsMax:
+                            break
+                else:
+                    moviesNews.append(movies[i])
                 k += 1
             i += pasteLen[j]
             j += 1
@@ -1806,11 +1814,11 @@ def showEpisodesLinks(siteUrl=''):
 
     lines = getHosterList(siteUrl)
 
-    listeEpisodes = []
+    listeEpisodes = set()
     for episode in lines:
         for numEpisode in episode.keys():
             if numEpisode not in listeEpisodes:
-                listeEpisodes.append(numEpisode)
+                listeEpisodes.add(numEpisode)
 
     sDisplaySaison = sSaison
     if sSaison.isdigit():
