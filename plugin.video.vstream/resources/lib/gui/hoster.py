@@ -29,8 +29,10 @@ class cHosterGui:
         movieFunc = oInputParameterHandler.getValue('movieFunc')
         sLang = oInputParameterHandler.getValue('sLang')
         sRes = oInputParameterHandler.getValue('sRes')
-        sFav = oInputParameterHandler.getValue('sFav')
         sTmdbId = oInputParameterHandler.getValue('sTmdbId')
+        sFav = oInputParameterHandler.getValue('sFav')
+        if not sFav:
+            sFav = oInputParameterHandler.getValue('function')
 
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(self.SITE_NAME)
