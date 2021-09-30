@@ -209,7 +209,7 @@ def showSeries(sSearch=''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'class="shortstory">.+?href="([^"]+).+?src="(http[^"]+).+?>([^<]+)</a></h4>'
+    sPattern = 'class="shortstory">.+?href="([^"]+).+?data-src="([^"]+).+?>([^<]+)<\/a><\/h4>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -273,7 +273,7 @@ def showSaisons():
     if (aResult[0] == True):
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', aResult[1][0])
 
-    sPattern = 'class="short-images.+?href="([^"]+).+?<img src="([^"]+).+?<figcaption>([^<]+)'
+    sPattern = 'class="shortstory">.+?href="([^"]+).+?data-src="([^"]+).+?<figcaption>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
