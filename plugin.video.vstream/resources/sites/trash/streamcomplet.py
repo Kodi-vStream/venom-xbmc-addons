@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-return False  # 06/02/2021
+# return False  # 06/02/2021
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -57,24 +57,14 @@ def showSearch():
 def showGenres():
     oGui = cGui()
 
-    liste = []
-    liste.append(['Action', URL_MAIN + 'films/action/'])
-    liste.append(['Animation', URL_MAIN + 'films/animation/'])
-    liste.append(['Aventure', URL_MAIN + 'films/aventure/'])
-    liste.append(['Comédie', URL_MAIN + 'films/comedie/'])
-    liste.append(['Drame', URL_MAIN + 'films/drame/'])
-    liste.append(['Fiction', URL_MAIN + 'films/fiction/'])
-    liste.append(['Guerre', URL_MAIN + 'films/guerre/'])
-    liste.append(['Historique', URL_MAIN + 'films/historique/'])
-    liste.append(['Horreur', URL_MAIN + 'films/horreur/'])
-    liste.append(['Musique', URL_MAIN + 'films/musical/'])
-    liste.append(['Policier', URL_MAIN + 'films/policier/'])
-    liste.append(['Romance', URL_MAIN + 'films/romance/'])
-    liste.append(['Thriller', URL_MAIN + 'films/thriller/'])
+    liste = [['Action', 'action'], ['Animation', 'animation'], ['Aventure', 'aventure'], ['Comédie', 'comedie'],
+             ['Drame', 'drame'], ['Fiction', 'fiction'], ['Guerre', 'guerre'], ['Historique', 'historique'],
+             ['Horreur', 'horreur'], ['Musique', 'musical'], ['Policier', 'policier'], ['Romance', 'romance'],
+             ['Thriller', 'thriller']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/' + sUrl + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
