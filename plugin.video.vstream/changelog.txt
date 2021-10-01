@@ -17,6 +17,7 @@ Historique des modifications
 - Meilleure intégration de DNSPython
 - Amélioration des performances
 - Amélioration sur l'affichage des métadonnées (sagas, titre des épisodes, ...)
+- Meilleur support de Uptostream
 
 *** 1.4.0***
 - En cours de lecture : ajout d'une section avec les médias commencés
