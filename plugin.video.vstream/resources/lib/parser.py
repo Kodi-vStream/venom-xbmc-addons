@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-from operator import itemgetter
 import re
 
 class cParser:
@@ -34,21 +33,6 @@ class cParser:
     def parse(self, sHtmlContent, sPattern, iMinFoundValue=1):
         sHtmlContent = self.__replaceSpecialCharacters(str(sHtmlContent))
         aMatches = re.compile(sPattern, re.IGNORECASE).findall(sHtmlContent)
-
-        #Source non compatible avec le tri :
-        #- Celle qui utilise oGui.
-        #- Celle qui se base sur l'ordre des tuple pour ajouter du texte (voir hds_fm).
-        #- French-Stream lol a cause des valeurs random sur le site comme "ABCDE".
-        try:
-            if "episode" in str(aMatches) and not aMatches[0][1] == "" and not "ABCDE" in str(aMatches):
-                if aMatches[1][0] and not "/" in str(aMatches[1][0]):
-                    aMatches = self.sorted_nicely(aMatches, itemgetter(0))
-                elif aMatches[1][1] and not "/" in str(aMatches[1][1]):
-                    aMatches = self.sorted_nicely(aMatches, itemgetter(1))
-                else:
-                    aMatches = self.sorted_nicely(aMatches, itemgetter(2))                 
-        except Exception as e:
-            pass
 
         if (len(aMatches) >= iMinFoundValue):
             return True, aMatches
