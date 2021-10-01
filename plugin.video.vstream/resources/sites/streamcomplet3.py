@@ -11,8 +11,8 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 from resources.lib.util import cUtil
 
-SITE_IDENTIFIER = 'streamcomplet3_2'
-SITE_NAME = 'Streamcomplet3 (2)'
+SITE_IDENTIFIER = 'streamcomplet3'
+SITE_NAME = 'Streamcomplet3'
 SITE_DESC = 'Films en streaming.'
 
 URL_MAIN = "https://w6.streamcomplet3.tv/"
