@@ -1453,16 +1453,18 @@ def showMovies(sSearch=''):
 
         while k < lenMovies:
             if i < pasteMaxLen[j]:
-                if bNews:
-                    movieName = movies[i][pbContent.TITLE]
-                    if movieName not in listName:        # trie des séries en doublons (à cause des saisons)
-                        listName.add(movieName)
+                # Filtrage par média (film/série)
+                if pbContent.CAT >=0 and sMedia in movies[i][pbContent.CAT]:
+                    if bNews:
+                        movieName = movies[i][pbContent.TITLE]
+                        if movieName not in listName:        # trie des séries en doublons (à cause des saisons)
+                            listName.add(movieName)
+                            moviesNews.append(movies[i])
+                            nbMoviesNews += 1
+                            if nbMoviesNews == nbMoviesNewsMax:
+                                break
+                    else:
                         moviesNews.append(movies[i])
-                        nbMoviesNews += 1
-                        if nbMoviesNews == nbMoviesNewsMax:
-                            break
-                else:
-                    moviesNews.append(movies[i])
                 k += 1
             i += pasteLen[j]
             j += 1
@@ -1493,8 +1495,8 @@ def showMovies(sSearch=''):
             numItem = (numPage-1) * ITEM_PAR_PAGE
 
     if bRandom:
-        # Génération d'indices aléatoires, ajout de deux indices car les doublons aléatoires sont rassemblés
-        randoms = [random.randint(0, len(movies)) for _ in range(ITEM_PAR_PAGE+2)]
+        # Génération d'indices aléatoires, ajout d'une marge car les doublons aléatoires sont rassemblés
+        randoms = [random.randint(0, len(movies)) for _ in range(ITEM_PAR_PAGE*2)]
 
     movieIds = set()
 
