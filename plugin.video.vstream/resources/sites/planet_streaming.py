@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+return False  # 01/10/21 WAAW en hoster
 
 import re
 
@@ -16,7 +17,7 @@ SITE_IDENTIFIER = 'planet_streaming'
 SITE_NAME = 'Planet Streaming'
 SITE_DESC = 'Films en Streaming complet VF HD'
 
-URL_MAIN = 'https://w1w.planet-streaming1.com/'
+URL_MAIN = "https://w1w.planet-streaming1.com/"
 
 MOVIE_MOVIE = (True, 'load')
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
@@ -64,37 +65,19 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    liste = []
-    liste.append(['Action', sUrl + 'action/'])
-    liste.append(['Animation', sUrl + 'animation/'])
-    liste.append(['Arts Martiaux', sUrl + 'arts-martiaux/'])
-    liste.append(['Aventure', sUrl + 'aventure/'])
-    liste.append(['Biopic', sUrl + 'biopic/'])
-    liste.append(['Comédie', sUrl + 'comedie/'])
-    liste.append(['Comédie Dramatique', sUrl + 'comedie-dramatique/'])
-    liste.append(['Comédie Musicale', sUrl + 'comedie-musicale/'])
-    liste.append(['Documentaire', sUrl + 'documentaire/'])
-    liste.append(['Drame', sUrl + 'drame/'])
-    liste.append(['Epouvante Horreur', sUrl + 'epouvante-horreur/'])
-    liste.append(['Espionnage', sUrl + 'espionnage/'])
-    liste.append(['Famille', sUrl + 'famille/'])
-    liste.append(['Fantastique', sUrl + 'fantastique/'])
-    liste.append(['Guerre', sUrl + 'guerre/'])
-    liste.append(['Historique', sUrl + 'historique/'])
-    liste.append(['Musical', sUrl + 'musical/'])
-    liste.append(['Péplum', sUrl + 'peplum/'])
-    liste.append(['Policier', sUrl + 'policier/'])
-    liste.append(['Romance', sUrl + 'romance/'])
-    liste.append(['Science Fiction', sUrl + 'science-fiction/'])
-    liste.append(['Thriller', sUrl + 'thriller/'])
-    liste.append(['Western', sUrl + 'western/'])
+    liste = [['Action', 'action'], ['Animation', 'animation'], ['Arts Martiaux', 'arts-martiaux'],
+             ['Aventure', 'aventure'], ['Biopic', 'biopic'], ['Comédie', 'comedie'],
+             ['Comédie Dramatique', 'comedie-dramatique'], ['Comédie Musicale', 'comedie-musicale'],
+             ['Documentaire', 'documentaire'], ['Drame', 'drame'], ['Epouvante Horreur', 'epouvante-horreur'],
+             ['Espionnage', 'espionnage'], ['Famille', 'famille'], ['Fantastique', 'fantastique'],
+             ['Guerre', 'guerre'], ['Historique', 'historique'], ['Musical', 'musical'], ['Péplum', 'peplum'],
+             ['Policier', 'policier'], ['Romance', 'romance'], ['Science Fiction', 'science-fiction'],
+             ['Thriller', 'thriller'], ['Western', 'western']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + sUrl + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
