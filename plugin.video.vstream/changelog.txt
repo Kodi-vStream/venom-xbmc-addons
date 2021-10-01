@@ -14,8 +14,9 @@ Historique des modifications
 
 *** 1.5.0***
 - Contrat de licence sur l'utilisation du code vStream
-- Amélioration des performances
 - Meilleure intégration de DNSPython
+- Amélioration des performances
+- Amélioration sur l'affichage des métadonnées (sagas, titre des épisodes, ...)
 
 *** 1.4.0***
 - En cours de lecture : ajout d'une section avec les médias commencés
