@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-
 from resources.lib.config import GestionCookie
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, VSlog, isMatrix, CountdownDialog
+from resources.lib.comaddon import dialog, VSlog, isMatrix, CountdownDialog, xbmc
 from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
@@ -100,8 +99,24 @@ class cHoster(iHoster):
         r1 = s.get(r["data"]["user_url"]).text
         tok = re.search('token.+?;.+?;(.+?)&', r1).group(1)
 
-        with CountdownDialog("Autorisation nécessaire", "Pour voir cette vidéo, veuillez vous connecter", "Allez sur ce lien : " + r['data']['user_url'], "Et valider le pin : " + r['data']['pin'], True, r["data"]['expired_in'], 10) as cd:
-            js_result = cd.start(self.__check_auth, [r["data"]["check_url"]])["data"]
+        if not xbmc.getCondVisibility('system.platform.android'):
+            # Si possible on ouvre la page automatiquement dans un navigateur internet.
+            import webbrowser
+            webbrowser.open(r['data']['user_url'])
+            with CountdownDialog("Autorisation nécessaire", "Pour voir cette vidéo, veuillez vous connecter", "Allez sur ce lien : " + r['data']['user_url'], "Et valider le pin : " + r['data']['pin'], True, r["data"]['expired_in'], 10) as cd:
+                js_result = cd.start(self.__check_auth, [r["data"]["check_url"]])["data"]
+        else:
+            from resources.lib import pyqrcode
+            from resources.lib.librecaptcha.gui import cInputWindowYesNo
+            qr = pyqrcode.create(r['data']['user_url'])
+            qr.png('special://home/userdata/addon_data/plugin.video.vstream/qrcode.png', scale=5)
+            oSolver = cInputWindowYesNo(captcha='special://home/userdata/addon_data/plugin.video.vstream/qrcode.png', msg="Scanner le QRCode pour acceder au lien d'autorisation", roundnum=1)
+            retArg = oSolver.get()
+            DIALOG = dialog()
+            if retArg == "N":
+                return False
+
+            js_result = s.get(r["data"]["check_url"]).json()["data"]
 
         #Deux modes de fonctionnement different.
         if js_result.get("streamLinks").get('src'):
