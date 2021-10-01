@@ -19,7 +19,7 @@ SITE_IDENTIFIER = 'dpstreaming'
 SITE_NAME = 'DP Streaming'
 SITE_DESC = 'Séries en Streaming'
 
-URL_MAIN = 'https://series.dpstreaming.to/'
+URL_MAIN = "https://series.dpstreaming.to/"
 
 SERIE_SERIES = (True, 'load')
 SERIE_NEWS = (URL_MAIN + 'serie-category/series/', 'showMovies')
@@ -126,43 +126,20 @@ def showSeriesSearch():
 def showGenres():
     oGui = cGui()
 
-    liste = []
-    liste.append(['Action', URL_MAIN + 'serie-category/series/action/'])
-    liste.append(['Animation', URL_MAIN + 'serie-category/series/animation/'])
-    liste.append(['Arts Martiaux', URL_MAIN + 'serie-category/series/arts-martiaux/'])
-    liste.append(['Aventure', URL_MAIN + 'serie-category/series/aventure/'])
-    liste.append(['Biopic', URL_MAIN + 'serie-category/series/biopic/'])
-    liste.append(['Classique', URL_MAIN + 'serie-category/series/classique/'])
-    liste.append(['Comédie', URL_MAIN + 'serie-category/series/comedie/'])
-    liste.append(['Comédie dramatique', URL_MAIN + 'serie-category/series/comedie-dramatique/'])
-    liste.append(['Comédie musicale', URL_MAIN + 'serie-category/series/comedie-musicale/'])
-    liste.append(['Dessin animés', URL_MAIN + 'serie-category/series/dessin-anime/'])
-    liste.append(['Divers', URL_MAIN + 'serie-category/series/divers/'])
-    liste.append(['Documentaires', URL_MAIN + 'serie-category/series/documentaire/'])
-    liste.append(['Drama', URL_MAIN + 'serie-category/series/drama/'])
-    liste.append(['Drame', URL_MAIN + 'serie-category/series/drame/'])
-    liste.append(['Epouvante-Horreur', URL_MAIN + 'serie-category/series/epouvante-horreur/'])
-    liste.append(['Espionnage', URL_MAIN + 'serie-category/series/espionnage/'])
-    liste.append(['Expérimental', URL_MAIN + 'serie-category/series/experimental/'])
-    liste.append(['Famille', URL_MAIN + 'serie-category/series/famille/'])
-    liste.append(['Fantastique', URL_MAIN + 'serie-category/series/fantastique/'])
-    liste.append(['Guerre', URL_MAIN + 'serie-category/series/guerre/'])
-    liste.append(['Historique', URL_MAIN + 'serie-category/series/historique/'])
-    liste.append(['Judiciaire', URL_MAIN + 'serie-category/series/judiciaire/'])
-    liste.append(['Médical', URL_MAIN + 'serie-category/series/medical/'])
-    liste.append(['Musical', URL_MAIN + 'serie-category/series/musical/'])
-    liste.append(['Péplum', URL_MAIN + 'serie-category/series/peplum/'])
-    liste.append(['Policier', URL_MAIN + 'serie-category/series/policier/'])
-    liste.append(['Romance', URL_MAIN + 'serie-category/series/romance/'])
-    liste.append(['Science Fiction', URL_MAIN + 'serie-category/series/science-fiction/'])
-    liste.append(['soap', URL_MAIN + 'serie-category/series/soap/'])
-    liste.append(['Thriller', URL_MAIN + 'serie-category/series/thriller/'])
-    liste.append(['Websérie', URL_MAIN + 'serie-category/series/webserie/'])
-    liste.append(['Western', URL_MAIN + 'serie-category/series/western/'])
+    liste = [['Action', 'action'], ['Animation', 'animation'], ['Arts Martiaux', 'arts-martiaux'],
+             ['Aventure', 'aventure'], ['Biopic', 'biopic'], ['Classique', 'classique'], ['Comédie', 'comedie'],
+             ['Comédie dramatique', 'comedie-dramatique'], ['Comédie musicale', 'comedie-musicale'],
+             ['Dessin animés', 'dessin-anime'], ['Divers', 'divers'], ['Documentaires', 'documentaire'],
+             ['Drama', 'drama'], ['Drame', 'drame'], ['Epouvante-Horreur', 'epouvante-horreur'],
+             ['Espionnage', 'espionnage'], ['Expérimental', 'experimental'], ['Famille', 'famille'],
+             ['Fantastique', 'fantastique'], ['Guerre', 'guerre'], ['Historique', 'historique'],
+             ['Judiciaire', 'judiciaire'], ['Médical', 'medical'], ['Musical', 'musical'], ['Péplum', 'peplum'],
+             ['Policier', 'policier'], ['Romance', 'romance'], ['Science Fiction', 'science-fiction'], ['soap', 'soap'],
+             ['Thriller', 'thriller'], ['Websérie', 'webserie'], ['Western', 'western']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'serie-category/series/' + sUrl + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
