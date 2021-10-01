@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'streamcomplet3_2'
 SITE_NAME = 'Streamcomplet3 (2)'
 SITE_DESC = 'Films en streaming.'
 
-URL_MAIN = 'https://streamcomplet3.tv/'
+URL_MAIN = "https://w6.streamcomplet3.tv/"
 
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -95,7 +95,7 @@ def showMovies(sSearch=''):
         sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = 'th-item.+?href="([^"]+)" title="([^"]+).+?src="([^"]+).+?cat nowrap">([^<]*)'
+    sPattern = 'th-item.+?href="([^"]+)" title="([^"]+).+?src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -112,8 +112,9 @@ def showMovies(sSearch=''):
 
             sUrl2 = aEntry[0]
             sTitle = aEntry[1]
-            sThumb = URL_MAIN[:-1] + aEntry[2]
-            sYear = aEntry[3]
+            sThumb = aEntry[2]
+            if sThumb.startswith('/'):
+                sThumb = URL_MAIN[:-1] + aEntry[2]
 
             # filtre search
             if sSearch and total > 5:
@@ -123,7 +124,6 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
