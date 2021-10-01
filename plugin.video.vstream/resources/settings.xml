@@ -215,6 +215,8 @@
 
         <setting visible="false" id="plugin_streaming_series" type="bool" label="Streaming-Series" default="true"/>
 
+        <setting visible="false" id="plugin_streamingdivx" type="bool" label="StreamingDivx" default="true"/>
+
         <setting visible="false" id="plugin_streaminz" type="bool" label="Streaminz" default="true"/>
 
         <setting visible="false" id="plugin_streampourvous" type="bool" label="Streampourvous" default="true"/>
