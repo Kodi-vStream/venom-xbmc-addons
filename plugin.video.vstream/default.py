@@ -2,7 +2,6 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 # from resources.lib.statistic import cStatistic
-from resources.lib.gui.hoster import cHosterGui
 from resources.lib.home import cHome
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.pluginHandler import cPluginHandler
@@ -239,6 +238,7 @@ def setSettings(oInputParameterHandler):
     
 def isHosterGui(sSiteName, sFunction):
     if sSiteName == 'cHosterGui':
+        from resources.lib.gui.hoster import cHosterGui
         oHosterGui = cHosterGui()
         exec("oHosterGui." + sFunction + "()")
         return True

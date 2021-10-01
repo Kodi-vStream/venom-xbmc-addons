@@ -11,6 +11,7 @@ from resources.lib.util import UnquotePlus
 SITE_IDENTIFIER = 'cViewing'
 SITE_NAME = 'Viewing'
 
+
 class cViewing:
 
     DIALOG = dialog()
@@ -22,14 +23,13 @@ class cViewing:
         sTitleWatched = oInputParameterHandler.getValue('sTitleWatched')
         sCat = oInputParameterHandler.getValue('sCat')
 
-        if not sTitleWatched:    # confirmation if delete ALL
+        if not sTitleWatched:  # confirmation if delete ALL
             if not self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
                 return False
 
         meta = {}
         meta['titleWatched'] = sTitleWatched
         meta['cat'] = sCat
-
 
         if cDb().del_viewing(meta):
             self.DIALOG.VSinfo(addon().VSlang(30072))
@@ -55,7 +55,7 @@ class cViewing:
     def getViewing(self):
         oGui = cGui()
         DB = cDb()
-        oInputParameterHandler = cInputParameterHandler()
+        # oInputParameterHandler = cInputParameterHandler()
 
         row = DB.get_viewing()
         if not row:
@@ -86,7 +86,7 @@ class cViewing:
                 function = data['fav']
                 cat = data['cat']
                 sSeason = data['season']
-                sTmdbId = data['tmdb_id']# if 'tmdb_id' in data else None
+                sTmdbId = data['tmdb_id']  # if 'tmdb_id' in data else None
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', siteurl)
@@ -103,12 +103,12 @@ class cViewing:
                 resumetime, totaltime = DB.get_resume(meta)
                 oOutputParameterHandler.addParameter('ResumeTime', resumetime)
                 oOutputParameterHandler.addParameter('TotalTime', totaltime)
-                
-                if cat=='1':
+
+                if cat == '1':
                     oListItem = oGui.addMovie(site, function, title, 'films.png', '', title, oOutputParameterHandler)
-                elif cat=='5':
+                elif cat == '5':
                     oListItem = oGui.addMisc(site, function, title, 'films.png', '', title, oOutputParameterHandler)
-                elif cat=='4':
+                elif cat == '4':
                     oListItem = oGui.addSeason(site, function, title, 'series.png', '', title, oOutputParameterHandler)
                 else:
                     oListItem = oGui.addTV(site, function, title, 'series.png', '', title, oOutputParameterHandler)
@@ -119,7 +119,7 @@ class cViewing:
 
             except Exception as e:
                 pass
-        
+
         # Vider toute la catégorie n'est pas accessible lors de l'utilisation en Widget
         if not xbmc.getCondVisibility('Window.IsActive(home)'):
             oOutputParameterHandler = cOutputParameterHandler()

@@ -24,6 +24,7 @@ SITE_NAME = 'Channel Stream'
 SITE_DESC = 'iptv'
 
 URL_MAIN = 'https://channelstream.watch'
+SPORT_LIVE  = (URL_MAIN + '/programme.php', 'showMovies')
 
 TV_FRENCH = (URL_MAIN + "/chaine-tv.php", 'showMovies')
 
@@ -39,9 +40,12 @@ def load():
     liste.append(['Sport', 'Chaîne Sportive', 'sport.png', False])
     liste.append(['Science et Nature', 'Chaîne axés sur les sciences', 'buzz.png', False])
     if addon().getSetting('contenu_adulte') == 'true':
-        liste.append(['Adulte', 'Chaîne consacrée aux Film', 'buzz.png', True])
+        liste.append(['Adulte', 'Chaîne consacrée aux Film', 'buzz.png', True]) 
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
+    oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Sports (En direct)', 'replay.png', oOutputParameterHandler)
+
     for sTitle, sFiltre, sIcon, bAdulte in liste:
         oOutputParameterHandler.addParameter('siteUrl', TV_FRENCH[0])
         oOutputParameterHandler.addParameter('sFiltre', sFiltre)
@@ -65,9 +69,11 @@ def showMovies():
     if isMatrix():
         sHtmlContent = sHtmlContent.replace('Ã®','î').replace('Ã©','é')
 
-    sHtmlContent = oParser.abParse(sHtmlContent, sFiltre, '<!-- Type Chaîne -->')
-
-    sPattern = 'location.href = \'\.(.+?)\'.+?src=\'(.+?)\'.+?<div align="center">(.+?)</div>'
+    if "programme" in sUrl:
+        sPattern = "colspan='7'.+?<b>([^<]+)</b>.+?location\.href = '([^']+)'.+?text-align.+?>(.+?)</td>.+?src='([^']+)'.+?text-align.+?>([^<]+)<.+?text-align: left.+?>([^<]+)<"
+    else:
+        sPattern = 'location.href = \'\.(.+?)\'.+?src=\'(.+?)\'.+?<div align="center">(.+?)</div>'
+        sHtmlContent = oParser.abParse(sHtmlContent, sFiltre, '<!-- Type Chaîne -->')
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -79,30 +85,52 @@ def showMovies():
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
+            if "programme" in sUrl:
+                sTitle = aEntry[0]                
+                sUrl2 = aEntry[1]
+                sDate = aEntry[2].replace('<br />',' ')
+                sThumb = aEntry[3]
+                sdesc1 = aEntry[4]
+                sdesc2 = aEntry[5]
 
-            # Trie des chaines adultes 
-            if "+18" in str(aEntry[2]):
-                if not bAdulte:
+                sDisplayTitle = sTitle
+                if sdesc1:
+                    sDisplayTitle += ' ' + sdesc1 + ' - ' + sdesc2
+                if sDate:
+                    try:
+                        d = datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S+02:00')[0:6]))
+                        sDate = d.strftime("%H:%M %d/%m/%y")
+                    except Exception as e:
+                        pass
+                    sDisplayTitle += ' - ' + sDate
+
+            else:
+                # Trie des chaines adultes 
+                if "+18" in str(aEntry[2]):
+                    if not bAdulte:
+                        continue
+                elif bAdulte:
                     continue
-            elif bAdulte:
-                continue
 
-            sTitle = aEntry[2]
-            if "<" in sTitle:
-                sTitle = sTitle.split('<')[0]
+                sTitle = aEntry[2]
+                if "<" in sTitle:
+                    sTitle = sTitle.split('<')[0]
 
-            if 'Canal + Série' in sTitle:
-                sTitle = 'Canal + Séries'
+                if 'Canal + Série' in sTitle:
+                    sTitle = 'Canal + Séries'
 
-            sUrl2 = URL_MAIN + aEntry[0]
-            sThumb = URL_MAIN + '/' + aEntry[1]
-            sDesc = getEPG(EPG, sTitle)
+                sUrl2 = URL_MAIN + aEntry[0]
+                sThumb = URL_MAIN + '/' + aEntry[1]
+                sDesc = getEPG(EPG, sTitle)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, sThumb, sDesc, oOutputParameterHandler)
+            if "programme" in sUrl:
+                oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, sThumb, sDisplayTitle, oOutputParameterHandler)
+            else:
+                oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, sThumb, sDesc, oOutputParameterHandler)                
 
     oGui.setEndOfDirectory()
 
@@ -185,7 +213,7 @@ def showHoster():
     # oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
     # oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
     if addon().getSetting('enregistrement_activer') == 'true':
-        oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'enregistrement', 'Enregistrement')
+        oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'enregistrement', 'Enregistrement')
 
     # Menu pour les films
     if sMeta == 1:

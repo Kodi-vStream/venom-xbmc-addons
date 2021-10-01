@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-import re
-import json
-
 from resources.lib.config import GestionCookie
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, VSlog, isMatrix
+from resources.lib.comaddon import dialog, VSlog, isMatrix, CountdownDialog, xbmc
 from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import Unquote
+import json, requests, re
 
 class cHoster(iHoster):
 
@@ -88,7 +86,6 @@ class cHoster(iHoster):
             return False, False
 
         cookies = GestionCookie().Readcookie("uptobox")
-        import requests, re
 
         s = requests.Session()
         s.headers.update({"Cookie": cookies})
@@ -102,31 +99,52 @@ class cHoster(iHoster):
         r1 = s.get(r["data"]["user_url"]).text
         tok = re.search('token.+?;.+?;(.+?)&', r1).group(1)
 
-        r1 = s.post("https://uptobox.com/api/user/pin/validate?token=" + tok,json={"pin":r["data"]["pin"]}).json()
-        s.headers.update({"Referer": "https://uptobox.com/pin?pin=" + r["data"]["pin"]})
+        if not xbmc.getCondVisibility('system.platform.android'):
+            # Si possible on ouvre la page automatiquement dans un navigateur internet.
+            import webbrowser
+            webbrowser.open(r['data']['user_url'])
+            with CountdownDialog("Autorisation nécessaire", "Pour voir cette vidéo, veuillez vous connecter", "Allez sur ce lien : " + r['data']['user_url'], "Et valider le pin : " + r['data']['pin'], True, r["data"]['expired_in'], 10) as cd:
+                js_result = cd.start(self.__check_auth, [r["data"]["check_url"]])["data"]
+        else:
+            from resources.lib import pyqrcode
+            from resources.lib.librecaptcha.gui import cInputWindowYesNo
+            qr = pyqrcode.create(r['data']['user_url'])
+            qr.png('special://home/userdata/addon_data/plugin.video.vstream/qrcode.png', scale=5)
+            oSolver = cInputWindowYesNo(captcha='special://home/userdata/addon_data/plugin.video.vstream/qrcode.png', msg="Scanner le QRCode pour acceder au lien d'autorisation", roundnum=1)
+            retArg = oSolver.get()
+            DIALOG = dialog()
+            if retArg == "N":
+                return False
 
-        r = s.get(r["data"]["check_url"]).json()["data"]
+            js_result = s.get(r["data"]["check_url"]).json()["data"]
 
-        sPattern = "'(.+?)': {(.+?)}"
+        #Deux modes de fonctionnement different.
+        if js_result.get("streamLinks").get('src'):
+            api_call = js_result['streamLinks']['src']
+        else:
+            sPattern = "'(.+?)': {(.+?)}"
 
-        oParser = cParser()
-        aResult = oParser.parse(r["streamLinks"], sPattern)
+            oParser = cParser()
+            aResult = oParser.parse(js_result["streamLinks"], sPattern)
 
-        url = []
-        qua = []
-        api_call = False
+            url = []
+            qua = []
+            api_call = False
 
-        for aEntry in aResult[1]:
-            QUAL = aEntry[0]
-            d = re.findall("'u*(.+?)': u*'(.+?)'",aEntry[1])
-            for aEntry1 in d:
-                url.append(aEntry1[1])
-                qua.append(QUAL  + ' (' + aEntry1[0] + ')')
+            for aEntry in aResult[1]:
+                QUAL = aEntry[0]
+                d = re.findall("'u*(.+?)': u*'(.+?)'",aEntry[1])
+                for aEntry1 in d:
+                    url.append(aEntry1[1])
+                    qua.append(QUAL  + ' (' + aEntry1[0] + ')')
 
-        # Affichage du tableau
-        api_call = dialog().VSselectqual(qua, url)
+            # Affichage du tableau
+            api_call = dialog().VSselectqual(qua, url)
 
-        SubTitle = self.checkSubtitle(r["subs"])
+        try:
+            SubTitle = self.checkSubtitle(js_result["subs"])
+        except:
+            VSlog("Pas de sous-titre")
 
         if (api_call):
             if SubTitle:
@@ -135,3 +153,17 @@ class cHoster(iHoster):
                 return True, api_call
 
         return False, False
+
+    def __check_auth(self, url):
+        try:
+            js_result = json.loads(requests.get(url).content)
+        except ValueError:
+            raise ResolverError('Unusable Authorization Response')
+
+        if js_result.get('statusCode') == 0:
+            if js_result.get('data') == "wait-pin-validation":
+                return False
+            else:
+                return js_result
+
+        raise ResolverError('Error during check authorisation.')

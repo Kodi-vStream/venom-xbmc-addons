@@ -890,7 +890,7 @@ msgstr "[COLOR gold]Recherche saison complète[/COLOR]"
 
 msgctxt "#30416"
 msgid "[COLOR gold]Search history[/COLOR]"
-msgstr "[COLOR gold]Lancer une nouvelle recherche[/COLOR]"
+msgstr "[COLOR gold]Sélectionner pour lancer une recherche[/COLOR]"
 
 msgctxt "#30417"
 msgid "[COLOR orange]Search on Alluc_ee[/COLOR]"
@@ -1130,3 +1130,11 @@ msgstr "Autoriser le contenu pour adultes"
 msgctxt "#31200"
 msgid "Choose the number of items to display"
 msgstr "Choisir le nombre d'elements a afficher"
+
+msgctxt "#31201"
+msgid "View: Seasons (recommended 50-51-500-501-508)"
+msgstr "Vue: Saisons (recommandé 50-51-500-501-508)"
+
+msgctxt "#31202"
+msgid "View: Episodes (recommended 50-51-500-501-508)"
+msgstr "Vue: Episodes (recommandé 50-51-500-501-508)"

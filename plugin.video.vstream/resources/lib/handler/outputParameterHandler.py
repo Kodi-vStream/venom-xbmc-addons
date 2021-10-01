@@ -2,15 +2,15 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.util import urlEncode, Unquote
 
-class cOutputParameterHandler:
 
+class cOutputParameterHandler:
     def __init__(self):
         self.__aParams = {}
 
     def addParameter(self, sParameterName, mParameterValue):
         if not mParameterValue:
             return
- 
+
         self.__aParams[sParameterName] = Unquote(str(mParameterValue))
 
     def getParameterAsUri(self):
@@ -28,7 +28,7 @@ class cOutputParameterHandler:
 
     def clearParameter(self):
         self.__aParams.clear()
-    
+
     def exist(self, sParamName):
         if sParamName in self.__aParams:
             return sParamName

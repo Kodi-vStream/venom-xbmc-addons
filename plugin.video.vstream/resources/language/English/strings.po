@@ -1130,3 +1130,11 @@ msgstr ""
 msgctxt "#31200"
 msgid "Choose the number of items to display"
 msgstr ""
+
+msgctxt "#31201"
+msgid "View: Seasons (recommended 50-51-500-501-508)"
+msgstr ""
+
+msgctxt "#31202"
+msgid "View: Episodes (recommended 50-51-500-501-508)"
+msgstr ""

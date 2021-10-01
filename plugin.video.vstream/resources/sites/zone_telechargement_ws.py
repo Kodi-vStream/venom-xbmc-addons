@@ -22,7 +22,7 @@ SITE_IDENTIFIER = 'zone_telechargement_ws'
 SITE_NAME = '[COLOR violet]Zone-Telechargement[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
-URL_MAIN = "https://www.zt-za.net/"
+URL_MAIN = "https://www.zone-telechargement.cam/"
 
 URL_SEARCH = (URL_MAIN + 'engine/ajax/controller.php?mod=filter&q=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + 'engine/ajax/controller.php?mod=filter&q=', 'showMovies')
@@ -412,10 +412,11 @@ def showMoviesLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    if "zt-protect" in sUrl:
-        # Dl Protect present aussi a cette étape.
-        sHtmlContent = DecryptDlProtecte(sUrl)
-    else:
+    if "onaregarde" in sUrl:
+        oParser = cParser()
+        sPattern = '<a type="submit".+?href="([^"]+)"'
+        sUrl = oParser.parse(sHtmlContent, sPattern)[1][0]
+
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
@@ -479,10 +480,11 @@ def showSeriesLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    if "zt-protect" in sUrl:
-        # Dl Protect present aussi a cette étape.
-        sHtmlContent = DecryptDlProtecte(sUrl)
-    else:
+    if "onaregarde" in sUrl:
+        oParser = cParser()
+        sPattern = '<a type="submit".+?href="([^"]+)"'
+        sUrl = oParser.parse(sHtmlContent, sPattern)[1][0]
+
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
@@ -500,7 +502,7 @@ def showSeriesLinks():
         pass
 
     # on recherche d'abord la qualité courante
-    sPattern = '</span> Qualité([^<]+)<.+?img src="([^"]+)".+?alt=.+?- Saison ([0-9]+)'
+    sPattern = 'smallsep.+?Qualité([^<]+)<.+?img src="([^"]+)".+?alt=.+?- Saison ([0-9]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sQual = ''
@@ -649,7 +651,7 @@ def showSeriesHosters():
     if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent or 'premium' in sHtmlContent:
         sHtmlContent = CutPremiumlinks(sHtmlContent)
 
-    sPattern = '<div style="font-weight.+?</span>([^<]+)</div>|<a class="btnToLink".+?href="([^"]+)".+?Episode ([0-9]+)'
+    sPattern = '<div style="font-weight.+?>([^<]+)</div>|<a class="btnToLink".+?href="([^"]+)".+?Episode ([0-9]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -695,7 +697,7 @@ def Display_protected_link():
             if sHtmlContent.startswith('http'):
                 aResult_dlprotecte = (True, [sHtmlContent])
             else:
-                sPattern_dlprotecte = '<div class="alert alert-primary".+?href="(.+?)"'
+                sPattern_dlprotecte = 'class="alert alert-primary".+?href="(.+?)"'
                 aResult_dlprotecte = oParser.parse(sHtmlContent, sPattern_dlprotecte)
 
         else:
@@ -744,7 +746,7 @@ def CutQual(sHtmlContent):
 
 def CutSais(sHtmlContent):
     oParser = cParser()
-    sPattern = '</span>Saisons.+?galement disponibles.+?</h3>(.+?)</div>'
+    sPattern = '<h3>Saisons.+?galement disponibles.+?</h3>(.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0]):
         return aResult[1][0]
@@ -779,22 +781,7 @@ def DecryptDlProtecte(url):
         return ''
 
     oRequestHandler = cRequestHandler(url)
+    oRequestHandler.setRequestType(1)
     sHtmlContent = oRequestHandler.request()
-
-    oParser = cParser()
-    sPattern = '<form action="([^"]+)" method="get">.+?type="hidden" name="_token" value="(.+?)">'
-    result = oParser.parse(sHtmlContent, sPattern)
-
-    if (result[0]):
-        RestUrl = str(result[1][0][0])
-        if not RestUrl.startswith('http'):
-            RestUrl = 'https://' + url.split('/')[2] + RestUrl
-        try:
-            token = str(result[1][0][1], 'utf-8')
-        except:
-            token = result[1][0][1]
-
-        oRequestHandler = cRequestHandler(RestUrl + "?_token" + token)
-        sHtmlContent = oRequestHandler.request()
 
     return str(sHtmlContent)

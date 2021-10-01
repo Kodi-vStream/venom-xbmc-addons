@@ -140,7 +140,7 @@ def showMovies(sSearch=''):
         sHtmlContent = oRequestHandler.request()
 
     sPattern = 'mov clearfix.+?src="([^"]*)" *alt="([^"]*).+?link="([^"]+).+?(?:|bloc1">([^<]+).+?)(?:|bloc2">([^<]*).+?)'
-    sPattern += 'ml-desc"> (.+?)</div.+?Synopsis:.+?ml-desc">(.+?)</div'
+    sPattern += 'ml-desc"> (?:([0-9]+)| )</div.+?Synopsis:.+?ml-desc">(.+?)</div'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):

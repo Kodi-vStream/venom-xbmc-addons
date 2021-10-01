@@ -425,31 +425,25 @@ class cHome:
             oGui.addText(SITE_IDENTIFIER)
         oOutputParameterHandler = cOutputParameterHandler()
         for match in row:
-
-            # code to get type with disp
-            sType = self.addons.getSetting('search' + match[2][-1:] + '_type')
-            if sType:
-                oOutputParameterHandler.addParameter('type', sType)
-                window(10101).setProperty('search_type', sType)
+            sTitle = match['title']
+            sCat = match['disp']
 
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oOutputParameterHandler.addParameter('searchtext', match[1])
-            # oOutputParameterHandler.addParameter('disp', match[2])
-            # oOutputParameterHandler.addParameter('readdb', 'False')
+            oOutputParameterHandler.addParameter('searchtext', sTitle)
 
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName('globalSearch')
             oGuiElement.setFunction('globalSearch')
 
             try:
-                oGuiElement.setTitle('- ' + match[1])
+                oGuiElement.setTitle('- ' + sTitle)
             except:
-                oGuiElement.setTitle('- ' + str(match[1], 'utf-8'))
+                oGuiElement.setTitle('- ' + str(sTitle, 'utf-8'))
 
-            oGuiElement.setFileName(match[1])
-            oGuiElement.setCat(match[2])
+            oGuiElement.setFileName(sTitle)
+            oGuiElement.setCat(sCat)
             oGuiElement.setIcon('search.png')
-            oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, 'cHome', 'delSearch', self.addons.VSlang(30412))
+            oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, 'cHome', 'delSearch', self.addons.VSlang(30412))
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         if row:

@@ -37,7 +37,7 @@
 				<posx>0</posx>
 				<posy>0</posy>
               	<fadetime>200</fadetime>
-    			<texture fallback="black-back.png">$INFO[Window.Property(backdrop_url)]</texture>
+    			<texture fallback="black-back.png">$INFO[Window.Property(backdrop_path)]</texture>
              	<aspectratio align="center" aligny="center" scalediffuse="false">scale</aspectratio>
 			</control>
 
@@ -148,7 +148,7 @@
 						</control>
 
 						<control type="image">
-							<texture background="true" diffuse="poster-big.png" fallback="no-poster2.png">$INFO[Window.Property(cover_url)]</texture>
+							<texture background="true" diffuse="poster-big.png" fallback="no-poster2.png">$INFO[Window.Property(poster_path)]</texture>
 							<bordersize>15</bordersize>
 							<aspectratio scalediffuse="false">scale</aspectratio>
 							<visible>!Control.HasFocus(50) + !Control.HasFocus(5200) + !Control.HasFocus(5205) + !Control.HasFocus(5210)  + !Control.HasFocus(5215)</visible>

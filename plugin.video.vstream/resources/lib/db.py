@@ -404,7 +404,7 @@ class cDb:
 
     def get_bookmark(self):
 
-        sql_select = 'SELECT * FROM favorite'
+        sql_select = 'SELECT * FROM favorite order by addon_id desc'
 
         try:
             self.dbcur.execute(sql_select)
@@ -468,6 +468,11 @@ class cDb:
     # ***********************************
 
     def insert_viewing(self, meta):
+        
+        if not 'title' in meta:
+            return
+        if not 'siteurl' in meta:
+            return
 
         title = self.str_conv(meta['title'])
         titleWatched = self.str_conv(meta['titleWatched'])

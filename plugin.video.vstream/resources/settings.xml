@@ -38,8 +38,10 @@
         <setting id="active-view" type="bool" label="30408" default="false"/>
         <setting id="default-view" type="number" label="30406" default="50" enable="eq(-1,true)"/>
         <setting id="accueil-view" type="number" label="30407" default="500" enable="eq(-2,true)"/>
-        <setting id="movie-view" type="number" label="30404" default="500" enable="eq(-3,true)"/>
-        <setting id="serie-view" type="number" label="30405" default="500" enable="eq(-4,true)"/>
+        <setting id="movies-view" type="number" label="30404" default="500" enable="eq(-3,true)"/>
+        <setting id="tvshows-view" type="number" label="30405" default="500" enable="eq(-4,true)"/>
+        <setting id="seasons-view" type="number" label="31201" default="500" enable="eq(-5,true)"/>
+        <setting id="episodes-view" type="number" label="31202" default="500" enable="eq(-6,true)"/>
     </category>
 
     <!-- A propos/sources -->
@@ -97,13 +99,9 @@
 
         <setting visible="false" id="plugin_buzzmonclick_com" type="bool" label="BuzzMonClick" default="true"/>
 
-		<setting visible="false" id="plugin_cine974" type="bool" label="Cine 974" default="true"/>
-
         <setting visible="false" id="plugin_cinemay_cc" type="bool" label="Cinemay_cc" default="true"/>
 
         <setting visible="false" id="plugin_cinemay_com" type="bool" label="Cinemay" default="true"/>
-
-        <setting visible="false" id="plugin_cinemey" type="bool" label="Cinemey" default="true"/>
 
         <setting visible="false" id="plugin_dbanimes" type="bool" label="DBanimes" default="true"/>
 
@@ -114,6 +112,8 @@
         <setting visible="false" id="plugin_dpstream" type="bool" label="Dpstream" default="true"/>
 
         <setting visible="false" id="plugin_dpstreamhd" type="bool" label="DpStream HD" default="true"/>
+
+        <setting visible="false" id="plugin_ducine" type="bool" label="Du Ciné" default="true"/>
 
         <setting visible="false" id="plugin_enstream_series" type="bool" label="Enstream (Séries)" default="true"/>
 
@@ -258,8 +258,6 @@
         <setting visible="false" id="plugin_zone_streaming" type="bool" label="Zone Streaming" default="true"/>
 
         <setting visible="false" id="plugin_zone_telechargement_ws" type="bool" label="Zone Téléchargement.ws" default="true"/>
-
-        <setting visible="false" id="plugin_zustream_co" type="bool" label="ZuStream (Séries)" default="true"/>
 
         <setting visible="false" id="plugin_zustream" type="bool" label="ZuStream" default="true"/>
     </category>

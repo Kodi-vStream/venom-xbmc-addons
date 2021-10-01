@@ -2,8 +2,7 @@
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 
 import xbmcaddon, xbmcgui, xbmc, xbmcplugin, xbmcvfs 
-import json
-
+import time
 """System d'importation
 
 from resources.lib.comaddon import addon, dialog, VSlog, xbmcgui, xbmc
@@ -152,6 +151,95 @@ class empty():
 
     def VSclose(self, dialog):
         pass
+
+#Baser sur UrlResolver
+class CountdownDialog(object):
+    __INTERVALS = 5
+
+    def __init__(self, heading, line1='', line2='', line3='', active=True, countdown=60, interval=5):
+        self.heading = heading
+        self.countdown = countdown
+        self.interval = interval
+        self.line1 = line1
+        self.line2 = line2
+        self.line3 = line3
+        if active:
+            if xbmc.getCondVisibility('Window.IsVisible(progressdialog)'):
+                pd = CustomProgressDialog.ProgressDialog()
+            else:
+                pd = xbmcgui.DialogProgress()
+            if not self.line3:
+                line3 = 'Expires in: %s seconds' % countdown
+            if not isMatrix():
+                pd.create(self.heading, line1, line2, line3)
+            else:
+                pd.create(self.heading,
+                          line1 + '\n'
+                          + line2 + '\n'
+                          + line3)
+            pd.update(100)
+            self.pd = pd
+        else:
+            self.pd = None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        if self.pd is not None:
+            self.pd.close()
+            del self.pd
+
+    def start(self, func, args=None, kwargs=None):
+        if args is None:
+            args = []
+        if kwargs is None:
+            kwargs = {}
+        result = func(*args, **kwargs)
+        if result:
+            return result
+
+        if self.pd is not None:
+            start = time.time()
+            expires = time_left = self.countdown
+            interval = self.interval
+            while time_left > 0:
+                for _ in range(CountdownDialog.__INTERVALS):
+                    xbmc.sleep(int(interval * 1000 / CountdownDialog.__INTERVALS))
+                    if self.is_canceled():
+                        return
+                    time_left = expires - int(time.time() - start)
+                    if time_left < 0:
+                        time_left = 0
+                    progress = int(time_left * 100 / expires)
+                    line3 = 'Expires in: %s seconds' % time_left if not self.line3 else ''
+                    self.update(progress, line3=line3)
+
+                result = func(*args, **kwargs)
+                if result:
+                    return result
+
+    def is_canceled(self):
+        if self.pd is None:
+            return False
+        else:
+            return self.pd.iscanceled()
+
+    def update(self, percent, line1='', line2='', line3=''):
+        if not line1:
+            line1 = self.line1
+        if not line2:
+            line2 = self.line2
+        if not line3:
+            line3 = self.line3
+        if self.pd is not None:
+            if not isMatrix():
+                self.pd.update(percent, line1, line2, line3)
+            else:
+                self.pd.update(percent,
+                               line1 + '\n'
+                               + line2 + '\n'
+                               + line3)
 
 class progress():
 
@@ -349,6 +437,7 @@ class addonManager:
 
     # Active/desactive un addon
     def enableAddon(self, addon_id, enable = 'True'):
+        import json
         # if enable=='True' and xbmc.getCondVisibility('System.HasAddon(%s)' % addon_id) == 0:
             # VSlog('%s déjà activé'  %addon_id)
             # return True

@@ -25,7 +25,7 @@
 				<posx>0</posx>
 				<posy>0</posy>
 				<fadetime>200</fadetime>
-				<texture fallback="fanart.jpg">$INFO[Window(Home).Property(ListItem.backdrop_url)]</texture>
+				<texture fallback="fanart.jpg">$INFO[Window(Home).Property(ListItem.backdrop_path)]</texture>
 				<aspectratio align="center" aligny="center" scalediffuse="false">scale</aspectratio>
 			</control>
 
@@ -51,7 +51,7 @@
 					<right>40</right>
 					<bottom>252</bottom>
 					<fadetime>200</fadetime>
-					<!--<texture fallback="fanart.jpg">$INFO[Window(Home).Property(ListItem.backdrop_url)]</texture>-->
+					<!--<texture fallback="fanart.jpg">$INFO[Window(Home).Property(ListItem.backdrop_path)]</texture>-->
 					<texture fallback="fanart.jpg">$INFO[Container(50).ListItem.Icon]</texture>
 					<aspectratio align="center" aligny="center">center</aspectratio>
 				</control>

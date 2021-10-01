@@ -15,11 +15,10 @@ import unicodedata
 import re
 import string
 
-# function util n'utilise pas xbmc, xbmcgui, xbmcaddon ect...
 
+# function util n'utilise pas xbmc, xbmcgui, xbmcaddon ect...
 class cUtil:
     # reste a transformer la class en fonction distante.
-
     def CheckOrd(self, label):
         count = 0
         try:
@@ -35,25 +34,26 @@ class cUtil:
         return count
 
     def CheckOccurence(self, str1, str2):
-        ignoreListe = ['3d', 'la', 'le', 'les', 'un', 'une', 'de', 'des', 'du', 'en', 'a', 'au', 'aux', 'is', 'the', 'in', 'of', 'and', 'mais', 'ou', 'no', 'dr', 'contre', 'dans', 'qui',
-                       'et', 'donc', 'or', 'ni', 'ne', 'pas', 'car', 'je', 'tu', 'il', 'elle', 'on', 'nous', 'vous', 'ils', 'elles', 'i', 'you', 'he', 'she', 'it', 'we', 'they',
-                       'my', 'your', 'his', 'its', 'our']
+        ignoreListe = ['3d', 'la', 'le', 'les', 'un', 'une', 'de', 'des', 'du', 'en', 'a', 'au', 'aux', 'is', 'the',
+                       'in', 'of', 'and', 'mais', 'ou', 'no', 'dr', 'contre', 'dans', 'qui', 'et', 'donc', 'or', 'ni',
+                       'ne', 'pas', 'car', 'je', 'tu', 'il', 'elle', 'on', 'nous', 'vous', 'ils', 'elles', 'i', 'you',
+                       'he', 'she', 'it', 'we', 'they', 'my', 'your', 'his', 'its', 'our']
 
         str1 = str1.replace('+', ' ').replace('%20', ' ').replace(':', ' ').replace('-', ' ')
         str2 = str2.replace(':', ' ').replace('-', ' ')
-        
+
         str1 = self.CleanName(str1.replace('.', ' '))
         str2 = self.CleanName(str2.replace('.', ' '))
 
         i = 0
-        list2 = str2.split(' ')     # Comparaison mot à mot
+        list2 = str2.split(' ')      # Comparaison mot à mot
         for part in str1.split(' '):
-            if part in ignoreListe: # Mots à ignorer
+            if part in ignoreListe:  # Mots à ignorer
                 continue
-            if len(part) == 1:      # Ignorer une seule lettre
+            if len(part) == 1:       # Ignorer une seule lettre
                 continue
             if part in list2:
-                i += 1              # Nombre de mots correspondants
+                i += 1               # Nombre de mots correspondants
         return i
 
     def removeHtmlTags(self, sValue, sReplace=''):
@@ -62,7 +62,6 @@ class cUtil:
 
     def formatTime(self, iSeconds):
         iSeconds = int(iSeconds)
-
         iMinutes = int(iSeconds / 60)
         iSeconds = iSeconds - (iMinutes * 60)
         if (iSeconds < 10):
@@ -155,12 +154,12 @@ class cUtil:
 
             try:
                 name = unicodedata.normalize('NFD', name).encode('ascii', 'ignore').decode('unicode_escape')
-                name = name.encode('utf-8') #on repasse en utf-8
+                name = name.encode('utf-8')  # on repasse en utf-8
             except TypeError:
-                #name = unicodedata.normalize('NFKD', name.decode("utf-8")).encode('ASCII', 'ignore')
+                # name = unicodedata.normalize('NFKD', name.decode("utf-8")).encode('ASCII', 'ignore')
                 pass
 
-        #on cherche l'annee
+        # on cherche l'annee
         annee = ''
         m = re.search('(\([0-9]{4}\))', name)
         if m:
@@ -188,7 +187,6 @@ class cUtil:
         return name
 
     def FormatSerie(self, string):
-
         # vire doubles espaces
         string = re.sub(' +', ' ', string)
 
@@ -233,17 +231,16 @@ class cUtil:
     def getSerieTitre(self, sTitle):
         serieTitle = re.sub(r'\[.*\]|\(.*\)', r'', sTitle)
         serieTitle = re.sub('[- –]+$', '', serieTitle)
-        
+
         if '|' in serieTitle:
             serieTitle = serieTitle[:serieTitle.index('|')]
-        
+
         # on repasse en utf-8
         if not isMatrix():
             return serieTitle.encode('utf-8')
         return serieTitle
 
     def getEpisodeTitre(self, sTitle):
-
         string = re.search('(?i)(e(?:[a-z]+sode\s?)*([0-9]+))', sTitle)
         if string:
             sTitle = sTitle.replace(string.group(1), '')

@@ -193,7 +193,7 @@ def showMovies(sSearch=''):
 
     if sSearch:
         sSearch = sSearch.replace(' ', '+').replace('&20', '+')
-        bvalid, stoken, scookie = GetTokens()
+        bvalid, stoken, scookie = getTokens()
         if bvalid:
             pdata = '_token=' + stoken + '&search=' + sSearch
             sUrl = URL_MAIN + 'search'
@@ -239,10 +239,7 @@ def showMovies(sSearch=''):
             sDesc = ''
             sThumb = re.sub('/w\d+/', '/w342/', aEntry[0])
 
-            if isMatrix():
-                sTitle = aEntry[1].encode('latin-1').decode()
-            else:
-                sTitle = aEntry[1]
+            sTitle = aEntry[1]
 
             sTitle = sTitle.replace('film en streaming', '').replace('série en streaming', '')
             sYear = aEntry[2]
@@ -257,7 +254,7 @@ def showMovies(sSearch=''):
 
             if sSearch:
                 oGui.addLink(SITE_IDENTIFIER, 'showSelectType', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
-            elif SERIE_NEWS[0] in sUrl or 'série en streaming' in aEntry[1]:
+            elif '/serie' in sUrl or 'série en streaming' in aEntry[1]:
                 sDisplayTitle = sTitle
                 oGui.addTV(SITE_IDENTIFIER, 'showSXE', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
@@ -456,7 +453,7 @@ def showHosters():
     oGui.setEndOfDirectory()
 
 
-def GetTokens():
+def getTokens():
     oParser = cParser()
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()

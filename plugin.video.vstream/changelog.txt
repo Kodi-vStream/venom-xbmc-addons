@@ -12,6 +12,13 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 1.5.0***
+- Contrat de licence sur l'utilisation du code vStream
+- Meilleure intégration de DNSPython
+- Amélioration des performances
+- Amélioration sur l'affichage des métadonnées (sagas, titre des épisodes, ...)
+- Meilleur support de Uptostream
+
 *** 1.4.0***
 - En cours de lecture : ajout d'une section avec les médias commencés
 

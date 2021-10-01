@@ -26,6 +26,7 @@ API_VERS = '2'
 
 MAXRESULT = addon().getSetting('trakt_number_element')
 
+
 class cTrakt:
     CONTENT = '0'
     ADDON = addon()
@@ -53,7 +54,6 @@ class cTrakt:
                 return False
 
             if (oDialog == 1):
-
                 try:
                     oRequestHandler = cRequestHandler(URL_API + 'oauth/device/token')
                     oRequestHandler.setRequestType(1)
@@ -67,7 +67,6 @@ class cTrakt:
                         self.ADDON.setSetting('bstoken', str(sHtmlContent['access_token']))
                         self.DIALOG.VSinfo(self.ADDON.VSlang(30000))
                         return
-
                 except:
                     pass
 
@@ -348,7 +347,7 @@ class cTrakt:
         sHeaders = oRequestHandler.getResponseHeader()
 
         # Fonctionnement specifique au calendrier.
-        if not 'X-Pagination-Page-Count' in sHeaders:
+        if 'X-Pagination-Page-Count' not in sHeaders:
             if sCurrentLimit == False:
                 sCurrentLimit = 0
             else:
@@ -879,9 +878,9 @@ class cTrakt:
 
             if sType == "shows":
                 if not sSeason:
-                    sSeason = re.search('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))',sTitle).group(2)
+                    sSeason = re.search('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle).group(2)
                 if not sEpisode:
-                    sEpisode = re.search('(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))',sTitle).group(2)
+                    sEpisode = re.search('(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', sTitle).group(2)
             else:
                 sSeason = False
                 sEpisode = False
@@ -967,7 +966,7 @@ class cTrakt:
             oOutputParameterHandler.addParameter('sReload', True)
             # oOutputParameterHandler.addParameter('sImdb', oGuiElement.getImdbId())
             oOutputParameterHandler.addParameter('sTmdbId', oGuiElement.getTmdbId())
-            oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cTrakt', 'cTrakt', 'getAction', sTitle)
+            oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, 'cTrakt', 'cTrakt', 'getAction', sTitle)
         return
 
     def showHosters(self):

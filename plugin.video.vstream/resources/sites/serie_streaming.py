@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'serie_streaming'
 SITE_NAME = 'Série Streaming'
 SITE_DESC = 'Serie Streaming - voir votre series streaming Gratuit'
 
-URL_MAIN = 'https://serie-streaming.io/'
+URL_MAIN = "https://ww1.serie-streaming.io/"
 
 URL_SEARCH = (URL_MAIN + 'search', 'showSeries')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showSeries')

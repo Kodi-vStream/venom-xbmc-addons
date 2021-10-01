@@ -8,19 +8,12 @@ import xbmcvfs
 
 from resources.lib.comaddon import progress, addon, dialog, VSlog, VSPath, isMatrix
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.util import Quote, cUtil, Unquote
 from resources.lib.tmdb import cTMDb
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.premiumHandler import cPremiumHandler
-
-try:
-    import urllib2
-except ImportError:
-    import urllib.request as urllib2
 
 try:
     from sqlite3 import dbapi2 as sqlite
@@ -284,6 +277,7 @@ class PasteContent:
     # 4 = uptobox + uptostream
     def getUptoStream(self):
         if not self.upToStream:
+            from resources.lib.handler.premiumHandler import cPremiumHandler
             if not cPremiumHandler('uptobox').isPremiumModeAvailable():
                 self.upToStream = 2 # forcer une valeur pour ne pas retester
             else:
@@ -337,6 +331,7 @@ class PasteContent:
 
         if 'uptobox' in self.HEBERGEUR:
             # Recherche d'un compte premium valide
+            from resources.lib.handler.premiumHandler import cPremiumHandler
             links = None
             if not self.keyUpto and not self.keyAlld and not self.keyReald:
                 self.keyUpto = cPremiumHandler('uptobox').getToken()
@@ -378,11 +373,13 @@ class PasteContent:
         elif self.keyReald:
             links, status = self._getCrypt().resolveLink(pasteBin, link, self.keyReald, 1)
 
-        if status == 'ok' and links and len(links)>0:
+        if status != 'ok':  # Certains liens en erreur
+            err = 'Erreur : ' + str(status)
+            VSlog(err)
+
+        if links and len(links)>0:
             return links
         
-        err = 'Erreur : ' + str(status)
-        VSlog(err)
 
     def _decompress(self, pasteBin):
 
@@ -396,6 +393,7 @@ class PasteContent:
             pass
 
         if not hasMovies:
+            from resources.lib.handler.requestHandler import cRequestHandler
             oRequestHandler = cRequestHandler(URL_MAIN + pasteBin)
             oRequestHandler.setTimeout(4)
             sContent = oRequestHandler.request()
@@ -461,9 +459,9 @@ def load():
         oGuiElement.setMeta(0)
 
         oOutputParameterHandler.addParameter('pasteID', pasteID)
-        oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'renamePasteName', addons.VSlang(30223))
-        oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'refreshPaste', "Forcer la mise à jour")
-        oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'deletePasteName', addons.VSlang(30412))
+        oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'renamePasteName', addons.VSlang(30223))
+        oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'refreshPaste', "Forcer la mise à jour")
+        oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'deletePasteName', addons.VSlang(30412))
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
     # Menu pour ajouter un dossier (hors widget)
@@ -1212,8 +1210,6 @@ def showSaga():
 
         sDisplaySaga = sSagaName
         sSagaName = sSagaName.replace('[', '').replace(']', '')  # Exemple pour le film [REC], les crochets sont génant pour certaines fonctions
-        if not sSagaName.lower().endswith('saga'):
-            sSagaName = sSagaName + " Saga"
         oOutputParameterHandler.addParameter('sMovieTitle', sSagaName)
 
         oGui.addMoviePack(SITE_IDENTIFIER, 'showMovies', sDisplaySaga, 'genres.png', '', '', oOutputParameterHandler)
@@ -1405,7 +1401,7 @@ def showMovies(sSearch=''):
     if 'sSaga' in aParams:
         sSaga = aParams['sSaga'].replace(' | ', ' & ')
     if 'sGroupe' in aParams:
-        sGroupe = aParams['sGroupe'].replace(' | ', ' & ')
+        sGroupe = "'" + aParams['sGroupe'].replace(' | ', ' & ') + "'"
     if 'sYear' in aParams:
         sYear = aParams['sYear']
     if 'sRes' in aParams:
@@ -1425,11 +1421,17 @@ def showMovies(sSearch=''):
     if not numPage and 'numPage' in aParams:
         numPage = aParams['numPage']
 
+    if bRandom:
+        numItem = 0
+    else:
+        numItem = int(numItem) if numItem else 0
+
     pbContent = PasteContent()
     movies = []
     pasteLen = []
     pasteMaxLen = []
     maxlen = 0
+
     listeIDs = getPasteList(sUrl, pasteID)
 
     for pasteBin in listeIDs:
@@ -1441,17 +1443,31 @@ def showMovies(sSearch=''):
 
     # si plusieurs pastes, on les parcourt en parallèle
     if (bNews or sYear or sGenre or sRes) and len(listeIDs) > 1:
+        listName = set()
         moviesNews = []
         i = j = k = 0
-        lenMovie = len(movies)
-        while k < lenMovie:
+        lenMovies = len(movies)
+        if bNews:   # Si pas de tris, pas besoin de récupérer plus qu'on ne peut en afficher
+            nbMoviesNewsMax = min(lenMovies, numItem + ITEM_PAR_PAGE + 1 )
+            nbMoviesNews = 0
+
+        while k < lenMovies:
             if i < pasteMaxLen[j]:
-                moviesNews.append(movies[i])
+                if bNews:
+                    movieName = movies[i][pbContent.TITLE]
+                    if movieName not in listName:        # trie des séries en doublons (à cause des saisons)
+                        listName.add(movieName)
+                        moviesNews.append(movies[i])
+                        nbMoviesNews += 1
+                        if nbMoviesNews == nbMoviesNewsMax:
+                            break
+                else:
+                    moviesNews.append(movies[i])
                 k += 1
             i += pasteLen[j]
             j += 1
             if j >= len(pasteMaxLen):
-                i = (i % lenMovie) + 1
+                i = (i % lenMovies) + 1
                 j=0
 
         movies = moviesNews
@@ -1469,10 +1485,6 @@ def showMovies(sSearch=''):
         movies = sorted(movies, key=lambda line: line[pbContent.YEAR], reverse=True)
 
     # Gestion de la pagination
-    if not numItem:
-        numItem = 0
-    else:
-        numItem = int(numItem)
     numPage = int(numPage)
     if numPage > 1 and numItem == 0:  # choix d'une page
         numItem = (numPage-1) * ITEM_PAR_PAGE
@@ -1481,7 +1493,6 @@ def showMovies(sSearch=''):
             numItem = (numPage-1) * ITEM_PAR_PAGE
 
     if bRandom:
-        numItem = 0
         # Génération d'indices aléatoires, ajout de deux indices car les doublons aléatoires sont rassemblés
         randoms = [random.randint(0, len(movies)) for _ in range(ITEM_PAR_PAGE+2)]
 
@@ -1507,6 +1518,16 @@ def showMovies(sSearch=''):
         # Filtrage par média (film/série), "film" par défaut si pas précisé
         if pbContent.CAT >=0 and sMedia not in movie[pbContent.CAT]:
             continue
+
+        # Filtrage par liste
+        if sGroupe and pbContent.GROUPES >= 0:
+            groupes = movie[pbContent.GROUPES].strip()
+            if not groupes or groupes == '[]':
+                continue
+            # groupes = eval(groupes)
+            groupes = groupes.replace('"', "'")
+            if sGroupe not in groupes:
+                continue
 
         # Filtrage par saga
         if sSaga and sSaga != movie[pbContent.SAISON].strip():
@@ -1547,17 +1568,8 @@ def showMovies(sSearch=''):
             listNetwork = movie[pbContent.NETWORK].strip()
             if not listNetwork:
                 continue
-            listNetwork = eval(listNetwork)
+            # listNetwork = eval(listNetwork)
             if sNetwork not in listNetwork:
-                continue
-
-        # Filtrage par groupe
-        if sGroupe and pbContent.GROUPES >= 0:
-            groupes = movie[pbContent.GROUPES].strip()
-            if not groupes:
-                continue
-            groupes = eval(groupes)
-            if sGroupe not in groupes:
                 continue
 
         # Filtrage par titre
@@ -1802,11 +1814,11 @@ def showEpisodesLinks(siteUrl=''):
 
     lines = getHosterList(siteUrl)
 
-    listeEpisodes = []
+    listeEpisodes = set()
     for episode in lines:
         for numEpisode in episode.keys():
             if numEpisode not in listeEpisodes:
-                listeEpisodes.append(numEpisode)
+                listeEpisodes.add(numEpisode)
 
     sDisplaySaison = sSaison
     if sSaison.isdigit():

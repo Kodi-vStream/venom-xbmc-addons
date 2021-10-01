@@ -139,7 +139,7 @@ def showMovies(sSearch=''):
             sUrl = aEntry[2]
             sYear = aEntry[3]
             sDesc = aEntry[4]
-            sDisplayTitle = sTitle + '(' + sYear + ')'
+            sDisplayTitle = sTitle + ' (' + sYear + ')'
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -162,7 +162,7 @@ def showMovies(sSearch=''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '>([^<]+)</a></div><div class="naviright"><a href="([^"]+?)" >Suivant'
+    sPattern = '>([^<]+)</a></div><div class="naviright"><a href="([^"]+?)">Suivant'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):

@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'enstream_series'
 SITE_NAME = 'Enstream (Séries)'
 SITE_DESC = 'EnStream.Cc est le coin des séries en français par excellence'
 
-URL_MAIN = 'https://www.enstream.cc/'
+URL_MAIN = "https://www.enstream.site/"
 
 URL_SEARCH = (URL_MAIN + 'recherche?q=', 'showSeries')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showSeries')

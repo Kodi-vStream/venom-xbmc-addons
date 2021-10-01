@@ -5,7 +5,9 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.aadecode import AADecoder
+from resources.lib.comaddon import isMatrix
 import base64, re
+
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 sPattern1 = '<iframe id="iframe" src="([^"]+)"'
 
@@ -58,6 +60,7 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         aResult = oParser.parse(sHtmlContent, sPattern1)
+
         if (aResult[0] == True):
             sUrl = aResult[1][0]
 
@@ -119,15 +122,13 @@ def sDecode(r, o):
         n = (n + e[f % 256]) % 256
         if not f in e:
             f = 0
-            t = e[f]
-            e[f] = e[n]
-            e[n] = t
-            a += chr(ord(o[h]) ^ e[(e[f] + e[n]) % 256])
-        else:
-            t = e[f]
-            e[f] = e[n]
-            e[n] = t
-            a += chr(ord(o[h]) ^ e[(e[f] + e[n]) % 256])
+        t = e[f]
+        e[f] = e[n]
+        e[n] = t
 
+        if isMatrix():
+            a += chr(o[h] ^ e[(e[f] + e[n]) % 256])
+        else:
+            a += chr(ord(o[h]) ^ e[(e[f] + e[n]) % 256])
     return a
 

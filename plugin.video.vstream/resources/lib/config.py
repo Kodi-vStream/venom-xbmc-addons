@@ -7,7 +7,7 @@ from datetime import date, datetime
 import unicodedata
 import xbmcvfs
 import time
-
+import json
 
 # -----------------------
 #     Cookies gestion
@@ -154,7 +154,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
         tmdb_id = xbmc.getInfoLabel('ListItem.Property(TmdbId)')
         season = xbmc.getInfoLabel('ListItem.Season')
         episode = xbmc.getInfoLabel('ListItem.Episode')
-        meta = cTMDb().get_meta(sType, sFileName, tmdb_id, year = year, season = season, episode = episode)
+        meta = cTMDb().get_meta(sType, sFileName, tmdb_id = tmdb_id, year = year, season = season, episode = episode)
     except:
         DIALOG.VSok("Veuillez vider le cache des métadonnées Paramètre - outils - 'vider le cache de vStream'")
         pass
@@ -227,50 +227,41 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
             self.setFocusId(9000)
 
 #            self.getControl(50).reset()
-            
-            if 'credits' in meta and meta['credits']:
 
-                #Decodage python 3
-                try:
-                    data = eval(str(meta['credits'].encode('latin-1'), 'utf-8'))
-                except:
-                    data = eval(str(meta['credits']))
-    
-                try:
-                    listitems = []
-                    for i in data['cast']:
-                        slabel = i['name']
-                        slabel2 = i['character']
-                        if i['profile_path']:
-                            sicon = self.poster+str(i['profile_path'])
-                        else :
-                            sicon = self.none_poster % slabel
-                        sid = i['id']
-                        listitem_ = listitem(label=slabel, label2=slabel2)
-                        listitem_.setProperty('id', str(sid))
-                        listitem_.setArt({'icon':sicon})
-                        listitems.append(listitem_)
-                    self.getControl(50).addItems(listitems)
-                except:
-                    pass
-                
-                try:
-                    listitems2 = []
-                    for i in data['crew']:
-                        slabel = i['name']
-                        slabel2 = i['job']
-                        if i['profile_path']:
-                            sicon = self.poster+str(i['profile_path'])
-                        else :
-                            sicon = self.none_poster % slabel
-                        sid = i['id']
-                        listitem_ = listitem(label=slabel, label2=slabel2)
-                        listitem_.setProperty('id', str(sid))
-                        listitem_.setArt({'icon':sicon})
-                        listitems2.append(listitem_)
-                    self.getControl(5200).addItems(listitems2)
-                except:
-                    pass
+            if 'cast'in meta:
+                listitems = []
+                data = json.loads(meta['cast'])
+                for i in data:
+                    slabel = i['name']
+                    slabel2 = i['character']
+                    if i.get('thumbnail'):
+                        sicon = str(i['thumbnail'])
+                    else :
+                        sicon = self.none_poster % slabel
+                    sid = i['id']
+                    listitem_ = listitem(label=slabel, label2=slabel2)
+                    listitem_.setProperty('id', str(sid))
+                    listitem_.setArt({'icon':sicon})
+                    listitems.append(listitem_)
+                self.getControl(50).addItems(listitems)
+
+            
+            if 'crew'in meta:
+                listitems2 = []
+                data = json.loads(meta['crew'])
+                for i in data:
+                    slabel = i['name']
+                    slabel2 = i['job']
+                    if i.get('profile_path'):
+                        sicon = self.poster + str(i['profile_path'])
+                    else :
+                        sicon = self.none_poster % slabel
+                    sid = i['id']
+                    listitem_ = listitem(label=slabel, label2=slabel2)
+                    listitem_.setProperty('id', str(sid))
+                    listitem_.setArt({'icon':sicon})
+                    listitems2.append(listitem_)
+                self.getControl(5200).addItems(listitems2)
 
             listitems3 = []
             if 'guest_stars'in meta and meta['guest_stars']: # dans certains épisodes
@@ -308,12 +299,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
             # self.getControl(49).setVisible(True)
             # self.getControl(2).setImage(meta['cover_url'])
             # self.getControl(3).setLabel(meta['rating'])
-            
-            if 'rating' not in meta or meta['rating'] == 0:
-                meta['rating'] = '-'
-            if 'votes' not in meta or meta['votes'] == '0':
-                meta['votes'] = '-'
- 
+
 
             for prop in meta:
                 #Py3 unicode == str.
