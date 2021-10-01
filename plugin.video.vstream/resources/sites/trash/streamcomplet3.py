@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# source 42 14012021
-return False  # Cloudflare
+return False
 import re
 
 from resources.lib.gui.hoster import cHosterGui
