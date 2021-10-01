@@ -19,7 +19,7 @@ SITE_DESC = 'Voir les meilleurs films en version française'
 # URL_MAIN = 'https://v7.stream-complet.co/' 
 # url de redirection => www.stream-complet.biz
 
-URL_MAIN = 'https://w1.stream-complet.biz/'
+URL_MAIN = "https://w2.stream-complet.biz/"
 
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -33,6 +33,7 @@ FUNCTION_SEARCH = 'showMovies'
 SERIES_NEWS = (URL_MAIN + 'series-streaming/', 'showMovies')
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
+
 
 def load():
     oGui = cGui()
@@ -197,7 +198,7 @@ def showSXE():
     if (aResultDesc[0] == True):
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', aResultDesc[1][0])
 
-    sPattern = '<h3 id="Saison-(\d+)|<a href="([^"]+)">.+?pisode.(\d+)'
+    sPattern = '(\d+)</a></h3>|href="([^"]+)">.pisode (\d+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sSaison = ''
 
@@ -297,9 +298,6 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     siteReferer = oInputParameterHandler.getValue('siteReferer')
-    sLang = oInputParameterHandler.getValue('sLang')
-
-    sDisplayName = ('%s (%s)') % (sMovieTitle, sLang)
 
     if 'sstatic' in sUrl:
         sUrl1 = sUrl + '/ajax'
@@ -317,7 +315,7 @@ def showHosters():
             sHosterUrl = aResult[1][0]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                oHoster.setDisplayName(sDisplayName)
+                oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
     else:
@@ -335,7 +333,7 @@ def showHosters():
                 # VSlog(sHosterUrl)
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
-                    oHoster.setDisplayName(sDisplayName)
+                    oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
@@ -365,7 +363,7 @@ def showHostersDL():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     else:
-        oHoster = cHosterGui().checkHoster(sHosterUrl)
+        oHoster = cHosterGui().checkHoster(sUrl)
         if (oHoster != False):
             oHoster.setDisplayName(sDisplayName)
             oHoster.setFileName(sMovieTitle)
