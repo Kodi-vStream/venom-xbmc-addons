@@ -135,6 +135,8 @@ def showSeries(sSearch=''):
 
             sUrl2 = aEntry[0]
             sThumb = re.sub('/w\d+/', '/w342/', 'https:' + aEntry[1])
+            if sThumb.startswith('/'):
+                sThumb = 'https' + sThumb
             sTitle = aEntry[2]
             if'/lettre/' in sUrl:
                 sDesc = ''
