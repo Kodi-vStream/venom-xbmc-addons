@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# update 15/04/2021
 # return False
 
 import re
@@ -234,7 +233,6 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            sDesc = ''
             sUrl2 = aEntry[0]
             sThumb = re.sub('/w\d+/', '/w342/', aEntry[1])
             sTitle = aEntry[2].split(' en streaming')[0].split('streaming | ')[1]
@@ -259,16 +257,15 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
 
             if sSearch:
-                oGui.addLink(SITE_IDENTIFIER, 'showSelectType', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+                oGui.addLink(SITE_IDENTIFIER, 'showSelectType', sDisplayTitle, sThumb, '', oOutputParameterHandler)
             elif SERIE_NEWS[0] not in sUrl:
                 oOutputParameterHandler.addParameter('sYear', sYear)
-                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 sDisplayTitle = sTitle
-                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
