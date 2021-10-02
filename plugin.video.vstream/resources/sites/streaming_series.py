@@ -20,12 +20,12 @@ SITE_DESC = 'Regarder toutes vos séries en Streaming Gratuit'
 
 URL_MAIN = 'https://streaming-series.la/'
 
-SERIE_NEWS = (URL_MAIN, 'showMovies')
 SERIE_SERIES = ('http://', 'load')
+SERIE_NEWS = (URL_MAIN, 'showMovies')
 SERIE_GENRES = (True, 'showGenres')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 
@@ -60,32 +60,16 @@ def showSerieSearch():
 def showGenres():
     oGui = cGui()
 
-    liste = []
-    liste.append(['Action', URL_MAIN + 'category/series/action/'])
-    liste.append(['Animation', URL_MAIN + 'category/series/animation/'])
-    liste.append(['Aventure', URL_MAIN + 'category/series/aventure/'])
-    liste.append(['Comédie', URL_MAIN + 'category/series/comedie/'])
-    liste.append(['Documentaire', URL_MAIN + 'category/series/documentaire/'])
-    liste.append(['Drame', URL_MAIN + 'category/series/drame/'])
-    liste.append(['Epouvante Horreur', URL_MAIN + 'category/series/epouvante-horreur/'])
-    liste.append(['Espionnage', URL_MAIN + 'category/series/espionnage/'])
-    liste.append(['Famille', URL_MAIN + 'category/series/famille/'])
-    liste.append(['Fantastique', URL_MAIN + 'category/series/fantastique/'])
-    liste.append(['Guerre', URL_MAIN + 'category/series/guerre/'])
-    liste.append(['Historique', URL_MAIN + 'category/series/historique/'])
-    liste.append(['Judiciaire', URL_MAIN + 'category/series/judiciaire/'])
-    liste.append(['Medical', URL_MAIN + 'category/series/medical/'])
-    liste.append(['Musical', URL_MAIN + 'category/series/musical/'])
-    liste.append(['Policier', URL_MAIN + 'category/series/policier/'])
-    liste.append(['Romance', URL_MAIN + 'category/series/romance/'])
-    liste.append(['Science Fiction', URL_MAIN + 'category/series/science-fiction/'])
-    liste.append(['Soap', URL_MAIN + 'category/series/soap/'])
-    liste.append(['Thriller', URL_MAIN + 'category/series/thriller/'])
-    liste.append(['Western', URL_MAIN + 'category/series/western/'])
+    liste = [['Action', 'action'], ['Animation', 'animation'], ['Aventure', 'aventure'], ['Comédie', 'comedie'],
+             ['Documentaire', 'documentaire'], ['Drame', 'drame'], ['Epouvante Horreur', 'epouvante-horreur'],
+             ['Espionnage', 'espionnage'], ['Famille', 'famille'], ['Fantastique', 'fantastique'], ['Guerre', 'guerre'],
+             ['Historique', 'historique'], ['Judiciaire', 'judiciaire'], ['Medical', 'medical'], ['Musical', 'musical'],
+             ['Policier', 'policier'], ['Romance', 'romance'], ['Science Fiction', 'science-fiction'], ['Soap', 'soap'],
+             ['Thriller', 'thriller'], ['Western', 'western']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/series/' + sUrl + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -230,7 +214,7 @@ def showLinks():
 
             # langue
             if aEntry[0]:
-                sLang = aEntry[0].replace('(', ' - ').replace(')', '')
+                sLang = aEntry[0].replace('(', '').replace(')', '')
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + sLang + '[/COLOR]')
             # hote
             else:
