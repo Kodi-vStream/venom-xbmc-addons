@@ -87,6 +87,8 @@
         <!--activation invisible des sources pour la recherche globale, il n'est pas utile de déclarer celles sans sSearch-->
         <setting visible="false" id="plugin__1seriestreaming" type="bool" label="1 SerieStreaming" default="true"/>
 
+        <setting visible="false" id="plugin__33seriestreaming" type="bool" label="33 Séries" default="true"/>
+
         <setting visible="false" id="plugin__4kstreamz" type="bool" label="4kstreamz" default="true"/>
 
         <setting visible="false" id="plugin_adkami_com" type="bool" label="ADKami" default="true"/>
@@ -180,8 +182,6 @@
         <setting visible="false" id="plugin_neko_sama" type="bool" label="Neko Sama" default="true"/>
 
         <setting visible="false" id="plugin_neuf_docu" type="bool" label="9Docu" default="true"/>
-
-        <setting visible="false" id="plugin_o1seriestreaming" type="bool" label="01series" default="true"/>
 
         <setting visible="false" id="plugin_o1streaming" type="bool" label="O1 streaming" default="true"/>
 
