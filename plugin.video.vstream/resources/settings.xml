@@ -85,6 +85,8 @@
         <setting type="sep"/>
 
         <!--activation invisible des sources pour la recherche globale, il n'est pas utile de déclarer celles sans sSearch-->
+        <setting visible="false" id="plugin__1seriestreaming" type="bool" label="1 SerieStreaming" default="true"/>
+
         <setting visible="false" id="plugin__4kstreamz" type="bool" label="4kstreamz" default="true"/>
 
         <setting visible="false" id="plugin_adkami_com" type="bool" label="ADKami" default="true"/>
@@ -226,8 +228,6 @@
         <setting visible="false" id="plugin_tirexo" type="bool" label="Tirexo" default="true"/>
 
         <setting visible="false" id="plugin_topreplay" type="bool" label="TopReplay" default="true"/>
-
-        <setting visible="false" id="plugin_tvseriestreaming" type="bool" label="TVseriestreaming" default="true"/>
 
         <setting visible="false" id="plugin_vf_film" type="bool" label="VF Film" default="true"/>
 
