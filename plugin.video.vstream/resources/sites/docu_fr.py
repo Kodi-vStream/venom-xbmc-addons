@@ -15,10 +15,10 @@ SITE_IDENTIFIER = 'docu_fr'
 SITE_NAME = 'Docu Fr'
 SITE_DESC = 'Documentaire streaming sur YT'
 
-URL_MAIN = 'https://documentaire.io/'
+URL_MAIN = "https://documentaire.io/"
 
+DOC_DOCS = (True, 'load')
 DOC_NEWS = (URL_MAIN, 'showMovies')
-DOC_DOCS = ('http://', 'load')
 DOC_GENRES = (True, 'showGenres')
 
 URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
@@ -54,24 +54,15 @@ def showSearch():
 def showGenres():
     oGui = cGui()
 
-    liste = []
-    liste.append(['Animaux', URL_MAIN + 'animaux/'])
-    liste.append(['Civilisations anciennes', URL_MAIN + 'civilisations-anciennes/'])
-    liste.append(['Consommation', URL_MAIN + 'consommation/'])
-    liste.append(['Environnement', URL_MAIN + 'environnement/'])
-    liste.append(['Grands conflits', URL_MAIN + 'grands-conflits/'])
-    liste.append(['Histoire', URL_MAIN + 'histoire/'])
-    liste.append(['Politique', URL_MAIN + 'politique/'])
-    liste.append(['Portraits', URL_MAIN + 'portraits'])
-    liste.append(['Santé', URL_MAIN + 'sante/'])
-    liste.append(['Science et technologie', URL_MAIN + 'science-et-technologie/'])
-    liste.append(['Société', URL_MAIN + 'societe/'])
-    liste.append(['Sport', URL_MAIN + 'sport/'])
-    liste.append(['Voyage', URL_MAIN + 'voyage/'])
+    liste = [['Animaux', 'animaux'], ['Civilisations anciennes', 'civilisations-anciennes'],
+             ['Consommation', 'consommation'], ['Environnement', 'environnement'],
+             ['Grands conflits', 'grands-conflits'], ['Histoire', 'histoire'], ['Politique', 'politique'],
+             ['Santé', 'sante'], ['Science et technologie', 'science-et-technologie'], ['Société', 'societe'],
+             ['Sport', 'sport'], ['Voyage', 'voyage']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + sUrl + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'doc.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -84,12 +75,12 @@ def showMovies(sSearch=''):
     if sSearch:
         sUrl = sSearch
 
+    oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sHtmlContent = sHtmlContent.replace('&#39;', '\'')
-    sPattern = 'article id=".+?data-background="([^"]+)">.+?<div class="read-title">.+?<a href="([^"]+)">([^<]+)'
+    sHtmlContent = oParser.abParse(sHtmlContent, '', 'Derniers Docus')
+    sPattern = 'flink" href="([^"]+)" title="([^"]+).+?src="(http[^"]+)'
 
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -105,9 +96,9 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            sThumb = aEntry[0]
-            sUrl2 = aEntry[1]
-            sTitle = aEntry[2]
+            sUrl2 = aEntry[0]
+            sTitle = aEntry[1].replace('|', '-')
+            sThumb = aEntry[2]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -127,7 +118,7 @@ def showMovies(sSearch=''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '>([^<]+)</a><a class="next page-numbers" href="([^"]+)">Next<'
+    sPattern = '>([^<]+)</a><a class="next page-numbers" href="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
