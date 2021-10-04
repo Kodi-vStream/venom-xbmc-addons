@@ -116,10 +116,7 @@ class cFav:
             except:
                 title = data['title']
 
-            try:
-                thumbnail = data['icon'].encode('utf-8')
-            except:
-                thumbnail = data['icon']
+            thumbnail = data['icon']
 
             try:
                 try:
