@@ -4,6 +4,7 @@ import xbmc
 import xbmcaddon
 import xbmcvfs
 import sys
+import re
 from base64 import b64encode
 from resources.lib.comaddon import dialog, addon, addonManager, VSlog, isMatrix
 from resources.lib.gui.gui import cGui
@@ -19,13 +20,11 @@ from resources.lib.util import UnquotePlus
 class UpNext:
     # Prépare le lien du prochain épisode d'une série
     def nextEpisode(self, guiElement):
-
         if not self.use_up_next():
             return
 
         # tester s'il s'agit d'une série
-        tvShowTitle = guiElement.getItemValue('tvshowtitle')
-        if not tvShowTitle:
+        if not guiElement.getItemValue('mediatype') == "episode":
             return
 
         oInputParameterHandler = cInputParameterHandler()
@@ -45,7 +44,12 @@ class UpNext:
             if not sEpisode:
                 return  # impossible de déterminer l'épisode courant
 
-        sMovieTitle = tvShowTitle  # if 'Saison' in tvShowTitle else tvShowTitle + ' S' + sSaison
+        #tvShowTitle n'est pas toujours disponible.
+        tvShowTitle = guiElement.getItemValue('tvshowtitle')
+        if not tvShowTitle:
+            tvShowTitle = re.search('\[\/COLOR\](.+?)\[COLOR',guiElement.getItemValue('title')).group(1)
+
+        sMovieTitle = tvShowTitle # if 'Saison' in tvShowTitle else tvShowTitle + ' S' + sSaison
 
         numEpisode = int(sEpisode)
         nextEpisode = numEpisode+1
