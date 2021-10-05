@@ -20,6 +20,7 @@ from resources.lib.util import UnquotePlus
 class UpNext:
     # Prépare le lien du prochain épisode d'une série
     def nextEpisode(self, guiElement):
+
         if not self.use_up_next():
             return
 
@@ -49,7 +50,16 @@ class UpNext:
         if not tvShowTitle:
             tvShowTitle = re.search('\[\/COLOR\](.+?)\[COLOR',guiElement.getItemValue('title')).group(1)
 
-        sMovieTitle = tvShowTitle # if 'Saison' in tvShowTitle else tvShowTitle + ' S' + sSaison
+        sMovieTitle = tvShowTitle 
+
+        #Force l'ajout de la saison dans le titre.
+        #Mais ignorer si aucun saison n'existe.
+        #Par mesure de sécuriter pour eviter les bugs.
+        try:
+            if not 'Saison' in tvShowTitle:
+                tvShowTitle + ' S' + sSaison
+        except:
+            pass
 
         numEpisode = int(sEpisode)
         nextEpisode = numEpisode+1
@@ -76,6 +86,7 @@ class UpNext:
                 sFileName += 'S%s' % sSaison
             sFileName += 'E%s' % sNextEpisode
             nextTitle = UnquotePlus(nextTitle)
+
             if sLang:
                 nextTitle += ' (%s)' % sLang
 
@@ -93,6 +104,7 @@ class UpNext:
             oOutputParameterHandler.addParameter('sSeason', sSaison)
             oOutputParameterHandler.addParameter('sEpisode', sNextEpisode)
             oOutputParameterHandler.addParameter('sLang', sLang)
+            oOutputParameterHandler.addParameter('tvshowtitle', tvShowTitle)
 
             sParams = oOutputParameterHandler.getParameterAsUri()
             url = 'plugin://plugin.video.vstream/?site=cHosterGui&function=play&%s' % sParams
