@@ -52,14 +52,8 @@ class UpNext:
 
         sMovieTitle = tvShowTitle 
 
-        #Force l'ajout de la saison dans le titre.
-        #Mais ignorer si aucun saison n'existe.
-        #Par mesure de sécuriter pour eviter les bugs.
-        try:
-            if not 'Saison' in tvShowTitle:
-                tvShowTitle + ' S' + sSaison
-        except:
-            pass
+        if not 'Saison' in tvShowTitle and type(sSaison) is not bool:
+            sMovieTitle = tvShowTitle + ' S' + sSaison
 
         numEpisode = int(sEpisode)
         nextEpisode = numEpisode+1
