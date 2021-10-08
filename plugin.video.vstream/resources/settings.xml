@@ -247,6 +247,8 @@
 
         <setting visible="false" id="plugin_vostfree" type="bool" label="Vostfree" default="true"/>
 
+        <setting visible="false" id="plugin_watchvf" type="bool" label="WatchVF" default="true"/>
+
         <setting visible="false" id="plugin_wawacity" type="bool" label="Wawacity" default="true"/>
 
         <setting visible="false" id="plugin_wiflix" type="bool" label="WiFlix" default="true"/>
