@@ -679,9 +679,12 @@ class cGuiElement:
 
         # Used only if there is data in db, overwrite getMetadonne()
         sCat = str(self.getCat())
-        if sCat and int(sCat) in(1, 2, 3, 4, 5, 8):  # Vérifier seulement si de type média
-            if self.getWatched():
-                self.addItemValues('playcount', 1)
+        try:
+            if sCat and int(sCat) in(1, 2, 3, 4, 5, 8):  # Vérifier seulement si de type média
+                if self.getWatched():
+                    self.addItemValues('playcount', 1)
+        except:
+            sCat = False
 
         self.addItemProperties('siteUrl', self.getSiteUrl())
         self.addItemProperties('sCleanTitle', self.getFileName())
