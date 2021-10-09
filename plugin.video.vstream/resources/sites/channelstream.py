@@ -7,6 +7,7 @@ import json
 import resources.sites.freebox
 
 
+from resources.lib.packer import cPacker
 from resources.lib.comaddon import addon, isMatrix
 from resources.lib.epg import cePg
 from resources.lib.gui.gui import cGui
@@ -176,97 +177,150 @@ def showHoster():
         sMeta = 0
 
     # Double Iframe a passer.
-    sPattern = '<iframe.+?src="([^"]+)"'
-    iframeURL = oParser.parse(sHtmlContent, sPattern)[1][0]
-
-    oRequestHandler = cRequestHandler(iframeURL)
-    sHtmlContent = oRequestHandler.request()
-
-    sPattern = '<iframe.+?src="([^"]+)"'
+    sPattern = '<iframe.+?src="([^"]+)" webkitallowfullscreen'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if not aResult[1]:  # Pas de flux
         oGui.setEndOfDirectory()
         return
 
-    iframeURL1 = aResult[1][0]
-    sHosterUrl = iframeURL1
+    for entry in aResult[1]:
+        oOutputParameterHandler = cOutputParameterHandler()
+        iframeURL1 = entry
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-    oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-    oOutputParameterHandler.addParameter('sYear', sYear)
-    oOutputParameterHandler.addParameter('sDesc', sDesc)
+        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+        oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+        oOutputParameterHandler.addParameter('sYear', sYear)
+        oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-    oGuiElement = cGuiElement()
-    oGuiElement.setTitle(sMovieTitle)
-    oGuiElement.setDescription(sDesc)
-    oGuiElement.setFileName(sMovieTitle)
-    oGuiElement.setSiteName(resources.sites.freebox.SITE_IDENTIFIER)
-    oGuiElement.setFunction('play__')
-    oGuiElement.setIcon('tv.png')
-    oGuiElement.setMeta(sMeta)
-    oGuiElement.setThumbnail(sThumb)
-    oGuiElement.setDirectTvFanart()
-    oGuiElement.setCat(sMeta)
+        oGuiElement = cGuiElement()
+        oGuiElement.setTitle(sMovieTitle)
+        oGuiElement.setDescription(sDesc)
+        oGuiElement.setFileName(sMovieTitle)
+        oGuiElement.setSiteName(resources.sites.freebox.SITE_IDENTIFIER)
+        oGuiElement.setFunction('play__')
+        oGuiElement.setIcon('tv.png')
+        oGuiElement.setMeta(sMeta)
+        oGuiElement.setThumbnail(sThumb)
+        oGuiElement.setDirectTvFanart()
+        oGuiElement.setCat(sMeta)
 
-    # oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
-    # oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
-    if addon().getSetting('enregistrement_activer') == 'true':
-        oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'enregistrement', 'Enregistrement')
+        # oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
+        # oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
+        if addon().getSetting('enregistrement_activer') == 'true':
+            oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'enregistrement', 'Enregistrement')
 
-    # Menu pour les films
-    if sMeta == 1:
-        oGui.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
-        oGui.createContexMenuba(oGuiElement, oOutputParameterHandler)
-        oGui.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
-        oGui.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
+        # Menu pour les films
+        if sMeta == 1:
+            oGui.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
+            oGui.createContexMenuba(oGuiElement, oOutputParameterHandler)
+            oGui.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
+            oGui.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
 
-    if 'dailymotion' in sHosterUrl:
-        oOutputParameterHandler.addParameter('sHosterIdentifier', 'dailymotion')
-        oOutputParameterHandler.addParameter('sMediaUrl', sHosterUrl)
-        oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
-        oOutputParameterHandler.addParameter('sFileName', sMovieTitle)
-        oGuiElement.setFunction('play')
-        oGuiElement.setSiteName('cHosterGui')
-        oGui.addHost(oGuiElement, oOutputParameterHandler)
-        cGui.CONTENT = 'movies'
-        oGui.setEndOfDirectory()
-        return
+        if 'dailymotion' in iframeURL1:
+            oOutputParameterHandler.addParameter('sHosterIdentifier', 'dailymotion')
+            oOutputParameterHandler.addParameter('sMediaUrl', iframeURL1)
+            oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
+            oOutputParameterHandler.addParameter('sFileName', sMovieTitle)
+            oGuiElement.setFunction('play')
+            oGuiElement.setSiteName('cHosterGui')
+            oGui.addHost(oGuiElement, oOutputParameterHandler)
+            cGui.CONTENT = 'movies'
+            oGui.setEndOfDirectory()
+            return
 
-    oRequestHandler = cRequestHandler(iframeURL1)
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Referer', iframeURL)
-    sHtmlContent2 = oRequestHandler.request()
+        elif "telerium" in iframeURL1:
+            oRequestHandler = cRequestHandler(iframeURL1)
+            oRequestHandler.addHeaderEntry('User-Agent', UA)
+            oRequestHandler.addHeaderEntry('Referer', iframeURL)
+            sHtmlContent2 = oRequestHandler.request()
 
-    sPattern2 = 'var\s+cid[^\'"]+[\'"]{1}([0-9]+)'
-    aResult = re.findall(sPattern2, sHtmlContent2)
+            if sHtmlContent2:
+                sPattern2 = 'var\s+cid[^\'"]+[\'"]{1}([0-9]+)'
+                aResult = re.findall(sPattern2, sHtmlContent2)
 
-    if aResult:
-        str2 = aResult[0]
-        datetoken = int(getTimer()) * 1000
+                if aResult:
+                    str2 = aResult[0]
+                    datetoken = int(getTimer()) * 1000
 
-        jsonUrl = 'https://telerium.digital/streams/' + str2 + '/' + str(datetoken) + '.json'
-        tokens = getRealTokenJson(jsonUrl, iframeURL1)
-        m3url = tokens['url']
-        nxturl = 'https://telerium.digital' + tokens['tokenurl']
+                    jsonUrl = 'https://telerium.digital/streams/' + str2 + '/' + str(datetoken) + '.json'
+                    tokens = getRealTokenJson(jsonUrl, iframeURL1)
+                    m3url = tokens['url']
+                    nxturl = 'https://telerium.digital' + tokens['tokenurl']
 
-        realtoken = getRealTokenJson(nxturl, iframeURL1)[10][::-1]
+                    realtoken = getRealTokenJson(nxturl, iframeURL1)[10][::-1]
 
-        try:
-            m3url = m3url.decode("utf-8")
-        except:
-            pass
+                    try:
+                        m3url = m3url.decode("utf-8")
+                    except:
+                        pass
 
-        sHosterUrl = 'https:' + m3url + realtoken + '|User-Agent=' + UA
-        sHosterUrl += '&Referer=' + Quote(iframeURL1) + '&Sec-Fetch-Mode=cors&Origin=https://telerium.tv'
+                    sHosterUrl = 'https:' + m3url + realtoken + '|User-Agent=' + UA
+                    sHosterUrl += '&Referer=' + Quote(iframeURL1) + '&Sec-Fetch-Mode=cors&Origin=https://telerium.tv'
+            else:
+                sHosterUrl = ""
 
-    oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
-    oGui.addFolder(oGuiElement, oOutputParameterHandler)
+        elif 'allfoot' or 'channel.stream' in iframeURL1:
+            if "channel.stream" in iframeURL1:
+                oRequestHandler = cRequestHandler(iframeURL1)
+                oRequestHandler.addHeaderEntry('User-Agent', UA)
+                # oRequestHandler.addHeaderEntry('Referer', siterefer) # a verifier
+                sHtmlContent = oRequestHandler.request()
+
+                sHosterUrl = ''
+                oParser = cParser()
+                sPattern = '<iframe.+?src="([^"]+)'
+                aResult = oParser.parse(sHtmlContent, sPattern)
+                try:
+                    #Lien telerium qui ne marche pas
+                    #Mais qui n'est pas toujours present
+                    iframeURL1 = aResult[1][1]
+                except:
+                    iframeURL1 = aResult[1][0]                    
+
+            oRequestHandler = cRequestHandler(iframeURL1)
+            oRequestHandler.addHeaderEntry('User-Agent', UA)
+            # oRequestHandler.addHeaderEntry('Referer', siterefer) # a verifier
+            sHtmlContent = oRequestHandler.request()
+
+            sHosterUrl = ''
+            oParser = cParser()
+            sPattern = '<iframe.+?src="([^"]+)'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+
+            if aResult[1]:
+                if 'ragnarp' in aResult[1][0]:
+                    bvalid, shosterurl = Hoster_Wigistream(aResult[1][0], iframeURL1)
+                    if bvalid:
+                        sHosterUrl = shosterurl
+     
+        if sHosterUrl != "":
+            oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
+            oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
     cGui.CONTENT = 'movies'
     oGui.setEndOfDirectory()
 
+def Hoster_Wigistream(url, referer):
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Referer', referer)
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
+    aResult = re.findall(sPattern, sHtmlContent)
+
+    if aResult:
+        sstr = aResult[0]
+        if not sstr.endswith(';'):
+            sstr = sstr + ';'
+        sUnpack = cPacker().unpack(sstr)
+        sPattern = 'src="(.+?)"'
+        aResult = re.findall(sPattern, sUnpack)
+        if aResult:
+            return True, aResult[0] + '|User-Agent=' + UA + '&Referer=' + Quote(url)
+
+    return False, False
 
 def getRealTokenJson(link, referer):
     # cookies = {'elVolumen': '100', '__ga': '100'}
