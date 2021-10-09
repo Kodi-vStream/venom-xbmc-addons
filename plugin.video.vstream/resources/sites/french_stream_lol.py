@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# source 34 https://french-stream.lol/  french-stream.lol 29112020
-# update 02042021
+# update 09/102021
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -10,25 +9,24 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress
 
 
 SITE_IDENTIFIER = 'french_stream_lol'
 SITE_NAME = 'French-stream-lol'
 SITE_DESC = 'Films & séries'
 
-URL_MAIN = 'https://french-stream.re/'
+URL_MAIN = "https://french-stream.re/"
 
 MOVIE_NEWS = (URL_MAIN + 'xfsearch/qualit/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 MOVIE_VOSTFR = (URL_MAIN + 'film/vostfr/', 'showMovies')
-
 MOVIE_VF_FRENCH = (URL_MAIN + 'xfsearch/version-film/French/', 'showMovies')
 MOVIE_VF_TRUEFRENCH = (URL_MAIN + 'xfsearch/version-film/TrueFrench/', 'showMovies')
-
 MOVIE_HDLIGHT = (URL_MAIN + 'xfsearch/qualit/HDLight/', 'showMovies')
 MOVIE_DVD = (URL_MAIN + 'xfsearch/qualit/DVDSCR/', 'showMovies')
 MOVIE_CAM = (URL_MAIN + 'xfsearch/qualit/CAM/', 'showMovies')
+MOVIE_NETFLIX = (URL_MAIN + 'film/film-netflix/', 'showMovies')
 
 SERIE_NEWS = (URL_MAIN + 'xfsearch/version-serie/', 'showMovies')
 SERIE_GENRES = (True, 'showSerieGenres')
@@ -68,6 +66,9 @@ def load():
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VF_FRENCH[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VF_FRENCH[1], 'Films (VF)', 'vf.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NETFLIX[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VF_FRENCH[1], 'Films (Netflix)', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VF_TRUEFRENCH[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VF_TRUEFRENCH[1], 'Films (True French)', 'films.png', oOutputParameterHandler)
@@ -193,10 +194,10 @@ def showSearch():
 def showMovieGenres():
     oGui = cGui()
 
-    liste = []  # 'romance'
-    listegenre = ['action', 'animation', 'arts-martiaux', 'aventure', 'biopic', 'comedie', 'drame',
-                  'documentaire', 'epouvante-horreur', 'espionnage', 'famille', 'fantastique',
-                  'guerre', 'historique', 'policier', 'science-fiction', 'thriller', 'western']
+    liste = []
+    listegenre = ['action', 'animation', 'arts-martiaux', 'aventure', 'biopic', 'comedie', 'drame', 'documentaire',
+                  'epouvante-horreur', 'espionnage', 'famille', 'fantastique', 'guerre', 'historique', 'policier',
+                  'romance', 'science-fiction', 'thriller', 'western']
 
     for igenre in listegenre:
         liste.append([igenre.capitalize(), URL_MAIN + igenre + '/'])
@@ -212,22 +213,16 @@ def showMovieGenres():
 def showSerieGenres():
     oGui = cGui()
 
-    liste = []
-    listegenre = ['action', 'animation', 'aventure', 'biopic', 'comedie', 'drame', 'famille', 'fantastique',
-                  'historique', 'horreur', 'judiciaire', 'medical', 'policier', 'romance', 'science-fiction',
-                  'thriller', 'western']
-
-    # https://french-stream.lol/serie-judiciare/
-    # https://french-stream.lol/serie/serie-judiciare/
-    for igenre in listegenre:
-        urlgenre = igenre
-        if igenre == 'judiciaire':
-            urlgenre = 'judiciare'
-        liste.append([igenre.capitalize(), URL_MAIN + 'serie/serie-' + urlgenre + '/'])
+    liste = [['Action', 'serie-action'], ['Animation', 'animation-serie'], ['Aventure', 'aventure-serie'],
+             ['Biopic', 'biopic-serie'], ['Comédie', 'serie-comedie'], ['Drame', 'drame-serie'],
+             ['Famille', 'familles-serie'], ['Fantastique', 'serie-fantastique'], ['Historique', 'serie-historique'],
+             ['Horreur', 'serie-horreur'], ['Judiciaire', 'serie-judiciare'], ['Médical', 'serie-medical'],
+             ['Policier', 'serie-policier'], ['Romance', 'serie-romance'], ['Science-fiction', 'serie-science-fiction'],
+             ['Thriller', 'serie-thriller'], ['Western', 'serie-western'], ['K-Drama', 'serie/k-drama']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + sUrl + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -289,19 +284,14 @@ def showMovies(sSearch=''):
 
             sTitle = aEntry[2].replace('- Saison', ' Saison')  # uniquement pour les séries
 
-            if bSearchMovie:
-                if '/serie' in sUrl2:
-                    continue
-            if bSearchSerie:
-                if '/serie' not in sUrl2:
-                    continue
+            # if bSearchMovie: #  il n'y a jamais '/serie' dans sUrl2
+                # if '/serie' in sUrl2:
+                    # continue
+            # if bSearchSerie:
+                # if '/serie' not in sUrl2:
+                    # continue
 
             sDisplayTitle = sTitle
-            if sSearch and not bSearchMovie and not bSearchSerie:
-                if '/serie' in sUrl2 or 'serie/' in sUrl or '/serie' in sUrl:
-                    sDisplayTitle = sDisplayTitle + ' [Série]'
-                else:
-                    sDisplayTitle = sDisplayTitle + ' [Film]'
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -309,50 +299,35 @@ def showMovies(sSearch=''):
 
             if '/serie' in sUrl2 or 'serie/' in sUrl or '/serie' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+            elif bSearchSerie is True or '- Saison' in aEntry[2]:
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showMovieLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     if not sSearch:
-        bNextPage, sNextPage, sNumPage = __checkForNextPage(sHtmlContent)
-        if (bNextPage != False):
+        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
+        if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sNumPage, oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sNumberNext = ''
-    sNumberMax = ''
-    sNumPage = ''
-
-    sPattern = '(\d+)<.a>\s*<.span>\s*<span class="pnext">'
+    sPattern = '(\d+)</a>\s*</span><span class="pnext"><a href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        sNumberMax = aResult[1][0]
+        sNumberMax = aResult[1][0][0]
+        sNextPage = aResult[1][0][1]
+        sNumberNext = re.search('cstart=([0-9]+)', sNextPage).group(1)
+        sPaging = sNumberNext + '/' + sNumberMax
+        return sNextPage, sPaging
 
-    sPattern = '<span class="pnext"><a href="([^"]+)'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        sNextPage = aResult[1][0]  # minimum requis
-        try:
-            sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
-        except:
-            pass
-
-        if sNumberNext:
-            sNumPage = sNumberNext
-            if sNumberMax:
-                sNumPage = sNumPage + '/' + sNumberMax
-
-        if sNextPage:
-            return True, sNextPage, sNumPage
-
-    return False, 'none', 'none'
+    return False, 'none'
 
 
 def showEpisodes():
