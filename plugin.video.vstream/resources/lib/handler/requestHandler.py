@@ -6,6 +6,9 @@ from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix
 from json import loads, dumps
 from resources.lib.util import urlEncode
 
+import requests.packages.urllib3.util.connection as urllib3_cn
+import socket
+
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
     REQUEST_TYPE_POST = 1
@@ -31,6 +34,20 @@ class cRequestHandler:
         self.redirects = True
         self.verify = True
         self.json = {}
+        self.forceIPV4 = False
+
+    #Utile pour certains hebergeurs qui ne marche pas en ipv6.
+    def disableIPV6(self):
+        self.forceIPV4 = True
+
+    def allowed_gai_family(self):
+        """
+         https://github.com/shazow/urllib3/blob/master/urllib3/util/connection.py
+        """
+        family = socket.AF_INET
+        if urllib3_cn.HAS_IPV6:
+            family = socket.AF_INET # force ipv6 only if it is available
+        return family
 
     #Desactive le ssl
     def disableSSL(self):
@@ -132,7 +149,6 @@ class cRequestHandler:
 
     def __callRequest(self, jsonDecode=False):
         if self.__enableDNS:
-            import socket
             self.save_getaddrinfo = socket.getaddrinfo
             socket.getaddrinfo = self.new_getaddrinfo
 
@@ -160,6 +176,8 @@ class cRequestHandler:
         else:
             method = "POST"
 
+        if self.forceIPV4:
+            urllib3_cn.allowed_gai_family = self.allowed_gai_family
 
         oResponse = None
         try:
