@@ -248,15 +248,20 @@ def showMovies(sSearch=''):
             sSearch = sSearch.replace(key_search_series, '')
             bSearchSerie = True
 
-        pdata = 'do=search&subaction=search&search_start=1&full_search=0&result_from=1&story=' + sSearch
-        oRequest = cRequestHandler(URL_SEARCH[0])
-        oRequest.setRequestType(1)
-        oRequest.addHeaderEntry('Referer', URL_MAIN)
-        oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-        oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-        oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-        oRequest.addParametersLine(pdata)
-        sHtmlContent = oRequest.request()
+        sUrl = URL_MAIN + 'index.php?story=' + sSearch + '&do=search&subaction=search'
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request()
+
+        # la méthode suivante fonctionne mais pas à 100%
+        # pdata = 'do=search&subaction=search&search_start=1&full_search=0&result_from=1&story=' + sSearch
+        # oRequest = cRequestHandler(URL_SEARCH[0])
+        # oRequest.setRequestType(1)
+        # oRequest.addHeaderEntry('Referer', URL_MAIN)
+        # oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+        # oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+        # oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+        # oRequest.addParametersLine(pdata)
+        # sHtmlContent = oRequest.request()
 
     else:
         oRequestHandler = cRequestHandler(sUrl)
@@ -284,12 +289,12 @@ def showMovies(sSearch=''):
 
             sTitle = aEntry[2].replace('- Saison', ' Saison')  # uniquement pour les séries
 
-            # if bSearchMovie: #  il n'y a jamais '/serie' dans sUrl2
-                # if '/serie' in sUrl2:
-                    # continue
-            # if bSearchSerie:
-                # if '/serie' not in sUrl2:
-                    # continue
+            if bSearchMovie:  # il n'y a jamais '/serie' dans sUrl2
+                if '- Saison' in aEntry[2]:
+                    continue
+            if bSearchSerie:
+                if '- Saison' not in aEntry[2]:
+                    continue
 
             sDisplayTitle = sTitle
 
@@ -405,7 +410,7 @@ def showSerieLinks():
         if numEpisode:
             numEpisode = int(numEpisode)
             if 'VO' in sLang:
-                numEpisode += 32 
+                numEpisode += 32
             if numEpisode == 2:
                 sRel_Episode = 'ABCDE'
             else:
@@ -428,7 +433,7 @@ def showSerieLinks():
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-        
+
 
     if (aResult[0] == True):
         html = aResult[1][0]
