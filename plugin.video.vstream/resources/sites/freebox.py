@@ -360,6 +360,8 @@ def GetRealUrl(chain):
     UA2 = UA
     url = chain
     regex = ''
+    param = ""
+    head = None
 
     r = re.search('\[[DECODENRJ]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
     if r:
@@ -381,19 +383,26 @@ def GetRealUrl(chain):
     if r:
         url = r.group(1)
 
+    r = re.search('\[[HEAD]+\](.+?)(?:(?:\[[A-Z]+\])|$)',chain)
+    if r:
+        head = r.group(1)
+
     # post metehod ?
     r = re.search('\[[POSTFORM]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
     if r:
         param = r.group(1)
-        oRequestHandler = cRequestHandler(url)
+
+    oRequestHandler = cRequestHandler(url)
+    if param:
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('Accept-Encoding', 'identity')
         oRequestHandler.addParametersLine(param)
-        sHtmlContent = oRequestHandler.request()
-
-    else:
-        oRequestHandler = cRequestHandler(url)
-        sHtmlContent = oRequestHandler.request()
+    if head:
+        import json
+        head = json.loads(head)
+        for a in head:
+            oRequestHandler.addHeaderEntry(a,head[a])
+    sHtmlContent = oRequestHandler.request()
 
     if regex:
         aResult2 = oParser.parse(sHtmlContent, regex)
