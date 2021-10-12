@@ -8,6 +8,7 @@
 
 import re
 import requests
+import time
 
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog, isMatrix
@@ -84,30 +85,42 @@ class cHoster(iHoster):
         api_call = ''
         UA = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36'
 
-        oParser = cParser()
+        oRequestHandler = cRequestHandler("https://yt1s.com/api/ajaxSearch/index")
+        oRequestHandler.setRequestType(1)
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+        oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
+        oRequestHandler.addHeaderEntry('Origin', 'https://yt1s.com')
+        oRequestHandler.addHeaderEntry('Referer', 'https://yt1s.com/fr13')
+        oRequestHandler.addParameters("q", self.__sUrl)
+        oRequestHandler.addParameters("vt","home")
+        sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
-        headers = {'User-Agent': UA}
-        sHtml = Unquote(requests.get(self.__sUrl, cookies={'CONSENT': GestionCookie().Readcookie("youtube")}, headers=headers).text)
+        aResult = sHtmlContent['links']["mp4"]["auto"]["k"]
 
-        sHtmlContent = self.deescape(sHtml[7 + sHtml.find('formats'):sHtml.rfind('adaptiveFormats')])
-        sPattern = '"url":"([^"]+)".+?"qualityLabel":"([^"]+)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-
-        if (aResult[0] == True):
-            url = []
-            qua = [] 
-            for aEntry in aResult[1]:
-                # Py3 a besoin de la deuxieme version, je laisse le 1er replace au cas où pour Py2
-                url.append(aEntry[0].replace('/&', '&').replace("\\\\u0026", "&").replace("\u0026", "&"))
-                qua.append(aEntry[1])
-
-            if url:
-                if self.__res:
-                    for i in range(len(qua)):
-                        if qua[i] == self.__res:
-                            api_call = url[i]
-                if not api_call:
-                    api_call = dialog().VSselectqual(qua, url)
+        oRequestHandler = cRequestHandler("https://yt1s.com/api/ajaxConvert/convert")
+        oRequestHandler.setRequestType(1)
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+        oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
+        oRequestHandler.addHeaderEntry('Origin', 'https://yt1s.com')
+        oRequestHandler.addHeaderEntry('Referer', 'https://yt1s.com/fr13')
+        oRequestHandler.addParameters("vid", self.__sUrl.split("v=")[1])
+        oRequestHandler.addParameters("k",aResult)
+        try:
+            api_call = oRequestHandler.request(jsonDecode=True)['dlink']
+        except:            
+            time.sleep(3)
+            oRequestHandler = cRequestHandler("https://yt1s.com/api/ajaxConvert/convert")
+            oRequestHandler.setRequestType(1)
+            oRequestHandler.addHeaderEntry('User-Agent', UA)
+            oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+            oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
+            oRequestHandler.addHeaderEntry('Origin', 'https://yt1s.com')
+            oRequestHandler.addHeaderEntry('Referer', 'https://yt1s.com/fr13')
+            oRequestHandler.addParameters("vid", self.__sUrl.split("v=")[1])
+            oRequestHandler.addParameters("k",aResult)
+            api_call = oRequestHandler.request(jsonDecode=True)['dlink']
 
         if api_call:
             return True, api_call
