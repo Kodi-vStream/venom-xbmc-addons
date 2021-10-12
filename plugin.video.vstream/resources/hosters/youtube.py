@@ -69,17 +69,7 @@ class cHoster(iHoster):
 
     def getMediaLink(self):
         first_test = self.__getMediaLinkForGuest()
-
-        if first_test != False:
-            return first_test
-        else:
-            return self.__getMediaLinkForGuest2()
-
-    def deescape(self, escaped):
-        if isMatrix():
-            return escaped.encode().decode('unicode_escape')
-        else:
-            return escaped.decode('string_escape')
+        return first_test
 
     def __getMediaLinkForGuest(self):
         api_call = ''
@@ -96,7 +86,16 @@ class cHoster(iHoster):
         oRequestHandler.addParameters("vt","home")
         sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
-        aResult = sHtmlContent['links']["mp4"]["auto"]["k"]
+        # initialisation des tableaux
+        url = []
+        qua = []
+        # Remplissage des tableaux
+        for i in sHtmlContent['links']["mp4"]:
+            url.append(sHtmlContent['links']["mp4"][i]["k"])
+            qua.append(sHtmlContent['links']["mp4"][i]["q"])
+
+        # dialogue qualité
+        k = dialog().VSselectqual(qua, url)
 
         oRequestHandler = cRequestHandler("https://yt1s.com/api/ajaxConvert/convert")
         oRequestHandler.setRequestType(1)
@@ -106,7 +105,7 @@ class cHoster(iHoster):
         oRequestHandler.addHeaderEntry('Origin', 'https://yt1s.com')
         oRequestHandler.addHeaderEntry('Referer', 'https://yt1s.com/fr13')
         oRequestHandler.addParameters("vid", self.__sUrl.split("v=")[1])
-        oRequestHandler.addParameters("k",aResult)
+        oRequestHandler.addParameters("k",k)
         try:
             api_call = oRequestHandler.request(jsonDecode=True)['dlink']
         except:            
@@ -119,59 +118,10 @@ class cHoster(iHoster):
             oRequestHandler.addHeaderEntry('Origin', 'https://yt1s.com')
             oRequestHandler.addHeaderEntry('Referer', 'https://yt1s.com/fr13')
             oRequestHandler.addParameters("vid", self.__sUrl.split("v=")[1])
-            oRequestHandler.addParameters("k",aResult)
+            oRequestHandler.addParameters("k",k)
             api_call = oRequestHandler.request(jsonDecode=True)['dlink']
 
         if api_call:
             return True, api_call
         else:
             return False
-
-    def __getMediaLinkForGuest2(self):
-        api_call = ''
-
-        oRequest = cRequestHandler('https://ytoffline.net/fr1')
-        oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0')
-        oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-        oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-        sHtmlContent = oRequest.request()
-
-        tok = re.search('id="token" value="(.+?)"', sHtmlContent).group(1)
-        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
-
-        oParser = cParser()
-        pdata = 'url=' + Quote(self.__sUrl) + '&token=' + tok
-
-        oRequest = cRequestHandler('https://ytoffline.net/fr1/download/')
-        oRequest.setRequestType(1)
-        oRequest.addHeaderEntry('User-Agent', UA)
-        oRequest.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
-        oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
-        oRequest.addHeaderEntry('Content-Length', len(pdata))
-        oRequest.addHeaderEntry('Referer', 'https://ytoffline.net/fr1/')
-        oRequest.addParametersLine(pdata)
-
-        sHtmlContent = oRequest.request()
-
-        sStart = '<div id="mp4" class="display-block tabcontent">'
-        sEnd = '<div id="audio" class="tabcontent">'
-        sHtmlContent1 = oParser.abParse(sHtmlContent, sStart, sEnd)
-        sPattern = '<td>([^<]+)<small>.+?data-href="([^"]+)"'
-        aResult = oParser.parse(sHtmlContent1, sPattern)
-
-        if (aResult[0] == True):
-            # initialisation des tableaux
-            url = []
-            qua = []
-            # Remplissage des tableaux
-            for i in aResult[1]:
-                url.append(str(i[1]))
-                qua.append(str(i[0]))
-
-            # dialogue qualité
-            api_call = dialog().VSselectqual(qua, url)
-
-        if (api_call):
-            return True, api_call
-
-        return False, False
