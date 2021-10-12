@@ -243,7 +243,7 @@ class cDb:
             return
         cat = meta['cat'] if 'cat' in meta else '1'
 
-        ex = 'INSERT INTO watched (title, cat) VALUES (?, ?)'
+        ex = 'INSERT or IGNORE INTO watched (title, cat) VALUES (?, ?)'
         try:
             self.dbcur.execute(ex, (title, cat))
             self.db.commit()
