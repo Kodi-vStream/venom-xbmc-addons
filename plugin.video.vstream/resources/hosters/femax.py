@@ -4,9 +4,8 @@
 
 import json
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog ,VSlog
+from resources.lib.comaddon import dialog
 
 
 class cHoster(iHoster):
@@ -48,20 +47,20 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self, api_call=None):
 
-        req = self.__sUrl.replace('/v/','/api/source/')
+        req = self.__sUrl.replace('/v/', '/api/source/')
         pdata = 'r' # 'r' ou n'importe quelle chaine (ne doit pas etre vide)
         oRequestHandler = cRequestHandler(req)
         oRequestHandler.setRequestType(1)
         oRequestHandler.addParametersLine(pdata)
         sHtmlContent = oRequestHandler.request()
-        jsonrsp  = json.loads(sHtmlContent )
+        jsonrsp  = json.loads(sHtmlContent)
 
         list_url = []
         list_q = []
         bfind = False
         for rsp in jsonrsp:
             if rsp == 'data':
-                bfind = True   
+                bfind = True
         if not bfind:
             return False, False
 
