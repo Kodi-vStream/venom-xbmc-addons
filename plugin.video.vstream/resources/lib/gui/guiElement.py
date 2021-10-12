@@ -285,7 +285,9 @@ class cGuiElement:
         if sTitle2:
             self.addItemValues('tvshowtitle', cUtil().getSerieTitre(sTitle))
             self.__sTitleWatched += '_' + sTitle2
-        self.addItemValues('originaltitle', self.__sTitleWatched)
+            
+        if self.getMetaAddon() == 'false':
+            self.addItemValues('originaltitle', self.__sTitleWatched)
 
         if sTitle2:
             sTitle2 = '[COLOR %s]%s[/COLOR] ' % (self.__sDecoColor, sTitle2)
