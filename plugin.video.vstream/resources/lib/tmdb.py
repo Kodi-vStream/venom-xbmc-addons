@@ -194,6 +194,7 @@ class cTMDb:
 
         sql_create = "CREATE TABLE IF NOT EXISTS episode ("\
                      "tmdb_id TEXT, "\
+                     "originaltitle TEXT,"\
                      "season INTEGER, "\
                      "episode INTEGER, "\
                      "year INTEGER, "\
@@ -821,7 +822,7 @@ class cTMDb:
 
         # cache des épisodes
         elif media_type == "episode":
-            return self._cache_save_episode(meta, season, episode)
+            return self._cache_save_episode(meta, name, season, episode)
 
         # cache des collections
         elif media_type == 'collection':
@@ -938,11 +939,11 @@ class cTMDb:
             pass
 
     # Cache pour les épisodes
-    def _cache_save_episode(self, meta, season, episode):
+    def _cache_save_episode(self, meta, name, season, episode):
         try:
-            sql = 'INSERT or IGNORE INTO episode (tmdb_id, season, episode, year, title, premiered, poster_path, plot, rating, votes, director, writer, guest_stars, tagline) VALUES ' \
-                  '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-            self.dbcur.execute(sql, (meta['tmdb_id'], season, episode, meta['year'], meta['title'], meta['premiered'], meta['poster_path'], meta['plot'], meta['rating'], meta['votes'], meta['director'], meta['writer'], ''.join(meta.get('guest_stars', "")), meta["tagline"]))
+            sql = 'INSERT or IGNORE INTO episode (tmdb_id, originaltitle, season, episode, year, title, premiered, poster_path, plot, rating, votes, director, writer, guest_stars, tagline) VALUES ' \
+                  '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            self.dbcur.execute(sql, (meta['tmdb_id'], name + "_S"+season + "E" + episode, season, episode, meta['year'], meta['title'], meta['premiered'], meta['poster_path'], meta['plot'], meta['rating'], meta['votes'], meta['director'], meta['writer'], ''.join(meta.get('guest_stars', "")), meta["tagline"]))
             self.db.commit()
         except Exception as e:
             VSlog(str(e))
@@ -951,7 +952,7 @@ class cTMDb:
                 VSlog('Table recreated')
 
                 # Deuxieme tentative
-                self.dbcur.execute(sql, (meta['tmdb_id'], season, episode, meta['year'], meta['title'], meta['premiered'], meta['poster_path'], meta['plot'], meta['rating'], meta['votes'], meta['director'], meta['writer'], ''.join(meta.get('guest_stars',"")),meta.get("tagline","")))
+                self.dbcur.execute(sql, (meta['tmdb_id'], name, season, episode, meta['year'], meta['title'], meta['premiered'], meta['poster_path'], meta['plot'], meta['rating'], meta['votes'], meta['director'], meta['writer'], ''.join(meta.get('guest_stars', "")), meta["tagline"]))
                 self.db.commit()
             else:
                 VSlog('SQL ERROR INSERT into table episode')
