@@ -402,13 +402,13 @@ class cTMDb:
 
     # Search for TV shows by title.
     def search_tvshow_name(self, name, year='', page=1, genre=''):
-
         if year:
             term = QuotePlus(name) + '&year=' + year
         else:
             term = QuotePlus(name)
 
         meta = self._call('search/tv', 'query=' + term + '&page=' + str(page))
+
         if 'errors' not in meta and 'status_code' not in meta:
 
             # si pas de résultat avec l'année, on teste sans l'année
@@ -999,7 +999,8 @@ class cTMDb:
         """
 
         name = re.sub(" +", " ", name)  # nettoyage du titre
-
+        name = name.replace('VF','').replace('VOSTFR','')
+        
         # VSlog('Attempting to retrieve meta data for %s: %s %s %s %s' % (media_type, name, year, imdb_id, tmdb_id))
 
         # recherche dans la base de données
@@ -1081,7 +1082,6 @@ class cTMDb:
         if append_to_response:
             url += '&%s' % append_to_response
 
-        # On utilise requests car urllib n'arrive pas a certain moment a ouvrir le json.
         oRequestHandler = cRequestHandler(url)
         data = oRequestHandler.request(jsonDecode=True)
 
