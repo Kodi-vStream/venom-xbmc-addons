@@ -71,81 +71,36 @@ def showSearch():
 def showGenres():
     oGui = cGui()
 
-    liste = []
-    liste.append(['Ambient', URL_MAIN + '/genre/ambient/'])
-    liste.append(['Acid', URL_MAIN + '/genre/acid/'])
-    liste.append(['Autre', URL_MAIN + '/genre/other/'])
-    liste.append(['Breakbeat', URL_MAIN + '/genre/breakbeat/'])
-    liste.append(['Breakcore', URL_MAIN + '/genre/breakcore/'])
-    liste.append(['Chiptune ', URL_MAIN + '/genre/chiptune/'])
-    liste.append(['Classic hardstyle', URL_MAIN + '/tag/classic-hardstyle/'])
-    liste.append(['Crossbreed', URL_MAIN + '/genre/crossbreed/'])
-    liste.append(['Dance', URL_MAIN + '/genre/dance'])
-    liste.append(['Darkcore', URL_MAIN + '/genre/darkcore/'])
-    liste.append(['Deep House', URL_MAIN + '/genre/deephouse/'])
-    liste.append(['Disco', URL_MAIN + '/genre/disco'])
-    liste.append(['Dark Psy', URL_MAIN + '/genre/darkpsy/'])
-    liste.append(['Darkstep', URL_MAIN + '/genre/darkstep/'])
-    liste.append(['Drum and bass', URL_MAIN + '/genre/drumnbass/'])
-    liste.append(['Dubstep', URL_MAIN + '/genre/dubstep/'])
-    liste.append(['Early hardcore', URL_MAIN + '/genre/earlyhardcore/'])
-    liste.append(['Early hardstyle', URL_MAIN + '/genre/earlyhardstyle/'])
-    liste.append(['Early terror', URL_MAIN + '/genre/earlyterror/'])
-    liste.append(['EBM', URL_MAIN + '/genre/ebm/'])
-    liste.append(['Eclectic', URL_MAIN + '/genre/eclectic/'])
-    liste.append(['Electro', URL_MAIN + '/genre/electro/'])
-    liste.append(['Euphoric hardstyle', URL_MAIN + '/tag/euphoric-hardstyle/'])
-    liste.append(['Fidget', URL_MAIN + '/genre/fidget/'])
-    liste.append(['Frenchcore', URL_MAIN + '/genre/frenchcore/'])
-    liste.append(['Funk', URL_MAIN + '/genre/funk/'])
-    liste.append(['Garage', URL_MAIN + '/genre/garage/'])
-    liste.append(['Goa', URL_MAIN + '/genre/goa/'])
-    liste.append(['Grime', URL_MAIN + '/genre/grim/'])
-    liste.append(['Hands-up', URL_MAIN + '/genre/handsup/'])
-    liste.append(['Happy hardcore', URL_MAIN + '/genre/happyhardcore/'])
-    liste.append(['Hardcore', URL_MAIN + '/genre/hardcore/'])
-    liste.append(['Hardstyle', URL_MAIN + '/genre/hardstyle/'])
-    liste.append(['Hardtechno', URL_MAIN + '/genre/hardtechno/'])
-    liste.append(['Hardtek', URL_MAIN + '/genre/hardtek/'])
-    liste.append(['Hardtrance', URL_MAIN + '/genre/hardtrance/'])
-    liste.append(['House', URL_MAIN + '/genre/house/'])
-    liste.append(['Industrial', URL_MAIN + '/genre/industrial'])
-    liste.append(['Industrial hardcore', URL_MAIN + '/genre/industrialhardcore/'])
-    liste.append(['IDM', URL_MAIN + '/genre/idm/'])
-    liste.append(['Jump', URL_MAIN + '/genre/jump/'])
-    liste.append(['Jungle', URL_MAIN + '/genre/jungle/'])
-    liste.append(['Liquid', URL_MAIN + '/genre/liquid/'])
-    liste.append(['Lounge', URL_MAIN + '/genre/lounge/'])
-    liste.append(['Minimal', URL_MAIN + '/genre/minimal/'])
-    liste.append(['Moombahton', URL_MAIN + '/genre/moombahton/'])
-    liste.append(['Noise', URL_MAIN + '/genre/noise/'])
-    liste.append(['Oldschool', URL_MAIN + '/genre/oldschool/'])
-    liste.append(['Progressive', URL_MAIN + '/genre/progressive/'])
-    liste.append(['Progressive House', URL_MAIN + '/genre/progressivehouse/'])
-    liste.append(['Progressive Trance', URL_MAIN + '/genre/progressivetrance/'])
-    liste.append(['Psytrance', URL_MAIN + '/genre/psytrance/'])
-    liste.append(['Raw Hardstyle', URL_MAIN + '/tag/raw-hardstyle/'])
-    liste.append(['Speedcore', URL_MAIN + '/genre/speedcore/'])
-    liste.append(['Schranz', URL_MAIN + '/genre/schranz/'])
-    liste.append(['Speedcore', URL_MAIN + '/genre/speedcore/'])
-    liste.append(['Splittercore', URL_MAIN + '/genre/splittercore/'])
-    liste.append(['Tech house', URL_MAIN + '/genre/techhouse/'])
-    liste.append(['Techno', URL_MAIN + '/genre/techno/'])
-    liste.append(['Techtrance', URL_MAIN + '/genre/techtrance/'])
-    liste.append(['Tek', URL_MAIN + '/genre/tek/'])
-    liste.append(['Tekno', URL_MAIN + '/genre/tekno/'])
-    liste.append(['Terror', URL_MAIN + '/genre/terror/'])
-    liste.append(['Trance', URL_MAIN + '/genre/trance/'])
-    liste.append(['Tribal House', URL_MAIN + '/genre/tribalhouse/'])
-    liste.append(['UK Happy hardcore', URL_MAIN + '/genre/ukhappyhardcore/'])
-    liste.append(['UK Hardcore', URL_MAIN + '/genre/ukhardcore/'])
-    liste.append(['UK Hardhouse', URL_MAIN + '/ukhardhouse/'])
-    liste.append(['Vocal Trance', URL_MAIN + '/genre/vocaltrance/'])
-    liste.append(['Witch house', URL_MAIN + '/genre/witchhouse/'])
+    liste = [['Ambient', 'genre/ambient'], ['Acid', 'genre/acid'], ['Autre', 'genre/other'],
+             ['Breakbeat', 'genre/breakbeat'], ['Breakcore', 'genre/breakcore'], ['Chiptune ', 'genre/chiptune'],
+             ['Classic hardstyle', 'tag/classic-hardstyle'], ['Crossbreed', 'genre/crossbreed'],
+             ['Dance', 'genre/dance'], ['Darkcore', 'genre/darkcore'], ['Deep House', 'genre/deephouse'],
+             ['Disco', 'genre/disco'], ['Dark Psy', 'genre/darkpsy'], ['Darkstep', 'genre/darkstep'],
+             ['Drum and bass', 'genre/drumnbass'], ['Dubstep', 'genre/dubstep'],
+             ['Early hardcore', 'genre/earlyhardcore'], ['Early hardstyle', 'genre/earlyhardstyle'],
+             ['Early terror', 'genre/earlyterror'], ['EBM', 'genre/ebm'], ['Eclectic', 'genre/eclectic'],
+             ['Electro', 'genre/electro'], ['Euphoric hardstyle', 'tag/euphoric-hardstyle'], ['Fidget', 'genre/fidget'],
+             ['Frenchcore', 'genre/frenchcore'], ['Funk', 'genre/funk'], ['Garage', 'genre/garage'],
+             ['Goa', 'genre/goa'], ['Grime', 'genre/grim'], ['Hands-up', 'genre/handsup'],
+             ['Happy hardcore', 'genre/happyhardcore'], ['Hardcore', 'genre/hardcore'], ['Hardstyle', 'genre/hardstyle'],
+             ['Hardtechno', 'genre/hardtechno'], ['Hardtek', 'genre/hardtek'], ['Hardtrance', 'genre/hardtrance'],
+             ['House', 'genre/house'], ['Industrial', 'genre/industrial'],
+             ['Industrial hardcore', 'genre/industrialhardcore'], ['IDM', 'genre/idm'], ['Jump', 'genre/jump'],
+             ['Jungle', 'genre/jungle'], ['Liquid', 'genre/liquid'], ['Lounge', 'genre/lounge'],
+             ['Minimal', 'genre/minimal'], ['Moombahton', 'genre/moombahton'], ['Noise', 'genre/noise'],
+             ['Oldschool', 'genre/oldschool'], ['Progressive', 'genre/progressive'],
+             ['Progressive House', 'genre/progressivehouse'], ['Progressive Trance', 'genre/progressivetrance'],
+             ['Psytrance', 'genre/psytrance'], ['Raw Hardstyle', 'tag/raw-hardstyle'], ['Speedcore', 'genre/speedcore'],
+             ['Schranz', 'genre/schranz'], ['Speedcore', 'genre/speedcore'], ['Splittercore', 'genre/splittercore'],
+             ['Tech house', 'genre/techhouse'], ['Techno', 'genre/techno'], ['Techtrance', 'genre/techtrance'],
+             ['Tek', 'genre/tek'], ['Tekno', 'genre/tekno'], ['Terror', 'genre/terror'], ['Trance', 'genre/trance'],
+             ['Tribal House', 'genre/tribalhouse'], ['UK Happy hardcore', 'genre/ukhappyhardcore'],
+             ['UK Hardcore', 'genre/ukhardcore'], ['UK Hardhouse', 'genre/ukhardhouse'],
+             ['Vocal Trance', 'genre/vocaltrance'], ['Witch house', 'genre/witchhouse']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/' + sUrl + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -402,7 +357,7 @@ def showPromo():
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = 'class="active"><a href="".+?href="([^"]+).+?>([^<]+)</a></li>\s*</ul>\s*</div></div>\s*</div>\s*<div class="large'
+    sPattern = 'class="active"><a href="".+?href="([^"]+).+?>(\d+)</a></li>\s*</ul>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sNextPage = URL_MAIN + aResult[1][0][0]
