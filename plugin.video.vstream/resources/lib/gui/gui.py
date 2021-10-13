@@ -318,23 +318,16 @@ class cGui:
 
         itemTitle = oGuiElement.getTitle()
 
-        # Obligatoire de convertir sous Kodi 20 pour le moment.
-        if int(oGuiElement.getMeta()) == 6 and oGuiElement.getMetaAddon() == 'true':  # Nom de l'épisode
-            try:
-                data['title'] = str(data['season']) + "x" + str(data['episode']) + " " + data['title'] + " " + itemTitle.split(data['tvshowtitle'])[1]
-            except:
-                pass
+        #La deuxieme conditions sert a vérifier si le contenu a des métas données.
+        if int(oGuiElement.getMeta()) == 6 and data.get('cast') is not None:
+            data['title'] = str(data['season']) + "x" + str(data['episode']) + " " + data['title'] + " " + itemTitle.split(data['tvshowtitle'])[1]  # Nom de l'épisode
         else:
             #Permets d'afficher toutes les informations pour les films.
             data['title'] = itemTitle
 
-
-        try:
-            if data.get('duration'):
-                # Convertion en seconde, utile pour le lien final.
-                data['duration'] = (sum(x * int(t) for x, t in zip([1, 60, 3600], reversed(data.get('duration', '').split(":")))))
-        except:
-            pass
+        if ":" in str(data.get('duration')):
+            # Convertion en seconde, utile pour le lien final.
+            data['duration'] = (sum(x * int(t) for x, t in zip([1, 60, 3600], reversed(data.get('duration', '').split(":")))))
 
         oListItem = listitem(itemTitle)
 
