@@ -233,8 +233,8 @@ def showEpisodes():
         for aEntry in sorted(aResult[1], key=lambda aResult: aResult[1]):
             sQual = aEntry[2]
 
-            if isMatrix():
-                sQual = sQual.encode('latin-1').decode()
+            # if isMatrix():  # plante sous matrix !!!!!!
+                # sQual = sQual.encode('latin-1').decode()
 
             # Changemement de formats ...x... -> ....P
             if '1920×' in sQual or '1440×' in sQual or '1904×' in sQual:
@@ -251,7 +251,8 @@ def showEpisodes():
             else:
                 sQual = re.sub('(\d+×\d+)px', '[480P]', sQual)
 
-            sTitle = 'E' + aEntry[1] + ' ' + sMovieTitle + ' ' + sQual
+            sTitle = 'E' + aEntry[1] + ' ' + sMovieTitle
+            sDisplayTitle = sTitle + ' ' + sQual
             idEpisode = aEntry[0]
 
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -259,7 +260,7 @@ def showEpisodes():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('serieID', serieID)
             oOutputParameterHandler.addParameter('idEpisode', idEpisode)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
