@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+import re
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -7,8 +10,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.comaddon import progress
 from resources.lib.parser import cParser
-from resources.lib.util import Quote, cUtil
-import re
+from resources.lib.util import QuotePlus #, cUtil
 
 SITE_IDENTIFIER = 'mesfilms'
 SITE_NAME = 'Mes Films'
@@ -68,7 +70,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + Quote(sSearchText)
+        sUrl = URL_SEARCH[0] + QuotePlus(sSearchText)
         showSearchResult(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -153,14 +155,14 @@ def showSearchResult(sSearch=''):
                 sYear = re.search('(\d{4})', sYear).group(1)
             sDesc = aEntry[4]
 
-            # on ne recherche que des saisons
-            if '/episode/' in sUrl:
+            # on ne recherche que des films même si séries et animés dispo
+            if not '/film/' in sUrl:
                 continue
 
             # Filtrer les résultats
-            if sSearch and total > 5:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
-                    continue
+            # if sSearch and total > 5:
+                # if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
+                    # continue
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
