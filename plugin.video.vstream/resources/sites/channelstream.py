@@ -24,8 +24,8 @@ SITE_IDENTIFIER = 'channelstream'
 SITE_NAME = 'Channel Stream'
 SITE_DESC = 'iptv'
 
-URL_MAIN = 'https://channelstream.watch'
-SPORT_LIVE  = (URL_MAIN + '/programme.php', 'showMovies')
+URL_MAIN = "https://channelstream.watch"
+SPORT_LIVE = (URL_MAIN + '/programme.php', 'showMovies')
 
 TV_FRENCH = (URL_MAIN + "/chaine-tv.php", 'showMovies')
 
@@ -41,7 +41,7 @@ def load():
     liste.append(['Sport', 'Chaîne Sportive', 'sport.png', False])
     liste.append(['Science et Nature', 'Chaîne axés sur les sciences', 'buzz.png', False])
     if addon().getSetting('contenu_adulte') == 'true':
-        liste.append(['Adulte', 'Chaîne consacrée aux Film', 'buzz.png', True]) 
+        liste.append(['Adulte', 'Chaîne consacrée aux Film', 'buzz.png', True])
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
@@ -68,10 +68,10 @@ def showMovies():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     if isMatrix():
-        sHtmlContent = sHtmlContent.replace('Ã®','î').replace('Ã©','é')
+        sHtmlContent = sHtmlContent.replace('Ã®', 'î').replace('Ã©', 'é')
 
     if "programme" in sUrl:
-        sPattern = "colspan='7'.+?<b>([^<]+)</b>.+?location\.href = '([^']+)'.+?text-align.+?>(.+?)</td>.+?src='([^']+)'.+?text-align.+?>([^<]+)<.+?text-align: left.+?>([^<]+)<"
+        sPattern = "colspan='7'.+?<b>([^<]+)</b>.+?location\.href = '([^']+).+?text-align.+?>(.+?)</td>.+?src='([^']+).+?text-align.+?>([^<]+).+?text-align: left.+?>([^<]+)"
     else:
         sPattern = 'location.href = \'\.(.+?)\'.+?src=\'(.+?)\'.+?<div align="center">(.+?)</div>'
         sHtmlContent = oParser.abParse(sHtmlContent, sFiltre, '<!-- Type Chaîne -->')
@@ -81,15 +81,15 @@ def showMovies():
     try:
         EPG = cePg().get_epg('', 'direct')
     except:
-         EPG = ""
+        EPG = ""
 
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if "programme" in sUrl:
-                sTitle = aEntry[0]                
+                sTitle = aEntry[0]
                 sUrl2 = aEntry[1]
-                sDate = aEntry[2].replace('<br />',' ')
+                sDate = aEntry[2].replace('<br />', ' ')
                 sThumb = aEntry[3]
                 sdesc1 = aEntry[4]
                 sdesc2 = aEntry[5]
@@ -106,7 +106,7 @@ def showMovies():
                     sDisplayTitle += ' - ' + sDate
 
             else:
-                # Trie des chaines adultes 
+                # Trie des chaines adultes
                 if "+18" in str(aEntry[2]):
                     if not bAdulte:
                         continue
@@ -131,7 +131,7 @@ def showMovies():
             if "programme" in sUrl:
                 oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, sThumb, sDisplayTitle, oOutputParameterHandler)
             else:
-                oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, sThumb, sDesc, oOutputParameterHandler)                
+                oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -272,11 +272,11 @@ def showHoster():
                 sPattern = '<iframe.+?src="([^"]+)'
                 aResult = oParser.parse(sHtmlContent, sPattern)
                 try:
-                    #Lien telerium qui ne marche pas
-                    #Mais qui n'est pas toujours present
+                    # Lien telerium qui ne marche pas
+                    # Mais qui n'est pas toujours present
                     iframeURL1 = aResult[1][1]
                 except:
-                    iframeURL1 = aResult[1][0]                    
+                    iframeURL1 = aResult[1][0]
 
             oRequestHandler = cRequestHandler(iframeURL1)
             oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -293,13 +293,14 @@ def showHoster():
                     bvalid, shosterurl = Hoster_Wigistream(aResult[1][0], iframeURL1)
                     if bvalid:
                         sHosterUrl = shosterurl
-     
+
         if sHosterUrl != "":
             oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
     cGui.CONTENT = 'movies'
     oGui.setEndOfDirectory()
+
 
 def Hoster_Wigistream(url, referer):
     oRequestHandler = cRequestHandler(url)
@@ -321,6 +322,7 @@ def Hoster_Wigistream(url, referer):
             return True, aResult[0] + '|User-Agent=' + UA + '&Referer=' + Quote(url)
 
     return False, False
+
 
 def getRealTokenJson(link, referer):
     # cookies = {'elVolumen': '100', '__ga': '100'}
