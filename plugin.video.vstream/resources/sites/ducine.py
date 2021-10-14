@@ -110,27 +110,16 @@ def showSearch():
 def showGenres():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    urlType = oInputParameterHandler.getValue('siteUrl')
 
-    liste = []
-    liste.append(['Action', sUrl + 'action.html'])
-    liste.append(['Animation', sUrl + 'animation.html'])
-    liste.append(['Aventure', sUrl + 'aventure.html'])
-    liste.append(['Comédie', sUrl + 'comaedie.html'])
-    liste.append(['Documentaire', sUrl + 'documentaire.html'])
-    liste.append(['Drame', sUrl + 'drame.html'])
-    liste.append(['Epouvante Horreur', sUrl + 'epouvante-horreur.html'])
-    liste.append(['Famille', sUrl + 'famille.html'])
-    liste.append(['Fantastique', sUrl + 'fantastique.html'])
-    liste.append(['Guerre', sUrl + 'guerre.html'])
-    liste.append(['Policier', sUrl + 'policier.html'])
-    liste.append(['Romance', sUrl + 'romance.html'])
-    liste.append(['Thriller', sUrl + 'thriller.html'])
-    liste.append(['Divers', sUrl + 'divers.html'])
+    liste = [['Action', 'action'], ['Animation', 'animation'], ['Aventure', 'aventure'], ['Comédie', 'comaedie'],
+             ['Documentaire', 'documentaire'], ['Drame', 'drame'], ['Epouvante Horreur', 'epouvante-horreur'],
+             ['Famille', 'famille'], ['Fantastique', 'fantastique'], ['Guerre', 'guerre'], ['Policier', 'policier'],
+             ['Romance', 'romance'], ['Thriller', 'thriller'], ['Divers', 'divers']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', urlType + sUrl + '.html')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
