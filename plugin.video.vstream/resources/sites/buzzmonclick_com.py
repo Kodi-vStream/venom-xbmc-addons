@@ -21,7 +21,7 @@ SITE_IDENTIFIER = 'buzzmonclick_com'
 SITE_NAME = 'BuzzMonClick'
 SITE_DESC = 'Films & Séries en Streaming de qualité entièrement gratuit.'
 
-URL_MAIN = 'https://buzzmonclick.net/category/replay-tv/'
+URL_MAIN = "https://buzzmonclick.net/category/replay-tv/"
 
 REPLAYTV_NEWS = (URL_MAIN, 'showMovies')
 REPLAYTV_REPLAYTV = ('http://', 'load')
@@ -73,15 +73,12 @@ def showMoviesSearch():
 def showGenres():
     oGui = cGui()
 
-    liste = []
-    liste.append(['Documentaires', URL_MAIN + 'documentaires/'])
-    liste.append(['Divertissement', URL_MAIN + 'divertissement/'])
-    liste.append(['Infos/Magazines', URL_MAIN + 'infos-magazine/'])
-    liste.append(['Télé-Réalité', URL_MAIN + 'tele-realite/'])
+    liste = [['Documentaires', 'documentaires'], ['Divertissement', 'divertissement'],
+             ['Infos/Magazines', 'infos-magazine'], ['Télé-Réalité', 'tele-realite']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + sUrl + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -98,7 +95,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div id="(post-[0-9]+)".+?<a class="clip-link".+?title="([^"]+)" href="([^"]+)".+?img src="([^"]+)"'
+    sPattern = '<div id="post-[0-9]+".+?<a class="clip-link.+?title="([^"]+)" href="([^"]+).+?img src="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -110,19 +107,19 @@ def showMovies(sSearch=''):
         for aEntry in aResult[1]:
 
             try:
-                sTitle = unicode(aEntry[1], 'utf-8')  # converti en unicode
+                sTitle = unicode(aEntry[0], 'utf-8')  # converti en unicode
                 sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')  # vire accent
                 # sTitle = unescape(str(sTitle))
                 sTitle = sTitle.encode("utf-8")
             except NameError:
-                sTitle = aEntry[1]
+                sTitle = aEntry[0]
 
             # mise en page
             sTitle = sTitle.replace('Permalien pour', '').replace('&prime;', '\'')
             sTitle = re.sub('(?:,)* (?:Replay |Video )*du ([0-9]+ [a-zA-z]+ [0-9]+)', ' (\\1)', sTitle)
             sTitle = re.sub(', (?:Replay|Video)$', '', sTitle)
-            sUrl = aEntry[2]
-            sThumb = aEntry[3]
+            sUrl = aEntry[1]
+            sThumb = aEntry[2]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -207,8 +204,8 @@ def showHosters():
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0] == True):
-            data = "_method=" + aResult[1][0] + "&_csrfToken=" + aResult[1][1] + "&ad_form_data=" + Quote(aResult[1][2]) + "&_Token%5Bfields%5D=" + Quote(aResult[1][3]) + "&_Token%5Bunlocked%5D=" + Quote(aResult[1][4])
-
+            data = "_method=" + aResult[1][0] + "&_csrfToken=" + aResult[1][1] + "&ad_form_data=" + Quote(aResult[1][2])
+            data += "&_Token%5Bfields%5D=" + Quote(aResult[1][3]) + "&_Token%5Bunlocked%5D=" + Quote(aResult[1][4])
             # Obligatoire pour validé les cookies.
             xbmc.sleep(6000)
             oRequestHandler = cRequestHandler('https://forum-tv.org/adslinkme/links/go')
@@ -247,5 +244,6 @@ def cutLink(sHtmlContent):
     oParser = cParser()
     sPattern = '">Lecteurs Disponibles :</span></h3>(.+?)<div id="extras">'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         return aResult[1][0]
