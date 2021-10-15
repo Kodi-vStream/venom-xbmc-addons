@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'neko_sama'
 SITE_NAME = 'Neko Sama'
 SITE_DESC = 'Animés en streaming'
 
-URL_MAIN = 'https://www.neko-sama.fr/'
+URL_MAIN = 'https://neko-sama.fr/'
 
 ANIM_ANIMS = ('http://', 'load')
 ANIM_NEWS = (URL_MAIN, 'showLastEp')
@@ -204,7 +204,8 @@ def showMovies():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<a href="([^"]+)"><div class="nekosama-lazy-wrapper">.+?src="([^"]+)" alt="([^"]+)"'
+
+    sPattern = '<a href="([^"]+)">.+?src="([^"]+)" alt="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
