@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+#Il faut faire le code pour le nouvel hoster.
+return False
 
 import re
 import base64
@@ -342,9 +344,7 @@ def showHosters():
         for aEntry in aResult[1]:
 
             site = URL_MAIN + "?trembed=" + aEntry[0] + "&trid=" + aEntry[1] + "&trtype=" + aEntry[2]
-            # Marche plus ?........constaté : ne marche pas toujours avec les series...affaire à suivre
             if aEntry[2] == '1':
-                site = site.replace("trembed=1", "trembed=0")
                 if site not in list_site_film:
                     list_site_film.append(site)
                 else:
@@ -353,18 +353,9 @@ def showHosters():
             oRequestHandler = cRequestHandler(site)
             sHtmlContent = oRequestHandler.request()
 
-            url = re.search('"Video".+?src="(.+?)"', sHtmlContent).group(1)
+            slug = re.search('"Video".+?src=".+?v=(.+?)"', sHtmlContent).group(1)
 
-            oRequestHandler = cRequestHandler(url)
-            sHtmlContent = oRequestHandler.request()
-
-            lastUrl = 'https://' + url.split('/')[2] + '/playlist/' + url.split('id=')[1] + "/" + str(round(time.time() * 1000)) + ".m3u8"
-
-            oRequestHandler = cRequestHandler(lastUrl)
-            sHtmlContent = oRequestHandler.request()
-            url = re.search('RESOLUTION.+?\n(.+?)\n', sHtmlContent).group(1)
-
-            sHosterUrl = 'http://127.0.0.1:2424?u=https://' + lastUrl.split('/')[2] + url
+            sHosterUrl = "https://geoip.redirect-ads.com/?v=" + slug
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
