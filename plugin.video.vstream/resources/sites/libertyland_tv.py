@@ -110,41 +110,19 @@ def showSearch():
 
 def showMovieGenres():
     oGui = cGui()
-    sUrl = URL_MAIN + 'films/genre/'
 
-    liste = []
-    liste.append(['Action', sUrl + 'action.html'])
-    liste.append(['Animation', sUrl + 'animation.html'])
-    liste.append(['Arts martiaux', sUrl + 'arts-martiaux.html'])
-    liste.append(['Aventure', sUrl + 'aventure.html'])
-    liste.append(['Biographie', sUrl + 'biographie.html'])
-    liste.append(['Biopic', sUrl + 'biopic.html'])
-    liste.append(['Comédie', sUrl + 'comedie.html'])
-    liste.append(['Comédie Dramatique', sUrl + 'comedie-dramatique.html'])
-    liste.append(['Comédie Musicale', sUrl + 'comedie-musicale.html'])
-    liste.append(['Crime', sUrl + 'crime.html'])
-    liste.append(['Drame', sUrl + 'drame.html'])
-    liste.append(['Espionnage', sUrl + 'espionnage.html'])
-    liste.append(['Famille', sUrl + 'famille.html'])
-    liste.append(['Fantastique', sUrl + 'fantastique.html'])
-    liste.append(['Guerre', sUrl + 'guerre.html'])
-    liste.append(['Histoire', sUrl + 'histoire.html'])
-    liste.append(['Historique', sUrl + 'historique.html'])
-    liste.append(['Horreur', sUrl + 'horreur.html'])
-    liste.append(['Judiciaire', sUrl + 'judiciaire.html'])
-    liste.append(['Médical', sUrl + 'medical.html'])
-    liste.append(['Musical', sUrl + 'musical.html'])
-    liste.append(['Péplum', sUrl + 'peplum.html'])
-    liste.append(['Policier', sUrl + 'policier.html'])
-    liste.append(['Romance', sUrl + 'romance.html'])
-    liste.append(['Science-Fiction', sUrl + 'science-fiction.html'])
-    liste.append(['Sport', sUrl + 'sport.html'])
-    liste.append(['Thriller', sUrl + 'thriller.html'])
-    liste.append(['Western', sUrl + 'western.html'])
+    liste = [['Action', 'action'], ['Animation', 'animation'], ['Arts martiaux', 'arts-martiaux'],
+             ['Aventure', 'aventure'], ['Biographie', 'biographie'], ['Biopic', 'biopic'], ['Comédie', 'comedie'],
+             ['Comédie Dramatique', 'comedie-dramatique'], ['Comédie Musicale', 'comedie-musicale'], ['Crime', 'crime'],
+             ['Drame', 'drame'], ['Espionnage', 'espionnage'], ['Famille', 'famille'], ['Fantastique', 'fantastique'],
+             ['Guerre', 'guerre'], ['Histoire', 'histoire'], ['Historique', 'historique'], ['Horreur', 'horreur'],
+             ['Judiciaire', 'judiciaire'], ['Médical', 'medical'], ['Musical', 'musical'], ['Péplum', 'peplum'],
+             ['Policier', 'policier'], ['Romance', 'romance'], ['Science-Fiction', 'science-fiction'],
+             ['Sport', 'sport'], ['Thriller', 'thriller'], ['Western', 'western']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/genre/' + sUrl + '.html')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -152,34 +130,17 @@ def showMovieGenres():
 
 def showSerieGenres():
     oGui = cGui()
-    sUrl = URL_MAIN + 'v2/series/genre/'
 
-    liste = []
-    liste.append(['Action', sUrl + 'action/'])
-    liste.append(['Animé', sUrl + 'anime/'])
-    liste.append(['Aventure', sUrl + 'aventure/'])
-    liste.append(['Comédie', sUrl + 'comedie/'])
-    liste.append(['DC Comics', sUrl + 'dc-comics/'])
-    liste.append(['Documentaire', sUrl + 'documentaire/'])
-    liste.append(['Drama', sUrl + 'drama/'])
-    liste.append(['Drame', sUrl + 'drame/'])
-    liste.append(['Emission TV', sUrl + 'emission-tv/'])
-    liste.append(['Epouvante-Horreur', sUrl + 'epouvante-horreur/'])
-    liste.append(['Fantastique', sUrl + 'fantastique/'])
-    liste.append(['Gore', sUrl + 'gore/'])
-    liste.append(['Guerre', sUrl + 'guerre/'])
-    liste.append(['Historique', sUrl + 'historique/'])
-    liste.append(['Mystère', sUrl + 'mystere/'])
-    liste.append(['Policier', sUrl + 'policier/'])
-    liste.append(['Romance', sUrl + 'romance/'])
-    liste.append(['Science-Fiction', sUrl + 'science-fiction/'])
-    liste.append(['Série TV', sUrl + 'serie-tv/'])
-    liste.append(['Thriller', sUrl + 'thriller/'])
-    liste.append(['Télé-réalité', sUrl + 'tele-realite/'])
+    liste = [['Action', 'action'], ['Animé', 'anime'], ['Aventure', 'aventure'], ['Comédie', 'comedie'],
+             ['DC Comics', 'dc-comics'], ['Documentaire', 'documentaire'], ['Drama', 'drama'], ['Drame', 'drame'],
+             ['Emission TV', 'emission-tv'], ['Epouvante-Horreur', 'epouvante-horreur'], ['Fantastique', 'fantastique'],
+             ['Gore', 'gore'], ['Guerre', 'guerre'], ['Historique', 'historique'], ['Mystère', 'mystere'],
+             ['Policier', 'policier'], ['Romance', 'romance'], ['Science-Fiction', 'science-fiction'],
+             ['Série TV', 'serie-tv'], ['Thriller', 'thriller'], ['Télé-réalité', 'tele-realite']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'v2/series/genre/' + sUrl + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -412,6 +373,7 @@ def showLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
+    sType = ''
     if '/films' in sUrl:
         sType = 'films'
     elif 'saison' in sUrl or 'episode' in sUrl:
