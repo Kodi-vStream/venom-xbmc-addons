@@ -61,31 +61,16 @@ def showSearch():
 def showGenres():
     oGui = cGui()
 
-    liste = []
-    liste.append(['Action', 'action/'])
-    liste.append(['Animation', 'animation/'])
-    liste.append(['Aventure', 'aventure/'])
-    liste.append(['Biopic', 'biopic/'])
-    liste.append(['Comédie', 'comedie/'])
-    liste.append(['Drame', 'drame/'])
-    liste.append(['Epouvante Horreur', 'epouvante-horreur/'])
-    liste.append(['Espionnage', 'espionnage/'])
-    liste.append(['Famille', 'famille/'])
-    liste.append(['Fantastique', 'fantastique/'])
-    liste.append(['Guerre', 'guerre/'])
-    liste.append(['Historique', 'historique/'])
-    liste.append(['Judiciaire', 'judiciaire/'])
-    liste.append(['Musical', 'musical/'])
-    liste.append(['Policier', 'policier/'])
-    liste.append(['Romance', 'romance/'])
-    liste.append(['Science Fiction', 'science-fiction/'])
-    liste.append(['Sci-Fi & Fantasy', 'sci-fi-et-fantasy/'])
-    liste.append(['Thriller', 'thriller/'])
-    liste.append(['Western', 'western/'])
+    liste = [['Action', 'action'], ['Animation', 'animation'], ['Aventure', 'aventure'], ['Biopic', 'biopic'],
+             ['Comédie', 'comedie'], ['Drame', 'drame'], ['Epouvante Horreur', 'epouvante-horreur'],
+             ['Espionnage', 'espionnage'], ['Famille', 'famille'], ['Fantastique', 'fantastique'], ['Guerre', 'guerre'],
+             ['Historique', 'historique'], ['Judiciaire', 'judiciaire'], ['Musical', 'musical'],
+             ['Policier', 'policier'], ['Romance', 'romance'], ['Science Fiction', 'science-fiction'],
+             ['Sci-Fi & Fantasy', 'sci-fi-et-fantasy'], ['Thriller', 'thriller'], ['Western', 'western']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/' + sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/' + sUrl + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
