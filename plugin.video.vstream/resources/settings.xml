@@ -227,6 +227,8 @@
 
         <setting visible="false" id="plugin_tirexo" type="bool" label="Tirexo" default="true"/>
 
+        <setting visible="false" id="plugin_toonanime" type="bool" label="Toonanime" default="true"/>
+        
         <setting visible="false" id="plugin_topreplay" type="bool" label="TopReplay" default="true"/>
 
         <setting visible="false" id="plugin_vf_film" type="bool" label="VF Film" default="true"/>
