@@ -72,5 +72,5 @@ def runServer():
 if __name__ == '__main__':
     service()
 
-    if addon().getSetting('plugin_toonanuime') == "true" or addon().getSetting('plugin_kaydo_ws') == "true":
+    if addon().getSetting('plugin_toonanime') == "true" or addon().getSetting('plugin_kaydo_ws') == "true":
         runServer()
