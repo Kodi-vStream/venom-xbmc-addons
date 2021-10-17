@@ -328,7 +328,7 @@ def __checkForNextPage(sHtmlContent):
     if (aResult[0] == True):
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
-        sNumberNext = re.search('cstart=([0-9]+)', sNextPage).group(1)
+        sNumberNext = re.search('([0-9]+)', sNextPage).group(1)
         sPaging = sNumberNext + '/' + sNumberMax
         return sNextPage, sPaging
 
