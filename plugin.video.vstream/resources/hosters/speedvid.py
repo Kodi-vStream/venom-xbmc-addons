@@ -1,5 +1,5 @@
-#coding: utf-8
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# coding: utf-8
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
@@ -13,18 +13,18 @@ import re
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
-class cHoster(iHoster):
 
+class cHoster(iHoster):
     def __init__(self):
         self.__sDisplayName = 'Speedvid'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -74,23 +74,23 @@ class cHoster(iHoster):
         oRequest.addHeaderEntry('Host', 'www.speedvid.net')
         sHtmlContent = oRequest.request()
 
-        #suppression commentaires
+        # suppression commentaires
         sHtmlContent = re.sub( r'<!--.*?-->', '', sHtmlContent )
 
         oParser = cParser()
 
-        #fh = open('c:\\test0.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
+        # fh = open('c:\\test0.txt', "w")
+        # fh.write(sHtmlContent)
+        # fh.close()
 
-        #decodage de la pahe html
+        # decodage de la pahe html
         sHtmlContent3 = sHtmlContent
         code = ''
         maxboucle = 10
         while (maxboucle > 0):
             VSlog('loop : ' + str(maxboucle))
             sHtmlContent3 = CheckCpacker(sHtmlContent3)
-            #sHtmlContent3 = CheckJJDecoder(sHtmlContent3)
+            # sHtmlContent3 = CheckJJDecoder(sHtmlContent3)
             sHtmlContent3 = CheckAADecoder(sHtmlContent3)
 
             maxboucle = maxboucle - 1
@@ -99,11 +99,11 @@ class cHoster(iHoster):
 
         VSlog('fini')
 
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
+        # fh = open('c:\\test.txt', "w")
+        # fh.write(sHtmlContent)
+        # fh.close()
 
-        #Desactive pour le moment
+        # Desactive pour le moment
         if (True):
             Realurl = ''
 
@@ -134,9 +134,9 @@ class cHoster(iHoster):
 
             sHtmlContent = oRequest.request()
 
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
+        # fh = open('c:\\test.txt', "w")
+        # fh.write(sHtmlContent)
+        # fh.close()
 
         api_call = ''
 
@@ -167,36 +167,38 @@ class cHoster(iHoster):
             return True, api_call
 
         return False, False
-#********************************************************************************************************************************
+# ********************************************************************************************************************************
+
 
 def CheckCpacker(str):
 
     sPattern = '>([^>]+\(p,a,c,k,e(?:.|\s)+?\)\)\s*)<'
     aResult = re.search(sPattern, str, re.DOTALL | re.UNICODE)
     if (aResult):
-        #VSlog('Cpacker encryption')
+        # VSlog('Cpacker encryption')
         str2 = aResult.group(1)
 
         if not str2.endswith(';'):
             str2 = str2 + ';'
 
-        #if not str2.startswith('eval'):
-        #    str2 = 'eval(function' + str2[4:]
+        # if not str2.startswith('eval'):
+           # str2 = 'eval(function' + str2[4:]
 
-        #Me demandez pas pourquoi mais si je l'affiche pas en log, ca freeze ?????
-        #VSlog(str2)
+        # Me demandez pas pourquoi mais si je l'affiche pas en log, ca freeze ?????
+        # VSlog(str2)
 
         try:
             tmp = cPacker().unpack(str2)
-            #tmp = tmp.replace("\\'", "'")
+            # tmp = tmp.replace("\\'", "'")
         except:
             tmp = ''
 
-        #VSlog(tmp)
+        # VSlog(tmp)
 
         return str[:(aResult.start() + 1)] + tmp + str[(aResult.end()-1):]
 
     return str
+
 
 def CheckJJDecoder(str):
 
@@ -210,12 +212,13 @@ def CheckJJDecoder(str):
 
     return str
 
+
 def CheckAADecoder(str):
     aResult = re.search('([>;]\s*)(ﾟωﾟ.+?\(\'_\'\);)', str, re.DOTALL | re.UNICODE)
     if (aResult):
         VSlog('AA encryption')
 
-        #tmp = aResult.group(1) + AADecoder(aResult.group(2)).decode()
+        # tmp = aResult.group(1) + AADecoder(aResult.group(2)).decode()
 
         JP = JsParser()
         Liste_var = []
