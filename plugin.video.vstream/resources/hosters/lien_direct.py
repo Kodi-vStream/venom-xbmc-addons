@@ -4,7 +4,8 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
-# import re
+from resources.lib.util import urlEncode, Quote
+import re
 
 class cHoster(iHoster):
 
@@ -93,26 +94,29 @@ class cHoster(iHoster):
             UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
             api_call = api_call + '|User-Agent=' + UA + '&referer=' + self.__sUrl
 
-        #Special pour hd-stream.in et film-streaming.co
-        if 'playlist.m3u8' in api_call:
-            # base = re.sub(r'(playlist.m3u8*.+)', '', api_call)
+        #Special pour toonanime.
+        if 'toonanime' in api_call:
             oRequest = cRequestHandler(api_call)
+            oRequest.addHeaderEntry('Referer', 'https://lb.toonanime.xyz/')
             sHtmlContent = oRequest.request()
-            sPattern =  ',NAME="([^"]+)".+?(chunklist.+?.m3u8)'
-            oParser = cParser()
-            aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
-                #initialisation des tableaux
-                url=[]
-                qua=[]
-                api_call = ''
-                #Remplissage des tableaux
-                for i in aResult[1]:
-                    url.append(str(i[1]))
-                    qua.append(str(i[0]))
 
-                #Affichage du tableau
-                api_call = dialog().VSselectqual(qua, url)
+            aResult = re.findall(',RESOLUTION=(.+?)\n(.+?).m3u8',sHtmlContent)
+            #initialisation des tableaux
+            url=[]
+            qua=[]
+            api_call = ''
+            #Remplissage des tableaux
+            for i in aResult:
+                url.append(str(i[1]) + '.m3u8')
+                qua.append(str(i[0]))
+
+            headers = {
+                "User-Agent":Quote("Mozilla/5.0 (Linux; Android 6.0.1; SM-G930V Build/MMB29M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.89 Mobile Safari/537.36"),
+                "Referer":"https://lb.toonanime.xyz/"
+            }
+            
+            #Affichage du tableau
+            api_call = "http://127.0.0.1:2424?u=https://lb.toonanime.xyz" + dialog().VSselectqual(qua, url) + "@" + urlEncode(headers)
 
         if (api_call):
             return True, api_call
