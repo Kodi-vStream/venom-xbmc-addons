@@ -12,6 +12,11 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 from resources.lib.util import urlEncode
 
+try:
+    xrange
+except NameError:
+    xrange = range
+
 SITE_IDENTIFIER = 'toonanime'
 SITE_NAME = 'toonanime'  
 SITE_DESC = 'anime en VF/VOSTFR' 
@@ -22,6 +27,8 @@ ANIM_ANIMS = ('http://', 'load')
 ANIM_NEWS = (URL_MAIN, 'showMovies')
 ANIM_VFS = (URL_MAIN + 'anime-vf/', 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + 'anime-vostfr/', 'showMovies')
+ANIM_FILM = (URL_MAIN + 'films/', 'showMovies')
+ANIME_YEAR = (True, 'showYears')
 
 URL_SEARCH = (URL_MAIN + 'index.php?', 'showMovies')
 URL_SEARCH_ANIMS = (URL_SEARCH[0], 'showMovies')
@@ -37,6 +44,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d\'animés', 'search.png', oOutputParameterHandler)
 
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_FILM[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_FILM[1], "Film d'animation japonais (Derniers ajouts)", 'animes.png', oOutputParameterHandler)
+
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Dernier ajouts)', 'news.png', oOutputParameterHandler)
 
@@ -45,6 +55,9 @@ def load():
 
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', ANIME_YEAR[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIME_YEAR[1], 'Animés (Par années)', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -64,61 +77,36 @@ def showGenres():
 
     
     liste = []
-    liste.append(['Action', URL_MAIN + 'action/'])
-    liste.append(['Animation', URL_MAIN + 'animation/'])
-    liste.append(['Arts Martiaux', URL_MAIN + 'arts-martiaux/'])
-    liste.append(['Aventure', URL_MAIN + 'aventure/'])
-    liste.append(['Biopic', URL_MAIN + 'biopic/'])
-    liste.append(['Comédie', URL_MAIN + 'comedie/'])
-    liste.append(['Comédie Dramatique', URL_MAIN + 'comedie-dramatique/'])
-    liste.append(['Comédie Musicale', URL_MAIN + 'comedie-musicale/'])
-    liste.append(['Documentaire', URL_MAIN + 'documentaire/'])
-    liste.append(['Drame', URL_MAIN + 'drame/'])
-    liste.append(['Epouvante Horreur', URL_MAIN + 'epouvante-horreur/'])
-    liste.append(['Erotique', URL_MAIN + 'erotique'])
-    liste.append(['Espionnage', URL_MAIN + 'espionnage/'])
-    liste.append(['Famille', URL_MAIN + 'famille/'])
-    liste.append(['Fantastique', URL_MAIN + 'fantastique/'])
-    liste.append(['Guerre', URL_MAIN + 'guerre/'])
-    liste.append(['Historique', URL_MAIN + 'historique/'])
-    liste.append(['Musical', URL_MAIN + 'musical/'])
-    liste.append(['Policier', URL_MAIN + 'policier/'])
-    liste.append(['Péplum', URL_MAIN + 'peplum/'])
-    liste.append(['Romance', URL_MAIN + 'romance/'])
-    liste.append(['Science Fiction', URL_MAIN + 'science-fiction/'])
-    liste.append(['Spectacle', URL_MAIN + 'spectacle/'])
-    liste.append(['Thriller', URL_MAIN + 'thriller/'])
-    liste.append(['Western', URL_MAIN + 'western/'])
-    liste.append(['Divers', URL_MAIN + 'divers/'])
+    liste.append(['Action', URL_MAIN + 'xfsearch/genre/Action/'])
+    liste.append(['Animation', URL_MAIN + 'xfsearch/genre/Action/'])
+    liste.append(['Aventure', URL_MAIN + 'xfsearch/genre/Aventure'])
+    liste.append(['Comédie', URL_MAIN + 'xfsearch/genre/Comédie'])
+    liste.append(['Tranche de Vie', URL_MAIN + 'xfsearch/genre/Tranche de vie'])
+    liste.append(['Drame', URL_MAIN + 'xfsearch/genre/Drame'])
+    liste.append(['Fantasy', URL_MAIN + 'xfsearch/genre/Fantasy'])
+    liste.append(['Surnaturel', URL_MAIN + 'xfsearch/genre/Surnaturel'])
+    liste.append(['Mystère', URL_MAIN + 'xfsearch/genre/Mystère'])
+    liste.append(['Shonen', URL_MAIN + 'xfsearch/genre/Shonen'])
+    liste.append(['Psychologique', URL_MAIN + 'xfsearch/genre/Psychologique'])
+    liste.append(['Romance', URL_MAIN + 'xfsearch/genre/Romance'])
+    liste.append(['Science-Fiction', URL_MAIN + 'xfsearch/genre/Sci-Fi'])
+
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:  
         oOutputParameterHandler.addParameter('siteUrl', sUrl) 
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
         
-
     oGui.setEndOfDirectory()
 
 
-def showMovieYears():  
+def showYears():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    for i in reversed(xrange(1913, 2021)):
+    for i in reversed(xrange(1982, 2021)):
         Year = str(i)
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/annee-' + Year)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
-
-def showSerieYears():
-    oGui = cGui()
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    for i in reversed(xrange(1936, 2021)):
-        Year = str(i)
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/annee-' + Year)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'xfsearch/year/' + Year)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -155,7 +143,10 @@ def showMovies(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)  
         sHtmlContent = oRequestHandler.request()  
 
-    sPattern = '<article class="short__story.+?href="([^"]+)".+?data-src="([^"]+)" alt="([^"]+)".+?pg">([^<]+).+?cat">([^<]+).+?text">([^<]+)'
+    if "/films/" in sUrl:
+        sPattern = '<article class="short__story.+?href="([^"]+)".+?data-src="([^"]+)" alt="([^"]+)".+?pg">([^<]+).+?text">([^<]+)'
+    else:
+        sPattern = '<article class="short__story.+?href="([^"]+)".+?data-src="([^"]+)" alt="([^"]+)".+?pg">([^<]+).+?cat">([^<]+).+?text">([^<]+)'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -177,10 +168,16 @@ def showMovies(sSearch=''):
             
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
-            sLang = aEntry[2].split(" ")[-1]
-            sTitle = re.sub('Saison \d+','',aEntry[2][:aEntry[2].rfind('')].replace(sLang,"")) + " " + aEntry[4]
-            sQual = aEntry[3]
-            sDesc = aEntry[5]
+            if "/films/" in sUrl:
+                sTitle = aEntry[2]
+                sQual = aEntry[3]
+                sDesc = aEntry[4]   
+                sLang = ""             
+            else:
+                sLang = aEntry[2].split(" ")[-1]
+                sTitle = re.sub('Saison \d+','',aEntry[2][:aEntry[2].rfind('')].replace(sLang,"")) + " " + aEntry[4]
+                sQual = aEntry[3]
+                sDesc = aEntry[5]
             
             sTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang.upper())
 
@@ -247,17 +244,19 @@ def ShowSerieSaisonEpisodes():
 
             i = i + 1
 
-            sPattern = 'id="(.+?)".+?>(.+?)<'
+            sPattern = 'id="(.+?)" class="(.+?)">(.+?)<'
             aResult1 = oParser.parse(aEntry, sPattern)
 
             for aEntry1 in aResult1[1]:
-                sTitle = sMovieTitle + " E" + str(i) + " [COLOR coral]Lecteur " + aEntry1[1] + "[/COLOR]"
+                sTitle = sMovieTitle + " E" + str(i) + " [COLOR coral]Lecteur " + aEntry1[2] + "[/COLOR]"
+                hostClass = aEntry1[1]
                 sUrl2 = aEntry1[0]
 
-                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+                oOutputParameterHandler.addParameter('siteUrl', sUrl2) 
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sReferer', sUrl)
+                oOutputParameterHandler.addParameter('hostClass', hostClass)
 
                 oGui.addAnime(SITE_IDENTIFIER, 'seriesHosters', sTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
 
@@ -274,6 +273,7 @@ def seriesHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sDesc = oInputParameterHandler.getValue('sDesc')
     sReferer = oInputParameterHandler.getValue('sReferer')
+    hostClass = oInputParameterHandler.getValue('hostClass')   
 
     Id = sReferer.split('/')[4].split('-')[0]
 
@@ -295,13 +295,15 @@ def seriesHosters():
 
     if "https" in aEntry:
         sHosterUrl = aEntry
-
-    elif "ToonVip" in sMovieTitle:
+    elif hostClass == "toonanimeplayer_cdnt": 
         sHosterUrl = "https://lb.toonanime.xyz/playlist/" +  aEntry + "/" + str(round(time.time() * 1000))
-    elif "Sibnet" in sMovieTitle:
-        sHosterUrl = "https://video.sibnet.ru/shell.php?videoid=" + aEntry
-    elif "ToonHY" in sMovieTitle:
-        sHosterUrl = "https://geoip.redirect-ads.com/?v=" + aEntry   
+    else: 
+        oRequestHandler = cRequestHandler(URL_MAIN + "/templates/toonanime/js/anime.js")
+        sHtmlContent = oRequestHandler.request()
+
+        sPattern = 'player_type=="' + hostClass + '".+?src=\\\\"([^\\\\]+)\\\\'
+        urlBase = oParser.parse(sHtmlContent, sPattern)[1][0]
+        sHosterUrl = urlBase.replace('"+player_content+"',aEntry)
 
     sMovieTitle = re.sub("\[COLOR coral\](.+?)\[/COLOR\]","",sMovieTitle)
 
