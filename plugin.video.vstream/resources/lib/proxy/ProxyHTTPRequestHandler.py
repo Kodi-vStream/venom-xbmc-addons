@@ -10,6 +10,7 @@ else:
     from urlparse import urlparse,parse_qsl
 
 import requests
+import base64
 
 class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
     protocol_version = 'HTTP/1.0'
@@ -40,7 +41,11 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
         else:
             if isMatrix(): res = res.content.decode()
             res = res.replace('http','http://127.0.0.1:2424?u=http')
-            if isMatrix(): ret = res.encode()
+            
+            if res.endswith("=="):
+               ret = base64.b64decode(res)
+            else:
+                if isMatrix(): ret = res.encode()
 
         self.send_response_only(200)
         self.send_header('Content-Length', len(ret))
