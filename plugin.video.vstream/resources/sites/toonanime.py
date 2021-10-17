@@ -23,8 +23,8 @@ ANIM_NEWS = (URL_MAIN, 'showMovies')
 ANIM_VFS = (URL_MAIN + 'anime-vf/', 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + 'anime-vostfr/', 'showMovies')
 
-URL_SEARCH = (URL_MAIN + 'index.php?do=search', 'showMovies')
-URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?do=search', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'index.php?', 'showMovies')
+URL_SEARCH_ANIMS = (URL_SEARCH[0], 'showMovies')
 
 FUNCTION_SEARCH = 'showMovies'
 
@@ -49,15 +49,15 @@ def load():
     oGui.setEndOfDirectory()
 
 
-def showSearch():  
+def showSearch():
     oGui = cGui()
 
-    sSearchText = oGui.showKeyBoard()  
+    sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        showMovies(sSearchText)  
+        sUrl = sSearchText
+        showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
-
 
 def showGenres():  
     oGui = cGui()
@@ -130,7 +130,14 @@ def showMovies(sSearch=''):
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')  
 
+    bGlobal_Search = False
+
     if sSearch:
+
+        if URL_SEARCH[0] in sSearch:
+            bGlobal_Search = True
+            sSearch = sSearch.replace(URL_SEARCH[0], '')
+
         query_args = (('do', 'search'), ('subaction', 'search'), ('story', sSearch), ('titleonly', '0'), ('full_search','1'))
 
         data = urlEncode(query_args)
