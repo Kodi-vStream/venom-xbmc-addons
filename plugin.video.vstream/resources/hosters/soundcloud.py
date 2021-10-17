@@ -1,6 +1,6 @@
-#-*- coding: utf-8 -*-
-#https://github.com/Kodi-vStream/venom-xbmc-addons
-#
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
@@ -69,7 +69,7 @@ class cHoster(iHoster):
         oParser = cParser()
 
         # Magic number
-        sPattern =  'soundcloud:\/\/sounds:([0-9]+)">'
+        sPattern = 'soundcloud:\/\/sounds:([0-9]+)">'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             n = aResult[1][0]
@@ -134,7 +134,7 @@ class cHoster(iHoster):
         json_string = json.loads(sHtmlContent)
         api_call = json_string['url']
 
-        if (api_call):
+        if api_call:
             return True, api_call + '|User-Agent=' + UA
 
         return False, False
