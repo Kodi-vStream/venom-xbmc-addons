@@ -1,19 +1,19 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
 from resources.lib.comaddon import dialog
 
-class cHoster(iHoster):
 
+class cHoster(iHoster):
     def __init__(self):
         self.__sDisplayName = 'Estream'
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -69,23 +69,23 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
-        #type1
+        # type1
         oParser = cParser()
         sPattern = '<source *src="([^"]+)" *type=\'video/.+?\''
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             api_call = aResult[1][0]
 
-        #type2?
-        sPattern =  '<script type=\'text/javascript\'>(.+?)</script>'
+        # type2?
+        sPattern = '<script type=\'text/javascript\'>(.+?)</script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             stri = cPacker().unpack(aResult[1][0])
-            sPattern =  'file:"([^"]+)",label:"([0-9]+)"}'
+            sPattern = 'file:"([^"]+)",label:"([0-9]+)"}'
             aResult = oParser.parse(stri, sPattern)
             if (aResult[0] == True):
-                url=[]
-                qua=[]
+                url = []
+                qua = []
 
                 for aEntry in aResult[1]:
                     url.append(aEntry[0])
@@ -93,7 +93,7 @@ class cHoster(iHoster):
 
                 api_call = dialog().VSselectqual(qua, url)
 
-        if (api_call):
+        if api_call:
             return True, api_call
 
         return False, False
