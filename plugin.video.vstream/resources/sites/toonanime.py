@@ -300,12 +300,12 @@ def seriesHosters():
         sHosterUrl = "https://lb.toonanime.xyz/playlist/" +  aEntry + "/" + str(round(time.time() * 1000))
     elif "Sibnet" in sMovieTitle:
         sHosterUrl = "https://video.sibnet.ru/shell.php?videoid=" + aEntry
-    else:
-        sHosterUrl = "https://hydrax.net/watch?v=" + aEntry   
+    elif "ToonHY" in sMovieTitle:
+        sHosterUrl = "https://geoip.redirect-ads.com/?v=" + aEntry   
 
     sMovieTitle = re.sub("\[COLOR coral\](.+?)\[/COLOR\]","",sMovieTitle)
 
-    if "toonanime" in sHosterUrl or "hydrax" in sHosterUrl:
+    if "toonanime" in sHosterUrl:
         oHoster = cHosterGui().checkHoster("mp4")
     else:
         oHoster = cHosterGui().checkHoster(sHosterUrl)
