@@ -394,7 +394,7 @@ def showLinks():
 
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
-    sPattern = "player_option.+?post='(\d+)'.+?data-nume='(.+?)'.+?title'>(.+?)<.+?class='server'>(.+?)<.+?flags/(\w+)"
+    sPattern = "data-type='([^']+)' data-post='([^']+)' data-nume='([^']+).+?title'>([^<]+).+?server'>(.+?)<.+?flags/(\w+)"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -405,13 +405,14 @@ def showLinks():
         for aEntry in sortedList:
 
             sUrl2 = URL_MAIN + 'wp-json/dooplayer/v1/post/'
-            dtype = 'movie'  # fonctionne pour Film ou Série (pour info : série -> dtype = 'tv')
-            dpost = aEntry[0]
-            dnum = aEntry[1]
+            # dtype = 'movie'  # fonctionne pour Film ou Série (pour info : série -> dtype = 'tv')
+            dtype = aEntry[0]
+            dpost = aEntry[1]
+            dnum = aEntry[2]
             pdata = dpost + '?type=' + dtype + '&source=' + dnum
-            sTitle = aEntry[2].replace('Serveur', '').replace('Télécharger', '').replace('(', '').replace(')', '')
-            sLang = aEntry[4].replace('fr', 'VF').replace('en', 'VOSTFR')
-            sServer = aEntry[3]
+            sTitle = aEntry[3].replace('Serveur', '').replace('Télécharger', '').replace('(', '').replace(')', '').replace('[', '').replace(']', '')
+            sServer = aEntry[4]
+            sLang = aEntry[5].replace('fr', 'VF').replace('en', 'VOSTFR')
 
             if 'freebiesforyou.net' in sServer or 'youtube.com' in sServer:
                 continue
