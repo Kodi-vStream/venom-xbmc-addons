@@ -154,6 +154,10 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
         tmdb_id = xbmc.getInfoLabel('ListItem.Property(TmdbId)')
         season = xbmc.getInfoLabel('ListItem.Season')
         episode = xbmc.getInfoLabel('ListItem.Episode')
+        if sType == 'episode' and not episode:
+            sType = 'season'
+        if sType == 'season' and not season:
+            sType = 'tvshow'
         meta = cTMDb().get_meta(sType, sFileName, tmdb_id = tmdb_id, year = year, season = season, episode = episode)
     except:
         DIALOG.VSok("Veuillez vider le cache des métadonnées Paramètre - outils - 'vider le cache de vStream'")
