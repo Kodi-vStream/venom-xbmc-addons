@@ -859,7 +859,7 @@ def showNetwork():
                 continue
     
             networks = movie[pbContent.NETWORK].strip()
-            if networks != '':
+            if networks != '' and networks != '[]':
                 networks = eval(networks)
                 if networks:
                     for network in networks:
