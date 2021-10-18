@@ -84,6 +84,7 @@ class cPlayer(xbmc.Player):
     def run(self, oGuiElement, sTitle, sUrl):
 
         # Lancement d'une vidéo sans avoir arreté la précedente
+        self.tvShowTitle = oGuiElement.getItemValue('tvshowtitle')
         if self.isPlaying():
             self.multi = True
             self._setWatched() # la vidéo en cours doit être marquée comme VUE
@@ -96,7 +97,6 @@ class cPlayer(xbmc.Player):
         oGui = cGui()
         item = oGui.createListItem(oGuiElement)
         item.setPath(oGuiElement.getMediaUrl())
-        self.tvShowTitle = oGuiElement.getItemValue('tvshowtitle')
 
         #Sous titres
         if (self.Subtitles_file):

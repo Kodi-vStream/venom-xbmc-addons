@@ -20,17 +20,17 @@ from resources.lib.util import UnquotePlus
 class UpNext:
     # Prépare le lien du prochain épisode d'une série
     def nextEpisode(self, guiElement):
-
-        if not self.use_up_next():
-            return
-
+        
         # tester s'il s'agit d'une série
         if not guiElement.getItemValue('mediatype') == "episode":
             return
 
-        oInputParameterHandler = cInputParameterHandler()
+        # Demander d'installer l'extension 
+        if not self.use_up_next():
+            return
 
         # La source
+        oInputParameterHandler = cInputParameterHandler()
         sSiteName = oInputParameterHandler.getValue('sourceName')
         if not sSiteName:
             return
@@ -50,10 +50,7 @@ class UpNext:
         if not tvShowTitle:
             tvShowTitle = re.search('\[\/COLOR\](.+?)\[COLOR',guiElement.getItemValue('title')).group(1)
 
-        sMovieTitle = tvShowTitle 
-
-        if not 'Saison' in tvShowTitle and type(sSaison) is not bool:
-            sMovieTitle = tvShowTitle + ' S' + sSaison
+        sMovieTitle = tvShowTitle
 
         numEpisode = int(sEpisode)
         nextEpisode = numEpisode+1
@@ -68,6 +65,7 @@ class UpNext:
         sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
         nextSaisonFunc = oInputParameterHandler.getValue('nextSaisonFunc')
         sLang = oInputParameterHandler.getValue('sLang')
+        sTmdbId = oInputParameterHandler.getValue('sTmdbId')
 
         try:
             sHosterIdentifier, sMediaUrl, nextTitle, sDesc, sThumb = self.getMediaUrl(sSiteName, nextSaisonFunc, sParams, sSaison, nextEpisode, sLang, sHosterIdentifier)
@@ -84,13 +82,16 @@ class UpNext:
             if sLang:
                 nextTitle += ' (%s)' % sLang
 
+            episodeTitle = nextTitle
+        
             saisonUrl = oInputParameterHandler.getValue('saisonUrl')
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sHosterIdentifier', sHosterIdentifier)
             oOutputParameterHandler.addParameter('sourceName', sSiteName)
             oOutputParameterHandler.addParameter('sFileName', sFileName)
-            oOutputParameterHandler.addParameter('sTitle', nextTitle)
+            oOutputParameterHandler.addParameter('sTitle', sFileName)
             oOutputParameterHandler.addParameter('sCat', 8)  # Catégorie épisode
+            oOutputParameterHandler.addParameter('sMeta', 6)  # Meta épisode
             oOutputParameterHandler.addParameter('sFav', 'play')
             oOutputParameterHandler.addParameter('sMediaUrl', str(sMediaUrl))
             oOutputParameterHandler.addParameter('saisonUrl', saisonUrl)
@@ -99,6 +100,7 @@ class UpNext:
             oOutputParameterHandler.addParameter('sEpisode', sNextEpisode)
             oOutputParameterHandler.addParameter('sLang', sLang)
             oOutputParameterHandler.addParameter('tvshowtitle', tvShowTitle)
+            oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
 
             sParams = oOutputParameterHandler.getParameterAsUri()
             url = 'plugin://plugin.video.vstream/?site=cHosterGui&function=play&%s' % sParams
@@ -137,8 +139,8 @@ class UpNext:
                         'tvshow.clearart': '',
                         'tvshow.clearlogo': '',
                         'tvshow.fanart': sThumbnail,  # guiElement.getFanart(),
-                        'tvshow.landscape': guiElement.getPoster(),
-                        'tvshow.poster': guiElement.getPoster(),
+                        'tvshow.landscape': sThumbnail,  # guiElement.getPoster(),
+                        'tvshow.poster': sThumbnail,  # guiElement.getPoster(),
                     },
                 ),
                 play_url=url  # provide either `play_info` or `play_url`
@@ -163,7 +165,6 @@ class UpNext:
         for sUrl, listItem, isFolder in cGui().getEpisodeListing():
             sParams = sUrl.split('?', 1)[1]
             aParams = dict(param.split('=') for param in sParams.split('&'))
-
             sFunction = aParams['function']
             if sFunction == 'DoNothing':
                 continue
@@ -178,7 +179,18 @@ class UpNext:
                 continue           # L'épisode est connue mais ce n'est pas le bon
 
             sMediaUrl = aParams['sMediaUrl'] if 'sMediaUrl' in aParams else None
-            sTitle = UnquotePlus(aParams['sTitle']) if 'sTitle' in aParams else None
+            infoTag = listItem.getVideoInfoTag()
+            tagLine = infoTag.getTagLine()
+            if tagLine:
+                sTitle = tagLine
+            else:
+                sTitle = listItem.getLabel()
+                
+            if not sDesc:
+                sDesc = infoTag.getPlot()
+                
+            if not sTitle:
+                sTitle = UnquotePlus(aParams['sTitle']) if 'sTitle' in aParams else None
             if 'sHost' in aParams and aParams['sHost']:
                 oHoster = cHosterGui().checkHoster(aParams['sHost'])
                 if not oHoster:
@@ -193,9 +205,10 @@ class UpNext:
                 if hostName != sHosterIdentifier:
                     continue
 
+            sThumb = listItem.getArt('thumb')
             if 'sThumb' in aParams and aParams['sThumb']:
                 sThumb = UnquotePlus(aParams['sThumb'])
-            if 'sDesc' in aParams and aParams['sDesc']:
+            if not sDesc and 'sDesc' in aParams and aParams['sDesc']:
                 sDesc = UnquotePlus(aParams['sDesc'])
 
             if sMediaUrl:

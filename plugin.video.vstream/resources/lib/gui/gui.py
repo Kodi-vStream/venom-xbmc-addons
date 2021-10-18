@@ -318,9 +318,22 @@ class cGui:
 
         itemTitle = oGuiElement.getTitle()
 
-        #La deuxieme conditions sert a vérifier si le contenu a des métas données.
-        if int(oGuiElement.getMeta()) == 6 and data.get('cast') is not None:
-            data['title'] = str(data['season']) + "x" + str(data['episode']) + " " + data['title'] + " " + itemTitle.split(data['tvshowtitle'])[1]  # Nom de l'épisode
+        # Formatage nom episode
+        sCat = oGuiElement.getCat()
+        if sCat and int(sCat)== 8:  # Nom de l'épisode
+            try:
+                if 'tagline' in data and data['tagline']:
+                    episodeTitle = data['tagline']
+                else:
+                    episodeTitle = 'Episode ' + str(data['episode'])
+                host = ''
+                if 'tvshowtitle' in data:
+                    host = itemTitle.split(data['tvshowtitle'])[1]
+                itemTitle = str(data['season']) + "x" + str(data['episode']) + ". " + episodeTitle + " " + host
+                data['title'] = itemTitle
+            except:
+                data['title'] = itemTitle
+                pass
         else:
             #Permets d'afficher toutes les informations pour les films.
             data['title'] = itemTitle

@@ -60,12 +60,7 @@ class cHosterGui:
 
         oGuiElement.setIcon('host.png')
 
-        if sCat == "1":
-            title = re.sub('\[.*\]|\(.*\)','', oHoster.getDisplayName())
-        elif xbmc.getInfoLabel('ListItem.tagline'):
-            title = xbmc.getInfoLabel('ListItem.tagline')
-        else:
-            title = oHoster.getDisplayName()
+        title = oGuiElement.getCleanTitle()
 
         oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
         oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
@@ -494,6 +489,7 @@ class cHosterGui:
         sTitle = oInputParameterHandler.getValue('sTitle')
         siteUrl = oInputParameterHandler.getValue('siteUrl')
         sCat = oInputParameterHandler.getValue('sCat')
+        sMeta = oInputParameterHandler.getValue('sMeta')
 
         if not sTitle:
             sTitle = sFileName
@@ -532,8 +528,10 @@ class cHosterGui:
                     oGuiElement.setSiteName(self.SITE_NAME)
                     oGuiElement.setSiteUrl(siteUrl)
                     oGuiElement.setMediaUrl(aLink[1])
+                    oGuiElement.setFileName(sFileName)
                     oGuiElement.setTitle(sTitle)
                     oGuiElement.setCat(sCat)
+                    oGuiElement.setMeta(int(sMeta))
                     oGuiElement.getInfoLabel()
     
                     from resources.lib.player import cPlayer

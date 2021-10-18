@@ -6,6 +6,7 @@ import re
 import string
 import xbmcvfs
 import json
+import unicodedata
 
 from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix, xbmc, xbmcgui
 from resources.lib.util import QuotePlus
@@ -281,15 +282,14 @@ class cTMDb:
         meta = self._call('search/' + str(mediaType), 'query=' + term + '&page=' + str(page))
 
         # si pas de résultat avec l'année, on teste sans l'année
-        if 'total_results' in meta and meta['total_results'] == 0 and year:
-            meta = self.search_movie_name(name, '')
+        if 'total_results' in meta:
+            if year and meta['total_results'] == 0:
+                return self.search_movie_name(name)
 
             # cherche 1 seul resultat
-            if 'total_results' in meta and meta['total_results'] != 0:
+            if meta['total_results'] != 0:
                 tmdb_id = meta['results'][0]['id']
                 return tmdb_id
-        else:
-            return False
 
         return False
 
@@ -309,7 +309,7 @@ class cTMDb:
 
             # si pas de résultat avec l'année, on teste sans l'année
             if 'total_results' in meta and meta['total_results'] == 0 and year:
-                meta = self.search_movie_name(name, '')
+                return self.search_movie_name(name)
 
             # cherche 1 seul resultat
             if 'total_results' in meta and meta['total_results'] != 0:
@@ -413,7 +413,7 @@ class cTMDb:
 
             # si pas de résultat avec l'année, on teste sans l'année
             if 'total_results' in meta and meta['total_results'] == 0 and year:
-                meta = self.search_tvshow_name(name, '')
+                return self.search_tvshow_name(name)
 
             # cherche 1 seul resultat
             if 'total_results' in meta and meta['total_results'] != 0:
@@ -724,6 +724,16 @@ class cTMDb:
         return _meta
 
     def _clean_title(self, title):
+        # vire accent
+        try:
+            title = unicode(title, 'utf-8')
+            title = unicodedata.normalize('NFD', title).encode('ascii', 'ignore').decode('unicode_escape')
+            if not isMatrix():
+                title = title.encode('utf-8')  # on repasse en utf-8
+        except Exception as e:
+            pass
+
+        # Vire tous les caracteres non alphabetiques
         title = re.sub('[^%s]' % (string.ascii_lowercase + string.digits), '', title.lower())
         return title
 
@@ -813,7 +823,7 @@ class cTMDb:
             return self._cache_save_movie(meta, name, year)
 
         # cache des séries et animes
-        elif media_type == 'tvshow' or media_type == 'anime':
+        if media_type == 'tvshow' or media_type == 'anime':
             return self._cache_save_tvshow(meta, name, season, year)
 
         # cache des saisons
@@ -821,11 +831,11 @@ class cTMDb:
             return self._cache_save_season(meta, season)
 
         # cache des épisodes
-        elif media_type == "episode":
+        if media_type == "episode":
             return self._cache_save_episode(meta, name, season, episode)
 
         # cache des collections
-        elif media_type == 'collection':
+        if media_type == 'collection':
             return self._cache_save_collection(meta, name)
 
             
@@ -941,9 +951,10 @@ class cTMDb:
     # Cache pour les épisodes
     def _cache_save_episode(self, meta, name, season, episode):
         try:
+            title = name + '_S' + season + 'E' + episode
             sql = 'INSERT or IGNORE INTO episode (tmdb_id, originaltitle, season, episode, year, title, premiered, poster_path, plot, rating, votes, director, writer, guest_stars, tagline) VALUES ' \
                   '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-            self.dbcur.execute(sql, (meta['tmdb_id'], name + "_S"+season + "E" + episode, season, episode, meta['year'], meta['title'], meta['premiered'], meta['poster_path'], meta['plot'], meta['rating'], meta['votes'], meta['director'], meta['writer'], ''.join(meta.get('guest_stars', "")), meta["tagline"]))
+            self.dbcur.execute(sql, (meta['tmdb_id'], title, season, episode, meta['year'], title, meta['premiered'], meta['poster_path'], meta['plot'], meta['rating'], meta['votes'], meta['director'], meta['writer'], ''.join(meta.get('guest_stars', "")), meta["tagline"]))
             self.db.commit()
         except Exception as e:
             VSlog(str(e))
@@ -952,7 +963,7 @@ class cTMDb:
                 VSlog('Table recreated')
 
                 # Deuxieme tentative
-                self.dbcur.execute(sql, (meta['tmdb_id'], name, season, episode, meta['year'], meta['title'], meta['premiered'], meta['poster_path'], meta['plot'], meta['rating'], meta['votes'], meta['director'], meta['writer'], ''.join(meta.get('guest_stars', "")), meta["tagline"]))
+                self.dbcur.execute(sql, (meta['tmdb_id'], title, season, episode, meta['year'], title, meta['premiered'], meta['poster_path'], meta['plot'], meta['rating'], meta['votes'], meta['director'], meta['writer'], ''.join(meta.get('guest_stars', "")), meta["tagline"]))
                 self.db.commit()
             else:
                 VSlog('SQL ERROR INSERT into table episode')
@@ -1028,10 +1039,12 @@ class cTMDb:
             elif name:
                 meta = self.search_tvshow_name(name, year)
         elif media_type == 'season':
-            if not tmdb_id:
-                tmdb_id = self.get_idbyname(name, year, 'tv')
             if tmdb_id:
                 meta = self.search_season_id(tmdb_id, season)
+            else:  # on retrouve l'id en cherchant la série qui peut être en cache
+                meta = self.get_meta('tvshow', name, year=year)
+                if 'tmdb_id' in meta and meta['tmdb_id']:
+                    return self.get_meta('season', name, tmdb_id=meta['tmdb_id'], year=year, season=season)
         elif media_type == 'episode':
             if tmdb_id: # pas de recherche par nom si pas de tmdb_id, car il y aurait déjà un tmdb_id si on connaissait la série
                 meta = self.search_episode_id(tmdb_id, season, episode)

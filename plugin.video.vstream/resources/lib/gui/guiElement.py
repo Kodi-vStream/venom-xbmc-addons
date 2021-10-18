@@ -285,9 +285,7 @@ class cGuiElement:
         if sTitle2:
             self.addItemValues('tvshowtitle', cUtil().getSerieTitre(sTitle))
             self.__sTitleWatched += '_' + sTitle2
-            
-        if self.getMetaAddon() == 'false':
-            self.addItemValues('originaltitle', self.__sTitleWatched)
+        self.addItemValues('originaltitle', self.__sTitleWatched)
 
         if sTitle2:
             sTitle2 = '[COLOR %s]%s[/COLOR] ' % (self.__sDecoColor, sTitle2)
@@ -303,8 +301,10 @@ class cGuiElement:
         return sTitle2
 
     def setTitle(self, sTitle):
-        #Convertie les bytes en strs pour le replace.
-        self.__sCleanTitle = sTitle.replace('[]', '').replace('()', '').strip()
+        # Nom en clair sans les langues, qualités, et autres décorations
+        self.__sCleanTitle = re.sub('\[.*\]|\(.*\)','', sTitle)
+        if not self.__sCleanTitle:
+            self.__sCleanTitle = re.sub('\[.+?\]|\(.+?\)','', sTitle)
 
         if isMatrix():
             #Python 3 decode sTitle
@@ -467,8 +467,10 @@ class cGuiElement:
             self.__sThumbnail = url
             self.__sPoster = url
 
+        # Completer au besoin
         for key, value in meta.items():
-            self.addItemValues(key, value)
+            if value:
+                self.addItemValues(key, value)
 
         return
 
