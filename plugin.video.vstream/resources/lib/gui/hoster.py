@@ -6,9 +6,16 @@ from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.comaddon import dialog, addon, VSlog, xbmc
+from resources.lib.comaddon import dialog, addon, VSlog, xbmc, isMatrix
 
 import re
+
+if isMatrix():
+    from urllib.parse import urlparse
+else:
+    from urlparse import urlparse
+
+from os.path import splitext
 
 class cHosterGui:
 
@@ -464,13 +471,8 @@ class cHosterGui:
         if ('megaup' in sHostName):
             return self.getHoster('megaup')            
 
-        # Si aucun hebergeur connu on teste les liens directs
-        if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8.webm.mkv'):
+        if splitext(urlparse(sHosterUrl).path)[-1] in ['.mp4','.avi','.flv','.m3u8','.webm','.mkv','.mpd']:
             return self.getHoster('lien_direct')
-        # Cas special si parametre apres le lien_direct
-        if (sHosterUrl.split('?')[0][-4:] in '.mp4.avi.flv.m3u8.webm.mkv'):
-            return self.getHoster('lien_direct')
-
         return False
 
     def getHoster(self, sHosterFileName):
