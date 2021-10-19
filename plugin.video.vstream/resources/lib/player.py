@@ -5,10 +5,17 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.gui.gui import cGui
 from resources.lib.upnext import UpNext
-from resources.lib.comaddon import addon, dialog, xbmc, isKrypton, VSlog, addonManager
+from resources.lib.comaddon import addon, dialog, xbmc, isKrypton, VSlog, addonManager, isMatrix
 from resources.lib.db import cDb
 from resources.lib.util import cUtil, Unquote
 import xbmcplugin
+
+if isMatrix():
+    from urllib.parse import urlparse
+else:
+    from urlparse import urlparse
+
+from os.path import splitext
 
 #pour les sous titres
 #https://github.com/amet/service.subtitles.demo/blob/master/service.subtitles.demo/service.py
@@ -109,7 +116,7 @@ class cPlayer(xbmc.Player):
 
         player_conf = self.ADDON.getSetting('playerPlay')
         #Si lien dash, methode prioritaire
-        if sUrl.endswith('.mpd') or sUrl.split('?')[0][-4:] in '.mpd' or sUrl.endswith('.m3u8'):
+        if splitext(urlparse(sUrl).path)[-1] in [".mpd",".m3u8"]:
             if isKrypton() == True:
                 addonManager().enableAddon('inputstream.adaptive')
                 item.setProperty('inputstream','inputstream.adaptive')
