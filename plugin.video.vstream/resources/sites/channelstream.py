@@ -260,24 +260,24 @@ def showHoster():
             else:
                 sHosterUrl = ""
 
-        elif 'allfoot' or 'channel.stream' in iframeURL1:
-            if "channel.stream" in iframeURL1:
-                oRequestHandler = cRequestHandler(iframeURL1)
-                oRequestHandler.addHeaderEntry('User-Agent', UA)
-                # oRequestHandler.addHeaderEntry('Referer', siterefer) # a verifier
-                sHtmlContent = oRequestHandler.request()
+        elif "channel.stream" in iframeURL1:
+            oRequestHandler = cRequestHandler(iframeURL1)
+            oRequestHandler.addHeaderEntry('User-Agent', UA)
+            # oRequestHandler.addHeaderEntry('Referer', siterefer) # a verifier
+            sHtmlContent = oRequestHandler.request()
 
-                sHosterUrl = ''
-                oParser = cParser()
-                sPattern = '<iframe.+?src="([^"]+)'
-                aResult = oParser.parse(sHtmlContent, sPattern)
-                try:
-                    # Lien telerium qui ne marche pas
-                    # Mais qui n'est pas toujours present
-                    iframeURL1 = aResult[1][1]
-                except:
-                    iframeURL1 = aResult[1][0]
+            sHosterUrl = ''
+            oParser = cParser()
+            sPattern = '<iframe.+?src="([^"]+)'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            try:
+                # Lien telerium qui ne marche pas
+                # Mais qui n'est pas toujours present
+                iframeURL1 = aResult[1][1]
+            except:
+                iframeURL1 = aResult[1][0]
 
+        if 'allfoot' in iframeURL1 or "sportsonline" in iframeURL1:
             oRequestHandler = cRequestHandler(iframeURL1)
             oRequestHandler.addHeaderEntry('User-Agent', UA)
             # oRequestHandler.addHeaderEntry('Referer', siterefer) # a verifier
@@ -289,7 +289,7 @@ def showHoster():
             aResult = oParser.parse(sHtmlContent, sPattern)
 
             if aResult[1]:
-                if 'ragnarp' in aResult[1][0]:
+                if 'ragnarp' in aResult[1][0] or 'worlwidestream' in aResult[1][0]:
                     bvalid, shosterurl = Hoster_Wigistream(aResult[1][0], iframeURL1)
                     if bvalid:
                         sHosterUrl = shosterurl
