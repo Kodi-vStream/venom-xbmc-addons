@@ -76,17 +76,10 @@ class cPlayer(xbmc.Player):
         oPlaylist.add(oGuiElement.getMediaUrl(), oListItem )
 
     def AddSubtitles(self, files):
-        try:
-            basestring
-        except:
-            basestring = str
-            
-        if len(files) == 1:
-            self.Subtitles_file = files[0]
-        elif isinstance(files, basestring):
-            self.Subtitles_file.append(files)
-        else:
+        if type(files) is list or type(files) is tuple:
             self.Subtitles_file = files
+        else:
+            self.Subtitles_file.append(files)
 
     def run(self, oGuiElement, sTitle, sUrl):
 
