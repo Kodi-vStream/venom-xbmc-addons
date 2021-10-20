@@ -2265,7 +2265,7 @@ def addPasteID():
         if len(movies) == 0:
             dialog().VSok(addons.VSlang(30022))
             return
-    except Exception:
+    except Exception as e:
         dialog().VSinfo(addons.VSlang(30011))
         raise
 
@@ -2311,7 +2311,7 @@ def adminPasteID():
             movies = pbContentNew.getLines(pasteBin)
             if len(movies) == 0:
                 color = 'red'
-        except Exception:
+        except Exception as e:
             dialog().VSinfo(addons.VSlang(30011))
             raise
 

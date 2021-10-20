@@ -92,7 +92,7 @@ class cRechercheHandler:
             pluginData['search'] = getattr(plugin, sSearch)
             return pluginData
 
-        except Exception:
+        except:
             return False
 
     def getAvailablePlugins(self):

@@ -41,7 +41,7 @@ class cSiteHandler:
             exec ("sSiteName = " + sName + ".SITE_NAME", globals())
             sPluginSettingsName = 'plugin_' + sName
             return sSearch[0], sPluginSettingsName, sSearch[1], sSiteName
-        except Exception:
+        except Exception as e:
             VSlog("Cannot import plugin: " + str(sName))
             return False, False
 
