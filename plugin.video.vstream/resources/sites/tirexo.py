@@ -575,14 +575,18 @@ def showSeriesLinks():
     if (aResult1[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult1[1]:
-            sTitle = sMovieTitle + ' ' + aEntry[1].replace('<b>','')
+            if not "Saison" in aEntry[1]:
+                sTitle = sMovieTitle + ' Saison ' + aEntry[1]
+            else:
+                sTitle = sMovieTitle + ' ' + aEntry[1].replace('<b>','')   
+
             sQual = aEntry[2]
             sLang = aEntry[3]
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
 
             sUrl = URL_MAIN + "?subaction=get_links&version=" + aEntry[0]
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oGui.addSeason(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
@@ -611,6 +615,7 @@ def showSeriesLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('sSaison', sSaison)            
             oGui.addSeason(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -714,9 +719,9 @@ def showSeriesHosters():
                     sTitle = sMovieTitle + ' ' + aEntry[2].replace('FINAL ', '')
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-                    oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                    oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)                 
-                    oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sTitle, sThumb, sDesc, oOutputParameterHandler)
+                    oGui.addEpisode(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
     else:
