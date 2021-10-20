@@ -60,10 +60,9 @@ class cHoster(iHoster):
                     url = aEntry["src"]
                     if not url.startswith('http'):
                         url = 'http:' + url
-                    Files.append(url)
+                    Files.append(url.replace('.vtt','.srt'))
                 else:
                     continue
-
             return Files
         return False
 
