@@ -469,9 +469,9 @@ class cHosterGui:
         if ('ninjastream' in sHostName):
             return self.getHoster('ninjastream')
         if ('megaup' in sHostName):
-            return self.getHoster('megaup')            
+            return self.getHoster('megaup')   
 
-        if splitext(urlparse(sHosterUrl).path)[-1] in ['.mp4','.avi','.flv','.m3u8','.webm','.mkv','.mpd']:
+        if any(x in splitext(urlparse(sHosterUrl).path) for x in ['mp4','avi','flv','m3u8','webm','mkv','mpd']) :
             return self.getHoster('lien_direct')
         return False
 
