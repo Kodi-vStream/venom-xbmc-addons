@@ -26,9 +26,9 @@ SITE_DESC = 'Films/Séries/Reportages/Concerts'
 URL_MAIN = "https://www2.tirexo.work/"
 
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=1&result_from=1&story=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=15&story=', 'showMovies')
-URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=32&story=', 'showMovies')
-URL_SEARCH_MISC = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=39&story=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0catlist=15&story=', 'showMovies')
+URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0catlist=32&story=', 'showMovies')
+URL_SEARCH_MISC = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0catlist=39&story=', 'showMovies')
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_COLLECTION = (URL_MAIN + 'collections/', 'showMovies')
@@ -313,7 +313,8 @@ def showMovies(sSearch=''):
         sUrl = sSearch
 
     if sSearch or "index" in sUrl:  # en mode recherche
-        sPattern = 'class="mov-t nowrap" href="(.+?films.+?|.+?series.+?|.+?animes.+?|.+?emissions-tv-documentaires.+?)" title="([^"]+).+?data-content="([^"]+).+?<img src="/([^"]+).+?<div style="height: 51px" class="mov-c nowrap'
+        sPattern = 'class="mov-t nowrap" href="([^"]+)" title="([^"]+).+?data-content="([^"]+).+?<img src="/([^"]+)"'
+        ValidUrl = ['films', 'series', 'animes', 'emissions-tv-documentaires']
     elif 'collections/' in sUrl:
         sPattern = 'class="mov-t nowrap" href=".+?<img src="\/([^"]+)" width="200px" height="320px" title="([^"]+).+?data-link="([^"]+)'
     else:
@@ -342,10 +343,14 @@ def showMovies(sSearch=''):
                 sUrl2 = aEntry[2]
                 sDesc = ''
             elif sSearch or 'index' in sUrl:
-                sUrl2 = aEntry[0]
-                sTitle = aEntry[1]
-                sDesc = aEntry[2]
-                sThumb = URL_MAIN + aEntry[3]
+                #On exclus tout ce qui n'est pas lisible par Kodi.
+                if any(x in aEntry[0] for x in ValidUrl):
+                    sUrl2 = aEntry[0]
+                    sTitle = aEntry[1]
+                    sDesc = aEntry[2]
+                    sThumb = URL_MAIN + aEntry[3]
+                else:
+                    continue
             else:
                 sUrl2 = aEntry[3]
                 sDesc = aEntry[0]
@@ -367,7 +372,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            if 'series' in sUrl2 or 'animes' in sUrl2:
+            if any(x in sUrl2 for x in ['series','animes','saison']):
                 oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             elif 'collections/' in sUrl:
                 oGui.addMoviePack(SITE_IDENTIFIER, 'showCollec', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
@@ -741,7 +746,7 @@ def Display_protected_link():
             if sHtmlContent.startswith('http'):
                 aResult_dlprotecte = (True, [sHtmlContent])
             else:
-                sPattern_dlprotecte = '<div class="alert">.+?<a href="(.+?)"'
+                sPattern_dlprotecte = '<h3>.+?<a href="(.+?)"'
                 aResult_dlprotecte = oParser.parse(sHtmlContent, sPattern_dlprotecte)
 
         else:
