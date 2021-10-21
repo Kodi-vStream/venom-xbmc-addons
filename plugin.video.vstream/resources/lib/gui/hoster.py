@@ -7,7 +7,6 @@ from resources.lib.gui.contextElement import cContextElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.comaddon import dialog, addon, VSlog, xbmc, isMatrix
-
 import re
 
 class cHosterGui:
@@ -180,7 +179,7 @@ class cHosterGui:
                     'archive','jetload','dustreaming', 'vupload', 'viki', 'flix555', 'onlystream', 'pstream', 'vudeo', 'sendvid', 
                     'supervideo', 'dood', 'vidia', 'streamtape', 'femax', 'vidbem', 'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 
                     'plynow', 'myvi.tv', 'playtube', 'dwfull', '1fichier', 'uptobox', 'uplea', 'vidload','cloudhost',
-                    'easyload', 'ninjastream', 'megaup']
+                    'easyload', 'ninjastream', 'megaup','33player']
 
         val = next((x for x in supported_player if x in sHostName), None)
         if val:
@@ -267,8 +266,9 @@ class cHosterGui:
         return False
 
     def getHoster(self, sHosterFileName):
-        exec ("from resources.hosters." + sHosterFileName + " import cHoster", globals())
-        return cHoster()
+        mod = __import__('resources.hosters.' + sHosterFileName, fromlist=['cHoster'])
+        klass = getattr(mod, 'cHoster')
+        return klass()
 
     def play(self):
         oGui = cGui()
