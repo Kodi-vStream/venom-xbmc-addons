@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-
-#Recaptcha sur le protecteur de lien.
-return False
-
 import random
 import re
 import requests
@@ -708,7 +704,7 @@ def showSeriesHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = "\?domain=(.+?)\.|'download' rel=.+?href='([^']+)'>([^<]+)"
+    sPattern = "\?domain=(.+?)\.|'download' rel=.+?>([^<]+).+?href=([^']+)\""
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -718,9 +714,9 @@ def showSeriesHosters():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + re.sub('\.\w+', '', aEntry[0]) + '[/COLOR]')
 
             else:
-                if not "Streaming" in aEntry[2]:
-                    sUrl2 = URL_MAIN[:-1] + aEntry[1]
-                    sTitle = sMovieTitle + ' ' + aEntry[2].replace('FINAL ', '')
+                if not URL_MAIN in aEntry[2]:
+                    sUrl2 = URL_MAIN[:-1] + aEntry[2].replace('\\','').replace('"','')
+                    sTitle = sMovieTitle + ' ' + aEntry[1].replace('FINAL ', '')
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -766,20 +762,23 @@ def Display_protected_link():
     else:
         if not sUrl.startswith('http'):
             sUrl = 'http://' + sUrl
-        aResult_dlprotecte = (True, [sUrl])
 
-    if (aResult_dlprotecte[0]):
+        oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
+        oRequestHandler.addHeaderEntry('User-Agent', UA)   
+        sHtmlContent = oRequestHandler.request()
 
-        episode = 1
+        oParser = cParser()
+        sPattern = '<iframe.+?src="(.+?)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
 
-        for aEntry in aResult_dlprotecte[1]:
-            sHosterUrl = aEntry
+    if (aResult[0]):
+
+        for aEntry in aResult[1]:
+            sHosterUrl = aEntry.replace('uptostream','uptobox')
 
             sTitle = sMovieTitle
-            if len(aResult_dlprotecte[1]) > 1:
-                sTitle = sMovieTitle + ' episode ' + episode
-
-            episode += 1
+            if len(aResult[1]) > 1:
+                sTitle = sMovieTitle
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
