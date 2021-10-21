@@ -3,7 +3,6 @@
 #
 from requests import post, Session, Request, RequestException, ConnectionError
 from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix
-from json import loads, dumps
 from resources.lib.util import urlEncode
 
 import requests.packages.urllib3.util.connection as urllib3_cn
@@ -257,9 +256,7 @@ class cRequestHandler:
                     json_session = False
 
                     try:
-                        json_session = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, data=dumps({
-                            'cmd': 'sessions.list'
-                        }))
+                        json_session = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, json={'cmd': 'sessions.list'})
                     except:
                         dialog().VSerror("%s" % ("Page protege par Cloudflare, veuillez executer  FlareSolverr."))
 
@@ -268,24 +265,23 @@ class cRequestHandler:
                         if json_session.json()['sessions']:
                             cloudproxy_session = json_session.json()['sessions'][0]
                         else:
-                            json_session = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, data=dumps({
+                            json_session = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, json={
                                 'cmd': 'sessions.create'
-                            }))
-                            response_session = loads(json_session.text)
-                            cloudproxy_session = response_session['session']
+                            }).json()
+                            cloudproxy_session = json_session['session']
 
                         self.__aHeaderEntries['Content-Type'] = 'application/x-www-form-urlencoded' if (method == 'post') else 'application/json'
 
                         #Ont fait une requete.
-                        json_response = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, data=dumps({
+                        json_response = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, json={
                             'cmd': 'request.%s' % method.lower(),
                             'url': self.__sUrl,
                             'session': cloudproxy_session,
                             'postData': '%s' % urlEncode(sParameters) if (method.lower() == 'post') else ''
-                        }))
+                        })
 
                         http_code = json_response.status_code
-                        response = loads(json_response.text)
+                        response = json_response.json()
                         if 'solution' in response:
                             if self.__sUrl != response['solution']['url']:
                                 self.__sRealUrl = response['solution']['url']
