@@ -239,7 +239,7 @@ def showMovies(sSearch=''):
 
     sSearch2 = sSearch.replace('-', '').strip().lower()
     # ref thumb title
-    sPattern = 'class="TPostMv">.+?href="([^"]*).+?src="([^"]*).+?center">([^<]*)'
+    sPattern = 'class="TPostMv">.+?href="([^"]*).+?src="([^"]*).+?class="Qlty".+?class="Qlty.+?>([^<]*).+?center">([^<]*)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     itemss = 0
@@ -260,7 +260,8 @@ def showMovies(sSearch=''):
 
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
-            sTitle = aEntry[2]
+            sLang = aEntry[2]
+            sTitle = aEntry[3]
 
             if bSearchMovie:
                 if ' saison ' in sTitle.lower():
@@ -279,7 +280,7 @@ def showMovies(sSearch=''):
                 if sSearch2 not in s1:
                     continue
 
-            sDisplayTitle = sTitle.replace('- Saison', ' Saison')
+            sDisplayTitle = ('%s (%s)') % (sTitle.replace('- Saison', ' Saison'), sLang)
             if sSearch and not bSearchMovie and not bSearchSerie:
                 if '/serie' in sUrl or '- saison ' in sTitle.lower():
                     sDisplayTitle = sDisplayTitle + ' [Série]'
