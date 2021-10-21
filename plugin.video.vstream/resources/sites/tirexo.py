@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+#Recaptcha sur le protecteur de lien.
+return False
+
 import random
 import re
 import requests
