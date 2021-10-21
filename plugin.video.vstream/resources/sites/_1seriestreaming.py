@@ -224,7 +224,10 @@ def showSaisons():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
-            sThumb = aEntry[0]
+            if 'no-poster.svg' not in aEntry[0]:
+                sThumb = aEntry[0]
+            else:
+                sThumb = sThumb
             sUrl = aEntry[1]
             sTitle = aEntry[2]
 
