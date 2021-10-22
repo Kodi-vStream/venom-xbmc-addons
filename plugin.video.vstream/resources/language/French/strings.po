@@ -1138,3 +1138,7 @@ msgstr "Vue: Saisons (recommandé 50-51-500-501-508)"
 msgctxt "#31202"
 msgid "View: Episodes (recommended 50-51-500-501-508)"
 msgstr "Vue: Episodes (recommandé 50-51-500-501-508)"
+
+msgctxt "#31203"
+msgid "IP address for Flaresolverr"
+msgstr "Adresse IP pour Flaresolverr"
