@@ -74,7 +74,7 @@
 
         <setting id="contenu_adulte" type="bool" label="31103" default="false"/>
 
-        <setting label="Adresse IP pour Flaresolverr" type="ipaddress" id="ipaddress"/>
+        <setting label="31203" type="ipaddress" id="ipaddress" default="127.0.0.1"/>
 
         <setting id="PlutoTV_deviceID" type="text" label="" default="" visible="false"/>
         <setting id="PlutoTV_clientID" type="text" label="" default="" visible="false"/>
