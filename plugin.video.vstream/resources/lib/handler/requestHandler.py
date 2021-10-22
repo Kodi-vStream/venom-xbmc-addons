@@ -251,7 +251,7 @@ class cRequestHandler:
             if oResponse.status_code in [503,403]:
                 if not "Forbidden" in sContent:
                     #Default
-                    CLOUDPROXY_ENDPOINT = 'http://localhost:8191/v1'
+                    CLOUDPROXY_ENDPOINT = 'http://' + addon().getSetting('ipaddress') + ':8191/v1'
 
                     json_session = False
 
