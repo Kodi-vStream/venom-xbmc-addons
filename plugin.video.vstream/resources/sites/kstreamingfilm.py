@@ -20,6 +20,7 @@ URL_MAIN = "https://kstreamingfilm.com/"
 MOVIE_MOVIE = (True, 'load')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
+MOVIE_ANNEES = (True, 'showYears')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
@@ -38,6 +39,10 @@ def load():
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Années)', 'annees.png', oOutputParameterHandler)
+
 
     oGui.setEndOfDirectory()
 
@@ -73,7 +78,16 @@ def showGenres():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
+    
+def showYears():
+    oGui = cGui()
+    oOutputParameterHandler = cOutputParameterHandler()
+    for i in reversed(range(1935, 2022)):
+        sYear = str(i)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'release/' + sYear )
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
+    oGui.setEndOfDirectory()
+  
 
 def showMovies(sSearch=''):
     oGui = cGui()
@@ -91,6 +105,10 @@ def showMovies(sSearch=''):
         sStart = 'Derniers films ajoutés'
         sEnd = 'Film streaming les plus populaires'
         sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
+    if 'release' in sUrl :
+        sPattern = 'center-icons".+?src="([^"]+)" alt="([^"]+).+?href="([^"]+).+?movie-release">([^<]*)'
+    else :
+        sPattern = 'center-icons".+?src="([^"]+)" alt="([^"]+).+?href="([^"]+).+?movie-release">([^<]*).+?(?:|story\'>([^<]+).+?)movie-cast'
 
     sPattern = 'center-icons".+?src="([^"]+)" alt="([^"]+).+?href="([^"]+).+?movie-release">([^<]*).+?(?:|story\'>([^<]+).+?)movie-cast'
 
@@ -112,7 +130,9 @@ def showMovies(sSearch=''):
             sTitle = aEntry[1]
             sUrl = aEntry[2]
             sYear = aEntry[3]
-            sDesc = aEntry[4]
+            sDesc = ''
+            if 'Derniers films ajoutés' in sHtmlContent:
+                sDesc = aEntry[4]
             sDisplayTitle = sTitle + ' (' + sYear + ')'
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
