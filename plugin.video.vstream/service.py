@@ -5,12 +5,10 @@
 import subprocess
 import xbmcvfs
 from datetime import datetime
-from resources.lib.comaddon import addon, xbmc, VSlog, VSPath, isMatrix
-from resources.lib.util import Unquote, Quote, urlEncode
+from resources.lib.comaddon import addon, xbmc, VSlog, VSPath
 
 #Import Serveur
 import threading
-from resources.lib.proxy.ProxyHTTPRequestHandler import ProxyHTTPRequestHandler
 from http.server import HTTPServer, ThreadingHTTPServer
 from socketserver import ThreadingMixIn
 
@@ -51,7 +49,8 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     """Handle requests in a separate thread."""
 
 def runServer():
-    pass
+    from resources.lib.proxy.ProxyHTTPRequestHandler import ProxyHTTPRequestHandler
+
     server_address = ('127.0.0.1', 2424)
     httpd = ThreadingHTTPServer(server_address, ProxyHTTPRequestHandler)
 
