@@ -277,12 +277,8 @@ class PasteContent:
     # 4 = uptobox + uptostream
     def getUptoStream(self):
         if not self.upToStream:
-            from resources.lib.handler.premiumHandler import cPremiumHandler
-            if not cPremiumHandler('uptobox').isPremiumModeAvailable():
-                self.upToStream = 2 # forcer une valeur pour ne pas retester
-            else:
-                mode = int(addon().getSetting("hoster_uptobox_mode_default"))
-                self.upToStream = 4-mode
+            mode = int(addon().getSetting("hoster_uptobox_mode_default"))
+            self.upToStream = 4-mode
         return self.upToStream
 
     def getLines(self, pasteBin):
