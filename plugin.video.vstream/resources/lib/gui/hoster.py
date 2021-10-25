@@ -183,7 +183,7 @@ class cHosterGui:
 
         val = next((x for x in supported_player if x in sHostName), None)
         if val:
-            return self.getHoster(val)
+            return self.getHoster(val.replace('.',''))
 
         # Gestion classique
         if ('youtube' in sHostName) or ('youtu.be' in sHostName):
