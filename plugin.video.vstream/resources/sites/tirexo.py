@@ -749,14 +749,14 @@ def Display_protected_link():
         if sHtmlContent:
             # Si redirection
             if sHtmlContent.startswith('http'):
-                aResult_dlprotecte = (True, [sHtmlContent])
+                aResult = (True, [sHtmlContent])
             else:
                 sPattern_dlprotecte = '<h3>.+?<a href="(.+?)"'
-                aResult_dlprotecte = oParser.parse(sHtmlContent, sPattern_dlprotecte)
+                aResult = oParser.parse(sHtmlContent, sPattern_dlprotecte)
 
         else:
             dialog().VSok('Erreur de décryptage du lien')
-            aResult_dlprotecte = (False, False)
+            aResult = (False, False)
 
     # Si lien normal
     else:
