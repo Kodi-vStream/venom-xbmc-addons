@@ -22,9 +22,10 @@ from datetime import datetime, timedelta
 
 SITE_IDENTIFIER = 'channelstream'
 SITE_NAME = 'Channel Stream'
-SITE_DESC = 'iptv'
+SITE_DESC = 'Chaines TV en directs'
 
 URL_MAIN = "https://channelstream.watch"
+SPORT_SPORTS = (True, 'load')
 SPORT_LIVE = (URL_MAIN + '/programme.php', 'showMovies')
 
 TV_FRENCH = (URL_MAIN + "/chaine-tv.php", 'showMovies')
@@ -289,7 +290,7 @@ def showHoster():
             aResult = oParser.parse(sHtmlContent, sPattern)
 
             if aResult[1]:
-                if 'ragnarp' in aResult[1][0] or 'worlwidestream' in aResult[1][0]:
+                if 'ragnarp' in aResult[1][0] or 'wigistream' in aResult[1][0] or 'worlwidestream' in aResult[1][0]:
                     bvalid, shosterurl = Hoster_Wigistream(aResult[1][0], iframeURL1)
                     if bvalid:
                         sHosterUrl = shosterurl
@@ -303,6 +304,9 @@ def showHoster():
 
 
 def Hoster_Wigistream(url, referer):
+    url = url.strip()
+    if not url.startswith('http'):
+        url = 'http:'+url
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Referer', referer)
