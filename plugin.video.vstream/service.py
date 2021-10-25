@@ -5,12 +5,13 @@
 import subprocess
 import xbmcvfs
 from datetime import datetime
-from resources.lib.comaddon import addon, xbmc, VSlog, VSPath
+from resources.lib.comaddon import addon, xbmc, VSlog, VSPath, isMatrix
 
-#Import Serveur
-import threading
-from http.server import HTTPServer, ThreadingHTTPServer
-from socketserver import ThreadingMixIn
+if isMatrix():
+    #Import Serveur
+    import threading
+    from socketserver import ThreadingMixIn
+    from http.server import HTTPServer, ThreadingHTTPServer
 
 def service():
     ADDON = addon()
@@ -45,31 +46,31 @@ def service():
             proc = subprocess.Popen(command, stdout=subprocess.PIPE)
             p_status = proc.wait()
 
-class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
-    """Handle requests in a separate thread."""
-
-def runServer():
-    from resources.lib.proxy.ProxyHTTPRequestHandler import ProxyHTTPRequestHandler
-
-    server_address = ('127.0.0.1', 2424)
-    httpd = ThreadingHTTPServer(server_address, ProxyHTTPRequestHandler)
-
-    server_thread = threading.Thread(target=httpd.serve_forever)
-    server_thread.start()
-    VSlog("Server Start")
-
-    monitor = xbmc.Monitor()
-
-    while not monitor.abortRequested():
-        if monitor.waitForAbort(1):
-            break
-
-    httpd.shutdown()
 
     server_thread.join()
 
 if __name__ == '__main__':
     service()
 
-    if addon().getSetting('plugin_toonanime') == "true" or addon().getSetting('plugin_kaydo_ws') == "true":
-        runServer()
+    if isMatrix():
+        if addon().getSetting('plugin_toonanime') == "true" or addon().getSetting('plugin_kaydo_ws') == "true":
+            class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+                """Handle requests in a separate thread."""
+
+            def runServer():
+                from resources.lib.proxy.ProxyHTTPRequestHandler import ProxyHTTPRequestHandler
+
+                server_address = ('127.0.0.1', 2424)
+                httpd = ThreadingHTTPServer(server_address, ProxyHTTPRequestHandler)
+
+                server_thread = threading.Thread(target=httpd.serve_forever)
+                server_thread.start()
+                VSlog("Server Start")
+
+                monitor = xbmc.Monitor()
+
+                while not monitor.abortRequested():
+                    if monitor.waitForAbort(1):
+                        break
+
+                httpd.shutdown()
