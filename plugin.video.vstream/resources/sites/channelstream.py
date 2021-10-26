@@ -4,6 +4,7 @@
 import re
 import string
 import json
+import time
 import resources.sites.freebox
 
 
@@ -79,10 +80,10 @@ def showMovies():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    try:
-        EPG = cePg().get_epg('', 'direct')
-    except:
-        EPG = ""
+    # try:
+        # EPG = cePg().get_epg('', 'direct')
+    # except:
+        # EPG = ""
 
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
@@ -95,16 +96,18 @@ def showMovies():
                 sdesc1 = aEntry[4]
                 sdesc2 = aEntry[5]
 
-                sDisplayTitle = sTitle
                 if sdesc1:
-                    sDisplayTitle += ' ' + sdesc1 + ' - ' + sdesc2
+                    sTitle += ' : ' + sdesc1 + ' - ' + sdesc2
+                sDisplayTitle = sTitle
                 if sDate:
                     try:
-                        d = datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S+02:00')[0:6]))
-                        sDate = d.strftime("%H:%M %d/%m/%y")
+                        d = datetime(*(time.strptime(sDate, '%Hh%M %d-%m-%Y')[0:6]))
+#                        d = datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S+02:00')[0:6]))
+                        sDate = d.strftime("%d/%m/%y - %H:%M")
                     except Exception as e:
                         pass
                     sDisplayTitle += ' - ' + sDate
+                sDesc = sDisplayTitle
 
             else:
                 # Trie des chaines adultes
@@ -123,11 +126,13 @@ def showMovies():
 
                 sUrl2 = URL_MAIN + aEntry[0]
                 sThumb = URL_MAIN + '/' + aEntry[1]
-                sDesc = getEPG(EPG, sTitle)
-
+#                sDesc = getEPG(EPG, sTitle)
+                sDesc = sTitle
+            
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
 
             if "programme" in sUrl:
                 oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, sThumb, sDisplayTitle, oOutputParameterHandler)
@@ -144,38 +149,41 @@ def showHoster():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sDesc = oInputParameterHandler.getValue('sDesc')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sMovieTitle = sTitle
+    sCat = 6
+    sMeta = 0
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    try:
-        info = cePg().getChannelEpg(sTitle)
-        sDesc = info['plot']
-
-        sMovieTitle = info['title']
-        if not sMovieTitle:
-            sMovieTitle = sTitle
-
-        sMeta = 0
-        sCat = info['media_type']
-        if sCat:
-            if 'Film' in sCat:
-                sMeta = 1
-            if 'Série' in sCat:
-                sMeta = 2
-        sYear = info['year']
-        coverUrl = info['cover_url']
-        if coverUrl:
-            sThumb = coverUrl
-
-    except:
-        sMovieTitle = sTitle
-        info = ""
-        sYear = ""
-        coverUrl = sThumb
-        sDesc = ""
-        sMeta = 0
+    # try:
+        # info = cePg().getChannelEpg(sTitle)
+        # sDesc = info['plot']
+        #
+        # sMovieTitle = info['title']
+        # if not sMovieTitle:
+            # sMovieTitle = sTitle
+            #
+        # sMeta = 0
+        # sCat = info['media_type']
+        # if sCat:
+            # if 'Film' in sCat:
+                # sMeta = 1
+            # if 'Série' in sCat:
+                # sMeta = 2
+        # sYear = info['year']
+        # coverUrl = info['cover_url']
+        # if coverUrl:
+            # sThumb = coverUrl
+    # except:
+        # sMovieTitle = sTitle
+        # info = ""
+        # sYear = ""
+        # coverUrl = sThumb
+        # sDesc = ""
+        # sMeta = 0
 
     # Double Iframe a passer.
     sPattern = '<iframe.+?src="([^"]+)" webkitallowfullscreen'
@@ -191,7 +199,7 @@ def showHoster():
 
         oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
         oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-        oOutputParameterHandler.addParameter('sYear', sYear)
+#        oOutputParameterHandler.addParameter('sYear', sYear)
         oOutputParameterHandler.addParameter('sDesc', sDesc)
 
         oGuiElement = cGuiElement()
@@ -204,7 +212,8 @@ def showHoster():
         oGuiElement.setMeta(sMeta)
         oGuiElement.setThumbnail(sThumb)
         oGuiElement.setDirectTvFanart()
-        oGuiElement.setCat(sMeta)
+        oGuiElement.setCat(sCat)
+        oGuiElement.setMeta(sMeta)
 
         # oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
         # oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
@@ -212,7 +221,7 @@ def showHoster():
             oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'enregistrement', 'Enregistrement')
 
         # Menu pour les films
-        if sMeta == 1:
+        if sCat == 1:
             oGui.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
             oGui.createContexMenuba(oGuiElement, oOutputParameterHandler)
             oGui.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
@@ -238,10 +247,10 @@ def showHoster():
 
             if sHtmlContent2:
                 sPattern2 = 'var\s+cid[^\'"]+[\'"]{1}([0-9]+)'
-                aResult = re.findall(sPattern2, sHtmlContent2)
+                aResult2 = re.findall(sPattern2, sHtmlContent2)
 
-                if aResult:
-                    str2 = aResult[0]
+                if aResult2:
+                    str2 = aResult2[0]
                     datetoken = int(getTimer()) * 1000
 
                     jsonUrl = 'https://telerium.digital/streams/' + str2 + '/' + str(datetoken) + '.json'
@@ -270,13 +279,13 @@ def showHoster():
             sHosterUrl = ''
             oParser = cParser()
             sPattern = '<iframe.+?src="([^"]+)'
-            aResult = oParser.parse(sHtmlContent, sPattern)
+            aResult2 = oParser.parse(sHtmlContent, sPattern)
             try:
                 # Lien telerium qui ne marche pas
                 # Mais qui n'est pas toujours present
-                iframeURL1 = aResult[1][1]
+                iframeURL1 = aResult2[1][1]
             except:
-                iframeURL1 = aResult[1][0]
+                iframeURL1 = aResult2[1][0]
 
         if 'allfoot' in iframeURL1 or "sportsonline" in iframeURL1:
             oRequestHandler = cRequestHandler(iframeURL1)
@@ -284,20 +293,17 @@ def showHoster():
             # oRequestHandler.addHeaderEntry('Referer', siterefer) # a verifier
             sHtmlContent = oRequestHandler.request()
 
-            sHosterUrl = ''
             oParser = cParser()
             sPattern = '<iframe.+?src="([^"]+)'
-            aResult = oParser.parse(sHtmlContent, sPattern)
+            aResult2 = oParser.parse(sHtmlContent, sPattern)
 
-            if aResult[1]:
-                if 'ragnarp' in aResult[1][0] or 'wigistream' in aResult[1][0] or 'worlwidestream' in aResult[1][0]:
-                    bvalid, shosterurl = Hoster_Wigistream(aResult[1][0], iframeURL1)
-                    if bvalid:
-                        sHosterUrl = shosterurl
-
-        if sHosterUrl != "":
-            oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
-            oGui.addFolder(oGuiElement, oOutputParameterHandler)
+            if aResult2[1]:
+                for stream in aResult2[1]:
+                    if 'ragnarp' in stream or 'wigistream' in stream or 'worlwidestream' in stream:
+                        sHosterUrl = Hoster_Wigistream(stream, iframeURL1)
+                        if sHosterUrl:
+                            oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
+                            oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
     cGui.CONTENT = 'movies'
     oGui.setEndOfDirectory()
@@ -323,9 +329,9 @@ def Hoster_Wigistream(url, referer):
         sPattern = 'src="(.+?)"'
         aResult = re.findall(sPattern, sUnpack)
         if aResult:
-            return True, aResult[0] + '|User-Agent=' + UA + '&Referer=' + Quote(url)
+            return aResult[0] + '|User-Agent=' + UA + '&Referer=' + Quote(url)
 
-    return False, False
+    return False
 
 
 def getRealTokenJson(link, referer):
