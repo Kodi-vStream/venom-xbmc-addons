@@ -89,24 +89,24 @@ def showMovies():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if "programme" in sUrl:
-                sTitle = aEntry[0]
                 sUrl2 = aEntry[1]
                 sDate = aEntry[2].replace('<br />', ' ')
                 sThumb = aEntry[3]
                 sdesc1 = aEntry[4]
                 sdesc2 = aEntry[5]
 
+                sTitle = ''
                 if sdesc1:
-                    sTitle += ' : ' + sdesc1 + ' - ' + sdesc2
-                sDisplayTitle = sTitle
+                    sTitle = sdesc1 + ' - ' + sdesc2 + ' - '
+                sTitle += aEntry[0]
                 if sDate:
                     try:
                         d = datetime(*(time.strptime(sDate, '%Hh%M %d-%m-%Y')[0:6]))
-#                        d = datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S+02:00')[0:6]))
-                        sDate = d.strftime("%d/%m/%y - %H:%M")
+                        sDate = d.strftime("%d/%m/%y %H:%M")
                     except Exception as e:
                         pass
-                    sDisplayTitle += ' - ' + sDate
+                    sTitle += ' - ' + sDate
+                sDisplayTitle = sTitle
                 sDesc = sDisplayTitle
 
             else:
