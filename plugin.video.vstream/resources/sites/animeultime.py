@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'animeultime'
 SITE_NAME = 'Anime Ultime'
 SITE_DESC = 'Animés, Dramas en Direct Download'
 
-URL_MAIN = 'http://www.anime-ultime.net/'
+URL_MAIN = "http://www.anime-ultime.net/"
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0'
 
@@ -271,7 +271,7 @@ def showSeries(sSearch=''):
                 sThumb = ''
 
                 # Enleve le contenu pour adulte.
-                if 'Inderdit -' in sTitle or 'Public Averti' in sTitle or 'Interdit' in sTitle:
+                if 'Public Averti' in sTitle or 'Interdit' in sTitle:
                     if adulteContent == "false":
                         oGui.addText(SITE_IDENTIFIER, '[COLOR red]Contenu pour adulte desactiver dans les parametre[/COLOR]')
                         return
@@ -327,7 +327,7 @@ def showSeries(sSearch=''):
 
                 if adulteContent == "false":
                     # Enleve le contenu pour adulte.
-                    if 'Inderdit -' in sTitle or 'Public Averti' in sTitle or 'Interdit' in sTitle:
+                    if 'Public Averti' in sTitle or 'Interdit' in sTitle:
                         continue
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)

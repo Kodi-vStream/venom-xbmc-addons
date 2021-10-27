@@ -6,8 +6,9 @@ import base64
 import json
 import re
 import time
+import ast
 from datetime import datetime, timedelta
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import isMatrix
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -17,6 +18,11 @@ from resources.lib.packer import cPacker
 from resources.lib.parser import cParser
 from resources.lib.util import Quote
 
+if isMatrix():
+    from urllib.parse import urlparse
+else:
+    from urlparse import urlparse
+
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
 SITE_IDENTIFIER = 'streamonsport'
@@ -25,20 +31,19 @@ SITE_DESC = 'Site pour regarder du sport en direct'
 
 URL_MAIN = 'https://www.streamonsport.info/'
 
-SPORT_SPORTS = (True, 'showMenuHomeSport')
+SPORT_SPORTS = (True, 'load')
 SPORT_TV = (URL_MAIN + '31-sport-tv-fr-streaming.html', 'showMovies')
 CHAINE_TV = (URL_MAIN + '2370162-chaines-tv-streaming.html', 'showMovies')
 SPORT_LIVE = (URL_MAIN, 'showMovies')
-SPORT_GENRES = (True, 'showGenres')
-# URL_SEARCH = (URL_MAIN + '?search=', 'showMovies')  # recherche hs
+SPORT_GENRES = (URL_MAIN, 'showGenres')
 
 
 def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines Sport TV', 'sport.png', oOutputParameterHandler)
+    # oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
+    # oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines Sport TV', 'sport.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Sports (En direct)', 'replay.png', oOutputParameterHandler)
@@ -47,62 +52,45 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Sports (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', CHAINE_TV[0])
-    oGui.addDir(SITE_IDENTIFIER, CHAINE_TV[1], 'Chaines TV généralistes', 'tv.png', oOutputParameterHandler)
+    # oOutputParameterHandler.addParameter('siteUrl', CHAINE_TV[0])
+    # oGui.addDir(SITE_IDENTIFIER, CHAINE_TV[1], 'Chaines TV généralistes', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
-
-def showMenuHomeSport():
-    oGui = cGui()
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SPORT_TV [0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines Sport TV', 'sport.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Sports (En direct)', 'replay.png', oOutputParameterHandler)
-
-    # menu souvent vide
-    oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Sports (Genres)', 'genres.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', CHAINE_TV[0])
-    oGui.addDir(SITE_IDENTIFIER, CHAINE_TV[1], 'Chaines généralistes TV', 'tv.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
 
 
 def showGenres():
     oGui = cGui()
 
-    liste = []
-    liste.append(['FootBall', URL_MAIN + '1-foot-streaming-ligue.html'])
-    liste.append(['Rugby', URL_MAIN + '2-rugby-streaming.html'])
-    liste.append(['Basketball', URL_MAIN + '3-basketball-streaming.html'])
-    liste.append(['Formule 1', URL_MAIN + '4-formule-1-grand-prix-despagne-en-streaming-gratuit.html'])
-    liste.append(['Handball', URL_MAIN + '6-handball-streaming.html'])
-    liste.append(['Tennis', URL_MAIN + '5-tennis-streaming.html'])
-    liste.append(['Moto', URL_MAIN + '7-moto-gp-streaming-portugal.html'])
-    # liste.append( ['Radio', URL_MAIN + '76-ecouter-la-radio-streaming.html'])
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+    sPattern =  '<a href="(.+?)"><img alt="(.+?)".+?src="(.+?)">'
+    oParser = cParser()
+    sHtmlContent = oParser.abParse(sHtmlContent, '<div class="teams"', '</div></div>')
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
+
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        oOutputParameterHandler = cOutputParameterHandler()
+        for aEntry in aResult[1]:
+            title = aEntry[1].replace('streaming', '').strip()
+            sThumb = aEntry[2].replace(',', '%2C').replace('?v=so', '')
+            if 'http' not in sThumb:
+                sThumb = URL_MAIN[:-1] + sThumb
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
+            oOutputParameterHandler.addParameter('sMovieTitle', title)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addMisc(SITE_IDENTIFIER, 'showMovies', title, 'genres.png', sThumb, title, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
-
-# inactif
-def showSearch():
-    oGui = cGui()
-    sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText
-        showMovies(sUrl)
-        oGui.setEndOfDirectory()
-        return
 
 
 def showMovies(sSearch=''):
@@ -127,13 +115,8 @@ def showMovies(sSearch=''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sThumb = aEntry[0]
             sUrl2 = aEntry[1]
             sTitle = aEntry[2].replace(' streaming gratuit', '').replace(' foot', '')
@@ -173,8 +156,6 @@ def showMovies(sSearch=''):
             else:
                 oGui.addDir(SITE_IDENTIFIER, 'showLive', sDisplayTitle, sThumb, oOutputParameterHandler)
 
-        progress_.VSclose(progress_)
-
     if not sSearch:
         oGui.setEndOfDirectory()
 
@@ -198,13 +179,8 @@ def showLive():
     i = 0
     if (aResult[0] == True):
         total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             i += 1
             sUrl2 = aEntry
             sDisplayTitle = sMovieTitle + ' - Lien ' + str(i)
@@ -214,8 +190,6 @@ def showLive():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('siterefer', sUrl)
             oGui.addLink(SITE_IDENTIFIER, 'Showlink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
     # 1 seul liens tv telerium
     sPattern = 'iframe id="video".src.+?id=([^"]+)'
@@ -265,21 +239,21 @@ def Showlink():
         sPattern = '<iframe.+?src="([^"]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        try:
-            oRequestHandler = cRequestHandler(aResult[1][0])
-            oRequestHandler.addHeaderEntry('User-Agent', UA)
-            # oRequestHandler.addHeaderEntry('Referer', siterefer) # a verifier
-            sHtmlContent = oRequestHandler.request()
+        oRequestHandler = cRequestHandler(aResult[1][0])
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        # oRequestHandler.addHeaderEntry('Referer', siterefer) # a verifier
+        sHtmlContent = oRequestHandler.request()
+        if "pkcast123.me" in sHtmlContent:
+            sPattern = 'fid="([^"]+)"'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            sUrl2 = "https://www.pkcast123.me/footy.php?player=desktop&live=" +  aResult[1][0] + "&vw=649&vh=460"
+        else:           
             sHosterUrl = ''
-            oParser = cParser()
+
             sPattern = '<iframe.+?src="([^"]+)'
             aResult = oParser.parse(sHtmlContent, sPattern)
             sUrl2 = aResult[1][0]
-        except:
-            sPattern = 'id=.(\d+).+?embed.telerium.+?<.script>'
-            aResult2 = oParser.parse(sHtmlContent, sPattern)
-            if (aResult2[0] == True):
-                sUrl2 = 'https://telerium.club/embed/' + aResult2[1][0] + '.html'
+
 
     # pas de pre requete
     if 'laylow.cyou' in sUrl:
@@ -289,6 +263,10 @@ def Showlink():
         sUrl2 = sUrl
 
     if sUrl2:
+        if 'pkcast123' in sUrl2:
+            bvalid, shosterurl = Hoster_Pkcast(sUrl2, sUrl)
+            if bvalid:
+                sHosterUrl = shosterurl
 
         if 'telerium' in sUrl2:
             bvalid, shosterurl = Hoster_Telerium(sUrl2, sUrl)
@@ -321,6 +299,22 @@ def Showlink():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
+
+def Hoster_Pkcast(url, referer):
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Referer', '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(referer)))
+    sHtmlContent = oRequestHandler.request()
+
+    oParser = cParser()
+    sPattern = 'play\(\).+?return\((.+?)\.join'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if aResult:
+        return True, ''.join(ast.literal_eval(aResult[1][0])) + '|User-Agent=' + UA + '&Referer=' + Quote(url)
+
+    return False, False
 
 
 def Hoster_Telerium(url, referer):
@@ -419,10 +413,7 @@ def getRealTokenJson(link, referer):
 
     realResp = ''
     oRequestHandler = cRequestHandler(link)
-    # oRequestHandler.addHeaderEntry('Host', 'telerium.tv')
     oRequestHandler.addHeaderEntry('User-Agent', UA)
-    # oRequestHandler.addHeaderEntry('Accept', 'application/json, text/javascript, */*; q=0.01')
-    # oRequestHandler.addHeaderEntry('Accept', 'application/json')
     oRequestHandler.addHeaderEntry('Accept-Language', 'pl,en-US;q=0.7,en;q=0.3')
     oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
     oRequestHandler.addHeaderEntry('Referer', referer)
@@ -434,11 +425,9 @@ def getRealTokenJson(link, referer):
     except:
         pass
 
-    if not realResp:  # and False:
+    if not realResp:
         oRequestHandler = cRequestHandler(link)
-        # oRequestHandler.addHeaderEntry('Host', 'telerium.tv')
         oRequestHandler.addHeaderEntry('User-Agent', UA)
-        # oRequestHandler.addHeaderEntry('Accept', 'application/json, text/javascript, */*; q=0.01')
         oRequestHandler.addHeaderEntry('Accept', 'application/json')
         oRequestHandler.addHeaderEntry('Accept-Language', 'pl,en-US;q=0.7,en;q=0.3')
         oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# source 28
+
 import re
 import string
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -15,7 +16,7 @@ SITE_IDENTIFIER = 'animecomplet'
 SITE_NAME = 'Animecomplet'
 SITE_DESC = 'Series Anime'
 
-URL_MAIN = 'https://animecomplet.co/'
+URL_MAIN = "https://animecomplet.me/"
 
 tag_alpha = 'tagaplha'
 ANIM_ANIMS = (True, 'load')
@@ -172,12 +173,16 @@ def showAnims(sSearch=''):
                 except:
                     pass
 
+            sLang = ''
+            if ' VOSTFR' in sTitle:
+                sLang = 'VOSTFR'
+                sTitle = sTitle.replace(' - Episode', ' Episode').replace(' VOSTFR', '')
+
             if 'http' not in sThumb:
                 sThumb = URL_MAIN + sThumb
 
-            # le lien liés a l'episode va
-            # nous fournir apres tous les episodes saisons
-            # donc inutile de tout afficher si titre semblable
+            # le lien liés a l'episode va nous fournir apres tous
+            # les episodes saisons donc inutile de tout afficher si titre semblable
             if bSearchGlobal and iCurrent > 3:
                 bValid, sim = similarTitle(sTitle)
                 if bValid:
@@ -185,11 +190,12 @@ def showAnims(sSearch=''):
                         list_simlilar.append(sim)
                     else:
                         continue
+            sDisplayTtitle = sTitle + ' (' + sLang + ')'
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addAnime(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            # oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addAnime(SITE_IDENTIFIER, 'showEpisodes', sDisplayTtitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -289,6 +295,8 @@ def showEpisodes():
 
             sUrl2 = aEntry[0]
             sTitle = aEntry[1]
+            if ' VOSTFR' in sTitle:
+                sTitle = sTitle.replace(' - Episode', ' Episode').replace(' VOSTFR', '')
             sThumb = aEntry[2]
             if 'http' not in sThumb:
                 sThumb = URL_MAIN + sThumb
@@ -404,9 +412,9 @@ def similarTitle(s):
         try:
             s = str(s).lower()
             sx = s.split(' ')
-            snew = sx[0] + ' ' + sx[1]
+            snews = sx[0] + ' ' + sx[1]
             for spe in list_spe:
-                snews = snew.replace(spe, '')
+                snews = snews.replace(spe, '')
             return True, snews.lower()
         except:
             return False, False

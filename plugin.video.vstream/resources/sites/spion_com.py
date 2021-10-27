@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Par jojotango
+return False
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -15,7 +16,7 @@ SITE_IDENTIFIER = 'spion_com'
 SITE_NAME = 'Spi0n'
 SITE_DESC = 'Insolite du web'
 
-URL_MAIN = 'https://www.spi0n.com/'
+URL_MAIN = "https://www.spi0n.com/"
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MISC = (URL_SEARCH[0], 'showMovies')

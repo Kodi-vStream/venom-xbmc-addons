@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+return False  # Sous Cloudflare 14/10/2021
+
 import re
 import xbmc
 
@@ -16,7 +18,7 @@ SITE_IDENTIFIER = 'enstream'
 SITE_NAME = 'Enstream'
 SITE_DESC = 'Regarder tous vos films streaming complets, gratuit et illimité'
 
-URL_MAIN = 'https://www.enstream.club/'
+URL_MAIN = "https://www.enstream.club/"
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = ('', FUNCTION_SEARCH)
@@ -63,33 +65,17 @@ def showSearch():
 def showGenres():
     oGui = cGui()
 
-    liste = []
-    liste.append(['Action', URL_MAIN + 'genre/action/'])
-    liste.append(['Animation', URL_MAIN + 'genre/animation/'])
-    liste.append(['Aventure', URL_MAIN + 'genre/aventure/'])
-    liste.append(['Biopic', URL_MAIN + 'genre/biopic/'])
-    liste.append(['Comédie', URL_MAIN + 'genre/comedie/'])
-    liste.append(['Comédie Dramatique', URL_MAIN + 'genre/comedie-dramatique/'])
-    liste.append(['Comédie Musicale', URL_MAIN + 'genre/comedie-musical/'])
-    liste.append(['Drame', URL_MAIN + 'genre/drame/'])
-    liste.append(['Epouvante Horreur', URL_MAIN + 'genre/epouvante-horreur/'])
-    liste.append(['Espionnage', URL_MAIN + 'genre/espionnage/'])
-    liste.append(['Famille', URL_MAIN + 'genre/famille/'])
-    liste.append(['Fantastique', URL_MAIN + 'genre/fantastique/'])
-    liste.append(['Guerre', URL_MAIN + 'genre/guerre/'])
-    liste.append(['Historique', URL_MAIN + 'genre/historique/'])
-    liste.append(['Judiciaire', URL_MAIN + 'genre/judiciaire/'])
-    liste.append(['Musical', URL_MAIN + 'genre/musical/'])
-    liste.append(['Péplum', URL_MAIN + 'genre/peplum/'])
-    liste.append(['Policier', URL_MAIN + 'genre/policier/'])
-    liste.append(['Romance', URL_MAIN + 'genre/romance/'])
-    liste.append(['Science Fiction', URL_MAIN + 'genre/science-fiction/'])
-    liste.append(['Thriller', URL_MAIN + 'genre/thriller/'])
-    liste.append(['Western', URL_MAIN + 'genre/western/'])
+    liste = [['Action', 'action'], ['Animation', 'animation'], ['Aventure', 'aventure'], ['Biopic', 'biopic'],
+             ['Comédie', 'comedie'], ['Comédie Dramatique', 'comedie-dramatique'],
+             ['Comédie Musicale', 'comedie-musical'], ['Drame', 'drame'], ['Epouvante Horreur', 'epouvante-horreur'],
+             ['Espionnage', 'espionnage'], ['Famille', 'famille'], ['Fantastique', 'fantastique'], ['Guerre', 'guerre'],
+             ['Historique', 'historique'], ['Judiciaire', 'judiciaire'], ['Musical', 'musical'], ['Péplum', 'peplum'],
+             ['Policier', 'policier'], ['Romance', 'romance'], ['Science Fiction', 'science-fiction'],
+             ['Thriller', 'thriller'], ['Western', 'western']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'genre/' + sUrl + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -109,18 +95,15 @@ def showYears():
 
 def showAlpha():
     oGui = cGui()
-    sUrl = URL_MAIN + 'ABC/'
 
-    liste = [['0-9', sUrl], ['A', sUrl + 'A'], ['B', sUrl + 'B'], ['C', sUrl + 'C'], ['D', sUrl + 'D'],
-             ['E', sUrl + 'E'], ['F', sUrl + 'F'], ['G', sUrl + 'G'], ['H', sUrl + 'H'], ['I', sUrl + 'I'],
-             ['J', sUrl + 'J'], ['K', sUrl + 'K'], ['L', sUrl + 'L'], ['M', sUrl + 'M'], ['N', sUrl + 'N'],
-             ['O', sUrl + 'O'], ['P', sUrl + 'P'], ['Q', sUrl + 'Q'], ['R', sUrl + 'R'], ['S', sUrl + 'S'],
-             ['T', sUrl + 'T'], ['U', sUrl + 'U'], ['V', sUrl + 'V'], ['W', sUrl + 'W'], ['X', sUrl + 'X'],
-             ['Y', sUrl + 'Y'], ['Z', sUrl + 'Z']]
+    liste = [['0-9', ''], ['A', 'A'], ['B', 'B'], ['C', 'C'], ['D', 'D'], ['E', 'E'], ['F', 'F'], ['G', 'G'],
+             ['H', 'H'], ['I', 'I'], ['J', 'J'], ['K', 'K'], ['L', 'L'], ['M', 'M'], ['N', 'N'], ['O', 'O'],
+             ['P', 'P'], ['Q', 'Q'], ['R', 'R'], ['S', 'S'], ['T', 'T'], ['U', 'U'], ['V', 'V'], ['W', 'W'],
+             ['X', 'X'], ['Y', 'Y'], ['Z', 'Z']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'ABC/' + sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()

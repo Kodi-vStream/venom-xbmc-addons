@@ -20,7 +20,7 @@ SITE_IDENTIFIER = 'free_telechargement_org'
 SITE_NAME = '[COLOR violet]Free-Téléchargement[/COLOR]'
 SITE_DESC = 'Fichiers en DDL, HD, Films, Séries, Mangas Etc...'
 
-URL_MAIN = 'http://www.free-telecharger.org/'
+URL_MAIN = "https://www.free-telecharger.net/"
 URL_PROTECT = 'liens.free-telecharg'  # ne pas mettre 'er' ou 'ement' à la fin, perte de hosters
 
 FUNCTION_SEARCH = 'showSearchResult'
@@ -243,33 +243,17 @@ def showGenreMoviesHD():
 def showGenre(basePath):
     oGui = cGui()
 
-    liste = []
-    liste.append(['Action', URL_MAIN + '1/genre-Action/' + basePath])
-    liste.append(['Animation', URL_MAIN + '1/genre-Animation/' + basePath])
-    liste.append(['Arts Martiaux', URL_MAIN + '1/genre-Arts%20Martiaux/' + basePath])
-    liste.append(['Aventure', URL_MAIN + '1/genre-Aventure/' + basePath])
-    liste.append(['Biographies', URL_MAIN + '1/genre-Biographies/' + basePath])
-    liste.append(['Comédie', URL_MAIN + '1/genre-Comedie/' + basePath])
-    liste.append(['Comédie dramatique', URL_MAIN + '1/genre-Comedie+Dramatique/' + basePath])
-    liste.append(['Comédie musicale', URL_MAIN + '1/genre-Comedie+Musicale/' + basePath])
-    liste.append(['Divers', URL_MAIN + '1/genre-Divers/' + basePath])
-    liste.append(['Drame', URL_MAIN + '1/genre-Drame/' + basePath])
-    liste.append(['Espionnage', URL_MAIN + '1/genre-Espionnage/' + basePath])
-    liste.append(['Famille', URL_MAIN + '1/genre-Famille/' + basePath])
-    liste.append(['Fantastique', URL_MAIN + '1/genre-Fantastique/' + basePath])
-    liste.append(['Guerre', URL_MAIN + '1/genre-Guerre/' + basePath])
-    liste.append(['Historique', URL_MAIN + '1/Historique/' + basePath])
-    liste.append(['Horreur', URL_MAIN + '1/genre-Horreur-Epouvante/' + basePath])
-    liste.append(['Péplum', URL_MAIN + '1/genre-Peplum/' + basePath])
-    liste.append(['Policier', URL_MAIN + '1/genre-Policiers/' + basePath])
-    liste.append(['Romance', URL_MAIN + '1/genre-Romance/' + basePath])
-    liste.append(['Science fiction', URL_MAIN + '1/genre-Science-Fiction/' + basePath])
-    liste.append(['Thriller', URL_MAIN + '1/genre-Thriller/' + basePath])
-    liste.append(['Western', URL_MAIN + '1/genre-Westerns/' + basePath])
+    liste = [['Action', 'Action'], ['Animation', 'Animation'], ['Arts Martiaux', 'Arts%20Martiaux'],
+             ['Aventure', 'Aventure'], ['Biographies', 'Biographies'], ['Comédie', 'Comedie'],
+             ['Comédie dramatique', 'Comedie+Dramatique'], ['Comédie musicale', 'Comedie+Musicale'],
+             ['Divers', 'Divers'], ['Drame', 'Drame'], ['Espionnage', 'Espionnage'], ['Famille', 'Famille'],
+             ['Fantastique', 'Fantastique'], ['Guerre', 'Guerre'], ['Historique', 'Historiques'],
+             ['Horreur', 'Horreur-Epouvante'], ['Péplum', 'Peplum'], ['Policier', 'Policiers'], ['Romance', 'Romance'],
+             ['Science fiction', 'Science-Fiction'], ['Thriller', 'Thriller'], ['Western', 'Westerns']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '1/genre-' + sUrl + '/' +  + basePath)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()

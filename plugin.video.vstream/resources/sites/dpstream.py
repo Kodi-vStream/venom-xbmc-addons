@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# update 15/04/2021
 # return False
 
 import re
@@ -143,16 +142,13 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-
     listegenre = ['action', 'animation', 'aventure', 'comedie', 'crime', 'documentaire', 'drame', 'familial',
                   'fantastique', 'guerre', 'histoire', 'horreur', 'kids', 'musique', 'mystere', 'reality', 'romance',
                   'science-fiction', 'soap', 'science-fiction-fantastique', 'talk', 'telefilm', 'thriller', 'politics',
                   'western']
 
-    url1g = URL_MAIN + 'categories/'
-
     for igenre in listegenre:
-        liste.append([igenre.capitalize(), url1g + igenre])
+        liste.append([igenre.capitalize(), URL_MAIN + 'categories/' + igenre])
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
@@ -166,16 +162,13 @@ def showSeriesGenres():
     oGui = cGui()
 
     liste = []
-
     listegenre = ['action', 'action-adventure', 'animation', 'aventure', 'comedie', 'crime', 'documentaire', 'drame',
                   'familial', 'fantastique', 'guerre', 'histoire', 'horreur', 'kids', 'musique', 'mystere', 'news',
                   'reality', 'romance', 'science-fiction', 'soap', 'science-fiction-fantastique', 'talk', 'thriller',
                   'politics', 'western']
 
-    url1g = URL_MAIN + 'categories/'
-
     for igenre in listegenre:
-        liste.append([igenre.capitalize(), url1g + igenre + '/series'])
+        liste.append([igenre.capitalize(), URL_MAIN + 'categories/' + igenre + '/series'])
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
@@ -240,7 +233,6 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            sDesc = ''
             sUrl2 = aEntry[0]
             sThumb = re.sub('/w\d+/', '/w342/', aEntry[1])
             sTitle = aEntry[2].split(' en streaming')[0].split('streaming | ')[1]
@@ -265,16 +257,15 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
 
             if sSearch:
-                oGui.addLink(SITE_IDENTIFIER, 'showSelectType', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+                oGui.addLink(SITE_IDENTIFIER, 'showSelectType', sDisplayTitle, sThumb, '', oOutputParameterHandler)
             elif SERIE_NEWS[0] not in sUrl:
                 oOutputParameterHandler.addParameter('sYear', sYear)
-                oGui.addMovie(SITE_IDENTIFIER, 'showLink', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 sDisplayTitle = sTitle
-                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -325,7 +316,6 @@ def showSelectType():
     oOutputParameterHandler.addParameter('sThumb', sThumb)
     oOutputParameterHandler.addParameter('sDesc', sDesc)
     oOutputParameterHandler.addParameter('sYear', sYear)
-    sDisplayTitle = sMovieTitle + '(' + sYear + ')'
 
     # (a modifier car ce n'est plus le cas)
     # dans le cas d'une recherche on ne sait pas si c'est un film ou une serie
@@ -335,9 +325,9 @@ def showSelectType():
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
 
     if '<meta name=description content="serie' in sHtmlContent:
-        oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+        oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sMovieTitle, '', sThumb, sDesc, oOutputParameterHandler)
     else:
-        oGui.addMovie(SITE_IDENTIFIER, 'showLink', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+        oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sMovieTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -417,12 +407,12 @@ def ShowEpisodes():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def showLink():
+def showLinks():
     oGui = cGui()
 
     oParser = cParser()
@@ -479,7 +469,7 @@ def showLink():
             oOutputParameterHandler.addParameter('sYear', sYear)
             oOutputParameterHandler.addParameter('sHost', sHost)
             oOutputParameterHandler.addParameter('sLang', sLang)
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

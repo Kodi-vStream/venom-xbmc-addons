@@ -26,8 +26,8 @@
 #EXTINF:-1 tvg-logo="france5.png" ,France 5
 [REGEX]{"url": "([^"]+)"}[URL]https://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=https://simulcast.ftven.fr/simulcast/France_5/hls_fr5/index.m3u8
 
-#EXTINF:-1 tvg-logo="arte.png" ,Arte
-http://artelive-lh.akamaihd.net/i/artelive_fr@344805/master.m3u8
+#EXTINF:-1 tvg-logo="arte.png" ,ARTE
+[REGEX]"streams":\[{"url":"([^"]+)"[HEAD]{"Authorization":"Bearer MzYyZDYyYmM1Y2Q3ZWRlZWFjMmIyZjZjNTRiMGY4MzY4NzBhOWQ5YjE4MGQ1NGFiODJmOTFlZDQwN2FkOTZjMQ"}[URL]https://api.arte.tv/api/player/v2/config/fr/LIVE
 
 #EXTINF:-1 tvg-logo="gulli.png" ,Gulli
 [REGEX]url = "(.+?)"[URL]http://replay.gulli.fr/jwplayer/embedstreamtv

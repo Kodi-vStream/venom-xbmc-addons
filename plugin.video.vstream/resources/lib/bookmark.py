@@ -116,10 +116,7 @@ class cFav:
             except:
                 title = data['title']
 
-            try:
-                thumbnail = data['icon'].encode('utf-8')
-            except:
-                thumbnail = data['icon']
+            thumbnail = data['icon']
 
             try:
                 try:
@@ -217,7 +214,9 @@ class cFav:
         oInputParameterHandler = cInputParameterHandler()
 
         sCat = oInputParameterHandler.getValue('sCat') if oInputParameterHandler.exist('sCat') else xbmc.getInfoLabel('ListItem.Property(sCat)')
-        iCat = int(sCat)
+        iCat = 0
+        if sCat:
+            iCat = int(sCat)
         if iCat<1 or iCat>8:
             self.DIALOG.VSinfo('Error', self.ADDON.VSlang(30038))
             return

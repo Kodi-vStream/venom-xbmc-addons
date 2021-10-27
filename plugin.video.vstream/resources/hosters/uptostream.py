@@ -60,10 +60,9 @@ class cHoster(iHoster):
                     url = aEntry["src"]
                     if not url.startswith('http'):
                         url = 'http:' + url
-                    Files.append(url)
+                    Files.append(url.replace('.vtt','.srt'))
                 else:
                     continue
-
             return Files
         return False
 
@@ -120,7 +119,7 @@ class cHoster(iHoster):
 
         #Deux modes de fonctionnement different.
         if js_result.get("streamLinks").get('src'):
-            api_call = js_result['streamLinks']['src']
+            api_call = js_result['streamLinks']['src'].replace(".m3u8",".mpd")
         else:
             sPattern = "'(.+?)': {(.+?)}"
 

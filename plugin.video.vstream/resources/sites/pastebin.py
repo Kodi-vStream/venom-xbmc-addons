@@ -277,12 +277,8 @@ class PasteContent:
     # 4 = uptobox + uptostream
     def getUptoStream(self):
         if not self.upToStream:
-            from resources.lib.handler.premiumHandler import cPremiumHandler
-            if not cPremiumHandler('uptobox').isPremiumModeAvailable():
-                self.upToStream = 2 # forcer une valeur pour ne pas retester
-            else:
-                mode = int(addon().getSetting("hoster_uptobox_mode_default"))
-                self.upToStream = 4-mode
+            mode = int(addon().getSetting("hoster_uptobox_mode_default"))
+            self.upToStream = 4-mode
         return self.upToStream
 
     def getLines(self, pasteBin):
@@ -859,7 +855,7 @@ def showNetwork():
                 continue
     
             networks = movie[pbContent.NETWORK].strip()
-            if networks != '':
+            if networks != '' and networks != '[]':
                 networks = eval(networks)
                 if networks:
                     for network in networks:
@@ -1453,16 +1449,18 @@ def showMovies(sSearch=''):
 
         while k < lenMovies:
             if i < pasteMaxLen[j]:
-                if bNews:
-                    movieName = movies[i][pbContent.TITLE]
-                    if movieName not in listName:        # trie des séries en doublons (à cause des saisons)
-                        listName.add(movieName)
+                # Filtrage par média (film/série)
+                if pbContent.CAT >=0 and sMedia in movies[i][pbContent.CAT]:
+                    if bNews:
+                        movieName = movies[i][pbContent.TITLE]
+                        if movieName not in listName:        # trie des séries en doublons (à cause des saisons)
+                            listName.add(movieName)
+                            moviesNews.append(movies[i])
+                            nbMoviesNews += 1
+                            if nbMoviesNews == nbMoviesNewsMax:
+                                break
+                    else:
                         moviesNews.append(movies[i])
-                        nbMoviesNews += 1
-                        if nbMoviesNews == nbMoviesNewsMax:
-                            break
-                else:
-                    moviesNews.append(movies[i])
                 k += 1
             i += pasteLen[j]
             j += 1
@@ -1493,8 +1491,8 @@ def showMovies(sSearch=''):
             numItem = (numPage-1) * ITEM_PAR_PAGE
 
     if bRandom:
-        # Génération d'indices aléatoires, ajout de deux indices car les doublons aléatoires sont rassemblés
-        randoms = [random.randint(0, len(movies)) for _ in range(ITEM_PAR_PAGE+2)]
+        # Génération d'indices aléatoires, ajout d'une marge car les doublons aléatoires sont rassemblés
+        randoms = [random.randint(0, len(movies)) for _ in range(ITEM_PAR_PAGE*2)]
 
     movieIds = set()
 
@@ -2263,7 +2261,7 @@ def addPasteID():
         if len(movies) == 0:
             dialog().VSok(addons.VSlang(30022))
             return
-    except Exception:
+    except Exception as e:
         dialog().VSinfo(addons.VSlang(30011))
         raise
 
@@ -2309,7 +2307,7 @@ def adminPasteID():
             movies = pbContentNew.getLines(pasteBin)
             if len(movies) == 0:
                 color = 'red'
-        except Exception:
+        except Exception as e:
             dialog().VSinfo(addons.VSlang(30011))
             raise
 

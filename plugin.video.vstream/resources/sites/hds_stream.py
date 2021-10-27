@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-return False
+# return False
 
 import re
 
@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'hds_stream'
 SITE_NAME = 'Hds-stream'
 SITE_DESC = 'Film streaming HD complet en vf. Des films et séries pour les fan de streaming hds.'
 
-URL_MAIN = 'https://hds.club/'
+URL_MAIN = "https://hds.club/"
 
 MOVIE_MOVIES = (True, 'showMenuMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
@@ -267,7 +267,7 @@ def showSxE():
                 sUrl = aEntry[2]
                 EpTitle = aEntry[3]
                 Ep = aEntry[1]
-                sDisplayTitle = EpTitle + ' ' + sSaison + ' Episode ' + Ep 
+                sDisplayTitle = EpTitle + ' ' + sSaison + ' Episode ' + Ep
                 sTitle = sMovieTitle + ' | ' + sDisplayTitle
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)

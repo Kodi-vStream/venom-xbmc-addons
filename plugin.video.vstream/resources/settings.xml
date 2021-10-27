@@ -9,7 +9,7 @@
         <setting id="playerType" type="enum" values="Auto|MPlayer|DVDPlayer" label="30001" default="2" enable="eq(-1,0)"/>
         <setting id="upnext" type="bool" label="30506" default="true"/>
         <setting id="srt-view" type="bool" label="30002" default="false"/>
-        <setting id="deco_color" type="select" label="30010" values="aliceblue|lemonchiffon|lightblue|lightcoral|lightcyan|lightgrey|lightgreen|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lavender|moccasin|pink|plum|powderblue|seashell|coral" default="lightcoral"/>
+        <setting id="deco_color" type="select" label="30010" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen" default="lightcoral"/>
         <!-- <setting id="param_timeout" label="30027" type="number" default="1000"/-->
 
         <setting label="30031" type="lsep"/>
@@ -74,6 +74,8 @@
 
         <setting id="contenu_adulte" type="bool" label="31103" default="false"/>
 
+        <setting label="31203" type="ipaddress" id="ipaddress" default="127.0.0.1"/>
+
         <setting id="PlutoTV_deviceID" type="text" label="" default="" visible="false"/>
         <setting id="PlutoTV_clientID" type="text" label="" default="" visible="false"/>
         <setting id="PlutoTV_sid" type="text" label="" default="" visible="false"/>
@@ -85,6 +87,10 @@
         <setting type="sep"/>
 
         <!--activation invisible des sources pour la recherche globale, il n'est pas utile de déclarer celles sans sSearch-->
+        <setting visible="false" id="plugin__1seriestreaming" type="bool" label="1 SerieStreaming" default="true"/>
+
+        <setting visible="false" id="plugin__33seriestreaming" type="bool" label="33 Séries" default="true"/>
+
         <setting visible="false" id="plugin__4kstreamz" type="bool" label="4kstreamz" default="true"/>
 
         <setting visible="false" id="plugin_adkami_com" type="bool" label="ADKami" default="true"/>
@@ -179,8 +185,6 @@
 
         <setting visible="false" id="plugin_neuf_docu" type="bool" label="9Docu" default="true"/>
 
-        <setting visible="false" id="plugin_o1seriestreaming" type="bool" label="01series" default="true"/>
-
         <setting visible="false" id="plugin_o1streaming" type="bool" label="O1 streaming" default="true"/>
 
         <setting visible="false" id="plugin_otaku_attitude" type="bool" label="Otaku-Attitude" default="true"/>
@@ -209,15 +213,13 @@
 
         <setting visible="false" id="plugin_streamay_series" type="bool" label="StreamAy Séries" default="true"/>
 
-        <setting visible="false" id="plugin_streamcomplet" type="bool" label="StreamComplet" default="true"/>
-
         <setting visible="false" id="plugin_streamcomplet3" type="bool" label="Streamcomplet3" default="true"/>
-
-        <setting visible="false" id="plugin_streamcomplet3_2" type="bool" label="Streamcomplet3 (2)" default="true"/>
 
         <setting visible="false" id="plugin_streamdivx" type="bool" label="StreamDivx" default="true"/>
 
         <setting visible="false" id="plugin_streaming_series" type="bool" label="Streaming-Series" default="true"/>
+
+        <setting visible="false" id="plugin_streamingdivx" type="bool" label="StreamingDivx" default="true"/>
 
         <setting visible="false" id="plugin_streaminz" type="bool" label="Streaminz" default="true"/>
 
@@ -227,9 +229,9 @@
 
         <setting visible="false" id="plugin_tirexo" type="bool" label="Tirexo" default="true"/>
 
+        <setting visible="false" id="plugin_toonanime" type="bool" label="Toonanime" default="true"/>
+        
         <setting visible="false" id="plugin_topreplay" type="bool" label="TopReplay" default="true"/>
-
-        <setting visible="false" id="plugin_tvseriestreaming" type="bool" label="TVseriestreaming" default="true"/>
 
         <setting visible="false" id="plugin_vf_film" type="bool" label="VF Film" default="true"/>
 
@@ -248,6 +250,8 @@
         <setting visible="false" id="plugin_voirseries_best" type="bool" label="VoirSeries" default="true"/>
 
         <setting visible="false" id="plugin_vostfree" type="bool" label="Vostfree" default="true"/>
+
+        <setting visible="false" id="plugin_watchvf" type="bool" label="WatchVF" default="true"/>
 
         <setting visible="false" id="plugin_wawacity" type="bool" label="Wawacity" default="true"/>
 

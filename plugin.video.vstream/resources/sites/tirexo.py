@@ -26,9 +26,9 @@ SITE_DESC = 'Films/Séries/Reportages/Concerts'
 URL_MAIN = "https://www2.tirexo.work/"
 
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=1&result_from=1&story=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=15&story=', 'showMovies')
-URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=32&story=', 'showMovies')
-URL_SEARCH_MISC = (URL_MAIN + 'index.php?do=search&subaction=search&catlist=39&story=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0catlist=15&story=', 'showMovies')
+URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0catlist=32&story=', 'showMovies')
+URL_SEARCH_MISC = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0catlist=39&story=', 'showMovies')
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_COLLECTION = (URL_MAIN + 'collections/', 'showMovies')
@@ -313,7 +313,8 @@ def showMovies(sSearch=''):
         sUrl = sSearch
 
     if sSearch or "index" in sUrl:  # en mode recherche
-        sPattern = 'class="mov-t nowrap" href="(.+?films.+?|.+?series.+?|.+?animes.+?|.+?emissions-tv-documentaires.+?)" title="([^"]+).+?data-content="([^"]+).+?<img src="/([^"]+).+?<div style="height: 51px" class="mov-c nowrap'
+        sPattern = 'class="mov-t nowrap" href="([^"]+)" title="([^"]+).+?data-content="([^"]+).+?<img src="/([^"]+)"'
+        ValidUrl = ['films', 'series', 'animes', 'emissions-tv-documentaires']
     elif 'collections/' in sUrl:
         sPattern = 'class="mov-t nowrap" href=".+?<img src="\/([^"]+)" width="200px" height="320px" title="([^"]+).+?data-link="([^"]+)'
     else:
@@ -342,10 +343,14 @@ def showMovies(sSearch=''):
                 sUrl2 = aEntry[2]
                 sDesc = ''
             elif sSearch or 'index' in sUrl:
-                sUrl2 = aEntry[0]
-                sTitle = aEntry[1]
-                sDesc = aEntry[2]
-                sThumb = URL_MAIN + aEntry[3]
+                #On exclus tout ce qui n'est pas lisible par Kodi.
+                if any(x in aEntry[0] for x in ValidUrl):
+                    sUrl2 = aEntry[0]
+                    sTitle = aEntry[1]
+                    sDesc = aEntry[2]
+                    sThumb = URL_MAIN + aEntry[3]
+                else:
+                    continue
             else:
                 sUrl2 = aEntry[3]
                 sDesc = aEntry[0]
@@ -367,7 +372,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            if 'series' in sUrl2 or 'animes' in sUrl2:
+            if any(x in sUrl2 for x in ['series','animes','saison']):
                 oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             elif 'collections/' in sUrl:
                 oGui.addMoviePack(SITE_IDENTIFIER, 'showCollec', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
@@ -570,14 +575,18 @@ def showSeriesLinks():
     if (aResult1[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult1[1]:
-            sTitle = sMovieTitle + ' ' + aEntry[1].replace('<b>','')
+            if not "Saison" in aEntry[1]:
+                sTitle = sMovieTitle + ' Saison ' + aEntry[1]
+            else:
+                sTitle = sMovieTitle + ' ' + aEntry[1].replace('<b>','')   
+
             sQual = aEntry[2]
             sLang = aEntry[3]
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
 
             sUrl = URL_MAIN + "?subaction=get_links&version=" + aEntry[0]
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oGui.addSeason(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
@@ -606,6 +615,7 @@ def showSeriesLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('sSaison', sSaison)            
             oGui.addSeason(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -694,7 +704,7 @@ def showSeriesHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = "\?domain=(.+?)\.|'download' rel=.+?href='([^']+)'>([^<]+)"
+    sPattern = "\?domain=(.+?)\.|'download' rel=.+?>([^<]+).+?href=([^']+)\""
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -704,14 +714,14 @@ def showSeriesHosters():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + re.sub('\.\w+', '', aEntry[0]) + '[/COLOR]')
 
             else:
-                if not "Streaming" in aEntry[2]:
-                    sUrl2 = URL_MAIN[:-1] + aEntry[1]
-                    sTitle = sMovieTitle + ' ' + aEntry[2].replace('FINAL ', '')
+                if not URL_MAIN in aEntry[2]:
+                    sUrl2 = URL_MAIN[:-1] + aEntry[2].replace('\\','').replace('"','')
+                    sTitle = sMovieTitle + ' ' + aEntry[1].replace('FINAL ', '')
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-                    oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                    oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)                 
-                    oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sTitle, sThumb, sDesc, oOutputParameterHandler)
+                    oGui.addEpisode(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
     else:
@@ -739,33 +749,36 @@ def Display_protected_link():
         if sHtmlContent:
             # Si redirection
             if sHtmlContent.startswith('http'):
-                aResult_dlprotecte = (True, [sHtmlContent])
+                aResult = (True, [sHtmlContent])
             else:
-                sPattern_dlprotecte = '<div class="alert">.+?<a href="(.+?)"'
-                aResult_dlprotecte = oParser.parse(sHtmlContent, sPattern_dlprotecte)
+                sPattern_dlprotecte = '<h3>.+?<a href="(.+?)"'
+                aResult = oParser.parse(sHtmlContent, sPattern_dlprotecte)
 
         else:
             dialog().VSok('Erreur de décryptage du lien')
-            aResult_dlprotecte = (False, False)
+            aResult = (False, False)
 
     # Si lien normal
     else:
         if not sUrl.startswith('http'):
             sUrl = 'http://' + sUrl
-        aResult_dlprotecte = (True, [sUrl])
 
-    if (aResult_dlprotecte[0]):
+        oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
+        oRequestHandler.addHeaderEntry('User-Agent', UA)   
+        sHtmlContent = oRequestHandler.request()
 
-        episode = 1
+        oParser = cParser()
+        sPattern = '<iframe.+?src="(.+?)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
 
-        for aEntry in aResult_dlprotecte[1]:
-            sHosterUrl = aEntry
+    if (aResult[0]):
+
+        for aEntry in aResult[1]:
+            sHosterUrl = aEntry.replace('uptostream','uptobox')
 
             sTitle = sMovieTitle
-            if len(aResult_dlprotecte[1]) > 1:
-                sTitle = sMovieTitle + ' episode ' + episode
-
-            episode += 1
+            if len(aResult[1]) > 1:
+                sTitle = sMovieTitle
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):

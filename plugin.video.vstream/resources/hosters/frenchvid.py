@@ -71,6 +71,7 @@ class cHoster(iHoster):
             
         if 'fem.tohds' in self.__sUrl:
             oRequestHandler = cRequestHandler(self.__sUrl)
+            oRequestHandler.disableIPV6()
             sHtmlContent = oRequestHandler.request()
 
             sPattern = '<iframe src="([^"]+)"'
@@ -87,6 +88,7 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(url)
         oRequest.setRequestType(1)
+        oRequest.disableIPV6()
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Referer',self.__sUrl)
         oRequest.addParametersLine(postdata)
@@ -105,12 +107,11 @@ class cHoster(iHoster):
 
         if (api_call):
             oRequest = cRequestHandler(api_call)
+            oRequest.disableIPV6()
             oRequest.addHeaderEntry('Host','fvs.io')
             oRequest.addHeaderEntry('User-Agent', UA)
             sHtmlContent = oRequest.request()
             api_call = oRequest.getRealUrl()
-            if '::/' in api_call:
-                dialog().VSinfo('Desactiver l\'IPV6 sur votre appareil', 'Lecture impossible', 4)
             return True, api_call  + '|User-Agent=' + UA
 
         return False, False

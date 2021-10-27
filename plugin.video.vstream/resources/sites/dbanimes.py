@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# source 43 'https://dbanimes.com/
+
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'dbanimes'
 SITE_NAME = 'DBanimes'
 SITE_DESC = 'animés en streaming'
 
-URL_MAIN = 'https://dbanimes.com/'
+URL_MAIN = "https://dbanimes.com/"
 
 ANIM_ANIMS = (True, 'load')
 ANIM_VOSTFRS = (URL_MAIN + 'anime/', 'showMovies')
@@ -172,6 +172,7 @@ def showMovies(sSearch=''):
             sUrl2 = aEntry[0]
             sTitle = aEntry[1].replace('VOSTFR', '').replace('vostfr', '').replace('Vostfr', '')  # à confirmer : tous vostr meme ceux  notés non vostfr
             sTitle = sTitle.replace('Saision', 'Saison').replace('Sasion', 'Saison')
+            sDisplayTitle = sTitle
             sThumb = aEntry[2]
 
             if key_serie in sUrl:
@@ -183,7 +184,7 @@ def showMovies(sSearch=''):
 
             if 'film' in sTitle.lower():
                 sTitle = sTitle.replace('Film', '').replace('film', '')  # à reverifier .replace('Movie', '')
-                sTitle = sTitle + ' [film]'
+                sDisplayTitle = sTitle + ' [Film]'
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -192,7 +193,7 @@ def showMovies(sSearch=''):
             if URL_MAIN == sUrl or URL_MAIN + 'page/' in sUrl:
                 oGui.addAnime(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addAnime(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addAnime(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -286,16 +287,16 @@ def showHosters():
 
     sPattern = '<li class=streamer>.+?<iframe.*?src="*([^"\s]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    i = 0
+    # i = 0
     if aResult[0] == True:
         for aEntry in aResult[1]:
             sHosterUrl = aEntry.strip()
             if 'https:' not in sHosterUrl:
                 sHosterUrl = 'https:' + sHosterUrl
 
-            sHost = GetHostname(sHosterUrl)
-            i = i + 1
-            sDisplayTitle = '%s [COLOR coral]%s[/COLOR]' % (sMovieTitle, sHost)
+            # sHost = getHostName(sHosterUrl)
+            # i = i + 1
+            # sDisplayTitle = '%s [COLOR coral]%s[/COLOR]' % (sMovieTitle, sHost)
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
@@ -306,7 +307,7 @@ def showHosters():
     oGui.setEndOfDirectory()
 
 
-def GetHostname(url):
+def getHostName(url):
     oHoster = cHosterGui().checkHoster(url)
     if (oHoster != False):
         return oHoster.getDisplayName()

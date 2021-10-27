@@ -301,8 +301,10 @@ class cGuiElement:
         return sTitle2
 
     def setTitle(self, sTitle):
-        #Convertie les bytes en strs pour le replace.
-        self.__sCleanTitle = sTitle.replace('[]', '').replace('()', '').strip()
+        # Nom en clair sans les langues, qualités, et autres décorations
+        self.__sCleanTitle = re.sub('\[.*\]|\(.*\)','', sTitle)
+        if not self.__sCleanTitle:
+            self.__sCleanTitle = re.sub('\[.+?\]|\(.+?\)','', sTitle)
 
         if isMatrix():
             #Python 3 decode sTitle
@@ -465,8 +467,10 @@ class cGuiElement:
             self.__sThumbnail = url
             self.__sPoster = url
 
+        # Completer au besoin
         for key, value in meta.items():
-            self.addItemValues(key, value)
+            if value:
+                self.addItemValues(key, value)
 
         return
 
@@ -679,9 +683,12 @@ class cGuiElement:
 
         # Used only if there is data in db, overwrite getMetadonne()
         sCat = str(self.getCat())
-        if sCat and int(sCat) in(1, 2, 3, 4, 5, 8):  # Vérifier seulement si de type média
-            if self.getWatched():
-                self.addItemValues('playcount', 1)
+        try:
+            if sCat and int(sCat) in(1, 2, 3, 4, 5, 8):  # Vérifier seulement si de type média
+                if self.getWatched():
+                    self.addItemValues('playcount', 1)
+        except:
+            sCat = False
 
         self.addItemProperties('siteUrl', self.getSiteUrl())
         self.addItemProperties('sCleanTitle', self.getFileName())

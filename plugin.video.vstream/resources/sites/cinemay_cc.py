@@ -8,13 +8,13 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, isMatrix
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'cinemay_cc'
 SITE_NAME = 'Cinemay_cc'
 SITE_DESC = 'Films VF & VOSTFR en streaming.'
 
-URL_MAIN = 'https://cinemay.cc/'
+URL_MAIN = "https://cinemay.cc/"
 URL_SEARCH = ('', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
@@ -155,18 +155,14 @@ def showAlpha(sTypeSerie=''):
     oInputParameterHandler = cInputParameterHandler()
     sType = oInputParameterHandler.getValue('siteUrl')
 
-    sUrl = URL_MAIN + 'letter/'
-
-    liste = [['A', sUrl + 'a'], ['B', sUrl + 'b'], ['C', sUrl + 'c'], ['D', sUrl + 'd'], ['E', sUrl + 'e'],
-             ['F', sUrl + 'f'], ['G', sUrl + 'g'], ['H', sUrl + 'h'], ['I', sUrl + 'i'], ['J', sUrl + 'j'],
-             ['K', sUrl + 'k'], ['L', sUrl + 'l'], ['M', sUrl + 'm'], ['N', sUrl + 'n'], ['O', sUrl + 'o'],
-             ['P', sUrl + 'p'], ['Q', sUrl + 'q'], ['R', sUrl + 'r'], ['S', sUrl + 's'], ['T', sUrl + 't'],
-             ['U', sUrl + 'u'], ['V', sUrl + 'v'], ['W', sUrl + 'w'], ['X', sUrl + 'x'], ['Y', sUrl + 'y'],
-             ['Z', sUrl + 'z']]
+    liste = [['A', 'a'], ['B', 'b'], ['C', 'c'], ['D', 'd'], ['E', 'e'], ['F', 'f'], ['G', 'g'], ['H', 'h'],
+             ['J', 'j'], ['K', 'k'], ['L', 'l'], ['M', 'm'], ['N', 'n'], ['O', 'o'], ['P', 'p'], ['Q', 'q'],
+             ['R', 'r'], ['S', 's'], ['T', 't'], ['U', 'u'], ['V', 'v'], ['W', 'w'], ['X', 'x'], ['Y', 'y'],
+             ['Z', 'z']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl + str(sType) + sTypeSerie)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'letter/' + sUrl + str(sType) + sTypeSerie)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -206,7 +202,7 @@ def showMovies(sSearch=''):
             oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
             oRequestHandler.addHeaderEntry('Cookie', scookie)
             oRequestHandler.addParametersLine(pdata)
-            oRequestHandler.request()
+            # oRequestHandler.request()
             sHtmlContent = oRequestHandler.request()
 
         else:
@@ -463,7 +459,7 @@ def getTokens():
     site_session = ''
 
     sHeader = oRequestHandler.getResponseHeader()
-    sPattern = '<nav id="menu.+?name=_token.+?value="([^"]+).+?<div class="typeahead'
+    sPattern = 'id="menu.+?name=_token value="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):

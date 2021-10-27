@@ -18,7 +18,7 @@ SITE_IDENTIFIER = 'streamingdivx'
 SITE_NAME = 'Streamingdivx'
 SITE_DESC = 'Films VF en streaming.'
 
-URL_MAIN = 'https://www.streamingdivx.ninja/'
+URL_MAIN = "https://wvw.streamingdivx.ninja/"
 
 MOVIE_NEWS = (URL_MAIN + 'films.html', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenres')
@@ -62,32 +62,17 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    liste = []
-    liste.append(['Action', sUrl + 'action'])
-    liste.append(['Animation', sUrl + 'animation'])
-    liste.append(['Aventure', sUrl + 'aventure'])
-    liste.append(['Biopic', sUrl + 'biopic'])
-    liste.append(['Comédie', sUrl + 'comedie'])
-    liste.append(['Comédie-dramatique', sUrl + 'comedie-dramatique'])
-    liste.append(['Comédie-musicale', sUrl + 'comedie-musicale'])
-    liste.append(['Documentaire', sUrl + 'documentaire'])
-    liste.append(['Drame', sUrl + 'drame'])
-    liste.append(['Epouvante Horreur', sUrl + 'epouvante-horreur'])
-    liste.append(['Famille', sUrl + 'famille'])
-    liste.append(['Fantastique', sUrl + 'fantastique'])
-    liste.append(['Guerre', sUrl + 'guerre'])
-    liste.append(['Opera', sUrl + 'opera'])
-    liste.append(['Policier', sUrl + 'policier'])
-    liste.append(['Romance', sUrl + 'romance'])
-    liste.append(['Science-fiction', sUrl + 'science-fiction'])
-    liste.append(['Thriller', sUrl + 'thriller'])
+    liste = [['Action', 'action'], ['Animation', 'animation'], ['Aventure', 'aventure'], ['Biopic', 'biopic'],
+             ['Comédie', 'comedie'], ['Comédie-dramatique', 'comedie-dramatique'],
+             ['Comédie-musicale', 'comedie-musicale'], ['Documentaire', 'documentaire'], ['Drame', 'drame'],
+             ['Epouvante Horreur', 'epouvante-horreur'], ['Famille', 'famille'], ['Fantastique', 'fantastique'],
+             ['Guerre', 'guerre'], ['Opera', 'opera'], ['Policier', 'policier'], ['Romance', 'romance'],
+             ['Science-fiction', 'science-fiction'], ['Thriller', 'thriller']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/' + sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -105,7 +90,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="short-images.+?<a href="([^"]+)" title="([^"]+)" class=.+?<img src="([^"]+).+?(?:<div class="short-content">|<a href=.+?qualite.+?>(.*?)</a>.+?<a href=.+?langue.+?>(.*?)</a>)'
+    sPattern = '<div class="short-images.+?href="([^"]+)" title="([^"]+)" class=.+?<img src="([^"]+).+?(?:<div class="short-content">|<a href=.+?qualite.+?>(.*?)</a>.+?<a href=.+?langue.+?>(.*?)</a>)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == False):
@@ -222,12 +207,12 @@ def showSaisons():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addSeason(SITE_IDENTIFIER, 'showEp', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def showEp():
+def showEpisodes():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')

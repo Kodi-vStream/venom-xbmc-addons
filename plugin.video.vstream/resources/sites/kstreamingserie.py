@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'kstreamingserie'
 SITE_NAME = 'K Streaming Série'
 SITE_DESC = 'Médiathèque de chaînes officielles'
 
-URL_MAIN = 'https://www.kstreamingserie.com/'
+URL_MAIN = "https://www.kstreamingserie.com/"
 
 SERIE_SERIE = (True, 'load')
 SERIE_NEWS = (URL_MAIN, 'showSeries')
@@ -59,46 +59,20 @@ def showSearch():
 def showGenres():
     oGui = cGui()
 
-    liste = []
-    liste.append(['Action', URL_MAIN + 'action/'])
-    liste.append(['Afro', URL_MAIN + 'afro/'])
-    liste.append(['Animation', URL_MAIN + 'animation/'])
-    liste.append(['Arts Martiaux', URL_MAIN + 'art-martiaux/'])
-    liste.append(['Aventure', URL_MAIN + 'aventure/'])
-    liste.append(['Biographique', URL_MAIN + 'biographique/'])
-    liste.append(['Biopic', URL_MAIN + 'biopic/'])
-    liste.append(['Comédie', URL_MAIN + 'comedie/'])
-    liste.append(['Comédie dramatique', URL_MAIN + 'comedie-dramatique/'])
-    liste.append(['Comédie musicale', URL_MAIN + 'comedie-musicale/'])
-    liste.append(['Crime', URL_MAIN + 'crime/'])
-    liste.append(['Divers', URL_MAIN + 'divers/'])
-    liste.append(['Documentaire', URL_MAIN + 'documentaire/'])
-    liste.append(['Drame', URL_MAIN + 'drame/'])
-    liste.append(['Epouvante-horreur', URL_MAIN + 'epouvante-horreur/'])
-    liste.append(['Erotique', URL_MAIN + 'erotique/'])
-    liste.append(['Espionnage', URL_MAIN + 'espionnage/'])
-    liste.append(['Famille', URL_MAIN + 'famille/'])
-    liste.append(['Fantastique', URL_MAIN + 'fantastique/'])
-    liste.append(['Film-musical', URL_MAIN + 'film-musical/'])
-    liste.append(['Guerre', URL_MAIN + 'guerre/'])
-    liste.append(['Historique', URL_MAIN + 'historique/'])
-    liste.append(['Horreur', URL_MAIN + 'horreur/'])
-    liste.append(['Judiciaire', URL_MAIN + 'judiciaire/'])
-    liste.append(['Musical', URL_MAIN + 'musique/'])
-    liste.append(['Mystère', URL_MAIN + 'mystere/'])
-    liste.append(['Non classé', URL_MAIN + 'non-classe/'])
-    liste.append(['Policier', URL_MAIN + 'policier/'])
-    liste.append(['Romance', URL_MAIN + 'romance/'])
-    liste.append(['Science fiction', URL_MAIN + 'science-fiction/'])
-    liste.append(['Slasher', URL_MAIN + 'slasher/'])
-    liste.append(['Sport', URL_MAIN + 'sport-event/'])
-    liste.append(['Terreur', URL_MAIN + 'thriller/terreur/'])
-    liste.append(['Thriller', URL_MAIN + 'thriller/'])
-    liste.append(['Western', URL_MAIN + 'western/'])
+    liste = [['Action', 'action'], ['Afro', 'afro'], ['Animation', 'animation'], ['Arts Martiaux', 'art-martiaux'],
+             ['Aventure', 'aventure'], ['Biographique', 'biographique'], ['Biopic', 'biopic'], ['Comédie', 'comedie'],
+             ['Comédie dramatique', 'comedie-dramatique'], ['Comédie musicale', 'comedie-musicale'], ['Crime', 'crime'],
+             ['Divers', 'divers'], ['Documentaire', 'documentaire'], ['Drame', 'drame'],
+             ['Epouvante-horreur', 'epouvante-horreur'], ['Erotique', 'erotique'], ['Espionnage', 'espionnage'],
+             ['Famille', 'famille'], ['Fantastique', 'fantastique'], ['Film-musical', 'film-musical'],
+             ['Guerre', 'guerre'], ['Historique', 'historique'], ['Horreur', 'horreur'], ['Judiciaire', 'judiciaire'],
+             ['Musical', 'musique'], ['Mystère', 'mystere'], ['Non classé', 'non-classe'], ['Policier', 'policier'],
+             ['Romance', 'romance'], ['Science fiction', 'science-fiction'], ['Slasher', 'slasher'],
+             ['Sport', 'sport-event'], ['Terreur', 'thriller/terreur'], ['Thriller', 'thriller'], ['Western', 'western']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + sUrl + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()

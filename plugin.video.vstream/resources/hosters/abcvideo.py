@@ -1,5 +1,5 @@
-#coding: utf-8
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# coding: utf-8
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # https://abcvideo.cc/embed-xxxxx.html'
 # https://abcvideo.cc/xxxxx.html'
 # pour récuperer le token : https://github.com/addon-lab/addon-lab_resolver_Project adapté pour evoload mais meme principe
@@ -12,8 +12,8 @@ from resources.lib.comaddon import dialog
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
 
-class cHoster(iHoster):
 
+class cHoster(iHoster):
     def __init__(self):
         self.__sDisplayName = 'Abcvideo'
         self.__sFileName = self.__sDisplayName
@@ -61,14 +61,14 @@ class cHoster(iHoster):
         urlcode = urlcode.replace('.html', '')
         code = urlcode.split('/')[-1]
 
-        headers1 = {'user-agent':UA,
-                   'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8'
+        headers1 = {'user-agent': UA,
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8'
                     }
 
-        headers2 = {'user-agent':UA,
-                   'Accept':'*/*',
-                   'Content-Type':'text/plain; charset=UTF-8',
-                   'Referer':url
+        headers2 = {'user-agent': UA,
+                    'Accept': '*/*',
+                    'Content-Type': 'text/plain; charset=UTF-8',
+                    'Referer': url
                     }
 
         s = requests.session()
@@ -108,10 +108,10 @@ def get_token(site_key, co, loc):
 
     sa = ''
     cb = '365ae0il5lwn'
-    headers1 = {'user-agent':UA,
-               'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-               'Content-Type':'application/x-www-form-urlencoded;charset=utf-8',
-               'Referer':loc
+    headers1 = {'user-agent': UA,
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+                'Referer': loc
                 }
 
     url1 = 'https://www.google.com/recaptcha/api.js'
@@ -124,7 +124,8 @@ def get_token(site_key, co, loc):
         v = aresult[0]
     else:
         return False, False
-    url2 = "https://www.google.com/recaptcha/api2/anchor?ar=1&k=" + site_key + "&co=" + co + "&hl=ro&v=" + v + "&size=invisible&cb=" + cb
+    url2 = "https://www.google.com/recaptcha/api2/anchor?ar=1&k=" + site_key + "&co=" + co
+    url2 += "&hl=ro&v=" + v + "&size=invisible&cb=" + cb
 
     req = s.get(url2)
     data = req.text
@@ -138,19 +139,19 @@ def get_token(site_key, co, loc):
 
     url3 = "https://www.google.com/recaptcha/api2/reload?k=" + site_key
 
-    post_data = {'v':v, 'reason':'q', 'k':site_key, 'c':c, 'sa':sa, 'co':co}
+    post_data = {'v': v, 'reason': 'q', 'k': site_key, 'c': c, 'sa': sa, 'co': co}
 
-    headers2 = {'user-agent':UA,
-               'Accept':'*/*',
-               'Content-Type':'application/x-www-form-urlencoded;charset=utf-8',
-               'Referer':url2
+    headers2 = {'user-agent': UA,
+                'Accept': '*/*',
+                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+                'Referer': url2
                 }
 
     req_url3 = s.post(url3, data=post_data, headers=headers2)
     data = req_url3.text
     aresult = re.findall("resp\",\"(.*?)\"", data)
     if aresult:
-        token  = aresult[0]
+        token = aresult[0]
         return True, token
 
     return False, False

@@ -2,8 +2,6 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
 import string
-import xbmcplugin
-import xbmcvfs
 
 from resources.lib.comaddon import progress, addon, dialog
 from resources.lib.enregistrement import cEnregistremement
@@ -42,6 +40,7 @@ class track:
         self.icon = icon
         self.data = data
 
+
 def load():
     oGui = cGui()
     addons = addon()
@@ -71,9 +70,7 @@ def load():
 def showIptvSite():
     oGui = cGui()
 
-    liste = []
-    liste.append(['ChannelStream', 'channelstream'])
-    liste.append(['Streamonsport', 'streamonsport'])
+    liste = [['ChannelStream', 'channelstream'], ['Streamonsport', 'streamonsport']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, fName in liste:
@@ -84,7 +81,7 @@ def showIptvSite():
 
 
 def parseM3U(sUrl=None):  # Traite les m3u local
-    oGui = cGui()
+    # oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -116,6 +113,7 @@ def parseM3U(sUrl=None):  # Traite les m3u local
                 song = track(None, None, None, None)
 
     return playlist
+
 
 def showWeb(infile=None):  # Code qui s'occupe de liens TV du Web
     oGui = cGui()
@@ -205,7 +203,7 @@ def enregistrement():  # Code qui gerent l'epg
         return
 
     if '[' in sUrl and ']' in sUrl:
-        sUrl = GetRealUrl(sUrl)
+        sUrl = getRealUrl(sUrl)
 
     if 'plugin' in sUrl:
         url = re.findall('url=(.+?)&amp', ''.join(sUrl))
@@ -317,7 +315,7 @@ def play__():  # Lancer les liens
 
     # Special url with tag
     if '[' in sUrl and ']' in sUrl:
-        sUrl = GetRealUrl(sUrl)
+        sUrl = getRealUrl(sUrl)
 
     # Bug specifique au flux france TV
     # eof detectedL
@@ -349,17 +347,20 @@ def play__():  # Lancer les liens
 
 """
 Fonction diverse:
-#   - GetRealUrl = Regex pour Iptv(Officiel)
+#   - getRealUrl = Regex pour Iptv(Officiel)
 #   - showDailymotionStream = Lis les liens de streaming de Daylimotion qui sont speciaux
 #   - getBrightcoveKey = Recupere le token pour les liens proteger par Brightcove (RMC Decouvert par exemple)
 """
 
-def GetRealUrl(chain):
+
+def getRealUrl(chain):
     oParser = cParser()
 
     UA2 = UA
     url = chain
     regex = ''
+    param = ""
+    head = None
 
     r = re.search('\[[DECODENRJ]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
     if r:
@@ -381,19 +382,26 @@ def GetRealUrl(chain):
     if r:
         url = r.group(1)
 
+    r = re.search('\[[HEAD]+\](.+?)(?:(?:\[[A-Z]+\])|$)',chain)
+    if r:
+        head = r.group(1)
+
     # post metehod ?
     r = re.search('\[[POSTFORM]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
     if r:
         param = r.group(1)
-        oRequestHandler = cRequestHandler(url)
+
+    oRequestHandler = cRequestHandler(url)
+    if param:
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('Accept-Encoding', 'identity')
         oRequestHandler.addParametersLine(param)
-        sHtmlContent = oRequestHandler.request()
-
-    else:
-        oRequestHandler = cRequestHandler(url)
-        sHtmlContent = oRequestHandler.request()
+    if head:
+        import json
+        head = json.loads(head)
+        for a in head:
+            oRequestHandler.addHeaderEntry(a,head[a])
+    sHtmlContent = oRequestHandler.request()
 
     if regex:
         aResult2 = oParser.parse(sHtmlContent, regex)
@@ -403,6 +411,7 @@ def GetRealUrl(chain):
     url = url + '|User-Agent=' + UA2
 
     return url
+
 
 def decodeNrj(d):
     oRequestHandler = cRequestHandler(d)
@@ -420,12 +429,13 @@ def decodeNrj(d):
 
     return dataUrl
 
+
 def getBrightcoveKey(sUrl):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     if "rmcdecouverte" in sUrl:
-        url = re.search('<script type="application/javascript" src="([^"]+)"></script>', sHtmlContent).group(1) 
+        url = re.search('<script type="application/javascript" src="([^"]+)"></script>', sHtmlContent).group(1)
 
         oRequestHandler = cRequestHandler("https://" + sUrl.split('/')[2] + url)
         sHtmlContent = oRequestHandler.request()
@@ -437,7 +447,7 @@ def getBrightcoveKey(sUrl):
         sHtmlContent = oRequestHandler.request().lower()
 
         ID = sUrl.split('/')[2].split('.')[0]
-        account = re.search("\n(.+?): '" + ID + "'", sHtmlContent).group(1).replace('            ','')
+        account = re.search("\n(.+?): '" + ID + "'", sHtmlContent).group(1).replace('            ', '')
 
     else:
         result = re.search('<div class="video_block" id="video_player_.+?" accountid="([^"]+)" playerid="([^"]+)" videoid="([^"]+)"', sHtmlContent)
@@ -451,7 +461,7 @@ def getBrightcoveKey(sUrl):
     sHtmlContent = oRequestHandler.request()
     policyKey = re.search('policyKey:"(.+?)"', sHtmlContent).group(1)
 
-    url = "https://edge.api.brightcove.com/playback/v1/accounts/%s/videos/%s" %(account, video)
+    url = "https://edge.api.brightcove.com/playback/v1/accounts/%s/videos/%s" % (account, video)
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('Accept', "application/json;pk=" + policyKey)
     sHtmlContent = oRequestHandler.request()

@@ -3,6 +3,7 @@
 from operator import itemgetter
 import re
 
+
 class cParser:
 
     def sorted_nicely(self, l, key):
@@ -29,26 +30,16 @@ class cParser:
                       .replace('&rsquo;', "'").replace('&lsquo;', '\'').replace('&nbsp;', '').replace('&#8217;', "'")\
                       .replace('&#8230;', '...').replace('&#8242;', "'").replace('&#884;', '\'').replace('&#39;', '\'')\
                       .replace('&#038;', '&').replace('&iuml;', 'ï').replace('&#8220;', '"').replace('&#8221;', '"')\
-                      .replace('–', '-').replace('—', '-')
+                      .replace('–', '-').replace('—', '-').replace('&#58;', ':')
 
     def parse(self, sHtmlContent, sPattern, iMinFoundValue=1):
         sHtmlContent = self.__replaceSpecialCharacters(str(sHtmlContent))
         aMatches = re.compile(sPattern, re.IGNORECASE).findall(sHtmlContent)
 
-        #Source non compatible avec le tri :
-        #- Celle qui utilise oGui.
-        #- Celle qui se base sur l'ordre des tuple pour ajouter du texte (voir hds_fm).
-        #- French-Stream lol a cause des valeurs random sur le site comme "ABCDE".
-        try:
-            if "episode" in str(aMatches) and not aMatches[0][1] == "" and not "ABCDE" in str(aMatches):
-                if aMatches[1][0] and not "/" in str(aMatches[1][0]):
-                    aMatches = self.sorted_nicely(aMatches, itemgetter(0))
-                elif aMatches[1][1] and not "/" in str(aMatches[1][1]):
-                    aMatches = self.sorted_nicely(aMatches, itemgetter(1))
-                else:
-                    aMatches = self.sorted_nicely(aMatches, itemgetter(2))                 
-        except Exception as e:
-            pass
+        # extrait la page html après retraitement vStream
+        # fh = open('c:\\test.txt', "w")
+        # fh.write(sHtmlContent)
+        # fh.close()
 
         if (len(aMatches) >= iMinFoundValue):
             return True, aMatches
@@ -83,11 +74,11 @@ class cParser:
         # la recherche de fin n'est pas obligatoire
         # usage2 oParser.abParse(sHtmlContent, 'start', 'end', 6)
         # ex youtube.py
-        
+
         startIdx = sHtmlContent.find(start)
         if startIdx == -1:  # rien trouvé, retourner le texte complet
             return sHtmlContent
-        
+
         if end:
             endIdx = sHtmlContent[startoffset + startIdx:].find(end)
             if endIdx > 0:

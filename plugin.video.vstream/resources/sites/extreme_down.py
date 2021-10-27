@@ -21,7 +21,7 @@ SITE_IDENTIFIER = 'extreme_down'
 SITE_NAME = '[COLOR violet]Extreme Down[/COLOR]'
 SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
-URL_MAIN = 'https://www.extreme-down.live/'
+URL_MAIN = "https://www.extreme-down.live/"
 
 URL_SEARCH = (URL_MAIN + 'index.php?', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0] + 'do=search&subaction=search&titleonly=3&speedsearch=1&story=', 'showMovies')
@@ -282,37 +282,19 @@ def showSearch():
 def showGenres():
     oGui = cGui()
 
-    liste = []
-    liste.append(['Action', URL_MAIN + 'action/'])
-    liste.append(['Animation', URL_MAIN + 'animation/'])
-    liste.append(['Arts Martiaux', URL_MAIN + 'arts-martiaux/'])
-    liste.append(['Aventure', URL_MAIN + 'aventure/'])
-    liste.append(['Biopic', URL_MAIN + 'biopic/'])
-    liste.append(['Comédie', URL_MAIN + 'comedie/'])
-    liste.append(['Comédie Dramatique', URL_MAIN + 'comedie-dramatique/'])
-    liste.append(['Comédie Musicale', URL_MAIN + 'comedie-musicale/'])
-    liste.append(['Documentaire', URL_MAIN + 'documentaire/'])
-    liste.append(['Drame', URL_MAIN + 'drame/'])
-    liste.append(['Epouvante Horreur', URL_MAIN + 'epouvante-horreur/'])
-    liste.append(['Erotique', URL_MAIN + 'erotique'])
-    liste.append(['Espionnage', URL_MAIN + 'espionnage/'])
-    liste.append(['Famille', URL_MAIN + 'famille/'])
-    liste.append(['Fantastique', URL_MAIN + 'fantastique/'])
-    liste.append(['Guerre', URL_MAIN + 'guerre/'])
-    liste.append(['Historique', URL_MAIN + 'historique/'])
-    liste.append(['Musical', URL_MAIN + 'musical/'])
-    liste.append(['Policier', URL_MAIN + 'policier/'])
-    liste.append(['Péplum', URL_MAIN + 'peplum/'])
-    liste.append(['Romance', URL_MAIN + 'romance/'])
-    liste.append(['Science Fiction', URL_MAIN + 'science-fiction/'])
-    liste.append(['Spectacle', URL_MAIN + 'spectacle/'])
-    liste.append(['Thriller', URL_MAIN + 'thriller/'])
-    liste.append(['Western', URL_MAIN + 'western/'])
-    liste.append(['Divers', URL_MAIN + 'divers/'])
+    liste = [['Action', 'action'], ['Animation', 'animation'], ['Arts Martiaux', 'arts-martiaux'],
+             ['Aventure', 'aventure'], ['Biopic', 'biopic'], ['Comédie', 'comedie'],
+             ['Comédie Dramatique', 'comedie-dramatique'], ['Comédie Musicale', 'comedie-musicale'],
+             ['Documentaire', 'documentaire'], ['Drame', 'drame'], ['Epouvante Horreur', 'epouvante-horreur'],
+             ['Erotique', 'erotique'], ['Espionnage', 'espionnage'], ['Famille', 'famille'],
+             ['Fantastique', 'fantastique'], ['Guerre', 'guerre'], ['Historique', 'historique'], ['Musical', 'musical'],
+             ['Policier', 'policier'], ['Péplum', 'peplum'], ['Romance', 'romance'],
+             ['Science Fiction', 'science-fiction'], ['Spectacle', 'spectacle'], ['Thriller', 'thriller'],
+             ['Western', 'western'], ['Divers', 'divers']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + sUrl + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -595,7 +577,7 @@ def showSeriesLinks():
     oOutputParameterHandler.addParameter('sDesc', sDesc)
     oGui.addSeason(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-    sHtmlContent1 = CutQual(sHtmlContent)
+    sHtmlContent1 = cutQual(sHtmlContent)
     sPattern1 = '<a class="btn-other" href="([^"]+)">([^<]+)</a>'
 
     aResult1 = oParser.parse(sHtmlContent1, sPattern1)
@@ -613,7 +595,7 @@ def showSeriesLinks():
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oGui.addSeason(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-    sHtmlContent2 = CutSais(sHtmlContent)
+    sHtmlContent2 = cutSais(sHtmlContent)
     sPattern2 = '<a class="btn-other" href="([^"]+)">([^<]+)<'
 
     aResult2 = oParser.parse(sHtmlContent2, sPattern2)
@@ -625,7 +607,7 @@ def showSeriesLinks():
         for aEntry in aResult2[1]:
 
             sUrl = aEntry[0]
-            sTitle = sMovieTitle + ' ' + aEntry[1].replace('Saison ','S' )
+            sTitle = sMovieTitle + ' ' + aEntry[1].replace('Saison ', 'S')
             
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -797,7 +779,7 @@ def getHost():
     oGui.setEndOfDirectory()
 
 
-def CutQual(sHtmlContent):
+def cutQual(sHtmlContent):
     oParser = cParser()
     sPattern = '<span class="other-qualities">&Eacute;galement disponible en :</span>(.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -806,7 +788,7 @@ def CutQual(sHtmlContent):
     return ''
 
 
-def CutSais(sHtmlContent):
+def cutSais(sHtmlContent):
     oParser = cParser()
     sPattern = '<span class="other-qualities">Autres saisons :</span>(.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)

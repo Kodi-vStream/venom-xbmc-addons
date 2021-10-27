@@ -238,7 +238,7 @@ def showHostersLink3():
     data = oRequestHandler.request()
 
     # Recherche du premier lien
-    sPattern = '\?>.+?<iframe src="([^"]+)"'
+    sPattern = "href='(.+?)'"
     aResult = oParser.parse(data, sPattern)
 
     # Si il existe, suivi du lien
@@ -248,32 +248,23 @@ def showHostersLink3():
         oRequestHandler.addHeaderEntry('Referer', sLink)
         data = oRequestHandler.request()
 
-    # Recherche du premier lien
-    sPattern = 'href=\'([^"]+)\''
-    aResult = oParser.parse(data, sPattern)
-
-    # Si il existe, suivi du lien
-    if ( aResult[0] == True ):
-        oRequestHandler = cRequestHandler(aResult[1][0])
-        oRequestHandler.addHeaderEntry('User-Agent', UA)
-        oRequestHandler.addHeaderEntry('Referer', sLink)
-        data = oRequestHandler.request()
-
-    sPattern = 'playsinline.+?src="([^"]+)"'
+    sPattern = "src: '(.+?)'.+?res: (.+?),"
     aResult = oParser.parse(data, sPattern)
 
     if (aResult[0] == True):
 
         for aEntry in aResult[1]:
 
-            sLink2 = aEntry.replace('\/', '/')
-            sQual = ""
+            sLink2 = aEntry[0]
+            sQual = aEntry[1]
+
+            sTitle = ('%s [%s]') % (sMovieTitle, sQual)
 
             oHoster = cHosterGui().checkHoster("mp4")
 
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, "http://127.0.0.1:2424?u="+sLink2, '')
+                oHoster.setDisplayName(sTitle)
+                oHoster.setFileName(sTitle)
+                cHosterGui().showHoster(oGui, oHoster, sLink2, '')
 
     oGui.setEndOfDirectory()

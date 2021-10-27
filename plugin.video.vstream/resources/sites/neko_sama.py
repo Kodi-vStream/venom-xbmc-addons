@@ -16,15 +16,14 @@ SITE_IDENTIFIER = 'neko_sama'
 SITE_NAME = 'Neko Sama'
 SITE_DESC = 'Animés en streaming'
 
-URL_MAIN = 'https://www.neko-sama.fr/'
+URL_MAIN = 'https://neko-sama.fr/'
 
 ANIM_ANIMS = ('http://', 'load')
 ANIM_NEWS = (URL_MAIN, 'showLastEp')
 ANIM_VFS = (URL_MAIN + 'anime-vf', 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + 'anime', 'showMovies')
 
-URL_SEARCH = (ANIM_VOSTFRS[0], 'showSearchResult')
-URL_SEARCH_ANIMS = (ANIM_VOSTFRS[0], 'showSearchResult')
+URL_SEARCH_VOSTFR = (ANIM_VOSTFRS[0], 'showSearchResult')
 URL_SEARCH_VF = (ANIM_VFS[0], 'showSearchResult')
 
 FUNCTION_SEARCH = 'showSearchResult'
@@ -33,7 +32,7 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMS[0])
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_VOSTFR[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d\'animés (VOSTFR)', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_VF[0])
@@ -116,8 +115,6 @@ def parseJson(json_object, sSearch):
 
 def showSearchResult(sSearch):
     oGui = cGui()
-    oRequestHandler = cRequestHandler(URL_SEARCH[0])
-
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -204,7 +201,8 @@ def showMovies():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<a href="([^"]+)"><div class="nekosama-lazy-wrapper">.+?src="([^"]+)" alt="([^"]+)"'
+
+    sPattern = '<a href="([^"]+)">.+?src="([^"]+)" alt="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):

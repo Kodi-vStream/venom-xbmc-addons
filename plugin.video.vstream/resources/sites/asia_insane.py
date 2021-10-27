@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'asia_insane'
 SITE_NAME = 'Asia Insane'
 SITE_DESC = 'Regarder Films et Séries Asiatique en Streaming gratuit'
 
-URL_MAIN = 'https://www.asia-insane.biz/'
+URL_MAIN = "https://www.asia-insane.biz/"
 
 DRAMA_DRAMAS = (True, 'load')
 DRAMA_MOVIES = (URL_MAIN + 'films-asiatiques-affichage-grid/', 'showMovies')
@@ -68,42 +68,20 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
-    sUrl = URL_MAIN + 'amy_genre/'
 
-    liste = []
-    liste.append(['Action', sUrl + 'action/'])
-    liste.append(['Arts Martiaux', sUrl + 'arts-martiaux/'])
-    liste.append(['Aventure', sUrl + 'aventure/'])
-    liste.append(['Comédie', sUrl + 'comedie/'])
-    liste.append(['Crime', sUrl + 'crime/'])
-    liste.append(['Drame', sUrl + 'drame/'])
-    liste.append(['Ecole', sUrl + 'ecole/'])
-    liste.append(['Expérimental', sUrl + 'experimental/'])
-    liste.append(['Famille', sUrl + 'famille'])
-    liste.append(['Fantastique', sUrl + 'fantastique/'])
-    liste.append(['Gastronomie', sUrl + 'gastronomie/'])
-    liste.append(['Guerre', sUrl + 'guerre/'])
-    liste.append(['Histoire vraie', sUrl + 'histoire-vraie/'])
-    liste.append(['Historique', sUrl + 'historique/'])
-    liste.append(['Horreur', sUrl + 'horreur/'])
-    liste.append(['Maladie', sUrl + 'maladie/'])
-    liste.append(['Médecine', sUrl + 'medecine/'])
-    liste.append(['Mélodrame', sUrl + 'melodrame/'])
-    liste.append(['Musical', sUrl + 'musical/'])
-    liste.append(['Mystère', sUrl + 'mystere/'])
-    liste.append(['Policier', sUrl + 'policier/'])
-    liste.append(['Psycologique', sUrl + 'psycologique/'])
-    liste.append(['Romance', sUrl + 'romance/'])
-    liste.append(['Science Fiction', sUrl + 'science-fiction/'])
-    liste.append(['Sport', sUrl + 'sport'])
-    liste.append(['Suspense', sUrl + 'suspense'])
-    liste.append(['Travail', sUrl + 'travail/'])
-    liste.append(['Tranche de vie', sUrl + 'tranche-de-vie/'])
-    liste.append(['Thriller', sUrl + 'thriller/'])
+    liste = [['Action', 'action'], ['Arts Martiaux', 'arts-martiaux'], ['Aventure', 'aventure'], ['Comédie', 'comedie'],
+             ['Crime', 'crime'], ['Drame', 'drame'], ['Ecole', 'ecole'], ['Expérimental', 'experimental'],
+             ['Famille', 'famille'], ['Fantastique', 'fantastique'], ['Gastronomie', 'gastronomie'],
+             ['Guerre', 'guerre'], ['Histoire vraie', 'histoire-vraie'], ['Historique', 'historique'],
+             ['Horreur', 'horreur'], ['Maladie', 'maladie'], ['Médecine', 'medecine'], ['Mélodrame', 'melodrame'],
+             ['Musical', 'musical'], ['Mystère', 'mystere'], ['Policier', 'policier'], ['Psycologique', 'psycologique'],
+             ['Romance', 'romance'], ['Science Fiction', 'science-fiction'], ['Sport', 'sport'],
+             ['Suspense', 'suspense'], ['Travail', 'travail'], ['Tranche de vie', 'tranche-de-vie'],
+             ['Thriller', 'thriller']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'amy_genre/' + sUrl + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -157,7 +135,7 @@ def showAlpha():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if '/dramas/' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'ShowSerieEpisodes', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSerieEpisodes', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
@@ -257,7 +235,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if '/dramas/' in sUrl2:
-                oGui.addTV(SITE_IDENTIFIER, 'ShowSerieEpisodes', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSerieEpisodes', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -287,7 +265,7 @@ def __checkForNextPage(sHtmlContent):
     return False, 'none'
 
 
-def ShowSerieEpisodes():
+def showSerieEpisodes():
     oGui = cGui()
     oParser = cParser()
 

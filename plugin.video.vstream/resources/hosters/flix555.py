@@ -1,23 +1,23 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
 
-class cHoster(iHoster):
 
+class cHoster(iHoster):
     def __init__(self):
         self.__sDisplayName = 'Flix555'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -68,18 +68,18 @@ class cHoster(iHoster):
         sPattern = '(\s*eval\s*\(\s*function\(p,a,c,k,e(?:.|\s)+?)<\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        #Attention sous titre present aussi
+        # Attention sous titre present aussi
 
         if (aResult[0] == True):
             sHtmlContent = cPacker().unpack(aResult[1][0])
 
-            sPattern =  '{sources:\[{file:"([^"]+)",label:"([^"]+)"'
+            sPattern = '{sources:\[{file:"([^"]+)",label:"([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
 
             if (aResult[0] == True):
                 api_call = aResult[1][0][0]
 
-        if (api_call):
+        if api_call:
             return True, api_call
 
         return False, False

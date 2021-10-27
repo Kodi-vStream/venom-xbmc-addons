@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'otakufr_com'
 SITE_NAME = 'OtakuFR'
 SITE_DESC = 'OtakuFR animés en streaming et téléchargement'
 
-URL_MAIN = 'https://otakufr.co/'
+URL_MAIN = "https://otakufr.co/"
 
 ANIM_ANIMS = (URL_MAIN, 'load')
 ANIM_NEWS = (URL_MAIN, 'showMovies')
@@ -37,7 +37,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animes (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', ANIM_LIST[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_LIST[1], 'Animés (Par ordre alphabétique)', 'az.png', oOutputParameterHandler)
@@ -95,19 +95,24 @@ def showMovies(sSearch=''):
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
             sTitle = aEntry[2]
+            sLang = ''
+            if 'Vostfr' in sTitle:
+                sLang = 'VOSTFR'
+                sTitle = sTitle.replace('Vostfr', '')
             sDesc = ''
             if sSearch or '/genre/' in sUrl or '/film' in sUrl:
                 sDesc = aEntry[3]
+
+            sDisplayTitle = sTitle + ' (' + sLang + ')'
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if sSearch or '/genre/' in sUrl or '/film' in sUrl:
-
-                oGui.addAnime(SITE_IDENTIFIER, 'showEpisodes', sTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addAnime(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addAnime(SITE_IDENTIFIER, 'showLinks', sTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addAnime(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -138,14 +143,14 @@ def __checkForNextPage(sHtmlContent):
 def ShowGenre():
     oGui = cGui()
 
-    listegenre = ['action', 'aventure', 'comedie', 'crime', 'demons', 'drame', 'Ecchi', 'espace', 'fantastique',
-                  'gore', 'harem', 'historique', 'horreur', 'jeu', 'lecole', 'magie', 'martial-arts', 'mecha',
-                  'militaire', 'musique', 'mysterieux', 'Parodie', 'police', 'psychologique', 'romance', 'samurai',
-                  'sci-fi', 'seinen', 'shoujo', 'shoujo-ai', 'shounen', 'shounen-ai', 'sport', 'super-power',
-                  'surnaturel', 'suspense', 'thriller', 'tranche-de-vie']
+    liste = ['action', 'aventure', 'comedie', 'crime', 'demons', 'drame', 'Ecchi', 'espace', 'fantastique', 'gore',
+             'harem', 'historique', 'horreur', 'jeu', 'lecole', 'magie', 'martial-arts', 'mecha', 'militaire',
+             'musique', 'mysterieux', 'Parodie', 'police', 'psychologique', 'romance', 'samurai', 'sci-fi', 'seinen',
+             'shoujo', 'shoujo-ai', 'shounen', 'shounen-ai', 'sport', 'super-power', 'surnaturel', 'suspense',
+             'thriller', 'tranche-de-vie']
 
     oOutputParameterHandler = cOutputParameterHandler()
-    for igenre in listegenre:
+    for igenre in liste:
         sTitle = igenre.capitalize().replace('-', ' ')
         if 'Jeu' in igenre:
             sTitle = 'Jeux'
@@ -241,7 +246,7 @@ def showEpisodes():
         for aEntry in reversed(aResult[1]):
             sUrl = aEntry[0]
             Ep = aEntry[1].split(' ')[-2]
-            sTitle = aEntry[1].replace(Ep,'') + ' E' + Ep
+            sTitle = aEntry[1].replace(Ep, '') + ' E' + Ep
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -271,7 +276,7 @@ def showLinks():
         for aEntry in aResult[1]:
             list_hostname.append(aEntry)
 
-    # list_host=[]
+    # list_host = []
     sPattern = 'iframe.+?src="([^"]*).+?id="([^"]*)' # normalement on devrait correler le valeur de l'id avec list_hostname
     aResult = oParser.parse(sHtmlContent, sPattern)
     i = 0

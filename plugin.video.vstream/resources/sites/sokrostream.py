@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-
+return False  # 02/10/21
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'sokrostream'
 SITE_NAME = 'Sokrostream'
 SITE_DESC = 'Film streaming vf - streaming complet'
 
-URL_MAIN = 'https://sokrostream.top/'
+URL_MAIN = "https://sokrostream.top/"
 
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -60,34 +60,16 @@ def showSearch():
 def showGenres():
     oGui = cGui()
 
-    liste = []
-    liste.append(['Action', URL_MAIN + 'category/action/'])
-    liste.append(['Animation', URL_MAIN + 'category/animation/'])
-    liste.append(['Aventure', URL_MAIN + 'category/aventure/'])
-    liste.append(['Biographie', URL_MAIN + 'category/biographie/'])
-    liste.append(['Comédie', URL_MAIN + 'category/comedie/'])
-    liste.append(['Comédie Dramatique', URL_MAIN + 'category/comedie-dramatique/'])
-    liste.append(['Crime', URL_MAIN + 'category/crime/'])
-    liste.append(['Drame', URL_MAIN + 'category/drame/'])
-    liste.append(['Documentaire', URL_MAIN + 'category/documentaire/'])
-    liste.append(['Familial', URL_MAIN + 'category/famille'])
-    liste.append(['Fantasy', URL_MAIN + 'category/fantaisie/'])
-    liste.append(['Fantastique', URL_MAIN + 'category/fantastique/'])
-    liste.append(['Guerre', URL_MAIN + 'category/guerre/'])
-    liste.append(['Histoire', URL_MAIN + 'category/histoire/'])
-    liste.append(['Horreur', URL_MAIN + 'category/horreur/'])
-    liste.append(['Mélodrame', URL_MAIN + 'category/melodrame/'])
-    liste.append(['Musique', URL_MAIN + 'category/musical/'])
-    liste.append(['Mystère', URL_MAIN + 'category/mystere/'])
-    liste.append(['Romance', URL_MAIN + 'category/romance/'])
-    liste.append(['Science-fiction', URL_MAIN + 'category/science-fiction/'])
-    liste.append(['Sports', URL_MAIN + 'category/sport/'])
-    liste.append(['Thriller', URL_MAIN + 'category/thriller/'])
-    #liste.append(['Western', URL_MAIN + 'category/western/'])
+    liste = [['Action', 'action'], ['Animation', 'animation'], ['Aventure', 'aventure'], ['Biographie', 'biographie'],
+             ['Comédie', 'comedie'], ['Comédie Dramatique', 'comedie-dramatique'], ['Crime', 'crime'],
+             ['Drame', 'drame'], ['Documentaire', 'documentaire'], ['Familial', 'famille'], ['Fantasy', 'fantaisie'],
+             ['Fantastique', 'fantastique'], ['Guerre', 'guerre'], ['Histoire', 'histoire'], ['Horreur', 'horreur'],
+             ['Mélodrame', 'melodrame'], ['Musique', 'musical'], ['Mystère', 'mystere'], ['Romance', 'romance'],
+             ['Science-fiction', 'science-fiction'], ['Sports', 'sport'], ['Thriller', 'thriller']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/' + sUrl + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()

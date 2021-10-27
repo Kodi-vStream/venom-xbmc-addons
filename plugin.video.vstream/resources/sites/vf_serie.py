@@ -18,7 +18,7 @@ URL_MAIN = "https://vf-serie.org/"
 
 FUNCTION_SEARCH = 'showSeries'
 URL_SEARCH = (URL_MAIN + '?s=', FUNCTION_SEARCH)
-URL_SEARCH_SERIES = (URL_SEARCH[0], FUNCTION_SEARCH)
+# URL_SEARCH_SERIES = (URL_SEARCH[0], FUNCTION_SEARCH) # la recherche ne fonctionne pas sur la source
 
 SERIE_SERIES = (True, 'load')
 SERIE_NEWS = (URL_MAIN + 'series-tv/', 'showSeries')
@@ -87,18 +87,15 @@ def showGenres():
 
 def showAlpha():
     oGui = cGui()
-    sUrl = URL_MAIN + 'lettre/'
 
-    liste = [['0-9', sUrl + '0-9'], ['A', sUrl + 'a'], ['B', sUrl + 'b'], ['C', sUrl + 'c'], ['D', sUrl + 'd'],
-             ['E', sUrl + 'e'], ['F', sUrl + 'f'], ['G', sUrl + 'g'], ['H', sUrl + 'h'], ['I', sUrl + 'i'],
-             ['J', sUrl + 'j'], ['K', sUrl + 'k'], ['L', sUrl + 'l'], ['M', sUrl + 'm'], ['N', sUrl + 'n'],
-             ['O', sUrl + 'o'], ['P', sUrl + 'p'], ['Q', sUrl + 'q'], ['R', sUrl + 'r'], ['S', sUrl + 's'],
-             ['T', sUrl + 't'], ['U', sUrl + 'u'], ['V', sUrl + 'v'], ['W', sUrl + 'w'], ['X', sUrl + 'x'],
-             ['Y', sUrl + 'y'], ['Z', sUrl + 'z']]
+    liste = [['0-9', '0-9'], ['A', 'a'], ['B', 'b'], ['C', 'c'], ['D', 'd'], ['E', 'e'], ['F', 'f'], ['G', 'g'],
+             ['H', 'h'], ['I', 'i'], ['J', 'j'], ['K', 'k'], ['L', 'l'], ['M', 'm'], ['N', 'n'], ['O', 'o'],
+             ['P', 'p'], ['Q', 'q'], ['R', 'r'], ['S', 's'],['T', 't'], ['U', 'u'], ['V', 'v'], ['W', 'w'],
+             ['X', 'x'], ['Y', 'y'], ['Z', 'z']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl + '/')
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'lettre/' + sUrl + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -138,6 +135,8 @@ def showSeries(sSearch=''):
 
             sUrl2 = aEntry[0]
             sThumb = re.sub('/w\d+/', '/w342/', 'https:' + aEntry[1])
+            if sThumb.startswith('/'):
+                sThumb = 'https' + sThumb
             sTitle = aEntry[2]
             if'/lettre/' in sUrl:
                 sDesc = ''

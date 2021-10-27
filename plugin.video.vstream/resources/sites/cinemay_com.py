@@ -18,7 +18,7 @@ SITE_IDENTIFIER = 'cinemay_com'
 SITE_NAME = 'Cinemay'
 SITE_DESC = 'Films & Séries en streaming'
 
-URL_MAIN = 'https://cinemay.li/'
+URL_MAIN = "https://cinemay.li/"
 
 MOVIE_MOVIE = (True, 'load')
 MOVIE_NEWS = (URL_MAIN + 'film-vf-streaming/', 'showMovies')
@@ -69,33 +69,16 @@ def showSearch():
 def showGenres():
     oGui = cGui()
 
-    liste = []
-    liste.append(['Action', URL_MAIN + 'genre/action/'])
-    liste.append(['Animation', URL_MAIN + 'genre/animation/'])
-    liste.append(['Aventure', URL_MAIN + 'genre/aventure/'])
-    liste.append(['Comédie', URL_MAIN + 'genre/comédie/'])
-    liste.append(['Crime', URL_MAIN + 'genre/crime/'])
-    liste.append(['Documentaire', URL_MAIN + 'genre/documentaire/'])
-    liste.append(['Drame', URL_MAIN + 'genre/drame/'])
-    liste.append(['Familial', URL_MAIN + 'genre/familial/'])
-    liste.append(['Fantastique', URL_MAIN + 'genre/fantastique/'])
-    liste.append(['Guerre', URL_MAIN + 'genre/guerre/'])
-    # liste.append(['Guerre & politics', URL_MAIN + 'genre/war-politics/'])
-    liste.append(['Histoire', URL_MAIN + 'genre/histoire/'])
-    liste.append(['Horreur', URL_MAIN + 'genre/horreur/'])
-    liste.append(['Enfants', URL_MAIN + 'genre/kids/'])
-    liste.append(['Musique', URL_MAIN + 'genre/musique/'])
-    liste.append(['Mystère', URL_MAIN + 'genre/mystère/'])
-    liste.append(['Téléfilm', URL_MAIN + 'genre/telefilm/'])
-    liste.append(['Romance', URL_MAIN + 'genre/romance/'])
-    liste.append(['Science-Fiction', URL_MAIN + 'genre/science_fiction/'])
-    liste.append(['Soap', URL_MAIN + 'genre/soap/'])
-    liste.append(['Thriller', URL_MAIN + 'genre/thriller/'])
-    liste.append(['Western', URL_MAIN + 'genre/western/'])
+    liste = [['Action', 'action'], ['Animation', 'animation'], ['Aventure', 'aventure'], ['Comédie', 'comédie'],
+             ['Crime', 'crime'], ['Documentaire', 'documentaire'], ['Drame', 'drame'], ['Familial', 'familial'],
+             ['Fantastique', 'fantastique'], ['Guerre', 'guerre'], ['Histoire', 'histoire'], ['Horreur', 'horreur'],
+             ['Enfants', 'kids'], ['Musique', 'musique'], ['Mystère', 'mystère'], ['Téléfilm', 'telefilm'],
+             ['Romance', 'romance'], ['Science-Fiction', 'science_fiction'], ['Soap', 'soap'], ['Thriller', 'thriller'],
+             ['Western', 'western']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'genre/' + sUrl + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -155,7 +138,9 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if '/serie' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, '', sThumb, '', oOutputParameterHandler)
+                sMovieTitle = re.sub('  S\d+', '', sTitle)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oGui.addSeason(SITE_IDENTIFIER, 'showSeries', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
@@ -221,6 +206,7 @@ def showSeriesNews():
             sTitle = re.sub('(\d+)&#215;(\d+)', 'S\g<1>E\g<2>', aEntry[1])
             sTitle = sTitle.replace(':', '')
             cCleantitle = re.sub('S\d+E\d+', '', sTitle)
+            cCleantitle = re.sub('- Saison \d+', '', sTitle)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', cCleantitle)
@@ -306,7 +292,6 @@ def showSeries():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + sLang + '[/COLOR]')
             else:
                 # on vire le double affichage de la saison
-                sMovieTitle = re.sub('- Saison \d+', '', sMovieTitle)
                 sTitle = sMovieTitle + ' ' + aEntry[1].replace(' x ', '').replace(' ', '')
                 sData = aEntry[2]
 

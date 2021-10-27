@@ -686,7 +686,7 @@ class CloudScraper(Session):
         try:
             resp = scraper.get(url, **kwargs)
             resp.raise_for_status()
-        except Exception:
+        except Exception as e:
             logging.error('"{}" returned an error. Could not collect tokens.'.format(url))
             raise
 

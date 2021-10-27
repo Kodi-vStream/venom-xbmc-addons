@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+return False
 
 """
 Pour rappel.
@@ -74,34 +75,17 @@ def showSearch():
 def showGenres():
     oGui = cGui()
 
-    liste = []
-    liste.append(['Action', URL_MAIN + 'action/'])
-    liste.append(['Animation', URL_MAIN + 'animation/'])
-    liste.append(['Arts Martiaux', URL_MAIN + 'arts-martiaux/'])
-    liste.append(['Aventure', URL_MAIN + 'aventure/'])
-    liste.append(['Biopic', URL_MAIN + 'biopic/'])
-    liste.append(['Comédie', URL_MAIN + 'comedie/'])
-    liste.append(['Comédie Musicale', URL_MAIN + 'comedie-musicale/'])
-    liste.append(['Drame', URL_MAIN + 'drame/'])
-    liste.append(['Documentaire', URL_MAIN + 'documentaire/'])
-    liste.append(['Epouvante Horreur', URL_MAIN + 'epouvante-horreur/'])
-    liste.append(['Erotique', URL_MAIN + 'erotique/'])
-    liste.append(['Espionnage', URL_MAIN + 'espionnage//'])
-    liste.append(['Famille', URL_MAIN + 'famille/'])
-    liste.append(['Fantastique', URL_MAIN + 'fantastique/'])
-    liste.append(['Guerre', URL_MAIN + 'guerre/'])
-    liste.append(['Historique', URL_MAIN + 'historique/'])
-    liste.append(['Judiciaire', URL_MAIN + 'judiciaire/'])
-    liste.append(['Musical', URL_MAIN + 'musical/'])
-    liste.append(['Policier', URL_MAIN + 'policier/'])
-    liste.append(['Romance', URL_MAIN + 'romance/'])
-    liste.append(['Science Fiction', URL_MAIN + 'science-fiction/'])
-    liste.append(['Thriller', URL_MAIN + 'thriller/'])
-    liste.append(['Western', URL_MAIN + 'western/'])
+    liste = [['Action', 'action'], ['Animation', 'animation'], ['Arts Martiaux', 'arts-martiaux'],
+             ['Aventure', 'aventure'], ['Biopic', 'biopic'], ['Comédie', 'comedie'],
+             ['Comédie Musicale', 'comedie-musicale'], ['Drame', 'drame'], ['Documentaire', 'documentaire'],
+             ['Epouvante Horreur', 'epouvante-horreur'], ['Erotique', 'erotique'], ['Espionnage', 'espionnage'],
+             ['Famille', 'famille'], ['Fantastique', 'fantastique'], ['Guerre', 'guerre'], ['Historique', 'historique'],
+             ['Judiciaire', 'judiciaire'], ['Musical', 'musical'], ['Policier', 'policier'], ['Romance', 'romance'],
+             ['Science Fiction', 'science-fiction'], ['Thriller', 'thriller'], ['Western', 'western']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + sUrl + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()

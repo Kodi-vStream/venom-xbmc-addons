@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'filmstreamvk_com'
 SITE_NAME = 'Filmstreamvk'
 SITE_DESC = 'Films, Séries & Mangas en Streaming'
 
-URL_MAIN = 'https://filmstreamvk.bz/'
+URL_MAIN = "https://filmstreamvk.bz/"
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_NEWS = (URL_MAIN + 'film', 'showMovies')
@@ -117,26 +117,14 @@ def showSearch():
 def showGenres():
     oGui = cGui()
 
-    liste = []
-    liste.append(['Action', URL_MAIN + 'genre/action/'])
-    liste.append(['Animation', URL_MAIN + 'genre/animation/'])
-    liste.append(['Aventure', URL_MAIN + 'genre/aventure/'])
-    liste.append(['Comédie', URL_MAIN + 'genre/comedie/'])
-    liste.append(['Crime', URL_MAIN + 'genre/crime/'])
-    liste.append(['Drame', URL_MAIN + 'genre/drame/'])
-    liste.append(['Familial', URL_MAIN + 'genre/familial/'])
-    liste.append(['Fantastique', URL_MAIN + 'genre/fantastique/'])
-    liste.append(['Guerre', URL_MAIN + 'genre/guerre/'])
-    liste.append(['Horreur', URL_MAIN + 'genre/horreur/'])
-    liste.append(['Histoire', URL_MAIN + 'genre/histoire/'])
-    liste.append(['Romance', URL_MAIN + 'genre/romance/'])
-    liste.append(['Thriller', URL_MAIN + 'genre/thriller/'])
-    liste.append(['Science-Fiction', URL_MAIN + 'genre/science-fiction/'])
-    liste.append(['Western', URL_MAIN + 'genre/western/'])
+    liste = [['Action', 'action'], ['Animation', 'animation'], ['Aventure', 'aventure'], ['Comédie', 'comedie'],
+             ['Crime', 'crime'], ['Drame', 'drame'], ['Familial', 'familial'], ['Fantastique', 'fantastique'],
+             ['Guerre', 'guerre'], ['Horreur', 'horreur'], ['Histoire', 'histoire'], ['Romance', 'romance'],
+             ['Thriller', 'thriller'], ['Science-Fiction', 'science-fiction'], ['Western', 'western']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'genre/' + sUrl + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()

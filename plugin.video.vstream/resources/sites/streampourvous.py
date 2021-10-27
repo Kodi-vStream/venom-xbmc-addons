@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'streampourvous'
 SITE_NAME = 'StreampourVous'
 SITE_DESC = 'films,'
 
-URL_MAIN = 'https://wvv.streampourvous.com/'
+URL_MAIN = "https://vvw.streampourvous.ws/"
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_NEWS = (URL_MAIN + 'film-streaming/', 'showMovies')
@@ -44,11 +44,36 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMenuMovies', 'Films', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MOVIES[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche film', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMenuTvShows', 'Séries', 'series.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche série', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+    # oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
+    # oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN)
+    oGui.addDir(SITE_IDENTIFIER, 'showNetwork', 'Séries (Par diffuseurs)', 'host.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Par années)', 'annees.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_MANGAS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_MANGAS[1], 'Séries (Animations)', 'animes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -58,7 +83,7 @@ def showMenuMovies():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MOVIES[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche films', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche film', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
@@ -77,7 +102,7 @@ def showMenuTvShows():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche séries', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche série', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
@@ -294,7 +319,7 @@ def showMovies(sSearch=''):
             if '/serie' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSxE', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showLink', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -354,12 +379,12 @@ def showSxE():
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
-                oGui.addEpisode(SITE_IDENTIFIER, 'showLink', sDisplaytitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sDisplaytitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def showLink():
+def showLinks():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -369,7 +394,7 @@ def showLink():
 
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
-    sPattern = 'dooplay_player_option.+?data-post=\'(\d+)\'.+?data-nume=\'(.+?)\'>.+?\'title\'>(.+?)<.+?class=\'server\'>(.+?)<.+?flags\/(\w+)'
+    sPattern = "data-type='([^']+)' data-post='([^']+)' data-nume='([^']+).+?title'>([^<]+).+?server'>(.+?)<.+?flags/(\w+)"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -379,14 +404,15 @@ def showLink():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in sortedList:
 
-            sUrl2 = URL_MAIN + '/wp-json/dooplayer/v1/post/'
-            dtype = 'movie'  # fonctionne pour Film ou Série (pour info : série -> dtype = 'tv')
-            dpost = aEntry[0]
-            dnum = aEntry[1]
+            sUrl2 = URL_MAIN + 'wp-json/dooplayer/v1/post/'
+            # dtype = 'movie'  # fonctionne pour Film ou Série (pour info : série -> dtype = 'tv')
+            dtype = aEntry[0]
+            dpost = aEntry[1]
+            dnum = aEntry[2]
             pdata = dpost + '?type=' + dtype + '&source=' + dnum
-            sTitle = aEntry[2].replace('Serveur', '').replace('Télécharger', '').replace('(', '').replace(')', '')
-            sLang = aEntry[4].replace('fr', 'VF').replace('en', 'VOSTFR')
-            sServer = aEntry[3]
+            sTitle = aEntry[3].replace('Serveur', '').replace('Télécharger', '').replace('(', '').replace(')', '').replace('[', '').replace(']', '')
+            sServer = aEntry[4]
+            sLang = aEntry[5].replace('fr', 'VF').replace('en', 'VOSTFR')
 
             if 'freebiesforyou.net' in sServer or 'youtube.com' in sServer:
                 continue
@@ -423,6 +449,7 @@ def showHosters():
     sUrl = sUrl + pdata
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request(jsonDecode=True)["embed_url"]
+
     if 'dood' in sHtmlContent or 'evoload' in sHtmlContent:
         sPattern = '(http.+?)$'
     else:

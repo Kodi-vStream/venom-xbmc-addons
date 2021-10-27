@@ -18,11 +18,10 @@ SITE_IDENTIFIER = 'pluto_tv'
 SITE_NAME = 'Pluto TV'
 SITE_DESC = 'Chaine gratuite légal, VOD de programme divers'
 
-URL_MAIN = 'https://api.pluto.tv'
+URL_MAIN = "https://api.pluto.tv"
 
 CHAINE_DIRECT = (URL_MAIN + '/v2/channels.json?', 'showTV')
 VOD = (URL_MAIN + '/v3/vod/categories?includeItems=true&deviceType=web', 'showGenre')
-
 
 def getData():
     if addon().getSetting("PlutoTV_sid"):
@@ -139,6 +138,8 @@ def showVOD():
 
             sThumb = aEntry["featuredImage"]["path"]
             sTitle = aEntry["name"]
+            # /!\ ces replace sont différent
+            sTitle = sTitle.replace(' : Saison', ' Saison').replace(' : Saison', ' Saison')
             ids = aEntry["_id"]
             sDesc = aEntry["description"]
             if not isMatrix():
@@ -149,14 +150,15 @@ def showVOD():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
+            VOD_SERIES = "https://service-vod.clusters.pluto.tv/v3/vod/series/"
             if aEntry["type"] == "series":
-                sUrl = "https://service-vod.clusters.pluto.tv/v3/vod/series/" + ids + "/seasons?includeItems=true&deviceType=web"
+                sUrl = VOD_SERIES + ids + "/seasons?includeItems=true&deviceType=web"
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSerieSxE', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             elif aEntry["type"] == "Anime":
-                sUrl = "https://service-vod.clusters.pluto.tv/v3/vod/series/" + ids + "/seasons?includeItems=true&deviceType=web"
+                sUrl = VOD_SERIES + ids + "/seasons?includeItems=true&deviceType=web"
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oGui.addAnime(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addAnime(SITE_IDENTIFIER, 'showSerieSxE', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 siteUrl = "https://service-stitcher.clusters.pluto.tv/stitch/hls/episode/" + ids + "/master.m3u8"
                 oOutputParameterHandler.addParameter('siteUrl', siteUrl)
@@ -167,7 +169,7 @@ def showVOD():
     oGui.setEndOfDirectory()
 
 
-def ShowSerieSaisonEpisodes():
+def showSerieSxE():
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()

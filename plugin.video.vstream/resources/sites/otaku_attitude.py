@@ -18,8 +18,8 @@ SITE_IDENTIFIER = 'otaku_attitude'
 SITE_NAME = 'Otaku-Attitude'
 SITE_DESC = 'Animes, Drama et OST en DDL et Streaming'
 
-URL_MAIN = 'https://www.otaku-attitude.net/'
-OST_MAIN = 'https://forum.otaku-attitude.net/musicbox/playlists/'
+URL_MAIN = "https://www.otaku-attitude.net/"
+OST_MAIN = "https://forum.otaku-attitude.net/musicbox/playlists/"
 
 URL_SEARCH_ANIMS = (URL_MAIN + 'recherche.html?cat=1&q=', 'showAnimes')
 URL_SEARCH_DRAMAS = (URL_MAIN + 'recherche.html?cat=2&q=', 'showAnimes')
@@ -58,14 +58,11 @@ def load():
 def showGenres():
     oGui = cGui()
 
-    liste = []
-    liste.append(['Animés', OST_MAIN + '1-anime/'])
-    liste.append(['Dramas', OST_MAIN + '6-drama/'])
-    liste.append(['Jeux Vidéo', OST_MAIN + '7-jeu-vidéo/'])
+    liste = [['Animés', '1-anime'], ['Dramas', '6-drama'], ['Jeux Vidéo', '7-jeu-vidéo']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', OST_MAIN + sUrl + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showOst', sTitle, 'music.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -236,8 +233,8 @@ def showEpisodes():
         for aEntry in sorted(aResult[1], key=lambda aResult: aResult[1]):
             sQual = aEntry[2]
 
-            if isMatrix():
-                sQual = sQual.encode('latin-1').decode()
+            # if isMatrix():  # plante sous matrix !!!!!!
+                # sQual = sQual.encode('latin-1').decode()
 
             # Changemement de formats ...x... -> ....P
             if '1920×' in sQual or '1440×' in sQual or '1904×' in sQual:
@@ -254,7 +251,8 @@ def showEpisodes():
             else:
                 sQual = re.sub('(\d+×\d+)px', '[480P]', sQual)
 
-            sTitle = 'E' + aEntry[1] + ' ' + sMovieTitle + ' ' + sQual
+            sTitle = 'E' + aEntry[1] + ' ' + sMovieTitle
+            sDisplayTitle = sTitle + ' ' + sQual
             idEpisode = aEntry[0]
 
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -262,7 +260,7 @@ def showEpisodes():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('serieID', serieID)
             oOutputParameterHandler.addParameter('idEpisode', idEpisode)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

@@ -5,10 +5,17 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.gui.gui import cGui
 from resources.lib.upnext import UpNext
-from resources.lib.comaddon import addon, dialog, xbmc, isKrypton, VSlog, addonManager
+from resources.lib.comaddon import addon, dialog, xbmc, isKrypton, VSlog, addonManager, isMatrix
 from resources.lib.db import cDb
 from resources.lib.util import cUtil, Unquote
 import xbmcplugin
+
+if isMatrix():
+    from urllib.parse import urlparse
+else:
+    from urlparse import urlparse
+
+from os.path import splitext
 
 #pour les sous titres
 #https://github.com/amet/service.subtitles.demo/blob/master/service.subtitles.demo/service.py
@@ -69,21 +76,15 @@ class cPlayer(xbmc.Player):
         oPlaylist.add(oGuiElement.getMediaUrl(), oListItem )
 
     def AddSubtitles(self, files):
-        try:
-            basestring
-        except:
-            basestring = str
-            
-        if len(files) == 1:
-            self.Subtitles_file = files[0]
-        elif isinstance(files, basestring):
-            self.Subtitles_file.append(files)
-        else:
+        if type(files) is list or type(files) is tuple:
             self.Subtitles_file = files
+        else:
+            self.Subtitles_file.append(files)
 
     def run(self, oGuiElement, sTitle, sUrl):
 
         # Lancement d'une vidéo sans avoir arreté la précedente
+        self.tvShowTitle = oGuiElement.getItemValue('tvshowtitle')
         if self.isPlaying():
             self.multi = True
             self._setWatched() # la vidéo en cours doit être marquée comme VUE
@@ -96,7 +97,6 @@ class cPlayer(xbmc.Player):
         oGui = cGui()
         item = oGui.createListItem(oGuiElement)
         item.setPath(oGuiElement.getMediaUrl())
-        self.tvShowTitle = oGuiElement.getItemValue('tvshowtitle')
 
         #Sous titres
         if (self.Subtitles_file):
@@ -109,7 +109,7 @@ class cPlayer(xbmc.Player):
 
         player_conf = self.ADDON.getSetting('playerPlay')
         #Si lien dash, methode prioritaire
-        if sUrl.endswith('.mpd') or sUrl.split('?')[0][-4:] in '.mpd' or "pstream" in sUrl:
+        if splitext(urlparse(sUrl).path)[-1] in [".mpd",".m3u8"]:
             if isKrypton() == True:
                 addonManager().enableAddon('inputstream.adaptive')
                 item.setProperty('inputstream','inputstream.adaptive')

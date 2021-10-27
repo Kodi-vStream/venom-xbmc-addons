@@ -14,16 +14,15 @@ SITE_IDENTIFIER = 'les_docus'
 SITE_NAME = 'Les docus'
 SITE_DESC = 'Documentaires reportages et vidéos en streaming en francais.'
 
-URL_MAIN = 'http://www.les-docus.com/'
+URL_MAIN = "https://www.les-docus.com/"
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MISC = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
+DOC_DOCS = (True, 'load')
 DOC_GENRES = (True, 'showGenres')
-
 DOC_NEWS = (URL_MAIN, 'showMovies')
-DOC_DOCS = ('http://', 'load')
 
 
 def load():
@@ -141,8 +140,8 @@ def showMovies(sSearch=''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
-    sPattern = 'class="post-header">.+?href="([^"]+)" title="([^"]+)">.+?src="([^"]+)".+?<p *style.+?>([^<]+)</p>'
+
+    sPattern = 'post-header"><a href="([^"]+)" title="([^"]+).+?src="(https[^"]+)".+?<p *style.+?>([^<]+)</p>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -176,7 +175,7 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '>([^<]+)</a> <a *class="next page-numbers" href="([^"]+)'
+    sPattern = '>([^<]+)</a> *<a *class="next page-numbers" href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0] is True:
         sNumberMax = aResult[1][0][0]

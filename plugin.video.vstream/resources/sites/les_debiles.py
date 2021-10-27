@@ -60,17 +60,12 @@ def showSearch():
 def showGenre():
     oGui = cGui()
 
-    liste = []
-    liste.append(['Nouveautés', URL_MAIN + 'videos-s0-1.html'])
-    liste.append(['Top Vues', URL_MAIN + 'videos-s1-1.html'])
-    liste.append(['Top Vote', URL_MAIN + 'videos-s2-1.html'])
-    liste.append(['Hit Parade', URL_MAIN + 'videos-s5-1.html'])
-    liste.append(['Fatality', URL_MAIN + 'videos-s7-1.html'])
-    liste.append(['Vidéos Longues', URL_MAIN + 'videos-s3-1.html'])
+    liste = [['Nouveautés', 'videos-s0-1'], ['Top Vues', 'videos-s1-1'], ['Top Vote', 'videos-s2-1'],
+             ['Hit Parade', 'videos-s5-1'], ['Fatality', 'videos-s7-1'], ['Vidéos Longues', 'videos-s3-1']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + sUrl + '.html')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()

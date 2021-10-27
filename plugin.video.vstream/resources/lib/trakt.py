@@ -300,7 +300,7 @@ class cTrakt:
         oRequestHandler.addJSONEntry('client_id', API_KEY)
         oRequestHandler.addJSONEntry('client_secret', API_SECRET)
         oRequestHandler.addJSONEntry('token', self.ADDON.getSetting('bstoken'))
-        sHtmlContent = oRequestHandler.request(jsonDecode=True)
+        sHtmlContent = oRequestHandler.request()
 
         total = len(sHtmlContent)
 

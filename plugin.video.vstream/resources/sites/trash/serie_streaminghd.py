@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
-return False #13/02/21
+return False  # 13/02/21 WAAW en hoster
 
 import re
 
@@ -18,7 +18,7 @@ SITE_IDENTIFIER = 'serie_streaminghd'
 SITE_NAME = 'Série-StreamingHD'
 SITE_DESC = 'Séries en streaming vf, vostfr'
 
-URL_MAIN = 'http://series-streaminghd.com/'
+URL_MAIN = "https://series-streaminghd.com/"
 
 SERIE_SERIES = (True, 'load')
 SERIE_NEWS = (URL_MAIN, 'showSeries')
@@ -131,7 +131,7 @@ def showSeries(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '>([^<]+)</a>  <a href="([^"]+)">Suivant &#8594;'
+    sPattern = '>([^<]+)</a>  <a href="([^"]+)">Suivant'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sNumberMax = aResult[1][0][0]
@@ -166,7 +166,7 @@ def showHosters():
 
             for aEntry in aResult[1]:
                 sHosterUrl = aEntry[0]
-                sMovieTitle2 = sMovieTitle + ' episode ' + aEntry[1]
+                sMovieTitle2 = sMovieTitle + ' Episode ' + aEntry[1]
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
@@ -182,12 +182,11 @@ def showHosters():
         aResult = oParser.parse(sHtmlTab, sPattern)
 
         if (aResult[0] == True):
-
             oGui.addText(SITE_IDENTIFIER, '[COLOR red]Langue VOSTFR[/COLOR]')
 
             for aEntry in aResult[1]:
                 sHosterUrl = aEntry[0]
-                sMovieTitle2 = sMovieTitle + ' episode ' + aEntry[1]
+                sMovieTitle2 = sMovieTitle + ' Episode ' + aEntry[1]
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):

@@ -3,8 +3,10 @@
 #
 from requests import post, Session, Request, RequestException, ConnectionError
 from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix
-from json import loads, dumps
 from resources.lib.util import urlEncode
+
+import requests.packages.urllib3.util.connection as urllib3_cn
+import socket
 
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
@@ -31,6 +33,20 @@ class cRequestHandler:
         self.redirects = True
         self.verify = True
         self.json = {}
+        self.forceIPV4 = False
+
+    #Utile pour certains hebergeurs qui ne marche pas en ipv6.
+    def disableIPV6(self):
+        self.forceIPV4 = True
+
+    def allowed_gai_family(self):
+        """
+         https://github.com/shazow/urllib3/blob/master/urllib3/util/connection.py
+        """
+        family = socket.AF_INET
+        if urllib3_cn.HAS_IPV6:
+            family = socket.AF_INET # force ipv6 only if it is available
+        return family
 
     #Desactive le ssl
     def disableSSL(self):
@@ -101,10 +117,10 @@ class cRequestHandler:
     def getRealUrl(self):
         return self.__sRealUrl
 
-    def request(self,jsonDecode=False):
+    def request(self,jsonDecode=False, xmlDecode=False):
         # Supprimee car deconne si url contient ' ' et '+' en meme temps
         # self.__sUrl = self.__sUrl.replace(' ', '+')
-        return self.__callRequest(jsonDecode)
+        return self.__callRequest(jsonDecode, xmlDecode)
 
     #Recupere les cookies de la requete
     def GetCookies(self):
@@ -130,9 +146,8 @@ class cRequestHandler:
         self.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         self.addHeaderEntry('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.7')
 
-    def __callRequest(self, jsonDecode=False):
+    def __callRequest(self, jsonDecode=False, xmlDecode=False):
         if self.__enableDNS:
-            import socket
             self.save_getaddrinfo = socket.getaddrinfo
             socket.getaddrinfo = self.new_getaddrinfo
 
@@ -160,6 +175,8 @@ class cRequestHandler:
         else:
             method = "POST"
 
+        if self.forceIPV4:
+            urllib3_cn.allowed_gai_family = self.allowed_gai_family
 
         oResponse = None
         try:
@@ -180,9 +197,12 @@ class cRequestHandler:
             self.__sResponseHeader = oResponse.headers
             self.__sRealUrl = oResponse.url
 
-            if jsonDecode == False:
+            if jsonDecode == True:
+                sContent = oResponse.json()
+            elif xmlDecode == True:
                 sContent = oResponse.content
-
+            else:
+                sContent = oResponse.content
                 #Necessaire pour Python 3
                 if isMatrix() and not 'youtube' in oResponse.url:
                     try:
@@ -193,8 +213,6 @@ class cRequestHandler:
                             sContent = sContent.decode('unicode-escape')
                         except:
                             pass
-            else:
-                sContent = oResponse.json()
 
         except ConnectionError as e:
             # Retry with DNS only if addon is present
@@ -234,14 +252,12 @@ class cRequestHandler:
             if oResponse.status_code in [503,403]:
                 if not "Forbidden" in sContent:
                     #Default
-                    CLOUDPROXY_ENDPOINT = 'http://localhost:8191/v1'
+                    CLOUDPROXY_ENDPOINT = 'http://' + addon().getSetting('ipaddress') + ':8191/v1'
 
                     json_session = False
 
                     try:
-                        json_session = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, data=dumps({
-                            'cmd': 'sessions.list'
-                        }))
+                        json_session = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, json={'cmd': 'sessions.list'})
                     except:
                         dialog().VSerror("%s" % ("Page protege par Cloudflare, veuillez executer  FlareSolverr."))
 
@@ -250,24 +266,23 @@ class cRequestHandler:
                         if json_session.json()['sessions']:
                             cloudproxy_session = json_session.json()['sessions'][0]
                         else:
-                            json_session = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, data=dumps({
+                            json_session = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, json={
                                 'cmd': 'sessions.create'
-                            }))
-                            response_session = loads(json_session.text)
-                            cloudproxy_session = response_session['session']
+                            }).json()
+                            cloudproxy_session = json_session['session']
 
                         self.__aHeaderEntries['Content-Type'] = 'application/x-www-form-urlencoded' if (method == 'post') else 'application/json'
 
                         #Ont fait une requete.
-                        json_response = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, data=dumps({
+                        json_response = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, json={
                             'cmd': 'request.%s' % method.lower(),
                             'url': self.__sUrl,
                             'session': cloudproxy_session,
                             'postData': '%s' % urlEncode(sParameters) if (method.lower() == 'post') else ''
-                        }))
+                        })
 
                         http_code = json_response.status_code
-                        response = loads(json_response.text)
+                        response = json_response.json()
                         if 'solution' in response:
                             if self.__sUrl != response['solution']['url']:
                                 self.__sRealUrl = response['solution']['url']

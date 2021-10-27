@@ -58,28 +58,16 @@ def showSearch():
 def showGenres():
     oGui = cGui()
 
-    liste = []
-    liste.append(['Action', URL_MAIN + 'series-vf/genres/action.html'])
-    liste.append(['Animation', URL_MAIN + 'series-vf/genres/animation.html'])
-    liste.append(['Aventure', URL_MAIN + 'series-vf/genres/aventure.html'])
-    liste.append(['Biopic', URL_MAIN + 'series-vf/genres/biopic.html'])
-    liste.append(['Comédie', URL_MAIN + 'series-vf/genres/comaedie.html'])
-    liste.append(['Comédie dramatique', URL_MAIN + 'series-vf/genres/drame-comaedie.html'])
-    liste.append(['Documentaire', URL_MAIN + 'series-vf/genres/documentaire.html'])
-    liste.append(['Drame', URL_MAIN + 'series-vf/genres/drame.html'])
-    liste.append(['Epouvante-Horreur', URL_MAIN + 'series-vf/genres/epouvante-horreur.html'])
-    liste.append(['Famille', URL_MAIN + 'series-vf/genres/famille.html'])
-    liste.append(['Fantastique', URL_MAIN + 'series-vf/genres/fantastique.html'])
-    liste.append(['Guerre', URL_MAIN + 'series-vf/genres/guerre.html'])
-    liste.append(['Horreur', URL_MAIN + 'series-vf/genres/horreur.html'])
-    liste.append(['Policier', URL_MAIN + 'series-vf/genres/policier.html'])
-    liste.append(['Romance', URL_MAIN + 'series-vf/genres/romance.html'])
-    liste.append(['Thriller', URL_MAIN + 'series-vf/genres/thriller.html'])
-    liste.append(['Divers', URL_MAIN + 'series-vf/genres/divers.html'])
+    liste = [['Action', 'action'], ['Action & aventure', 'action-et-adventure'], ['Animation', 'animation'],
+             ['Aventure', 'aventure'], ['Biopic', 'biopic'], ['Comédie', 'comaedie'],
+             ['Comédie dramatique', 'drame-comaedie'], ['Documentaire', 'documentaire'], ['Drame', 'drame'],
+             ['Epouvante-Horreur', 'epouvante-horreur'], ['Famille', 'famille'], ['Fantastique', 'fantastique'],
+             ['Guerre', 'guerre'], ['Horreur', 'horreur'], ['Policier', 'policier'], ['Romance', 'romance'],
+             ['Thriller', 'thriller'], ['Divers', 'divers']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series-vf/genres/' + sUrl + '.html')
         oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -198,7 +186,7 @@ def showSaisons():
     # récupération du Synopsis
     sDesc = ''
     try:
-        sPattern = 'full-text clearfix">(.+?)</div>'
+        sPattern = 'full-text clearfix">([^<]*)</div>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]

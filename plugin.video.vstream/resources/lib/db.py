@@ -72,7 +72,7 @@ class cDb:
         try:
             self.dbcur.close()
             self.db.close()
-        except Exception:
+        except Exception as e:
             pass
 
     def _create_tables(self, dropTable = ''):
@@ -229,7 +229,7 @@ class cDb:
             dialog().VSinfo(addon().VSlang(30041))
             oGui.updateDirectory()
             return False, False
-        except Exception:
+        except Exception as e:
             VSlog('SQL ERROR DELETE : %s' % sql_delete)
             return False, False
 
@@ -243,7 +243,7 @@ class cDb:
             return
         cat = meta['cat'] if 'cat' in meta else '1'
 
-        ex = 'INSERT INTO watched (title, cat) VALUES (?, ?)'
+        ex = 'INSERT or IGNORE INTO watched (title, cat) VALUES (?, ?)'
         try:
             self.dbcur.execute(ex, (title, cat))
             self.db.commit()
@@ -303,7 +303,7 @@ class cDb:
             self.dbcur.execute(sql_select)
             self.db.commit()
             return False, False
-        except Exception:
+        except Exception as e:
             VSlog('SQL ERROR %s' % sql_select)
             return False, False
 
@@ -319,7 +319,7 @@ class cDb:
         ex = "DELETE FROM resume WHERE title = '%s'" % title
         try:
             self.dbcur.execute(ex)
-        except Exception:
+        except Exception as e:
             VSlog('SQL ERROR - ' + ex)
             pass
 
@@ -369,7 +369,7 @@ class cDb:
             self.dbcur.execute(sql_select)
             self.db.commit()
             return False, False
-        except Exception:
+        except Exception as e:
             VSlog('SQL ERROR %s' % sql_select)
             return False, False
 
@@ -411,7 +411,7 @@ class cDb:
             # matchedrow = self.dbcur.fetchone()
             matchedrow = self.dbcur.fetchall()
             return matchedrow
-        except Exception:
+        except Exception as e:
             VSlog('SQL ERROR EXECUTE')
             return None
 
@@ -459,7 +459,7 @@ class cDb:
                 dialog().VSinfo(addon().VSlang(30044))
                 cGui().updateDirectory()
                 return True
-            except Exception:
+            except Exception as e:
                 VSlog('SQL ERROR %s' % sql_delete)
         return False
 
@@ -484,7 +484,7 @@ class cDb:
         ex = "DELETE FROM viewing WHERE title_id = '%s' and cat = '%s'" % (titleWatched, cat)
         try:
             self.dbcur.execute(ex)
-        except Exception:
+        except Exception as e:
             VSlog('SQL ERROR - ' + ex)
             pass
 
@@ -568,7 +568,7 @@ class cDb:
             self.db.commit()
             VSlog('SQL INSERT download Successfully')
             dialog().VSinfo(addon().VSlang(30042), meta['title'])
-        except Exception:
+        except Exception as e:
             VSlog('SQL ERROR INSERT into download')
             pass
 
@@ -584,7 +584,7 @@ class cDb:
             self.dbcur.execute(sql_select)
             matchedrow = self.dbcur.fetchall()
             return matchedrow
-        except Exception:
+        except Exception as e:
             VSlog('SQL ERROR %s' % sql_select)
             return None
 
@@ -596,7 +596,7 @@ class cDb:
             self.dbcur.execute(sql_select)
             self.db.commit()
             return False, False
-        except Exception:
+        except Exception as e:
             VSlog('SQL ERROR %s' % sql_select)
             return False, False
 
@@ -609,7 +609,7 @@ class cDb:
             self.dbcur.execute(sql_select)
             self.db.commit()
             return False, False
-        except Exception:
+        except Exception as e:
             VSlog('SQL ERROR %s' % sql_select)
             return False, False
 
@@ -628,7 +628,7 @@ class cDb:
             self.dbcur.execute(sql_select)
             self.db.commit()
             return False, False
-        except Exception:
+        except Exception as e:
             VSlog('SQL ERROR %s' % sql_select)
             return False, False
 
@@ -638,7 +638,7 @@ class cDb:
             self.dbcur.execute(sql_select)
             self.db.commit()
             return False, False
-        except Exception:
+        except Exception as e:
             VSlog('SQL ERROR %s' % sql_select)
             return False, False
 
@@ -655,6 +655,6 @@ class cDb:
             self.dbcur.execute(sql_select)
             self.db.commit()
             return False, False
-        except Exception:
+        except Exception as e:
             VSlog('SQL ERROR %s' % sql_select)
             return False, False
