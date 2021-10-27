@@ -12,6 +12,12 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 1.6.0***
+- Meilleur support des sous-titres
+- Meilleur support de Uptostream
+- Métadonnées dans l'enchainement des épisodes
+- Amélioration sur l'affichage des métadonnées (numérotation des épisodes, ...)
+
 *** 1.5.0***
 - Contrat de licence sur l'utilisation du code vStream
 - Meilleure intégration de DNSPython
@@ -30,7 +36,6 @@ Historique des modifications
 - Reprise d'un média commencé, même en changeant de source
 - Métadonnées : plus d'informations média pour les films et compatibilité avec plus de skins
 - Métadonnées : informations média (pochette et description) pour les saisons
-
 
 *** 1.1.0***
 - F4mProxy : Suppression de la dépendance
