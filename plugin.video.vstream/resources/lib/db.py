@@ -72,7 +72,7 @@ class cDb:
         try:
             self.dbcur.close()
             self.db.close()
-        except Exception as e:
+        except:
             pass
 
     def _create_tables(self, dropTable = ''):
