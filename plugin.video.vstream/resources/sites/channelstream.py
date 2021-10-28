@@ -7,7 +7,6 @@ import json
 import time
 import resources.sites.freebox
 
-
 from resources.lib.packer import cPacker
 from resources.lib.comaddon import addon, isMatrix
 from resources.lib.epg import cePg
@@ -72,23 +71,19 @@ def showMovies():
     if isMatrix():
         sHtmlContent = sHtmlContent.replace('Ã®', 'î').replace('Ã©', 'é')
 
-    if "programme" in sUrl:
+    if "/programme.php" in sUrl:
         sPattern = "colspan='7'.+?<b>([^<]+)</b>.+?location\.href = '([^']+).+?text-align.+?>(.+?)</td>.+?src='([^']+).+?text-align.+?>([^<]+).+?text-align: left.+?>([^<]+)"
     else:
         sPattern = 'location.href = \'\.(.+?)\'.+?src=\'(.+?)\'.+?<div align="center">(.+?)</div>'
         sHtmlContent = oParser.abParse(sHtmlContent, sFiltre, '<!-- Type Chaîne -->')
+        EPG = cePg().get_epg('', 'direct',noTextBox=True)
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-
-    # try:
-        # EPG = cePg().get_epg('', 'direct')
-    # except:
-        # EPG = ""
 
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            if "programme" in sUrl:
+            if "/programme.php" in sUrl:
                 sUrl2 = aEntry[1]
                 sDate = aEntry[2].replace('<br />', ' ')
                 sThumb = aEntry[3]
@@ -110,6 +105,16 @@ def showMovies():
                 sDesc = sDisplayTitle
 
             else:
+                #On passe le contenu +18 puisqu'il n'y a pas d'EPG.
+                if not "<imgwidt" in aEntry[2]:
+                    fixName = aEntry[2].lower().replace('sport','sports').replace(' ',"").replace('é','e').replace('è','e')
+                    try:
+                        sDesc = re.search("\[COLOR red\]" + fixName.replace('+',"\\+") + "\[/COLOR\](.+?)\[COLOR red",EPG, re.MULTILINE|re.DOTALL).group(1)
+                    except:
+                        sDesc = ""
+                else:
+                    sDesc = ""
+
                 # Trie des chaines adultes
                 if "+18" in str(aEntry[2]):
                     if not bAdulte:
@@ -126,15 +131,13 @@ def showMovies():
 
                 sUrl2 = URL_MAIN + aEntry[0]
                 sThumb = URL_MAIN + '/' + aEntry[1]
-#                sDesc = getEPG(EPG, sTitle)
-                sDesc = sTitle
-            
+
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            if "programme" in sUrl:
+            if "/programme.php" in sUrl:
                 oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, sThumb, sDisplayTitle, oOutputParameterHandler)
             else:
                 oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, sThumb, sDesc, oOutputParameterHandler)
@@ -361,31 +364,3 @@ def getTimer():
     epoch = datetime(1970, 1, 1)
 
     return (datenow - epoch).total_seconds() // 1
-
-
-def getEPG(EPG, sTitle):
-
-    oParser = cParser()
-
-    sTitle = sTitle.replace('+', 'plus')
-
-    try:
-        sTitle = cUtil().CleanName(sTitle)
-    except:
-        pass
-
-    sTitle = re.sub('[^%s]' % (string.ascii_lowercase + string.digits), '', sTitle.lower())
-
-    sPattern = '(.+?)\/>(.+?)<'
-    aResult = oParser.parse(EPG, sPattern)
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-            sChannel = aEntry[0]
-
-            sChannel = re.sub('[^%s]' % (string.ascii_lowercase + string.digits), '', sChannel.lower())
-            if sChannel == sTitle:
-                sDesc = aEntry[1].replace('[COLOR khaki]', '\r\n\t[COLOR khaki]')
-                sDesc = sDesc.replace('[/COLOR]', '[/COLOR]\r\n')
-                return sDesc
-
-    return ''
