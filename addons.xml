@@ -83,7 +83,7 @@
 
 <addon id="repository.vstream"
        name="vStream Repository"
-        version="0.0.4"
+        version="0.0.5"
         provider-name="Venom">
     <extension point="xbmc.addon.repository" name="vStream XBMC Addon Repository">
     <dir>
