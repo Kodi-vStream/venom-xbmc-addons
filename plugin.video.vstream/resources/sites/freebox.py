@@ -136,6 +136,8 @@ def showWeb(infile=None):  # Code qui s'occupe de liens TV du Web
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]Problème de lecture avec la playlist[/COLOR]')
 
     else:
+        EPG = cePg().get_epg('', 'direct',noTextBox=True)
+
         total = len(playlist)
         progress_ = progress().VScreate(SITE_NAME)
         for track in playlist:
@@ -146,6 +148,12 @@ def showWeb(infile=None):  # Code qui s'occupe de liens TV du Web
             if not sThumb:
                 sThumb = 'tv.png'
 
+            fixName = track.title.lower().replace('sport','sports').replace(' ',"").replace('é','e').replace('è','e')
+            try:
+                sDesc = re.search("\[COLOR red\]" + fixName.replace('+',"\\+") + "\[/COLOR\](.+?)\[COLOR red",EPG, re.MULTILINE|re.DOTALL).group(1)
+            except:
+                sDesc = ""
+
             # les + ne peuvent pas passer
             url2 = track.path.replace('+', 'P_L_U_S')
 
@@ -155,10 +163,12 @@ def showWeb(infile=None):  # Code qui s'occupe de liens TV du Web
             oOutputParameterHandler.addParameter('siteUrl', url2)
             oOutputParameterHandler.addParameter('sMovieTitle', track.title)
             oOutputParameterHandler.addParameter('sThumbnail', thumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)            
 
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName(SITE_IDENTIFIER)
             oGuiElement.setFunction('play__')
+            oGuiElement.setDescription(sDesc)
             oGuiElement.setTitle(track.title)
             oGuiElement.setFileName(track.title)
             oGuiElement.setIcon('tv.png')
