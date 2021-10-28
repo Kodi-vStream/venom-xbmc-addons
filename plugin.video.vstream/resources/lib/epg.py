@@ -16,8 +16,9 @@ SITE_NAME = 'epg'
 
 class cePg:
 
-    def view_epg(self, sTitle, sTime):
-        text = self.get_epg(sTitle, sTime)
+    def view_epg(self, sTitle, sTime,text=None):
+        if text == None:
+            text = self.get_epg(sTitle, sTime)
          
         if text:
             self.TextBoxes(sTitle, text)
