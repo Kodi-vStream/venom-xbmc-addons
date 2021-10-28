@@ -163,7 +163,8 @@ def showWeb(infile=None):  # Code qui s'occupe de liens TV du Web
             oOutputParameterHandler.addParameter('siteUrl', url2)
             oOutputParameterHandler.addParameter('sMovieTitle', track.title)
             oOutputParameterHandler.addParameter('sThumbnail', thumb)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)            
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('EpgData', EPG)                      
 
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName(SITE_IDENTIFIER)
@@ -192,7 +193,8 @@ def direct_epg():  # Code qui gerent l'epg
     oInputParameterHandler = cInputParameterHandler()
     # aParams = oInputParameterHandler.getAllParameter()
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
-    cePg().view_epg(sTitle, 'direct')
+    text = oInputParameterHandler.getValue('EpgData')
+    cePg().view_epg(sTitle, 'direct', text=text)
 
 
 def soir_epg():  # Code qui gerent l'epg
