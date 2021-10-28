@@ -46,29 +46,11 @@ class main:
 
     def __init__(self):
         self.parseUrl()
-        # Ne pas desactiver la ligne d'en dessous, car sinon ca genere des probleme de Db sous Android.
 
-        # PROBLEME réglé le 31/05/20 !!
-        # Dans runScript."clean" on supprimait les tables pour vider le cache, il fallait donc les recréer.
-        # Maintenant on vide les tables sans les supprimer. 
-        # cDb()._create_tables()
-
-    def parseUrl(self):
-
-        # import sys
-        # xbmc.log('arg :' + str(sys.argv), xbmc.LOGNOTICE)
-        # xbmc.log('Debug 1 >>' + str(xbmc.getInfoLabel('Container().CurrentPage')), xbmc.LOGNOTICE)
-        # xbmc.log('Debug 2 >>' + str(xbmc.getInfoLabel('Container.FolderPath')), xbmc.LOGNOTICE)
-
-        
+    def parseUrl(self):        
         # Exclue les appels par des plugins qu'on ne sait pas gérer, par exemple :  plugin://plugin.video.vstream/extrafanart
         oPluginHandler = cPluginHandler()
         pluginPath = oPluginHandler.getPluginPath()
-#         if oPluginHandler.getPluginPath() != 'plugin://plugin.video.vstream/':
-#             cGui().setEndOfDirectory()
-#             return
-        if pluginPath == 'plugin://plugin.video.vstream/extrafanart/':
-            return
         
         oInputParameterHandler = cInputParameterHandler()
 
@@ -238,9 +220,9 @@ def setSettings(oInputParameterHandler):
     
 def isHosterGui(sSiteName, sFunction):
     if sSiteName == 'cHosterGui':
-        from resources.lib.gui.hoster import cHosterGui
-        oHosterGui = cHosterGui()
-        exec("oHosterGui." + sFunction + "()")
+        plugins = __import__('resources.lib.gui.hoster', fromlist=['cHosterGui']).cHosterGui()
+        function = getattr(plugins, sFunction)
+        function()
         return True
     return False
 
@@ -255,36 +237,36 @@ def isGui(sSiteName, sFunction):
 
 def isFav(sSiteName, sFunction):
     if sSiteName == 'cFav':
-        from resources.lib.bookmark import cFav
-        oFav = cFav()
-        exec("oFav." + sFunction + "()")
+        plugins = __import__('resources.lib.bookmark', fromlist=['cFav']).cFav()
+        function = getattr(plugins, sFunction)
+        function()
         return True
     return False
 
 
 def isViewing(sSiteName, sFunction):
     if sSiteName == 'cViewing':
-        from resources.lib.viewing import cViewing
-        oViewing = cViewing()
-        exec("oViewing." + sFunction + "()")
+        plugins = __import__('resources.lib.viewing', fromlist=['cViewing']).cViewing()
+        function = getattr(plugins, sFunction)
+        function()
         return True
     return False
 
 
 def isLibrary(sSiteName, sFunction):
     if sSiteName == 'cLibrary':
-        from resources.lib.library import cLibrary
-        oLibrary = cLibrary()
-        exec("oLibrary." + sFunction + "()")
+        plugins = __import__('resources.lib.library', fromlist=['cLibrary']).cLibrary()
+        function = getattr(plugins, sFunction)
+        function()
         return True
     return False
 
 
 def isDl(sSiteName, sFunction):
     if sSiteName == 'cDownload':
-        from resources.lib.download import cDownload
-        oDownload = cDownload()
-        exec("oDownload." + sFunction + "()")
+        plugins = __import__('resources.lib.download', fromlist=['cDownload']).cDownload()
+        function = getattr(plugins, sFunction)
+        function()
         return True
     return False
 
@@ -299,9 +281,9 @@ def isHome(sSiteName, sFunction):
 
 def isTrakt(sSiteName, sFunction):
     if sSiteName == 'cTrakt':
-        from resources.lib.trakt import cTrakt
-        oTrakt = cTrakt()
-        exec("oTrakt." + sFunction + "()")
+        plugins = __import__('resources.lib.trakt', fromlist=['cTrakt']).cTrakt()
+        function = getattr(plugins, sFunction)
+        function()
         return True
     return False
 
@@ -329,7 +311,7 @@ def searchGlobal():
         xbmc.executebuiltin('Dialog.Close(busydialog)')
     except:
         pass
-
+        
     oGui.addText('globalSearch', addons.VSlang(30081) % sSearchText, 'search.png')
     sSearchText = Quote(sSearchText)
 
