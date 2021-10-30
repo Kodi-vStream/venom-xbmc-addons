@@ -635,7 +635,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = "\?domain=(.+?)\.|'download'.+?href='([^>]+)'>([^<]+)"
+    sPattern = "domain=(.+?)\.|'download' href=([^']+)\""
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -645,7 +645,7 @@ def showHosters():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + re.sub('\.\w+', '', aEntry[0]) + '[/COLOR]')
 
             else:
-                if not "Streaming" in aEntry[2]:
+                if not URL_MAIN in aEntry[1]:
                     sUrl2 = URL_MAIN[:-1] + aEntry[1]
                     sTitle = sMovieTitle
                     oOutputParameterHandler = cOutputParameterHandler()
@@ -734,7 +734,7 @@ def Display_protected_link():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sUrl = oInputParameterHandler.getValue('siteUrl').replace('\\','').replace('"','')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     if 'link' in sUrl:
