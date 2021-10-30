@@ -11,7 +11,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil, Unquote, QuotePlus, Noredirection
+from resources.lib.util import cUtil, Unquote, QuotePlus
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -810,21 +810,18 @@ def GetTinyUrl(url):
 
     # On va chercher le vrai lien
     else:
-        headers9 = [('User-Agent', UA), ('Referer', URL_MAIN)]
+        oRequestHandler = cRequestHandler(url)
+        oRequestHandler.disableRedirect()
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
+        sHtmlContent = oRequestHandler.request()
 
-        opener = Noredirection()
-        opener.addheaders = headers9
-        reponse = opener.open(url, None, 5)
-
-        UrlRedirect = reponse.geturl()
+        UrlRedirect = oRequestHandler.getRealUrl()
 
         if not(UrlRedirect == url):
             url = UrlRedirect
-        elif 'Location' in reponse.headers:
-            url = reponse.headers['Location']
-
-        reponse.close()
-
+        elif 'Location' in reponse.getResponseHeader():
+            url = reponse.getResponseHeader()['Location']
     return url
 
 
