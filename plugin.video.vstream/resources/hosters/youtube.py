@@ -86,17 +86,6 @@ class cHoster(iHoster):
         oRequestHandler.addParameters("vt","home")
         sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
-        # initialisation des tableaux
-        url = []
-        qua = []
-        # Remplissage des tableaux
-        for i in sHtmlContent['links']["mp4"]:
-            url.append(sHtmlContent['links']["mp4"][i]["k"])
-            qua.append(sHtmlContent['links']["mp4"][i]["q"])
-
-        # dialogue qualité
-        k = dialog().VSselectqual(qua, url)
-
         oRequestHandler = cRequestHandler("https://yt1s.com/api/ajaxConvert/convert")
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -105,7 +94,7 @@ class cHoster(iHoster):
         oRequestHandler.addHeaderEntry('Origin', 'https://yt1s.com')
         oRequestHandler.addHeaderEntry('Referer', 'https://yt1s.com/fr13')
         oRequestHandler.addParameters("vid", self.__sUrl.split("v=")[1])
-        oRequestHandler.addParameters("k",k)
+        oRequestHandler.addParameters("k",sHtmlContent['links']["mp4"]["auto"]["k"])
         try:
             api_call = oRequestHandler.request(jsonDecode=True)['dlink']
         except:            
@@ -118,7 +107,7 @@ class cHoster(iHoster):
             oRequestHandler.addHeaderEntry('Origin', 'https://yt1s.com')
             oRequestHandler.addHeaderEntry('Referer', 'https://yt1s.com/fr13')
             oRequestHandler.addParameters("vid", self.__sUrl.split("v=")[1])
-            oRequestHandler.addParameters("k",k)
+            oRequestHandler.addParameters("k",sHtmlContent['links']["mp4"]["auto"]["k"])
             api_call = oRequestHandler.request(jsonDecode=True)['dlink']
 
         if api_call:
