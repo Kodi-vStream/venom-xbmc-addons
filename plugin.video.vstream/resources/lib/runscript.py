@@ -26,10 +26,7 @@ except:
     from pysqlite2 import dbapi2 as sqlite
     VSlog('SQLITE 2 as DB engine')
 
-try:
-    import json
-except:
-    import simplejson as json
+import json
 
 SITE_IDENTIFIER = 'runscript'
 SITE_NAME = 'runscript'
@@ -270,6 +267,8 @@ class cClear:
             class XMLDialog(xbmcgui.WindowXMLDialog):
 
                 ADDON = addon()
+                data = None
+                path = VSPath('special://home/addons/plugin.video.vstream/resources/sites.json')
 
                 def __init__(self, *args, **kwargs):
                     xbmcgui.WindowXMLDialog.__init__(self)
@@ -286,13 +285,15 @@ class cClear:
                     oPluginHandler = cPluginHandler()
                     aPlugins = oPluginHandler.getAllPlugins()
 
+                    self.data = json.load(open(self.path))
+
                     for aPlugin in aPlugins:
                         # teste si deja dans le dsip
                         sPluginSettingsName = 'plugin_' + aPlugin[1]
-                        bPlugin = self.ADDON.getSetting(sPluginSettingsName)
+                        bPlugin = self.data['site'][sPluginSettingsName]['active']
 
                         icon = "special://home/addons/plugin.video.vstream/resources/art/sites/%s.png" % aPlugin[1]
-                        stitle = aPlugin[0].replace('[COLOR violet]', '').replace('[COLOR orange]', '')\
+                        stitle = self.data['site'][sPluginSettingsName]['label'].replace('[COLOR violet]', '').replace('[COLOR orange]', '')\
                                            .replace('[/COLOR]', '').replace('[COLOR dodgerblue]', '')\
                                            .replace('[COLOR coral]', '')
                         if (bPlugin == 'true'):
@@ -305,12 +306,13 @@ class cClear:
                             listitem.select(True)
 
                         listitems.append(listitem)
-
                     self.container.addItems(listitems)
                     self.setFocus(self.container)
 
                 def onClick(self, controlId):
                     if controlId == 5:
+                        with open(self.path, 'w') as f:
+                            f.write(json.dumps(self.data, ensure_ascii=False, indent=4))
                         self.close()
                         return
                     elif controlId == 99:
@@ -329,25 +331,16 @@ class cClear:
                             label = item.getLabel().replace(valid, '')
                             item.setLabel(label)
                             item.select(False)
-                            sPluginSettingsName = ('plugin_%s') % (item.getProperty('sitename'))
-                            self.ADDON.setSetting(sPluginSettingsName, str('false'))
+                            self.data['site']["plugin_" + item.getProperty('sitename')]['active'] = "false"
                         else:
                             label = ('%s %s') % (item.getLabel(), valid)
                             item.setLabel(label)
                             item.select(True)
-                            sPluginSettingsName = ('plugin_%s') % (item.getProperty('sitename'))
-                            self.ADDON.setSetting(sPluginSettingsName, str('true'))
+                            self.data['site']["plugin_" + item.getProperty('sitename')]['active'] = "true"
                         return
 
                 def onFocus(self, controlId):
                     self.controlId = controlId
-
-                def _close_dialog(self):
-                    self.close()
-
-                # def onAction(self, action):
-                    # if action.getId() in (9, 10, 92, 216, 247, 257, 275, 61467, 61448):
-                        # self.close()
 
             path = "special://home/addons/plugin.video.vstream"
             wd = XMLDialog('DialogSelect.xml', path, "Default")
