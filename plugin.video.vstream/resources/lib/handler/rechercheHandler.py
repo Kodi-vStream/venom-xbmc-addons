@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.comaddon import addon, VSlog
+from resources.lib.comaddon import addon, VSlog, VSPath
 from resources.lib.db import cDb
 
 import sys
 import xbmcvfs
-
+import json
 
 class cRechercheHandler:
     Count = 0
@@ -56,7 +56,7 @@ class cRechercheHandler:
 
     def __getFileNamesFromFolder(self, sFolder):
         aNameList = []
-        folder, items = xbmcvfs.listdir(sFolder)
+        items = xbmcvfs.listdir(sFolder)[1][:-1]
         items.sort()
 
         for sItemName in items:
@@ -121,11 +121,12 @@ class cRechercheHandler:
         VSlog("Sites Folder: " + sFolder)
 
         aFileNames = self.__getFileNamesFromFolder(sFolder)
+        with open(VSPath('special://home/addons/plugin.video.vstream/resources/sites.json')) as f:
+            data = json.load(f)
 
         aPlugins = []
         for sFileName in aFileNames:
-            sPluginSettingsName = 'plugin_' + sFileName
-            bPlugin = addons.getSetting(sPluginSettingsName)
+            bPlugin = data['site']['plugin_' + sFileName]['active']
             if (bPlugin == 'true'):
                 aPlugin = self.importPlugin(sFileName, sCat)
                 if aPlugin:
