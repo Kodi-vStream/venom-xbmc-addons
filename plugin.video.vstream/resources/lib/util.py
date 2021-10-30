@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.comaddon import xbmc, isMatrix
+
 try:
     import htmlentitydefs
     import urllib
-    import urllib2
-
 except ImportError:
     import html.entities as htmlentitydefs
     import urllib.parse as urllib
-    import urllib.request as urllib2
 
 import unicodedata
 import re
@@ -71,24 +69,6 @@ class cUtil:
             iMinutes = '0' + str(iMinutes)
 
         return str(iMinutes) + ':' + str(iSeconds)
-
-    # def DecoTitle2(self, string):
-    #
-        # # on vire ancienne deco en cas de bug
-        # string = re.sub('\[\/*COLOR.*?\]', '', str(string))
-        #
-        # # pr les tag Crochet
-        # string = re.sub('([\[].+?[\]])',' [COLOR coral]\\1[/COLOR] ', string)
-        # # pr les tag parentheses
-        # string = re.sub('([\(](?![0-9]{4}).{1,7}[\)])', ' [COLOR coral]\\1[/COLOR] ', string)
-        # # pr les series
-        # string = self.FormatSerie(string)
-        # string = re.sub('(?i)(.*) ((?:[S|E][0-9\.\-\_]+){1,2})', '\\1 [COLOR coral]\\2[/COLOR] ', string)
-        #
-        # # vire doubles espaces
-        # string = re.sub(' +', ' ', string)
-        #
-        # return string
 
     def unescape(self, text):
         def fixup(m):
@@ -297,39 +277,3 @@ def QuoteSafe(sUrl):
 
 def urlEncode(sUrl):
     return urllib.urlencode(sUrl)
-
-
-def Noredirection():
-    class NoRedirection(urllib2.HTTPErrorProcessor):
-        def http_response(self, request, response):
-            return response
-
-        https_response = http_response
-
-    opener = urllib2.build_opener(NoRedirection)
-    return opener
-
-# deprecier utiliser comaddon dialog()
-# def updateDialogSearch(dialog, total, site):
-#     global COUNT
-#     COUNT += 1
-#     iPercent = int(float(COUNT * 100) / total)
-#     dialog.update(iPercent, 'Chargement: ' + str(site))
-
-
-# def VStranslatePath(location):
-#     # ex util.VStranslatePath('special://logpath/') > http://kodi.wiki/view/Special_protocol
-#     # d'apres Kodi ne doit pas etre utiliser sur les special://
-#     return xbmc.translatePath(location).decode('utf-8')
-
-
-def GetGooglUrl(url):
-    if 'http://goo.gl' in url:
-        try:
-            headers = {'User-Agent': 'Mozilla 5.10', 'Host': 'goo.gl', 'Connection': 'keep-alive'}
-            request = urllib2.Request(url, None, headers)
-            reponse = urllib2.urlopen(request)
-            url = reponse.geturl()
-        except:
-            pass
-    return url
