@@ -34,7 +34,12 @@ class cRequestHandler:
         self.verify = True
         self.json = {}
         self.forceIPV4 = False
+        self.oResponse = None
 
+
+    def statusCode(self):
+        return self.oResponse.status_code
+        
     #Utile pour certains hebergeurs qui ne marche pas en ipv6.
     def disableIPV6(self):
         self.forceIPV4 = True
@@ -178,7 +183,6 @@ class cRequestHandler:
         if self.forceIPV4:
             urllib3_cn.allowed_gai_family = self.allowed_gai_family
 
-        oResponse = None
         try:
             _request = Request(method, self.__sUrl, headers=self.__aHeaderEntries)
             if method in ['POST']:
@@ -193,18 +197,18 @@ class cRequestHandler:
             prepped = _request.prepare()
             self.s.headers.update(self.__aHeaderEntries)
 
-            oResponse = self.s.send(prepped, timeout=self.__timeout, allow_redirects=self.redirects, verify=self.verify)
-            self.__sResponseHeader = oResponse.headers
-            self.__sRealUrl = oResponse.url
+            self.oResponse = self.s.send(prepped, timeout=self.__timeout, allow_redirects=self.redirects, verify=self.verify)
+            self.__sResponseHeader = self.oResponse.headers
+            self.__sRealUrl = self.oResponse.url
 
             if jsonDecode == True:
-                sContent = oResponse.json()
+                sContent = self.oResponse.json()
             elif xmlDecode == True:
-                sContent = oResponse.content
+                sContent = self.oResponse.content
             else:
-                sContent = oResponse.content
+                sContent = self.oResponse.content
                 #Necessaire pour Python 3
-                if isMatrix() and not 'youtube' in oResponse.url:
+                if isMatrix() and not 'youtube' in self.oResponse.url:
                     try:
                        sContent = sContent.decode()
                     except:
@@ -248,8 +252,8 @@ class cRequestHandler:
             dialog().VSerror(error_msg)
             sContent = ''
 
-        if oResponse != None:
-            if oResponse.status_code in [503,403]:
+        if self.oResponse != None:
+            if self.oResponse.status_code in [503,403]:
                 if not "Forbidden" in sContent:
                     #Default
                     CLOUDPROXY_ENDPOINT = 'http://' + addon().getSetting('ipaddress') + ':8191/v1'
@@ -289,11 +293,11 @@ class cRequestHandler:
 
                             sContent = response['solution']['response']
 
-            if oResponse and not sContent:
+            if self.oResponse and not sContent:
                 #Ignorer ces deux codes erreurs.
                 ignoreStatus = [200,302]
-                if oResponse.status_code not in ignoreStatus:
-                    dialog().VSerror("%s (%d),%s" % (addon().VSlang(30205), oResponse.status_code, self.__sUrl))
+                if self.oResponse.status_code not in ignoreStatus:
+                    dialog().VSerror("%s (%d),%s" % (addon().VSlang(30205), self.oResponse.status_code, self.__sUrl))
 
         if sContent:
             if (self.__bRemoveNewLines == True):
