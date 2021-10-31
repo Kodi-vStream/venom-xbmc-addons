@@ -14,6 +14,7 @@ class cRechercheHandler:
         self.__sText = ""
         self.__sDisp = ""
         self.__sCat = ""
+        self.__siteAdded = False
 
     def getPluginHandle(self):
         try:
@@ -96,7 +97,7 @@ class cRechercheHandler:
             return False
 
     def getAvailablePlugins(self):
-
+        path = VSPath('special://home/addons/plugin.video.vstream/resources/sites.json')
         addons = addon()
         sText = self.getText()
         if not sText:
@@ -121,16 +122,27 @@ class cRechercheHandler:
         VSlog("Sites Folder: " + sFolder)
 
         aFileNames = self.__getFileNamesFromFolder(sFolder)
-        with open(VSPath('special://home/addons/plugin.video.vstream/resources/sites.json')) as f:
+        with open(path) as f:
             data = json.load(f)
 
         aPlugins = []
         for sFileName in aFileNames:
+            pluginData = data["site"].get('plugin_' + sFileName)
+            if pluginData is None:
+                data['site'].update({'plugin_' + sFileName: {"label":sFileName,"active":"true"}})
+                if self.__siteAdded == False:
+                    self.__siteAdded = True
+                              
             bPlugin = data['site']['plugin_' + sFileName]['active']
             if (bPlugin == 'true'):
                 aPlugin = self.importPlugin(sFileName, sCat)
                 if aPlugin:
                     aPlugins.append(aPlugin)
+
+        if self.__siteAdded == True:
+            with open(path, 'w') as f:
+                f.write(json.dumps(data, indent=4))
+
         return aPlugins
 
     def __createAvailablePluginsItem(self, sPluginName, sPluginIdentifier, sPluginDesc):
