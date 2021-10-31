@@ -5,7 +5,7 @@
             "active": "true"
         },
         "plugin__33seriestreaming": {
-            "label": "33 Séries",
+            "label": "33 S\u00e9ries",
             "active": "true"
         },
         "plugin__4kstreamz": {
@@ -77,11 +77,11 @@
             "active": "true"
         },
         "plugin_ducine": {
-            "label": "Du Ciné",
+            "label": "Du Cin\u00e9",
             "active": "true"
         },
         "plugin_enstream_series": {
-            "label": "Enstream (Séries)",
+            "label": "Enstream (S\u00e9ries)",
             "active": "true"
         },
         "plugin_enstream": {
@@ -169,11 +169,11 @@
             "active": "true"
         },
         "plugin_kstreamingserie": {
-            "label": "K streaming Série",
+            "label": "K streaming S\u00e9rie",
             "active": "true"
         },
         "plugin_les_debiles": {
-            "label": "Les Débiles",
+            "label": "Les D\u00e9biles",
             "active": "true"
         },
         "plugin_les_docus": {
@@ -245,7 +245,7 @@
             "active": "true"
         },
         "plugin_serie_streaming": {
-            "label": "Série Streaming",
+            "label": "S\u00e9rie Streaming",
             "active": "true"
         },
         "plugin_series_en_streaming": {
@@ -285,7 +285,7 @@
             "active": "true"
         },
         "plugin_streamay_series": {
-            "label": "StreamAy Séries",
+            "label": "StreamAy S\u00e9ries",
             "active": "true"
         },
         "plugin_streamcomplet3": {
@@ -313,7 +313,7 @@
             "active": "true"
         },
         "plugin_telecharger_streaming": {
-            "label": "Télécharger-streaming",
+            "label": "T\u00e9l\u00e9charger-streaming",
             "active": "true"
         },
         "plugin_themoviedb_org": {
@@ -341,7 +341,7 @@
             "active": "true"
         },
         "plugin_vf_serie": {
-            "label": "VF Série",
+            "label": "VF S\u00e9rie",
             "active": "true"
         },
         "plugin_vfilms": {
@@ -385,7 +385,7 @@
             "active": "true"
         },
         "plugin_youtitou_com": {
-            "label": "YouTitou (Animés)",
+            "label": "YouTitou (Anim\u00e9s)",
             "active": "true"
         },
         "plugin_zone_streaming": {
@@ -393,7 +393,7 @@
             "active": "true"
         },
         "plugin_zone_telechargement_ws": {
-            "label": "Zone Téléchargement.ws",
+            "label": "Zone T\u00e9l\u00e9chargement.ws",
             "active": "true"
         },
         "plugin_zustream": {
