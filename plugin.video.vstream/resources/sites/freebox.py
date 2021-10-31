@@ -136,7 +136,8 @@ def showWeb(infile=None):  # Code qui s'occupe de liens TV du Web
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]Problème de lecture avec la playlist[/COLOR]')
 
     else:
-        EPG = cePg().get_epg('', 'direct',noTextBox=True)
+        cEpg = cePg()
+        EPG = cEpg.getEpg('', 'direct',noTextBox=True)
 
         total = len(playlist)
         progress_ = progress().VScreate(SITE_NAME)
@@ -148,11 +149,8 @@ def showWeb(infile=None):  # Code qui s'occupe de liens TV du Web
             if not sThumb:
                 sThumb = 'tv.png'
 
-            fixName = track.title.lower().replace('sport','sports').replace(' ',"").replace('é','e').replace('è','e')
-            try:
-                sDesc = re.search("\[COLOR red\]" + fixName.replace('+',"\\+") + "\[/COLOR\](.+?)\[COLOR red",EPG, re.MULTILINE|re.DOTALL).group(1)
-            except:
-                sDesc = ""
+            channelName = track.title.replace('sport','sports').replace('(en clair)','')
+            sDesc = cEpg.getChannelEpg(EPG, channelName)
 
             # les + ne peuvent pas passer
             url2 = track.path.replace('+', 'P_L_U_S')

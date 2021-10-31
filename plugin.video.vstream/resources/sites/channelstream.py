@@ -60,6 +60,7 @@ def load():
 def showMovies():
     oGui = cGui()
     oParser = cParser()
+    cEpg = cePg()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -76,7 +77,7 @@ def showMovies():
     else:
         sPattern = 'location.href = \'\.(.+?)\'.+?src=\'(.+?)\'.+?<div align="center">(.+?)</div>'
         sHtmlContent = oParser.abParse(sHtmlContent, sFiltre, '<!-- Type Chaîne -->')
-        EPG = cePg().get_epg('', 'direct',noTextBox=True)
+        EPG = cEpg.getEpg('', 'direct',noTextBox=True)
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -107,11 +108,8 @@ def showMovies():
             else:
                 #On passe le contenu +18 puisqu'il n'y a pas d'EPG.
                 if not "<imgwidt" in aEntry[2]:
-                    fixName = aEntry[2].lower().replace('sport','sports').replace(' ',"").replace('é','e').replace('è','e')
-                    try:
-                        sDesc = re.search("\[COLOR red\]" + fixName.replace('+',"\\+") + "\[/COLOR\](.+?)\[COLOR red",EPG, re.MULTILINE|re.DOTALL).group(1)
-                    except:
-                        sDesc = ""
+                    channelName = aEntry[2].replace('sport','sports')#.replace(' ',"").replace('é','e').replace('è','e')
+                    sDesc = cEpg.getChannelEpg(EPG, channelName)
                 else:
                     sDesc = ""
 

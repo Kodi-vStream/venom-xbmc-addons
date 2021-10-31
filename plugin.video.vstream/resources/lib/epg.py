@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Venom.
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
-from resources.lib.util import cUtil
-from resources.lib.comaddon import dialog, xbmc, window, VSlog, progress
-from datetime import timedelta, datetime
+from resources.lib.comaddon import dialog, isMatrix
+from datetime import datetime
 
 import xml.etree.ElementTree as ET
 import requests
 import re
+import unicodedata
 
 SITE_IDENTIFIER = 'ePg'
 SITE_NAME = 'epg'
@@ -18,7 +16,7 @@ class cePg:
 
     def view_epg(self, sTitle, sTime,text=None):
         if text == None:
-            text = self.get_epg(sTitle, sTime)
+            text = self.getEpg(sTitle, sTime)
          
         if text:
             self.TextBoxes(sTitle, text)
@@ -26,12 +24,12 @@ class cePg:
             dialog().VSinfo('Impossible de trouver le guide tv')
 
 
-    def get_epg(self, sTitle, sTime, noTextBox=False):
+    def getEpg(self, sTitle, sTime, noTextBox=False):
         #Si noTextBox == True, ca veux dire que l'appel viens d'une source.
         #Dans ce cas la, on normalise les noms pour faciliter la detection.
         sUrl = "https://xmltv.ch/xmltv/xmltv-complet_1jour.xml"
 
-        dialog().VSinfo("Chargement de l'EPG")
+        # dialog().VSinfo("Chargement du guide TV")
 
         d = datetime.now()
         if 'soir' in sTime:
@@ -55,10 +53,13 @@ class cePg:
         for elem in tree.findall('programme'):
             if elem.get('start'):
                 formatTime = self.parse_date_tz(elem.get('start').split(' ')[0], elem.get('stop').split(' ')[0])
-                if noTextBox == True:
-                    text += "[COLOR red]" + channelList[elem.get("channel")].lower().replace(' ',"").replace('é','e').replace('è','e') + "[/COLOR]\r\n"
-                else:
-                    text += "[COLOR red]" + channelList[elem.get("channel")] + "[/COLOR]\r\n"                  
+                channelId = elem.get("channel")
+                if not isinstance(channelId, str):
+                    channelId = channelId.decode('utf-8')
+                channel = channelList[channelId]
+                if noTextBox:
+                    channel = self._clean_name(channel)
+                text += "[COLOR red]" + channel + "[/COLOR]\r\n"                  
                 text += "[B]" + formatTime + "[/B]\r\n"
                 text += "[COLOR khaki][UPPERCASE]" + elem.find('title').text + "[/UPPERCASE][/COLOR]\r\n"
                 if elem.find('category') is not None:    
@@ -66,6 +67,10 @@ class cePg:
                 if elem.find('desc') is not None:
                     text +=  elem.find('desc').text
             text += "\r\n"
+            
+            
+        if not isMatrix():
+            text = text.encode('utf8')
         return text
 
 
@@ -75,6 +80,8 @@ class cePg:
         return formatTime
 
     def TextBoxes(self, heading, anounce):
+        from resources.lib.comaddon import window, xbmc
+
         # activate the text viewer window
         xbmc.executebuiltin("ActivateWindow(%d)" % 10147)
         # get window
@@ -120,3 +127,30 @@ class cePg:
             if b'</programme>' in line:
                 take_line = True
         return xmltv_l
+
+    def getChannelEpg(self, EPG, channelName):
+
+        if not EPG:
+            return ''
+
+        try:
+            searchName = self._clean_name(channelName).replace('+',"\\+")
+            sDesc = re.search("\[COLOR red\]" + searchName + "\[\/COLOR\](.+?)\[COLOR red", EPG, re.MULTILINE|re.DOTALL).group(1)
+        except Exception as e:
+            sDesc = ''
+        return sDesc
+
+
+    def _clean_name(self, name):
+        # vire accent
+        try:
+            if isinstance(name, str):
+                name = unicode(name, 'utf-8')
+            name = unicodedata.normalize('NFD', name).encode('ascii', 'ignore').decode('unicode_escape')
+            if not isMatrix():
+                name = name.encode('utf-8')  # on repasse en utf-8
+        except Exception as e:
+            pass
+
+        name = name.replace(' +',"+").lower().strip()
+        return name
