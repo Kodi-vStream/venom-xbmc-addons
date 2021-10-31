@@ -176,7 +176,7 @@ class cHosterGui:
                     'drive.google.com', 'docs.google.com', 'vidwatch', 'up2stream', 'vidbm', 'tune', 'vidup', 'vidbull', 'vidlox', 'videobin', 'stagevu', 'movshare',
                     'gorillavid','daclips', 'estream', 'hdvid', 'vshare', 'giga', 'vidbom', 'upvideo', 'upvid', 'cloudvid', 'megadrive', 'downace', 'clickopen',
                     'iframe-secured', 'iframe-secure', 'jawcloud', 'kvid', 'soundcloud', 'mixcloud', 'ddlfr', 'pdj', 'vidzstore', 'hd-stream', 'rapidstream', 
-                    'archive','jetload','dustreaming', 'vupload', 'viki', 'flix555', 'onlystream', 'pstream', 'vudeo', 'sendvid', 
+                    'archive','jetload','dustreaming', 'vupload', 'viki', 'flix555', 'onlystream', 'upstream', 'pstream', 'vudeo', 'sendvid', 
                     'supervideo', 'dood', 'vidia', 'streamtape', 'femax', 'vidbem', 'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 
                     'plynow', 'myvi.tv', 'playtube', 'dwfull', '1fichier', 'uptobox', 'uplea', 'vidload','cloudhost',
                     'easyload', 'ninjastream', 'megaup','33player']
