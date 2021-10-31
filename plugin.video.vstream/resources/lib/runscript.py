@@ -312,7 +312,7 @@ class cClear:
                 def onClick(self, controlId):
                     if controlId == 5:
                         with open(self.path, 'w') as f:
-                            f.write(json.dumps(self.data, ensure_ascii=False, indent=4))
+                            f.write(json.dumps(self.data, indent=4))
                         self.close()
                         return
                     elif controlId == 99:
