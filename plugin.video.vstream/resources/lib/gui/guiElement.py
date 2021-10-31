@@ -2,9 +2,8 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Venom.
 import re
-import unicodedata
 
-from resources.lib.comaddon import addon, xbmc, isMatrix, VSlog, isNexus
+from resources.lib.comaddon import addon, xbmc, isMatrix, isNexus
 from resources.lib.db import cDb
 from resources.lib.util import cUtil, QuoteSafe
 
