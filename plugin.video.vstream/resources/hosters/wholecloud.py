@@ -1,6 +1,6 @@
-#coding: utf-8
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#Wholecloud-Movshare
+# -*- coding: utf-8 -*-
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# Wholecloud-Movshare
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
@@ -8,13 +8,12 @@ import re
 
 
 class cHoster(iHoster):
-
     def __init__(self):
         self.__sDisplayName = 'Wholecloud'
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -70,15 +69,15 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         r = re.search('var fkzd="([^"]+)"', sHtmlContent)
-        if (r):
+        if r:
             url = 'http://www.wholecloud.net/api/player.api.php?key=' + r.group(1) + '&file=' + sId
             oRequest = cRequestHandler(url)
             sHtmlContent = oRequest.request()
             r2 = re.search('^url=([^&]+)&', sHtmlContent)
-            if (r2):
+            if r2:
                 api_call = r2.group(1)
 
-        if (api_call):
+        if api_call:
             return True, api_call
 
         return False, False
