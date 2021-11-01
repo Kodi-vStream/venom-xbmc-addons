@@ -42,7 +42,6 @@ the python script "\plugin.video.vstream\default.py" has left several classes in
 """
 ADDONVS = xbmcaddon.Addon('plugin.video.vstream')  # singleton
 
-
 # class addon(xbmcaddon.Addon):
 class addon:
     def __init__(self, addonId=None):
@@ -62,7 +61,6 @@ class addon:
 
     def VSlang(self, lang):
         return VSPath(xbmcaddon.Addon(self.addonId).getLocalizedString(lang)) if self.addonId else VSPath(ADDONVS.getLocalizedString(lang))
-        # Bug avec accent xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang)).decode('utf-8')
 
 
 """
@@ -73,26 +71,24 @@ dialogs = dialog()
 dialogs.VSinfo('test')
 https://codedocs.xyz/xbmc/xbmc/group__python___dialog.html
 """
-
-DIALOG = xbmcgui.Dialog() # Singleton
-
-
 class dialog:
-# class dialog(xbmcgui.Dialog):
+    def __init__(self):
+        self.DIALOG = xbmcgui.Dialog()
+
     def VSok(self, desc, title='vStream'):
-        return DIALOG.ok(title, desc)
+        return self.DIALOG.ok(title, desc)
 
     def VSyesno(self, desc, title='vStream'):
-        return DIALOG.yesno(title, desc)
+        return self.DIALOG.yesno(title, desc)
 
     def VSselect(self, desc, title='vStream'):
-        return DIALOG.select(title, desc)
+        return self.DIALOG.select(title, desc)
 
     def numeric(self, dialogType, heading, defaultt):
-        return DIALOG.numeric(dialogType, heading, defaultt)
+        return self.DIALOG.numeric(dialogType, heading, defaultt)
 
     def VSbrowse(self, type, heading, shares):
-        return DIALOG.browse(type, heading, shares)
+        return self.DIALOG.browse(type, heading, shares)
 
     def VSselectqual(self, list_qual, list_url):
 
@@ -101,7 +97,7 @@ class dialog:
         if len(list_url) == 1:
             return list_url[0]
 
-        ret = DIALOG.select(addon().VSlang(30448), list_qual)
+        ret = self.DIALOG.select(addon().VSlang(30448), list_qual)
         if ret > -1:
             return list_url[ret]
         return ''
@@ -115,13 +111,13 @@ class dialog:
         if (addon().getSetting('Block_Noti_sound') == 'true'):
             sound = True
 
-        return DIALOG.notification(str(title), str(desc), xbmcgui.NOTIFICATION_INFO, iseconds, sound)
+        return self.DIALOG.notification(str(title), str(desc), xbmcgui.NOTIFICATION_INFO, iseconds, sound)
 
     def VSerror(self, e):
-        return DIALOG.notification('vStream', 'Erreur: ' + str(e), xbmcgui.NOTIFICATION_ERROR, 2000), VSlog('Erreur: ' + str(e))
+        return self.DIALOG.notification('vStream', 'Erreur: ' + str(e), xbmcgui.NOTIFICATION_ERROR, 2000), VSlog('Erreur: ' + str(e))
 
     def VStextView(self, desc, title='vStream'):
-        return DIALOG.textviewer(title, desc)
+        return self.DIALOG.textviewer(title, desc)
 
 
 """
@@ -139,10 +135,6 @@ dialog = progress() non recommandé
 progress = progress() non recommandé
 https://codedocs.xyz/xbmc/xbmc/group__python___dialog_progress.html
 """
-
-COUNT = 0
-PROGRESS = None  # Singleton
-
 
 class empty:
 
@@ -322,7 +314,6 @@ https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#ga0b7116686
 
 
 class listitem(xbmcgui.ListItem):
-    # ListItem([label, label2, iconImage, thumbnailImage, path])
     def __init__(self, label='', label2='', iconImage='', thumbnailImage='', path=''):
         pass
 
@@ -434,9 +425,6 @@ class addonManager:
     # Active/desactive un addon
     def enableAddon(self, addon_id, enable='True'):
         import json
-        # if enable=='True' and xbmc.getCondVisibility('System.HasAddon(%s)' % addon_id) == 0:
-            # VSlog('%s déjà activé'  %addon_id)
-            # return True
 
         request = {
             "jsonrpc": "2.0",
