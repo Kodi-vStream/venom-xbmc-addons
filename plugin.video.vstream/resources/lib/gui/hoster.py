@@ -235,6 +235,9 @@ class cHosterGui:
 
         if ('upvideo' in sHostName) or ('streamon' in sHostName):
             return self.getHoster('upvideo')
+        
+         if ('streamlare' in sHostName):
+            return self.getHoster('streamlare')
 
         if ('clipwatching' in sHostName) or ('highstream' in sHostName):
             return self.getHoster('clipwatching')
