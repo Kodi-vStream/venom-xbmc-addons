@@ -243,6 +243,10 @@ class CountdownDialog(object):
 
 class progress():
 
+    def __init__(self):
+        self.PROGRESS = None
+        self.COUNT = 0
+
     def VScreate(self, title = 'vStream', desc = '', large=False):
         # l'option "large" permet de forcer un sablier large, seul le sablier large peut être annulé.
 
@@ -257,60 +261,45 @@ class progress():
         if dlgId != 9999 and dlgId != 10138: # 9999 = None
             return empty()
 
-#         # Ne pas afficher le sablier si le mode d'affichage est une liste
-#         # Ne fonctionne pas car l'info correspond à la fenêtre precedente
-#         viewMode = xbmc.getInfoLabel('Container.ViewMode')
-#         VSlog('viewMode = '+ viewMode)
-#         if 'list' in viewMode or 'List' in viewMode:
-#             return empty()
-
-        global PROGRESS
-        if PROGRESS == None:
+        if self.PROGRESS == None:
             if large:
-                PROGRESS = xbmcgui.DialogProgress()
+                self.PROGRESS = xbmcgui.DialogProgress()
             elif ADDONVS.getSetting('spinner_small') == 'true':
-                PROGRESS = xbmcgui.DialogProgressBG()
+                self.PROGRESS = xbmcgui.DialogProgressBG()
             else:
-                PROGRESS = xbmcgui.DialogProgress()
-            PROGRESS.create(title, desc)
+                self.PROGRESS = xbmcgui.DialogProgress()
+            self.PROGRESS.create(title, desc)
 
         return self
 
     def VSupdate(self, dialog, total, text = '', search = False):
-
-        global PROGRESS
-        if not PROGRESS:    # Déjà refermé
+        if not self.PROGRESS:    # Déjà refermé
             return
         
         if not search and window(10101).getProperty('search') == 'true':
             return
         
-        global COUNT
-        COUNT += 1
-        iPercent = int(float(COUNT * 100) / total)
-        PROGRESS.update(iPercent, 'Chargement ' + str(COUNT) + '/' + str(total) + " " + text)
+        self.COUNT += 1
+        iPercent = int(float(self.COUNT * 100) / total)
+        self.PROGRESS.update(iPercent, 'Chargement ' + str(self.COUNT) + '/' + str(total) + " " + text)
 
     def iscanceled(self):
-        global PROGRESS
-        if isinstance(PROGRESS, xbmcgui.DialogProgress):
-            return PROGRESS.iscanceled()
+        if isinstance(self.PROGRESS, xbmcgui.DialogProgress):
+            return self.PROGRESS.iscanceled()
         return False
 
     def VSclose(self, dialog = ''):
-        global PROGRESS
-        if not PROGRESS:
+        if not self.PROGRESS:
             return      # Déjà fermée
 
         if window(10101).getProperty('search') == 'true':
             return
         
-        if PROGRESS:            # test si pas fermé entre-temps
-            dialog = PROGRESS   # Sémaphore pour synchroniser la fermeture
-            PROGRESS = None
-            dialog.close()
+        if self.PROGRESS:            # test si pas fermé entre-temps
+            self.PROGRESS.close()
 
     def getProgress(self):
-        return COUNT
+        return self.COUNT
     
 """
 from resources.lib.comaddon import window
