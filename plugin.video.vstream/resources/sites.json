@@ -132,6 +132,10 @@
             "label": "Funeral for a manga",
             "active": "true"
         },
+        "plugin_fullmachtv": {
+            "label": "Sport NBA",
+            "active": "true"
+        },
         "plugin_gum_gum_streaming_com": {
             "label": "Gum-Gum-Streaming",
             "active": "true"
