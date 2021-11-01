@@ -26,7 +26,7 @@ FANART_URL = 'https://ia.media-.imdb.com/images/m/'
 
 MOVIE_WORLD = (URL_MAIN + 'search/title?groups=top_1000&sort=user_rating,desc&start=1', 'showMovies')
 MOVIE_TOP250 = (URL_MAIN + 'search/title?count=100&groups=top_250', 'showMovies')
-# MOVIE_TOP2021 = (URL_MAIN + 'search/title?year=2021,2021&title_type=feature&explore=languages', 'showMovies')
+MOVIE_TOP2021 = (URL_MAIN + 'search/title?year=2021,2021&title_type=feature&explore=languages', 'showMovies')
 MOVIE_TOP2020 = (URL_MAIN + 'search/title?year=2020,2020&title_type=feature&explore=languages', 'showMovies')
 MOVIE_TOP2019 = (URL_MAIN + 'search/title?year=2019,2019&title_type=feature&explore=languages', 'showMovies')
 MOVIE_TOP2018 = (URL_MAIN + 'search/title?year=2018,2018&title_type=feature&explore=languages', 'showMovies')
@@ -77,8 +77,8 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP250[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP250[1], 'Top 250', 'films.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP2021[0])
-    # oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP2021[1], 'Top Films 2021', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP2021[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP2021[1], 'Top Films 2021', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP2020[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP2020[1], 'Top Films 2020', 'films.png', oOutputParameterHandler)
