@@ -183,7 +183,7 @@ class cHosterGui:
                             'vupload', 'viki', 'flix555', 'onlystream', 'upstream', 'pstream', 'vudeo', 'sendvid',
                             'supervideo', 'dood', 'vidia', 'streamtape', 'femax', 'vidbem', 'sibnet', 'vidplayer',
                             'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow', 'myvi.tv', 'playtube',
-                            'dwfull', '1fichier', 'uptobox', 'uplea', 'vidload', 'cloudhost', 'easyload', 'ninjastream',
+                            'dwfull', 'onefichier', 'uptobox', 'uplea', 'vidload', 'cloudhost', 'easyload', 'ninjastream',
                             'megaup', '33player']
 
         val = next((x for x in supported_player if x in sHostName), None)
