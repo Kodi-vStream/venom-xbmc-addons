@@ -2,12 +2,14 @@
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 # Venom.
 
+import xbmc
+
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.comaddon import dialog, addon, VSlog, xbmc
+from resources.lib.comaddon import dialog, addon, VSlog
 
 
 class cHosterGui:
@@ -171,20 +173,17 @@ class cHosterGui:
                     return self.getHoster("lien_direct")
 
         supported_player = ['streamz', 'streamax', 'gounlimited', 'xdrive', 'facebook', 'mixdrop', 'mixloads', 'vidoza',
-                            'rutube', 'vk.com', 'vkontakte', 'vkcom', 'megawatch', 'playvidto', 'vidzi', 'vcstream',
-                            'filetrip', 'uptostream', 'livestream', 'flashx', 'filez', 'speedvid', 'netu',  'mail.ru',
-                            'onevideo', 'playreplay', 'vimeo', 'prostream', 'vidfast', 'uqload', 'letwatch',
-                            'letsupload', 'filepup', 'vimple.ru', 'wstream', 'watchvideo', 'drive.google.com',
-                            'docs.google.com', 'vidwatch', 'up2stream', 'vidbm', 'tune', 'vidup', 'vidbull', 'vidlox',
-                            'videobin', 'stagevu', 'movshare', 'gorillavid', 'daclips', 'estream', 'hdvid', 'vshare',
-                            'giga', 'vidbom', 'upvideo', 'upvid', 'cloudvid', 'megadrive', 'downace', 'clickopen',
-                            'iframe-secured', 'iframe-secure', 'jawcloud', 'kvid', 'soundcloud', 'mixcloud', 'ddlfr',
-                            'pdj', 'vidzstore', 'hd-stream', 'rapidstream', 'archive', 'jetload', 'dustreaming',
-                            'vupload', 'viki', 'flix555', 'onlystream', 'upstream', 'pstream', 'vudeo', 'sendvid',
-                            'supervideo', 'dood', 'vidia', 'streamtape', 'femax', 'vidbem', 'sibnet', 'vidplayer',
-                            'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow', 'myvi.tv', 'playtube',
-                            'dwfull', 'onefichier', 'uptobox', 'uplea', 'vidload', 'cloudhost', 'easyload', 'ninjastream',
-                            'megaup', '33player']
+                            'rutube', 'megawatch', 'vidzi', 'filetrip', 'uptostream', 'speedvid', 'netu', 'letsupload',
+                            'onevideo', 'playreplay', 'vimeo', 'prostream', 'vidfast', 'uqload', 'letwatch', 'mail.ru',
+                            'filepup', 'vimple', 'wstream', 'watchvideo', 'vidwatch', 'up2stream', 'vidbm',  'tune',
+                            'vidup', 'vidbull', 'vidlox', 'megaup', '33player' 'easyload', 'ninjastream', 'cloudhost',
+                            'videobin', 'stagevu', 'gorillavid', 'daclips', 'hdvid', 'vshare', 'streamlare', 'vidload',
+                            'giga', 'vidbom', 'upvid', 'cloudvid', 'megadrive', 'downace', 'clickopen', 'supervideo',
+                            'jawcloud', 'kvid', 'soundcloud', 'mixcloud', 'ddlfr', 'vupload', 'dwfull', 'vidzstore',
+                            'pdj', 'rapidstream', 'archive', 'jetload', 'dustreaming', 'viki', 'flix555', 'onlystream',
+                            'upstream', 'pstream', 'vudeo', 'sendvid', 'dood', 'vidia', 'streamtape', 'femax', 'vidbem',
+                            'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow',
+                            'myvi.tv', 'playtube', 'uptobox', 'uplea', '33player']
 
         val = next((x for x in supported_player if x in sHostName), None)
         if val:
@@ -194,10 +193,25 @@ class cHosterGui:
         if ('youtube' in sHostName) or ('youtu.be' in sHostName):
             return self.getHoster('youtube')
 
+        if ('vk.com' in sHostName) or ('vkontakte' in sHostName) or ('vkcom' in sHostName):
+            return self.getHoster('vk')
+
+        if ('playvidto' in sHostName):
+            return self.getHoster('vidto')
+
+        if ('hd-stream' in sHostName):
+            return self.getHoster('hd_stream')
+
+        if ('vcstream' in sHostName):
+            return self.getHoster('vidcloud')
+
+        if ('livestream' in sHostName):
+            return self.getHoster('lien_direct')
+
         # vidtodo et clone
         val = next((x for x in ['vidtodo', 'vixtodo', 'viddoto', 'vidstodo'] if x in sHostName), None)
         if val:
-            return self.getHoster("vidtodo")
+            return self.getHoster('vidtodo')
 
         if ('dailymotion' in sHostName) or ('dai.ly' in sHostName):
             try:
@@ -207,31 +221,31 @@ class cHosterGui:
                 pass
             else:
                 return self.getHoster('dailymotion')
+        if ('flashx' in sHostName) or ('filez' in sHostName):
+            return self.getHoster('flashx')
 
         if ('mystream' in sHostName) or ('mstream' in sHostName):
             return self.getHoster('mystream')
 
-        if ('streamingentiercom/videophp?type=speed' in sHosterUrl):
-            return self.getHoster('speedvideo')
-        if ('speedvideo' in sHostName):
+        if ('streamingentiercom/videophp?type=speed' in sHosterUrl) or ('speedvideo' in sHostName):
             return self.getHoster('speedvideo')
 
-        if ('googlevideo' in sHostName):
-            return self.getHoster('googlevideo')
-        if ('picasaweb' in sHostName):
-            return self.getHoster('googlevideo')
-        if ('googleusercontent' in sHostName):
+        if ('googlevideo' in sHostName) or ('picasaweb' in sHostName) or ('googleusercontent' in sHostName):
             return self.getHoster('googlevideo')
 
         if ('ok.ru' in sHostName) or ('odnoklassniki' in sHostName):
             return self.getHoster('ok_ru')
 
+        if ('iframe-secured' in sHostName):
+            return self.getHoster('iframe_secured')
+
+        if ('iframe-secure' in sHostName):
+            return self.getHoster('iframe_secure')
+
         if ('thevideo' in sHostName) or ('video.tt' in sHostName) or ('vev.io' in sHostName):
             return self.getHoster('thevideo_me')
 
-        if ('drive.google.com' in sHostName):
-            return self.getHoster('googledrive')
-        if ('docs.google.com' in sHostName):
+        if ('drive.google.com' in sHostName) or ('docs.google.com' in sHostName):
             return self.getHoster('googledrive')
 
         if ('movshare' in sHostName) or ('wholecloud' in sHostName):
@@ -240,8 +254,8 @@ class cHosterGui:
         if ('upvideo' in sHostName) or ('streamon' in sHostName):
             return self.getHoster('upvideo')
 
-        if ('streamlare' in sHostName):
-            return self.getHoster('streamlare')
+        if ('estream' in sHostName) and not ('widestream' in sHostName):
+            return self.getHoster('estream')
 
         if ('clipwatching' in sHostName) or ('highstream' in sHostName):
             return self.getHoster('clipwatching')
@@ -259,6 +273,9 @@ class cHosterGui:
             return self.getHoster('directmoviedl')
 
         # Lien telechargeable a convertir en stream
+        if ('1fichier' in sHostName):
+            return self.getHoster('onefichier')
+
         if ('uploaded' in sHostName) or ('ul.to' in sHostName):
             if ('/file/forbidden' in sHosterUrl):
                 return False
