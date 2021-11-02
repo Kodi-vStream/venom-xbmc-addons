@@ -84,17 +84,6 @@ class main:
             return
 
         if not oInputParameterHandler.exist('site'):
-
-            # mise a jour
-            try:
-                # from resources.lib.about import cAbout
-                # cAbout().getUpdate()
-                plugins = __import__('resources.lib.about', fromlist=['about']).cAbout()
-                function = getattr(plugins, 'getUpdate')
-                function()
-            except:
-                pass
-
             # charge home
             plugins = __import__('resources.lib.home', fromlist=['home']).cHome()
             function = getattr(plugins, 'load')
@@ -103,13 +92,7 @@ class main:
 
         if oInputParameterHandler.exist('site'):
             sSiteName = oInputParameterHandler.getValue('site')
-            # if oInputParameterHandler.exist('title'):
-                # sTitle = oInputParameterHandler.getValue('title')
-            # else:
-                # sTitle = 'none'
-
             VSlog('load site ' + sSiteName + ' and call function ' + sFunction)
-            # cStatistic().callStartPlugin(sSiteName, sTitle)
 
             if isHosterGui(sSiteName, sFunction):
                 return
@@ -173,8 +156,6 @@ class main:
 
             # charge sites
             try:
-                # exec("from resources.sites import " + sSiteName + " as plugin")
-                # exec("plugin." + sFunction + "()")
                 plugins = __import__('resources.sites.%s' % sSiteName, fromlist=[sSiteName])
                 function = getattr(plugins, sFunction)
                 function()
