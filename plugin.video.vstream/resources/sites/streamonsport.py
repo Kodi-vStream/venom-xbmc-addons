@@ -226,33 +226,28 @@ def Showlink():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     siterefer = oInputParameterHandler.getValue('siterefer')
+    sHosterUrl = ''
     sUrl2 = ''
-    shosterurl = ''
                     
+    if 'yahoo.php' in sUrl:  # redirection
+        sUrl = src="https://allfoot.info/fr/" + sUrl.replace('/yahoo.php?s=', '')
+    
     if 'allfoot' in sUrl or 'channelstream' in sUrl:
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         # oRequestHandler.addHeaderEntry('Referer', siterefer) # a verifier
         sHtmlContent = oRequestHandler.request()
-        sHosterUrl = ''
-        oParser = cParser()
-        sPattern = '<iframe.+?src="([^"]+)'
-        aResult = oParser.parse(sHtmlContent, sPattern)
 
-        oRequestHandler = cRequestHandler(aResult[1][0])
-        oRequestHandler.addHeaderEntry('User-Agent', UA)
-        # oRequestHandler.addHeaderEntry('Referer', siterefer) # a verifier
-        sHtmlContent = oRequestHandler.request()
+        oParser = cParser()
         if "pkcast123.me" in sHtmlContent:
             sPattern = 'fid="([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
             sUrl2 = "https://www.pkcast123.me/footy.php?player=desktop&live=" +  aResult[1][0] + "&vw=649&vh=460"
-        else:           
-            sHosterUrl = ''
-
+        else:
             sPattern = '<iframe.+?src="([^"]+)'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            sUrl2 = aResult[1][0]
+            if aResult[0]:
+                sUrl2 = aResult[1][0]
 
 
     # pas de pre requete
@@ -263,6 +258,7 @@ def Showlink():
         sUrl2 = sUrl
 
     if sUrl2:
+        shosterurl = ''
         if 'pkcast123' in sUrl2:
             bvalid, shosterurl = Hoster_Pkcast(sUrl2, sUrl)
             if bvalid:
@@ -278,7 +274,7 @@ def Showlink():
             if bvalid:
                 sHosterUrl = shosterurl
 
-        if 'wigistream' or 'cloudstream' in sUrl2:
+        if 'wigistream' in sUrl2 or 'cloudstream' in sUrl2:
             bvalid, shosterurl = Hoster_Wigistream(sUrl2, sUrl)
             if bvalid:
                 sHosterUrl = shosterurl
@@ -290,7 +286,6 @@ def Showlink():
                 sHosterUrl = shosterurl
 
         if sHosterUrl:
-
             sHosterUrl = sHosterUrl.strip()
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if(oHoster != False):
