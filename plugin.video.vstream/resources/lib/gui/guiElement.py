@@ -16,14 +16,10 @@ from resources.lib.util import cUtil, QuoteSafe
 
 class cGuiElement:
 
-    DEFAULT_FOLDER_ICON = 'icon.png'
-    # COUNT = 0
-    DB = cDb()
-
     def __init__(self):
-
+        self.DEFAULT_FOLDER_ICON = 'icon.png'
         self.addons = addon()
-        
+        self.DB = cDb()
         # self.__sRootArt = cConfig().getRootArt()
         self.__sFunctionName = ''
         self.__sRootArt = 'special://home/addons/plugin.video.vstream/resources/art/'
