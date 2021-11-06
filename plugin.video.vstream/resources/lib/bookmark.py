@@ -16,10 +16,8 @@ SITE_NAME = 'Fav'
 
 class cFav:
 
-    def __init__(self):
-        self.DIALOG = dialog()
-        self.ADDON = addon()
-        self.db = cDb()
+    DIALOG = dialog()
+    ADDON = addon()
 
     # Suppression d'un bookmark, d'une catégorie, ou tous les bookmarks
     def delBookmark(self):
@@ -33,7 +31,7 @@ class cFav:
         sTitle = oInputParameterHandler.getValue('sCleanTitle')
         # sTitle = cUtil().CleanName(sTitle)
 
-        self.db.del_bookmark(siteUrl, sTitle, sCat, sAll)
+        cDb().del_bookmark(siteUrl, sTitle, sCat, sAll)
         return True
 
     # Suppression d'un bookmark depuis un Widget
@@ -44,7 +42,7 @@ class cFav:
         sTitle = xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
         siteUrl = xbmc.getInfoLabel('ListItem.Property(siteUrl)')
 
-        self.db.del_bookmark(siteUrl, sTitle)
+        cDb().del_bookmark(siteUrl, sTitle)
 
         return True
 
@@ -52,7 +50,7 @@ class cFav:
         oGui = cGui()
 
         # Comptages des marque-pages
-        row = self.db.get_bookmark()
+        row = cDb().get_bookmark()
 
         compt = [0, 0, 0, 0, 0, 0, 0, 0, 0]
         for i in row:
@@ -88,7 +86,7 @@ class cFav:
         oGui = cGui()
         oInputParameterHandler = cInputParameterHandler()
 
-        row = self.db.get_bookmark()
+        row = cDb().get_bookmark()
 
         if (oInputParameterHandler.exist('sCat')):
             sCat = oInputParameterHandler.getValue('sCat')
@@ -243,6 +241,6 @@ class cFav:
         meta['icon'] = xbmc.getInfoLabel('ListItem.Art(thumb)')
         meta['fanart'] = xbmc.getInfoLabel('ListItem.Art(fanart)')
         try:
-            self.db.insert_bookmark(meta)
+            cDb().insert_bookmark(meta)
         except:
             pass
