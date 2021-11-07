@@ -31,7 +31,7 @@ class cHoster(iHoster):
         return self.__sFileName
 
     def getPluginIdentifier(self):
-        return 'onefichier'
+        return '1fichier'
 
     def setHD(self, sHD):
         self.__sHD = ''
