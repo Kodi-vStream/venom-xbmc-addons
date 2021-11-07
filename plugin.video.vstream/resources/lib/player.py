@@ -253,7 +253,6 @@ class cPlayer(xbmc.Player):
                     elif self.currentTime > 180.0:
                         sTitleWatched = self.infotag.getOriginalTitle()
                         if sTitleWatched:
-                            db = cDb()
                             meta = {}
                             meta['title'] = sTitleWatched
                             meta['site'] = self.sSite
