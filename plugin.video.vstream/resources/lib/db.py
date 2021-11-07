@@ -4,7 +4,7 @@
 import json
 import xbmcvfs
 
-from resources.lib.comaddon import dialog, addon, VSlog, VSPath, isMatrix, xbmc
+from resources.lib.comaddon import dialog, addon, VSlog, VSPath, isMatrix, xbmc, VSProfil
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.util import QuotePlus, Unquote
 
@@ -18,58 +18,36 @@ except:
 
 
 class cDb:
-    # On chercher le profil courant.
-    request = {
-        "jsonrpc": "2.0",
-        "method": "Profiles.GetCurrentProfile",
-        "params": {
-            "properties": ["thumbnail", "lockmode"]
-        },
-        "id": 1
-    }
+    def __enter__(self):
+        name = VSProfil()
 
-    req = json.dumps(request)
-    response = xbmc.executeJSONRPC(req)
-    # On recupere le nom.
-    name = json.loads(response)['result']['label']
+        # Le cas par defaut.
+        if name == 'Master user':
+            DB = 'special://home/userdata/addon_data/plugin.video.vstream/vstream.db'
+        else:
+            DB = 'special://home/userdata/profiles/' + name + '/addon_data/plugin.video.vstream/vstream.db'
 
-    # Le cas par defaut.
-    if name == 'Master user':
-        DB = 'special://home/userdata/addon_data/plugin.video.vstream/vstream.db'
-    else:
-        DB = 'special://home/userdata/profiles/' + name + '/addon_data/plugin.video.vstream/vstream.db'
-
-    try:
-        REALDB = VSPath(DB).decode('utf-8')
-    except AttributeError:
-        REALDB = VSPath(DB)
-
-    del request, req, name, response    # delete des objets temporaires
-
-    def __init__(self):
+        try:
+            REALDB = VSPath(DB).decode('utf-8')
+        except AttributeError:
+            REALDB = VSPath(DB)
 
         VSlog('DB engine for db : ' + sqlite.__name__)
 
         try:
-            if not xbmcvfs.exists(self.DB):
-                self.db = sqlite.connect(self.REALDB)
-                self.db.row_factory = sqlite.Row
-                self.dbcur = self.db.cursor()
-                self._create_tables()
-                return
-        except:
-            VSlog('Error: Unable to write to %s' % self.REALDB)
-            pass
-
-        try:
-            self.db = sqlite.connect(self.REALDB)
+            self.db = sqlite.connect(REALDB)
             self.db.row_factory = sqlite.Row
             self.dbcur = self.db.cursor()
+            if not xbmcvfs.exists(DB):
+                self._create_tables()
+                return
+            return self
+            
         except:
             VSlog('Error: Unable to access to %s' % self.REALDB)
             pass
 
-    def __del__(self):
+    def __exit__(self, exc_type, exc_value, traceback):
         ''' Cleanup db when object destroyed '''
         try:
             self.dbcur.close()
