@@ -10,18 +10,6 @@
         <setting id="upnext" type="bool" label="30506" default="true"/>
         <setting id="srt-view" type="bool" label="30002" default="false"/>
         <setting id="deco_color" type="select" label="30010" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen" default="lightcoral"/>
-        <!-- <setting id="param_timeout" label="30027" type="number" default="1000"/-->
-
-        <setting label="30031" type="lsep"/>
-        <setting type="sep"/>
-        <setting id="meta-view" type="bool" label="30006" default="false"/>
-        <setting label="30005" type="lsep"/>
-        <setting type="sep"/>
-        <setting id="api_tmdb" type="text" label="API"  default="b7cf9324cbeb6f4fb811144aa9397093"/>
-        <setting id="poster_tmdb" type="select" label="30007" values="w92|w154|w185|w342|w500|w780|original" default="w342"/>
-        <setting id="backdrop_tmdb" type="select" label="30008" values="w300|w780|w1280|original" default="w1280"/>
-        <setting id="extendedinfo-view" type="bool" label="30009" default="false"/>
-        <setting id="information-view" type="bool" label="31102" default="false"/>
 
         <setting label="30076" type="lsep"/>
         <setting type="sep"/>
@@ -31,6 +19,18 @@
         <setting type="sep"/>
         <setting id="Block_Noti_sound" type="bool" label="30411" default="false"/>
         <setting id="spinner_small" type="bool" label="30480" default="true"/>
+    </category>
+
+    <!-- Affichage -->
+    <category label="31205">
+        <setting id="meta-view" type="bool" label="30006" default="false"/>
+        <setting label="30005" type="lsep"/>
+        <setting id="api_tmdb" type="text" label="API"  default="b7cf9324cbeb6f4fb811144aa9397093"/>
+        <setting id="poster_tmdb" type="select" label="30007" values="w92|w154|w185|w342|w500|w780|original" default="w342"/>
+        <setting id="backdrop_tmdb" type="select" label="30008" values="w300|w780|w1280|original" default="w1280"/>
+        <setting id="extendedinfo-view" type="bool" label="30009" default="false"/>
+        <setting id="information-view" type="bool" label="31102" default="false"/>
+        <setting id="display_season_title" type="bool" label="31204" default="true"/>        
 
         <setting label="30032" type="lsep"/>
         <setting type="sep"/>
@@ -61,14 +61,8 @@
         <setting id="ZT" type="text" label="" default="" visible="false"/>
         <setting id="Tirexo" type="text" label="" default="" visible="false"/>
 
-        <!--parametre invisible qui enregistre le token alldebrid pour extreme download -->
-        <!--setting id="token_alldebrid" type="text" label="Token Alldebrid" default="" visible="false"/>-->
-
-        <!--<setting label="30036" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, changelog)"/>-->
         <setting label="30036" type="action" action="RunScript(plugin.video.vstream, changelog, ?site=globalRun&amp;function=changelog)"/>
 
-        <!--<setting label="30035" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, soutient)"/>-->
-        <!--setting label="30035" type="action" action="RunScript(plugin.video.vstream, soutient, ?site=globalRun&amp;function=soutient)"/>-->
         <setting label="30116" type="lsep"/>
         <setting type="sep"/>
 
@@ -79,8 +73,6 @@
         <setting id="PlutoTV_deviceID" type="text" label="" default="" visible="false"/>
         <setting id="PlutoTV_clientID" type="text" label="" default="" visible="false"/>
         <setting id="PlutoTV_sid" type="text" label="" default="" visible="false"/>
-
-        <!--<setting label="30420" type="action"  action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, search)"/>-->
         <setting label="30420" type="action"  action="RunScript(plugin.video.vstream, search, ?site=globalRun&amp;function=search)"/>
 
         <setting subsetting="true" label="30070" type="lsep"/>
@@ -103,38 +95,31 @@
 
         <setting type="sep"/>
         <setting id="debug" type="bool" label="30422" default="true"/>
-        <!--<setting label="Upload kodi.log" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, uplog)"/>-->
         <setting label="Upload kodi.log" type="action" action="RunScript(plugin.video.vstream, uplog, ?site=globalRun&amp;function=uplog)"/>
         <setting id="service_log" type="text" label="30054" default="" enable="false"/>
 
         <setting type="sep"/>
         <setting subsetting="true" label="30055" type="lsep"/>
-        <!--<setting label="Import/Export" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, addon)"/>-->
         <setting label="Import/Export" type="action" action="RunScript(plugin.video.vstream, sauv, ?site=globalRun&amp;function=sauv)"/>
 
         <setting type="sep"/>
         <setting subsetting="true" label="30056" type="lsep"/>
-        <!--<setting label="Supprimer une BDD" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, clean)"/>-->
         <setting label="30057" type="action" action="RunScript(plugin.video.vstream, clean, ?site=globalRun&amp;function=clear)"/>
 
         <setting type="sep"/>
         <setting subsetting="true" label="30058" type="lsep"/>
-        <!--<setting label="Clear Cache vStream" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, addon)"/>-->
         <setting label="30128" type="action" action="RunScript(plugin.video.vstream, addon, ?site=globalRun&amp;function=addon)"/>
 
         <setting type="sep"/>
         <setting subsetting="true" label="30059" type="lsep"/>
-        <!--<setting label="Clear Cache Kodi" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, xbmc)"/>-->
         <setting label="30129" type="action" action="RunScript(plugin.video.vstream, xbmc, ?site=globalRun&amp;function=xbmc)"/>
 
         <setting type="sep"/>
         <setting subsetting="true" label="30060" type="lsep"/>
-        <!--<setting label="Clear .fi Files" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, fi)"/>-->
         <setting label="30061" type="action" action="RunScript(plugin.video.vstream, fi, ?site=globalRun&amp;function=fi)"/>
 
         <setting type="sep"/>
         <setting subsetting="true" label="30062" type="lsep"/>
-        <!--<setting label="Clear Thumbnails" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, thumb)"/>-->
         <setting label="30063" type="action" action="RunScript(plugin.video.vstream, thumb, ?site=globalRun&amp;function=thumb)"/>
 
         <setting type="sep"/>
@@ -230,28 +215,9 @@
         <setting type="text" label="30068" default=""/>
         <setting type="text" label="30065" default=""/>
         <setting type="text" label="30069" default=""/>
-        <!-- <setting subsetting="true" label="30068" type="lsep"/> -->
-        <!-- <setting subsetting="true" label="30065" type="lsep"/> -->
-        <!-- <setting subsetting="true" label="30069" type="lsep"/> -->
 
         <setting type="sep"/>
         <setting id="UserUrlResolver" type="bool" label="30066" default="false"/>
-        <!--<setting label="Configurer UrlResolver" type="action" option="close" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, urlresolver)"/>-->
         <setting label="30067" type="action" option="close" action="RunScript(plugin.video.vstream, urlresolver, ?site=globalRun&amp;function=urlresolver)"/>
     </category>
-
-    <!--<category label="30026">
-        <setting label="30026" type="lsep"/>
-        <setting label="(1) Activer TV Direct" type="action" action="ActivateWindow(settings)" enable ="true" />
-        <setting label="(2) Activer l'addon  PVR IPTV simple client" type="action" action="ActivateWindow(addonbrowser)" enable ="true" />
-        <setting label="(3) Modifier Paramètres PVR" type="action" action="Addon.OpenSettings(pvr.iptvsimple)" enable ="true" />
-        <setting label="30028" type="lsep"/>
-        <setting id="m3u" type="text" label="URL de la playlist M3U"  default="https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/webtv2.m3u"/>
-        <setting id="xmltv" type="text" label="URL du fichier XMLTV" default="http://kazer.org/tvguide.xml?u=rgyamjgsph9gx"/>
-        <setting id="icon" type="text" label="Dossier icône" default="special://userdata/addon_data/plugin.video.vstream/resources/art/tv"/>
-        <setting type="sep" visible="true"/>
-        <setting id="pvr-view" type="bool" label="Active le racourcis Tv direct" default="false"/>
-    </category>
-    -->
-
 </settings>
