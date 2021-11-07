@@ -17,7 +17,7 @@ except:
     from pysqlite2 import dbapi2 as sqlite
 
 
-class cDb:
+class cDb(object):
     def __enter__(self):
         name = VSProfil()
 
