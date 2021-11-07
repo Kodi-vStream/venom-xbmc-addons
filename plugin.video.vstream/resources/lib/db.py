@@ -32,19 +32,16 @@ class cDb(object):
         except AttributeError:
             REALDB = VSPath(DB)
 
-        VSlog('DB engine for db : ' + sqlite.__name__)
-
         try:
             self.db = sqlite.connect(REALDB)
             self.db.row_factory = sqlite.Row
             self.dbcur = self.db.cursor()
-            if not xbmcvfs.exists(DB):
+            if self.dbcur.rowcount == -1:
                 self._create_tables()
-                return
             return self
             
         except:
-            VSlog('Error: Unable to access to %s' % self.REALDB)
+            VSlog('Error: Unable to access to %s' % REALDB)
             pass
 
     def __exit__(self, exc_type, exc_value, traceback):
