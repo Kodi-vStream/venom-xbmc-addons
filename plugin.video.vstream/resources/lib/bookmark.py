@@ -50,7 +50,8 @@ class cFav:
         oGui = cGui()
 
         # Comptages des marque-pages
-        row = cDb().get_bookmark()
+        with cDb() as db:
+            row = db.get_bookmark()
 
         compt = [0, 0, 0, 0, 0, 0, 0, 0, 0]
         for i in row:
@@ -86,7 +87,9 @@ class cFav:
         oGui = cGui()
         oInputParameterHandler = cInputParameterHandler()
 
-        row = cDb().get_bookmark()
+        # Comptages des marque-pages
+        with cDb() as db:
+            row = db.get_bookmark()
 
         if (oInputParameterHandler.exist('sCat')):
             sCat = oInputParameterHandler.getValue('sCat')
@@ -241,6 +244,8 @@ class cFav:
         meta['icon'] = xbmc.getInfoLabel('ListItem.Art(thumb)')
         meta['fanart'] = xbmc.getInfoLabel('ListItem.Art(fanart)')
         try:
-            cDb().insert_bookmark(meta)
+            # Comptages des marque-pages
+            with cDb() as db:
+                db.insert_bookmark(meta)
         except:
             pass
