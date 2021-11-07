@@ -22,6 +22,7 @@ class cGui:
     listing = []
     episodeListing = []  # Pour gérer l'enchainement des episodes
     ADDON = addon()
+    displaySeason = addon().getSetting('display_season_title')
 
     if isKrypton():
         CONTENT = 'addons'
@@ -329,7 +330,10 @@ class cGui:
                 host = ''
                 if 'tvshowtitle' in data:
                     host = itemTitle.split(data['tvshowtitle'])[1]
-                itemTitle = str(data['season']) + "x" + str(data['episode']) + ". " + episodeTitle + " " + host
+                if self.displaySeason == "true":
+                    itemTitle = str(data['season']) + "x" + str(data['episode']) + ". " + episodeTitle + " " + host
+                else:
+                    itemTitle = episodeTitle + " " + host
                 data['title'] = itemTitle
             except:
                 data['title'] = itemTitle
@@ -712,16 +716,14 @@ class cGui:
             meta['cat'] = sCat
 
             from resources.lib.db import cDb
-            db = cDb()
-            row = db.get_watched(meta)
-            if row:
-                db.del_watched(meta)
-                db.del_resume(meta)
-            else:
-                db.insert_watched(meta)
-                db.del_viewing(meta)
-            # To test
-            # updateDirectory()
+            with cDb() as db:
+                row = db.get_watched(meta)
+                if row:
+                    db.del_watched(meta)
+                    db.del_resume(meta)
+                else:
+                    db.insert_watched(meta)
+                    db.del_viewing(meta)
 
         else:
             # Use kodi buildin feature
