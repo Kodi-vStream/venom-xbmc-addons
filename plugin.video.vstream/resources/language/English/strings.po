@@ -1142,3 +1142,11 @@ msgstr ""
 msgctxt "#31203"
 msgid "IP address for Flaresolverr"
 msgstr ""
+
+msgctxt "#31204"
+msgid "Display season and episode in title"
+msgstr ""
+
+msgctxt "#31205"
+msgid "Display"
+msgstr ""
