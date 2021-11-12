@@ -16,7 +16,7 @@
         <import addon="repository.vstream"/>
         <import addon="script.module.pyqrcode"/>
         <import addon="script.module.requests"/>
-        <import addon="script.module.dnspython"/>
+        <import addon="script.module.dnspython" optional="true"/>
         <import addon="script.module.urlresolver" optional="true"/>
         <import addon="script.module.selenium" optional="true"/>
         <!-- Pour le DEBUG        <import addon="script.module.pydevd" version="4.4.0"/> -->
