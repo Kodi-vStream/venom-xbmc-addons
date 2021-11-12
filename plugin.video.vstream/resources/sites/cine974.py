@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'cine974'
 SITE_NAME = 'Ciné 974'
 SITE_DESC = 'Film streaming HD gratuit complet'
 
-URL_MAIN = 'https://www.cine974.com/'
+URL_MAIN = "https://www.cine974.com/"
 
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN + 'streaming/', 'showMovies')
@@ -111,7 +111,9 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = aEntry
+            link = re.sub('.+?embed/', '', aEntry)
+            link = link.replace('?rel=0', '')
+            sHosterUrl = 'https://www.youtube.com/watch?v=' + link
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
