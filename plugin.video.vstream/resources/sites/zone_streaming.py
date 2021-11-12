@@ -10,13 +10,13 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress  # , VSlog
+from resources.lib.comaddon import progress, VSlog
 
 SITE_IDENTIFIER = 'zone_streaming'
 SITE_NAME = 'Zone Streaming'
 SITE_DESC = 'Médiathèque de chaînes officielles'
 
-URL_MAIN = 'http://www.zone-streaming.fr/'
+URL_MAIN = "http://www.zone-streaming.fr/"
 
 MOVIE_MOVIE = (URL_MAIN + 'category/films/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -286,34 +286,39 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<iframe.+?src="([^"]+)"'
+    sPattern = '<iframe.+?src="([^"]+)'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
+            watchUrl = 'https://www.youtube.com/watch?v='
 
             if 'videoseries?list=' in aEntry:
 
-                idList = aEntry.replace('https://www.youtube-nocookie.com/embed/videoseries?list=', '')\
-                               .replace('&cc_load_policy=1', '')
+                idList = re.sub('https:.+?list=', '', aEntry)
 
-                sUrl = 'https://www.youtube-nocookie.com/list_ajax?style=json&action_get_list=1&list=' + idList
+                sUrl = 'https://www.youtube.com/watch?v=&list=' + idList
                 oRequestHandler = cRequestHandler(sUrl)
                 sHtmlContent = oRequestHandler.request()
+                VSlog('surl = ' + str(sUrl))
+                # fh = open('c:\\test.txt', "w")
+                # fh.write(str(sHtmlContent))
+                # fh.close()
 
                 page = json.loads(sHtmlContent)
-                List_video = page["video"]
-                for i in List_video:
-                    # VSlog(i["encrypted_id"])
-                    # VSlog(i["thumbnail"])
-                    # VSlog(i["title"])
 
-                    sUrl = 'https://www.youtube.com/watch?v='
-                    sHosterUrl = sUrl + i["encrypted_id"]
+
+                List_video = page["playlist"]
+                for i in List_video:
+                    # VSlog(i["simpleTex"])
+                    # VSlog(i["thumbnail"])
+                    # VSlog(i["videoId"])
+
+                    sHosterUrl = watchUrl + i["videoId"]
                     sThumb = i["thumbnail"]
-                    sTitle = i["title"].encode('utf-8').replace('EP.', 'E').replace('Ep. ', 'E').replace('Ep ', 'E')
+                    sTitle = i["simpleTex"].encode('utf-8').replace('EP.', 'E').replace('Ep. ', 'E').replace('Ep ', 'E')
                     sTitle = sTitle.replace('|', '-')
 
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -325,7 +330,7 @@ def showHosters():
             else:
                 link = re.sub('.+?embed/', '', aEntry)
                 link = link.replace('?rel=0', '')
-                sHosterUrl = 'https://www.youtube.com/watch?v=' + link
+                sHosterUrl = watchUrl + link
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     oHoster.setDisplayName(sMovieTitle)
