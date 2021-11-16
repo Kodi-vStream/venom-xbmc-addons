@@ -74,7 +74,7 @@ def showMovies(sSearch=''):
     oParser = cParser()
 
     if sSearch or '/genre/' in sUrl or '/film' in sUrl:
-        sPattern = '<figure class="m-0">.+?ref="([^"]+).+?src="([^"]+).+?title="([^"]+).+?Synopsis:.+?>([^<]+)'  # news
+        sPattern = '<figure class="m-0">.+?ref="([^"]+).+?(?:src="(.+?)"|\.?) class.+?</i>([^<]+).+?Synopsis:.+?>([^<]+)'  # news
     else:
         sPattern = '<article class=".+?ref="([^"]+).+?src="([^"]+).+?title="([^"]+)'  # populaire et search
 
