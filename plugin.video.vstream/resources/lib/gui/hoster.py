@@ -181,7 +181,7 @@ class cHosterGui:
                             'giga', 'vidbom', 'upvid', 'cloudvid', 'megadrive', 'downace', 'clickopen', 'supervideo',
                             'jawcloud', 'kvid', 'soundcloud', 'mixcloud', 'ddlfr', 'vupload', 'dwfull', 'vidzstore',
                             'pdj', 'rapidstream', 'archive', 'jetload', 'dustreaming', 'viki', 'flix555', 'onlystream',
-                            'upstream', 'pstream', 'vudeo', 'sendvid', 'dood', 'vidia', 'streamtape', 'femax', 'vidbem',
+                            'upstream', 'pstream', 'vudeo', 'dood', 'vidia', 'streamtape', 'femax', 'vidbem',
                             'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow',
                             'myvi.tv', 'playtube', 'uptobox', 'uplea', '33player']
 
@@ -265,7 +265,7 @@ class cHosterGui:
 
         # frenchvid et clone
         val = next((x for x in ['french-vid', 'yggseries', 'fembed', 'fem.tohds', 'feurl', 'fsimg', 'core1player',
-                                'vfsplayer', 'gotochus'] if x in sHostName), None)
+                                'vfsplayer', 'gotochus', 'sendvid'] if x in sHostName), None)
         if val:
             return self.getHoster("frenchvid")
 
