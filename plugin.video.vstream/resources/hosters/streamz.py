@@ -6,19 +6,18 @@ from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
 from resources.lib.comaddon import VSlog
-from resources.lib.util import Noredirection
 import re
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0'
 
 
 def Getheader(url, c):
-    opener = Noredirection()
-    opener.addheaders = [('User-Agent', UA)]
-    opener.addheaders = [('Cookie', c)]
-
-    response = opener.open(url)
-    return response.headers['Location']
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.disableRedirect()
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Cookie', c)
+    sHtmlContent = oRequestHandler.request()
+    return oRequestHandler.getResponseHeader()['Location']
 
 
 class cHoster(iHoster):
