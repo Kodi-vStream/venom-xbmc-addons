@@ -175,7 +175,7 @@ class cHosterGui:
         supported_player = ['streamz', 'streamax', 'gounlimited', 'xdrive', 'facebook', 'mixdrop', 'mixloads', 'vidoza',
                             'rutube', 'megawatch', 'vidzi', 'filetrip', 'uptostream', 'speedvid', 'netu', 'letsupload',
                             'onevideo', 'playreplay', 'vimeo', 'prostream', 'vidfast', 'uqload', 'letwatch', 'mail.ru',
-                            'filepup', 'vimple', 'wstream', 'watchvideo', 'vidwatch', 'up2stream', 'vidbm',  'tune',
+                            'filepup', 'vimple', 'wstream', 'watchvideo', 'vidwatch', 'up2stream', 'tune',
                             'vidup', 'vidbull', 'vidlox', 'megaup', '33player' 'easyload', 'ninjastream', 'cloudhost',
                             'videobin', 'stagevu', 'gorillavid', 'daclips', 'hdvid', 'vshare', 'streamlare', 'vidload',
                             'giga', 'vidbom', 'upvid', 'cloudvid', 'megadrive', 'downace', 'clickopen', 'supervideo',
@@ -190,6 +190,9 @@ class cHosterGui:
             return self.getHoster(val.replace('.', ''))
 
         # Gestion classique
+        if ('vidbm' in sHostName) or ('vedbom' in sHostName):
+            return self.getHoster('vidbm')
+            
         if ('youtube' in sHostName) or ('youtu.be' in sHostName):
             return self.getHoster('youtube')
 
