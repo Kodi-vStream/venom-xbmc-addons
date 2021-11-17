@@ -404,12 +404,12 @@ def showLinks():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in sortedList:
 
-            sUrl2 = URL_MAIN + 'wp-json/dooplayer/v1/post/'
+            sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
             # dtype = 'movie'  # fonctionne pour Film ou Série (pour info : série -> dtype = 'tv')
             dtype = aEntry[0]
             dpost = aEntry[1]
             dnum = aEntry[2]
-            pdata = dpost + '?type=' + dtype + '&source=' + dnum
+            pdata = dpost + '.' + dtype + '.' + dnum
             sTitle = aEntry[3].replace('Serveur', '').replace('Télécharger', '').replace('(', '').replace(')', '').replace('[', '').replace(']', '')
             sServer = aEntry[4]
             sLang = aEntry[5].replace('fr', 'VF').replace('en', 'VOSTFR')
@@ -444,11 +444,11 @@ def showHosters():
     oRequest.addHeaderEntry('Accept', '*/*')
     oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
     oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-    oRequest.addParametersLine(pdata)
-
-    sUrl = sUrl + pdata
-    oRequest = cRequestHandler(sUrl)
-    sHtmlContent = oRequest.request(jsonDecode=True)["embed_url"]
+    oRequest.addParameters("action","doo_player_ajax")
+    oRequest.addParameters("post",pdata.split('.')[0])
+    oRequest.addParameters("nume",pdata.split('.')[2])
+    oRequest.addParameters("type",pdata.split('.')[1])
+    sHtmlContent = oRequest.request(jsonDecode=True)
 
     if 'dood' in sHtmlContent or 'evoload' in sHtmlContent:
         sPattern = '(http.+?)$'
