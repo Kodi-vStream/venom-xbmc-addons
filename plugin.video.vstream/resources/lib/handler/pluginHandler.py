@@ -65,6 +65,8 @@ class cPluginHandler:
 
         aPlugins = []
         for sFileName in aFileNames:
+            if sFileName.startswith('__'):  # exclut par exemple __init__.py
+                continue
             # wir versuchen das plugin zu importieren
             aPlugin = self.__importPlugin(sFileName)
             if (aPlugin[0] != False):
