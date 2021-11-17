@@ -6,8 +6,6 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog, VSlog
-from resources.lib.util import QuotePlus
-import json
 
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0'
@@ -68,6 +66,8 @@ class cHoster(iHoster):
             baseUrl = 'https://www.core1player.com/api/source/'
         elif 'gotochus' in self.__sUrl:
             baseUrl = 'https://www.gotochus.com/api/source/'
+        elif 'sendvid' in self.__sUrl:
+            baseUrl = "https://sendvid.net/api/source/"
             
         if 'fem.tohds' in self.__sUrl:
             oRequestHandler = cRequestHandler(self.__sUrl)
@@ -80,11 +80,11 @@ class cHoster(iHoster):
 
             url = baseUrl + aResult[1][0].rsplit('/', 1)[1]
 
-            postdata = 'r=' + QuotePlus(self.__sUrl) + '&d=' + baseUrl.replace('https://', '').replace('/api/source/', '')
+            postdata = 'r=' + self.__sUrl + '&d=' + baseUrl.replace('https://', '').replace('/api/source/', '')
 
         else:
             url = baseUrl + self.__sUrl.rsplit('/', 1)[1]
-            postdata = 'r=' + QuotePlus(self.__sUrl) + '&d=' + baseUrl.replace('https://', '').replace('/api/source/', '')
+            postdata = 'r=' + self.__sUrl + '&d=' + baseUrl.replace('https://', '').replace('/api/source/', '')
 
         oRequest = cRequestHandler(url)
         oRequest.setRequestType(1)
@@ -92,9 +92,8 @@ class cHoster(iHoster):
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Referer',self.__sUrl)
         oRequest.addParametersLine(postdata)
-        sHtmlContent = oRequest.request()
+        page = oRequest.request(jsonDecode=True)
 
-        page = json.loads(sHtmlContent)
         if page:
             url = []
             qua = []
