@@ -13,6 +13,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, VSlog
 from resources.lib.config import GestionCookie
+from resources.lib.util import Unquote
 
 SITE_IDENTIFIER = 'neuf_docu'
 SITE_NAME = '9Docu'
@@ -133,7 +134,7 @@ def showMovies(sSearch=''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'class="attachment-medium aligncenter" src="([^"]+)".+?<a href="([^"<]+)"[^<>]+>([^<>]+)'
+    sPattern = 'class="attachment-medium.+?" data-src="([^"]+)".+?<a href="([^"<]+)"[^<>]+>([^<>]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -201,6 +202,14 @@ def showHosters():
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
+
+            if "clictune" in aEntry:
+                oRequestHandler = cRequestHandler(aEntry)
+                sHtmlContent = oRequestHandler.request()
+
+                sPattern = 'txt = \'<b><a href="([^"]+)"'
+                aResult = oParser.parse(sHtmlContent, sPattern)[1][0]
+                aEntry = Unquote(re.search('url=(.+?)&',aResult).group(1))
 
             if "ReviveLink" in aEntry:
                 url2 = 'http://' + (aEntry.split('/')[2]).lower() + '/qcap/Qaptcha.jquery.php'
