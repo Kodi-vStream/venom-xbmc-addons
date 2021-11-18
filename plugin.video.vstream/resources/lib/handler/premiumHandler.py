@@ -20,8 +20,8 @@ class cPremiumHandler:
         self.__ssl = False
         
         #hack pour garder la compatiblité avec ceux qui ont deja relgé les settings
-        if self.__sHosterIdentifier == 'onefichier':
-            self.__sHosterIdentifier = '1fichier'
+        if self.__sHosterIdentifier == '1fichier':
+            self.__sHosterIdentifier = 'onefichier'
 
         self.__Ispremium = False
         bIsPremium = self.ADDON.getSetting('hoster_' + str(self.__sHosterIdentifier) + '_premium')
