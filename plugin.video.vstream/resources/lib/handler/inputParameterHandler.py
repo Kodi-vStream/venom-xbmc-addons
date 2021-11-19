@@ -7,10 +7,9 @@ from resources.lib.util import UnquotePlus, Unquote
 
 
 class cInputParameterHandler:
-
     def __init__(self):
         aParams = dict()
-        if len(sys.argv) >= 2 and len(sys.argv[2])>0:
+        if len(sys.argv) >= 2 and len(sys.argv[2]) > 0:
             args = sys.argv[2].replace(' & ', ' ')
             aParams = dict(part.split('=') for part in args[1:].split('&'))
 
