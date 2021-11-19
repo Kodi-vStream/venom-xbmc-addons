@@ -2,14 +2,12 @@
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 # Venom.
 
-import xbmc
-
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.comaddon import dialog, addon, VSlog
+from resources.lib.comaddon import dialog, addon, VSlog, xbmc
 
 
 class cHosterGui:
@@ -181,7 +179,7 @@ class cHosterGui:
                             'giga', 'vidbom', 'upvid', 'cloudvid', 'megadrive', 'downace', 'clickopen', 'supervideo',
                             'jawcloud', 'kvid', 'soundcloud', 'mixcloud', 'ddlfr', 'vupload', 'dwfull', 'vidzstore',
                             'pdj', 'rapidstream', 'archive', 'jetload', 'dustreaming', 'viki', 'flix555', 'onlystream',
-                            'upstream', 'pstream', 'vudeo', 'dood', 'vidia', 'streamtape', 'femax', 'vidbem',
+                            'upstream', 'pstream', 'vudeo', 'dood', 'vidia', 'streamtape', 'vidbem',
                             'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow',
                             'myvi.tv', 'playtube', 'uptobox', 'uplea', '33player']
 
@@ -268,7 +266,7 @@ class cHosterGui:
 
         # frenchvid et clone
         val = next((x for x in ['french-vid', 'yggseries', 'fembed', 'fem.tohds', 'feurl', 'fsimg', 'core1player',
-                                'vfsplayer', 'gotochus', 'sendvid'] if x in sHostName), None)
+                                'vfsplayer', 'gotochus', 'sendvid', "femax"] if x in sHostName), None)
         if val:
             return self.getHoster("frenchvid")
 
@@ -277,7 +275,7 @@ class cHosterGui:
 
         # Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
-            return self.getHoster('onefichier')
+            return self.getHoster('1fichier')
 
         if ('uploaded' in sHostName) or ('ul.to' in sHostName):
             if ('/file/forbidden' in sHosterUrl):
