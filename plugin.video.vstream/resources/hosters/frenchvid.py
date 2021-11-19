@@ -68,6 +68,8 @@ class cHoster(iHoster):
             baseUrl = 'https://www.gotochus.com/api/source/'
         elif 'sendvid' in self.__sUrl:
             baseUrl = "https://sendvid.net/api/source/"
+        elif "femax20" in self.__sUrl:
+            baseUrl = "https://diasfem.com/api/source/"
             
         if 'fem.tohds' in self.__sUrl:
             oRequestHandler = cRequestHandler(self.__sUrl)
@@ -88,29 +90,31 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(url)
         oRequest.setRequestType(1)
+        oRequest.disableSSL()
         oRequest.disableIPV6()
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Referer',self.__sUrl)
         oRequest.addParametersLine(postdata)
         page = oRequest.request(jsonDecode=True)
 
-        if page:
-            url = []
-            qua = []
-            for x in page['data']:
-                url.append(x['file'])
-                qua.append(x['label'])
+        url = []
+        qua = []
+        for x in page['data']:
+            url.append(x['file'])
+            qua.append(x['label'])
 
-            if (url):
-                api_call = dialog().VSselectqual(qua, url)
+        api_call = dialog().VSselectqual(qua, url)
+
+        oRequest = cRequestHandler(api_call)
+        oRequest.disableSSL()
+        oRequest.disableIPV6()
+        oRequest.addHeaderEntry('Host','fvs.io')
+        oRequest.addHeaderEntry('User-Agent', UA)
+        sHtmlContent = oRequest.request()
+        api_call = oRequest.getRealUrl()
+
 
         if (api_call):
-            oRequest = cRequestHandler(api_call)
-            oRequest.disableIPV6()
-            oRequest.addHeaderEntry('Host','fvs.io')
-            oRequest.addHeaderEntry('User-Agent', UA)
-            sHtmlContent = oRequest.request()
-            api_call = oRequest.getRealUrl()
-            return True, api_call  + '|User-Agent=' + UA
+            return True, api_call  + '|User-Agent=' + UA + '&verifypeer=false'
 
         return False, False
