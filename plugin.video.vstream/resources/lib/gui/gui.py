@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import xbmcplugin
-import xbmc
 import json
 
-from resources.lib.comaddon import listitem, addon, dialog, window, isKrypton, isNexus
+from resources.lib.comaddon import listitem, addon, dialog, window, isKrypton, isNexus, xbmc
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -562,7 +561,10 @@ class cGui:
         xbmcplugin.addDirectoryItems(iHandler, self.listing, len(self.listing))
         xbmcplugin.setPluginCategory(iHandler, '')
         xbmcplugin.setContent(iHandler, cGui.CONTENT)
-        xbmcplugin.addSortMethod(iHandler, xbmcplugin.SORT_METHOD_NONE)
+        if cGui.CONTENT == 'episodes':
+            xbmcplugin.addSortMethod(iHandler, xbmcplugin.SORT_METHOD_EPISODE)
+        else:
+            xbmcplugin.addSortMethod(iHandler, xbmcplugin.SORT_METHOD_NONE)   
         xbmcplugin.endOfDirectory(iHandler, succeeded=True, cacheToDisc=True)
         # reglage vue
         # 50 = liste / 51 grande liste / 500 icone / 501 gallerie / 508 fanart /
