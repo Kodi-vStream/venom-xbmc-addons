@@ -122,10 +122,10 @@ class cRequestHandler:
     def getRealUrl(self):
         return self.__sRealUrl
 
-    def request(self,jsonDecode=False, xmlDecode=False):
+    def request(self,jsonDecode=False):
         # Supprimee car deconne si url contient ' ' et '+' en meme temps
         # self.__sUrl = self.__sUrl.replace(' ', '+')
-        return self.__callRequest(jsonDecode, xmlDecode)
+        return self.__callRequest(jsonDecode)
 
     #Recupere les cookies de la requete
     def GetCookies(self):
@@ -151,7 +151,7 @@ class cRequestHandler:
         self.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         self.addHeaderEntry('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.7')
 
-    def __callRequest(self, jsonDecode=False, xmlDecode=False):
+    def __callRequest(self, jsonDecode=False):
         if self.__enableDNS:
             self.save_getaddrinfo = socket.getaddrinfo
             socket.getaddrinfo = self.new_getaddrinfo
@@ -203,8 +203,6 @@ class cRequestHandler:
 
             if jsonDecode == True:
                 sContent = self.oResponse.json()
-            elif xmlDecode == True:
-                sContent = self.oResponse.content
             else:
                 sContent = self.oResponse.content
                 #Necessaire pour Python 3
