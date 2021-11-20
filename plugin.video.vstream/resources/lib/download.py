@@ -12,9 +12,8 @@ import threading
 import xbmcplugin
 import xbmcvfs
 import xbmcgui
-import xbmc
 
-from resources.lib.comaddon import addon, dialog, progress, VSlog, VSupdate, VSPath, isMatrix
+from resources.lib.comaddon import addon, dialog, progress, VSlog, VSupdate, VSPath, isMatrix, xbmc
 from resources.lib.db import cDb
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
@@ -196,7 +195,6 @@ class cDownloadProgressBar(threading.Thread):
             req = urllib2.Request(url, None, headers)
 
             self.oUrlHandler = urllib2.urlopen(req, timeout=30)
-            # self.__instance = repr(self)
             self.file = xbmcvfs.File(self.__fPath, 'w')
         except:
             VSlog('download error ' + self.__sUrl)
@@ -355,7 +353,8 @@ class cDownload:
     def CleanDownloadList(self):
 
         try:
-            cDb().clean_download()
+            with cDb() as db:
+                db.clean_download()
             self.DIALOG.VSinfo(self.ADDON.VSlang(30071))
         except:
             pass
@@ -381,7 +380,8 @@ class cDownload:
         meta['url'] = url
 
         try:
-            cDb().reset_download(meta)
+            with cDb() as db:
+                db.reset_download(meta)
             self.DIALOG.VSinfo(self.ADDON.VSlang(30071))
             VSupdate()
         except:
@@ -415,7 +415,9 @@ class cDownload:
             meta['path'] = path
 
             try:
-                cDb().del_download(meta)
+                with cDb() as db:
+                    db.del_download(meta)
+
                 xbmcvfs.delete(path)
                 self.DIALOG.VSinfo(self.ADDON.VSlang(30072))
                 VSupdate()
@@ -423,7 +425,8 @@ class cDownload:
                 self.DIALOG.VSinfo(self.ADDON.VSlang(30073))
 
     def GetNextFile(self):
-        row = cDb().get_download()
+        with cDb() as db:
+            row = db.get_download()
 
         for data in row:
             status = data[8]
@@ -440,7 +443,8 @@ class cDownload:
         meta = {}
         meta['url'] = url
 
-        row = cDb().get_download(meta)
+        with cDb() as db:
+            row = db.get_download(meta)
 
         if not (row):
             return None
@@ -472,8 +476,8 @@ class cDownload:
         else:
             cDownloadProgressBar().StopAll()
 
-        # On remet tout les status a 0 ou 2
-        cDb().cancel_download()
+        with cDb() as db:
+            db.cancel_download()
 
         VSupdate()
 
@@ -482,7 +486,8 @@ class cDownload:
     def getDownloadList(self):
         oGui = cGui()
 
-        row = cDb().get_download()
+        with cDb() as db:
+            row = db.get_download()
 
         oOutputParameterHandler = cOutputParameterHandler()
         for data in row:
@@ -562,7 +567,8 @@ class cDownload:
         meta['path'] = ''
 
         try:
-            cDb().del_download(meta)
+            with cDb() as db:
+                db.del_download(meta)
             self.DIALOG.VSinfo(self.ADDON.VSlang(30071))
             VSupdate()
         except:
@@ -603,12 +609,11 @@ class cDownload:
                     meta['title'] = sTitle
                     meta['path'] = sDownloadPath
 
-                    cDb().insert_download(meta)
-
+                    with cDb() as db:
+                        db.insert_download(meta)
                     return True
 
                 except:
-                    # print_exc()
                     self.DIALOG.VSinfo(self.ADDON.VSlang(30084), sTitle)
                     VSlog('Unable to download')
 
@@ -631,7 +636,8 @@ class cDownload:
         if (self.AddDownload(meta)):
             # telechargement direct ou pas?
             if not self.isDownloading():
-                row = cDb().get_download(meta)
+                with cDb() as db:
+                    row = db.get_download(meta)
                 if row:
                     self.StartDownloadOneFile(row[0])
 
@@ -654,7 +660,9 @@ class cDownload:
         if (self.AddDownload(meta)):
             # Si pas de telechargement en cours on lance le notre
             if not self.isDownloading():
-                row = cDb().get_download(meta)
+                with cDb() as db:
+                    row = db.get_download(meta)
+
                 if row:
 
                     title = row[0][1]
