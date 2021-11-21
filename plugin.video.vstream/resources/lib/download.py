@@ -12,8 +12,9 @@ import threading
 import xbmcplugin
 import xbmcvfs
 import xbmcgui
+import xbmc
 
-from resources.lib.comaddon import addon, dialog, progress, VSlog, VSupdate, VSPath, isMatrix, xbmc
+from resources.lib.comaddon import addon, dialog, progress, VSlog, VSupdate, VSPath, isMatrix
 from resources.lib.db import cDb
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
