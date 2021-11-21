@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import xbmcplugin
+import xbmc
 import json
 
-from resources.lib.comaddon import listitem, addon, dialog, window, isKrypton, isNexus, xbmc
+from resources.lib.comaddon import listitem, addon, dialog, window, isKrypton, isNexus
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
