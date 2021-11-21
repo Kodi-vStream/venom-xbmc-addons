@@ -3,8 +3,9 @@
 
 import json
 import xbmcvfs
+import xbmc
 
-from resources.lib.comaddon import dialog, addon, VSlog, VSPath, isMatrix, xbmc, VSProfil
+from resources.lib.comaddon import dialog, addon, VSlog, VSPath, isMatrix, VSProfil
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.util import QuotePlus, Unquote
 
