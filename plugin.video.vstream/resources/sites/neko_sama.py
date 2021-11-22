@@ -106,7 +106,7 @@ def showSearchResult(sSearch):
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    oRequestHandler = cRequestHandler(URL_SEARCH[0])
+    oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     searchURL = URL_MAIN[:-1] + re.search('var urlsearch = "([^"]+)";', sHtmlContent).group(1)
@@ -245,7 +245,7 @@ def showSaisonEpisodes():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
-    if str(sUrl.rsplit('-', 1)[-1]) == "vostfr":
+    if sUrl.endswith("vostfr"):
         oRequestHandler = cRequestHandler(sUrl.replace('vostfr','vf'))
         sHtmlContent = oRequestHandler.request()
         if not "404 Not Found" in sHtmlContent:
