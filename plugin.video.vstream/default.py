@@ -130,7 +130,7 @@ class main:
 
             if sSiteName == 'globalSources':
                 oGui = cGui()
-                aPlugins = oPluginHandler.getAvailablePlugins(True)
+                aPlugins = oPluginHandler.getAvailablePlugins(force=True)
 
                 if len(aPlugins) == 0:
                     addons = addon()
