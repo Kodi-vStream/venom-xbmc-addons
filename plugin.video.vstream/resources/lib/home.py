@@ -4,7 +4,7 @@
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
-from resources.lib.handler.siteHandler import cSiteHandler
+from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.comaddon import addon, window
@@ -103,7 +103,7 @@ class cHome:
 
         if not searchtext:
             searchtext=cInputParameterHandler().getValue('searchtext')
-        
+
         if not searchtext:
             return self.showSearchText()
 
@@ -111,7 +111,6 @@ class cHome:
 
         oGui = cGui()
         oGui.addText('globalSearch', self.addons.VSlang(30077) % searchtext, 'none.png')
-
 
         # utilisation de guielement pour ajouter la bonne catégorie
         oGuiElement = cGuiElement()
@@ -434,7 +433,7 @@ class cHome:
         oInputParameterHandler = cInputParameterHandler()
         sSiteUrl = oInputParameterHandler.getValue('siteUrl')
 
-        oPluginHandler = cSiteHandler()
+        oPluginHandler = cPluginHandler()
         aPlugins = oPluginHandler.getAvailablePlugins(sSiteUrl)
         oOutputParameterHandler = cOutputParameterHandler()
         for aPlugin in aPlugins:
