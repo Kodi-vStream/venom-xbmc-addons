@@ -48,28 +48,14 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
 
-        if 'yggseries.com' in self.__sUrl:
-            baseUrl = 'https://yggseries.com/api/source/'
-        elif 'french-vid' in self.__sUrl:
+        if 'french-vid' in self.__sUrl:
             baseUrl = 'https://www.fembed.com/api/source/'
-        elif 'fembed' in self.__sUrl:
-            baseUrl = 'https://www.fembed.com/api/source/'
-        elif 'feurl' in self.__sUrl:
-            baseUrl = 'https://feurl.com/api/source/'
-        elif 'vfsplayer' in self.__sUrl:
-            baseUrl = 'https://vfsplayer.xyz/api/source/'
-        elif 'fsimg' in self.__sUrl:
-            baseUrl = 'https://www.fsimg.info/api/source/'
+        elif 'fembed' in self.__sUrl or "femax20" in self.__sUrl:
+            baseUrl = 'https://www.diasfem.com/api/source/'
         elif 'fem.tohds' in self.__sUrl:
             baseUrl = 'https://feurl.com/api/source/'
-        elif 'core1player' in self.__sUrl:
-            baseUrl = 'https://www.core1player.com/api/source/'
-        elif 'gotochus' in self.__sUrl:
-            baseUrl = 'https://www.gotochus.com/api/source/'
-        elif 'sendvid' in self.__sUrl:
-            baseUrl = "https://sendvid.net/api/source/"
-        elif "femax20" in self.__sUrl:
-            baseUrl = "https://diasfem.com/api/source/"
+        else:
+            baseUrl = 'https://' + self.__sUrl.split('/')[2] + '/api/source/'
             
         if 'fem.tohds' in self.__sUrl:
             oRequestHandler = cRequestHandler(self.__sUrl)
@@ -112,7 +98,6 @@ class cHoster(iHoster):
         oRequest.addHeaderEntry('User-Agent', UA)
         sHtmlContent = oRequest.request()
         api_call = oRequest.getRealUrl()
-
 
         if (api_call):
             return True, api_call  + '|User-Agent=' + UA + '&verifypeer=false'
