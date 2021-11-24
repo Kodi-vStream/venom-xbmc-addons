@@ -7,6 +7,7 @@ import json
 
 from resources.lib.comaddon import addon, VSlog, VSPath
 
+
 class cPluginHandler:
 
     def getPluginHandle(self):
@@ -43,11 +44,11 @@ class cPluginHandler:
 
     def __importPlugin(self, sName, sLabel=""):
         try:
-            exec ("from resources.sites import " + sName, globals())             
-            exec ("sSiteName = " + sName + ".SITE_NAME", globals())
+            exec("from resources.sites import " + sName, globals())
+            exec("sSiteName = " + sName + ".SITE_NAME", globals())
             sPluginSettingsName = 'plugin_' + sName
             if sLabel:
-                exec ("sSearch = " + sName + "." + sLabel, globals())
+                exec("sSearch = " + sName + "." + sLabel, globals())
                 return sSearch[0], sPluginSettingsName, sSearch[1], sSiteName
             else:
                 exec("sSiteName = " + sName + ".SITE_NAME", globals())
@@ -57,7 +58,7 @@ class cPluginHandler:
             VSlog("Cannot import plugin " + str(sName))
             VSlog("Detail de l\'erreur " + str(e))
             return False, False
-            
+
     def getAvailablePlugins(self, sLabel="", force=False):
         path = VSPath('special://home/addons/plugin.video.vstream/resources/sites.json')
         with open(path) as f:
