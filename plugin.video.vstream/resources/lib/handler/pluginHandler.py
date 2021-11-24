@@ -51,7 +51,6 @@ class cPluginHandler:
                 exec("sSearch = " + sName + "." + sLabel, globals())
                 return sSearch[0], sPluginSettingsName, sSearch[1], sSiteName
             else:
-                exec("sSiteName = " + sName + ".SITE_NAME", globals())
                 exec("sSiteDesc = " + sName + ".SITE_DESC", globals())
                 return sSiteName, sPluginSettingsName, sSiteDesc
         except Exception as e:
