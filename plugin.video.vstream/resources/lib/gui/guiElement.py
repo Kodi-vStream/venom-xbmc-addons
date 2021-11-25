@@ -17,8 +17,6 @@ from resources.lib.util import cUtil, QuoteSafe
 class cGuiElement:
 
     DEFAULT_FOLDER_ICON = 'icon.png'
-    # COUNT = 0
-    DB = cDb()
 
     def __init__(self):
 
@@ -419,7 +417,8 @@ class cGuiElement:
         meta['site'] = self.getSiteUrl()
         meta['cat'] = self.getCat()
 
-        data = self.DB.get_watched(meta)
+        with cDb() as db:
+            data = db.get_watched(meta)
         return data
 
 

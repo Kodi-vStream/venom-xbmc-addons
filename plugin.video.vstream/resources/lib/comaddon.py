@@ -412,6 +412,24 @@ def VSPath(pathSpecial):
         path = xbmc.translatePath(pathSpecial)
     return path
 
+# Récupere le nom du profil courant
+def VSProfil():
+    import json
+    # On chercher le profil courant.
+    request = {
+        "jsonrpc": "2.0",
+        "method": "Profiles.GetCurrentProfile",
+        "params": {
+            "properties": ["thumbnail", "lockmode"]
+        },
+        "id": 1
+    }
+
+    req = json.dumps(request)
+    response = xbmc.executeJSONRPC(req)
+    # On recupere le nom.
+    name = json.loads(response)['result']['label']
+    return name
 
 class addonManager:
     # Demande l'installation d'un addon

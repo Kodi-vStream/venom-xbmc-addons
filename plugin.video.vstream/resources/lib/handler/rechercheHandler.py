@@ -112,7 +112,8 @@ class cRechercheHandler:
                 meta = {}
                 meta['title'] = sText
                 meta['disp'] = sCat
-                cDb().insert_history(meta)
+                with cDb() as db:
+                    db.insert_history(meta)
         except:
             pass
 

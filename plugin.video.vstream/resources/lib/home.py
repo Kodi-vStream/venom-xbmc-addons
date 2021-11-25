@@ -388,7 +388,9 @@ class cHome:
         oGui = cGui()
 
         from resources.lib.db import cDb
-        row = cDb().get_history()
+        with cDb() as db:
+            row = db.get_history()
+
         if row:
             oGui.addText(SITE_IDENTIFIER, self.addons.VSlang(30416))
         else:
@@ -424,7 +426,8 @@ class cHome:
 
     def delSearch(self):
         from resources.lib.db import cDb
-        cDb().del_history()
+        with cDb() as db:
+            db.del_history()
         return True
 
     def callpluging(self):
