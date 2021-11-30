@@ -97,8 +97,8 @@ class cHoster(iHoster):
                 break
             except:
                 pass
-  
-        api_call = json.loads(code[code.index("{"):])['url']
+
+        api_call = json.loads(code[code.rfind("{"):])['url']
 
         if (api_call):
             return True, api_call + '|' + urlEncode(headers)
