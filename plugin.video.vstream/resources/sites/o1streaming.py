@@ -9,7 +9,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 
 SITE_IDENTIFIER = 'o1streaming'
 SITE_NAME = '01 Streaming'
@@ -200,29 +200,24 @@ def showSaisons():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sDesc = ''
-    sPattern = 'class="description.+?<p>(.+?)<.p><.div>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        sDesc = aResult[1][0]
-        sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', sDesc)
 
-    sPattern = 'choose-season.+?ref="([^"]+).+?inline">([^<]+)'
+    sPattern = '<a data-post="([^"]+)" data-season="([^"]+)"[^<>]+>([^<>]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            sUrl2 = aEntry[0]
+            data = aEntry[0]
             saison = aEntry[1]
 
             sTitle = ("%s %s") % (sMovieTitle, ' Saison ' + saison)
 
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'wp-admin/admin-ajax.php')
+            oOutputParameterHandler.addParameter('data', data)
+            oOutputParameterHandler.addParameter('saison', saison)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oGui.addSeason(SITE_IDENTIFIER, 'ShowEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'ShowEpisodes', sTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -232,10 +227,15 @@ def ShowEpisodes():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    data = oInputParameterHandler.getValue('data')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    sDesc = oInputParameterHandler.getValue('sDesc')
+    saison = oInputParameterHandler.getValue('saison')
 
     oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.setRequestType(1)
+    oRequestHandler.addParameters('action', 'action_select_season') 
+    oRequestHandler.addParameters('season', saison) 
+    oRequestHandler.addParameters('post', data) 
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '<h2 class="entry-title">([^><]+).+?<a href="([^"]+)" class="lnk-blk">'
@@ -250,8 +250,7 @@ def ShowEpisodes():
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
