@@ -30,8 +30,8 @@ class cFav:
         siteUrl = oInputParameterHandler.getValue('siteUrl')
         sTitle = oInputParameterHandler.getValue('sCleanTitle')
         # sTitle = cUtil().CleanName(sTitle)
-
-        cDb().del_bookmark(siteUrl, sTitle, sCat, sAll)
+        with cDb() as db:
+            db.del_bookmark(siteUrl, sTitle, sCat, sAll)
         return True
 
     # Suppression d'un bookmark depuis un Widget
@@ -41,8 +41,8 @@ class cFav:
 
         sTitle = xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
         siteUrl = xbmc.getInfoLabel('ListItem.Property(siteUrl)')
-
-        cDb().del_bookmark(siteUrl, sTitle)
+        with cDb() as db:
+            db.del_bookmark(siteUrl, sTitle)
 
         return True
 
