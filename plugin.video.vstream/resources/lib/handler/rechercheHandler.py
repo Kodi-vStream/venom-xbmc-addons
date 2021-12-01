@@ -57,7 +57,8 @@ class cRechercheHandler:
 
     def __getFileNamesFromFolder(self, sFolder):
         aNameList = []
-        items = xbmcvfs.listdir(sFolder)[1][:-1]
+        items = xbmcvfs.listdir(sFolder)[1]
+        items.remove("__init__.py")
         items.sort()
 
         for sItemName in items:
