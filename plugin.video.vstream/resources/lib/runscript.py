@@ -4,9 +4,11 @@
 # vstream = xbmcaddon.Addon('plugin.video.vstream')
 # sLibrary = VSPath(vstream.getAddonInfo("path")).decode("utf-8")
 # sys.path.append (sLibrary)
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import addon, dialog, VSlog, window, VSPath, xbmc
-from resources.lib.util import urlEncode
+import json
+import xbmcvfs
+import xbmc
+import xbmcgui
+import sys
 
 try:  # Python 2
     import urllib2
@@ -14,10 +16,9 @@ try:  # Python 2
 except ImportError:  # Python 3
     import urllib.request as urllib2
 
-import xbmcvfs
-import sys
-import xbmc
-import xbmcgui
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.comaddon import addon, dialog, VSlog, window, VSPath
+# from resources.lib.util import urlEncode
 
 try:
     from sqlite3 import dbapi2 as sqlite
@@ -26,7 +27,6 @@ except:
     from pysqlite2 import dbapi2 as sqlite
     VSlog('SQLITE 2 as DB engine')
 
-import json
 
 SITE_IDENTIFIER = 'runscript'
 SITE_NAME = 'runscript'
@@ -155,7 +155,7 @@ class cClear:
                     cached_Cache = VSPath(cached_Cache).decode("utf-8")
                 except AttributeError:
                     cached_Cache = VSPath(cached_Cache)
-                
+
                 try:
                     db = sqlite.connect(cached_Cache)
                     dbcur = db.cursor()
@@ -246,12 +246,12 @@ class cClear:
                     oRequestHandler = cRequestHandler(cUrl)
                     oRequestHandler.setRequestType(1)
                     oRequestHandler.addHeaderEntry('User-Agent', UA)
-                    oRequestHandler.addParameters('raw_paste',result)
+                    oRequestHandler.addParameters('raw_paste', result)
                     oRequestHandler.addParameters('author', "kodi.log")
                     oRequestHandler.addParameters('language', "text")
-                    oRequestHandler.addParameters('permissions',1) # private
+                    oRequestHandler.addParameters('permissions', 1)  # private
                     oRequestHandler.addParameters('expire', 259200)  # 3j
-                    oRequestHandler.addParameters('submit', 'Submit+Paste') 
+                    oRequestHandler.addParameters('submit', 'Submit+Paste')
                     sHtmlContent = oRequestHandler.request()
                     code = oRequestHandler.getRealUrl().replace('http://slexy.org/view/', '')
 
@@ -293,9 +293,11 @@ class cClear:
                         bPlugin = self.data['site'][sPluginSettingsName]['active']
 
                         icon = "special://home/addons/plugin.video.vstream/resources/art/sites/%s.png" % aPlugin[1]
-                        stitle = self.data['site'][sPluginSettingsName]['label'].replace('[COLOR violet]', '').replace('[COLOR orange]', '')\
-                                           .replace('[/COLOR]', '').replace('[COLOR dodgerblue]', '')\
-                                           .replace('[COLOR coral]', '')
+                        stitle = self.data['site'][sPluginSettingsName]['label'].replace('[COLOR violet]', '')\
+                                                                                .replace('[COLOR orange]', '')\
+                                                                                .replace('[/COLOR]', '')\
+                                                                                .replace('[COLOR dodgerblue]', '')\
+                                                                                .replace('[COLOR coral]', '')
                         if (bPlugin == 'true'):
                             stitle = ('%s %s') % (stitle, valid)
                         listitem = xbmcgui.ListItem(label=stitle, label2=aPlugin[2])
@@ -414,11 +416,13 @@ class cClear:
     #         file_path = os.path.join(dir, the_file).encode('utf-8')
     #         if clearNested and os.path.isdir(file_path):
     #             self.ClearDir(file_path, clearNested)
-    #             try: os.rmdir(file_path)
+    #             try:
+    #                 os.rmdir(file_path)
     #             except Exception as e:
     #                 print(str(e))
     #         else:
-    #             try:os.unlink(file_path)
+    #             try:
+    #                 os.unlink(file_path)
     #             except Exception as e:
     #                 print str(e)
 
@@ -427,7 +431,8 @@ class cClear:
     #         dir = dir.decode("utf8")
     #     except:
     #         pass
-    #     try:os.unlink(dir)
+    #     try:
+    #         os.unlink(dir)
     #     except Exception as e:
     #         print(str(e))
 
