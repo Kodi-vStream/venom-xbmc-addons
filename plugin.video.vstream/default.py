@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+import xbmc
 
 # from resources.lib.statistic import cStatistic
 from resources.lib.home import cHome
@@ -8,7 +9,7 @@ from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.handler.rechercheHandler import cRechercheHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.comaddon import progress, VSlog, addon, window, xbmc
+from resources.lib.comaddon import progress, VSlog, addon, window
 from resources.lib.util import Quote
 # http://kodi.wiki/view/InfoLabels
 # http://kodi.wiki/view/List_of_boolean_conditions
@@ -47,13 +48,13 @@ class main:
     def __init__(self):
         self.parseUrl()
 
-    def parseUrl(self):        
+    def parseUrl(self):
         # Exclue les appels par des plugins qu'on ne sait pas gérer, par exemple :  plugin://plugin.video.vstream/extrafanart
         oPluginHandler = cPluginHandler()
         pluginPath = oPluginHandler.getPluginPath()
         if pluginPath == 'plugin://plugin.video.vstream/extrafanart/':
             return
-        
+
         oInputParameterHandler = cInputParameterHandler()
 
         if oInputParameterHandler.exist('function'):
@@ -79,7 +80,7 @@ class main:
         if sFunction == 'setSettings':
             setSettings(oInputParameterHandler)
             return
-            
+
         if sFunction == 'DoNothing':
             return
 
@@ -141,7 +142,6 @@ class main:
                         oOutputParameterHandler = cOutputParameterHandler()
                         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
                         icon = 'sites/%s.png' % (aPlugin[1])
-                        # icon = 'https://imgplaceholder.com/512x512/transparent/fff?text=%s&font-family=Roboto_Bold' % aPlugin[1]
                         oGui.addDir(aPlugin[1], 'load', aPlugin[0], icon, oOutputParameterHandler)
 
                 oGui.setEndOfDirectory()
@@ -188,7 +188,7 @@ def setSetting(plugin_id, value):
 # &id5=hoster_uploaded_password&value5=MyPass)
 def setSettings(oInputParameterHandler):
     addons = addon()
-    
+
     for i in range(1, 100):
         plugin_id = oInputParameterHandler.getValue('id' + str(i))
         if plugin_id:
@@ -200,7 +200,8 @@ def setSettings(oInputParameterHandler):
                 addons.setSetting(plugin_id, value)
 
     return True
-    
+
+
 def isHosterGui(sSiteName, sFunction):
     if sSiteName == 'cHosterGui':
         plugins = __import__('resources.lib.gui.hoster', fromlist=['cHosterGui']).cHosterGui()
@@ -294,17 +295,17 @@ def searchGlobal():
         xbmc.executebuiltin('Dialog.Close(busydialog)')
     except:
         pass
-        
+
     oGui.addText('globalSearch', addons.VSlang(30081) % sSearchText, 'search.png')
     sSearchText = Quote(sSearchText)
 
     count = 0
     for plugin in aPlugins:
- 
+
         progress_.VSupdate(progress_, total, plugin['name'], True)
         if progress_.iscanceled():
             break
- 
+
         oGui.searchResults[:] = []  # vider le tableau de résultats pour les récupérer par source
         _pluginSearch(plugin, sSearchText)
 
@@ -315,7 +316,7 @@ def searchGlobal():
             oGui.addText(plugin['identifier'], '%s. [COLOR olive]%s[/COLOR]' % (count, plugin['name']), 'sites/%s.png' % (plugin['identifier']))
             for result in oGui.searchResults:
                 oGui.addFolder(result['guiElement'], result['params'])
- 
+
     if not count:   # aucune source ne retourne de résultats
         oGui.addText('globalSearch')  # "Aucune information"
 
@@ -331,14 +332,14 @@ def _pluginSearch(plugin, sSearchText):
 
     # Appeler la source en mode Recherche globale
     window(10101).setProperty('search', 'true')
-    
+
     try:
         plugins = __import__('resources.sites.%s' % plugin['identifier'], fromlist=[plugin['identifier']])
         function = getattr(plugins, plugin['search'][1])
         sUrl = plugin['search'][0] + str(sSearchText)
-        
+
         function(sUrl)
-        
+
         VSlog('Load Search: ' + str(plugin['identifier']))
     except:
         VSlog(plugin['identifier'] + ': search failed')
