@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # https://www.myvi.tv/embed/xxxxxxxxx
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
@@ -8,15 +8,15 @@ from resources.lib.util import Unquote
 
 UA = 'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36'
 
-class cHoster(iHoster):
 
+class cHoster(iHoster):
     def __init__(self):
-        self.__sDisplayName = 'MyviTv'
+        self.__sDisplayName = 'Myvi'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -28,7 +28,7 @@ class cHoster(iHoster):
         return self.__sFileName
 
     def getPluginIdentifier(self):
-        return 'myvitv'
+        return 'myvi'
 
     def setHD(self, sHD):
         self.__sHD = ''
@@ -59,7 +59,7 @@ class cHoster(iHoster):
         if (aResult[0] == True):
             api_call = Unquote(aResult[1][0])
 
-        if (api_call):
+        if api_call:
             return True, api_call + '|User-Agent=' + UA + '&Referer=' + self.__sUrl
 
         return False, False
