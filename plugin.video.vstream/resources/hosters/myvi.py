@@ -46,19 +46,16 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-
         api_call = ''
         oParser = cParser()
 
         oRequest = cRequestHandler(self.__sUrl)
-        sHtmlContent = oRequest.request()
-
+        sHtmlContent = oRequest.request().replace('u0026', '&')
         sPattern = 'CreatePlayer.+?v=(.+?)&tp'
 
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             api_call = Unquote(aResult[1][0])
-
         if api_call:
             return True, api_call + '|User-Agent=' + UA + '&Referer=' + self.__sUrl
 
