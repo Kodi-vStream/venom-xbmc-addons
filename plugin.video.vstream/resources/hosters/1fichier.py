@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-import urllib3, re
+import re
+import urllib3
 
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog, VSlog
 from resources.lib.handler.premiumHandler import cPremiumHandler
-from resources.lib.parser import cParser
 from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.parser import cParser
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
 
-class cHoster(iHoster):
 
+class cHoster(iHoster):
     def __init__(self):
         self.__sDisplayName = '1Fichier'
         self.__sFileName = self.__sDisplayName
@@ -66,7 +67,6 @@ class cHoster(iHoster):
         return
 
     def getMediaLink(self):
-
         self.oPremiumHandler = cPremiumHandler(self.getPluginIdentifier())
         print(self.oPremiumHandler.isPremiumModeAvailable())
 
@@ -97,17 +97,17 @@ class cHoster(iHoster):
         oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
 
-        oRequestHandler.addParameters('dl_no_ssl', 'on')            
+        oRequestHandler.addParameters('dl_no_ssl', 'on')
         oRequestHandler.addParameters('adz', adcode)
         sHtmlContent = oRequestHandler.request()
-        
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close
-        
+
+        # fh = open('c:\\test.txt', "w")
+        # fh.write(sHtmlContent)
+        # fh.close
+
         api_call = self.GetMedialinkDL(sHtmlContent)
 
-        if (api_call):
+        if api_call:
             if isPremium:
                 api_call = api_call + '&' + self.oPremiumHandler.AddCookies()
             return True, api_call
@@ -152,7 +152,7 @@ class cHoster(iHoster):
         '''
 
         sHtmlContent = self.oPremiumHandler.GetHtml('%s' % url + '&e=1')
-        if (sHtmlContent):
+        if sHtmlContent:
             # L'option est désactivée : la réponse sera de type "text/plain; charset=utf-8", exemple :
             # https://serveur-2b.1fichier.com/lelienactif;Film.de.Jacquie.et.Michel.a.la.montagne.mkv;1234567890;0
             m = re.search('^(.*);.*;.*;.*$', sHtmlContent)
@@ -175,8 +175,8 @@ class cHoster(iHoster):
                            'Content-Type': 'application/x-www-form-urlencoded'
                            }
                 try:
-                  http = urllib3.PoolManager()
-                  response = http.request(method='POST', url=url, fields=data, headers=headers)
+                    http = urllib3.PoolManager()
+                    response = http.request(method='POST', url=url, fields=data, headers=headers)
                 except urllib3.exceptions.HTTPError as e:
                     VSlog(e.read())
                     VSlog(e.reason)
@@ -205,7 +205,7 @@ class cHoster(iHoster):
 
         VSlog(api_call)
 
-        if (api_call):
+        if api_call:
             return True, api_call
 
         return False, False
