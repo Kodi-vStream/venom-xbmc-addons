@@ -9,7 +9,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'o1streaming'
 SITE_NAME = '01 Streaming'
@@ -121,7 +121,7 @@ def showMovies(sSearch=''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'entry-header"> *<h2 class="entry-title">([^<]+).+?src="([^"]+).+?class="year">([^<]+).+?<a href="([^"]+)'
+    sPattern = 'entry-header"> *<h2 class="entry-title">([^<]+).+?src="([^"]+).+?class="year">([^<]+).+?href="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -201,6 +201,16 @@ def showSaisons():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
+    # récupération du Synopsis
+    sDesc = ''
+    try:
+        sPattern = 'description"><p>(.+?)</p>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sDesc = aResult[1][0]
+    except:
+        pass
+
     sPattern = '<a data-post="([^"]+)" data-season="([^"]+)"[^<>]+>([^<>]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -216,8 +226,9 @@ def showSaisons():
             oOutputParameterHandler.addParameter('data', data)
             oOutputParameterHandler.addParameter('saison', saison)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oGui.addSeason(SITE_IDENTIFIER, 'ShowEpisodes', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'ShowEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -228,14 +239,15 @@ def ShowEpisodes():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     data = oInputParameterHandler.getValue('data')
+    sDesc = oInputParameterHandler.getValue('sDesc')
     sThumb = oInputParameterHandler.getValue('sThumb')
     saison = oInputParameterHandler.getValue('saison')
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.setRequestType(1)
-    oRequestHandler.addParameters('action', 'action_select_season') 
-    oRequestHandler.addParameters('season', saison) 
-    oRequestHandler.addParameters('post', data) 
+    oRequestHandler.addParameters('action', 'action_select_season')
+    oRequestHandler.addParameters('season', saison)
+    oRequestHandler.addParameters('post', data)
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '<h2 class="entry-title">([^><]+).+?<a href="([^"]+)" class="lnk-blk">'
@@ -250,7 +262,8 @@ def ShowEpisodes():
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -268,6 +281,17 @@ def showLinks():
     oParser = cParser()
 
     numUrl = 0
+
+    # récupération du Synopsis
+    if sDesc == False:
+        try:
+            sPattern = 'description"><p>(.+?)</p>'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if aResult[0]:
+                sDesc = aResult[1][0]
+        except:
+            pass
+
     sPatternUrl = '<iframe (?:data-)*src="([^"]+)"'
     aResultUrl = oParser.parse(sHtmlContent, sPatternUrl)
     if (aResultUrl[0] == True):
@@ -293,7 +317,7 @@ def showLinks():
                     oOutputParameterHandler.addParameter('sHost', sHost)
                     oOutputParameterHandler.addParameter('sLang', sLang)
                     oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                    oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, '', oOutputParameterHandler)
+                    oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
