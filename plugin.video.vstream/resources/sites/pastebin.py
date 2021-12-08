@@ -461,13 +461,14 @@ def load():
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
     # Menu pour ajouter un dossier (hors widget)
+    sDecoColor = addons.getSetting('deco_color')
     if not xbmc.getCondVisibility('Window.IsActive(home)'):
         oOutputParameterHandler = cOutputParameterHandler()
-        oGui.addDir(SITE_IDENTIFIER, 'addPasteName', '[COLOR coral]Ajouter un dossier %s[/COLOR]' % SITE_NAME, 'listes.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'addPasteName', '[COLOR %s]Ajouter un dossier %s[/COLOR]' % (sDecoColor, SITE_NAME), 'listes.png', oOutputParameterHandler)
 
     # Menu pour raffraichir le cache
     oOutputParameterHandler = cOutputParameterHandler()
-    oGui.addDir(SITE_IDENTIFIER, 'refreshAllPaste', '[COLOR coral]Mettre à jour tous les contenus[/COLOR]', 'download.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'refreshAllPaste', '[COLOR %s]Mettre à jour tous les contenus[/COLOR]' % sDecoColor, 'download.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -518,11 +519,12 @@ def showMenu():
 
         # Menu pour ajouter un lien (hors widget)
         if not xbmc.getCondVisibility('Window.IsActive(home)'):
+            sDecoColor = addons.getSetting('deco_color')
             oOutputParameterHandler.addParameter('pasteID', pasteID) # remettre les paramètres lorsqu'on recycle oOutputParameterHandler
-            oGui.addDir(SITE_IDENTIFIER, 'addPasteID', '[COLOR coral]Ajouter un code %s[/COLOR]' % SITE_NAME, 'notes.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'addPasteID', '[COLOR %s]Ajouter un code %s[/COLOR]' % (sDecoColor, SITE_NAME), 'notes.png', oOutputParameterHandler)
             
             oOutputParameterHandler.addParameter('pasteID', pasteID) # remettre les paramètres lorsqu'on recycle oOutputParameterHandler
-            oGui.addDir(SITE_IDENTIFIER, 'adminPasteID', '[COLOR coral]Retirer un code %s[/COLOR]' % SITE_NAME, 'trash.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'adminPasteID', '[COLOR %s]Retirer un code %s[/COLOR]' % (sDecoColor, SITE_NAME), 'trash.png', oOutputParameterHandler)
 
     elif 'film' in sMedia:
         contenu.discard('containSeries')
