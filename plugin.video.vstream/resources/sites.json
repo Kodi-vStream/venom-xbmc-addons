@@ -128,6 +128,10 @@
             "label": "French-stream-lol",
             "active": "true"
         },
+        "plugin_frenchanimes": {
+            "label": "French Animes",
+            "active": "true"
+        },
         "plugin_funeralforamanga": {
             "label": "Funeral for a manga",
             "active": "true"
