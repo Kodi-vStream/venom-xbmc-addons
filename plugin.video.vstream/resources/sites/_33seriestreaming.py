@@ -14,7 +14,7 @@ SITE_IDENTIFIER = '_33seriestreaming'
 SITE_NAME = '33 Séries'
 SITE_DESC = 'Films et Séries en streaming VF et VOSTFR'
 
-URL_MAIN = "https://wvv.33seriestreaming.com/"
+URL_MAIN = "https://vvv.33seriestreaming.com/"
 
 # Sous menus
 MOVIE_MOVIE = (True, 'showMenuMovies')
