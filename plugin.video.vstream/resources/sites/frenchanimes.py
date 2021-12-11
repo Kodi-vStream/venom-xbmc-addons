@@ -19,14 +19,14 @@ SITE_DESC = 'Mangas en streaming'
 URL_MAIN = "https://french-anime.com/"
 
 ANIM_ANIMS = (True, 'load')
-ANIM_NEWS = (URL_MAIN, 'showMovies')
-ANIM_VFS = (URL_MAIN + 'animes-vf/', 'showMovies')
-ANIM_VOSTFRS = (URL_MAIN + 'animes-vostfr/', 'showMovies')
-ANIM_MOVIE = (URL_MAIN + 'films-vf-vostfr/', 'showMovies')
+ANIM_NEWS = (URL_MAIN, 'showAnimes')
+ANIM_VFS = (URL_MAIN + 'animes-vf/', 'showAnimes')
+ANIM_VOSTFRS = (URL_MAIN + 'animes-vostfr/', 'showAnimes')
+ANIM_MOVIE = (URL_MAIN + 'films-vf-vostfr/', 'showAnimes')
 ANIM_GENRES = (True, 'showGenres')
 
 URL_SEARCH = (URL_MAIN + '?do=search&mode=advanced&subaction=search&story=', 'showSearch')
-URL_SEARCH_ANIMS = ('', 'showMovies')
+URL_SEARCH_ANIMS = ('', 'showAnimes')
 FUNCTION_SEARCH = 'showSearch'
 
 
@@ -57,13 +57,10 @@ def load():
 
 def showSearch():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
-        showMovies(sUrl)
+        showAnimes(sUrl)
         oGui.setEndOfDirectory()
         return
 
@@ -96,11 +93,11 @@ def showGenres():
         oOutputParameterHandler = cOutputParameterHandler()
         for sTitle, sUrl in TriAlpha:
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showAnimes', sTitle, 'genres.png', oOutputParameterHandler)
         oGui.setEndOfDirectory()
 
 
-def showMovies(sSearch=''):
+def showAnimes(sSearch=''):
     oGui = cGui()
     oParser = cParser()
 
@@ -161,7 +158,7 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showAnimes', 'Page ' + sPaging, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
