@@ -111,7 +111,7 @@ class cRequestHandler:
     def addMultipartFiled(self, fields):
         mpartdata = MPencode(fields)
         self.__aParamatersLine = mpartdata[1]
-        self.addHeaderEntry('Content-Type', mpartdata[0] )
+        self.addHeaderEntry('Content-Type', mpartdata[0])
         self.addHeaderEntry('Content-Length', len(mpartdata[1]))
 
     # Je sais plus si elle gere les doublons
@@ -122,7 +122,7 @@ class cRequestHandler:
     def getRealUrl(self):
         return self.__sRealUrl
 
-    def request(self,jsonDecode=False):
+    def request(self, jsonDecode=False):
         # Supprimee car deconne si url contient ' ' et '+' en meme temps
         # self.__sUrl = self.__sUrl.replace(' ', '+')
         return self.__callRequest(jsonDecode)
@@ -232,7 +232,7 @@ class cRequestHandler:
                 sContent = ''
                 return False
 
-        except RequestException  as e:
+        except RequestException as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e) and self.BUG_SSL == False:
                 self.BUG_SSL = True
                 return self.__callRequest()
@@ -250,7 +250,7 @@ class cRequestHandler:
             dialog().VSerror(error_msg)
             sContent = ''
 
-        if self.oResponse != None:
+        if self.oResponse is not None:
             if self.oResponse.status_code in [503, 403]:
                 if "Forbidden" not in sContent:
                     # Default
