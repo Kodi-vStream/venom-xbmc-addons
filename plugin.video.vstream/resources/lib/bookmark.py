@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-# Venom.
+import xbmc
+
 from resources.lib.db import cDb
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.comaddon import dialog, addon, xbmc, isMatrix
+from resources.lib.comaddon import dialog, addon, isMatrix
 from resources.lib.util import UnquotePlus
 
 SITE_IDENTIFIER = 'cFav'
@@ -164,7 +165,7 @@ class cFav:
                 if (cat  == '1'):           # Films
                     oGuiElement.setMeta(1)
                     oGuiElement.setCat(1)
-                elif (cat == '2'):          # Séries 
+                elif (cat == '2'):          # Séries
                     oGuiElement.setMeta(2)
                     oGuiElement.setCat(2)
                 elif (cat == '3'):          # Anime
@@ -195,7 +196,7 @@ class cFav:
                 oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, 'cFav', 'cFav', 'delBookmark', self.ADDON.VSlang(30412))
 
                 if (function == 'play'):
-                    oGui.addHost(oGuiElement, oOutputParameterHandler)
+                    oGui.addHost(oGuiElement, oOutputParameterHandler)  # addHost n'existe plus
                 else:
                     oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
@@ -220,7 +221,7 @@ class cFav:
         iCat = 0
         if sCat:
             iCat = int(sCat)
-        if iCat<1 or iCat>8:
+        if iCat < 1 or iCat > 8:
             self.DIALOG.VSinfo('Error', self.ADDON.VSlang(30038))
             return
 
@@ -232,7 +233,7 @@ class cFav:
         sFav = oInputParameterHandler.getValue('sFav') if oInputParameterHandler.exist('sFav') else xbmc.getInfoLabel('ListItem.Property(sFav)')
 
         if sTitle == '':
-            self.DIALOG.VSinfo('Error', 'Probleme sur titre')
+            self.DIALOG.VSinfo('Error', 'Probleme sur le titre')
             return
 
         meta['siteurl'] = sSiteUrl
