@@ -71,11 +71,8 @@ class cDownloadProgressBar(threading.Thread):
         return self.__oDialog
 
     def _StartDownload(self):
-
         diag = self.createProcessDialog()
-
         xbmcgui.Window(10101).setProperty('arret', '0')
-
         headers = self.oUrlHandler.info()
 
         iTotalSize = -1
@@ -90,7 +87,6 @@ class cDownloadProgressBar(threading.Thread):
         self.DIALOG.VSinfo(self.ADDON.VSlang(30086))
 
         while not (self.processIsCanceled or diag.isFinished()):
-
             data = self.oUrlHandler.read(chunk)
             if not data:
                 print('DL err')
@@ -166,7 +162,6 @@ class cDownloadProgressBar(threading.Thread):
                 pass
 
     def __stateCallBackFunction(self, iDownsize, iTotalSize):
-
         if self.__oDialog.isFinished():
             self.createProcessDialog()
 
@@ -178,13 +173,12 @@ class cDownloadProgressBar(threading.Thread):
             self.__oDialog.close()
 
     def run(self):
-
         try:
             # Recuperation url simple
             url = self.__sUrl.split('|')[0]
             # Recuperation des headers du lien
             headers = {}
-            if len (self.__sUrl.split('|')) > 1:
+            if len(self.__sUrl.split('|')) > 1:
                 u = self.__sUrl.split('|')[1].split('&')
                 for i in u:
                     headers[i.split('=')[0]] = i.replace(i.split('=')[0] + '=', '')
@@ -216,10 +210,8 @@ class cDownloadProgressBar(threading.Thread):
         return '%.*f %s' % (2, iBytes/(1024*1024.0), 'MB')
 
     def StopAll(self):
-
         self.processIsCanceled = True
         xbmcgui.Window(10101).setProperty('SimpleDownloaderQueue', '0')
-
         xbmcgui.Window(10101).setProperty('arret', '1')
         try:
             self.__oDialog.close()
@@ -257,13 +249,11 @@ class cDownload:
         return '%.*f %s' % (2, iBytes/(1024*1024.0), 'MB')
 
     def isDownloading(self):
-
         if not xbmc.getCondVisibility('Window.IsVisible(10151)'):
             return False
         return True
 
     def download(self, sDBUrl, sTitle, sDownloadPath, FastMode=False):
-
         if self.isDownloading():
             self.DIALOG.VSinfo('Erreur', self.ADDON.VSlang(30012))
             return False
@@ -306,7 +296,6 @@ class cDownload:
         return True
 
     def __createTitle(self, sUrl, sTitle):
-
         sTitle = cUtil().CleanName(sTitle)
         sTitle = cUtil().FormatSerie(sTitle)
 
@@ -330,7 +319,6 @@ class cDownload:
         return sTitle
 
     def getDownload(self):
-
         oGui = cGui()
         sPluginHandle = cPluginHandler().getPluginHandle()
         sPluginPath = cPluginHandler().getPluginPath()
@@ -352,7 +340,6 @@ class cDownload:
         oGui.setEndOfDirectory()
 
     def CleanDownloadList(self):
-
         try:
             with cDb() as db:
                 db.clean_download()
@@ -447,13 +434,13 @@ class cDownload:
         with cDb() as db:
             row = db.get_download(meta)
 
-        if not (row):
+        if not row:
             return None
 
         return row[0]
 
     def StartDownload(self, data):
-        if not (data):
+        if not data:
             return
 
         title = data[1]
@@ -486,7 +473,6 @@ class cDownload:
 
     def getDownloadList(self):
         oGui = cGui()
-
         with cDb() as db:
             row = db.get_download()
 
@@ -522,9 +508,7 @@ class cDownload:
             elif status == '2':
                 sStatus = '[COLOR=green][Fini] [/COLOR]'
 
-
             if size:
-                
                 if isMatrix():
                     try:
                         title = title.decode()
@@ -560,7 +544,6 @@ class cDownload:
         return
 
     def delDownload(self):
-
         oInputParameterHandler = cInputParameterHandler()
         url = oInputParameterHandler.getValue('sUrl')
         meta = {}
@@ -578,14 +561,13 @@ class cDownload:
         return
 
     def AddDownload(self, meta):
-
         sTitle = meta['title']
         sUrl = meta['url']
 
         # titre fichier
         sTitle = self.__createTitle(sUrl, sTitle)
         sTitle = self.__createDownloadFilename(sTitle)
-        sTitle =  cGui().showKeyBoard(sTitle)
+        sTitle = cGui().showKeyBoard(sTitle)
 
         if (sTitle != False and len(sTitle) > 0):
 
@@ -597,7 +579,7 @@ class cDownload:
 
             if (sPath != ''):
                 self.ADDON.setSetting('download_folder', sPath)
-                sDownloadPath = VSPath(sPath + '%s' % (sTitle))
+                sDownloadPath = VSPath(sPath + '%s' % sTitle)
 
                 if xbmcvfs.exists(sDownloadPath):
                     self.DIALOG.VSinfo(self.ADDON.VSlang(30082), sTitle)
@@ -621,7 +603,6 @@ class cDownload:
         return False
 
     def AddtoDownloadList(self):
-
         oInputParameterHandler = cInputParameterHandler()
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
         sFileName = oInputParameterHandler.getValue('sFileName')
@@ -645,7 +626,6 @@ class cDownload:
         return
 
     def AddtoDownloadListandview(self):
-
         oInputParameterHandler = cInputParameterHandler()
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
         sFileName = oInputParameterHandler.getValue('sFileName')
