@@ -9,7 +9,7 @@ import xbmcgui
 import xbmcvfs
 
 """System d'importation
-from resources.lib.comaddon import addon, dialog, VSlog, xbmcgui, xbmc
+from resources.lib.comaddon import addon, dialog, VSlog
 """
 
 """
@@ -42,6 +42,7 @@ the python script "\plugin.video.vstream\default.py" has left several classes in
 """
 ADDONVS = xbmcaddon.Addon('plugin.video.vstream')  # singleton
 
+
 # class addon(xbmcaddon.Addon):
 class addon:
     def __init__(self, addonId=None):
@@ -71,6 +72,8 @@ dialogs = dialog()
 dialogs.VSinfo('test')
 https://codedocs.xyz/xbmc/xbmc/group__python___dialog.html
 """
+
+
 class dialog:
     def __init__(self):
         self.DIALOG = xbmcgui.Dialog()
@@ -136,6 +139,7 @@ progress = progress() non recommandé
 https://codedocs.xyz/xbmc/xbmc/group__python___dialog_progress.html
 """
 
+
 class empty:
 
     def VSupdate(self, dialog, total, text='', search=False):
@@ -148,7 +152,7 @@ class empty:
         pass
 
 
-# Baser sur UrlResolver
+# Basé sur UrlResolver
 class CountdownDialog(object):
     __INTERVALS = 5
 
@@ -319,7 +323,7 @@ class listitem(xbmcgui.ListItem):
 
     # Permet l'ajout d'un menu après la création d'un item
     def addMenu(self, sFile, sFunction, sTitle, oOutputParameterHandler=False):
-        sPluginPath = 'plugin://plugin.video.vstream/' # cPluginHandler().getPluginPath()
+        sPluginPath = 'plugin://plugin.video.vstream/'  # cPluginHandler().getPluginPath()
         nbContextMenu = self.getProperty('nbcontextmenu')
         nbContextMenu = int(nbContextMenu) if nbContextMenu else 0
 
@@ -412,6 +416,7 @@ def VSPath(pathSpecial):
         path = xbmc.translatePath(pathSpecial)
     return path
 
+
 # Récupere le nom du profil courant
 def VSProfil():
     import json
@@ -430,6 +435,7 @@ def VSProfil():
     # On recupere le nom.
     name = json.loads(response)['result']['label']
     return name
+
 
 class addonManager:
     # Demande l'installation d'un addon
