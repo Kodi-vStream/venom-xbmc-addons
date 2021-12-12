@@ -4,10 +4,8 @@ import re
 import requests
 
 from resources.hosters.youtube import cHoster
-from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.player import cPlayer
-from resources.lib.comaddon import addon, dialog
 from resources.lib.tmdb import cTMDb
 from resources.lib.config import GestionCookie
 
