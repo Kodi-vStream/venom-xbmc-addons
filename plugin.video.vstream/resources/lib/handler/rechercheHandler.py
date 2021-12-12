@@ -7,6 +7,7 @@ import sys
 import xbmcvfs
 import json
 
+
 class cRechercheHandler:
     Count = 0
 
@@ -84,7 +85,7 @@ class cRechercheHandler:
             sSearch = 'URL_SEARCH_DRAMAS'
         elif sCat == '5':
             sSearch = 'URL_SEARCH_MISC'
-        else :
+        else:
             sSearch = 'URL_SEARCH'
 
         try:
@@ -93,7 +94,6 @@ class cRechercheHandler:
             pluginData['name'] = plugin.SITE_NAME
             pluginData['search'] = getattr(plugin, sSearch)
             return pluginData
-
         except:
             return False
 
@@ -110,9 +110,7 @@ class cRechercheHandler:
         # historique
         try:
             if (addons.getSetting("history-view") == 'true'):
-                meta = {}
-                meta['title'] = sText
-                meta['disp'] = sCat
+                meta = {'title': sText, 'disp': sCat}
                 with cDb() as db:
                     db.insert_history(meta)
         except:
@@ -131,10 +129,10 @@ class cRechercheHandler:
         for sFileName in aFileNames:
             pluginData = data["site"].get('plugin_' + sFileName)
             if pluginData is None:
-                data['site'].update({'plugin_' + sFileName: {"label":sFileName,"active":"true"}})
+                data['site'].update({'plugin_' + sFileName: {"label": sFileName, "active": "true"}})
                 if self.__siteAdded == False:
                     self.__siteAdded = True
-                              
+
             bPlugin = data['site']['plugin_' + sFileName]['active']
             if (bPlugin == 'true'):
                 aPlugin = self.importPlugin(sFileName, sCat)
@@ -148,8 +146,5 @@ class cRechercheHandler:
         return aPlugins
 
     def __createAvailablePluginsItem(self, sPluginName, sPluginIdentifier, sPluginDesc):
-        aPluginEntry = []
-        aPluginEntry.append(sPluginName)
-        aPluginEntry.append(sPluginIdentifier)
-        aPluginEntry.append(sPluginDesc)
+        aPluginEntry = [sPluginName, sPluginIdentifier, sPluginDesc]
         return aPluginEntry
