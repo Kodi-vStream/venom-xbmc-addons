@@ -205,7 +205,7 @@ def showMovies(sSearch=''):
 
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
-        sPattern = '<div class="image">.+?<a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)".+?<p>(.+?)</p>'
+        sPattern = '<div class="image">.+?<a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)".+?<p>([^<]*)</p>'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -281,7 +281,7 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<span>Page.+?de ([^<]+)<\/span.+?href="([^"]+)(?:"><i id=\'nextpagination\'|" ><span class="icon-chevron-right)'
+    sPattern = '<span>Page.+?de ([^<]+)</span.+?href="([^"]+)(?:"><i id=\'nextpaginat|" ><span class="icon-chevron-rig)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sNumberMax = aResult[1][0][0]
@@ -420,7 +420,7 @@ def showHosters():
                     oRequestHandler.disableRedirect()
                     oRequestHandler.addHeaderEntry('User-Agent', UA)
                     oRequestHandler.addHeaderEntry('Referer', 'https://re.zu-lien.com')
-                    sHtmlContent = oRequestHandler.request()
+                    oRequestHandler.request()
 
                     getreal = sHosterUrl
 
