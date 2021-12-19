@@ -106,7 +106,6 @@ def showHoster():
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sDesc = oInputParameterHandler.getValue('sDesc')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    sMovieTitle = sTitle
     sCat = 6
     sMeta = 0
 
@@ -114,7 +113,7 @@ def showHoster():
     sHtmlContent = oRequestHandler.request()
 
     # Double Iframe a passer.
-    sPattern = '<iframe.+?src="([^"]+)" webkitallowfullscreen'
+    sPattern = "document\.getElementById\('video'\)\.src='([^']+)'.+?>([^<]+)<"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if not aResult[1]:  # Pas de flux
@@ -123,9 +122,13 @@ def showHoster():
 
     for entry in aResult[1]:
         oOutputParameterHandler = cOutputParameterHandler()
-        iframeURL1 = entry
-
-        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+        iframeURL1 = entry[0]
+        canal = entry[1]
+        sMovieTitle = sTitle
+        if canal not in sMovieTitle:
+            sMovieTitle += ' [' + canal + ']'
+            
+        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oOutputParameterHandler.addParameter('sThumbnail', sThumb)
         oOutputParameterHandler.addParameter('sDesc', sDesc)
 
@@ -154,73 +157,36 @@ def showHoster():
             oGui.setEndOfDirectory()
             return
 
-        elif "telerium" in iframeURL1:
-            oRequestHandler = cRequestHandler(iframeURL1)
-            oRequestHandler.addHeaderEntry('User-Agent', UA)
-            oRequestHandler.addHeaderEntry('Referer', iframeURL)
-            sHtmlContent2 = oRequestHandler.request()
+        oRequestHandler = cRequestHandler(iframeURL1)
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        # oRequestHandler.addHeaderEntry('Referer', siterefer) # a verifier
+        sHtmlContent = oRequestHandler.request()
 
-            if sHtmlContent2:
-                sPattern2 = 'var\s+cid[^\'"]+[\'"]{1}([0-9]+)'
-                aResult2 = re.findall(sPattern2, sHtmlContent2)
+        sHosterUrl = ''
+        oParser = cParser()
+        sPattern = '<iframe.+?src="([^"]+)'
+        aResult2 = oParser.parse(sHtmlContent, sPattern)
+        try:
+            # Lien telerium qui ne marche pas, mais qui n'est pas toujours present
+            iframeURL1 = aResult2[1][1]
+        except:
+            iframeURL1 = aResult2[1][0]
 
-                if aResult2:
-                    str2 = aResult2[0]
-                    datetoken = int(getTimer()) * 1000
-
-                    jsonUrl = 'https://telerium.digital/streams/' + str2 + '/' + str(datetoken) + '.json'
-                    tokens = getRealTokenJson(jsonUrl, iframeURL1)
-                    m3url = tokens['url']
-                    nxturl = 'https://telerium.digital' + tokens['tokenurl']
-
-                    realtoken = getRealTokenJson(nxturl, iframeURL1)[10][::-1]
-
-                    try:
-                        m3url = m3url.decode("utf-8")
-                    except:
-                        pass
-
-                    sHosterUrl = 'https:' + m3url + realtoken + '|User-Agent=' + UA
-                    sHosterUrl += '&Referer=' + Quote(iframeURL1) + '&Sec-Fetch-Mode=cors&Origin=https://telerium.tv'
-            else:
-                sHosterUrl = ""
-
-        elif "channel.stream" in iframeURL1 or ".casptv." in iframeURL1:
-            oRequestHandler = cRequestHandler(iframeURL1)
-            oRequestHandler.addHeaderEntry('User-Agent', UA)
-            # oRequestHandler.addHeaderEntry('Referer', siterefer) # a verifier
-            sHtmlContent = oRequestHandler.request()
-
-            sHosterUrl = ''
-            oParser = cParser()
-            sPattern = '<iframe.+?src="([^"]+)'
-            aResult2 = oParser.parse(sHtmlContent, sPattern)
-            try:
-                # Lien telerium qui ne marche pas
-                # Mais qui n'est pas toujours present
-                iframeURL1 = aResult2[1][1]
-            except:
-                iframeURL1 = aResult2[1][0]
-
-        if 'allfoot' in iframeURL1 or "sportsonline" in iframeURL1 or "1rowsports" in iframeURL1:
-            oRequestHandler = cRequestHandler(iframeURL1)
-            oRequestHandler.addHeaderEntry('User-Agent', UA)
-            # oRequestHandler.addHeaderEntry('Referer', siterefer) # a verifier
-            sHtmlContent = oRequestHandler.request()
-
-            oParser = cParser()
-            sPattern = '<iframe.+?src="([^"]+)'
-            aResult2 = oParser.parse(sHtmlContent, sPattern)
-
-            if aResult2[1]:
-                for stream in aResult2[1]:
-                    if 'ragnarp' in stream or 'wigistream' in stream or 'worlwidestream' in stream:
-                        sHosterUrl = Hoster_Wigistream(stream, iframeURL1)
-                        if sHosterUrl:
-                            oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
-                            oGui.addFolder(oGuiElement, oOutputParameterHandler)
-
-    cGui.CONTENT = 'movies'
+        oRequestHandler = cRequestHandler(iframeURL1)
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        sHtmlContent = oRequestHandler.request()
+    
+        oParser = cParser()
+        sPattern = '<iframe.+?src="([^"]+)'
+        aResult2 = oParser.parse(sHtmlContent, sPattern)
+    
+        if aResult2[1]:
+            sHosterUrl = Hoster_Wigistream(aResult2[1][0], iframeURL1)
+            if sHosterUrl:
+                oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
+                oGui.addFolder(oGuiElement, oOutputParameterHandler)
+            
+    cGui.CONTENT = 'files'
     oGui.setEndOfDirectory()
 
 
