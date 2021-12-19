@@ -2,21 +2,19 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Arias800
 import re
-import string
 import json
 import time
 import resources.sites.freebox
 
 from resources.lib.packer import cPacker
 from resources.lib.comaddon import addon, isMatrix
-from resources.lib.epg import cePg
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil, Quote
+from resources.lib.util import Quote
 
 from datetime import datetime, timedelta
 
@@ -24,11 +22,9 @@ SITE_IDENTIFIER = 'channelstream'
 SITE_NAME = 'Channel Stream'
 SITE_DESC = 'Chaines TV en directs'
 
-URL_MAIN = "https://channelstream.watch"
+URL_MAIN = "https://channelstream.es"
 SPORT_SPORTS = (True, 'load')
 SPORT_LIVE = (URL_MAIN + '/programme.php', 'showMovies')
-
-TV_FRENCH = (URL_MAIN + "/chaine-tv.php", 'showMovies')
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -36,23 +32,9 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/5
 def load():
     oGui = cGui()
 
-    liste = []
-    liste.append(['Généraliste', 'Chaîne de télévision généraliste', 'tv.png', False])
-    liste.append(['Cinéma', 'Chaîne consacrée aux Film', 'films.png', False])
-    liste.append(['Sport', 'Chaîne Sportive', 'sport.png', False])
-    liste.append(['Science et Nature', 'Chaîne axés sur les sciences', 'buzz.png', False])
-    if addon().getSetting('contenu_adulte') == 'true':
-        liste.append(['Adulte', 'Chaîne consacrée aux Film', 'buzz.png', True])
-
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Sports (En direct)', 'replay.png', oOutputParameterHandler)
-
-    for sTitle, sFiltre, sIcon, bAdulte in liste:
-        oOutputParameterHandler.addParameter('siteUrl', TV_FRENCH[0])
-        oOutputParameterHandler.addParameter('sFiltre', sFiltre)
-        oOutputParameterHandler.addParameter('bAdulte', bAdulte)
-        oGui.addDir(SITE_IDENTIFIER, TV_FRENCH[1], sTitle, sIcon, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -60,7 +42,6 @@ def load():
 def showMovies():
     oGui = cGui()
     oParser = cParser()
-    cEpg = cePg()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -72,63 +53,36 @@ def showMovies():
     if isMatrix():
         sHtmlContent = sHtmlContent.replace('Ã®', 'î').replace('Ã©', 'é')
 
-    if "/programme.php" in sUrl:
-        sPattern = "colspan='7'.+?<b>([^<]+)</b>.+?location\.href = '([^']+).+?text-align.+?>(.+?)</td>.+?src='([^']+).+?text-align.+?>([^<]+).+?text-align: left.+?>([^<]+)"
-    else:
-        sPattern = 'location.href = \'\.(.+?)\'.+?src=\'(.+?)\'.+?<div align="center">(.+?)</div>'
-        sHtmlContent = oParser.abParse(sHtmlContent, sFiltre, '<!-- Type Chaîne -->')
-        EPG = cEpg.getEpg('', 'direct',noTextBox=True)
-
+    sPattern = "colspan=\"7\".+?<b>([^<]+)<\/b>.+?location\.href = '([^']+).+?text-align.+?>(.+?)<\/td>.+?text-align.+?>([^<]+).+?text-align: left.+?>([^<]+).+?<span class=\"t\">([^<]+)<\/span>"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            if "/programme.php" in sUrl:
-                sUrl2 = aEntry[1]
-                sDate = aEntry[2].replace('<br />', ' ')
-                sThumb = aEntry[3]
-                sdesc1 = aEntry[4]
-                sdesc2 = aEntry[5]
+            sUrl2 = aEntry[1]
+            sDate = aEntry[2].replace('<br />', ' ')
+            sdesc1 = aEntry[3]
+            sdesc2 = aEntry[4]
+            sTime = aEntry[5]
 
-                sTitle = ''
-                if sdesc1:
-                    sTitle = sdesc1 + ' - ' + sdesc2 + ' - '
-                sTitle += aEntry[0]
-                if sDate:
-                    try:
-                        d = datetime(*(time.strptime(sDate, '%Hh%M %d-%m-%Y')[0:6]))
-                        sDate = d.strftime("%d/%m/%y %H:%M")
-                    except Exception as e:
-                        pass
-                    sTitle += ' - ' + sDate
-                sDisplayTitle = sTitle
-                sDesc = sDisplayTitle
+            sTitle = ''
+            if sDate:
+                try:
+                    sDate +=  ' ' + sTime
+                    d = datetime(*(time.strptime(sDate, '%Y-%m-%d %H:%M')[0:6]))
+                    d +=  timedelta(hours=6)
+                    sDate = d.strftime("%d/%m/%y %H:%M")
+                except Exception as e:
+                    pass
+                sTitle += sDate +' '
+            sTitle += ' - '
 
-            else:
-                #On passe le contenu +18 puisqu'il n'y a pas d'EPG.
-                if not "<imgwidt" in aEntry[2]:
-                    channelName = aEntry[2].replace('sport','sports')#.replace(' ',"").replace('é','e').replace('è','e')
-                    sDesc = cEpg.getChannelEpg(EPG, channelName)
-                else:
-                    sDesc = ""
-
-                # Trie des chaines adultes
-                if "+18" in str(aEntry[2]):
-                    if not bAdulte:
-                        continue
-                elif bAdulte:
-                    continue
-
-                sTitle = aEntry[2]
-                if "<" in sTitle:
-                    sTitle = sTitle.split('<')[0]
-
-                if 'Canal + Série' in sTitle:
-                    sTitle = 'Canal + Séries'
-
-                sUrl2 = URL_MAIN + aEntry[0]
-                sThumb = URL_MAIN + '/' + aEntry[1]
+            if sdesc1:
+                sTitle += sdesc1 + ' - ' + sdesc2 + ' - '
+            sTitle += '(' + aEntry[0] + ')'
+            sDisplayTitle = sTitle
+            sDesc = sDisplayTitle
+            sThumb = ''
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -148,7 +102,7 @@ def showHoster():
     oParser = cParser()
 
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sDesc = oInputParameterHandler.getValue('sDesc')
     sThumb = oInputParameterHandler.getValue('sThumb')
@@ -158,33 +112,6 @@ def showHoster():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    # try:
-        # info = cePg().getChannelEpg(sTitle)
-        # sDesc = info['plot']
-        #
-        # sMovieTitle = info['title']
-        # if not sMovieTitle:
-            # sMovieTitle = sTitle
-            #
-        # sMeta = 0
-        # sCat = info['media_type']
-        # if sCat:
-            # if 'Film' in sCat:
-                # sMeta = 1
-            # if 'Série' in sCat:
-                # sMeta = 2
-        # sYear = info['year']
-        # coverUrl = info['cover_url']
-        # if coverUrl:
-            # sThumb = coverUrl
-    # except:
-        # sMovieTitle = sTitle
-        # info = ""
-        # sYear = ""
-        # coverUrl = sThumb
-        # sDesc = ""
-        # sMeta = 0
 
     # Double Iframe a passer.
     sPattern = '<iframe.+?src="([^"]+)" webkitallowfullscreen'
@@ -200,7 +127,6 @@ def showHoster():
 
         oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
         oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-#        oOutputParameterHandler.addParameter('sYear', sYear)
         oOutputParameterHandler.addParameter('sDesc', sDesc)
 
         oGuiElement = cGuiElement()
@@ -215,18 +141,6 @@ def showHoster():
         oGuiElement.setDirectTvFanart()
         oGuiElement.setCat(sCat)
         oGuiElement.setMeta(sMeta)
-
-        # oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
-        # oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
-        if addon().getSetting('enregistrement_activer') == 'true':
-            oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, resources.sites.freebox.SITE_IDENTIFIER, SITE_IDENTIFIER, 'enregistrement', 'Enregistrement')
-
-        # Menu pour les films
-        if sCat == 1:
-            oGui.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
-            oGui.createContexMenuba(oGuiElement, oOutputParameterHandler)
-            oGui.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
-            oGui.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
 
         if 'dailymotion' in iframeURL1:
             oOutputParameterHandler.addParameter('sHosterIdentifier', 'dailymotion')
@@ -271,7 +185,7 @@ def showHoster():
             else:
                 sHosterUrl = ""
 
-        elif "channel.stream" in iframeURL1:
+        elif "channel.stream" in iframeURL1 or ".casptv." in iframeURL1:
             oRequestHandler = cRequestHandler(iframeURL1)
             oRequestHandler.addHeaderEntry('User-Agent', UA)
             # oRequestHandler.addHeaderEntry('Referer', siterefer) # a verifier
@@ -288,7 +202,7 @@ def showHoster():
             except:
                 iframeURL1 = aResult2[1][0]
 
-        if 'allfoot' in iframeURL1 or "sportsonline" in iframeURL1:
+        if 'allfoot' in iframeURL1 or "sportsonline" in iframeURL1 or "1rowsports" in iframeURL1:
             oRequestHandler = cRequestHandler(iframeURL1)
             oRequestHandler.addHeaderEntry('User-Agent', UA)
             # oRequestHandler.addHeaderEntry('Referer', siterefer) # a verifier
