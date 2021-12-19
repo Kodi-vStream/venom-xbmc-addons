@@ -53,7 +53,12 @@ def showMovies():
     if isMatrix():
         sHtmlContent = sHtmlContent.replace('Ã®', 'î').replace('Ã©', 'é')
 
-    sPattern = "colspan=\"7\".+?<b>([^<]+)<\/b>.+?location\.href = '([^']+).+?text-align.+?>(.+?)<\/td>.+?text-align.+?>([^<]+).+?text-align: left.+?>([^<]+).+?<span class=\"t\">([^<]+)<\/span>"
+    # récupérer les drapeaux pour en faire des thumb
+    sPattern = "\.flag\.([^{]+){.+?url\(([^)]+)\)"
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    flags = dict(aResult[1])
+
+    sPattern = "colspan=\"7\".+?<b>([^<]+)<\/b>.+?location\.href = '([^']+).+?text-align.+?>(.+?)<\/td>.+?<span class=\"flag ([^\"]+).+?text-align.+?>([^<]+).+?text-align: left.+?>([^<]+).+?<span class=\"t\">([^<]+)<\/span>"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -61,10 +66,12 @@ def showMovies():
         for aEntry in aResult[1]:
             sUrl2 = aEntry[1]
             sDate = aEntry[2].replace('<br />', ' ')
-            sdesc1 = aEntry[3]
-            sdesc2 = aEntry[4]
-            sTime = aEntry[5]
+            flag =  aEntry[3]
+            sdesc1 = aEntry[4]
+            sdesc2 = aEntry[5]
+            sTime = aEntry[6]
 
+            sThumb = flags.get(flag)
             sTitle = ''
             if sDate:
                 try:
@@ -82,17 +89,13 @@ def showMovies():
             sTitle += '(' + aEntry[0] + ')'
             sDisplayTitle = sTitle
             sDesc = sDisplayTitle
-            sThumb = ''
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            if "/programme.php" in sUrl:
-                oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, sThumb, sDisplayTitle, oOutputParameterHandler)
-            else:
-                oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, sThumb, sDisplayTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
