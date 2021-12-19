@@ -162,18 +162,29 @@ class main:
             # if isAboutGui(sSiteName, sFunction) == True:
                 # return
 
-            # charge sites
-            try:
-                plugins = __import__('resources.sites.%s' % sSiteName, fromlist=[sSiteName])
-                function = getattr(plugins, sFunction)
-                function()
-            except Exception as e:
-                progress().VSclose()  # Referme le dialogue en cas d'exception, sinon blocage de Kodi
-                VSlog('could not load site: ' + sSiteName + ' error: ' + str(e))
-                import traceback
-                traceback.print_exc()
+            if sSiteName == 'playVideo':
+                playVideo();
                 return
 
+            # charge sites
+            if(not executePlugin(sSiteName, sFunction)):
+                progress().VSclose()  # Referme le dialogue en cas d'exception, sinon blocage de Kodi
+                return
+
+def executePlugin(sSiteName, sFunction, parameters = None):
+    try:
+        plugins = __import__('resources.sites.%s' % sSiteName, fromlist=[sSiteName])
+        function = getattr(plugins, sFunction)
+        if parameters:
+            function(parameters)
+        else:
+            function()
+        return True
+    except Exception as e:
+        VSlog('could not load site: ' + sSiteName + ' error: ' + str(e))
+        import traceback
+        traceback.print_exc()
+        return False
 
 def setSetting(plugin_id, value):
     addons = addon()
@@ -210,13 +221,19 @@ def setSettings(oInputParameterHandler):
     return True
 
 
-def isHosterGui(sSiteName, sFunction):
+def isHosterGui(sSiteName, sFunction, parameters = None):
     if sSiteName == 'cHosterGui':
-        plugins = __import__('resources.lib.gui.hoster', fromlist=['cHosterGui']).cHosterGui()
-        function = getattr(plugins, sFunction)
-        function()
+        playHosterGui(sFunction, parameters)
         return True
     return False
+
+def playHosterGui(sFunction, parameters = None):
+    plugins = __import__('resources.lib.gui.hoster', fromlist=['cHosterGui']).cHosterGui()
+    function = getattr(plugins, sFunction)
+    if parameters:
+        return function(parameters)
+    else:
+        return function()
 
 
 def isGui(sSiteName, sFunction):
@@ -294,6 +311,160 @@ def isSearch(sSiteName, sFunction):
         return True
     return False
 
+def playVideoFromPlugin(oGui, searchResult, searchTitle, searchCat, searchYear, find = False, allRealLink = []):
+    if not find:
+        numberOfCriteria = getResultNumberOfCriteria(searchResult, searchTitle, searchCat, searchYear)
+
+        if numberOfCriteria > 0:
+            guiElement = searchResult['guiElement']
+            VSlog("================== " + str(guiElement.getSiteName()) + "." + str(guiElement.getFunction()) + " ==================")
+            videoParams = searchResult['params'] # OutputParameter
+            VSlog("numberOfCriteria: " + str(numberOfCriteria))
+
+            if guiElement.getSiteName() == 'cHosterGui':
+                # VSlog("Execute cHosterGui." + str(guiElement.getFunction()))
+                # playerInfo = playHosterGui(guiElement.getFunction(), videoParams)
+                # VSlog("playerInfo: " + str(playerInfo))
+                allRealLink.append(searchResult)
+                # find = True
+            else:
+                oGui.searchResults[:] = []  # vider le tableau de résultats
+                window(10101).setProperty('search', 'true')
+                window(10101).setProperty('playVideo', 'true')
+                VSlog("Execute " + str(guiElement.getSiteName()) + "." + str(guiElement.getFunction()))
+                result = executePlugin(guiElement.getSiteName(), guiElement.getFunction(), videoParams)
+                window(10101).setProperty('playVideo', 'false')
+                window(10101).setProperty('search', 'false')
+
+                pluginResult = oGui.searchResults[:]
+                oGui.searchResults[:] = []
+                for searchResult in pluginResult:
+                    # VSlog("---- INFOS -----")
+                    # VSlog("videoParams result BEFORE:")
+                    # searchResult['params'].debug()
+                    searchResult['params'].mergeUnexistingInfos(videoParams)
+                    # VSlog("videoParams result AFTER:")
+                    # searchResult['params'].debug()
+                    # VSlog("--------------")
+                    find = playVideoFromPlugin(oGui, searchResult, searchTitle, searchCat, searchYear, find, allRealLink)
+                    if find:
+                        break
+
+    return find
+
+
+def playVideo():
+    oGui = cGui()
+    
+    oInputParameterHandler = cInputParameterHandler()
+    if oInputParameterHandler.exist('cat'):
+        searchCat = int(oInputParameterHandler.getValue('cat'))
+    else:
+        searchCat = -1
+
+    if oInputParameterHandler.exist('title'):
+        searchTitle = oInputParameterHandler.getValue('title')
+    else:
+        searchTitle = ""
+
+    if oInputParameterHandler.exist('year'):
+        searchYear = str(oInputParameterHandler.getValue('year'))
+    else:
+        searchYear = ""
+
+    oHandler = cRechercheHandler()
+    oHandler.setText(searchTitle)
+    oHandler.setCat(searchCat)
+    listPlugins = oHandler.getAvailablePlugins()
+    quoteSearchTitle = Quote(searchTitle)
+
+    find = False
+    allRealLink = []
+    for plugin in listPlugins:
+        if find:
+            break
+
+        oGui.searchResults[:] = []  # vider le tableau de résultats pour les récupérer par source
+        _pluginSearch(plugin, quoteSearchTitle)
+
+        if len(oGui.searchResults) > 0:  # Au moins un résultat
+            pluginResult = oGui.searchResults[:]
+            oGui.searchResults[:] = []
+            for searchResult in pluginResult:
+                find = playVideoFromPlugin(oGui, searchResult, searchTitle, searchCat, searchYear, find, allRealLink)
+                if find:
+                    break
+
+    for result in allRealLink:
+        oGui.addFolder(result['guiElement'], result['params'])
+
+    if not find:
+        # oGui.addText('globalSearch')  # "Aucune information"
+        cGui.CONTENT = 'files'
+
+        oGui.setEndOfDirectory()
+    return True
+
+
+def getResultNumberOfCriteria(result, searchTitle, searchCat, searchYear):
+    numberOfCriteria = 0
+
+    sYear = result['params'].getValue('sYear')
+    if sYear and sYear != searchYear:
+        VSlog("Exclude because 'year' not correct: " + str(sYear))
+        return 0
+    else:
+        numberOfCriteria += 1
+
+    sMovieTitle = result['params'].getValue('sMovieTitle')
+    if sMovieTitle and not _checkAllSearchWordInTitle(searchTitle, sMovieTitle):
+        VSlog("Exclude because 'title' not correct: " + str(sMovieTitle))
+        return 0
+    else:
+        numberOfCriteria += 1
+
+    if searchCat >= 0:
+        sMeta = int(result['params'].getValue('sMeta'))
+        if sMeta != 0:
+            if searchCat == 1 and sMeta != 1:
+                VSlog("Exclude because is is not a film (meta: " + str(sMeta) + ")")
+                return 0
+            elif searchCat in [2, 4] and sMeta not in [2, 5]:
+                VSlog("Exclude because is is not a serie (meta: " + str(sMeta) + ")")
+                return 0
+            else:
+                numberOfCriteria += 1
+
+        #    Categorie       Meta          sCat     CONTENT
+        #    Film            1             1        movies
+        #    Serie           2             2        tvshows
+        #    Anime           4             3        tvshows
+        #    Saison          5             4        episodes
+        #    Divers          0             5        videos
+        #    IPTV (Officiel) 0             6        files
+        #    Saga            3             7        movies
+        #    Episodes        6             8        episodes
+        #    Person          7             /        artists
+        #    Network         8             /        files
+
+    # VSlog('--------------------------')
+    # VSlog('>>> Params <<<')
+    # result['params'].debug()
+    # VSlog('>>> Gui <<<')
+    # result['guiElement'].debug()
+    # VSlog('--------------------------')
+
+    return numberOfCriteria
+
+
+def _checkAllSearchWordInTitle(searchTitle, resultTitle):
+    searchTitle = searchTitle.lower()
+    resultTitle = resultTitle.lower()
+
+    for word in searchTitle.split():
+        if word not in resultTitle:
+            return False
+    return True
 
 def _pluginSearch(plugin, sSearchText):
 

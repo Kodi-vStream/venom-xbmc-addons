@@ -107,7 +107,7 @@ def showEpisode():
             if oHoster:
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
-                oHosterGui.showHoster(oGui, oHoster, sUrl, sThumb)
+                oHosterGui.showHoster(oGui, oHoster, sUrl, sThumb, oInputParameterHandler=oInputParameterHandler)
 
     oGui.setEndOfDirectory()
 

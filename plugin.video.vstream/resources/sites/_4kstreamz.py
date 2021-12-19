@@ -154,7 +154,8 @@ def showMovies(sSearch=''):
     sHtmlContent = oRequestHandler.request()
 
     if 'list-films.html' in sUrl or '/films/page' in sUrl:
-        sPattern = '<a class="movie_single.+?href="([^"]+).+?img src="([^"]+).+?class="nop">([^<]+).+?class="qualitos">([^<]+).+?class="synopsis nop">([^<]+)'
+        sPattern = '<a class="movie_single.+?href="([^"]+).+?img src="([^"]+).+?class="nop">([^<]+).+?class="qualitos">' + \
+            '([^<]+).+?class="synopsis nop">([^<]+)'
     else:
         sPattern = '<a class="movie_single.+?href="([^"]+).+?img src="([^"]+).+?class="nop">([^<]+)'
 
@@ -328,10 +329,13 @@ def showEpisodes():
     oGui.setEndOfDirectory()
 
 
-def showLinks():
+def showLinks(oInputParameterHandler = False):
     oGui = cGui()
     oHosterGui = cHosterGui()
-    oInputParameterHandler = cInputParameterHandler()
+
+    if not oInputParameterHandler:
+        oInputParameterHandler = cInputParameterHandler()
+
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
@@ -374,7 +378,7 @@ def showLinks():
                 oOutputParameterHandler.addParameter('sHost', sHost)
                 oOutputParameterHandler.addParameter('sLang', sLang)
                 oOutputParameterHandler.addParameter('referer', sUrl)
-                oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+                oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler, oInputParameterHandler)
 
     sPattern = "<img src=\".(vf|vostfr).png|class=.Playersbelba.+?PPl=(.+?)CData=([^']+).+?<.span>.+?<span>([^<]+)"
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -404,14 +408,18 @@ def showLinks():
                 oOutputParameterHandler.addParameter('sHost', sHost)
                 oOutputParameterHandler.addParameter('sLang', sLang)
                 oOutputParameterHandler.addParameter('referer', sUrl)
-                oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+                oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler, oInputParameterHandler)
+
     oGui.setEndOfDirectory()
 
 
-def showHosters():
+def showHosters(oInputParameterHandler = False):
     oGui = cGui()
     oHosterGui = cHosterGui()
-    oInputParameterHandler = cInputParameterHandler()
+    
+    if not oInputParameterHandler:
+        oInputParameterHandler = cInputParameterHandler()
+
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
@@ -436,7 +444,7 @@ def showHosters():
             if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb, oInputParameterHandler=oInputParameterHandler)
 
     else:
         sHosterUrl = urlReal
@@ -444,6 +452,6 @@ def showHosters():
         if oHoster:
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
-            oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
+            oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb, oInputParameterHandler=oInputParameterHandler)
 
     oGui.setEndOfDirectory()

@@ -314,7 +314,7 @@ def showMp3():
     if oHoster:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
-        cHosterGui().showHoster(oGui, oHoster, mp3Url + "|verifypeer=false", sThumb)
+        cHosterGui().showHoster(oGui, oHoster, mp3Url + "|verifypeer=false", sThumb, oInputParameterHandler=oInputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -338,6 +338,6 @@ def showHosters():
     if oHoster:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
-        cHosterGui().showHoster(oGui, oHoster, sHosterUrl + "|verifypeer=false", sThumb)
+        cHosterGui().showHoster(oGui, oHoster, sHosterUrl + "|verifypeer=false", sThumb, oInputParameterHandler=oInputParameterHandler)
 
     oGui.setEndOfDirectory()

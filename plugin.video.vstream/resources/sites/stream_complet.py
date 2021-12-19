@@ -259,10 +259,11 @@ def showSXE():
     oGui.setEndOfDirectory()
 
 
-def showLinks():
+def showLinks(oInputParameterHandler = False):
     oGui = cGui()
 
-    oInputParameterHandler = cInputParameterHandler()
+    if not oInputParameterHandler:
+        oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
@@ -296,7 +297,7 @@ def showLinks():
             oOutputParameterHandler.addParameter('siteReferer', sUrl)
             oOutputParameterHandler.addParameter('sLang', sLang)
             oOutputParameterHandler.addParameter('sHost', sHostname)
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayName, sThumb, sDesc, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayName, sThumb, sDesc, oOutputParameterHandler, oInputParameterHandler)
 
     sPattern = '(?:class="players">|</a>)\s*<a href="([^"]+).+?<li class="player".+?langue-s">([^<]+).+?<span class="p-name">([^"]+)</span>'
     # avec href="([^"]+)"; '"' à garder  pour éviter oublie avec test reg101
@@ -320,15 +321,16 @@ def showLinks():
             oOutputParameterHandler.addParameter('siteReferer', sUrl)
             oOutputParameterHandler.addParameter('sLang', sLang)
             oOutputParameterHandler.addParameter('sHost', sHostname)
-            oGui.addLink(SITE_IDENTIFIER, 'showHostersDL', sDisplayTitle, sThumb, '', oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHostersDL', sDisplayTitle, sThumb, '', oOutputParameterHandler, oInputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def showHosters():
+def showHosters(oInputParameterHandler = False):
     oGui = cGui()
     oHosterGui = cHosterGui()
-    oInputParameterHandler = cInputParameterHandler()
+    if not oInputParameterHandler:
+        oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
@@ -352,7 +354,7 @@ def showHosters():
             if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb, oInputParameterHandler=oInputParameterHandler)
     else:
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('Referer', siteReferer)
@@ -369,15 +371,16 @@ def showHosters():
                 if oHoster:
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
-                    oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                    oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb, oInputParameterHandler=oInputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
-def showHostersDL():
+def showHostersDL(oInputParameterHandler = False):
     oGui = cGui()
 
-    oInputParameterHandler = cInputParameterHandler()
+    if not oInputParameterHandler:
+        oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
@@ -394,7 +397,7 @@ def showHostersDL():
             if oHoster:
                 oHoster.setDisplayName(sDisplayName)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb, oInputParameterHandler=oInputParameterHandler)
 
     else:
         sHosterUrl = sUrl
@@ -402,7 +405,7 @@ def showHostersDL():
         if oHoster:
             oHoster.setDisplayName(sDisplayName)
             oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb, oInputParameterHandler=oInputParameterHandler)
     oGui.setEndOfDirectory()
 
 

@@ -117,7 +117,7 @@ def showHosters():
         if oHoster:
             oHoster.setDisplayName(sTitle)
             oHoster.setFileName(sTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '', oInputParameterHandler=oInputParameterHandler)
 
     oGui.setEndOfDirectory()
 

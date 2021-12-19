@@ -326,7 +326,7 @@ def showHosters():  # affiche les videos disponible du live
                             if oHoster:
                                 oHoster.setDisplayName(sDisplayTitle)
                                 oHoster.setFileName(sMovieTitle2)
-                                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb, oInputParameterHandler=oInputParameterHandler)
                         oGui.setEndOfDirectory()
                         return
 
@@ -390,7 +390,7 @@ def showHosters():  # affiche les videos disponible du live
                             if oHoster:
                                 oHoster.setDisplayName(sDisplayTitle)
                                 oHoster.setFileName(sMovieTitle2)
-                                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb, oInputParameterHandler=oInputParameterHandler)
 
                         oGui.setEndOfDirectory()
                         return
@@ -1254,7 +1254,7 @@ def showHosters():  # affiche les videos disponible du live
             if oHoster:
                 oHoster.setDisplayName(sMovieTitle2)  # nom affiche
                 oHoster.setFileName(sMovieTitle2)  # idem
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb, oInputParameterHandler=oInputParameterHandler)
 
         oGui.setEndOfDirectory()
 

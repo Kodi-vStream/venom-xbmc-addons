@@ -29,7 +29,7 @@ class cPlayer(xbmc.Player):
 
     ADDON = addon()
 
-    def __init__(self, *args):
+    def __init__(self, oInputParameterHandler = False, *args):
 
         sPlayerType = self.__getPlayerType()
         xbmc.Player.__init__(self, sPlayerType)
@@ -37,7 +37,8 @@ class cPlayer(xbmc.Player):
         self.Subtitles_file = []
         self.SubtitleActive = False
 
-        oInputParameterHandler = cInputParameterHandler()
+        if not oInputParameterHandler:
+            oInputParameterHandler = cInputParameterHandler()
         self.sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
         self.sTitle = oInputParameterHandler.getValue('sFileName')
         if self.sTitle:
@@ -104,7 +105,7 @@ class cPlayer(xbmc.Player):
         sPluginHandle = cPluginHandler().getPluginHandle()
 
         oGui = cGui()
-        item = oGui._createListItem(oGuiElement)
+        item = oGui.createListItem(oGuiElement)
         item.setPath(oGuiElement.getMediaUrl())
 
         # Sous titres
@@ -141,6 +142,7 @@ class cPlayer(xbmc.Player):
             VSlog('Player use PlayMedia() method')
         # 3 eme mode (defaut)
         else:
+            item.customDebug()
             xbmcplugin.setResolvedUrl(sPluginHandle, True, item)
             VSlog('Player use setResolvedUrl() method')
 

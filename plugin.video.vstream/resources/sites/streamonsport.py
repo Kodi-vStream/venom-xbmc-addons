@@ -184,8 +184,9 @@ def showLive():
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('siterefer', sUrl)
-                oGui.addLink(SITE_IDENTIFIER, 'showLink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+                oGui.addLink(SITE_IDENTIFIER, 'showLink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler, oInputParameterHandler)
 
+<<<<<<< HEAD
     # # 1 seul liens tv telerium
     # sPattern = 'iframe id="video" src.+?id=([^"]+)'
     # aResult = oParser.parse(sHtmlContent, sPattern)
@@ -198,6 +199,30 @@ def showLive():
     #     oOutputParameterHandler.addParameter('sThumb', sThumb)
     #     oOutputParameterHandler.addParameter('siterefer', sUrl)
     #     oGui.addLink(SITE_IDENTIFIER, 'showLink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+=======
+    # 1 seul liens tv telerium
+    sPattern = 'iframe id="video".src.+?id=([^"]+)'
+
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0] is True:
+        url2 = aResult[1][0]
+        oRequestHandler = cRequestHandler(url2)
+        sHtmlContent = oRequestHandler.request()
+
+        sPattern = '<iframe.+?src="([^"]+)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0] is True:
+
+            sUrl2 = aResult[1][0]  # https://telerium.tv/embed/35001.html
+            sDisplayTitle = sMovieTitle
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('siterefer', sUrl)
+            oGui.addLink(SITE_IDENTIFIER, 'showlink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler, oInputParameterHandler)
+>>>>>>> c8d3996be (Try to make auto play)
 
     oGui.setEndOfDirectory()
 
@@ -280,7 +305,7 @@ def showLink():
         if oHoster:
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb, oInputParameterHandler=oInputParameterHandler)
 
     oGui.setEndOfDirectory()
 

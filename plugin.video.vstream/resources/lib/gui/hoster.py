@@ -14,10 +14,11 @@ class cHosterGui:
     ADDON = addon()
 
     # step 1 - bGetRedirectUrl in ein extra optionsObject verpacken
-    def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail, bGetRedirectUrl=False):
+    def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail, bGetRedirectUrl=False, oInputParameterHandler=False):
         oHoster.setUrl(sMediaUrl)
         oOutputParameterHandler = cOutputParameterHandler()
-        oInputParameterHandler = cInputParameterHandler()
+        if not oInputParameterHandler:
+            oInputParameterHandler = cInputParameterHandler()
 
         # Gestion NextUp
         siteUrl = oInputParameterHandler.getValue('siteUrl')
@@ -319,11 +320,13 @@ class cHosterGui:
         klass = getattr(mod, 'cHoster')
         return klass()
 
-    def play(self):
+    def play(self, oInputParameterHandler = False):
         oGui = cGui()
         oDialog = dialog()
 
-        oInputParameterHandler = cInputParameterHandler()
+        if not oInputParameterHandler:
+            oInputParameterHandler = cInputParameterHandler()
+
         sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
         bGetRedirectUrl = oInputParameterHandler.getValue('bGetRedirectUrl')
@@ -377,7 +380,7 @@ class cHosterGui:
                     oGuiElement.getInfoLabel()
 
                     from resources.lib.player import cPlayer
-                    oPlayer = cPlayer()
+                    oPlayer = cPlayer(oInputParameterHandler)
 
                     # sous titres ?
                     if len(aLink) > 2:
@@ -386,15 +389,16 @@ class cHosterGui:
                     return oPlayer.run(oGuiElement, aLink[1])
 
             oDialog.VSerror(self.ADDON.VSlang(30020))
-            return
+            return False
 
         except Exception as e:
             oDialog.VSerror(self.ADDON.VSlang(30020))
             import traceback
             traceback.print_exc()
-            return
+            return False
 
         oGui.setEndOfDirectory()
+        return False
 
     def addToPlaylist(self):
         oGui = cGui()

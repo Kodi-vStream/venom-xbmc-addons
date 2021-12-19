@@ -351,6 +351,11 @@ class listitem(xbmcgui.ListItem):
 
         self.setProperty('nbcontextmenu', str(nbContextMenu + 1))
 
+    def customDebug(self):
+        VSlog('Infos: ')
+        for val in self.__dict__:
+            VSlog('- ' + str(val))
+
 
 """
 from resources.lib.comaddon import VSlog
