@@ -2,7 +2,6 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Arias800
 import re
-import json
 import time
 import resources.sites.freebox
 
@@ -24,7 +23,7 @@ SITE_DESC = 'Chaines TV en directs'
 
 URL_MAIN = "https://channelstream.es"
 SPORT_SPORTS = (True, 'load')
-SPORT_LIVE = (URL_MAIN + '/programme.php', 'showMovies')
+SPORT_LIVE = ('/programme.php', 'showMovies')
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -44,9 +43,7 @@ def showMovies():
     oParser = cParser()
 
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sFiltre = oInputParameterHandler.getValue('sFiltre')
-    bAdulte = oInputParameterHandler.getValue('bAdulte')
+    sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -217,31 +214,3 @@ def Hoster_Wigistream(url, referer):
 
     return False
 
-
-def getRealTokenJson(link, referer):
-    # cookies = {'elVolumen': '100', '__ga': '100'}
-
-    # headers = {'Host': 'telerium.tv',
-               # 'User-Agent': UA, 'Accept': 'application/json, text/javascript, */*; q=0.01',
-               # 'Accept-Language': 'pl,en-US;q=0.7,en;q=0.3', 'X-Requested-With': 'XMLHttpRequest',
-               # 'Referer': referer}
-
-    oRequestHandler = cRequestHandler(link)
-    # oRequestHandler.addHeaderEntry('Host', 'telerium.tv')
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    # oRequestHandler.addHeaderEntry('Accept', 'application/json, text/javascript, */*; q=0.01')
-    oRequestHandler.addHeaderEntry('Accept-Language', 'pl,en-US;q=0.7,en;q=0.3')
-    oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
-    oRequestHandler.addHeaderEntry('Referer', referer)
-    oRequestHandler.addCookieEntry('elVolumen', '100')
-    oRequestHandler.addCookieEntry('__ga', '100')
-    realResp = oRequestHandler.request()
-    return json.loads(realResp)
-
-
-def getTimer():
-    datenow = datetime.utcnow().replace(second=0, microsecond=0)
-    datenow = datenow + timedelta(days=1)
-    epoch = datetime(1970, 1, 1)
-
-    return (datenow - epoch).total_seconds() // 1
