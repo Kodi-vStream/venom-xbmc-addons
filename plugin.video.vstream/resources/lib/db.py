@@ -65,9 +65,6 @@ class cDb(object):
                      "title TEXT, "\
                      "disp TEXT, "\
                      "icone TEXT, "\
-                     "isfolder TEXT, "\
-                     "level TEXT, "\
-                     "lastwatched TIMESTAMP "", "\
                      "UNIQUE(title)"\
                      ");"
         self.dbcur.execute(sql_create)
@@ -181,7 +178,7 @@ class cDb(object):
             pass
 
     def get_history(self):
-        sql_select = 'SELECT * FROM history'
+        sql_select = 'SELECT * FROM history ORDER BY addon_id DESC'
 
         try:
             self.dbcur.execute(sql_select)
