@@ -3,23 +3,17 @@
 
     <!-- Menu general -->
     <category label="30021">
-        <setting label="30034" type="lsep"/>
-        <setting type="sep"/>
-        <setting id="service_time" type="text" label="30047" default="" enable="false" visible="false"/>
         <setting id="service_version" type="text" label="Version:" default="" enable="false"/>
-        <setting id="service_futur" type="text" label="" default="" visible="false"/>
-        <setting label="30036" type="action" action="RunScript(plugin.video.vstream, changelog, ?site=globalRun&amp;function=changelog)"/>
-
+<!--         <setting label="30034" type="lsep"/>
+        <setting type="sep"/>
+c'est le changelog de la beta !        <setting label="30036" type="action" action="RunScript(plugin.video.vstream, changelog, ?site=globalRun&amp;function=changelog)"/>
+ -->
         <setting label="30030" type="lsep"/>
         <setting type="sep"/>
         <setting id="playerPlay" type="enum" values="XbmcPlayer|XbmcPlugin (recommandé)" label="30029" default="1"/>
         <setting id="playerType" type="enum" values="Auto|MPlayer|DVDPlayer" label="30001" default="2" enable="eq(-1,0)"/>
         <setting id="upnext" type="bool" label="30506" default="true"/>
         <setting id="srt-view" type="bool" label="30002" default="false"/>
-
-        <setting label="30076" type="lsep"/>
-        <setting type="sep"/>
-        <setting id="history-view" type="bool" label="30016" default="true"/>
 
         <setting label="30410" type="lsep"/>
         <setting type="sep"/>
@@ -30,8 +24,6 @@
 
     <!-- Affichage -->
     <category label="31205">
-        <setting id="tmdb_session" type="text" label="" default="" visible="false"/>
-        <setting id="tmdb_account" type="text" label="" default="" visible="false"/>
 
         <setting label="30005" type="lsep"/>
         <setting id="meta-view" type="bool" label="30006" default="false"/>
@@ -52,32 +44,35 @@
         <setting id="tvshows-view" type="number" label="30405" default="500" enable="eq(-4,true)"/>
         <setting id="seasons-view" type="number" label="31201" default="500" enable="eq(-5,true)"/>
         <setting id="episodes-view" type="number" label="31202" default="500" enable="eq(-6,true)"/>
+
+        <setting id="tmdb_session" type="text" label="" default="" visible="false"/>
+        <setting id="tmdb_account" type="text" label="" default="" visible="false"/>
     </category>
 
     <!-- Sources -->
     <category label="30449">
 
-        <!--parametre invisible qui enregistre l'url actuel de zt et Tirexo -->
-        <setting id="ZT" type="text" label="" default="" visible="false"/>
-        <setting id="Tirexo" type="text" label="" default="" visible="false"/>
-
         <setting label="30116" type="lsep"/>
-        <setting type="sep"/>
-
+<!--        <setting type="sep"/>
+ n'est plus utile		<setting subsetting="true" label="30070" type="lsep"/> -->
+        <setting label="30420" type="action"  action="RunScript(plugin.video.vstream, search, ?site=globalRun&amp;function=search)"/>
+        <setting label="31104" type="action"  action="RunScript(plugin.video.vstream, disableSources, ?site=globalRun&amp;function=disableSources)"/>
         <setting id="contenu_adulte" type="bool" label="31103" default="false"/>
-
+        <setting id="history-view" type="bool" label="30016" default="true"/>
+        <setting type="sep"/>
         <setting label="31203" type="ipaddress" id="ipaddress" default="127.0.0.1"/>
 
+        <!--parametres invisibles -->
+        <setting id="ZT" type="text" label="" default="" visible="false"/>
+        <setting id="Tirexo" type="text" label="" default="" visible="false"/>
         <setting id="PlutoTV_deviceID" type="text" label="" default="" visible="false"/>
         <setting id="PlutoTV_clientID" type="text" label="" default="" visible="false"/>
         <setting id="PlutoTV_sid" type="text" label="" default="" visible="false"/>
-        <setting label="30420" type="action"  action="RunScript(plugin.video.vstream, search, ?site=globalRun&amp;function=search)"/>
-        <setting subsetting="true" label="30070" type="lsep"/>
-        <setting type="sep"/>
     </category>
 
     <!-- Enregistrement -->
     <category label="Enregistrement">
+        <setting label="Enregistrement" type="lsep"/>
         <setting id="path_ffmpeg" label="30049" type="file" default=""/>
         <setting id="path_enregistrement" type="folder" label="30050" default=""/>
         <setting id="path_enregistrement_programmation" type="text" label="" default="" visible="false"/>
@@ -95,27 +90,21 @@
         <setting label="Upload kodi.log" type="action" action="RunScript(plugin.video.vstream, uplog, ?site=globalRun&amp;function=uplog)"/>
         <setting id="service_log" type="text" label="30054" default="" enable="false"/>
 
-        <setting type="sep"/>
         <setting subsetting="true" label="30055" type="lsep"/>
         <setting label="Import/Export" type="action" action="RunScript(plugin.video.vstream, sauv, ?site=globalRun&amp;function=sauv)"/>
 
-        <setting type="sep"/>
         <setting subsetting="true" label="30056" type="lsep"/>
         <setting label="30057" type="action" action="RunScript(plugin.video.vstream, clean, ?site=globalRun&amp;function=clear)"/>
 
-        <setting type="sep"/>
         <setting subsetting="true" label="30058" type="lsep"/>
         <setting label="30128" type="action" action="RunScript(plugin.video.vstream, addon, ?site=globalRun&amp;function=addon)"/>
 
-        <setting type="sep"/>
         <setting subsetting="true" label="30059" type="lsep"/>
         <setting label="30129" type="action" action="RunScript(plugin.video.vstream, xbmc, ?site=globalRun&amp;function=xbmc)"/>
 
-        <setting type="sep"/>
         <setting subsetting="true" label="30060" type="lsep"/>
         <setting label="30061" type="action" action="RunScript(plugin.video.vstream, fi, ?site=globalRun&amp;function=fi)"/>
 
-        <setting type="sep"/>
         <setting subsetting="true" label="30062" type="lsep"/>
         <setting label="30063" type="action" action="RunScript(plugin.video.vstream, thumb, ?site=globalRun&amp;function=thumb)"/>
 

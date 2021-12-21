@@ -259,6 +259,27 @@ class cClear:
                     self.DIALOG.VSok(self.ADDON.VSlang(30097) + '  ' + code)
             return
 
+        # désactiver toutes les sources
+        elif (env == 'disableSources'):
+            if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
+                from resources.lib.handler.pluginHandler import cPluginHandler
+                oPluginHandler = cPluginHandler()
+                aPlugins = oPluginHandler.getAllPlugins()
+
+                path = VSPath('special://home/addons/plugin.video.vstream/resources/sites.json')
+                data = json.load(open(path))
+
+                for aPlugin in aPlugins:
+                    data['site']["plugin_" + aPlugin[1]]['active'] = "false"
+            
+                with open(path, 'w') as f:
+                    f.write(json.dumps(data, indent=4))
+                    
+                self.DIALOG.VSinfo(self.ADDON.VSlang(30014))
+                    
+            return
+
+        # aciver/désactiver les sources
         elif (env == 'search'):
 
             from resources.lib.handler.pluginHandler import cPluginHandler
