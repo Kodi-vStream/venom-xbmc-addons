@@ -25,7 +25,7 @@ msgid "Downloads Stopped"
 msgstr ""
 
 msgctxt "#30005"
-msgid "vStream will be faster with your own TMDB API key"
+msgid "Media informations"
 msgstr ""
 
 msgctxt "#30006"
@@ -133,7 +133,7 @@ msgid "Metadata"
 msgstr ""
 
 msgctxt "#30032"
-msgid "View"
+msgid "View mode"
 msgstr ""
 
 msgctxt "#30033"
@@ -865,7 +865,7 @@ msgid "Close"
 msgstr ""
 
 msgctxt "#30410"
-msgid "Divers"
+msgid "Interface"
 msgstr ""
 
 msgctxt "#30411"
@@ -1021,7 +1021,7 @@ msgid "Select a quality"
 msgstr ""
 
 msgctxt "#30449"
-msgid "About/Sources"
+msgid "Sources"
 msgstr ""
 
 msgctxt "#30450"

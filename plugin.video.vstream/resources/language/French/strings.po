@@ -25,12 +25,12 @@ msgid "Downloads Stopped"
 msgstr "Téléchargements Arrêté"
 
 msgctxt "#30005"
-msgid "vStream will be faster with your own TMDB API key"
-msgstr "vStream sera plus rapide avec votre propre clef API TMDB"
+msgid "Media informations"
+msgstr "Informations détaillées des médias"
 
 msgctxt "#30006"
 msgid "Search Metadata (slowed vStream)"
-msgstr "Recherche les Métadonnées (ralenti vStream)"
+msgstr "Rechercher les métadonnées (ralenti vStream)"
 
 msgctxt "#30007"
 msgid "Posters Size"
@@ -133,8 +133,8 @@ msgid "Metadata"
 msgstr "Métadonnées"
 
 msgctxt "#30032"
-msgid "View"
-msgstr "Affichage"
+msgid "View mode"
+msgstr "Modes d'affichage"
 
 msgctxt "#30033"
 msgid "Tools"
@@ -865,8 +865,8 @@ msgid "Close"
 msgstr "Fermer"
 
 msgctxt "#30410"
-msgid "Divers"
-msgstr "Divers"
+msgid "Interface"
+msgstr "Interface"
 
 msgctxt "#30411"
 msgid "Enable sound notifications"
@@ -1021,8 +1021,8 @@ msgid "Select a quality"
 msgstr "Sélectionner une qualité"
 
 msgctxt "#30449"
-msgid "About/Sources"
-msgstr "A propos/Sources"
+msgid "Sources"
+msgstr "Sources"
 
 msgctxt "#30450"
 msgid "Search (Actor, Actress)"
