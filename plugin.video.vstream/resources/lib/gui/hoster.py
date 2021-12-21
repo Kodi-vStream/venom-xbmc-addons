@@ -357,7 +357,7 @@ class cHosterGui:
                     if len(aLink) > 2:
                         oPlayer.AddSubtitles(aLink[2])
 
-                    return oPlayer.run(oGuiElement, oHoster.getFileName(), aLink[1])
+                    return oPlayer.run(oGuiElement, aLink[1])
 
             oDialog.VSerror(self.ADDON.VSlang(30020))
             return

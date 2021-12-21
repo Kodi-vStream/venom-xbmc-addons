@@ -81,7 +81,7 @@ class cPlayer(xbmc.Player):
         else:
             self.Subtitles_file.append(files)
 
-    def run(self, oGuiElement, sTitle, sUrl):
+    def run(self, oGuiElement, sUrl):
 
         # Lancement d'une vidéo sans avoir arreté la précedente
         self.tvShowTitle = oGuiElement.getItemValue('tvshowtitle')
