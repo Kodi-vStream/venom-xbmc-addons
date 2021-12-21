@@ -57,7 +57,7 @@ class cLibrary:
             sCat = '2'
 
         sMediaUrl = QuotePlus(sMediaUrl)
-        sFileName = QuotePlus(sFileName)
+        #sFileName = QuotePlus(sFileName)
 
         sLink = 'plugin://plugin.video.vstream/?function=play&site=cHosterGui&sFileName='
         sLink += sFileName + '&sMediaUrl=' + sMediaUrl + '&sHosterIdentifier=' + sHosterIdentifier
@@ -65,7 +65,7 @@ class cLibrary:
         sTitle = sFileName
 
         if sCat == '1':  # film
-            sTitle = cUtil().CleanName(sTitle)
+            #sTitle = cUtil().CleanName(sTitle)
             sTitle = self.showKeyBoard(sTitle, 'Nom du dossier et du fichier')
 
             try:
