@@ -11,9 +11,12 @@ from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'fullmatchtv'
 SITE_NAME = 'Fullmatchtv'
-SITE_DESC = 'Regarder vos sports MLB NBA streaming complets, gratuit et illimité'
+SITE_DESC = 'Sports Replay'
 
 URL_MAIN = 'https://fullmatchtv.com/'
+
+SPORT_SPORTS = (True, 'load')
+SPORT_GENRES = (True, 'load')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 
