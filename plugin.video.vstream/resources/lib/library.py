@@ -79,7 +79,7 @@ class cLibrary:
                 dialog().VSinfo('Rajout impossible')
 
         elif sCat == '2':  # serie
-            sTitle = cUtil().CleanName(sTitle)
+            #sTitle = cUtil().CleanName(sTitle)
             sFTitle = self.showKeyBoard(sTitle, 'Recommandé Nomdeserie/Saison00')
 
             try:
