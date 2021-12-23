@@ -29,11 +29,11 @@ SITE_IDENTIFIER = 'streamonsport'
 SITE_NAME = 'Streamonsport'
 SITE_DESC = 'Site pour regarder du sport en direct'
 
-URL_MAIN = 'https://www.streamonsport.info/'
+URL_MAIN = 'https://www.streamonsport.to/'
 
 SPORT_SPORTS = (True, 'load')
-SPORT_TV = (URL_MAIN + '31-sport-tv-fr-streaming.html', 'showMovies')
-CHAINE_TV = (URL_MAIN + '2370162-chaines-tv-streaming.html', 'showMovies')
+SPORT_TV = (URL_MAIN + '31-site-pour-regarder-les-chaines-de-sport.html', 'showMovies')
+CHAINE_TV = (URL_MAIN + '2370162-chaines-tv-streaming-tf1-france-2-canal-plus.html', 'showMovies')
 SPORT_LIVE = (URL_MAIN, 'showMovies')
 SPORT_GENRES = (URL_MAIN, 'showGenres')
 
@@ -42,18 +42,18 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
-    # oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines Sport TV', 'sport.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Sports (En direct)', 'replay.png', oOutputParameterHandler)
 
-    # menu souvent vide
     oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Sports (Genres)', 'genres.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler.addParameter('siteUrl', CHAINE_TV[0])
-    # oGui.addDir(SITE_IDENTIFIER, CHAINE_TV[1], 'Chaines TV généralistes', 'tv.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
+    oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines TV Sports', 'sport.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', CHAINE_TV[0])
+    oGui.addDir(SITE_IDENTIFIER, CHAINE_TV[1], 'Chaines TV Ciné', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -95,11 +95,8 @@ def showGenres():
 
 def showMovies(sSearch=''):
     oGui = cGui()
-    if sSearch:
-        sUrl = sSearch
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -127,14 +124,14 @@ def showMovies(sSearch=''):
             if sUrl != CHAINE_TV[0] and sUrl != SPORT_TV[0]:
                 sDisplayTitle = sTitle
                 if sdesc1:
-                    sDisplayTitle += ' - ' + sdesc1
+                    sDisplayTitle += ' (' + sdesc1.replace(' · ', '') + ')'
                 if sDate:
                     try:
-                        d = datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S+02:00')[0:6]))
+                        d = datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S+01:00')[0:6]))
                         sDate = d.strftime("%d/%m/%y %H:%M")
                     except Exception as e:
                         pass
-                    sDisplayTitle += ' - ' + sDate
+                    sDisplayTitle = sDate + ' - ' + sDisplayTitle
             else:
                 bChaine = True
                 sTitle = sTitle.upper()
@@ -193,7 +190,6 @@ def showLive():
 
     # 1 seul liens tv telerium
     sPattern = 'iframe id="video".src.+?id=([^"]+)'
-    oParser = cParser()
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -230,9 +226,9 @@ def Showlink():
     sUrl2 = ''
                     
     if 'yahoo.php' in sUrl:  # redirection
-        sUrl = src="https://allfoot.info/fr/" + sUrl.replace('/yahoo.php?s=', '')
+        sUrl = URL_MAIN + sUrl
     
-    if 'allfoot' in sUrl or 'channelstream' in sUrl:
+    if 'allfoot' in sUrl or 'streamonsport' in sUrl:
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         # oRequestHandler.addHeaderEntry('Referer', siterefer) # a verifier
@@ -249,7 +245,6 @@ def Showlink():
             if aResult[0]:
                 sUrl2 = aResult[1][0]
 
-
     # pas de pre requete
     if 'laylow.cyou' in sUrl:
         sUrl2 = sUrl
@@ -264,6 +259,11 @@ def Showlink():
             if bvalid:
                 sHosterUrl = shosterurl
 
+        if "leet365.cc" in sUrl2:
+            bvalid, shosterurl = Hoster_Leet365(sUrl2, sUrl)
+            if bvalid:
+                sHosterUrl = shosterurl
+            
         if 'telerium' in sUrl2:
             bvalid, shosterurl = Hoster_Telerium(sUrl2, sUrl)
             if bvalid:
@@ -346,6 +346,27 @@ def Hoster_Telerium(url, referer):
     return False, False
 
 
+def Hoster_Leet365(url, referer):
+    oParser = cParser()
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Referer', referer)
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = '<iframe.+?src="([^"]+)'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0]:
+        return Hoster_Wigistream(aResult[1][0], url)
+
+    sPattern = '<script>fid="(.+?)".+?src="\/\/fclecteur\.com\/footy\.js">'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0]:
+        referer = url
+        url = 'https://fclecteur.com/footy.php?player=desktop&live=%s' % aResult[1][0]
+        return Hoster_Laylow(url, referer)
+
+    return False, False
+
 def Hoster_Andrhino(url, referer):
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -397,7 +418,7 @@ def Hoster_Laylow(url, referer):
     oRequestHandler.addHeaderEntry('Referer', referer)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = "source:\s'(https.+?m3u8)"
+    sPattern = "source:.+?'(https.+?m3u8)"
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         return True, aResult[0] + '|User-Agent=' + UA + '&Referer=' + Quote(url)
