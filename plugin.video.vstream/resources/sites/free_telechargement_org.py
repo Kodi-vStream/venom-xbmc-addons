@@ -362,11 +362,12 @@ def showSearchResult(sSearch=''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        for n, u in NextPage:
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', u)
-            sNumPage = re.search('/([0-9]+)/', u).group(1)
-            oGui.addNext(SITE_IDENTIFIER, 'showSearchResult', 'Page ' + sNumPage + ' ' + n, oOutputParameterHandler)
+        if not sSearch:
+            for n, u in NextPage:
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', u)
+                sNumPage = re.search('/([0-9]+)/', u).group(1)
+                oGui.addNext(SITE_IDENTIFIER, 'showSearchResult', 'Page ' + sNumPage + ' ' + n, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
