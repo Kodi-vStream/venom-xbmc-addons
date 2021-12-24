@@ -381,23 +381,24 @@ def showMovies(sSearch=''):
 
         progress_.VSclose(progress_)
 
-        if 'index' in sUrl:
-            sPattern = '<a name="nextlink".+?javascript:list_submit\((.+?)\)'
-            aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', re.sub('search_start=(\d+)', 'search_start=' + str(aResult[1][0]), sUrl))
-                number = re.search('([0-9]+)', aResult[1][0]).group(1)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
-        else:
-            sNextPage = __checkForNextPage(sHtmlContent, sUrl)
-            if (sNextPage != False):
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-                nextPage = re.search('cstart=([0-9]+)', sNextPage)
-                if nextPage:
-                    number = nextPage.group(1)
+        if not sSearch:
+            if 'index' in sUrl:
+                sPattern = '<a name="nextlink".+?javascript:list_submit\((.+?)\)'
+                aResult = oParser.parse(sHtmlContent, sPattern)
+                if (aResult[0] == True):
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', re.sub('search_start=(\d+)', 'search_start=' + str(aResult[1][0]), sUrl))
+                    number = re.search('([0-9]+)', aResult[1][0]).group(1)
                     oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
+            else:
+                sNextPage = __checkForNextPage(sHtmlContent, sUrl)
+                if (sNextPage != False):
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+                    nextPage = re.search('cstart=([0-9]+)', sNextPage)
+                    if nextPage:
+                        number = nextPage.group(1)
+                        oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
