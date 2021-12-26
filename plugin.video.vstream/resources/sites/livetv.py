@@ -14,28 +14,23 @@ from resources.lib.packer import cPacker
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil, Unquote
 
+try:    import json
+except: import simplejson as json
+
 SITE_IDENTIFIER = 'livetv'
 SITE_NAME = 'Live TV'
-SITE_DESC = 'Site pour regarder du sport en direct gratuitement'
+SITE_DESC = 'Evénements sportifs en direct'
 
 URL_MAIN = 'http://livetv.sx'
-URL_SEARCH = (URL_MAIN + '/frx/fanclubs/?q=', 'showMovies4')
-URL_SEARCH_MISC = (URL_MAIN + '/frx/fanclubs/?q=', 'showMovies4')
-FUNCTION_SEARCH = 'showMovies4'
 
 SPORT_GENRES = (URL_MAIN + '/frx/allupcoming/', 'showMovies')  # Liste de diffusion des sports
 SPORT_LIVE = (URL_MAIN + '/frx/', 'showLive')  # streaming Actif
-# SPORT_SPORTSCLASS = (URL_MAIN + '/frx/calendar/411/', 'showClass')  # Les classements
-NETS_GENRES = (True, 'showGenres')  # Les clubs de football
 SPORT_SPORTS = (True, 'load')
 
 
 def load():
     oGui = cGui()
-
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher l\'équipe', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Les sports (Genres)', 'sport.png', oOutputParameterHandler)
@@ -43,53 +38,7 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Les sports (En live)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', NETS_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, NETS_GENRES[1], 'Les clubs de foot (urlresolver requis)', 'genres.png', oOutputParameterHandler)
-
     oGui.setEndOfDirectory()
-
-
-def showSearch():
-    oGui = cGui()
-
-    sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText
-        showMovies4(sUrl)  # showMovies4 car c'est pour afficher le club recherché'
-        oGui.setEndOfDirectory()
-        return
-
-
-def showGenres():  # affiche les clubs de foot
-    oGui = cGui()
-
-    liste = []
-    liste.append(['PSG', URL_MAIN + '/frx/team/1_4_216_psg/fanclub/'])
-    liste.append(['Marseille (OM)', URL_MAIN + '/frx/team/1_310_383_marseille/fanclub/'])
-    liste.append(['Barcelone', URL_MAIN + '/frx/team/1_3_227_barcelona/fanclub/'])
-    liste.append(['Real-Madrid', URL_MAIN + '/frx/team/1_163_317_real_madrid/fanclub/'])
-    liste.append(['Marchester Utd', URL_MAIN + '/frx/team/1_350_421_manchester_utd/fanclub/'])
-    liste.append(['Chelsea', URL_MAIN + '/frx/team/1_351_397_chelsea/fanclub/'])
-    liste.append(['Bayern Munich', URL_MAIN + '/frx/team/1_5_227_bayern/fanclub/'])
-    liste.append(['Juventus', URL_MAIN + '/frx/team/1_244_365_juventus/fanclub/'])
-    liste.append(['Arsenal', URL_MAIN + '/frx/team/1_353_406_arsenal/fanclub/'])
-    liste.append(['Liverpool', URL_MAIN + '/frx/team/1_352_412_liverpool/fanclub/'])
-    liste.append(['Manchester City', URL_MAIN + '/frx/team/1_363_446_manchester_city/fanclub/'])
-    liste.append(['France', URL_MAIN + '/frx/team/1_77_258_france/fanclub/'])
-    liste.append(['Dortmund', URL_MAIN + '/frx/team/1_136_296_dortmund/fanclub/'])
-    liste.append(['Monaco', URL_MAIN + '/frx/team/1_319_383_monaco/fanclub/'])
-    liste.append(['Portugal', URL_MAIN + '/frx/team/1_79_269_portugal/fanclub/'])
-    liste.append(['Argentine', URL_MAIN + '/frx/team/1_62_253_argentina/fanclub/'])
-    liste.append(['Belgique', URL_MAIN + '/frx/team/1_83_270_belgium/fanclub/'])
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMenu', sTitle, 'genres.png', oOutputParameterHandler)
-        # showMenu car c'est pour afficher les infos du club seul resultat est fonctionnel pour l'instant''
-
-    oGui.setEndOfDirectory()
-
 
 def showLive():
     oGui = cGui()
@@ -292,71 +241,6 @@ def showMovies3():  # affiche les videos disponible du live
     oGui.setEndOfDirectory()
 
 
-def showMovies4(sSearch=''):  # Afficher le club recherché
-    oGui = cGui()
-
-    if sSearch:
-        sUrl = sSearch
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-
-    sPattern = '<a href="([^"]+)"><span class="sltitle">([^<>]+)</span></a>\s*<br>\s*<font color=".+?">([^<>]+)</font>'
-
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == False):
-        oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-        oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
-            sUrl2 = URL_MAIN + aEntry[0]
-            sTitle = aEntry[1]
-            sHoster = aEntry[2]
-            # sLang = aEntry[3]
-            # sQual = aEntry[4]
-            sThumb = ''
-            sDesc = ''
-
-            try:
-                sTitle = sTitle.decode("iso-8859-1", 'ignore')
-            except:
-                pass
-
-            sTitle = sTitle.encode("utf-8", 'ignore')
-
-            try:
-                sTitle = str(sTitle, encoding="utf8", errors='ignore')
-                sHoster = str(sHoster, encoding="utf8", errors='ignore')
-                # sQual = str(sQual, encoding="utf8", errors='ignore')
-            except:
-                pass
-
-            sTitle = ('%s (%s)') % (sTitle, sHoster)
-
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-
-            oGui.addMovie(SITE_IDENTIFIER, 'showMenu', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
-
-    if not sSearch:
-        oGui.setEndOfDirectory()
-
-
 def showHosters():  # affiche les videos disponible du live
     oGui = cGui()
     UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
@@ -379,7 +263,27 @@ def showHosters():  # affiche les videos disponible du live
         url = aResult[1][0]
         if not (url.startswith("http")):
             url = "http:" + url
-        # url = 'http://www.sporcanli.com/frame2.html' #a garder peut etre utile pour ajouter un hébergeur
+
+        if 'popofthestream' in url:
+            oRequestHandler = cRequestHandler(url)
+            sHtmlContent = oRequestHandler.request()
+            sPattern = 'src="([^"]+)'
+            aResult = re.findall(sPattern, sHtmlContent)
+            if aResult:
+                url2 = url.replace('-', '/')
+                urlChannel = url2.replace('html', 'json')
+                oRequestHandler = cRequestHandler(urlChannel)
+                sHtmlContent = oRequestHandler.request();
+                result = json.loads(sHtmlContent)
+                if 'id' in result:
+                    idChannel = result['id']
+                    oRequestHandler = cRequestHandler(url2)
+                    sHtmlContent2 = oRequestHandler.request();
+                    sPattern = '<iframe.+?src="([^\']+)'
+                    aResult = re.findall(sPattern, sHtmlContent2)
+                    if aResult:
+                        url = aResult[0] + idChannel
+                    
 
         if 'sportlevel' in url:
             oRequestHandler = cRequestHandler(url)
@@ -465,7 +369,7 @@ def showHosters():  # affiche les videos disponible du live
                     if aResult:
                         sHosterUrl = aResult[0]
 
-        if 'ustream.pro' in url:
+        if 'ustream.pro' in url or 'maxsport' in url:
             oRequestHandler = cRequestHandler(url)
             sHtmlContent2 = oRequestHandler.request()
             sPattern = '<iframe.+?src="(.+?)"'
@@ -474,6 +378,7 @@ def showHosters():  # affiche les videos disponible du live
                 url2 = aResult[0]
 
                 oRequestHandler = cRequestHandler(url2)
+                oRequestHandler.addHeaderEntry('Referer', url)
                 sHtmlContent2 = oRequestHandler.request()
                 sPattern1 = '<iframe.+?src="(.+?)"'
                 aResult = re.findall(sPattern1, sHtmlContent2)
@@ -825,13 +730,12 @@ def showHosters():  # affiche les videos disponible du live
             aResult = re.findall(sPattern2, sHtmlContent2)
             if aResult:
                 fid = aResult[0]
-
-            url2 = 'http://webtv.ws/embed.php?live=spstream' + fid + '&vw=700&vh=440'
-            Referer = url
-            oRequestHandler = cRequestHandler(url2)
-            oRequestHandler.addHeaderEntry('User-Agent', UA)
-            oRequestHandler.addHeaderEntry('Referer', Referer)
-            sHtmlContent3 = oRequestHandler.request()
+                url2 = 'http://webtv.ws/embed.php?live=spstream' + fid + '&vw=700&vh=440'
+                Referer = url
+                oRequestHandler = cRequestHandler(url2)
+                oRequestHandler.addHeaderEntry('User-Agent', UA)
+                oRequestHandler.addHeaderEntry('Referer', Referer)
+                sHtmlContent3 = oRequestHandler.request()
 
         if 'thesports4u.net' in url or 'soccerstreams' in url:  # Fini
             if 'thesports4u' in url:
@@ -1337,212 +1241,3 @@ def showHosters():  # affiche les videos disponible du live
 
         oGui.setEndOfDirectory()
 
-
-def showMenu(sSearch=''):  # affiche le menu du club
-    oGui = cGui()
-    if sSearch:
-        sUrl = sSearch
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-
-    sPattern = '<a href="([^"]+)" *class="white">(.+?)</a></td>'
-
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == False):
-        oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-        oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
-            sTitle = aEntry[1]
-            sUrl2 = aEntry[0]
-            sThumb = ''
-            # sLang = aEntry[3]
-            # sQual = aEntry[4]
-            # sHoster = aEntry[2]
-            sDesc = ''
-
-            try:
-                sTitle = sTitle.decode("iso-8859-1", 'ignore')
-            except:
-                pass
-
-            sTitle = sTitle.encode("utf-8", 'ignore')
-
-            try:
-                sTitle = str(sTitle, encoding="utf8", errors='ignore')
-                # sHoster = str(sHoster, encoding="utf8", errors='ignore')
-                # sQual = str(sQual, encoding="utf8", errors='ignore')
-            except:
-                pass
-
-            sTitle = ('%s') % (sTitle)
-
-            sUrl2 = URL_MAIN + sUrl2
-
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-
-            oGui.addMovie(SITE_IDENTIFIER, 'showResult', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
-
-    if not sSearch:
-        oGui.setEndOfDirectory()
-
-
-def showResult(sSearch=''):  # le menu resultat quand on a choisi le club
-    oGui = cGui()
-    if sSearch:
-        sUrl = sSearch
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-
-    sPattern = '<span class="date">([^<]+)</span>.+?<span class="graydesc">([^<]+)</span>.+?<td align="right">([^<>]+)'
-    sPattern += '.+?align="center">\s*<b>([^<]+)</b>.+?<td>([^<]+)</td>.+?<font color=".+?</font>.+?class="small" *href="([^"]+)'
-
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == False):
-        oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-        oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
-            sTitle = aEntry[2] + aEntry[4]
-            sUrl2 = aEntry[5]
-            sDate = aEntry[0]
-            sComp = aEntry[1]
-            sScore = aEntry[3]
-            # sEquipe = aEntry[4]
-            sThumb = ''
-            sDesc = ''
-
-            try:
-                sTitle = sTitle.decode("iso-8859-1", 'ignore')
-                sDate = sDate.decode("iso-8859-1", 'ignore')
-                sScore = sScore.decode("iso-8859-1", 'ignore')
-                sComp = sComp.decode("iso-8859-1", 'ignore')
-            except:
-                pass
-
-            sTitle = cUtil().unescape(sTitle)
-            sTitle = sTitle.encode("utf-8", 'ignore')
-
-            sDate = cUtil().unescape(sDate)
-            sDate = sDate.encode("utf-8", 'ignore')
-
-            sScore = cUtil().unescape(sScore)
-            sScore = sScore.encode("utf-8", 'ignore')
-
-            sComp = cUtil().unescape(sComp)
-            sComp = sComp.encode("utf-8", 'ignore')
-
-            try:
-                sTitle = str(sTitle, encoding="utf8", errors='ignore')
-                sDate = str(sDate, encoding="utf8", errors='ignore')
-                sScore = str(sScore, encoding="utf8", errors='ignore')
-                sComp = str(sComp, encoding="utf8", errors='ignore')
-            except:
-                pass
-
-            sTitle = ('%s  [%s] (%s) [COLOR]%s[/COLOR]]') % (sTitle, sScore, sDate, sComp)
-            sUrl2 = URL_MAIN + sUrl2
-
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitlebis', sTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters2', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
-
-    if not sSearch:
-        oGui.setEndOfDirectory()
-
-
-# def showDecode():  # les hosters des lives celui que je suis bloqué
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle2 = oInputParameterHandler.getValue('sMovieTitle2')
-    sThumb = oInputParameterHandler.getValue('sThumb')
-
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-
-    oParser = cParser()
-    sPattern = '.+?(http://.+?).+?'
-    # urllib.unquote(sPattern)
-
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-
-            sHosterUrl = str(aEntry)
-            sHosterUrl = sHosterUrl.decode("iso-8859-1", 'ignore')
-            # sHosterUrl = cUtil().unescape(sHosterUrl)
-            sHosterUrl = sHosterUrl.encode("utf-8", 'ignore')
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle2)
-                oHoster.setFileName(sMovieTitle2)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
-    oGui.setEndOfDirectory()
-
-
-def showHosters2():  # Les hosters des videos (pas des lives attentions)
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitlebis = oInputParameterHandler.getValue('sMovieTitlebis')
-    sThumb = oInputParameterHandler.getValue('sThumb')
-
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-
-    oParser = cParser()
-    sPattern = '<iframe.+?src="(http.+?)".+?</iframe>'
-
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-
-            sHosterUrl = aEntry
-            # sHosterUrl = sHosterUrl.decode("iso-8859-1", 'ignore')
-            # sHosterUrl = cUtil().unescape(sHosterUrl)
-            # sHosterUrl = sHosterUrl.encode("utf-8", 'ignore')
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitlebis)
-                oHoster.setFileName(sMovieTitlebis)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
-    oGui.setEndOfDirectory()
