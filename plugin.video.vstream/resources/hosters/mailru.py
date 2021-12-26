@@ -19,7 +19,7 @@ class cHoster(iHoster):
     def __init__(self):
         iHoster.__init__(self, 'mailru', 'MailRu')
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         api_call = False
 
         UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'

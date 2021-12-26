@@ -37,7 +37,7 @@ class cHoster(iHoster):
         self._url = self._url.replace('embed.php?id=', '')
         self._url = 'http://www.onevideo.to/embed.php?id=' + str(self._url)
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         # api_call = ('http://www.nowvideo.sx/api/player.api.php?key=%s&file=%s') %
         #    (self.__getKey(), self.__getIdFromUrl())
         api_call = ('http://www.onevideo.to/api/player.api.php?user=undefined&codes=1&file=%s' +

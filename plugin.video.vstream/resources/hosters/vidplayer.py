@@ -14,7 +14,7 @@ class cHoster(iHoster):
     def __init__(self):
         iHoster.__init__(self, 'vidplayer', 'Vidplayer')
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         req = self._url.replace('/v/', '/api/source/')
         pdata = 'r'
         oRequestHandler = cRequestHandler(req)

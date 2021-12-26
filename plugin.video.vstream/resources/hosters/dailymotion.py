@@ -19,7 +19,7 @@ class cHoster(iHoster):
             else:
                 self._url = "https://www.dailymotion.com/player/metadata/video/" + self._url.split('/')[4]
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         api_call = False
         url = []
         qua = []

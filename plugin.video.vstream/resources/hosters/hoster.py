@@ -38,8 +38,8 @@ class iHoster:
     def getUrl(self):
         return self._url
 
-    def getMediaLink(self):
-        return self._getMediaLinkForGuest()
+    def getMediaLink(self, autoPlay = False):
+        return self._getMediaLinkForGuest(autoPlay)
 
     # nom du fichier, interessant pour afficher la release
     def getMediaFile(self):
@@ -47,7 +47,7 @@ class iHoster:
             return None
         if self._url[-4:] not in '.mkv.avi.mp4.m4v.iso':
             return None
-        
+
         sMediaFile = self._url[:-4]
         sMediaFile = Unquote(sMediaFile.split('/')[-1])
         sMediaFile = re.sub('TM\d+TM', '', sMediaFile)
@@ -56,8 +56,8 @@ class iHoster:
         sMediaFile = sMediaFile.replace('_', ' ')
         return sMediaFile
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         raise NotImplementedError()
 
-    def _getMediaLinkByPremiumUser(self):
+    def _getMediaLinkByPremiumUser(self, autoPlay = False):
         pass

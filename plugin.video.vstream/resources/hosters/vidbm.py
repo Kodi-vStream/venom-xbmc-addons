@@ -29,7 +29,7 @@ class cHoster(iHoster):
         self._url = self._url.replace('.html?auto=1', '')
         self._url = self._url.replace('.html', '')
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
 

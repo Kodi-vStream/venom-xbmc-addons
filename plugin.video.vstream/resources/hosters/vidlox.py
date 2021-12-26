@@ -18,7 +18,7 @@ class cHoster(iHoster):
         url = url.replace('embed-dlox.me/', 'embed-')
         self._url = str(url)
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         oParser = cParser()
         oRequest = cRequestHandler(self._url)
         oRequest.addHeaderEntry('Referer', "https://vidlox.me/8m8p7kane4r1.html")

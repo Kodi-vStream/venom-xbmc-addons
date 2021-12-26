@@ -28,7 +28,7 @@ class cHoster(iHoster):
 
         return ''
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         vUrl = False
         sId = self.__getIdFromUrl(self._url)
 

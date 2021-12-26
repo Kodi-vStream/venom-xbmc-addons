@@ -16,8 +16,8 @@ class cHoster(iHoster):
     def setRealHost(self, sName):
         self.__sRealHost = sName
 
-    def _getMediaLinkForGuest(self):
-        hmf = urlresolver.HostedMediaFile(url=self._url)
+    def _getMediaLinkForGuest(self, autoPlay = False):
+        hmf = urlresolver.HostedMediaFile(url = self._url)
         if hmf.valid_url():
             stream_url = hmf.resolve()
             if stream_url:

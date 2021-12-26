@@ -9,6 +9,7 @@ from resources.lib.db import cDb
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
+from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.upnext import UpNext
 from resources.lib.util import cUtil, Unquote
 
@@ -72,7 +73,7 @@ class cPlayer(xbmc.Player):
 
     def addItemToPlaylist(self, oGuiElement):
         oGui = cGui()
-        oListItem = oGui.createListItem(oGuiElement)
+        oListItem =  oGui.createListItem(oGuiElement)
         self.__addItemToPlaylist(oGuiElement, oListItem)
 
     def __addItemToPlaylist(self, oGuiElement, oListItem):
@@ -84,6 +85,23 @@ class cPlayer(xbmc.Player):
             self.Subtitles_file = files
         else:
             self.Subtitles_file.append(files)
+
+    def preCheckVideoWork(self, sUrl):
+        parsedUrl = urlparse(sUrl)
+        domainUrl = parsedUrl.scheme + "://" + parsedUrl.hostname
+        VSlog("Pre check video work (" + str(domainUrl) + ")")
+        oRequestHandler = cRequestHandler(domainUrl)
+        result = oRequestHandler.request()
+        if result:
+            VSlog("Result: " + str(oRequestHandler.statusCode()))
+
+            return int(oRequestHandler.statusCode()) in [200, 403, 404]
+        else:
+            VSlog("Pre check failed (" + str(result) + ")")
+        return False
+
+    def prepareToRun(self, oGuiElement):
+        self.listMediaUrl.append(oGuiElement.getMediaUrl())
 
     def run(self, oGuiElement, sUrl):
 
@@ -105,8 +123,19 @@ class cPlayer(xbmc.Player):
         sPluginHandle = cPluginHandler().getPluginHandle()
 
         oGui = cGui()
-        item = oGui.createListItem(oGuiElement)
-        item.setPath(oGuiElement.getMediaUrl())
+        item = oGui._createListItem(oGuiElement)
+        if self.listMediaUrl and len(self.listMediaUrl) > 1:
+            VSlog("List of media url: " + str(self.listMediaUrl))
+            path = 'stack://' + ' , '.join(self.listMediaUrl)
+        else:
+            VSlog("Gui element")
+            path = oGuiElement.getMediaUrl()
+
+        VSlog("Create path: " + str(path))
+        item.setPath(path)
+
+        if sUrl == '':
+            sUrl = item.getPath()
 
         # Sous titres
         if self.Subtitles_file:

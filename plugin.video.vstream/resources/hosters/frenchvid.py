@@ -15,10 +15,8 @@ class cHoster(iHoster):
     def __init__(self):
         iHoster.__init__(self, 'frenchvid', 'Frenchvid')
 
-    def setUrl(self, url):
-        self._url = str(url)
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         # Get Redirection
         if 'fembed' in self._url:
             oRequest = cRequestHandler(self._url)

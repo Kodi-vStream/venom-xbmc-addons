@@ -16,7 +16,7 @@ class cHoster(iHoster):
     def setUrl(self, url):
         self._url = str(url).replace('+', '%20')  # un lien direct n'est pas forcement urlEncoded
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         api_call = self._url
 
         if ('hds.' in api_call) or ('bidzen' in api_call):

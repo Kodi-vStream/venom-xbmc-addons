@@ -29,7 +29,7 @@ class cHoster(iHoster):
 
         return ''
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         sId = self.__getIdFromUrl(self._url)
 
         json_url = 'http://www.video.tt/player_control/settings.php?v=%s' % sId

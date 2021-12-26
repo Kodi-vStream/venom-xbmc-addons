@@ -14,7 +14,7 @@ class cHoster(iHoster):
 
     # facultatif mais a laisser pour compatibilitee
     # Extraction du lien et decodage si besoin
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         oRequestHandler = cRequestHandler("https://ninjastream.to/api/video/get")
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('Referer', self._url)

@@ -273,7 +273,7 @@ class cHoster(iHoster):
             return file_url
         return False
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         #host = self.parseNETUTV(self._url)
         oRequest = cRequestHandler('http://netu.tv/watch_video.php?v=S7DGB15KBN6N')
         sHtmlContent = oRequest.request()

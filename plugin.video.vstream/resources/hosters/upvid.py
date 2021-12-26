@@ -24,7 +24,7 @@ class cHoster(iHoster):
         if 'embed-' not in self._url:
             self._url = self._url.rsplit('/', 1)[0] + '/embed-' + self._url.rsplit('/', 1)[1]
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         api_call = ''
         oParser = cParser()
         sUrl = self._url

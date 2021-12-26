@@ -19,9 +19,8 @@ class cHoster(iHoster):
         else:
             return False
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         web_url = self.getUrl(self._url)
-
         oRequest = cRequestHandler(web_url)
         sHtmlContent = oRequest.request()
 

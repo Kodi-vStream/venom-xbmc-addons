@@ -36,7 +36,7 @@ class cHoster(iHoster):
     def setUrl(self, url):
         self._url = str(url).replace('/d/', '/e/').replace('doodstream.com', 'dood.la')
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         api_call = False
 
         headers = {'User-Agent': UA}

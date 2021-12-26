@@ -14,14 +14,14 @@ class cHoster(iHoster):
     def setUrl(self, sUrl):
         self._url = sUrl.replace('/divx/', '/play/').replace('.html', '')
 
-    def getMediaLink(self):
+    def getMediaLink(self, autoPlay = False):
         oPremiumHandler = cPremiumHandler(self.getPluginIdentifier())
         if (oPremiumHandler.isPremiumModeAvailable()):
             sUsername = oPremiumHandler.getUsername()
             sPassword = oPremiumHandler.getPassword()
             return self._getMediaLinkByPremiumUser(sUsername, sPassword);
 
-        return self._getMediaLinkForGuest();
+        return self._getMediaLinkForGuest(autoPlay);
 
     def _getMediaLinkByPremiumUser(self, sUsername, sPassword):
         oRequestHandler = cRequestHandler('http://www.duckload.com/api/public/login&user=' + sUsername + '&pw=' + \
@@ -46,7 +46,7 @@ class cHoster(iHoster):
 
         return False, aResult
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         sSecondsForWait = 10
 
         oRequest = cRequestHandler(self._url)

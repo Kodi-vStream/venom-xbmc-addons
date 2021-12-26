@@ -36,7 +36,7 @@ class cHoster(iHoster):
     def isDownloadable(self):
         return False
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         ids = self.__getIdFromUrl()
 
         hqqUrl = 'http://hqq.tv/player/embed_player.php?vid=' + ids + '&autoplay=no'
@@ -55,7 +55,6 @@ class cHoster(iHoster):
         oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         oRequestHandler.addHeaderEntry('x-requested-with', 'XMLHttpRequest')
         oRequestHandler.addHeaderEntry('Referer', hqqUrl)
-        # ok
 
         oRequestHandler.request()
         api_call = oRequestHandler.getRealUrl()

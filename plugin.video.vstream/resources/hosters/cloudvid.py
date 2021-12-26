@@ -23,7 +23,7 @@ class cHoster(iHoster):
         if not self._url.endswith('.html'):
             self._url = self._url + '.html'
 
-    def _getMediaLinkForGuest(self, api_call=None):
+    def _getMediaLinkForGuest(self, autoPlay = False, api_call=None):
         oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
 

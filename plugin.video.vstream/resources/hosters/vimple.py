@@ -17,7 +17,7 @@ class cHoster(iHoster):
     def __init__(self):
         iHoster.__init__(self, 'vimple', 'Vimple')
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'}
         req = urllib2.Request(self._url, None, headers)
         response = urllib2.urlopen(req)

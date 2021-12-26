@@ -19,8 +19,7 @@ class cHoster(iHoster):
     def __init__(self):
         iHoster.__init__(self, 'youtube', 'Youtube')
 
-    def _getMediaLinkForGuest(self):
-
+    def _getMediaLinkForGuest(self, autoPlay = False):
         # 0 = Plugin invidious
         # 1 = Plugin Youtube
 
@@ -44,7 +43,7 @@ class cHoster(iHoster):
         if 'plugin'  in self._url:
             api_call = self._url
         else:
-            videoID = self.__getIdFromUrl(self._url)
+            videoID = self.__getIdFromUrl()
             if MODE == 1:
                 api_call = 'plugin://plugin.video.youtube/play/?video_id=' + videoID
             else:
@@ -55,10 +54,10 @@ class cHoster(iHoster):
         else:
             return False, False
 
-    def __getIdFromUrl(self, sUrl):
+    def __getIdFromUrl(self):
         id = ''
-        if 'plugin' not in sUrl:
-            id = sUrl
+        if 'plugin' not in self._url:
+            id = self._url
             id = id.replace('http:', '')
             id = id.replace('https:', '')
             id = id.replace('//', '')
@@ -68,6 +67,5 @@ class cHoster(iHoster):
             id = id.replace('/watch?v=', '')
             id = str(id)
         else:
-            id = sUrl
- 
+            id = self._url
         return id

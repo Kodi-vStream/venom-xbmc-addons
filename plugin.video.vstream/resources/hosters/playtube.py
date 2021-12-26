@@ -17,7 +17,7 @@ class cHoster(iHoster):
     def __init__(self):
         iHoster.__init__(self, 'playtube', 'Playtube')
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         oRequestHandler = cRequestHandler(self._url)
         sHtmlContent = oRequestHandler.request()
 

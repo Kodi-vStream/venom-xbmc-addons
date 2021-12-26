@@ -19,7 +19,7 @@ class cHoster(iHoster):
         self._url = str(url)
         self._url = self._url.replace('/e/', '/api/fetch/')
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         api_call = False
 
         oRequest = cRequestHandler(self._url)

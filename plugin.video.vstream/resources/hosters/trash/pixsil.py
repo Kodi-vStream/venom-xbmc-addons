@@ -11,7 +11,7 @@ class cHoster(iHoster):
     def __init__(self):
         iHoster.__init__(self, 'pixsil', 'Pixsil')
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         api_call = self._url
         api_call = api_call + '|Referer=http://www.mangacity.org/jwplayer/player.swf'
 

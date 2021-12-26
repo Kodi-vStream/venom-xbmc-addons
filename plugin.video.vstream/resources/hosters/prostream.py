@@ -11,7 +11,7 @@ class cHoster(iHoster):
     def __init__(self):
         iHoster.__init__(self, 'prostream', 'Prostream')
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         api_call = ''
 
         oParser = cParser()

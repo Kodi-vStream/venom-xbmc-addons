@@ -162,8 +162,11 @@ class main:
             # if isAboutGui(sSiteName, sFunction) == True:
                 # return
 
-            if sSiteName == 'playVideo':
-                playVideo();
+            if sSiteName == 'quickSearch':
+                if sFunction == "playVideo":
+                    quickSearch(True);
+                else:
+                    quickSearch(False);
                 return
 
             # charge sites
@@ -221,9 +224,9 @@ def setSettings(oInputParameterHandler):
     return True
 
 
-def isHosterGui(sSiteName, sFunction, parameters = None):
+def isHosterGui(sSiteName, sFunction):
     if sSiteName == 'cHosterGui':
-        playHosterGui(sFunction, parameters)
+        playHosterGui(sFunction)
         return True
     return False
 
@@ -311,7 +314,7 @@ def isSearch(sSiteName, sFunction):
         return True
     return False
 
-def playVideoFromPlugin(oGui, searchResult, searchTitle, searchCat, searchYear, find = False, allRealLink = []):
+def quickSearchForPlugin(playVideo, oGui, searchResult, searchTitle, searchCat, searchYear, find = False, allVideoLink = []):
     if not find:
         numberOfCriteria = getResultNumberOfCriteria(searchResult, searchTitle, searchCat, searchYear)
 
@@ -322,11 +325,17 @@ def playVideoFromPlugin(oGui, searchResult, searchTitle, searchCat, searchYear, 
             VSlog("numberOfCriteria: " + str(numberOfCriteria))
 
             if guiElement.getSiteName() == 'cHosterGui':
+
+                # if playVideo:
+                #     playMovieCorrectly = playHosterGui(guiElement.getFunction(), videoParams)
+                #     VSlog("playMovieCorrectly: " + str(playMovieCorrectly))
+                #     find = playMovieCorrectly
+
+
+                allVideoLink.append(searchResult)
+
+
                 # VSlog("Execute cHosterGui." + str(guiElement.getFunction()))
-                # playerInfo = playHosterGui(guiElement.getFunction(), videoParams)
-                # VSlog("playerInfo: " + str(playerInfo))
-                allRealLink.append(searchResult)
-                # find = True
             else:
                 oGui.searchResults[:] = []  # vider le tableau de résultats
                 window(10101).setProperty('search', 'true')
@@ -346,14 +355,15 @@ def playVideoFromPlugin(oGui, searchResult, searchTitle, searchCat, searchYear, 
                     # VSlog("videoParams result AFTER:")
                     # searchResult['params'].debug()
                     # VSlog("--------------")
-                    find = playVideoFromPlugin(oGui, searchResult, searchTitle, searchCat, searchYear, find, allRealLink)
+                    find = quickSearchForPlugin(playVideo, oGui, searchResult, searchTitle, 
+                        searchCat, searchYear, find, allVideoLink)
                     if find:
                         break
 
     return find
 
 
-def playVideo():
+def quickSearch(playVideo = False):
     oGui = cGui()
     
     oInputParameterHandler = cInputParameterHandler()
@@ -379,7 +389,7 @@ def playVideo():
     quoteSearchTitle = Quote(searchTitle)
 
     find = False
-    allRealLink = []
+    allVideoLink = []
     for plugin in listPlugins:
         if find:
             break
@@ -391,12 +401,22 @@ def playVideo():
             pluginResult = oGui.searchResults[:]
             oGui.searchResults[:] = []
             for searchResult in pluginResult:
-                find = playVideoFromPlugin(oGui, searchResult, searchTitle, searchCat, searchYear, find, allRealLink)
+                find = quickSearchForPlugin(playVideo, oGui, searchResult, searchTitle, 
+                    searchCat, searchYear, find, allVideoLink)
                 if find:
                     break
 
-    for result in allRealLink:
-        oGui.addFolder(result['guiElement'], result['params'])
+    if playVideo and len(allVideoLink) > 1:
+        from resources.lib.gui.hoster import cHosterGui
+        hosterGui = cHosterGui()
+        for result in allVideoLink:
+            hosterGui.play(result['params'], True)
+
+        playMovieCorrectly = hosterGui.playPlayer()
+        VSlog("playMovieCorrectly: " + str(playMovieCorrectly))
+    else:
+        for result in allVideoLink:
+            oGui.addFolder(result['guiElement'], result['params'])
 
     if not find:
         # oGui.addText('globalSearch')  # "Aucune information"
@@ -422,6 +442,14 @@ def getResultNumberOfCriteria(result, searchTitle, searchCat, searchYear):
         return 0
     else:
         numberOfCriteria += 1
+
+    sLang = str(result['params'].getValue('sLang')).lower()
+    VSlog('sLang: ' + str(sLang))
+    if sLang and (sLang == 'vf' or sLang == 'truefrench'):
+        numberOfCriteria += 1
+    elif sLang and ('vostfr' in sLang or 'en' in sLang):
+        VSlog("Exclude because 'vostfr' or 'en': " + str(sLang))
+        return 0
 
     if searchCat >= 0:
         sMeta = int(result['params'].getValue('sMeta'))

@@ -17,7 +17,7 @@ class cHoster(iHoster):
         self._url = str(url)
         self._url = self._url.replace("/f/", "/e/")
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         api_call = ''
 
         oParser = cParser()

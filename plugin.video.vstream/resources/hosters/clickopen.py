@@ -15,7 +15,7 @@ class cHoster(iHoster):
     def __init__(self):
         iHoster.__init__(self, 'clickopen', 'ClickOpen')
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         url = 'https://clickopen.win/api/source/' + self._url.rsplit('/', 1)[1]
 
         postdata = 'r=&d=clickopen.win'

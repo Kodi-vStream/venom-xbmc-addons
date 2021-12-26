@@ -10,7 +10,7 @@ class cHoster(iHoster):
     def __init__(self):
         iHoster.__init__(self, 'allow_redirects', 'redirection')
 
-    def _getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self, autoPlay = False):
         oRequestHandler = cRequestHandler(self._url)
         oRequestHandler.request()
         sHosterUrl = oRequestHandler.getRealUrl()
