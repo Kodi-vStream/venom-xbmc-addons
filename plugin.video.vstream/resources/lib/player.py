@@ -10,10 +10,10 @@ from resources.lib.db import cDb
 from resources.lib.util import cUtil, Unquote
 import xbmcplugin
 
-if isMatrix():
-    from urllib.parse import urlparse
-else:
+try:  # Python 2
     from urlparse import urlparse
+except ImportError:  # Python 3
+    from urllib.parse import urlparse
 
 from os.path import splitext
 
