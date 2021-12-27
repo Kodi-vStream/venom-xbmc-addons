@@ -325,6 +325,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sDisplayTitle', sDisplayTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sQual', sQual)
 
             if 'anime' in sUrl or 'anime' in sUrl2:
                 oGui.addAnime(SITE_IDENTIFIER, 'showSeriesLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
@@ -444,6 +445,7 @@ def showMoviesLinks(oInputParameterHandler = False):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sYear', sYear)
+            oOutputParameterHandler.addParameter('sQual', sQual)
             oGui.addLink(SITE_IDENTIFIER, 'showMoviesLinks', sTitle, sThumb, sDesc, oOutputParameterHandler, oInputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -502,6 +504,7 @@ def showSeriesLinks():
         oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
         oOutputParameterHandler.addParameter('sThumb', sThumb)
         oOutputParameterHandler.addParameter('sDesc', sDesc)
+        oOutputParameterHandler.addParameter('sQual', sQual)
         oGui.addSeason(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     # on regarde si dispo dans d'autres qualités
@@ -524,6 +527,7 @@ def showSeriesLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('sQual', sQual)
             oGui.addSeason(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     # on regarde si dispo d'autres saisons

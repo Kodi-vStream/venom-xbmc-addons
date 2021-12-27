@@ -164,6 +164,7 @@ def showMovies(sSearch=''):
                 sDesc = aEntry[4]
 
                 sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
+                oOutputParameterHandler.addParameter('sQual', sQual)
 
             else:
                 sDisplayTitle = sTitle

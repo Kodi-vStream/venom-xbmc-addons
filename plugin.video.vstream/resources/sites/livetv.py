@@ -198,6 +198,7 @@ def showMovies2():  # affiche les matchs en direct depuis la section showMovie
             oOutputParameterHandler.addParameter('siteUrl3', sUrl3)
             oOutputParameterHandler.addParameter('sMovieTitle2', sTitle2)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sQual', sQual)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies3', sDisplayTitle, 'sport.png', oOutputParameterHandler)
 
         progress_.VSclose(progress_)

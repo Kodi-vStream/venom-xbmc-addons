@@ -9,7 +9,6 @@ from resources.lib.db import cDb
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
-from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.upnext import UpNext
 from resources.lib.util import cUtil, Unquote
 
@@ -86,26 +85,8 @@ class cPlayer(xbmc.Player):
         else:
             self.Subtitles_file.append(files)
 
-    def preCheckVideoWork(self, sUrl):
-        parsedUrl = urlparse(sUrl)
-        domainUrl = parsedUrl.scheme + "://" + parsedUrl.hostname
-        VSlog("Pre check video work (" + str(domainUrl) + ")")
-        oRequestHandler = cRequestHandler(domainUrl)
-        result = oRequestHandler.request()
-        if result:
-            VSlog("Result: " + str(oRequestHandler.statusCode()))
-
-            return int(oRequestHandler.statusCode()) in [200, 403, 404]
-        else:
-            VSlog("Pre check failed (" + str(result) + ")")
-        return False
-
-    def prepareToRun(self, oGuiElement):
-        self.listMediaUrl.append(oGuiElement.getMediaUrl())
-
     def run(self, oGuiElement, sUrl):
-
-        # Lancement d'une vidéo sans avoir arrêté la précédente
+        # Lancement d'une vidéo sans avoir arreté la précedente
         self.tvShowTitle = oGuiElement.getItemValue('tvshowtitle')
         if self.isPlaying():
             sEpisode = str(oGuiElement.getEpisode())
@@ -124,18 +105,7 @@ class cPlayer(xbmc.Player):
 
         oGui = cGui()
         item = oGui._createListItem(oGuiElement)
-        if self.listMediaUrl and len(self.listMediaUrl) > 1:
-            VSlog("List of media url: " + str(self.listMediaUrl))
-            path = 'stack://' + ' , '.join(self.listMediaUrl)
-        else:
-            VSlog("Gui element")
-            path = oGuiElement.getMediaUrl()
-
-        VSlog("Create path: " + str(path))
-        item.setPath(path)
-
-        if sUrl == '':
-            sUrl = item.getPath()
+        item.setPath(oGuiElement.getMediaUrl())
 
         # Sous titres
         if self.Subtitles_file:
@@ -203,7 +173,6 @@ class cPlayer(xbmc.Player):
 
             except Exception as err:
                 VSlog("Exception run: {0}".format(err))
-
             xbmc.sleep(1000)
 
         if not self.playBackStoppedEventReceived:

@@ -6,16 +6,12 @@ from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.comaddon import dialog, addon, VSlog
+from resources.lib.comaddon import dialog, addon, VSlog, window
 
 
 class cHosterGui:
     SITE_NAME = 'cHosterGui'
     ADDON = addon()
-
-    def __init__(self):
-        from resources.lib.player import cPlayer
-        self.oPlayer = cPlayer()
 
     # step 1 - bGetRedirectUrl in ein extra optionsObject verpacken
     def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail, bGetRedirectUrl=False, oInputParameterHandler=False):
@@ -37,6 +33,11 @@ class cHosterGui:
         sFav = oInputParameterHandler.getValue('sFav')
         if not sFav:
             sFav = oInputParameterHandler.getValue('function')
+        searchSiteId = oInputParameterHandler.getValue('searchSiteId')
+        if searchSiteId:
+            oOutputParameterHandler.addParameter('searchSiteId', searchSiteId)
+        oOutputParameterHandler.addParameter('searchSiteName', oInputParameterHandler.getValue('searchSiteName'))
+        oOutputParameterHandler.addParameter('sQual', oInputParameterHandler.getValue('sQual'))
 
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(self.SITE_NAME)
@@ -324,9 +325,10 @@ class cHosterGui:
         klass = getattr(mod, 'cHoster')
         return klass()
 
-    def play(self, oInputParameterHandler = False, autoPlay = False):
+    def play(self, oInputParameterHandler = False):
         oGui = cGui()
         oDialog = dialog()
+        autoPlay = window(10101).getProperty('autoPlay') == 'true'
 
         if not oInputParameterHandler:
             oInputParameterHandler = cInputParameterHandler()
@@ -383,14 +385,14 @@ class cHosterGui:
                     oGuiElement.setMeta(int(sMeta))
                     oGuiElement.getInfoLabel()
 
-                    # from resources.lib.player import cPlayer
-                    # oPlayer = cPlayer(oInputParameterHandler)
+                    from resources.lib.player import cPlayer
+                    oPlayer = cPlayer(oInputParameterHandler)
 
                     # sous titres ?
                     if len(aLink) > 2:
                         self.oPlayer.AddSubtitles(aLink[2])
 
-                    return self.oPlayer.prepareToRun(oGuiElement)
+                    return oPlayer.run(oGuiElement, aLink[1])
 
             if not autoPlay:
                 oDialog.VSerror(self.ADDON.VSlang(30020))
@@ -405,9 +407,6 @@ class cHosterGui:
         if not autoPlay:
             oGui.setEndOfDirectory()
         return False
-
-    def playPlayer(self):
-        return self.oPlayer.run(cGuiElement(), '')
 
     def addToPlaylist(self):
         oGui = cGui()
@@ -425,7 +424,7 @@ class cHosterGui:
         oHoster.setFileName(sFileName)
 
         oHoster.setUrl(sMediaUrl)
-        aLink = oHoster.getMediaLink(False)
+        aLink = oHoster.getMediaLink()
 
         if aLink[0]:
             oGuiElement = cGuiElement()

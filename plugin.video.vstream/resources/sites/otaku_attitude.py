@@ -265,6 +265,7 @@ def showEpisodes():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('serieID', serieID)
             oOutputParameterHandler.addParameter('idEpisode', idEpisode)
+            oOutputParameterHandler.addParameter('sQual', sQual)
             oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()

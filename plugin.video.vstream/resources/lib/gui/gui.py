@@ -25,10 +25,15 @@ class cGui:
     episodeListing = []  # Pour gérer l'enchainement des episodes
     ADDON = addon()
     displaySeason = addon().getSetting('display_season_title')
-
     # Gérer les résultats de la recherche
     searchResults = {}
     searchResultsSemaphore = threading.Semaphore()
+
+    def emptySearchResult(siteName):
+        cGui.searchResultsSemaphore.acquire()
+        # VSlog("Set empty result for " + str(siteName))
+        cGui.searchResults[siteName] = []  # vider le tableau de résultats
+        cGui.searchResultsSemaphore.release()
 
     def getEpisodeListing(self):
         return self.episodeListing
@@ -258,6 +263,8 @@ class cGui:
         if window(10101).getProperty('search') == 'true':
             self.addSearchResult(oGuiElement, oOutputParameterHandler)
             return
+        else:
+            VSlog("No save result")
 
         # Des infos a rajouter ?
         params = {'siteUrl': oGuiElement.setSiteUrl,

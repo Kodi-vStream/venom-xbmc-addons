@@ -573,6 +573,7 @@ def showMoviesLinks(oInputParameterHandler = False):
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('sQual', sQual)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler, oInputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -642,6 +643,7 @@ def showSeriesLinks():
             oOutputParameterHandler.addParameter('sTmdbId', idTMDB)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('sQual', sQual)
             oGui.addSeason(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
     # Affichage du titre

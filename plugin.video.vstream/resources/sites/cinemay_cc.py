@@ -187,6 +187,7 @@ def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
 
+    oInputParameterHandler = cInputParameterHandler()
     if sSearch:
         bvalid, stoken, scookie = getTokens()
         if bvalid:
@@ -211,7 +212,6 @@ def showMovies(sSearch=''):
             return
 
     else:
-        oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()

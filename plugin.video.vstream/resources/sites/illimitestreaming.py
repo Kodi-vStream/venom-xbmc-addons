@@ -422,6 +422,7 @@ def showHosters(oInputParameterHandler = False):
             sQual = tab[2*i+(n+1)][1]
 
             sTitle = ('%s [%s] (%s)') % (sMovieTitle, sQual, sLang)
+            oInputParameterHandler.addParameter('sQual', sQual)
 
             # Petit hack pour conserver le nom de domaine du site
             # necessaire pour userload.

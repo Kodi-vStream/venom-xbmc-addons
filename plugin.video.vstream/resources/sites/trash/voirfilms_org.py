@@ -365,6 +365,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sQual', sQual)
 
             if '/serie' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showS_E', sDisplayTitle, sThumb, sThumb, '', oOutputParameterHandler)
