@@ -159,10 +159,6 @@ class cGui:
         if not oOutputParameterHandler.getValue('sLang'):
             oOutputParameterHandler.addParameter('sLang', oInputParameterHandler.getValue('sLang'))
 
-        # Affichage du pourcentage de lecture en cours, non utilisé car pas très economique au niveau des liens lorsqu'il y en a beaucoup
-        # oOutputParameterHandler.addParameter('ResumeTime', oInputParameterHandler.getValue('ResumeTime'))
-        # oOutputParameterHandler.addParameter('TotalTime', oInputParameterHandler.getValue('TotalTime'))
-
         sIcon = sThumbnail
         return self.addNewDir('link', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 0, None)
 
@@ -321,7 +317,7 @@ class cGui:
 
         # Formatage nom episode
         sCat = oGuiElement.getCat()
-        if sCat and int(sCat)== 8:  # Nom de l'épisode
+        if sCat and int(sCat) == 8:  # Nom de l'épisode
             try:
                 if 'tagline' in data and data['tagline']:
                     episodeTitle = data['tagline']
@@ -573,7 +569,7 @@ class cGui:
             xbmc.executebuiltin('Container.SetViewMode(' + str(forceViewMode) + ')')
         else:
             if self.ADDON.getSetting('active-view') == 'true':
-                if cGui.CONTENT == 'movies' or  cGui.CONTENT == 'artists':
+                if cGui.CONTENT == 'movies' or cGui.CONTENT == 'artists':
                     # xbmc.executebuiltin('Container.SetViewMode(507)')
                     xbmc.executebuiltin('Container.SetViewMode(%s)' % self.ADDON.getSetting('movies-view'))
                 elif cGui.CONTENT in ['tvshows', 'seasons', 'episodes']:
