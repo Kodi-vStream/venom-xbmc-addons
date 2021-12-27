@@ -51,8 +51,8 @@ class cClear:
             return
 
         elif (env == 'changelog_old'):
+            sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/changelog.txt'
             try:
-                sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/changelog.txt'
                 oRequest = urllib2.Request(sUrl)
                 oResponse = urllib2.urlopen(oRequest)
 
@@ -108,7 +108,6 @@ class cClear:
 
                         listitem = xbmcgui.ListItem(label=login, label2=desc)
                         listitem.setArt({'icon': icon, 'thumb': icon})
-
                         listitems.append(listitem)
 
                     self.container.addItems(listitems)
@@ -131,8 +130,8 @@ class cClear:
             return
 
         elif (env == 'soutient'):
+            sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/soutient.txt'
             try:
-                sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/soutient.txt'
                 oRequest = urllib2.Request(sUrl)
                 oResponse = urllib2.urlopen(oRequest)
 
@@ -147,7 +146,7 @@ class cClear:
                 self.DIALOG.VSerror("%s, %s" % (self.ADDON.VSlang(30205), sUrl))
             return
 
-        elif (env == 'addon'): # Vider le cache des métadonnées
+        elif (env == 'addon'):  # Vider le cache des métadonnées
             if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
                 cached_Cache = "special://home/userdata/addon_data/plugin.video.vstream/video_cache.db"
                 # important seul xbmcvfs peux lire le special
@@ -172,7 +171,8 @@ class cClear:
             return
 
         elif (env == 'clean'):
-            liste = ['Historiques des recherches', 'Marque-Pages', 'En cours de lecture', 'Niveau de lecture', 'Marqués vues', 'Téléchargements']
+            liste = ['Historiques des recherches', 'Marque-Pages', 'En cours de lecture',
+                     'Niveau de lecture', 'Marqués vues', 'Téléchargements']
             ret = self.DIALOG.VSselect(liste, self.ADDON.VSlang(30110))
             cached_DB = "special://home/userdata/addon_data/plugin.video.vstream/vstream.db"
             # important seul xbmcvfs peux lire le special
@@ -235,9 +235,9 @@ class cClear:
             if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
                 path = "special://logpath/kodi.log"
                 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
-                headers = {'User-Agent': UA}
+                # headers = {'User-Agent': UA}
                 if xbmcvfs.exists(path):
-                    post_data = {}
+                    # post_data = {}
                     cUrl = 'http://slexy.org/index.php/submit'
                     logop = xbmcvfs.File(path, 'rb')
                     result = logop.read()
@@ -252,7 +252,7 @@ class cClear:
                     oRequestHandler.addParameters('permissions', 1)  # private
                     oRequestHandler.addParameters('expire', 259200)  # 3j
                     oRequestHandler.addParameters('submit', 'Submit+Paste')
-                    sHtmlContent = oRequestHandler.request()
+                    oRequestHandler.request()
                     code = oRequestHandler.getRealUrl().replace('http://slexy.org/view/', '')
 
                     self.ADDON.setSetting('service_log', code)
@@ -271,12 +271,12 @@ class cClear:
 
                 for aPlugin in aPlugins:
                     data['site']["plugin_" + aPlugin[1]]['active'] = "false"
-            
+
                 with open(path, 'w') as f:
                     f.write(json.dumps(data, indent=4))
-                    
+
                 self.DIALOG.VSinfo(self.ADDON.VSlang(30014))
-                    
+
             return
 
         # aciver/désactiver les sources
