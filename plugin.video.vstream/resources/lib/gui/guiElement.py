@@ -403,41 +403,40 @@ class cGuiElement:
         if not self.getTitleWatched():
             return 0
 
-        meta = {}
-        meta['title'] = self.getTitleWatched()
-        meta['site'] = self.getSiteUrl()
-        meta['cat'] = self.getCat()
+        meta = {'title': self.getTitleWatched(),
+                'site': self.getSiteUrl(),
+                'cat': self.getCat()
+                }
 
         with cDb() as db:
             data = db.get_watched(meta)
         return data
 
     def getInfoLabel(self):
-        meta = {
-            'title': xbmc.getInfoLabel('ListItem.title'),
-            # 'label': xbmc.getInfoLabel('ListItem.title'),
-            # 'originaltitle': xbmc.getInfoLabel('ListItem.originaltitle'),
-            'year': xbmc.getInfoLabel('ListItem.year'),
-            'genre': xbmc.getInfoLabel('ListItem.genre'),
-            'director': xbmc.getInfoLabel('ListItem.director'),
-            'country': xbmc.getInfoLabel('ListItem.country'),
-            'rating': xbmc.getInfoLabel('ListItem.rating'),
-            'votes': xbmc.getInfoLabel('ListItem.votes'),
-            'mpaa': xbmc.getInfoLabel('ListItem.mpaa'),
-            'duration': xbmc.getInfoLabel('ListItem.duration'),
-            'trailer': xbmc.getInfoLabel('ListItem.trailer'),
-            'writer': xbmc.getInfoLabel('ListItem.writer'),
-            'studio': xbmc.getInfoLabel('ListItem.studio'),
-            'tagline': xbmc.getInfoLabel('ListItem.tagline'),
-            'plotoutline': xbmc.getInfoLabel('ListItem.plotoutline'),
-            'plot': xbmc.getInfoLabel('ListItem.plot'),
-            'poster_path': xbmc.getInfoLabel('ListItem.Art(thumb)'),
-            'backdrop_path': xbmc.getInfoLabel('ListItem.Art(fanart)'),
-            'imdbnumber': xbmc.getInfoLabel('ListItem.IMDBNumber'),
-            'season': xbmc.getInfoLabel('ListItem.season'),
-            'episode': xbmc.getInfoLabel('ListItem.episode'),
-            'tvshowtitle': xbmc.getInfoLabel('ListItem.tvshowtitle')
-            }
+        meta = {'title': xbmc.getInfoLabel('ListItem.title'),
+                # 'label': xbmc.getInfoLabel('ListItem.title'),
+                # 'originaltitle': xbmc.getInfoLabel('ListItem.originaltitle'),
+                'year': xbmc.getInfoLabel('ListItem.year'),
+                'genre': xbmc.getInfoLabel('ListItem.genre'),
+                'director': xbmc.getInfoLabel('ListItem.director'),
+                'country': xbmc.getInfoLabel('ListItem.country'),
+                'rating': xbmc.getInfoLabel('ListItem.rating'),
+                'votes': xbmc.getInfoLabel('ListItem.votes'),
+                'mpaa': xbmc.getInfoLabel('ListItem.mpaa'),
+                'duration': xbmc.getInfoLabel('ListItem.duration'),
+                'trailer': xbmc.getInfoLabel('ListItem.trailer'),
+                'writer': xbmc.getInfoLabel('ListItem.writer'),
+                'studio': xbmc.getInfoLabel('ListItem.studio'),
+                'tagline': xbmc.getInfoLabel('ListItem.tagline'),
+                'plotoutline': xbmc.getInfoLabel('ListItem.plotoutline'),
+                'plot': xbmc.getInfoLabel('ListItem.plot'),
+                'poster_path': xbmc.getInfoLabel('ListItem.Art(thumb)'),
+                'backdrop_path': xbmc.getInfoLabel('ListItem.Art(fanart)'),
+                'imdbnumber': xbmc.getInfoLabel('ListItem.IMDBNumber'),
+                'season': xbmc.getInfoLabel('ListItem.season'),
+                'episode': xbmc.getInfoLabel('ListItem.episode'),
+                'tvshowtitle': xbmc.getInfoLabel('ListItem.tvshowtitle')
+                }
 
         if 'title' in meta and meta['title']:
             meta['title'] = self.getTitle()
