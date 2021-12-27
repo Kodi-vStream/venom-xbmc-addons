@@ -251,7 +251,7 @@ class cGuiElement:
         # enleve les crochets et les parentheses si elle sont vides
         sTitle = sTitle.replace('()', '').replace('[]', '').replace('- -', '-')
 
-        # vire espace a la fin et les - (attention, il y a 2 tirets differents meme si invisible a l'oeil nu et un est en unicode)
+        # vire espace et - a la fin (/!\ il y a 2 tirets differents meme si invisible a l'oeil nu et un est en unicode)
         sTitle = re.sub('[- –]+$', '', sTitle)
         # et au debut
         if sTitle.startswith(' '):
@@ -290,9 +290,9 @@ class cGuiElement:
 
     def setTitle(self, sTitle):
         # Nom en clair sans les langues, qualités, et autres décorations
-        self.__sCleanTitle = re.sub('\[.*\]|\(.*\)','', sTitle)
+        self.__sCleanTitle = re.sub('\[.*\]|\(.*\)', '', sTitle)
         if not self.__sCleanTitle:
-            self.__sCleanTitle = re.sub('\[.+?\]|\(.+?\)','', sTitle)
+            self.__sCleanTitle = re.sub('\[.+?\]|\(.+?\)', '', sTitle)
 
         if isMatrix():
             # Python 3 decode sTitle
