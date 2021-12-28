@@ -72,8 +72,12 @@ def showLive():
 
             try:
                 sTitle2 = sTitle2.decode("iso-8859-1", 'ignore')
-                sTitle2 = cUtil().unescape(sTitle2)
+            except:
+                pass
+            sTitle2 = cUtil().unescape(sTitle2)
+            try:
                 sTitle2 = sTitle2.encode("utf-8", 'ignore')
+                sTitle2 = str(sTitle2, encoding="utf-8", errors='ignore')
             except:
                 pass
 
@@ -117,8 +121,13 @@ def showMovies():  # affiche les catégories qui ont des lives'
 
             try:
                 sTitle = sTitle.decode("iso-8859-1", 'ignore')
-                sTitle = cUtil().unescape(sTitle)
+            except:
+                pass
+
+            sTitle = cUtil().unescape(sTitle)
+            try:
                 sTitle = sTitle.encode("utf-8", 'ignore')
+                sTitle = str(sTitle , encoding="utf-8", errors='ignore')
             except:
                 pass
 
@@ -180,13 +189,13 @@ def showMovies2():  # affiche les matchs en direct depuis la section showMovie
 
             sQual = cUtil().unescape(sQual)
             sQual = sQual.encode("utf-8", 'ignore')
+            sDate = sDate.encode("cp1252", 'ignore')
 
             try:
                 sTitle2 = str(sTitle2, encoding="utf-8", errors='ignore')
                 sQual = str(sQual, encoding="utf-8", errors='ignore')
                 sDate = str(sDate, encoding="cp1252", errors='ignore')
             except:
-                sDate = sDate.encode("cp1252", 'ignore')
                 pass
             
             
@@ -237,6 +246,13 @@ def showMovies3():  # affiche les videos disponible du live
                 break
 
             sLang = aEntry[0]
+            sLang = cUtil().unescape(sLang)
+            sLang = sLang .encode("utf-8", 'ignore')
+            try:
+                sLang = str(sLang , encoding="utf-8", errors='ignore')
+            except:
+                pass
+
             sUrl4 = aEntry[1]
             if not (sUrl4.startswith("http")):
                 sUrl4 = "http:" + sUrl4
