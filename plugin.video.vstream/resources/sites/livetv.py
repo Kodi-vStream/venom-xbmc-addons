@@ -3,6 +3,8 @@
 # Ovni-crea
 import base64
 import re
+import time
+import locale
 
 from resources.lib.comaddon import progress, xbmc
 from resources.lib.gui.gui import cGui
@@ -13,6 +15,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.packer import cPacker
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil, Unquote
+from datetime import datetime
 
 try:    import json
 except: import simplejson as json
@@ -129,6 +132,8 @@ def showMovies():  # affiche les catégories qui ont des lives'
 
 
 def showMovies2():  # affiche les matchs en direct depuis la section showMovie
+    locale.setlocale(locale.LC_ALL, 'french_FRANCE')  # pour traiter les dates
+    
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl2 = oInputParameterHandler.getValue('siteUrl2')
@@ -160,12 +165,12 @@ def showMovies2():  # affiche les matchs en direct depuis la section showMovie
             if 'live.gif' in aEntry[2]:
                 taglive = ' [COLOR limegreen] Online[/COLOR]'
 
-            sHoster = aEntry[3]
+            sDate = aEntry[3]
             sQual = aEntry[4]
 
             try:
                 sTitle2 = sTitle2.decode("iso-8859-1", 'ignore')
-                sHoster = sHoster.decode("iso-8859-1", 'ignore')
+                sDate = sDate.decode("iso-8859-1", 'ignore')
                 sQual = sQual.decode("iso-8859-1", 'ignore')
             except:
                 pass
@@ -173,20 +178,26 @@ def showMovies2():  # affiche les matchs en direct depuis la section showMovie
             sTitle2 = cUtil().unescape(sTitle2)
             sTitle2 = sTitle2.encode("utf-8", 'ignore')
 
-            sHoster = cUtil().unescape(sHoster)
-            sHoster = sHoster.encode("utf-8", 'ignore')
-
             sQual = cUtil().unescape(sQual)
             sQual = sQual.encode("utf-8", 'ignore')
 
             try:
                 sTitle2 = str(sTitle2, encoding="utf-8", errors='ignore')
-                sHoster = str(sHoster, encoding="utf-8", errors='ignore')
                 sQual = str(sQual, encoding="utf-8", errors='ignore')
+                sDate = str(sDate, encoding="cp1252", errors='ignore')
             except:
+                sDate = sDate.encode("cp1252", 'ignore')
                 pass
+            
+            
+            if sDate:
+                try:
+                    d = datetime(*(time.strptime(sDate, '%d %B \xe0 %H:%M')[0:6]))
+                    sDate = d.strftime("%d/%m %H:%M")
+                except Exception as e:
+                    pass
 
-            sTitle2 = ('%s (%s) [COLOR yellow]%s[/COLOR]') % (sTitle2, sHoster, sQual)
+            sTitle2 = ('%s - %s [COLOR yellow]%s[/COLOR]') % (sDate, sTitle2, sQual)
             sDisplayTitle = sTitle2 + taglive
 
             oOutputParameterHandler.addParameter('siteUrl3', sUrl3)
