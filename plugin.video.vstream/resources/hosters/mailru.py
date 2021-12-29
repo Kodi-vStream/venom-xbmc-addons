@@ -15,64 +15,18 @@ from resources.lib.comaddon import dialog
 
 
 class cHoster(iHoster):
+
     def __init__(self):
-        self.__sDisplayName = 'MailRu'
-        self.__sFileName = self.__sDisplayName
-        self.__sHD = ''
+        iHoster.__init__(self, 'mailru', 'MailRu')
 
-    def getDisplayName(self):
-        return self.__sDisplayName
-
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
-
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    def getFileName(self):
-        return self.__sFileName
-
-    def getPluginIdentifier(self):
-        return 'mailru'
-
-    def setHD(self, sHD):
-        self.__sHD = ''
-
-    def getHD(self):
-        return self.__sHD
-
-    def isDownloadable(self):
-        return True
-
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return ''
-
-    def __getIdFromUrl(self, sUrl):
-        return ''
-
-    def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
-
-    def checkUrl(self, sUrl):
-        return True
-
-    def __getUrl(self, media_id):
-        return
-
-    def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self):
         api_call = False
 
         UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 
         headers = {"User-Agent": UA}
 
-        req1 = urllib2.Request(self.__sUrl, None, headers)
+        req1 = urllib2.Request(self._url, None, headers)
         resp1 = urllib2.urlopen(req1)
         sHtmlContent = resp1.read()
         resp1.close()
@@ -102,13 +56,13 @@ class cHoster(iHoster):
             sPattern = '(?:^|,) *([^;,]+?)=([^;,\/]+?);'
             aResult = oParser.parse(str(head['Set-Cookie']), sPattern)
             # print(aResult)
-            if (aResult[0] == True):
+            if aResult[0] is True:
                 for cook in aResult[1]:
                     cookies = cookies + cook[0] + '=' + cook[1] + ';'
 
         sPattern = '{"url":"([^"]+)",.+?"key":"(\d+p)"}'
         aResult = oParser.parse(data, sPattern)
-        if (aResult[0] == True):
+        if aResult[0] is True:
             # initialisation des tableaux
             url = []
             qua = []

@@ -16,53 +16,13 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/5
 
 class cHoster(iHoster):
     def __init__(self):
-        self.__sDisplayName = 'Soundcloud'
-        self.__sFileName = self.__sDisplayName
+        iHoster.__init__(self, 'soundcloud', 'Soundcloud')
 
-    def getDisplayName(self):
-        return self.__sDisplayName
-
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
-
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    def getFileName(self):
-        return self.__sFileName
-
-    def getPluginIdentifier(self):
-        return 'soundcloud'
-
-    def isDownloadable(self):
-        return True
-
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return ''
-
-    def __getIdFromUrl(self):
-        return ''
-
-    def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
-
-    def checkUrl(self, sUrl):
-        return True
-
-    def getUrl(self):
-        return self.__sUrl
-
-    def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self):
         url2 = ''
-        VSlog(self.__sUrl)
+        VSlog(self._url)
 
-        oRequest = cRequestHandler(self.__sUrl)
+        oRequest = cRequestHandler(self._url)
         oRequest.addHeaderEntry('User-Agent', UA)
         sHtmlContent = oRequest.request()
 

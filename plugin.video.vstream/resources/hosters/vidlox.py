@@ -8,48 +8,17 @@ from resources.lib.comaddon import dialog, isKrypton
 class cHoster(iHoster):
 
     def __init__(self):
-        if not (isKrypton() == True):
-            self.__sDisplayName = '(Windows\Android Nécessite Kodi17)' + ' Vidlox'
-        else:
-            self.__sDisplayName = 'Vidlox'
-        self.__sFileName = self.__sDisplayName
-        self.__sHD = ''
+        iHoster.__init__(self, 'vidlox', 'Vidlox')
+        if not isKrypton():
+            self._defaultDisplayName = '(Windows\Android Nécessite Kodi17)' + ' Vidlox'
 
-    def getDisplayName(self):
-        return  self.__sDisplayName
+    def setUrl(self, url):
+        url = url.replace('embed-dlox.me/','embed-')
+        self._url = str(url)
 
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
-
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    def getFileName(self):
-        return self.__sFileName
-
-    def getPluginIdentifier(self):
-        return 'vidlox'
-
-    def setHD(self, sHD):
-        self.__sHD = ''
-
-    def getHD(self):
-        return self.__sHD
-
-    def isDownloadable(self):
-        return True
-
-    def setUrl(self, sUrl):
-        sUrl = sUrl.replace('embed-dlox.me/','embed-')
-        self.__sUrl = str(sUrl)
-
-    def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self):
-
+    def _getMediaLinkForGuest(self):
         oParser = cParser()
-        oRequest = cRequestHandler(self.__sUrl)
+        oRequest = cRequestHandler(self._url)
         oRequest.addHeaderEntry('Referer', "https://vidlox.me/8m8p7kane4r1.html")
         sHtmlContent = oRequest.request()
 
@@ -59,7 +28,7 @@ class cHoster(iHoster):
         sPattern =  '([^"]+\.mp4)'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if aResult[0] is True:
             #initialisation des tableaux
             url=[]
             qua=["HD", "SD"] #sd en 2eme pos generalement quand sd
@@ -72,7 +41,7 @@ class cHoster(iHoster):
             #dialogue qualité
             api_call = dialog().VSselectqual(qua, url)
 
-        if (api_call):
+        if api_call:
             return True, api_call
 
         return False, False

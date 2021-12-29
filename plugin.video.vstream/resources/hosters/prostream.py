@@ -8,57 +8,26 @@ from resources.lib.packer import cPacker
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Prostream'
-        self.__sFileName = self.__sDisplayName
+        iHoster.__init__(self, 'prostream', 'Prostream')
 
-    def getDisplayName(self):
-        return  self.__sDisplayName
-
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
-
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    def getFileName(self):
-        return self.__sFileName
-
-    def getPluginIdentifier(self):
-        return 'prostream'
-
-    def isDownloadable(self):
-        return True
-
-    def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
-
-    def checkUrl(self, sUrl):
-        return True
-
-    def getUrl(self):
-        return self.__sUrl
-
-    def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self):
         api_call = ''
 
         oParser = cParser()
-        oRequest = cRequestHandler(self.__sUrl)
+        oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
 
         sPattern =  '<script type=\'text/javascript\'>(.+?)<\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
-        if (aResult[0] == True):
+
+        if aResult[0] is True:
             html = cPacker().unpack(aResult[1][0])
             sPattern = 'sources:\["([^"]+)"\]'
             aResult = oParser.parse(html, sPattern)
-            if (aResult[0] == True):
+            if aResult[0] is True:
                 api_call = aResult[1][0]
 
-        if (api_call):
+        if api_call:
             return True, api_call
 
         return False, False

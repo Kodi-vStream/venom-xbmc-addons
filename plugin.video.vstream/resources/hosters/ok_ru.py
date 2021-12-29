@@ -4,11 +4,11 @@
 
 try:  # Python 2
     import urllib2
-
 except ImportError:  # Python 3
     import urllib.request as urllib2
 
 import json
+import requests
 
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
@@ -18,64 +18,18 @@ from resources.lib.util import cUtil
 
 class cHoster(iHoster):
     def __init__(self):
-        self.__sDisplayName = 'Ok.ru'
-        self.__sFileName = self.__sDisplayName
-        self.__sHD = ''
-
-    def getDisplayName(self):
-        return self.__sDisplayName
-
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
-
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    def getFileName(self):
-        return self.__sFileName
-
-    def getPluginIdentifier(self):
-        return 'ok_ru'
-
-    def setHD(self, sHD):
-        self.__sHD = ''
-
-    def getHD(self):
-        return self.__sHD
-
-    def isDownloadable(self):
-        return True
-
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return ''
+        iHoster.__init__(self, 'ok_ru', 'Ok.ru')
 
     def getHostAndIdFromUrl(self, sUrl):
         sPattern = 'https*:\/\/.*?((?:(?:ok)|(?:odnoklassniki))\.ru)\/.+?\/([0-9]+)'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
+        if aResult[0] is True:
             return aResult[1][0]
         return ''
 
-    def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
-
-    def checkUrl(self, sUrl):
-        return True
-
-    def __getUrl(self, media_id):
-        return ''
-
-    def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self):
-        import requests
-
-        v = self.getHostAndIdFromUrl(self.__sUrl)
+    def _getMediaLinkForGuest(self):
+        v = self.getHostAndIdFromUrl(self._url)
         sId = v[1]
         sHost = v[0]
         web_url = 'http://' + sHost + '/videoembed/' + sId
@@ -106,8 +60,8 @@ class cHoster(iHoster):
                 api_call = dialog().VSselectqual(qua, url)
 
 
-        if (api_call):
-            api_call = api_call + '|Referer=' + self.__sUrl
+        if api_call:
+            api_call = api_call + '|Referer=' + self._url
             return True, api_call
 
         return False, False

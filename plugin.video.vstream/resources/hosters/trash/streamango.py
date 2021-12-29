@@ -1,39 +1,14 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
+import re
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
-import re
 
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Streamango'
-        self.__sFileName = self.__sDisplayName
-        self.__sHD = ''
-
-    def getDisplayName(self):
-        return  self.__sDisplayName
-
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
-
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    def getFileName(self):
-        return self.__sFileName
-
-    def getPluginIdentifier(self):
-        return 'streamango'
-
-    def setHD(self, sHD):
-        self.__sHD = ''
-
-    def getHD(self):
-        return self.__sHD
-
-    def isDownloadable(self):
-        return True
+        iHoster.__init__(self, 'streamango', 'Streamango')
 
     def decode(self, encoded, code):
         #from https://github.com/jsergio123/script.module.urlresolver
@@ -68,21 +43,9 @@ class cHoster(iHoster):
 
         return _0x59b81a
 
-    def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
-
-    def checkUrl(self, sUrl):
-        return True
-
-    def __getUrl(self, media_id):
-        return
-
-    def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self):
         api_call = False
-        oRequest = cRequestHandler(self.__sUrl)
+        oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
 
         r1 = re.search("{type:\"video/mp4\",src:\w+\('([^']+)',(\d+)", sHtmlContent)
@@ -93,7 +56,7 @@ class cHoster(iHoster):
 
             api_call = 'http:' + api_call
 
-        if (api_call):
+        if api_call:
             return True, api_call
 
         return False, False
