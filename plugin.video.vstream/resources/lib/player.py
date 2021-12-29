@@ -173,6 +173,7 @@ class cPlayer(xbmc.Player):
 
             except Exception as err:
                 VSlog("Exception run: {0}".format(err))
+
             xbmc.sleep(1000)
 
         if not self.playBackStoppedEventReceived:

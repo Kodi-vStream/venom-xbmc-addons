@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.util import urlEncode, Unquote
-from resources.lib.comaddon import VSlog
 
 
 class cOutputParameterHandler:
@@ -34,15 +33,7 @@ class cOutputParameterHandler:
         if sParamName in self.__aParams:
             return sParamName
 
-    def mergeAndOverwrite(self, parameterHandler):
-        for value in parameterHandler.__aParams:
-            self.__aParams[value] = parameterHandler.__aParams[value]
-
     def mergeUnexistingInfos(self, parameterHandler):
         for value in parameterHandler.__aParams:
             if value not in self.__aParams:
                 self.__aParams[value] = parameterHandler.__aParams[value]
-
-    def debug(self):
-        for param in self.__aParams.keys():
-            VSlog("'" + str(param) + "' -> '" + str(self.__aParams[param]) + "'")

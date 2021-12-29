@@ -325,10 +325,9 @@ class cHosterGui:
         klass = getattr(mod, 'cHoster')
         return klass()
 
-    def play(self, oInputParameterHandler = False):
+    def play(self, oInputParameterHandler = False, autoPlay = False):
         oGui = cGui()
         oDialog = dialog()
-        autoPlay = window(10101).getProperty('autoPlay') == 'true'
 
         if not oInputParameterHandler:
             oInputParameterHandler = cInputParameterHandler()
@@ -358,7 +357,8 @@ class cHosterGui:
         oHoster.setFileName(sFileName)
 
         sHosterName = oHoster.getDisplayName()
-        oDialog.VSinfo(sHosterName, 'Resolve')
+        if not autoPlay:
+            oDialog.VSinfo(sHosterName, 'Resolve')
 
         try:
             oHoster.setUrl(sMediaUrl)
@@ -370,7 +370,8 @@ class cHosterGui:
                     if oHoster:
                         oHoster.setFileName(sFileName)
                         sHosterName = oHoster.getDisplayName()
-                        oDialog.VSinfo(sHosterName, 'Resolve')
+                        if not autoPlay:
+                            oDialog.VSinfo(sHosterName, 'Resolve')
                         oHoster.setUrl(aLink[1])
                         aLink = oHoster.getMediaLink(autoPlay)
 
@@ -390,7 +391,7 @@ class cHosterGui:
 
                     # sous titres ?
                     if len(aLink) > 2:
-                        self.oPlayer.AddSubtitles(aLink[2])
+                        oPlayer.AddSubtitles(aLink[2])
 
                     return oPlayer.run(oGuiElement, aLink[1])
 

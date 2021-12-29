@@ -3,7 +3,7 @@
 import re
 import xbmc
 
-from resources.lib.comaddon import addon, isMatrix, isNexus, VSlog
+from resources.lib.comaddon import addon, isMatrix, isNexus
 from resources.lib.db import cDb
 from resources.lib.util import cUtil, QuoteSafe
 

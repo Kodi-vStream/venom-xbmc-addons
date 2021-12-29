@@ -31,14 +31,14 @@ class cGui:
 
     def emptySearchResult(siteName):
         cGui.searchResultsSemaphore.acquire()
-        # VSlog("Set empty result for " + str(siteName))
         cGui.searchResults[siteName] = []  # vider le tableau de résultats
         cGui.searchResultsSemaphore.release()
 
     def getEpisodeListing(self):
         return self.episodeListing
 
-    def addNewDir(self, Type, sId, sFunction, sLabel, sIcon, sThumbnail='', sDesc='', oOutputParameterHandler='', sMeta=0, sCat=None):
+    def addNewDir(self, Type, sId, sFunction, sLabel, sIcon, sThumbnail='', sDesc='', oOutputParameterHandler='',
+            sMeta=0, sCat=None):
         oGuiElement = cGuiElement()
         # dir ou link => CONTENT par défaut = files
         if Type != 'dir' and Type != 'link':
@@ -263,8 +263,6 @@ class cGui:
         if window(10101).getProperty('search') == 'true':
             self.addSearchResult(oGuiElement, oOutputParameterHandler)
             return
-        else:
-            VSlog("No save result")
 
         # Des infos a rajouter ?
         params = {'siteUrl': oGuiElement.setSiteUrl,

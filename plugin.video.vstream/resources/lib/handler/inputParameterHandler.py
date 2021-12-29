@@ -4,7 +4,6 @@
 import sys
 
 from resources.lib.util import UnquotePlus, Unquote
-from resources.lib.comaddon import VSlog
 
 
 class cInputParameterHandler:
@@ -31,7 +30,3 @@ class cInputParameterHandler:
     def exist(self, sParamName):
         if sParamName in self.__aParams:
             return sParamName
-
-    def debug(self):
-        for param in self.__aParams.keys():
-            VSlog("'" + str(param) + "' -> '" + str(self.__aParams[param]) + "'")
