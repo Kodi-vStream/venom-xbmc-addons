@@ -21,7 +21,6 @@ jobs:
     - name: Analysing default.py code with pylint
       run: |
         pylint plugin.video.vstream/default.py
-    - name: Analysing the code with pylint
-      run: |
-        pylint $(find . -name "*.py" | xargs)
+#       Commande à mettre pour tester tous les fichiers:
+#        pylint $(find . -name "*.py" | xargs)
 
