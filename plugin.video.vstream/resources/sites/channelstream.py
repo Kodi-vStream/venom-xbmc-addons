@@ -181,7 +181,11 @@ def showHoster():
         aResult2 = oParser.parse(sHtmlContent, sPattern)
     
         if aResult2[1]:
-            sHosterUrl = Hoster_Wigistream(aResult2[1][0], iframeURL1)
+            urlHoster = aResult2[1][0]
+            if 'primetubsub' in urlHoster:
+                sHosterUrl = getHosterPrimetubsub(urlHoster, iframeURL1)
+            else:
+                sHosterUrl = getHosterWigistream(urlHoster, iframeURL1)
             if sHosterUrl:
                 oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
                 oGui.addFolder(oGuiElement, oOutputParameterHandler)
@@ -190,7 +194,7 @@ def showHoster():
     oGui.setEndOfDirectory()
 
 
-def Hoster_Wigistream(url, referer):
+def getHosterWigistream(url, referer):
     url = url.strip()
     if not url.startswith('http'):
         url = 'http:'+url
@@ -213,4 +217,35 @@ def Hoster_Wigistream(url, referer):
             return aResult[0] + '|User-Agent=' + UA + '&Referer=' + Quote(url)
 
     return False
+
+def getHosterPrimetubsub(url, referer):
+    oParser = cParser()
+    
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Referer', referer)
+    sHtmlContent = oRequestHandler.request()
+    sPattern = '<iframe.+?src="([^"]+)'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if not aResult[0]:
+        return
+
+    referer = url
+    url = aResult[1][0]
+    
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Referer', referer)
+    sHtmlContent = oRequestHandler.request()
+    sPattern = "(src|[^/]source):'([^']+)"
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if not aResult[0]:
+        return
+    
+    referer = url
+    url = aResult[1][0][1]
+    
+    return url + '|User-Agent=' + UA + '&Referer=' + Quote(referer)
 
