@@ -906,7 +906,7 @@ msgstr "Vue: Recherche Visuelle (recommandé 500)"
 
 msgctxt "#30420"
 msgid "Enable/Disable sources"
-msgstr "Activer/Désactiver les sources"
+msgstr "Activer/Désactiver des sources"
 
 msgctxt "#30421"
 msgid "Go to [COLOR teal]%s[CR]%s[/COLOR][CR],Valid vStream, only then click YES"
@@ -1127,6 +1127,10 @@ msgid "Allow adult content"
 msgstr "Autoriser le contenu pour adultes"
 
 msgctxt "#31104"
+msgid "Enable all sources"
+msgstr "Activer toutes les sources"
+
+msgctxt "#31105"
 msgid "Disable all sources"
 msgstr "Désactiver toutes les sources"
 

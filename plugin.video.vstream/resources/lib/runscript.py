@@ -17,7 +17,7 @@ except ImportError:  # Python 3
     import urllib.request as urllib2
 
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import addon, dialog, VSlog, window, VSPath
+from resources.lib.comaddon import addon, dialog, VSlog, window, VSPath, siteManager
 # from resources.lib.util import urlEncode
 
 try:
@@ -259,22 +259,22 @@ class cClear:
                     self.DIALOG.VSok(self.ADDON.VSlang(30097) + '  ' + code)
             return
 
+        # activer toutes les sources
+        elif (env == 'enableSources'):
+            if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
+                sitesManager = siteManager()
+                sitesManager.enableAll()
+                sitesManager.save()
+                self.DIALOG.VSinfo(self.ADDON.VSlang(30014))
+
+            return
+
         # désactiver toutes les sources
         elif (env == 'disableSources'):
             if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
-                from resources.lib.handler.pluginHandler import cPluginHandler
-                oPluginHandler = cPluginHandler()
-                aPlugins = oPluginHandler.getAllPlugins()
-
-                path = VSPath('special://home/addons/plugin.video.vstream/resources/sites.json')
-                data = json.load(open(path))
-
-                for aPlugin in aPlugins:
-                    data['site']["plugin_" + aPlugin[1]]['active'] = "false"
-
-                with open(path, 'w') as f:
-                    f.write(json.dumps(data, indent=4))
-
+                sitesManager = siteManager()
+                sitesManager.disableAll()
+                sitesManager.save()
                 self.DIALOG.VSinfo(self.ADDON.VSlang(30014))
 
             return
@@ -288,9 +288,8 @@ class cClear:
             class XMLDialog(xbmcgui.WindowXMLDialog):
 
                 ADDON = addon()
-                data = None
-                path = VSPath('special://home/addons/plugin.video.vstream/resources/sites.json')
-
+                sitesManager = siteManager()
+                
                 def __init__(self, *args, **kwargs):
                     xbmcgui.WindowXMLDialog.__init__(self)
                     pass
@@ -306,26 +305,22 @@ class cClear:
                     oPluginHandler = cPluginHandler()
                     aPlugins = oPluginHandler.getAllPlugins()
 
-                    self.data = json.load(open(self.path))
+                    #self.data = json.load(open(self.path))
 
                     for aPlugin in aPlugins:
                         # teste si deja dans le dsip
-                        sPluginSettingsName = 'plugin_' + aPlugin[1]
-                        bPlugin = self.data['site'][sPluginSettingsName]['active']
+                        sPluginName = aPlugin[1]
+                        isActive = self.sitesManager.isActive(sPluginName)
+                        icon = "special://home/addons/plugin.video.vstream/resources/art/sites/%s.png" % sPluginName
+                        stitle = self.sitesManager.getProperty(sPluginName, self.sitesManager.LABEL)
 
-                        icon = "special://home/addons/plugin.video.vstream/resources/art/sites/%s.png" % aPlugin[1]
-                        stitle = self.data['site'][sPluginSettingsName]['label'].replace('[COLOR violet]', '')\
-                                                                                .replace('[COLOR orange]', '')\
-                                                                                .replace('[/COLOR]', '')\
-                                                                                .replace('[COLOR dodgerblue]', '')\
-                                                                                .replace('[COLOR coral]', '')
-                        if (bPlugin == 'true'):
+                        if isActive:
                             stitle = ('%s %s') % (stitle, valid)
                         listitem = xbmcgui.ListItem(label=stitle, label2=aPlugin[2])
                         listitem.setArt({'icon': icon, 'thumb': icon})
                         listitem.setProperty('Addon.Summary', aPlugin[2])
                         listitem.setProperty('sitename', aPlugin[1])
-                        if (bPlugin == 'true'):
+                        if isActive:
                             listitem.select(True)
 
                         listitems.append(listitem)
@@ -333,9 +328,8 @@ class cClear:
                     self.setFocus(self.container)
 
                 def onClick(self, controlId):
-                    if controlId == 5:
-                        with open(self.path, 'w') as f:
-                            f.write(json.dumps(self.data, indent=4))
+                    if controlId == 5:       # OK
+                        self.sitesManager.save()
                         self.close()
                         return
                     elif controlId == 99:
@@ -354,12 +348,14 @@ class cClear:
                             label = item.getLabel().replace(valid, '')
                             item.setLabel(label)
                             item.select(False)
-                            self.data['site']["plugin_" + item.getProperty('sitename')]['active'] = "false"
+                            sPluginSettingsName = item.getProperty('sitename')
+                            self.sitesManager.setActive(sPluginSettingsName, False)
                         else:
                             label = ('%s %s') % (item.getLabel(), valid)
                             item.setLabel(label)
                             item.select(True)
-                            self.data['site']["plugin_" + item.getProperty('sitename')]['active'] = "true"
+                            sPluginSettingsName = item.getProperty('sitename')
+                            self.sitesManager.setActive(sPluginSettingsName, True)
                         return
 
                 def onFocus(self, controlId):

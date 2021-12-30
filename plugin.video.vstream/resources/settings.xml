@@ -56,7 +56,8 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
 <!--        <setting type="sep"/>
  n'est plus utile		<setting subsetting="true" label="30070" type="lsep"/> -->
         <setting label="30420" type="action"  action="RunScript(plugin.video.vstream, search, ?site=globalRun&amp;function=search)"/>
-        <setting label="31104" type="action"  action="RunScript(plugin.video.vstream, disableSources, ?site=globalRun&amp;function=disableSources)"/>
+        <setting label="31104" type="action"  action="RunScript(plugin.video.vstream, enableSources, ?site=globalRun&amp;function=enableSources)"/>
+        <setting label="31105" type="action"  action="RunScript(plugin.video.vstream, disableSources, ?site=globalRun&amp;function=disableSources)"/>
         <setting id="contenu_adulte" type="bool" label="31103" default="false"/>
         <setting id="history-view" type="bool" label="30016" default="true"/>
         <setting type="sep"/>

@@ -5,7 +5,7 @@ import sys
 import xbmcvfs
 import json
 
-from resources.lib.comaddon import addon, VSlog, VSPath
+from resources.lib.comaddon import addon, VSlog, VSPath, siteManager
 
 
 class cPluginHandler:
@@ -47,23 +47,21 @@ class cPluginHandler:
         try:
             exec("from resources.sites import " + sName, globals())
             exec("sSiteName = " + sName + ".SITE_NAME", globals())
-            sPluginSettingsName = 'plugin_' + sName
             if sLabel:
                 exec("sSearch = " + sName + "." + sLabel, globals())
-                return sSearch[0], sPluginSettingsName, sSearch[1], sSiteName
+                return sSearch[0], sSearch[1], sSiteName
             else:
                 exec("sSiteDesc = " + sName + ".SITE_DESC", globals())
-                return sSiteName, sPluginSettingsName, sSiteDesc
+                return sSiteName, sSiteDesc
         except Exception as e:
             VSlog("Cannot import plugin " + str(sName))
             VSlog("Detail de l\'erreur " + str(e))
             return False, False
 
     def getAvailablePlugins(self, sLabel="", force=False):
-        path = VSPath('special://home/addons/plugin.video.vstream/resources/sites.json')
-        with open(path) as f:
-            data = json.load(f)
+        
         addons = addon()
+        sitesManager = siteManager()
 
         sFolder = "special://home/addons/plugin.video.vstream/resources/sites"
         sFolder = sFolder.replace('\\', '/')
@@ -73,28 +71,24 @@ class cPluginHandler:
         aPlugins = []
         for sFileName in aFileNames:
             # existieren zu diesem plugin die an/aus settings
-            bPlugin = data['site']["plugin_" + sFileName]['active']
-            if (bPlugin != ''):
-                # settings gefunden
-                if (bPlugin == 'true') or (force == True):
-                    # wir versuchen das plugin zu importieren
+            if force or sitesManager.isActive(sFileName):
+                # wir versuchen das plugin zu importieren
+                if sLabel:
+                    aPlugin = self.__importPlugin(sFileName, sLabel)
+                else:
+                    aPlugin = self.__importPlugin(sFileName)
+
+                if (aPlugin[0] != False):
+                    sSiteDesc = aPlugin[1]
                     if sLabel:
-                        aPlugin = self.__importPlugin(sFileName, sLabel)
+                        sSiteUrl = aPlugin[0]
+                        sSiteName = aPlugin[2]
+                        item = self.__createAvailablePluginsItem(sSiteUrl, sSiteName, sFileName, sSiteDesc)
                     else:
-                        aPlugin = self.__importPlugin(sFileName)
+                        sSiteName = aPlugin[0]
+                        item = self.__createAvailablePluginsItem("", sSiteName, sFileName, sSiteDesc)
 
-                    if (aPlugin[0] != False):
-                        sPluginSettingsName = aPlugin[1]
-                        sSiteDesc = aPlugin[2]
-                        if sLabel:
-                            sSiteUrl = aPlugin[0]
-                            sSiteName = aPlugin[3]
-                            item = self.__createAvailablePluginsItem(sSiteUrl, sSiteName, sFileName, sSiteDesc)
-                        else:
-                            sSiteName = aPlugin[0]
-                            item = self.__createAvailablePluginsItem("", sSiteName, sFileName, sSiteDesc)
-
-                        aPlugins.append(item)
+                    aPlugins.append(item)
 
         return aPlugins
 
@@ -110,8 +104,7 @@ class cPluginHandler:
             aPlugin = self.__importPlugin(sFileName)
             if (aPlugin[0] != False):
                 sSiteName = aPlugin[0]
-                sPluginSettingsName = aPlugin[1]
-                sSiteDesc = aPlugin[2]
+                sSiteDesc = aPlugin[1]
 
                 # settings nicht gefunden, also schalten wir es trotzdem sichtbar
                 aPlugins.append(self.__createAvailablePluginsItem("", sSiteName, sFileName, sSiteDesc))

@@ -2,7 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 import time
-
+import json
 import xbmc
 import xbmcaddon
 import xbmcgui
@@ -419,7 +419,6 @@ def VSPath(pathSpecial):
 
 # Récupere le nom du profil courant
 def VSProfil():
-    import json
     # On chercher le profil courant.
     request = {
         "jsonrpc": "2.0",
@@ -437,6 +436,106 @@ def VSProfil():
     return name
 
 
+# Gestion des sources : activer, désactiver, libellé, ... 
+class siteManager:
+
+    SITES = 'sites'
+    ACTIVE = 'active'
+    LABEL = 'label'
+
+    def __init__(self):
+        
+        # Propriétés par défaut
+        self.defaultPath = VSPath('special://home/addons/plugin.video.vstream/resources/sites.json')
+        self.defaultData = None
+
+        # Propriétés selon le profil        
+        name = VSProfil()
+        if name == 'Master user':   # Le cas par defaut
+            path = VSPath('special://home/userdata/addon_data/plugin.video.vstream/sites.json')
+        else:
+            path = VSPath('special://home/userdata/profiles/' + name + '/addon_data/plugin.video.vstream/sites.json')
+        
+        # Résolution du chemin
+        try:
+            self.propertiesPath = VSPath(path).decode('utf-8')
+        except AttributeError:
+            self.propertiesPath = VSPath(path)
+
+        # Chargement des properties
+        try:
+            self.data = json.load(open(self.propertiesPath))
+        except IOError:
+            # le fichier n'existe pas, on le crée à partir des settings par défaut
+            xbmcvfs.copy(self.defaultPath, path)
+            self.data = json.load(open(self.propertiesPath))
+            
+
+    # Sauvegarder les propriétés modifiées
+    def save(self):
+        with open(self.propertiesPath, 'w') as f:
+            f.write(json.dumps(self.data, indent=4))
+
+    def isActive(self, sourceName):
+        return self.getProperty(sourceName, self.ACTIVE) == 'True'
+    
+    def setActive(self, sourceName, state):
+        self.setProperty(sourceName, self.ACTIVE, state)
+    
+    def disableAll(self):
+        for sourceName in self.data[self.SITES]:
+            self.setActive(sourceName, False)
+        return
+
+    def enableAll(self):
+        for sourceName in self.data[self.SITES]:
+            self.setActive(sourceName, True)
+        return
+
+    def getProperty(self, sourceName, propName):
+        sourceData = self._getDataSource(sourceName)
+        if sourceData:
+            return sourceData.get(propName)
+
+    def setProperty(self, sourceName, propName, value):
+        sourceData = self._getDataSource(sourceName)
+        if sourceData:
+            sourceData[propName] = str(value)
+
+    # Lire les settings d'une source
+    def _getDataSource(self, sourceName):
+
+        # userSettings
+        sourceData = self.data[self.SITES].get(sourceName)
+        
+        # pas de user Settings, on recherche dans les default Settings
+        if not sourceData:
+            sourceData = self._getDefaultProp(sourceName)
+
+            # Sauvegarder dans les user Settings
+            if sourceData:
+                self.data[self.SITES][sourceName] = sourceData
+
+        return sourceData 
+        
+    # Récupérer les propriétés par défaut d'une source
+    def _getDefaultProp(self, sourceName):
+
+        # Chargement des properties par défaut
+        if not self.defaultData:
+            self.defaultData = json.load(open(self.defaultPath))
+
+        # Retrouver la prop par défaut
+        sourceData = self.defaultData[self.SITES].get(sourceName)
+        
+        # pas de valeurs par défaut, on en crée à la volée
+        if not sourceData:
+            sourceData = {self.ACTIVE : 'True', self.LABEL : sourceName}
+
+        return sourceData
+    
+    
+
 class addonManager:
     # Demande l'installation d'un addon
     def installAddon(self, addon_id):
@@ -448,7 +547,6 @@ class addonManager:
 
     # Active/desactive un addon
     def enableAddon(self, addon_id, enable='True'):
-        import json
 
         request = {
             "jsonrpc": "2.0",

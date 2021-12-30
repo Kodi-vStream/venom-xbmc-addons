@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.comaddon import addon, VSlog, VSPath
+from resources.lib.comaddon import addon, VSlog, VSPath, siteManager
 from resources.lib.db import cDb
 
 import sys
@@ -98,8 +98,6 @@ class cRechercheHandler:
             return False
 
     def getAvailablePlugins(self):
-        path = VSPath('special://home/addons/plugin.video.vstream/resources/sites.json')
-        addons = addon()
         sText = self.getText()
         if not sText:
             return False
@@ -108,6 +106,7 @@ class cRechercheHandler:
             return False
 
         # historique
+        addons = addon()
         try:
             if (addons.getSetting("history-view") == 'true'):
                 meta = {'title': sText, 'disp': sCat}
@@ -117,31 +116,18 @@ class cRechercheHandler:
             pass
 
         sFolder = "special://home/addons/plugin.video.vstream/resources/sites"
-
         sFolder = sFolder.replace('\\', '/')
         VSlog("Sites Folder: " + sFolder)
 
-        aFileNames = self.__getFileNamesFromFolder(sFolder)
-        with open(path) as f:
-            data = json.load(f)
+        sitesManager = siteManager()
 
         aPlugins = []
+        aFileNames = self.__getFileNamesFromFolder(sFolder)
         for sFileName in aFileNames:
-            pluginData = data["site"].get('plugin_' + sFileName)
-            if pluginData is None:
-                data['site'].update({'plugin_' + sFileName: {"label": sFileName, "active": "true"}})
-                if self.__siteAdded == False:
-                    self.__siteAdded = True
-
-            bPlugin = data['site']['plugin_' + sFileName]['active']
-            if (bPlugin == 'true'):
+            if sitesManager.isActive(sFileName):
                 aPlugin = self.importPlugin(sFileName, sCat)
                 if aPlugin:
                     aPlugins.append(aPlugin)
-
-        if self.__siteAdded == True:
-            with open(path, 'w') as f:
-                f.write(json.dumps(data, indent=4))
 
         return aPlugins
 

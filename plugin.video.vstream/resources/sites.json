@@ -1,412 +1,412 @@
 {
-    "site": {
-        "plugin__1seriestreaming": {
+    "sites": {
+        "_1seriestreaming": {
             "label": "1 SerieStreaming",
-            "active": "true"
+            "active": "True"
         },
-        "plugin__33seriestreaming": {
+        "_33seriestreaming": {
             "label": "33 S\u00e9ries",
-            "active": "true"
+            "active": "True"
         },
-        "plugin__4kstreamz": {
+        "_4kstreamz": {
             "label": "4kstreamz",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_adkami_com": {
+        "adkami_com": {
             "label": "Adkami",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_alldebrid": {
+        "alldebrid": {
             "label": "AllDebrid",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_animecomplet": {
+        "animecomplet": {
             "label": "AnimeComplet",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_animeultime": {
+        "animeultime": {
             "label": "Anime Ultime",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_asia_insane": {
+        "asia_insane": {
             "label": "Asia Insane",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_buzzmonclick_com": {
+        "buzzmonclick_com": {
             "label": "BuzzMonClick",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_channelstream": {
+        "channelstream": {
             "label": "ChannelStream",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_cine974": {
+        "cine974": {
             "label": "cine974",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_cinemay_cc": {
+        "cinemay_cc": {
             "label": "Cinemay_cc",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_cinemay_com": {
+        "cinemay_com": {
             "label": "Cinemay",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_debrid_link": {
+        "debrid_link": {
             "label": "Debrid Link",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_dbanimes": {
+        "dbanimes": {
             "label": "DBanimes",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_ddl1": {
+        "ddl1": {
             "label": "DDL1",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_docu_fr": {
+        "docu_fr": {
             "label": "Docu Fr",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_dpstream": {
+        "dpstream": {
             "label": "Dpstream",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_dpstreamhd": {
+        "dpstreamhd": {
             "label": "DpStream HD",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_ducine": {
+        "ducine": {
             "label": "Du Cin\u00e9",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_enstream_series": {
+        "enstream_series": {
             "label": "Enstream (S\u00e9ries)",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_enstream": {
+        "enstream": {
             "label": "Enstream",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_extreme_down": {
+        "extreme_down": {
             "label": "ExtremeDown",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_filmspourenfants": {
+        "filmspourenfants": {
             "label": "Films pour Enfants",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_filmoflix": {
+        "filmoflix": {
             "label": "Filmoflix",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_freebox": {
+        "freebox": {
             "label": "Freebox",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_filmstoon_pro": {
+        "filmstoon_pro": {
             "label": "Films Toon",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_filmstreamingy": {
+        "filmstreamingy": {
             "label": "FilmstreamingY",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_filmstreamvk_com": {
+        "filmstreamvk_com": {
             "label": "Filmstream vk",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_free_telechargement_org": {
+        "free_telechargement_org": {
             "label": "Free Telechargement",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_french_stream_com": {
+        "french_stream_com": {
             "label": "French Stream",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_french_stream_lol": {
+        "french_stream_lol": {
             "label": "French-stream-lol",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_frenchanimes": {
+        "frenchanimes": {
             "label": "French Animes",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_funeralforamanga": {
+        "funeralforamanga": {
             "label": "Funeral for a manga",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_fullmatchtv": {
+        "fullmatchtv": {
             "label": "Full Match TV",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_gum_gum_streaming_com": {
+        "gum_gum_streaming_com": {
             "label": "Gum-Gum-Streaming",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_hds_fm": {
+        "hds_fm": {
             "label": "Hds-fm",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_hds_stream": {
+        "hds_stream": {
             "label": "Hds-stream",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_ianime": {
+        "ianime": {
             "label": "Ianime",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_illimitestreaming": {
+        "illimitestreaming": {
             "label": "Illimitestreaming",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_k_streaming": {
+        "k_streaming": {
             "label": "K_Streaming",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_kaydo_ws": {
+        "kaydo_ws": {
             "label": "kaydo",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_kepliz_com": {
+        "kepliz_com": {
             "label": "Kepliz",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_kstreamingfilm": {
+        "kstreamingfilm": {
             "label": "K streaming Film",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_kstreamingserie": {
+        "kstreamingserie": {
             "label": "K streaming S\u00e9rie",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_les_debiles": {
+        "les_debiles": {
             "label": "Les D\u00e9biles",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_les_docus": {
+        "les_docus": {
             "label": "Les docus",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_libertyland_tv": {
+        "libertyland_tv": {
             "label": "Libertyland",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_livetv": {
+        "livetv": {
             "label": "Live TV",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_lsdb": {
+        "lsdb": {
             "label": "Liveset Database",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_mamcin": {
+        "mamcin": {
             "label": "Mamcin",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_mesfilms": {
+        "mesfilms": {
             "label": "Mes Films",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_mystream_zone": {
+        "mystream_zone": {
             "label": "MyStream",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_neko_sama": {
+        "neko_sama": {
             "label": "Neko Sama",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_neuf_docu": {
+        "neuf_docu": {
             "label": "9Docu",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_o1streaming": {
+        "o1streaming": {
             "label": "O1 streaming",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_otaku_attitude": {
+        "otaku_attitude": {
             "label": "Otaku-Attitude",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_otakufr_com": {
+        "otakufr_com": {
             "label": "OtakuFR",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_pastebin": {
+        "pastebin": {
             "label": "PasteBin",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_planet_streaming": {
+        "planet_streaming": {
             "label": "Planet Streaming",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_pluto_tv": {
+        "pluto_tv": {
             "label": "Pluto TV",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_psyplay": {
+        "psyplay": {
             "label": "Psy Play",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_radio": {
+        "radio": {
             "label": "Radio",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_serie_streaming": {
+        "serie_streaming": {
             "label": "S\u00e9rie Streaming",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_series_en_streaming": {
+        "series_en_streaming": {
             "label": "Series en Streaming",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_series_stream": {
+        "series_stream": {
             "label": "Series Stream",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_siteonefichier": {
+        "siteonefichier": {
             "label": "Mon Compte 1Fichier",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_siteuptobox": {
+        "siteuptobox": {
             "label": "Mon Compte Uptobox",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_skyanimes": {
+        "skyanimes": {
             "label": "Sky-Animes",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_sokrostream": {
+        "sokrostream": {
             "label": "Sokrostream",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_spion_com": {
+        "spion_com": {
             "label": "Spion",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_streamonsport": {
+        "streamonsport": {
             "label": "Streamonsport",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_stream_complet": {
+        "stream_complet": {
             "label": "Stream Complet",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_streamay_series": {
+        "streamay_series": {
             "label": "StreamAy S\u00e9ries",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_streamcomplet3": {
+        "streamcomplet3": {
             "label": "Streamcomplet3",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_streamdivx": {
+        "streamdivx": {
             "label": "StreamDivx",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_streaming_series": {
+        "streaming_series": {
             "label": "Streaming-Series",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_streamingdivx": {
+        "streamingdivx": {
             "label": "StreamingDivx",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_streaminz": {
+        "streaminz": {
             "label": "Streaminz",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_streampourvous": {
+        "streampourvous": {
             "label": "Streampourvous",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_telecharger_streaming": {
+        "telecharger_streaming": {
             "label": "T\u00e9l\u00e9charger-streaming",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_themoviedb_org": {
+        "themoviedb_org": {
             "label": "The Movie Database",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_tirexo": {
+        "tirexo": {
             "label": "Tirexo",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_topimdb": {
+        "topimdb": {
             "label": "Top IMDB",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_toonanime": {
+        "toonanime": {
             "label": "Toonanime",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_topreplay": {
+        "topreplay": {
             "label": "TopReplay",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_vf_film": {
+        "vf_film": {
             "label": "VF Film",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_vf_serie": {
+        "vf_serie": {
             "label": "VF S\u00e9rie",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_vfilms": {
+        "vfilms": {
             "label": "VFilms",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_videobuzzy_com": {
+        "videobuzzy_com": {
             "label": "Videobuzzy",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_viki_com": {
+        "viki_com": {
             "label": "Viki",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_voiranime": {
+        "voiranime": {
             "label": "voiranime",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_voirfilms_org": {
+        "voirfilms_org": {
             "label": "VoirFilms",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_voirseries_best": {
+        "voirseries_best": {
             "label": "VoirSeries",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_vostfree": {
+        "vostfree": {
             "label": "Vostfree",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_watchvf": {
+        "watchvf": {
             "label": "WatchVF",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_wawacity": {
+        "wawacity": {
             "label": "Wawacity",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_wiflix": {
+        "wiflix": {
             "label": "WiFlix",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_youtitou_com": {
+        "youtitou_com": {
             "label": "YouTitou (Anim\u00e9s)",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_zone_streaming": {
+        "zone_streaming": {
             "label": "Zone Streaming",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_zone_telechargement_ws": {
+        "zone_telechargement_ws": {
             "label": "Zone T\u00e9l\u00e9chargement.ws",
-            "active": "true"
+            "active": "True"
         },
-        "plugin_zustream": {
+        "zustream": {
             "label": "ZuStream",
-            "active": "true"
+            "active": "True"
         }
     }
 }
