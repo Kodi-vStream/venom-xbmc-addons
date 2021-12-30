@@ -18,10 +18,10 @@ from resources.lib.packer import cPacker
 from resources.lib.parser import cParser
 from resources.lib.util import Quote
 
-if isMatrix():
-    from urllib.parse import urlparse
-else:
+try:  # Python 2
     from urlparse import urlparse
+except ImportError:  # Python 3
+    from urllib.parse import urlparse
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
