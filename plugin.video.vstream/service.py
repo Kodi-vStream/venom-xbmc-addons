@@ -5,7 +5,7 @@
 import subprocess
 import xbmcvfs
 from datetime import datetime
-from resources.lib.comaddon import addon, xbmc, VSlog, VSPath, isMatrix
+from resources.lib.comaddon import addon, xbmc, VSlog, VSPath, isMatrix, siteManager
 
 if isMatrix():
     #Import Serveur
@@ -53,7 +53,8 @@ if __name__ == '__main__':
     service()
 
     if isMatrix():
-        if addon().getSetting('plugin_toonanime') == "true" or addon().getSetting('plugin_kaydo_ws') == "true":
+        sitesManager = siteManager()
+        if sitesManager.isActive('toonanime') or sitesManager.isActive('kaydo_ws'):
             class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
                 """Handle requests in a separate thread."""
 
