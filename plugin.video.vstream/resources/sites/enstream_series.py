@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-return False  # Sous Cloudflare 14/10/2021
+# return False  # Sous Cloudflare 14/10/2021
 import re
 
 from resources.lib.comaddon import progress
@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'enstream_series'
 SITE_NAME = 'Enstream (Séries)'
 SITE_DESC = 'EnStream.Cc est le coin des séries en français par excellence'
 
-URL_MAIN = "https://www.enstream.site/"
+URL_MAIN = "https://www.enstream.cam/"
 
 URL_SEARCH = (URL_MAIN + 'recherche?q=', 'showSeries')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showSeries')

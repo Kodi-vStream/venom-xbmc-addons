@@ -8,6 +8,7 @@ from resources.lib.parser import cParser
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
+
 class cPremiumHandler:
     ADDON = addon()
     DIALOG = dialog()
@@ -19,13 +20,17 @@ class cPremiumHandler:
         self.__LoginTry = False
         self.__ssl = False
 
+        # hack pour garder la compatiblité avec ceux qui ont déjà reglé les settings
+        if self.__sHosterIdentifier == '1fichier':
+            self.__sHosterIdentifier = 'onefichier'
+
         self.__Ispremium = False
         bIsPremium = self.ADDON.getSetting('hoster_' + str(self.__sHosterIdentifier) + '_premium')
         if (bIsPremium == 'true'):
             VSlog("Utilise compte premium pour hoster " + str(self.__sHosterIdentifier))
             self.__Ispremium = True
         else:
-            VSlog("Utilise compte gratuit pour hoster: " + str(self.__sHosterIdentifier))
+            VSlog("Utilise compte gratuit pour hoster " + str(self.__sHosterIdentifier))
 
     def isPremiumModeAvailable(self):
         return self.__Ispremium
@@ -99,9 +104,9 @@ class cPremiumHandler:
         if 'uptobox' in self.__sHosterIdentifier:
             oRequestHandler.disableRedirect()
 
-            oRequestHandler.addHeaderEntry('User-Agent',UA)
-            oRequestHandler.addHeaderEntry('Content-Type',"application/x-www-form-urlencoded")
-            oRequestHandler.addHeaderEntry('Content-Length',str(len(post_data)))
+            oRequestHandler.addHeaderEntry('User-Agent', UA)
+            oRequestHandler.addHeaderEntry('Content-Type', "application/x-www-form-urlencoded")
+            oRequestHandler.addHeaderEntry('Content-Length', str(len(post_data)))
 
         for data in post_data:
             oRequestHandler.addParameters(data, post_data[data])
@@ -153,7 +158,7 @@ class cPremiumHandler:
 
     def GetHtmlwithcookies(self, url, data, cookies):
         oRequestHandler = cRequestHandler(url)
-        oRequestHandler.addHeaderEntry('User-Agent',UA)
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
         if not (data == None):
             oRequestHandler.addParametersLine(data)
             oRequestHandler.addHeaderEntry('Referer', url)
@@ -165,7 +170,6 @@ class cPremiumHandler:
 
     def GetHtml(self, url, data=None):
         cookies = GestionCookie().Readcookie(self.__sHosterIdentifier)
-
         # aucun ne marche sans cookies
         if (cookies == '') and not self.__LoginTry and self.__Ispremium:
             self.Authentificate()

@@ -23,7 +23,8 @@ ANIM_NEWS = (URL_MAIN, 'showLastEp')
 ANIM_VFS = (URL_MAIN + 'anime-vf', 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + 'anime', 'showMovies')
 
-URL_SEARCH_VOSTFR = (ANIM_VOSTFRS[0], 'showSearchResult')
+URL_SEARCH = (ANIM_VOSTFRS[0], 'showSearchResult')
+URL_SEARCH_ANIMS = (ANIM_VOSTFRS[0], 'showSearchResult')
 URL_SEARCH_VF = (ANIM_VFS[0], 'showSearchResult')
 
 FUNCTION_SEARCH = 'showSearchResult'
@@ -32,7 +33,7 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_VOSTFR[0])
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d\'animés (VOSTFR)', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_VF[0])
@@ -98,57 +99,41 @@ def showGenres():
     oGui.setEndOfDirectory()
 
 
-def parseJson(json_object, sSearch):
-    # Parse le json pour recuperer les elements qui contiennent sSearch dans leurs titre
-    Title = []
-    Url = []
-    Thumb = []
-
-    for dicts in json_object:
-        if sSearch in dicts['title'].lower() or sSearch in dicts['title_english'].lower() or sSearch in dicts['others'].lower():
-            Title.append(dicts['title'])
-            Url.append(dicts['url'])
-            Thumb.append(dicts['url_image'])
-
-    return Title, Url, Thumb
-
 
 def showSearchResult(sSearch):
     oGui = cGui()
+
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    searchURL = URL_MAIN + re.search('var urlsearch = "([^"]+)";', sHtmlContent).group(1)
+    searchURL = URL_MAIN[:-1] + re.search('var urlsearch = "([^"]+)";', sHtmlContent).group(1)
 
+    bGlobal_Search = False
+    if sSearch:
+        if URL_SEARCH[0] in sSearch:
+            bGlobal_Search = True
+            sSearch = sSearch.replace(URL_SEARCH[0], '')
     sSearch = sSearch.lower()
 
     oRequestHandler = cRequestHandler(searchURL)
     data = oRequestHandler.request(jsonDecode=True)
 
-    Title, Url, Thumb = parseJson(data, sSearch)
-    total = len(Title)
-    progress_ = progress().VScreate(SITE_NAME)
     oOutputParameterHandler = cOutputParameterHandler()
-    for title, url, thumb in zip(Title, Url, Thumb):
-        progress_.VSupdate(progress_, total)
-        if progress_.iscanceled():
-            break
+    for dicts in data:
+        if sSearch in dicts['title'].lower() or sSearch in dicts['title_english'].lower() or sSearch in dicts['others'].lower():
+            sTitle = dicts['title']
+            sUrl2 = URL_MAIN[:-1] + dicts['url']
+            sThumb = dicts['url_image']
+            sDesc = ''
 
-        sTitle = title
-        sUrl2 = URL_MAIN + url
-        sThumb = thumb
-        sDesc = ''
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-        oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-        oOutputParameterHandler.addParameter('sThumb', sThumb)
-
-        oGui.addAnime(SITE_IDENTIFIER, 'showSaisonEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-    progress_.VSclose(progress_)
+            oGui.addAnime(SITE_IDENTIFIER, 'showSaisonEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -178,7 +163,7 @@ def showLastEp():
             if progress_.iscanceled():
                 break
 
-            sUrl2 = URL_MAIN + aEntry[2]
+            sUrl2 = URL_MAIN[:-1] + aEntry[2]
             sThumb = aEntry[3]
             sTitle = aEntry[1] + " " + aEntry[0]
             sDesc = ''
@@ -217,7 +202,7 @@ def showMovies():
             if progress_.iscanceled():
                 break
 
-            sUrl2 = URL_MAIN + aEntry[0]
+            sUrl2 = URL_MAIN[:-1] + aEntry[0]
             sThumb = aEntry[1]
             sTitle = aEntry[2]
             sDesc = ''
@@ -260,6 +245,16 @@ def showSaisonEpisodes():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
+    if sUrl.endswith("vostfr"):
+        oRequestHandler = cRequestHandler(sUrl.replace('vostfr','vf'))
+        sHtmlContent = oRequestHandler.request()
+        if not "404 Not Found" in sHtmlContent:
+            oOutputParameterHandler = cOutputParameterHandler()
+            sTitle = "[COLOR red]Cliquez ici pour acceder à la version VF[/COLOR]"
+            oOutputParameterHandler.addParameter('siteUrl', sUrl.replace('vostfr','vf'))
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oGui.addDir(SITE_IDENTIFIER, 'showSaisonEpisodes', sTitle, '', oOutputParameterHandler)
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -288,7 +283,7 @@ def showSaisonEpisodes():
                 break
 
             sTitle = sMovieTitle + ' ' + aEntry[0].replace('Ep. ', 'E')
-            sUrl2 = URL_MAIN + aEntry[1].replace('\\/', '/')
+            sUrl2 = URL_MAIN[:-1] + aEntry[1].replace('\\/', '/')
             sThumb = aEntry[2]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)

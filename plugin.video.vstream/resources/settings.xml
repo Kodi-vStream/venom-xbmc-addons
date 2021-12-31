@@ -3,34 +3,36 @@
 
     <!-- Menu general -->
     <category label="30021">
+        <setting id="service_version" type="text" label="Version:" default="" enable="false"/>
+<!--         <setting label="30034" type="lsep"/>
+        <setting type="sep"/>
+c'est le changelog de la beta !        <setting label="30036" type="action" action="RunScript(plugin.video.vstream, changelog, ?site=globalRun&amp;function=changelog)"/>
+ -->
         <setting label="30030" type="lsep"/>
         <setting type="sep"/>
         <setting id="playerPlay" type="enum" values="XbmcPlayer|XbmcPlugin (recommandé)" label="30029" default="1"/>
         <setting id="playerType" type="enum" values="Auto|MPlayer|DVDPlayer" label="30001" default="2" enable="eq(-1,0)"/>
         <setting id="upnext" type="bool" label="30506" default="true"/>
         <setting id="srt-view" type="bool" label="30002" default="false"/>
-        <setting id="deco_color" type="select" label="30010" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen" default="lightcoral"/>
-        <!-- <setting id="param_timeout" label="30027" type="number" default="1000"/-->
 
-        <setting label="30031" type="lsep"/>
+        <setting label="30410" type="lsep"/>
         <setting type="sep"/>
-        <setting id="meta-view" type="bool" label="30006" default="false"/>
+        <setting id="deco_color" type="select" label="30010" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen" default="lightcoral"/>
+        <setting id="Block_Noti_sound" type="bool" label="30411" default="false"/>
+        <setting id="spinner_small" type="bool" label="30480" default="true"/>
+    </category>
+
+    <!-- Affichage -->
+    <category label="31205">
+
         <setting label="30005" type="lsep"/>
-        <setting type="sep"/>
-        <setting id="api_tmdb" type="text" label="API"  default="b7cf9324cbeb6f4fb811144aa9397093"/>
+        <setting id="meta-view" type="bool" label="30006" default="false"/>
+        <setting id="api_tmdb" type="text" label="API TMDB"  default="b7cf9324cbeb6f4fb811144aa9397093"/>
         <setting id="poster_tmdb" type="select" label="30007" values="w92|w154|w185|w342|w500|w780|original" default="w342"/>
         <setting id="backdrop_tmdb" type="select" label="30008" values="w300|w780|w1280|original" default="w1280"/>
         <setting id="extendedinfo-view" type="bool" label="30009" default="false"/>
         <setting id="information-view" type="bool" label="31102" default="false"/>
-
-        <setting label="30076" type="lsep"/>
-        <setting type="sep"/>
-        <setting id="history-view" type="bool" label="30016" default="true"/>
-
-        <setting label="30410" type="lsep"/>
-        <setting type="sep"/>
-        <setting id="Block_Noti_sound" type="bool" label="30411" default="false"/>
-        <setting id="spinner_small" type="bool" label="30480" default="true"/>
+        <setting id="display_season_title" type="bool" label="31204" default="true"/>        
 
         <setting label="30032" type="lsep"/>
         <setting type="sep"/>
@@ -42,232 +44,36 @@
         <setting id="tvshows-view" type="number" label="30405" default="500" enable="eq(-4,true)"/>
         <setting id="seasons-view" type="number" label="31201" default="500" enable="eq(-5,true)"/>
         <setting id="episodes-view" type="number" label="31202" default="500" enable="eq(-6,true)"/>
-    </category>
 
-    <!-- A propos/sources -->
-    <category label="30449">
-        <setting label="30034" type="lsep"/>
-        <setting type="sep"/>
-        <setting id="service_time" type="text" label="30047" default="" enable="false"/>
-        <setting id="service_version" type="text" label="Version:" default="" enable="false"/>
-
-        <!-- setting invisible utilise -->
-        <setting id="service_futur" type="text" label="" default="" visible="false"/>
-        <setting id="bstoken" type="text" label="" default="" visible="false"/>
         <setting id="tmdb_session" type="text" label="" default="" visible="false"/>
         <setting id="tmdb_account" type="text" label="" default="" visible="false"/>
+    </category>
 
-        <!--parametre invisible qui enregistre l'url actuel de zt et Tirexo -->
-        <setting id="ZT" type="text" label="" default="" visible="false"/>
-        <setting id="Tirexo" type="text" label="" default="" visible="false"/>
+    <!-- Sources -->
+    <category label="30449">
 
-        <!--parametre invisible qui enregistre le token alldebrid pour extreme download -->
-        <!--setting id="token_alldebrid" type="text" label="Token Alldebrid" default="" visible="false"/>-->
-
-        <!--<setting label="30036" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, changelog)"/>-->
-        <setting label="30036" type="action" action="RunScript(plugin.video.vstream, changelog, ?site=globalRun&amp;function=changelog)"/>
-
-        <!--<setting label="30035" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, soutient)"/>-->
-        <!--setting label="30035" type="action" action="RunScript(plugin.video.vstream, soutient, ?site=globalRun&amp;function=soutient)"/>-->
         <setting label="30116" type="lsep"/>
-        <setting type="sep"/>
-
+<!--        <setting type="sep"/>
+ n'est plus utile		<setting subsetting="true" label="30070" type="lsep"/> -->
+        <setting label="30420" type="action"  action="RunScript(plugin.video.vstream, search, ?site=globalRun&amp;function=search)"/>
+        <setting label="31104" type="action"  action="RunScript(plugin.video.vstream, enableSources, ?site=globalRun&amp;function=enableSources)"/>
+        <setting label="31105" type="action"  action="RunScript(plugin.video.vstream, disableSources, ?site=globalRun&amp;function=disableSources)"/>
         <setting id="contenu_adulte" type="bool" label="31103" default="false"/>
-
+        <setting id="history-view" type="bool" label="30016" default="true"/>
+        <setting type="sep"/>
         <setting label="31203" type="ipaddress" id="ipaddress" default="127.0.0.1"/>
 
+        <!--parametres invisibles -->
+        <setting id="ZT" type="text" label="" default="" visible="false"/>
+        <setting id="Tirexo" type="text" label="" default="" visible="false"/>
         <setting id="PlutoTV_deviceID" type="text" label="" default="" visible="false"/>
         <setting id="PlutoTV_clientID" type="text" label="" default="" visible="false"/>
         <setting id="PlutoTV_sid" type="text" label="" default="" visible="false"/>
-
-        <!--<setting label="30420" type="action"  action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, search)"/>-->
-        <setting label="30420" type="action"  action="RunScript(plugin.video.vstream, search, ?site=globalRun&amp;function=search)"/>
-
-        <setting subsetting="true" label="30070" type="lsep"/>
-        <setting type="sep"/>
-
-        <!--activation invisible des sources pour la recherche globale, il n'est pas utile de déclarer celles sans sSearch-->
-        <setting visible="false" id="plugin__1seriestreaming" type="bool" label="1 SerieStreaming" default="true"/>
-
-        <setting visible="false" id="plugin__33seriestreaming" type="bool" label="33 Séries" default="true"/>
-
-        <setting visible="false" id="plugin__4kstreamz" type="bool" label="4kstreamz" default="true"/>
-
-        <setting visible="false" id="plugin_adkami_com" type="bool" label="ADKami" default="true"/>
-
-        <setting visible="false" id="plugin_alldebrid" type="bool" label="AllDebrid" default="true"/>
-
-        <setting visible="false" id="plugin_animecomplet" type="bool" label="Animecomplet" default="true"/>
-
-        <setting visible="false" id="plugin_animeultime" type="bool" label="Anime Ultime" default="true"/>
-
-        <setting visible="false" id="plugin_asia_insane" type="bool" label="Asia Insane" default="true"/>
-
-        <setting visible="false" id="plugin_buzzmonclick_com" type="bool" label="BuzzMonClick" default="true"/>
-
-        <setting visible="false" id="plugin_cinemay_cc" type="bool" label="Cinemay_cc" default="true"/>
-
-        <setting visible="false" id="plugin_cinemay_com" type="bool" label="Cinemay" default="true"/>
-
-        <setting visible="false" id="plugin_dbanimes" type="bool" label="DBanimes" default="true"/>
-
-        <setting visible="false" id="plugin_ddl1" type="bool" label="DDL1" default="true"/>
-
-        <setting visible="false" id="plugin_docu_fr" type="bool" label="Docu Fr" default="true"/>
-
-        <setting visible="false" id="plugin_dpstream" type="bool" label="Dpstream" default="true"/>
-
-        <setting visible="false" id="plugin_dpstreamhd" type="bool" label="DpStream HD" default="true"/>
-
-        <setting visible="false" id="plugin_ducine" type="bool" label="Du Ciné" default="true"/>
-
-        <setting visible="false" id="plugin_enstream_series" type="bool" label="Enstream (Séries)" default="true"/>
-
-        <setting visible="false" id="plugin_enstream" type="bool" label="Enstream" default="true"/>
-
-        <setting visible="false" id="plugin_extreme_down" type="bool" label="ExtremeDown" default="true"/>
-
-        <setting visible="false" id="plugin_filmspourenfants" type="bool" label="Films pour Enfants" default="true"/>
-
-        <setting visible="false" id="plugin_filmstoon_pro" type="bool" label="Films Toon" default="true"/>
-
-        <setting visible="false" id="plugin_filmstreamingy" type="bool" label="FilmstreamingY" default="true"/>
-
-        <setting visible="false" id="plugin_filmstreamvk_com" type="bool" label="Filmstream vk" default="true"/>
-
-        <setting visible="false" id="plugin_free_telechargement_org" type="bool" label="Free Telechargement" default="true"/>
-
-        <setting visible="false" id="plugin_freebox" type="bool" label="active freebox" default="false"/>
-
-        <setting visible="false" id="plugin_french_stream_com" type="bool" label="French Stream" default="true"/>
-
-        <setting visible="false" id="plugin_french_stream_lol" type="bool" label="French-stream-lol" default="true"/>
-
-        <setting visible="false" id="plugin_funeralforamanga" type="bool" label="Funeral for a manga" default="true"/>
-
-        <setting visible="false" id="gum_gum_streaming_com" type="bool" label="Gum-Gum-Streaming" default="true"/>
-
-        <setting visible="false" id="plugin_hds_fm" type="bool" label="Hds-fm" default="true"/>
-
-        <setting visible="false" id="plugin_hds_stream" type="bool" label="Hds-stream" default="true"/>
-
-        <setting visible="false" id="plugin_ianime" type="bool" label="Ianime" default="true"/>
-
-        <setting visible="false" id="plugin_illimitestreaming" type="bool" label="Illimitestreaming" default="true"/>
-
-        <setting visible="false" id="plugin_k_streaming" type="bool" label="K_Streaming" default="true"/>
-
-        <setting visible="false" id="plugin_kaydo_ws" type="bool" label="kaydo" default="true"/>
-
-        <setting visible="false" id="plugin_kepliz_com" type="bool" label="Kepliz" default="true"/>
-
-        <setting visible="false" id="plugin_kstreamingfilm" type="bool" label="K streaming Film" default="true"/>
-
-        <setting visible="false" id="plugin_kstreamingserie" type="bool" label="K streaming Série" default="true"/>
-
-        <setting visible="false" id="plugin_les_debiles" type="bool" label="Les Débiles" default="true"/>
-
-        <setting visible="false" id="plugin_les_docus" type="bool" label="Les docus" default="true"/>
-
-        <setting visible="false" id="plugin_libertyland_tv" type="bool" label="Libertyland" default="true"/>
-
-        <setting visible="false" id="plugin_livetv" type="bool" label="Live TV" default="true"/>
-
-        <setting visible="false" id="plugin_lsbd" type="bool" label="Liveset Database" default="true"/>
-
-        <setting visible="false" id="plugin_mamcin" type="bool" label="Mamcin" default="true"/>
-
-        <setting visible="false" id="plugin_mesfilms" type="bool" label="Mes Films" default="true"/>
-
-        <setting visible="false" id="plugin_mystream_zone" type="bool" label="My Stream" default="true"/>
-
-        <setting visible="false" id="plugin_neko_sama" type="bool" label="Neko Sama" default="true"/>
-
-        <setting visible="false" id="plugin_neuf_docu" type="bool" label="9Docu" default="true"/>
-
-        <setting visible="false" id="plugin_o1streaming" type="bool" label="O1 streaming" default="true"/>
-
-        <setting visible="false" id="plugin_otaku_attitude" type="bool" label="Otaku-Attitude" default="true"/>
-
-        <setting visible="false" id="plugin_otakufr_com" type="bool" label="OtakuFR" default="true"/>
-
-        <setting visible="false" id="plugin_pastebin" type="bool" label="PasteBin" default="true"/>
-
-        <setting visible="false" id="plugin_planet_streaming" type="bool" label="Planet Streaming" default="true"/>
-
-        <setting visible="false" id="plugin_psyplay" type="bool" label="Psy Play" default="true"/>
-
-        <setting visible="false" id="plugin_serie_streaming" type="bool" label="Série Streaming" default="true"/>
-
-        <setting visible="false" id="plugin_series_en_streaming" type="bool" label="Series en Streaming" default="true"/>
-
-        <setting visible="false" id="plugin_series_stream" type="bool" label="Series Stream" default="true"/>
-
-        <setting visible="false" id="plugin_skyanimes" type="bool" label="Sky-Animes" default="true"/>
-
-        <setting visible="false" id="plugin_sokrostream" type="bool" label="Sokrostream" default="true"/>
-
-        <setting visible="false" id="plugin_spion_com" type="bool" label="Spion" default="true"/>
-
-        <setting visible="false" id="plugin_stream_complet" type="bool" label="Stream Complet" default="true"/>
-
-        <setting visible="false" id="plugin_streamay_series" type="bool" label="StreamAy Séries" default="true"/>
-
-        <setting visible="false" id="plugin_streamcomplet3" type="bool" label="Streamcomplet3" default="true"/>
-
-        <setting visible="false" id="plugin_streamdivx" type="bool" label="StreamDivx" default="true"/>
-
-        <setting visible="false" id="plugin_streaming_series" type="bool" label="Streaming-Series" default="true"/>
-
-        <setting visible="false" id="plugin_streamingdivx" type="bool" label="StreamingDivx" default="true"/>
-
-        <setting visible="false" id="plugin_streaminz" type="bool" label="Streaminz" default="true"/>
-
-        <setting visible="false" id="plugin_streampourvous" type="bool" label="Streampourvous" default="true"/>
-
-        <setting visible="false" id="plugin_telecharger_streaming" type="bool" label="Télécharger-streaming" default="true"/>
-
-        <setting visible="false" id="plugin_tirexo" type="bool" label="Tirexo" default="true"/>
-
-        <setting visible="false" id="plugin_toonanime" type="bool" label="Toonanime" default="true"/>
-        
-        <setting visible="false" id="plugin_topreplay" type="bool" label="TopReplay" default="true"/>
-
-        <setting visible="false" id="plugin_vf_film" type="bool" label="VF Film" default="true"/>
-
-        <setting visible="false" id="plugin_vf_serie" type="bool" label="VF Série" default="true"/>
-
-        <setting visible="false" id="plugin_vfilms" type="bool" label="VFilms" default="true"/>
-
-        <setting visible="false" id="plugin_videobuzzy_com" type="bool" label="Videobuzzy" default="true"/>
-
-        <setting visible="false" id="plugin_viki_com" type="bool" label="Viki" default="true"/>
-
-        <setting visible="false" id="plugin_voiranime" type="bool" label="voiranime" default="true"/>
-
-        <setting visible="false" id="plugin_voirfilms_org" type="bool" label="VoirFilms" default="true"/>
-
-        <setting visible="false" id="plugin_voirseries_best" type="bool" label="VoirSeries" default="true"/>
-
-        <setting visible="false" id="plugin_vostfree" type="bool" label="Vostfree" default="true"/>
-
-        <setting visible="false" id="plugin_watchvf" type="bool" label="WatchVF" default="true"/>
-
-        <setting visible="false" id="plugin_wawacity" type="bool" label="Wawacity" default="true"/>
-
-        <setting visible="false" id="plugin_wiflix" type="bool" label="WiFlix" default="true"/>
-
-        <setting visible="false" id="plugin_youtitou_com" type="bool" label="YouTitou (Animés)" default="true"/>
-
-        <setting visible="false" id="plugin_zone_streaming" type="bool" label="Zone Streaming" default="true"/>
-
-        <setting visible="false" id="plugin_zone_telechargement_ws" type="bool" label="Zone Téléchargement.ws" default="true"/>
-
-        <setting visible="false" id="plugin_zustream" type="bool" label="ZuStream" default="true"/>
     </category>
 
     <!-- Enregistrement -->
     <category label="Enregistrement">
+        <setting label="Enregistrement" type="lsep"/>
         <setting id="path_ffmpeg" label="30049" type="file" default=""/>
         <setting id="path_enregistrement" type="folder" label="30050" default=""/>
         <setting id="path_enregistrement_programmation" type="text" label="" default="" visible="false"/>
@@ -282,38 +88,25 @@
 
         <setting type="sep"/>
         <setting id="debug" type="bool" label="30422" default="true"/>
-        <!--<setting label="Upload kodi.log" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, uplog)"/>-->
         <setting label="Upload kodi.log" type="action" action="RunScript(plugin.video.vstream, uplog, ?site=globalRun&amp;function=uplog)"/>
         <setting id="service_log" type="text" label="30054" default="" enable="false"/>
 
-        <setting type="sep"/>
         <setting subsetting="true" label="30055" type="lsep"/>
-        <!--<setting label="Import/Export" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, addon)"/>-->
         <setting label="Import/Export" type="action" action="RunScript(plugin.video.vstream, sauv, ?site=globalRun&amp;function=sauv)"/>
 
-        <setting type="sep"/>
         <setting subsetting="true" label="30056" type="lsep"/>
-        <!--<setting label="Supprimer une BDD" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, clean)"/>-->
         <setting label="30057" type="action" action="RunScript(plugin.video.vstream, clean, ?site=globalRun&amp;function=clear)"/>
 
-        <setting type="sep"/>
         <setting subsetting="true" label="30058" type="lsep"/>
-        <!--<setting label="Clear Cache vStream" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, addon)"/>-->
         <setting label="30128" type="action" action="RunScript(plugin.video.vstream, addon, ?site=globalRun&amp;function=addon)"/>
 
-        <setting type="sep"/>
         <setting subsetting="true" label="30059" type="lsep"/>
-        <!--<setting label="Clear Cache Kodi" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, xbmc)"/>-->
         <setting label="30129" type="action" action="RunScript(plugin.video.vstream, xbmc, ?site=globalRun&amp;function=xbmc)"/>
 
-        <setting type="sep"/>
         <setting subsetting="true" label="30060" type="lsep"/>
-        <!--<setting label="Clear .fi Files" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, fi)"/>-->
         <setting label="30061" type="action" action="RunScript(plugin.video.vstream, fi, ?site=globalRun&amp;function=fi)"/>
 
-        <setting type="sep"/>
         <setting subsetting="true" label="30062" type="lsep"/>
-        <!--<setting label="Clear Thumbnails" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, thumb)"/>-->
         <setting label="30063" type="action" action="RunScript(plugin.video.vstream, thumb, ?site=globalRun&amp;function=thumb)"/>
 
         <setting type="sep"/>
@@ -336,6 +129,7 @@
 
     <!-- Integration trakt -->
     <category label="30340">
+        <setting id="bstoken" type="text" label="" default="" visible="false"/>
         <setting id="trakt_number_element" type="number" label="31200" default="10"/>
         <setting id="trakt_show_lists" type="bool" label="30341" default="true"/>
 
@@ -409,28 +203,9 @@
         <setting type="text" label="30068" default=""/>
         <setting type="text" label="30065" default=""/>
         <setting type="text" label="30069" default=""/>
-        <!-- <setting subsetting="true" label="30068" type="lsep"/> -->
-        <!-- <setting subsetting="true" label="30065" type="lsep"/> -->
-        <!-- <setting subsetting="true" label="30069" type="lsep"/> -->
 
         <setting type="sep"/>
         <setting id="UserUrlResolver" type="bool" label="30066" default="false"/>
-        <!--<setting label="Configurer UrlResolver" type="action" option="close" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, urlresolver)"/>-->
         <setting label="30067" type="action" option="close" action="RunScript(plugin.video.vstream, urlresolver, ?site=globalRun&amp;function=urlresolver)"/>
     </category>
-
-    <!--<category label="30026">
-        <setting label="30026" type="lsep"/>
-        <setting label="(1) Activer TV Direct" type="action" action="ActivateWindow(settings)" enable ="true" />
-        <setting label="(2) Activer l'addon  PVR IPTV simple client" type="action" action="ActivateWindow(addonbrowser)" enable ="true" />
-        <setting label="(3) Modifier Paramètres PVR" type="action" action="Addon.OpenSettings(pvr.iptvsimple)" enable ="true" />
-        <setting label="30028" type="lsep"/>
-        <setting id="m3u" type="text" label="URL de la playlist M3U"  default="https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/webtv2.m3u"/>
-        <setting id="xmltv" type="text" label="URL du fichier XMLTV" default="http://kazer.org/tvguide.xml?u=rgyamjgsph9gx"/>
-        <setting id="icon" type="text" label="Dossier icône" default="special://userdata/addon_data/plugin.video.vstream/resources/art/tv"/>
-        <setting type="sep" visible="true"/>
-        <setting id="pvr-view" type="bool" label="Active le racourcis Tv direct" default="false"/>
-    </category>
-    -->
-
 </settings>

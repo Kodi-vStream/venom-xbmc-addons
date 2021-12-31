@@ -25,12 +25,12 @@ msgid "Downloads Stopped"
 msgstr "Téléchargements Arrêté"
 
 msgctxt "#30005"
-msgid "vStream will be faster with your own TMDB API key"
-msgstr "vStream sera plus rapide avec votre propre clef API TMDB"
+msgid "Media informations"
+msgstr "Informations détaillées des médias"
 
 msgctxt "#30006"
 msgid "Search Metadata (slowed vStream)"
-msgstr "Recherche les Métadonnées (ralenti vStream)"
+msgstr "Rechercher les métadonnées (ralenti vStream)"
 
 msgctxt "#30007"
 msgid "Posters Size"
@@ -70,7 +70,7 @@ msgstr "Mise à jour"
 
 msgctxt "#30016"
 msgid "Activate search history"
-msgstr "Activer l'historique de recherche"
+msgstr "Activer l'historique des recherches"
 
 msgctxt "#30017"
 msgid "[COLOR azure]Select page[/COLOR]"
@@ -122,7 +122,7 @@ msgstr "Paramètre à modifier dans l'addon PVR"
 
 msgctxt "#30029"
 msgid "Play default"
-msgstr "Lecture par défaut"
+msgstr "Lecteur par défaut"
 
 msgctxt "#30030"
 msgid "Play"
@@ -133,8 +133,8 @@ msgid "Metadata"
 msgstr "Métadonnées"
 
 msgctxt "#30032"
-msgid "View"
-msgstr "Affichage"
+msgid "View mode"
+msgstr "Modes d'affichage"
 
 msgctxt "#30033"
 msgid "Tools"
@@ -286,7 +286,7 @@ msgstr "A moins d'avoir un débrideur,[CR] cocher cette case vous apportera plus
 
 msgctxt "#30070"
 msgid "Choose your sources click OK[CR]- To validate the modifications click again on OK"
-msgstr "Choisissez vos sources cliquez OK[CR]- Pour valider les modifications cliquez encore sur OK"
+msgstr "Choisissez vos sources et valider avec OK[CR]Confirmer les modifications en validant ici sur OK"
 
 msgctxt "#30071"
 msgid "Updated list"
@@ -470,7 +470,7 @@ msgstr "Télévision/Musique"
 
 msgctxt "#30116"
 msgid "All the sources"
-msgstr "Toutes les sources"
+msgstr "Sources dans les menus et les recherches"
 
 msgctxt "#30117"
 msgid "TV replay"
@@ -865,8 +865,8 @@ msgid "Close"
 msgstr "Fermer"
 
 msgctxt "#30410"
-msgid "Divers"
-msgstr "Divers"
+msgid "Interface"
+msgstr "Interface"
 
 msgctxt "#30411"
 msgid "Enable sound notifications"
@@ -906,7 +906,7 @@ msgstr "Vue: Recherche Visuelle (recommandé 500)"
 
 msgctxt "#30420"
 msgid "Enable/Disable sources"
-msgstr "Activer/Désactiver les sources"
+msgstr "Activer/Désactiver des sources"
 
 msgctxt "#30421"
 msgid "Go to [COLOR teal]%s[CR]%s[/COLOR][CR],Valid vStream, only then click YES"
@@ -1021,8 +1021,8 @@ msgid "Select a quality"
 msgstr "Sélectionner une qualité"
 
 msgctxt "#30449"
-msgid "About/Sources"
-msgstr "A propos/Sources"
+msgid "Sources"
+msgstr "Sources"
 
 msgctxt "#30450"
 msgid "Search (Actor, Actress)"
@@ -1126,6 +1126,14 @@ msgctxt "#31103"
 msgid "Allow adult content"
 msgstr "Autoriser le contenu pour adultes"
 
+msgctxt "#31104"
+msgid "Enable all sources"
+msgstr "Activer toutes les sources"
+
+msgctxt "#31105"
+msgid "Disable all sources"
+msgstr "Désactiver toutes les sources"
+
 
 msgctxt "#31200"
 msgid "Choose the number of items to display"
@@ -1142,3 +1150,11 @@ msgstr "Vue: Episodes (recommandé 50-51-500-501-508)"
 msgctxt "#31203"
 msgid "IP address for Flaresolverr"
 msgstr "Adresse IP pour Flaresolverr"
+
+msgctxt "#31204"
+msgid "Display season and episode in title"
+msgstr "Afficher la saison et l'épisode dans le titre"
+
+msgctxt "#31205"
+msgid "Display"
+msgstr "Affichage"

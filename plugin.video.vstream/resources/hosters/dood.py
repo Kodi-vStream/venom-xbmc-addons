@@ -89,21 +89,16 @@ class cHoster(iHoster):
         api_call = False
 
         headers = {'User-Agent': UA}
-        if xbmc.getCondVisibility('system.platform.android'):
-            oRequest = cRequestHandler(self.__sUrl)
-            oRequest.addHeaderEntry('User-Agent', UA)
-            sHtmlContent = oRequest.request()
-            urlDonwload = oRequest.getRealUrl()
-        else:
-            if isMatrix():
-                import urllib.request as urllib
-            else:
-                import urllib
 
-            req = urllib.Request(self.__sUrl, None, headers)
-            with urllib.urlopen(req) as response:
-               sHtmlContent = response.read()
-               urlDonwload = response.geturl()
+        if isMatrix():
+            import urllib.request as urllib
+        else:
+            import urllib
+
+        req = urllib.Request(self.__sUrl, None, headers)
+        with urllib.urlopen(req) as response:
+           sHtmlContent = response.read()
+           urlDonwload = response.geturl()
 
         try:
             sHtmlContent = sHtmlContent.decode('utf8')
@@ -125,15 +120,10 @@ class cHoster(iHoster):
         url2 = 'https://' + urlDonwload.split('/')[2] + aResult[1][0]
 
         headers.update({'Referer': urlDonwload})
-        if xbmc.getCondVisibility('system.platform.android'):
-            oRequest = cRequestHandler(url2)
-            oRequest.addHeaderEntry('User-Agent', UA)
-            oRequest.addHeaderEntry('Referer', urlDonwload)
-            sHtmlContent = oRequest.request()
-        else:
-            req = urllib.Request(url2, None, headers)
-            with urllib.urlopen(req) as response:
-               sHtmlContent = response.read()
+
+        req = urllib.Request(url2, None, headers)
+        with urllib.urlopen(req) as response:
+           sHtmlContent = response.read()
 
         try:
             sHtmlContent = sHtmlContent.decode('utf8')

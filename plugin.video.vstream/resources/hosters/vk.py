@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
@@ -14,7 +14,7 @@ class cHoster(iHoster):
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
@@ -90,13 +90,13 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        url=[]
-        qua=[]
+        url = []
+        qua = []
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
-        sPattern =  '"url.+?":"(.+?)\.(\d+).mp4'
+        sPattern = '"url.+?":"(.+?)\.(\d+).mp4'
 
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -108,7 +108,7 @@ class cHoster(iHoster):
 
             dialog2 = xbmcgui.Dialog()
             ret = dialog2.select('Select Quality', qua)
-            #sUrl = url[ret] + '.' + qua[ret] + '.mp4'
+            # sUrl = url[ret] + '.' + qua[ret] + '.mp4'
             api_call = ('%s.%s.mp4') % (url[ret], qua[ret])
 
             if api_call:

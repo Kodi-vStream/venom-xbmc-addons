@@ -45,7 +45,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENT[1], 'Séries (Populaires)', 'comments.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Series (Liste)', 'listes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste)', 'listes.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
@@ -124,17 +124,17 @@ def showSeries(sSearch=''):
 
     if sSearch:
         sSearch = sSearch.replace(' ', '+').replace('&20', '+')
-        bvalid, stoken, scookie = getTokens()
-        if bvalid:
+        bValid, sToken, sCookie = getTokens()
+        if bValid:
             sUrl = URL_MAIN + 'search'
-            pdata = '_token=' + stoken + '&search=' + sSearch
+            pdata = '_token=' + sToken + '&search=' + sSearch
 
             oRequestHandler = cRequestHandler(sUrl)
             oRequestHandler.setRequestType(1)
             oRequestHandler.addHeaderEntry('User-Agent', UA)
             oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
             oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
-            oRequestHandler.addHeaderEntry('Cookie', scookie)
+            oRequestHandler.addHeaderEntry('Cookie', sCookie)
             oRequestHandler.addParametersLine(pdata)
             sHtmlContent = oRequestHandler.request()
         else:
@@ -159,7 +159,7 @@ def showSeries(sSearch=''):
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
-            
+
             sThumb = re.sub('/w\d+/', '/w342/', aEntry[0])
             sUrl2 = aEntry[1]
             if sUrl2.startswith('/'):

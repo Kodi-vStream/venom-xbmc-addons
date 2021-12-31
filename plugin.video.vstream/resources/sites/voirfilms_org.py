@@ -8,7 +8,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-from resources.lib.util import QuoteSafe, Noredirection, Quote
+from resources.lib.util import QuoteSafe, Quote
 import re
 
 SITE_IDENTIFIER = 'voirfilms_org'
@@ -549,15 +549,16 @@ def showHosters():
         redirection_target = oRequestHandler.getRealUrl()
 
     else:
-        opener = Noredirection()
-        opener.addheaders = [('User-Agent', UA)]
-        opener.addheaders = [('Referer', host)]
-        response = opener.open(sUrl)
-        sHtmlContent = response.read()
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.disableRedirect()
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Referer', host)
+        sHtmlContent = oRequestHandler.request()
+
         redirection_target = sUrl
-        if response.code == 302:
-            redirection_target = response.headers['Location']
-        response.close()
+
+        if oRequestHandler.statusCode() == 302:
+            redirection_target = reponse.getResponseHeader()['Location']
 
     # attention fake redirection
     sUrl = redirection_target

@@ -286,7 +286,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<iframe src="([^"]+)"'
+    sPattern = '<iframe.+?src="([^"]+)"'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -323,7 +323,9 @@ def showHosters():
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
             else:
-                sHosterUrl = aEntry
+                link = re.sub('.+?embed/', '', aEntry)
+                link = link.replace('?rel=0', '')
+                sHosterUrl = 'https://www.youtube.com/watch?v=' + link
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     oHoster.setDisplayName(sMovieTitle)

@@ -2,12 +2,14 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
 # alors la j'ai pas le courage
+import re
+import ssl
+from collections import OrderedDict
+
+from requests.adapters import HTTPAdapter
+
 from resources.lib.comaddon import VSlog
 from resources.lib.config import GestionCookie
-from requests.adapters import HTTPAdapter
-from collections import OrderedDict
-import re, ssl, requests  #, os, time, json, random
-from requests.sessions import Session
 from resources.lib.util import urlEncode
 
 try:  # Python 2
@@ -55,7 +57,7 @@ class CipherSuiteAdapter(HTTPAdapter):
 
 Mode_Debug = True
 
-if (False):
+if False:
     Mode_Debug = True
     import logging
     # These two lines enable debugging at httplib level (requests->urllib3->http.client)
@@ -92,9 +94,7 @@ if (False):
         # response = urllib.request.urlopen(req)
         # sHtmlContent = response.read()
         # response.close()
-
     # except urllib.error.HTTPError as e:
-
         # if e.code == 503:
             # if CloudflareBypass().check(e.headers):
                 # cookies = e.headers['Set-Cookie']
@@ -134,15 +134,12 @@ class CloudflareBypass(object):
 
         sPattern = '(?:^|[,;]) *([^;,]+?)=([^;,\/]+)'
         aResult = re.findall(sPattern, data)
-        # VSlog(str(aResult))
-        if (aResult):
+        if aResult:
             for cook in aResult:
                 if 'deleted' in cook[1]:
                     continue
                 list[cook[0]] = cook[1]
                 # cookies = cookies + cook[0] + '=' + cook[1]+ ';'
-
-        # VSlog(str(list))
 
         return list
 
@@ -162,13 +159,13 @@ class CloudflareBypass(object):
         if 'Referer' in self.Memorised_Headers:
             head['Referer'] = self.Memorised_Headers['Referer']
 
-        if (False):
+        if False:
             # Normalisation because they are not case sensitive:
             Headers = ['User-Agent', 'Accept', 'Accept-Language', 'Accept-Encoding', 'Cache-Control', 'Dnt', 'Pragma', 'Connexion']
             Headers_l = [x.lower() for x in Headers]
             head2 = dict(head)
             for key in head2:
-                if not key in Headers and key.lower() in Headers_l:
+                if key not in Headers and key.lower() in Headers_l:
                     p = Headers_l.index(key.lower())
                     head[Headers[p]] = head[key]
                     del head[key]
@@ -188,7 +185,6 @@ class CloudflareBypass(object):
 
         # Memorise cookie
         self.Memorised_Cookies = cookies
-        # VSlog(cookies)
 
         # cookies in headers?
         if Gived_headers != '':
@@ -199,10 +195,10 @@ class CloudflareBypass(object):
                     self.Memorised_Cookies = Gived_headers['Cookie']
 
         # For debug
-        if (Mode_Debug):
+        if Mode_Debug:
             VSlog('Headers present ' + str(Gived_headers))
             VSlog('url ' + url)
-            if (htmlcontent):
+            if htmlcontent:
                 VSlog('code html ok')
             VSlog('cookies passés : ' + self.Memorised_Cookies)
             VSlog('post data :' + str(postdata))
@@ -213,15 +209,15 @@ class CloudflareBypass(object):
 
         cookieMem = GestionCookie().Readcookie(self.host.replace('.', '_'))
         if not (cookieMem == ''):
-            if (Mode_Debug):
-                VSlog('cookies present sur disque :' + cookieMem )
-            if not (self.Memorised_Cookies):
+            if Mode_Debug:
+                VSlog('cookies present sur disque :' + cookieMem)
+            if not self.Memorised_Cookies:
                 cookies = cookieMem
             else:
                 cookies = self.Memorised_Cookies + '; ' + cookieMem
         else:
-            if (Mode_Debug):
-                VSlog('Pas de cookies présent sur disque' )
+            if Mode_Debug:
+                VSlog('Pas de cookies présent sur disque')
 
         data = {}
         if postdata:
@@ -286,7 +282,7 @@ def checkpart(s, end='+'):
     pos = 0
 
     try:
-        while (1):
+        while 1:
             c = s[pos]
 
             if (c == '('):

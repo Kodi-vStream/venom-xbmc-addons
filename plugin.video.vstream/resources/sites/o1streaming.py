@@ -9,7 +9,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 
 SITE_IDENTIFIER = 'o1streaming'
 SITE_NAME = '01 Streaming'
@@ -121,7 +121,7 @@ def showMovies(sSearch=''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'entry-header"><h2 class="entry-title">([^<]+).+?src="([^"]+).+?class="year">([^<]+).+?<a href="([^"]+)'
+    sPattern = 'entry-header"> *<h2 class="entry-title">([^<]+).+?src="([^"]+).+?class="year">([^<]+).+?href="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -200,25 +200,31 @@ def showSaisons():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sDesc = ''
-    sPattern = 'class="description.+?<p>(.+?)<.p><.div>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        sDesc = aResult[1][0]
-        sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', sDesc)
 
-    sPattern = 'choose-season.+?ref="([^"]+).+?inline">([^<]+)'
+    # récupération du Synopsis
+    sDesc = ''
+    try:
+        sPattern = 'description"><p>(.+?)</p>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sDesc = aResult[1][0]
+    except:
+        pass
+
+    sPattern = '<a data-post="([^"]+)" data-season="([^"]+)"[^<>]+>([^<>]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            sUrl2 = aEntry[0]
+            data = aEntry[0]
             saison = aEntry[1]
 
             sTitle = ("%s %s") % (sMovieTitle, ' Saison ' + saison)
 
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'wp-admin/admin-ajax.php')
+            oOutputParameterHandler.addParameter('data', data)
+            oOutputParameterHandler.addParameter('saison', saison)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -232,10 +238,16 @@ def ShowEpisodes():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumb = oInputParameterHandler.getValue('sThumb')
+    data = oInputParameterHandler.getValue('data')
     sDesc = oInputParameterHandler.getValue('sDesc')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    saison = oInputParameterHandler.getValue('saison')
 
     oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.setRequestType(1)
+    oRequestHandler.addParameters('action', 'action_select_season')
+    oRequestHandler.addParameters('season', saison)
+    oRequestHandler.addParameters('post', data)
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '<h2 class="entry-title">([^><]+).+?<a href="([^"]+)" class="lnk-blk">'
@@ -269,6 +281,17 @@ def showLinks():
     oParser = cParser()
 
     numUrl = 0
+
+    # récupération du Synopsis
+    if sDesc == False:
+        try:
+            sPattern = 'description"><p>(.+?)</p>'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if aResult[0]:
+                sDesc = aResult[1][0]
+        except:
+            pass
+
     sPatternUrl = '<iframe (?:data-)*src="([^"]+)"'
     aResultUrl = oParser.parse(sHtmlContent, sPatternUrl)
     if (aResultUrl[0] == True):
@@ -294,7 +317,7 @@ def showLinks():
                     oOutputParameterHandler.addParameter('sHost', sHost)
                     oOutputParameterHandler.addParameter('sLang', sLang)
                     oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                    oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, '', oOutputParameterHandler)
+                    oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -306,23 +329,14 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-    oParser = cParser()
-    sPattern = '<iframe.+?src="([^"]+)"'
-    aResult = oParser.parse(sHtmlContent, sPattern)
+    sHosterUrl = sUrl
+    if sHosterUrl.startswith('/'):
+        sHosterUrl = 'http:' + sHosterUrl
 
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-
-            sHosterUrl = aEntry
-            if sHosterUrl.startswith('/'):
-                sHosterUrl = 'http:' + sHosterUrl
-
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    oHoster = cHosterGui().checkHoster(sHosterUrl)
+    if (oHoster != False):
+        oHoster.setDisplayName(sMovieTitle)
+        oHoster.setFileName(sMovieTitle)
+        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()

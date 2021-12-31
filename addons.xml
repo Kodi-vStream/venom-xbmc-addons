@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.video.vstream" name="vStream" version="1.6.0" provider-name="venom-xbmc-addons">
+<addon id="plugin.video.vstream" name="vStream" version="1.7.0" provider-name="venom-xbmc-addons">
     <requires>
 
         <trycatch>
@@ -12,11 +12,11 @@
                 <import addon="xbmc.python" version="2.24.0"/>
             </catch>
         </trycatch>
-
-        <import addon="script.module.urlresolver" optional="true"/>
+        <import addon="repository.vstream"/>
+        <import addon="script.module.pyqrcode"/>
         <import addon="script.module.requests"/>
         <import addon="script.module.dnspython" optional="true"/>
-        <import addon="repository.vstream"/>
+        <import addon="script.module.urlresolver" optional="true"/>
         <import addon="script.module.selenium" optional="true"/>
         <!-- Pour le DEBUG        <import addon="script.module.pydevd" version="4.4.0"/> -->
     </requires>
@@ -83,7 +83,7 @@
 
 <addon id="repository.vstream"
        name="vStream Repository"
-        version="0.0.4"
+        version="0.0.5"
         provider-name="Venom">
     <extension point="xbmc.addon.repository" name="vStream XBMC Addon Repository">
     <dir>
@@ -95,6 +95,11 @@
         <info compressed="false">https://raw.githubusercontent.com/Ovni-crea/seleniumzip/master/addons.xml</info>
         <checksum>https://raw.githubusercontent.com/Ovni-crea/seleniumzip/master/addons.xml.md5</checksum>
         <datadir zip="true">https://raw.githubusercontent.com/Ovni-crea/seleniumzip/master</datadir>
+    </dir>
+    <dir>
+        <info compressed="false">https://raw.githubusercontent.com/Arias800/Fichier-divers/master/addon.xml</info>
+        <checksum>https://raw.githubusercontent.com/Arias800/Fichier-divers/master/addons.xml.md5</checksum>
+        <datadir zip="true">https://raw.githubusercontent.com/Arias800/script.module.dnspython/master</datadir>
     </dir>
    </extension>
 

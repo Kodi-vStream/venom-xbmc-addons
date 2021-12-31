@@ -8,6 +8,7 @@ from resources.lib.util import urlEncode
 import requests.packages.urllib3.util.connection as urllib3_cn
 import socket
 
+
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
     REQUEST_TYPE_POST = 1
@@ -34,8 +35,12 @@ class cRequestHandler:
         self.verify = True
         self.json = {}
         self.forceIPV4 = False
+        self.oResponse = None
 
-    #Utile pour certains hebergeurs qui ne marche pas en ipv6.
+    def statusCode(self):
+        return self.oResponse.status_code
+
+    # Utile pour certains hebergeurs qui ne marche pas en ipv6.
     def disableIPV6(self):
         self.forceIPV4 = True
 
@@ -45,14 +50,14 @@ class cRequestHandler:
         """
         family = socket.AF_INET
         if urllib3_cn.HAS_IPV6:
-            family = socket.AF_INET # force ipv6 only if it is available
+            family = socket.AF_INET  # force ipv6 only if it is available
         return family
 
-    #Desactive le ssl
+    # Desactive le ssl
     def disableSSL(self):
         self.verify = False
 
-    #Empeche les redirections 
+    # Empeche les redirections
     def disableRedirect(self):
         self.redirects = False
 
@@ -62,27 +67,27 @@ class cRequestHandler:
     def removeBreakLines(self, bRemoveBreakLines):
         self.__bRemoveBreakLines = bRemoveBreakLines
 
-    #Defini le type de requete
-    #0 : pour un requete GET
-    #1 : pour une requete POST
+    # Defini le type de requete
+    # 0 : pour un requete GET
+    # 1 : pour une requete POST
     def setRequestType(self, cType):
         self.__cType = cType
 
-    #Permets de definir un timeout
+    # Permets de definir un timeout
     def setTimeout(self, valeur):
         self.__timeout = valeur
 
-    #Ajouter un cookie dans le headers de la requete
+    # Ajouter un cookie dans le headers de la requete
     def addCookieEntry(self, sHeaderKey, sHeaderValue):
         aHeader = {sHeaderKey: sHeaderValue}
         self.__Cookie.update(aHeader)
 
-    #Ajouter des parametre JSON
+    # Ajouter des parametre JSON
     def addJSONEntry(self, sHeaderKey, sHeaderValue):
         aHeader = {sHeaderKey: sHeaderValue}
         self.json.update(aHeader)
 
-    #Ajouter un elements dans le headers de la requete
+    # Ajouter un elements dans le headers de la requete
     def addHeaderEntry(self, sHeaderKey, sHeaderValue):
         for sublist in list(self.__aHeaderEntries):
             if sHeaderKey in sublist:
@@ -94,11 +99,11 @@ class cRequestHandler:
         aHeader = {sHeaderKey: sHeaderValue}
         self.__aHeaderEntries.update(aHeader)
 
-    #Ajout un parametre dans la requete
+    # Ajout un parametre dans la requete
     def addParameters(self, sParameterKey, mParameterValue):
         self.__aParamaters[sParameterKey] = mParameterValue
 
-    #Ajoute une ligne de parametre
+    # Ajoute une ligne de parametre
     def addParametersLine(self, mParameterValue):
         self.__aParamatersLine = mParameterValue
 
@@ -106,7 +111,7 @@ class cRequestHandler:
     def addMultipartFiled(self, fields):
         mpartdata = MPencode(fields)
         self.__aParamatersLine = mpartdata[1]
-        self.addHeaderEntry('Content-Type', mpartdata[0] )
+        self.addHeaderEntry('Content-Type', mpartdata[0])
         self.addHeaderEntry('Content-Length', len(mpartdata[1]))
 
     # Je sais plus si elle gere les doublons
@@ -117,12 +122,12 @@ class cRequestHandler:
     def getRealUrl(self):
         return self.__sRealUrl
 
-    def request(self,jsonDecode=False, xmlDecode=False):
+    def request(self, jsonDecode=False):
         # Supprimee car deconne si url contient ' ' et '+' en meme temps
         # self.__sUrl = self.__sUrl.replace(' ', '+')
-        return self.__callRequest(jsonDecode, xmlDecode)
+        return self.__callRequest(jsonDecode)
 
-    #Recupere les cookies de la requete
+    # Recupere les cookies de la requete
     def GetCookies(self):
         if not self.__sResponseHeader:
             return ''
@@ -146,13 +151,13 @@ class cRequestHandler:
         self.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         self.addHeaderEntry('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.7')
 
-    def __callRequest(self, jsonDecode=False, xmlDecode=False):
+    def __callRequest(self, jsonDecode=False):
         if self.__enableDNS:
             self.save_getaddrinfo = socket.getaddrinfo
             socket.getaddrinfo = self.new_getaddrinfo
 
         if self.__aParamatersLine:
-            sParameters = self.__aParamatersLine            
+            sParameters = self.__aParamatersLine
         else:
             sParameters = self.__aParamaters
 
@@ -178,7 +183,6 @@ class cRequestHandler:
         if self.forceIPV4:
             urllib3_cn.allowed_gai_family = self.allowed_gai_family
 
-        oResponse = None
         try:
             _request = Request(method, self.__sUrl, headers=self.__aHeaderEntries)
             if method in ['POST']:
@@ -193,22 +197,20 @@ class cRequestHandler:
             prepped = _request.prepare()
             self.s.headers.update(self.__aHeaderEntries)
 
-            oResponse = self.s.send(prepped, timeout=self.__timeout, allow_redirects=self.redirects, verify=self.verify)
-            self.__sResponseHeader = oResponse.headers
-            self.__sRealUrl = oResponse.url
+            self.oResponse = self.s.send(prepped, timeout=self.__timeout, allow_redirects=self.redirects, verify=self.verify)
+            self.__sResponseHeader = self.oResponse.headers
+            self.__sRealUrl = self.oResponse.url
 
             if jsonDecode == True:
-                sContent = oResponse.json()
-            elif xmlDecode == True:
-                sContent = oResponse.content
+                sContent = self.oResponse.json()
             else:
-                sContent = oResponse.content
-                #Necessaire pour Python 3
-                if isMatrix() and not 'youtube' in oResponse.url:
+                sContent = self.oResponse.content
+                # Necessaire pour Python 3
+                if isMatrix() and 'youtube' not in self.oResponse.url:
                     try:
-                       sContent = sContent.decode()
+                        sContent = sContent.decode()
                     except:
-                        #Decodage minimum obligatoire.
+                        # Decodage minimum obligatoire.
                         try:
                             sContent = sContent.decode('unicode-escape')
                         except:
@@ -230,7 +232,7 @@ class cRequestHandler:
                 sContent = ''
                 return False
 
-        except RequestException  as e:
+        except RequestException as e:
             if 'CERTIFICATE_VERIFY_FAILED' in str(e) and self.BUG_SSL == False:
                 self.BUG_SSL = True
                 return self.__callRequest()
@@ -248,10 +250,10 @@ class cRequestHandler:
             dialog().VSerror(error_msg)
             sContent = ''
 
-        if oResponse != None:
-            if oResponse.status_code in [503,403]:
-                if not "Forbidden" in sContent:
-                    #Default
+        if self.oResponse is not None:
+            if self.oResponse.status_code in [503, 403]:
+                if "Forbidden" not in sContent:
+                    # Default
                     CLOUDPROXY_ENDPOINT = 'http://' + addon().getSetting('ipaddress') + ':8191/v1'
 
                     json_session = False
@@ -262,7 +264,7 @@ class cRequestHandler:
                         dialog().VSerror("%s" % ("Page protege par Cloudflare, veuillez executer  FlareSolverr."))
 
                     if json_session:
-                        #On regarde si une session existe deja.
+                        # On regarde si une session existe deja.
                         if json_session.json()['sessions']:
                             cloudproxy_session = json_session.json()['sessions'][0]
                         else:
@@ -273,7 +275,7 @@ class cRequestHandler:
 
                         self.__aHeaderEntries['Content-Type'] = 'application/x-www-form-urlencoded' if (method == 'post') else 'application/json'
 
-                        #Ont fait une requete.
+                        # Ont fait une requete.
                         json_response = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, json={
                             'cmd': 'request.%s' % method.lower(),
                             'url': self.__sUrl,
@@ -289,11 +291,11 @@ class cRequestHandler:
 
                             sContent = response['solution']['response']
 
-            if oResponse and not sContent:
-                #Ignorer ces deux codes erreurs.
-                ignoreStatus = [200,302]
-                if oResponse.status_code not in ignoreStatus:
-                    dialog().VSerror("%s (%d),%s" % (addon().VSlang(30205), oResponse.status_code, self.__sUrl))
+            if self.oResponse and not sContent:
+                # Ignorer ces deux codes erreurs.
+                ignoreStatus = [200, 302]
+                if self.oResponse.status_code not in ignoreStatus:
+                    dialog().VSerror("%s (%d),%s" % (addon().VSlang(30205), self.oResponse.status_code, self.__sUrl))
 
         if sContent:
             if (self.__bRemoveNewLines == True):
@@ -318,7 +320,7 @@ class cRequestHandler:
                 path = VSPath('special://home/addons/script.module.dnspython/lib/')
             else:
                 path = VSPath('special://home/addons/script.module.dnspython/lib/').decode('utf-8')
-                             
+
             if path not in sys.path:
                 sys.path.append(path)
             host = args[0]
@@ -339,6 +341,7 @@ class cRequestHandler:
         except Exception as e:
             VSlog("new_getaddrinfo ERROR: {0}".format(e))
             return self.save_getaddrinfo(*args)
+
 
 # ******************************************************************************
 # from https://github.com/eliellis/mpart.py

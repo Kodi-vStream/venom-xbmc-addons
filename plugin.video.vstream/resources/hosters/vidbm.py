@@ -8,6 +8,7 @@ from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 from resources.lib.aadecode import decodeAA
 from resources.lib.packer import cPacker
+#from resources.lib.comaddon import VSlog
 import re
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:72.0) Gecko/20100101 Firefox/72.0'
@@ -61,49 +62,17 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-
         api_call = False
 
-        sUrl = 'https://www.vidbm.com/embed-' + self.__sUrl + '.html?auto=1'
-
-        oRequest = cRequestHandler(sUrl)
+        oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-
-        packed = CheckCpacker(sHtmlContent)
-        if packed:
-            aa = CheckAADecoder(packed)
-            if aa:
-                sPattern = 'sources: *\[{file:"([^"]+)"'
-                aResult = oParser.parse(aa, sPattern)
-                if (aResult[0] == True):
-                    api_call = aResult[1][0] + '|User-Agent=' + UA
+        sPattern = 'sources: *\[{file:"([^"]+)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        api_call = aResult[1][0] + '|User-Agent=' + UA
 
         if (api_call):
             return True, api_call
 
         return False, False
-
-def CheckCpacker(sHtmlContent):
-    oParser = cParser()
-    sPattern = "(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>"
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        str2 = aResult[1][0]
-        try:
-            result = cPacker().unpack(str2)
-            return result
-        except:
-            pass
-
-    return False
-
-def CheckAADecoder(sHtmlContent):
-    aResult = re.search("(ﾟωﾟ.+\(\\\\'_\\\\'\);)", sHtmlContent, re.DOTALL | re.UNICODE)
-    if (aResult):
-        j = aResult.group(1)
-        tmp = decodeAA(j)
-        return tmp
-
-    return False

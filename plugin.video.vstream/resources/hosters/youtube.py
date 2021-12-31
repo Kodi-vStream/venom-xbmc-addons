@@ -6,16 +6,10 @@
 # http://www.youtube-nocookie.com/v/etc...
 # https://youtu.be/etc...
 
-import re
-import requests
 import time
 
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, isMatrix
-from resources.lib.config import GestionCookie
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
-from resources.lib.util import Unquote, Quote
 
 
 class cHoster(iHoster):
@@ -72,7 +66,6 @@ class cHoster(iHoster):
         return first_test
 
     def __getMediaLinkForGuest(self):
-        api_call = ''
         UA = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36'
 
         oRequestHandler = cRequestHandler("https://yt1s.com/api/ajaxSearch/index")
@@ -83,19 +76,8 @@ class cHoster(iHoster):
         oRequestHandler.addHeaderEntry('Origin', 'https://yt1s.com')
         oRequestHandler.addHeaderEntry('Referer', 'https://yt1s.com/fr13')
         oRequestHandler.addParameters("q", self.__sUrl)
-        oRequestHandler.addParameters("vt","home")
+        oRequestHandler.addParameters("vt", "home")
         sHtmlContent = oRequestHandler.request(jsonDecode=True)
-
-        # initialisation des tableaux
-        url = []
-        qua = []
-        # Remplissage des tableaux
-        for i in sHtmlContent['links']["mp4"]:
-            url.append(sHtmlContent['links']["mp4"][i]["k"])
-            qua.append(sHtmlContent['links']["mp4"][i]["q"])
-
-        # dialogue qualité
-        k = dialog().VSselectqual(qua, url)
 
         oRequestHandler = cRequestHandler("https://yt1s.com/api/ajaxConvert/convert")
         oRequestHandler.setRequestType(1)
@@ -105,10 +87,10 @@ class cHoster(iHoster):
         oRequestHandler.addHeaderEntry('Origin', 'https://yt1s.com')
         oRequestHandler.addHeaderEntry('Referer', 'https://yt1s.com/fr13')
         oRequestHandler.addParameters("vid", self.__sUrl.split("v=")[1])
-        oRequestHandler.addParameters("k",k)
+        oRequestHandler.addParameters("k", sHtmlContent['links']["mp4"]["auto"]["k"])
         try:
             api_call = oRequestHandler.request(jsonDecode=True)['dlink']
-        except:            
+        except:
             time.sleep(3)
             oRequestHandler = cRequestHandler("https://yt1s.com/api/ajaxConvert/convert")
             oRequestHandler.setRequestType(1)
@@ -118,7 +100,7 @@ class cHoster(iHoster):
             oRequestHandler.addHeaderEntry('Origin', 'https://yt1s.com')
             oRequestHandler.addHeaderEntry('Referer', 'https://yt1s.com/fr13')
             oRequestHandler.addParameters("vid", self.__sUrl.split("v=")[1])
-            oRequestHandler.addParameters("k",k)
+            oRequestHandler.addParameters("k", sHtmlContent['links']["mp4"]["auto"]["k"])
             api_call = oRequestHandler.request(jsonDecode=True)['dlink']
 
         if api_call:

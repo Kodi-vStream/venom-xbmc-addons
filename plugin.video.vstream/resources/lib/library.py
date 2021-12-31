@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
+import os
+import sys
+
+import xbmcgui
+import xbmcplugin
+import xbmcvfs
+import xbmc
+
+from resources.lib.comaddon import addon, dialog, VSPath
+from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.gui.gui import cGui
 from resources.lib.util import cUtil, QuotePlus
-from resources.lib.comaddon import addon, dialog, xbmc, VSlog, VSPath
-from resources.lib.gui.hoster import cHosterGui
-import xbmcvfs
-
-import xbmcplugin, xbmcgui
-import os, sys
 
 SITE_IDENTIFIER = 'cLibrary'
 SITE_NAME = 'Library'
@@ -54,14 +57,15 @@ class cLibrary:
             sCat = '2'
 
         sMediaUrl = QuotePlus(sMediaUrl)
-        sFileName = QuotePlus(sFileName)
+        #sFileName = QuotePlus(sFileName)
 
-        sLink = 'plugin://plugin.video.vstream/?function=play&site=cHosterGui&sFileName=' + sFileName + '&sMediaUrl=' + sMediaUrl + '&sHosterIdentifier=' + sHosterIdentifier
+        sLink = 'plugin://plugin.video.vstream/?function=play&site=cHosterGui&sFileName='
+        sLink += sFileName + '&sMediaUrl=' + sMediaUrl + '&sHosterIdentifier=' + sHosterIdentifier
 
         sTitle = sFileName
 
         if sCat == '1':  # film
-            sTitle = cUtil().CleanName(sTitle)
+            #sTitle = cUtil().CleanName(sTitle)
             sTitle = self.showKeyBoard(sTitle, 'Nom du dossier et du fichier')
 
             try:
@@ -75,7 +79,7 @@ class cLibrary:
                 dialog().VSinfo('Rajout impossible')
 
         elif sCat == '2':  # serie
-            sTitle = cUtil().CleanName(sTitle)
+            #sTitle = cUtil().CleanName(sTitle)
             sFTitle = self.showKeyBoard(sTitle, 'Recommandé Nomdeserie/Saison00')
 
             try:
@@ -102,8 +106,8 @@ class cLibrary:
             dialog().VSinfo('Rajout impossible')
 
     def getLibrary(self):
-        #xbmc.executebuiltin("Container.Update(special://userdata/addon_data/plugin.video.vstream/)", True)
-        #xbmc.executebuiltin('ActivateWindow(Videos,"special://userdata/addon_data/plugin.video.vstream/")', True)
+        # xbmc.executebuiltin("Container.Update(special://userdata/addon_data/plugin.video.vstream/)", True)
+        # xbmc.executebuiltin('ActivateWindow(Videos,"special://userdata/addon_data/plugin.video.vstream/")', True)
         oGui = cGui()
         path = 'special://userdata/addon_data/plugin.video.vstream/'
         listDir = xbmcvfs.listdir(path)
@@ -122,7 +126,7 @@ class cLibrary:
         sFile = oInputParameterHandler.getValue('filePath')
 
         listDir = xbmcvfs.listdir(sFile)
-        
+
         if listDir[0]:
             data = listDir[0]
         else:
@@ -130,11 +134,11 @@ class cLibrary:
 
         addon_handle = None
         for i in data:
-            path = VSPath(sFile+'/'+i) #Suppression du special: pour plus tard
-            sTitle = os.path.basename(path) #Titre du fichier .strm
+            path = VSPath(sFile + '/' + i)  # Suppression du special: pour plus tard
+            sTitle = os.path.basename(path)  # Titre du fichier .strm
 
             if '.strm' in i:
-                sHosterUrl = sFile+'/'+i
+                sHosterUrl = sFile + '/' + i
                 addon_handle = int(sys.argv[1])
                 xbmcplugin.setContent(addon_handle, 'video')
                 li = xbmcgui.ListItem(sTitle)
@@ -142,9 +146,9 @@ class cLibrary:
 
             else:
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('filePath', sFile+'/'+i)
+                oOutputParameterHandler.addParameter('filePath', sFile + '/' + i)
                 oGui.addDir(SITE_IDENTIFIER, 'openLibrary', sTitle, 'annees.png', oOutputParameterHandler)
-                
+
         if addon_handle:
             xbmcplugin.endOfDirectory(addon_handle)
         else:

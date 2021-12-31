@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# Votre pseudo
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import VSlog
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
 
-class cHoster(iHoster):
 
+class cHoster(iHoster):
     def __init__(self):
         # Nom a afficher dans vStream
-        self.__sDisplayName = 'Ninjastream'
+        self.__sDisplayName = 'NinjaStream'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
 
@@ -67,7 +66,6 @@ class cHoster(iHoster):
     # premiere fonction utilisee, memorise le lien
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        # self.__sUrl = self.__sUrl.replace('https://', 'http://')
 
     # facultatif mais a laisser pour compatibilitee
     def checkUrl(self, sUrl):
@@ -83,20 +81,18 @@ class cHoster(iHoster):
 
     # Extraction du lien et decodage si besoin
     def __getMediaLinkForGuest(self):
-        api_call = False
-
         oRequestHandler = cRequestHandler("https://ninjastream.to/api/video/get")
         oRequestHandler.setRequestType(1)
-        oRequestHandler.addHeaderEntry('Referer',self.__sUrl)
+        oRequestHandler.addHeaderEntry('Referer', self.__sUrl)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
-        oRequestHandler.addHeaderEntry('X-Requested-With','XMLHttpRequest')
+        oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
         oRequestHandler.addHeaderEntry('Origin', 'https://{0}'.format(self.__sUrl.split('/')[2]))
-        oRequestHandler.addJSONEntry('id',self.__sUrl.split('/')[4])        
+        oRequestHandler.addJSONEntry('id', self.__sUrl.split('/')[4])
         sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
         api_call = sHtmlContent['result']['playlist']
 
-        if (api_call):
+        if api_call:
             # Rajout d'un header ?
             # api_call = api_call + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
             return True, api_call

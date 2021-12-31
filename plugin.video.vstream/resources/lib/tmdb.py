@@ -241,10 +241,10 @@ class cTMDb:
                 if not DIALOG.VSyesno(sText):
                     return False
             else:
-                from resources.lib import pyqrcode
+                import pyqrcode
                 from resources.lib.librecaptcha.gui import cInputWindowYesNo
                 qr = pyqrcode.create(url + result['request_token'])
-                qr.png('special://home/userdata/addon_data/plugin.video.vstream/qrcode.png', scale=5)
+                qr.png(VSPath('special://home/userdata/addon_data/plugin.video.vstream/qrcode.png'), scale=5)
                 oSolver = cInputWindowYesNo(captcha='special://home/userdata/addon_data/plugin.video.vstream/qrcode.png', msg="Scanner le QRCode pour acceder au lien d'autorisation", roundnum=1)
                 retArg = oSolver.get()
                 DIALOG = dialog()

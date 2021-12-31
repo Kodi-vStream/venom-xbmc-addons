@@ -155,7 +155,7 @@ def showAnims(sSearch=''):
                     sTitle = sTitle.decode('ascii', errors='ignore')
                 except:
                     pass
-                if '(0)' in sTitle or 'EPISODES' in sTitle:  # EPISODES  1 element pattern a revoir pattern
+                if '(0)' in sTitle or 'EPISODES' in sTitle:  # EPISODES 1 element pattern a revoir pattern
                     continue
 
                 if bAlpha:
@@ -306,7 +306,7 @@ def showEpisodes():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            oGui.addEpisode(SITE_IDENTIFIER, 'seriesHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addAnime(SITE_IDENTIFIER, 'seriesHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):

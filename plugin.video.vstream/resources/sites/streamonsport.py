@@ -18,10 +18,10 @@ from resources.lib.packer import cPacker
 from resources.lib.parser import cParser
 from resources.lib.util import Quote
 
-if isMatrix():
-    from urllib.parse import urlparse
-else:
+try:  # Python 2
     from urlparse import urlparse
+except ImportError:  # Python 3
+    from urllib.parse import urlparse
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -29,11 +29,11 @@ SITE_IDENTIFIER = 'streamonsport'
 SITE_NAME = 'Streamonsport'
 SITE_DESC = 'Site pour regarder du sport en direct'
 
-URL_MAIN = 'https://www.streamonsport.info/'
+URL_MAIN = 'https://www.streamonsport.to/'
 
 SPORT_SPORTS = (True, 'load')
-SPORT_TV = (URL_MAIN + '31-sport-tv-fr-streaming.html', 'showMovies')
-CHAINE_TV = (URL_MAIN + '2370162-chaines-tv-streaming.html', 'showMovies')
+SPORT_TV = (URL_MAIN + '31-site-pour-regarder-les-chaines-de-sport.html', 'showMovies')
+CHAINE_TV = (URL_MAIN + '2370162-chaines-tv-streaming-tf1-france-2-canal-plus.html', 'showMovies')
 SPORT_LIVE = (URL_MAIN, 'showMovies')
 SPORT_GENRES = (URL_MAIN, 'showGenres')
 
@@ -42,18 +42,18 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
-    # oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines Sport TV', 'sport.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Sports (En direct)', 'replay.png', oOutputParameterHandler)
 
-    # menu souvent vide
     oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Sports (Genres)', 'genres.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler.addParameter('siteUrl', CHAINE_TV[0])
-    # oGui.addDir(SITE_IDENTIFIER, CHAINE_TV[1], 'Chaines TV généralistes', 'tv.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
+    oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines TV Sports', 'sport.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', CHAINE_TV[0])
+    oGui.addDir(SITE_IDENTIFIER, CHAINE_TV[1], 'Chaines TV Ciné', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -95,11 +95,8 @@ def showGenres():
 
 def showMovies(sSearch=''):
     oGui = cGui()
-    if sSearch:
-        sUrl = sSearch
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -127,14 +124,14 @@ def showMovies(sSearch=''):
             if sUrl != CHAINE_TV[0] and sUrl != SPORT_TV[0]:
                 sDisplayTitle = sTitle
                 if sdesc1:
-                    sDisplayTitle += ' - ' + sdesc1
+                    sDisplayTitle += ' (' + sdesc1.replace(' · ', '') + ')'
                 if sDate:
                     try:
-                        d = datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S+02:00')[0:6]))
+                        d = datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S+01:00')[0:6]))
                         sDate = d.strftime("%d/%m/%y %H:%M")
                     except Exception as e:
                         pass
-                    sDisplayTitle += ' - ' + sDate
+                    sDisplayTitle = sDate + ' - ' + sDisplayTitle
             else:
                 bChaine = True
                 sTitle = sTitle.upper()
@@ -173,27 +170,26 @@ def showLive():
     oParser = cParser()
 
     # liens visibles
-    sPattern = "btn btn-success btn-sm.+?src='([^\']*)"
+    sPattern = "btn btn-(success|warning) btn-sm.+?src='([^\']*)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     i = 0
     if (aResult[0] == True):
-        total = len(aResult[1])
         oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in aResult[1]:
-            i += 1
-            sUrl2 = aEntry
-            sDisplayTitle = sMovieTitle + ' - Lien ' + str(i)
-
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('siterefer', sUrl)
-            oGui.addLink(SITE_IDENTIFIER, 'Showlink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+        if aResult[1]:
+            for aEntry in aResult[1]:
+                i += 1
+                sUrl2 = aEntry[1]
+                sDisplayTitle = sMovieTitle + ' - Lien ' + str(i)
+    
+                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('siterefer', sUrl)
+                oGui.addLink(SITE_IDENTIFIER, 'Showlink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     # 1 seul liens tv telerium
     sPattern = 'iframe id="video".src.+?id=([^"]+)'
-    oParser = cParser()
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -226,77 +222,68 @@ def Showlink():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     siterefer = oInputParameterHandler.getValue('siterefer')
-    sUrl2 = ''
-    shosterurl = ''
+    sHosterUrl = ''
                     
-    if 'allfoot' in sUrl or 'channelstream' in sUrl:
+    if 'yahoo.php' in sUrl:  # redirection
+        sUrl = URL_MAIN + sUrl
+    
+    if 'allfoot' in sUrl or 'streamonsport' in sUrl:
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         # oRequestHandler.addHeaderEntry('Referer', siterefer) # a verifier
         sHtmlContent = oRequestHandler.request()
-        sHosterUrl = ''
-        oParser = cParser()
-        sPattern = '<iframe.+?src="([^"]+)'
-        aResult = oParser.parse(sHtmlContent, sPattern)
 
-        oRequestHandler = cRequestHandler(aResult[1][0])
-        oRequestHandler.addHeaderEntry('User-Agent', UA)
-        # oRequestHandler.addHeaderEntry('Referer', siterefer) # a verifier
-        sHtmlContent = oRequestHandler.request()
+        siterefer = sUrl
+        oParser = cParser()
         if "pkcast123.me" in sHtmlContent:
             sPattern = 'fid="([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            sUrl2 = "https://www.pkcast123.me/footy.php?player=desktop&live=" +  aResult[1][0] + "&vw=649&vh=460"
-        else:           
-            sHosterUrl = ''
-
+            sUrl = "https://www.pkcast123.me/footy.php?player=desktop&live=" +  aResult[1][0] + "&vw=649&vh=460"
+        else:
             sPattern = '<iframe.+?src="([^"]+)'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            sUrl2 = aResult[1][0]
+            if aResult[0]:
+                sUrl = aResult[1][0]
 
+    shosterurl = ''
+    if 'pkcast123' in sUrl:
+        bvalid, shosterurl = Hoster_Pkcast(sUrl, siterefer)
+        if bvalid:
+            sHosterUrl = shosterurl
 
-    # pas de pre requete
-    if 'laylow.cyou' in sUrl:
-        sUrl2 = sUrl
+    if "leet365.cc" in sUrl:
+        bvalid, shosterurl = Hoster_Leet365(sUrl, siterefer)
+        if bvalid:
+            sHosterUrl = shosterurl
+        
+    if 'telerium' in sUrl:
+        bvalid, shosterurl = Hoster_Telerium(sUrl, siterefer)
+        if bvalid:
+            sHosterUrl = shosterurl
 
-    if 'telerium' in sUrl:  # chaine TV
-        sUrl2 = sUrl
+    if 'andrhino' in sUrl:
+        bvalid, shosterurl = Hoster_Andrhino(sUrl, siterefer)
+        if bvalid:
+            sHosterUrl = shosterurl
 
-    if sUrl2:
-        if 'pkcast123' in sUrl2:
-            bvalid, shosterurl = Hoster_Pkcast(sUrl2, sUrl)
-            if bvalid:
-                sHosterUrl = shosterurl
+    if 'wigistream' in sUrl or 'cloudstream' in sUrl:
+        bvalid, shosterurl = Hoster_Wigistream(sUrl, siterefer)
+        if bvalid:
+            sHosterUrl = shosterurl
 
-        if 'telerium' in sUrl2:
-            bvalid, shosterurl = Hoster_Telerium(sUrl2, sUrl)
-            if bvalid:
-                sHosterUrl = shosterurl
+    # a verifier
+    if 'laylow' in sUrl:
+        bvalid, shosterurl = Hoster_Laylow(sUrl, siterefer)
+        if bvalid:
+            sHosterUrl = shosterurl
 
-        if 'andrhino' in sUrl2:
-            bvalid, shosterurl = Hoster_Andrhino(sUrl2, sUrl)
-            if bvalid:
-                sHosterUrl = shosterurl
-
-        if 'wigistream' or 'cloudstream' in sUrl2:
-            bvalid, shosterurl = Hoster_Wigistream(sUrl2, sUrl)
-            if bvalid:
-                sHosterUrl = shosterurl
-
-        # a verifier
-        if 'laylow' in sUrl2:
-            bvalid, shosterurl = Hoster_Laylow(sUrl2, sUrl)
-            if bvalid:
-                sHosterUrl = shosterurl
-
-        if sHosterUrl:
-
-            sHosterUrl = sHosterUrl.strip()
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if(oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    if sHosterUrl:
+        sHosterUrl = sHosterUrl.strip()
+        oHoster = cHosterGui().checkHoster(sHosterUrl)
+        if(oHoster != False):
+            oHoster.setDisplayName(sMovieTitle)
+            oHoster.setFileName(sMovieTitle)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
@@ -351,6 +338,27 @@ def Hoster_Telerium(url, referer):
     return False, False
 
 
+def Hoster_Leet365(url, referer):
+    oParser = cParser()
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Referer', referer)
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = '<iframe.+?src="([^"]+)'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0]:
+        return Hoster_Wigistream(aResult[1][0], url)
+
+    sPattern = '<script>fid="(.+?)".+?src="\/\/fclecteur\.com\/footy\.js">'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0]:
+        referer = url
+        url = 'https://fclecteur.com/footy.php?player=desktop&live=%s' % aResult[1][0]
+        return Hoster_Laylow(url, referer)
+
+    return False, False
+
 def Hoster_Andrhino(url, referer):
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -393,6 +401,11 @@ def Hoster_Wigistream(url, referer):
         if aResult:
             return True, aResult[0] + '|User-Agent=' + UA + '&Referer=' + Quote(url)
 
+    sPattern = '<iframe.+?src="([^"]+)' # iframe imbriqué
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        return Hoster_Wigistream(aResult[0], url)
+
     return False, False
 
 
@@ -402,12 +415,14 @@ def Hoster_Laylow(url, referer):
     oRequestHandler.addHeaderEntry('Referer', referer)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = "source:\s'(https.+?m3u8)"
+    sPattern = "source:.+?'(https.+?m3u8)"
     aResult = re.findall(sPattern, sHtmlContent)
+    
     if aResult:
         return True, aResult[0] + '|User-Agent=' + UA + '&Referer=' + Quote(url)
 
-    return False, False
+    return Hoster_Pkcast(url, referer)
+
 
 def getRealTokenJson(link, referer):
 

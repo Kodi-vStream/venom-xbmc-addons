@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
@@ -8,14 +8,13 @@ from resources.lib.comaddon import dialog
 
 
 class cHoster(iHoster):
-
     def __init__(self):
         self.__sDisplayName = 'WatchVideo'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -74,10 +73,9 @@ class cHoster(iHoster):
 
         oParser = cParser()
 
-        #Dean Edwards Packer
+        # Dean Edwards Packer
         sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
-
 
         if (aResult[0] == True):
             sHtmlContent = cPacker().unpack(aResult[1][0])
@@ -86,19 +84,19 @@ class cHoster(iHoster):
             aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0] == True):
-            #initialisation des tableaux
-            url=[]
-            qua=[]
+            # initialisation des tableaux
+            url = []
+            qua = []
 
-            #Remplissage des tableaux
+            # Remplissage des tableaux
             for i in aResult[1]:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
 
-            #tableau
+            # tableau
             api_call = dialog().VSselectqual(qua, url)
 
-        if (api_call):
+        if api_call:
             return True, api_call
 
         return False, False

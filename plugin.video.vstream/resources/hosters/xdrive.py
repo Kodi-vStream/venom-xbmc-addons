@@ -1,20 +1,20 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#https://xdrive.cc/embed/xxxxxx/blabla.mp4 >fstreamvk
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+# https://xdrive.cc/embed/xxxxxx/blabla.mp4 >fstreamvk
 
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 
-class cHoster(iHoster):
 
+class cHoster(iHoster):
     def __init__(self):
         self.__sDisplayName = 'Xdrive'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
 
     def getDisplayName(self):
-        return  self.__sDisplayName
+        return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
@@ -62,7 +62,7 @@ class cHoster(iHoster):
         if (aResult[0] == True):
             api_call = aResult[1][0]
 
-        if (api_call):
+        if api_call:
             return True, api_call
 
         return False, False

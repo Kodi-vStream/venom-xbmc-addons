@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'cine974'
 SITE_NAME = 'Ciné 974'
 SITE_DESC = 'Film streaming HD gratuit complet'
 
-URL_MAIN = 'https://www.cine974.com/'
+URL_MAIN = "https://www.cine974.com/"
 
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN + 'streaming/', 'showMovies')
@@ -39,7 +39,7 @@ def showMovies():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = 'with_buttons">.+?href="([^"]+).+?src="([^"]+)" alt="([^"]+)'
+    sPattern = 'src="([^"]+)" alt="([^"]+)" class="sc.+?synop">([^<]*).+?href="([^"]+)">Regarder'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -55,19 +55,21 @@ def showMovies():
             if progress_.iscanceled():
                 break
 
-            sUrl2 = aEntry[0]
-            if sUrl2.startswith('/'):
-                sUrl2 = URL_MAIN[:-1] + sUrl2
-            sThumb = aEntry[1]
+            sThumb = aEntry[0]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
-            sTitle = aEntry[2]
+            sTitle = aEntry[1]
+            sDesc = aEntry[2]
+            sUrl2 = aEntry[3]
+            if sUrl2.startswith('/'):
+                sUrl2 = URL_MAIN[:-1] + sUrl2
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -111,7 +113,9 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = aEntry
+            link = re.sub('.+?embed/', '', aEntry)
+            link = link.replace('?rel=0', '')
+            sHosterUrl = 'https://www.youtube.com/watch?v=' + link
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):

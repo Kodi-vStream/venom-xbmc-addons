@@ -15,15 +15,15 @@ SITE_IDENTIFIER = 'filmstreamingy'
 SITE_NAME = 'FilmStreamingY'
 SITE_DESC = 'stream HD, streaming Sans pub, streaming vf'
 
-URL_MAIN = "https://ww5.film-streamings.com/"
+URL_MAIN = "https://www.films-streamingr.com/"
 
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_MOVIE = (True, 'load')
-MOVIE_NEWS = (URL_MAIN + 'film-en-streaming-13', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'regarder-les-meilleurs-film-en-hd-et-vf-streaming', 'showMovies')
 MOVIE_SANTA = (URL_MAIN + 'liste-de-films-de-noel', 'showMovies')
-MOVIE_NOTES = (URL_MAIN + 'top-films-streaming-12', 'showMovies')
+MOVIE_NOTES = (URL_MAIN + 'genre/top-films-streaming', 'showMovies')
 MOVIE_IMDB = (URL_MAIN + 'top-imdb', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
@@ -106,10 +106,9 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'item">.+?href="([^"]+).+?(?:|quality">([^<]*).+?)src="(http[^"]+).+?alt="([^"]+).+?(?:|tag">([^<]*).+?)desc">(.*?)</'
+    sPattern = 'item">.+?href="([^"]+).+?(?:|quality">([^<]*).+?)src="([^"]+).+?alt="([^"]+).+?(?:|tag">([^<]+)).+?p>([^<]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)

@@ -263,10 +263,7 @@ def showMovies(sSearch=''):
         sStart = 'class="animation-2 items">'
         sEnd = '<div class=\'resppages\'>'
         sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
-        if 'serie-streaming/' in sUrl or 'network/' in sUrl:
-            sPattern = 'class="item tvshows"><div class="poster">.+?img src="([^"]+)" alt="([^"]+).+?(?:|class="quality">([^<]+).+?)(?:|class="dtyearfr">([^<]+).+?)<a href="([^"]+)">.+?class="texto">(.*?)</div>'
-        else:
-            sPattern = 'class="item movies"><div class="poster">.+?img src="([^"]+)" alt="([^"]+)".+?(?:|class="quality">([^<]+)<.+?)(?:|class="dtyearfr">([^<]+)<.+?)<a href="([^"]+)">.+?class="texto">(.*?)</div>'
+        sPattern = 'class="item.+?"><div class="poster.+?src="([^"]+)" alt="([^"]+).+?(?:|class="quality">([^<]+).+?)href="([^"]+).+?<span>([0-9]{4}).+?texto">(.*?)</div'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -283,7 +280,7 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            sLang = ''
+            sQual = ''
             sYear = ''
             sDesc = ''
             if sSearch:
@@ -293,28 +290,28 @@ def showMovies(sSearch=''):
                 sDesc = aEntry[3]
             else:
                 sThumb = aEntry[0]
-                sTitle = aEntry[1]
+                sTitle = re.sub('\([0-9]{4}\)', '', aEntry[1])
                 if aEntry[2]:
-                    sLang = aEntry[2]
-                if aEntry[3]:
-                    sYear = aEntry[3]
-                sUrl = aEntry[4]
+                    sQual = aEntry[2]  # parfois sLang
+                sUrl = aEntry[3]
+                sYear = aEntry[4]
                 if aEntry[5]:
                     sDesc = aEntry[5].replace('Voir', '').replace('Film complet streaming VF HD', '')\
                                      .replace('streaming VF HD', '')
 
             try:
                 sDesc = unicode(sDesc, 'utf-8')  # converti en unicode
-                sDesc = utils.unescape(sDesc).encode('utf-8')    # retire les balises HTML
+                sDesc = utils.unescape(sDesc).encode('utf-8')  # retire les balises HTML
             except:
                 pass
 
-            sDisplayTitle = ('%s %s (%s)') % (sTitle, sLang, sYear)
+            sDisplayTitle = ('%s %s (%s)') % (sTitle, sQual, sYear)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('sYear', sYear)
 
             if '/serie' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSxE', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
@@ -391,6 +388,7 @@ def showLinks():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
+    sYear = oInputParameterHandler.getValue('sYear')
 
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
@@ -404,13 +402,13 @@ def showLinks():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in sortedList:
 
-            sUrl2 = URL_MAIN + 'wp-json/dooplayer/v1/post/'
-            # dtype = 'movie'  # fonctionne pour Film ou Série (pour info : série -> dtype = 'tv')
+            sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
             dtype = aEntry[0]
             dpost = aEntry[1]
             dnum = aEntry[2]
-            pdata = dpost + '?type=' + dtype + '&source=' + dnum
-            sTitle = aEntry[3].replace('Serveur', '').replace('Télécharger', '').replace('(', '').replace(')', '').replace('[', '').replace(']', '')
+            pdata = dpost + '.' + dtype + '.' + dnum
+            sTitle = aEntry[3].replace('Serveur', '').replace('Télécharger', '').replace('(', '')\
+                              .replace(')', '').replace('[', '').replace(']', '')
             sServer = aEntry[4]
             sLang = aEntry[5].replace('fr', 'VF').replace('en', 'VOSTFR')
 
@@ -444,11 +442,11 @@ def showHosters():
     oRequest.addHeaderEntry('Accept', '*/*')
     oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
     oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-    oRequest.addParametersLine(pdata)
-
-    sUrl = sUrl + pdata
-    oRequest = cRequestHandler(sUrl)
-    sHtmlContent = oRequest.request(jsonDecode=True)["embed_url"]
+    oRequest.addParameters("action", "doo_player_ajax")
+    oRequest.addParameters("post", pdata.split('.')[0])
+    oRequest.addParameters("type", pdata.split('.')[1])
+    oRequest.addParameters("nume", pdata.split('.')[2])
+    sHtmlContent = oRequest.request(jsonDecode=True)
 
     if 'dood' in sHtmlContent or 'evoload' in sHtmlContent:
         sPattern = '(http.+?)$'

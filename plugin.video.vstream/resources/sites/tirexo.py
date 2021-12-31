@@ -381,23 +381,24 @@ def showMovies(sSearch=''):
 
         progress_.VSclose(progress_)
 
-        if 'index' in sUrl:
-            sPattern = '<a name="nextlink".+?javascript:list_submit\((.+?)\)'
-            aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', re.sub('search_start=(\d+)', 'search_start=' + str(aResult[1][0]), sUrl))
-                number = re.search('([0-9]+)', aResult[1][0]).group(1)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
-        else:
-            sNextPage = __checkForNextPage(sHtmlContent, sUrl)
-            if (sNextPage != False):
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-                nextPage = re.search('cstart=([0-9]+)', sNextPage)
-                if nextPage:
-                    number = nextPage.group(1)
+        if not sSearch:
+            if 'index' in sUrl:
+                sPattern = '<a name="nextlink".+?javascript:list_submit\((.+?)\)'
+                aResult = oParser.parse(sHtmlContent, sPattern)
+                if (aResult[0] == True):
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', re.sub('search_start=(\d+)', 'search_start=' + str(aResult[1][0]), sUrl))
+                    number = re.search('([0-9]+)', aResult[1][0]).group(1)
                     oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
+            else:
+                sNextPage = __checkForNextPage(sHtmlContent, sUrl)
+                if (sNextPage != False):
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+                    nextPage = re.search('cstart=([0-9]+)', sNextPage)
+                    if nextPage:
+                        number = nextPage.group(1)
+                        oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + number, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -635,7 +636,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = "\?domain=(.+?)\.|'download'.+?href='([^>]+)'>([^<]+)"
+    sPattern = "domain=(.+?)\.|'download' href=([^']+)\""
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -645,7 +646,7 @@ def showHosters():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + re.sub('\.\w+', '', aEntry[0]) + '[/COLOR]')
 
             else:
-                if not "Streaming" in aEntry[2]:
+                if not URL_MAIN in aEntry[1]:
                     sUrl2 = URL_MAIN[:-1] + aEntry[1]
                     sTitle = sMovieTitle
                     oOutputParameterHandler = cOutputParameterHandler()
@@ -734,7 +735,7 @@ def Display_protected_link():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sUrl = oInputParameterHandler.getValue('siteUrl').replace('\\','').replace('"','')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     if 'link' in sUrl:

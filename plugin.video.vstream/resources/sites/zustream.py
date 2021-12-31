@@ -10,14 +10,13 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import Noredirection
 from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'zustream'
 SITE_NAME = 'ZuStream'
 SITE_DESC = 'Retrouvez un énorme répertoire de films, de séries et de mangas en streaming VF et VOSTFR complets'
 
-URL_MAIN = 'https://www.zustream.org/'
+URL_MAIN = 'https://www.zustream.one/'
 
 MOVIE_MOVIE = (True, 'showMenuFilms')
 MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
@@ -206,7 +205,7 @@ def showMovies(sSearch=''):
 
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
-        sPattern = '<div class="image">.+?<a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)".+?<p>(.+?)</p>'
+        sPattern = '<div class="image">.+?<a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)".+?<p>([^<]*)</p>'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -282,7 +281,7 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<span>Page.+?de ([^<]+)<\/span.+?href="([^"]+)(?:"><i id=\'nextpagination\'|" ><span class="icon-chevron-right)'
+    sPattern = '<span>Page.+?de ([^<]+)</span.+?href="([^"]+)(?:"><i id=\'nextpaginat|" ><span class="icon-chevron-rig)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sNumberMax = aResult[1][0][0]
@@ -417,16 +416,16 @@ def showHosters():
                 oRequestHandler.request()
                 sUrl1 = oRequestHandler.getRealUrl()
                 if not sUrl1 or sUrl1 == sHosterUrl:
-                    opener = Noredirection()
-                    opener.addheaders = [('User-Agent', UA)]
-                    opener.addheaders = [('Referer', 'https://re.zu-lien.com')]
-                    response = opener.open(sHosterUrl)
-                    response.read()
+                    oRequestHandler = cRequestHandler(sHosterUrl)
+                    oRequestHandler.disableRedirect()
+                    oRequestHandler.addHeaderEntry('User-Agent', UA)
+                    oRequestHandler.addHeaderEntry('Referer', 'https://re.zu-lien.com')
+                    oRequestHandler.request()
+
                     getreal = sHosterUrl
-                    if response.code == 302:
-                        getreal = response.headers['Location']
-                    response.close()
-                    sHosterUrl = getreal
+
+                    if oRequestHandler.statusCode() == 302:
+                        redirection_target = reponse.getResponseHeader()['Location']
                 else:
                     sHosterUrl = sUrl1
 

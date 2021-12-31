@@ -6,8 +6,6 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog, VSlog
-from resources.lib.util import QuotePlus
-import json
 
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0'
@@ -50,24 +48,14 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
 
-        if 'yggseries.com' in self.__sUrl:
-            baseUrl = 'https://yggseries.com/api/source/'
-        elif 'french-vid' in self.__sUrl:
+        if 'french-vid' in self.__sUrl:
             baseUrl = 'https://www.fembed.com/api/source/'
-        elif 'fembed' in self.__sUrl:
-            baseUrl = 'https://www.fembed.com/api/source/'
-        elif 'feurl' in self.__sUrl:
-            baseUrl = 'https://feurl.com/api/source/'
-        elif 'vfsplayer' in self.__sUrl:
-            baseUrl = 'https://vfsplayer.xyz/api/source/'
-        elif 'fsimg' in self.__sUrl:
-            baseUrl = 'https://www.fsimg.info/api/source/'
+        elif 'fembed' in self.__sUrl or "femax20" in self.__sUrl:
+            baseUrl = 'https://www.diasfem.com/api/source/'
         elif 'fem.tohds' in self.__sUrl:
             baseUrl = 'https://feurl.com/api/source/'
-        elif 'core1player' in self.__sUrl:
-            baseUrl = 'https://www.core1player.com/api/source/'
-        elif 'gotochus' in self.__sUrl:
-            baseUrl = 'https://www.gotochus.com/api/source/'
+        else:
+            baseUrl = 'https://' + self.__sUrl.split('/')[2] + '/api/source/'
             
         if 'fem.tohds' in self.__sUrl:
             oRequestHandler = cRequestHandler(self.__sUrl)
@@ -80,38 +68,38 @@ class cHoster(iHoster):
 
             url = baseUrl + aResult[1][0].rsplit('/', 1)[1]
 
-            postdata = 'r=' + QuotePlus(self.__sUrl) + '&d=' + baseUrl.replace('https://', '').replace('/api/source/', '')
+            postdata = 'r=' + self.__sUrl + '&d=' + baseUrl.replace('https://', '').replace('/api/source/', '')
 
         else:
             url = baseUrl + self.__sUrl.rsplit('/', 1)[1]
-            postdata = 'r=' + QuotePlus(self.__sUrl) + '&d=' + baseUrl.replace('https://', '').replace('/api/source/', '')
+            postdata = 'r=' + self.__sUrl + '&d=' + baseUrl.replace('https://', '').replace('/api/source/', '')
 
         oRequest = cRequestHandler(url)
         oRequest.setRequestType(1)
+        oRequest.disableSSL()
         oRequest.disableIPV6()
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Referer',self.__sUrl)
         oRequest.addParametersLine(postdata)
+        page = oRequest.request(jsonDecode=True)
+
+        url = []
+        qua = []
+        for x in page['data']:
+            url.append(x['file'])
+            qua.append(x['label'])
+
+        api_call = dialog().VSselectqual(qua, url)
+
+        oRequest = cRequestHandler(api_call)
+        oRequest.disableSSL()
+        oRequest.disableIPV6()
+        oRequest.addHeaderEntry('Host','fvs.io')
+        oRequest.addHeaderEntry('User-Agent', UA)
         sHtmlContent = oRequest.request()
-
-        page = json.loads(sHtmlContent)
-        if page:
-            url = []
-            qua = []
-            for x in page['data']:
-                url.append(x['file'])
-                qua.append(x['label'])
-
-            if (url):
-                api_call = dialog().VSselectqual(qua, url)
+        api_call = oRequest.getRealUrl()
 
         if (api_call):
-            oRequest = cRequestHandler(api_call)
-            oRequest.disableIPV6()
-            oRequest.addHeaderEntry('Host','fvs.io')
-            oRequest.addHeaderEntry('User-Agent', UA)
-            sHtmlContent = oRequest.request()
-            api_call = oRequest.getRealUrl()
-            return True, api_call  + '|User-Agent=' + UA
+            return True, api_call  + '|User-Agent=' + UA + '&verifypeer=false'
 
         return False, False

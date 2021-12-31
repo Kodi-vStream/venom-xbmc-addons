@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
-import xbmcvfs, json
+import json
+import xbmcvfs
+import xbmc
 
+from resources.lib.comaddon import dialog, addon, VSlog, VSPath, isMatrix, VSProfil
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.util import QuotePlus, Unquote
-from resources.lib.comaddon import dialog, addon, VSlog, VSPath, isMatrix, xbmc
 
 SITE_IDENTIFIER = 'cDb'
 SITE_NAME = 'DB'
@@ -15,67 +17,43 @@ try:
 except:
     from pysqlite2 import dbapi2 as sqlite
 
-class cDb:
-    #On chercher le profil courant.
-    request = {
-        "jsonrpc": "2.0",
-        "method": "Profiles.GetCurrentProfile",
-        "params": {
-            "properties": ["thumbnail", "lockmode"]
-        },
-        "id": 1
-    }
 
-    req = json.dumps(request)
-    response = xbmc.executeJSONRPC(req)
-    #On recupere le nom.
-    name = json.loads(response)['result']['label']
+class cDb(object):
+    def __enter__(self):
+        name = VSProfil()
 
-    #Le cas par defaut.
-    if name == 'Master user':
-        DB = 'special://home/userdata/addon_data/plugin.video.vstream/vstream.db'
-    else:
-        DB = 'special://home/userdata/profiles/' + name + '/addon_data/plugin.video.vstream/vstream.db'
-
-    try:
-        REALDB = VSPath(DB).decode('utf-8')
-    except AttributeError:
-        REALDB = VSPath(DB)
-
-    del request, req, name, response    # delete des objets temporaires
-
-    def __init__(self):
-
-        VSlog('DB engine for db : ' + sqlite.__name__)
+        # Le cas par defaut.
+        if name == 'Master user':
+            DB = 'special://home/userdata/addon_data/plugin.video.vstream/vstream.db'
+        else:
+            DB = 'special://home/userdata/profiles/' + name + '/addon_data/plugin.video.vstream/vstream.db'
 
         try:
-            if not xbmcvfs.exists(self.DB):
-                self.db = sqlite.connect(self.REALDB)
-                self.db.row_factory = sqlite.Row
-                self.dbcur = self.db.cursor()
-                self._create_tables()
-                return
-        except:
-            VSlog('Error: Unable to write to %s' % self.REALDB)
-            pass
+            REALDB = VSPath(DB).decode('utf-8')
+        except AttributeError:
+            REALDB = VSPath(DB)
 
         try:
-            self.db = sqlite.connect(self.REALDB)
+            self.db = sqlite.connect(REALDB)
             self.db.row_factory = sqlite.Row
             self.dbcur = self.db.cursor()
+            if self.dbcur.rowcount == -1:
+                self._create_tables()
+            return self
+            
         except:
-            VSlog('Error: Unable to access to %s' % self.REALDB)
+            VSlog('Error: Unable to access to %s' % REALDB)
             pass
 
-    def __del__(self):
+    def __exit__(self, exc_type, exc_value, traceback):
         ''' Cleanup db when object destroyed '''
         try:
             self.dbcur.close()
             self.db.close()
-        except Exception as e:
+        except:
             pass
 
-    def _create_tables(self, dropTable = ''):
+    def _create_tables(self, dropTable=''):
 
         if dropTable != '':
             self.dbcur.execute("DROP TABLE IF EXISTS " + dropTable)
@@ -83,74 +61,71 @@ class cDb:
 
         ''' Create table '''
         sql_create = "CREATE TABLE IF NOT EXISTS history ("\
-                        "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
-                        "title TEXT, "\
-                        "disp TEXT, "\
-                        "icone TEXT, "\
-                        "isfolder TEXT, "\
-                        "level TEXT, "\
-                        "lastwatched TIMESTAMP "", "\
-                        "UNIQUE(title)"\
-                        ");"
+                     "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
+                     "title TEXT, "\
+                     "disp TEXT, "\
+                     "icone TEXT, "\
+                     "UNIQUE(title)"\
+                     ");"
         self.dbcur.execute(sql_create)
 
         sql_create = "CREATE TABLE IF NOT EXISTS resume ("\
-                        "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
-                        "title TEXT, "\
-                        "hoster TEXT, "\
-                        "point TEXT, "\
-                        "total TEXT, "\
-                        "UNIQUE(title, hoster)"\
-                        ");"
+                     "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
+                     "title TEXT, "\
+                     "hoster TEXT, "\
+                     "point TEXT, "\
+                     "total TEXT, "\
+                     "UNIQUE(title, hoster)"\
+                     ");"
         self.dbcur.execute(sql_create)
 
         sql_create = "CREATE TABLE IF NOT EXISTS watched ("\
-                        "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
-                        "title TEXT, "\
-                        "cat TEXT, "\
-                        "UNIQUE(title)"\
-                        ");"
+                     "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
+                     "title TEXT, "\
+                     "cat TEXT, "\
+                     "UNIQUE(title)"\
+                     ");"
         self.dbcur.execute(sql_create)
 
         sql_create = "CREATE TABLE IF NOT EXISTS favorite ("\
-                        "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
-                        "title TEXT, "\
-                        "siteurl TEXT, "\
-                        "site TEXT, "\
-                        "fav TEXT, "\
-                        "cat TEXT, "\
-                        "icon TEXT, "\
-                        "fanart TEXT, "\
-                        "UNIQUE(title, site)"\
-                        ");"
+                     "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
+                     "title TEXT, "\
+                     "siteurl TEXT, "\
+                     "site TEXT, "\
+                     "fav TEXT, "\
+                     "cat TEXT, "\
+                     "icon TEXT, "\
+                     "fanart TEXT, "\
+                     "UNIQUE(title, site)"\
+                     ");"
         self.dbcur.execute(sql_create)
 
         sql_create = "CREATE TABLE IF NOT EXISTS viewing ("\
-                        "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
-                        "tmdb_id TEXT, "\
-                        "title_id TEXT, "\
-                        "title TEXT, "\
-                        "siteurl TEXT, "\
-                        "site TEXT, "\
-                        "fav TEXT, "\
-                        "cat TEXT, "\
-                        "season integer, "\
-                        "UNIQUE (title_id)"\
-                        ");"
+                     "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
+                     "tmdb_id TEXT, "\
+                     "title_id TEXT, "\
+                     "title TEXT, "\
+                     "siteurl TEXT, "\
+                     "site TEXT, "\
+                     "fav TEXT, "\
+                     "cat TEXT, "\
+                     "season integer, "\
+                     "UNIQUE (title_id)"\
+                     ");"
         self.dbcur.execute(sql_create)
 
         sql_create = "CREATE TABLE IF NOT EXISTS download ("\
-                        "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
-                        "title TEXT, "\
-                        "url TEXT, "\
-                        "path TEXT, "\
-                        "cat TEXT, "\
-                        "icon TEXT, "\
-                        "size TEXT,"\
-                        "totalsize TEXT, "\
-                        "status TEXT, "\
-                        "UNIQUE(title, path)"\
-                        ");"
+                     "addon_id integer PRIMARY KEY AUTOINCREMENT, "\
+                     "title TEXT, "\
+                     "url TEXT, "\
+                     "path TEXT, "\
+                     "cat TEXT, "\
+                     "icon TEXT, "\
+                     "size TEXT,"\
+                     "totalsize TEXT, "\
+                     "status TEXT, "\
+                     "UNIQUE(title, path)"\
+                     ");"
         self.dbcur.execute(sql_create)
 
         VSlog('Table initialized')
@@ -166,9 +141,9 @@ class cDb:
                     pass
             import unicodedata
             data = unicodedata.normalize('NFKD', data).encode('ascii', 'ignore')
-            
+
             try:
-                data = data.decode('string-escape')  # ATTENTION: provoque des bugs pour les chemins a cause du caractere '/'
+                data = data.decode('string-escape')  # ATTENTION: bugs pour les chemins a cause du caractere '/'
             except:
                 pass
 
@@ -199,11 +174,11 @@ class cDb:
                 self.dbcur.execute(ex)
                 self.db.commit()
                 VSlog('SQL UPDATE history Successfully')
-            VSlog('SQL ERROR INSERT, title = %s, %s' % (title, e) )
+            VSlog('SQL ERROR INSERT, title = %s, %s' % (title, e))
             pass
 
     def get_history(self):
-        sql_select = 'SELECT * FROM history'
+        sql_select = 'SELECT * FROM history ORDER BY addon_id DESC'
 
         try:
             self.dbcur.execute(sql_select)
@@ -249,17 +224,17 @@ class cDb:
             self.db.commit()
             VSlog('SQL INSERT watched Successfully')
         except Exception as e:
-            if 'no such column' in str(e) or 'no column named' in str(e) or 'no such table' in str(e) :
-                if 'named cat' in str(e): # ajout nouvelle colonne 'cat'
+            if 'no such column' in str(e) or 'no column named' in str(e) or 'no such table' in str(e):
+                if 'named cat' in str(e):  # ajout nouvelle colonne 'cat'
                     self.dbcur.execute("ALTER TABLE watched add column cat TEXT")
                     self.db.commit()
                     VSlog('Table recreated : watched')
-    
+
                     # Deuxieme tentative
                     self.dbcur.execute(ex, (title, cat))
                     self.db.commit()
             else:
-                VSlog('SQL ERROR INSERT watched : title = %s' % e )
+                VSlog('SQL ERROR INSERT watched : title = %s' % e)
 
     def get_watched(self, meta):
         title = meta['title']
@@ -272,19 +247,19 @@ class cDb:
         try:
             self.dbcur.execute(sql_select)
             matchedrow = self.dbcur.fetchall()
-            
+
             # Gestion des homonymes films / séries
             # Si la cat est enregistrée, on vérifie si c'est la même
             for data in matchedrow:
                 matchedcat = data['cat']
                 if matchedcat:
                     return int(matchedcat) == int(cat)
-            
+
             if matchedrow:
                 return True
             return False
         except Exception as e:
-            if 'no such column' in str(e) or 'no column named' in str(e) or 'no such table' in str(e) :
+            if 'no such column' in str(e) or 'no column named' in str(e) or 'no such table' in str(e):
                 # Deuxieme tentative, sans la cat
                 sql_select = "SELECT * FROM watched WHERE title = '%s'" % title
                 self.dbcur.execute(sql_select)
@@ -328,7 +303,7 @@ class cDb:
             self.dbcur.execute(ex, (title, site, point, total))
             self.db.commit()
         except Exception as e:
-            if 'no such column' in str(e) or 'no column named' in str(e) or 'no such table' in str(e) :
+            if 'no such column' in str(e) or 'no column named' in str(e) or 'no such table' in str(e):
                 self._create_tables('resume')
                 VSlog('Table recreated : resume')
 
@@ -351,9 +326,9 @@ class cDb:
             if not matchedrow:
                 return False, False
             return float(matchedrow[0]), float(matchedrow[1])
-        
+
         except Exception as e:
-            if 'no such column' in str(e) or 'no column named' in str(e) :
+            if 'no such column' in str(e) or 'no column named' in str(e):
                 self._create_tables('resume')
                 VSlog('Table recreated : resume')
             else:
@@ -373,10 +348,9 @@ class cDb:
             VSlog('SQL ERROR %s' % sql_select)
             return False, False
 
-
-    # ***********************************
-    #   Bookmark fonctions
-    # ***********************************
+    #  ***********************************
+    #  Bookmark fonctions
+    #  ***********************************
 
     def insert_bookmark(self, meta):
 
@@ -415,8 +389,8 @@ class cDb:
             VSlog('SQL ERROR EXECUTE')
             return None
 
-    def del_bookmark(self, sSiteUrl='', sMovieTitle='', sCat = '', sAll = False):
-        
+    def del_bookmark(self, sSiteUrl='', sMovieTitle='', sCat='', sAll=False):
+
         sql_delete = None
 
         # Tous supprimer
@@ -444,18 +418,17 @@ class cDb:
                     catList = ('0', sCat)
             sql_delete = "DELETE FROM favorite WHERE cat in %s" % str(catList)
 
-
         if sql_delete:
             from resources.lib.gui.gui import cGui
             try:
                 self.dbcur.execute(sql_delete)
                 self.db.commit()
                 update = self.db.total_changes
-                
+
                 if not update and sSiteUrl and sMovieTitle:
                     # si pas trouvé, on essaie sans le titre, seulement l'URL
                     return self.del_bookmark(sSiteUrl)
-                    
+
                 dialog().VSinfo(addon().VSlang(30044))
                 cGui().updateDirectory()
                 return True
@@ -468,19 +441,19 @@ class cDb:
     # ***********************************
 
     def insert_viewing(self, meta):
-        
-        if not 'title' in meta:
+
+        if 'title' not in meta:
             return
-        if not 'siteurl' in meta:
+        if 'siteurl' not in meta:
             return
 
         title = self.str_conv(meta['title'])
         titleWatched = self.str_conv(meta['titleWatched'])
         siteurl = QuotePlus(meta['siteurl'])
         cat = meta['cat']
-        saison = meta['season'] if 'season' in meta else '' 
+        saison = meta['season'] if 'season' in meta else ''
         sTmdbId = meta['sTmdbId'] if 'sTmdbId' in meta else ''
-            
+
         ex = "DELETE FROM viewing WHERE title_id = '%s' and cat = '%s'" % (titleWatched, cat)
         try:
             self.dbcur.execute(ex)
@@ -495,7 +468,7 @@ class cDb:
 
             VSlog('SQL INSERT viewing Successfully')
         except Exception as e:
-            if 'no such column' in str(e) or 'no column named' in str(e) or 'no such table' in str(e) :
+            if 'no such column' in str(e) or 'no column named' in str(e) or 'no such table' in str(e):
                 self._create_tables('viewing')
                 VSlog('Table recreated : viewing')
 
@@ -506,7 +479,6 @@ class cDb:
                 VSlog('SQL ERROR INSERT : %s' % e)
             pass
 
-
     def get_viewing(self):
         sql_select = "SELECT * FROM viewing group by title order by addon_id DESC"
 
@@ -514,26 +486,24 @@ class cDb:
             self.dbcur.execute(sql_select)
             matchedrow = self.dbcur.fetchall()
             return matchedrow
-        
+
         except Exception as e:
             VSlog('SQL ERROR : %s' % sql_select)
             return None
 
-
     def del_viewing(self, meta):
         sTitleWatched = meta['titleWatched'] if 'titleWatched' in meta else None
-        
+
         sql_deleteCat = ""
         if not sTitleWatched:       # delete all
             sql_delete = "DELETE FROM viewing"
         else:
             sql_deleteTitle = "DELETE FROM viewing WHERE title_id = '%s'" % sTitleWatched
             if 'cat' in meta:
-                sql_deleteCat = " and cat = '%s'" %meta['cat']
+                sql_deleteCat = " and cat = '%s'" % meta['cat']
             sql_delete = sql_deleteTitle + sql_deleteCat
-        
+
         update = 0
-        from resources.lib.gui.gui import cGui
         try:
             self.dbcur.execute(sql_delete)
             self.db.commit()
@@ -543,17 +513,16 @@ class cDb:
             if not update and sql_deleteCat:
                 del meta['cat']
                 return self.del_viewing(meta)
-            
+
             return True
         except Exception as e:
             VSlog('SQL ERROR %s, error = %s' % (sql_delete, e))
-        
+
         return update
 
-
-    # ***********************************
-    #   Download fonctions
-    # ***********************************
+    #  ***********************************
+    #  Download fonctions
+    #  ***********************************
 
     def insert_download(self, meta):
 
@@ -564,7 +533,7 @@ class cDb:
         ex = 'INSERT INTO download (title, url, path, cat, icon, size, totalsize, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
 
         try:
-            self.dbcur.execute(ex, (title,url, sPath,meta['cat'],sIcon, '', '', 0))
+            self.dbcur.execute(ex, (title, url, sPath, meta['cat'], sIcon, '', '', 0))
             self.db.commit()
             VSlog('SQL INSERT download Successfully')
             dialog().VSinfo(addon().VSlang(30042), meta['title'])

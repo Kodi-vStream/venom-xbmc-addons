@@ -85,20 +85,20 @@ class cHoster(iHoster):
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         sHtmlContent = oRequest.request()
 
-        sPattern =  '(?:parseJSON|atob).+?ey(.+?)"'
+        sPattern =  'atob.+?\}\("(.+?)"'
         code = oParser.parse(sHtmlContent, sPattern)
 
         for i in code[1]:
             try:
                 if isMatrix():
-                    code = base64.b64decode("ey" + i).decode('ascii')
+                    code = base64.b64decode(i).decode('ascii')
                 else:
-                    code = base64.b64decode("ey" + i)
+                    code = base64.b64decode(i)
                 break
             except:
                 pass
 
-        api_call = json.loads(code)['url']
+        api_call = json.loads(code[code.rfind("{"):])['url']
 
         if (api_call):
             return True, api_call + '|' + urlEncode(headers)

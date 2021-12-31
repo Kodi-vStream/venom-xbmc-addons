@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+import xbmc
 
 # from resources.lib.statistic import cStatistic
 from resources.lib.home import cHome
@@ -8,7 +9,7 @@ from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.handler.rechercheHandler import cRechercheHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.comaddon import progress, VSlog, addon, window, xbmc
+from resources.lib.comaddon import progress, VSlog, addon, window
 from resources.lib.util import Quote
 # http://kodi.wiki/view/InfoLabels
 # http://kodi.wiki/view/List_of_boolean_conditions
@@ -46,30 +47,14 @@ class main:
 
     def __init__(self):
         self.parseUrl()
-        # Ne pas desactiver la ligne d'en dessous, car sinon ca genere des probleme de Db sous Android.
-
-        # PROBLEME réglé le 31/05/20 !!
-        # Dans runScript."clean" on supprimait les tables pour vider le cache, il fallait donc les recréer.
-        # Maintenant on vide les tables sans les supprimer. 
-        # cDb()._create_tables()
 
     def parseUrl(self):
-
-        # import sys
-        # xbmc.log('arg :' + str(sys.argv), xbmc.LOGNOTICE)
-        # xbmc.log('Debug 1 >>' + str(xbmc.getInfoLabel('Container().CurrentPage')), xbmc.LOGNOTICE)
-        # xbmc.log('Debug 2 >>' + str(xbmc.getInfoLabel('Container.FolderPath')), xbmc.LOGNOTICE)
-
-        
         # Exclue les appels par des plugins qu'on ne sait pas gérer, par exemple :  plugin://plugin.video.vstream/extrafanart
         oPluginHandler = cPluginHandler()
         pluginPath = oPluginHandler.getPluginPath()
-#         if oPluginHandler.getPluginPath() != 'plugin://plugin.video.vstream/':
-#             cGui().setEndOfDirectory()
-#             return
         if pluginPath == 'plugin://plugin.video.vstream/extrafanart/':
             return
-        
+
         oInputParameterHandler = cInputParameterHandler()
 
         if oInputParameterHandler.exist('function'):
@@ -95,22 +80,11 @@ class main:
         if sFunction == 'setSettings':
             setSettings(oInputParameterHandler)
             return
-            
+
         if sFunction == 'DoNothing':
             return
 
         if not oInputParameterHandler.exist('site'):
-
-            # mise a jour
-            try:
-                # from resources.lib.about import cAbout
-                # cAbout().getUpdate()
-                plugins = __import__('resources.lib.about', fromlist=['about']).cAbout()
-                function = getattr(plugins, 'getUpdate')
-                function()
-            except:
-                pass
-
             # charge home
             plugins = __import__('resources.lib.home', fromlist=['home']).cHome()
             function = getattr(plugins, 'load')
@@ -119,13 +93,7 @@ class main:
 
         if oInputParameterHandler.exist('site'):
             sSiteName = oInputParameterHandler.getValue('site')
-            # if oInputParameterHandler.exist('title'):
-                # sTitle = oInputParameterHandler.getValue('title')
-            # else:
-                # sTitle = 'none'
-
             VSlog('load site ' + sSiteName + ' and call function ' + sFunction)
-            # cStatistic().callStartPlugin(sSiteName, sTitle)
 
             if isHosterGui(sSiteName, sFunction):
                 return
@@ -163,7 +131,7 @@ class main:
 
             if sSiteName == 'globalSources':
                 oGui = cGui()
-                aPlugins = oPluginHandler.getAvailablePlugins(True)
+                aPlugins = oPluginHandler.getAvailablePlugins(force=True)
 
                 if len(aPlugins) == 0:
                     addons = addon()
@@ -174,7 +142,6 @@ class main:
                         oOutputParameterHandler = cOutputParameterHandler()
                         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
                         icon = 'sites/%s.png' % (aPlugin[1])
-                        # icon = 'https://imgplaceholder.com/512x512/transparent/fff?text=%s&font-family=Roboto_Bold' % aPlugin[1]
                         oGui.addDir(aPlugin[1], 'load', aPlugin[0], icon, oOutputParameterHandler)
 
                 oGui.setEndOfDirectory()
@@ -189,8 +156,6 @@ class main:
 
             # charge sites
             try:
-                # exec("from resources.sites import " + sSiteName + " as plugin")
-                # exec("plugin." + sFunction + "()")
                 plugins = __import__('resources.sites.%s' % sSiteName, fromlist=[sSiteName])
                 function = getattr(plugins, sFunction)
                 function()
@@ -223,7 +188,7 @@ def setSetting(plugin_id, value):
 # &id5=hoster_uploaded_password&value5=MyPass)
 def setSettings(oInputParameterHandler):
     addons = addon()
-    
+
     for i in range(1, 100):
         plugin_id = oInputParameterHandler.getValue('id' + str(i))
         if plugin_id:
@@ -235,12 +200,13 @@ def setSettings(oInputParameterHandler):
                 addons.setSetting(plugin_id, value)
 
     return True
-    
+
+
 def isHosterGui(sSiteName, sFunction):
     if sSiteName == 'cHosterGui':
-        from resources.lib.gui.hoster import cHosterGui
-        oHosterGui = cHosterGui()
-        exec("oHosterGui." + sFunction + "()")
+        plugins = __import__('resources.lib.gui.hoster', fromlist=['cHosterGui']).cHosterGui()
+        function = getattr(plugins, sFunction)
+        function()
         return True
     return False
 
@@ -255,36 +221,36 @@ def isGui(sSiteName, sFunction):
 
 def isFav(sSiteName, sFunction):
     if sSiteName == 'cFav':
-        from resources.lib.bookmark import cFav
-        oFav = cFav()
-        exec("oFav." + sFunction + "()")
+        plugins = __import__('resources.lib.bookmark', fromlist=['cFav']).cFav()
+        function = getattr(plugins, sFunction)
+        function()
         return True
     return False
 
 
 def isViewing(sSiteName, sFunction):
     if sSiteName == 'cViewing':
-        from resources.lib.viewing import cViewing
-        oViewing = cViewing()
-        exec("oViewing." + sFunction + "()")
+        plugins = __import__('resources.lib.viewing', fromlist=['cViewing']).cViewing()
+        function = getattr(plugins, sFunction)
+        function()
         return True
     return False
 
 
 def isLibrary(sSiteName, sFunction):
     if sSiteName == 'cLibrary':
-        from resources.lib.library import cLibrary
-        oLibrary = cLibrary()
-        exec("oLibrary." + sFunction + "()")
+        plugins = __import__('resources.lib.library', fromlist=['cLibrary']).cLibrary()
+        function = getattr(plugins, sFunction)
+        function()
         return True
     return False
 
 
 def isDl(sSiteName, sFunction):
     if sSiteName == 'cDownload':
-        from resources.lib.download import cDownload
-        oDownload = cDownload()
-        exec("oDownload." + sFunction + "()")
+        plugins = __import__('resources.lib.download', fromlist=['cDownload']).cDownload()
+        function = getattr(plugins, sFunction)
+        function()
         return True
     return False
 
@@ -299,9 +265,9 @@ def isHome(sSiteName, sFunction):
 
 def isTrakt(sSiteName, sFunction):
     if sSiteName == 'cTrakt':
-        from resources.lib.trakt import cTrakt
-        oTrakt = cTrakt()
-        exec("oTrakt." + sFunction + "()")
+        plugins = __import__('resources.lib.trakt', fromlist=['cTrakt']).cTrakt()
+        function = getattr(plugins, sFunction)
+        function()
         return True
     return False
 
@@ -335,11 +301,11 @@ def searchGlobal():
 
     count = 0
     for plugin in aPlugins:
- 
+
         progress_.VSupdate(progress_, total, plugin['name'], True)
         if progress_.iscanceled():
             break
- 
+
         oGui.searchResults[:] = []  # vider le tableau de résultats pour les récupérer par source
         _pluginSearch(plugin, sSearchText)
 
@@ -350,7 +316,7 @@ def searchGlobal():
             oGui.addText(plugin['identifier'], '%s. [COLOR olive]%s[/COLOR]' % (count, plugin['name']), 'sites/%s.png' % (plugin['identifier']))
             for result in oGui.searchResults:
                 oGui.addFolder(result['guiElement'], result['params'])
- 
+
     if not count:   # aucune source ne retourne de résultats
         oGui.addText('globalSearch')  # "Aucune information"
 
@@ -366,14 +332,14 @@ def _pluginSearch(plugin, sSearchText):
 
     # Appeler la source en mode Recherche globale
     window(10101).setProperty('search', 'true')
-    
+
     try:
         plugins = __import__('resources.sites.%s' % plugin['identifier'], fromlist=[plugin['identifier']])
         function = getattr(plugins, plugin['search'][1])
         sUrl = plugin['search'][0] + str(sSearchText)
-        
+
         function(sUrl)
-        
+
         VSlog('Load Search: ' + str(plugin['identifier']))
     except:
         VSlog(plugin['identifier'] + ': search failed')

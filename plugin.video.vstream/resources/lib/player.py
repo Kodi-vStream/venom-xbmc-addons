@@ -10,10 +10,10 @@ from resources.lib.db import cDb
 from resources.lib.util import cUtil, Unquote
 import xbmcplugin
 
-if isMatrix():
-    from urllib.parse import urlparse
-else:
+try:  # Python 2
     from urlparse import urlparse
+except ImportError:  # Python 3
+    from urllib.parse import urlparse
 
 from os.path import splitext
 
@@ -81,7 +81,7 @@ class cPlayer(xbmc.Player):
         else:
             self.Subtitles_file.append(files)
 
-    def run(self, oGuiElement, sTitle, sUrl):
+    def run(self, oGuiElement, sUrl):
 
         # Lancement d'une vidéo sans avoir arreté la précedente
         self.tvShowTitle = oGuiElement.getItemValue('tvshowtitle')
@@ -203,106 +203,105 @@ class cPlayer(xbmc.Player):
     def _setWatched(self):
 
         try:
-            if self.isPlaying():
-                self.totalTime = self.getTotalTime()
-                self.currentTime = self.getTime()
-                self.infotag = self.getVideoInfoTag()
-    
-            if self.totalTime > 0:
-                pourcent = float('%.2f' % (self.currentTime / self.totalTime))
-    
-                saisonViewing = False
+            with cDb() as db:
+                if self.isPlaying():
+                    self.totalTime = self.getTotalTime()
+                    self.currentTime = self.getTime()
+                    self.infotag = self.getVideoInfoTag()
                 
-                #calcul le temp de lecture
-                # Dans le cas ou ont a vu intégralement le contenu, percent = 0.0
-                # Mais on a tout de meme terminé donc le temps actuel est egal au temps total.
-                if (pourcent > 0.90) or (pourcent == 0.0 and self.currentTime == self.totalTime):
-    
-                    # Marquer VU dans la BDD Vstream
-                    sTitleWatched = self.infotag.getOriginalTitle()
-                    if sTitleWatched:
-                        db = cDb()
-                        meta = {}
-                        meta['title'] = sTitleWatched
-                        meta['cat'] = self.sCat
-                        db.insert_watched(meta)
-    
-                        # RAZ du point de reprise
-                        db.del_resume(meta)
-                        
-                        # Sortie des LECTURE EN COURS pour les films, pour les séries la suppression est manuelle
-                        if self.sCat == '1':
-                            meta['titleWatched'] = sTitleWatched
+                if self.totalTime > 0:
+                    pourcent = float('%.2f' % (self.currentTime / self.totalTime))
+        
+                    saisonViewing = False
+                    
+                    #calcul le temp de lecture
+                    # Dans le cas ou ont a vu intégralement le contenu, percent = 0.0
+                    # Mais on a tout de meme terminé donc le temps actuel est egal au temps total.
+                    if (pourcent > 0.90) or (pourcent == 0.0 and self.currentTime == self.totalTime):
+        
+                        # Marquer VU dans la BDD Vstream
+                        sTitleWatched = self.infotag.getOriginalTitle()
+                        if sTitleWatched:
+                            meta = {}
+                            meta['title'] = sTitleWatched
                             meta['cat'] = self.sCat
-                            db.del_viewing(meta)
-                        elif self.sCat == '8':      # A la fin de la lecture d'un episode, on met la saison en "Lecture en cours" 
-                            saisonViewing = True
-                    
-                    # Marquer VU dans les comptes perso
-                    # NE FONCTIONNE PAS SI PLUSIEURS VIDEOS SE SONT ENCHAINEES (cas des épisodes)
-                    if not self.multi:
-                        tmdb_session = self.ADDON.getSetting('tmdb_session')
-                        if tmdb_session:
-                            self.__getWatchlist('tmdb')
-    
-                        bstoken = self.ADDON.getSetting('bstoken')
-                        if bstoken:
-                            self.__getWatchlist('trakt')
-
-                # Sauvegarde du point de lecture pour une reprise
-                elif self.currentTime > 180.0:
-                    sTitleWatched = self.infotag.getOriginalTitle()
-                    if sTitleWatched:
-                        db = cDb()
-                        meta = {}
-                        meta['title'] = sTitleWatched
-                        meta['site'] = self.sSite
-                        meta['point'] = self.currentTime
-                        meta['total'] = self.totalTime
-                        matchedrow = db.insert_resume(meta)
-                        
-                        # Lecture en cours
-                        meta['cat'] = self.sCat
-                        meta['site'] = self.sSource
-                        meta['sTmdbId'] = self.sTmdbId
-                        
-                        # Lecture d'un épisode, on sauvegarde la saison 
-                        if self.sCat == '8':
-                            saisonViewing = True
-                        else:   # Lecture d'un film
+                            db.insert_watched(meta)
+        
+                            # RAZ du point de reprise
+                            db.del_resume(meta)
                             
-                            # les 'divers' de moins de 45 minutes peuvent être de type 'adultes'
-                            # pas de sauvegarde en attendant mieux
-                            if self.sCat == '5' and self.totalTime < 2700:
-                                pass
-                            else:
-                                meta['title'] = self.sTitle
+                            # Sortie des LECTURE EN COURS pour les films, pour les séries la suppression est manuelle
+                            if self.sCat == '1':
                                 meta['titleWatched'] = sTitleWatched
-                                if self.movieUrl and self.movieFunc:
-                                    meta['siteurl'] = self.movieUrl
-                                    meta['fav'] = self.movieFunc
-                                else:
-                                    meta['siteurl'] = self.sSite
-                                    meta['fav'] = self.sFav
+                                meta['cat'] = self.sCat
+                                db.del_viewing(meta)
+                            elif self.sCat == '8':      # A la fin de la lecture d'un episode, on met la saison en "Lecture en cours" 
+                                saisonViewing = True
+                        
+                        # Marquer VU dans les comptes perso
+                        # NE FONCTIONNE PAS SI PLUSIEURS VIDEOS SE SONT ENCHAINEES (cas des épisodes)
+                        if not self.multi:
+                            tmdb_session = self.ADDON.getSetting('tmdb_session')
+                            if tmdb_session:
+                                self.__getWatchlist('tmdb')
+        
+                            bstoken = self.ADDON.getSetting('bstoken')
+                            if bstoken:
+                                self.__getWatchlist('trakt')
+
+                    # Sauvegarde du point de lecture pour une reprise
+                    elif self.currentTime > 180.0:
+                        sTitleWatched = self.infotag.getOriginalTitle()
+                        if sTitleWatched:
+                            meta = {}
+                            meta['title'] = sTitleWatched
+                            meta['site'] = self.sSite
+                            meta['point'] = self.currentTime
+                            meta['total'] = self.totalTime
+                            matchedrow = db.insert_resume(meta)
                             
-                                db.insert_viewing(meta)
-                    
-                # Lecture d'un épisode, on met la saison "En cours de lecture"
-                if saisonViewing:
-                    meta['cat'] = '4'  # saison
-                    meta['sTmdbId'] = self.sTmdbId
-                    tvShowTitle = cUtil().titleWatched(self.tvShowTitle).replace(' ', '')
-                    if self.sSaison:
-                        meta['season'] = self.sSaison
-                        meta['title'] = self.tvShowTitle + " S" + self.sSaison
-                        meta['titleWatched'] = tvShowTitle + "_S" + self.sSaison
-                    else:
-                        meta['title'] = self.tvShowTitle
-                        meta['titleWatched'] = tvShowTitle
-                    meta['site'] = self.sSource
-                    meta['siteurl'] = self.saisonUrl
-                    meta['fav'] = self.nextSaisonFunc
-                    db.insert_viewing(meta)
+                            # Lecture en cours
+                            meta['cat'] = self.sCat
+                            meta['site'] = self.sSource
+                            meta['sTmdbId'] = self.sTmdbId
+                            
+                            # Lecture d'un épisode, on sauvegarde la saison 
+                            if self.sCat == '8':
+                                saisonViewing = True
+                            else:   # Lecture d'un film
+                                
+                                # les 'divers' de moins de 45 minutes peuvent être de type 'adultes'
+                                # pas de sauvegarde en attendant mieux
+                                if self.sCat == '5' and self.totalTime < 2700:
+                                    pass
+                                else:
+                                    meta['title'] = self.sTitle
+                                    meta['titleWatched'] = sTitleWatched
+                                    if self.movieUrl and self.movieFunc:
+                                        meta['siteurl'] = self.movieUrl
+                                        meta['fav'] = self.movieFunc
+                                    else:
+                                        meta['siteurl'] = self.sSite
+                                        meta['fav'] = self.sFav
+                                
+                                    db.insert_viewing(meta)
+                        
+                    # Lecture d'un épisode, on met la saison "En cours de lecture"
+                    if saisonViewing:
+                        meta['cat'] = '4'  # saison
+                        meta['sTmdbId'] = self.sTmdbId
+                        tvShowTitle = cUtil().titleWatched(self.tvShowTitle).replace(' ', '')
+                        if self.sSaison:
+                            meta['season'] = self.sSaison
+                            meta['title'] = self.tvShowTitle + " S" + self.sSaison
+                            meta['titleWatched'] = tvShowTitle + "_S" + self.sSaison
+                        else:
+                            meta['title'] = self.tvShowTitle
+                            meta['titleWatched'] = tvShowTitle
+                        meta['site'] = self.sSource
+                        meta['siteurl'] = self.saisonUrl
+                        meta['fav'] = self.nextSaisonFunc
+                        db.insert_viewing(meta)
 
         except Exception as err:
             VSlog("ERROR Player_setWatched : {0}".format(err))
@@ -318,27 +317,27 @@ class cPlayer(xbmc.Player):
 
         self.playBackEventReceived = True
 
-        # Reprendre la lecture
-        if self.isPlayingVideo() and self.getTime() < 180:  # si supérieur à 3 minutes, la gestion de la reprise est assuré par KODI
-            self.infotag = self.getVideoInfoTag()
-            sTitleWatched = self.infotag.getOriginalTitle()
-            if sTitleWatched:
-                db = cDb()
-                meta = {}
-                meta['title'] = sTitleWatched
-                resumePoint, total = db.get_resume(meta)
-                if resumePoint:
-                    h = resumePoint//3600
-                    ms = resumePoint-h*3600
-                    m = ms//60
-                    s = ms-m*60
-                    ret = dialog().VSselect(['Reprendre depuis %02d:%02d:%02d' %(h, m, s), 'Lire depuis le début'], 'Reprendre la lecture')
-                    if ret == 0:
-                        self.seekTime(resumePoint)
-                    elif ret == 1:
-                        self.seekTime(0.0)
-                        # RAZ du point de reprise
-                        db.del_resume(meta)
+        with cDb() as db:
+            # Reprendre la lecture
+            if self.isPlayingVideo() and self.getTime() < 180:  # si supérieur à 3 minutes, la gestion de la reprise est assuré par KODI
+                self.infotag = self.getVideoInfoTag()
+                sTitleWatched = self.infotag.getOriginalTitle()
+                if sTitleWatched:
+                    meta = {}
+                    meta['title'] = sTitleWatched
+                    resumePoint, total = db.get_resume(meta)
+                    if resumePoint:
+                        h = resumePoint//3600
+                        ms = resumePoint-h*3600
+                        m = ms//60
+                        s = ms-m*60
+                        ret = dialog().VSselect(['Reprendre depuis %02d:%02d:%02d' %(h, m, s), 'Lire depuis le début'], 'Reprendre la lecture')
+                        if ret == 0:
+                            self.seekTime(resumePoint)
+                        elif ret == 1:
+                            self.seekTime(0.0)
+                            # RAZ du point de reprise
+                            db.del_resume(meta)
 
 
     def __getWatchlist(self, sAction):

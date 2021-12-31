@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'filmstoon_pro'
 SITE_NAME = 'Films toon'
 SITE_DESC = 'Films en streaming'
 
-URL_MAIN = 'https://filmstoon.in/'
+URL_MAIN = "https://filmstoon.in/"
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_NEWS = (URL_MAIN + 'movies/page/1/', 'showMovies')
@@ -359,9 +359,8 @@ def showHosters():
 
     oParser = cParser()
 
-    sPattern = '<div class="movieplay">.+?src="([^"]+)'
+    sPattern = '<div class="movieplay"><iframe src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         if 'embedo' in aResult[1][0]:
 
