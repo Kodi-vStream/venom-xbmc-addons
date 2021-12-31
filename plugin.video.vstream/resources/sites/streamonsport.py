@@ -170,23 +170,23 @@ def showLive():
     oParser = cParser()
 
     # liens visibles
-    sPattern = "btn btn-success btn-sm.+?src='([^\']*)"
+    sPattern = "btn btn-(success|warning) btn-sm.+?src='([^\']*)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     i = 0
     if (aResult[0] == True):
-        total = len(aResult[1])
         oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in aResult[1]:
-            i += 1
-            sUrl2 = aEntry
-            sDisplayTitle = sMovieTitle + ' - Lien ' + str(i)
-
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('siterefer', sUrl)
-            oGui.addLink(SITE_IDENTIFIER, 'Showlink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+        if aResult[1]:
+            for aEntry in aResult[1]:
+                i += 1
+                sUrl2 = aEntry[1]
+                sDisplayTitle = sMovieTitle + ' - Lien ' + str(i)
+    
+                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('siterefer', sUrl)
+                oGui.addLink(SITE_IDENTIFIER, 'Showlink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     # 1 seul liens tv telerium
     sPattern = 'iframe id="video".src.+?id=([^"]+)'
@@ -223,7 +223,6 @@ def Showlink():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     siterefer = oInputParameterHandler.getValue('siterefer')
     sHosterUrl = ''
-    sUrl2 = ''
                     
     if 'yahoo.php' in sUrl:  # redirection
         sUrl = URL_MAIN + sUrl
@@ -234,64 +233,57 @@ def Showlink():
         # oRequestHandler.addHeaderEntry('Referer', siterefer) # a verifier
         sHtmlContent = oRequestHandler.request()
 
+        siterefer = sUrl
         oParser = cParser()
         if "pkcast123.me" in sHtmlContent:
             sPattern = 'fid="([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            sUrl2 = "https://www.pkcast123.me/footy.php?player=desktop&live=" +  aResult[1][0] + "&vw=649&vh=460"
+            sUrl = "https://www.pkcast123.me/footy.php?player=desktop&live=" +  aResult[1][0] + "&vw=649&vh=460"
         else:
             sPattern = '<iframe.+?src="([^"]+)'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if aResult[0]:
-                sUrl2 = aResult[1][0]
+                sUrl = aResult[1][0]
 
-    # pas de pre requete
-    if 'laylow.cyou' in sUrl:
-        sUrl2 = sUrl
+    shosterurl = ''
+    if 'pkcast123' in sUrl:
+        bvalid, shosterurl = Hoster_Pkcast(sUrl, siterefer)
+        if bvalid:
+            sHosterUrl = shosterurl
 
-    if 'telerium' in sUrl:  # chaine TV
-        sUrl2 = sUrl
+    if "leet365.cc" in sUrl:
+        bvalid, shosterurl = Hoster_Leet365(sUrl, siterefer)
+        if bvalid:
+            sHosterUrl = shosterurl
+        
+    if 'telerium' in sUrl:
+        bvalid, shosterurl = Hoster_Telerium(sUrl, siterefer)
+        if bvalid:
+            sHosterUrl = shosterurl
 
-    if sUrl2:
-        shosterurl = ''
-        if 'pkcast123' in sUrl2:
-            bvalid, shosterurl = Hoster_Pkcast(sUrl2, sUrl)
-            if bvalid:
-                sHosterUrl = shosterurl
+    if 'andrhino' in sUrl:
+        bvalid, shosterurl = Hoster_Andrhino(sUrl, siterefer)
+        if bvalid:
+            sHosterUrl = shosterurl
 
-        if "leet365.cc" in sUrl2:
-            bvalid, shosterurl = Hoster_Leet365(sUrl2, sUrl)
-            if bvalid:
-                sHosterUrl = shosterurl
-            
-        if 'telerium' in sUrl2:
-            bvalid, shosterurl = Hoster_Telerium(sUrl2, sUrl)
-            if bvalid:
-                sHosterUrl = shosterurl
+    if 'wigistream' in sUrl or 'cloudstream' in sUrl:
+        bvalid, shosterurl = Hoster_Wigistream(sUrl, siterefer)
+        if bvalid:
+            sHosterUrl = shosterurl
 
-        if 'andrhino' in sUrl2:
-            bvalid, shosterurl = Hoster_Andrhino(sUrl2, sUrl)
-            if bvalid:
-                sHosterUrl = shosterurl
+    # a verifier
+    if 'laylow' in sUrl:
+        bvalid, shosterurl = Hoster_Laylow(sUrl, siterefer)
+        if bvalid:
+            sHosterUrl = shosterurl
 
-        if 'wigistream' in sUrl2 or 'cloudstream' in sUrl2:
-            bvalid, shosterurl = Hoster_Wigistream(sUrl2, sUrl)
-            if bvalid:
-                sHosterUrl = shosterurl
-
-        # a verifier
-        if 'laylow' in sUrl2:
-            bvalid, shosterurl = Hoster_Laylow(sUrl2, sUrl)
-            if bvalid:
-                sHosterUrl = shosterurl
-
-        if sHosterUrl:
-            sHosterUrl = sHosterUrl.strip()
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if(oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    if sHosterUrl:
+        sHosterUrl = sHosterUrl.strip()
+        oHoster = cHosterGui().checkHoster(sHosterUrl)
+        if(oHoster != False):
+            oHoster.setDisplayName(sMovieTitle)
+            oHoster.setFileName(sMovieTitle)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
@@ -409,6 +401,11 @@ def Hoster_Wigistream(url, referer):
         if aResult:
             return True, aResult[0] + '|User-Agent=' + UA + '&Referer=' + Quote(url)
 
+    sPattern = '<iframe.+?src="([^"]+)' # iframe imbriqué
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        return Hoster_Wigistream(aResult[0], url)
+
     return False, False
 
 
@@ -420,10 +417,12 @@ def Hoster_Laylow(url, referer):
 
     sPattern = "source:.+?'(https.+?m3u8)"
     aResult = re.findall(sPattern, sHtmlContent)
+    
     if aResult:
         return True, aResult[0] + '|User-Agent=' + UA + '&Referer=' + Quote(url)
 
-    return False, False
+    return Hoster_Pkcast(url, referer)
+
 
 def getRealTokenJson(link, referer):
 
