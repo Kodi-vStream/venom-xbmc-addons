@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.video.vstream" name="vStream" version="1.6.0" provider-name="venom-xbmc-addons">
+<addon id="plugin.video.vstream" name="vStream" version="1.7.0" provider-name="venom-xbmc-addons">
     <requires>
 
         <trycatch>
@@ -12,7 +12,6 @@
                 <import addon="xbmc.python" version="2.24.0"/>
             </catch>
         </trycatch>
-
         <import addon="repository.vstream"/>
         <import addon="script.module.pyqrcode"/>
         <import addon="script.module.requests"/>
@@ -96,6 +95,11 @@
         <info compressed="false">https://raw.githubusercontent.com/Ovni-crea/seleniumzip/master/addons.xml</info>
         <checksum>https://raw.githubusercontent.com/Ovni-crea/seleniumzip/master/addons.xml.md5</checksum>
         <datadir zip="true">https://raw.githubusercontent.com/Ovni-crea/seleniumzip/master</datadir>
+    </dir>
+    <dir>
+        <info compressed="false">https://raw.githubusercontent.com/Arias800/Fichier-divers/master/addon.xml</info>
+        <checksum>https://raw.githubusercontent.com/Arias800/Fichier-divers/master/addons.xml.md5</checksum>
+        <datadir zip="true">https://raw.githubusercontent.com/Arias800/script.module.dnspython/master</datadir>
     </dir>
    </extension>
 
