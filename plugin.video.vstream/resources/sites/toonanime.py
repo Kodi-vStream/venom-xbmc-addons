@@ -170,7 +170,6 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oOutputParameterHandler.addParameter('referer', sUrl)
 
             oGui.addAnime(SITE_IDENTIFIER, 'ShowSxE', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -208,15 +207,16 @@ def ShowSxE():
     sDesc = oInputParameterHandler.getValue('sDesc')
     sMovieTitle = re.sub('Episode \d+', '', sMovieTitle)
 
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
+    sID = sUrl.split('/')[3].split('-')[0]
 
-    sPattern = '<div id="buttons_.+?"(.+?)/div></div>'
+    oRequestHandler = cRequestHandler(URL_MAIN + 'engine/ajax/full-story.php?newsId=' + sID)
+    sHtmlContent = oRequestHandler.request(jsonDecode=True)['html']
+
+    sPattern = 'href="(.+?)".+?title="(.+?)">'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    i = 0
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
@@ -226,29 +226,20 @@ def ShowSxE():
             if progress_.iscanceled():
                 break
 
-            i = i + 1
+            sTitle = aEntry[1]
+            sUrl2 = aEntry[0]
 
-            sPattern = 'id="(.+?)" class="(.+?)">(.+?)<'
-            aResult1 = oParser.parse(aEntry, sPattern)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('id', sID)
 
-            for aEntry1 in aResult1[1]:
-                sTitle = sMovieTitle + " E" + str(i) + " [COLOR coral]Lecteur " + aEntry1[2] + "[/COLOR]"
-                hostClass = aEntry1[1]
-                sUrl2 = aEntry1[0]
-
-                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oOutputParameterHandler.addParameter('sDesc', sDesc)
-                oOutputParameterHandler.addParameter('sReferer', sUrl)
-                oOutputParameterHandler.addParameter('hostClass', hostClass)
-
-                oGui.addAnime(SITE_IDENTIFIER, 'seriesHosters', sTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addAnime(SITE_IDENTIFIER, 'seriesHosters', sTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
-
 
 def seriesHosters():
     oGui = cGui()
@@ -257,47 +248,58 @@ def seriesHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sReferer = oInputParameterHandler.getValue('sReferer')
-    hostClass = oInputParameterHandler.getValue('hostClass')
+    sDesc = oInputParameterHandler.getValue('sDesc')
+    sID = oInputParameterHandler.getValue('id')
 
-    Id = sReferer.split('/')[4].split('-')[0]
-    query_args = (('newsId', Id), ('preset', ''), ('preset2', Id), ('template', ''), ('d', time.time() * 1000))
-    data = urlEncode(query_args)
-
-    oRequestHandler = cRequestHandler(URL_MAIN + "engine/ajax/full-story.php")
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addHeaderEntry('Referer', sReferer)
-    oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
-    oRequestHandler.addParametersLine(data)
+    oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'id="content_' + sUrl + '".+?>(.+?)<'
+    sPattern = 'data-class="(.+?) ".+?data-server-id="(.+?)"'
 
     oParser = cParser()
-    aEntry = oParser.parse(sHtmlContent, sPattern)[1][0]
+    aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if "https" in aEntry:
-        sHosterUrl = aEntry
-    elif hostClass == "toonanimeplayer_cdnt":
-        sHosterUrl = "https://lb.toonanime.xyz/playlist/" + aEntry + "/" + str(round(time.time() * 1000))
-    else:
-        oRequestHandler = cRequestHandler(URL_MAIN + "/templates/toonanime/js/anime.js")
-        sHtmlContent = oRequestHandler.request()
+    oRequestHandler = cRequestHandler(URL_MAIN + 'engine/ajax/full-story.php?newsId=' + sID)
+    sHtmlContent = oRequestHandler.request(jsonDecode=True)['html']
 
-        sPattern = 'player_type=="' + hostClass + '".+?src=\\\\"([^\\\\]+)\\\\'
-        urlBase = oParser.parse(sHtmlContent, sPattern)[1][0]
-        sHosterUrl = urlBase.replace('"+player_content+"', aEntry)
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
+        for aEntry in aResult[1]:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
 
-    sMovieTitle = re.sub("\[COLOR coral\](.+?)\[/COLOR\]", "", sMovieTitle)
+            sPattern = '<div id="content_player_' + aEntry[1] + '".+?>(.+?)<'
+            aResult1 = oParser.parse(sHtmlContent, sPattern)
+            hostClass = aEntry[0]
 
-    if "toonanime" in sHosterUrl:
-        oHoster = cHosterGui().checkHoster("mp4")
-    else:
-        oHoster = cHosterGui().checkHoster(sHosterUrl)
+            for aEntry1 in aResult1[1]:
+                sTitle = sMovieTitle + " [COLOR coral]Lecteur " + hostClass + "[/COLOR]"
 
-    if (oHoster != False):
-        oHoster.setDisplayName(sMovieTitle)
-        oHoster.setFileName(sMovieTitle)
-        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                if "https" in aEntry1[0]:
+                    sHosterUrl = aEntry1[0]
+                elif hostClass == "cdnt":
+                    sHosterUrl = "https://lb.toonanime.xyz/playlist/" + aEntry1 + "/" + str(round(time.time() * 1000))
+                else:
+                    oRequestHandler = cRequestHandler(URL_MAIN + "/templates/toonanime/js/anime.js")
+                    sHtmlContent1 = oRequestHandler.request()
+
+                    sPattern = 'player_type=="toonanimeplayer_' + hostClass + '".+?src=\\\\"([^\\\\]+)\\\\"'
+                    urlBase = oParser.parse(sHtmlContent1, sPattern)[1][0]
+                    sHosterUrl = urlBase.replace('"+player_content+"', aEntry1)
+
+                if "toonanime" in sHosterUrl:
+                    oHoster = cHosterGui().checkHoster("mp4")
+                else:
+                    oHoster = cHosterGui().checkHoster(sHosterUrl)
+
+                if (oHoster != False):
+                    oHoster.setDisplayName(sTitle)
+                    oHoster.setFileName(sTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
