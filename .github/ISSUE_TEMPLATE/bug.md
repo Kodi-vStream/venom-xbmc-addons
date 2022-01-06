@@ -9,13 +9,13 @@ about: Créer un rapport de Bug
 
 **Votre system**
 - OS: [Windows, Android]
-- Appareil [nvidia shield, Ultra]
-- Version Kodi  [16.17.18]
-- Version Vstream
+- Appareil: [nvidia shield, Ultra]
+- Version Kodi: [16.17.18]
+- Version Vstream: [1.7.0]
 
 **Nous devons le reproduire**
 <!-- Pour cela il nous faut: -->
-- Nnom du site: 
+- Nom du site: 
 - Titre du fim/serie: 
 - Nom du host (openload/vidzi/...): 
 
