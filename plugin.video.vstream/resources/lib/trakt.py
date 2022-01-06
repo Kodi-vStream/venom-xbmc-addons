@@ -96,7 +96,7 @@ class cTrakt:
             VSlog('bstoken invalid')
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oOutputParameterHandler.addParameter('type', 'movie')
-            oGui.addDir(SITE_IDENTIFIER, 'getToken()', self.ADDON.VSlang(30305), 'trakt.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'getToken', self.ADDON.VSlang(30305), 'trakt.png', oOutputParameterHandler)
         else:
             # nom de l'user
             try:
