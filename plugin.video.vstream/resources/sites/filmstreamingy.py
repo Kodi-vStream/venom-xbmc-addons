@@ -107,7 +107,7 @@ def showMovies(sSearch=''):
     sHtmlContent = oRequestHandler.request()
 
     #Regex surement un peu trop leger, freeze
-    sPattern = 'item">.+?href="([^"]+).+?(?:|quality">([^<]*).+?)src="([^"]+).+?alt="([^"]+).+?(?:|tag">([^<]+)).+?p>([^<]+)'
+    sPattern = 'item">.+?href="([^"]+).+?(?:|quality">([^<]*)).+?src="([^"]+).+?alt="([^"]+).+?(?:|tag">([^<]+)).+?p>([^<]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
