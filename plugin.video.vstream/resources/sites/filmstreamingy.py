@@ -9,22 +9,22 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 
 SITE_IDENTIFIER = 'filmstreamingy'
 SITE_NAME = 'FilmStreamingY'
 SITE_DESC = 'stream HD, streaming Sans pub, streaming vf'
 
-URL_MAIN = "https://www.films-streamingr.com/"
+URL_MAIN = "https://www.film-streamingk.info/"
 
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_MOVIE = (True, 'load')
-MOVIE_NEWS = (URL_MAIN + 'regarder-les-meilleurs-film-en-hd-et-vf-streaming', 'showMovies')
-MOVIE_SANTA = (URL_MAIN + 'liste-de-films-de-noel', 'showMovies')
-MOVIE_NOTES = (URL_MAIN + 'genre/top-films-streaming', 'showMovies')
-MOVIE_IMDB = (URL_MAIN + 'top-imdb', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'film/film-en-streaming', 'showMovies')
+MOVIE_SANTA = (URL_MAIN + 'film/genre/liste-de-films-de-noell', 'showMovies')
+MOVIE_NOTES = (URL_MAIN + 'film/genre/top-films-streaming', 'showMovies')
+MOVIE_IMDB = (URL_MAIN + 'film/top-imdb-films', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
 
@@ -106,6 +106,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
+    #Regex surement un peu trop leger, freeze
     sPattern = 'item">.+?href="([^"]+).+?(?:|quality">([^<]*).+?)src="([^"]+).+?alt="([^"]+).+?(?:|tag">([^<]+)).+?p>([^<]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
