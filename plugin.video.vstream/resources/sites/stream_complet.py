@@ -255,7 +255,7 @@ def showSXE():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
 
-        oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory()
 
 
 def showLinks():
