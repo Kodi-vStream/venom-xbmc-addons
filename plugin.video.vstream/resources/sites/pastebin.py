@@ -10,7 +10,6 @@ from resources.lib.comaddon import progress, addon, dialog, VSlog, VSPath, isMat
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.util import Quote, cUtil, Unquote
-from resources.lib.tmdb import cTMDb
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.gui.hoster import cHosterGui
@@ -783,6 +782,7 @@ def showSearchGlobal(sSearch=''):
 
 
 def showGenres():
+    from resources.lib.tmdb import cTMDb
     tmdb = cTMDb()
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()

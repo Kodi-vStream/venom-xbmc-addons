@@ -10,7 +10,6 @@ import unicodedata
 
 from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix, xbmc, xbmcgui
 from resources.lib.util import QuotePlus
-from resources.lib.handler.requestHandler import cRequestHandler
 
 try:
     from sqlite3 import dbapi2 as sqlite
@@ -1091,6 +1090,7 @@ class cTMDb:
         return result
 
     def _call(self, action, append_to_response=''):
+        from resources.lib.handler.requestHandler import cRequestHandler
         url = '%s%s?language=%s&api_key=%s' % (self.URL, action, self.lang, self.api_key)
         if append_to_response:
             url += '&%s' % append_to_response
