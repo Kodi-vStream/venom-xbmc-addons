@@ -155,7 +155,7 @@ def showSeries(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<span>\d+</span><a href="([^"]+).+?>([^<]+)</a></div>'
+    sPattern = '<span>\d+</span>\s*<a href="([^"]+).+?>([^<]+)</a>\s*</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sNextPage = URL_MAIN[:-1] + aResult[1][0][0]
