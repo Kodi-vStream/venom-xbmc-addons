@@ -266,11 +266,6 @@ class cGui:
 
         oListItem = self.createListItem(oGuiElement)
 
-        if _isFolder == False:
-            oListItem.setProperty('IsPlayable', 'true')
-        else:
-            oListItem.setProperty('IsPlayable', 'false')
-
         sCat = oGuiElement.getCat()
         if sCat:
             cGui.sCat = sCat
@@ -283,6 +278,7 @@ class cGui:
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
 
         if _isFolder == True:
+            # oListItem.setProperty('IsPlayable', 'true')
             if sCat:    # 1 = movies, moviePack; 2 = series, animes, episodes; 5 = MISC
                 if oGuiElement.getMeta():
                     self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
@@ -300,6 +296,7 @@ class cGui:
                 if sCat != 6:
                     self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
         else:
+            oListItem.setProperty('IsPlayable', 'true')
             self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
