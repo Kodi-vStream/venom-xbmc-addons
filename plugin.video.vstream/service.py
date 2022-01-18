@@ -1,17 +1,21 @@
 # -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 
-#Import enregistrement
+# Import enregistrement
 import subprocess
 import xbmcvfs
+import xbmc
+
 from datetime import datetime
-from resources.lib.comaddon import addon, xbmc, VSlog, VSPath, isMatrix, siteManager
+from resources.lib.comaddon import addon, VSlog, VSPath, isMatrix, siteManager
+
 
 if isMatrix():
-    #Import Serveur
+    # Import Serveur
     import threading
     from socketserver import ThreadingMixIn
     from http.server import HTTPServer, ThreadingHTTPServer
+
 
 def service():
     ADDON = addon()
@@ -31,8 +35,8 @@ def service():
     monitor = xbmc.Monitor()
 
     del ADDON
-    
-    while not monitor.abortRequested() and not recordInProgress == True:
+
+    while not monitor.abortRequested() and recordInProgress is not True:
         if monitor.waitForAbort(int(interval)):
             break
 
@@ -46,8 +50,8 @@ def service():
             proc = subprocess.Popen(command, stdout=subprocess.PIPE)
             p_status = proc.wait()
 
-
     server_thread.join()
+
 
 if __name__ == '__main__':
     service()
