@@ -352,7 +352,7 @@ class cGuiElement:
         return self.__sPoster
 
     def setFanart(self, sFanart):
-        if (sFanart != ''):
+        if sFanart != '':
             self.__sFanart = sFanart
 
     def setMovieFanart(self):
@@ -517,15 +517,15 @@ class cGuiElement:
             if sType:
                 args = (sType, sTitle)
                 kwargs = {}
-                if (self.__ImdbId):
+                if self.__ImdbId:
                     kwargs['imdb_id'] = self.__ImdbId
-                if (self.__TmdbId):
+                if self.__TmdbId:
                     kwargs['tmdb_id'] = self.__TmdbId
-                if (self.__Year):
+                if self.__Year:
                     kwargs['year'] = self.__Year
-                if (self.__Season):
+                if self.__Season:
                     kwargs['season'] = self.__Season
-                if (self.__Episode):
+                if self.__Episode:
                     kwargs['episode'] = self.__Episode
 
                 meta = TMDb.get_meta(*args, **kwargs)
