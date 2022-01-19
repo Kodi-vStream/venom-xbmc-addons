@@ -762,7 +762,7 @@ class cTMDb:
                 if year:
                     sql_select = sql_select + ' AND tvshow.year = %s' % year
 
-        elif media_type == 'season':
+        elif media_type == 'season' and season:
             sql_select = 'SELECT *, season.poster_path, season.premiered, ' \
                              'season.year, season.plot FROM season LEFT JOIN tvshow ON season.tmdb_id = tvshow.tmdb_id'
             if tmdb_id:
@@ -1037,7 +1037,7 @@ class cTMDb:
                 meta = self.search_tvshow_id(tmdb_id)
             elif name:
                 meta = self.search_tvshow_name(name, year)
-        elif media_type == 'season':
+        elif media_type == 'season' and season:
             if tmdb_id:
                 meta = self.search_season_id(tmdb_id, season)
             else:  # on retrouve l'id en cherchant la série qui peut être en cache
