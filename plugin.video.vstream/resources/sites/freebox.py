@@ -427,10 +427,10 @@ def decodeNrj(d):
     oRequestHandler = cRequestHandler(d)
     sHtmlContent = oRequestHandler.request()
 
-    title = re.search('<div data-title="([^"]+)"', sHtmlContent).group(1)
+    title = re.search('data-program_title="([^"]+)"', sHtmlContent).group(1)
     ids = re.search('data-ref="([^"]+)"', sHtmlContent).group(1)
 
-    url = 'https://www.nrj-play.fr/compte/live?channel=' + d.split('/')[3] + '&title=' + title + '&channel='
+    url = 'https://www.nrj-play.fr/compte/live?channel=' + d.split('/')[3] + '&channel=' + d.split('/')[3] + '&title=' + title + '&channel='
     url += d.split('/')[3] + '&ref=' + ids + '&formId=formDirect'
 
     oRequestHandler = cRequestHandler(url)
