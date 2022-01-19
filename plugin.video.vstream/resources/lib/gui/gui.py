@@ -738,9 +738,11 @@ class cGui:
 
         return False
 
-    def showNumBoard(self, sDefaultNum=''):
+    def showNumBoard(self, sTitle="", sDefaultNum=''):
         dialogs = dialog()
-        numboard = dialogs.numeric(0, self.ADDON.VSlang(30019), sDefaultNum)
+        if not sTitle:
+            sTitle = self.ADDON.VSlang(30019)
+        numboard = dialogs.numeric(0, sTitle, sDefaultNum)
         # numboard.doModal()
         if numboard is not None:
             return numboard

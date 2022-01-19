@@ -459,15 +459,12 @@ def load():
         oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'deletePasteName', addons.VSlang(30412))
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-    # Menu pour ajouter un dossier (hors widget)
-    sDecoColor = addons.getSetting('deco_color')
+    # Menus non visibles en widget
     if not xbmc.getCondVisibility('Window.IsActive(home)'):
-        oOutputParameterHandler = cOutputParameterHandler()
-        oGui.addDir(SITE_IDENTIFIER, 'addPasteName', '[COLOR %s]Ajouter un dossier %s[/COLOR]' % (sDecoColor, SITE_NAME), 'listes.png', oOutputParameterHandler)
+        sDecoColor = addons.getSetting('deco_color')
 
-    # Menu pour raffraichir le cache
-    oOutputParameterHandler = cOutputParameterHandler()
-    oGui.addDir(SITE_IDENTIFIER, 'refreshAllPaste', '[COLOR %s]Mettre à jour tous les contenus[/COLOR]' % sDecoColor, 'download.png', oOutputParameterHandler)
+        # Menu pour définir la periode du cache
+        oGui.addDir(SITE_IDENTIFIER, 'adminContenu', '[COLOR %s]Gérer les contenus[/COLOR]' % sDecoColor, 'library.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -2351,3 +2348,40 @@ def deletePasteID():
     dialog().VSinfo(addons.VSlang(30072))
 
     cGui().updateDirectory()
+
+
+# Menu d'administration des contenus
+def adminContenu():
+    oGui = cGui()
+    oOutputParameterHandler = cOutputParameterHandler()
+    sDecoColor = addon().getSetting('deco_color')
+
+    # Menu pour ajouter un dossier
+    oGui.addDir(SITE_IDENTIFIER, 'addPasteName', '[COLOR %s]Ajouter un dossier[/COLOR]' % sDecoColor, 'notes.png', oOutputParameterHandler)
+
+    # Menu pour raffraichir le cache
+    oGui.addDir(SITE_IDENTIFIER, 'refreshAllPaste', '[COLOR %s]Forcer la mise à jour des contenus[/COLOR]' % sDecoColor, 'download.png', oOutputParameterHandler)
+
+    # Menu pour définir la periode du cache
+    oGui.addDir(SITE_IDENTIFIER, 'adminCacheDuration', '[COLOR %s]Période de raffraichissement des contenus[/COLOR]' % sDecoColor, 'update.png', oOutputParameterHandler)
+
+    # Menu pour raffraichir le cache
+    oGui.addDir(SITE_IDENTIFIER, 'adminNbElement', "[COLOR %s]Nombre d'éléments affichés[/COLOR]" % sDecoColor, 'listes.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+# Définir la période de raffraichissement des pastes
+def adminCacheDuration():
+    oGui = cGui()
+    nDuration = oGui.showNumBoard("Nombre d'heures", str(CACHE_DURATION))
+    if nDuration:
+        addon().setSetting(SITE_IDENTIFIER + '_cacheDuration', nDuration)
+
+# Définir le nombre d'éléments par liste
+def adminNbElement():
+    oGui = cGui()
+    nElement = oGui.showNumBoard("Nombre d'éléments par liste", str(ITEM_PAR_PAGE))
+    if nElement:
+        addon().setSetting(SITE_IDENTIFIER + '_nbItemParPage', nElement)
+
