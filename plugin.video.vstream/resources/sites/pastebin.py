@@ -69,7 +69,7 @@ def getCacheDuration():
     if not cacheDuration:
         cacheDuration = "12"  # en heure
         addon().setSetting(SITE_IDENTIFIER + '_cacheDuration', cacheDuration)
-    return min(int(cacheDuration), 168)
+    return int(cacheDuration)
 
 CACHE_DURATION = getCacheDuration()
 
@@ -463,7 +463,10 @@ def load():
     if not xbmc.getCondVisibility('Window.IsActive(home)'):
         sDecoColor = addons.getSetting('deco_color')
 
-        # Menu pour définir la periode du cache
+        # Menu pour ajouter un dossier
+        oGui.addDir(SITE_IDENTIFIER, 'addPasteName', '[COLOR %s]Ajouter un dossier[/COLOR]' % sDecoColor, 'notes.png', oOutputParameterHandler)
+
+        # Menu pour gérer les paramètres
         oGui.addDir(SITE_IDENTIFIER, 'adminContenu', '[COLOR %s]Gérer les contenus[/COLOR]' % sDecoColor, 'library.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -2355,9 +2358,6 @@ def adminContenu():
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
     sDecoColor = addon().getSetting('deco_color')
-
-    # Menu pour ajouter un dossier
-    oGui.addDir(SITE_IDENTIFIER, 'addPasteName', '[COLOR %s]Ajouter un dossier[/COLOR]' % sDecoColor, 'notes.png', oOutputParameterHandler)
 
     # Menu pour raffraichir le cache
     oGui.addDir(SITE_IDENTIFIER, 'refreshAllPaste', '[COLOR %s]Forcer la mise à jour des contenus[/COLOR]' % sDecoColor, 'download.png', oOutputParameterHandler)
