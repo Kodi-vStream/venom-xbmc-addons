@@ -5,8 +5,9 @@ import base64
 import re
 import time
 import locale
+import xbmc
 
-from resources.lib.comaddon import progress, xbmc
+from resources.lib.comaddon import progress
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -141,7 +142,12 @@ def showMovies():  # affiche les catégories qui ont des lives'
 
 
 def showMovies2():  # affiche les matchs en direct depuis la section showMovie
-    locale.setlocale(locale.LC_ALL, 'french_FRANCE')  # pour traiter les dates
+
+    try:
+        # Sur PC et pour les dates, pour traiter les mois écrit en francais ("janvier")
+        locale.setlocale(locale.LC_ALL, 'french_FRANCE')
+    except:
+        pass
     
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
