@@ -1440,7 +1440,7 @@ def showMovies(sSearch=''):
         pasteMaxLen.append(maxlen)
 
     # si plusieurs pastes, on les parcourt en parallèle
-    if (bNews or sYear or sGenre or sRes) and len(listeIDs) > 1:
+    if (bNews or sYear or sGenre or sRes or sNetwork) and len(listeIDs) > 1:
         listName = set()
         moviesNews = []
         i = j = k = 0
