@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'streaminz'
 SITE_NAME = 'Streaminz'
 SITE_DESC = ' films, de séries et de mangas en streaming VF et VOSTFR complets'
 
-URL_MAIN = "https://www.streaminz.cc/"
+URL_MAIN = "https://www.streaminz.biz/"
 # Clone "https://www.showstream.xyz/"
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
@@ -354,7 +354,7 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<span>Page .+?de (\d+).+?href="([^"]+)"><span class="fas fa-chevron-right">'
+    sPattern = 'span>Page .+?de (\d+).+?href="([^"]+)"><i id='
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sNumberMax = aResult[1][0][0]
