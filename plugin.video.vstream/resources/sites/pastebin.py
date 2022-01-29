@@ -286,7 +286,9 @@ class PasteContent:
 
         # Lecture en cache
         if sContent:
-            lines = eval(sContent)
+            lines = eval(sContent)       # trop long
+            if lines[0].startswith('#'):    # paste index
+                return self.readIndex(lines)
             entete = lines[0].split(";")
 
         # Lecture sur le site
@@ -295,6 +297,12 @@ class PasteContent:
             lines, self.movies = self._decompress(pasteBin)
             if not lines:
                 return []
+
+            if lines[0].startswith('#'): # paste index
+                allLines = self.readIndex(lines)
+                if allLines:
+                    self._getCache().save(pasteBin, lines, self.movies)
+                return allLines
 
             # Vérifie si la ligne d'entete existe avec les champs obligatoires
             entete = lines[0].split(";")
@@ -380,12 +388,13 @@ class PasteContent:
 
         lines = []
         hasMovies = False
-        try:
-            lines = self._getCrypt().loadFile(pasteBin)
-            if lines:
-                hasMovies = True
-        except Exception as e:
-            pass
+        if len(pasteBin) == 9:
+            try:
+                lines = self._getCrypt().loadFile(pasteBin)
+                if lines:
+                    hasMovies = True
+            except Exception as e:
+                pass
 
         if not hasMovies:
             from resources.lib.handler.requestHandler import cRequestHandler
@@ -398,6 +407,10 @@ class PasteContent:
             if sContent.startswith('CAT;'):
                 lines = sContent.splitlines()
 
+            # paste index
+            elif sContent.startswith('#'):
+                lines = sContent.splitlines()
+        
         return lines, hasMovies
 
     def _getCrypt(self):
@@ -410,6 +423,16 @@ class PasteContent:
             self.cache = PasteCache()
         return self.cache
 
+    def readIndex(self, pastes):
+        lines = []
+        for paste in pastes:
+            if paste.startswith('#'):   # ligne en commentaire
+                continue
+            if len(paste.strip()) == 0: # ligne vide
+                continue
+            lines += self.getLines(paste)
+        return lines
+    
 
 def load():
     addons = addon()
@@ -455,7 +478,6 @@ def load():
 
         oOutputParameterHandler.addParameter('pasteID', pasteID)
         oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'renamePasteName', addons.VSlang(30223))
-        oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'refreshPaste', "Forcer la mise à jour")
         oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'deletePasteName', addons.VSlang(30412))
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
@@ -2131,28 +2153,6 @@ def renamePasteName():
     oGui.updateDirectory()
 
 
-# Forcer la mise à jour d'un dossier PasteBin
-def refreshPaste():
-
-    addons = addon()
-    cache = PasteCache()
-
-    oInputParameterHandler = cInputParameterHandler()
-    pasteID = oInputParameterHandler.getValue('pasteID')
-
-    # Supprimer le cache de chaque paste du dossier
-    prefixID = SETTING_PASTE_ID + str(pasteID)
-    pasteBin = addons.getSetting(prefixID)
-    if pasteBin:
-        cache.remove(pasteBin)
-    for numID in range(1, PASTE_PAR_GROUPE):
-        pasteID = prefixID + '_' + str(numID)
-        pasteBin = addons.getSetting(pasteID)
-        if pasteBin != '':
-            cache.remove(pasteBin)
-
-    dialog().VSinfo(addons.VSlang(30014))
-
 
 # Forcer la mise à jour de tous les dossiers PasteBin
 def refreshAllPaste():
@@ -2381,7 +2381,7 @@ def adminCacheDuration():
 # Définir le nombre d'éléments par liste
 def adminNbElement():
     oGui = cGui()
-    nElement = oGui.showNumBoard("Nombre d'éléments par liste", str(ITEM_PAR_PAGE))
+    nElement = oGui.showNumBoard("Nombre d'éléments par page", str(ITEM_PAR_PAGE))
     if nElement:
         addon().setSetting(SITE_IDENTIFIER + '_nbItemParPage', nElement)
 
