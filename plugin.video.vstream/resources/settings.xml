@@ -3,9 +3,7 @@
 
     <!-- Menu general -->
     <category label="30021">
-        <setting id="service_version" type="text" label="Version:" default="" enable="false"/>
-<!--         <setting label="30034" type="lsep"/>
-        <setting type="sep"/>
+<!--
 c'est le changelog de la beta !        <setting label="30036" type="action" action="RunScript(plugin.video.vstream, changelog, ?site=globalRun&amp;function=changelog)"/>
  -->
         <setting label="30030" type="lsep"/>
