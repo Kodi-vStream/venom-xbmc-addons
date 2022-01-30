@@ -280,7 +280,7 @@ class PasteContent:
             self.upToStream = 4-mode
         return self.upToStream
 
-    def getLines(self, pasteBin):
+    def getLines(self, pasteBin, sMedia = ''):
 
         sContent, self.movies = self._getCache().read(pasteBin)
 
@@ -288,7 +288,7 @@ class PasteContent:
         if sContent:
             lines = eval(sContent)       # trop long
             if lines[0].startswith('#'):    # paste index
-                return self.readIndex(lines)
+                return self.readIndex(lines, sMedia)
             entete = lines[0].split(";")
 
         # Lecture sur le site
@@ -299,7 +299,7 @@ class PasteContent:
                 return []
 
             if lines[0].startswith('#'): # paste index
-                allLines = self.readIndex(lines)
+                allLines = self.readIndex(lines, sMedia)
                 if allLines:
                     self._getCache().save(pasteBin, lines, self.movies)
                 return allLines
@@ -323,6 +323,14 @@ class PasteContent:
             if champ in dir(self):
                 setattr(self, champ, idx)
             idx += 1
+
+        # On vérifie le type de média s'il est demandé
+        if self.movies and sMedia and len(lines)>1:
+            sMediaPaste = 'film'
+            if self.CAT >= 0:
+                sMediaPaste = lines[1].split(";")[self.CAT]
+            if sMedia != sMediaPaste:
+                return []
 
         lines = [k.split(";") for k in lines[1:]]
 
@@ -423,14 +431,14 @@ class PasteContent:
             self.cache = PasteCache()
         return self.cache
 
-    def readIndex(self, pastes):
+    def readIndex(self, pastes, sMedia = ''):
         lines = []
         for paste in pastes:
             if paste.startswith('#'):   # ligne en commentaire
                 continue
             if len(paste.strip()) == 0: # ligne vide
                 continue
-            lines += self.getLines(paste)
+            lines += self.getLines(paste, sMedia)
         return lines
     
 
@@ -821,7 +829,7 @@ def showGenres():
     pbContent = PasteContent()
     for pasteBin in listeIDs:
 
-        movies = pbContent.getLines(pasteBin)
+        movies = pbContent.getLines(pasteBin, sMedia)
 
         for movie in movies:
             try:
@@ -866,14 +874,14 @@ def showNetwork():
 
     sUrl, params = siteUrl.split('&', 1)
     aParams = dict(param.split('=') for param in params.split('&'))
-    sMedia = aParams['sMedia'] if 'sMedia' in aParams else 'film'
+    sMedia = aParams['sMedia'] if 'sMedia' in aParams else 'serie'
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
 
     pbContent = PasteContent()
     listNetwork = {}
     listeIDs = getPasteList(sUrl, pasteID)
     for pasteBin in listeIDs:
-        movies = pbContent.getLines(pasteBin)
+        movies = pbContent.getLines(pasteBin, sMedia)
         for movie in movies:
             if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
                 continue
@@ -929,7 +937,7 @@ def showRealisateur():
     listReal = {}
     listeIDs = getPasteList(sUrl, pasteID)
     for pasteBin in listeIDs:
-        movies = pbContent.getLines(pasteBin)
+        movies = pbContent.getLines(pasteBin, sMedia)
         for movie in movies:
             if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
                 continue
@@ -1000,7 +1008,7 @@ def showCast():
     listActeur = {}
     listeIDs = getPasteList(sUrl, pasteID)
     for pasteBin in listeIDs:
-        movies = pbContent.getLines(pasteBin)
+        movies = pbContent.getLines(pasteBin, sMedia)
         for movie in movies:
             if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
                 continue
@@ -1081,7 +1089,7 @@ def showGroupes():
     groupesPerso = set()
     listeIDs = getPasteList(sUrl, pasteID)
     for pasteBin in listeIDs:
-        movies = pbContent.getLines(pasteBin)
+        movies = pbContent.getLines(pasteBin, sMedia)
 
         for movie in movies:
             try:
@@ -1172,7 +1180,7 @@ def showSaga():
     listeIDs = getPasteList(sUrl, pasteID)
 
     for pasteBin in listeIDs:
-        movies = pbContent.getLines(pasteBin)
+        movies = pbContent.getLines(pasteBin, sMedia)
         for movie in movies:
             if pbContent.CAT >= 0 and sMedia not in movie[pbContent.CAT]:
                 continue
@@ -1264,7 +1272,7 @@ def showYears():
     years = set()
     listeIDs = getPasteList(sUrl, pasteID)
     for pasteBin in listeIDs:
-        movies = pbContent.getLines(pasteBin)
+        movies = pbContent.getLines(pasteBin, sMedia)
         for line in movies:
             if pbContent.CAT >= 0 and sMedia not in line[pbContent.CAT]:
                 continue
@@ -1319,7 +1327,7 @@ def showResolution():
     resolutions = set()
     listeIDs = getPasteList(sUrl, pasteID)
     for pasteBin in listeIDs:
-        movies = pbContent.getLines(pasteBin)
+        movies = pbContent.getLines(pasteBin, sMedia)
         for line in movies:
             if pbContent.CAT >= 0 and sMedia not in line[pbContent.CAT]:
                 continue
@@ -1455,7 +1463,7 @@ def showMovies(sSearch=''):
     listeIDs = getPasteList(sUrl, pasteID)
 
     for pasteBin in listeIDs:
-        moviesBin = pbContent.getLines(pasteBin)
+        moviesBin = pbContent.getLines(pasteBin, sMedia)
         movies += moviesBin
         pasteLen.append(len(moviesBin))
         maxlen += len(moviesBin)
@@ -1733,7 +1741,7 @@ def showSerieSaisons():
     listeIDs = getPasteList(sUrl, pasteID)
     pbContent = PasteContent()
     for pasteBin in listeIDs:
-        moviesBin = pbContent.getLines(pasteBin)
+        moviesBin = pbContent.getLines(pasteBin, sMedia)
 
         # Recherche les saisons de la série
         for serie in moviesBin:
@@ -1926,7 +1934,7 @@ def getHosterList(siteUrl):
     listeIDs = getPasteList(siteUrl, pasteID)
 
     for pasteBin in listeIDs:
-        moviesBin = pbContent.getLines(pasteBin)
+        moviesBin = pbContent.getLines(pasteBin, sMedia)
 
         for movie in moviesBin:
 
