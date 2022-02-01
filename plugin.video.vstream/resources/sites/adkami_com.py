@@ -8,7 +8,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, isMatrix, VSlog
+from resources.lib.comaddon import progress, isMatrix
 
 SITE_IDENTIFIER = 'adkami_com'
 SITE_NAME = 'ADKami'
@@ -112,7 +112,7 @@ def showSearchSerie():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText is not False:
         sUrl = URL_SEARCH_SERIES[0] + sSearchText
         showSeries(sUrl)
         oGui.setEndOfDirectory()
@@ -123,7 +123,7 @@ def showSearchAnim():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText is not False:
         sUrl = URL_SEARCH_ANIMS[0] + sSearchText
         showSeries(sUrl)
         oGui.setEndOfDirectory()
@@ -134,7 +134,7 @@ def showSearchDrama():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText is not False:
         sUrl = URL_SEARCH_DRAMAS[0] + sSearchText
         showSeries(sUrl)
         oGui.setEndOfDirectory()
@@ -145,14 +145,14 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText is not False:
         sUrl = URL_SEARCH[0] + sSearchText
         showSeries(sUrl)
         oGui.setEndOfDirectory()
         return
 
 
-def showGenre():
+def showGenres():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sType2 = oInputParameterHandler.getValue('type2')
@@ -231,10 +231,10 @@ def showNoAlpha():
     sPattern = 'data-original="([^"]+)".+?<span class="top"><a href="([^"]+)"><span class="title">([^<]+)</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
 
         for aEntry in aResult[1]:
@@ -273,8 +273,6 @@ def showSeries(sSearch=''):
     # aResult = oParser.parse(sHtmlContent, sPattern)
     aResult = re.findall(sPattern, sHtmlContent, re.DOTALL)
 
-    VSlog(aResult)
-
     if not aResult:
         oGui.addText(SITE_IDENTIFIER)
     else:
@@ -305,7 +303,7 @@ def showSeries(sSearch=''):
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage is not False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             sNumPage = re.search('page=([0-9]+)', sNextPage).group(1)
@@ -319,7 +317,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<button class=\'actuel\'>[0-9]+</button><a href="([^"]+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         return aResult[1][0]
 
     return False
@@ -341,7 +339,7 @@ def showEpisode():
     try:
         sPattern = '<p class="description.+?">([^<]+)<a title'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if aResult[0] is True:
             sDesc = aResult[1][0]
             sDesc = sDesc.replace('<br />', '').replace('&apos;', '\'')
     except:
@@ -350,14 +348,14 @@ def showEpisode():
     sPattern = 'line-height:200px;font-size:26px;text-align:center;">L.anime est licencié<.p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]Animé licencié[/COLOR]')
 
     else:
         sPattern = '<li class="saison">([^<]+)</li>|<a href="(https://www\.adkami\.com[^"]+)"[^<>]+>([^<]+)</a></li>'
 
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if aResult[0] is True:
             oOutputParameterHandler = cOutputParameterHandler()
             sSaison = 'Saison 1'
             for aEntry in aResult[1]:
@@ -430,7 +428,7 @@ def showHosters():
 
         sHosterUrl = sUrl.replace('plus', '+')
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
+        if oHoster is not False:
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -447,8 +445,6 @@ def decodex(x):
     missing_padding = len(x) % 4
     if missing_padding:
         x += '=' * (4 - missing_padding)
-
-    VSlog(x)
 
     try:
         e = base64.b64decode(x)
