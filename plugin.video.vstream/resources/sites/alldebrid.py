@@ -61,10 +61,10 @@ def showLiens(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         nbItem = 0
         index = 0
         progress_ = progress().VScreate(SITE_NAME)
@@ -96,7 +96,7 @@ def showLiens(sSearch=''):
             progress_.VSclose(progress_)
 
             if not sSearch:
-                if nbItem % ITEM_PAR_PAGE == 0:  # cherche la page suivante
+                if nbItem % ITEM_PAR_PAGE is 0:  # cherche la page suivante
                     numPage += 1
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -132,7 +132,7 @@ def showMagnets(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         nbItem = 0
         index = 0
 
@@ -159,7 +159,7 @@ def showMagnets(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if not sSearch:
-                if nbItem % ITEM_PAR_PAGE == 0:  # cherche la page suivante
+                if nbItem % ITEM_PAR_PAGE is 0:  # cherche la page suivante
                     numPage += 1
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -198,7 +198,7 @@ def showseriesHoster(sSearch=''):
         result = resp.headers['location']
         sHosterUrl = result
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
+        if oHoster is not False:
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sMovieTitle)
@@ -215,10 +215,10 @@ def showseriesHoster(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         nbItem = 0
         index = 0
         progress_ = progress().VScreate(SITE_NAME)
@@ -248,7 +248,7 @@ def showseriesHoster(sSearch=''):
             oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
             if not sSearch:
-                if nbItem % ITEM_PAR_PAGE == 0:  # cherche la page suivante
+                if nbItem % ITEM_PAR_PAGE is 0:  # cherche la page suivante
                     numPage += 1
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -270,7 +270,7 @@ def showHosters():
 
     sHosterUrl = sUrl
     oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if (oHoster != False):
+    if oHoster is not False:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sMovieTitle)
@@ -291,10 +291,10 @@ def showInfo():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
