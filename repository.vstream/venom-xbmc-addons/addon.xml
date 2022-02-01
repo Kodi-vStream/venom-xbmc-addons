@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.vstream"
-       name="vStream Repository"
+       name="benking110181 Repository"
         version="0.0.5"
-        provider-name="Venom">
+        provider-name="benking110181">
     <extension point="xbmc.addon.repository" name="vStream XBMC Addon Repository">
     <dir>
-        <info compressed="false">https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/addons.xml</info>
-        <checksum>https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/addons.xml.md5</checksum>
-        <datadir zip="true">https://github.com/Kodi-vStream/venom-xbmc-addons/raw/master/repo</datadir>
+        <info compressed="false">https://raw.githubusercontent.com/benking110181/venom-xbmc-addons/master/addons.xml</info>
+        <checksum>https://raw.githubusercontent.com/benking110181/venom-xbmc-addons/master/addons.xml.md5</checksum>
+        <datadir zip="true">https://github.com/benking110181/venom-xbmc-addons/raw/master/repo</datadir>
     </dir>
     <dir>
         <info compressed="false">https://raw.githubusercontent.com/Ovni-crea/seleniumzip/master/addons.xml</info>
