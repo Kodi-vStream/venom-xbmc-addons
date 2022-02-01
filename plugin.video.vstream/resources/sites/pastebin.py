@@ -231,6 +231,7 @@ class PasteCache:
 
 
 class PasteContent:
+    PASTE = 0       # Id du paste
     CAT = -1        # (Optionnel) - Catégorie 'film', 'serie' 'anime' (Film par défaut)
     TMDB = -1       # (optionnel) - Id TMDB
     TITLE = -1      # Titre du film / épisodes
@@ -311,7 +312,7 @@ class PasteContent:
             self._getCache().save(pasteBin, lines, self.movies)
 
         # Calcul des index de chaque champ
-        idx = 0
+        self.PASTE = 0
         for champ in entete:
             champ = champ.strip()
 
@@ -321,8 +322,8 @@ class PasteContent:
                 if len(hebergeur) > 1:
                     self.HEBERGEUR = hebergeur[1].replace(' ', '').replace('"', '').replace('\'', '')
             if champ in dir(self):
-                setattr(self, champ, idx)
-            idx += 1
+                setattr(self, champ, self.PASTE)
+            self.PASTE += 1
 
         # On vérifie le type de média s'il est demandé
         if self.movies and sMedia and len(lines)>1:
@@ -332,9 +333,13 @@ class PasteContent:
             if sMedia != sMediaPaste:
                 return []
 
-        lines = [k.split(";") for k in lines[1:]]
+        links = []
+        for k in lines[1:]:
+            line = k.split(";")
+            line.append(pasteBin)
+            links.append(line)
 
-        return lines
+        return links
 
     def resolveLink(self, pasteBin, link):
         if not self.movies:
@@ -2021,7 +2026,7 @@ def getHosterList(siteUrl):
                         if pbContent.getUptoStream() == 2:
                             continue
 
-                    listLinks = pbContent.resolveLink(pasteBin, link)
+                    listLinks = pbContent.resolveLink(movie[pbContent.PASTE], link)
                     for url, res, lang in listLinks:
                         if 'unknown' in lang:
                             lang = ''
