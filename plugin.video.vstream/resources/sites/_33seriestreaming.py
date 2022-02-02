@@ -9,7 +9,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 
-SITE_IDENTIFIER = '_33seriestreaming'
+SITE_IDENTIFIER = '_33seriestreaming'  # Clone -> https://33streaming.co/
 SITE_NAME = '33 Séries'
 SITE_DESC = 'Films et Séries en streaming VF et VOSTFR'
 
@@ -28,11 +28,9 @@ SERIE_NEWS = (URL_MAIN + 'series-streaming', 'showMovies')
 SERIE_GENRES = (URL_MAIN, 'showSeriesGenres')
 SERIE_ANNEES = (True, 'showSerieYears')
 
-cat_serie = 'cat=serie'
-cat_film = 'cat=film'
 URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&story=', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&' + cat_film + '&story=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&' + cat_serie + '&story=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&titleonly=3&catlist%5B%5D=1&story=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&titleonly=3&catlist%5B%5D=2&story=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 
@@ -212,15 +210,6 @@ def showMovies(sSearch=''):
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
             sTitle = aEntry[2]
-
-            if sSearch:
-                if cat_serie in sUrl:
-                    if '/series-streaming' not in sUrl2:
-                        continue
-                if cat_film in sUrl:
-                    if '/film-streaming/' not in sUrl2:
-                        continue
-
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
 
