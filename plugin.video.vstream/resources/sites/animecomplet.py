@@ -121,7 +121,7 @@ def showAnims(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    if sUrl is ANIM_LIST[0]:
+    if sUrl == ANIM_LIST[0]:
         sPattern = '<a href="([^"]+)">.([^<]+).+?style="width'
     else:
         sPattern = '<center><p><img.*?src=.([^">]+).*?category"><a href="([^"]+).+?title="([^"]+).+?meta-date">([^<]+)'
@@ -148,7 +148,7 @@ def showAnims(sSearch=''):
             iCurrent = iCurrent + 1
             sThumb = ''
             sDesc = ''
-            if sUrl is ANIM_LIST[0]:
+            if sUrl == ANIM_LIST[0]:
                 sUrl2 = aEntry[0]
                 sTitle = aEntry[1]
                 try:  # décodage fait avant comparaison
