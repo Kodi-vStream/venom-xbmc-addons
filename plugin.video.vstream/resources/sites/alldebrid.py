@@ -96,7 +96,7 @@ def showLiens(sSearch=''):
             progress_.VSclose(progress_)
 
             if not sSearch:
-                if nbItem % ITEM_PAR_PAGE is 0:  # cherche la page suivante
+                if nbItem % ITEM_PAR_PAGE == 0:  # cherche la page suivante
                     numPage += 1
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -159,7 +159,7 @@ def showMagnets(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if not sSearch:
-                if nbItem % ITEM_PAR_PAGE is 0:  # cherche la page suivante
+                if nbItem % ITEM_PAR_PAGE == 0:  # cherche la page suivante
                     numPage += 1
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -248,7 +248,7 @@ def showseriesHoster(sSearch=''):
             oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
             if not sSearch:
-                if nbItem % ITEM_PAR_PAGE is 0:  # cherche la page suivante
+                if nbItem % ITEM_PAR_PAGE == 0:  # cherche la page suivante
                     numPage += 1
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
