@@ -1454,6 +1454,11 @@ def showMovies(sSearch=''):
     if not numPage and 'numPage' in aParams:
         numPage = aParams['numPage']
 
+
+    if sSearchTitle:
+        oUtil = cUtil()
+        sSearchTitle = oUtil.CleanName(sSearchTitle)
+
     if bRandom:
         numItem = 0
     else:
@@ -1625,7 +1630,7 @@ def showMovies(sSearch=''):
 
         # Titre recherché
         if sSearchTitle:
-            if cUtil().CheckOccurence(sSearchTitle, sTitle) == 0:
+            if not oUtil.CheckOccurence(sSearchTitle, sTitle):
                 continue
 
         # Recherche alphabétique
@@ -1709,20 +1714,19 @@ def showMovies(sSearch=''):
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', '', '', oOutputParameterHandler)
 
         # Gestion de la pagination
-        if not sSearch:
-
-            if nbItem % ITEM_PAR_PAGE == 0 and numPage*ITEM_PAR_PAGE < len(movies):
+        if nbItem % ITEM_PAR_PAGE == 0 and numPage*ITEM_PAR_PAGE < len(movies):
+            if not sSearchTitle:
                 numPage += 1
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', siteUrl)
                 oOutputParameterHandler.addParameter('numPage', numPage)
                 oOutputParameterHandler.addParameter('numItem', numItem)
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + str(numPage), oOutputParameterHandler)
-                break
+            break
 
     progress_.VSclose(progress_)
 
-    if not sSearch:
+    if not sSearchTitle:
         oGui.setEndOfDirectory()
 
 

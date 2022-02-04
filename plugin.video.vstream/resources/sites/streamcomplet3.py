@@ -74,7 +74,7 @@ def showMovies(sSearch=''):
     oGui = cGui()
 
     if sSearch:
-
+        oUtil = cUtil()
         sSearch = sSearch.replace(' ', '+').replace('%20', '+')
         pData = 'do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=' + sSearch
         sUrl = URL_MAIN + 'index.php?do=search'
@@ -87,7 +87,7 @@ def showMovies(sSearch=''):
         oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
         oRequestHandler.addParametersLine(pData)
         sHtmlContent = oRequestHandler.request()
-
+        sSearch = oUtil.CleanName(sSearch.replace(URL_SEARCH[0], ''))
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -118,7 +118,7 @@ def showMovies(sSearch=''):
 
             # filtre search
             if sSearch and total > 5:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
+                if not oUtil.CheckOccurence(sSearch, sTitle):
                     continue
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
