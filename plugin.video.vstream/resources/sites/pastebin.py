@@ -9,10 +9,8 @@ import xbmcvfs
 from resources.lib.comaddon import progress, addon, dialog, VSlog, VSPath, isMatrix
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.util import Quote, cUtil, Unquote
+from resources.lib.util import cUtil, Unquote
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
-from resources.lib.gui.hoster import cHosterGui
 
 try:
     from sqlite3 import dbapi2 as sqlite
@@ -448,6 +446,7 @@ class PasteContent:
     
 
 def load():
+    from resources.lib.gui.guiElement import cGuiElement
     addons = addon()
     oGui = cGui()
 
@@ -784,6 +783,7 @@ def getPasteBin(pbContent, pasteBin):
 
 
 def showSearch():
+    from resources.lib.util import Quote 
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -805,15 +805,24 @@ def showSearchGlobal(sSearch=''):
 
     sUrl = sSearch
 
+    numIds = []
     for numID in range(1, GROUPE_MAX):
         prefixID = SETTING_PASTE_LABEL + str(numID)
         pastebin = addons.getSetting(prefixID)
         if pastebin:
-            searchUrl = sUrl.replace(KEY_PASTE_ID, str(numID))
-            try:
-                showMovies(searchUrl)
-            except:
-                pass
+            numIds.append(numID)
+
+    progress_ = progress().VScreate(SITE_NAME)
+    maxProgress = len(numIds)
+    for numID in numIds:
+        progress_.VSupdate(progress_, maxProgress)
+        searchUrl = sUrl.replace(KEY_PASTE_ID, str(numID) + '&bSilent=True')
+        try:
+            showMovies(searchUrl)
+        except:
+            pass
+
+    progress_.VSclose(progress_)
 
 
 def showGenres():
@@ -828,7 +837,7 @@ def showGenres():
     sMedia = aParams['sMedia'] if 'sMedia' in aParams else 'film'
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
 
-    listeIDs = getPasteList(sUrl, pasteID)
+    listeIDs = getPasteList(pasteID)
 
     genres = {}
     pbContent = PasteContent()
@@ -884,7 +893,7 @@ def showNetwork():
 
     pbContent = PasteContent()
     listNetwork = {}
-    listeIDs = getPasteList(sUrl, pasteID)
+    listeIDs = getPasteList(pasteID)
     for pasteBin in listeIDs:
         movies = pbContent.getLines(pasteBin, sMedia)
         for movie in movies:
@@ -940,7 +949,7 @@ def showRealisateur():
 
     pbContent = PasteContent()
     listReal = {}
-    listeIDs = getPasteList(sUrl, pasteID)
+    listeIDs = getPasteList(pasteID)
     for pasteBin in listeIDs:
         movies = pbContent.getLines(pasteBin, sMedia)
         for movie in movies:
@@ -1011,7 +1020,7 @@ def showCast():
 
     pbContent = PasteContent()
     listActeur = {}
-    listeIDs = getPasteList(sUrl, pasteID)
+    listeIDs = getPasteList(pasteID)
     for pasteBin in listeIDs:
         movies = pbContent.getLines(pasteBin, sMedia)
         for movie in movies:
@@ -1092,7 +1101,7 @@ def showGroupes():
     pbContent = PasteContent()
     sousGroupe = set()
     groupesPerso = set()
-    listeIDs = getPasteList(sUrl, pasteID)
+    listeIDs = getPasteList(pasteID)
     for pasteBin in listeIDs:
         movies = pbContent.getLines(pasteBin, sMedia)
 
@@ -1144,7 +1153,7 @@ def showGroupeDetails():
     groupes = set()
     
     if sGroupe:
-        listeIDs = getPasteList(sUrl, pasteID)
+        listeIDs = getPasteList(pasteID)
         for pasteBin in listeIDs:
             movies = pbContent.getLines(pasteBin)
             for movie in movies:
@@ -1182,7 +1191,7 @@ def showSaga():
 
     pbContent = PasteContent()
     sagas = {}
-    listeIDs = getPasteList(sUrl, pasteID)
+    listeIDs = getPasteList(pasteID)
 
     for pasteBin in listeIDs:
         movies = pbContent.getLines(pasteBin, sMedia)
@@ -1275,7 +1284,7 @@ def showYears():
 
     pbContent = PasteContent()
     years = set()
-    listeIDs = getPasteList(sUrl, pasteID)
+    listeIDs = getPasteList(pasteID)
     for pasteBin in listeIDs:
         movies = pbContent.getLines(pasteBin, sMedia)
         for line in movies:
@@ -1330,7 +1339,7 @@ def showResolution():
 
     pbContent = PasteContent()
     resolutions = set()
-    listeIDs = getPasteList(sUrl, pasteID)
+    listeIDs = getPasteList(pasteID)
     for pasteBin in listeIDs:
         movies = pbContent.getLines(pasteBin, sMedia)
         for line in movies:
@@ -1383,20 +1392,12 @@ def showResolution():
 
 def AlphaList():
     oGui = cGui()
-
     oInputParameterHandler = cInputParameterHandler()
     siteUrl = oInputParameterHandler.getValue('siteUrl')
-
     oOutputParameterHandler = cOutputParameterHandler()
-    for i in range(0, 36):
-        if (i < 10):
-            sLetter = chr(48 + i)
-        else:
-            sLetter = chr(65 + i - 10)
-
-        sUrl = siteUrl + '&sAlpha=' + sLetter
-
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+    for i in range(48, 84):
+        sLetter = chr(i+7 if i>57 else i)
+        oOutputParameterHandler.addParameter('siteUrl', siteUrl + '&sAlpha=' + sLetter)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] Lettre [COLOR red]' + sLetter + '[/COLOR][/COLOR]', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -1410,7 +1411,7 @@ def showMovies(sSearch=''):
     numPage = oInputParameterHandler.getValue('numPage')
     sMedia = 'film'  # Par défaut
     pasteID = sGenre = sSaga = sGroupe = sYear = sRes = sAlpha = sNetwork = sDirector = sCast = None
-    bRandom = bNews = False
+    bSilent = bRandom = bNews = False
 
     if sSearch:
         siteUrl = sSearch
@@ -1451,6 +1452,8 @@ def showMovies(sSearch=''):
         bRandom = aParams['bRandom']
     if 'bNews' in aParams:
         bNews = aParams['bNews']
+    if 'bSilent' in aParams:
+        bSilent = aParams['bSilent']
     if not numPage and 'numPage' in aParams:
         numPage = aParams['numPage']
 
@@ -1470,14 +1473,16 @@ def showMovies(sSearch=''):
     pasteMaxLen = []
     maxlen = 0
 
-    listeIDs = getPasteList(sUrl, pasteID)
+    listeIDs = getPasteList(pasteID)
 
     for pasteBin in listeIDs:
         moviesBin = pbContent.getLines(pasteBin, sMedia)
-        movies += moviesBin
-        pasteLen.append(len(moviesBin))
-        maxlen += len(moviesBin)
-        pasteMaxLen.append(maxlen)
+        nbMovies = len(moviesBin)
+        if nbMovies > 0:
+            movies += moviesBin
+            pasteLen.append(nbMovies)
+            maxlen += nbMovies
+            pasteMaxLen.append(maxlen)
 
     # si plusieurs pastes, on les parcourt en parallèle
     if (bNews or sYear or sGenre or sRes or sNetwork) and len(listeIDs) > 1:
@@ -1540,7 +1545,9 @@ def showMovies(sSearch=''):
 
     nbItem = 0
     index = 0
-    progress_ = progress().VScreate(SITE_NAME)
+    
+    if not bSilent:
+        progress_ = progress().VScreate(SITE_NAME)
     oOutputParameterHandler = cOutputParameterHandler()
 
     for movie in movies:
@@ -1674,9 +1681,10 @@ def showMovies(sSearch=''):
                     continue
 
         nbItem += 1
-        progress_.VSupdate(progress_, ITEM_PAR_PAGE)
-        if progress_.iscanceled():
-            break
+        if not bSilent:
+            progress_.VSupdate(progress_, ITEM_PAR_PAGE)
+            if progress_.iscanceled():
+                break
 
         sUrl = URL_MAIN
         if sMedia:
@@ -1724,7 +1732,8 @@ def showMovies(sSearch=''):
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + str(numPage), oOutputParameterHandler)
             break
 
-    progress_.VSclose(progress_)
+    if not bSilent:
+        progress_.VSclose(progress_)
 
     if not sSearchTitle:
         oGui.setEndOfDirectory()
@@ -1747,7 +1756,7 @@ def showSerieSaisons():
     sMedia = aParams['sMedia'] if 'sMedia' in aParams else 'serie'
 
     saisons = {}
-    listeIDs = getPasteList(sUrl, pasteID)
+    listeIDs = getPasteList(pasteID)
     pbContent = PasteContent()
     for pasteBin in listeIDs:
         moviesBin = pbContent.getLines(pasteBin, sMedia)
@@ -1881,15 +1890,11 @@ def showEpisodesLinks(siteUrl=''):
 
 
 def showHosters():
+    from resources.lib.gui.hoster import cHosterGui
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sTitle = oInputParameterHandler.getValue('sMovieTitle').replace(' | ', ' & ')
     siteUrl = oInputParameterHandler.getValue('siteUrl')
-
-    sUrl = siteUrl.replace('+', ' ').replace('|', '+').replace(' & ', ' | ')
-    params = sUrl.split('&', 1)[1]
-    aParams = dict(param.split('=') for param in params.split('&'))
-
     listRes = getHosterList(siteUrl)
 
     for res in sorted(listRes.keys(), key=trie_res):
@@ -1940,7 +1945,7 @@ def getHosterList(siteUrl):
     pbContent = PasteContent()
     listEpisodes = []
     listRes = {}
-    listeIDs = getPasteList(siteUrl, pasteID)
+    listeIDs = getPasteList(pasteID)
 
     for pasteBin in listeIDs:
         moviesBin = pbContent.getLines(pasteBin, sMedia)
@@ -2216,15 +2221,10 @@ def deleteAllPasteName():
 
 
 # Retourne la liste des PasteBin depuis l'URL ou un groupe
-def getPasteList(siteUrl, pasteID):
+def getPasteList(pasteID):
     addons = addon()
 
     IDs = []
-
-    siteId = siteUrl.split(URL_MAIN)    # Supporte le format https://pastebin.com/raw/izu23hfkjhd
-    if siteId[1]:
-        IDs.append(siteId[1])
-
     if pasteID:
         prefixID = SETTING_PASTE_ID + str(pasteID)
         pasteBin = addons.getSetting(prefixID)
