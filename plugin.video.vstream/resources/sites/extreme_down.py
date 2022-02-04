@@ -350,6 +350,8 @@ def showMovies(sSearch=''):
 
         sCat = int(re.search('speedsearch=(\d)', sSearch).group(1))
         sSearch = re.search('story=(.+?)($|&)', sSearch).group(1)
+        oUtil = cUtil()
+        sSearch = oUtil.CleanName(sSearch)
     else:
         oRequestHandler = cRequestHandler(siteUrl)
         sHtmlContent = oRequestHandler.request()
@@ -361,10 +363,9 @@ def showMovies(sSearch=''):
 
     titles = set()
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
+    else:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -410,7 +411,7 @@ def showMovies(sSearch=''):
             titles.add(key)
 
             if sSearch and total > 5:
-                if cUtil().CheckOccurence(sSearch, sTitle) == 0:
+                if not oUtil.CheckOccurence(sSearch, sTitle):
                     continue
 
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
