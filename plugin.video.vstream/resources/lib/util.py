@@ -36,24 +36,20 @@ class cUtil:
     # percent : pourcentage de concordance, 75% = il faut au moins 3 mots sur 4
     # retourne True si pourcentage atteint
     def CheckOccurence(self, str1, str2, percent=75):
-        ignoreListe = ['3d', 'la', 'le', 'les', 'un', 'une', 'de', 'des', 'du', 'en', 'a', 'au', 'aux', 'is', 'the',
-                       'in', 'of', 'and', 'mais', 'ou', 'no', 'dr', 'contre', 'dans', 'qui', 'et', 'donc', 'or', 'ni',
-                       'ne', 'pas', 'car', 'je', 'tu', 'il', 'elle', 'on', 'nous', 'vous', 'ils', 'elles', 'i', 'you',
-                       'he', 'she', 'it', 'we', 'they', 'my', 'your', 'his', 'its', 'our']
 
         str2 = self.CleanName(str2)
 
         nbOccurence = nbWord = 0
         list2 = str2.split(' ')      # Comparaison mot à mot
         for part in str1.split(' '):
-            if part in ignoreListe:  # Mots à ignorer
-                continue
             if len(part) == 1:       # Ignorer une seule lettre
                 continue
-            nbWord += 1
+            nbWord += 1                         # nombre de mots au total
             if part in list2:
-                nbOccurence += 1               # Nombre de mots correspondants
+                nbOccurence += 1                # Nombre de mots correspondants
         
+        if nbWord == 0:
+            return False 
         return 100*nbOccurence/nbWord >= percent
 
     def removeHtmlTags(self, sValue, sReplace=''):
@@ -127,24 +123,6 @@ class cUtil:
         return title
 
     def CleanName(self, name):
-        # # # les apostrophes remplacer par des espaces
-        name = re.sub("[\’\'\-\–\:\+\.]", ' ', name)
-
-        # vire accent si nécessaire
-        if not isMatrix():
-            n2 = re.sub('[^a-zA-Z0-9 ]', '', name)
-            if n2 != name:
-                try:
-                    name = unicode(name, 'utf-8')  # converti en unicode pour aider aux convertions
-                except:
-                    pass
-                    
-                try:
-                    name = unicodedata.normalize('NFD', name).encode('ascii', 'ignore').decode('unicode_escape')
-                    name = name.encode('utf-8')  # on repasse en utf-8
-                except TypeError:
-                    # name = unicodedata.normalize('NFKD', name.decode("utf-8")).encode('ASCII', 'ignore')
-                    pass
 
         # on cherche l'annee
         annee = ''
@@ -153,10 +131,23 @@ class cUtil:
             annee = str(m.group(0))
             name = name.replace(annee, '')
 
+        # Suppression des ponctuations
+        name = re.sub("[\’\'\-\–\:\+\.]", ' ', name)
+        name = re.sub("[\,\&\?\!]", '', name)
+
         # vire tag
         name = re.sub('[\(\[].+?[\)\]]', '', name)
-        # vire caractere special
-        name = re.sub('[^a-zA-Z0-9 ]', '', name)
+
+        # enlève les accents, si nécessaire
+        n2 = re.sub('[^a-zA-Z0-9 ]', '', name)
+        if n2 != name:
+            try:
+                if not isMatrix():
+                    name = name.decode('utf8', 'ignore')    # converti en unicode pour aider aux convertions
+                name = unicodedata.normalize('NFD', name).encode('ascii', 'ignore')
+            except Exception as e:
+                pass
+
         # tout en minuscule
         name = name.lower()
         # vire espace debut et fin
