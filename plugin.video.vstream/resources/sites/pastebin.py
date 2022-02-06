@@ -593,6 +593,9 @@ def showDetailMenu(pasteID, contenu):
         oOutputParameterHandler.addParameter('siteUrl', searchUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Films)', 'search.png', oOutputParameterHandler)
 
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&sYear=2022&pasteID=' + pasteID)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Nouveautés)', 'news.png', oOutputParameterHandler)
+
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&bNews=True&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
@@ -638,6 +641,9 @@ def showDetailMenu(pasteID, contenu):
         searchUrl = URL_SEARCH_SERIES[0].replace(KEY_PASTE_ID, pasteID)
         oOutputParameterHandler.addParameter('siteUrl', searchUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Séries)', 'search.png', oOutputParameterHandler)
+
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&sYear=2022&pasteID=' + pasteID)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Nouveautés)', 'news.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&bNews=True&pasteID=' + pasteID)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
@@ -1485,7 +1491,7 @@ def showMovies(sSearch=''):
             pasteMaxLen.append(maxlen)
 
     # si plusieurs pastes, on les parcourt en parallèle
-    if (bNews or sYear or sGenre or sRes or sNetwork) and len(listeIDs) > 1:
+    if (bNews or sRes or sNetwork) and len(listeIDs) > 1:
         listName = set()
         moviesNews = []
         i = j = k = 0
@@ -1516,6 +1522,11 @@ def showMovies(sSearch=''):
                 j=0
 
         movies = moviesNews
+
+
+    # Classement par ID TMDB, pseudo-classement par sortie
+    if sYear or sGenre:
+        movies = sorted(movies, key=lambda line: int(line[pbContent.TMDB]) if line[pbContent.TMDB] else 0, reverse=True)
 
     # Recherche par ordre alphabetique => le tableau doit être trié
     if sAlpha:
