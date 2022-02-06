@@ -145,6 +145,8 @@ class cUtil:
                 if not isMatrix():
                     name = name.decode('utf8', 'ignore')    # converti en unicode pour aider aux convertions
                 name = unicodedata.normalize('NFD', name).encode('ascii', 'ignore')
+                if isMatrix():
+                    name = name.decode('utf8', 'ignore')
             except Exception as e:
                 pass
 
