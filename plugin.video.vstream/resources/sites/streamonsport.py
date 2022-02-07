@@ -29,7 +29,7 @@ SITE_IDENTIFIER = 'streamonsport'
 SITE_NAME = 'Streamonsport'
 SITE_DESC = 'Site pour regarder du sport en direct'
 
-URL_MAIN = 'https://www.streamonsport.to/'
+URL_MAIN = 'https://www.streamonsport.info/'
 
 SPORT_SPORTS = (True, 'load')
 SPORT_TV = (URL_MAIN + '31-site-pour-regarder-les-chaines-de-sport.html', 'showMovies')
