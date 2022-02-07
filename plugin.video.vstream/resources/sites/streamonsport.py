@@ -251,7 +251,7 @@ def Showlink():
         if bvalid:
             sHosterUrl = shosterurl
 
-    if "leet365.cc" in sUrl:
+    if "leet365.cc" in sUrl or 'casadelfutbol' in sUrl:
         bvalid, shosterurl = Hoster_Leet365(sUrl, siterefer)
         if bvalid:
             sHosterUrl = shosterurl
