@@ -76,7 +76,7 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  '<script type="text/javascript" src="(.+?)"'
+        sPattern =  '<script src="(.+?)"'
         aResult = oParser.parse(sHtmlContent, sPattern)[1][1]
 
         oRequest = cRequestHandler(aResult)
