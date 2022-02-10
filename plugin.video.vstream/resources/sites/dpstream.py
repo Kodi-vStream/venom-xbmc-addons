@@ -20,9 +20,9 @@ URL_MAIN = "https://dpstream.io/"
 
 MOVIE_NEWS = (URL_MAIN + 'film-streaming', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
-MOVIE_VIEWS = (URL_MAIN + 'film-box-office', 'showMovies')
+MOVIE_VIEWS = (URL_MAIN + 'film-box-office-1', 'showMovies')
 
-SERIE_NEWS = (URL_MAIN + 'serie-streaming', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'series-streaming', 'showMovies')
 SERIE_GENRES = (True, 'showSeriesGenres')
 
 key_search_movies = '#searchsomemovies'
