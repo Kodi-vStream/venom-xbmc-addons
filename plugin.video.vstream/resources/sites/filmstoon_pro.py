@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # source 03 update 25/12/2020
+
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -218,7 +219,8 @@ def showMovies(sSearch=''):
             sThumb = re.sub('/w\d+/', '/w342/', aEntry[1])
             sTitle = aEntry[2]
             if 'episode' in sUrl or '/series/' in sUrl:
-                sTitle = sTitle.replace('- Season', ' Saison').replace('-Season', ' Saison').replace('Season', 'Saison')
+                sTitle = sTitle.replace('- Season', ' ').replace('-Season', ' ').replace('Season', '').replace('- Saison', '')
+                sTitle = re.sub('\d+', '',sTitle)
             sYear = aEntry[3]
             sDesc = aEntry[4].replace('<p>', '')
 
@@ -248,7 +250,7 @@ def showMovies(sSearch=''):
             if 'series' not in sUrl2:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'showSXE', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSaison', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -300,8 +302,7 @@ def __checkForNextPage(shtml, surl):
 
     return False, False, False
 
-
-def showSXE():
+def showSaison():
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
@@ -314,11 +315,55 @@ def showSXE():
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
 
-    # permet de couper une partie précise du code html pour récupéré plus simplement les episodes.
+    # permet de couper une partie précise du code html pour récupérer plus simplement les episodes.
     sStart = 'class="les-title"'
     sEnd = '<div class="mvi-content"'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
-    sPattern = '<strong>Season.+?(\d+)|<a href="([^"]+).+?Episode.+?(\d+)'
+    sPattern = '<strong>Season.+?(\d+)'
+
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    sSaison = ''
+
+    if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
+        for aEntry in aResult[1]:
+
+            sNumSaison = aEntry[0]
+            sSaison = 'Saison ' + aEntry[0]
+            sUrlSaison = sUrl + "?sNumSaison=" + sNumSaison
+            sDisplayTitle =  sMovieTitle + ' ' +  sSaison
+            sTitle = sMovieTitle 
+
+            oOutputParameterHandler.addParameter('siteUrl', sUrlSaison)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+
+            oGui.addSeason(SITE_IDENTIFIER, 'showSXE', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showSXE():
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sDesc = oInputParameterHandler.getValue('sDesc')
+    
+    sUrl, sNumSaison  = sUrl.split('?sNumSaison=')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    oParser = cParser()
+
+    # permet de couper une partie précise du code html pour récupéré plus simplement les episodes.
+    sStart = '<strong>Season ' + sNumSaison
+    sEnd = '<div class="tvseason">'
+    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
+    sPattern = '<a href="([^"]+).+?Episode.+?(\d+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -326,19 +371,17 @@ def showSXE():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
-            if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR skyblue]' + 'Saison ' + aEntry[0] + '[/COLOR]')
-            else:
-                sUrl = aEntry[1]
-                Ep = aEntry[2]
-                sTitle = sMovieTitle.replace('- Saison', ' Saison') + ' Episode' + Ep
+            sUrl = aEntry[0]
+            Ep = aEntry[1]
+            Saison = 'Saison ' + sNumSaison
+            sTitle = sMovieTitle + ' ' + Saison + ' Episode' + Ep
 
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-                oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
