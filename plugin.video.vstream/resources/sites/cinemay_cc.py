@@ -2,13 +2,14 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 import re
-from resources.lib.gui.hoster import cHosterGui
+from resources.lib.comaddon import progress
 from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'cinemay_cc'
 SITE_NAME = 'Cinemay_cc'
@@ -188,9 +189,11 @@ def showMovies(sSearch=''):
     oParser = cParser()
 
     if sSearch:
-        sSearch = sSearch.replace(' ', '+').replace('&20', '+')
+        sSearch = sSearch.replace(' ', '+').replace('%20', '+')
         bvalid, stoken, scookie = getTokens()
         if bvalid:
+            oUtil = cUtil()
+            sSearch = oUtil.CleanName(sSearch)
             pdata = '_token=' + stoken + '&search=' + sSearch
             sUrl = URL_MAIN + 'search'
             UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
@@ -204,7 +207,6 @@ def showMovies(sSearch=''):
             oRequestHandler.addParametersLine(pdata)
             # oRequestHandler.request()
             sHtmlContent = oRequestHandler.request()
-
         else:
             oGui.addText(SITE_IDENTIFIER)
             return
@@ -219,10 +221,9 @@ def showMovies(sSearch=''):
     sPattern = '<figure>.+?data-src="([^"]+.jpg)" (?:alt|title)="([^"]+).+?year">([^<]*).+?href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
+    else:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -234,10 +235,13 @@ def showMovies(sSearch=''):
 
             sDesc = ''
             sThumb = re.sub('/w\d+/', '/w342/', aEntry[0])
+            sTitle = aEntry[1].replace('film en streaming', '').replace('série en streaming', '')
+            
+            # Titre recherché
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearch, sTitle):
+                    continue
 
-            sTitle = aEntry[1]
-
-            sTitle = sTitle.replace('film en streaming', '').replace('série en streaming', '')
             sYear = aEntry[2]
             sUrl2 = aEntry[3]
             sDisplayTitle = sTitle + '(' + sYear + ')'
