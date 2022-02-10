@@ -183,9 +183,9 @@ class cGuiElement:
         # convertion unicode ne fonctionne pas avec les accents
         try:
             # traitement du titre pour retirer le - quand c'est une Saison. Tiret, tiret moyen et cadratin
-            sTitle = sTitle.replace('Season', 'Saison').replace('season', 'Saison')
-            sTitle = sTitle.replace(' - Saison', ' Saison').replace(' – Saison', ' Saison')\
-                           .replace(' — Saison', ' Saison')
+            sTitle = sTitle.replace('Season', 'saison').replace('season', 'saison').replace('Saison', 'saison')
+            sTitle = sTitle.replace(' - saison', ' saison').replace(' – saison', ' saison')\
+                           .replace(' — saison', ' saison')
 
             if not isMatrix():
                 sTitle = sTitle.decode('utf-8')
