@@ -674,7 +674,6 @@ def showLinks():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
                 ep = aEntry[0]
             else:
                 sUrl2 = aEntry[1]
