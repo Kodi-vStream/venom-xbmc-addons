@@ -3,7 +3,6 @@
 # Ovni-crea
 import base64
 import re
-import time
 import locale
 import xbmc
 
@@ -484,7 +483,7 @@ def showHosters():  # affiche les videos disponible du live
             if aResult:
                 sHosterUrl = aResult[0] + '|User-Agent=' + UA + '&referer=' + Referer
             else:
-                sPattern2 = "pl.\init\('([^']+)'\);"
+                sPattern2 = "pl\.init\('([^']+)'\);"
                 aResult = re.findall(sPattern2, sHtmlContent2)
                 if aResult:
                     sHosterUrl = aResult[0] + '|User-Agent=' + UA + '&referer=' + Referer
@@ -1019,7 +1018,7 @@ def showHosters():  # affiche les videos disponible du live
                 name = aResult1[0][1]
                 sHosterUrl = 'http://' + ip + ':' + name + 'm3u8'
 
-        if 'harleyquinn' in url:  # Terminé
+        if 'harleyquinn' in url or 'joker' in url :  # Terminé
             oRequestHandler = cRequestHandler(url)
             sHtmlContent2 = oRequestHandler.request()
             sPattern2 = 'fid="(.+?)"; v_width=(.+?); v_height=(.+?);'
@@ -1030,7 +1029,7 @@ def showHosters():  # affiche les videos disponible du live
                 vw = aResult[0][1]
                 vh = aResult[0][2]
 
-                url2 = 'http://www.jokerplayer.net/embed.php?u=' + fid + '&vw=' + vw + '&vh=' + vh
+                url2 = 'http://www.jokersplayer.xyz/embed.php?u=' + fid + '&vw=' + vw + '&vh=' + vh
                 oRequestHandler = cRequestHandler(url2)
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
                 oRequestHandler.addHeaderEntry('Referer', url)
@@ -1043,6 +1042,7 @@ def showHosters():  # affiche les videos disponible du live
                     oRequestHandler = cRequestHandler(url3)
                     oRequestHandler.addHeaderEntry('User-Agent', UA)
                     oRequestHandler.addHeaderEntry('Referer', url2)
+                    oRequestHandler.addHeaderEntry('Connection', 'keep-alive')
                     sHtmlContent2 = oRequestHandler.request()
                     sPattern3 = 'src=.+?e=(.+?)&st=(.+?)&'
                     aResult = re.findall(sPattern3, sHtmlContent2)
@@ -1280,5 +1280,20 @@ def getHosterIframe(url, referer):
         if aResult:
             return aResult[0] + '|Referer=' + url
 
+
+    sPattern =  '.atob\("(.+?)"'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        import base64
+        code = aResult[0]
+        try:
+            if isMatrix():
+                code = base64.b64decode(code).decode('ascii')
+            else:
+                code = base64.b64decode(code)
+            return True, code + '|Referer=' + url
+        except Exception as e:
+            pass
+        
     
     
