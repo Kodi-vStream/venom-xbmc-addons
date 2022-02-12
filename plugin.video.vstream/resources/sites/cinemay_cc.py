@@ -118,8 +118,7 @@ def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText
-        showMovies(sUrl)
+        showMovies(sSearchText)
         oGui.setEndOfDirectory()
         return
 
@@ -189,11 +188,11 @@ def showMovies(sSearch=''):
     oParser = cParser()
 
     if sSearch:
-        sSearch = sSearch.replace(' ', '+').replace('%20', '+')
         bvalid, stoken, scookie = getTokens()
         if bvalid:
             oUtil = cUtil()
-            sSearch = oUtil.CleanName(sSearch)
+            sSearchText = oUtil.CleanName(sSearch)
+            sSearch = sSearch.replace(' ', '+').replace('%20', '+')
             pdata = '_token=' + stoken + '&search=' + sSearch
             sUrl = URL_MAIN + 'search'
             UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
@@ -239,7 +238,7 @@ def showMovies(sSearch=''):
             
             # Titre recherché
             if sSearch:
-                if not oUtil.CheckOccurence(sSearch, sTitle):
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
                     continue
 
             sYear = aEntry[2]
