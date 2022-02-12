@@ -255,7 +255,7 @@ def showMovies(sSearch=''):
                 oGui.addLink(SITE_IDENTIFIER, 'showSelectType', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
             elif '/serie' in sUrl or 'série en streaming' in aEntry[1]:
                 sDisplayTitle = sTitle
-                oGui.addTV(SITE_IDENTIFIER, 'showSXE', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSaison', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLink', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -313,9 +313,46 @@ def showSelectType():
 
     if 'class="num-epi">' in sHtmlContent:
 
-        oGui.addTV(SITE_IDENTIFIER, 'showSXE', sMovieTitle, '', sThumb, sDesc, oOutputParameterHandler)
+        oGui.addTV(SITE_IDENTIFIER, 'showSaison', sMovieTitle, '', sThumb, sDesc, oOutputParameterHandler)
     else:
         oGui.addMovie(SITE_IDENTIFIER, 'showLink', sMovieTitle, '', sThumb, sDesc, oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+def showSaison():
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sDesc = oInputParameterHandler.getValue('sDesc')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    oParser = cParser()
+    
+    sPattern = '<a href="#season.+?class.+?saison (\d+)'
+
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    sSaison = ''
+
+    if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
+        for aEntry in aResult[1]:
+
+            sNumSaison = aEntry[0]
+            sSaison = 'Saison ' + aEntry[0]
+            sUrlSaison = sUrl + "?sNumSaison=" + sNumSaison
+            sDisplayTitle =  sMovieTitle + ' ' +  sSaison
+            sTitle = sMovieTitle 
+
+            oOutputParameterHandler.addParameter('siteUrl', sUrlSaison)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+
+            oGui.addSeason(SITE_IDENTIFIER, 'showSXE', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -329,40 +366,40 @@ def showSXE():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sDesc = oInputParameterHandler.getValue('sDesc')
 
+    sUrl, sNumSaison  = sUrl.split('?sNumSaison=')
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
+    sStart = 'class="num-epi">' + sNumSaison
+    sEnd = 'id="season-'
+    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
     sPattern = 'class="description">.*?<br>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
 
-    sPattern = 'class="num-epi">([^<]+).+?href="([^"]+)'
+    sPattern = 'class="num-epi">\d+x([^<]+).+?href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    list_saison = []
+    
 
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            if 'x' in aEntry[0]:
-                # class="numep">1x13<
-                saison, episode = aEntry[0].split('x')
-                if saison not in list_saison:
-                    list_saison.append(saison)
-                    sSaison = ' Saison ' + saison
-                    oGui.addText(SITE_IDENTIFIER, '[COLOR skyblue]' + sSaison + '[/COLOR]')
+            
+            Ep = aEntry[0]
+            sUrl2 = aEntry[1]
+            Saison = 'Saison' +' ' + sNumSaison
+            sTitle = sMovieTitle + ' ' + Saison + ' Episode' + Ep
 
-                sUrl2 = aEntry[1]
-                sTitle = sMovieTitle + sSaison + ' Episode' + episode
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oOutputParameterHandler.addParameter('sDesc', sDesc)
-
-                oGui.addTV(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
