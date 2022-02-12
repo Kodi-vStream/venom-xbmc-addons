@@ -514,21 +514,25 @@ def showMoviesLinks():
             pass
 
     # liens download
-    sPattern = "domain=(.+?)\..+?rel='nofollow' class='download' target='_blank' data-id='.+?' href='([^']+)"
+    sPattern = "domain=(.+?)'(.+?)/tbody"
     aResult = oParser.parse(sHtmlContent, sPattern)
+    oOutputParameterHandler = cOutputParameterHandler()
     if aResult[0] is True:
-        oOutputParameterHandler = cOutputParameterHandler()
+        sPattern = "target='_blank' data-id='.+?' href='([^']+)"
         for aEntry in aResult[1]:
             sHost = aEntry[0]
-            sUrl2 = URL_MAIN[:-1] + aEntry[1]
-            sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
-
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
-
+            aResult = oParser.parse(aEntry[1], sPattern)
+            if aResult[0] is True:
+                for aEntry in aResult[1]:
+                    sUrl2 = URL_MAIN[:-1] + aEntry
+                    sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
+            
+                    oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+                    oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                    oOutputParameterHandler.addParameter('sThumb', sThumb)
+                    oOutputParameterHandler.addParameter('sDesc', sDesc)
+                    oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+    
     # lien STREAMING
     sPattern = 'rel=.nofollow. class=.download. href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -765,38 +769,16 @@ def Display_protected_link():
     sUrl = oInputParameterHandler.getValue('siteUrl').replace('\\', '').replace('"', '')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    if 'link' in sUrl:
-        oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
-        oRequestHandler.addHeaderEntry('User-Agent', UA)
-        sHtmlContent = oRequestHandler.request()
-        sUrl = oRequestHandler.getRealUrl()
+    if not sUrl.startswith('http'):
+        sUrl = 'http://' + sUrl
 
-        sHtmlContent = DecryptDlProtecte(sUrl)
+    oRequestHandler = cRequestHandler(sUrl.replace('link', 'streaming').replace(' ', '%20'))
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    sHtmlContent = oRequestHandler.request()
 
-        if sHtmlContent:
-            # Si redirection
-            if sHtmlContent.startswith('http'):
-                aResult = (True, [sHtmlContent])
-            else:
-                sPattern_dlprotecte = '<h3>.+?<a href="(.+?)"'
-                aResult = oParser.parse(sHtmlContent, sPattern_dlprotecte)
-
-        else:
-            dialog().VSok('Erreur de décryptage du lien')
-            aResult = (False, False)
-
-    # Si lien normal
-    else:
-        if not sUrl.startswith('http'):
-            sUrl = 'http://' + sUrl
-
-        oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
-        oRequestHandler.addHeaderEntry('User-Agent', UA)
-        sHtmlContent = oRequestHandler.request()
-
-        oParser = cParser()
-        sPattern = '<iframe.+?src="(.+?)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+    oParser = cParser()
+    sPattern = '<iframe.+?src="(.+?)"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
 
