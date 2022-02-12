@@ -9,7 +9,6 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, isMatrix
-
 SITE_IDENTIFIER = 'adkami_com'
 SITE_NAME = 'ADKami'
 SITE_DESC = 'Bienvenue sur ADKami un site Animés, Mangas & Séries en streaming.'
@@ -248,11 +247,11 @@ def showNoAlpha():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if 't=1' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSaison', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             elif 't=5' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, 'dramas.png', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSaison', sTitle, 'dramas.png', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addAnime(SITE_IDENTIFIER, 'showEpisode', sTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
+                oGui.addAnime(SITE_IDENTIFIER, 'showSaison', sTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -272,6 +271,8 @@ def showSeries(sSearch=''):
     # oParser = cParser()
     # aResult = oParser.parse(sHtmlContent, sPattern)
     aResult = re.findall(sPattern, sHtmlContent, re.DOTALL)
+
+    
 
     if not aResult:
         oGui.addText(SITE_IDENTIFIER)
@@ -294,11 +295,11 @@ def showSeries(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if 't=1' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSaison', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             elif 't=5' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, 'dramas.png', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSaison', sTitle, 'dramas.png', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addAnime(SITE_IDENTIFIER, 'showEpisode', sTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
+                oGui.addAnime(SITE_IDENTIFIER, 'showSaison', sTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -322,8 +323,7 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
-
-def showEpisode():
+def showSaison():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -352,38 +352,93 @@ def showEpisode():
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]Animé licencié[/COLOR]')
 
     else:
-        sPattern = '<li class="saison">([^<]+)</li>|<a href="(https://www\.adkami\.com[^"]+)"[^<>]+>([^<]+)</a></li>'
+        sPattern = '<li class="saison">.+?(\d+)<\/li>'
+
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        sSaison = ''
+        
+        if aResult[0] is True:
+            oOutputParameterHandler = cOutputParameterHandler()
+            for aEntry in aResult[1]:
+                
+                sNumSaison = aEntry[0]
+                sSaison = 'Saison ' + aEntry[0]
+                sUrlSaison = sUrl + "?sNumSaison=" + sNumSaison
+                sDisplayTitle =  sMovieTitle + ' ' +  sSaison
+                sTitle = sMovieTitle 
+    
+    
+                
+    
+                oOutputParameterHandler.addParameter('siteUrl', sUrlSaison)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('sDesc', sDesc)
+                #oOutputParameterHandler.addParameter('sLang', sLang)
+    
+                oGui.addSeason(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showEpisode():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
+
+    sUrl, sNumSaison  = sUrl.split('?sNumSaison=')
+    
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    oParser = cParser()
+    # info anime et serie
+    
+
+    sPattern = 'line-height:200px;font-size:26px;text-align:center;">L.anime est licencié<.p>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if aResult[0] is True:
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Animé licencié[/COLOR]')
+
+    else:
+        sStart = 'class="saison">saison ' + sNumSaison
+        sEnd = '<div class="saison-container">'
+        sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
+        sPattern = '<a href="(https://www\.adkami\.com[^"]+)"[^<>]+>([^<]+)</a></li>'
 
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0] is True:
             oOutputParameterHandler = cOutputParameterHandler()
-            sSaison = 'Saison 1'
+            
             for aEntry in aResult[1]:
-                if aEntry[0]:
-                    sSaison = aEntry[0].capitalize()
-                    oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + sSaison + '[/COLOR]')
-                else:
-                    sUrl = aEntry[1]
-                    sEpisode = aEntry[2]
-                    sTitle = sMovieTitle + ' ' + sSaison + ' ' + sEpisode
-                    sTitle = re.sub(' vf', ' (VF)', sTitle, re.IGNORECASE)
-                    sDisplayTitle = re.sub(' vostfr', ' (VOSTFR)', sTitle, re.IGNORECASE)
+                
+                
+                sUrl = aEntry[0]
+                sEpisode = aEntry[1]
+                Saison = 'Saison ' + sNumSaison
+                sTitle = sMovieTitle + ' ' + Saison + ' ' + sEpisode
+                sTitle = re.sub(' vf', ' (VF)', sTitle, re.IGNORECASE)
+                sDisplayTitle = re.sub(' vostfr', ' (VOSTFR)', sTitle, re.IGNORECASE)
 
-                    sLang = ''
-                    if '(VOSTFR)' in sDisplayTitle:
-                        sLang = 'VOSTFR'
-                    elif '(VF)' in sDisplayTitle:
-                        sLang = 'VF'
+                sLang = ''
+                if '(VOSTFR)' in sDisplayTitle:
+                    sLang = 'VOSTFR'
+                elif '(VF)' in sDisplayTitle:
+                    sLang = 'VF'
 
-                    sTitle = sDisplayTitle.replace(' (VF)', '').replace(' (VOSTFR)', '')
+                sTitle = sDisplayTitle.replace(' (VF)', '').replace(' (VOSTFR)', '')
 
-                    oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                    oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                    oOutputParameterHandler.addParameter('sThumb', sThumb)
-                    oOutputParameterHandler.addParameter('sDesc', sDesc)
-                    oOutputParameterHandler.addParameter('sLang', sLang)
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('sDesc', sDesc)
+                oOutputParameterHandler.addParameter('sLang', sLang)
 
-                    oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -445,6 +500,8 @@ def decodex(x):
     missing_padding = len(x) % 4
     if missing_padding:
         x += '=' * (4 - missing_padding)
+
+    
 
     try:
         e = base64.b64decode(x)
