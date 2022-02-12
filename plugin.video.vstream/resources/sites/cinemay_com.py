@@ -283,10 +283,11 @@ def showSeries():
         for aEntry in aResult[1]:
             if aEntry[0]:  # Affichage de la langue
                 sLang = aEntry[0]
-                oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + sLang + '[/COLOR]')
+                #oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + sLang + '[/COLOR]')
             else:
                 # on vire le double affichage de la saison
                 sTitle = sMovieTitle + ' ' + aEntry[1].replace(' x ', '').replace(' ', '')
+                sTitle = sTitle + ' ' + '(' + sLang + ')'
                 sData = aEntry[2]
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -297,7 +298,6 @@ def showSeries():
                 oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def showLinks():
     oGui = cGui()
