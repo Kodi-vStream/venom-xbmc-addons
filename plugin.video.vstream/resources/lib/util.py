@@ -124,6 +124,8 @@ class cUtil:
 
     def CleanName(self, name):
 
+        name = name.replace('%20', ' ')
+
         # on cherche l'annee
         annee = ''
         m = re.search('(\([0-9]{4}\))', name)
