@@ -47,6 +47,11 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
+        #Peut-etre une redirection.
+        if 'fembed' in self.__sUrl:
+            oRequestHandler = cRequestHandler(self.__sUrl)
+            sHtmlContent = oRequestHandler.request()
+            self.__sUrl = oRequestHandler.getRealUrl()
 
         if 'french-vid' in self.__sUrl:
             baseUrl = 'https://www.fembed.com/api/source/'
@@ -56,7 +61,7 @@ class cHoster(iHoster):
             baseUrl = 'https://feurl.com/api/source/'
         else:
             baseUrl = 'https://' + self.__sUrl.split('/')[2] + '/api/source/'
-            
+
         if 'fem.tohds' in self.__sUrl:
             oRequestHandler = cRequestHandler(self.__sUrl)
             oRequestHandler.disableIPV6()

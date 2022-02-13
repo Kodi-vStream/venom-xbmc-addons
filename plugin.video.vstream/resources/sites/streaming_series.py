@@ -79,7 +79,9 @@ def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
+        oUtil = cUtil()
         sUrl = sSearch.replace(' ', '+')
+        sSearch = oUtil.CleanName(sSearch.replace(URL_SEARCH[0], ''))
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -89,10 +91,9 @@ def showMovies(sSearch=''):
     sPattern = 'class="post-thumbnail">.+?href="([^"]+)" *title="([^"]+)".+?src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
+    else:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -107,7 +108,7 @@ def showMovies(sSearch=''):
 
             # Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
+                if not oUtil.CheckOccurence(sSearch, sTitle):
                     continue
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)

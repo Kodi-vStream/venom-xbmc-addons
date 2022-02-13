@@ -151,7 +151,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if 'serie' in sUrl2:
-                oGui.addTV(SITE_IDENTIFIER, 'showSXE', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSaison', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
 
@@ -179,8 +179,7 @@ def __checkForNextPage(sHtmlContent):
         return sNextPage, sPagination
     return False, False
 
-
-def showSXE():
+def showSaison():
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
@@ -198,26 +197,63 @@ def showSXE():
     if (aResultDesc[0] == True):
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', aResultDesc[1][0])
 
-    sPattern = '(\d+)</a></h3>|href="([^"]+)">.pisode (\d+)'
+    sPattern = '(\d+)<\/a><\/h3>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sSaison = ''
 
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            if aEntry[0]:
-                sSaison = 'Saison ' + aEntry[0]
-                oGui.addText(SITE_IDENTIFIER, '[COLOR greenyellow]' + sSaison + '[/COLOR]')
-            else:
-                sUrl = aEntry[1]
-                Ep = aEntry[2]
-                sTitle = sMovieTitle + ' ' + sSaison + ' Episode ' + Ep
+            sNumSaison = aEntry[0]
+            sSaison = 'Saison ' + aEntry[0]
+            sUrlSaison = sUrl + "?sNumSaison=" + sNumSaison
+                         
+            sTitle = sMovieTitle + sSaison 
+            sDisplayTitle = sTitle + '' + sSaison
+            oOutputParameterHandler.addParameter('siteUrl', sUrlSaison)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oGui.addSeason(SITE_IDENTIFIER, 'showSXE', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oOutputParameterHandler.addParameter('sDesc', sDesc)
-                oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+    oGui.setEndOfDirectory()
+
+
+
+def showSXE():
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    
+    sUrl, sNumSaison  = sUrl.split('?sNumSaison=') 
+    
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    oParser = cParser()
+    sStart = 'id="saison-'+ sNumSaison
+    sEnd = '<div id="alt">'
+    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
+    
+    sPattern = 'href="([^"]+)">épisode (\d+)'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        oOutputParameterHandler = cOutputParameterHandler()
+        for aEntry in aResult[1]:
+                            
+            sUrl = aEntry[0]
+            Ep = aEntry[1]
+            Saison = 'Saison ' + sNumSaison
+            sTitle = sMovieTitle + Saison  + ' Episode ' + Ep
+            
+
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

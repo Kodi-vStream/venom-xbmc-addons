@@ -180,19 +180,12 @@ class cGuiElement:
 
     def TraiteTitre(self, sTitle):
 
-        # Format Obligatoire a traiter via le fichier source
-        # -------------------------------------------------
-        # Episode 7 a 9 > Episode 7-9
-        # Saison 1 à ? > Saison 1-?
-        # Format de date > 11/22/3333 ou 11-22-3333
-
         # convertion unicode ne fonctionne pas avec les accents
-
         try:
-            # traitement du titre pour les caracteres spéciaux déplacé dans parser plus global
             # traitement du titre pour retirer le - quand c'est une Saison. Tiret, tiret moyen et cadratin
-            sTitle = sTitle.replace(' - Saison', ' Saison').replace(' – Saison', ' Saison')\
-                           .replace(' — Saison', ' Saison')
+            sTitle = sTitle.replace('Season', 'saison').replace('season', 'saison').replace('Saison', 'saison')
+            sTitle = sTitle.replace(' - saison', ' saison').replace(' – saison', ' saison')\
+                           .replace(' — saison', ' saison')
 
             if not isMatrix():
                 sTitle = sTitle.decode('utf-8')
@@ -213,42 +206,36 @@ class cGuiElement:
             self.__Date = str(string.group(0))
             sTitle = '%s (%s) ' % (sTitle, self.__Date)
 
-        # Recherche saison et episode a faire pr serie uniquement
-        if True:
-            m = re.search('(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', sTitle, re.UNICODE)
+        # Recherche saisons et episodes
+        sa = ep = ''
+        m = re.search('(|S|saison)(\s?|\.)(\d+)(\s?|\.)(E|Ep|x|\wpisode)(\s?|\.)(\d+)', sTitle, re.UNICODE)
+        if m:
+            sTitle = sTitle.replace(m.group(0), '')
+            sa = m.group(3)
+            ep = m.group(7)
+        else:   # Juste l'épisode
+            m = re.search('(^|\s|\.)(E|Ep|\wpisode)(\s?|\.)(\d+)', sTitle, re.UNICODE)
             if m:
-                # ok y a des episodes
-                sTitle = sTitle.replace(m.group(1), '')
-                ep = m.group(2)
-                if len(ep) == 1:
-                    ep = '0' + ep
-                self.__Episode = ep
-                self.addItemValues('Episode', self.__Episode)
-
-                # pour les saisons
-                m = re.search('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle, re.UNICODE)
+                sTitle = sTitle.replace(m.group(0), '')
+                ep = m.group(4)
+            else:             # juste la saison
+                m = re.search('(S|saison)(\s?|\.)(\d+)', sTitle, re.UNICODE)
                 if m:
-                    sTitle = sTitle.replace(m.group(1), '')
-                    sa = m.group(2)
-                    if len(sa) == 1:
-                        sa = '0' + sa
-                    self.__Season = sa
-                    self.addItemValues('Season', self.__Season)
+                    sTitle = sTitle.replace(m.group(0), '')
+                    sa = m.group(3)
 
-            else:
-                # pas d'episode mais y a t il des saisons ?
-                m = re.search('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle, re.UNICODE)
-                if m:
-                    sTitle = sTitle.replace(m.group(1), '')
-                    sa = m.group(2)
-                    if len(sa) == 1:
-                        sa = '0' + sa
-                    self.__Season = sa
-                    self.addItemValues('Season', self.__Season)
+        if sa:
+            self.__Season = sa
+            self.addItemValues('Season', self.__Season)
+        if ep:
+            self.__Episode = ep
+            self.addItemValues('Episode', self.__Episode)
 
-        # vire doubles espaces
+        # vire doubles espaces et double points
         sTitle = re.sub(' +', ' ', sTitle)
-        # enleve les crochets et les parentheses si elle sont vides
+        sTitle = re.sub('\.+', '.', sTitle)
+
+        # enleve les crochets et les parentheses si elles sont vides
         sTitle = sTitle.replace('()', '').replace('[]', '').replace('- -', '-')
 
         # vire espace et - a la fin (/!\ il y a 2 tirets differents meme si invisible a l'oeil nu et un est en unicode)
@@ -264,9 +251,9 @@ class cGuiElement:
         # on reformate SXXEXX Titre [tag] (Annee)
         sTitle2 = ''
         if self.__Season:
-            sTitle2 = sTitle2 + 'S' + self.__Season
+            sTitle2 = sTitle2 + 'S%02d' % int(self.__Season)
         if self.__Episode:
-            sTitle2 = sTitle2 + 'E' + self.__Episode
+            sTitle2 = sTitle2 + 'E%02d' % int(self.__Episode)
 
         # Titre unique pour marquer VU (avec numéro de l'épisode pour les séries)
         self.__sTitleWatched = cUtil().titleWatched(sTitle).replace(' ', '')
@@ -352,7 +339,7 @@ class cGuiElement:
         return self.__sPoster
 
     def setFanart(self, sFanart):
-        if (sFanart != ''):
+        if sFanart != '':
             self.__sFanart = sFanart
 
     def setMovieFanart(self):
@@ -517,15 +504,15 @@ class cGuiElement:
             if sType:
                 args = (sType, sTitle)
                 kwargs = {}
-                if (self.__ImdbId):
+                if self.__ImdbId:
                     kwargs['imdb_id'] = self.__ImdbId
-                if (self.__TmdbId):
+                if self.__TmdbId:
                     kwargs['tmdb_id'] = self.__TmdbId
-                if (self.__Year):
+                if self.__Year:
                     kwargs['year'] = self.__Year
-                if (self.__Season):
+                if self.__Season:
                     kwargs['season'] = self.__Season
-                if (self.__Episode):
+                if self.__Episode:
                     kwargs['episode'] = self.__Episode
 
                 meta = TMDb.get_meta(*args, **kwargs)

@@ -29,7 +29,7 @@ SITE_IDENTIFIER = 'streamonsport'
 SITE_NAME = 'Streamonsport'
 SITE_DESC = 'Site pour regarder du sport en direct'
 
-URL_MAIN = 'https://www.streamonsport.to/'
+URL_MAIN = 'https://my.streamonsport.biz/'
 
 SPORT_SPORTS = (True, 'load')
 SPORT_TV = (URL_MAIN + '31-site-pour-regarder-les-chaines-de-sport.html', 'showMovies')
@@ -148,10 +148,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if bChaine:
-                oGui.addMisc(SITE_IDENTIFIER, 'showLive', sDisplayTitle, 'tv.png', sThumb, sDisplayTitle, oOutputParameterHandler)
-            else:
-                oGui.addDir(SITE_IDENTIFIER, 'showLive', sDisplayTitle, sThumb, oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showLive', sDisplayTitle, 'tv.png', sThumb, sDisplayTitle, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -251,7 +248,7 @@ def Showlink():
         if bvalid:
             sHosterUrl = shosterurl
 
-    if "leet365.cc" in sUrl:
+    if "leet365.cc" in sUrl or 'casadelfutbol' in sUrl:
         bvalid, shosterurl = Hoster_Leet365(sUrl, siterefer)
         if bvalid:
             sHosterUrl = shosterurl

@@ -5,6 +5,7 @@
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog, VSlog, addon
 from resources.lib.handler.premiumHandler import cPremiumHandler
+from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import QuoteSafe
 
@@ -42,31 +43,6 @@ class cHoster(iHoster):
         self.__sUrl = self.__sUrl.replace('iframe/', '')
         self.__sUrl = self.__sUrl.replace('http:', 'https:')
         self.__sUrl = self.__sUrl.split('?aff_id')[0]
-
-    def checkSubtitle(self, sHtmlContent):
-        oParser = cParser()
-
-        # On ne charge les sous titres uniquement si vostfr se trouve dans le titre.
-        # if not re.search("<h1 class='file-title'>[^<>]+(?:TRUEFRENCH|FRENCH)[^<>]*</h1>", sHtmlContent, re.IGNORECASE):
-        if "<track type='vtt'" in sHtmlContent:
-
-            sPattern = '<track type=[\'"].+?[\'"] kind=[\'"]subtitles[\'"] src=[\'"]([^\'"]+).vtt[\'"] srclang=[\'"].+?[\'"] label=[\'"]([^\'"]+)[\'"]>'
-            aResult = oParser.parse(sHtmlContent, sPattern)
-
-            if (aResult[0] == True):
-                Files = []
-                for aEntry in aResult[1]:
-                    url = aEntry[0]
-                    label = aEntry[1]
-                    url = url + '.srt'
-
-                    if not url.startswith('http'):
-                        url = 'http:' + url
-                    if 'Forc' not in label:
-                        Files.append(url)
-                return Files
-
-        return False
 
     def checkUrl(self, sUrl):
         return True
@@ -115,35 +91,29 @@ class cHoster(iHoster):
 
     def __getMediaLinkByPremiumUser(self):
 
-        if not self.oPremiumHandler.Authentificate():
+        token = self.oPremiumHandler.getToken()
+        if not token:
             return self.__getMediaLinkForGuest()
 
-        else:
-            sHtmlContent = self.oPremiumHandler.GetHtml(self.__sUrl)
-            # compte gratuit ou erreur auth
-            if 'you can wait' in sHtmlContent or 'time-remaining' in sHtmlContent:
-                VSlog('no premium')
-                return self.__getMediaLinkForGuest()
+        fileCode = self.__sUrl.split('/')[-1].split('?')[0]
+        url1 = "https://uptobox.com/api/link?token=%s&file_code=%s" % (token, fileCode)
+        try:
+            oRequestHandler = cRequestHandler(url1)
+            dict_liens = oRequestHandler.request(jsonDecode=True)
+            statusCode = dict_liens["statusCode"]
+            if statusCode == 0:  # success
+                return True, dict_liens["data"]["dlLink"]
+    
+            if statusCode == 16:  # Waiting needed
+                status = "Pas de compte Premium" #dict_liens["data"]["waiting"]
+            elif statusCode == 7:  # Invalid parameter 
+                status = dict_liens["data"]["message"]
+                status += ' - ' + dict_liens["data"]["data"]
             else:
-                SubTitle = self.checkSubtitle(sHtmlContent)
-                api_call = self.GetMedialinkDL(sHtmlContent)
-                if api_call:
-                    if SubTitle:
-                        return True, api_call, SubTitle
-                    else:
-                        return True, api_call
-
-                return False, False
-
-    def GetMedialinkDL(self, sHtmlContent):
-
-        oParser = cParser()
-
-        sPattern = '<a href *=[\'"](?!http:\/\/uptostream.+)([^<>]+?)[\'"] *class=\'big-button-green-flat mt-4 mb-4\''
-        aResult = oParser.parse(sHtmlContent, sPattern)
-
-        if (aResult[0]):
-            return QuoteSafe(aResult[1][0])
+                status = "Erreur inconnue : " + str(statusCode)
+        except Exception as e:
+            status = e
+            
+        VSlog('UPTOBOX - ' + status)
 
         return False
-

@@ -272,8 +272,15 @@ def showMovieYears():
 
 
 def showSearchResult(sSearch=''):
+    oUtil = cUtil()
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
+
+    sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+    sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+    sSearchText = sSearchText.replace(URL_SEARCH_MISC[0], '')
+    sSearchText = sSearchText.replace(URL_SEARCH_ANIMS[0], '')
+    sSearchText = oUtil.CleanName(sSearchText)
 
     loop = 2
 
@@ -340,6 +347,12 @@ def showSearchResult(sSearch=''):
 
             sTitle = str(aEntry[1]).replace(' - Saison', ' Saison').replace(' - saison', ' Saison')
             sTitle = cUtil().removeHtmlTags(sTitle)
+            
+            # Filtre recherche
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue
+
             sUrl2 = URL_MAIN + aEntry[0]
 
             sDesc = aEntry[3]

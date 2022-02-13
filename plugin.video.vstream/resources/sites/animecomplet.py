@@ -69,7 +69,7 @@ def showAlpha():
     sPattern = 'href="#gti_(\d+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
             liste.append([str(aEntry), url1 + str(aEntry)])
 
@@ -88,7 +88,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText is not False:
         sUrl = URL_SEARCH[0] + sSearchText
         showAnims(sUrl)
         oGui.setEndOfDirectory()
@@ -132,10 +132,10 @@ def showAnims(sSearch=''):
     iCurrent = 0
     list_simlilar = []
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -201,7 +201,7 @@ def showAnims(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage is not False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showAnims', 'Page ' + sPaging, oOutputParameterHandler)
@@ -213,7 +213,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '>([^<]+)</a><a class="next page.+?href="([^"]+).+?Next'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page/([0-9]+)', aResult[1][0][1]).group(1)
@@ -237,7 +237,7 @@ def showSaisons():
     sPattern = 'colo_cont">.+?>([^<]*)</p>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sDesc = aResult[1][0]
         sDesc = ('[I][COLOR coral]%s[/COLOR][/I] %s') % (' SYNOPSIS : \r\n\r\n', sDesc)
     else:
@@ -247,7 +247,7 @@ def showSaisons():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
@@ -276,7 +276,7 @@ def showEpisodes():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sDesc = ('[I][COLOR grey]%s[/COLOR][/I]') % ('Anime Complet')
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
 
     # inutile (pour l'instant)
@@ -286,10 +286,10 @@ def showEpisodes():
     sPattern = '<h2><a href="([^"]+).+?title="([^"]+).+?src=.([^">]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -309,7 +309,7 @@ def showEpisodes():
             oGui.addAnime(SITE_IDENTIFIER, 'seriesHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage is not False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showEpisodes', 'Page ' + sPaging, oOutputParameterHandler)
@@ -333,7 +333,7 @@ def seriesHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry
@@ -343,7 +343,7 @@ def seriesHosters():
 
             # sHost = ''
             oHoster = cHosterGui().checkHoster(sUrl2)
-            if (oHoster != False):
+            if oHoster is not False:
                 sHost = '[COLOR coral]' + oHoster.getDisplayName() + '[/COLOR]'
             else:
                 sHost = '[COLOR pink]' + getHostName(sUrl2) + '[/COLOR]'
@@ -395,7 +395,7 @@ def hostersLink():
         sHosterUrl = sHosterUrl + "|Referer=" + URL_MAIN
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if (oHoster != False):
+    if oHoster is not False:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -404,7 +404,6 @@ def hostersLink():
 
 
 def similarTitle(s):
-
     list_spe = ['&', '\'', ',', '.', ';', '!']
 
     s = s.strip()

@@ -12,6 +12,10 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 1.8.0***
+- Recherche plus rapide et des résultats plus pertinents
+- Amélioration de la fluidité dans la navigation des menus
+
 *** 1.7.0***
 - Retour des sites de sports
 - Episodes toujours classés par ordre

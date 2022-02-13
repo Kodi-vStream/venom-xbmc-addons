@@ -96,7 +96,7 @@ class cTrakt:
             VSlog('bstoken invalid')
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oOutputParameterHandler.addParameter('type', 'movie')
-            oGui.addDir(SITE_IDENTIFIER, 'getToken()', self.ADDON.VSlang(30305), 'trakt.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'getToken', self.ADDON.VSlang(30305), 'trakt.png', oOutputParameterHandler)
         else:
             # nom de l'user
             try:
@@ -281,7 +281,6 @@ class cTrakt:
                 liste.append([self.decode((List['list']['name'] + ' (' + str(List['list']['item_count']) + ')')), url])
 
         for sTitle, sUrl in liste:
-
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'getTrakt', sTitle, 'genres.png', oOutputParameterHandler)
@@ -640,7 +639,7 @@ class cTrakt:
             progress_.VSclose(progress_)
 
             try:
-                if (sPage < sMaxPage):
+                if (sPage != sMaxPage):
                     sNextPage = sUrl.replace('page=' + str(sPage), 'page=' + str(int(sPage) + 1))
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sNextPage)

@@ -9,22 +9,22 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'filmstreamingy'
 SITE_NAME = 'FilmStreamingY'
 SITE_DESC = 'stream HD, streaming Sans pub, streaming vf'
 
-URL_MAIN = "https://www.films-streamingr.com/"
+URL_MAIN = "https://wwv.le-streamingk.com/"
 
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_MOVIE = (True, 'load')
-MOVIE_NEWS = (URL_MAIN + 'regarder-les-meilleurs-film-en-hd-et-vf-streaming', 'showMovies')
-MOVIE_SANTA = (URL_MAIN + 'liste-de-films-de-noel', 'showMovies')
-MOVIE_NOTES = (URL_MAIN + 'genre/top-films-streaming', 'showMovies')
-MOVIE_IMDB = (URL_MAIN + 'top-imdb', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'film/film-en-streaming', 'showMovies')
+MOVIE_NOTES = (URL_MAIN + 'vf/top-films-streaming', 'showMovies')
+MOVIE_IMDB = (URL_MAIN + 'vf/top-imdb-films', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
 
@@ -37,9 +37,6 @@ def load():
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_SANTA[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_SANTA[1], 'Films de Noël', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'notes.png', oOutputParameterHandler)
@@ -57,9 +54,8 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
-        sUrl = URL_SEARCH_MOVIES[0] + sSearchText.replace(' ', '+')
-        showMovies(sUrl)
+    if sSearchText is not False:
+        showMovies(sSearchText)
         oGui.setEndOfDirectory()
         return
 
@@ -79,11 +75,11 @@ def showGenres():
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            if ('liste-de-films-de-noel'  in aEntry[0]) or ('top-films-streaming-'  in aEntry[0]):
+            if aEntry[1] in ('Liste De Films De Noël', 'Top Films Streaming', 'Prochainement'):
                 continue
 
             sUrl = aEntry[0]
-            sTitle = aEntry[1].capitalize().replace('Co-', 'Comédie-')
+            sTitle = aEntry[1].capitalize()#.replace('Co-', 'Comédie-')
             triAlpha.append((sTitle, sUrl))
 
         # Trie des genres par ordre alphabétique
@@ -98,7 +94,9 @@ def showGenres():
 def showMovies(sSearch=''):
     oGui = cGui()
     if sSearch:
-        sUrl = sSearch
+        oUtil = cUtil()
+        sSearchText = oUtil.CleanName(sSearch.replace(URL_SEARCH_MOVIES[0], ''))
+        sUrl = URL_SEARCH_MOVIES[0] + sSearchText.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -106,7 +104,8 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'item">.+?href="([^"]+).+?(?:|quality">([^<]*).+?)src="([^"]+).+?alt="([^"]+).+?(?:|tag">([^<]+)).+?p>([^<]+)'
+    #Regex surement un peu trop leger, freeze
+    sPattern = 'item">.+?href="([^"]+).+?(?:|quality">([^<]*)).+?src="([^"]+).+?alt="([^"]+).+?(?:|tag">([^<]+)).+?p>([^<]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -130,6 +129,11 @@ def showMovies(sSearch=''):
                               .replace(' streaming', '').replace(' Straming', '').replace('Version Francais', 'VF')
             sYear = aEntry[4]
             sDesc = aEntry[5].replace('<p>', '')
+
+            # Filtre de recherche
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue
 
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sYear)
 

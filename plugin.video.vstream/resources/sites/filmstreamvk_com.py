@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+return False  # NPAI 04/02/2022
 
 import re
 
@@ -138,6 +139,8 @@ def showMovies(sSearch=''):
 
     if sSearch:
         sUrl = sSearch
+        oUtil = cUtil()
+        sSearch = oUtil.CleanName(sSearch.replace(URL_SEARCH[0], ''))
         sPattern = 'class="image">.*?<a href="([^"]+)">\s*<img src="([^"]+)" alt="([^"]+)".+?<p>([^<]*)'
     elif 'episodes' in sUrl:
         sPattern = 'class="poster">.*?<img src="([^"]+)" alt="([^"]+)".+?<a href="([^"]+)'
@@ -151,10 +154,10 @@ def showMovies(sSearch=''):
         sHtmlContent = oParser.abParse(sHtmlContent, 'class="archive_post">', '')
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    else:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -166,7 +169,7 @@ def showMovies(sSearch=''):
 
             # Si recherche et trop de resultat, on filtre
             if sSearch and total > 5:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[2]) == 0:
+                if not oUtil.CheckOccurence(sSearch, aEntry[2]):
                     continue
 
             if sSearch:
@@ -213,7 +216,6 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
 
 
