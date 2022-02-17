@@ -208,7 +208,7 @@ class cGuiElement:
 
         # Recherche saisons et episodes
         sa = ep = ''
-        m = re.search('(| S|saison)(\s?|\.)(\d+)(\s?|\.)(E|Ep|x|\wpisode)(\s?|\.)(\d+)', sTitle, re.UNICODE)
+        m = re.search('(|S|saison)(\s?|\.)(\d+)(\s?|\.)(E|Ep|x|\wpisode)(\s?|\.)(\d+)', sTitle, re.UNICODE)
         if m:
             sTitle = sTitle.replace(m.group(0), '')
             sa = m.group(3)
