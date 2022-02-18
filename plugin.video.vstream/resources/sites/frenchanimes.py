@@ -8,7 +8,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
 
@@ -194,8 +194,11 @@ def showEpisodes():
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
     # Pour les liens myvi
     sHtmlContent = sHtmlContent.replace('!//', '!https://').replace(',//', ',https://')
+    
+    #Besoin des saut de ligne
+    sHtmlContent = sHtmlContent.replace('\n','@')
 
-    sPattern = '([0-9]+)!|(https:.+?)[,|<]'
+    sPattern = '([0-9]+)!|(https:.+?)[,|<@]'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     ep = 0
