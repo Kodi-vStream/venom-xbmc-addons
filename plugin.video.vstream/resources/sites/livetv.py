@@ -24,7 +24,8 @@ SITE_IDENTIFIER = 'livetv'
 SITE_NAME = 'Live TV'
 SITE_DESC = 'Evénements sportifs en direct'
 
-URL_MAIN = 'http://livetv.sx'
+# URL_MAIN = 'http://livetv.sx'
+URL_MAIN = 'http://62.182.83.65'
 
 SPORT_GENRES = (URL_MAIN + '/frx/allupcoming/', 'showMovies')  # Liste de diffusion des sports
 SPORT_LIVE = (URL_MAIN + '/frx/', 'showLive')  # streaming Actif
