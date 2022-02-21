@@ -1,0 +1,50 @@
+[MASTER]
+
+# Add files or directories to the blacklist.
+ignore=LICENSE,
+       MANIFEST.in,
+       PUBLISH.md,
+       README.md,
+       requirements.txt,
+       script.test,
+
+
+[MESSAGES CONTROL]
+
+# Types of check we want to disable
+# format
+# disable=stuff-that-we-actually-want-ignored,
+#        stuff-that-we-actually-want-ignored2,
+#
+#        stuff-thats-only-ignored-for-now-and-will-be-addressed-in-a-pr,
+#        stuff-thats-only-ignored-for-now-and-will-be-addressed-in-a-pr2
+disable=import-error,
+        no-name-in-module,
+        consider-using-dict-items,
+        missing-docstring,
+        broad-except,
+        too-few-public-methods,
+        attribute-defined-outside-init,
+        useless-object-inheritance,
+        no-else-return,
+        len-as-condition,
+        unused-import,
+        unused-variable,
+        useless-else-on-loop,
+        bad-continuation,
+        too-many-arguments,
+        logging-not-lazy,
+        unidiomatic-typecheck,
+        too-many-nested-blocks,
+        inconsistent-return-statements,
+        arguments-differ,
+        consider-using-in,
+        deprecated-method,
+        redefined-outer-name,
+        consider-using-f-string
+
+
+[FORMAT]
+
+# Maximum number of characters on a single line.
+max-line-length=120
