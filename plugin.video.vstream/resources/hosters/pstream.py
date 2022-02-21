@@ -98,7 +98,11 @@ class cHoster(iHoster):
             except:
                 pass
 
-        api_call = json.loads(code[code.rfind("{"):])['url']
+        jsonCall = json.loads(code[code.rfind("{"):])
+        for a in jsonCall:
+            if ".m3u8" in str(jsonCall[a]):
+                api_call = jsonCall[a]
+                break
 
         if (api_call):
             return True, api_call + '|' + urlEncode(headers)
