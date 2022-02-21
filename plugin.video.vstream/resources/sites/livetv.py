@@ -3,10 +3,10 @@
 # Ovni-crea
 import base64
 import re
-import time
 import locale
+import xbmc
 
-from resources.lib.comaddon import progress, xbmc
+from resources.lib.comaddon import progress, isMatrix
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -39,7 +39,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Les sports (Genres)', 'sport.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Les sports (En live)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Les sports (En direct)', 'news.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -104,18 +104,12 @@ def showMovies():  # affiche les catégories qui ont des lives'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] == False:
         oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
+    else:
         total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sUrl2 = URL_MAIN + aEntry[0]
             sTitle = aEntry[1]
 
@@ -135,14 +129,11 @@ def showMovies():  # affiche les catégories qui ont des lives'
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies2', sTitle, 'sport.png', oOutputParameterHandler)
 
-        progress_.VSclose(progress_)
-
         oGui.setEndOfDirectory()
 
 
 def showMovies2():  # affiche les matchs en direct depuis la section showMovie
-    locale.setlocale(locale.LC_ALL, 'french_FRANCE')  # pour traiter les dates
-    
+
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl2 = oInputParameterHandler.getValue('siteUrl2')
@@ -154,10 +145,10 @@ def showMovies2():  # affiche les matchs en direct depuis la section showMovie
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] == False:
         oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
+    else:
+        mois = ['filler', 'janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'décembre']
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME, large=True)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -177,32 +168,28 @@ def showMovies2():  # affiche les matchs en direct depuis la section showMovie
             sDate = aEntry[3]
             sQual = aEntry[4]
 
-            try:
-                sTitle2 = sTitle2.decode("iso-8859-1", 'ignore')
-                sDate = sDate.decode("iso-8859-1", 'ignore')
-                sQual = sQual.decode("iso-8859-1", 'ignore')
-            except:
-                pass
+            if not isMatrix():
+                try:
+                    sTitle2 = sTitle2.decode("iso-8859-1", 'ignore')
+                    sQual = sQual.decode("iso-8859-1", 'ignore')
+                    sDate = sDate.decode("iso-8859-1", 'ignore')
+                except:
+                    pass
+                    
+                sTitle2 = cUtil().unescape(sTitle2)
+                sTitle2 = sTitle2.encode("utf-8", 'ignore')
+                
+                sQual = cUtil().unescape(sQual)
+                sQual = str(sQual.encode("utf-8", 'ignore'))
 
-            sTitle2 = cUtil().unescape(sTitle2)
-            sTitle2 = sTitle2.encode("utf-8", 'ignore')
+                sDate = sDate.encode('utf-8')
 
-            sQual = cUtil().unescape(sQual)
-            sQual = sQual.encode("utf-8", 'ignore')
-            sDate = sDate.encode("cp1252", 'ignore')
-
-            try:
-                sTitle2 = str(sTitle2, encoding="utf-8", errors='ignore')
-                sQual = str(sQual, encoding="utf-8", errors='ignore')
-                sDate = str(sDate, encoding="cp1252", errors='ignore')
-            except:
-                pass
-            
-            
             if sDate:
                 try:
-                    d = datetime(*(time.strptime(sDate, '%d %B \xe0 %H:%M')[0:6]))
-                    sDate = d.strftime("%d/%m %H:%M")
+                    sDateTime = re.findall('(\d+) ([\S]+).+?(\d+)(:\d+)', str(sDate))
+                    if sDateTime:
+                        sMonth = mois.index(sDateTime[0][1])
+                        sDate = '%02d/%02d %02d%s' % (int(sDateTime[0][0]), sMonth, int(sDateTime[0][2]), sDateTime[0][3])
                 except Exception as e:
                     pass
 
@@ -496,7 +483,7 @@ def showHosters():  # affiche les videos disponible du live
             if aResult:
                 sHosterUrl = aResult[0] + '|User-Agent=' + UA + '&referer=' + Referer
             else:
-                sPattern2 = "pl.\init\('([^']+)'\);"
+                sPattern2 = "pl\.init\('([^']+)'\);"
                 aResult = re.findall(sPattern2, sHtmlContent2)
                 if aResult:
                     sHosterUrl = aResult[0] + '|User-Agent=' + UA + '&referer=' + Referer
@@ -1031,7 +1018,7 @@ def showHosters():  # affiche les videos disponible du live
                 name = aResult1[0][1]
                 sHosterUrl = 'http://' + ip + ':' + name + 'm3u8'
 
-        if 'harleyquinn' in url:  # Terminé
+        if 'harleyquinn' in url or 'joker' in url :  # Terminé
             oRequestHandler = cRequestHandler(url)
             sHtmlContent2 = oRequestHandler.request()
             sPattern2 = 'fid="(.+?)"; v_width=(.+?); v_height=(.+?);'
@@ -1042,7 +1029,7 @@ def showHosters():  # affiche les videos disponible du live
                 vw = aResult[0][1]
                 vh = aResult[0][2]
 
-                url2 = 'http://www.jokerplayer.net/embed.php?u=' + fid + '&vw=' + vw + '&vh=' + vh
+                url2 = 'http://www.jokersplayer.xyz/embed.php?u=' + fid + '&vw=' + vw + '&vh=' + vh
                 oRequestHandler = cRequestHandler(url2)
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
                 oRequestHandler.addHeaderEntry('Referer', url)
@@ -1055,6 +1042,7 @@ def showHosters():  # affiche les videos disponible du live
                     oRequestHandler = cRequestHandler(url3)
                     oRequestHandler.addHeaderEntry('User-Agent', UA)
                     oRequestHandler.addHeaderEntry('Referer', url2)
+                    oRequestHandler.addHeaderEntry('Connection', 'keep-alive')
                     sHtmlContent2 = oRequestHandler.request()
                     sPattern3 = 'src=.+?e=(.+?)&st=(.+?)&'
                     aResult = re.findall(sPattern3, sHtmlContent2)
@@ -1292,5 +1280,20 @@ def getHosterIframe(url, referer):
         if aResult:
             return aResult[0] + '|Referer=' + url
 
+
+    sPattern =  '.atob\("(.+?)"'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        import base64
+        code = aResult[0]
+        try:
+            if isMatrix():
+                code = base64.b64decode(code).decode('ascii')
+            else:
+                code = base64.b64decode(code)
+            return True, code + '|Referer=' + url
+        except Exception as e:
+            pass
+        
     
     

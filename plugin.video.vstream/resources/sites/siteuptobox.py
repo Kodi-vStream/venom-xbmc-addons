@@ -130,7 +130,6 @@ def showFile(sSearch=''):
                 sToken = aResult[1][0]
 
             if sSearch:
-
                 sHtmlContent = oPremiumHandler.GetHtml(API_URL.replace('none', sToken) + '%2F%2F' + sSearch)
             else:
                 sHtmlContent = oPremiumHandler.GetHtml(API_URL.replace('none', sToken) + '%2F%2F')
@@ -142,21 +141,21 @@ def showFile(sSearch=''):
         total = len(content)
         progress_ = progress().VScreate(SITE_NAME)
         sPath = getpath(content)
-        for x in content:
+        for contentType in content:
 
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
 
-            if x == 'files':
+            if contentType == 'files':
 
-                for y in content[x]:
+                for file in content[contentType]:
                     if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-                        sTitle = y['file_name']
+                        sTitle = file['file_name']
                     else:
-                        sTitle = y['file_name'].encode('utf-8')
+                        sTitle = file['file_name'].encode('utf-8')
 
-                    sHosterUrl = URL_MAIN + y['file_code']
+                    sHosterUrl = URL_MAIN + file['file_code']
 
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
                     if (oHoster != False):
@@ -165,15 +164,15 @@ def showFile(sSearch=''):
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
                     sNext += 1
 
-            if x == 'folders':
+            if not sSearch and contentType == 'folders':
 
-                for z in content[x]:
+                for folder in content[contentType]:
                     if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-                        sTitle = z['name']
-                        sFoldername = z['fld_name']
+                        sTitle = folder['name']
+                        sFoldername = folder['fld_name']
                     else:
-                        sTitle = z['name'].encode('utf-8')
-                        sFoldername = z['fld_name'].encode('utf-8')
+                        sTitle = folder['name'].encode('utf-8')
+                        sFoldername = folder['fld_name'].encode('utf-8')
 
                     sUrl = API_URL.replace('none', sToken)
 
@@ -184,8 +183,8 @@ def showFile(sSearch=''):
                     oOutputParameterHandler.addParameter('sToken', sToken)
                     oGui.addDir(SITE_IDENTIFIER, 'showFile', sTitle, 'genres.png', oOutputParameterHandler)
 
-            if x == 'currentFolder':
-                if content[x]['fileCount'] != int(sNext):
+            if not sSearch and contentType == 'currentFolder':
+                if content[contentType]['fileCount'] != int(sNext):
                     oOutputParameterHandler = cOutputParameterHandler()
 
                     sOffset = int(sOffset) + 100

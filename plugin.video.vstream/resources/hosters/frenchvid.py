@@ -23,10 +23,10 @@ class cHoster(iHoster):
         elif 'fem.tohds' in self._url:
             baseUrl = 'https://feurl.com/api/source/'
         else:
-            baseUrl = 'https://' + self._url.split('/')[2] + '/api/source/'
+            baseUrl = 'https://' + self.__sUrl.split('/')[2] + '/api/source/'
 
-        if 'fem.tohds' in self._url:
-            oRequestHandler = cRequestHandler(self._url)
+        if 'fem.tohds' in self.__sUrl:
+            oRequestHandler = cRequestHandler(self.__sUrl)
             oRequestHandler.disableIPV6()
             sHtmlContent = oRequestHandler.request()
 

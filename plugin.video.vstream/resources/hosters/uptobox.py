@@ -6,6 +6,7 @@ from resources.hosters.hoster import iHoster
 from resources.hosters.uptostream import cHoster as uptostreamHoster
 from resources.lib.comaddon import dialog, VSlog, addon
 from resources.lib.handler.premiumHandler import cPremiumHandler
+from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import QuoteSafe
 
@@ -49,6 +50,8 @@ class cHoster(iHoster):
 
         return False
 
+    def checkUrl(self, sUrl):
+        return True
 
 
     def getMediaLink(self):
@@ -118,5 +121,31 @@ class cHoster(iHoster):
 
         if (aResult[0]):
             return QuoteSafe(aResult[1][0])
+    def __getMediaLinkByPremiumUser(self):
+
+        token = self.oPremiumHandler.getToken()
+        if not token:
+            return self.__getMediaLinkForGuest()
+
+        fileCode = self.__sUrl.split('/')[-1].split('?')[0]
+        url1 = "https://uptobox.com/api/link?token=%s&file_code=%s" % (token, fileCode)
+        try:
+            oRequestHandler = cRequestHandler(url1)
+            dict_liens = oRequestHandler.request(jsonDecode=True)
+            statusCode = dict_liens["statusCode"]
+            if statusCode == 0:  # success
+                return True, dict_liens["data"]["dlLink"]
+    
+            if statusCode == 16:  # Waiting needed
+                status = "Pas de compte Premium" #dict_liens["data"]["waiting"]
+            elif statusCode == 7:  # Invalid parameter 
+                status = dict_liens["data"]["message"]
+                status += ' - ' + dict_liens["data"]["data"]
+            else:
+                status = "Erreur inconnue : " + str(statusCode)
+        except Exception as e:
+            status = e
+            
+        VSlog('UPTOBOX - ' + status)
 
         return False

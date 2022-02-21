@@ -172,23 +172,30 @@ def showHoster():
         except:
             iframeURL1 = aResult2[1][0]
 
-        oRequestHandler = cRequestHandler(iframeURL1)
-        oRequestHandler.addHeaderEntry('User-Agent', UA)
-        sHtmlContent = oRequestHandler.request()
-    
-        oParser = cParser()
-        sPattern = '<iframe.+?src="([^"]+)'
-        aResult2 = oParser.parse(sHtmlContent, sPattern)
-    
-        if aResult2[1]:
-            urlHoster = aResult2[1][0]
-            if 'primetubsub' in urlHoster:
-                sHosterUrl = getHosterPrimetubsub(urlHoster, iframeURL1)
-            else:
-                sHosterUrl = getHosterWigistream(urlHoster, iframeURL1)
-            if sHosterUrl:
-                oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
-                oGui.addFolder(oGuiElement, oOutputParameterHandler)
+        iframeURL1 = aResult2[1][0]
+        
+        if 'cloudstream' in iframeURL1:
+            sHosterUrl = getHosterWigistream(iframeURL1, sUrl)
+        
+        if not sHosterUrl:
+            oRequestHandler = cRequestHandler(iframeURL1)
+            oRequestHandler.addHeaderEntry('User-Agent', UA)
+            sHtmlContent = oRequestHandler.request()
+        
+            oParser = cParser()
+            sPattern = '<iframe.+?src="([^"]+)'
+            aResult2 = oParser.parse(sHtmlContent, sPattern)
+        
+            if aResult2[1]:
+                urlHoster = aResult2[1][0]
+                if 'primetubsub' in urlHoster:
+                    sHosterUrl = getHosterPrimetubsub(urlHoster, iframeURL1)
+                else:
+                    sHosterUrl = getHosterWigistream(urlHoster, iframeURL1)
+        
+        if sHosterUrl:
+            oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
+            oGui.addFolder(oGuiElement, oOutputParameterHandler)
             
     cGui.CONTENT = 'files'
     oGui.setEndOfDirectory()
@@ -213,6 +220,12 @@ def getHosterWigistream(url, referer):
         sUnpack = cPacker().unpack(sstr)
         sPattern = 'src="(.+?)"'
         aResult = re.findall(sPattern, sUnpack)
+        if aResult:
+            return aResult[0] + '|User-Agent=' + UA + '&Referer=' + Quote(url)
+
+    else:
+        sPattern = "source:'(.+?)'"
+        aResult = re.findall(sPattern, sHtmlContent)
         if aResult:
             return aResult[0] + '|User-Agent=' + UA + '&Referer=' + Quote(url)
 

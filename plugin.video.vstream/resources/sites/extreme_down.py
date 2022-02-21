@@ -21,7 +21,11 @@ SITE_IDENTIFIER = 'extreme_down'
 SITE_NAME = '[COLOR violet]Extreme Down[/COLOR]'
 SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
-URL_MAIN = "https://www.extreme-down.live/"
+# Utiliser ce site pour retrouver le nom de domaine : 
+# https://www.extreme-down.info/
+
+URL_MAIN = "https://www.extreme-down.plus/"
+
 
 URL_SEARCH = (URL_MAIN + 'index.php?', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0] + 'do=search&subaction=search&titleonly=3&speedsearch=1&story=', 'showMovies')
@@ -346,6 +350,8 @@ def showMovies(sSearch=''):
 
         sCat = int(re.search('speedsearch=(\d)', sSearch).group(1))
         sSearch = re.search('story=(.+?)($|&)', sSearch).group(1)
+        oUtil = cUtil()
+        sSearch = oUtil.CleanName(sSearch)
     else:
         oRequestHandler = cRequestHandler(siteUrl)
         sHtmlContent = oRequestHandler.request()
@@ -357,10 +363,9 @@ def showMovies(sSearch=''):
 
     titles = set()
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
+    else:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -406,7 +411,7 @@ def showMovies(sSearch=''):
             titles.add(key)
 
             if sSearch and total > 5:
-                if cUtil().CheckOccurence(sSearch, sTitle) == 0:
+                if not oUtil.CheckOccurence(sSearch, sTitle):
                     continue
 
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
@@ -669,7 +674,6 @@ def showLinks():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
                 ep = aEntry[0]
             else:
                 sUrl2 = aEntry[1]

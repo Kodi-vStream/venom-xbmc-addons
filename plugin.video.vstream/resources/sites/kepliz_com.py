@@ -21,17 +21,17 @@ SITE_DESC = 'Films en streaming'
 
 # Source compatible avec les clones : toblek, bofiaz, nimvon
 # mais pas compatible avec les clones, qui ont une redirection direct : sajbo, trozam, radego
-URL_HOST = 'http://www.wavob.com/'
+URL_HOST = 'http://www.poblom.com/'
 URL_MAIN = 'URL_MAIN'
 
 # pour l'addon
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'c/wavob/29/0', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'c/poblom/29/0', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_HD = (URL_MAIN, 'showMovies')
 
-DOC_NEWS = (URL_MAIN + 'c/wavob/26/0', 'showMovies')
-SHOW_SHOWS = (URL_MAIN + 'c/wavob/3/0', 'showMovies')
+DOC_NEWS = (URL_MAIN + 'c/poblom/26/0', 'showMovies')
+SHOW_SHOWS = (URL_MAIN + 'c/poblom/3/0', 'showMovies')
 
 URL_SEARCH = ('', 'showMovies')
 URL_SEARCH_MOVIES = ('', 'showMovies')
@@ -95,7 +95,7 @@ def showGenres():
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, iGenre in liste:
-        sUrl = URL_MAIN + 'c/wavob/%d/0' %iGenre
+        sUrl = URL_MAIN + 'c/poblom/%d/0' %iGenre
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
@@ -120,7 +120,7 @@ def showMovies(sSearch=''):
     # En cas de recherche direct OU lors de la navigation dans les differentes pages de résultats d'une recherche
     if sSearch:
         sSearch = sSearch[:20]      # limite de caractere sinon bug de la recherche
-        oRequestHandler = cRequestHandler(sMainUrl + 'home/wavob/')
+        oRequestHandler = cRequestHandler(sMainUrl + 'home/poblom/')
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
         oRequestHandler.addParameters('searchword', sSearch.replace(' ', '+'))
         sABPattern = '<div class="column24"'
@@ -143,7 +143,7 @@ def showMovies(sSearch=''):
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -180,7 +180,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = 'href="([^"]+)"><img style="position:relative;" +src="data:image'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         return aResult[1][0]
 
     return False
@@ -203,62 +203,33 @@ def showHosters():
     # Recuperation info film, com et image
     sThumb = ''
     sDesc = ''
-    sPattern = '<p style="text-align: center;"><img src="([^"]+)".+?<p style="text-align: left;">(.+?)</p>'
+    sPattern = '<img src="([^"]+)".+?<p.+?>([^<]+)</p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sThumb = aResult[1][0][0]
-        sDesc = cUtil().unescape(aResult[1][0][1])
+        sDesc = aResult[1][0][1]
 
-    sPattern = '<iframe src="([^"]+)"'
+    sPattern = '<iframe.+?src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0]):
 
-        sMovieTitle = sMovieTitle.replace(' [HD]', '')
+    if aResult[0] is True:
+        sMovieTitle = sMovieTitle
         sLink = aResult[1][0]
         if sLink.startswith('/'):
             sLink = URL_HOST[:-1] + sLink
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sLink', sLink)
-        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-
-        oGui.addLink(SITE_IDENTIFIER, 'showHostersLink3', sMovieTitle, sThumb, sDesc, oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
-def showHostersLink3():
-    oGui = cGui()
-    oParser = cParser()
-    oInputParameterHandler = cInputParameterHandler()
-    sLink = oInputParameterHandler.getValue('sLink')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-
     oRequestHandler = cRequestHandler(sLink)
     data = oRequestHandler.request()
 
-    # Recherche du premier lien
-    sPattern = "href='(.+?)'"
+    sPattern = 'file: "(.+?)"'
     aResult = oParser.parse(data, sPattern)
 
-    # Si il existe, suivi du lien
-    if ( aResult[0] == True ):
-        oRequestHandler = cRequestHandler(aResult[1][0])
-        oRequestHandler.addHeaderEntry('User-Agent', UA)
-        oRequestHandler.addHeaderEntry('Referer', sLink)
-        data = oRequestHandler.request()
-
-    sPattern = "src: '(.+?)'.+?res: (.+?),"
-    aResult = oParser.parse(data, sPattern)
-
-    if (aResult[0] == True):
-
+    if aResult[0] is True:
         for aEntry in aResult[1]:
 
-            sLink2 = aEntry[0]
-            sQual = aEntry[1]
-
-            sTitle = ('%s [%s]') % (sMovieTitle, sQual)
+            sLink2 = aEntry
+            sTitle = sMovieTitle
 
             oHoster = cHosterGui().checkHoster("mp4")
 

@@ -103,6 +103,8 @@ def showAnimes(sSearch=''):
 
     oParser = cParser()
     if sSearch:
+        oUtil = cUtil()
+        sSearch = oUtil.CleanName(sSearch)
         sPattern = 'href="([^"]+)" class="liste_dl"><img src="([^"]+)".+?alt=".+?strong>([^<]+)<.+?all">([^<]+)</.+?>'
     else:
         sPattern = 'href="([^"]+)".+?><img src="([^"]+)".+?alt=".+?strong>([^<]+)<.+?all">([^<]+)<br.+?>'
@@ -128,7 +130,7 @@ def showAnimes(sSearch=''):
 
             # filtre search
             if sSearch and total > 5:
-                if cUtil().CheckOccurence(sSearch, sTitle) == 0:
+                if not oUtil.CheckOccurence(sSearch, sTitle):
                     continue
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)

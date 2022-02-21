@@ -2,7 +2,6 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 import re
-import json
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -10,13 +9,13 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress  # , VSlog
+from resources.lib.comaddon import progress#, VSlog
 
 SITE_IDENTIFIER = 'zone_streaming'
 SITE_NAME = 'Zone Streaming'
 SITE_DESC = 'Médiathèque de chaînes officielles'
 
-URL_MAIN = 'http://www.zone-streaming.fr/'
+URL_MAIN = "http://www.zone-streaming.fr/"
 
 MOVIE_MOVIE = (URL_MAIN + 'category/films/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -221,13 +220,13 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
-    sPattern = 'class="post-thumbnail".+?href="([^"]+).+?src="(http[^"]+).+?title="Permalink.+?>([^<]+)<.+?<p>([^<]+)'
+    sPattern = 'post-thumbnail".+?href="([^"]+).+?src="(http[^"]+).+?bookmark">([^<]+).+?<p>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -265,7 +264,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = 'pages\'>Page.+?sur ([^<]+?)<.+?href="([^"]+?)">>><'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -286,46 +285,42 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<iframe.+?src="([^"]+)"'
+    sPattern = '<iframe.+?src="([^"]+)'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
+            watchUrl = 'https://www.youtube.com/watch?v='
 
             if 'videoseries?list=' in aEntry:
+                idList = re.sub('https:.+?list=', '', aEntry)
 
-                idList = aEntry.replace('https://www.youtube-nocookie.com/embed/videoseries?list=', '')\
-                               .replace('&cc_load_policy=1', '')
-
-                sUrl = 'https://www.youtube-nocookie.com/list_ajax?style=json&action_get_list=1&list=' + idList
+                sUrl = 'https://invidious.fdn.fr/playlist?list=' + idList
                 oRequestHandler = cRequestHandler(sUrl)
                 sHtmlContent = oRequestHandler.request()
 
-                page = json.loads(sHtmlContent)
-                List_video = page["video"]
-                for i in List_video:
-                    # VSlog(i["encrypted_id"])
-                    # VSlog(i["thumbnail"])
-                    # VSlog(i["title"])
+                sPattern1 = ' class="thumbnail" src="(.+?)".+?<p dir="auto">(.+?)</p>.+? <a.+?href="(.+?)"'
+                aResult1 = oParser.parse(sHtmlContent, sPattern1)
 
-                    sUrl = 'https://www.youtube.com/watch?v='
-                    sHosterUrl = sUrl + i["encrypted_id"]
-                    sThumb = i["thumbnail"]
-                    sTitle = i["title"].encode('utf-8').replace('EP.', 'E').replace('Ep. ', 'E').replace('Ep ', 'E')
-                    sTitle = sTitle.replace('|', '-')
+                if aResult1[0] is True:
+                    for aEntry in aResult1[1]:
+                        sHosterUrl = aEntry[2]
+                        sThumb = 'https://invidious.fdn.fr' + aEntry[0]
+                        sTitle = aEntry[1].replace('EP.', 'E').replace('Ep. ', 'E').replace('Ep ', 'E')
+                        sTitle = sTitle.replace('|', '-')
 
-                    oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    if (oHoster != False):
-                        oHoster.setDisplayName(sTitle)
-                        oHoster.setFileName(sTitle)
-                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                        oHoster = cHosterGui().checkHoster(sHosterUrl)
+                        if (oHoster != False):
+                            oHoster.setDisplayName(sTitle)
+                            oHoster.setFileName(sTitle)
+                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
             else:
                 link = re.sub('.+?embed/', '', aEntry)
                 link = link.replace('?rel=0', '')
-                sHosterUrl = 'https://www.youtube.com/watch?v=' + link
+                sHosterUrl = watchUrl + link
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     oHoster.setDisplayName(sMovieTitle)

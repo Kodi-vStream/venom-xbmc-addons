@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'vf_film'
 SITE_NAME = 'VF Film'
 SITE_DESC = 'Regarder tous vos films streaming complets, gratuit et illimité'
 
-URL_MAIN = "https://vf-film.me/"
+URL_MAIN = "https://vf-film.site/"
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + '?s=', FUNCTION_SEARCH)

@@ -37,7 +37,12 @@ class cDb(object):
             self.db = sqlite.connect(REALDB)
             self.db.row_factory = sqlite.Row
             self.dbcur = self.db.cursor()
-            if self.dbcur.rowcount == -1:
+
+            self.dbcur.execute("""
+                SELECT name, sql FROM sqlite_master
+                WHERE type='table'
+                ORDER BY name;""")
+            if self.dbcur.fetchone() is None:
                 self._create_tables()
             return self
             

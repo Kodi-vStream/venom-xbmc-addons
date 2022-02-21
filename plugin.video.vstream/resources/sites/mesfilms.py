@@ -135,10 +135,9 @@ def showSearchResult(sSearch=''):
     sPattern = 'animation-2".+?href="([^"]+).+?src="([^"]+)" alt="([^"]+).+?(?:|year">([^<]*)<.+?)<p>(.*?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
+    else:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -161,7 +160,7 @@ def showSearchResult(sSearch=''):
 
             # Filtrer les résultats
             # if sSearch and total > 5:
-                # if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
+                # if not cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle):
                     # continue
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)

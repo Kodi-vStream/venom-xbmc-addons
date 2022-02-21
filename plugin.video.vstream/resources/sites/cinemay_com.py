@@ -41,11 +41,11 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films & Séries (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
@@ -91,7 +91,9 @@ def showMovies(sSearch=''):
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     if sSearch:
+        oUtil = cUtil()
         sUrl = sSearch.replace(' ', '+')
+        sSearch = oUtil.CleanName(sSearch.replace(URL_SEARCH[0], ''))
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -99,10 +101,10 @@ def showMovies(sSearch=''):
     sPattern = '<a href="([^"]+)" data-url=".+?" class=".+?" title="([^"]+)"><img.+?src="([^"]*)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    else:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -112,26 +114,18 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            # Pas sure que ce soit utile, fonctionne sans...
-            # try:  # encode/decode pour affichage des accents en python 2
-                # sTitle = unicode(aEntry[1], 'utf-8')
-                # sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode('unicode_escape')
-                # sTitle = sTitle.encode('latin-1')
-            # except NameError:
-                # sTitle = aEntry[1]
-
             # Nettoyage du titre
             sTitle = aEntry[1].replace(' en streaming', '').replace('- Saison ', ' S')
             if sTitle.startswith('Film'):
                 sTitle = sTitle.replace('Film ', '')
 
-            sUrl = URL_MAIN[:-1] + aEntry[0]
-            sThumb = URL_MAIN[:-1] + aEntry[2]
-
             # filtre search
             if sSearch and total > 5:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
+                if not oUtil.CheckOccurence(sSearch, sTitle):
                     continue
+
+            sUrl = URL_MAIN[:-1] + aEntry[0]
+            sThumb = URL_MAIN[:-1] + aEntry[2]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -289,10 +283,11 @@ def showSeries():
         for aEntry in aResult[1]:
             if aEntry[0]:  # Affichage de la langue
                 sLang = aEntry[0]
-                oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + sLang + '[/COLOR]')
+                #oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + sLang + '[/COLOR]')
             else:
                 # on vire le double affichage de la saison
                 sTitle = sMovieTitle + ' ' + aEntry[1].replace(' x ', '').replace(' ', '')
+                sTitle = sTitle + ' ' + '(' + sLang + ')'
                 sData = aEntry[2]
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -303,7 +298,6 @@ def showSeries():
                 oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def showLinks():
     oGui = cGui()
