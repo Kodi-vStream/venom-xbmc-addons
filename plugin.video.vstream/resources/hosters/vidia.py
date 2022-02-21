@@ -10,73 +10,26 @@ from resources.lib.packer import cPacker
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Vidia'
-        self.__sFileName = self.__sDisplayName
-        self.__sHD = ''
+        iHoster.__init__(self, 'vidia', 'Vidia')
 
-    def getDisplayName(self):
-        return  self.__sDisplayName
-
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
-
-    #facultatif mais a laisser pour compatibilitee
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    #facultatif mais a laisser pour compatibilitee
-    def getFileName(self):
-        return self.__sFileName
-
-    def getPluginIdentifier(self):
-        return 'vidia'
-
-    def isDownloadable(self):
-        return True
-
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return ''
-
-    def __getIdFromUrl(self):
-        return ''
-
-    def __modifyUrl(self, sUrl):
-        return ''
-
-    def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
-
-    def checkUrl(self, sUrl):
-        return True
-
-    def getUrl(self, media_id):
-        return
-
-    def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self):
-
+    def _getMediaLinkForGuest(self):
         api_call = False
 
-        oRequest = cRequestHandler(self.__sUrl)
+        oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
         sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if aResult[0] is True:
             sHtmlContent = cPacker().unpack(aResult[1][0])
             sPattern = '{file:"([^"]+)"}'
             aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if aResult[0] is True:
             api_call = aResult[1][0].replace(',', '').replace('master.m3u8', 'index-v1-a1.m3u8')
 
-        if (api_call):
+        if api_call:
             return True, api_call
 
         return False, False

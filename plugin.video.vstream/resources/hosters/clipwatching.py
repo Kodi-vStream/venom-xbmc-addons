@@ -9,44 +9,14 @@ from resources.lib.comaddon import dialog
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'ClipWatching'
-        self.__sFileName = self.__sDisplayName
-        self.__sHD = ''
-
-    def getDisplayName(self):
-        return self.__sDisplayName
-
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
-
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    def getFileName(self):
-        return self.__sFileName
+        iHoster.__init__(self, 'clipwatching', 'ClipWatching')
 
     def isDownloadable(self):
         return False
 
-    def getPluginIdentifier(self):
-        return 'clipwatching'
-
-    def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
-
-    def checkUrl(self, sUrl):
-        return True
-
-    def __getUrl(self, media_id):
-        return
-
-    def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self, api_call=None):
-
+    def _getMediaLinkForGuest(self, api_call=None):
         oParser = cParser()
-        oRequest = cRequestHandler(self.__sUrl)
+        oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
 
         # accelère le traitement

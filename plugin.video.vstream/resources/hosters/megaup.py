@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+import re
+import time
+import requests
+
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 from resources.lib.comaddon import dialog, VSlog
@@ -8,60 +12,12 @@ from resources.lib.handler.requestHandler import cRequestHandler
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0'
 
 class cHoster(iHoster):
+
     def __init__(self):
-        self.__sDisplayName = 'Megaup'
-        self.__sFileName = self.__sDisplayName
-        self.__sHD = ''
+        iHoster.__init__(self, 'megaup', 'Megaup')
 
-    def getDisplayName(self):
-        return self.__sDisplayName
-
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
-
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    def getFileName(self):
-        return self.__sFileName
-
-    def getPluginIdentifier(self):
-        return 'megaup'
-
-    def setHD(self, sHD):
-        self.__sHD = ''
-
-    def getHD(self):
-        return self.__sHD
-
-    def isDownloadable(self):
-        return True
-
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return ''
-
-    def __getIdFromUrl(self, sUrl):
-        return ''
-
-    def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
-
-    def checkUrl(self, sUrl):
-        return True
-
-    def __getUrl(self, media_id):
-        return
-
-    def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self):
-        import requests, re, time
-
-        oRequestHandler = cRequestHandler(self.__sUrl)
+    def _getMediaLinkForGuest(self):
+        oRequestHandler = cRequestHandler(self._url)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         sHtmlContent = oRequestHandler.request()
         cookies = oRequestHandler.GetCookies() + ";"
@@ -84,7 +40,8 @@ class cHoster(iHoster):
 
         time.sleep(6)
 
-        oRequestHandler = cRequestHandler("https://download.megaup.net/?idurl=" + cidken + "&idfilename=" + file + "&idfilesize=" + size)
+        oRequestHandler = cRequestHandler("https://download.megaup.net/?idurl=" + cidken + "&idfilename=" + file + \
+            "&idfilesize=" + size)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         sHtmlContent = oRequestHandler.request()
 
@@ -94,7 +51,7 @@ class cHoster(iHoster):
         oRequestHandler.disableRedirect()
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         oRequestHandler.addHeaderEntry("Referer", "https://download.megaup.net/")
-        oRequestHandler.addHeaderEntry("Cookie", cookies)        
+        oRequestHandler.addHeaderEntry("Cookie", cookies)
         sHtmlContent = oRequestHandler.request()
         api_call = oRequestHandler.getResponseHeader()['Location']
 

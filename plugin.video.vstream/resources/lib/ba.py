@@ -85,7 +85,7 @@ class cShowBA:
         if urlTrailer:
             hote = cHoster()
             hote.setUrl(urlTrailer)
-            hote.setResolution('720p')
+            # hote.setResolution('720p') Pas utilisé
             api_call = hote.getMediaLink()[1]
 
             if not api_call:

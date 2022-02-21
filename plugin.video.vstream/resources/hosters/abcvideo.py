@@ -2,10 +2,11 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # https://abcvideo.cc/embed-xxxxx.html'
 # https://abcvideo.cc/xxxxx.html'
-# pour récuperer le token : https://github.com/addon-lab/addon-lab_resolver_Project adapté pour evoload mais meme principe
+# pour récuperer le token : https://github.com/addon-lab/addon-lab_resolver_Project adapté pour evoload
+# mais meme principe
 
-import requests
 import re
+import requests
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
@@ -15,49 +16,16 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
 
 class cHoster(iHoster):
     def __init__(self):
-        self.__sDisplayName = 'Abcvideo'
-        self.__sFileName = self.__sDisplayName
+        iHoster.__init__(self, 'abcvideo', 'Abcvideo')
 
-    def getDisplayName(self):
-        return self.__sDisplayName
-
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
-
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    def getFileName(self):
-        return self.__sFileName
-
-    def getPluginIdentifier(self):
-        return 'abcvideo'
-
-    def isDownloadable(self):
-        return True
-
-    def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
-
-    def checkUrl(self, sUrl):
-        return True
-
-    def getUrl(self):
-        return self.__sUrl
-
-    def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self):
-
-        url = self.__sUrl
+    def _getMediaLinkForGuest(self):
         api_call = ''
         key = "6LcOeuUUAAAAANS5Gb3oKwWkBjOdMXxqbj_2cPCy"
         co = "aHR0cHM6Ly9hYmN2aWRlby5jYzo0NDM."
         loc = "https://abcvideo.cc"
         sUrlPlayer = "https://abcvideo.cc/dl"
 
-        urlcode = url.replace('embed-', '')
+        urlcode = self._url.replace('embed-', '')
         urlcode = urlcode.replace('.html', '')
         code = urlcode.split('/')[-1]
 
@@ -68,11 +36,11 @@ class cHoster(iHoster):
         headers2 = {'user-agent': UA,
                     'Accept': '*/*',
                     'Content-Type': 'text/plain; charset=UTF-8',
-                    'Referer': url
+                    'Referer': self._url
                     }
 
         s = requests.session()
-        s.get(url, headers=headers1)
+        s.get(self._url, headers=headers1)
 
         bvalid, token = get_token(key, co, loc)
         if bvalid:
@@ -91,14 +59,14 @@ class cHoster(iHoster):
                 oParser = cParser()
                 sPattern = 'PROGRAM.*?BANDWIDTH.*?RESOLUTION=(\d+x\d+).*?(https.*?m3u8)'
                 aResult = oParser.parse(response, sPattern)
-                if (aResult[0] == True):
+                if aResult[0] is True:
                     for aEntry in aResult[1]:
                         list_url.append(aEntry[1])
                         list_q.append(aEntry[0])
                     if list_url:
                         api_call = dialog().VSselectqual(list_q, list_url)
 
-        if (api_call):
+        if api_call:
             return True, api_call
 
         return False, False

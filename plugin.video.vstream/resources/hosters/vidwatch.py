@@ -9,62 +9,14 @@ from resources.hosters.hoster import iHoster
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'VidWatch'
-        self.__sFileName = self.__sDisplayName
-        self.__sHD = ''
+        iHoster.__init__(self, 'vidwatch', 'VidWatch')
 
-    def getDisplayName(self):
-        return  self.__sDisplayName
-
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
-
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    def getFileName(self):
-        return self.__sFileName
-
-    def getPluginIdentifier(self):
-        return 'vidwatch'
-
-    def setHD(self, sHD):
-        self.__sHD = ''
-
-    def getHD(self):
-        return self.__sHD
-
-    def isDownloadable(self):
-        return True
-
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return ''
-
-    def __getIdFromUrl(self, sUrl):
-        return ''
-
-    def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
-
-    def checkUrl(self, sUrl):
-        return True
-
-    def __getUrl(self, media_id):
-        return
-
-    def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self):
-
+    def _getMediaLinkForGuest(self):
         api_call =''
 
-        #VSlog(self.__sUrl)
+        #VSlog(self._url)
 
-        oRequest = cRequestHandler(self.__sUrl)
+        oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
@@ -72,12 +24,12 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         #VSlog(str(aResult))
-        if (aResult[0] == True):
+        if aResult[0] is True:
             api_call = aResult[1][0][0]
 
         #VSlog(api_call)
 
-        if (api_call):
+        if api_call:
             return True, api_call
 
         return False, False

@@ -1,66 +1,30 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+import re
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-import re
 
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Gorillavid'
-        self.__sFileName = self.__sDisplayName
-
-    def getDisplayName(self):
-        return  self.__sDisplayName
-
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
-
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    def getFileName(self):
-        return self.__sFileName
-
-    def getPluginIdentifier(self):
-        return 'gorillavid'
-
-    def isDownloadable(self):
-        return True
-
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return ''
+        iHoster.__init__(self, 'gorillavid', 'Gorillavid')
 
     def __getIdFromUrl(self, sUrl):
         sPattern = 'http://gorillavid.in/embed.+?-([^<]+)-'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
+        if aResult[0] is True:
             return aResult[1][0]
 
         return ''
 
-    def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
-
-    def checkUrl(self, sUrl):
-        return True
-
-    def __getUrl(self, media_id):
-        return
-
-    def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self):
         api_call = False
         oParser = cParser()
 
-        sId = self.__getIdFromUrl(self.__sUrl)
+        sId = self.__getIdFromUrl(self._url)
 
         url = 'http://gorillavid.in/' + sId
         oRequest = cRequestHandler(url)
@@ -68,7 +32,7 @@ class cHoster(iHoster):
         sPattern =  '<input type="hidden" name="([^"]+)" value="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if aResult[0] is True:
             oRequest.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
             for aEntry in aResult[1]:
                 oRequest.addParameters(aEntry[0], aEntry[1])
@@ -78,7 +42,7 @@ class cHoster(iHoster):
             if (r2):
                 api_call = r2.group(1)
 
-        if (api_call):
+        if api_call:
             return True, api_call
 
         return False, False

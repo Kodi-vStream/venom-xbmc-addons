@@ -1,53 +1,22 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 # https://vidplayer.cz/v/xxxxxxx
+import json
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
-import json
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0'
 
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Vidplayer'
-        self.__sFileName = self.__sDisplayName
+        iHoster.__init__(self, 'vidplayer', 'Vidplayer')
 
-    def getDisplayName(self):
-        return  self.__sDisplayName
-
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
-
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    def getFileName(self):
-        return self.__sFileName
-
-    def getPluginIdentifier(self):
-        return 'vidplayer'
-
-    def isDownloadable(self):
-        return True
-
-    def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
-
-    def checkUrl(self, sUrl):
-        return True
-
-    def getUrl(self):
-        return self.__sUrl
-
-    def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self):
-
-        req = self.__sUrl.replace('/v/','/api/source/')
-        pdata = 'r' 
+    def _getMediaLinkForGuest(self):
+        req = self._url.replace('/v/','/api/source/')
+        pdata = 'r'
         oRequestHandler = cRequestHandler(req)
         oRequestHandler.setRequestType(1)
 
@@ -68,7 +37,7 @@ class cHoster(iHoster):
         if list_url:
             api_call = dialog().VSselectqual(list_q,list_url)
 
-        if (api_call):
+        if api_call:
             return True, api_call
 
         return False, False
