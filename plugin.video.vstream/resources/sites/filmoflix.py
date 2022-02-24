@@ -502,7 +502,8 @@ def showMovieHosters():
 
     oRequest = cRequestHandler(sUrl)
     oRequest.addHeaderEntry('Referer', referer)
-    oRequest.addHeaderEntry('Cookie', cook)
+    if cook:
+        oRequest.addHeaderEntry('Cookie', cook)
     shtml = oRequest.request()
 
     oParser = cParser()
