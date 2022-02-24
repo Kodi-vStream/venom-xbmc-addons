@@ -286,7 +286,8 @@
         },
         "streamonsport": {
             "label": "Streamonsport",
-            "active": "True"
+            "active": "True",
+            "url": "https://match.streamonsport.biz/"
         },
         "stream_complet": {
             "label": "Stream Complet",

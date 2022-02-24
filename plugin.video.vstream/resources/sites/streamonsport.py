@@ -8,7 +8,7 @@ import re
 import time
 import ast
 from datetime import datetime, timedelta
-from resources.lib.comaddon import isMatrix
+from resources.lib.comaddon import isMatrix, siteManager
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -29,7 +29,8 @@ SITE_IDENTIFIER = 'streamonsport'
 SITE_NAME = 'Streamonsport'
 SITE_DESC = 'Site pour regarder du sport en direct'
 
-URL_MAIN = 'https://v1.streamonsport.biz/'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
+#'https://match.streamonsport.biz/'
 
 SPORT_SPORTS = (True, 'load')
 SPORT_TV = (URL_MAIN + '31-site-pour-regarder-les-chaines-de-sport.html', 'showMovies')

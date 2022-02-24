@@ -442,6 +442,7 @@ class siteManager:
     SITES = 'sites'
     ACTIVE = 'active'
     LABEL = 'label'
+    URL_MAIN = 'url'
 
     def __init__(self):
         
@@ -481,6 +482,9 @@ class siteManager:
     
     def setActive(self, sourceName, state):
         self.setProperty(sourceName, self.ACTIVE, state)
+
+    def getUrlMain(self, sourceName):
+        return self.getProperty(sourceName, self.URL_MAIN)
     
     def disableAll(self):
         for sourceName in self.data[self.SITES]:
@@ -495,7 +499,20 @@ class siteManager:
     def getProperty(self, sourceName, propName):
         sourceData = self._getDataSource(sourceName)
         if sourceData:
-            return sourceData.get(propName)
+            if propName in sourceData:
+                return sourceData.get(propName)
+
+            # Propriété inconnue, on récupérere la valeur par défaut ...
+            defaultProps = self._getDefaultProp(sourceName)
+            if propName not in defaultProps:
+                return False
+
+            # ... et on l'enregistre
+            value = defaultProps.get(propName)
+            self.setProperty(sourceName, propName, value)
+            self.save()
+            return value
+
 
     def setProperty(self, sourceName, propName, value):
         sourceData = self._getDataSource(sourceName)
