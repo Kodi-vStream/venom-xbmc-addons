@@ -1,6 +1,13 @@
 #coding: utf-8
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
+import re
+
+try: # Python 2
+    import urllib2
+except ImportError:  # Python 3
+    import urllib.request as urllib2
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
@@ -11,79 +18,33 @@ from resources.lib.util import QuoteSafe
 from resources.lib.comaddon import dialog, VSlog, xbmc
 #Pour le futur
 from resources.lib.jsparser import JsParser
-import re, urllib2, base64, math
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
 
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'OpenLoad'
-        self.__sFileName = self.__sDisplayName
-        self.__sHD = ''
+        iHoster.__init__(self, 'openload', 'OpenLoad')
 
-    def getDisplayName(self):
-        return  self.__sDisplayName
-
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
-
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    def getFileName(self):
-        return self.__sFileName
-
-    def getPluginIdentifier(self):
-        return 'openload'
-
-    def setHD(self, sHD):
-        self.__sHD = ''
-
-    def getHD(self):
-        return self.__sHD
-
-    def isDownloadable(self):
-        return True
-
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return ''
-
-    def __getIdFromUrl(self, sUrl):
-        return ''
-
-    def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
-        self.__sUrl = self.__sUrl.replace('openload.io', 'openload.co')
-        self.__sUrl = QuoteSafe(sUrl)
-        if self.__sUrl[-4:-3] == '.':
-            self.__sUrl = self.__sUrl.replace(self.__sUrl.split('/')[-1], '')
-
-    def checkUrl(self, sUrl):
-        return True
-
-    def __getUrl(self, media_id):
-        return
+    def setUrl(self, url):
+        self._url = str(url)
+        self._url = self._url.replace('openload.io', 'openload.co')
+        self._url = QuoteSafe(sUrl)
+        if self._url[-4:-3] == '.':
+            self._url = self._url.replace(self._url.split('/')[-1], '')
 
     def __getHost(self):
-        parts = self.__sUrl.split('//', 1)
+        parts = self._url.split('//', 1)
         host = parts[0] + '//' + parts[1].split('/', 1)[0]
         return host
 
-    def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self):
-
+    def _getMediaLinkForGuest(self):
         oParser = cParser()
 
         #recuperation de la page
-        #xbmc.log('url teste : ' + self.__sUrl)
-        oRequest = cRequestHandler(self.__sUrl)
-        oRequest.addHeaderEntry('referer', self.__sUrl)
+        #xbmc.log('url teste : ' + self._url)
+        oRequest = cRequestHandler(self._url)
+        oRequest.addHeaderEntry('referer', self._url)
         oRequest.addHeaderEntry('User-Agent', UA)
         sHtmlContent1 = oRequest.request()
 
@@ -198,7 +159,7 @@ class cHoster(iHoster):
 
         VSlog(api_call)
 
-        if (api_call):
+        if api_call:
             return True, api_call
 
         return False, False
@@ -236,44 +197,46 @@ def Hexa(string):
     return str(int(string, 0))
 
 def parseInt(sin):
-    return int(''.join([c for c in re.split(r'[,.]', str(sin))[0] if c.isdigit()])) if re.match(r'\d+', str(sin), re.M) and not callable(sin) else None
+    if re.match(r'\d+', str(sin), re.M) and not callable(sin):
+        return int(''.join([c for c in re.split(r'[,.]', str(sin))[0] if c.isdigit()]))
+    return None
 
-def CheckCpacker(str):
+def CheckCpacker(strToPack):
 
     sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
-    aResult = re.findall(sPattern, str)
+    aResult = re.findall(sPattern, strToPack)
     if (aResult):
         str2 = aResult[0]
         if not str2.endswith(';'):
             str2 = str2 + ';'
         try:
-            str = cPacker().unpack(str2)
+            strToPack = cPacker().unpack(str2)
             print('Cpacker encryption')
         except:
             pass
 
-    return str
+    return strToPack
 
-def CheckJJDecoder(str):
+def CheckJJDecoder(strDecoder):
 
     sPattern = '([a-z]=.+?\(\)\)\(\);)'
-    aResult = re.findall(sPattern, str)
+    aResult = re.findall(sPattern, strDecoder)
     if (aResult):
         print('JJ encryption')
         return JJDecoder(aResult[0]).decode()
 
-    return str
+    return strDecoder
 
-def CheckAADecoder(str):
-    aResult = re.search('([>;]\s*)(ﾟωﾟ.+?\(\'_\'\);)', str, re.DOTALL | re.UNICODE)
+def CheckAADecoder(strToDecode):
+    aResult = re.search('([>;]\s*)(ﾟωﾟ.+?\(\'_\'\);)', strToDecode, re.DOTALL | re.UNICODE)
     if (aResult):
         print('AA encryption')
         tmp = aResult.group(1) + AADecoder(aResult.group(2)).decode()
-        return str[:aResult.start()] + tmp + str[aResult.end():]
+        return strToDecode[:aResult.start()] + tmp + strToDecode[aResult.end():]
 
-    return str
+    return strToDecode
 
-def CleanCode(code,Coded_url):
+def CleanCode(code, Coded_url):
     #extract complete code
     r = re.search(r'type="text\/javascript">(.+?)<\/script>', code, re.DOTALL)
     if r:

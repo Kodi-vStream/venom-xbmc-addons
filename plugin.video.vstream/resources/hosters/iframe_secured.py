@@ -1,74 +1,51 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 #stream elite
+import re
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
-import re
+from resources.lib.gui.hoster import cHosterGui
+
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
 
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Iframe-Secured'
-        self.__sFileName = self.__sDisplayName
-
-    def getDisplayName(self):
-        return  self.__sDisplayName
-
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
-
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    def getFileName(self):
-        return self.__sFileName
-
-    def getPluginIdentifier(self):
-        return 'iframe_secured'
+        iHoster.__init__(self, 'iframe_secured', 'Iframe-Secured')
 
     def isDownloadable(self):
         return False
 
-    def setUrl(self, sUrl):
-
+    def setUrl(self, url):
         #http://iframe-secured.com/embed/evovinec
         #http://iframe-secured.com/embed/iframe.php?u=evovinec
-        self.__sUrl = sUrl.replace('http://iframe-secured.com/embed/', '')
-        self.__sUrl = self.__sUrl.replace('//iframe-secured.com/embed/', '')
-        self.__sUrl = 'http://iframe-secured.com/embed/iframe.php?u=%s' % self.__sUrl
+        self._url = url.replace('http://iframe-secured.com/embed/', '')
+        self._url = self._url.replace('//iframe-secured.com/embed/', '')
+        self._url = 'http://iframe-secured.com/embed/iframe.php?u=%s' % self._url
 
-    def checkUrl(self, sUrl):
-        return True
-
-    def getUrl(self):
-        return self.__sUrl
-
-    def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self):
-
+    def _getMediaLinkForGuest(self):
         api_call = ''
 
         oParser = cParser()
-        oRequest = cRequestHandler(self.__sUrl)
+        oRequest = cRequestHandler(self._url)
         oRequest.addHeaderEntry('User-Agent', UA)
-        oRequest.addHeaderEntry('Referer', self.__sUrl.replace('iframe.php?u=', ''))
+        oRequest.addHeaderEntry('Referer', self._url.replace('iframe.php?u=', ''))
         sHtmlContent = oRequest.request()
 
-        sPattern = '<input  id=".+?name="([^"]+)" type="hidden" value="([^"]+)"/><input  id="challenge" name="([^"]+)" type="hidden" value="([^"]+)"/>'
+        sPattern = '<input  id=".+?name="([^"]+)" type="hidden" value="([^"]+)"/><input  id="challenge" ' + \
+            'name="([^"]+)" type="hidden" value="([^"]+)"/>'
 
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if aResult[0] is True:
             postdata = aResult[1][0][0] + '=' + aResult[1][0][1] + '&' + aResult[1][0][2] + '=' + aResult[1][0][3]
 
-            oRequest = cRequestHandler(self.__sUrl)
+            oRequest = cRequestHandler(self._url)
             oRequest.setRequestType(1)
             oRequest.addHeaderEntry('User-Agent', UA)
-            oRequest.addHeaderEntry('Referer', self.__sUrl)
+            oRequest.addHeaderEntry('Referer', self._url)
             oRequest.addParametersLine(postdata)
 
             sHtmlContent = oRequest.request()
@@ -83,9 +60,7 @@ class cHoster(iHoster):
                     sPattern = "replace\(.*'(.+?)'"
                     aResult = oParser.parse(sHtmlContent, sPattern)
 
-                    if (aResult[0] == True):
-                        from resources.lib.gui.hoster import cHosterGui
-
+                    if aResult[0] is True:
                         sHosterUrl = aResult[1][0]
 
                         if not sHosterUrl.startswith('http'):
@@ -97,7 +72,7 @@ class cHoster(iHoster):
                         oHoster.setUrl(sHosterUrl)
                         api_call = oHoster.getMediaLink()
 
-                        if (api_call[0] == True):
+                        if api_call[0] is True:
                             return True, api_call[1]
 
                         return False, False

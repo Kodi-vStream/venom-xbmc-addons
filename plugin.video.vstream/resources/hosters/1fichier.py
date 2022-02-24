@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
+import sys
+import random
 import re
 import urllib3
 
@@ -15,41 +17,12 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
 
 class cHoster(iHoster):
     def __init__(self):
-        self.__sDisplayName = '1Fichier'
-        self.__sFileName = self.__sDisplayName
-        self.__sHD = ''
+        iHoster.__init__(self, '1fichier', '1FIchier', 'violet')
 
-    def getDisplayName(self):
-        return self.__sDisplayName
-
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR violet]' + self.__sDisplayName + '[/COLOR]'
-
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    def getFileName(self):
-        return self.__sFileName
-
-    def getPluginIdentifier(self):
-        return '1fichier'
-
-    def setHD(self, sHD):
-        self.__sHD = ''
-
-    def getHD(self):
-        return self.__sHD
-
-    def isDownloadable(self):
-        return True
-
-    def isJDownloaderable(self):
-        return True
-
-    def __getIdFromUrl(self, sUrl):
+    def __getIdFromUrl(self, url):
         # http://kzu0y3.1fichier.com/
         # https://1fichier.com/?s6gdceia9y
-        sId = sUrl.replace('https://', '')
+        sId = url.replace('https://', '')
         sId = sId.replace('http://', '')
         sId = sId.replace('1fichier.com/?', '')
         sId = sId.replace('.1fichier.com', '')
@@ -57,34 +30,24 @@ class cHoster(iHoster):
 
         return sId
 
-    def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
-
-    def checkUrl(self, sUrl):
-        return True
-
-    def __getUrl(self, media_id):
-        return
-
     def getMediaLink(self):
         self.oPremiumHandler = cPremiumHandler(self.getPluginIdentifier())
         print(self.oPremiumHandler.isPremiumModeAvailable())
 
-        import sys
         if ('site=cDownload&function' not in sys.argv[2]) and not (self.oPremiumHandler.isPremiumModeAvailable()):
-            oDialog = dialog().VSok("Pas de streaming sans premium.\nPour voir le film passer par l'option 'Télécharger et Lire' du menu contextuel.")
+            oDialog = dialog().VSok("Pas de streaming sans premium.\n" + \
+                    "Pour voir le film passer par l'option 'Télécharger et Lire' du menu contextuel.")
             return False, False
 
         if self.oPremiumHandler.isPremiumModeAvailable():
-            return self.__getMediaLinkByPremiumUser()
+            return self._getMediaLinkByPremiumUser()
         else:
-            return self.__getMediaLinkForGuest()
+            return self._getMediaLinkForGuest()
 
-    def __getMediaLinkForGuest(self):
-        import random
+    def _getMediaLinkForGuest(self):
 
         api_call = False
-        url = 'https://1fichier.com/?' + self.__getIdFromUrl(self.__sUrl)
+        url = 'https://1fichier.com/?' + self.__getIdFromUrl(self._url)
 
         adcode = random.uniform(000.000000000, 999.999999999)
 
@@ -105,44 +68,43 @@ class cHoster(iHoster):
         # fh.write(sHtmlContent)
         # fh.close
 
-        api_call = self.GetMedialinkDL(sHtmlContent)
+        api_call = self.getMedialinkDL(sHtmlContent)
 
         if api_call:
-            if isPremium:
-                api_call = api_call + '&' + self.oPremiumHandler.AddCookies()
             return True, api_call
 
         return False, False
 
-    def GetMedialinkDL(self, sHtmlContent):
+    def getMedialinkDL(self, sHtmlContent):
 
         oParser = cParser()
         api_call = False
 
         sPattern = 'Vous devez attendre encore [0-9]+ minutes'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if aResult[0] is True:
             dialog().VSinfo('Erreur - Limitation %s' % aResult[1][0])
             return False
 
-        sPattern = '<a href="([^<>"]+?)"  style="float:none;margin:auto;font-weight:bold;padding: 10px;margin: 10px;font-size:\+1\.6em;border:2px solid red" class="ok btn-general btn-orange">'
+        sPattern = '<a href="([^<>"]+?)"  style="float:none;margin:auto;font-weight:bold;padding: 10px;margin: ' + \
+            '10px;font-size:\+1\.6em;border:2px solid red" class="ok btn-general btn-orange">'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if aResult[0] is True:
             # xbmc.sleep(1*1000)
             # VSlog(  aResult[1][0] )
-            api_call = aResult[1][0] + '|User-Agent=' + UA  # + '&Referer=' + self.__sUrl
+            api_call = aResult[1][0] + '|User-Agent=' + UA  # + '&Referer=' + self._url
             return api_call
 
         return False
 
-    def __getMediaLinkByPremiumUser(self):
+    def _getMediaLinkByPremiumUser(self):
         api_call = False
 
         if not self.oPremiumHandler.Authentificate():
             return False, False
 
-        url = 'https://1fichier.com/?' + self.__getIdFromUrl(self.__sUrl)
+        url = 'https://1fichier.com/?' + self.__getIdFromUrl(self._url)
 
         '''
         La partie ci-dessous permet d'utiliser l'option "Forcer l'affichage du menu pour les téléchargements" permettant
@@ -151,7 +113,7 @@ class cHoster(iHoster):
         d'obtenir le lien direct
         '''
 
-        sHtmlContent = self.oPremiumHandler.GetHtml('%s' % url + '&e=1')
+        sHtmlContent = self.oPremiumHandler.GetHtml('%s&e=1' % url)
         if sHtmlContent:
             # L'option est désactivée : la réponse sera de type "text/plain; charset=utf-8", exemple :
             # https://serveur-2b.1fichier.com/lelienactif;Film.de.Jacquie.et.Michel.a.la.montagne.mkv;1234567890;0

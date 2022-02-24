@@ -1,71 +1,32 @@
 # -*- coding: utf-8 -*-
 # Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Wholecloud-Movshare
+import re
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-import re
 
 
 class cHoster(iHoster):
     def __init__(self):
-        self.__sDisplayName = 'Wholecloud'
-        self.__sFileName = self.__sDisplayName
+        iHoster.__init__(self, 'wholecloud', 'Wholecloud')
 
-    def getDisplayName(self):
-        return self.__sDisplayName
-
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
-
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    def getFileName(self):
-        return self.__sFileName
-
-    def getPluginIdentifier(self):
-        return 'wholecloud'
-
-    def isDownloadable(self):
-        return True
-
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return ''
-
-    def __getIdFromUrl(self, sUrl):
+    def __getIdFromUrl(self):
         sPattern = 'v=([^<]+)'
         oParser = cParser()
-        aResult = oParser.parse(self.__sUrl, sPattern)
-        if (aResult[0] == True):
+        aResult = oParser.parse(self._url, sPattern)
+        if aResult[0] is True:
             return aResult[1][0]
 
         return ''
 
-    def __getKey(self):
-        return ''
-
-    def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
-
-    def checkUrl(self, sUrl):
-        return True
-
-    def getUrl(self):
-        return self.__sUrl
-
-    def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self):
         api_call = False
 
-        sId = self.__getIdFromUrl(self.__sUrl)
+        sId = self.__getIdFromUrl()
 
-        oRequest = cRequestHandler(self.__sUrl)
+        oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
 
         r = re.search('var fkzd="([^"]+)"', sHtmlContent)
@@ -81,4 +42,3 @@ class cHoster(iHoster):
             return True, api_call
 
         return False, False
-

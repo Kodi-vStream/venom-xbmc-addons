@@ -1,80 +1,37 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+# import re
+import base64
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
 from resources.lib.comaddon import VSlog
-# import re
-import base64
+from resources.lib.packer import cPacker
 
 
 class cHoster(iHoster):
     def __init__(self):
-        self.__sDisplayName = 'ddlfr'
-        self.__sFileName = self.__sDisplayName
+        iHoster.__init__(self, 'ddlfr', 'ddlfr')
 
-    def getDisplayName(self):
-        return self.__sDisplayName
-
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
-
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    def getFileName(self):
-        return self.__sFileName
-
-    def getPluginIdentifier(self):
-        return 'ddlfr'
-
-    def isDownloadable(self):
-        return True
-
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return ''
-
-    def __getIdFromUrl(self):
-        return ''
-
-    def __modifyUrl(self, sUrl):
-        return ''
-
-    def setUrl(self, sUrl):
-        self.__sUrl = sUrl
-
-    def checkUrl(self, sUrl):
-        return True
-
-    def getUrl(self):
-        return self.__sUrl
-
-    def getMediaLink(self):
-        VSlog("getMediaLink")
-        return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self):
+    def _getMediaLinkForGuest(self):
         api_call = ''
 
-        oRequest = cRequestHandler(self.__sUrl)
-        oRequest.addHeaderEntry('Referer', self.__sUrl)
+        oRequest = cRequestHandler(self._url)
+        oRequest.addHeaderEntry('Referer', self._url)
         sHtmlContent = oRequest.request()
         # VSlog(sHtmlContent)
         oParser = cParser()
         sPattern = 'JuicyCodes\.Run\("(.+?)"\);'
         aResult = oParser.parse(sHtmlContent, sPattern)
         # VSlog(aResult)
-        if (aResult[0] == True):
+        if aResult[0] is True:
 
             media = aResult[1][0].replace('+', '')
             media = base64.b64decode(media)
 
             # cPacker decode
-            from resources.lib.packer import cPacker
             media = cPacker().unpack(media)
             # VSlog(media)
             if media:
@@ -84,12 +41,12 @@ class cHoster(iHoster):
                 # VSlog(aResult)
 
                 # initialisation des tableaux
-                if (aResult[0] == True):
+                if aResult[0] is True:
                     url = []
                     qua = []
                 # Remplissage des tableaux
                     for i in aResult[1]:
-                        url.append(str(i[0] + '|Referer=' + self.__sUrl))
+                        url.append(str(i[0] + '|Referer=' + self._url))
                         qua.append(str(i[1]))
                 # Si une seule url
                     api_call = dialog().VSselectqual(qua, url)

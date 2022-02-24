@@ -213,13 +213,13 @@ class cGuiElement:
             sTitle = sTitle.replace(m.group(0), '')
             sa = m.group(3)
             ep = m.group(7)
-        else:   # Juste l'épisode
+        else:  # Juste l'épisode
             m = re.search('(^|\s|\.)(E|Ep|\wpisode)(\s?|\.)(\d+)', sTitle, re.UNICODE)
             if m:
                 sTitle = sTitle.replace(m.group(0), '')
                 ep = m.group(4)
-            else:             # juste la saison
-                m = re.search('(S|saison)(\s?|\.)(\d+)', sTitle, re.UNICODE)
+            else:  # juste la saison
+                m = re.search('( S|saison)(\s?|\.)(\d+)', sTitle, re.UNICODE)
                 if m:
                     sTitle = sTitle.replace(m.group(0), '')
                     sa = m.group(3)

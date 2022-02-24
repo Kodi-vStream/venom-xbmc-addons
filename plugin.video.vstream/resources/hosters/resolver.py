@@ -6,63 +6,17 @@ import urlresolver
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'RSLVR-'
+        iHoster.__init__(self, 'resolver', 'RSLVR-')
         self.__sRealHost = '???'
-        self.__sFileName = self.__sDisplayName
-        self.__sHD = ''
 
-    def getDisplayName(self):
-        return self.__sDisplayName
-
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR violet]'+ self.__sDisplayName + self.__sRealHost + '[/COLOR]'
-
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    def getFileName(self):
-        return self.__sFileName
-
-    def getPluginIdentifier(self):
-        return 'resolver'
+    def setDisplayName(self, displayName):
+        self._displayName = displayName + ' [COLOR violet]'+ self._defaultDisplayName + self.__sRealHost + '[/COLOR]'
 
     def setRealHost(self, sName):
         self.__sRealHost = sName
 
-    def setHD(self, sHD):
-        self.__sHD = ''
-
-    def getHD(self):
-        return self.__sHD
-
-    def isDownloadable(self):
-        return True
-
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return ''
-
-    def __getIdFromUrl(self, sUrl):
-        return ''
-
-    def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
-
-    def checkUrl(self, sUrl):
-        return True
-
-    def getUrl(self,media_id):
-        return ''
-
-    def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self):
-        sUrl = self.__sUrl
-
-        hmf = urlresolver.HostedMediaFile(url = sUrl)
+    def _getMediaLinkForGuest(self):
+        hmf = urlresolver.HostedMediaFile(url = self._url)
         if hmf.valid_url():
             stream_url = hmf.resolve()
             if stream_url:
