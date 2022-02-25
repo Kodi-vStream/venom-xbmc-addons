@@ -11,12 +11,27 @@ from resources.lib.comaddon import dialog, VSPath, isMatrix, VSlog
 from resources.lib.parser import cParser
 from resources.lib.util import urlEncode
 
+try:
+    # python2
+    from urlparse import urlparse
+except:
+    # python3
+    from urllib.parse import urlparse
+
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0"
 
 headers = {'User-Agent': UA,
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
     "Accept-Language": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3"}
 
+
+def uri_validator(x):
+    try:
+        result = urlparse(x)
+        return all([result.scheme, result.netloc])
+    except:
+        return False
+        
 class cHoster(iHoster):
 
     def __init__(self):
@@ -56,7 +71,7 @@ class cHoster(iHoster):
 
         jsonCall = json.loads(code[code.rfind("{"):])
         for a in jsonCall:
-            if ".m3u8" in str(jsonCall[a]):
+            if uri_validator(jsonCall[a]):
                 api_call = jsonCall[a]
                 break
 
