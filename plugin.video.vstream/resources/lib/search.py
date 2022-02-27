@@ -23,6 +23,7 @@ class cSearch:
         self.addons = addon()
         self.autoPlayVideo = False
         self.findAndPlay = False
+        self.allVideoLink = {}
 
     def load(self):
         cGui().setEndOfDirectory()
@@ -203,7 +204,7 @@ class cSearch:
             self._progressInit()
 
             self.listRemainingPlugins = [plugin['name'] for plugin in listPlugins]
-            cGui.resetSearchResult()
+            cGui().resetSearchResult()
             return listPlugins
         except Exception as error:
             VSlog('Error when search is initiate: ' + str(error))
@@ -277,10 +278,10 @@ class cSearch:
 
                 else:
                     videoParams.addParameter('searchSiteId', siteId) # On concerve le site d'origine
-                    cGui.emptySearchResult(siteId)
+                    cGui().emptySearchResult(siteId)
                     self._executePluginForSearch(siteId, functionName, videoParams)
 
-                    pluginResult = cGui.getSearchResult()
+                    pluginResult = cGui().getSearchResult()
                     for newSearchResult in pluginResult[siteId]:
                         if self._continueToSearch():
                             # On garde toutes les données qu'on avait au par avant
@@ -300,7 +301,7 @@ class cSearch:
     def _quickSearchForPlugin(self, plugin, searchInfo):
         if self._continueToSearch():
             self._pluginSearch(plugin, Quote(searchInfo['title']))
-            searchResults = cGui.getSearchResult()
+            searchResults = cGui().getSearchResult()
             pluginId = plugin['identifier']
             pluginName = plugin['name']
 
