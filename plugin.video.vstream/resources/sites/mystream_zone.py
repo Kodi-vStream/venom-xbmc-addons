@@ -301,16 +301,18 @@ def showMovies(sSearch=''):
         sPattern = "poster'.+?ref='([^']*).+?src='(h[^']*).+?alt='([^']*).+?rating'>([^<]*)"
 
     elif '/tvshows/' in sUrl or '/movies/' in sUrl:  # thumb; title; url; year; desc #regex ok
-        sPattern = 'asyncsrc="(h[^"]*)" alt="([^"]+).+?href="([^"]+).+?span>([^<]*).+?texto">([^<]*)'
+        sPattern = 'noscript>.+?src="([^"]+).+?alt="([^"]+).+?href="([^"]+).+?class="metadata".+?<span>(\d+).+?class="texto">([^<]*)'
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.setTimeout(TimeOut)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
     # filtrage sHtmlContent
-    sHtmlContent = oParser.abParse(sHtmlContent, '<h2>Recently added</h2>', '')
+    sStart = '<h2>Recently added</h2>'
+    sEnd = 'class="pagination"><span>'
+    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
     # pour les sThumb
-    sHtmlContent = re.sub('https:..ml2o99dkuow5.i.optimole.+?/https', 'https', sHtmlContent)
+    #sHtmlContent = re.sub('https:..ml2o99dkuow5.i.optimole.+?/https', 'https', sHtmlContent)
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
