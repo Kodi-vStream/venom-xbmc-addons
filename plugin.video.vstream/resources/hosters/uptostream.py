@@ -56,7 +56,8 @@ class cHoster(iHoster):
 
         # Uptostream avec un compte uptobox, pas besoin du QRcode
         token = self.oPremiumHandler.getToken()
-        if token:
+        r = requests.get('https://uptobox.com/api/user/me?token=' + token).json()
+        if r["data"]["premium"]:
             status = ''
             url1 = "https://uptobox.com/api/streaming?token=%s&file_code=%s" % (token, filecode)
             try:
@@ -95,8 +96,6 @@ class cHoster(iHoster):
                 with CountdownDialog("Autorisation nécessaire", "Pour voir cette vidéo, veuillez vous connecter", "Allez sur ce lien : " + r['data']['user_url'], "Et valider le pin : " + r['data']['pin'], True, r["data"]['expired_in'], 10) as cd:
                     js_result = cd.start(self.__check_auth, [r["data"]["check_url"]])["data"]
             else:
-                import pyqrcode
-                from resources.lib.librecaptcha.gui import cInputWindowYesNo
                 qr = pyqrcode.create(r['data']['user_url'])
                 qr.png(VSPath('special://home/userdata/addon_data/plugin.video.vstream/qrcode.png'), scale=5)
                 oSolver = cInputWindowYesNo(captcha='special://home/userdata/addon_data/plugin.video.vstream/qrcode.png', msg="Scanner le QRCode pour acceder au lien d'autorisation", roundnum=1)
