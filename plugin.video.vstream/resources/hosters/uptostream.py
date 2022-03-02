@@ -22,6 +22,9 @@ class cHoster(iHoster):
         iHoster.__init__(self, 'uptostream', 'UpToStream')
         self.oPremiumHandler = None
 
+    def setUrl(self, url):
+        self._url = str(url)
+
     def checkSubtitle(self, sHtmlContent):
         if sHtmlContent:
             Files = []
@@ -31,7 +34,7 @@ class cHoster(iHoster):
                     url = aEntry["src"]
                     if not url.startswith('http'):
                         url = 'http:' + url
-                    Files.append(url.replace('.vtt','.srt'))
+                    Files.append(url)
                 else:
                     continue
             return Files
@@ -49,7 +52,7 @@ class cHoster(iHoster):
 
         api_call = False
         SubTitle = False
-        filecode = self.__sUrl.split('/')[-1].split('?')[0]
+        filecode = self._url.split('/')[-1].split('?')[0]
 
         # Uptostream avec un compte uptobox, pas besoin du QRcode
         token = self.oPremiumHandler.getToken()
