@@ -2114,6 +2114,8 @@ def addPasteName():
     sLabel = oGui.showKeyBoard('', "[COLOR coral]Saisir un nom pour le dossier[/COLOR]")
     if sLabel == False:
         return
+
+    sLabel = sLabel.strip()
     if sLabel in names:
         dialog().VSok(addons.VSlang(30082))
         return
@@ -2172,6 +2174,8 @@ def renamePasteName():
     sLabel = oGui.showKeyBoard('', "[COLOR coral]Saisir un nom pour le dossier[/COLOR]")
     if sLabel == False:
         return
+
+    sLabel = sLabel.strip()
     if sLabel in names:
         dialog().VSok(addons.VSlang(30082))
         return
@@ -2279,6 +2283,8 @@ def addPasteID():
     pasteID = oGui.showKeyBoard('', "[COLOR coral]Saisir le code du %s[/COLOR]" % SITE_NAME)
     if pasteID == False:
         return
+
+    pasteID = pasteID.strip()
     if pasteID in IDs:          # ID déjà dans le groupe
         dialog().VSok(addons.VSlang(30082))
         return
@@ -2304,6 +2310,7 @@ def addPasteID():
             dialog().VSok(addons.VSlang(30022))
             return
 
+    # ok, on ajoute le paste
     addons.setSetting(settingID, pasteID)
     dialog().VSinfo(addons.VSlang(30042))
 
