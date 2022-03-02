@@ -254,11 +254,16 @@ def showSearch():
 
 def showMovies(sSearch=''):
     oGui = cGui()
+    oUtil = cUtil()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oParser = cParser()
     if sSearch:
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
+        
         sUrl = sSearch.replace(' ', '+')
         sPattern = 'class="image">.+?<a href="([^"]+).+?<img src="([^"]+)" alt="([^"]+).+?class="([^"]+).+?<p>(.+?)</p'
         sType = oParser.parseSingleResult(sUrl, '\?post_types=(.+?)&')  # pour filtrage entre film et série
@@ -279,7 +284,6 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
-        utils = cUtil()
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
@@ -297,6 +301,8 @@ def showMovies(sSearch=''):
                 sDesc = aEntry[4]
                 if sType1 != sType[1]:  # pour differencier la recherche entre films et séries
                     continue
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
             elif sTypeYear:
                 sType1 = aEntry[0]
                 if sType1 != sTypeYear:  # pour differencier la recherche entre films et séries
@@ -323,7 +329,7 @@ def showMovies(sSearch=''):
 
             try:
                 sDesc = unicode(sDesc, 'utf-8')  # converti en unicode
-                sDesc = utils.unescape(sDesc).encode('utf-8')  # retire les balises HTML
+                sDesc = oUtil.unescape(sDesc).encode('utf-8')  # retire les balises HTML
             except:
                 pass
 

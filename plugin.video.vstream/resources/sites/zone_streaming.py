@@ -3,13 +3,14 @@
 
 import re
 
+from resources.lib.comaddon import progress
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress#, VSlog
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'zone_streaming'
 SITE_NAME = 'Zone Streaming'
@@ -212,6 +213,9 @@ def showReplayGenres():
 def showMovies(sSearch=''):
     oGui = cGui()
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -225,8 +229,7 @@ def showMovies(sSearch=''):
 
     if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
-
-    if aResult[0] is True:
+    else:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -241,6 +244,10 @@ def showMovies(sSearch=''):
             sTitle = aEntry[2]
             sDesc = aEntry[3].replace('&#46;', '.')
 
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
+            
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)

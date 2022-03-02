@@ -3,13 +3,14 @@
 
 import re
 
+from resources.lib.comaddon import progress
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'o1streaming'
 SITE_NAME = '01 Streaming'
@@ -117,7 +118,11 @@ def showMovies(sSearch=''):
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     if sSearch:
+        oUtil = cUtil()
         sUrl = sSearch
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -140,17 +145,18 @@ def showMovies(sSearch=''):
             sYear = aEntry[2]
             sUrl2 = aEntry[3]
             sTitle = aEntry[0]
-
-            s = sTitle
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
+            sDisplayTitle = sTitle
             if '/release/' in sUrl or sSearch:
                 if '/serie' in sUrl2:
-                    s = s + ' [Série] '
+                    sDisplayTitle += ' [Série]'
                 else:
-                    s = s + ' [Film] '
+                    sDisplayTitle += ' [Film]'
 
-            sDisplayTitle = s
             if sYear:
-                sDisplayTitle += '(%s)' % sYear
+                sDisplayTitle += ' (%s)' % sYear
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)

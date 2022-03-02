@@ -11,7 +11,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-# from resources.lib.util import cUtil  # outils pouvant etre utiles
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'hds_stream'
 SITE_NAME = 'Hds-stream'
@@ -160,6 +160,10 @@ def showMovies(sSearch=''):
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch
         sPattern = 'class="result-item">.*?href="([^"]+)"><img src="([^"]+).*?class="title"><a.*?>([^<]+).*?class="year">([^<]+).*?class="contenido"><p>([^<]+)</p>'
     elif 'tendance/' in sUrl:
@@ -190,6 +194,8 @@ def showMovies(sSearch=''):
                 sTitle = aEntry[2]
                 sYear = aEntry[3]
                 sDesc = aEntry[4]
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
             else:
                 sThumb = aEntry[0]
                 if sThumb.startswith('//'):

@@ -10,7 +10,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.comaddon import progress
 from resources.lib.parser import cParser
-from resources.lib.util import QuotePlus #, cUtil
+from resources.lib.util import QuotePlus, cUtil
 
 SITE_IDENTIFIER = 'mesfilms'
 SITE_NAME = 'Mes Films'
@@ -130,6 +130,11 @@ def showSearchResult(sSearch=''):
     oParser = cParser()
     sUrl = sSearch
 
+    if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sPattern = 'animation-2".+?href="([^"]+).+?src="([^"]+)" alt="([^"]+).+?(?:|year">([^<]*)<.+?)<p>(.*?)<'
@@ -159,9 +164,9 @@ def showSearchResult(sSearch=''):
                 continue
 
             # Filtrer les résultats
-            # if sSearch and total > 5:
-                # if not cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle):
-                    # continue
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)

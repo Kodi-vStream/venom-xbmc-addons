@@ -10,6 +10,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'kstreamingfilm'
 SITE_NAME = 'K Streaming Film'
@@ -92,6 +93,9 @@ def showYears():
 def showMovies(sSearch=''):
     oGui = cGui()
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -114,10 +118,9 @@ def showMovies(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
+    else:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -131,6 +134,11 @@ def showMovies(sSearch=''):
             sUrl = aEntry[2]
             sYear = aEntry[3]
             sDesc = ''
+
+            if sSearch:     # Filtre de recherche
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue
+            
             if 'Derniers films ajoutés' in sHtmlContent:
                 sDesc = aEntry[4]
             sDisplayTitle = sTitle + ' (' + sYear + ')'

@@ -3,13 +3,14 @@
 
 import re
 
+from resources.lib.comaddon import progress
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'psyplay'
 SITE_NAME = 'Psy Play'
@@ -140,7 +141,10 @@ def showGenres():
 def showMovies(sSearch=''):
     oGui = cGui()
     if sSearch:
+        oUtil = cUtil()
         sUrl = sSearch
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -153,10 +157,9 @@ def showMovies(sSearch=''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
+    else:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -173,6 +176,11 @@ def showMovies(sSearch=''):
                               .replace(' streaming', '').replace(' Straming', '').replace('Version Francais', 'VF')
             if '/series' in sUrl2:
                 sTitle = re.sub('Episode \d+', '', sTitle)
+                
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
+                
             sYear = aEntry[4]
             sDesc = aEntry[5].replace('<p>', '').replace('&#8220;', '"').replace('&#8221;', '"')
 

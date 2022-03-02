@@ -8,6 +8,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'telecharger_streaming'
 SITE_NAME = '[COLOR violet]Telecharger-streaming[/COLOR]'
@@ -58,18 +59,19 @@ def showSearch():
 def showMovies(sSearch=''):
     oGui = cGui()
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_MISC[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch.replace(' ', '+')
+        sPattern = '<h1 class="title"><a href="([^"]+)" title="([^"]+)">.+?<p>.+?Synopsis :([^"]+)</p>'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
+        sPattern = '<h1 class="title"><a href="([^"]+)" title="([^"]+).+?<img.+?class="alignleft.+?src="([^"]+).+?Synopsis :(.+?)</p>'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    if sSearch:
-        sPattern = '<h1 class="title"><a href="([^"]+)" title="([^"]+)">.+?<p>.+?Synopsis :([^"]+)</p>'
-    else:
-        sPattern = '<h1 class="title"><a href="([^"]+)" title="([^"]+).+?<img.+?class="alignleft.+?src="([^"]+).+?Synopsis :(.+?)</p>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -83,6 +85,8 @@ def showMovies(sSearch=''):
             if sSearch:
                 sUrl2 = aEntry[0]
                 sTitle = aEntry[1]
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
                 sThumb = ""
                 sDesc = aEntry[2].replace('</strong>', '')
             else:

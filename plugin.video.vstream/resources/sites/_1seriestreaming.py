@@ -10,6 +10,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
+from resources.lib.util import cUtil
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
 
@@ -123,6 +124,8 @@ def showSeries(sSearch=''):
     oParser = cParser()
 
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = oUtil.CleanName(sSearch)
         sSearch = sSearch.replace(' ', '+').replace('&20', '+')
         bValid, sToken, sCookie = getTokens()
         if bValid:
@@ -165,6 +168,9 @@ def showSeries(sSearch=''):
             if sUrl2.startswith('/'):
                 sUrl2 = URL_MAIN[:-1] + sUrl2
             sTitle = aEntry[2]
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)

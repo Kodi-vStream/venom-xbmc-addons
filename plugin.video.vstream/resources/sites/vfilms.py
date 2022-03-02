@@ -2,13 +2,14 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
 
+from resources.lib.comaddon import progress
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'vfilms'
 SITE_NAME = 'VFilms'
@@ -152,6 +153,9 @@ def showMovies(sSearch=''):
     oGui = cGui()
 
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch + '&do=search&subaction=search'
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -165,10 +169,9 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
+    else:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -182,6 +185,10 @@ def showMovies(sSearch=''):
             sThumb = re.sub('/w\d+/', '/w342/', aEntry[2])
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
+
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)

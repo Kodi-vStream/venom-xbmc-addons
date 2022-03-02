@@ -14,7 +14,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 # from resources.lib.config import GestionCookie
-# from resources.lib.util import cUtil
+from resources.lib.util import cUtil
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
 
@@ -326,6 +326,10 @@ def showMovies(sSearch=''):
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch
 
     if sSearch or "index" in sUrl:  # en mode recherche
@@ -360,6 +364,9 @@ def showMovies(sSearch=''):
                     sTitle = aEntry[1]
                     sDesc = aEntry[2]
                     sThumb = URL_MAIN[:-1] + aEntry[3]
+                    if sSearch:
+                        if not oUtil.CheckOccurence(sSearchText, sTitle):
+                            continue    # Filtre de recherche
                 else:
                     continue
             elif 'collections/' in sUrl:
@@ -373,12 +380,11 @@ def showMovies(sSearch=''):
                 sThumb = URL_MAIN[:-1] + aEntry[1]
                 sTitle = aEntry[2]
 
-                # Enlever les films en doublons (même titre)
-                # il s'agit du même film dans une autre qualité qu'on retrouvera au moment du choix de la qualité
-            key = sTitle
-            if key in titles:
+            # Enlever les films en doublons (même titre)
+            # il s'agit du même film dans une autre qualité qu'on retrouvera au moment du choix de la qualité
+            if sTitle in titles:
                 continue
-            titles.add(key)
+            titles.add(sTitle)
 
             # sDesc = re.sub('<[^<]+?>', '', sDesc)
             sDisplayTitle = sTitle
@@ -463,10 +469,9 @@ def showCollec():
 
             # Enlever les films en doublons (même titre)
             # il s'agit du même film dans une autre qualité qu'on retrouvera au moment du choix de la qualité
-            key = sTitle
-            if key in titles:
+            if sTitle in titles:
                 continue
-            titles.add(key)
+            titles.add(sTitle)
 
             sDesc = re.sub('<[^<]+?>', '', sDesc)
             sDisplayTitle = sTitle

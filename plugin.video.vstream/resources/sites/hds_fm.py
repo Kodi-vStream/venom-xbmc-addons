@@ -10,6 +10,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
+from resources.lib.util import cUtil
 
 
 SITE_IDENTIFIER = 'hds_fm'
@@ -216,15 +217,16 @@ def showMovies(sSearch=''):
     bSearchMovie = False
     bSearchSerie = False
     if sSearch:
-
         sSearch = sSearch.replace('%20', ' ')
-
         if key_search_movies in sSearch:
             sSearch = sSearch.replace(key_search_movies, '')
             bSearchMovie = True
         if key_search_series in sSearch:
             sSearch = sSearch.replace(key_search_series, '')
             bSearchSerie = True
+
+        oUtil = cUtil()
+        sSearchText = oUtil.CleanName(sSearch)
         sSearch2 = sSearch.replace('-', '').strip().lower()
         sUrl = URL_SEARCH[0] + sSearch2
         oRequest = cRequestHandler(sUrl)
@@ -237,7 +239,6 @@ def showMovies(sSearch=''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    sSearch2 = sSearch.replace('-', '').strip().lower()
     # ref thumb title
     sPattern = 'class="TPostMv">.+?href="([^"]*).+?src="([^"]*).+?class="Qlty".+?class="Qlty.+?>([^<]*).+?center">([^<]*)'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -256,8 +257,6 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            itemss += 1
-
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
             sLang = aEntry[2]
@@ -270,15 +269,9 @@ def showMovies(sSearch=''):
                 if ' saison ' not in sTitle.lower():
                     continue
 
-            if sSearch and itemss > 4:  # 5 premiers résultats non filtrés en cas d'erreur du filtre
-                s1 = sTitle.lower()
-                if '-' in s1:
-                    s1 = s1.split('-')[0]
-                if '(' in s1:
-                    s1 = s1.split('(')[0]
-                s1 = s1.strip()
-                if sSearch2 not in s1:
-                    continue
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
 
             sDisplayTitle = ('%s (%s)') % (sTitle.replace('- Saison', ' Saison'), sLang)
             if sSearch and not bSearchMovie and not bSearchSerie:

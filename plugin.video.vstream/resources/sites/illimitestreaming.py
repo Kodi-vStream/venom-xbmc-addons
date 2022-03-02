@@ -230,10 +230,13 @@ def showSearch():
 
 def showMovies(sSearch=''):
     oGui = cGui()
+    oUtil = cUtil()
 
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
-
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -256,7 +259,6 @@ def showMovies(sSearch=''):
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
-        utils = cUtil()
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
@@ -268,7 +270,8 @@ def showMovies(sSearch=''):
                 sTitle = aEntry[1]
                 sThumb = aEntry[2]
                 sDesc = aEntry[3]
-
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
             elif 'movie' in sTypeYear:
                 sUrl = aEntry[0]
                 if '/series' in sUrl:
@@ -292,7 +295,7 @@ def showMovies(sSearch=''):
             sThumb = re.sub('/w\d+', '/w342', sThumb)
             try:
                 sDesc = unicode(sDesc, 'utf-8')  # converti en unicode
-                sDesc = utils.unescape(sDesc).encode('utf-8')    # retire les balises HTML
+                sDesc = oUtil.unescape(sDesc).encode('utf-8')    # retire les balises HTML
             except:
                 pass
 

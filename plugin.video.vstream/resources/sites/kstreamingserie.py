@@ -9,6 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'kstreamingserie'
 SITE_NAME = 'K Streaming Série'
@@ -112,6 +113,9 @@ def showList():
 def showSeries(sSearch=''):
     oGui = cGui()
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -132,10 +136,9 @@ def showSeries(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
+    else:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -147,6 +150,11 @@ def showSeries(sSearch=''):
             sThumb = aEntry[0]
             sTitle = re.sub('\(\d{4}\)', '', aEntry[1])
             sUrl = aEntry[2]
+
+            if sSearch:     # Filtre de recherche
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue
+            
             sDesc = ''  # absente pour la recherche
             if len(aEntry) > 3:
                 sDesc = aEntry[3]
