@@ -14,14 +14,14 @@ SITE_IDENTIFIER = 'vf_film'
 SITE_NAME = 'VF Film'
 SITE_DESC = 'Regarder tous vos films streaming complets, gratuit et illimité'
 
-URL_MAIN = "https://vf-film.site/"
+URL_MAIN = "https://vf-film.co/"
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + '?s=', FUNCTION_SEARCH)
 URL_SEARCH_MOVIES = (URL_SEARCH[0], FUNCTION_SEARCH)
 
 MOVIE_MOVIE = (True, 'load')
-MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'voir-film-en-streaming/', 'showMovies')
 MOVIE_NOTES = (URL_MAIN + 'les-films-les-mieux-notee/', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'films-les-plus-vues/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
