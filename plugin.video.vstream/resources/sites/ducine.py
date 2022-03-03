@@ -2,7 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
 
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -14,7 +14,8 @@ SITE_IDENTIFIER = 'ducine'
 SITE_NAME = 'Du Ciné'
 SITE_DESC = 'Films et Séries en Français streaming gratuit'
 
-URL_MAIN = "https://www.ducine.co/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
+#'https://www.ducine.site/'
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_NEWS = (URL_MAIN + 'films-vostfr.html', 'showMovies')
