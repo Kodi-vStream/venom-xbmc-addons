@@ -8,6 +8,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = '_33seriestreaming'  # Clone -> https://33streaming.co/
 SITE_NAME = '33 Séries'
@@ -187,6 +188,10 @@ def showMovies(sSearch=''):
     sYear = oInputParameterHandler.getValue('sYear')
 
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch.replace(' ', '+').replace('%20 ', '+')
     sPattern = 'class=".+?grid-item.+?href="([^"]+).+?src="([^"]+).+?alt="([^"]+)'
     oRequestHandler = cRequestHandler(sUrl)
@@ -212,6 +217,10 @@ def showMovies(sSearch=''):
             sTitle = aEntry[2]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
+
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
 
             sDisplayTitle = sTitle
             sDesc = ''

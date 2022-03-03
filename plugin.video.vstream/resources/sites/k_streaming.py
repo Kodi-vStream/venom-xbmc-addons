@@ -10,6 +10,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'k_streaming'
 SITE_NAME = 'K-Streaming'
@@ -112,6 +113,10 @@ def showMovies(sSearch=''):
     oParser = cParser()
 
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch.replace(' ', '%20')
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -123,10 +128,10 @@ def showMovies(sSearch=''):
     sPattern = 'moviefilm".+?href="([^"]+).+?src="([^"]+)" alt="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    else:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -136,12 +141,15 @@ def showMovies(sSearch=''):
                 break
 
             sUrl2 = aEntry[0]
-
             sThumb = aEntry[1]
-
             sTitle = aEntry[2].replace('Streaming', '').replace('Sasion', 'Saison')
-            sDisplayTitle = sTitle
 
+            # Filtre de recherche
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue
+            
+            sDisplayTitle = sTitle
             sDesc = ''
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -155,6 +163,7 @@ def showMovies(sSearch=''):
 
         progress_.VSclose(progress_)
 
+    if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
 
@@ -162,7 +171,6 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
-    if not sSearch:  # Le moteur de recherche du site est correct pour laisser le nextPage même en globalSearch
         oGui.setEndOfDirectory()
 
 

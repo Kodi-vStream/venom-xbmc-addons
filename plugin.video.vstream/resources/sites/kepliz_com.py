@@ -11,6 +11,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.comaddon import progress
+from resources.lib.util import cUtil
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -119,6 +120,11 @@ def showMovies(sSearch=''):
     
     # En cas de recherche direct OU lors de la navigation dans les differentes pages de résultats d'une recherche
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_MISC[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
+
         sSearch = sSearch[:20]      # limite de caractere sinon bug de la recherche
         oRequestHandler = cRequestHandler(sMainUrl + 'home/poblom/')
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
@@ -140,10 +146,10 @@ def showMovies(sSearch=''):
     sPattern = '<span style="list-style-type:none;" >.+? href="\/[0-9a-zA-Z]+\/([^"]+)">(.+?)\((.+?)\).+?>(<i>(.+?)<\/i>|)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    else:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -153,26 +159,30 @@ def showMovies(sSearch=''):
                 break
 
             sUrl2 = aEntry[0]
+            sTitle = aEntry[1].strip()
             sYear = aEntry[2]
+            sQual = aEntry[4]
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
 
-            sTitle = ("%s (%s) [%s]") % (aEntry[1], sYear, aEntry[4])
-
+            sDisplayTitle = ("%s (%s) [%s]") % (sTitle, sYear, sQual)
             oOutputParameterHandler.addParameter('siteUrl', sMainUrl + sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', aEntry[1].strip())
+            oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
             oOutputParameterHandler.addParameter('sMainUrl', sMainUrl)
             oOutputParameterHandler.addParameter('sYear', sYear)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', '', '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', '', '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
+    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', URL_HOST + sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Suivant', oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
 
 

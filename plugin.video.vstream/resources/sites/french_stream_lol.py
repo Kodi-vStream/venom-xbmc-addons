@@ -10,6 +10,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
+from resources.lib.util import cUtil
 
 
 SITE_IDENTIFIER = 'french_stream_lol'
@@ -238,6 +239,11 @@ def showMovies(sSearch=''):
     bSearchMovie = False
     bSearchSerie = False
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
+        
         # sUrl = URL_SEARCH[0]  # sert a rien
         sSearch = sSearch.replace(' ', '+').replace('%20', '+')
 
@@ -270,10 +276,10 @@ def showMovies(sSearch=''):
     sPattern = 'with-mask" href="([^"]+).+?src="([^"]*).+?title">([^<]*)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    else:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -294,6 +300,11 @@ def showMovies(sSearch=''):
                     continue
             if bSearchSerie:
                 if '- Saison' not in aEntry[2]:
+                    continue
+
+            # Filtre de recherche
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
                     continue
 
             sDisplayTitle = sTitle

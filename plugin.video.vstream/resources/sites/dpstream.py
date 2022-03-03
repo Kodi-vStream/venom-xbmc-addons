@@ -11,6 +11,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'dpstream'
 SITE_NAME = 'DpStream'
@@ -194,6 +195,11 @@ def showMovies(sSearch=''):
 
         bvalid, sToken, sCookie = getTokens()
         if bvalid:
+            oUtil = cUtil()
+            sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+            sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+            sSearchText = oUtil.CleanName(sSearchText)
+            
             pData = '_token=' + sToken + '&search=' + sSearch
             sUrl = URL_MAIN + 'search'
             UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
@@ -220,10 +226,10 @@ def showMovies(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    else:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -245,6 +251,10 @@ def showMovies(sSearch=''):
             if bSearchSerie:
                 if sType == 'film':
                     continue
+
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
 
             sDisplayTitle = sTitle + '(' + sYear + ')'
 
