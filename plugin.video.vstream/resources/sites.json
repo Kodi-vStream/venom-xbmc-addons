@@ -78,7 +78,8 @@
         },
         "ducine": {
             "label": "Du Cin\u00e9",
-            "active": "True"
+            "active": "True",
+            "url": "https://www.ducine.site/"
         },
         "enstream_series": {
             "label": "Enstream (S\u00e9ries)",
