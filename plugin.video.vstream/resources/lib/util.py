@@ -276,3 +276,7 @@ def QuoteSafe(sUrl):
 
 def urlEncode(sUrl):
     return urllib.urlencode(sUrl)
+
+# retroune le hostname d'une Url
+def urlHostName(sUrl):
+    return urllib.urlparse(sUrl).hostname

@@ -1157,3 +1157,11 @@ msgstr ""
 msgctxt "#31205"
 msgid "Display"
 msgstr ""
+
+msgctxt "#31208"
+msgid "Remaining sites: %s"
+msgstr ""
+
+msgctxt "#31209"
+msgid "Results: %s"
+msgstr "Results: [COLOR deepskyblue]%s[/COLOR]"

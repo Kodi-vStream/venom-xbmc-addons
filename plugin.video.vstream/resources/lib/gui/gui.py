@@ -3,6 +3,8 @@
 import xbmcplugin
 import xbmc
 import json
+import threading
+import copy
 
 from resources.lib.comaddon import listitem, addon, dialog, window, isKrypton, isNexus
 from resources.lib.gui.contextElement import cContextElement
@@ -18,11 +20,14 @@ class cGui:
 
     SITE_NAME = 'cGui'
     CONTENT = 'files'
-    searchResults = []
     listing = []
     episodeListing = []  # Pour gérer l'enchainement des episodes
     ADDON = addon()
     displaySeason = addon().getSetting('display_season_title')
+
+    # Gérer les résultats de la recherche
+    searchResults = {}
+    searchResultsSemaphore = threading.Semaphore()
 
     if isKrypton():
         CONTENT = 'addons'
@@ -93,9 +98,9 @@ class cGui:
 
         try:
             return self.addFolder(oGuiElement, oOutputParameterHandler)
-        except Exception as e:
-            pass
-
+        except Exception as error:
+            VSlog("addNewDir error: " + str(error))
+    
     #    Categorie       Meta          sCat     CONTENT
     #    Film            1             1        movies
     #    Serie           2             2        tvshows
@@ -760,3 +765,28 @@ class cGui:
 
     def showInfo(self, sTitle, sDescription, iSeconds=0):
         return False
+
+    def getSearchResult(self):
+        cGui.searchResultsSemaphore.acquire()
+        result = copy.deepcopy(cGui.searchResults)
+        cGui.searchResultsSemaphore.release()
+        return result
+
+    def addSearchResult(self, oGuiElement, oOutputParameterHandler):
+        cGui.searchResultsSemaphore.acquire()
+        searchSiteId = oOutputParameterHandler.getValue('searchSiteId')
+        if not searchSiteId:
+            searchSiteId = oGuiElement.getSiteName()
+
+        if searchSiteId not in cGui.searchResults:
+            cGui.searchResults[searchSiteId] = []
+
+        cGui.searchResults[searchSiteId].append({'guiElement': oGuiElement,
+            'params': copy.deepcopy(oOutputParameterHandler)})
+        cGui.searchResultsSemaphore.release()
+
+    def resetSearchResult(self):
+        cGui.searchResultsSemaphore.acquire()
+        cGui.searchResults = {}
+        cGui.searchResultsSemaphore.release()
+    

@@ -1158,3 +1158,11 @@ msgstr "Afficher la saison et l'épisode dans le titre"
 msgctxt "#31205"
 msgid "Display"
 msgstr "Affichage"
+
+msgctxt "#31208"
+msgid "Remaining sites: %s"
+msgstr "Sites restants : %s"
+
+msgctxt "#31209"
+msgid "Results: %s"
+msgstr "Résultats : [COLOR deepskyblue]%s[/COLOR]"
