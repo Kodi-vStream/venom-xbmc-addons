@@ -222,7 +222,7 @@ def Showlink():
     siterefer = oInputParameterHandler.getValue('siterefer')
     sHosterUrl = ''
                     
-    if 'yahoo.php' in sUrl:  # redirection
+    if 'yahoo' in sUrl:  # redirection
         sUrl = URL_MAIN + sUrl
     
     if 'allfoot' in sUrl or 'streamonsport' in sUrl:
