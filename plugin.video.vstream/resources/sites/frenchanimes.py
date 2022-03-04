@@ -26,7 +26,7 @@ ANIM_MOVIE = (URL_MAIN + 'films-vf-vostfr/', 'showAnimes')
 ANIM_GENRES = (True, 'showGenres')
 
 URL_SEARCH = (URL_MAIN + '?do=search&mode=advanced&subaction=search&story=', 'showSearch')
-URL_SEARCH_ANIMS = ('', 'showAnimes')
+URL_SEARCH_ANIMS = (URL_SEARCH[0], 'showAnimes')
 FUNCTION_SEARCH = 'showSearch'
 
 
