@@ -9,6 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
+from resources.lib.util import cUtil
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:82.0) Gecko/20100101 Firefox/82.0'
 
@@ -404,6 +405,12 @@ def showMovies(sSearch=''):
     oGui = cGui()
 
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_ANIMS[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
+
         # par defaut
         sUrl = sSearch.replace(' ', '+').replace('%20', '+')
         # on replace le tag a la fin qqle soit la position du tag trouvé
@@ -419,12 +426,6 @@ def showMovies(sSearch=''):
             sUrl = sUrl.replace(tagmangas, '')
             sUrl = sUrl + tagmangas
 
-        # ne marche pas en globale le programme sort subitement
-        # de ce module sans resultat de recherche a l'appel
-        # du parametre  sType oInputParameterHandler sType
-        # oInputParameterHandler = cInputParameterHandler()
-        # sType = oInputParameterHandler.getValue('type')
-
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -437,10 +438,10 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    else:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -467,6 +468,10 @@ def showMovies(sSearch=''):
 
             sUrl2 = URL_MAIN + aEntry[0]
             sDesc = aEntry[3]
+
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
 
             sDisplayTitle = ('%s (%s)') % (sTitle, sLang)
 
