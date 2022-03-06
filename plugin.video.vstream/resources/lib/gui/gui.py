@@ -248,8 +248,7 @@ class cGui:
 
         # recherche append les reponses
         if window(10101).getProperty('search') == 'true':
-            import copy
-            cGui.searchResults.append({'guiElement': oGuiElement, 'params': copy.deepcopy(oOutputParameterHandler)})
+            self.addSearchResult(oGuiElement, oOutputParameterHandler)
             return
 
         # Des infos a rajouter ?
