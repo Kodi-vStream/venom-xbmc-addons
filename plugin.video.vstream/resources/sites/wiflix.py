@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'wiflix'
 SITE_NAME = 'Wiflix'
 SITE_DESC = 'Films & Séries en streaming'
 
-URL_MAIN = 'https://wiflix.tel/'
+URL_MAIN = "https://wiflix.city/"
 
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming/', 'showMovies')
 MOVIE_EXCLU = (URL_MAIN + 'film-en-streaming/exclue', 'showMovies')
