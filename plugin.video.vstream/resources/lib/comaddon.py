@@ -436,7 +436,7 @@ def VSProfil():
     return name
 
 
-# Gestion des sources : activer, désactiver, libellé, ... 
+# Gestion des sources : activer/désactiver, libellé, url, ... 
 class siteManager:
 
     SITES = 'sites'
@@ -484,7 +484,7 @@ class siteManager:
         self.setProperty(sourceName, self.ACTIVE, state)
 
     def getUrlMain(self, sourceName):
-        return self.getProperty(sourceName, self.URL_MAIN)
+        return self.getDefaultProperty(sourceName, self.URL_MAIN)
     
     def disableAll(self):
         for sourceName in self.data[self.SITES]:
@@ -495,6 +495,14 @@ class siteManager:
         for sourceName in self.data[self.SITES]:
             self.setActive(sourceName, True)
         return
+
+
+    def getDefaultProperty(self, sourceName, propName):
+        defaultProps = self._getDefaultProp(sourceName)
+        if propName not in defaultProps:
+            return False
+        return defaultProps.get(propName)
+
 
     def getProperty(self, sourceName, propName):
         sourceData = self._getDataSource(sourceName)
@@ -547,7 +555,7 @@ class siteManager:
         
         # pas de valeurs par défaut, on en crée à la volée
         if not sourceData:
-            sourceData = {self.ACTIVE : 'True', self.LABEL : sourceName}
+            sourceData = {self.ACTIVE : 'False', self.LABEL : sourceName}
 
         return sourceData
     
