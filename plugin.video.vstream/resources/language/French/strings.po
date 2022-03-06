@@ -784,6 +784,10 @@ msgctxt "#30349"
 msgid "Show most monthly viewed"
 msgstr "Afficher les films les plus vus du mois"
 
+msgctxt "#30350"
+msgid "Replays"
+msgstr "Rédiffusions"
+
 msgctxt "#30351"
 msgid "TV Shows"
 msgstr "Séries"

@@ -26,9 +26,9 @@ SITE_DESC = 'Films/Séries/Reportages/Concerts'
 URL_MAIN = "https://www2.tirexo.art/"
 
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=1&result_from=1&story=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0catlist=15&story=', 'showMovies')
-URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0catlist=32&story=', 'showMovies')
-URL_SEARCH_MISC = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0catlist=39&story=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&catlist=15&story=', 'showMovies')
+URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&catlist=32&story=', 'showMovies')
+URL_SEARCH_MISC = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&catlist[]=75&catlist[]=76&catlist[]=77&catlist[]=79&catlist[]=101&story=', 'showMovies')
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_COLLECTION = (URL_MAIN + 'collections/', 'showMovies')
@@ -78,11 +78,11 @@ ANIM_VOSTFRS_1080 = (URL_MAIN + 'animes-vostfr-1080p/', 'showMovies')
 FILM_ANIM = (URL_MAIN + 'films-animes/', 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'animes/', 'showMovies')
 
-DOC_NEWS = (URL_MAIN + 'emissions-tv-documentaires/souscate_doc-Documentaire/', 'showMovies')
-SPORT_SPORTS = (URL_MAIN + 'emissions-tv-documentaires/souscate_doc-Sport/', 'showMovies')
-TV_NEWS = (URL_MAIN + 'emissions-tv-documentaires/souscate_doc-Émissions+TV/', 'showMovies')
-SPECT_NEWS = (URL_MAIN + 'emissions-tv-documentaires/souscate_doc-Spectacle/', 'showMovies')
-CONCERT_NEWS = (URL_MAIN + 'musiques-mp3-gratuite/souscat_music-Concerts/', 'showMovies')
+DOC_NEWS = (URL_MAIN + 'emissions-tv-documentaires/documentaire', 'showMovies')
+SPORT_REPLAY = (URL_MAIN + 'emissions-tv-documentaires/sport', 'showMovies')
+TV_NEWS = (URL_MAIN + 'emissions-tv-documentaires/emissions-tv/', 'showMovies')
+SPECT_NEWS = (URL_MAIN + '?do=cat&category=emissions-tv-documentaires/spectacle&epoque=2022', 'showMovies')
+CONCERT_NEWS = (URL_MAIN + '?do=cat&category=musiques-mp3-gratuite/concerts&epoque=2022', 'showMovies')
 
 
 def load():
@@ -272,8 +272,8 @@ def showMenuAutres():
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', SPORT_SPORTS[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Sports', 'sport.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SPORT_REPLAY[0])
+    oGui.addDir(SITE_IDENTIFIER, SPORT_REPLAY[1], 'Sports', 'sport.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SPECT_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SPECT_NEWS[1], 'Spectacles', 'star.png', oOutputParameterHandler)
@@ -329,12 +329,14 @@ def showMovies(sSearch=''):
         oUtil = cUtil()
         sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
         sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_ANIMS[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_MISC[0], '')
         sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch
 
     if sSearch or "index" in sUrl:  # en mode recherche
         sPattern = 'mov"><a class="mov-t nowrap" href="([^"]+)" title="([^"]+).+?data-content="(.*?)" class="mov-i img-box"><img src="([^"]+)'
-        validUrl = ['films', 'series', 'animes', 'emissions-tv-documentaires']
+        validUrl = ['films', 'series', 'animes', 'concerts', 'emissions-tv-documentaires']
     elif 'collections/' in sUrl:
         sPattern = 'tcarusel-item.+?href="([^"]+).+?title="([^"]+)" data-content="([^"]*).+?src="([^"]+)'
     else:

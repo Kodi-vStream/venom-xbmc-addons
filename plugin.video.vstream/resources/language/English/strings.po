@@ -784,6 +784,10 @@ msgctxt "#30349"
 msgid "Show most monthly viewed"
 msgstr ""
 
+msgctxt "#30350"
+msgid "Replays"
+msgstr ""
+
 msgctxt "#30351"
 msgid "TV Shows"
 msgstr ""
