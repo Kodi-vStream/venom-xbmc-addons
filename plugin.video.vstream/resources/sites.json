@@ -69,11 +69,6 @@
             "active": "True",
             "url": "https://dbanimes.co/"
         },
-        "ddl1": {
-            "label": "DDL1",
-            "active": "True",
-            "url": "https://www.ddl-best.net/"
-        },
         "debrid_link": {
             "label": "Debrid Link",
             "active": "True",
@@ -98,11 +93,6 @@
             "label": "Du Cin\u00e9",
             "active": "True",
             "url": "https://www.ducine.site/"
-        },
-        "enstream": {
-            "label": "Enstream",
-            "active": "True",
-            "url": "https://www.enstream.club/"
         },
         "enstream_series": {
             "label": "Enstream (S\u00e9ries)",
