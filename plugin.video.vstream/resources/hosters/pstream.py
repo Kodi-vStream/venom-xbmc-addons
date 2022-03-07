@@ -24,13 +24,6 @@ headers = {'User-Agent': UA,
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
     "Accept-Language": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3"}
 
-
-def uri_validator(x):
-    try:
-        result = urlparse(x)
-        return all([result.scheme, result.netloc])
-    except:
-        return False
         
 class cHoster(iHoster):
 
@@ -70,10 +63,17 @@ class cHoster(iHoster):
                 pass
 
         jsonCall = json.loads(code[code.rfind("{"):])
+
         for a in jsonCall:
-            if uri_validator(jsonCall[a]):
+            try:
+                if isMatrix():
+                    d = base64.b64decode(jsonCall[a].split('/')[4].split('.')[0]).decode('ascii')
+                else:
+                    d = base64.b64decode(jsonCall[a].split('/')[4].split('.')[0])
                 api_call = jsonCall[a]
                 break
+            except:
+                pass
 
         if api_call:
             return True, api_call + '|' + urlEncode(headers)
