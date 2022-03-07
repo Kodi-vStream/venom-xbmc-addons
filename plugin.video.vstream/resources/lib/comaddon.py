@@ -472,11 +472,6 @@ class siteManager:
             self.data = json.load(open(self.propertiesPath))
             
 
-    # Sauvegarder les propriétés modifiées
-    def save(self):
-        with open(self.propertiesPath, 'w') as f:
-            f.write(json.dumps(self.data, indent=4))
-
     def isActive(self, sourceName):
         return self.getProperty(sourceName, self.ACTIVE) == 'True'
     
@@ -518,7 +513,7 @@ class siteManager:
             # ... et on l'enregistre
             value = defaultProps.get(propName)
             self.setProperty(sourceName, propName, value)
-            self.save()
+            self._save()
             return value
 
 
@@ -526,6 +521,10 @@ class siteManager:
         sourceData = self._getDataSource(sourceName)
         if sourceData:
             sourceData[propName] = str(value)
+
+    def setDefaultProps(self, props):
+        self.defaultData = props
+        self._saveDefault()
 
     # Lire les settings d'une source
     def _getDataSource(self, sourceName):
@@ -559,6 +558,16 @@ class siteManager:
 
         return sourceData
     
+    # Sauvegarder les propriétés modifiées
+    def _save(self):
+        with open(self.propertiesPath, 'w') as f:
+            f.write(json.dumps(self.data, indent=4))
+
+    # Sauvegarder les propriétés par défaut
+    def _saveDefault(self):
+        with open(self.defaultPath, 'w') as f:
+            f.write(json.dumps(self.defaultData, indent=4))
+
     
 
 class addonManager:
