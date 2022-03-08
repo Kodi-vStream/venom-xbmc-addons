@@ -869,8 +869,8 @@ msgid "Close"
 msgstr "Fermer"
 
 msgctxt "#30410"
-msgid "Interface"
-msgstr "Interface"
+msgid "Misc"
+msgstr "Divers"
 
 msgctxt "#30411"
 msgid "Enable sound notifications"
@@ -1103,6 +1103,10 @@ msgstr "Addon dnspython manquant"
 msgctxt "#30480"
 msgid "Small loading spinner"
 msgstr "Sablier de chargement réduit"
+
+msgctxt "#30481"
+msgid "Interface"
+msgstr "Interface"
 
 # upnext
 msgctxt "#30505"

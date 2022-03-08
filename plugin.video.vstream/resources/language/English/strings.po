@@ -869,7 +869,7 @@ msgid "Close"
 msgstr ""
 
 msgctxt "#30410"
-msgid "Interface"
+msgid "Misc"
 msgstr ""
 
 msgctxt "#30411"
@@ -1102,6 +1102,10 @@ msgstr ""
 
 msgctxt "#30480"
 msgid "Small loading spinner"
+msgstr ""
+
+msgctxt "#30481"
+msgid "Interface"
 msgstr ""
 
 # upnext
