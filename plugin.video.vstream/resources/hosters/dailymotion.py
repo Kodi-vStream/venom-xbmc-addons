@@ -11,7 +11,7 @@ class cHoster(iHoster):
         iHoster.__init__(self, 'dailymotion', 'DailyMotion')
 
     def setUrl(self, url):
-        self.url = str(url)
+        self._url = str(url)
         if "metadata" not in self._url:
             if 'embed/video' in self._url:
                 self._url = "https://www.dailymotion.com/player/metadata/video/" + self._url.split('/')[5]
