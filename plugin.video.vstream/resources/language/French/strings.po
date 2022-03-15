@@ -933,8 +933,8 @@ msgid "Movies (Popular)"
 msgstr "Films (Populaires)"
 
 msgctxt "#30426"
-msgid "Movies (Theater)"
-msgstr "Films (en Salle)"
+msgid "Movies (News)"
+msgstr "Films (Récents)"
 
 msgctxt "#30427"
 msgid "Movies (Top Rated)"
@@ -949,8 +949,8 @@ msgid "TV Shows (Popular)"
 msgstr "Séries (Populaires)"
 
 msgctxt "#30430"
-msgid "TV Shows (on TV)"
-msgstr "Séries (à la TV)"
+msgid "TV Shows (On air)"
+msgstr "Séries (En cours)"
 
 msgctxt "#30431"
 msgid "TV Shows (Top Rated)"

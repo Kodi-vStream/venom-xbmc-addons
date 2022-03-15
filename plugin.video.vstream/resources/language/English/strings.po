@@ -933,7 +933,7 @@ msgid "Movies (Popular)"
 msgstr ""
 
 msgctxt "#30426"
-msgid "Movies (Theater)"
+msgid "Movies (News)"
 msgstr ""
 
 msgctxt "#30427"
@@ -949,7 +949,7 @@ msgid "TV Shows (Popular)"
 msgstr ""
 
 msgctxt "#30430"
-msgid "TV Shows (on TV)"
+msgid "TV Shows (On air)"
 msgstr ""
 
 msgctxt "#30431"
