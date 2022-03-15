@@ -78,8 +78,7 @@ def showMovies():
                     sDate = d.strftime("%d/%m/%y %H:%M")
                 except Exception as e:
                     pass
-                sTitle += sDate +' '
-            sTitle += ' - '
+                sTitle = sDate +' - '
 
             if sdesc1:
                 sTitle += sdesc1 + ' - ' + sdesc2 + ' - '
