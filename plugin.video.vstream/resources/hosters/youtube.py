@@ -43,7 +43,7 @@ class cHoster(iHoster):
         if api_call:
             return True, api_call
         else:
-            return False
+            return False, False
 
     def __getIdFromUrl(self, sUrl):
         id = ''
