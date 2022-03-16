@@ -70,7 +70,7 @@ def load():
 def showIptvSite():
     oGui = cGui()
 
-    liste = [['ChannelStream', 'channelstream'], ['Streamonsport', 'streamonsport']]
+    liste = [['leet365', 'leet365'], ['ChannelStream', 'channelstream'], ['Streamonsport', 'streamonsport']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, fName in liste:

@@ -75,9 +75,9 @@ channels = {
         35:['multisport+ 5', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_562.PNG'],
         36:['multisport+ 6', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_562.PNG'],
         29:['TF1', 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/TF1_logo_2013.png/800px-TF1_logo_2013.png'],
-        30:['France 2', 'https://www.ffp.asso.fr/wp-content/uploads/2018/10/France-2.png']
-        # 38:['France 3', 'https://static.wikia.nocookie.net/hdl-logopedia/images/0/0a/Logo-france-3.png/revision/latest/scale-to-width-down/220?cb=20180220171302&path-prefix=fr'],
-        # 39:['TMC', 'https://upload.wikimedia.org/wikipedia/commons/e/e2/Tmc_2016.png']
+        30:['France 2', 'https://www.ffp.asso.fr/wp-content/uploads/2018/10/France-2.png'],
+        38:['France 3', 'https://static.wikia.nocookie.net/hdl-logopedia/images/0/0a/Logo-france-3.png/revision/latest/scale-to-width-down/220?cb=20180220171302&path-prefix=fr'],
+        39:['TMC', 'https://upload.wikimedia.org/wikipedia/commons/e/e2/Tmc_2016.png']
     }
 
 
@@ -145,8 +145,7 @@ def showTV():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    chainesCine = [29, 30, 5, 17]
-#    chainesCine = [29, 30, 38, 5, 17, 39]
+    chainesCine = [29, 30, 38, 5, 17, 39]
     if 'sport' in sUrl:
         chaines = []
         for c in channels:  # enlever les chaines ciné en conservant l'ordre
