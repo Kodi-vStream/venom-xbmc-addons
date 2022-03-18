@@ -13,7 +13,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress, siteManager
 from resources.lib.util import Noredirection
 
 # copie du site http://www.kaydo.ws/
@@ -23,7 +23,7 @@ SITE_IDENTIFIER = 'kaydo_ws'
 SITE_NAME = 'Kaydo (hdss.to)'
 SITE_DESC = 'Site de streaming en HD'
 
-URL_MAIN = 'https://hdss.la/'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
