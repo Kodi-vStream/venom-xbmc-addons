@@ -22,11 +22,10 @@ except ImportError:  # Python 3
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
 SITE_IDENTIFIER = 'leet365'
-SITE_NAME = 'leet365'
+SITE_NAME = 'Leet365'
 SITE_DESC = 'Tous les sports'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
-
 
 SPORT_SPORTS = (True, 'load')
 SPORT_TV = ('sport', 'showTV')
