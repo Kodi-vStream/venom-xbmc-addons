@@ -11,13 +11,13 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import urlEncode
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 
 SITE_IDENTIFIER = 'planet_streaming'
 SITE_NAME = 'Planet Streaming'
 SITE_DESC = 'Films en Streaming complet VF HD'
 
-URL_MAIN = "https://w1w.planet-streaming1.com/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 MOVIE_MOVIE = (True, 'load')
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
@@ -119,7 +119,7 @@ def showMovies(sSearch=''):
         sPattern = '<div class="fullstream fullstreaming">.+?<img src="([^"]+)".+?<h3 class="mov-title"><a href="([^"]+)" >([^<]+)</a>.+?<strong>(?:Qualit|Version).+?">(.+?)</a>.+?</*strong>'
     else:
         sPattern = 'class="fullstream fullstreaming".+?src="([^"]+).+?alt="([^"]+).+?<strong>(?:Qualit|Version).+?>(.+?)</a>.+?</*strong>.+?xfsearch.+?>([^<]+).+?itemprop="description".+?;">([^<]+).+?<a href="([^"]+)'
-    
+
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -237,7 +237,7 @@ def showHosters():
             if sHosterUrl not in sethost:
                 sethost.add(sHosterUrl)
             else:
-                continue 
+                continue
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
