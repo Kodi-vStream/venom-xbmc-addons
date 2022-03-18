@@ -6,13 +6,13 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 
 SITE_IDENTIFIER = 'youtitou_com'
 SITE_NAME = 'YouTitou'
 SITE_DESC = 'Plus de 900 dessins animés gratuits classés par âge'
 
-URL_MAIN = 'http://www.youtitou.com/'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 ANIM_ENFANTS = ('http://', 'load')
 
