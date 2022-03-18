@@ -9,7 +9,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 from resources.lib.util import urlEncode
 
 try:
@@ -21,7 +21,7 @@ SITE_IDENTIFIER = 'toonanime'
 SITE_NAME = 'Toon Anime'
 SITE_DESC = 'anime en VF/VOSTFR'
 
-URL_MAIN = "https://toonanime.cc/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 ANIM_ANIMS = ('http://', 'load')
 ANIM_NEWS = (URL_MAIN, 'showMovies')
