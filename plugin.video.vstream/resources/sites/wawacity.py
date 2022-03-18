@@ -8,7 +8,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 from resources.lib.util import cUtil
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:82.0) Gecko/20100101 Firefox/82.0'
@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'wawacity'
 SITE_NAME = '[COLOR violet]Wawacity[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
-URL_MAIN = 'https://www.wawacity.tv/'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 URL_SEARCH = (URL_MAIN + '?search=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
