@@ -2,7 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
 
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'serie_streaming'
 SITE_NAME = 'Série Streaming'
 SITE_DESC = 'Serie Streaming - voir votre series streaming Gratuit'
 
-URL_MAIN = "https://ww1.serie-streaming.io/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 URL_SEARCH = (URL_MAIN + 'search', 'showSeries')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showSeries')
@@ -112,7 +112,7 @@ def showSeries(sSearch=''):
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)     
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
