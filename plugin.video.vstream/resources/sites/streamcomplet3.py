@@ -8,14 +8,14 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'streamcomplet3'
 SITE_NAME = 'Streamcomplet3'
 SITE_DESC = 'Films en streaming.'
 
-URL_MAIN = "https://w6.streamcomplet3.tv/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
