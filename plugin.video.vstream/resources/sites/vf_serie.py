@@ -8,13 +8,13 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 
 SITE_IDENTIFIER = 'vf_serie'
 SITE_NAME = 'VF Série'
 SITE_DESC = 'Regarder tous vos films streaming complets, gratuit et illimité'
 
-URL_MAIN = "https://vf-serie.org/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 FUNCTION_SEARCH = 'showSeries'
 URL_SEARCH = (URL_MAIN + '?s=', FUNCTION_SEARCH)
