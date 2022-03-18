@@ -12,7 +12,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import dialog
+from resources.lib.comaddon import dialog, siteManager
 from resources.lib.util import Quote
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
@@ -21,7 +21,7 @@ SITE_IDENTIFIER = 'buzzmonclick_com'
 SITE_NAME = 'BuzzMonClick'
 SITE_DESC = 'Films & Séries en Streaming de qualité entièrement gratuit.'
 
-URL_MAIN = "https://buzzmonclick.net/category/replay-tv/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 REPLAYTV_NEWS = (URL_MAIN, 'showMovies')
 REPLAYTV_REPLAYTV = ('http://', 'load')
@@ -63,7 +63,7 @@ def load():
 def showMoviesSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -99,10 +99,10 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -128,7 +128,7 @@ def showMovies(sSearch=''):
             oGui.addMisc(SITE_IDENTIFIER, 'showLinks', sTitle, 'doc.png', sThumb, '', oOutputParameterHandler)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             sNumPage = re.search('/page/([0-9]+)', sNextPage).group(1)
@@ -142,7 +142,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = 'class="nextpostslink" rel="next" href="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         return aResult[1][0]
 
     return False
@@ -164,7 +164,7 @@ def showLinks():
     sPattern = '(?:href=|src=)"([^"]+)".+?>(?:([^<]+)|)'
     aResult = oParser.parse(cutLink(sHtmlContent), sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -203,7 +203,7 @@ def showHosters():
         sPattern = '<input type="hidden".+?value="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if aResult[0] is True:
             data = "_method=" + aResult[1][0] + "&_csrfToken=" + aResult[1][1] + "&ad_form_data=" + Quote(aResult[1][2])
             data += "&_Token%5Bfields%5D=" + Quote(aResult[1][3]) + "&_Token%5Bunlocked%5D=" + Quote(aResult[1][4])
             # Obligatoire pour validé les cookies.
@@ -222,17 +222,17 @@ def showHosters():
 
             sPattern = 'url":"([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
+            if aResult[0] is True:
                 sHosterUrl = aResult[1][0]
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if oHoster != False:
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
     else:
         sHosterUrl = sUrl
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
+        if oHoster != False:
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -245,5 +245,5 @@ def cutLink(sHtmlContent):
     sPattern = '">Lecteurs Disponibles :</span></h3>(.+?)<div id="extras">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         return aResult[1][0]
