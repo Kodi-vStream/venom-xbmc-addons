@@ -5,7 +5,7 @@ import re
 import requests
 import xbmc
 
-from resources.lib.comaddon import progress, dialog
+from resources.lib.comaddon import dialog, progress, siteManager
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -20,7 +20,7 @@ SITE_IDENTIFIER = 'topreplay'
 SITE_NAME = 'TopReplay'
 SITE_DESC = 'Replay TV'
 
-URL_MAIN = "https://topreplay.cc/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 URL_SEARCH = (URL_MAIN + '/?s=', 'showMovies')
 URL_SEARCH_MISC = (URL_MAIN + '/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
