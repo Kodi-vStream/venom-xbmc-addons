@@ -9,18 +9,14 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'stream_complet'
 SITE_NAME = 'Stream Complet'
 SITE_DESC = 'Voir les meilleurs films en version française'
 
-# url d'origine de creation marche encore
-# URL_MAIN = 'https://v7.stream-complet.co/' 
-# url de redirection => www.stream-complet.biz
-
-URL_MAIN = "https://w2.stream-complet.biz/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -217,8 +213,8 @@ def showSaison():
             sNumSaison = aEntry[0]
             sSaison = 'Saison ' + aEntry[0]
             sUrlSaison = sUrl + "?sNumSaison=" + sNumSaison
-                         
-            sTitle = sMovieTitle + sSaison 
+
+            sTitle = sMovieTitle + sSaison
             sDisplayTitle = sTitle + '' + sSaison
             oOutputParameterHandler.addParameter('siteUrl', sUrlSaison)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -237,28 +233,28 @@ def showSXE():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    
-    sUrl, sNumSaison  = sUrl.split('?sNumSaison=') 
-    
+
+    sUrl, sNumSaison  = sUrl.split('?sNumSaison=')
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
     sStart = 'id="saison-'+ sNumSaison
     sEnd = '<div id="alt">'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
-    
+
     sPattern = 'href="([^"]+)">épisode (\d+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-                            
+
             sUrl = aEntry[0]
             Ep = aEntry[1]
             Saison = 'Saison ' + sNumSaison
             sTitle = sMovieTitle + Saison  + ' Episode ' + Ep
-            
+
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -402,7 +398,7 @@ def showHostersDL():
         if bvalid:
             sHosterUrl = shost
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            
+
             if (oHoster != False):
                 oHoster.setDisplayName(sDisplayName)
                 oHoster.setFileName(sMovieTitle)
@@ -428,7 +424,7 @@ def Hoster_shortn(url):
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         token = aResult[0]
-        data = '_token=' + token 
+        data = '_token=' + token
         oRequestHandler = cRequestHandler(url)
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('Referer', url)
