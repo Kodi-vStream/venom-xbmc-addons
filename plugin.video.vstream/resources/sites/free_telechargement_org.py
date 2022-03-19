@@ -12,7 +12,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil, Quote
 from resources.lib.config import GestionCookie
-from resources.lib.comaddon import progress, dialog
+from resources.lib.comaddon import progress, dialog, siteManager
 
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
@@ -20,7 +20,7 @@ SITE_IDENTIFIER = 'free_telechargement_org'
 SITE_NAME = '[COLOR violet]Free-Téléchargement[/COLOR]'
 SITE_DESC = 'Fichiers en DDL, HD, Films, Séries, Mangas Etc...'
 
-URL_MAIN = "https://www.free-telecharger.net/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 URL_PROTECT = 'liens.free-telecharg'  # ne pas mettre 'er' ou 'ement' à la fin, perte de hosters
 
 FUNCTION_SEARCH = 'showSearchResult'
@@ -222,7 +222,7 @@ def showMenuEmissionsTV():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         sSearchText = Quote(sSearchText)
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -261,7 +261,6 @@ def showGenre(basePath):
 
 def showMovieYears():
     oGui = cGui()
-
     oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(range(1950, 2022)):
         Year = str(i)
@@ -295,21 +294,21 @@ def showSearchResult(sSearch=''):
     aResult = []
     NextPage = []
 
-    while (loop):
+    while loop:
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
         sHtmlContent = sHtmlContent.replace('<span style="background-color: yellow;"><font color="red">', '')
         sPattern = '<b><p style="font-size: 18px;"><A href="([^"]+)">(.+?)<\/A.+?<td align="center">\s*<img src="([^"]+)".+?<b>Description : (.+?)<br /><br />'
         aResult1 = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult1[0] == False):
+        if aResult1[0] is False:
             oGui.addText(SITE_IDENTIFIER)
 
         if aResult1[0]:
             aResult = aResult + aResult1[1]
 
             sNextPage = __checkForNextPage(sHtmlContent)
-            if (sNextPage != False):
+            if sNextPage != False:
                 n = ' >>>'
                 if sSearch:
                     n = ' SD >>>'
@@ -318,7 +317,7 @@ def showSearchResult(sSearch=''):
                 NextPage.append((n, sNextPage))
 
         loop = loop - 1
-        if (loop == 1):
+        if loop == 1:
             HD = len(aResult)
             if sUrl.find('=video') > 0:
                 sUrl = sUrl.replace('=video', '=Films+HD')
@@ -327,7 +326,7 @@ def showSearchResult(sSearch=''):
             else:
                 loop = 0
 
-    if (aResult):
+    if aResult:
         i = 0
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult:
@@ -398,7 +397,7 @@ def showMovies():
     sPattern = '<table style="float:left;padding-left:8px"> *<td> *<div align="left"> *<a href="([^"]+)" onmouseover="Tip\(\'<b>([^"]+?)</b>.+?Description :</b> <i>([^<]+?)<.+?<img src="([^"]+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -439,7 +438,7 @@ def showMovies():
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             sNumPage = re.search('/([0-9]+)/', sNextPage).group(1)
@@ -453,7 +452,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<span class="courante">[^<]+</span> <a href="(.+?)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         return URL_MAIN + aResult[1][0]
 
     return False
@@ -482,7 +481,7 @@ def showHosters():
     aResult1 = oParser.parse(sHtmlContent, sPattern)
     # VSlog(aResult1)
 
-    if (aResult1[0] == True):
+    if aResult1[0] is True:
         if 'Forced' in aResult1[1][0]:
             aResult1[1][0] = ''
 
@@ -518,7 +517,7 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
     # VSlog(aResult)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -596,7 +595,7 @@ def showSeriesHosters():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         oGui.addText(SITE_IDENTIFIER, sMovieTitle + aResult1[1][0])
 
@@ -648,14 +647,14 @@ def Display_protected_link():
             sUrl = 'http://' + sUrl
         aResult_dlprotect = (True, [sUrl])
 
-    if (aResult_dlprotect[0]):
+    if aResult_dlprotect[0]:
         for aEntry in aResult_dlprotect[1]:
             sHosterUrl = aEntry
 
             sTitle = sMovieTitle
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -797,7 +796,7 @@ def get_response(img, cookie):
                         kb = xbmc.Keyboard(self.getControl(5000).getLabel(), '', False)
                         kb.doModal()
 
-                        if (kb.isConfirmed()):
+                        if kb.isConfirmed():
                             self.getControl(5000).setLabel(kb.getText())
                             self.getControl(2).setVisible(False)
                         else:
