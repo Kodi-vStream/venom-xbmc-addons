@@ -11,7 +11,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 from resources.lib.util import cUtil
 
 # Detecte si c'est Kodi 19 ou plus
@@ -26,7 +26,7 @@ SITE_IDENTIFIER = 'french_stream_com'
 SITE_NAME = 'French-stream'
 SITE_DESC = 'Films, Séries & Mangas en streaming'
 
-URL_MAIN = "https://www.french-streaming.in/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 # URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=9&story=', 'showMovies')
 # URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=10&story=', 'showSeries')
@@ -270,7 +270,7 @@ def showSearchSeries():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         sUrl = URL_SEARCH_SERIES[0] + sSearchText
         showSeries(sUrl)
         oGui.setEndOfDirectory()
@@ -336,7 +336,6 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-
     if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
@@ -357,11 +356,11 @@ def showMovies(sSearch=''):
 
             sTitle = aEntry[2]
 
-            if (sSearch and ' - Saison ' in sTitle):  # La recherche retourne aussi des séries
+            if sSearch and ' - Saison ' in sTitle:  # La recherche retourne aussi des séries
                 continue
 
             # on recupere le titre dans le poster car le site ne l'affiche pas toujours
-            if (sTitle == ' '):
+            if sTitle == ' ':
                 sTitle = aEntry[1].replace('/static/poster/', '').replace('-', ' ').replace('.jpg', '').title()
 
             # Filtre de recherche
@@ -385,7 +384,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -432,14 +431,14 @@ def showSeries(sSearch=''):
                 sThumb = URL_MAIN[:-1] + sThumb
             sTitle = aEntry[2]
 
-            if (sSearch and not ' - Saison ' in sTitle):  # La recherche retourne aussi des films
+            if sSearch and ' - Saison ' not in sTitle:  # La recherche retourne aussi des films
                 continue
 
             # Filtre de recherche
             if sSearch:
                 if not oUtil.CheckOccurence(sSearchText, sTitle):
                     continue
-            
+
             # filtre pour réorienter les mangas
             # if '/manga' in sUrl:
                 # sType = 'mangas'
@@ -459,7 +458,7 @@ def showSeries(sSearch=''):
         progress_.VSclose(progress_)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showSeries', 'Page ' + sPaging, oOutputParameterHandler)
@@ -472,7 +471,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = 'href="([^"]+)">>></a>.+?>(\d+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sNextPage = URL_MAIN[:-1] + aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
@@ -481,7 +480,7 @@ def __checkForNextPage(sHtmlContent):
 
     sPattern = '>([^<]+)</a>\s*<a href="([^"]+)">>>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sNumberMax = aResult[1][0][0]
         sNextPage = URL_MAIN[:-1] + aResult[1][0][1]
         sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
@@ -505,12 +504,12 @@ def showHosters():
     sPattern = '<a style="display.+?cid="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
 
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
@@ -542,11 +541,11 @@ def showEpisode():
 
     sPattern = '</i> *(VF|VOSTFR) *</div>|<a id="([^"]+)".+?target="seriePlayer".+?"([^"]+)" data-rel="([^"]+)"'
     aResult = re.findall(sPattern, sHtmlContent)
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
     sLang = ''
-    if (aResult):
+    if aResult:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult:
 
@@ -588,7 +587,7 @@ def showSeriesHosters():
     sPattern = '<div id="' + sData + '" class="fullsfeature"(.+?)<div style='
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         block = aResult[1][0]
     else:
         return
@@ -596,7 +595,7 @@ def showSeriesHosters():
     sPattern = '<a (?:id="([^"]+)"|onclick=".+?") *surl="([^"]+)"'
     aResult = oParser.parse(block, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
 
             if aEntry[0]:
@@ -618,7 +617,7 @@ def showSeriesHosters():
                 sHosterUrl = aEntry[1]
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
 
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
@@ -641,7 +640,7 @@ def mangaHosters():
     sPattern = '</i> *(VF|VOSTFR) *</div>|<a style="padding:5px 0;" id=".+?" *cid="([^"]+)".+?</i>([^<]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
 
             if aEntry[0]:
@@ -652,13 +651,13 @@ def mangaHosters():
                 sHosterUrl = aEntry[1]
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if oHoster != False:
                     oHoster.setDisplayName(sTitle)
                     oHoster.setFileName(sTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     # redirection en cas d'absence de résultat
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
