@@ -52,9 +52,7 @@ ANIM_NEWS = (URL_MAIN + 'mangas/', 'showSeries')
 
 
 def decode_url_Serie(url, sId, tmp=''):
-
     v = url
-
     if 'singh' in sId:
         fields = url.split('nbsp')
         try:
@@ -99,9 +97,7 @@ def decode_url_Serie(url, sId, tmp=''):
 
 
 def decode_url(url, sId, tmp=''):
-
     v = url
-
     if sId == 'seriePlayer':
         fields = tmp.split('sig=705&&')
         if isPython3:
@@ -153,8 +149,7 @@ def decode_url(url, sId, tmp=''):
     return v
 
 
-def ResolveUrl(url):
-
+def resolveUrl(url):
     try:
         url2 = ''
         pat = 'p_id=([0-9]+).+?c_id=([^&]+)'
@@ -259,7 +254,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         sUrl = URL_SEARCH_MOVIES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -320,6 +315,7 @@ def showSerieGenres():
 
 def showMovies(sSearch=''):
     oGui = cGui()
+
     if sSearch:
         oUtil = cUtil()
         sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
@@ -331,18 +327,15 @@ def showMovies(sSearch=''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    sPattern = 'film-ripz".+?href="([^"]+)" title="[^"]+">.+?<img src="([^"]+).+?class="short-titl.+?>([^<]+)<(\/div|br>(.+?)<)'
+    sPattern = 'film-ripz".+?href="([^"]+)" title="[^"]+">.+?<img src="([^"]+).+?class="short-titl.+?>([^<]+)<(/div|br>(.+?)<)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
-
     else:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
-
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
@@ -394,7 +387,6 @@ def showMovies(sSearch=''):
 
 def showSeries(sSearch=''):
     oGui = cGui()
-    oParser = cParser()
 
     if sSearch:
         oUtil = cUtil()
@@ -407,18 +399,15 @@ def showSeries(sSearch=''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
     sPattern = 'class="short-poster.+?href="([^"]+)".+?img src="([^"]*)".*?class="short-title.+?>([^<]+)<'
-
+    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
-
     else:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
-
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
@@ -492,7 +481,6 @@ def __checkForNextPage(sHtmlContent):
 
 def showHosters():
     oGui = cGui()
-    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -500,8 +488,8 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
     sPattern = '<a style="display.+?cid="([^"]+)'
+    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0] is True:
@@ -552,10 +540,9 @@ def showEpisode():
             if aEntry[0]:
                 sLang = aEntry[0]
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
-
             else:
                 # sId = aEntry[1]
-                sTitle = aEntry[2] + ' ' + sMovieTitle.replace('- Saison', ' Saison')
+                sTitle = sMovieTitle + ' ' + aEntry[2]
                 sData = aEntry[3]
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -611,7 +598,7 @@ def showSeriesHosters():
                 else:
                     url2 = decode_url_Serie(url, aEntry[0], tmp)
                     # second convertion
-                    sHosterUrl = ResolveUrl(url2)
+                    sHosterUrl = resolveUrl(url2)
 
             else:
                 sHosterUrl = aEntry[1]
@@ -645,7 +632,6 @@ def mangaHosters():
 
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
-
             else:
                 sTitle = aEntry[2] + sMovieTitle
                 sHosterUrl = aEntry[1]
