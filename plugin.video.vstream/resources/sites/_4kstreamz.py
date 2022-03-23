@@ -269,7 +269,7 @@ def showSaisons():
             sUrl2 = aEntry[0]
             saison = aEntry[1].replace(' ', '')
 
-            sTitle = ("%s %s %s") % (sMovieTitle, ' Saison ', saison)
+            sTitle = ("%s %s %s") % (sMovieTitle, 'saison', saison)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
