@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# update 09/102021
 import re
 
 from resources.lib.gui.hoster import cHosterGui
@@ -40,8 +39,8 @@ URL_SEARCH_MOVIES = (key_search_movies, 'showMovies')
 URL_SEARCH_SERIES = (key_search_series, 'showMovies')
 
 # recherche utilisée quand on utilise directement la source
-MY_SEARCH_MOVIES = (True, 'myShowSearchMovie')
-MY_SEARCH_SERIES = (True, 'myShowSearchSerie')
+MY_SEARCH_MOVIES = (True, 'showSearchMovie')
+MY_SEARCH_SERIES = (True, 'showSearchSerie')
 
 # Menu GLOBALE HOME
 MOVIE_MOVIE = (True, 'showMenuMovies')
@@ -161,7 +160,7 @@ def showMenuTvShows():
     oGui.setEndOfDirectory()
 
 
-def myShowSearchSerie():
+def showSearchSerie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if sSearchText != False:
@@ -171,7 +170,7 @@ def myShowSearchSerie():
         return
 
 
-def myShowSearchMovie():
+def showSearchMovie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if sSearchText != False:
@@ -229,7 +228,6 @@ def showSerieGenres():
 
 
 def showMovies(sSearch=''):
-
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -291,8 +289,7 @@ def showMovies(sSearch=''):
             sThumb = aEntry[1]
             if 'http' not in sThumb:
                 sThumb = URL_MAIN[:-1] + sThumb
-
-            sTitle = aEntry[2].replace('- Saison', ' Saison')  # uniquement pour les séries
+            sTitle = aEntry[2]
 
             if bSearchMovie:  # il n'y a jamais '/serie' dans sUrl2
                 if '- Saison' in aEntry[2]:
@@ -365,7 +362,7 @@ def showEpisodes():
     aResult = oParser.parse(sHtmlContent, sPattern)
     sDesc = 'french stream lol'
     if aResult[0] is True:
-        sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', cleanDesc(aResult[1][0]))
+        sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', cleanDesc(aResult[1][0]))
 
     sPattern = 'fa-play-circle-o">.+?(VOSTFR|VF)|id="(?:honey|yoyo)(?:\d+)"\s*href="([^"]+).+?data-rel="([^"]+).+?</i>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -388,7 +385,7 @@ def showEpisodes():
                 else:
                     sEpisode = aEntry[3]
 
-                sTitle = sMovieTitle.replace('- Saison', ' Saison') + ' ' + sEpisode
+                sTitle = sMovieTitle + ' ' + sEpisode
                 sDisplayTitle = sTitle + ' (' + sLang + ')'
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -405,18 +402,16 @@ def showEpisodes():
 
 
 def showSerieLinks():
-
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    sDesc = oInputParameterHandler.getValue('sDesc')
     sLang = oInputParameterHandler.getValue('sLang')
     sFirst_Url = oInputParameterHandler.getValue('sFirst_Url')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sRel_Episode = oInputParameterHandler.getValue('sRel_Episode')
     if not sRel_Episode:
-        numEpisode = oInputParameterHandler.getValue('sEpisode') # Gestion Up_Next
+        numEpisode = oInputParameterHandler.getValue('sEpisode')  # Gestion Up_Next
         if numEpisode:
             numEpisode = int(numEpisode)
             if 'VO' in sLang:
@@ -447,10 +442,9 @@ def showSerieLinks():
     if aResult[0] is True:
         html = aResult[1][0]
         sPattern = 'href="([^"]+).*?aria-hidden'
-        aResulturl = oParser.parse(html, sPattern)
-        if aResulturl[0] is True:
-            # oOutputParameterHandler = cOutputParameterHandler()
-            for aEntry in aResulturl[1]:
+        aResultUrl = oParser.parse(html, sPattern)
+        if aResultUrl[0] is True:
+            for aEntry in aResultUrl[1]:
                 sHosterUrl = aEntry
 
                 if isBlackHost(sHosterUrl):
@@ -458,10 +452,6 @@ def showSerieLinks():
 
                 if 'http' not in sHosterUrl:  # liens naze du site url
                     continue
-
-                if 'hqq.tv' in sHosterUrl:
-                    continue
-                    # pass
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if oHoster != False:
@@ -475,35 +465,19 @@ def showSerieLinks():
 def showMovieLinks():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
     oParser = cParser()
-    sPattern = 'id="s-desc">([^<]+)|Date de sortie:<.span>([^<]+)'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    sDesc = 'french stream lol'
-    if aResult[0] is True:
-        try:  # a verifier
-            if len(aResult[1]) == 2:
-                sYear = aResult[1][1][1]
-                sDesc = cleanDesc(aResult[1][0][0])
-                sDesc = ('%s [I][COLOR grey]%s[/COLOR][/I] %s') % ('Année : ' + sYear + '\r\n', 'Synopsis :', sDesc)
-            else:
-                sDesc = (' [I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', cleanDesc(aResult[1][0][0]))
-        except:
-            pass
-
     sPattern = '<li>\s*<a.*?href="([^"]+).+?hidden="true'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     valide_host = []
 
     if aResult[0] is True:
-        # oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
@@ -512,9 +486,6 @@ def showMovieLinks():
 
             if 'http' not in sHosterUrl:  # liens nazes du site url
                 continue
-            if 'hqq.tv' in sHosterUrl:
-                continue
-
             if sHosterUrl not in valide_host:  # à cause de l'url par défaut
                 valide_host.append(sHosterUrl)
             else:
@@ -530,7 +501,7 @@ def showMovieLinks():
 
 
 def isBlackHost(url):
-    black_host = ['playzer.xyz']  # à rajouter
+    black_host = ['playzer.xyz', 'hqq.tv']  # à rajouter
     urlLower = url.lower()
     for host in black_host:
         if host.lower() in urlLower:
@@ -539,7 +510,6 @@ def isBlackHost(url):
 
 
 def cleanDesc(sDesc):
-
     oParser = cParser()
     sPattern = '(Résumé.+?streaming Complet)'
     aResult = oParser.parse(sDesc, sPattern)
