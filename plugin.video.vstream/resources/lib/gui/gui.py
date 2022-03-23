@@ -6,7 +6,7 @@ import json
 import threading
 import copy
 
-from resources.lib.comaddon import listitem, addon, dialog, window, isKrypton, isNexus
+from resources.lib.comaddon import listitem, addon, dialog, window, isKrypton, isNexus, VSlog
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -71,7 +71,7 @@ class cGui:
             oOutputParameterHandler.addParameter('sMeta', sMeta)
             oGuiElement.setMeta(sMeta)
 
-        # Si pas d'id TMDB on recupère le précedent
+        # Si pas d'id TMDB on recupère le précédent
         if not oOutputParameterHandler.getValue('sTmdbId'):
             oInputParameterHandler = cInputParameterHandler()
             sTmdbID = oInputParameterHandler.getValue('sTmdbId')
@@ -100,7 +100,7 @@ class cGui:
             return self.addFolder(oGuiElement, oOutputParameterHandler)
         except Exception as error:
             VSlog("addNewDir error: " + str(error))
-    
+
     #    Categorie       Meta          sCat     CONTENT
     #    Film            1             1        movies
     #    Serie           2             2        tvshows
@@ -176,7 +176,6 @@ class cGui:
         return self.addNewDir('seasons', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 5, 4)
 
     def addEpisode(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
-
         # Pour gérer l'enchainement des épisodes, l'URL de la saison
         oInputParameterHandler = cInputParameterHandler()
         saisonUrl = oInputParameterHandler.getValue('saisonUrl')
@@ -223,7 +222,6 @@ class cGui:
         return self.addText(sId)
 
     def addText(self, sId, sLabel='', sIcon='none.png'):
-
         # Pas de texte lors des recherches globales
         if window(10101).getProperty('search') == 'true':
             return
@@ -243,7 +241,7 @@ class cGui:
 
     # afficher les liens non playable
     def addFolder(self, oGuiElement, oOutputParameterHandler='', _isFolder=True):
-        if _isFolder == False:
+        if _isFolder is False:
             cGui.CONTENT = 'files'
 
         # recherche append les reponses
@@ -281,7 +279,7 @@ class cGui:
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
 
-        if _isFolder == True:
+        if _isFolder is True:
             # oListItem.setProperty('IsPlayable', 'true')
             if sCat:    # 1 = movies, moviePack; 2 = series, animes, episodes; 5 = MISC
                 if oGuiElement.getMeta():
@@ -529,7 +527,7 @@ class cGui:
         return oListItem
 
     def __createItemUrl(self, oGuiElement, oOutputParameterHandler=''):
-        if (oOutputParameterHandler == ''):
+        if oOutputParameterHandler == '':
             oOutputParameterHandler = cOutputParameterHandler()
 
         # On descend l'id TMDB dans les saisons et les épisodes
@@ -543,7 +541,7 @@ class cGui:
 
         sPluginPath = cPluginHandler().getPluginPath()
 
-        if (len(oGuiElement.getFunction()) == 0):
+        if len(oGuiElement.getFunction()) == 0:
             sItemUrl = '%s?site=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), QuotePlus(oGuiElement.getCleanTitle()), sParams)
         else:
             sItemUrl = '%s?site=%s&function=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), oGuiElement.getFunction(), QuotePlus(oGuiElement.getCleanTitle()), sParams)
@@ -735,7 +733,7 @@ class cGui:
         keyboard = xbmc.Keyboard(sDefaultText)
         keyboard.setHeading(heading)
         keyboard.doModal()
-        if (keyboard.isConfirmed()):
+        if keyboard.isConfirmed():
             sSearchText = keyboard.getText()
             if (len(sSearchText)) > 0:
                 return sSearchText
@@ -788,4 +786,3 @@ class cGui:
         cGui.searchResultsSemaphore.acquire()
         cGui.searchResults = {}
         cGui.searchResultsSemaphore.release()
-    
