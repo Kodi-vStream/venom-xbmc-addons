@@ -284,7 +284,7 @@ def showSeries():
             else:
                 # on vire le double affichage de la saison
                 sTitle = sMovieTitle + ' ' + aEntry[1].replace(' x ', '').replace(' ', '')
-                sTitle = sTitle + ' ' + '(' + sLang + ')'
+                sDisplayTitle = sTitle + ' ' + '(' + sLang + ')'
                 sData = aEntry[2]
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -292,7 +292,7 @@ def showSeries():
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sData', sData)
                 oOutputParameterHandler.addParameter('sLang', sLang)
-                oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -321,9 +321,9 @@ def showLinks():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0] is True:
-        MovieUrl = URL_MAIN + 'playery/?id=' + aResult[1][0]
+        movieUrl = URL_MAIN + 'playery/?id=' + aResult[1][0]
 
-        oRequestHandler = cRequestHandler(MovieUrl)
+        oRequestHandler = cRequestHandler(movieUrl)
         oRequestHandler.addHeaderEntry("User-Agent", UA)
         oRequestHandler.addHeaderEntry("Referer", sRefUrl)
         sHtmlContent = oRequestHandler.request()
