@@ -22,7 +22,6 @@ class cHoster(iHoster):
         #Get Redirection
         if 'fembed' in self._url:
             oRequest = cRequestHandler(self._url)
-            oRequest.disableIPV6()
             oRequest.addHeaderEntry('User-Agent', UA)
             sHtmlContent = oRequest.request()
             self._url = oRequest.getRealUrl()
@@ -38,7 +37,6 @@ class cHoster(iHoster):
 
         if 'fem.tohds' in self._url:
             oRequestHandler = cRequestHandler(self._url)
-            oRequestHandler.disableIPV6()
             sHtmlContent = oRequestHandler.request()
 
             sPattern = '<iframe src="([^"]+)"'
@@ -55,8 +53,6 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(url)
         oRequest.setRequestType(1)
-        oRequest.disableSSL()
-        oRequest.disableIPV6()
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Referer', self._url)
         oRequest.addParametersLine(postdata)
@@ -71,14 +67,12 @@ class cHoster(iHoster):
         api_call = dialog().VSselectqual(qua, url)
 
         oRequest = cRequestHandler(api_call)
-        oRequest.disableSSL()
-        oRequest.disableIPV6()
         oRequest.addHeaderEntry('Host','fvs.io')
         oRequest.addHeaderEntry('User-Agent', UA)
         sHtmlContent = oRequest.request()
         api_call = oRequest.getRealUrl()
 
         if api_call:
-            return True, api_call  + '|User-Agent=' + UA + '&verifypeer=false'
+            return True, api_call  + '|User-Agent=' + UA
 
         return False, False
