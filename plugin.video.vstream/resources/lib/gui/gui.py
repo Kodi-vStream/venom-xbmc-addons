@@ -6,7 +6,7 @@ import json
 import threading
 import copy
 
-from resources.lib.comaddon import listitem, addon, dialog, window, isKrypton, isNexus, VSlog
+from resources.lib.comaddon import listitem, addon, dialog, window, isKrypton, isNexus, progress, VSlog
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -21,6 +21,7 @@ class cGui:
     SITE_NAME = 'cGui'
     CONTENT = 'files'
     listing = []
+    thread_listing = []
     episodeListing = []  # Pour gérer l'enchainement des episodes
     ADDON = addon()
     displaySeason = addon().getSetting('display_season_title')
@@ -308,7 +309,29 @@ class cGui:
         oOutputParameterHandler.clearParameter()
         return oListItem
 
+
     def createListItem(self, oGuiElement):
+        
+        # Récupération des metadonnées par thread
+        if oGuiElement.getMeta() and oGuiElement.getMetaAddon() == 'true':
+            return self.createListItemThread(oGuiElement)
+        
+        # pas de meta, appel direct
+        return self._createListItem(oGuiElement)
+        
+        
+    # Utilisation d'un Thread pour un chargement des metas en parallèle
+    def createListItemThread(self, oGuiElement):
+        itemTitle = oGuiElement.getTitle()
+        oListItem = listitem(itemTitle)
+        t = threading.Thread(target = self._createListItem, args=(oGuiElement,oListItem))
+        self.thread_listing.append(t)
+        t.start()
+        return oListItem
+
+
+    def _createListItem(self, oGuiElement, oListItem = None):
+        
         # Enleve les elements vides
         data = {key: val for key, val in oGuiElement.getItemValues().items() if val != ""}
 
@@ -341,7 +364,8 @@ class cGui:
             # Convertion en seconde, utile pour le lien final.
             data['duration'] = (sum(x * int(t) for x, t in zip([1, 60, 3600], reversed(data.get('duration', '').split(":")))))
 
-        oListItem = listitem(itemTitle)
+        if not oListItem:
+            oListItem = listitem(itemTitle)
 
         if data.get('cast'):
             credits = json.loads(data['cast'])
@@ -554,6 +578,18 @@ class cGui:
         if not self.listing:
             self.addText('cGui')
 
+        # attendre l'arret des thread utilisés pour récupérer les métadonnées
+        total = len(self.thread_listing)
+        if total>0 :
+            progress_ = progress().VScreate(addon().VSlang(30141))
+            for thread in self.thread_listing:
+                progress_.VSupdate(progress_, total)
+                thread.join(100)
+            progress_.VSclose(progress_)
+
+
+        del self.thread_listing[:]
+        
         xbmcplugin.addDirectoryItems(iHandler, self.listing, len(self.listing))
         xbmcplugin.setPluginCategory(iHandler, '')
         xbmcplugin.setContent(iHandler, cGui.CONTENT)
