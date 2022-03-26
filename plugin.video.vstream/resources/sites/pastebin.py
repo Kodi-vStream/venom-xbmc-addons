@@ -14,25 +14,6 @@ from resources.lib.util import cUtil, Unquote
 from resources.lib.gui.gui import cGui
 
 
-DEBUG = False
-
-if DEBUG:
-    import sys  # pydevd module need to be copied in Kodi\system\python\Lib\pysrc
-#    sys.path.append('H:\Program Files\Kodi\system\Python\Lib\pysrc') #Py2
-    sys.path.append('E:\Logiciels\Kodi19\system\Python\Lib\pysrc')  # Py3
-
-    try:
-        import pysrc.pydevd as pydevd
-        pydevd.settrace('localhost', stdoutToServer=False, stderrToServer=False)
-    except ImportError as error:
-        VSlog(error)
-        try:
-            import pydevd  # with the addon script.module.pydevd, only use `import pydevd`
-            pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True, suspend=False)
-        except ImportError:
-            sys.stderr.write("Error: " + "You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
-
-
 
 try:
     from sqlite3 import dbapi2 as sqlite
