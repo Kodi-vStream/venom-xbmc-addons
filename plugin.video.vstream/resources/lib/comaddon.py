@@ -241,7 +241,7 @@ class progress:
         self.PROGRESS = None
         self.COUNT = 0
 
-    def VScreate(self, title='vStream', desc='', large=False):
+    def VScreate(self, title='', desc='', large=False):
         # l'option "large" permet de forcer un sablier large, seul le sablier large peut être annulé.
 
         # Ne pas afficher le sablier si nous ne sommes pas dans un menu vStream
@@ -256,6 +256,9 @@ class progress:
             return empty()
 
         if self.PROGRESS == None:
+            if not title:
+                title = addon().VSlang(30140)
+            
             if large:
                 self.PROGRESS = xbmcgui.DialogProgress()
             elif ADDONVS.getSetting('spinner_small') == 'true':
@@ -273,9 +276,12 @@ class progress:
         if not search and window(10101).getProperty('search') == 'true':
             return
 
+        if not text:
+            text= addon().VSlang(30140)
+
         self.COUNT += 1
         iPercent = int(float(self.COUNT * 100) / total)
-        self.PROGRESS.update(iPercent, 'Chargement ' + str(self.COUNT) + '/' + str(total) + " " + text)
+        self.PROGRESS.update(iPercent, message = text + ' : ' + str(self.COUNT) + '/' + str(total))
 
     def iscanceled(self):
         if isinstance(self.PROGRESS, xbmcgui.DialogProgress):
@@ -479,7 +485,7 @@ class siteManager:
         self.setProperty(sourceName, self.ACTIVE, state)
 
     def getUrlMain(self, sourceName):
-        return self.getDefaultProperty(sourceName, self.URL_MAIN)
+        return str(self.getDefaultProperty(sourceName, self.URL_MAIN))
     
     def disableAll(self):
         for sourceName in self.data[self.SITES]:
@@ -550,11 +556,11 @@ class siteManager:
             self.defaultData = json.load(open(self.defaultPath))
 
         # Retrouver la prop par défaut
-        sourceData = self.defaultData[self.SITES].get(sourceName)
+        sourceData = self.defaultData[self.SITES].get(sourceName) if self.SITES in self.defaultData else None
         
         # pas de valeurs par défaut, on en crée à la volée
         if not sourceData:
-            sourceData = {self.ACTIVE : 'False', self.LABEL : sourceName}
+            sourceData = {self.ACTIVE : 'False', self.LABEL : sourceName, self.URL_MAIN : sourceName}
 
         return sourceData
     

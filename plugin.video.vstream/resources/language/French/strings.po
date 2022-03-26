@@ -524,6 +524,14 @@ msgctxt "#30138"
 msgid "Sources"
 msgstr "Sources"
 
+msgctxt "#30140"
+msgid "Loading"
+msgstr "Chargement "
+
+msgctxt "#30141"
+msgid "Loading infos"
+msgstr "Chargement des informations"
+
 msgctxt "#30145"
 msgid "Download folder"
 msgstr "Dossier de Téléchargement"
@@ -934,7 +942,7 @@ msgstr "Films (Populaires)"
 
 msgctxt "#30426"
 msgid "Movies (News)"
-msgstr "Films (Récents)"
+msgstr "Films (Nouveautés)"
 
 msgctxt "#30427"
 msgid "Movies (Top Rated)"
