@@ -6,12 +6,10 @@ import xbmc
 from resources.lib.home import cHome
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.pluginHandler import cPluginHandler
-from resources.lib.handler.rechercheHandler import cRechercheHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.comaddon import progress, VSlog, addon, window
 from resources.lib.search import cSearch
-from resources.lib.util import Quote
 # http://kodi.wiki/view/InfoLabels
 # http://kodi.wiki/view/List_of_boolean_conditions
 

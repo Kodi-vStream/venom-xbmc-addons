@@ -6,7 +6,6 @@ import requests
 from resources.hosters.youtube import cHoster
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.player import cPlayer
-from resources.lib.tmdb import cTMDb
 from resources.lib.config import GestionCookie
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36'
@@ -56,6 +55,7 @@ class cShowBA:
 
         # Sinon recherche de la BA officielle dans TMDB
         if not urlTrailer:
+            from resources.lib.tmdb import cTMDb
             meta = cTMDb().get_meta(self.metaType, self.search, year=self.year)
             if 'trailer' in meta and meta['trailer']:
                 self.SetTrailerUrl(meta['trailer'])

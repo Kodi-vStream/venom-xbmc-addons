@@ -15,9 +15,6 @@ class cSearch:
     def __init__(self):
         self.addons = addon()
 
-    def load(self):
-        cGui().setEndOfDirectory()
-
     def searchGlobal(self):
         try:
             oInputParameterHandler = cInputParameterHandler()
