@@ -519,7 +519,7 @@ class siteManager:
             # ... et on l'enregistre
             value = defaultProps.get(propName)
             self.setProperty(sourceName, propName, value)
-            self._save()
+            self.save()
             return value
 
 
@@ -565,7 +565,7 @@ class siteManager:
         return sourceData
     
     # Sauvegarder les propriétés modifiées
-    def _save(self):
+    def save(self):
         with open(self.propertiesPath, 'w') as f:
             f.write(json.dumps(self.data, indent=4))
 
