@@ -504,6 +504,10 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MISC[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Divers)', 'search.png', oOutputParameterHandler)
 
+    oOutputParameterHandler.addParameter('siteUrl', 'search/person')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchActor', 'Recherche (Acteurs)', 'actor.png', oOutputParameterHandler)
+
+
 #    sUrl = 
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '&numPage=1&sMedia=film')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuFilms', 'Films', 'films.png', oOutputParameterHandler)
@@ -1111,13 +1115,26 @@ def showTMDB():
     numPage = int(numPage)
 
     term = ''
-    sMedia = 'film' if 'movie' in siteUrl else 'serie'
-    sType = 'movie' if 'movie' in siteUrl else 'tvshow'
 
     result = grab.getUrl(siteUrl, numPage, term)
     total = len(result)
-    if (total > 0 and 'results' in result):
-        total = len(result['results'])
+    
+    results =  None
+    if 'cast' in result:
+        sMedia = 'film'
+        sType = 'person'
+        results = result['cast']
+    elif 'results' in result:
+        sMedia = 'film' if 'movie' in siteUrl else 'serie'
+        sType = 'movie' if 'movie' in siteUrl else 'tvshow'
+        results = result['results']
+    
+    if total > 0 and results:
+        bMatrix = isMatrix()
+        total = len(results)
+        tmdbIds = {}
+        for data in results:
+            tmdbIds[data['id']] = data['title'] if 'title' in data else data['name']
         
         pbContent = PasteContent()
         movies = []
@@ -1132,71 +1149,71 @@ def showTMDB():
                     if nbMovies > 0:
                         movies += moviesBin
 
+        # filmographie triée par date
+        if sType == 'person':
+            if pbContent.YEAR >= 0:
+                movies = sorted(movies, key=lambda line: line[pbContent.YEAR], reverse=True)
+
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
-        for i in result['results']:
+            
+        for movie in movies:
+            # l'ID TMDB
+            sTmdbId = None
+            if pbContent.TMDB == -1:
+                continue
+            sTmdbId = movie[pbContent.TMDB].strip()
+            if not sTmdbId:
+                continue
+            
+            sTitle = tmdbIds.pop(int(sTmdbId), None)
+            if not sTitle:
+                continue
+
+            if not bMatrix:
+                sTitle = sTitle.encode("utf-8")
+
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
 
-            # Mise en forme des infos (au format meta imdb)
-            i = grab._format(i, '', sType)
+            sUrl = URL_MAIN
+            if sMedia:
+                sUrl += '&sMedia=' + sMedia
+            if sTmdbId:
+                sUrl += '&idTMDB=' + sTmdbId
+            sUrl += '&sTitle=' + sTitle
+            sDisplayTitle = sTitle
 
-            # recup des infos
-            sId, sTitle, sGenre, sThumb, sFanart, sDesc, sYear = str(i['tmdb_id']), i['title'], i['genre'], i['poster_path'], i['backdrop_path'], i['plot'], i['year']
-            
-            
-            for movie in movies:
-                # l'ID TMDB
-                sTmdbId = None
-                if pbContent.TMDB == -1:
-                    continue
-                sTmdbId = movie[pbContent.TMDB].strip()
-                if not sTmdbId:
-                    continue
-                if sTmdbId != sId:
-                    continue
-                sUrl = URL_MAIN
-                # pasteID = movie[pbContent.PASTE]
-                # if pasteID:
-                #     sUrl += '&pasteID=' + pasteID
-                if sMedia:
-                    sUrl += '&sMedia=' + sMedia
-                if sYear:
-                    sUrl += '&sYear=' + str(sYear)
-                if sTmdbId:
-                    sUrl += '&idTMDB=' + sTmdbId
-                sUrl += '&sTitle=' + sTitle
-                sDisplayTitle = sTitle
+            # Pour supporter les caracteres '&' et '+' dans les noms alors qu'ils sont réservés
+            sTitle = sTitle.replace('+', ' ').replace(' & ', ' | ')
+            sTitle = sTitle.replace('[', '').replace(']', '')   # Exemple pour le film [REC], les crochets sont génants pour certaines fonctions
+    
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            if sTmdbId:
+                oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)  # Utilisé par TMDB
+    
+            if sMedia == 'serie':
+                oGui.addTV(SITE_IDENTIFIER, 'showSerieSaisons', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
+            elif sMedia == 'anime':
+                oGui.addAnime(SITE_IDENTIFIER, 'showSerieSaisons', sDisplayTitle, 'animes.png', '', '', oOutputParameterHandler)
+            elif sMedia == 'divers':
+                oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'doc.png', '', '', oOutputParameterHandler)
+            else:
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', '', '', oOutputParameterHandler)
 
-                # Pour supporter les caracteres '&' et '+' dans les noms alors qu'ils sont réservés
-                sTitle = sTitle.replace('+', ' ').replace(' & ', ' | ')
-                sTitle = sTitle.replace('[', '').replace(']', '')   # Exemple pour le film [REC], les crochets sont génants pour certaines fonctions
-        
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                if sTmdbId:
-                    oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)  # Utilisé par TMDB
-                if sYear:
-                    oOutputParameterHandler.addParameter('sYear', sYear)  # Utilisé par TMDB
-        
-                if sMedia == 'serie':
-                    oGui.addTV(SITE_IDENTIFIER, 'showSerieSaisons', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
-                elif sMedia == 'anime':
-                    oGui.addAnime(SITE_IDENTIFIER, 'showSerieSaisons', sDisplayTitle, 'animes.png', '', '', oOutputParameterHandler)
-                elif sMedia == 'divers':
-                    oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'doc.png', '', '', oOutputParameterHandler)
-                else:
-                    oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', '', '', oOutputParameterHandler)
+            if len(tmdbIds) == 0:
                 break
-                
+                    
         progress_.VSclose(progress_)
 
-        numPage += 1
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
-        oOutputParameterHandler.addParameter('numPage', numPage)
-        oGui.addNext(SITE_IDENTIFIER, 'showTMDB', 'Page ' + str(numPage), oOutputParameterHandler)
+        if sType != 'person':
+            numPage += 1
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+            oOutputParameterHandler.addParameter('numPage', numPage)
+            oGui.addNext(SITE_IDENTIFIER, 'showTMDB', 'Page ' + str(numPage), oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -1213,6 +1230,94 @@ def showSearch():
 
         showMovies(sUrl)
         oGui.setEndOfDirectory()
+
+
+def showSearchActor():
+    oGui = cGui()
+
+    sSearchText = oGui.showKeyBoard()
+    if not sSearchText:
+        return
+
+    showActors(sSearchText.replace(' ', '+'))
+
+
+def showActors(sSearch=''):
+    from resources.lib.tmdb import cTMDb
+    grab = cTMDb()
+    oGui = cGui()
+    addons = addon()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    iPage = 1
+    if (oInputParameterHandler.exist('page')):
+        iPage = oInputParameterHandler.getValue('page')
+
+    if (oInputParameterHandler.exist('sSearch')):
+        sSearch = oInputParameterHandler.getValue('sSearch')
+
+    if sSearch:
+        # format obligatoire evite de modif le format de l'url dans la lib >> _call
+        # a cause d'un ? pas ou il faut pour ça >> invalid api key
+        result = grab.getUrl(sUrl, iPage, 'query=' + sSearch)
+
+    else:
+        result = grab.getUrl(sUrl, iPage)
+
+    total = len(result)
+
+    if (total > 0):
+        total = len(result['results'])
+        progress_ = progress().VScreate(SITE_NAME)
+        oOutputParameterHandler = cOutputParameterHandler()
+
+        # récup le nombre de page pour NextPage
+        nbrpage = result['total_pages']
+
+        for i in result['results']:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
+
+            sName, sThumb = i['name'], i['profile_path']
+
+            if sThumb:
+                POSTER_URL = grab.poster
+                sThumb = POSTER_URL + sThumb
+            else:
+                sThumb = ''
+
+
+            if not isMatrix():
+                sName = sName.encode('utf-8')
+
+            sTitle = str(sName)
+            actorId = str(i['id'])
+            oOutputParameterHandler.addParameter('siteUrl', 'person/' + actorId + '/movie_credits')
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sTmdbId', actorId)    # Utilisé par TMDB
+            oGui.addPerson(SITE_IDENTIFIER, 'showTMDB', sTitle, 'actor.png', '', oOutputParameterHandler)
+
+        progress_.VSclose(progress_)
+
+        if (int(iPage) < int(nbrpage)):
+            iNextPage = int(iPage) + 1
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('page', iNextPage)
+
+            # ajoute param sSearch pour garder le bon format d'url avec grab url
+            if sSearch:
+                oOutputParameterHandler.addParameter('sSearch', sSearch)
+
+            oGui.addNext(SITE_IDENTIFIER, 'showActors', 'Page ' + str(iNextPage), oOutputParameterHandler)
+
+    view = addons.getSetting('visuel-view')
+
+    oGui.setEndOfDirectory(view)
+
 
 
 def showGenres():
