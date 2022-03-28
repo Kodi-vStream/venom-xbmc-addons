@@ -329,16 +329,17 @@ class PasteContent:
 
         # renouveller le contenu d'un paste
         if renew:
+            lastMediaTitle = lines[1].split(";")[self.TITLE]
             # décaler le lancement du scan
             decal = random.randint(3, 6)
-            t = threading.Timer(decal, renewPaste, args=(pasteBin,))
+            t = threading.Timer(decal, renewPaste, args=(pasteBin,lastMediaTitle))
             t.start()
 
         return links
 
 
     # renouveller le contenu du cache, avec prechargement des metadonnés
-    def renew(self, pasteId):
+    def renew(self, pasteId, lastMediaTitle):
         
         # Vider le cache du paste
         self._getCache().remove(pasteId)
@@ -355,6 +356,8 @@ class PasteContent:
         nbMeta = 100
         numItem = 0
         tmdbIDs = []    # id déjà traités
+        
+        # Recherche de nouveaux contenus
         progress_ = progress().VScreate(addon().VSlang(30141))
         total = min(nbMeta, len(movies))
         
@@ -371,6 +374,11 @@ class PasteContent:
             tmdbIDs.append(tmdbID)
         
             sTitle = movie[self.TITLE]
+            
+            # si on retombe sur le contenu de l'ancien paste, on s'arrete de scanner
+            if lastMediaTitle and lastMediaTitle == sTitle:
+                break
+            
             progress_.VSupdate(progress_, total, text=sTitle)
         
             sType = movie[self.CAT].replace('film', 'movie').replace('serie', 'tvshow')
@@ -1941,7 +1949,7 @@ def showMovies(sSearch=''):
         moviesNews = []
         i = j = k = 0
         lenMovies = len(movies)
-        if bNews:   # Si pas de tris, pas besoin de récupérer plus qu'on ne peut en afficher
+        if bNews and not sRes:   # Si pas de tris, pas besoin de récupérer plus qu'on ne peut en afficher
             nbMoviesNewsMax = min(lenMovies, numItem + ITEM_PAR_PAGE + 1 )
             nbMoviesNews = 0
 
@@ -1949,7 +1957,7 @@ def showMovies(sSearch=''):
             if i < pasteMaxLen[j]:
                 # Filtrage par média (film/série)
                 if pbContent.CAT >=0 and sMedia in movies[i][pbContent.CAT]:
-                    if bNews:
+                    if bNews and not sRes:
                         movieName = movies[i][pbContent.TITLE]
                         if movieName not in listName:        # trie des séries en doublons (à cause des saisons)
                             listName.add(movieName)
@@ -2694,9 +2702,9 @@ def deleteAllPasteName():
 
 
 # renouvelle le contenun d'un paste
-def renewPaste(pasteID):
+def renewPaste(pasteID, lastMediaTitle=''):
     content = PasteContent()
-    content.renew(pasteID)
+    content.renew(pasteID, lastMediaTitle)
 
 
 
