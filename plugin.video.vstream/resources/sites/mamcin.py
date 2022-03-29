@@ -10,15 +10,14 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 
 SITE_IDENTIFIER = 'mamcin'
 SITE_NAME = 'Mamcin'
 SITE_DESC = 'plus belle la vie, streaming, séries, récent'
 
-URL_MAIN = 'https://www.mamcin.com/'
-
-# FUNCTION_SEARCH = 'showMovies'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
+# URL_MAIN = dans sites.json
 
 SERIE_NEWS = (URL_MAIN, 'showMovies')
 SERIE_SERIES = (URL_MAIN, 'showMovies')
@@ -31,21 +30,9 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Plus Belle La Vie (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Plus Belle La Vie', 'news.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
-
-# search function
-# def showSearch():
-    # oGui = cGui()
-
-    # sSearchText = oGui.showKeyBoard()
-    # if (sSearchText != False):
-        # sUrl = URL_SEARCH[0] + sSearchText
-        # showMovies(sUrl)
-        # oGui.setEndOfDirectory()
-        # return
 
 
 # genre definition
@@ -75,15 +62,15 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="featured-image"><a href="([^"]+)" title="([^"]+)"><img width=".+?" height=".+?" src="([^"]+)"'
+    sPattern = 'class="featured-image"><a href="([^"]+)" title="([^"]+)"><img width=".+?" height=".+?" src="([^"]+)'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -106,7 +93,7 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             sPaging = re.search('page/([0-9]+)', sNextPage).group(1)
@@ -121,7 +108,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<li class="previous"><a href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         return aResult[1][0]
 
     return False
@@ -143,14 +130,14 @@ def showHosters():
     # add dailymotion sources
     sPattern = '<iframe.+?src="(.+?)?logo=0&info=0"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
             if not aEntry.startswith('http'):
                 sHosterUrl = 'https:' + aEntry
             else:
                 sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -158,13 +145,13 @@ def showHosters():
     # add sendvid sources
     sPattern = '<(?:source|iframe) src="(.+?)" width'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
             sHosterUrl = aEntry
             if not sHosterUrl.startswith('http'):
                 sHosterUrl = 'https:' + aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
