@@ -10,7 +10,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, isMatrix
+from resources.lib.comaddon import progress, siteManager  #, isMatrix
 from resources.lib.util import cUtil
 
 
@@ -18,7 +18,8 @@ SITE_IDENTIFIER = 'otaku_attitude'
 SITE_NAME = 'Otaku-Attitude'
 SITE_DESC = 'Animes, Drama et OST en DDL et Streaming'
 
-URL_MAIN = "https://www.otaku-attitude.net/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
+# URL_MAIN = dans sites.json
 OST_MAIN = "https://forum.otaku-attitude.net/musicbox/playlists/"
 
 URL_SEARCH_ANIMS = (URL_MAIN + 'recherche.html?cat=1&q=', 'showAnimes')
@@ -74,7 +75,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         sUrl = sUrl + sSearchText.replace(' ', '+')
         showAnimes(sUrl)
         oGui.setEndOfDirectory()
@@ -88,7 +89,7 @@ def showAnimes(sSearch=''):
     if sSearch:
         sUrl = sSearch
 
-    # On memorise le lien de base ce qui permet d'avoir un nextpage fonctionnel sans modif et peut importe la categorie
+    # On mémorise le lien de base ce qui permet d'avoir un nextpage fonctionnel sans modif et peu importe la categorie
     if not sSearch:
         if 'scroll' not in sUrl:
             memorisedUrl = sUrl
@@ -111,10 +112,10 @@ def showAnimes(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -145,7 +146,7 @@ def showAnimes(sSearch=''):
         Page = int(Page) + 1
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', memorisedUrl + '?&scroll=' + str(Page))
-        # On renvoi l'url memoriser et le numero de page pour l'incrementer a chaque fois
+        # On renvoie l'url memoriser et le numero de page pour l'incrementer a chaque fois
         oOutputParameterHandler.addParameter('memorisedUrl', memorisedUrl)
         oOutputParameterHandler.addParameter('Page', Page)
         oGui.addNext(SITE_IDENTIFIER, 'showAnimes', 'Page ' + str(Page), oOutputParameterHandler)
@@ -173,10 +174,10 @@ def showOst():
     sPattern = "<div class='plWrapper'>.+?href='([^']+)' title='([^']+)'.+?src=\"([^\"]+)\""
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -200,7 +201,7 @@ def showOst():
         Page = int(Page) + 1
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', memorisedUrl + '?page=' + str(Page))
-        # On renvoi l'url memoriser et le numero de page pour l'incrementer a chaque fois
+        # On renvoie l'url memoriser et le numero de page pour l'incrementer a chaque fois
         oOutputParameterHandler.addParameter('memorisedUrl', memorisedUrl)
         oOutputParameterHandler.addParameter('Page', Page)
         oGui.addNext(SITE_IDENTIFIER, 'showOst', 'Page ' + str(Page), oOutputParameterHandler)
@@ -227,10 +228,10 @@ def showEpisodes():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in sorted(aResult[1], key=lambda aResult: aResult[1]):
             sQual = aEntry[2]
@@ -280,10 +281,10 @@ def showMusic():
     sPattern = '<div data-track-file="([^"]+)".+?data-track-name="([^"]+)".+?"><span.+?>([^<]+)</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sTitle = aEntry[2] + ' ' + aEntry[1]
@@ -308,7 +309,7 @@ def showMp3():
 #         sHosterUrl = mp3Url
 
     oHoster = cHosterGui().checkHoster('m3u8')
-    if (oHoster != False):
+    if oHoster != False:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, mp3Url + "|verifypeer=false", sThumb)
@@ -332,7 +333,7 @@ def showHosters():
         sHosterUrl = URL_MAIN + 'launch-download-2-' + serieID + '-ddl-' + idEpisode + '.html'
 
     oHoster = cHosterGui().checkHoster('m3u8')
-    if (oHoster != False):
+    if oHoster != False:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl + "|verifypeer=false", sThumb)
