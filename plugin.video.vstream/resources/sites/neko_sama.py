@@ -9,14 +9,15 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 
 
 SITE_IDENTIFIER = 'neko_sama'
 SITE_NAME = 'Neko Sama'
 SITE_DESC = 'Animés en streaming'
 
-URL_MAIN = 'https://neko-sama.fr/'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
+# URL_MAIN = dans sites.json
 
 ANIM_ANIMS = ('http://', 'load')
 ANIM_NEWS = (URL_MAIN, 'showLastEp')
@@ -28,6 +29,7 @@ URL_SEARCH_ANIMS = (ANIM_VOSTFRS[0], 'showSearchResult')
 URL_SEARCH_VF = (ANIM_VFS[0], 'showSearchResult')
 
 FUNCTION_SEARCH = 'showSearchResult'
+
 
 def load():
     oGui = cGui()
@@ -54,7 +56,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         showSearchResult(sSearchText)
         oGui.setEndOfDirectory()
         return
@@ -63,41 +65,22 @@ def showSearch():
 def showGenres():
     oGui = cGui()
 
-    liste = []
-    liste.append(['Action', URL_MAIN + 'action/'])
-    liste.append(['Animation', URL_MAIN + 'animation/'])
-    liste.append(['Arts Martiaux', URL_MAIN + 'arts-martiaux/'])
-    liste.append(['Aventure', URL_MAIN + 'aventure/'])
-    liste.append(['Biopic', URL_MAIN + 'biopic/'])
-    liste.append(['Comédie', URL_MAIN + 'comedie/'])
-    liste.append(['Comédie Dramatique', URL_MAIN + 'comedie-dramatique/'])
-    liste.append(['Comédie Musicale', URL_MAIN + 'comedie-musicale/'])
-    liste.append(['Documentaire', URL_MAIN + 'documentaire/'])
-    liste.append(['Drame', URL_MAIN + 'drame/'])
-    liste.append(['Epouvante Horreur', URL_MAIN + 'epouvante-horreur/'])
-    liste.append(['Erotique', URL_MAIN + 'erotique'])
-    liste.append(['Espionnage', URL_MAIN + 'espionnage/'])
-    liste.append(['Famille', URL_MAIN + 'famille/'])
-    liste.append(['Fantastique', URL_MAIN + 'fantastique/'])
-    liste.append(['Guerre', URL_MAIN + 'guerre/'])
-    liste.append(['Historique', URL_MAIN + 'historique/'])
-    liste.append(['Musical', URL_MAIN + 'musical/'])
-    liste.append(['Policier', URL_MAIN + 'policier/'])
-    liste.append(['Péplum', URL_MAIN + 'peplum/'])
-    liste.append(['Romance', URL_MAIN + 'romance/'])
-    liste.append(['Science Fiction', URL_MAIN + 'science-fiction/'])
-    liste.append(['Spectacle', URL_MAIN + 'spectacle/'])
-    liste.append(['Thriller', URL_MAIN + 'thriller/'])
-    liste.append(['Western', URL_MAIN + 'western/'])
-    liste.append(['Divers', URL_MAIN + 'divers/'])
+    liste = [['Action', 'action'], ['Animation', 'animation'], ['Arts Martiaux', 'arts-martiaux'],
+             ['Aventure', 'aventure'], ['Biopic', 'biopic'], ['Comédie', 'comedie'],
+             ['Comédie Dramatique', 'comedie-dramatique'], ['Comédie Musicale', 'comedie-musicale'],
+             ['Documentaire', 'documentaire'], ['Drame', 'drame'], ['Epouvante Horreur', 'epouvante-horreur'],
+             ['Erotique', 'erotique'], ['Espionnage', 'espionnage'], ['Famille', 'famille'],
+             ['Fantastique', 'fantastique'], ['Guerre', 'guerre'], ['Historique', 'historique'], ['Musical', 'musical'],
+             ['Policier', 'policier'], ['Péplum', 'peplum'], ['Romance', 'romance'],
+             ['Science Fiction', 'science-fiction'], ['Spectacle', 'spectacle'], ['Thriller', 'thriller'],
+             ['Western', 'western'], ['Divers', 'divers']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + sUrl + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 
 def showSearchResult(sSearch):
@@ -151,10 +134,10 @@ def showLastEp():
     sPattern = '"episode":"([^"]+)","title":"([^"]+)","url":"([^"]+)",.+?"url_image":"([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -177,6 +160,7 @@ def showLastEp():
 
     oGui.setEndOfDirectory()
 
+
 def showMovies():
     oGui = cGui()
     oParser = cParser()
@@ -190,10 +174,10 @@ def showMovies():
     sPattern = '<a href="([^"]+)">.+?src="([^"]+)" alt="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -215,7 +199,7 @@ def showMovies():
         progress_.VSclose(progress_)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -227,7 +211,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '>([^<]+)</a><a href="([^"]+)" class=""><svg'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sNumberMax = aResult[1][0][0]
         sNextPage = URL_MAIN[:-1] + aResult[1][0][1]
         sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
@@ -246,34 +230,34 @@ def showSaisonEpisodes():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     if sUrl.endswith("vostfr"):
-        oRequestHandler = cRequestHandler(sUrl.replace('vostfr','vf'))
+        oRequestHandler = cRequestHandler(sUrl.replace('vostfr', 'vf'))
         sHtmlContent = oRequestHandler.request()
-        if not "404 Not Found" in sHtmlContent:
+        if "404 Not Found" not in sHtmlContent:
             oOutputParameterHandler = cOutputParameterHandler()
-            sTitle = "[COLOR red]Cliquez ici pour acceder à la version VF[/COLOR]"
-            oOutputParameterHandler.addParameter('siteUrl', sUrl.replace('vostfr','vf'))
+            sTitle = "[COLOR red]Cliquez ici pour accéder à la version VF[/COLOR]"
+            oOutputParameterHandler.addParameter('siteUrl', sUrl.replace('vostfr', 'vf'))
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oGui.addDir(SITE_IDENTIFIER, 'showSaisonEpisodes', sTitle, '', oOutputParameterHandler)
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
+    sDesc = ''
     try:
-        sDesc = ''
         sPattern = '<p>(.+?)</p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
     except:
         pass
-        
+
     sPattern = '"episode":"([^"]+)".+?"url":"([^"]+)","url_image":"([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -308,17 +292,17 @@ def showSeriesHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
-            # Enleve les faux liens
+            # Enlève les faux liens
             # if 'openload' in aEntry or '.mp4' not in aEntry:
             if 'openload' in aEntry or 'mystream.to' in aEntry or "streamtape" in aEntry:
                 continue
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
