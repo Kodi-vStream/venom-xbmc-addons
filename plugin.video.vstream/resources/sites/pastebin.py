@@ -22,7 +22,7 @@ except:
 
 
 SITE_IDENTIFIER = 'pastebin'
-SITE_NAME = 'PasteBin'
+SITE_NAME = '[COLOR violet]PasteBin[/COLOR]'
 
 SITE_DESC = 'Liste depuis %s' % SITE_NAME
 
