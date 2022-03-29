@@ -20,13 +20,13 @@ SITE_DESC = 'Films & Séries en streaming'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 # URL_MAIN = dans sites.json
 
+MOVIE_MOVIE = (URL_MAIN + 'film-en-streaming/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming/', 'showMovies')
 MOVIE_EXCLU = (URL_MAIN + 'film-en-streaming/exclue', 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'film-en-streaming/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
+SERIE_SERIES = (URL_MAIN + 'serie-en-streaming/', 'showSeries')
 SERIE_NEWS = (URL_MAIN + 'serie-en-streaming/', 'showSeries')
-SERIE_SERIES = (URL_MAIN + 'serie-streaming/', 'showMovies')
 # SERIE_LIST = (URL_MAIN + 'serie-streaming/', 'showSeriesList')
 
 URL_SEARCH = (URL_MAIN, 'showSearch')
@@ -265,7 +265,7 @@ def showSeries(sSearch=''):
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + aEntry[0]
 
-            sTitle = aEntry[1].replace('- Saison', 'Saison').replace(' wiflix', '')
+            sTitle = aEntry[1].replace('- Saison', 'saison').replace(' wiflix', '')
             sLang = re.sub('Saison \d+', '', aEntry[3]).replace(' ', '')
             sDisplayTitle = ('%s (%s)') % (sTitle, sLang)
             sUrl = aEntry[2]
