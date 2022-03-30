@@ -7,7 +7,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 from resources.lib.util import QuoteSafe, Quote
 import re
 
@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'voirfilms_org'
 SITE_NAME = 'VoirFilms'
 SITE_DESC = 'Films, Séries & Animés en Streaming'
 
-URL_MAIN = 'https://www.voir-films.info/'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 # URL_MAIN = 'https://wvv.voirfilms.club/'  # url de repli site sans pub
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
@@ -122,7 +122,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
         sUrl = sUrl + Quote(sSearchText)
@@ -141,7 +141,7 @@ def AlphaSearch():
     for i in range(0, 27):
         progress_.VSupdate(progress_, 36)
 
-        if (i > 0):
+        if i > 0:
             sTitle = chr(64 + i)
         else:
             sTitle = '09'
@@ -308,10 +308,10 @@ def showMovies(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -361,7 +361,7 @@ def showMovies(sSearch=''):
             # sThumb = unicode(sThumb, 'UTF-8')
             # sThumb = sThumb.encode('ascii', 'ignore').decode('ascii')
             # sThumb = sThumb.decode('utf8')
-            
+
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -377,7 +377,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -390,7 +390,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = ">([^<]+)</a><a href='([^']+)'>suiv »"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         if sNextPage.startswith('/'):
@@ -420,7 +420,7 @@ def showLinks():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -444,7 +444,7 @@ def showLinks():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -489,7 +489,7 @@ def showS_E():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1][::-1]:
 
@@ -540,7 +540,7 @@ def showHosters():
     # VSlog('org > ' + sUrl)
 
     # Attention ne marche pas dans tout les cas, certain site retourne aussi un 302 et la lib n'en gere qu'un
-    if (False):
+    if False:
         # On recupere la redirection
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -577,12 +577,13 @@ def showHosters():
 
     sHosterUrl = sUrl
     oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if (oHoster != False):
+    if oHoster != False:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
 
 def showHostersDL():
     oGui = cGui()
@@ -604,7 +605,7 @@ def showHostersDL():
             if bvalid:
                 sHosterUrl = shost
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if oHoster != False:
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -625,7 +626,7 @@ def Hoster_shortn(url, refer):
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         token = aResult[0]
-        data = '_token=' + token 
+        data = '_token=' + token
         oRequestHandler = cRequestHandler(url)
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('Referer', url)
