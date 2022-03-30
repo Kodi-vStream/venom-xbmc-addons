@@ -7,13 +7,13 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 
 SITE_IDENTIFIER = 'skyanimes'
 SITE_NAME = 'Sky-Animes'
 SITE_DESC = 'Animés, Dramas en Direct Download'
 
-URL_MAIN = 'http://www.sky-animes.com/'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 STREAM = 'index.php?file=Media&nuked_nude=index&op=do_dl&dl_id='
 
@@ -74,7 +74,7 @@ def showMenuDramas():
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, DRAMA_GENRES[1], 'Dramas (Genres)', 'genres.png', oOutputParameterHandler)
 
-    # contenu à controler
+    # contenu à contrôler
     # oOutputParameterHandler.addParameter('siteUrl', ANIM_OAVS[0])
     # oGui.addDir(SITE_IDENTIFIER, ANIM_OAVS[1], 'Dramas (OAVS)', 'dramas.png', oOutputParameterHandler)
 
@@ -104,10 +104,10 @@ def showGenresA():
     sPattern = '<a href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = URL_MAIN + aEntry[0]
@@ -135,10 +135,10 @@ def showGenresD():
     sPattern = '<a href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = URL_MAIN + aEntry[0]
@@ -157,7 +157,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         sUrl = sUrl + sSearchText.replace(' ', '+')
         showEpisode(sUrl)
         oGui.setEndOfDirectory()
@@ -178,10 +178,10 @@ def showSeries():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME, large=(total>50))
         oOutputParameterHandler = cOutputParameterHandler()
@@ -233,10 +233,10 @@ def showEpisode(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -248,8 +248,8 @@ def showEpisode(sSearch=''):
             if sSearch:
                 sTitle = aEntry[1]
                 sTitle, sTitle1 = sTitle.replace('1080p', '').replace('BD', '').replace('V2', '').replace('FIN', '')\
-                                       .replace('Fin', '').replace('fin', '').replace('OAV', '').replace('Bluray', '')\
-                                       .replace('Blu-Ray', '').rstrip().rsplit(' ', 1)
+                                        .replace('Fin', '').replace('fin', '').replace('OAV', '').replace('Bluray', '')\
+                                        .replace('Blu-Ray', '').rstrip().rsplit(' ', 1)
                 sTitle = 'E' + sTitle1 + ' ' + sTitle
                 sUrl2 = URL_MAIN + STREAM + aEntry[0]
                 sThumb = ''
@@ -282,7 +282,7 @@ def showHosters():
         sThumb = sThumb.replace(' ', '%20')
     oHoster = cHosterGui().checkHoster('m3u8')
 
-    if (oHoster != False):
+    if oHoster != False:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sUrl, sThumb)
