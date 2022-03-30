@@ -14,7 +14,7 @@ except ImportError:  # Python 3
     from urllib.error import URLError as UrlError
     from urllib.parse import urlencode
 
-from resources.lib.comaddon import progress, dialog, addon, isMatrix
+from resources.lib.comaddon import progress, dialog, addon, isMatrix, siteManager
 from resources.lib.config import GestionCookie
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
@@ -28,7 +28,7 @@ from resources.lib.util import Quote
 SITE_IDENTIFIER = 'siteuptobox'
 SITE_NAME = '[COLOR dodgerblue]Compte UpToBox[/COLOR]'
 SITE_DESC = 'Fichiers sur compte UpToBox'
-URL_MAIN = 'https://uptobox.com/'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 BURL = URL_MAIN + '?op=my_files'
 API_URL = 'https://uptobox.com/api/user/files?token=none&orderBy=file_created&dir=desc&offset=0&limit=100&path='
 
@@ -47,7 +47,7 @@ def load():
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
         oGui.addDir(SITE_IDENTIFIER, 'opensetting', addons.VSlang(30023), 'none.png', oOutputParameterHandler)
     else:
-        if (GestionCookie().Readcookie('uptobox') != ''):
+        if GestionCookie().Readcookie('uptobox') != '':
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -58,7 +58,7 @@ def load():
 
         else:
             Connection = oPremiumHandler.Authentificate()
-            if (Connection == False):
+            if Connection is False:
                 dialog().VSinfo('Connexion refusée')
                 return
 
@@ -79,7 +79,7 @@ def opensetting():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         sUrlSearch = '&searchField=file_name&search=' + sSearchText
         showFile(sUrlSearch)
 
@@ -93,25 +93,25 @@ def showFile(sSearch=''):
     oParser = cParser()
 
     sOffset = 0
-    if (oInputParameterHandler.exist('sOffset')):
+    if oInputParameterHandler.exist('sOffset'):
         sOffset = int(oInputParameterHandler.getValue('sOffset'))
 
     sNext = 0
-    if (oInputParameterHandler.exist('sNext')):
+    if oInputParameterHandler.exist('sNext'):
         sNext = int(oInputParameterHandler.getValue('sNext'))
 
     sToken = ''
-    if (oInputParameterHandler.exist('sToken')):
+    if oInputParameterHandler.exist('sToken'):
         sToken = oInputParameterHandler.getValue('sToken')
 
     sFoldername = ''
-    if (oInputParameterHandler.exist('sFoldername')):
+    if oInputParameterHandler.exist('sFoldername'):
         sFoldername = oInputParameterHandler.getValue('sFoldername')
         sUrl = sUrl + Quote(sFoldername).replace('//', '%2F%2F')
         # VSlog('folder   ' + str(sUrl))
 
     sPath = ''
-    if (oInputParameterHandler.exist('sPath')):
+    if oInputParameterHandler.exist('sPath'):
         sPath = oInputParameterHandler.getValue('sPath')
         sUrl = sUrl + Quote(sPath).replace('//', '%2F%2F')
         # VSlog('sPath   ' + str(sUrl))
@@ -126,7 +126,7 @@ def showFile(sSearch=''):
             sHtmlContent = oPremiumHandler.GetHtml(BURL)
             sPattern = 'token":"(.+?)",'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
+            if aResult[0] is True:
                 sToken = aResult[1][0]
 
             if sSearch:
@@ -158,7 +158,7 @@ def showFile(sSearch=''):
                     sHosterUrl = URL_MAIN + file['file_code']
 
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    if (oHoster != False):
+                    if oHoster != False:
                         oHoster.setDisplayName(sTitle)
                         oHoster.setFileName(sTitle)
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
@@ -210,10 +210,10 @@ def getpath(content):
 
 
 def AddmyAccount():
-    UptomyAccount()
+    upToMyAccount()
 
 
-def UptomyAccount():
+def upToMyAccount():
     addons = addon()
 
     if (addons.getSetting('hoster_uptobox_username') == '') and (addons.getSetting('hoster_uptobox_password') == ''):
@@ -227,7 +227,7 @@ def UptomyAccount():
     cookies = GestionCookie().Readcookie('uptobox')
 
     aResult = re.search('<form id="fileupload" action="([^"]+)"', sHtmlContent, re.DOTALL)
-    if (aResult):
+    if aResult:
         upUrl = aResult.group(1).replace('upload?', 'remote?')
 
         if upUrl.startswith('//'):
@@ -244,7 +244,7 @@ def UptomyAccount():
         req.add_header('Cookie', cookies)
         req.add_header('Content-Length', len(mpartdata[1]))
 
-        # penible ce dialog auth
+        # pénible ce dialog auth
         xbmc.executebuiltin('Dialog.Close(all,true)')
         xbmcgui.Dialog().notification('Requête envoyée', 'vous pouvez faire autre chose', xbmcgui.NOTIFICATION_INFO, 4000, False)
 
@@ -259,7 +259,7 @@ def UptomyAccount():
         sPattern = '{"id":.+?,(?:"size":|"progress":)([0-9]+)'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if aResult[0] is True:
             total = aResult[1][0]
             del aResult[1][0]
 
@@ -276,10 +276,10 @@ def UptomyAccount():
             dialog.close()
 
         else:
-            # penible ce dialog auth
+            # pénible ce dialog auth
             xbmc.executebuiltin('Dialog.Close(all,true)')
             xbmcgui.Dialog().notification('Info upload', 'Fichier introuvable', xbmcgui.NOTIFICATION_INFO, 2000, False)
     else:
-        # penible ce dialog auth
+        # pénible ce dialog auth
         xbmc.executebuiltin('Dialog.Close(all,true)')
         xbmcgui.Dialog().notification('Info upload', 'Erreur pattern', xbmcgui.NOTIFICATION_ERROR, 2000, False)
