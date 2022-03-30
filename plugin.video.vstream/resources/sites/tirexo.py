@@ -1,19 +1,15 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# import random
-# import time
-# import xbmc
 import re
 import requests
 
-from resources.lib.comaddon import progress, dialog
+from resources.lib.comaddon import progress, dialog, siteManager
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-# from resources.lib.config import GestionCookie
 from resources.lib.util import cUtil
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
@@ -23,7 +19,7 @@ SITE_NAME = '[COLOR violet]Tirexo[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
 
 # Teste pour le moment avec une url fixe.
-URL_MAIN = "https://www2.tirexo.art/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=1&result_from=1&story=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&catlist=15&story=', 'showMovies')
@@ -530,22 +526,21 @@ def showMoviesLinks():
             sHost = aEntry[0]
             aResult = oParser.parse(aEntry[1], sPattern)
             if aResult[0] is True:
-                for aEntry in aResult[1]:
-                    sUrl2 = URL_MAIN[:-1] + aEntry
-                    sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
+                sUrl2 = URL_MAIN[:-1] + aEntry
+                sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
             
-                    oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-                    oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                    oOutputParameterHandler.addParameter('sThumb', sThumb)
-                    oOutputParameterHandler.addParameter('sDesc', sDesc)
-                    oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oOutputParameterHandler.addParameter('sDesc', sDesc)
+                oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
     
     # lien STREAMING
     sPattern = 'rel=.nofollow. class=.download. href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0] is True:
         sUrl2 = URL_MAIN[:-1] + aResult[1][0]
-        sDisplayTitle = ('%s [Streaming]') % (sMovieTitle)
+        sDisplayTitle = ('%s [Streaming]') % sMovieTitle
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -770,7 +765,6 @@ def showSeriesHosters():
 
 def Display_protected_link():
     oGui = cGui()
-    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl').replace('\\', '').replace('"', '')
