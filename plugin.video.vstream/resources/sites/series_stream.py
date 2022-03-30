@@ -2,7 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
 
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'series_stream'
 SITE_NAME = 'Séries Stream'
 SITE_DESC = 'Voir une panoplie de séries en streaming VF et VOSTFR avec qualité full HD et en illimité.'
 
-URL_MAIN = 'https://wwv.series-stream.cc/'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 SERIE_SERIES = (True, 'load')
 SERIE_NEWS = (URL_MAIN + 'series.html', 'showSeries')
@@ -52,7 +52,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         showSeries(URL_SEARCH[0] + sSearchText)
         oGui.setEndOfDirectory()
         return
@@ -121,10 +121,10 @@ def showSeries(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -145,7 +145,7 @@ def showSeries(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showSeries', 'Page ' + sPaging, oOutputParameterHandler)
@@ -157,7 +157,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '>([0-9]+)</a></div>.+?next"><a href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sNumberMax = aResult[1][0][0]
         sNextPage = URL_MAIN[:-1] + aResult[1][0][1]
         sNumberNext = re.search('-([0-9]+)', sNextPage).group(1)
@@ -190,7 +190,7 @@ def showSaisons():
     sPattern = 'short-images radius-3".+?href="([^"]+)".+?<img src="([^"]+)".+?<figcaption>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -222,10 +222,10 @@ def showEpisodes():
     sPattern = 'class="saision_LI2">\s*<a href="([^"]+)">\s*<span>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = URL_MAIN[:-1] + aEntry[0]
@@ -254,10 +254,10 @@ def showLinks():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -299,7 +299,7 @@ def showHosters():
     sHosterUrl = oRequestHandler.getRealUrl()
     oHoster = cHosterGui().checkHoster(sHosterUrl)
 
-    if (oHoster != False):
+    if oHoster != False:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
