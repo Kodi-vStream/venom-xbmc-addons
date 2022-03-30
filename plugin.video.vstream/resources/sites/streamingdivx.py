@@ -54,7 +54,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -145,10 +145,9 @@ def showMovies(sSearch=''):
 
     if not sSearch:  # une seule page par recherche
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            number = re.search('page-([0-9]+)', sNextPage).group(1)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
@@ -158,7 +157,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = ">([^<]+)</a></div></div><div class=\"col-lg-1 col-sm-2 col-xs-2 pages-next\"><a href=['\"]([^'\"]+)"
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page-([0-9]+)', sNextPage).group(1)
@@ -193,7 +192,7 @@ def showSaisons():
     sPattern = '<div class="short-images.+?<a href="([^"]+)" class="short-images.+?<img src="([^"]+)" alt="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in reversed(aResult[1]):
 
@@ -235,7 +234,7 @@ def showEpisodes():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in reversed(aResult[1]):
 
@@ -283,7 +282,7 @@ def showLinks():
 
     aResult = oParser.parse(sHtmlContent, sPattern2)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -334,7 +333,7 @@ def showHosters():
         sHosterUrl = oParser.parse(sHtmlContent, sPattern2)[1][0]
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if (oHoster != False):
+    if oHoster != False:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
