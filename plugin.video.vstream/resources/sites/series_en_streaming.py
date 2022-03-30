@@ -22,7 +22,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, dialog
+from resources.lib.comaddon import progress, dialog, siteManager
 from resources.lib.util import cUtil
 
 
@@ -30,7 +30,7 @@ SITE_IDENTIFIER = 'series_en_streaming'
 SITE_NAME = 'Series-en-Streaming'
 SITE_DESC = 'Séries & Animés en Streaming'
 
-URL_MAIN = "https://ww1.series-en-streaming.xyz/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 SERIE_SERIES = ('http://', 'load')
 SERIE_NEWS = (URL_MAIN + 'category/series/?orderby=date', 'showMovies')
@@ -62,7 +62,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         showMovies(URL_SEARCH[0] + sSearchText)
         oGui.setEndOfDirectory()
         return
@@ -140,7 +140,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -152,7 +152,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '>([^<]+)</a></div><span class="son bg"><a href="([^"]+)" *>Suivante'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('/page/([0-9]+)', sNextPage).group(1)
@@ -187,7 +187,7 @@ def ShowEpisode():
     sPattern = '<a href="([^"]+)" class="post-page-numbers".+?<span>([^<>]+)</span></a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -218,7 +218,7 @@ def showLinks():
     aResult = oParser.parse(sHtmlContent, sPattern)
     sLang = ''
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
@@ -253,7 +253,7 @@ def showHosters():
     sHosterUrl = protectStreamByPass(sUrl)
     oHoster = cHosterGui().checkHoster(sHosterUrl)
 
-    if (oHoster != False):
+    if oHoster != False:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -263,7 +263,7 @@ def showHosters():
 
 def protectStreamByPass(url):
 
-    # lien commencant par VID_
+    # lien commençant par VID_
     Codedurl = url
     oRequestHandler = cRequestHandler(Codedurl)
     sHtmlContent = oRequestHandler.request()
@@ -272,7 +272,7 @@ def protectStreamByPass(url):
     sPattern = 'var k=\"([^<>\"]*?)\";'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         postdata = 'k=' + aResult[1][0]
 
         dialog().VSinfo('Décodage en cours', "Patientez", 5)
@@ -299,13 +299,13 @@ def protectStreamByPass(url):
         # recherche du lien embed
         sPattern = '<iframe src=["\']([^<>"\']+?)["\']'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if aResult[0] is True:
             return aResult[1][0]
 
         # recherche d'un lien redirigé
         sPattern = '<a class=.button. href=["\']([^<>"\']+?)["\'] target=._blank.>'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if aResult[0] is True:
             return aResult[1][0]
 
     return ''
