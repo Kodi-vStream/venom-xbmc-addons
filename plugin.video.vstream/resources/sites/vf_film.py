@@ -8,14 +8,14 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'vf_film'
 SITE_NAME = 'VF Film'
 SITE_DESC = 'Regarder tous vos films streaming complets, gratuit et illimité'
 
-URL_MAIN = "https://vf-film.co/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH = (URL_MAIN + '?s=', FUNCTION_SEARCH)
@@ -73,7 +73,7 @@ def showGenres():
     sPattern = '<li class="cat-item cat-item.+?"><a href="([^<]+)">([^<]+)</a>([^<]+)</li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -125,10 +125,10 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -163,7 +163,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -175,7 +175,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '>([^<]+)</a><a class="next page-numbers" href="([^"]+)">Next'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page/([0-9]+)', sNextPage).group(1)
@@ -211,7 +211,7 @@ def showHoster():
                 for aEntry1 in aResult[1]:
                     sHosterUrl = aEntry1
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    if (oHoster != False):
+                    if oHoster != False:
                         oHoster.setDisplayName(sMovieTitle)
                         oHoster.setFileName(sMovieTitle)
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
