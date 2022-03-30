@@ -66,7 +66,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
         sUrl = sUrl + Quote(sSearchText)
@@ -86,11 +86,10 @@ def showAlpha():
     for i in range(-1, 27):
         progress_.VSupdate(progress_, 36)
 
-
-        if (i == -1):
+        if i == -1:
             sTitle = 'ALL'
             oOutputParameterHandler.addParameter('siteUrl', sUrl.replace('?start=', ''))
-        elif (i == 0):
+        elif i == 0:
             sTitle = '#'
             oOutputParameterHandler.addParameter('siteUrl', sUrl + 'non-char')
         else:
@@ -169,10 +168,10 @@ def showAnimes(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -211,7 +210,7 @@ def showAnimes(sSearch=''):
 
     if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.findall('([0-9]+)', sNextPage)[-1]
@@ -224,7 +223,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<a class="nextpostslink".+?href="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         return aResult[1][0]
 
     return False
@@ -249,10 +248,10 @@ def showEpisodes():
     sPattern = '<li class="wp-manga-chapter.+?="([^"]+)".+?([^<]+)'  # Recup lien + titre
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
 
         # Dernier épisode
@@ -312,7 +311,7 @@ def showLinks():
 
     aResult = oParser.parse(sData, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -395,12 +394,12 @@ def getHost():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
 
         for aEntry in aResult[1]:
             sHosterUrl = aEntry.replace('\\', '').replace('\\/', '/')
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
