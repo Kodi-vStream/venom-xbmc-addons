@@ -935,7 +935,6 @@ def showMenuTvShows():
 
 def showMenuMangas():
     oGui = cGui()
-    # addons = addon()
     sUrl = URL_MAIN + '&numPage=1'
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -969,7 +968,6 @@ def showMenuMangas():
 
 def showMenuMisc():
     oGui = cGui()
-    # addons = addon()
     sUrl = URL_MAIN + '&numPage=1'
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -2497,12 +2495,14 @@ def getHosterList(siteUrl):
                 for link in listLinks:
                     if idxResMovie < len(listResMovie):
                         resMovie = listResMovie[idxResMovie]
+                        if resMovie and resMovie in '540P576P480P360P':
+                            resMovie = 'SD'
                     else:
                         resMovie = ''
                     idxResMovie += 1
 
                     # On vérifie la résolution attendue si pas uptostream
-                    if sRes and sRes in resMovie:
+                    if sRes and sRes not in resMovie:
                         if pbContent.getUptoStream() == 2:
                             continue
 
@@ -2512,8 +2512,12 @@ def getHosterList(siteUrl):
                             lang = ''
                         else:
                             lang = str(lang) if lang != 'ori' else ''
-                        if res != 'ori':
+                        if res and res != 'ori': 
                             res = str(res)
+                            if res in '540P576P480P360P':
+                                res = 'SD'
+                            elif res.isdigit():
+                                res += 'P'
                         else:
                             res = resMovie
                             if 'Multi' in res and not lang:
@@ -2531,8 +2535,6 @@ def getHosterList(siteUrl):
                             linkToAdd = True
 
                         if linkToAdd:
-                            if res.isdigit():
-                                res += 'P'
                             hoster = listRes.get(res)
                             if not hoster:
                                 listRes[res] = ([[url, lang]])
