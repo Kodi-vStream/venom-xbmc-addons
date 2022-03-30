@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# Venom.mino60.TmpName
 
 import re
 import unicodedata
@@ -29,6 +28,7 @@ FANART_URL = 'https://ia.media-.imdb.com/images/m/'
 MOVIE_WORLD = (URL_MAIN + 'search/title?groups=top_1000&sort=user_rating,desc&start=1', 'showMovies')
 MOVIE_TOP250 = (URL_MAIN + 'search/title?count=100&groups=top_250', 'showMovies')
 MOVIE_ANNEES = (True, 'showMovieYears')
+
 
 def unescape(text):
     try:  # python 2
@@ -72,6 +72,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
+
 def showMovieYears():
     oGui = cGui()
 
@@ -84,6 +85,7 @@ def showMovieYears():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', str(i), 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
 
 def showMovies(sSearch=''):
     oGui = cGui()
@@ -105,7 +107,7 @@ def showMovies(sSearch=''):
     sPattern = 'img alt="([^"]+).+?loadlate="([^"]+).+?primary">([^<]+).+?unbold">([^<]+).+?(?:|rated this(.+?)\s.+?)muted">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -133,7 +135,7 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Suivant', oOutputParameterHandler)
@@ -147,7 +149,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = 'href="([^"]+?)"class="lister-page-next'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sUrl = ('%s/%s') % (URL_MAIN, aResult[1][0])
         return sUrl
 
@@ -157,14 +159,14 @@ def __checkForNextPage(sHtmlContent):
 def showTitle(sMovieTitle, sUrl):
 
     sExtraTitle = ''
-    # si c'est une serie
+    # si c'est une série
     if sUrl != 'none':
         sExtraTitle = sUrl.split('|')[1]
         sMovieTitle = sUrl.split('|')[0]
 
     try:
-        # ancien decodage
-        sMovieTitle = unicode(sMovieTitle, 'utf-8')  # converti en unicode pour aider aux convertions
+        # ancien décodage
+        sMovieTitle = unicode(sMovieTitle, 'utf-8')  # converti en unicode pour aider aux conversions
         sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'ignore').decode("unicode_escape")  # vire accent et '\'
         sMovieTitle = sMovieTitle.encode("utf-8").lower()  # on repasse en utf-8
     except:
