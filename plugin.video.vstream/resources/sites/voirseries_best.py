@@ -384,7 +384,7 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'data-url=([^"]+).+?langue ([^"]+)'
+    sPattern = 'data-url=([^ ]+).+?langue ([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
