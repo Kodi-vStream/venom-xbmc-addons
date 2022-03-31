@@ -1,13 +1,12 @@
-#coding: utf-8
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# coding: utf-8
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-# from resources.lib.comaddon import dialog
 from resources.lib.packer import cPacker
 
-class cHoster(iHoster):
 
+class cHoster(iHoster):
     def __init__(self):
         iHoster.__init__(self, 'mixdrop', 'Mixdrop')
 
@@ -16,7 +15,7 @@ class cHoster(iHoster):
 
     def setUrl(self, url):
         self._url = str(url)
-        self._url = self._url.replace("/f/","/e/")
+        self._url = self._url.replace("/f/", "/e/")
 
     def _getMediaLinkForGuest(self):
         api_call = ''
@@ -28,7 +27,7 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>'
-        aResult = oParser.parse(sHtmlContent,sPattern)
+        aResult = oParser.parse(sHtmlContent, sPattern)
 
         if aResult[0] is True:
             sHtmlContent = cPacker().unpack(aResult[1][0])
@@ -37,18 +36,6 @@ class cHoster(iHoster):
             aResult = oParser.parse(sHtmlContent, sPattern)
             if aResult[0] is True:
                 api_call = aResult[1][0]
-
-            #else:
-                #sPattern = 'vsrc\d+="([^"]+)"'
-                #aResult = oParser.parse(sHtmlContent, sPattern)
-                #if aResult[0] is True:
-                #    api_call = aResult[1][0]
-
-                #else:
-                #    sPattern = 'furl="([^"]+)"'
-                #    aResult = oParser.parse(sHtmlContent, sPattern)
-                #    if aResult[0] is True:
-                #        api_call = aResult[1][0]
 
             if api_call.startswith('//'):
                 api_call = 'https:' + aResult[1][0]
