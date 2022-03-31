@@ -393,7 +393,7 @@ def showHosters():
 
             sHosterUrl = aEntry[0]
             if sHosterUrl.startswith('/'):
-                sHosterUrl = 'https' + sHosterUrl
+                sHosterUrl = 'https:' + sHosterUrl
             sLang = aEntry[1].upper()
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
