@@ -393,7 +393,7 @@ def showMoviesLinks():
 
     if "onaregarde" in sUrl:
         oParser = cParser()
-        sPattern = '<a type="submit".+?href="([^"]+)"'
+        sPattern = 'type="submit".+?href="([^"]+)"'
         sUrl = oParser.parse(sHtmlContent, sPattern)[1][0]
 
         oRequestHandler = cRequestHandler(sUrl)
