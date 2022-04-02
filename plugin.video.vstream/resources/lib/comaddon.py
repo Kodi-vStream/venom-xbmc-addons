@@ -281,7 +281,11 @@ class progress:
 
         self.COUNT += 1
         iPercent = int(float(self.COUNT * 100) / total)
-        self.PROGRESS.update(iPercent, message = text + ' : ' + str(self.COUNT) + '/' + str(total))
+        text += ' : ' + str(self.COUNT) + '/' + str(total) + '\n'
+        if isinstance(self.PROGRESS, xbmcgui.DialogProgress):
+            self.PROGRESS.update(iPercent, text )
+        else:
+            self.PROGRESS.update(iPercent, message = text )
 
     def iscanceled(self):
         if isinstance(self.PROGRESS, xbmcgui.DialogProgress):
