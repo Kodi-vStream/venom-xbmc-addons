@@ -72,7 +72,8 @@ class cGui:
             oOutputParameterHandler.addParameter('sMeta', sMeta)
             oGuiElement.setMeta(sMeta)
 
-        # Si pas d'id TMDB on recupère le précédent
+        # Si pas d'id TMDB pour un episode, on recupère le précédent qui vient de la série
+        # if Type == 'episodes':
         if not oOutputParameterHandler.getValue('sTmdbId'):
             oInputParameterHandler = cInputParameterHandler()
             sTmdbID = oInputParameterHandler.getValue('sTmdbId')
@@ -375,8 +376,6 @@ class cGui:
                     data['cast'].append(xbmc.Actor(i['name'], i['character'], i['order'], i.get('thumbnail', "")))
                 else:
                     data['cast'].append((i['name'], i['character'], i['order'], i.get('thumbnail', "")))
-        else:
-            credits = None
 
         if not isNexus():
             # voir : https://kodi.wiki/view/InfoLabels
