@@ -526,7 +526,7 @@ def showMoviesLinks():
             sHost = aEntry[0]
             aResult = oParser.parse(aEntry[1], sPattern)
             if aResult[0] is True:
-                for aEntry in aResult[1]:  # laisser cette boucle
+                for aEntry in aResult[1]:  # Plusieurs liens pour le même host
                     sUrl2 = URL_MAIN[:-1] + aEntry
                     sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
@@ -540,15 +540,16 @@ def showMoviesLinks():
     sPattern = 'rel=.nofollow. class=.download. href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0] is True:
-        sUrl2 = URL_MAIN[:-1] + aResult[1][0]
-        sDisplayTitle = ('%s [Streaming]') % sMovieTitle
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-        oOutputParameterHandler.addParameter('sThumb', sThumb)
-        oOutputParameterHandler.addParameter('sDesc', sDesc)
-        oGui.addLink(SITE_IDENTIFIER, 'showHostersLink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+        for aEntry in aResult[1]:  # Plusieurs liens pour le même host
+            sUrl2 = URL_MAIN[:-1] + aEntry
+            sDisplayTitle = ('%s [Streaming]') % sMovieTitle
+    
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oGui.addLink(SITE_IDENTIFIER, 'showHostersLink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     # on regarde si dispo dans d'autres qualités
     sPattern = "value='(.+?)'.+?<b>(.+?)</b>.+?<b> \((.+?)\)"
