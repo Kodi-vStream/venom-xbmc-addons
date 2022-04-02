@@ -10,21 +10,21 @@ class cJDownloaderHandler:
     DIALOG = dialog()
 
     def sendToJDownloader(self, sUrl):
-        if (self.__checkConfig() == False):
+        if self.__checkConfig() is False:
             VSlog('Settings ueberpruefen (XBMC)')
             return False
 
-        if (self.__checkConnection() == False):
+        if self.__checkConnection() is False:
             VSlog('Verbindung fehlgeschlagen (JD aus?)')
             return False
 
         bDownload = self.__download(sUrl)
-        if (bDownload == True):
+        if bDownload is True:
             self.DIALOG.VSinfo('Link gesendet', 'JDownloader')
 
     def __checkConfig(self):
         bEnabled = self.ADDON.getSetting('jd_enabled')
-        if (bEnabled == 'true'):
+        if bEnabled == 'true':
             return True
         return False
 
@@ -36,13 +36,13 @@ class cJDownloaderHandler:
 
     def __getAutomaticStart(self):
         bAutomaticStart = self.ADDON.getSetting('jd_automatic_start')
-        if (bAutomaticStart == 'true'):
+        if bAutomaticStart == 'true':
             return True
         return False
 
     def __getLinkGrabber(self):
         bAutomaticStart = self.ADDON.getSetting('jd_grabber')
-        if (bAutomaticStart == 'true'):
+        if bAutomaticStart == 'true':
             return True
         return False
 
@@ -61,11 +61,11 @@ class cJDownloaderHandler:
 
     def __createJDUrl(self, sFileUrl, sHost, sPort, bAutomaticDownload, bLinkGrabber):
         sGrabber = '0'
-        if (bLinkGrabber == True):
+        if bLinkGrabber is True:
             sGrabber = '1'
 
         sAutomaticStart = '0'
-        if (bAutomaticDownload == True):
+        if bAutomaticDownload is True:
             sAutomaticStart = '1'
 
         sUrl = 'http://' + str(sHost) + ':' + str(sPort) + '/action/add/links/grabber' + str(sGrabber) + '/start' + str(sAutomaticStart) + '/' + sFileUrl
@@ -80,11 +80,8 @@ class cJDownloaderHandler:
 
         try:
             oRequestHandler = cRequestHandler(sLinkForJd)
-            sHtmlContent = oRequestHandler.request()
+            oRequestHandler.request()
             return True
         except Exception as e:
             return False
         return False
-
-
-

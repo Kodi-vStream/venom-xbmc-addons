@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.comaddon import addon, VSlog, VSPath, siteManager
+from resources.lib.comaddon import addon, VSlog, siteManager
 from resources.lib.db import cDb
 
 import sys
 import xbmcvfs
-import json
 
 
 class cRechercheHandler:

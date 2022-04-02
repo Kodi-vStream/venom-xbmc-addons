@@ -12,6 +12,11 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+*** 1.9.0***
+- Bandes annonces depuis Youtube
+- Recherche plus rapide avec suivi des sources
+- Navigation plus rapide
+
 *** 1.8.0***
 - Recherche plus rapide et des résultats plus pertinents
 - Amélioration de la fluidité dans la navigation des menus

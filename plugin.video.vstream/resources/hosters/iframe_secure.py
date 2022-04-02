@@ -1,68 +1,29 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+import re
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
+from resources.lib.packer import cPacker
 from resources.hosters.hoster import iHoster
-import re
+from resources.lib.gui.hoster import cHosterGui
 
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Iframe-Secure'
-        self.__sFileName = self.__sDisplayName
+        iHoster.__init__(self, 'iframe_secure', 'Iframe-Secure')
 
-    def getDisplayName(self):
-        return  self.__sDisplayName
+    def setUrl(self, url):
+        self._url = url.replace('http://www.iframe-secure.com/embed/', '')
+        self._url = self._url.replace('//iframe-secure.com/embed/', '')
+        self._url = 'http://www.iframe-secure.com/embed/iframe.php?u=%s' % self._url
 
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
-
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    def getFileName(self):
-        return self.__sFileName
-
-    def getPluginIdentifier(self):
-        return 'iframe_secure'
-
-    def isDownloadable(self):
-        return True
-
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return ''
-
-    def __getIdFromUrl(self):
-        return ''
-
-    def __modifyUrl(self, sUrl):
-        return ''
-
-    def setUrl(self, sUrl):
-        self.__sUrl = sUrl.replace('http://www.iframe-secure.com/embed/', '')
-        self.__sUrl = sUrl.replace('//iframe-secure.com/embed/', '')
-        self.__sUrl = 'http://www.iframe-secure.com/embed/iframe.php?u=%s' % self.__sUrl
-
-    def checkUrl(self, sUrl):
-        return True
-
-    def getUrl(self):
-        return self.__sUrl
-
-    def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self):
-
+    def _getMediaLinkForGuest(self):
         api_call = ''
 
-        oRequest = cRequestHandler(self.__sUrl)
+        oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
 
-        from resources.lib.packer import cPacker
         sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
         aResult = re.findall(sPattern, sHtmlContent)
 
@@ -76,10 +37,7 @@ class cHoster(iHoster):
                 sPattern = "replace\(.*'(.+?)'"
                 aResult = oParser.parse(sHtmlContent, sPattern)
 
-                if (aResult[0] == True):
-
-                    from resources.lib.gui.hoster import cHosterGui
-
+                if aResult[0] is True:
                     sHosterUrl = aResult[1][0]
 
                     if not sHosterUrl.startswith('http'):
@@ -90,7 +48,7 @@ class cHoster(iHoster):
                     oHoster.setUrl(sHosterUrl)
                     api_call = oHoster.getMediaLink()
 
-                    if (api_call[0] == True):
+                    if api_call[0] is True:
                         return True, api_call[1]
 
         return False, False

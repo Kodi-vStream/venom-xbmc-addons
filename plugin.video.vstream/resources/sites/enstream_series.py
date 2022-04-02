@@ -3,7 +3,7 @@
 # return False  # Sous Cloudflare 14/10/2021
 import re
 
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'enstream_series'
 SITE_NAME = 'Enstream (Séries)'
 SITE_DESC = 'EnStream.Cc est le coin des séries en français par excellence'
 
-URL_MAIN = "https://www.enstream.cam/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 URL_SEARCH = (URL_MAIN + 'recherche?q=', 'showSeries')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showSeries')
@@ -53,7 +53,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         showSeries(URL_SEARCH[0] + sSearchText)
         oGui.setEndOfDirectory()
         return
@@ -79,7 +79,6 @@ def showGenres():
 
 def showYears():
     oGui = cGui()
-
     oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(range(1997, 2022)):
         Year = str(i)
@@ -121,10 +120,10 @@ def showSeries(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -145,7 +144,7 @@ def showSeries(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showSeries', 'Page ' + sPaging, oOutputParameterHandler)
@@ -157,7 +156,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<span>\d+</span>\s*<a href="([^"]+).+?>([^<]+)</a>\s*</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sNextPage = URL_MAIN[:-1] + aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('page-([0-9]+)', sNextPage).group(1)
@@ -190,7 +189,7 @@ def showSaisons():
     sPattern = 'short-images radius-3".+?href="([^"]+)".+?<img src="([^"]+)".+?<figcaption>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -222,10 +221,10 @@ def showEpisodes():
     sPattern = '<div class="saision_LI2">\s*<a href="([^"]+)">\s*<span>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -255,10 +254,10 @@ def showHoster():
     sPattern = 'data-url="([^"]+).+?DIV_5.+?>([^<]+).+?src="/icon/([^"]+)_l.png'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -300,7 +299,7 @@ def showHostersLinks():
     sHosterUrl = oRequestHandler.getRealUrl()
     oHoster = cHosterGui().checkHoster(sHosterUrl)
 
-    if (oHoster != False):
+    if oHoster != False:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

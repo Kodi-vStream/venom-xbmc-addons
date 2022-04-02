@@ -3,19 +3,20 @@
 
 import re
 
+from resources.lib.comaddon import progress, siteManager
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress#, VSlog
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'zone_streaming'
 SITE_NAME = 'Zone Streaming'
 SITE_DESC = 'Médiathèque de chaînes officielles'
 
-URL_MAIN = "http://www.zone-streaming.fr/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 MOVIE_MOVIE = (URL_MAIN + 'category/films/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -75,7 +76,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -87,46 +88,46 @@ def showGenres():
 
     liste = []
 
-    # Categorie Longs métrages
-    liste.append(['[COLOR yellow]Longs métrages[/COLOR]', URL_MAIN + 'category/films/longs-metrages/'])
-    liste.append(['Action', URL_MAIN + 'category/films/longs-metrages/action-longs-metrages/'])
-    liste.append(['Animation', URL_MAIN + 'category/films/longs-metrages/animation-longs-metrages/'])
-    liste.append(['Aventure', URL_MAIN + 'category/films/longs-metrages/aventure-longs-metrages/'])
-    liste.append(['Cinématiques', URL_MAIN + 'category/films/longs-metrages/cinematiques-jeux-video-longs-metrages/'])
-    liste.append(['Comédie', URL_MAIN + 'category/films/longs-metrages/comedies-longs-metrages/'])
-    liste.append(['Documentaires', URL_MAIN + 'category/films/longs-metrages/documentaires/'])
-    liste.append(['Drame', URL_MAIN + 'category/films/longs-metrages/drame-longs-metrages/'])
-    liste.append(['Historique', URL_MAIN + 'category/films/longs-metrages/historique-longs-metrages/'])
-    liste.append(['Horreur', URL_MAIN + 'category/films/longs-metrages/horreur-longs-metrages/'])
-    liste.append(['Romance', URL_MAIN + 'category/films/longs-metrages/romance-longs-metrages/'])
-    liste.append(['Science fiction', URL_MAIN + 'category/films/longs-metrages/science-fiction-longs-metrages/'])
-    liste.append(['Thriller', URL_MAIN + 'category/films/longs-metrages/thriller-longs-metrages/'])
+    # Catégorie Longs métrages
+    liste.append(['[COLOR yellow]Longs métrages[/COLOR]', 'category/films/longs-metrages/'])
+    liste.append(['Action', 'category/films/longs-metrages/action-longs-metrages/'])
+    liste.append(['Animation', 'category/films/longs-metrages/animation-longs-metrages/'])
+    liste.append(['Aventure', 'category/films/longs-metrages/aventure-longs-metrages/'])
+    liste.append(['Cinématiques', 'category/films/longs-metrages/cinematiques-jeux-video-longs-metrages/'])
+    liste.append(['Comédie', 'category/films/longs-metrages/comedies-longs-metrages/'])
+    liste.append(['Documentaires', 'category/films/longs-metrages/documentaires/'])
+    liste.append(['Drame', 'category/films/longs-metrages/drame-longs-metrages/'])
+    liste.append(['Historique', 'category/films/longs-metrages/historique-longs-metrages/'])
+    liste.append(['Horreur', 'category/films/longs-metrages/horreur-longs-metrages/'])
+    liste.append(['Romance', 'category/films/longs-metrages/romance-longs-metrages/'])
+    liste.append(['Science fiction', 'category/films/longs-metrages/science-fiction-longs-metrages/'])
+    liste.append(['Thriller', 'category/films/longs-metrages/thriller-longs-metrages/'])
 
-    # Categorie Moyens métrages
-    liste.append(['[COLOR yellow]Moyens métrages[/COLOR]', URL_MAIN + 'category/films/moyens-metrages/'])
-    liste.append(['Aventure', URL_MAIN + 'category/films/moyens-metrages/aventure-moyens-metrages/'])
-    liste.append(['Comédie', URL_MAIN + 'category/films/moyens-metrages/comedie-moyens-metrages/'])
-    liste.append(['Documentaires', URL_MAIN + 'category/films/moyens-metrages/documentaire-moyens-metrages/'])
-    liste.append(['Horreur', URL_MAIN + 'category/films/moyens-metrages/horreur-moyens-metrages/'])
-    liste.append(['Thriller', URL_MAIN + 'category/films/moyens-metrages/thriller-moyens-metrages/'])
+    # Catégorie Moyens métrages
+    liste.append(['[COLOR yellow]Moyens métrages[/COLOR]', 'category/films/moyens-metrages/'])
+    liste.append(['Aventure', 'category/films/moyens-metrages/aventure-moyens-metrages/'])
+    liste.append(['Comédie', 'category/films/moyens-metrages/comedie-moyens-metrages/'])
+    liste.append(['Documentaires', 'category/films/moyens-metrages/documentaire-moyens-metrages/'])
+    liste.append(['Horreur', 'category/films/moyens-metrages/horreur-moyens-metrages/'])
+    liste.append(['Thriller', 'category/films/moyens-metrages/thriller-moyens-metrages/'])
 
-    # Categorie Courts métrages
-    liste.append(['[COLOR yellow]Courts métrages[/COLOR]', URL_MAIN + 'category/films/courts-metrages/'])
-    liste.append(['Action', URL_MAIN + 'category/films/courts-metrages/action-courts-metrages/'])
-    liste.append(['Aventure', URL_MAIN + 'category/films/courts-metrages/aventure-courts-metrages/'])
-    liste.append(['Comédie', URL_MAIN + 'category/films/courts-metrages/comedie-courts-metrages/'])
-    liste.append(['Documentaires', URL_MAIN + 'category/films/courts-metrages/documentaires-courts-metrages/'])
-    liste.append(['Drame', URL_MAIN + 'category/films/courts-metrages/drame-courts-metrages/'])
-    liste.append(['Fantastique', URL_MAIN + 'category/films/courts-metrages/fantastique-courts-metrages/'])
-    liste.append(['Guerre', URL_MAIN + 'category/films/courts-metrages/guerre-courts-metrages/'])
-    liste.append(['Horreur', URL_MAIN + 'category/films/courts-metrages/horreur-courts-metrages/'])
-    liste.append(['Science fiction', URL_MAIN + 'category/films/courts-metrages/science-fiction-courts-metrages/'])
-    liste.append(['Thriller', URL_MAIN + 'category/films/courts-metrages/thriller-courts-metrages/'])
+    # Catégorie Courts métrages
+    liste.append(['[COLOR yellow]Courts métrages[/COLOR]', 'category/films/courts-metrages/'])
+    liste.append(['Action', 'category/films/courts-metrages/action-courts-metrages/'])
+    liste.append(['Aventure', 'category/films/courts-metrages/aventure-courts-metrages/'])
+    liste.append(['Comédie', 'category/films/courts-metrages/comedie-courts-metrages/'])
+    liste.append(['Documentaires', 'category/films/courts-metrages/documentaires-courts-metrages/'])
+    liste.append(['Drame', 'category/films/courts-metrages/drame-courts-metrages/'])
+    liste.append(['Fantastique', 'category/films/courts-metrages/fantastique-courts-metrages/'])
+    liste.append(['Guerre', 'category/films/courts-metrages/guerre-courts-metrages/'])
+    liste.append(['Horreur', 'category/films/courts-metrages/horreur-courts-metrages/'])
+    liste.append(['Science fiction', 'category/films/courts-metrages/science-fiction-courts-metrages/'])
+    liste.append(['Thriller', 'category/films/courts-metrages/thriller-courts-metrages/'])
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
 
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -139,39 +140,39 @@ def showSeriesGenres():
 
     liste = []
 
-    # Categorie Series
-    liste.append(['[COLOR yellow]Séries[/COLOR]', URL_MAIN + 'category/seriesweb/'])
-    liste.append(['Action', URL_MAIN + 'category/seriesweb/action-series/'])
-    liste.append(['Animation', URL_MAIN + 'category/seriesweb/animation-series/'])
-    liste.append(['Aventure', URL_MAIN + 'category/seriesweb/aventure-series/'])
-    liste.append(['Comédie', URL_MAIN + 'category/seriesweb/comedie-series/'])
-    liste.append(['Documentaires', URL_MAIN + 'category/seriesweb/documentaires-series/'])
-    liste.append(['Drame', URL_MAIN + 'category/seriesweb/drame-series/'])
-    liste.append(['Fantastique', URL_MAIN + 'category/seriesweb/fantastique-series/'])
-    liste.append(['Manga', URL_MAIN + 'category/seriesweb/manga-series/'])
-    liste.append(['Romance', URL_MAIN + 'category/seriesweb/romance-series/'])
-    liste.append(['Science fiction', URL_MAIN + 'category/seriesweb/science-fiction-series/'])
-    liste.append(['Thriller', URL_MAIN + 'category/seriesweb/thriller-series/'])
+    # Catégorie Series
+    liste.append(['[COLOR yellow]Séries[/COLOR]', 'category/seriesweb/'])
+    liste.append(['Action', 'category/seriesweb/action-series/'])
+    liste.append(['Animation', 'category/seriesweb/animation-series/'])
+    liste.append(['Aventure', 'category/seriesweb/aventure-series/'])
+    liste.append(['Comédie', 'category/seriesweb/comedie-series/'])
+    liste.append(['Documentaires', 'category/seriesweb/documentaires-series/'])
+    liste.append(['Drame', 'category/seriesweb/drame-series/'])
+    liste.append(['Fantastique', 'category/seriesweb/fantastique-series/'])
+    liste.append(['Manga', 'category/seriesweb/manga-series/'])
+    liste.append(['Romance', 'category/seriesweb/romance-series/'])
+    liste.append(['Science fiction', 'category/seriesweb/science-fiction-series/'])
+    liste.append(['Thriller', 'category/seriesweb/thriller-series/'])
 
-    # Categorie Webseries
-    liste.append(['[COLOR yellow]WebSéries[/COLOR]', URL_MAIN + 'category/webseries/'])
-    liste.append(['Action', URL_MAIN + 'category/webseries/action-webseries/'])
-    liste.append(['Comédie', URL_MAIN + 'category/webseries/comedie-webseries/'])
-    liste.append(['Documentaires', URL_MAIN + 'category/webseries/documentaires-webseries/'])
-    liste.append(['Drame', URL_MAIN + 'category/webseries/drame-webseries/'])
-    liste.append(['Fantastique', URL_MAIN + 'category/webseries/fantastique-webseries/'])
-    liste.append(['Histoire', URL_MAIN + 'category/webseries/histoire-webseries/'])
-    liste.append(['Musical', URL_MAIN + 'category/webseries/musical-webseries/'])
-    liste.append(['Romance', URL_MAIN + 'category/webseries/romance-webseries/'])
-    liste.append(['Science fiction', URL_MAIN + 'category/webseries/science-fiction-webseries/'])
-    liste.append(['Social', URL_MAIN + 'category/webseries/social-webseries/'])
-    liste.append(['Sport', URL_MAIN + 'category/webseries/sport-webseries/'])
-    liste.append(['Thriller', URL_MAIN + 'category/webseries/thriller-webseries/'])
+    # Catégorie Webseries
+    liste.append(['[COLOR yellow]WebSéries[/COLOR]', 'category/webseries/'])
+    liste.append(['Action', 'category/webseries/action-webseries/'])
+    liste.append(['Comédie', 'category/webseries/comedie-webseries/'])
+    liste.append(['Documentaires', 'category/webseries/documentaires-webseries/'])
+    liste.append(['Drame', 'category/webseries/drame-webseries/'])
+    liste.append(['Fantastique', 'category/webseries/fantastique-webseries/'])
+    liste.append(['Histoire', 'category/webseries/histoire-webseries/'])
+    liste.append(['Musical', 'category/webseries/musical-webseries/'])
+    liste.append(['Romance', 'category/webseries/romance-webseries/'])
+    liste.append(['Science fiction', 'category/webseries/science-fiction-webseries/'])
+    liste.append(['Social', 'category/webseries/social-webseries/'])
+    liste.append(['Sport', 'category/webseries/sport-webseries/'])
+    liste.append(['Thriller', 'category/webseries/thriller-webseries/'])
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
 
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -181,29 +182,29 @@ def showReplayGenres():
     oGui = cGui()
 
     liste = []
-    # Categorie emission
-    liste.append(['[COLOR yellow]Emissions[/COLOR]', URL_MAIN + 'category/emissions/'])
-    liste.append(['Actualité', URL_MAIN + 'category/emissions/actualite-emissions/'])
-    liste.append(['Automobile', URL_MAIN + 'category/emissions/automobile-emissions/'])
-    liste.append(['Cuisine', URL_MAIN + 'category/emissions/cuisine-emissions/'])
-    liste.append(['Culture', URL_MAIN + 'category/emissions/culture-emissions/'])
-    liste.append(['Découverte', URL_MAIN + 'category/emissions/decouverte-emissions/'])
-    liste.append(['Histoire', URL_MAIN + 'category/emissions/histoire-emissions/'])
-    liste.append(['Investigation', URL_MAIN + 'category/emissions/investigation-emissions/'])
-    liste.append(['Jardinage', URL_MAIN + 'category/emissions/jardinage-emissions/'])
-    liste.append(['Société', URL_MAIN + 'category/emissions/societe-emissions/'])
-    liste.append(['Sport', URL_MAIN + 'category/emissions/sport-emissions/'])
-    liste.append(['Télé-réalité', URL_MAIN + 'category/emissions/tele-realite-emissions/'])
-    liste.append(['Voyage', URL_MAIN + 'category/emissions/voyage-emissions/'])
-    # Categorie spectacle
-    liste.append(['[COLOR yellow]Spectacles[/COLOR]', URL_MAIN + 'category/spectaclesweb/'])
-    liste.append(['Concerts', URL_MAIN + 'category/spectaclesweb/concerts/'])
-    liste.append(['Humour', URL_MAIN + 'category/spectaclesweb/humour-spectacles/'])
+    # Catégorie emission
+    liste.append(['[COLOR yellow]Emissions[/COLOR]', 'category/emissions/'])
+    liste.append(['Actualité', 'category/emissions/actualite-emissions/'])
+    liste.append(['Automobile', 'category/emissions/automobile-emissions/'])
+    liste.append(['Cuisine', 'category/emissions/cuisine-emissions/'])
+    liste.append(['Culture', 'category/emissions/culture-emissions/'])
+    liste.append(['Découverte', 'category/emissions/decouverte-emissions/'])
+    liste.append(['Histoire', 'category/emissions/histoire-emissions/'])
+    liste.append(['Investigation', 'category/emissions/investigation-emissions/'])
+    liste.append(['Jardinage', 'category/emissions/jardinage-emissions/'])
+    liste.append(['Société', 'category/emissions/societe-emissions/'])
+    liste.append(['Sport', 'category/emissions/sport-emissions/'])
+    liste.append(['Télé-réalité', 'category/emissions/tele-realite-emissions/'])
+    liste.append(['Voyage', 'category/emissions/voyage-emissions/'])
+    # Catégorie spectacle
+    liste.append(['[COLOR yellow]Spectacles[/COLOR]', 'category/spectaclesweb/'])
+    liste.append(['Concerts', 'category/spectaclesweb/concerts/'])
+    liste.append(['Humour', 'category/spectaclesweb/humour-spectacles/'])
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
 
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -212,6 +213,9 @@ def showReplayGenres():
 def showMovies(sSearch=''):
     oGui = cGui()
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -225,8 +229,7 @@ def showMovies(sSearch=''):
 
     if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
-
-    if aResult[0] is True:
+    else:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -241,6 +244,10 @@ def showMovies(sSearch=''):
             sTitle = aEntry[2]
             sDesc = aEntry[3].replace('&#46;', '.')
 
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
+            
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -251,7 +258,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -312,7 +319,7 @@ def showHosters():
                         sTitle = sTitle.replace('|', '-')
 
                         oHoster = cHosterGui().checkHoster(sHosterUrl)
-                        if (oHoster != False):
+                        if oHoster != False:
                             oHoster.setDisplayName(sTitle)
                             oHoster.setFileName(sTitle)
                             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -322,7 +329,7 @@ def showHosters():
                 link = link.replace('?rel=0', '')
                 sHosterUrl = watchUrl + link
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if oHoster != False:
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

@@ -9,13 +9,14 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'kstreamingfilm'
 SITE_NAME = 'K Streaming Film'
 SITE_DESC = 'Films en streaming français sur internet.'
 
-URL_MAIN = "https://kstreamingfilm.com/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 MOVIE_MOVIE = (True, 'load')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -39,10 +40,9 @@ def load():
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Années)', 'annees.png', oOutputParameterHandler)
-
 
     oGui.setEndOfDirectory()
 
@@ -51,7 +51,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -78,7 +78,8 @@ def showGenres():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-    
+
+
 def showYears():
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
@@ -87,11 +88,14 @@ def showYears():
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'release/' + sYear )
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
     oGui.setEndOfDirectory()
-  
+
 
 def showMovies(sSearch=''):
     oGui = cGui()
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -105,19 +109,14 @@ def showMovies(sSearch=''):
         sStart = 'Derniers films ajoutés'
         sEnd = 'Film streaming les plus populaires'
         sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
-    if 'release' in sUrl :
-        sPattern = 'center-icons".+?src="([^"]+)" alt="([^"]+).+?href="([^"]+).+?movie-release">([^<]*)'
-    else :
-        sPattern = 'center-icons".+?src="([^"]+)" alt="([^"]+).+?href="([^"]+).+?movie-release">([^<]*).+?(?:|story\'>([^<]+).+?)movie-cast'
 
     sPattern = 'center-icons".+?src="([^"]+)" alt="([^"]+).+?href="([^"]+).+?movie-release">([^<]*).+?(?:|story\'>([^<]+).+?)movie-cast'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
+    else:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -129,8 +128,13 @@ def showMovies(sSearch=''):
             sThumb = aEntry[0]
             sTitle = aEntry[1]
             sUrl = aEntry[2]
-            sYear = aEntry[3]
+            sYear = aEntry[3].replace(' ', '')
             sDesc = ''
+
+            if sSearch:     # Filtre de recherche
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue
+
             if 'Derniers films ajoutés' in sHtmlContent:
                 sDesc = aEntry[4]
             sDisplayTitle = sTitle + ' (' + sYear + ')'
@@ -147,7 +151,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -159,7 +163,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '>([^<]+)</a></div><div class="naviright"><a href="([^"]+?)">Suivant'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -185,7 +189,7 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         list_hoster = []
         for aEntry in aResult[1]:
 
@@ -196,7 +200,7 @@ def showHosters():
                 continue
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

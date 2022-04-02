@@ -8,6 +8,7 @@ import xbmc
 
 from datetime import datetime
 from resources.lib.comaddon import addon, VSlog, VSPath, isMatrix, siteManager
+from resources.lib.update import cUpdate
 
 
 if isMatrix():
@@ -18,6 +19,11 @@ if isMatrix():
 
 
 def service():
+    
+    # mise à jour des setting si nécessaire
+    cUpdate().getUpdateSetting()
+    
+    # gestion des enregistrements en cours
     ADDON = addon()
     recordIsActivate = ADDON.getSetting('enregistrement_activer')
     if recordIsActivate == 'false':

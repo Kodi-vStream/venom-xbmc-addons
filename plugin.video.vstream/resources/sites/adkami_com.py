@@ -8,12 +8,12 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, isMatrix
+from resources.lib.comaddon import progress, isMatrix, siteManager
 SITE_IDENTIFIER = 'adkami_com'
 SITE_NAME = 'ADKami'
 SITE_DESC = 'Bienvenue sur ADKami un site Animés, Mangas & Séries en streaming.'
 
-URL_MAIN = "https://www.adkami.com/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 ANIM_ANIMS = (True, 'showAnimMenu')
 ANIM_NEWS = (URL_MAIN + 'anime', 'showSeries')
@@ -268,11 +268,7 @@ def showSeries(sSearch=''):
     sHtmlContent = oRequestHandler.request()
 
     sPattern = 'data-original="([^"]+)".+?class="top">.+?<a href="([^"]+)">.+?<span class="title">([^<]+)'
-    # oParser = cParser()
-    # aResult = oParser.parse(sHtmlContent, sPattern)
     aResult = re.findall(sPattern, sHtmlContent, re.DOTALL)
-
-    
 
     if not aResult:
         oGui.addText(SITE_IDENTIFIER)
@@ -323,6 +319,7 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
+
 def showSaison():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -353,29 +350,22 @@ def showSaison():
 
     else:
         sPattern = '<li class="saison">.+?(\d+)<\/li>'
-
         aResult = oParser.parse(sHtmlContent, sPattern)
-        sSaison = ''
-        
         if aResult[0] is True:
             oOutputParameterHandler = cOutputParameterHandler()
             for aEntry in aResult[1]:
-                
+
                 sNumSaison = aEntry[0]
                 sSaison = 'Saison ' + aEntry[0]
                 sUrlSaison = sUrl + "?sNumSaison=" + sNumSaison
-                sDisplayTitle =  sMovieTitle + ' ' +  sSaison
-                sTitle = sMovieTitle 
-    
-    
-                
-    
+                sDisplayTitle = sMovieTitle + ' ' + sSaison
+                sTitle = sMovieTitle
+
                 oOutputParameterHandler.addParameter('siteUrl', sUrlSaison)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
-                #oOutputParameterHandler.addParameter('sLang', sLang)
-    
+
                 oGui.addSeason(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -389,15 +379,12 @@ def showEpisode():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
 
-    sUrl, sNumSaison  = sUrl.split('?sNumSaison=')
-    
+    sUrl, sNumSaison = sUrl.split('?sNumSaison=')
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    # info anime et serie
-    
-
     sPattern = 'line-height:200px;font-size:26px;text-align:center;">L.anime est licencié<.p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -409,14 +396,10 @@ def showEpisode():
         sEnd = '<div class="saison-container">'
         sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
         sPattern = '<a href="(https://www\.adkami\.com[^"]+)"[^<>]+>([^<]+)</a></li>'
-
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0] is True:
             oOutputParameterHandler = cOutputParameterHandler()
-            
             for aEntry in aResult[1]:
-                
-                
                 sUrl = aEntry[0]
                 sEpisode = aEntry[1]
                 Saison = 'Saison ' + sNumSaison
@@ -500,8 +483,6 @@ def decodex(x):
     missing_padding = len(x) % 4
     if missing_padding:
         x += '=' * (4 - missing_padding)
-
-    
 
     try:
         e = base64.b64decode(x)

@@ -4,7 +4,7 @@
 import json
 import re
 
-from resources.lib.comaddon import progress, VSlog, dialog, addon
+from resources.lib.comaddon import addon, dialog, progress, siteManager, VSlog
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -21,11 +21,10 @@ SITE_IDENTIFIER = 'extreme_down'
 SITE_NAME = '[COLOR violet]Extreme Down[/COLOR]'
 SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
-# Utiliser ce site pour retrouver le nom de domaine : 
+# Utiliser ce site pour retrouver le nom de domaine :
 # https://www.extreme-down.info/
 
-URL_MAIN = "https://www.extreme-down.plus/"
-
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 URL_SEARCH = (URL_MAIN + 'index.php?', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0] + 'do=search&subaction=search&titleonly=3&speedsearch=1&story=', 'showMovies')
@@ -116,7 +115,7 @@ def showMenuMovies():
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS2021[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS2021[1], 'Nouveauté 2021 HD', 'news.png', oOutputParameterHandler)
 
@@ -276,7 +275,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         sUrl += sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -434,7 +433,7 @@ def showMovies(sSearch=''):
         if sSearch:
             sPattern = 'name="nextlink" id="nextlink" onclick="javascript:list_submit\(([0-9]+)\); return\(false\)" href="#">Suivant'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
+            if aResult[0] is True:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', siteUrl)
                 oOutputParameterHandler.addParameter('misc', sMisc)
@@ -444,7 +443,7 @@ def showMovies(sSearch=''):
 
         else:
             sNextPage = __checkForNextPage(sHtmlContent)
-            if (sNextPage != False):
+            if sNextPage != False:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
                 oOutputParameterHandler.addParameter('misc', sMisc)
@@ -463,7 +462,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<a href="([^"]+)">Suivant &.+?</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         return aResult[1][0]
 
     return False
@@ -513,7 +512,7 @@ def showMoviesLinks():
     sPattern = '<a class="btn-other" href="([^<]+)">([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -565,7 +564,7 @@ def showSeriesLinks():
     # VSlog(aResult)
 
     sQual = ''
-    if (aResult[0]):
+    if aResult[0]:
         sQual = aResult[1][0][0].replace('"', '')
         if 'Saison' in sQual:  # N° de saison dans la qualite
             # * et non pas + car parfois "Saison integrale" pas de chiffre
@@ -587,7 +586,7 @@ def showSeriesLinks():
 
     aResult1 = oParser.parse(sHtmlContent1, sPattern1)
 
-    if (aResult1[0] == True):
+    if aResult1[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult1[1]:
             sUrl = aEntry[0]
@@ -605,7 +604,7 @@ def showSeriesLinks():
 
     aResult2 = oParser.parse(sHtmlContent2, sPattern2)
 
-    if (aResult2[0] == True):
+    if aResult2[0] is True:
         oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Autres saisons disponibles :[/COLOR]')
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -613,7 +612,7 @@ def showSeriesLinks():
 
             sUrl = aEntry[0]
             sTitle = sMovieTitle + ' ' + aEntry[1].replace('Saison ', 'S')
-            
+
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -663,10 +662,10 @@ def showLinks():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     # Il n'existe que des fichiers en parties, non fonctionnel
-    if (aResult[0] == False) and float(size) > 4.85:
+    if (aResult[0] is False) and float(size) > 4.85:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         if 'saison' in sUrl:
             aResult[1].insert(0, ('Episode 1', '', ''))
 
@@ -719,7 +718,7 @@ def showHosters():
         for sHosterUrl in HostURL:
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -771,12 +770,12 @@ def getHost():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
 
         for aEntry in aResult[1]:
             sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

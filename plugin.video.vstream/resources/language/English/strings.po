@@ -524,6 +524,14 @@ msgctxt "#30138"
 msgid "Sources"
 msgstr ""
 
+msgctxt "#30140"
+msgid "Loading"
+msgstr ""
+
+msgctxt "#30141"
+msgid "Loading infos"
+msgstr ""
+
 msgctxt "#30145"
 msgid "Download folder"
 msgstr ""
@@ -784,6 +792,10 @@ msgctxt "#30349"
 msgid "Show most monthly viewed"
 msgstr ""
 
+msgctxt "#30350"
+msgid "Replays"
+msgstr ""
+
 msgctxt "#30351"
 msgid "TV Shows"
 msgstr ""
@@ -865,7 +877,7 @@ msgid "Close"
 msgstr ""
 
 msgctxt "#30410"
-msgid "Interface"
+msgid "Misc"
 msgstr ""
 
 msgctxt "#30411"
@@ -929,7 +941,7 @@ msgid "Movies (Popular)"
 msgstr ""
 
 msgctxt "#30426"
-msgid "Movies (Theater)"
+msgid "Movies (News)"
 msgstr ""
 
 msgctxt "#30427"
@@ -945,7 +957,7 @@ msgid "TV Shows (Popular)"
 msgstr ""
 
 msgctxt "#30430"
-msgid "TV Shows (on TV)"
+msgid "TV Shows (On air)"
 msgstr ""
 
 msgctxt "#30431"
@@ -1100,6 +1112,10 @@ msgctxt "#30480"
 msgid "Small loading spinner"
 msgstr ""
 
+msgctxt "#30481"
+msgid "Interface"
+msgstr ""
+
 # upnext
 msgctxt "#30505"
 msgid "Would you like to automatically play the next episode?"
@@ -1157,3 +1173,11 @@ msgstr ""
 msgctxt "#31205"
 msgid "Display"
 msgstr ""
+
+msgctxt "#31208"
+msgid "Remaining sites: %s"
+msgstr ""
+
+msgctxt "#31209"
+msgid "Results: %s"
+msgstr "Results: [COLOR deepskyblue]%s[/COLOR]"

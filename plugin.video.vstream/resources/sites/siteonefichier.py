@@ -3,7 +3,7 @@
 import xbmc
 import xbmcgui
 
-from resources.lib.comaddon import progress, addon
+from resources.lib.comaddon import progress, addon, siteManager
 from resources.lib.config import GestionCookie
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'siteonefichier'
 SITE_NAME = '[COLOR %s]%s[/COLOR]' % ('dodgerblue', 'Compte1fichier')
 
 SITE_DESC = 'Fichiers sur compte 1Fichier'
-URL_MAIN = 'https://1fichier.com/'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 URL_FILE = URL_MAIN + 'console/files.pl'
 URL_REMOTE = URL_MAIN + 'console/remote.pl'
 URL_VERIF = URL_MAIN + 'check_links.pl?links[]='
@@ -34,13 +34,13 @@ def load():
         oGui.addDir(SITE_IDENTIFIER, 'opensetting', addons.VSlang(30023), 'none.png', oOutputParameterHandler)
         oGui.setEndOfDirectory()
     else:
-        if (GestionCookie().Readcookie('onefichier') != ''):
+        if GestionCookie().Readcookie('onefichier') != '':
             showFile(URL_FILE)
 
         else:
             oPremiumHandler = cPremiumHandler('onefichier')
             Connection = oPremiumHandler.Authentificate()
-            if (Connection == False):
+            if Connection is False:
                 oGui = cGui()
                 oGui.addText(SITE_IDENTIFIER, '[COLOR %s]%s[/COLOR]' % ('red', 'Connexion refusée'))
                 oGui.setEndOfDirectory()
@@ -57,7 +57,7 @@ def showFile(sFileTree=''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     # sUrl = oInputParameterHandler.getValue('siteUrl')
-    if (oInputParameterHandler.exist('siteUrl')):
+    if oInputParameterHandler.exist('siteUrl'):
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
     if sFileTree:
@@ -70,7 +70,7 @@ def showFile(sFileTree=''):
     oParser = cParser()
     sPattern = '((?:|directory")) *rel="([^"]+)"><div class="dF"><a href="#" onclick="return false">(.+?)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -109,12 +109,12 @@ def showHosters():
 
     sPattern = '<a href="([^"]+)">(.+?)</a></td>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sHosterUrl = aResult[1][0][0]
         sTitle = aResult[1][0][1]
 
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
+        if oHoster != False:
             oHoster.setDisplayName(sTitle)
             oHoster.setFileName(sTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
@@ -122,26 +122,26 @@ def showHosters():
     oGui.setEndOfDirectory()
 
 
-def UptomyAccount():
+def upToMyAccount():
     oInputParameterHandler = cInputParameterHandler()
     sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
 
     oPremiumHandler = cPremiumHandler('onefichier')
-    # verif du lien
+    # vérification du lien
     sHtmlContent = oPremiumHandler.GetHtml('%s' % (URL_VERIF + sMediaUrl))
-    if (sHtmlContent):
+    if sHtmlContent:
         sCheck = sHtmlContent.find('NOT FOUND')
         if sCheck != -1:
-            # penible ce dialog auth
+            # pénible ce dialog auth
             xbmc.executebuiltin('Dialog.Close(all,true)')
             xbmcgui.Dialog().notification('Info upload', 'Fichier introuvable', xbmcgui.NOTIFICATION_INFO, 2000, False)
 
         else:
-            # si liens ok >> requete
+            # si liens ok >> requête
             sHtmlContent = oPremiumHandler.GetHtml(URL_REMOTE, '%s%s%s' % ('links=', sMediaUrl, '&did=0'))
-            if (sHtmlContent):
+            if sHtmlContent:
                 sCheck = sHtmlContent.find('1 liens')
                 if sCheck != -1:
-                    # penible ce dialog auth
+                    # pénible ce dialog auth
                     xbmc.executebuiltin('Dialog.Close(all,true)')
                     xbmcgui.Dialog().notification('Info upload', 'Ajouter à votre compte', xbmcgui.NOTIFICATION_INFO, 2000, False)

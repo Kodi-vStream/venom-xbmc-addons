@@ -2,7 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
 
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -15,7 +15,8 @@ SITE_IDENTIFIER = 'illimitestreaming'
 SITE_NAME = 'Illimitestreaming'
 SITE_DESC = 'Regarder Les Films & Séries VF. VOSTFR .VO'
 
-URL_MAIN = 'https://www.illimitestreaming.co/'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
+# URL_MAIN = dans sites.json
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
@@ -104,10 +105,10 @@ def showGenres():
     sPattern = 'taxonomy.+?href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
     triAlpha = []
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sTitle = aEntry[1].capitalize()
@@ -169,12 +170,12 @@ def showYears():
 
     sPattern = 'href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    aResult[1].insert(1, ('https://www.illimitestreaming.co/release-year/2020/', '2020'))
+    aResult[1].insert(1, (URL_MAIN + 'release-year/2020/', '2020'))
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -198,11 +199,11 @@ def showSeriesYears():
 
     sPattern = 'href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    aResult[1].insert(1, ('https://www.illimitestreaming.co/release-year/2020/', '2020'))
-    if (aResult[0] == False):
+    aResult[1].insert(1, (URL_MAIN + 'release-year/2020/', '2020'))
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -221,7 +222,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         sUrl = sUrl + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -230,10 +231,13 @@ def showSearch():
 
 def showMovies(sSearch=''):
     oGui = cGui()
+    oUtil = cUtil()
 
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
-
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -250,13 +254,12 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
-        utils = cUtil()
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
@@ -268,7 +271,8 @@ def showMovies(sSearch=''):
                 sTitle = aEntry[1]
                 sThumb = aEntry[2]
                 sDesc = aEntry[3]
-
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
             elif 'movie' in sTypeYear:
                 sUrl = aEntry[0]
                 if '/series' in sUrl:
@@ -292,7 +296,7 @@ def showMovies(sSearch=''):
             sThumb = re.sub('/w\d+', '/w342', sThumb)
             try:
                 sDesc = unicode(sDesc, 'utf-8')  # converti en unicode
-                sDesc = utils.unescape(sDesc).encode('utf-8')    # retire les balises HTML
+                sDesc = oUtil.unescape(sDesc).encode('utf-8')    # retire les balises HTML
             except:
                 pass
 
@@ -310,7 +314,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies',  'Page ' + sPaging, oOutputParameterHandler)
@@ -322,7 +326,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<li class=\'active\'>.+?href=\'([^\']+).+?/(\d+)/\'>Dernière'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sNextPage = aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
@@ -330,12 +334,12 @@ def __checkForNextPage(sHtmlContent):
         return sNextPage, sPaging
 
     # for the tvshows and the last page of movies
-    sPattern = "class='active'><a class=''>\d+</a></li><li><a rel='nofollow' class='page larger' href='([^\']+).+?>(\d+)</a></li></ul"
+    sPattern = "class=''>\d+</a></li><li><a rel='nofollow' class='page larger' href='([^']+).+?>(\d+)</a></li></ul"
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sNextPage = aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
-        sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
+        sNumberNext = re.search('page/([0-9]+)', sNextPage).group(1)
         sPaging = sNumberNext + '/' + sNumberMax
         return sNextPage, sPaging
 
@@ -360,7 +364,7 @@ def showSxE():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sSaison = ''
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
@@ -397,7 +401,7 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
 
         tab = aResult[1]
         n = len(tab)//3
@@ -416,7 +420,7 @@ def showHosters():
                 sHosterUrl = sHosterUrl + "|Referer=" + URL_MAIN
         
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

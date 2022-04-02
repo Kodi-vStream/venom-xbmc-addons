@@ -7,8 +7,9 @@ import string
 import xbmcvfs
 import json
 import unicodedata
+import threading
 
-from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix, xbmc, xbmcgui
+from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix, xbmc
 from resources.lib.util import QuotePlus
 
 try:
@@ -17,6 +18,9 @@ try:
 except:
     from pysqlite2 import dbapi2 as sqlite
     VSlog('SQLITE 2 as DB engine for tmdb')
+
+#Gestion du multithread
+lock  = threading.Semaphore()
 
 
 class cTMDb:
@@ -75,9 +79,10 @@ class cTMDb:
 
         try:
             if not xbmcvfs.exists(self.CACHE):
-                self.db = sqlite.connect(self.REALCACHE)
+                self.db = sqlite.connect(self.REALCACHE, isolation_level=None)
                 self.db.row_factory = sqlite.Row
                 self.dbcur = self.db.cursor()
+                self.dbcur.execute('pragma journal_mode=wal')
                 self.__createdb()
                 return
         except:
@@ -85,9 +90,12 @@ class cTMDb:
             pass
 
         try:
-            self.db = sqlite.connect(self.REALCACHE)
+            # Optimisation des acces SqlLite -> Autocommit
+            # https://charlesleifer.com/blog/going-fast-with-sqlite-and-python/
+            self.db = sqlite.connect(self.REALCACHE, isolation_level=None)
             self.db.row_factory = sqlite.Row
             self.dbcur = self.db.cursor()
+            self.dbcur.execute('pragma journal_mode=wal')
         except:
             VSlog('Error: Unable to connect to %s' % self.REALCACHE)
             pass
@@ -97,8 +105,8 @@ class cTMDb:
             # Permets de detruire une table pour la recreer de zero.
             if dropTable != '':
                 self.dbcur.execute("DROP TABLE " + dropTable)
-                self.db.commit()
         except:
+            VSlog('Error: Unable to drop table %s' % dropTable)
             pass
 
         sql_create = "CREATE TABLE IF NOT EXISTS movie ("\
@@ -223,6 +231,7 @@ class cTMDb:
             self.dbcur.close()
             self.db.close()
         except:
+            VSlog('Unable to close database')
             pass
 
     def getToken(self):
@@ -545,7 +554,7 @@ class cTMDb:
             'media_type': meta.get('media_type', "") if media_type == "" else media_type,
             'rating': meta.get('s_vote_average', 0.0) if meta.get('s_vote_average') else meta.get('vote_average', 0.0),
             'votes': meta.get('s_vote_count', 0) if meta.get('s_vote_count') else meta.get('vote_count', 0),
-            'duration': (int(meta.get('episode_run_time', 0)[0]) if meta.get('episode_run_time', 0) else meta.get('runtime', 0))*60,
+            "duration": 0,
             'plot':  ''.join([meta.get(key, "") for key in ['s_overview', 'overview', 'biography'] if meta.get(key) != None]),
             'mpaa': meta.get('mpaa', ""),
             'premiered': meta.get('s_premiered', "") if meta.get('s_premiered') else meta.get('release_date', "") if meta.get('release_date') else meta.get('first_air_date', "") if meta.get('first_air_date') else meta.get('air_date', ""),
@@ -567,6 +576,15 @@ class cTMDb:
             'guest_stars': str(meta.get('guest_stars', [])),
             }
 
+
+        if 'episode_run_time' in meta and len(meta['episode_run_time']):
+            duration = meta.get('episode_run_time', 0)[0]
+        else:
+            duration = meta.get('runtime', 0)
+        if duration:
+            _meta['duration'] = duration * 60
+
+        
         try:
             if _meta['year'] == 0:
                 _meta['year'] = int(_meta['premiered'][:4])
@@ -725,9 +743,11 @@ class cTMDb:
     def _clean_title(self, title):
         # vire accent
         try:
-            title = unicode(title, 'utf-8')
+            bMatrix = isMatrix()
+            if not bMatrix:
+                title = unicode(title, 'utf-8')
             title = unicodedata.normalize('NFD', title).encode('ascii', 'ignore').decode('unicode_escape')
-            if not isMatrix():
+            if not bMatrix:
                 title = title.encode('utf-8')  # on repasse en utf-8
         except Exception as e:
             pass
@@ -785,10 +805,12 @@ class cTMDb:
         else:
             return None
 
+        matchedrow = None
         try:
             self.dbcur.execute(sql_select)
             matchedrow = self.dbcur.fetchone()
         except Exception as e:
+            VSlog('************* Error selecting from cache db: %s' % e, 4)
             if 'no such column' in str(e) or 'no column named' in str(e):
                 # Pour les series il faut reconstruire les deux tables.
                 if media_type == "tvshow":
@@ -798,12 +820,14 @@ class cTMDb:
                     self.__createdb(media_type)
                 VSlog('Table recreated')
 
-                # Deuxieme tentative
+            # Deuxieme tentative
+            try:
                 self.dbcur.execute(sql_select)
                 matchedrow = self.dbcur.fetchone()
-            else:
-                VSlog('************* Error selecting from cache db: %s' % e, 4)
-                return None
+                VSlog('************* Error fixed')
+            except Exception as e:
+                VSlog('************* Error 2: %s' % e, 4)
+                pass
 
         if matchedrow:
             # VSlog('Found meta information by name in cache table')
@@ -849,9 +873,7 @@ class cTMDb:
             sql = 'INSERT or IGNORE INTO movie (imdb_id, tmdb_id, title, year, cast, crew, writer, director, tagline, rating, votes, duration, ' \
                   'plot, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path) ' \
                   'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(meta['duration']), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path']))
-            self.db.commit()
-            # VSlog('SQL INSERT Successfully')
+            self._sqlExecute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(meta['duration']), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path']))
         except Exception as e:
             VSlog(str(e))
             if 'no such column' in str(e) or 'no column named' in str(e) or "no such table" in str(e):
@@ -859,8 +881,7 @@ class cTMDb:
                 VSlog('Table recreated')
 
                 # Deuxieme tentative
-                self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(meta['duration']), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path']))
-                self.db.commit()
+                self._sqlExecute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['tagline'], meta['rating'], meta['votes'], str(meta['duration']), meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path']))
             else:
                 VSlog('SQL ERROR INSERT into table movie')
             pass
@@ -880,8 +901,7 @@ class cTMDb:
             sql = 'INSERT or IGNORE INTO tvshow (imdb_id, tmdb_id, title, year, cast, crew, writer, director, rating, votes, duration, ' \
                   'plot, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path, nbseasons) ' \
                   'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-            self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['rating'], meta['votes'], meta['duration'], meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta['nbseasons']))
-            self.db.commit()
+            self._sqlExecute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['rating'], meta['votes'], meta['duration'], meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta['nbseasons']))
         except Exception as e:
             VSlog(str(e))
             if 'no such column' in str(e) or 'no column named' in str(e):
@@ -889,8 +909,7 @@ class cTMDb:
                 VSlog('Table recreated')
 
                 # Deuxieme tentative
-                self.dbcur.execute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['rating'], meta['votes'], meta['duration'], meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta['nbseasons']))
-                self.db.commit()
+                self._sqlExecute(sql, (meta['imdb_id'], meta['tmdb_id'], name, year, meta['cast'], meta['crew'], meta['writer'], meta['director'], meta['rating'], meta['votes'], meta['duration'], meta['plot'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], meta['nbseasons']))
             else:
                 VSlog('SQL ERROR INSERT into table tvshow')
             pass
@@ -932,8 +951,7 @@ class cTMDb:
         try:
             sql = 'INSERT or IGNORE INTO season (tmdb_id, season, year, premiered, poster_path, plot, episode) VALUES '\
                   '(?, ?, ?, ?, ?, ?, ?)'
-            self.dbcur.execute(sql, (meta['tmdb_id'], season, s_year, premiered, fanart, plot, meta.get('episode_count', 0)))
-            self.db.commit()
+            self._sqlExecute(sql, (meta['tmdb_id'], season, s_year, premiered, fanart, plot, meta.get('episode_count', 0)))
         except Exception as e:
             VSlog(str(e))
             if 'no such column' in str(e) or 'no column named' in str(e):
@@ -941,11 +959,13 @@ class cTMDb:
                 VSlog('Table recreated')
 
                 # Deuxieme tentative
-                self.dbcur.execute(sql, (meta['tmdb_id'], season, s_year, premiered, fanart, plot, meta.get('episode_count', 0)))
-                self.db.commit()
+                try:
+                    self._sqlExecute(sql, (meta['tmdb_id'], season, s_year, premiered, fanart, plot, meta.get('episode_count', 0)))
+                except Exception as e:
+                    VSlog(str(e))
             else:
                 VSlog('SQL ERROR INSERT into table season')
-            pass
+        
 
     # Cache pour les épisodes
     def _cache_save_episode(self, meta, name, season, episode):
@@ -953,8 +973,7 @@ class cTMDb:
             title = name + '_S' + season + 'E' + episode
             sql = 'INSERT or IGNORE INTO episode (tmdb_id, originaltitle, season, episode, year, title, premiered, poster_path, plot, rating, votes, director, writer, guest_stars, tagline) VALUES ' \
                   '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-            self.dbcur.execute(sql, (meta['tmdb_id'], title, season, episode, meta['year'], title, meta['premiered'], meta['poster_path'], meta['plot'], meta['rating'], meta['votes'], meta['director'], meta['writer'], ''.join(meta.get('guest_stars', "")), meta["tagline"]))
-            self.db.commit()
+            self._sqlExecute(sql, (meta['tmdb_id'], title, season, episode, meta['year'], title, meta['premiered'], meta['poster_path'], meta['plot'], meta['rating'], meta['votes'], meta['director'], meta['writer'], ''.join(meta.get('guest_stars', "")), meta["tagline"]))
         except Exception as e:
             VSlog(str(e))
             if 'no such column' in str(e) or 'no column named' in str(e):
@@ -962,19 +981,16 @@ class cTMDb:
                 VSlog('Table recreated')
 
                 # Deuxieme tentative
-                self.dbcur.execute(sql, (meta['tmdb_id'], title, season, episode, meta['year'], title, meta['premiered'], meta['poster_path'], meta['plot'], meta['rating'], meta['votes'], meta['director'], meta['writer'], ''.join(meta.get('guest_stars', "")), meta["tagline"]))
-                self.db.commit()
+                self._sqlExecute(sql, (meta['tmdb_id'], title, season, episode, meta['year'], title, meta['premiered'], meta['poster_path'], meta['plot'], meta['rating'], meta['votes'], meta['director'], meta['writer'], ''.join(meta.get('guest_stars', "")), meta["tagline"]))
             else:
                 VSlog('SQL ERROR INSERT into table episode')
-            pass
 
     # Cache pour les sagas
     def _cache_save_collection(self, meta, name):
         try:
             sql = 'INSERT or IGNORE INTO saga (tmdb_id, title, plot, genre, poster_path, backdrop_path) VALUES ' \
                   '(?, ?, ?, ?, ?, ?)'
-            self.dbcur.execute(sql, (meta['tmdb_id'], name, meta['plot'], meta['genre'], meta['poster_path'], meta["backdrop_path"]))
-            self.db.commit()
+            self._sqlExecute(sql, (meta['tmdb_id'], name, meta['plot'], meta['genre'], meta['poster_path'], meta["backdrop_path"]))
         except Exception as e:
             VSlog(str(e))
             if 'no such column' in str(e) or 'no column named' in str(e) or "no such table" in str(e):
@@ -982,8 +998,7 @@ class cTMDb:
                 VSlog('Table recreated')
 
                 # Deuxieme tentative
-                self.dbcur.execute(sql, (meta['tmdb_id'], name, meta['plot'], meta['genre'], meta['poster_path'], meta["backdrop_path"]))
-                self.db.commit()
+                self._sqlExecute(sql, (meta['tmdb_id'], name, meta['plot'], meta['genre'], meta['poster_path'], meta["backdrop_path"]))
             else:
                 VSlog('SQL ERROR INSERT into table saga')
             pass
@@ -1010,6 +1025,7 @@ class cTMDb:
 
         name = re.sub(" +", " ", name)  # nettoyage du titre
         name = name.replace('VF','').replace('VOSTFR','')
+        cleanTitle = None
         
         # VSlog('Attempting to retrieve meta data for %s: %s %s %s %s' % (media_type, name, year, imdb_id, tmdb_id))
 
@@ -1020,7 +1036,8 @@ class cTMDb:
                 if media_type in ("season", "tvshow", "anime", "episode"):
                     name = re.sub('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))(?:([^"]+)|)', '', name)
 
-            meta = self._cache_search(media_type, self._clean_title(name), tmdb_id, year, season, episode)
+            cleanTitle = self._clean_title(name)
+            meta = self._cache_search(media_type, cleanTitle, tmdb_id, year, season, episode)
 
             if meta:
                 return meta
@@ -1070,7 +1087,10 @@ class cTMDb:
         if meta and 'tmdb_id' in meta:
             meta = self._format(meta, name, media_type)
             # sauvegarde dans un cache
-            self._cache_save(meta, self._clean_title(name), media_type, season, episode, year)
+            if not cleanTitle:
+                cleanTitle = self._clean_title(name)
+
+            self._cache_save(meta, cleanTitle, media_type, season, episode, year)
         elif meta != False:   # initialise un meta vide
             meta = self._format(meta, name)
         else:
@@ -1099,6 +1119,17 @@ class cTMDb:
         data = oRequestHandler.request(jsonDecode=True)
 
         return data
+
+    # SqlExecute Thread Safe
+    def _sqlExecute(self, request, param = None):
+        try:
+            lock.acquire()
+            self.dbcur.execute(request, param)
+        except Exception as e:
+            raise
+        finally:
+            lock.release()
+
 
     # retourne la liste des genres en Texte, à partir des IDs
     def getGenresFromIDs(self, genresID):

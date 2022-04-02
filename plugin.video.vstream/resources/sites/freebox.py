@@ -3,7 +3,7 @@
 import re
 import string
 
-from resources.lib.comaddon import progress, addon, dialog
+from resources.lib.comaddon import progress, addon, dialog, siteManager
 from resources.lib.enregistrement import cEnregistremement
 from resources.lib.epg import cePg
 from resources.lib.gui.gui import cGui
@@ -19,7 +19,7 @@ SITE_IDENTIFIER = 'freebox'
 SITE_NAME = '[COLOR orange]Télévision Direct/Stream[/COLOR]'
 SITE_DESC = 'Regarder la télévision'
 
-URL_MAIN = 'http://mafreebox.freebox.fr/freeboxtv/playlist.m3u'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 URL_WEB = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/Beta/repo/resources/webtv2.m3u'
 URL_RADIO = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/repo/resources/radio.m3u'
 
@@ -70,7 +70,7 @@ def load():
 def showIptvSite():
     oGui = cGui()
 
-    liste = [['ChannelStream', 'channelstream'], ['Streamonsport', 'streamonsport']]
+    liste = [['leet365', 'leet365'], ['ChannelStream', 'channelstream'], ['Streamonsport', 'streamonsport']]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, fName in liste:
@@ -105,7 +105,7 @@ def parseM3U(sUrl=None):  # Traite les m3u local
             ValidEntry = True
             song = track(length, title, None, icon)
 
-        elif (len(line) != 0):
+        elif len(line) != 0:
             if ValidEntry and (not (line.startswith('!') or line.startswith('#'))):
                 ValidEntry = False
                 song.path = line
@@ -162,7 +162,7 @@ def showWeb(infile=None):  # Code qui s'occupe de liens TV du Web
             oOutputParameterHandler.addParameter('sMovieTitle', track.title)
             oOutputParameterHandler.addParameter('sThumbnail', thumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oOutputParameterHandler.addParameter('EpgData', EPG)                      
+            oOutputParameterHandler.addParameter('EpgData', EPG)
 
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName(SITE_IDENTIFIER)
@@ -347,7 +347,7 @@ def play__():  # Lancer les liens
     else:
         oHoster = cHosterGui().checkHoster(sUrl)
 
-        if (oHoster != False):
+        if oHoster != False:
             oHoster.setDisplayName(sTitle)
             oHoster.setFileName(sTitle)
             cHosterGui().showHoster(oGui, oHoster, sUrl, sThumbnail)
@@ -430,8 +430,8 @@ def decodeNrj(d):
     title = re.search('data-program_title="([^"]+)"', sHtmlContent).group(1)
     ids = re.search('data-ref="([^"]+)"', sHtmlContent).group(1)
 
-    url = 'https://www.nrj-play.fr/compte/live?channel=' + d.split('/')[3] + '&channel=' + d.split('/')[3] + '&title=' + title + '&channel='
-    url += d.split('/')[3] + '&ref=' + ids + '&formId=formDirect'
+    url = 'https://www.nrj-play.fr/compte/live?channel=' + d.split('/')[3] + '&channel=' + d.split('/')[3] + '&title='
+    url += title + '&channel=' + d.split('/')[3] + '&ref=' + ids + '&formId=formDirect'
 
     oRequestHandler = cRequestHandler(url)
     sHtmlContent = oRequestHandler.request()

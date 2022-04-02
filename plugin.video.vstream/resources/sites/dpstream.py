@@ -10,13 +10,14 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'dpstream'
 SITE_NAME = 'DpStream'
 SITE_DESC = 'Series et Films en VF ou VOSTFR '
 
-URL_MAIN = "https://dpstream.io/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 MOVIE_NEWS = (URL_MAIN + 'film-streaming', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
@@ -111,7 +112,7 @@ def showMenuTvShows():
 def showSearchSerie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         sUrl = MY_SEARCH_SERIES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -121,7 +122,7 @@ def showSearchSerie():
 def showSearchMovie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         sUrl = MY_SEARCH_MOVIES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -131,7 +132,7 @@ def showSearchMovie():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         sUrl = sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -194,6 +195,11 @@ def showMovies(sSearch=''):
 
         bvalid, sToken, sCookie = getTokens()
         if bvalid:
+            oUtil = cUtil()
+            sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+            sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+            sSearchText = oUtil.CleanName(sSearchText)
+            
             pData = '_token=' + sToken + '&search=' + sSearch
             sUrl = URL_MAIN + 'search'
             UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
@@ -220,13 +226,12 @@ def showMovies(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    else:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
-
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
@@ -245,6 +250,10 @@ def showMovies(sSearch=''):
             if bSearchSerie:
                 if sType == 'film':
                     continue
+
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
 
             sDisplayTitle = sTitle + '(' + sYear + ')'
 
@@ -271,7 +280,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -283,7 +292,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '>([^<]+)</a></li><li class="page-item"><a class="page-link" href="([^"]+)">(?!\d)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -321,7 +330,7 @@ def showSelectType():
     # dans le cas d'une recherche on ne sait pas si c'est un film ou une serie
     # class="description">.*?<br>([^<]+)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
 
     if '<meta name=description content="serie' in sHtmlContent:
@@ -346,16 +355,16 @@ def showSaisons():
     sPattern = 'mb-3 d-block">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sDesc = 'no description'
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
 
     sPattern = 'class="seasonbar.+?href="([^"]+).+?arrow-right.+?>(\d+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
@@ -386,16 +395,16 @@ def ShowEpisodes():
     iSaison = ''
     sPattern = 'saison.(.+?)'
     aResult = oParser.parse(sUrl, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         iSaison = ' Saison ' + aResult[1][0]
 
     sPattern = 'class="seasonbar".+?href="([^"]+).+?rrow-right"><.span>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
@@ -442,15 +451,15 @@ def showLinks():
     sPattern = 'mb-3 d-block">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sDesc = 'no description'
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
 
     sPattern = 'data-url="([^"]+).+?class="p-.+?alt="([^"]+).+?alt="([^"]+)'  # p-1 movie p-2 serie
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sKey = aEntry[0]
@@ -475,7 +484,6 @@ def showLinks():
 
 
 def showHosters():
-
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -491,7 +499,7 @@ def showHosters():
     if aResult:
         sHosterUrl = aResult[0]
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
+        if oHoster != False:
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -512,19 +520,19 @@ def getTokens():
     sPattern = 'name=_token.+?value="([^"]+).+?<div class="typeahead'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         return False, 'none', 'none'
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         token = aResult[1][0]
 
     sPattern = 'XSRF-TOKEN=([^;]+).+?dpstream_session=([^;]+)'
     aResult = oParser.parse(sHeader, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         return False, 'none', 'none'
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         XSRF_TOKEN = aResult[1][0][0]
         site_session = aResult[1][0][1]
 

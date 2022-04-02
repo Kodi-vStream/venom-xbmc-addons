@@ -101,11 +101,11 @@ def showWeb():  # Code qui s'occupe de liens TV du Web
     oInputParameterHandler = cInputParameterHandler()
     playlist = parseWebM3U()
 
-    if (oInputParameterHandler.exist('AZ')):
+    if oInputParameterHandler.exist('AZ'):
         sAZ = oInputParameterHandler.getValue('AZ')
         string = filter(lambda t: t.title.strip().capitalize().startswith(sAZ), playlist)
         playlist = sorted(string, key=lambda t: t.title.strip().capitalize())
-    elif (oInputParameterHandler.exist('ident')):
+    elif oInputParameterHandler.exist('ident'):
         sIdent = oInputParameterHandler.getValue('ident')
         string = filter(lambda t: t.ident.strip().capitalize().startswith(sIdent), playlist)
         playlist = sorted(string, key=lambda t: t.ident.strip().capitalize())
@@ -126,8 +126,6 @@ def showWeb():  # Code qui s'occupe de liens TV du Web
             oOutputParameterHandler.addParameter('siteUrl', track.location)
             oOutputParameterHandler.addParameter('sMovieTitle', track.title)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-
-            # oGui.addDirectTV(SITE_IDENTIFIER, 'play__', track.title, 'tv.png' , sRootArt + '/tv/' + sThumb, oOutputParameterHandler)
 
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName(SITE_IDENTIFIER)
@@ -191,14 +189,14 @@ def play__():  # Lancer les liens
         oPlayer = cPlayer()
         oPlayer.clearPlayList()
         oPlayer.addItemToPlaylist(oGuiElement)
-        # tout repeter
+        # tout répéter
         xbmc.executebuiltin('xbmc.playercontrol(RepeatAll)')
 
         oPlayer.startPlayer()
         return
 
 
-def GetRealUrl(chain):  # Recupere les liens des regex
+def GetRealUrl(chain):  # Récupère les liens des regex
 
     UA2 = UA
     url = chain
@@ -206,20 +204,20 @@ def GetRealUrl(chain):  # Recupere les liens des regex
     sHtmlContent = ''
 
     r = re.search('\[[REGEX]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
-    if (r):
+    if r:
         regex = r.group(1)
 
     r = re.search('\[[UA]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
-    if (r):
+    if r:
         UA2 = r.group(1)
 
     r = re.search('\[[URL]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
-    if (r):
+    if r:
         url = r.group(1)
 
     # post methode ?
     r = re.search('\[[POSTFORM]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
-    if (r):
+    if r:
         param = r.group(1)
         oRequestHandler = cRequestHandler(url)
         oRequestHandler.setRequestType(1)
@@ -228,19 +226,15 @@ def GetRealUrl(chain):  # Recupere les liens des regex
         sHtmlContent = oRequestHandler.request()
 
     else:
-        if (url):
+        if url:
             oRequestHandler = cRequestHandler(url)
             sHtmlContent = oRequestHandler.request()
-
-    # xbmc.log(sHtmlContent)
 
     if regex:
         oParser = cParser()
         aResult2 = oParser.parse(sHtmlContent, regex)
-        if (aResult2):
+        if aResult2:
             url = aResult2[1][0]
-
-    # xbmc.log('Url recuperee : ' + url)
 
     url = url + '|User-Agent=' + UA2
 

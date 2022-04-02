@@ -10,13 +10,14 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 
 SITE_IDENTIFIER = 'libertyland_tv'
 SITE_NAME = 'Libertyland'
 SITE_DESC = 'Les films et séries récentes en streaming et en téléchargement'
 
-URL_MAIN = 'https://www.libertyvf.one/'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
+# URL_MAIN = dans sites.json
 
 URL_SEARCH = (URL_MAIN + 'v2/recherche/', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + 'v2/recherche/categorie=films&mot_search=', 'showMovies')
@@ -101,7 +102,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         sUrl = sUrl + sSearchText.replace(' ', '+')
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -187,10 +188,10 @@ def showMovies(sSearch=''):
     sHtmlContent = oRequestHandler.request()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -281,7 +282,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.findall('([0-9]+)', sNextPage)[-1]
@@ -294,7 +295,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<li><a href="([^"]+)" class="next">Suivant'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         return URL_MAIN[:-1] + aResult[1][0]
 
     return False
@@ -333,10 +334,10 @@ def showSaisonsEpisodes():
     sPattern = '(?:<h2 class="heading-small">(Saison .+?)<)|(?:<li><a title=".+? \| (.+?)" class="num_episode" href="([^"]+)")'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
@@ -367,7 +368,7 @@ def showLinks():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
 
-    # refomatage url
+    # reformatage url
     sUrl = ReformatUrl(sUrl)
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -385,7 +386,7 @@ def showLinks():
     sPattern = '<div title="([^"]+)".+?streaming="([^"]+)" heberger="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -424,7 +425,7 @@ def showHosters():
     sType = oInputParameterHandler.getValue('sType')
     idHeb = oInputParameterHandler.getValue('idHeb')
 
-    if (oInputParameterHandler.exist('idMov')):  # film
+    if oInputParameterHandler.exist('idMov'):  # film
         idMov = oInputParameterHandler.getValue('idMov')
         pdata = 'id=' + idHeb + '&id_movie=' + idMov + '&type=' + sType
         pUrl = URL_MAIN + 'v2/video.php'
@@ -442,7 +443,7 @@ def showHosters():
     sPattern = '<iframe.+?src="([^"]+)".+?"qualite":"([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry[0]
@@ -452,7 +453,7 @@ def showHosters():
             sQual = aEntry[1]
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
                 sDisplayTitle = ('%s [%s]') % (sMovieTitle, sQual)
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
@@ -462,14 +463,14 @@ def showHosters():
         # au cas où pas de qualité
         sPattern = '<iframe.+?src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if aResult[0] is True:
             for aEntry in aResult[1]:
                 sHosterUrl = aEntry
                 if sHosterUrl.startswith('//'):
                     sHosterUrl = 'http:' + sHosterUrl
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if oHoster != False:
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

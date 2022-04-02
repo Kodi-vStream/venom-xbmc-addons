@@ -241,7 +241,7 @@ class progress:
         self.PROGRESS = None
         self.COUNT = 0
 
-    def VScreate(self, title='vStream', desc='', large=False):
+    def VScreate(self, title='', desc='', large=False):
         # l'option "large" permet de forcer un sablier large, seul le sablier large peut être annulé.
 
         # Ne pas afficher le sablier si nous ne sommes pas dans un menu vStream
@@ -256,6 +256,9 @@ class progress:
             return empty()
 
         if self.PROGRESS == None:
+            if not title:
+                title = addon().VSlang(30140)
+            
             if large:
                 self.PROGRESS = xbmcgui.DialogProgress()
             elif ADDONVS.getSetting('spinner_small') == 'true':
@@ -273,9 +276,12 @@ class progress:
         if not search and window(10101).getProperty('search') == 'true':
             return
 
+        if not text:
+            text= addon().VSlang(30140)
+
         self.COUNT += 1
         iPercent = int(float(self.COUNT * 100) / total)
-        self.PROGRESS.update(iPercent, 'Chargement ' + str(self.COUNT) + '/' + str(total) + " " + text)
+        self.PROGRESS.update(iPercent, message = text + ' : ' + str(self.COUNT) + '/' + str(total))
 
     def iscanceled(self):
         if isinstance(self.PROGRESS, xbmcgui.DialogProgress):
@@ -436,12 +442,13 @@ def VSProfil():
     return name
 
 
-# Gestion des sources : activer, désactiver, libellé, ... 
+# Gestion des sources : activer/désactiver, libellé, url, ... 
 class siteManager:
 
     SITES = 'sites'
     ACTIVE = 'active'
     LABEL = 'label'
+    URL_MAIN = 'url'
 
     def __init__(self):
         
@@ -471,16 +478,14 @@ class siteManager:
             self.data = json.load(open(self.propertiesPath))
             
 
-    # Sauvegarder les propriétés modifiées
-    def save(self):
-        with open(self.propertiesPath, 'w') as f:
-            f.write(json.dumps(self.data, indent=4))
-
     def isActive(self, sourceName):
         return self.getProperty(sourceName, self.ACTIVE) == 'True'
     
     def setActive(self, sourceName, state):
         self.setProperty(sourceName, self.ACTIVE, state)
+
+    def getUrlMain(self, sourceName):
+        return str(self.getDefaultProperty(sourceName, self.URL_MAIN))
     
     def disableAll(self):
         for sourceName in self.data[self.SITES]:
@@ -492,15 +497,40 @@ class siteManager:
             self.setActive(sourceName, True)
         return
 
+
+    def getDefaultProperty(self, sourceName, propName):
+        defaultProps = self._getDefaultProp(sourceName)
+        if propName not in defaultProps:
+            return False
+        return defaultProps.get(propName)
+
+
     def getProperty(self, sourceName, propName):
         sourceData = self._getDataSource(sourceName)
         if sourceData:
-            return sourceData.get(propName)
+            if propName in sourceData:
+                return sourceData.get(propName)
+
+            # Propriété inconnue, on récupérere la valeur par défaut ...
+            defaultProps = self._getDefaultProp(sourceName)
+            if propName not in defaultProps:
+                return False
+
+            # ... et on l'enregistre
+            value = defaultProps.get(propName)
+            self.setProperty(sourceName, propName, value)
+            self.save()
+            return value
+
 
     def setProperty(self, sourceName, propName, value):
         sourceData = self._getDataSource(sourceName)
         if sourceData:
             sourceData[propName] = str(value)
+
+    def setDefaultProps(self, props):
+        self.defaultData = props
+        self._saveDefault()
 
     # Lire les settings d'une source
     def _getDataSource(self, sourceName):
@@ -526,14 +556,24 @@ class siteManager:
             self.defaultData = json.load(open(self.defaultPath))
 
         # Retrouver la prop par défaut
-        sourceData = self.defaultData[self.SITES].get(sourceName)
+        sourceData = self.defaultData[self.SITES].get(sourceName) if self.SITES in self.defaultData else None
         
         # pas de valeurs par défaut, on en crée à la volée
         if not sourceData:
-            sourceData = {self.ACTIVE : 'True', self.LABEL : sourceName}
+            sourceData = {self.ACTIVE : 'False', self.LABEL : sourceName, self.URL_MAIN : sourceName}
 
         return sourceData
     
+    # Sauvegarder les propriétés modifiées
+    def save(self):
+        with open(self.propertiesPath, 'w') as f:
+            f.write(json.dumps(self.data, indent=4))
+
+    # Sauvegarder les propriétés par défaut
+    def _saveDefault(self):
+        with open(self.defaultPath, 'w') as f:
+            f.write(json.dumps(self.defaultData, indent=4))
+
     
 
 class addonManager:

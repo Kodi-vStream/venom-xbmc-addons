@@ -3,7 +3,7 @@
 #
 from requests import post, Session, Request, RequestException, ConnectionError
 from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix
-from resources.lib.util import urlEncode
+from resources.lib.util import urlEncode, urlHostName
 
 import requests.packages.urllib3.util.connection as urllib3_cn
 import socket
@@ -225,7 +225,7 @@ class cRequestHandler:
                     self.__enableDNS = True
                     return self.__callRequest()
                 else:
-                    error_msg = addon().VSlang(30470)
+                    error_msg = '%s (%s)' % (addon().VSlang(30470), urlHostName(self.__sUrl))
                     dialog().VSerror(error_msg)
                     sContent = ''
             else:
@@ -243,7 +243,7 @@ class cRequestHandler:
                     self.__enableDNS = True
                     return self.__callRequest()
                 else:
-                    error_msg = addon().VSlang(30470)
+                    error_msg = '%s (%s)' % (addon().VSlang(30470), urlHostName(self.__sUrl))
             else:
                 error_msg = "%s (%s),%s" % (addon().VSlang(30205), e, self.__sUrl)
 
@@ -261,7 +261,7 @@ class cRequestHandler:
                     try:
                         json_session = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, json={'cmd': 'sessions.list'})
                     except:
-                        dialog().VSerror("%s" % ("Page protege par Cloudflare, veuillez executer  FlareSolverr."))
+                        dialog().VSerror("%s (%s)" % ("Page protegee par Cloudflare, essayez FlareSolverr.", urlHostName(self.__sUrl)))
 
                     if json_session:
                         # On regarde si une session existe deja.

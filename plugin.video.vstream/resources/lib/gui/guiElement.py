@@ -192,6 +192,22 @@ class cGuiElement:
         except:
             pass
 
+        """ Début Nettoyage du titre """
+        # vire doubles espaces et double points
+        sTitle = re.sub(' +', ' ', sTitle)
+        sTitle = re.sub('\.+', '.', sTitle)
+
+        # enleve les crochets et les parentheses si elles sont vides
+        sTitle = sTitle.replace('()', '').replace('[]', '').replace('- -', '-')
+
+        # vire espace et - a la fin (/!\ il y a 2 tirets differents meme si invisible a l'oeil nu et un est en unicode)
+        sTitle = re.sub('[- –]+$', '', sTitle)
+        # et au debut
+        if sTitle.startswith(' '):
+            sTitle = sTitle[1:]
+
+        """ Fin Nettoyage du titre """
+
         # recherche l'année, uniquement si entre caractere special a cause de 2001 odysse de l'espace ou k2000
         string = re.search('([^\w ][0-9]{4}[^\w ])', sTitle)
         if string:
@@ -206,6 +222,10 @@ class cGuiElement:
             self.__Date = str(string.group(0))
             sTitle = '%s (%s) ' % (sTitle, self.__Date)
 
+        # recherche les Tags restant : () ou [] sauf tag couleur
+        sDecoColor = self.addons.getSetting('deco_color')
+        sTitle = re.sub('([\(|\[](?!\/*COLOR)[^\)\(\]\[]+?[\]|\)])', '[COLOR ' + sDecoColor + ']\\1[/COLOR]', sTitle)
+
         # Recherche saisons et episodes
         sa = ep = ''
         m = re.search('(|S|saison)(\s?|\.)(\d+)(\s?|\.)(E|Ep|x|\wpisode)(\s?|\.)(\d+)', sTitle, re.UNICODE)
@@ -213,13 +233,13 @@ class cGuiElement:
             sTitle = sTitle.replace(m.group(0), '')
             sa = m.group(3)
             ep = m.group(7)
-        else:   # Juste l'épisode
+        else:  # Juste l'épisode
             m = re.search('(^|\s|\.)(E|Ep|\wpisode)(\s?|\.)(\d+)', sTitle, re.UNICODE)
             if m:
                 sTitle = sTitle.replace(m.group(0), '')
                 ep = m.group(4)
-            else:             # juste la saison
-                m = re.search('(S|saison)(\s?|\.)(\d+)', sTitle, re.UNICODE)
+            else:  # juste la saison
+                m = re.search('( S|saison)(\s?|\.)(\d+)', sTitle, re.UNICODE)
                 if m:
                     sTitle = sTitle.replace(m.group(0), '')
                     sa = m.group(3)
@@ -230,23 +250,6 @@ class cGuiElement:
         if ep:
             self.__Episode = ep
             self.addItemValues('Episode', self.__Episode)
-
-        # vire doubles espaces et double points
-        sTitle = re.sub(' +', ' ', sTitle)
-        sTitle = re.sub('\.+', '.', sTitle)
-
-        # enleve les crochets et les parentheses si elles sont vides
-        sTitle = sTitle.replace('()', '').replace('[]', '').replace('- -', '-')
-
-        # vire espace et - a la fin (/!\ il y a 2 tirets differents meme si invisible a l'oeil nu et un est en unicode)
-        sTitle = re.sub('[- –]+$', '', sTitle)
-        # et au debut
-        if sTitle.startswith(' '):
-            sTitle = sTitle[1:]
-
-        # recherche les Tags restant : () ou [] sauf tag couleur
-        sDecoColor = self.addons.getSetting('deco_color')
-        sTitle = re.sub('([\(|\[](?!\/*COLOR)[^\)\(\]\[]+?[\]|\)])', '[COLOR ' + sDecoColor + ']\\1[/COLOR]', sTitle)
 
         # on reformate SXXEXX Titre [tag] (Annee)
         sTitle2 = ''

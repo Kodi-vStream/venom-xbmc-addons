@@ -9,7 +9,8 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
+from resources.lib.util import cUtil
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
 
@@ -17,7 +18,7 @@ SITE_IDENTIFIER = '_1seriestreaming'
 SITE_NAME = '1 Serie Streaming'
 SITE_DESC = 'Séries & Animés en Streaming'
 
-URL_MAIN = "https://1seriestreaming.com/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 SERIE_SERIES = ('http://', 'load')
 SERIE_NEWS = (URL_MAIN + 'series-streaming', 'showSeries')
@@ -123,6 +124,8 @@ def showSeries(sSearch=''):
     oParser = cParser()
 
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = oUtil.CleanName(sSearch)
         sSearch = sSearch.replace(' ', '+').replace('&20', '+')
         bValid, sToken, sCookie = getTokens()
         if bValid:
@@ -165,6 +168,9 @@ def showSeries(sSearch=''):
             if sUrl2.startswith('/'):
                 sUrl2 = URL_MAIN[:-1] + sUrl2
             sTitle = aEntry[2]
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)

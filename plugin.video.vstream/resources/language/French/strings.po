@@ -524,6 +524,14 @@ msgctxt "#30138"
 msgid "Sources"
 msgstr "Sources"
 
+msgctxt "#30140"
+msgid "Loading"
+msgstr "Chargement "
+
+msgctxt "#30141"
+msgid "Loading infos"
+msgstr "Chargement des informations"
+
 msgctxt "#30145"
 msgid "Download folder"
 msgstr "Dossier de Téléchargement"
@@ -784,6 +792,10 @@ msgctxt "#30349"
 msgid "Show most monthly viewed"
 msgstr "Afficher les films les plus vus du mois"
 
+msgctxt "#30350"
+msgid "Replays"
+msgstr "Rédiffusions"
+
 msgctxt "#30351"
 msgid "TV Shows"
 msgstr "Séries"
@@ -865,8 +877,8 @@ msgid "Close"
 msgstr "Fermer"
 
 msgctxt "#30410"
-msgid "Interface"
-msgstr "Interface"
+msgid "Misc"
+msgstr "Divers"
 
 msgctxt "#30411"
 msgid "Enable sound notifications"
@@ -929,8 +941,8 @@ msgid "Movies (Popular)"
 msgstr "Films (Populaires)"
 
 msgctxt "#30426"
-msgid "Movies (Theater)"
-msgstr "Films (en Salle)"
+msgid "Movies (News)"
+msgstr "Films (Nouveautés)"
 
 msgctxt "#30427"
 msgid "Movies (Top Rated)"
@@ -945,8 +957,8 @@ msgid "TV Shows (Popular)"
 msgstr "Séries (Populaires)"
 
 msgctxt "#30430"
-msgid "TV Shows (on TV)"
-msgstr "Séries (à la TV)"
+msgid "TV Shows (On air)"
+msgstr "Séries (En cours)"
 
 msgctxt "#30431"
 msgid "TV Shows (Top Rated)"
@@ -1100,6 +1112,10 @@ msgctxt "#30480"
 msgid "Small loading spinner"
 msgstr "Sablier de chargement réduit"
 
+msgctxt "#30481"
+msgid "Interface"
+msgstr "Interface"
+
 # upnext
 msgctxt "#30505"
 msgid "Would you like to automatically play the next episode?"
@@ -1158,3 +1174,11 @@ msgstr "Afficher la saison et l'épisode dans le titre"
 msgctxt "#31205"
 msgid "Display"
 msgstr "Affichage"
+
+msgctxt "#31208"
+msgid "Remaining sites: %s"
+msgstr "Sites restants : %s"
+
+msgctxt "#31209"
+msgid "Results: %s"
+msgstr "Résultats : [COLOR deepskyblue]%s[/COLOR]"

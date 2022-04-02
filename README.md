@@ -6,7 +6,11 @@ vStream est un addon pour Kodi qui vous permet de visionner en streaming un gran
 
 [![images](https://img.shields.io/badge/Visiter-vstream&#46;io-yellowgreen.svg?style=for-the-badge)](https://kodi-vstream.github.io/)
 
-[![images](https://img.shields.io/badge/Communauté-KodiFR-yellowgreen.svg?style=for-the-badge)](http://kodi-fr.rf.gd/index.php)
+
+## Échanger !
+
+[![images](https://img.shields.io/badge/Communauté-DISCORD-yellowgreen.svg?style=for-the-badge)](https://discord.gg/S65HBXm)
+
 
 ## Installer !
 
@@ -17,11 +21,24 @@ https://kodi-vstream.github.io/repo/
 
 Puis "installer depuis un fichier zip" le repository depuis cette nouvelle source.
 
-Ou télécharger le ZIP :
+Cette méthode en détail : https://kodi-vstream.github.io/docs/installation2/
+
+
+Ou télécharger le ZIP du repository :
 
 [![images](https://img.shields.io/badge/T%C3%A9l%C3%A9charger-Repository-blue.svg?style=for-the-badge)](https://github.com/Kodi-vStream/venom-xbmc-addons/releases/tag/0.0.4)
 
+[![images](https://img.shields.io/badge/T%C3%A9l%C3%A9charger-QRcode-blue.svg?style=for-the-badge)](https://user-images.githubusercontent.com/47307622/154670423-a0265564-4e40-419d-b3d2-5237d4cd0b85.png)
+
+
+
+
 Installer ensuite l'addon vStream EXCLUSIVEMENT depuis le repository.
+
+Cette méthode en détail : https://kodi-vstream.github.io/docs/installation/
+
+
+
 
 ## Contribuer !
 

@@ -10,49 +10,10 @@ from resources.lib.parser import cParser
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Cloudhost'
-        self.__sFileName = self.__sDisplayName
-        self.__sHD = ''
+        iHoster.__init__(self, 'cloudhost', 'Cloudhost')
 
-    def getDisplayName(self):
-        return self.__sDisplayName
-
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
-
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    def getFileName(self):
-        return self.__sFileName
-
-    def getPluginIdentifier(self):
-        return 'cloudhost'
-
-    def setHD(self, sHD):
-        self.__sHD = ''
-
-    def getHD(self):
-        return self.__sHD
-
-    def isDownloadable(self):
-        return True
-
-    def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
-
-    def checkUrl(self, sUrl):
-        return True
-
-    def __getUrl(self, media_id):
-        return
-
-    def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self, api_call=None):
-        sUrl = self.__sUrl
-        oRequest = cRequestHandler(sUrl)
+    def _getMediaLinkForGuest(self, api_call=None):
+        oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
 
         sPattern = '<source src="([^"]+)"'

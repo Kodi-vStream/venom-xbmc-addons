@@ -10,13 +10,13 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.util import cUtil
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 
 SITE_IDENTIFIER = 'watchvf'
 SITE_NAME = 'WatchVF'
 SITE_DESC = 'Films en streaming.'
 
-URL_MAIN = "https://watchvf.com/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
@@ -47,7 +47,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -101,7 +101,7 @@ def showMovies(sSearch=''):
             sThumb = aEntry[1]
             sTitle = re.sub('^Voir', '', aEntry[2].replace(' Film en streaming complet', ''))
 
-            # Si recherche et trop de resultat, on nettoye
+            # Si recherche et trop de résultat, on nettoie
             if sSearch and total > 3:
                 if not oUtil.CheckOccurence(sSearch, sTitle):
                     continue
@@ -115,7 +115,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -127,7 +127,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '>(\d+)</a></li>\s*<li><a class="next page-numbers" href="([^"]+)">Next Page'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sNextPage = aResult[1][0][1]
         sNumberMax = aResult[1][0][0]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -151,15 +151,15 @@ def showHosters():
     sPattern = '<iframe.+?src=["\'](.+?)["\']'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

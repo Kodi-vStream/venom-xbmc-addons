@@ -10,13 +10,13 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 
 SITE_IDENTIFIER = 'animecomplet'
 SITE_NAME = 'Animecomplet'
 SITE_DESC = 'Series Anime'
 
-URL_MAIN = "https://animecomplet.me/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 tag_alpha = 'tagaplha'
 ANIM_ANIMS = (True, 'load')

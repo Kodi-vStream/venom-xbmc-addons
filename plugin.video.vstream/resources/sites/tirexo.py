@@ -1,20 +1,16 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-# import random
-# import time
-# import xbmc
 import re
 import requests
 
-from resources.lib.comaddon import progress, dialog
+from resources.lib.comaddon import progress, dialog, siteManager
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-# from resources.lib.config import GestionCookie
-# from resources.lib.util import cUtil
+from resources.lib.util import cUtil
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
 
@@ -23,12 +19,12 @@ SITE_NAME = '[COLOR violet]Tirexo[/COLOR]'
 SITE_DESC = 'Films/Séries/Reportages/Concerts'
 
 # Teste pour le moment avec une url fixe.
-URL_MAIN = "https://www2.tirexo.art/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=1&result_from=1&story=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0catlist=15&story=', 'showMovies')
-URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0catlist=32&story=', 'showMovies')
-URL_SEARCH_MISC = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0catlist=39&story=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&catlist=15&story=', 'showMovies')
+URL_SEARCH_ANIMS = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&catlist=32&story=', 'showMovies')
+URL_SEARCH_MISC = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&catlist[]=75&catlist[]=76&catlist[]=77&catlist[]=79&catlist[]=101&story=', 'showMovies')
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_COLLECTION = (URL_MAIN + 'collections/', 'showMovies')
@@ -78,11 +74,11 @@ ANIM_VOSTFRS_1080 = (URL_MAIN + 'animes-vostfr-1080p/', 'showMovies')
 FILM_ANIM = (URL_MAIN + 'films-animes/', 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'animes/', 'showMovies')
 
-DOC_NEWS = (URL_MAIN + 'emissions-tv-documentaires/souscate_doc-Documentaire/', 'showMovies')
-SPORT_SPORTS = (URL_MAIN + 'emissions-tv-documentaires/souscate_doc-Sport/', 'showMovies')
-TV_NEWS = (URL_MAIN + 'emissions-tv-documentaires/souscate_doc-Émissions+TV/', 'showMovies')
-SPECT_NEWS = (URL_MAIN + 'emissions-tv-documentaires/souscate_doc-Spectacle/', 'showMovies')
-CONCERT_NEWS = (URL_MAIN + 'musiques-mp3-gratuite/souscat_music-Concerts/', 'showMovies')
+DOC_NEWS = (URL_MAIN + 'emissions-tv-documentaires/documentaire', 'showMovies')
+SPORT_REPLAY = (URL_MAIN + 'emissions-tv-documentaires/sport', 'showMovies')
+TV_NEWS = (URL_MAIN + 'emissions-tv-documentaires/emissions-tv/', 'showMovies')
+SPECT_NEWS = (URL_MAIN + '?do=cat&category=emissions-tv-documentaires/spectacle&epoque=2022', 'showMovies')
+CONCERT_NEWS = (URL_MAIN + '?do=cat&category=musiques-mp3-gratuite/concerts&epoque=2022', 'showMovies')
 
 
 def load():
@@ -272,8 +268,8 @@ def showMenuAutres():
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', SPORT_SPORTS[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Sports', 'sport.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SPORT_REPLAY[0])
+    oGui.addDir(SITE_IDENTIFIER, SPORT_REPLAY[1], 'Sports', 'sport.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SPECT_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SPECT_NEWS[1], 'Spectacles', 'star.png', oOutputParameterHandler)
@@ -326,11 +322,17 @@ def showMovies(sSearch=''):
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_ANIMS[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_MISC[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch
 
     if sSearch or "index" in sUrl:  # en mode recherche
         sPattern = 'mov"><a class="mov-t nowrap" href="([^"]+)" title="([^"]+).+?data-content="(.*?)" class="mov-i img-box"><img src="([^"]+)'
-        validUrl = ['films', 'series', 'animes', 'emissions-tv-documentaires']
+        validUrl = ['films', 'series', 'animes', 'concerts', 'emissions-tv-documentaires']
     elif 'collections/' in sUrl:
         sPattern = 'tcarusel-item.+?href="([^"]+).+?title="([^"]+)" data-content="([^"]*).+?src="([^"]+)'
     else:
@@ -360,6 +362,9 @@ def showMovies(sSearch=''):
                     sTitle = aEntry[1]
                     sDesc = aEntry[2]
                     sThumb = URL_MAIN[:-1] + aEntry[3]
+                    if sSearch:
+                        if not oUtil.CheckOccurence(sSearchText, sTitle):
+                            continue    # Filtre de recherche
                 else:
                     continue
             elif 'collections/' in sUrl:
@@ -373,12 +378,11 @@ def showMovies(sSearch=''):
                 sThumb = URL_MAIN[:-1] + aEntry[1]
                 sTitle = aEntry[2]
 
-                # Enlever les films en doublons (même titre)
-                # il s'agit du même film dans une autre qualité qu'on retrouvera au moment du choix de la qualité
-            key = sTitle
-            if key in titles:
+            # Enlever les films en doublons (même titre)
+            # il s'agit du même film dans une autre qualité qu'on retrouvera au moment du choix de la qualité
+            if sTitle in titles:
                 continue
-            titles.add(key)
+            titles.add(sTitle)
 
             # sDesc = re.sub('<[^<]+?>', '', sDesc)
             sDisplayTitle = sTitle
@@ -463,10 +467,9 @@ def showCollec():
 
             # Enlever les films en doublons (même titre)
             # il s'agit du même film dans une autre qualité qu'on retrouvera au moment du choix de la qualité
-            key = sTitle
-            if key in titles:
+            if sTitle in titles:
                 continue
-            titles.add(key)
+            titles.add(sTitle)
 
             sDesc = re.sub('<[^<]+?>', '', sDesc)
             sDisplayTitle = sTitle
@@ -523,29 +526,30 @@ def showMoviesLinks():
             sHost = aEntry[0]
             aResult = oParser.parse(aEntry[1], sPattern)
             if aResult[0] is True:
-                for aEntry in aResult[1]:
+                for aEntry in aResult[1]:  # Plusieurs liens pour le même host
                     sUrl2 = URL_MAIN[:-1] + aEntry
                     sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
-            
+
                     oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                     oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
                     oOutputParameterHandler.addParameter('sDesc', sDesc)
                     oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
-    
+
     # lien STREAMING
     sPattern = 'rel=.nofollow. class=.download. href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0] is True:
-        sUrl2 = URL_MAIN[:-1] + aResult[1][0]
-        sDisplayTitle = ('%s [Streaming]') % (sMovieTitle)
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-        oOutputParameterHandler.addParameter('sThumb', sThumb)
-        oOutputParameterHandler.addParameter('sDesc', sDesc)
-        oGui.addLink(SITE_IDENTIFIER, 'showHostersLink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+        for aEntry in aResult[1]:  # Plusieurs liens pour le même host
+            sUrl2 = URL_MAIN[:-1] + aEntry
+            sDisplayTitle = ('%s [Streaming]') % sMovieTitle
+    
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oGui.addLink(SITE_IDENTIFIER, 'showHostersLink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     # on regarde si dispo dans d'autres qualités
     sPattern = "value='(.+?)'.+?<b>(.+?)</b>.+?<b> \((.+?)\)"
@@ -763,7 +767,6 @@ def showSeriesHosters():
 
 def Display_protected_link():
     oGui = cGui()
-    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl').replace('\\', '').replace('"', '')

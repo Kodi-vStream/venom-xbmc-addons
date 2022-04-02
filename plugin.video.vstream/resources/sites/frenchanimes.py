@@ -8,7 +8,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
 
@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'frenchanimes'
 SITE_NAME = 'French Animes'
 SITE_DESC = 'Mangas en streaming'
 
-URL_MAIN = "https://french-anime.com/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 ANIM_ANIMS = (True, 'load')
 ANIM_NEWS = (URL_MAIN, 'showAnimes')
@@ -26,7 +26,7 @@ ANIM_MOVIE = (URL_MAIN + 'films-vf-vostfr/', 'showAnimes')
 ANIM_GENRES = (True, 'showGenres')
 
 URL_SEARCH = (URL_MAIN + '?do=search&mode=advanced&subaction=search&story=', 'showSearch')
-URL_SEARCH_ANIMS = ('', 'showAnimes')
+URL_SEARCH_ANIMS = (URL_SEARCH[0], 'showAnimes')
 FUNCTION_SEARCH = 'showSearch'
 
 
@@ -58,7 +58,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showAnimes(sUrl)
         oGui.setEndOfDirectory()
@@ -78,10 +78,10 @@ def showGenres():
     sPattern = '<a href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
     TriAlpha = []
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
             sUrl = URL_MAIN[:-1] + aEntry[0]
             sTitle = aEntry[1].capitalize()
@@ -114,10 +114,10 @@ def showAnimes(sSearch=''):
     sPattern += '.+?desc">([^<]*).+?Synopsis:.+?desc">(.*?)</d'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -155,7 +155,7 @@ def showAnimes(sSearch=''):
         progress_.VSclose(progress_)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showAnimes', 'Page ' + sPaging, oOutputParameterHandler)
@@ -168,7 +168,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '>([^<]+)</a> *</span>.*?<span class="pnext"><a href="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -194,13 +194,16 @@ def showEpisodes():
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
     # Pour les liens myvi
     sHtmlContent = sHtmlContent.replace('!//', '!https://').replace(',//', ',https://')
+    
+    # Besoin des saut de ligne
+    sHtmlContent = sHtmlContent.replace('\n', '@')
 
-    sPattern = '([0-9]+)!|(https:.+?)[,|<]'
+    sPattern = '([0-9]+)!|(https:.+?)[,|<@]'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     ep = 0
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
 
             if aEntry[0]:
@@ -211,7 +214,7 @@ def showEpisodes():
                 sHosterUrl = aEntry[1]
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if oHoster != False:
                     oHoster.setDisplayName(sTitle)
                     oHoster.setFileName(sTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -235,21 +238,17 @@ def showHosters():
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
     # Pour les liens myvi
     sHtmlContent = sHtmlContent.replace('!//', '!https://').replace(',//', ',https://')
-    # extrait la page html après retraitement vStream
-    fh = open('c:\\test.txt', "w")
-    fh.write(sHtmlContent)
-    fh.close()
 
     sPattern = '(https:.+?)[,|<]'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

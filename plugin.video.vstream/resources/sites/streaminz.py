@@ -3,7 +3,7 @@
 
 import re
 
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -16,8 +16,7 @@ SITE_IDENTIFIER = 'streaminz'
 SITE_NAME = 'Streaminz'
 SITE_DESC = ' films, de séries et de mangas en streaming VF et VOSTFR complets'
 
-URL_MAIN = "https://www.streaminz.biz/"
-# Clone "https://www.showstream.xyz/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
@@ -129,10 +128,10 @@ def showGenres():
     sPattern = 'href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
     triAlpha = []
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sTitle = aEntry[1].capitalize()
@@ -195,10 +194,10 @@ def showYears():
     sPattern = 'href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -223,10 +222,10 @@ def showSeriesYears():
     sPattern = 'href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -245,7 +244,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         sUrl = sUrl + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -254,11 +253,16 @@ def showSearch():
 
 def showMovies(sSearch=''):
     oGui = cGui()
+    oUtil = cUtil()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oParser = cParser()
     if sSearch:
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
+
         sUrl = sSearch.replace(' ', '+')
         sPattern = 'class="image">.+?<a href="([^"]+).+?<img src="([^"]+)" alt="([^"]+).+?class="([^"]+).+?<p>(.+?)</p'
         sType = oParser.parseSingleResult(sUrl, '\?post_types=(.+?)&')  # pour filtrage entre film et série
@@ -273,13 +277,12 @@ def showMovies(sSearch=''):
     sHtmlContent = oRequestHandler.request()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
-        utils = cUtil()
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
@@ -295,11 +298,13 @@ def showMovies(sSearch=''):
                 sTitle = aEntry[2].replace('Streaming VF', '').replace('en', '').replace('Regarder', '')
                 sType1 = aEntry[3]
                 sDesc = aEntry[4]
-                if sType1 != sType[1]:  # pour differencier la recherche entre films et séries
+                if sType1 != sType[1]:  # pour différencier la recherche entre films et séries
                     continue
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
             elif sTypeYear:
                 sType1 = aEntry[0]
-                if sType1 != sTypeYear:  # pour differencier la recherche entre films et séries
+                if sType1 != sTypeYear:  # pour différencier la recherche entre films et séries
                     continue
                 sThumb = aEntry[1]
                 sTitle = aEntry[2]
@@ -323,7 +328,7 @@ def showMovies(sSearch=''):
 
             try:
                 sDesc = unicode(sDesc, 'utf-8')  # converti en unicode
-                sDesc = utils.unescape(sDesc).encode('utf-8')  # retire les balises HTML
+                sDesc = oUtil.unescape(sDesc).encode('utf-8')  # retire les balises HTML
             except:
                 pass
 
@@ -344,7 +349,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -356,7 +361,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = 'span>Page .+?de (\d+).+?href="([^"]+)"><i id='
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('([0-9]+)', sNextPage).group(1)
@@ -380,7 +385,7 @@ def showSxE():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
@@ -421,7 +426,7 @@ def showLink():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         # trie par numéro de serveur
         sortedList = sorted(aResult[1], key=lambda item: item[2])
         oOutputParameterHandler = cOutputParameterHandler()
@@ -437,7 +442,7 @@ def showLink():
             if '|' in sLang:
                 sLang = sLang.split('|')[1].strip().replace('FRENCH', 'FR')
 
-            if ('VIP - ' in aEntry[2]):  # Les liens VIP ne fonctionnent pas
+            if 'VIP - ' in aEntry[2]:  # Les liens VIP ne fonctionnent pas
                 continue
 
             sTitle = ('%s (%s)') % (sMovieTitle, sLang.upper())
@@ -501,7 +506,7 @@ def showHosters():
                 for aEntry2 in aResult[1]:
                     sHosterUrl = 'https://waaw.to' + aEntry2
 
-            # voir si filtrage ou non car parfois le lien mp4 créé un blocage
+            # voir si filtrage ou non, car parfois le lien mp4 créé un blocage
             if 'streaminz.ml' in sHosterUrl:
                 sid = sHosterUrl.split('/')[-1]
                 sHosterUrl = sHosterUrl
@@ -515,11 +520,11 @@ def showHosters():
                 oParser = cParser()
                 sPattern = '"data".+?file.+?"([^"]*).+?type.+?"([^"]*)'
                 aResult = oParser.parse(sHtmlContent2, sPattern)
-                if (aResult[0] == True):
+                if aResult[0] is True:
                     sHosterUrl = aResult[1][0][0] + '.' + aResult[1][0][1]
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

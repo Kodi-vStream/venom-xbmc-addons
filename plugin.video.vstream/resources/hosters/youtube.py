@@ -10,63 +10,64 @@ import time
 
 from resources.hosters.hoster import iHoster
 from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.comaddon import VSlog
 
+import xbmcaddon
 
 class cHoster(iHoster):
+
     def __init__(self):
-        self.__sDisplayName = 'Youtube'
-        self.__sFileName = self.__sDisplayName
-        self.__sHD = ''
-        self.__res = False
+        iHoster.__init__(self, 'youtube', 'Youtube')
 
-    def getDisplayName(self):
-        return self.__sDisplayName
-
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
-
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    def getFileName(self):
-        return self.__sFileName
-
-    def getPluginIdentifier(self):
-        return 'youtube'
-
-    def setHD(self, sHD):
-        self.__sHD = ''
-
-    def getHD(self):
-        return self.__sHD
-
-    def setResolution(self, res):
-        self.__res = res
-
-    def isDownloadable(self):
-        return True
-
-    def getPattern(self):
-        return ''
+    def _getMediaLinkForGuest(self):
+        
+        # 0 = site yt1s
+        # 1 = Plugin Youtube
+        MODE = 1
+        
+        api_call = ''
+        
+        if MODE == 1 and not xbmcaddon.Addon('plugin.video.youtube'):
+            VSlog('Plugin Youtube non installe')
+            MODE = 0
+        
+        if MODE == 0:
+            api_call = self._getMediaLinkForGuest0(self._url)
+        elif MODE == 1:
+            if 'plugin'  in self._url:
+                api_call = self._url
+            else:
+                videoID = self.__getIdFromUrl(self._url)
+                api_call = 'plugin://plugin.video.youtube/play/?video_id=' + videoID
+        
+        if api_call:
+            return True, api_call
+        else:
+            return False, False
 
     def __getIdFromUrl(self, sUrl):
-        return ''
+        id = ''
+        if 'plugin' not in sUrl:
+            id = sUrl
+            id = id.replace('http:', '')
+            id = id.replace('https:', '')
+            id = id.replace('//', '')
+            id = id.replace('www.youtube.com', '')
+            id = id.replace('www.youtube-nocookie.com', '')
+            id = id.replace('/embed/', '')
+            id = id.replace('/watch?v=', '')
+            id = str(id)
+        else:
+            id = sUrl
+ 
+        return id
 
-    def setUrl(self, sUrl):
-        self.__sUrl = sUrl
+    def _getMediaLinkForGuest0(self, sUrl):
 
-    def checkUrl(self, sUrl):
-        return True
+        api_call = ''
 
-    def __getUrl(self, sUrl):
-        return
-
-    def getMediaLink(self):
-        first_test = self.__getMediaLinkForGuest()
-        return first_test
-
-    def __getMediaLinkForGuest(self):
-        UA = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36'
+        UA = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) ' + \
+            'Chrome/53.0.2785.143 Safari/537.36'
 
         oRequestHandler = cRequestHandler("https://yt1s.com/api/ajaxSearch/index")
         oRequestHandler.setRequestType(1)
@@ -75,7 +76,7 @@ class cHoster(iHoster):
         oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
         oRequestHandler.addHeaderEntry('Origin', 'https://yt1s.com')
         oRequestHandler.addHeaderEntry('Referer', 'https://yt1s.com/fr13')
-        oRequestHandler.addParameters("q", self.__sUrl)
+        oRequestHandler.addParameters("q", sUrl)
         oRequestHandler.addParameters("vt", "home")
         sHtmlContent = oRequestHandler.request(jsonDecode=True)
 
@@ -86,7 +87,7 @@ class cHoster(iHoster):
         oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
         oRequestHandler.addHeaderEntry('Origin', 'https://yt1s.com')
         oRequestHandler.addHeaderEntry('Referer', 'https://yt1s.com/fr13')
-        oRequestHandler.addParameters("vid", self.__sUrl.split("v=")[1])
+        oRequestHandler.addParameters("vid", sUrl.split("v=")[1])
         oRequestHandler.addParameters("k", sHtmlContent['links']["mp4"]["auto"]["k"])
         try:
             api_call = oRequestHandler.request(jsonDecode=True)['dlink']
@@ -99,11 +100,8 @@ class cHoster(iHoster):
             oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
             oRequestHandler.addHeaderEntry('Origin', 'https://yt1s.com')
             oRequestHandler.addHeaderEntry('Referer', 'https://yt1s.com/fr13')
-            oRequestHandler.addParameters("vid", self.__sUrl.split("v=")[1])
+            oRequestHandler.addParameters("vid", sUrl.split("v=")[1])
             oRequestHandler.addParameters("k", sHtmlContent['links']["mp4"]["auto"]["k"])
             api_call = oRequestHandler.request(jsonDecode=True)['dlink']
 
-        if api_call:
-            return True, api_call
-        else:
-            return False
+        return api_call

@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
+import re
+import json
+import webbrowser
+import requests
+
 from resources.lib.config import GestionCookie
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog, VSlog, isMatrix, CountdownDialog, xbmc, VSPath
@@ -8,48 +13,16 @@ from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import Unquote
-import json, requests, re
+from resources.lib.librecaptcha.gui import cInputWindowYesNo
 
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'UpToStream'
-        self.__sFileName = self.__sDisplayName
+        iHoster.__init__(self, 'uptostream', 'UpToStream')
         self.oPremiumHandler = None
 
-    def getDisplayName(self):
-        return  self.__sDisplayName
-
-    def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
-
-    def setFileName(self, sFileName):
-        self.__sFileName = sFileName
-
-    def getFileName(self):
-        return self.__sFileName
-
-    def getPluginIdentifier(self):
-        return 'uptostream'
-
-    def isDownloadable(self):
-        return True
-
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return ''
-
-    def __getIdFromUrl(self):
-        if self.__sUrl[-4:] in '.mp4.avi.mkv':
-            return self.__sUrl.split('/')[3]
-        return self.__sUrl.split('/')[-1]
-
-    def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
-        self.__sUrl = self.__sUrl.replace('iframe/', '')
-        self.__sUrl = self.__sUrl.replace('http:', 'https:')
+    def setUrl(self, url):
+        self._url = str(url)
 
     def checkSubtitle(self, sHtmlContent):
         if sHtmlContent:
@@ -60,17 +33,14 @@ class cHoster(iHoster):
                     url = aEntry["src"]
                     if not url.startswith('http'):
                         url = 'http:' + url
-                    Files.append(url.replace('.vtt','.srt'))
+                    Files.append(url)
                 else:
                     continue
             return Files
         return False
 
-    def checkUrl(self, sUrl):
-        return True
-
-    def getUrl(self):
-        return self.__sUrl
+    def _getMediaLinkForGuest(self):
+        pass
 
     def getMediaLink(self):
         self.oPremiumHandler = cPremiumHandler('uptobox')
@@ -81,11 +51,12 @@ class cHoster(iHoster):
 
         api_call = False
         SubTitle = False
-        filecode = self.__sUrl.split('/')[-1].split('?')[0]
+        filecode = self._url.split('/')[-1].split('?')[0]
 
         # Uptostream avec un compte uptobox, pas besoin du QRcode
         token = self.oPremiumHandler.getToken()
-        if token:
+        r = requests.get('https://uptobox.com/api/user/me?token=' + token).json()
+        if r["data"]["premium"]:
             status = ''
             url1 = "https://uptobox.com/api/streaming?token=%s&file_code=%s" % (token, filecode)
             try:
@@ -125,7 +96,6 @@ class cHoster(iHoster):
                     js_result = cd.start(self.__check_auth, [r["data"]["check_url"]])["data"]
             else:
                 import pyqrcode
-                from resources.lib.librecaptcha.gui import cInputWindowYesNo
                 qr = pyqrcode.create(r['data']['user_url'])
                 qr.png(VSPath('special://home/userdata/addon_data/plugin.video.vstream/qrcode.png'), scale=5)
                 oSolver = cInputWindowYesNo(captcha='special://home/userdata/addon_data/plugin.video.vstream/qrcode.png', msg="Scanner le QRCode pour acceder au lien d'autorisation", roundnum=1)
@@ -164,7 +134,7 @@ class cHoster(iHoster):
         except:
             VSlog("Pas de sous-titre")
 
-        if (api_call):
+        if api_call:
             if SubTitle:
                 return True, api_call, SubTitle
             else:
@@ -176,7 +146,7 @@ class cHoster(iHoster):
         try:
             js_result = json.loads(requests.get(url).content)
         except ValueError:
-            raise ResolverError('Unusable Authorization Response')
+            raise Exception('Unusable Authorization Response')
 
         if js_result.get('statusCode') == 0:
             if js_result.get('data') == "wait-pin-validation":
@@ -184,4 +154,4 @@ class cHoster(iHoster):
             else:
                 return js_result
 
-        raise ResolverError('Error during check authorisation.')
+        raise Exception('Error during check authorisation.')

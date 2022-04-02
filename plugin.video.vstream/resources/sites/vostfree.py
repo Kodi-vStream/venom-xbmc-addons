@@ -8,7 +8,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress, siteManager
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
 
@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'vostfree'
 SITE_NAME = 'Vostfree'
 SITE_DESC = 'anime en streaming'
 
-URL_MAIN = 'https://vostfree.com/'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 URL_SEARCH = (URL_MAIN + '?do=search&subaction=search&speedsearch=1&story=', 'showMovies')
 URL_SEARCH_ANIMS = (URL_SEARCH[0], 'showMovies')
@@ -56,7 +56,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -84,10 +84,10 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -133,7 +133,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -146,7 +146,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '>([^<]+)</a>\s*</div>\s*<a href="([^"]+)">\s*<span class="next-page">Suivant</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('/page/([0-9]+)', sNextPage).group(1)
@@ -171,14 +171,14 @@ def seriesHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    # On récupere l'id associé a l'épisode
+    # On récupère l'id associé à l'épisode
     sPattern = '<option value="buttons_([0-9]+)">([^<]+)</option>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     epNumber = ''
     sHosterUrl = ''
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -193,11 +193,10 @@ def seriesHosters():
                 epNumber = aEntry[1]
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + epNumber + '[/COLOR]')
 
-            # On récupere l'info du player
+            # On récupère l'info du player
             sPattern = '<div id="buttons_' + aEntry[0] + '" class="button_box">(.+?)/div></div>'
             htmlCut = oParser.parse(sHtmlContent, sPattern)[1][0]
 
-            #sPattern = '<div id="player_([0-9]+)".+?">([^<]+)<'
             sPattern = '<div id="player_([0-9]+)".+?class="new_player_([^"]+)'
             data = oParser.parse(htmlCut, sPattern)
 
@@ -207,9 +206,9 @@ def seriesHosters():
                 playerData = oParser.parse(sHtmlContent, sPattern)[1][0]
 
                 if 'http' not in playerData:
-                    sPattern = 'player_type[^;]*=="new_player_' + aEntry1[1].lower()+ '"\|.+?(?:src=\\\\")([^"]*).*?player_content.*?"([^\\\\"]*)'
+                    sPattern = 'player_type[^;]*=="new_player_' + aEntry1[1].lower() + '"\|.+?(?:src=\\\\")([^"]*).*?player_content.*?"([^\\\\"]*)'
                     aResult2 = oParser.parse(playerContent, sPattern)
-                    if aResult2[0] == True:
+                    if aResult2[0] is True:
                         sHosterUrl = aResult2[1][0][0] + playerData + aResult2[1][0][1]
                         if 'http' not in sHosterUrl:
                             sHosterUrl = 'https:' + sHosterUrl
@@ -218,7 +217,7 @@ def seriesHosters():
                     sHosterUrl = playerData
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if oHoster != False:
                     oHoster.setDisplayName(sTitle)
                     oHoster.setFileName(sTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -239,7 +238,7 @@ def seriesHosters():
                 else:
                     sHosterUrl = url
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    if (oHoster != False):
+                    if oHoster != False:
                         oHoster.setDisplayName(sTitle)
                         oHoster.setFileName(sTitle)
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -302,7 +301,7 @@ def DecryptOuo():
 
     sHosterUrl = oRequestHandler.getRealUrl()
     oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if (oHoster != False):
+    if oHoster != False:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

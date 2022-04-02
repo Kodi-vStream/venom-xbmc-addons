@@ -327,6 +327,10 @@ class cHome:
         oOutputParameterHandler.addParameter('siteUrl', 'SPORT_GENRES')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30113), self.addons.VSlang(30105)), 'genres.png', oOutputParameterHandler)
 
+        # Affiche les Genres Sportifs
+        oOutputParameterHandler.addParameter('siteUrl', 'SPORT_REPLAY')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30113), self.addons.VSlang(30350)), 'genres.png', oOutputParameterHandler)
+
         # Affiche les Sources Sportives
         oOutputParameterHandler.addParameter('siteUrl', 'SPORT_SPORTS')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', self.addons.VSlang(30138), 'sport.png', oOutputParameterHandler)

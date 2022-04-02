@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.gui.hoster import cHosterGui
+from resources.lib.comaddon import siteManager
 from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'youtitou_com'
 SITE_NAME = 'YouTitou'
 SITE_DESC = 'Plus de 900 dessins animés gratuits classés par âge'
 
-URL_MAIN = 'http://www.youtitou.com/'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 ANIM_ENFANTS = ('http://', 'load')
 
@@ -68,7 +68,7 @@ def showMovies():
     sPattern = '<p style="text-align: center;"><a href="(http.//www.youtitou.com/videos.+?)">.+?<img.+?src="([^"]+)'
     aResult = oParser.parse(sHtml, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -90,14 +90,13 @@ def showEpisode():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtml = oRequestHandler.request()
     sPattern = 'class="media-object">.+?href="(http.//www.youtitou.com/videos.+?)".+?src="([^"]+)" alt="([^"]+)'
     aResult = oParser.parse(sHtml, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -130,14 +129,14 @@ def showHosters():
     sPattern = '<iframe.+?src="(.+?)".+?</iframe>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
             sHosterUrl = aEntry
             if sHosterUrl.startswith('//'):
                 sHosterUrl = 'https:' + sHosterUrl
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -157,11 +156,11 @@ def showEdu():
     sPattern = '<h2 class="row-title">(.+?)</h2>.+?<iframe.+?src="([^"]+)".+?</iframe>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         sPattern = '<iframe title="([^"]+)".+?src="([^"]+)".+?</iframe>'  # pas de titre 6_8
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
             sHosterUrl = aEntry[1]
             if sHosterUrl.startswith('//'):
@@ -172,7 +171,7 @@ def showEdu():
             sThumb = 'https://i.ytimg.com/vi/' + sId + '/mqdefault.jpg'
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

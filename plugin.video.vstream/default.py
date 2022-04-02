@@ -6,11 +6,10 @@ import xbmc
 from resources.lib.home import cHome
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.pluginHandler import cPluginHandler
-from resources.lib.handler.rechercheHandler import cRechercheHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.comaddon import progress, VSlog, addon, window
-from resources.lib.util import Quote
+from resources.lib.search import cSearch
 # http://kodi.wiki/view/InfoLabels
 # http://kodi.wiki/view/List_of_boolean_conditions
 
@@ -119,8 +118,7 @@ class main:
             if isTrakt(sSiteName, sFunction):
                 return
 
-            if sSiteName == 'globalSearch':
-                searchGlobal()
+            if isSearch(sSiteName, sFunction):
                 return
 
             if sSiteName == 'globalRun':
@@ -272,60 +270,12 @@ def isTrakt(sSiteName, sFunction):
     return False
 
 
-def searchGlobal():
-    oGui = cGui()
-    addons = addon()
-
-    oInputParameterHandler = cInputParameterHandler()
-    sSearchText = oInputParameterHandler.getValue('searchtext')
-    sCat = oInputParameterHandler.getValue('sCat')
-
-    oHandler = cRechercheHandler()
-    oHandler.setText(sSearchText)
-    oHandler.setCat(sCat)
-    aPlugins = oHandler.getAvailablePlugins()
-    if not aPlugins:
+def isSearch(sSiteName, sFunction):
+    if sSiteName == 'globalSearch':
+        oSearch = cSearch()
+        exec("oSearch.searchGlobal()")
         return True
-
-    total = len(aPlugins)
-    progress_ = progress().VScreate(large=True)
-
-    # kodi 17 vire la fenetre busy qui se pose au dessus de la barre de Progress
-    try:
-        xbmc.executebuiltin('Dialog.Close(busydialog)')
-    except:
-        pass
-
-    oGui.addText('globalSearch', addons.VSlang(30081) % sSearchText, 'search.png')
-    sSearchText = Quote(sSearchText)
-
-    count = 0
-    for plugin in aPlugins:
-
-        progress_.VSupdate(progress_, total, plugin['name'], True)
-        if progress_.iscanceled():
-            break
-
-        oGui.searchResults[:] = []  # vider le tableau de résultats pour les récupérer par source
-        _pluginSearch(plugin, sSearchText)
-
-        if len(oGui.searchResults) > 0:  # Au moins un résultat
-            count += 1
-
-            # nom du site
-            oGui.addText(plugin['identifier'], '%s. [COLOR olive]%s[/COLOR]' % (count, plugin['name']), 'sites/%s.png' % (plugin['identifier']))
-            for result in oGui.searchResults:
-                oGui.addFolder(result['guiElement'], result['params'])
-
-    if not count:   # aucune source ne retourne de résultats
-        oGui.addText('globalSearch')  # "Aucune information"
-
-    progress_.VSclose(progress_)
-
-    cGui.CONTENT = 'files'
-
-    oGui.setEndOfDirectory()
-    return True
+    return False
 
 
 def _pluginSearch(plugin, sSearchText):

@@ -9,13 +9,14 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 
 SITE_IDENTIFIER = 'les_debiles'
 SITE_NAME = 'Les Débiles'
 SITE_DESC = 'Vidéos drôles, du buzz, des fails et des vidéos insolites'
 
-URL_MAIN = 'http://www.lesdebiles.com/'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
+# URL_MAIN = dans sites.json
 
 URL_SEARCH = (URL_MAIN, 'showMovies')
 URL_SEARCH_MISC = (URL_MAIN, 'showMovies')
@@ -50,7 +51,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -80,7 +81,7 @@ def showGenres():
     sPattern = '<li><a href="([^>]+)">([^<]+)</a></li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -106,16 +107,16 @@ def showMovies(sSearch=''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sHtmlContent = sHtmlContent.replace('&gt;&gt;' , 'suivante')
+    sHtmlContent = sHtmlContent.replace('&gt;&gt;', 'suivante')
 
     sPattern = 'class="blockthumb">.+?class="imageitem" src="([^"]+)".+?class="titleitem"><a href="([^"]+)">(.+?)</a>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -136,7 +137,7 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             sPaging = re.search('-([0-9]+).html', sNextPage).group(1)
@@ -150,7 +151,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<a href="([^"]+)">suivante</a></li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         return aResult[1][0]
 
     return False
@@ -172,11 +173,11 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     # lien dailymotion
-    if (aResult[0] == False):
+    if aResult[0] is False:
         sPattern = 'src="([^"]+)\?.+?" allowfullscreen></iframe>'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
@@ -185,7 +186,7 @@ def showHosters():
                 sHosterUrl = 'http:' + sHosterUrl
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -195,13 +196,13 @@ def showHosters():
         if vidpremium != -1:
             sPattern = "window.location.href = '([^']+)';"
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
+            if aResult[0] is True:
                 sHosterUrl = aResult[1][0].replace('download-', '').replace('.html', '')
 
                 sHosterUrl = 'http://videos.lesdebiles.com/' + sHosterUrl + '.mp4'
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if oHoster != False:
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

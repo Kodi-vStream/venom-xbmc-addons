@@ -2,7 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 import re
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'cinemay_cc'
 SITE_NAME = 'Cinemay_cc'
 SITE_DESC = 'Films VF & VOSTFR en streaming.'
 
-URL_MAIN = "https://cinemay.cc/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 URL_SEARCH = ('', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showMovies')
@@ -117,7 +117,7 @@ def showMenuSeries():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         showMovies(sSearchText)
         oGui.setEndOfDirectory()
         return
@@ -235,7 +235,7 @@ def showMovies(sSearch=''):
             sDesc = ''
             sThumb = re.sub('/w\d+/', '/w342/', aEntry[0])
             sTitle = aEntry[1].replace('film en streaming', '').replace('série en streaming', '')
-            
+
             # Titre recherché
             if sSearch:
                 if not oUtil.CheckOccurence(sSearchText, sTitle):
@@ -263,7 +263,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -275,7 +275,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '>([^<]+?)</a><a href="([^"]+?)" class="next page-numbers'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -301,7 +301,7 @@ def showSelectType():
     oParser = cParser()
     sPattern = 'class="description">.*?<br>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -319,6 +319,7 @@ def showSelectType():
 
     oGui.setEndOfDirectory()
 
+
 def showSaison():
     oGui = cGui()
 
@@ -331,21 +332,18 @@ def showSaison():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
-    
     sPattern = '<a href="#season.+?class.+?saison (\d+)'
-
     aResult = oParser.parse(sHtmlContent, sPattern)
-    sSaison = ''
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
             sNumSaison = aEntry[0]
             sSaison = 'Saison ' + aEntry[0]
             sUrlSaison = sUrl + "?sNumSaison=" + sNumSaison
-            sDisplayTitle =  sMovieTitle + ' ' +  sSaison
-            sTitle = sMovieTitle 
+            sDisplayTitle = sMovieTitle + ' ' + sSaison
+            sTitle = sMovieTitle
 
             oOutputParameterHandler.addParameter('siteUrl', sUrlSaison)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -366,8 +364,8 @@ def showSXE():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sDesc = oInputParameterHandler.getValue('sDesc')
 
-    sUrl, sNumSaison  = sUrl.split('?sNumSaison=')
-    
+    sUrl, sNumSaison = sUrl.split('?sNumSaison=')
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -377,21 +375,19 @@ def showSXE():
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
     sPattern = 'class="description">.*?<br>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
 
     sPattern = 'class="num-epi">\d+x([^<]+).+?href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    
-
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            
+
             Ep = aEntry[0]
             sUrl2 = aEntry[1]
-            Saison = 'Saison' +' ' + sNumSaison
+            Saison = 'Saison' + ' ' + sNumSaison
             sTitle = sMovieTitle + ' ' + Saison + ' Episode' + Ep
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -420,7 +416,7 @@ def showLink():
     oParser = cParser()
     sPattern = 'class="description">.*?<br>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
 
     # dans le cas d'une erreur si serie (pas de controle année et genre)
@@ -438,10 +434,10 @@ def showLink():
 
     sPattern = 'data-url="([^"]+).+?server.+?alt="([^"]+).+?alt="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sKey = aEntry[0]
@@ -481,7 +477,7 @@ def showHosters():
         sHosterUrl = aResult[0]
 
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
+        if oHoster != False:
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -502,19 +498,19 @@ def getTokens():
     sPattern = 'id="menu.+?name=_token value="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         return False, 'none', 'none'
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         token = aResult[1][0]
 
     sPattern = 'XSRF-TOKEN=([^;]+).+?cinemay_session=([^;]+)'
     aResult = oParser.parse(sHeader, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         return False, 'none', 'none'
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         XSRF_TOKEN = aResult[1][0][0]
         site_session = aResult[1][0][1]
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.comaddon import xbmc, isMatrix
+from resources.lib.comaddon import isMatrix
 
 try:
     import htmlentitydefs
@@ -36,20 +36,18 @@ class cUtil:
     # percent : pourcentage de concordance, 75% = il faut au moins 3 mots sur 4
     # retourne True si pourcentage atteint
     def CheckOccurence(self, str1, str2, percent=75):
-
         str2 = self.CleanName(str2)
-
         nbOccurence = nbWord = 0
-        list2 = str2.split(' ')      # Comparaison mot à mot
+        list2 = str2.split(' ')   # Comparaison mot à mot
         for part in str1.split(' '):
-            if len(part) == 1:       # Ignorer une seule lettre
+            if len(part) == 1:    # Ignorer une seule lettre
                 continue
-            nbWord += 1                         # nombre de mots au total
+            nbWord += 1           # nombre de mots au total
             if part in list2:
-                nbOccurence += 1                # Nombre de mots correspondants
-        
+                nbOccurence += 1  # Nombre de mots correspondants
+
         if nbWord == 0:
-            return False 
+            return False
         return 100*nbOccurence/nbWord >= percent
 
     def removeHtmlTags(self, sValue, sReplace=''):
@@ -60,10 +58,10 @@ class cUtil:
         iSeconds = int(iSeconds)
         iMinutes = int(iSeconds / 60)
         iSeconds = iSeconds - (iMinutes * 60)
-        if (iSeconds < 10):
+        if iSeconds < 10:
             iSeconds = '0' + str(iSeconds)
 
-        if (iMinutes < 10):
+        if iMinutes < 10:
             iMinutes = '0' + str(iMinutes)
 
         return str(iMinutes) + ':' + str(iSeconds)
@@ -276,3 +274,7 @@ def QuoteSafe(sUrl):
 
 def urlEncode(sUrl):
     return urllib.urlencode(sUrl)
+
+
+def urlHostName(sUrl):  # retourne le hostname d'une Url
+    return urllib.urlparse(sUrl).hostname

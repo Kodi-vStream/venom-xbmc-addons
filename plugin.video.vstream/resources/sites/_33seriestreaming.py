@@ -7,21 +7,24 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
+from resources.lib.util import cUtil
 
-SITE_IDENTIFIER = '_33seriestreaming'  # Clone -> https://33streaming.co/
+SITE_IDENTIFIER = '_33seriestreaming'
 SITE_NAME = '33 Séries'
 SITE_DESC = 'Films et Séries en streaming VF et VOSTFR'
 
-URL_MAIN = "https://33seriestreaming.rip/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
+# URL_MAIN = "https://33seriestreaming.rip/"
+# Clone -> https://33streaming.co/
 
 # Sous menus
 MOVIE_MOVIE = (True, 'showMenuMovies')
 SERIE_SERIES = (True, 'showMenuTvShows')
 
+MOVIE_NEWS = (URL_MAIN + 'film-streaming', 'showMovies')
 MOVIE_GENRES = (URL_MAIN, 'showGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
-MOVIE_NEWS = (URL_MAIN + 'film-streaming', 'showMovies')
 MOVIE_LIST = (URL_MAIN, 'showAlpha')
 
 SERIE_NEWS = (URL_MAIN + 'series-streaming', 'showMovies')
@@ -49,7 +52,6 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showMenuTvShows', 'Séries', 'series.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 
 def showMenuMovies():
@@ -110,7 +112,7 @@ def showAlpha():
 
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
-    listalpha = [str(i) for i in range(1,10)]
+    listalpha = [str(i) for i in range(1, 10)]
     listalpha.extend(list(string.ascii_lowercase))
     for alpha in listalpha:
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'catalog/' + alpha + '/')
@@ -187,6 +189,10 @@ def showMovies(sSearch=''):
     sYear = oInputParameterHandler.getValue('sYear')
 
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch.replace(' ', '+').replace('%20 ', '+')
     sPattern = 'class=".+?grid-item.+?href="([^"]+).+?src="([^"]+).+?alt="([^"]+)'
     oRequestHandler = cRequestHandler(sUrl)
@@ -209,9 +215,13 @@ def showMovies(sSearch=''):
 
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
-            sTitle = aEntry[2]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
+            sTitle = aEntry[2]
+
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
 
             sDisplayTitle = sTitle
             sDesc = ''
@@ -265,7 +275,7 @@ def showSaisons():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'grid-item" href="([^"]+).+?src="([^"]+).+?(saison \d+)'
+    sPattern = 'grid-item" href="([^"]+).+?src="([^"]*).+?(saison \d+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0] is True:
@@ -359,12 +369,14 @@ def showHosters():
                 dataName = aEntry[0]
                 dataHash = aEntry[1]
                 dataEp = aEntry[2]
-                pdata = 'mod=xfield_ajaxs&hash=' + dataHash + '&episode=' + dataEp + '&name=' + dataName
+                pdata = 'mod=xfield_ajaxs&name=' + dataName + '&hash=' + dataHash + '&episode=' + dataEp
+                # pdata = 'mod=xfield_ajaxs&hash=' + dataHash + '&episode=' + dataEp + '&name=' + dataName
             else:
                 dataId = aEntry[0]
                 dataName = aEntry[1]
                 dataHash = aEntry[2]
-                pdata = 'mod=xfield_ajax&hash=' + dataHash + '&id=' + dataId + '&name=' + dataName
+                pdata = 'mod=xfield_ajax&id=' + dataId + '&name=' + dataName + '&hash=' + dataHash
+                # pdata = 'mod=xfield_ajax&hash=' + dataHash + '&id=' + dataId + '&name=' + dataName
 
             sHost = aEntry[3].strip()
             sLang = aEntry[4]
@@ -406,7 +418,6 @@ def hostersLink():
     oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
     oRequest.addParametersLine(pdata)
     sHtmlContent = oRequest.request()
-
     sPattern = '(http[^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 

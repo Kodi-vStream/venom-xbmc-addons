@@ -9,7 +9,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 from resources.lib.util import urlEncode
 
 try:
@@ -21,7 +21,7 @@ SITE_IDENTIFIER = 'toonanime'
 SITE_NAME = 'Toon Anime'
 SITE_DESC = 'anime en VF/VOSTFR'
 
-URL_MAIN = "https://toonanime.cc/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 ANIM_ANIMS = ('http://', 'load')
 ANIM_NEWS = (URL_MAIN, 'showMovies')
@@ -67,7 +67,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         sUrl = sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -137,10 +137,10 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -177,7 +177,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             sNumPage = re.search('/page/([0-9]+)', sNextPage).group(1)
@@ -191,7 +191,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<a href="([^"]+)"><span class="md__icon md-arrowr"></span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         return aResult[1][0]
 
     return False
@@ -203,9 +203,9 @@ def ShowSxE():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sDesc = oInputParameterHandler.getValue('sDesc')
-    sMovieTitle = re.sub('Episode \d+', '', sMovieTitle)
+    # sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    # sMovieTitle = re.sub('Episode \d+', '', sMovieTitle)
 
     sID = sUrl.split('/')[3].split('-')[0]
 
@@ -217,7 +217,7 @@ def ShowSxE():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -241,6 +241,7 @@ def ShowSxE():
 
     oGui.setEndOfDirectory()
 
+
 def seriesHosters():
     oGui = cGui()
 
@@ -248,7 +249,6 @@ def seriesHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sDesc = oInputParameterHandler.getValue('sDesc')
     sID = oInputParameterHandler.getValue('id')
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -262,10 +262,9 @@ def seriesHosters():
     oRequestHandler = cRequestHandler(URL_MAIN + 'engine/ajax/full-story.php?newsId=' + sID)
     sHtmlContent = oRequestHandler.request(jsonDecode=True)['html']
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
-        oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
@@ -276,7 +275,7 @@ def seriesHosters():
             hostClass = aEntry[0]
 
             for aEntry1 in aResult1[1]:
-                sTitle = sMovieTitle + " [COLOR coral]Lecteur " + hostClass + "[/COLOR]"
+                # sTitle = sMovieTitle  + " [COLOR coral]" + hostClass.capitalize() + "[/COLOR]"
 
                 if "https" in aEntry1[0]:
                     sHosterUrl = aEntry1[0]
@@ -295,9 +294,9 @@ def seriesHosters():
                 else:
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
 
-                if (oHoster != False):
-                    oHoster.setDisplayName(sTitle)
-                    oHoster.setFileName(sTitle)
+                if oHoster != False:
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
         progress_.VSclose(progress_)

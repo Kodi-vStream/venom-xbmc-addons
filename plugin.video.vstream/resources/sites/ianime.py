@@ -4,7 +4,7 @@ import random
 import re
 import unicodedata
 
-from resources.lib.comaddon import progress, VSlog, isMatrix
+from resources.lib.comaddon import progress, VSlog, isMatrix, siteManager
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -24,17 +24,18 @@ SITE_IDENTIFIER = 'ianime'
 SITE_NAME = 'I anime'
 SITE_DESC = 'Animés en streaming'
 
-URL_MAIN = 'https://www.ianimes.org/'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
+# URL_MAIN = dans sites.json
 
-MOVIE_MOVIE = (URL_MAIN + 'films.php?liste=' + RandomKey, 'ShowAlpha')
+MOVIE_MOVIE = (URL_MAIN + 'films.php?liste=' + RandomKey, 'showAlpha')
 MOVIE_GENRES = (URL_MAIN, 'showGenresMovies')
 
-SERIE_SERIES = (URL_MAIN + 'series.php?liste=' + RandomKey, 'ShowAlpha')
+SERIE_SERIES = (URL_MAIN + 'series.php?liste=' + RandomKey, 'showAlpha')
 
 ANIM_NEWS = (URL_MAIN + 'nouveautees.html', 'showMovies')
-ANIM_ANIMS = (URL_MAIN + 'animes.php?liste=' + RandomKey, 'ShowAlpha')
-ANIM_VFS = (URL_MAIN + 'listing_vf.php', 'ShowAlpha2')
-ANIM_VOSTFRS = (URL_MAIN + 'listing_vostfr.php', 'ShowAlpha2')
+ANIM_ANIMS = (URL_MAIN + 'animes.php?liste=' + RandomKey, 'showAlpha')
+ANIM_VFS = (URL_MAIN + 'listing_vf.php', 'showAlpha2')
+ANIM_VOSTFRS = (URL_MAIN + 'listing_vostfr.php', 'showAlpha2')
 ANIM_GENRES = (URL_MAIN + 'categorie.php?watch=' + RandomKey, 'showGenres')
 ANIM_DRAMA = (URL_MAIN + 'drama.php', 'showMovies')
 
@@ -55,7 +56,7 @@ def DecryptMangacity(chain):
     aResult2 = oParser.parse(chain, sPattern)
     d = ''
 
-    if (aResult2[0] == True):
+    if aResult2[0] is True:
 
         a = aResult2[1][0][0]
         b = aResult2[1][0][1].replace('"', '').split(',')
@@ -100,7 +101,7 @@ def ICDecode(html):
     d = ''
     i = 0
     while i < len(c):
-        if (i % 3 == 0):
+        if i % 3 == 0:
             d = d + '%'
         else:
             d = d + c[i]
@@ -190,7 +191,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         showMovies(sUrl + sSearchText)
         oGui.setEndOfDirectory()
         return
@@ -200,25 +201,25 @@ def showGenresMovies():
     oGui = cGui()
 
     liste = []
-    liste.append(['Action', URL_MAIN + 'categorie_action_page1.html'])
-    liste.append(['Animation', URL_MAIN + 'categorie_animation_page1.html'])
-    liste.append(['Aventure', URL_MAIN + 'categorie_aventure_page1.html'])
-    liste.append(['Combat', URL_MAIN + 'categorie_combats_page1.html'])
-    liste.append(['Comédie', URL_MAIN + 'categorie_comedie_page1.html'])
-    liste.append(['Drame', URL_MAIN + 'categorie_drame_page1.html'])
-    liste.append(['Espionnage', URL_MAIN + 'categorie_espionnage_page1.html'])
-    liste.append(['Fantastique', URL_MAIN + 'categorie_fantastique_page1.html'])
-    liste.append(['Guerre', URL_MAIN + 'categorie_guerre_page1.html'])
-    liste.append(['Horreur', URL_MAIN + 'categorie_epouvante_page1.html'])
-    liste.append(['Musical', URL_MAIN + 'categorie_musical_page1.html'])
-    liste.append(['Péplum', URL_MAIN + 'categorie_peplum_page1.html'])
-    liste.append(['Policier', URL_MAIN + 'categorie_policier_page1.html'])
-    liste.append(['Romance', URL_MAIN + 'categorie_romance_page1.html'])
-    liste.append(['Thriller', URL_MAIN + 'categorie_thriller_page1.html'])
+    liste.append(['Action', 'categorie_action_page1.html'])
+    liste.append(['Animation', 'categorie_animation_page1.html'])
+    liste.append(['Aventure', 'categorie_aventure_page1.html'])
+    liste.append(['Combat', 'categorie_combats_page1.html'])
+    liste.append(['Comédie', 'categorie_comedie_page1.html'])
+    liste.append(['Drame', 'categorie_drame_page1.html'])
+    liste.append(['Espionnage', 'categorie_espionnage_page1.html'])
+    liste.append(['Fantastique', 'categorie_fantastique_page1.html'])
+    liste.append(['Guerre', 'categorie_guerre_page1.html'])
+    liste.append(['Horreur', 'categorie_epouvante_page1.html'])
+    liste.append(['Musical', 'categorie_musical_page1.html'])
+    liste.append(['Péplum', 'categorie_peplum_page1.html'])
+    liste.append(['Policier', 'categorie_policier_page1.html'])
+    liste.append(['Romance', 'categorie_romance_page1.html'])
+    liste.append(['Thriller', 'categorie_thriller_page1.html'])
 
     oOutputParameterHandler = cOutputParameterHandler()
     for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -247,7 +248,7 @@ def showGenres():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     genres = []
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
             sTitle = aEntry[1]
             sTitle = str(cUtil().unescape(sTitle))
@@ -268,7 +269,7 @@ def showGenres():
     oGui.setEndOfDirectory()
 
 
-def ShowAlpha2():
+def showAlpha2():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -293,15 +294,15 @@ def ShowAlpha2():
     sPattern = '<a href=.(listing_(?:vf|vostfr)\.php\?affichage=[^<>"]+?). class=.button black pastel light. alt="Voir la liste des animes en ' + sType + '"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
-        ShowAlpha(URL_MAIN + aResult[1][0])
+    if aResult[0] is True:
+        showAlpha(URL_MAIN + aResult[1][0])
 
 
-def ShowAlpha(url=None):
+def showAlpha(url=None):
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
-    if (url == None):
+    if url is None:
         sUrl = oInputParameterHandler.getValue('siteUrl')
     else:
         sUrl = url
@@ -322,7 +323,7 @@ def ShowAlpha(url=None):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = URL_MAIN + aEntry[0]
@@ -377,10 +378,10 @@ def showMovies(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -450,7 +451,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:  # une seule page par recherche
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Suivant', oOutputParameterHandler)
@@ -464,11 +465,11 @@ def __checkForNextPage(sHtmlContent):
     sPattern = 'class=.button red light. title=.Voir la page.+?<a href=.(.+?)(?:\'|") class=.button light.'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         sPattern = "<.table><center><center><a href='(.+?)' class='button light' title='Voir la page 1'>"
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         return URL_MAIN + aResult[1][0]
 
     return False
@@ -497,7 +498,7 @@ def showEpisode():
     sPattern = '<headline11>(.+?)</headline11></a>|href="*([^"]+)"* title="([^"]+)"[^>]+style="*text-decoration:none;"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         isPython3 = isMatrix()
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -607,7 +608,7 @@ def showHosters():
         sPattern = '<div class="box"><iframe.+?src=[\'|"](.+?)[\'|"]'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if aResult[0] is True:
             for aEntry in aResult[1]:
                 if re.match(".+?&#[0-9]+;", aEntry):  # directe mais codé html
                     sHosterUrl = cUtil().unescape(aEntry)
@@ -624,7 +625,7 @@ def showHosters():
         # 2 eme methode
         sPattern = '<script>eval\(unescape\((.+?)\); eval\(unescape\((.+?)\);</script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if aResult[0] is True:
             for aEntry in aResult[1]:
                 # si url cryptee mangacity algo
                 sHosterUrl = DecryptMangacity(aEntry[1])
@@ -634,7 +635,7 @@ def showHosters():
         # 3 eme methode
         sPattern = 'document\.write\(unescape\("(%3c%.+?)"\)\);'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if aResult[0] is True:
             for aEntry in aResult[1]:
                 tmp = Unquote(aEntry)
 
@@ -693,7 +694,7 @@ def showHosters():
 
                 # redirection tinyurl
                 if 'tinyurl' in sHosterUrl:
-                    sHosterUrl = GetTinyUrl(sHosterUrl)
+                    sHosterUrl = getTinyUrl(sHosterUrl)
 
                 # test pr liens raccourcis
                 if 'http://goo.gl' in sHosterUrl:
@@ -761,7 +762,7 @@ def showHosters():
                     sHosterUrl = sHosterUrl2
 
                 if 'tinyurl' in sHosterUrl:
-                    sHosterUrl = GetTinyUrl(sHosterUrl)
+                    sHosterUrl = getTinyUrl(sHosterUrl)
 
                 if '///' in sHosterUrl:
                     sHosterUrl = 'https://' + '/'.join(sHosterUrl.split('/')[5:])
@@ -769,7 +770,7 @@ def showHosters():
                 VSlog(sHosterUrl)
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if oHoster != False:
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -778,7 +779,7 @@ def showHosters():
 
 
 # -------------------------------------------------------------------------------------------
-def GetTinyUrl(url):
+def getTinyUrl(url):
     if 'tinyurl' not in url:
         return url
 
