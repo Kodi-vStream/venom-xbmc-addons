@@ -13,8 +13,9 @@ Historique des modifications
 ==================================================================================
 
 *** 1.9.0***
+- Bandes annonces depuis Youtube
 - Recherche plus rapide avec suivi des sources
-- Navigation avec metadonnées plus rapide 
+- Navigation plus rapide
 
 *** 1.8.0***
 - Recherche plus rapide et des résultats plus pertinents
