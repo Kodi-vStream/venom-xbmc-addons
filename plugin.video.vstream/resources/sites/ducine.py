@@ -15,7 +15,7 @@ SITE_NAME = 'Du Ciné'
 SITE_DESC = 'Films et Séries en Français streaming gratuit'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
-#'https://www.ducine.site/'
+# "https://www.ducine.site/"
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_NEWS = (URL_MAIN + 'films-vostfr.html', 'showMovies')
@@ -102,7 +102,7 @@ def showMenuTvShows():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText != False:
         showMovies(URL_SEARCH[0] + sSearchText)
         oGui.setEndOfDirectory()
         return
@@ -156,10 +156,10 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -184,7 +184,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -196,7 +196,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<span>[\d+]</span><a href="([^"]+).+?>(\d+)</a>\s*</div'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         sNextPage = aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('([0-9]+).html', sNextPage).group(1)
@@ -227,10 +227,10 @@ def showSaisons():
     except:
         pass
 
-    sPattern = '([^"]+)" class="part13">Tous les épisodes.+?part12">([^<]+)'
+    sPattern = '([^"]+)" title="[^"]+" class="part13">Tous les épisodes.+?part12">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -262,10 +262,10 @@ def showEpisodes():
     sPattern = 'href="([^"]+)"><div class="fsa-ep">.+?</span>([^<]+)</'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -295,14 +295,14 @@ def showHosters():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry[0]
             sLang = aEntry[1].upper()
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
                 oHoster.setDisplayName(sMovieTitle + ' (' + sLang + ')')
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
