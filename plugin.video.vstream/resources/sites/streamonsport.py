@@ -31,11 +31,11 @@ SITE_DESC = 'Site pour regarder du sport en direct'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
-SPORT_SPORTS = (True, 'load')
+SPORT_SPORTS = ('/', 'load')
 SPORT_TV = ('31-site-pour-regarder-les-chaines-de-sport.html', 'showMovies')
 CHAINE_TV = ('2370162-chaines-tv-streaming-tf1-france-2-canal-plus.html', 'showMovies')
-SPORT_LIVE = (True, 'showMovies')
-SPORT_GENRES = (True, 'showGenres')
+SPORT_LIVE = ('/', 'showMovies')
+SPORT_GENRES = ('/', 'showGenres')
 
 
 def load():
@@ -123,7 +123,7 @@ def showMovies(sSearch=''):
                     sDisplayTitle += ' (' + sDesc1.replace(' · ', '') + ')'
                 if sDate:
                     try:
-                        d = datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S+01:00')[0:6]))
+                        d = datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S+02:00')[0:6]))
                         sDate = d.strftime("%d/%m/%y %H:%M")
                     except Exception as e:
                         pass

@@ -276,6 +276,8 @@ class PasteContent:
         if sContent:
             lines = eval(sContent)       # trop long
             if lines[0].startswith('#'):    # paste index
+                if renew: # renouveller le cache du paste index
+                    threading.Timer(10, renewPaste, args=(pasteBin, )).start()
                 return self.readIndex(lines, sMedia)
             entete = lines[0].split(";")
 
@@ -345,6 +347,10 @@ class PasteContent:
         # Récupérer la dernière version du paste
         movies = self.getLines(pasteId)
 
+        # pas de recherche de contenu pour un paste index
+        if not lastMediaTitle:
+            return
+
         # Récupérer les métadonnées des derniers contenus
         if self.TMDB == -1 or self.CAT == -1:
             return
@@ -374,7 +380,7 @@ class PasteContent:
             sTitle = movie[self.TITLE]
 
             # si on retombe sur le contenu de l'ancien paste, on s'arrête de scanner
-            if lastMediaTitle and lastMediaTitle == sTitle:
+            if lastMediaTitle == sTitle:
                 break
 
             progress_.VSupdate(progress_, total, text=sTitle)
@@ -517,15 +523,13 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showMenuMangas', 'Animes', 'animes.png', oOutputParameterHandler)
     oGui.addDir(SITE_IDENTIFIER, 'showMenuMisc', 'Divers', 'buzz.png', oOutputParameterHandler)
 
-    # Menus non visibles en widget
-    if not xbmc.getCondVisibility('Window.IsActive(home)'):
-        sDecoColor = addon().getSetting('deco_color')
 
-        # Menu pour gérer les dossiers
-        oGui.addDir(SITE_IDENTIFIER, 'showMenuFolder', '[COLOR %s]Gérer les codes[/COLOR]' % sDecoColor, 'notes.png', oOutputParameterHandler)
+    # Menu pour gérer les dossiers
+    sDecoColor = addon().getSetting('deco_color')
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuFolder', '[COLOR %s]Gérer les codes[/COLOR]' % sDecoColor, 'notes.png', oOutputParameterHandler)
 
-        # Menu pour gérer les paramètres
-        oGui.addDir(SITE_IDENTIFIER, 'adminContenu', '[COLOR %s]Gérer les contenus[/COLOR]' % sDecoColor, 'library.png', oOutputParameterHandler)
+    # Menu pour gérer les paramètres
+    oGui.addDir(SITE_IDENTIFIER, 'adminContenu', '[COLOR %s]Gérer les contenus[/COLOR]' % sDecoColor, 'library.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -820,7 +824,7 @@ def showMenuFilms():
 
     sRes = 'sRes=' in sUrl
     if sRes:
-        oGui.addText(SITE_IDENTIFIER, sLabel='[COLOR red]## Résolution %s ##[/COLOR]' % (sUrl.split('sRes=')[1]))
+        oGui.addText(SITE_IDENTIFIER, sLabel='[COLOR red]## Résolution %s ##[/COLOR]' % (sUrl.split('sRes=')[1]), sIcon='hd.png')
 
     oOutputParameterHandler = cOutputParameterHandler()
 
@@ -2007,7 +2011,7 @@ def showMovies(sSearch=''):
     oOutputParameterHandler = cOutputParameterHandler()
 
     if sRes:
-        oGui.addText(SITE_IDENTIFIER, sLabel='[COLOR red]## Résolution %s ##[/COLOR]' % sRes)
+        oGui.addText(SITE_IDENTIFIER, sLabel='[COLOR red]## Résolution %s ##[/COLOR]' % sRes, sIcon='hd.png')
 
     for movie in movies:
 
