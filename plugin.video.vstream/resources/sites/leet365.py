@@ -140,14 +140,10 @@ def showTV():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    chainesCine = [29, 30, 38, 5, 17, 39]
     if 'sport' in sUrl:
-        chaines = []
-        for c in channels:  # enlever les chaines ciné en conservant l'ordre
-            if c not in chainesCine or c == 5:  # Canal+ dans les 2 listes
-                chaines.append(c)
-    else:
-        chaines = chainesCine
+        chaines = [1, 4, 21, 20, 5, 6, 7, 8, 18, 19, 9, 2, 3, 10, 11, 12, 13, 14, 15, 16, 22, 23, 24, 25, 26, 27, 28, 37, 31, 32, 33, 34, 35, 36]
+    else: # Chaines ciné
+        chaines = [29, 30, 38, 5, 17, 39]
 
     oOutputParameterHandler = cOutputParameterHandler()
     for iChannel in chaines:
