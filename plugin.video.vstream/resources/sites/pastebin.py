@@ -824,7 +824,7 @@ def showMenuFilms():
 
     sRes = 'sRes=' in sUrl
     if sRes:
-        oGui.addText(SITE_IDENTIFIER, sLabel='[COLOR red]## Résolution %s ##[/COLOR]' % (sUrl.split('sRes=')[1]))
+        oGui.addText(SITE_IDENTIFIER, sLabel='[COLOR red]## Résolution %s ##[/COLOR]' % (sUrl.split('sRes=')[1]), sIcon='hd.png')
 
     oOutputParameterHandler = cOutputParameterHandler()
 
@@ -2011,7 +2011,7 @@ def showMovies(sSearch=''):
     oOutputParameterHandler = cOutputParameterHandler()
 
     if sRes:
-        oGui.addText(SITE_IDENTIFIER, sLabel='[COLOR red]## Résolution %s ##[/COLOR]' % sRes)
+        oGui.addText(SITE_IDENTIFIER, sLabel='[COLOR red]## Résolution %s ##[/COLOR]' % sRes, sIcon='hd.png')
 
     for movie in movies:
 
