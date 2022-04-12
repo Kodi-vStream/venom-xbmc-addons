@@ -552,7 +552,7 @@ def showMoviesLinks():
             oGui.addLink(SITE_IDENTIFIER, 'showHostersLink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     # on regarde si dispo dans d'autres qualités
-    sPattern = "value='(.+?)'.+?<b>(.+?)</b>.+?<b> \((.+?)\)"
+    sPattern = "value='([^']+)'.+?<b>([^<]+)<\/b>.+?<b> \(([^\)]+)\)"
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0] is True:
         # Affichage du texte
