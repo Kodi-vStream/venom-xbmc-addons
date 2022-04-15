@@ -336,7 +336,6 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                     else:
                         sThumbnail = self.none_poster % sTitle
 
-                    # sId = i['id']
 
                     listitem_ = listitem(label=sTitle)
                     try:
@@ -345,10 +344,11 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                         listitem_.setInfo('video', {'rating': str(i['vote_average'])})
 
                     listitem_.setArt({'icon': sThumbnail})
+                    # listitem_.setProperty('TmdbId', str(i['id']))
                     listitems.append(listitem_)
                 self.getControl(control).addItems(listitems)
 
-            except:
+            except Exception as e:
                 pass
 
             # self.getControl(52100).setVisible(False)
@@ -440,13 +440,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                 import sys
                 from resources.lib.util import cUtil
                 item = self.getControl(controlId).getSelectedItem()
-                sTitle = item.getLabel()
-
-                try:
-                    sTitle = sTitle.encode('utf-8')
-                    sTitle = cUtil().CleanName(sTitle)
-                except:
-                    return
+                sTitle = cUtil().CleanName(item.getLabel())
 
                 self.close()
 
