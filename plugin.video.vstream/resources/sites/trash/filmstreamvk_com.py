@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-return False  # NPAI 04/02/2022
+#return False  # NPAI 04/02/2022
 
 import re
 
@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'filmstreamvk_com'
 SITE_NAME = 'Filmstreamvk'
 SITE_DESC = 'Films, Séries & Mangas en Streaming'
 
-URL_MAIN = "https://filmstreamvk.bz/"
+URL_MAIN = "https://www.film-streamingk.biz/"
 
 MOVIE_MOVIE = (True, 'showMenuMovies')
 MOVIE_NEWS = (URL_MAIN + 'film', 'showMovies')
