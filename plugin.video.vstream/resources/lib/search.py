@@ -133,7 +133,7 @@ class cSearch:
         listThread = []
         window(10101).setProperty('search', 'true')
         for plugin in listPlugins:
-            thread = threading.Thread(target = targetFunction, args = tuple([plugin] + argsList))
+            thread = threading.Thread(target = targetFunction, name = plugin['name'], args = tuple([plugin] + argsList))
             thread.start()
             listThread.append(thread)
 
