@@ -49,11 +49,11 @@ def load():
     # oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
     # oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Sports (Genres)', 'genres.png', oOutputParameterHandler)
     #
-    # oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
-    # oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines TV Sports', 'sport.png', oOutputParameterHandler)
-    #
-    # oOutputParameterHandler.addParameter('siteUrl', CHAINE_TV[0])
-    # oGui.addDir(SITE_IDENTIFIER, CHAINE_TV[1], 'Chaines TV Ciné', 'tv.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
+    oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines TV Sports', 'sport.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler.addParameter('siteUrl', CHAINE_TV[0])
+    oGui.addDir(SITE_IDENTIFIER, CHAINE_TV[1], 'Chaines TV Ciné', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
