@@ -375,11 +375,7 @@ def showMovies(sSearch=''):
                 sThumb = URL_MAIN[:-1] + aEntry[1]
                 sTitle = aEntry[2]
 
-            # Enlever les films en doublons (même titre)
-            # il s'agit du même film dans une autre qualité qu'on retrouvera au moment du choix de la qualité
-            if sTitle in titles:
-                continue
-            titles.add(sTitle)
+            titles.append(sTitle)
 
             # sDesc = re.sub('<[^<]+?>', '', sDesc)
             sDisplayTitle = sTitle
@@ -663,6 +659,9 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
+    
+    if sUrl.find("https") != sUrl.rfind("https"):
+        sUrl = sUrl[sUrl.rfind("https"):]
 
     oRequestHandler = cRequestHandler(sUrl.replace(' ', '%20'))
     oRequestHandler.addHeaderEntry('User-Agent', UA)
