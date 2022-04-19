@@ -80,7 +80,7 @@
             "url": "https://documentaire.io/"
         },
         "dpstream": {
-            "label": "Dpstream",
+            "label": "DpStream",
             "active": "True",
             "url": "https://dpstream.io/"
         },
@@ -97,7 +97,7 @@
         "enstream_series": {
             "label": "Enstream (S\u00e9ries)",
             "active": "True",
-            "url": "https://www.enstream.cam/"
+            "url": "https://wwv.enstream.cam/"
         },
         "extreme_down": {
             "label": "ExtremeDown",
