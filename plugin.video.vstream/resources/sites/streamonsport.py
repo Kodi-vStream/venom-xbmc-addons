@@ -72,30 +72,16 @@ def load():
 def showGenres():
     oGui = cGui()
 
-    oRequestHandler = cRequestHandler(URL_MAIN)
-    sHtmlContent = oRequestHandler.request()
-
-    sPattern = '<a href="(.+?)"><img alt="(.+?)".+?src="(.+?)">'
-    oParser = cParser()
-    sHtmlContent = oParser.abParse(sHtmlContent, '<div class="teams"', '</div></div>')
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if aResult[0] is False:
-        oGui.addText(SITE_IDENTIFIER)
-
-    if aResult[0] is True:
-        oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in aResult[1]:
-            title = aEntry[1].replace('streaming', '').strip()
-            sThumb = aEntry[2].replace(',', '%2C').replace('?v=so', '')
-            if 'http' not in sThumb:
-                sThumb = URL_MAIN[:-1] + sThumb
-
-            oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
-            oOutputParameterHandler.addParameter('sMovieTitle', title)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMisc(SITE_IDENTIFIER, 'showMovies', title, 'genres.png', sThumb, title, oOutputParameterHandler)
-
+    genreURL = '-basketball-streaming-regarder-le-basket-en-streaming.html'
+    genres = [('Basket', '3'), ('Football', '1'), ('Rugby', '2'), ('Tennis', '5')]
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    for title, url in genres:
+        sUrl = URL_MAIN + url + genreURL
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('sMovieTitle', title)
+        oGui.addMisc(SITE_IDENTIFIER, 'showMovies', title, 'genres.png', '', title, oOutputParameterHandler)
+        
     oGui.setEndOfDirectory()
 
 
