@@ -325,7 +325,7 @@ class cGui:
     def createListItemThread(self, oGuiElement):
         itemTitle = oGuiElement.getTitle()
         oListItem = listitem(itemTitle)
-        t = threading.Thread(target = self._createListItem, args=(oGuiElement,oListItem))
+        t = threading.Thread(target = self._createListItem, name = itemTitle, args=(oGuiElement,oListItem))
         self.thread_listing.append(t)
         t.start()
         return oListItem
