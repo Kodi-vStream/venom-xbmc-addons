@@ -320,6 +320,9 @@ class cHome:
 
         # Affiche les live Sportifs
         oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'SPORT_TV')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30113), self.addons.VSlang(30200)), 'tv.png', oOutputParameterHandler)
+
         oOutputParameterHandler.addParameter('siteUrl', 'SPORT_LIVE')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30113), self.addons.VSlang(30119)), 'news.png', oOutputParameterHandler)
 
@@ -329,7 +332,7 @@ class cHome:
 
         # Affiche les Genres Sportifs
         oOutputParameterHandler.addParameter('siteUrl', 'SPORT_REPLAY')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30113), self.addons.VSlang(30350)), 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30113), self.addons.VSlang(30350)), 'replay.png', oOutputParameterHandler)
 
         # Affiche les Sources Sportives
         oOutputParameterHandler.addParameter('siteUrl', 'SPORT_SPORTS')

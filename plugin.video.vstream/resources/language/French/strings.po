@@ -540,6 +540,10 @@ msgctxt "#30160"
 msgid "Quality HD"
 msgstr "Qualité HD"
 
+msgctxt "#30200"
+msgid "Channels"
+msgstr "Chaines"
+
 msgctxt "#30201"
 msgid "Playlist"
 msgstr "Playlist"

@@ -76,6 +76,7 @@ ANIM_NEWS = (URL_MAIN + 'animes/', 'showMovies')
 
 DOC_NEWS = (URL_MAIN + 'emissions-tv-documentaires/documentaire', 'showMovies')
 SPORT_REPLAY = (URL_MAIN + 'emissions-tv-documentaires/sport', 'showMovies')
+SPORT_SPORTS = SPORT_REPLAY
 TV_NEWS = (URL_MAIN + 'emissions-tv-documentaires/emissions-tv/', 'showMovies')
 SPECT_NEWS = (URL_MAIN + '?do=cat&category=emissions-tv-documentaires/spectacle&epoque=2022', 'showMovies')
 CONCERT_NEWS = (URL_MAIN + '?do=cat&category=musiques-mp3-gratuite/concerts&epoque=2022', 'showMovies')

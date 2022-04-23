@@ -16,7 +16,7 @@ SITE_DESC = 'Sports Replay'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 SPORT_SPORTS = (True, 'load')
-SPORT_GENRES = (True, 'load')
+SPORT_REPLAY = (True, 'load')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 

@@ -66,7 +66,8 @@ OAV = (URL_MAIN + 'oav/', 'showMovies')
 DOC_NEWS = (URL_MAIN + 'documentaire-gratuit/', 'showMovies')  # docs
 DOC_DOCS = ('http://', 'load')
 
-SPORT_SPORTS = (URL_MAIN + 'sport/', 'showMovies')  # sports
+SPORT_REPLAY = (URL_MAIN + 'sport/', 'showMovies')  # sports
+SPORT_SPORTS = SPORT_REPLAY
 TV_NEWS = (URL_MAIN + 'emissions-tv/', 'showMovies')  # dernieres emissions tv
 SPECT_NEWS = (URL_MAIN + 'spectacles/', 'showMovies')  # derniers spectacles
 CONCERT_NEWS = (URL_MAIN + 'concert/', 'showMovies')  # derniers concerts
