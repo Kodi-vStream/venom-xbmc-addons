@@ -389,11 +389,6 @@
             "active": "True",
             "url": "https://www.themoviedb.org/"
         },
-        "tirexo": {
-            "label": "Tirexo",
-            "active": "True",
-            "url": "https://www2.tirexo.art/"
-        },
         "toonanime": {
             "label": "Toonanime",
             "active": "True",
@@ -478,11 +473,6 @@
             "label": "Zone Streaming",
             "active": "True",
             "url": "http://www.zone-streaming.fr/"
-        },
-        "zone_telechargement_ws": {
-            "label": "Zone T\u00e9l\u00e9chargement.ws",
-            "active": "True",
-            "url": "https://www.zone-telechargement.cam/"
         },
         "zustream": {
             "label": "ZuStream",
