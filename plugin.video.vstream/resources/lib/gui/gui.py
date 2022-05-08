@@ -254,15 +254,16 @@ class cGui:
         # Des infos a rajouter ?
         params = {'siteUrl': oGuiElement.setSiteUrl,
                   'sTmdbId': oGuiElement.setTmdbId,
-                  'sYear': oGuiElement.setYear}
+                  'sYear': oGuiElement.setYear,
+                  'sRes': oGuiElement.setRes}
 
-        try:
+        try:  # Py2
             for sParam, callback in params.iteritems():
                 value = oOutputParameterHandler.getValue(sParam)
                 if value:
                     callback(value)
 
-        except AttributeError:
+        except AttributeError:  # py3
             for sParam, callback in params.items():
                 value = oOutputParameterHandler.getValue(sParam)
                 if value:
@@ -270,6 +271,19 @@ class cGui:
 
         oListItem = self.createListItem(oGuiElement)
 
+ #affiche tag HD
+        # https://alwinesch.github.io/group__python__xbmcgui__listitem.html#ga99c7bf16729b18b6378ea7069ee5b138
+        sRes = oGuiElement.getRes()
+        if sRes:
+            if '2160' in sRes:
+                oListItem.addStreamInfo('video', { 'width':3840, 'height' : 2160 })
+            elif '1080' in sRes:
+                oListItem.addStreamInfo('video', { 'width':1920, 'height' : 1080 })
+            elif '720' in sRes:
+                oListItem.addStreamInfo('video', { 'width':1280, 'height' : 720 })
+            elif '480' in sRes:
+                oListItem.addStreamInfo('video', { 'width':720, 'height' : 576 })
+        
         sCat = oGuiElement.getCat()
         if sCat:
             cGui.sCat = sCat

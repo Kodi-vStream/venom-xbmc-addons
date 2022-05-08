@@ -59,6 +59,8 @@ class cGuiElement:
         self.__ImdbId = ''
         self.__Year = ''
 
+        self.__sRes = '' # resolution
+
         self.__aItemValues = {}
         self.__aProperties = {}
         self.__aContextElements = []
@@ -115,6 +117,19 @@ class cGuiElement:
     def getYear(self):
         return self.__Year
 
+    def setRes(self, data):
+        if data.upper() in ('1080P', 'FHD', 'FULLHD'): 
+            data = '1080p'
+        elif data.upper() in ('720P', 'DVDRIP', 'DVDSCR', 'HD', 'HDLIGHT', 'HDRIP', 'BDRIP', 'BRRIP'): 
+            data = '720p'
+        elif data.upper() in ('4K', 'UHD', '2160P'): 
+            data = '2160p'
+        
+        self.__sRes = data
+
+    def getRes(self):
+        return self.__sRes
+
     def setGenre(self, genre):
         self.__sGenre = genre
 
@@ -164,10 +179,7 @@ class cGuiElement:
         return self.__sSiteName
 
     def setFileName(self, sFileName):
-        if isMatrix():
-            self.__sFileName = sFileName
-        else:
-            self.__sFileName = cUtil().titleWatched(sFileName)
+        self.__sFileName = cUtil().titleWatched(sFileName)
 
     def getFileName(self):
         return self.__sFileName
@@ -209,10 +221,10 @@ class cGuiElement:
         """ Fin Nettoyage du titre """
 
         # recherche l'année, uniquement si entre caractere special a cause de 2001 odysse de l'espace ou k2000
-        string = re.search('([^\w ][0-9]{4}[^\w ])', sTitle)
+        string = re.search('[^\w ]([0-9]{4})[^\w ]', sTitle)
         if string:
             sTitle = sTitle.replace(string.group(0), '')
-            self.__Year = str(string.group(0)[1:5])
+            self.__Year = str(string.group(1))
             self.addItemValues('year', self.__Year)
 
         # recherche une date
