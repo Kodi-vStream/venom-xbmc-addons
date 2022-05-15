@@ -267,8 +267,7 @@ def getAction():
     if sAction == 'vote':
         # vote /movie/{movie_id}/rating
         # /tv/{tv_id}/rating
-        #numboard = dialogs.numeric(0, 'Min 0.5 - Max 10')
-        numboard = dialogs.DIALOG.numeric(0,'Min 0.5 - Max 10')
+        numboard = dialogs.numeric(0, 'Min 0.5 - Max 10', '')
         if numboard != None:
             sAction = '%s/%s/rating' % (sCat, sTMDB)
             sPost = {"value": numboard}
