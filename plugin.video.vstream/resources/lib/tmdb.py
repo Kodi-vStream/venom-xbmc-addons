@@ -1108,6 +1108,38 @@ class cTMDb:
         except:
             return False
         return result
+    
+    def getPostUrl(self, url, post):
+        # Execute une requete POST vers l'API
+        # Utile pour :
+        #       - Noter film
+        #       - Ajouter/Retirer le film des favoris
+        #       - Ajouter/Retirer le film de la watchlist
+        # Appelé depuis le menu contextuel TMDB
+        #
+        # Paramètres :
+        #   url : le complément de l'url de l'api
+        #           ex : 'movie/64408/rating' pour noter un film
+        #           ou : '' pour ajouter aux favoris
+        #   post : json qui sera envoyé Request Body
+        #           ex :   {
+        #                   "value": 8.5
+        #                  }
+
+        from urllib import request
+        session_id = self.ADDON.getSetting('tmdb_session')
+
+        urlapi = self.URL + url +'?api_key='+self.ADDON.getSetting('api_tmdb')+'&session_id='+ session_id
+        
+        req = request.Request(urlapi, method="POST")
+        req.add_header('Content-Type', 'application/json')
+        data = json.dumps(post)
+        data = data.encode()
+        r = request.urlopen(req, data=data)			
+        response = r.read()
+        r.close()
+        data = json.loads(response)
+        return data    
 
     def _call(self, action, append_to_response=''):
         from resources.lib.handler.requestHandler import cRequestHandler

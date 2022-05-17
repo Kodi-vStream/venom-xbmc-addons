@@ -18,7 +18,6 @@ SITE_DESC = 'Base de données video.'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
-API_KEY = '92ab39516970ab9d86396866456ec9b6'
 API_VERS = '3'
 API_URL = URL_MAIN + API_VERS
 
@@ -235,6 +234,7 @@ def getCat():
 
 
 def getAction():
+    oGui = cGui()
     grab = cTMDb()
     dialogs = dialog()
 
@@ -267,7 +267,7 @@ def getAction():
     if sAction == 'vote':
         # vote /movie/{movie_id}/rating
         # /tv/{tv_id}/rating
-        numboard = dialogs.numeric(0, 'Min 0.5 - Max 10')
+        numboard = oGui.showNumBoard('Min 0.5 - Max 10')
         if numboard != None:
             sAction = '%s/%s/rating' % (sCat, sTMDB)
             sPost = {"value": numboard}
