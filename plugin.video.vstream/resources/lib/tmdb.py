@@ -1037,6 +1037,8 @@ class cTMDb:
                     name = re.sub('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))(?:([^"]+)|)', '', name)
 
             cleanTitle = self._clean_title(name)
+            if not cleanTitle:
+                return {}
             meta = self._cache_search(media_type, cleanTitle, tmdb_id, year, season, episode)
 
             if meta:
@@ -1062,8 +1064,12 @@ class cTMDb:
                 if 'tmdb_id' in meta and meta['tmdb_id']:
                     return self.get_meta('season', name, tmdb_id=meta['tmdb_id'], year=year, season=season)
         elif media_type == 'episode':
-            if tmdb_id: # pas de recherche par nom si pas de tmdb_id, car il y aurait déjà un tmdb_id si on connaissait la série
+            if tmdb_id:
                 meta = self.search_episode_id(tmdb_id, season, episode)
+            else:  # on retrouve l'id en cherchant la série qui peut être en cache
+                meta = self.get_meta('tvshow', name, year=year)
+                if 'tmdb_id' in meta and meta['tmdb_id']:
+                    meta = self.search_episode_id(meta['tmdb_id'], season, episode)
         elif media_type == 'anime':
             if tmdb_id:
                 meta = self.search_tvshow_id(tmdb_id)
