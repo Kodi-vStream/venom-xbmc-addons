@@ -575,6 +575,12 @@ def showSaisons(oGui, sMovieTitle, content, numPage):
             sMovieTitle += ' [%s]' % sRes
         # if sLang:
         #     sMovieTitle += ' (%s)' % sLang
+
+        if 'SAISON' in sTitle.upper() or 'SEASON' in sTitle.upper():
+            m = re.search('(saison|season)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
+            if m:
+                sa = m.group(3)
+            sUrl += '&sSeason=' + sa
         
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -682,6 +688,8 @@ def showEpisodes(oGui, sMovieTitle, content, sSeason):
             if sa:
                 if int(sa) != int(sSeason):
                     continue
+            else:
+                sa = sSeason
         
         
         # seulement les formats vidéo (ou sans extensions)
