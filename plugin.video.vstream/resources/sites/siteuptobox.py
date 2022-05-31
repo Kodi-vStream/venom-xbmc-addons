@@ -33,7 +33,7 @@ URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 NB_FILES = 100
 BURL = URL_MAIN + '?op=my_files'
 API_URL = 'https://uptobox.com/api/user/files?token=none&orderBy=file_created&dir=desc'
-MOVIE_MOVIE = ('&path=//', 'showMedias')
+URL_MOVIE = ('&path=//', 'showMedias')
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
 headers = {'User-Agent': UA}
@@ -52,13 +52,13 @@ def load():
         return
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
+    oOutputParameterHandler.addParameter('siteUrl', URL_MOVIE[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Mes vidéos', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', URL_MOVIE[0])
+    oGui.addDir(SITE_IDENTIFIER, URL_MOVIE[1], 'Mes vidéos', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
+    oOutputParameterHandler.addParameter('siteUrl', URL_MOVIE[0])
     oGui.addDir(SITE_IDENTIFIER, 'showFile', 'Mes Fichiers', 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
