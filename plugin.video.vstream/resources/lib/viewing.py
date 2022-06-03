@@ -87,7 +87,7 @@ class cViewing:
                     function = data['fav']
                     cat = data['cat']
                     sSeason = data['season']
-                    sTmdbId = data['tmdb_id']  # if 'tmdb_id' in data else None
+                    sTmdbId = data['tmdb_id'] if data['tmdb_id'] != '0' else None
 
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', siteurl)

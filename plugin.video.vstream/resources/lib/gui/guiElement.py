@@ -100,7 +100,7 @@ class cGuiElement:
         return self.__sTrailer
 
     def setTmdbId(self, data):
-        self.__TmdbId = data
+        self.__TmdbId = data if data != '0' else ''
 
     def getTmdbId(self):
         return self.__TmdbId
