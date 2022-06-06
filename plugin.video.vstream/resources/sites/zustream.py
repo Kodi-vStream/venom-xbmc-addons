@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-
+return False #l'adresse a changé mais plus du tout le meme site
 import re
 
 from resources.lib.comaddon import progress, siteManager
