@@ -347,50 +347,53 @@ class PasteContent:
         # Récupérer la dernière version du paste
         movies = self.getLines(pasteId)
 
-        # pas de recherche de contenu pour un paste index
-        if not lastMediaTitle:
-            return
-
-        # Récupérer les métadonnées des derniers contenus
-        if self.TMDB == -1 or self.CAT == -1:
-            return
-
-        from resources.lib.tmdb import cTMDb
-        TMDb = cTMDb()
-        nbMeta = 100
-        numItem = 0
-        tmdbIDs = []    # id déjà traités
-
-        # Recherche de nouveaux contenus
-        progress_ = progress().VScreate(addon().VSlang(30141))
-        total = min(nbMeta, len(movies))
-
-        # préchargement des méta
-        for movie in movies:
-            numItem += 1
-            if numItem == nbMeta:
-                break
-
-            tmdbID = movie[self.TMDB]
-            if not tmdbID or tmdbID in tmdbIDs:
-                numItem -= 1
-                continue
-            tmdbIDs.append(tmdbID)
-
-            sTitle = movie[self.TITLE]
-
-            # si on retombe sur le contenu de l'ancien paste, on s'arrête de scanner
-            if lastMediaTitle == sTitle:
-                break
-
-            progress_.VSupdate(progress_, total, text=sTitle)
-
-            sType = movie[self.CAT].replace('film', 'movie').replace('serie', 'tvshow')
-            args = (sType, sTitle)
-            kwargs = {'tmdb_id': tmdbID}
-            meta = TMDb.get_meta(*args, **kwargs)
-
-        progress_.VSclose(progress_)
+        # Préchargement des métadonnées désactivé en attendant de trouver une méthode plus performante 
+        if False:
+            
+            # pas de recherche de contenu pour un paste index
+            if not lastMediaTitle:
+                return
+    
+            # Récupérer les métadonnées des derniers contenus
+            if self.TMDB == -1 or self.CAT == -1:
+                return
+    
+            from resources.lib.tmdb import cTMDb
+            TMDb = cTMDb()
+            nbMeta = 100
+            numItem = 0
+            tmdbIDs = []    # id déjà traités
+    
+            # Recherche de nouveaux contenus
+            progress_ = progress().VScreate(addon().VSlang(30141))
+            total = min(nbMeta, len(movies))
+    
+            # préchargement des méta
+            for movie in movies:
+                numItem += 1
+                if numItem == nbMeta:
+                    break
+    
+                tmdbID = movie[self.TMDB]
+                if not tmdbID or tmdbID in tmdbIDs:
+                    numItem -= 1
+                    continue
+                tmdbIDs.append(tmdbID)
+    
+                sTitle = movie[self.TITLE]
+    
+                # si on retombe sur le contenu de l'ancien paste, on s'arrête de scanner
+                if lastMediaTitle == sTitle:
+                    break
+    
+                progress_.VSupdate(progress_, total, text=sTitle)
+    
+                sType = movie[self.CAT].replace('film', 'movie').replace('serie', 'tvshow')
+                args = (sType, sTitle)
+                kwargs = {'tmdb_id': tmdbID}
+                meta = TMDb.get_meta(*args, **kwargs)
+    
+            progress_.VSclose(progress_)
 
     def resolveLink(self, pasteBin, link):
         if not self.movies:
