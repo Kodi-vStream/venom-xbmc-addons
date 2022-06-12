@@ -23,6 +23,8 @@ class cHoster(iHoster):
         api_call = False
         urlmain = 'https://video.sibnet.ru'
         oRequestHandler = cRequestHandler(self._url)
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Referer', urlmain + '/' )
         sHtmlContent = oRequestHandler.request()
 
         oParser = cParser()
@@ -30,8 +32,7 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if aResult[0] is True:
-            api_call= urlmain + aResult[1][0] + '|Referer=' + self._url
-
+            api_call = urlmain + aResult[1][0] + '|Referer=' + self._url
 
         if api_call:
             return True, api_call
