@@ -3,7 +3,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog
+from resources.lib.comaddon import dialog, VSlog
 from resources.lib.packer import cPacker
 
 
@@ -16,25 +16,23 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
+        
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close
+        
         sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
 
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if aResult[0] is True:
-            sHtmlContent2 = cPacker().unpack(aResult[1][0])
+            sHtmlContent = cPacker().unpack(aResult[1][0])
 
-            sPattern = '{src:"([^"]+)",type:"video\/mp4",res:([^:,<>]+)'
-            aResult = oParser.parse(sHtmlContent2, sPattern)
-            if aResult[0]:
-                # initialisation des tableaux
-                url = []
-                qua = []
-                for i in aResult[1]:
-                    url.append(str(i[0]))
-                    qua.append(str(i[1]))
-
-                api_call = dialog().VSselectqual(qua, url)
+        sPattern = '{src:\s*"([^"]+)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            api_call = aResult[1][0]
 
         if api_call:
             return True, api_call
