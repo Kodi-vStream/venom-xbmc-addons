@@ -81,35 +81,21 @@ def showFile(sSearch=''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    # VSlog('input   ' + str(sUrl))
-    oParser = cParser()
 
-    sOffset = 0
-    if oInputParameterHandler.exist('sOffset'):
-        sOffset = int(oInputParameterHandler.getValue('sOffset'))
-
-    sNext = 0
-    if oInputParameterHandler.exist('sNext'):
-        sNext = int(oInputParameterHandler.getValue('sNext'))
-
-    sToken = ''
-    if oInputParameterHandler.exist('sToken'):
-        sToken = oInputParameterHandler.getValue('sToken')
-
-    sFoldername = ''
-    if oInputParameterHandler.exist('sFoldername'):
-        sFoldername = oInputParameterHandler.getValue('sFoldername')
-        sUrl = sUrl + Quote(sFoldername).replace('//', '%2F%2F')
-
-    sPath = ''
-    if oInputParameterHandler.exist('sPath'):
-        sPath = oInputParameterHandler.getValue('sPath')
-        sUrl = sUrl + Quote(sPath).replace('//', '%2F%2F')
-
+    offset = 0
+    limit = NB_FILES
     if 'offset=' not in sUrl:
         sUrl = '&offset=0' + sUrl
+    else:
+        offset = int(re.search('&offset=(\d+)', sUrl).group(1))
+
     if 'limit=' not in sUrl:
-        sUrl = '&limit=%d' % NB_FILES  + sUrl
+        sUrl = '&limit=%d' % NB_FILES + sUrl
+    else:
+        limit = int(re.search('&limit=(\d+)', sUrl).group(1))
+
+    # Page courante
+    numPage = offset//limit
 
     oPremiumHandler = cPremiumHandler('uptobox')
     sToken = oPremiumHandler.getToken()
@@ -130,8 +116,8 @@ def showFile(sSearch=''):
     total = len(content)
     sPath = getpath(content)
     
-    # les dossiers en premier
-    if not sSearch and 'folders' in content:
+    # les dossiers en premier, sur la première page seulement
+    if not sSearch and numPage == 0 and 'folders' in content:
         folders = sorted(content['folders'], key=lambda f: f['fld_name'].upper())
         sFoldername = ''
         oOutputParameterHandler = cOutputParameterHandler()
@@ -149,6 +135,10 @@ def showFile(sSearch=''):
             oGui.addDir(SITE_IDENTIFIER, 'showFile', sTitle, 'genres.png', oOutputParameterHandler)
 
     # les fichiers
+    nbFile = 0
+    oHosterGui = cHosterGui()
+    oHoster = oHosterGui.getHoster('uptobox')
+
     for file in content['files']:
         if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
             sTitle = file['file_name']
@@ -157,26 +147,23 @@ def showFile(sSearch=''):
 
         sHosterUrl = URL_MAIN + file['file_code']
 
-        oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if oHoster != False:
-            oHoster.setDisplayName(sTitle)
-            oHoster.setFileName(sTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
-        sNext += 1
+        oHoster.setDisplayName(sTitle)
+        oHoster.setFileName(sTitle)
+        oHosterGui.showHoster(oGui, oHoster, sHosterUrl, '')
+            
+        nbFile += 1
 
     # Next >>>
-    if not sSearch:
-        if content['currentFolder']['fileCount'] != int(sNext):
-            oOutputParameterHandler = cOutputParameterHandler()
+    if not sSearch and nbFile == NB_FILES:
+        sPath = getpath(content)
+        nextPage = numPage + 1
+        offset = nextPage * NB_FILES
+        siteUrl = '&offset=%d&limit=%d&path=%s' % (offset, limit, sPath) 
 
-            sOffset = int(sOffset) + NB_FILES
-
-            oOutputParameterHandler.addParameter('siteUrl', API_URL.replace('none', sToken).replace('offset=0', 'offset=' + str(sOffset)))
-            oOutputParameterHandler.addParameter('sToken', sToken)
-            oOutputParameterHandler.addParameter('sNext', sNext)
-            oOutputParameterHandler.addParameter('sOffset', sOffset)
-            oOutputParameterHandler.addParameter('sPath', sPath)
-            oGui.addNext(SITE_IDENTIFIER, 'showFile', 'Suite', oOutputParameterHandler)
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+        oOutputParameterHandler.addParameter('sMovieTitle', 'sMovieTitle')
+        oGui.addNext(SITE_IDENTIFIER, 'showFile', 'Page %d' % (nextPage+1), oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -207,12 +194,12 @@ def showMedias(sSearch=''):
     if 'offset=' not in sSiteUrl:
         sSiteUrl = '&offset=0' + sSiteUrl
     else:
-        offset = int(re.search('&offset=(\d+)', sSiteUrl)[1])
+        offset = int(re.search('&offset=(\d+)', sSiteUrl).group(1))
 
     if 'limit=' not in sSiteUrl:
         sSiteUrl = '&limit=%d' % NB_FILES + sSiteUrl
     else:
-        limit = int(re.search('&limit=(\d+)', sSiteUrl)[1])
+        limit = int(re.search('&limit=(\d+)', sSiteUrl).group(1))
 
     # Page courante
     numPage = offset//limit
@@ -234,7 +221,7 @@ def showMedias(sSearch=''):
     isMovie = isTvShow = isSeason = False
     path = content['path'].upper()
     isMovie = 'FILM' in path or 'MOVIE' in path
-    isTvShow = 'SERIE' in path or 'SÉRIE' in path or 'TVSHOW' in path
+    isTvShow = 'SERIE' in path or u'SÉRIE' in path or 'TVSHOW' in path
     isAnime = '//ANIMES' in path or 'JAPAN' in path
 
     # ajout des dossiers en premier, sur la première page seulement
@@ -468,7 +455,7 @@ def showSeries(oGui, content, searchFolder, numPage):
             oGui.addDir(SITE_IDENTIFIER, 'showMedias', sTitle, 'genres.png', oOutputParameterHandler)
         else:           # série
             if 'SAISON' in sTitle.upper() or 'SEASON' in sTitle.upper() :
-                saison = int(re.search('(\d+)', sTitle)[1])
+                saison = int(re.search('(\d+)', sTitle).group(1))
                 sUrl += '&sSeason=%d' % saison
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -596,8 +583,8 @@ def getTag(sMovieTitle, tags, pos):
         aResult = re.search(t, sMovieTitle, re.IGNORECASE)
         if aResult:
             l = len(aResult.groups())
-            ret = aResult[l]
-            p = sMovieTitle.index(aResult[0])
+            ret = aResult.group(l)
+            p = sMovieTitle.index(aResult.group(0))
             if p<pos:
                 pos = p
             return ret.upper(), pos
