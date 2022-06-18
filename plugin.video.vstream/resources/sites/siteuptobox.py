@@ -314,6 +314,8 @@ def addFolders(oGui, content, searchFolder = None):
             sTitle=sTitle.replace('REP_', '')
         if sTitle.startswith('00_'):
             sTitle=sTitle.replace('00_', '')
+        if sTitle.startswith('RES-') and sTitle.endswith('-RES'):
+            sTitle=sTitle.replace('RES-', '[').replace('-RES', ']')
 
         sUrl = '&path=' + Quote(sFoldername).replace('//', '%2F%2F')
         
@@ -393,6 +395,12 @@ def showMovies(oGui, content):
 def showSeries(oGui, content, searchFolder, numPage):
     # dossiers trier par ordre alpha
     folders = sorted(content['folders'], key=lambda f: f['fld_name'].upper())
+
+    # ' resolution'
+    # path = content['path']
+    # res = re.search('RES-(%s)-RES', path)
+    # if res:
+    #     res = res.group(1)
 
     sMovieTitle = content['currentFolder']['name']
 

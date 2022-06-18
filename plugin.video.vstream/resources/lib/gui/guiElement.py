@@ -295,6 +295,8 @@ class cGuiElement:
         self.__sCleanTitle = re.sub('\[.*\]|\(.*\)', '', sTitle)
         if not self.__sCleanTitle:
             self.__sCleanTitle = re.sub('\[.+?\]|\(.+?\)', '', sTitle)
+            if not self.__sCleanTitle:
+                self.__sCleanTitle = sTitle.replace('[', '').replace(']', '').replace('(', '').replace(')', '')
 
         if isMatrix():
             # Python 3 decode sTitle
