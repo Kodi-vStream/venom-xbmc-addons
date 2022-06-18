@@ -220,7 +220,7 @@ def showMedias(sSearch=''):
 
     isMovie = isTvShow = isSeason = False
     path = content['path'].upper()
-    isMovie = 'FILM' in path or 'MOVIE' in path
+    isMovie = 'FILM' in path or 'MOVIE' in path or 'DISNEY' in path
     isTvShow = 'SERIE' in path or u'SÉRIE' in path or 'TVSHOW' in path
     isAnime = '//ANIMES' in path or 'JAPAN' in path
 
@@ -406,16 +406,20 @@ def showSeries(oGui, content, searchFolder, numPage):
 
     for folder in folders:
         
-        numSeries += 1
-        if numSeries <= offset:
-            continue
-        
         if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
             sTitle = folder['name']
             sFoldername = folder['fld_name']
         else:
             sTitle = folder['name'].encode('utf-8')
             sFoldername = folder['fld_name'].encode('utf-8')
+        
+        if 'REP_' in sTitle:
+            addFolders(oGui, content, sTitle.split(':')[0])
+            continue
+        
+        numSeries += 1
+        if numSeries <= offset:
+            continue
 
         if searchFolder and not sTitle.startswith(searchFolder):
             continue
@@ -454,8 +458,14 @@ def showSeries(oGui, content, searchFolder, numPage):
         if isSubFolder:   # dossier
             oGui.addDir(SITE_IDENTIFIER, 'showMedias', sTitle, 'genres.png', oOutputParameterHandler)
         else:           # série
-            if 'SAISON' in sTitle.upper() or 'SEASON' in sTitle.upper() :
+            saison = None
+            if 'SAISON' in sTitle.upper() or 'SEASON' in sTitle.upper():
                 saison = int(re.search('(\d+)', sTitle).group(1))
+            else:
+                saison = re.search('S(\d+)', sTitle)
+                if saison:
+                    saison = int(saison.group(1))
+            if saison:
                 sUrl += '&sSeason=%d' % saison
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
