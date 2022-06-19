@@ -354,9 +354,8 @@ def showMovies(oGui, content):
             # enlever l'extension
             sTitle = sTitle[:-4]
 
-        sMovieTitle = sTitle
-        
         # recherche des métadonnées
+        sMovieTitle = sTitle 
         pos = len(sMovieTitle)
         sPattern = ['[^\w]([0-9]{4})[^\w]']
         sYear, pos = getTag(sMovieTitle, sPattern, pos)
@@ -372,7 +371,12 @@ def showMovies(oGui, content):
         sPattern = ['VFI', 'VFF', 'VFQ', 'SUBFRENCH', 'TRUEFRENCH', 'FRENCH', 'VF', 'VOSTFR', '[^\w](VOST)[^\w]', '[^\w](VO)[^\w]', 'QC', '[^\w](MULTI)[^\w]']
         sLang, pos = getTag(sMovieTitle, sPattern, pos)
 
-        sMovieTitle = sMovieTitle[:pos].replace('.', ' ').strip()
+        sMovieTitle = sMovieTitle[:pos].replace('.', ' ').replace('_', ' ').strip()
+
+        # un peu de nettoyage
+        if not 'customer' in sMovieTitle.lower():
+            sMovieTitle = re.sub('(?i)' + re.escape('custom'), '', sMovieTitle)
+       
         
         sTitle = sMovieTitle
         if sRes:
