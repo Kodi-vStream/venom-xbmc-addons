@@ -236,7 +236,7 @@ def showMedias(sSearch=''):
         if 'sSeason' in sSiteUrl:
             sSeason = sSiteUrl.split('sSeason=')[1]
         
-        if len(content['files'])>1 :
+        if len(content['files'])>0 :
             nbFile = showEpisodes(oGui, sMovieTitle, content, sSiteUrl, sSeason)
         else:
             nbFile = showSeries(oGui, content, searchFolder, numPage)
