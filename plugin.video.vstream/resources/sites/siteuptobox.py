@@ -461,11 +461,19 @@ def showSeries(oGui, content, searchFolder, numPage):
         if sTitle.startswith('00_'):
             sTitle=sTitle.replace('00_', '')
 
+        pos = len(sTitle)
+        sPattern = ['[^\w]([0-9]{4})([^\w]|$)']
+        sYear, pos = getTag(sTitle, sPattern, pos)
+        if sYear:
+            sTitle = sTitle[:pos] + ' (%s)' %sYear
+
+
         sUrl = '&path=' + Quote(sFoldername).replace('//', '%2F%2F')
         # sMovieTitle = sTitle
         
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+        oOutputParameterHandler.addParameter('sYear', sYear)
         
         if isSubFolder:   # dossier
             oGui.addDir(SITE_IDENTIFIER, 'showMedias', sTitle, 'genres.png', oOutputParameterHandler)
@@ -478,9 +486,16 @@ def showSeries(oGui, content, searchFolder, numPage):
                 if saison:
                     saison = int(saison.group(1))
             if saison:
+                pos = len(sMovieTitle)
+                sPattern = ['[^\w]([0-9]{4})([^\w]|$)']
+                sYear, pos = getTag(sMovieTitle, sPattern, pos)
+                if sYear:
+                    sMovieTitle = sMovieTitle[:pos] + ' (%s)' %sYear
+                
                 sUrl += '&sSeason=%d' % saison
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sYear', sYear)
 
                 oGui.addSeason(SITE_IDENTIFIER, 'showMedias', sMovieTitle + ' ' + sTitle, '', '', '', oOutputParameterHandler)
             elif sMovieTitle.upper() == 'ANIMES' or 'JAPAN' in sMovieTitle.upper():
@@ -606,6 +621,8 @@ def getTag(sMovieTitle, tags, pos):
         if aResult:
             l = len(aResult.groups())
             ret = aResult.group(l)
+            if not ret and l > 1:
+                ret = aResult.group(l-1)
             p = sMovieTitle.index(aResult.group(0))
             if p<pos:
                 pos = p
