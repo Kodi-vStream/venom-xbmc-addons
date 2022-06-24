@@ -462,7 +462,7 @@ def showSeries(oGui, content, searchFolder, numPage):
             sTitle=sTitle.replace('00_', '')
 
         pos = len(sTitle)
-        sPattern = ['[^\w]([0-9]{4})([^\w]|$)']
+        sPattern = ['[^\w]([0-9]{4})[^\w]']
         sYear, pos = getTag(sTitle, sPattern, pos)
         if sYear:
             sTitle = sTitle[:pos] + ' (%s)' %sYear
@@ -487,7 +487,7 @@ def showSeries(oGui, content, searchFolder, numPage):
                     saison = int(saison.group(1))
             if saison:
                 pos = len(sMovieTitle)
-                sPattern = ['[^\w]([0-9]{4})([^\w]|$)']
+                sPattern = ['[^\w]([0-9]{4})[^\w]']
                 sYear, pos = getTag(sMovieTitle, sPattern, pos)
                 if sYear:
                     sMovieTitle = sMovieTitle[:pos] + ' (%s)' %sYear
