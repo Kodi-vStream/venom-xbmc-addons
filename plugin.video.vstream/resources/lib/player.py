@@ -95,7 +95,7 @@ class cPlayer(xbmc.Player):
         sPluginHandle = cPluginHandler().getPluginHandle()
 
         oGui = cGui()
-        item = oGui.createListItem(oGuiElement)
+        item = oGui._createListItem(oGuiElement)
         item.setPath(oGuiElement.getMediaUrl())
 
         #Sous titres

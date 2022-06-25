@@ -364,9 +364,11 @@ class cGui:
                 if 'tvshowtitle' in data:
                     host = itemTitle.split(data['tvshowtitle'])[1]
                 if self.displaySeason == "true":
-                    itemTitle = str(data['season']) + "x" + str(data['episode']) + ". " + episodeTitle + " " + host
+                    itemTitle = str(data['season']) + "x" + str(data['episode']) + ". " + episodeTitle
                 else:
-                    itemTitle = episodeTitle + " " + host
+                    itemTitle = episodeTitle
+                if len(host) > 3:
+                    itemTitle += " " + host
                 data['title'] = itemTitle
             except:
                 data['title'] = itemTitle
@@ -398,8 +400,9 @@ class cGui:
         else:
             videoInfoTag = oListItem.getVideoInfoTag()
 
+            # https://alwinesch.github.io/class_x_b_m_c_addon_1_1xbmc_1_1_info_tag_video.html
             # gestion des valeurs par defaut si non renseignées
-            videoInfoTag.setMediaType(data.get('mediatype', ""))
+            videoInfoTag.setMediaType(data.get('mediatype', ''))
             videoInfoTag.setTitle(data.get('title', ""))
             videoInfoTag.setTvShowTitle(data.get('tvshowtitle', ''))
             videoInfoTag.setOriginalTitle(data.get('originaltitle', ""))
