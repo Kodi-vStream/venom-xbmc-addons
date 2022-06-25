@@ -2364,6 +2364,7 @@ def showEpisodesLinks(siteUrl=''):
 
 def showHosters():
     from resources.lib.gui.hoster import cHosterGui
+    oHosterGui = cHosterGui()
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sTitle = oInputParameterHandler.getValue('sMovieTitle').replace(' | ', ' & ')
@@ -2373,6 +2374,8 @@ def showHosters():
     # Pre-trie pour insérer les résolutions inconnues, puis refaire un deuxième trie
     sortedRes = sorted(listRes.keys(), key=trie_res)
 
+    hosterLienDirect = oHosterGui.getHoster('lien_direct')
+    
     for res in sorted(listRes.keys(), key=trie_res):
         displayRes = res.replace('P', 'p').replace('1080p', 'fullHD').replace('720p', 'HD').replace('2160p', '4K')
         for sHosterUrl, lang in listRes[res]:
@@ -2381,9 +2384,9 @@ def showHosters():
                 sHosterUrl += 'http://' + sHosterUrl
 
             if '/dl/' in sHosterUrl or '.download.' in sHosterUrl or '.uptostream.' in sHosterUrl:
-                oHoster = cHosterGui().getHoster('lien_direct')
+                oHoster = hosterLienDirect
             else:
-                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                oHoster = oHosterGui.checkHoster(sHosterUrl)
 
             if oHoster:
                 sDisplayName = sTitle
@@ -2394,7 +2397,7 @@ def showHosters():
 
                 oHoster.setDisplayName(sDisplayName)
                 oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+                oHosterGui.showHoster(oGui, oHoster, sHosterUrl, '')
 
     oGui.setEndOfDirectory()
 
