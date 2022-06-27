@@ -490,7 +490,7 @@ def showSeries(oGui, content, searchFolder, numPage):
                 sPattern = ['[^\w]([0-9]{4})[^\w]']
                 sYear, pos = getTag(sMovieTitle, sPattern, pos)
                 if sYear:
-                    sMovieTitle = sMovieTitle[:pos] + ' (%s)' %sYear
+                    sMovieTitle = sMovieTitle[:pos]# + ' (%s)' %sYear
                 
                 sUrl += '&sSeason=%d' % saison
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -554,6 +554,14 @@ def showEpisodes(oGui, sMovieTitle, content, sSiteUrl, sSeason):
                 oGui.addSeason(SITE_IDENTIFIER, 'showMedias', sTitle, '', '', '', oOutputParameterHandler)
             return nbFile
     
+    
+    pos = len(sMovieTitle)
+    sPattern = ['[^\w]([0-9]{4})[^\w]']
+    sYear, pos = getTag(sMovieTitle, sPattern, pos)
+    if sYear:
+        sMovieTitle = sMovieTitle[:pos]# + ' (%s)' %sYear
+
+    
     # ajout des fichiers
     oOutputParameterHandler = cOutputParameterHandler()
     for file in content['files']:
@@ -563,7 +571,6 @@ def showEpisodes(oGui, sMovieTitle, content, sSiteUrl, sSeason):
             sTitle = file['file_name'].encode('utf-8')
             
         sHosterUrl = URL_MAIN + file['file_code']
-        
         
         # Recherche saisons et episodes
         sa = ep =''
@@ -595,6 +602,7 @@ def showEpisodes(oGui, sMovieTitle, content, sSiteUrl, sSeason):
         nbFile += 1
         oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+        oOutputParameterHandler.addParameter('sYear', sYear)
         oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', '', '', oOutputParameterHandler)
         
     return nbFile
