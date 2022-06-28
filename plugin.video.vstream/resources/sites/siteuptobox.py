@@ -464,8 +464,13 @@ def showSeries(oGui, content, searchFolder, numPage):
         pos = len(sTitle)
         sPattern = ['[^\w]([0-9]{4})[^\w]']
         sYear, pos = getTag(sTitle, sPattern, pos)
+
+        sPattern = ['TM(\d+)TM']
+        sTmdbId, pos = getTag(sTitle, sPattern, pos)
+
+        sTitle = sTitle[:pos]
         if sYear:
-            sTitle = sTitle[:pos] + ' (%s)' %sYear
+            sTitle = sTitle+ ' (%s)' %sYear
 
 
         sUrl = '&path=' + Quote(sFoldername).replace('//', '%2F%2F')
@@ -474,6 +479,7 @@ def showSeries(oGui, content, searchFolder, numPage):
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oOutputParameterHandler.addParameter('sYear', sYear)
+        oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
         
         if isSubFolder:   # dossier
             oGui.addDir(SITE_IDENTIFIER, 'showMedias', sTitle, 'genres.png', oOutputParameterHandler)
@@ -489,13 +495,15 @@ def showSeries(oGui, content, searchFolder, numPage):
                 pos = len(sMovieTitle)
                 sPattern = ['[^\w]([0-9]{4})[^\w]']
                 sYear, pos = getTag(sMovieTitle, sPattern, pos)
-                if sYear:
-                    sMovieTitle = sMovieTitle[:pos]# + ' (%s)' %sYear
+                sPattern = ['TM(\d+)TM']
+                sTmdbId, pos = getTag(sMovieTitle, sPattern, pos)
+                sMovieTitle = sMovieTitle[:pos]
                 
                 sUrl += '&sSeason=%d' % saison
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sYear', sYear)
+                oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
 
                 oGui.addSeason(SITE_IDENTIFIER, 'showMedias', sMovieTitle + ' ' + sTitle, '', '', '', oOutputParameterHandler)
             elif sMovieTitle.upper() == 'ANIMES' or 'JAPAN' in sMovieTitle.upper():
