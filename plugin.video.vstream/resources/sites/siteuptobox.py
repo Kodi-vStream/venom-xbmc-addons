@@ -220,7 +220,7 @@ def showMedias(sSearch=''):
 
     isMovie = isTvShow = isSeason = False
     path = content['path'].upper()
-    isMovie = 'FILM' in path or 'MOVIE' in path or 'DISNEY' in path
+    isMovie = 'FILM' in path or 'MOVIE' in path or 'DISNEY' in path or '3D' in path
     isTvShow = 'SERIE' in path or u'SÉRIE' in path or 'TVSHOW' in path
     isAnime = '//ANIMES' in path or 'JAPAN' in path
 
@@ -314,6 +314,11 @@ def addFolders(oGui, content, searchFolder = None):
             sTitle=sTitle.replace('REP_', '')
         if sTitle.startswith('00_'):
             sTitle=sTitle.replace('00_', '')
+        
+        # format du genre "REP_:"
+        if not sTitle:
+            return addFolders(oGui, content, subName)           
+            
         if sTitle.startswith('RES-') and sTitle.endswith('-RES'):
             sTitle=sTitle.replace('RES-', '[').replace('-RES', ']')
 
