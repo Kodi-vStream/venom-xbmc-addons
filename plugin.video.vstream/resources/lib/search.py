@@ -85,11 +85,7 @@ class cSearch:
 
     def _progressUpdate(self):
         if not self.autoPlayVideo and not self._progressIsCancel():
-            searchResults = cGui().getSearchResult()
-            numberResult = 0
-            values = searchResults.values()
-            for result in values:
-                numberResult += len(result)
+            numberResult = sum(map(len, self.allVideoLink.values()))
             message = "\n"
             message += (self.addons.VSlang(31209) % numberResult)
             message += "\n"
@@ -149,19 +145,6 @@ class cSearch:
                 pass
 
             self.progress_ = progress().VScreate(large=True)
-
-
-    def _progressUpdate(self):
-        if not self.autoPlayVideo and not self._progressIsCancel():
-            numberResult = sum(map(len, self.allVideoLink.values()))
-            message = "\n"
-            message += (self.addons.VSlang(31209) % numberResult)
-            message += "\n"
-            message += (self.addons.VSlang(31208) % (", ".join(self.listRemainingPlugins[0:5])))
-            if len(self.listRemainingPlugins) > 5:
-                message += " ..."
-            self.progress_.VSupdate(self.progress_, self.progressTotal, message, True)
-
 
     def _progressIsCancel(self):
         if not self.autoPlayVideo:
