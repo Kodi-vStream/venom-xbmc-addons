@@ -1185,3 +1185,15 @@ msgstr ""
 msgctxt "#31209"
 msgid "Results: %s"
 msgstr "Results: [COLOR deepskyblue]%s[/COLOR]"
+
+msgctxt "#31210"
+msgid "Add to new list"
+msgstr "Add to new list"
+
+msgctxt "#31211"
+msgid "Add to existing list"
+msgstr "Add to existing list"
+
+msgctxt "#31212"
+msgid "Select a list"
+msgstr "Select a list"
