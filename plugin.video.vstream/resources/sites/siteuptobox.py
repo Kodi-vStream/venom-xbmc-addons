@@ -237,10 +237,11 @@ def showMedias(sSearch = '', sType = None):
 
     isMovie = isTvShow = isSeason = False
     path = content['path'].upper()
-    isMovie = 'FILM' in path or 'MOVIE' in path or 'DISNEY' in path or '3D' in path
+    isMovie = 'FILM' in path or 'MOVIE' in path or 'DISNEY' in path or '3D' in path or 'DOCUMENTAIRE' in path or 'DOCS' in path
     isTvShow = 'SERIE' in path or u'SÉRIE' in path or 'TVSHOW' in path
-    isAnime = '//ANIMES' in path or 'JAPAN' in path
+    isAnime = '/ANIMES' in path or '/ANIMÉS' in path or 'JAPAN' in path
 
+    # Rechercher Film
     if path == '//' and not sSearch:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', path)
@@ -255,9 +256,7 @@ def showMedias(sSearch = '', sType = None):
         addFolders(oGui, content, searchFolder)
 
     nbFile = 0
-    if isMovie:
-        nbFile = showMovies(oGui, content, sType)
-    elif isTvShow or isAnime:
+    if isTvShow or isAnime:
         sSeason = False
         if 'sSeason' in sSiteUrl:
             sSeason = sSiteUrl.split('sSeason=')[1]
@@ -266,6 +265,8 @@ def showMedias(sSearch = '', sType = None):
             nbFile = showEpisodes(oGui, sMovieTitle, content, sSiteUrl, sSeason)
         else:
             nbFile = showSeries(oGui, content, searchFolder, numPage)
+    elif isMovie:
+        nbFile = showMovies(oGui, content, sType)
     else:
         for file in content['files']:
             if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
@@ -348,14 +349,18 @@ def addFolders(oGui, content, searchFolder = None):
         if sTitle.startswith('RES-') and sTitle.endswith('-RES'):
             sTitle=sTitle.replace('RES-', '[').replace('-RES', ']')
 
-        sUrl = '&path=' + Quote(sFoldername).replace('//', '%2F%2F')
-        
-        if 'FILM' in sTitle.upper() or 'MOVIE' in sTitle.upper():
-            sThumb = 'films.png' 
-        elif 'SERIE' in sTitle.upper() or 'SÉRIE' in sTitle.upper() or 'TVSHOW' in sTitle.upper():
+        if 'SERIE' in sTitle.upper() or 'SÉRIE' in sTitle.upper() or 'TVSHOW' in sTitle.upper():
             sThumb = 'series.png'
+        elif 'DOCUMENTAIRE' in sTitle.upper() or 'DOCS' in sTitle.upper():
+            sThumb = 'doc.png'
+        elif 'FILM' in sTitle.upper() or 'MOVIE' in sTitle.upper():
+            sThumb = 'films.png'
+        elif 'ANIMES' in sTitle.upper() or 'ANIMÉS' in sTitle.upper() or 'JAPAN' in sTitle.upper():
+            sThumb = 'animes.png'
         else:
             sThumb = 'genres.png'
+        
+        sUrl = '&path=' + Quote(sFoldername).replace('//', '%2F%2F')
         
 
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -430,7 +435,7 @@ def showMovies(oGui, content, sType = None):
         oOutputParameterHandler.addParameter('sLang', sLang)
         oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
         
-        oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sMovieTitle, '', '', '', oOutputParameterHandler)
+        oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sMovieTitle, 'films.png', '', '', oOutputParameterHandler)
         
     return numFile
 
@@ -545,7 +550,7 @@ def showSeries(oGui, content, searchFolder, numPage):
                 oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
 
                 oGui.addSeason(SITE_IDENTIFIER, 'showMedias', sMovieTitle + ' ' + sTitle, '', '', '', oOutputParameterHandler)
-            elif sMovieTitle.upper() == 'ANIMES' or 'JAPAN' in sMovieTitle.upper():
+            elif sMovieTitle.upper() == 'ANIMES' or sMovieTitle.upper() == 'ANIMÉS' or 'JAPAN' in sMovieTitle.upper():
                 oGui.addAnime(SITE_IDENTIFIER, 'showMedias', sTitle, '', '', '', oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showMedias', sTitle, '', '', '', oOutputParameterHandler)
@@ -559,10 +564,9 @@ def showSeries(oGui, content, searchFolder, numPage):
 
 def showEpisodes(oGui, sMovieTitle, content, sSiteUrl, sSeason):
     
-    nbFile = 0
-    
 
     if not sSeason:
+        nbFile = 0
         saisons = set()
         
         # Recherche des saisons
@@ -590,6 +594,7 @@ def showEpisodes(oGui, sMovieTitle, content, sSiteUrl, sSeason):
             return nbFile
     
     
+    nbFile = 0
     pos = len(sMovieTitle)
     sPattern = ['[^\w]([0-9]{4})[^\w]']
     sYear, pos = getTag(sMovieTitle, sPattern, pos)
