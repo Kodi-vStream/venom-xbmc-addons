@@ -203,6 +203,16 @@ def getContext():
     yn.append(True)
     lang.append(addons.VSlang(30445))
 
+    disp.append('addtolist')
+    fow.append('addtolist')
+    yn.append(True)
+    lang.append(addons.VSlang(31211))    
+
+    disp.append('addtonewlist')
+    fow.append('addtonewlist')
+    yn.append(True)
+    lang.append(addons.VSlang(31210))  
+
     disp.append('account/%s/watchlist' % tmdb_account)
     fow.append('watchlist')
     yn.append(False)
@@ -237,6 +247,7 @@ def getAction():
     oGui = cGui()
     grab = cTMDb()
     dialogs = dialog()
+    addons = addon()
 
     oInputParameterHandler = cInputParameterHandler()
 
@@ -267,12 +278,60 @@ def getAction():
     if sAction == 'vote':
         # vote /movie/{movie_id}/rating
         # /tv/{tv_id}/rating
+        # /tv/{tv_id}/season/{season_number}/episode/{episode_number}/rating
         numboard = oGui.showNumBoard('Min 0.5 - Max 10')
         if numboard != None:
-            sAction = '%s/%s/rating' % (sCat, sTMDB)
+            if sSeason != False and sEpisode != False:
+                sAction = '%s/%s/season/%s/episode/%s/rating' % (sCat, sTMDB, sSeason, sEpisode)
+            else:
+                sAction = '%s/%s/rating' % (sCat, sTMDB)
             sPost = {"value": numboard}
         else:
             return
+
+    elif sAction == 'addtolist':
+        if sCat == 'tv':
+            dialogs.VSinfo("Vous ne pouvez pas ajouter une série à une liste de films tmdb")
+            return
+        result = grab.getUrl('account/%s/lists' % addons.getSetting('tmdb_account'), term='session_id=%s' % addons.getSetting('tmdb_session'))
+        total = len(result)
+        if total == 0:
+            return
+        labels = []
+        for i in result['results']:
+            labels.append(i['name'])
+        idliste = dialogs.VSselect(labels, addons.VSlang(31212))
+        if idliste == -1 :
+            return
+        
+        idliste = result['results'][idliste]['id']
+        sAction = 'list/%s/add_item' % (idliste)
+        sPost = {"media_id": sTMDB}
+
+    elif sAction == 'addtonewlist':
+        if sCat == 'tv':
+            dialogs.VSinfo("Vous ne pouvez pas ajouter une série à une liste de films tmdb")
+            return        
+        # nom de la nouvelle liste
+        listname = oGui.showKeyBoard()
+        if listname == '':
+            return
+        # creation de la liste
+        sAction = 'list'
+        sPost = {
+                "name": listname,
+                "description": " ",
+                "language": "fr"
+                }
+        rep = grab.getPostUrl(sAction, sPost)
+        # recuperer son id
+        if 'success' in rep:
+            idliste = rep['list_id']
+        else:
+            return
+        # ajout du film à la nouvelle liste
+        sAction = 'list/%s/add_item' % (idliste)
+        sPost = {"media_id": sTMDB}
 
     else:
         sPost = {"media_type": sCat, "media_id": sTMDB, sFow: sYn}
@@ -284,7 +343,7 @@ def getAction():
 
     return
 
-
+"""
 # comme le cat change pour le type ont refait
 def getWatchlist():
     grab = cTMDb()
@@ -330,7 +389,7 @@ def getWatchlist():
 
     return
 
-
+"""
 def getToken():
     grab = cTMDb()
     return grab.getToken()
@@ -427,10 +486,18 @@ def showUserLists():
 
     sUrl = oInputParameterHandler.getValue('siteUrl')
     result = grab.getUrl(sUrl, iPage, term)
-    total = len(result)
+    results = result['results']
+    # Compter le nombre de pages
+    nbpages = result['total_pages']
+    page = 2
+    while page <= nbpages:
+        result = grab.getUrl(sUrl, page, term)
+        results += result['results']
+        page += 1
+    total = len(results)
     if total > 0:
         oOutputParameterHandler = cOutputParameterHandler()
-        for i in result['results']:
+        for i in results:
             sId, sTitle = i['id'], i['name']
 
             # sUrl = API_URL + '/genre/' + str(sId) + '/tv'
@@ -1106,10 +1173,4 @@ def showLists():
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = "<span class='page-numbers current'>.+?</span><a class='page-numbers' href='([^<]+)'>.+?</a>"
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
-        return aResult[1][0]
-
     return False
