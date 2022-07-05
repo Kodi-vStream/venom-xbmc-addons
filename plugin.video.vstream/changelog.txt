@@ -12,6 +12,11 @@ Historique des modifications
 - https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 ==================================================================================
 
+
+*** 2.0.0***
+- TMDB : Noter un film, ajouter dans les favoris, ajouter dans la watchlist
+- Compte Uptobox : Affichage des métadonnées de ses vidéos
+
 *** 1.9.0***
 - Bandes annonces depuis Youtube
 - Recherche plus rapide avec suivi des sources
