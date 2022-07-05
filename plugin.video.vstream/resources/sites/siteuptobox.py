@@ -139,12 +139,11 @@ def showFile(sSearch=''):
         folders = sorted(content['folders'], key=lambda f: f['fld_name'].upper())
         sFoldername = ''
         for folder in folders:
-            if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-                sTitle = folder['name']
-                sFoldername = folder['fld_name']
-            else:
-                sTitle = folder['name'].encode('utf-8')
-                sFoldername = folder['fld_name'].encode('utf-8')
+            sTitle = folder['name']
+            sFoldername = folder['fld_name']
+            if not isMatrix():
+                sTitle = sTitle.encode('utf-8')
+                sFoldername = sFoldername.encode('utf-8')
             sUrl = '&path=' + Quote(sFoldername).replace('//', '%2F%2F')
     
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -157,10 +156,9 @@ def showFile(sSearch=''):
     oHoster = oHosterGui.getHoster('uptobox')
 
     for file in content['files']:
-        if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-            sTitle = file['file_name']
-        else:
-            sTitle = file['file_name'].encode('utf-8')
+        sTitle = file['file_name']
+        if not isMatrix():
+            sTitle = sTitle.encode('utf-8')
 
         sHosterUrl = URL_MAIN + file['file_code']
 
@@ -237,9 +235,11 @@ def showMedias(sSearch = '', sType = None):
 
     isMovie = isTvShow = isSeason = False
     path = content['path'].upper()
-    isMovie = 'FILM' in path or 'MOVIE' in path or 'DISNEY' in path or '3D' in path or 'DOCUMENTAIRE' in path or 'DOCS' in path
-    isTvShow = 'SERIE' in path or u'SÉRIE' in path or 'TVSHOW' in path
-    isAnime = '/ANIMES' in path or '/ANIMÉS' in path or 'JAPAN' in path
+    if not isMatrix():
+        path = path.encode('utf-8')
+    isMovie = 'FILM' in path or 'MOVIE' in path or 'DISNEY' in path or '3D' in path or '4K' in path or 'DOCUMENTAIRE' in path or 'DOCS' in path
+    isTvShow = 'SERIE' in path or 'SÉRIE' in path or 'TVSHOW' in path
+    isAnime = '/ANIMES' in path or '/ANIMÉS' in path or 'MANGA' in path or 'JAPAN' in path
 
     # Rechercher Film
     if path == '//' and not sSearch:
@@ -269,10 +269,9 @@ def showMedias(sSearch = '', sType = None):
         nbFile = showMovies(oGui, content, sType)
     else:
         for file in content['files']:
-            if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-                sTitle = file['file_name']
-            else:
-                sTitle = file['file_name'].encode('utf-8')
+            sTitle = file['file_name']
+            if not isMatrix():
+                sTitle = sTitle.encode('utf-8')
                 
             sHosterUrl = URL_MAIN + file['file_code']
             oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -308,12 +307,14 @@ def addFolders(oGui, content, searchFolder = None):
     oOutputParameterHandler = cOutputParameterHandler()
 
     for folder in folders:
-        if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-            sTitle = folder['name']
-            sFoldername = folder['fld_name']
-        else:
-            sTitle = folder['name'].encode('utf-8')
-            sFoldername = folder['fld_name'].encode('utf-8')
+
+        sTitle = folder['name']
+        sFoldername = folder['fld_name']
+        folderPath = folder['path']
+        if not isMatrix():
+            sTitle = sTitle.encode('utf-8')
+            sFoldername = sFoldername.encode('utf-8')
+            folderPath = folderPath.encode('utf-8')
 
         if searchFolder and not sTitle.startswith(searchFolder):
             continue
@@ -324,7 +325,7 @@ def addFolders(oGui, content, searchFolder = None):
 
         if isSubFolder and ':' in sTitle:
             subName, subFolder = sTitle.split(':')
-            if folder['path'].endswith(subName):
+            if folderPath.endswith(subName):
                 sTitle = subFolder.strip()
             else:
                 if searchFolder:
@@ -355,7 +356,7 @@ def addFolders(oGui, content, searchFolder = None):
             sThumb = 'doc.png'
         elif 'FILM' in sTitle.upper() or 'MOVIE' in sTitle.upper():
             sThumb = 'films.png'
-        elif 'ANIMES' in sTitle.upper() or 'ANIMÉS' in sTitle.upper() or 'JAPAN' in sTitle.upper():
+        elif 'ANIMES' in sTitle.upper() or 'ANIMÉS' in sTitle.upper() or 'MANGA' in sTitle.upper() or 'JAPAN' in sTitle.upper():
             sThumb = 'animes.png'
         else:
             sThumb = 'genres.png'
@@ -376,10 +377,9 @@ def showMovies(oGui, content, sType = None):
     oOutputParameterHandler = cOutputParameterHandler()
     for file in content['files']:
         numFile += 1
-        if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-            sTitle = file['file_name']
-        else:
-            sTitle = file['file_name'].encode('utf-8')
+        sTitle = file['file_name']
+        if not isMatrix():
+            sTitle = sTitle.encode('utf-8')
             
         sHosterUrl = URL_MAIN + file['file_code']
         
@@ -401,19 +401,10 @@ def showMovies(oGui, content, sType = None):
         # recherche des métadonnées
         sMovieTitle = sTitle 
         pos = len(sMovieTitle)
-        sPattern = ['[^\w]([0-9]{4})[^\w]']
-        sYear, pos = getTag(sMovieTitle, sPattern, pos)
-        
-        sPattern = ['HDLIGHT', '\d{3,4}P', '4K', 'UHD', 'BDRIP', 'BRRIP', 'DVDRIP', 'DVDSCR', 'TVRIP', 'HDTV', 'BLURAY', '[^\w](R5)[^\w]', '[^\w](CAM)[^\w]', 'WEB-DL', 'WEBRIP', '[^\w](WEB)[^\w]']
-        sRes, pos = getTag(sMovieTitle, sPattern, pos)
-        if sRes:
-            sRes = sRes.replace('2160P', '4K')
-        
-        sPattern = ['TM(\d+)TM']
-        sTmdbId, pos = getTag(sMovieTitle, sPattern, pos)
-
-        sPattern = ['VFI', 'VFF', 'VFQ', 'SUBFRENCH', 'TRUEFRENCH', 'FRENCH', 'VF', 'VOSTFR', '[^\w](VOST)[^\w]', '[^\w](VO)[^\w]', 'QC', '[^\w](MULTI)[^\w]']
-        sLang, pos = getTag(sMovieTitle, sPattern, pos)
+        sYear, pos = getYear(sMovieTitle, pos)
+        sRes, pos = getReso(sMovieTitle, pos)
+        sTmdbId, pos = getIdTMDB(sMovieTitle, pos)
+        sLang, pos = getLang(sMovieTitle, pos)
 
         sMovieTitle = sMovieTitle[:pos].replace('.', ' ').replace('_', ' ').strip()
 
@@ -429,13 +420,13 @@ def showMovies(oGui, content, sType = None):
             sMovieTitle += ' (%s)' % sLang
         
         oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
-        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
         oOutputParameterHandler.addParameter('sYear', sYear)
         oOutputParameterHandler.addParameter('sRes', sRes)
         oOutputParameterHandler.addParameter('sLang', sLang)
         oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
         
-        oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sMovieTitle, 'films.png', '', '', oOutputParameterHandler)
+        oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', '', '', oOutputParameterHandler)
         
     return numFile
 
@@ -451,6 +442,8 @@ def showSeries(oGui, content, searchFolder, numPage):
     #     res = res.group(1)
 
     sMovieTitle = content['currentFolder']['name']
+    if not isMatrix():
+        sMovieTitle  = sMovieTitle.encode('utf-8')
 
     numSeries = 0
     nbSeries = 0
@@ -462,12 +455,11 @@ def showSeries(oGui, content, searchFolder, numPage):
 
     for folder in folders:
         
-        if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-            sTitle = folder['name']
-            sFoldername = folder['fld_name']
-        else:
-            sTitle = folder['name'].encode('utf-8')
-            sFoldername = folder['fld_name'].encode('utf-8')
+        sTitle = folder['name']
+        sFoldername = folder['fld_name']
+        if not isMatrix():
+            sTitle = sTitle.encode('utf-8')
+            sFoldername = sFoldername.encode('utf-8')
         
         if 'REP_' in sTitle:
             addFolders(oGui, content, sTitle.split(':')[0])
@@ -506,19 +498,12 @@ def showSeries(oGui, content, searchFolder, numPage):
             sTitle=sTitle.replace('00_', '')
 
         pos = len(sTitle)
-        sPattern = ['[^\w]([0-9]{4})[^\w]']
-        sYear, pos = getTag(sTitle, sPattern, pos)
-
-        sPattern = ['TM(\d+)TM']
-        sTmdbId, pos = getTag(sTitle, sPattern, pos)
-
+        
+        sYear, pos = getYear(sTitle, pos)
+        sTmdbId, pos = getIdTMDB(sTitle, pos)
         sTitle = sTitle[:pos]
-        if sYear:
-            sTitle = sTitle+ ' (%s)' %sYear
-
 
         sUrl = '&path=' + Quote(sFoldername).replace('//', '%2F%2F')
-        # sMovieTitle = sTitle
         
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -530,17 +515,17 @@ def showSeries(oGui, content, searchFolder, numPage):
         else:           # série
             saison = None
             if 'SAISON' in sTitle.upper() or 'SEASON' in sTitle.upper():
-                saison = int(re.search('(\d+)', sTitle).group(1))
-            else:
+                saison = re.search('(\d+)', sTitle)
+                if saison:
+                    saison = int(saison.group(1))
+            if not saison:
                 saison = re.search('S(\d+)', sTitle)
                 if saison:
                     saison = int(saison.group(1))
             if saison:
                 pos = len(sMovieTitle)
-                sPattern = ['[^\w]([0-9]{4})[^\w]']
-                sYear, pos = getTag(sMovieTitle, sPattern, pos)
-                sPattern = ['TM(\d+)TM']
-                sTmdbId, pos = getTag(sMovieTitle, sPattern, pos)
+                sYear, pos = getYear(sMovieTitle, pos)
+                sTmdbId, pos = getIdTMDB(sMovieTitle, pos)
                 sMovieTitle = sMovieTitle[:pos]
                 
                 sUrl += '&sSeason=%d' % saison
@@ -550,7 +535,7 @@ def showSeries(oGui, content, searchFolder, numPage):
                 oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
 
                 oGui.addSeason(SITE_IDENTIFIER, 'showMedias', sMovieTitle + ' ' + sTitle, '', '', '', oOutputParameterHandler)
-            elif sMovieTitle.upper() == 'ANIMES' or sMovieTitle.upper() == 'ANIMÉS' or 'JAPAN' in sMovieTitle.upper():
+            elif sMovieTitle.upper() == 'ANIMES' or sMovieTitle.upper() == 'ANIMÉS' or 'MANGA' in sMovieTitle.upper() or 'JAPAN' in sMovieTitle.upper():
                 oGui.addAnime(SITE_IDENTIFIER, 'showMedias', sTitle, '', '', '', oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showMedias', sTitle, '', '', '', oOutputParameterHandler)
@@ -563,7 +548,6 @@ def showSeries(oGui, content, searchFolder, numPage):
 
 
 def showEpisodes(oGui, sMovieTitle, content, sSiteUrl, sSeason):
-    
 
     if not sSeason:
         nbFile = 0
@@ -572,10 +556,9 @@ def showEpisodes(oGui, sMovieTitle, content, sSiteUrl, sSeason):
         # Recherche des saisons
         for file in content['files']:
             nbFile += 1
-            if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-                sTitle = file['file_name']
-            else:
-                sTitle = file['file_name'].encode('utf-8')
+            sTitle = file['file_name']
+            if not isMatrix():
+                sTitle = sTitle.encode('utf-8')
                 
             # Recherche saisons et episodes
             sa, ep = searchEpisode(sTitle)
@@ -594,26 +577,20 @@ def showEpisodes(oGui, sMovieTitle, content, sSiteUrl, sSeason):
             return nbFile
     
     
-    nbFile = 0
     pos = len(sMovieTitle)
-    sPattern = ['[^\w]([0-9]{4})[^\w]']
-    sYear, pos = getTag(sMovieTitle, sPattern, pos)
-    if sYear:
-        sMovieTitle = sMovieTitle[:pos]# + ' (%s)' %sYear
-
+    sYear, pos = getYear(sMovieTitle, pos)
+    sMovieTitle = sMovieTitle[:pos]
     
     # ajout des fichiers
+    nbFile = 0
     oOutputParameterHandler = cOutputParameterHandler()
     for file in content['files']:
-        if xbmc.getInfoLabel('system.buildversion')[0:2] >= '19':
-            sTitle = file['file_name']
-        else:
-            sTitle = file['file_name'].encode('utf-8')
+        sFileName = file['file_name']
+        if not isMatrix():
+            sFileName = sFileName.encode('utf-8')
             
-        sHosterUrl = URL_MAIN + file['file_code']
-        
         # Recherche saisons et episodes
-        sa, ep = searchEpisode(sTitle)
+        sa, ep = searchEpisode(sFileName)
         if sSeason:
             if sa:
                 if int(sa) != int(sSeason):
@@ -626,9 +603,24 @@ def showEpisodes(oGui, sMovieTitle, content, sSiteUrl, sSeason):
             if sa:
                 sTitle = 'S' + sa + sTitle
         
+        pos = len(sFileName)
+        sRes, pos = getReso(sFileName, pos)
+        sLang, pos = getLang(sFileName, pos)
+        
+        if not ep:
+            sTitle = sFileName[:pos]
+            
+        sDisplayTitle = sTitle
+        if sRes:
+            sDisplayTitle += '[%s]' % sRes
+        if sLang:
+            sDisplayTitle += '(%s)' % sLang
+        
+        sHosterUrl = URL_MAIN + file['file_code']
+        
         nbFile += 1
         oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
-        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+        oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
         oOutputParameterHandler.addParameter('sYear', sYear)
         oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', '', '', oOutputParameterHandler)
         
@@ -647,7 +639,7 @@ def searchEpisode(sTitle):
         if m:
             ep = m.group(4)
         else:  # juste la saison
-            m = re.search('( S|saison)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
+            m = re.search('( S|.S|saison)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
             if m:
                 sa = m.group(3)
 
@@ -667,8 +659,30 @@ def showHosters():
     oGui.setEndOfDirectory()
 
 
+def getYear(sMovieTitle, pos):
+    sPattern = ['[^\w]([0-9]{4})[^\w]']
+    return _getTag(sMovieTitle, sPattern, pos)
 
-def getTag(sMovieTitle, tags, pos):
+
+def getLang(sMovieTitle, pos):
+    sPattern = ['VFI', 'VFF', 'VFQ', 'SUBFRENCH', 'TRUEFRENCH', 'FRENCH', 'VF', 'VOSTFR', '[^\w](VOST)[^\w]', '[^\w](VO)[^\w]', 'QC', '[^\w](MULTI)[^\w]']
+    return _getTag(sMovieTitle, sPattern, pos)
+
+
+def getReso(sMovieTitle, pos):
+    sPattern = ['HDLIGHT', '\d{3,4}P', '4K', 'UHD', 'BDRIP', 'BRRIP', 'DVDRIP', 'DVDSCR', 'TVRIP', 'HDTV', 'BLURAY', '[^\w](R5)[^\w]', '[^\w](CAM)[^\w]', 'WEB-DL', 'WEBRIP', '[^\w](WEB)[^\w]']
+    sRes, pos = _getTag(sMovieTitle, sPattern, pos)
+    if sRes:
+        sRes = sRes.replace('2160P', '4K')
+    return sRes, pos
+
+
+def getIdTMDB(sMovieTitle, pos):
+    sPattern = ['TM(\d+)TM']
+    return _getTag(sMovieTitle, sPattern, pos)
+
+
+def _getTag(sMovieTitle, tags, pos):
     for t in tags:
         aResult = re.search(t, sMovieTitle, re.IGNORECASE)
         if aResult:
