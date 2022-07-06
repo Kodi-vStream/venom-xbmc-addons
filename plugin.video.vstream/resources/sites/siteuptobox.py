@@ -281,15 +281,8 @@ def showMedias(sSearch = '', sType = None):
     else:
         for file in content['files']:
             sTitle = file['file_name']
-            if not isMatrix():
-                sTitle = sTitle.encode('utf-8')
-                
             sHosterUrl = URL_MAIN + file['file_code']
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if oHoster != False:
-                oHoster.setDisplayName(sTitle)
-                oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+            showMovie(oGui, sTitle, sHosterUrl)
 
     # Lien Suivant >>
     if not sSearch and nbFile == NB_FILES:
@@ -385,59 +378,61 @@ def showMovies(oGui, content, sType = None):
     numFile = 0
     
     # ajout des fichiers
-    oOutputParameterHandler = cOutputParameterHandler()
     for file in content['files']:
-        numFile += 1
         sTitle = file['file_name']
-        if not isMatrix():
-            sTitle = sTitle.encode('utf-8')
-            
         sHosterUrl = URL_MAIN + file['file_code']
-        
-        # seulement les formats vidéo (ou sans extensions)
-        if sTitle[-4] == '.':
-            if sTitle[-4:] not in '.mkv.avi.mp4.m4v.iso':
-                continue
-            # enlever l'extension
-            sTitle = sTitle[:-4]
+        showMovie(oGui, sTitle, sHosterUrl, sType)
+        numFile += 1
 
-        # enlever les séries
-        if sType == "film":
-            sa, ep = searchEpisode(sTitle)
-            if sa or ep:
-                continue
-
-        # recherche des métadonnées
-        sMovieTitle = sTitle 
-        pos = len(sMovieTitle)
-        sYear, pos = getYear(sMovieTitle, pos)
-        sRes, pos = getReso(sMovieTitle, pos)
-        sTmdbId, pos = getIdTMDB(sMovieTitle, pos)
-        sLang, pos = getLang(sMovieTitle, pos)
-
-        sMovieTitle = sMovieTitle[:pos].replace('.', ' ').replace('_', ' ').strip()
-
-        # un peu de nettoyage
-        if not 'customer' in sMovieTitle.lower():
-            sMovieTitle = re.sub('(?i)' + re.escape('custom'), '', sMovieTitle)
-       
-        
-        sTitle = sMovieTitle
-        if sRes:
-            sMovieTitle += ' [%s]' % sRes
-        if sLang:
-            sMovieTitle += ' (%s)' % sLang
-        
-        oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
-        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-        oOutputParameterHandler.addParameter('sYear', sYear)
-        oOutputParameterHandler.addParameter('sRes', sRes)
-        oOutputParameterHandler.addParameter('sLang', sLang)
-        oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
-        
-        oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', '', '', oOutputParameterHandler)
-        
     return numFile
+
+
+def showMovie(oGui, sTitle, sHosterUrl, sType = None):
+    # seulement les formats vidéo (ou sans extensions)
+    if sTitle[-4] == '.':
+        if sTitle[-4:] not in '.mkv.avi.mp4.m4v.iso':
+            return
+        # enlever l'extension
+        sTitle = sTitle[:-4]
+
+    # enlever les séries
+    if sType == "film":
+        sa, ep = searchEpisode(sTitle)
+        if sa or ep:
+            return
+
+    if not isMatrix():
+        sTitle = sTitle.encode('utf-8')
+        
+    # recherche des métadonnées
+    sMovieTitle = sTitle 
+    pos = len(sMovieTitle)
+    sYear, pos = getYear(sMovieTitle, pos)
+    sRes, pos = getReso(sMovieTitle, pos)
+    sTmdbId, pos = getIdTMDB(sMovieTitle, pos)
+    sLang, pos = getLang(sMovieTitle, pos)
+
+    sMovieTitle = sMovieTitle[:pos].replace('.', ' ').replace('_', ' ').strip()
+
+    # un peu de nettoyage
+    if not 'customer' in sMovieTitle.lower():
+        sMovieTitle = re.sub('(?i)' + re.escape('custom'), '', sMovieTitle)
+   
+    
+    sTitle = sMovieTitle
+    if sRes:
+        sMovieTitle += ' [%s]' % sRes
+    if sLang:
+        sMovieTitle += ' (%s)' % sLang
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
+    oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+    oOutputParameterHandler.addParameter('sYear', sYear)
+    oOutputParameterHandler.addParameter('sRes', sRes)
+    oOutputParameterHandler.addParameter('sLang', sLang)
+    oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
+    oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', '', '', oOutputParameterHandler)
 
 
 def showSeries(oGui, content, searchFolder, numPage):
