@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
+return False #de nouveau en panne au 08/07/22
+
 import re
 
 from resources.lib.gui.hoster import cHosterGui
