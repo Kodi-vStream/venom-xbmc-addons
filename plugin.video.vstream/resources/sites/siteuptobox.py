@@ -85,7 +85,7 @@ def showSearch(path = '//'):
         sUrlSearch += '&searchField=file_name&search=' + sSearchText
         
         if sType == 'serie':
-            searchSerie(sSearchText)
+            searchSeries(sSearchText)
         else:
             showMedias(sUrlSearch, sType)
 
@@ -132,7 +132,7 @@ def showFile(sSearch=''):
     oOutputParameterHandler = cOutputParameterHandler()
     if path == '//' and not sSearch:
         oOutputParameterHandler.addParameter('siteUrl', URL_MOVIE[0])
-        oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher', 'search.png', oOutputParameterHandler)
 
 
     total = len(content)
@@ -282,7 +282,7 @@ def showMedias(sSearch = '', sType = None):
         for file in content['files']:
             sTitle = file['file_name']
             sHosterUrl = URL_MAIN + file['file_code']
-            showMovie(oGui, sTitle, sHosterUrl)
+            showMovie(oGui, sTitle, sHosterUrl, 'film')
 
     # Lien Suivant >>
     if not sSearch and nbFile == NB_FILES:
@@ -396,7 +396,7 @@ def showMovie(oGui, sTitle, sHosterUrl, sType = None):
         sTitle = sTitle[:-4]
 
     # enlever les séries
-    if sType == "film":
+    if sType == 'film':
         sa, ep = searchEpisode(sTitle)
         if sa or ep:
             return
@@ -438,9 +438,12 @@ def showMovie(oGui, sTitle, sHosterUrl, sType = None):
 def showSeries(oGui, content, searchFolder, numPage):
 
     # dossiers trier par ordre alpha
-    folders = sorted(content['folders'], key=lambda f: f['fld_name'].upper())
+    folders = content['folders']
+    if len(folders) == 0: return 0
+     
+    folders = sorted(folders, key=lambda f: f['fld_name'].upper())
 
-    sMovieTitle = content['currentFolder']['name']
+    sMovieTitle = content['currentFolder']['name'] if 'name' in content['currentFolder'] else 'Rechercher'
     if not isMatrix():
         sMovieTitle  = sMovieTitle.encode('utf-8')
 
@@ -646,49 +649,48 @@ def searchEpisode(sTitle):
     return sa, ep
 
 # recherche d'une serie par son nom en parcourant tous les dossiers
-def searchSerie(searchName):
+def searchSeries(searchName):
 
     oGui = cGui()
-    
-    urlSearchTV = '&offset=0&limit=20&path='
-    sSiteUrl = urlSearchTV + '//'
-    
     sToken = cPremiumHandler('uptobox').getToken()
+    sUrl = API_URL.replace('none', sToken) + '&offset=0&limit=20&path='
 
-    oRequestHandler = cRequestHandler(API_URL.replace('none', sToken) + sSiteUrl)
+    # recherches des dossiers "series" à la racine
+    oRequestHandler = cRequestHandler(sUrl + '//')
     sHtmlContent = oRequestHandler.request()
     content = json.loads(sHtmlContent)
-
     content = content['data']
-    if not content:
-        oGui.setEndOfDirectory()
-        return
-    
-    nbFile = 0
-    folders = content['folders']
-    for folder in folders:
-        path = folder['fld_name'].upper()
-        if not isMatrix():
-            path = path.encode('utf-8')
-        isTvShow = 'SERIE' in path or 'SÉRIE' in path or 'TVSHOW' in path
-        if not isTvShow:
-            continue
+    if content:
+        folders = content['folders']
+        for folder in folders:
+            path = folder['fld_name'].upper()
+            if not isMatrix():
+                path = path.encode('utf-8')
+            isTvShow = 'SERIE' in path or 'SÉRIE' in path or 'TVSHOW' in path
+            if isTvShow:
+                searchSerie(oGui, sUrl, path, searchName)
 
-        sSiteUrl = urlSearchTV + path
-        oRequestHandler = cRequestHandler(API_URL.replace('none', sToken) + sSiteUrl)
-        sHtmlContent = oRequestHandler.request()
-        content = json.loads(sHtmlContent)
-        content = content['data']
-        if not content:
-            continue
-        
-        nbFile += showSeries(oGui, content, searchName, 0)
-    
     oGui.setEndOfDirectory()
-    
     return
 
 
+def searchSerie(oGui, sUrl, path, searchName):
+    oRequestHandler = cRequestHandler(sUrl + path)
+    sHtmlContent = oRequestHandler.request()
+    content = json.loads(sHtmlContent)
+    content = content['data']
+    if content:
+        showSeries(oGui, content, searchName, 0)
+        folders = content['folders']
+        
+        # recherche dans les sous-dossiers qui ne sont pas des séries
+        for folder in folders:
+            subFolderName = folder['name'].upper()
+            if subFolderName.startswith('REP_') or subFolderName.startswith('00_'): 
+                path = folder['fld_name'].upper()
+                searchSerie(oGui, sUrl, path, searchName)
+
+                
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
