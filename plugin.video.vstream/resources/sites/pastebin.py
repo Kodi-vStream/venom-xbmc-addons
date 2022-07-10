@@ -907,6 +907,9 @@ def showMenuTvShows():
     oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&sYear=2022')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Nouveautés)', 'news.png', oOutputParameterHandler)
 
+    oOutputParameterHandler.addParameter('siteUrl', 'trending/tv/day')#tv/on_the_air')
+    oGui.addDir(SITE_IDENTIFIER, 'showTMDB', addons.VSlang(30430), 'series.png', oOutputParameterHandler)
+
     oOutputParameterHandler.addParameter('siteUrl', 'tv/popular')
     oGui.addDir(SITE_IDENTIFIER, 'showTMDB', addons.VSlang(30429), 'comments.png', oOutputParameterHandler)
 
@@ -922,11 +925,8 @@ def showMenuTvShows():
     oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie')
     oGui.addDir(SITE_IDENTIFIER, 'showNetwork', 'Séries (Par diffuseurs)', 'host.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', 'tv/on_the_air')
-    oGui.addDir(SITE_IDENTIFIER, 'showTMDB', addons.VSlang(30430), 'series.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', 'tv/top_rated')
-    oGui.addDir(SITE_IDENTIFIER, 'showTMDB', addons.VSlang(30431), 'star.png', oOutputParameterHandler)
+    # oOutputParameterHandler.addParameter('siteUrl', 'tv/top_rated')
+    # oGui.addDir(SITE_IDENTIFIER, 'showTMDB', addons.VSlang(30431), 'star.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie')
     oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Séries (Par années)', 'annees.png', oOutputParameterHandler)
