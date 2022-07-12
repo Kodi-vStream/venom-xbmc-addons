@@ -936,7 +936,7 @@ class cTrakt:
             pass
 
         try:
-            self.DIALOG.VSinfo(sText)
+            self.DIALOG.VSinfo(sText, 'trakt')
         except UnboundLocalError:
             self.DIALOG.VSinfo("Erreur")
 
