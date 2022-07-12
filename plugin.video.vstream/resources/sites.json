@@ -7,12 +7,12 @@
         },
         "_33seriestreaming": {
             "label": "33 S\u00e9ries",
-            "active": "True",
+            "active": "False",
             "url": "https://www.33seriestreaming.info/"
         },
         "_4kstreamz": {
             "label": "4kstreamz",
-            "active": "True",
+            "active": "False",
             "url": "https://www.4kstreamz.net/"
         },
         "adkami_com": {
@@ -81,12 +81,12 @@
         },
         "dpstream": {
             "label": "DpStream",
-            "active": "True",
+            "active": "False",
             "url": "https://dpstream.io/"
         },
         "dpstreamhd": {
             "label": "DpStream HD",
-            "active": "True",
+            "active": "False",
             "url": "https://serie.dpstreamhd.com/"
         },
         "ducine": {
@@ -231,7 +231,7 @@
         },
         "libertyland_tv": {
             "label": "Libertyland",
-            "active": "True",
+            "active": "False",
             "url": "https://www.libertyvf.one/"
         },
         "livetv": {
