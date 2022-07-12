@@ -123,10 +123,11 @@ class cRechercheHandler:
         aPlugins = []
         aFileNames = self.__getFileNamesFromFolder(sFolder)
         for sFileName in aFileNames:
-            if sitesManager.isActive(sFileName):
-                aPlugin = self.importPlugin(sFileName, sCat)
-                if aPlugin:
-                    aPlugins.append(aPlugin)
+            if sitesManager.isEnable(sFileName):
+                if sitesManager.isActive(sFileName):
+                    aPlugin = self.importPlugin(sFileName, sCat)
+                    if aPlugin:
+                        aPlugins.append(aPlugin)
 
         return aPlugins
 

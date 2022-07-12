@@ -482,6 +482,12 @@ class siteManager:
             self.data = json.load(open(self.propertiesPath))
             
 
+    # sites désactivé par la team
+    def isEnable(self, sourceName):
+        return self.getDefaultProperty(sourceName, self.ACTIVE) == 'True'
+
+    
+    # sites désactivé par l'utilisateur
     def isActive(self, sourceName):
         return self.getProperty(sourceName, self.ACTIVE) == 'True'
     
@@ -564,7 +570,7 @@ class siteManager:
         
         # pas de valeurs par défaut, on en crée à la volée
         if not sourceData:
-            sourceData = {self.ACTIVE : 'False', self.LABEL : sourceName, self.URL_MAIN : sourceName}
+            return {}
 
         return sourceData
     

@@ -70,7 +70,8 @@ class cPluginHandler:
 
         aPlugins = []
         for sFileName in aFileNames:
-            # existieren zu diesem plugin die an/aus settings
+            if not sitesManager.isEnable(sFileName):    # Site désactivé par la team
+                continue
             if force or sitesManager.isActive(sFileName):
                 # wir versuchen das plugin zu importieren
                 if sLabel:
@@ -93,6 +94,7 @@ class cPluginHandler:
         return aPlugins
 
     def getAllPlugins(self):
+        sitesManager = siteManager()
         sFolder = "special://home/addons/plugin.video.vstream/resources/sites"
         sFolder = sFolder.replace('\\', '/')
 
@@ -100,6 +102,8 @@ class cPluginHandler:
 
         aPlugins = []
         for sFileName in aFileNames:
+            if not sitesManager.isEnable(sFileName):    # Site désactivé par la team
+                continue
             # wir versuchen das plugin zu importieren
             aPlugin = self.__importPlugin(sFileName)
             if (aPlugin[0] != False):

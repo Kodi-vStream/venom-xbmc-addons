@@ -112,7 +112,6 @@ class cHome:
         oGui = cGui()
         oGui.addText('globalSearch', self.addons.VSlang(30077) % searchtext, 'none.png')
 
-        # utilisation de guielement pour ajouter la bonne catégorie
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName('globalSearch')
         oGuiElement.setFunction('showSearch')
