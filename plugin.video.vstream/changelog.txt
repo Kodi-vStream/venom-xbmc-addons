@@ -14,7 +14,7 @@ Historique des modifications
 
 
 *** 2.0.0***
-- TMDB : Noter un film, ajouter dans les favoris, ajouter dans la watchlist
+- TMDB : Noter film/série, ajouter aux favoris, à la watchlist, à des listes
 - Compte Uptobox : Affichage des métadonnées de ses vidéos
 
 *** 1.9.0***
