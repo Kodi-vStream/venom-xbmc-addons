@@ -2713,31 +2713,30 @@ def renewPaste(pasteID, lastMediaTitle=''):
 
 
 # Retourne la liste des PasteBin depuis l'URL ou un groupe
-def getPasteList(pasteID):
+def getPasteList(pasteID = None):
+    addons = addon()
 
     # Tous les pastes si non précisés
     if not pasteID:
         listeIDs = []
         for numID in range(1, GROUPE_MAX):
             prefixID = SETTING_PASTE_LABEL + str(numID)
-            pastebin = addon().getSetting(prefixID)
+            pastebin = addons.getSetting(prefixID)
             if pastebin:
                 listeIDs += getPasteList(numID)
         return dict.fromkeys(listeIDs).keys()   # suppression des doublons et conserve l'ordre
 
-    addons = addon()
 
     IDs = []
-    if pasteID:
-        prefixID = SETTING_PASTE_ID + str(pasteID)
-        pasteBin = addons.getSetting(prefixID)
+    prefixID = SETTING_PASTE_ID + str(pasteID)
+    pasteBin = addons.getSetting(prefixID)
+    if pasteBin and pasteBin not in IDs:
+        IDs.append(pasteBin)
+    for numID in range(1, PASTE_PAR_GROUPE):
+        pasteID = prefixID + '_' + str(numID)
+        pasteBin = addons.getSetting(pasteID)
         if pasteBin and pasteBin not in IDs:
             IDs.append(pasteBin)
-        for numID in range(1, PASTE_PAR_GROUPE):
-            pasteID = prefixID + '_' + str(numID)
-            pasteBin = addons.getSetting(pasteID)
-            if pasteBin and pasteBin not in IDs:
-                IDs.append(pasteBin)
     return set(IDs)
 
 
@@ -2882,6 +2881,9 @@ def adminContenu():
     oOutputParameterHandler = cOutputParameterHandler()
     sDecoColor = addon().getSetting('deco_color')
 
+    # Menu pour afficher le nombre de média
+    oGui.addDir(SITE_IDENTIFIER, 'getNbMedia', "[COLOR %s]Nombre total d'éléments[/COLOR]" % sDecoColor, 'views.png', oOutputParameterHandler)
+
     # Menu pour rafraichir le cache
     oGui.addDir(SITE_IDENTIFIER, 'refreshAllPaste', '[COLOR %s]Forcer la mise à jour des contenus[/COLOR]' % sDecoColor, 'download.png', oOutputParameterHandler)
 
@@ -2908,3 +2910,36 @@ def adminNbElement():
     nElement = oGui.showNumBoard("Nombre d'éléments par page", str(ITEM_PAR_PAGE))
     if nElement:
         addon().setSetting(SITE_IDENTIFIER + '_nbItemParPage', nElement)
+
+
+# Retourne la décompte de média par type
+def getNbMedia():
+    oGui = cGui()
+    addons = addon()
+
+    idFilms = set()
+    idSeries = set()
+    idAnimes = set()
+    idDivers = set()
+    
+    pbContent = PasteContent()
+    listeIDs = getPasteList()
+    for pasteBin in listeIDs:
+        moviesBin = pbContent.getLines(pasteBin)
+        for movie in moviesBin:
+            id = movie[pbContent.TMDB] if movie[pbContent.TMDB] else movie[pbContent.TITLE]
+            if 'film' in movie[pbContent.CAT]:
+                idFilms.add(id)
+            elif 'serie' in movie[pbContent.CAT]:
+                idSeries.add(id)
+            elif 'anime' in movie[pbContent.CAT]:
+                idAnimes.add(id)
+            else:
+                idDivers.add(id)
+                
+    oGui.addText(SITE_IDENTIFIER, 'Films[COLOR coral] (%d) [/COLOR]' % len(idFilms), 'films.png')
+    oGui.addText(SITE_IDENTIFIER, 'Séries[COLOR coral] (%d) [/COLOR]' % len(idSeries), 'tv.png')
+    oGui.addText(SITE_IDENTIFIER, 'Animés[COLOR coral] (%d) [/COLOR]' % len(idAnimes), 'animes.png')
+    oGui.addText(SITE_IDENTIFIER, 'Divers[COLOR coral] (%d) [/COLOR]' % len(idDivers), 'buzz.png')
+    oGui.setEndOfDirectory()
+
