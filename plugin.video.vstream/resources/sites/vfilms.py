@@ -142,7 +142,7 @@ def showGenres():
 def showYears():
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
-    for i in reversed(range(1994, 2022)):
+    for i in reversed(range(1994, 2023)):
         sYear = str(i)
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'xfsearch/year/' + sYear + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
@@ -212,11 +212,11 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '>([^<]+)</a>\s*</div>.+?pnext"><a href="([^"]+)'
+    sPattern = '<span>[\d]+</span> <a href="([^"]+).+?">(\d+)</a></div'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0] is True:
-        sNumberMax = aResult[1][0][0]
-        sNextPage = aResult[1][0][1]
+        sNextPage = aResult[1][0][0]
+        sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('page/([0-9]+)', sNextPage).group(1)
         sPaging = sNumberNext + '/' + sNumberMax
         return sNextPage, sPaging
