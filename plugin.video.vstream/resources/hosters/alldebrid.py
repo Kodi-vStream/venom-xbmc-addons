@@ -5,9 +5,7 @@ import json
 
 from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-
 from resources.lib.comaddon import VSlog
 
 
