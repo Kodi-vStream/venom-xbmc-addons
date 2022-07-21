@@ -1,9 +1,10 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#2 methode play
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+# 2 methode play
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
+
 
 class cHoster(iHoster):
 
@@ -25,14 +26,15 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        #type 1
+        # type 1
 
         sPattern = '{"src":"([^"]+)","type":"video/mp4"}'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0] is True:
             api_call = aResult[1][0]
 
-        # #type 2
+        # type 2
+
         # sPattern1 = 'src: *"(.+?.mp4)",'
         # aResult1 = oParser.parse(sHtmlContent, sPattern1)
         # if (aResult1[0] == True):
@@ -43,7 +45,6 @@ class cHoster(iHoster):
         # aResult1 = oParser.parse(sHtmlContent, sPattern1)
         # if (aResult1[0] == True):
             # FN = aResult1[1][0]
-
 
         # sPattern = '<input type="hidden" id="srv_id" value="([^"]+)">'
         # aResult = oParser.parse(sHtmlContent, sPattern)
@@ -68,10 +69,7 @@ class cHoster(iHoster):
             # aResult = oParser.parse(sHtmlContent, sPattern)
             # if (aResult1[0] == True):
                 # Host = aResult[1][0]
-
-
                 # api_call = Host + '/v2/schema/' + FN + '/master.m3u8'
-
 
         if api_call:
             return True, api_call
