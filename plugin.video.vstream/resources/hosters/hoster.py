@@ -4,7 +4,7 @@
 
 class iHoster:
 
-    def __init__(self, pluginIdentifier, displayName, color = 'skyblue'):
+    def __init__(self, pluginIdentifier, displayName, color='skyblue'):
         self._defaultDisplayName = displayName
         self._displayName = self._defaultDisplayName
         self._fileName = displayName
