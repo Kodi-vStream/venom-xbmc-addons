@@ -1,10 +1,9 @@
-#coding: utf-8
-import re
+# coding: utf-8
 
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import VSlog
+
 
 class cHoster(iHoster):
 
@@ -16,14 +15,12 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         api_call = ''
-        
-        oParser = cParser()
 
-        sPattern =  '"hls":\s*"([^"]+)"'
+        oParser = cParser()
+        sPattern = '"hls":\s*"([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if aResult[0] is True:
-
             api_call = aResult[1][0]
 
         if api_call:
