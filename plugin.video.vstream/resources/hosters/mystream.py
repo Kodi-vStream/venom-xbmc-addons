@@ -1,12 +1,12 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
 
-from resources.lib.comaddon import VSlog, xbmc
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0'
+
 
 class cHoster(iHoster):
 
@@ -24,7 +24,7 @@ class cHoster(iHoster):
 
         api_call = False
 
-        sPattern =  '(\$=.+?;)\s*<'
+        sPattern = '(\$=.+?;)\s*<'
         aResult = re.search(sPattern, sHtmlContent, re.DOTALL)
         if aResult:
             decoded = temp_decode(aResult.group(1))
@@ -37,6 +37,7 @@ class cHoster(iHoster):
             return True, api_call + '|User-Agent=' + UA + '&Referer=' + self._url + '&Origin=https://embed.mystream.to'
 
         return False, False
+
 
 def temp_decode(data):
     startpos = data.find('"\\""+') + 5
@@ -80,7 +81,7 @@ def temp_decode(data):
 
             first_group = first_group.replace('\\"', '\\').replace("\"\\\\\\\\\"", "\\\\")\
                                      .replace('\\"', '\\').replace('"', '').replace("+", "")
-            first_group = re.sub('(\(\!\[\]\)\[.+?\]+)','l',first_group)
+            first_group = re.sub('(\(\!\[\]\)\[.+?\]+)', 'l', first_group)
         try:
             final_data = first_group.encode('ascii').decode('unicode-escape').encode('ascii')\
                 .decode('unicode-escape')
