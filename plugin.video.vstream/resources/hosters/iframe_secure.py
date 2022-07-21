@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
 
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -7,6 +7,7 @@ from resources.lib.parser import cParser
 from resources.lib.packer import cPacker
 from resources.hosters.hoster import iHoster
 from resources.lib.gui.hoster import cHosterGui
+
 
 class cHoster(iHoster):
 
@@ -19,19 +20,17 @@ class cHoster(iHoster):
         self._url = 'http://www.iframe-secure.com/embed/iframe.php?u=%s' % self._url
 
     def _getMediaLinkForGuest(self):
-        api_call = ''
-
         oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
 
         sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
         aResult = re.findall(sPattern, sHtmlContent)
 
-        if (aResult):
+        if aResult:
             sUnpacked = cPacker().unpack(aResult[0])
             sHtmlContent = sUnpacked
 
-            if (sHtmlContent):
+            if sHtmlContent:
 
                 oParser = cParser()
                 sPattern = "replace\(.*'(.+?)'"
