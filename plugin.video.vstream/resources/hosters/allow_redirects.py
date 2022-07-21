@@ -4,6 +4,7 @@ from resources.hosters.hoster import iHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.gui.hoster import cHosterGui
 
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -11,7 +12,7 @@ class cHoster(iHoster):
 
     def _getMediaLinkForGuest(self):
         oRequestHandler = cRequestHandler(self._url)
-        sHtmlContent = oRequestHandler.request()
+        oRequestHandler.request()
         sHosterUrl = oRequestHandler.getRealUrl()
 
         if sHosterUrl and sHosterUrl != self._url:
@@ -19,7 +20,7 @@ class cHoster(iHoster):
             if oHoster:
                 oHoster.setUrl(sHosterUrl)
                 api_call = oHoster.getMediaLink()
-    
+
                 if api_call[0] is True:
                     return True, api_call[1]
 
