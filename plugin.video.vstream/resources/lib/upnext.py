@@ -38,6 +38,9 @@ class UpNext:
         # La saison
         sSaison = oInputParameterHandler.getValue('sSeason')
 
+        # l'ID tmdb
+        sTmdbId = oInputParameterHandler.getValue('sTmdbId')
+
         # Calcule l'épisode suivant à partir de l'épisode courant
         sEpisode = oInputParameterHandler.getValue('sEpisode')
         if not sEpisode:
@@ -60,15 +63,24 @@ class UpNext:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', saisonUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+        oOutputParameterHandler.addParameter('tvshowtitle', sMovieTitle)
+        oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
         sParams = oOutputParameterHandler.getParameterAsUri()
 
         sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
         nextSaisonFunc = oInputParameterHandler.getValue('nextSaisonFunc')
         sLang = oInputParameterHandler.getValue('sLang')
-        sTmdbId = oInputParameterHandler.getValue('sTmdbId')
 
         try:
+            # sauvegarde des parametres d'appel
+            oldParams = sys.argv[2] 
+            
             sHosterIdentifier, sMediaUrl, nextTitle, sDesc, sThumb = self.getMediaUrl(sSiteName, nextSaisonFunc, sParams, sSaison, nextEpisode, sLang, sHosterIdentifier)
+
+            # restauration des anciens params
+            sys.argv[2] = oldParams
+            
+            # pas d'épisode suivant
             if not sMediaUrl:
                 return
 
