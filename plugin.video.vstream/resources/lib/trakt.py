@@ -841,7 +841,7 @@ class cTrakt:
             self.__sType = disp[ret]
         return self.__sType
 
-    def getAction(self, Action=''):
+    def getAction(self, Action='', sEpisode = ''):
 
         if self.ADDON.getSetting('bstoken') == '':
             self.DIALOG.VSinfo('Vous devez être connecté')
@@ -863,7 +863,8 @@ class cTrakt:
         sImdb = oInputParameterHandler.getValue('sImdbId')
         sTMDB = oInputParameterHandler.getValue('sTmdbId')
         sSeason = oInputParameterHandler.getValue('sSeason')
-        sEpisode = oInputParameterHandler.getValue('sEpisode')
+        if not sEpisode:
+            sEpisode = oInputParameterHandler.getValue('sEpisode')
 
         # Film, serie, anime, saison, episode
         if sType not in ('1', '2', '3', '4', '8'):
@@ -876,16 +877,24 @@ class cTrakt:
             sTitle = oInputParameterHandler.getValue('sFileName')
 
             if sType == "shows":
+                if not addon().getSetting('trakt_tvshows_activate_scrobbling'):
+                    return
+                
+                sTitle = oInputParameterHandler.getValue('tvshowtitle')
                 if not sSeason:
                     sSeason = re.search('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle).group(2)
                 if not sEpisode:
                     sEpisode = re.search('(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', sTitle).group(2)
             else:
+                if not addon().getSetting('trakt_movies_activate_scrobbling'):
+                    return
                 sSeason = False
                 sEpisode = False
 
             sAction = URL_API + 'sync/history'
 
+            if not sTitle:
+                sTitle = oInputParameterHandler.getValue('sMovieTitle')
         else:
             sTitle = oInputParameterHandler.getValue('sMovieTitle')
 
@@ -893,6 +902,8 @@ class cTrakt:
             if not sTMDB:
                 sTMDB = int(self.getTmdbID(sTitle, sType))
 
+            if not sTMDB:
+                return
             sPost = {sType: [{'ids': {'tmdb': sTMDB}}]}
             if sSeason:
                 sPost = {sType: [{'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason)}]}]}
@@ -1048,6 +1059,6 @@ class cTrakt:
             year = str(r.group(0))
             sTitle = sTitle.replace(year, '')
 
-        meta = grab.get_idbyname(oInputParameterHandler.getValue('sFileName'), year, sType)
+        meta = grab.get_idbyname(sTitle, year, sType)
 
         return int(meta)

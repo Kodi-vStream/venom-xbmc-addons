@@ -840,6 +840,10 @@ msgctxt "#30360"
 msgid "My personnal Trakt lists"
 msgstr ""
 
+msgctxt "#30361"
+msgid "Activate scrobbling"
+msgstr ""
+
 msgctxt "#30400"
 msgid "Premium/Login"
 msgstr ""
