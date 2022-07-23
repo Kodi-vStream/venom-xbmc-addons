@@ -118,10 +118,11 @@ def showMovies(sSearch=''):
         oGui.setEndOfDirectory()
 
 
-def showLink():
+def showLink(oInputParameterHandler = False):
     oGui = cGui()
 
-    oInputParameterHandler = cInputParameterHandler()
+    if not oInputParameterHandler:
+        oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -171,7 +172,8 @@ def showLink():
                 if oHoster:
                     oHoster.setDisplayName(sMovieTitle + ' Partie' + sPartie)
                     oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb,
+                                            oInputParameterHandler=oInputParameterHandler)
 
             progress_.VSclose(progress_)
 

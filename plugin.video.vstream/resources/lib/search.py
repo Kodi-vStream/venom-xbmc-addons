@@ -83,9 +83,9 @@ class cSearch:
         if not self.autoPlayVideo:
             self.progress_ = progress().VScreate(large=True)
 
-    def _progressUpdate(self):
+    def _progressUpdate(self, numberResult):
         if not self.autoPlayVideo and not self._progressIsCancel():
-            numberResult = sum(map(len, self.allVideoLink.values()))
+            # numberResult = sum(map(len, self.allVideoLink.values()))
             message = "\n"
             message += (self.addons.VSlang(31209) % numberResult)
             message += "\n"
@@ -122,7 +122,6 @@ class cSearch:
 
             self._finishSearch(listThread)
             window(10101).setProperty('playVideo', 'false')
-            window(10101).setProperty('search', 'false')
 
             self._progressClose()
 
@@ -295,7 +294,7 @@ class cSearch:
         else:
             VSlog("No result for: " + str(pluginId))
         self.listRemainingPlugins.remove(pluginName)
-        self._progressUpdate()
+        self._progressUpdate(sum(map(len, self.allVideoLink.values())))
 
         if len(self.listRemainingPlugins) == 0 and self.autoPlayVideo:
             self.eventFindOneLink.set()
@@ -464,7 +463,7 @@ class cSearch:
             function(sUrl)
             if updateProcess:
                 self.listRemainingPlugins.remove(plugin['name'])
-                self._progressUpdate()
+                self._progressUpdate(sum(map(len, cGui().getSearchResult().values())))
 
             VSlog('Load Search: ' + str(plugin['identifier']))
         except Exception as e:

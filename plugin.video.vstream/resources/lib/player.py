@@ -29,7 +29,7 @@ class cPlayer(xbmc.Player):
 
     ADDON = addon()
 
-    def __init__(self, oInputParameterHandler = False, *args):
+    def __init__(self, oInputParameterHandler=False, *args):
 
         sPlayerType = self.__getPlayerType()
         xbmc.Player.__init__(self, sPlayerType)
@@ -72,7 +72,7 @@ class cPlayer(xbmc.Player):
 
     def addItemToPlaylist(self, oGuiElement):
         oGui = cGui()
-        oListItem =  oGui.createListItem(oGuiElement)
+        oListItem = oGui.createListItem(oGuiElement)
         self.__addItemToPlaylist(oGuiElement, oListItem)
 
     def __addItemToPlaylist(self, oGuiElement, oListItem):
@@ -119,7 +119,7 @@ class cPlayer(xbmc.Player):
         player_conf = self.ADDON.getSetting('playerPlay')
         # Si lien dash, methode prioritaire
         if splitext(urlparse(sUrl).path)[-1] in [".mpd", ".m3u8"]:
-            if isKrypton() == True:
+            if isKrypton():
                 addonManager().enableAddon('inputstream.adaptive')
                 item.setProperty('inputstream', 'inputstream.adaptive')
                 if '.m3u8' in sUrl:
@@ -141,7 +141,6 @@ class cPlayer(xbmc.Player):
             VSlog('Player use PlayMedia() method')
         # 3 eme mode (defaut)
         else:
-            item.customDebug()
             xbmcplugin.setResolvedUrl(sPluginHandle, True, item)
             VSlog('Player use setResolvedUrl() method')
 

@@ -465,7 +465,6 @@ def __checkForNextPage(sHtmlContent):
 
 def showHosters(oInputParameterHandler = False):
     oGui = cGui()
-    oParser = cParser()
     if not oInputParameterHandler:
         oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
