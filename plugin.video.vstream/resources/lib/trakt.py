@@ -126,7 +126,7 @@ class cTrakt:
             oOutputParameterHandler.addParameter('type', 'show')
             oGui.addDir(SITE_IDENTIFIER, 'getLists', self.ADDON.VSlang(30121), 'series.png', oOutputParameterHandler)
 
-            if self.ADDON.getSetting('trakt_show_lists'):
+            if self.ADDON.getSetting('trakt_show_lists') == 'true':
                 oOutputParameterHandler.addParameter('type', 'custom-lists')
                 oGui.addDir(SITE_IDENTIFIER, 'menuList', "Listes", 'trakt.png', oOutputParameterHandler)
 
@@ -862,9 +862,6 @@ class cTrakt:
         # entrer imdb ? venant d'ou?
         sImdb = oInputParameterHandler.getValue('sImdbId')
         sTMDB = oInputParameterHandler.getValue('sTmdbId')
-        sSeason = oInputParameterHandler.getValue('sSeason')
-        if not sEpisode:
-            sEpisode = oInputParameterHandler.getValue('sEpisode')
 
         # Film, serie, anime, saison, episode
         if sType not in ('1', '2', '3', '4', '8'):
@@ -874,20 +871,24 @@ class cTrakt:
 
         # Mettre en vu automatiquement.
         if Action == "SetWatched":
-            sTitle = oInputParameterHandler.getValue('sFileName')
+            sFileName = oInputParameterHandler.getValue('sFileName')
 
             if sType == "shows":
-                if not addon().getSetting('trakt_tvshows_activate_scrobbling'):
+                if self.ADDON.getSetting('trakt_tvshows_activate_scrobbling') == 'false':
                     return
                 
                 sTitle = oInputParameterHandler.getValue('tvshowtitle')
+                sSeason = oInputParameterHandler.getValue('sSeason')
                 if not sSeason:
                     sSeason = re.search('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle).group(2)
                 if not sEpisode:
-                    sEpisode = re.search('(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', sTitle).group(2)
+                    sEpisode = oInputParameterHandler.getValue('sEpisode')
+                if not sEpisode:
+                    sEpisode = re.search('(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', sFileName).group(2)
             else:
-                if not addon().getSetting('trakt_movies_activate_scrobbling'):
+                if self.ADDON.getSetting('trakt_movies_activate_scrobbling') == 'false':
                     return
+                sTitle = sFileName
                 sSeason = False
                 sEpisode = False
 

@@ -252,9 +252,7 @@ class cPlayer(xbmc.Player):
                         if tmdb_session:
                             self.__getWatchlist('tmdb')
     
-                        bstoken = self.ADDON.getSetting('bstoken')
-                        if bstoken:
-                            self.__getWatchlist('trakt', sEpisode)
+                        self.__getWatchlist('trakt', sEpisode)
 
                     # Sauvegarde du point de lecture pour une reprise
                     elif self.currentTime > 180.0:
