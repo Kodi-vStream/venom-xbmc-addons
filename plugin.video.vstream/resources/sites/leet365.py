@@ -267,10 +267,7 @@ def showHoster():
     if not sThumb:
         sThumb = ''
 
-    if "leet365.cc" in sUrl:
-        bvalid, shosterurl = Hoster_Leet365(sUrl, sUrl)
-        if bvalid:
-            sHosterUrl = shosterurl
+    bvalid, sHosterUrl = Hoster_Leet365(sUrl, sUrl)
 
     if sHosterUrl:
         sHosterUrl = sHosterUrl.strip()
@@ -296,6 +293,8 @@ def Hoster_Leet365(url, referer):
         hostUrl = aResult[1][0]
         if 'dailymotion' in hostUrl:
             return True, hostUrl
+        if 'fclecteur.com' in hostUrl:
+            return Hoster_Laylow(hostUrl, url)
         return Hoster_Wigistream(hostUrl, url)
 
     sPattern = '<script>fid="(.+?)".+?src="\/\/fclecteur\.com\/footy\.js">'
@@ -309,6 +308,9 @@ def Hoster_Leet365(url, referer):
 
 
 def Hoster_Wigistream(url, referer):
+    
+    if not url.startswith('http'):
+        url = 'https:' + url
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Referer', referer)
