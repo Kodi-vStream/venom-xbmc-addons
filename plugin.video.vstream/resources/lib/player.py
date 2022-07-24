@@ -247,12 +247,7 @@ class cPlayer(xbmc.Player):
                                 saisonViewing = True
                         
                         # Marquer VU dans les comptes perso
-                        # NE FONCTIONNE PAS SI PLUSIEURS VIDEOS SE SONT ENCHAINEES (cas des épisodes)
-                        tmdb_session = self.ADDON.getSetting('tmdb_session')
-                        if tmdb_session:
-                            self.__getWatchlist('tmdb')
-    
-                        self.__getWatchlist('trakt', sEpisode)
+                        self.__setWatchlist(sEpisode)
 
                     # Sauvegarde du point de lecture pour une reprise
                     elif self.currentTime > 180.0:
@@ -345,16 +340,11 @@ class cPlayer(xbmc.Player):
                             db.del_resume(meta)
 
 
-    def __getWatchlist(self, sAction, sEpisode=''):
-
-        if sAction == 'tmdb':
-            plugins = __import__('resources.sites.themoviedb_org', fromlist=['themoviedb_org'])
-            function = getattr(plugins, 'getWatchlist')
-            function()
-        elif sAction == 'trakt':
-            plugins = __import__('resources.lib.trakt', fromlist=['trakt']).cTrakt()
-            function = getattr(plugins, 'getAction')
-            function(Action = "SetWatched", sEpisode = sEpisode)
+    def __setWatchlist(self, sEpisode=''):
+        # Suivi de lecture dans Trakt
+        plugins = __import__('resources.lib.trakt', fromlist=['trakt']).cTrakt()
+        function = getattr(plugins, 'getAction')
+        function(Action = "SetWatched", sEpisode = sEpisode)
         return
 
     def __getPlayerType(self):
