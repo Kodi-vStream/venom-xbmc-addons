@@ -358,6 +358,10 @@ def addFolders(oGui, content, searchFolder = None):
             sThumb = 'series.png'
         elif 'DOCUMENTAIRE' in sTitle.upper() or 'DOCS' in sTitle.upper():
             sThumb = 'doc.png'
+        elif 'SPECTACLE' in sTitle.upper() or 'CONCERT' in sTitle.upper():
+            sThumb = 'star.png'
+        elif 'SPORT' in sTitle.upper():
+            sThumb = 'sport.png'
         elif 'FILM' in sTitle.upper() or 'MOVIE' in sTitle.upper():
             sThumb = 'films.png'
         elif 'ANIMES' in sTitle.upper() or 'ANIMÉS' in sTitle.upper() or 'MANGA' in sTitle.upper() or 'JAPAN' in sTitle.upper():
