@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, VSlog
+from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.packer import cPacker
+from resources.lib.parser import cParser
 
 
 class cHoster(iHoster):
@@ -17,9 +16,9 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
         
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close
+        # fh = open('c:\\test.txt', "w")
+        # fh.write(sHtmlContent)
+        # fh.close
         
         sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
 
