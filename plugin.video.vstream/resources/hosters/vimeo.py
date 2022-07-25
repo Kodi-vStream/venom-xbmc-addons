@@ -1,9 +1,11 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
+
 
 class cHoster(iHoster):
 
@@ -20,29 +22,26 @@ class cHoster(iHoster):
         return ''
 
     def _getMediaLinkForGuest(self):
-        api_call = False
-
         sId = self.__getIdFromUrl(self._url)
-
         web_url = 'https://player.vimeo.com/video/' + sId
 
         oRequest = cRequestHandler(web_url)
         sHtmlContent = oRequest.request()
-        sPattern =  ',"url":"(.+?)",.+?"quality":"(.+?)",'
+        sPattern = ',"url":"(.+?)",.+?"quality":"(.+?)",'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if aResult[0] is True:
-            #initialisation des tableaux
-            url=[]
-            qua=[]
+            # initialisation des tableaux
+            url = []
+            qua = []
 
-            #Remplissage des tableaux
+            # Remplissage des tableaux
             for i in aResult[1]:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
 
-            #tableau
+            # tableaux
             api_call = dialog().VSselectqual(qua, url)
 
             if api_call:
