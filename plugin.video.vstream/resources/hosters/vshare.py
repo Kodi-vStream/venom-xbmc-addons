@@ -1,8 +1,8 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#test sur http://vshare.eu/embed-wuqinr62cpn6-703x405.html
-#         http://vshare.eu/embed-cxmr4o8l2waa-703x405.html
-#         http://vshare.eu/embed-cxmr4o8l2waa703x405.html erreur code streambb
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+# test sur http://vshare.eu/embed-wuqinr62cpn6-703x405.html
+#          http://vshare.eu/embed-cxmr4o8l2waa-703x405.html
+#          http://vshare.eu/embed-cxmr4o8l2waa703x405.html erreur code streambb
 import re
 
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -10,8 +10,8 @@ from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 from resources.lib.packer import cPacker
 
-class cHoster(iHoster):
 
+class cHoster(iHoster):
     def __init__(self):
         iHoster.__init__(self, 'vshare', 'Vshare')
 
