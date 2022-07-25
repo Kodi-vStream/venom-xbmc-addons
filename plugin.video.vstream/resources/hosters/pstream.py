@@ -1,13 +1,12 @@
-#-*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # https://www.pstream.net/e/xxxxx
 import base64
 import json
-import re
 
-from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, VSPath, isMatrix, VSlog
+from resources.lib.comaddon import isMatrix
+from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import urlEncode
 
@@ -20,11 +19,11 @@ except:
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0"
 
-headers = {'User-Agent': UA,
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-    "Accept-Language": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3"}
+headers = {"User-Agent": UA,
+           "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+           "Accept-Language": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3"}
 
-        
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -40,7 +39,7 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  '<script src="(.+?)"'
+        sPattern = '<script src="(.+?)"'
         aResult = oParser.parse(sHtmlContent, sPattern)[1][1]
 
         oRequest = cRequestHandler(aResult)
@@ -49,7 +48,7 @@ class cHoster(iHoster):
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         sHtmlContent = oRequest.request()
 
-        sPattern =  'atob.+?\}\("(.+?)"'
+        sPattern = 'atob.+?\}\("(.+?)"'
         code = oParser.parse(sHtmlContent, sPattern)
 
         for i in code[1]:
