@@ -27,7 +27,7 @@ class cHoster(iHoster):
         # On récupere l'array
         sPattern = '<script>\s*\(function\(\).+?=(.+?)var player'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult):
+        if aResult:
             for aEntry in aResult[1]:
                 uHv4sb = aEntry
 
