@@ -19,16 +19,23 @@ class cHoster(iHoster):
 
         url = tuple(map(str, self._url.split(',')))
 
-        if len(url) == 2:
+        if len(url) <= 2:
             api_call = url[0]
         else:
-            url = []
+            link = []
             qual = []
             for a in url:
-                url.append(a)
-                qu = re.search('max_res=(\d+)',a).group(1)
-                qual.append(qu)
-            api_call = self.mydialog().VSselect(qual, url, 'Viki Select quality :')
+                q = re.search('max_res=(\d+)',a)
+                if q:
+                    link.append(a)
+                    qu = q.group(1)
+                    qual.append(qu)
+            if len(link) == 0:
+                api_call = a
+            elif len(link) == 1:
+                api_call = link[1]
+            elif len(link) > 1:
+                api_call = self.mydialog().VSselect(qual, link, 'Viki Select quality :')
 
         if api_call:
             return True, api_call
