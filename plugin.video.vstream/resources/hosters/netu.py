@@ -1,6 +1,6 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-#test film strem vk 1er page dark higlands & tous ces enfants m'appartiennent
+# test film strem vk 1er page dark higlands & tous ces enfants m'appartiennent
 import re
 
 from resources.hosters.hoster import iHoster
@@ -8,6 +8,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:72.0) Gecko/20100101 Firefox/72.0'
+
 
 class cHoster(iHoster):
 
@@ -20,7 +21,7 @@ class cHoster(iHoster):
         self._url = self._url.replace('http://waaw.tv/', 'http://hqq.tv/')
         self._url = self._url.replace('http://vizplay.icu/', 'http://hqq.tv/')
         self._url = self._url.replace('http://hqq.tv/player/hash.php?hash=',
-            'http://hqq.tv/player/embed_player.php?vid=')
+                                      'http://hqq.tv/player/embed_player.php?vid=')
         self._url = self._url.replace('http://hqq.tv/watch_video.php?v=', 'http://hqq.tv/player/embed_player.php?vid=')
 
     def __getIdFromUrl(self):
@@ -36,8 +37,6 @@ class cHoster(iHoster):
         return False
 
     def _getMediaLinkForGuest(self):
-        api_call = ''
-
         ids = self.__getIdFromUrl()
 
         hqqUrl = 'http://hqq.tv/player/embed_player.php?vid=' + ids + '&autoplay=no'
@@ -56,7 +55,7 @@ class cHoster(iHoster):
         oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         oRequestHandler.addHeaderEntry('x-requested-with', 'XMLHttpRequest')
         oRequestHandler.addHeaderEntry('Referer', hqqUrl)
-        #ok
+        # ok
 
         oRequestHandler.request()
         api_call = oRequestHandler.getRealUrl()
