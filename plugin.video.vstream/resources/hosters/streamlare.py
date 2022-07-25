@@ -3,7 +3,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
-from resources.lib.comaddon import dialog, VSlog
+from resources.lib.comaddon import dialog
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ' + \
     'Chrome/83.0.4103.116 Safari/537.36'
@@ -34,7 +34,7 @@ class cHoster(iHoster):
                 qua.append(aEntry[0])
                 url.append(aEntry[1])
 
-                api_call = dialog().VSselectqual(qua, url)
+            api_call = dialog().VSselectqual(qua, url)
 
         if api_call:
             return True, api_call + '|User-Agent=' + UA + '&Referer=' + self._url
