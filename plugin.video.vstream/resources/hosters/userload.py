@@ -1,18 +1,18 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-## https://userload.co/embed/xxxx
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+# https://userload.co/embed/xxxx
 import re
+
 import requests
 
-from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
-from resources.lib.parser import cParser
 from resources.lib.aadecode import AADecoder
+from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.packer import cPacker
-from resources.lib.comaddon import VSlog
-
+from resources.lib.parser import cParser
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0"
+
 
 class cHoster(iHoster):
 
@@ -23,26 +23,24 @@ class cHoster(iHoster):
         return False
 
     def _getMediaLinkForGuest(self):
-        api_call = False
-
         keymorocco = ''
-        keymycountry= ''
+        keymycountry = ''
         morocco = ''
         mycountry = ''
 
         urlapi = "https://userload.co/api/assets/userload/js/videojs.js"
 
-        #A voir quel encodage il faut pour Kodi 18.
+        # A voir quel encodage il faut pour Kodi 18.
         sHtmlContent1 = requests.get(urlapi).content.decode('utf-8')
 
         oParser = cParser()
         sPattern = '(ﾟωﾟ.+?\(\'_\'\);)'
-        aResult = oParser.parse(sHtmlContent1 , sPattern)
+        aResult = oParser.parse(sHtmlContent1, sPattern)
 
         if aResult[0] is True:
             sdecode = AADecoder(aResult[1][0]).decode()
 
-            sPattern =  'morocco=".([^\W]+).+?"&mycountry=".([^\W]+)'
+            sPattern = 'morocco=".([^\W]+).+?"&mycountry=".([^\W]+)'
             aResult_2 = oParser.parse(sdecode, sPattern)
 
             if aResult_2[0] is True:
@@ -89,7 +87,7 @@ class cHoster(iHoster):
             oRequest.addParametersLine(pdata)
             api_call = oRequest.request()
 
-            if 'mp4' in api_call and 'uloadcdn.com' in api_call :
+            if 'mp4' in api_call and 'uloadcdn.com' in api_call:
                 return True, api_call.strip()
 
         return False, False
