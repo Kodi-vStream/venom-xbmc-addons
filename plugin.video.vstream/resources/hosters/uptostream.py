@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-import re
 import json
-import webbrowser
+import re
 import requests
+import xbmc
 
-from resources.lib.config import GestionCookie
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, VSlog, isMatrix, CountdownDialog, xbmc, VSPath
+from resources.lib.comaddon import dialog, VSlog, CountdownDialog, VSPath
+from resources.lib.config import GestionCookie
 from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
-from resources.lib.util import Unquote
 from resources.lib.librecaptcha.gui import cInputWindowYesNo
+from resources.lib.parser import cParser
+
 
 class cHoster(iHoster):
 
@@ -63,36 +63,38 @@ class cHoster(iHoster):
                 oRequestHandler = cRequestHandler(url1)
                 dict_liens = oRequestHandler.request(jsonDecode=True)
                 status = dict_liens["statusCode"]
-                if status == 0 :
+                if status == 0:
                     js_result = dict_liens["data"]
             except Exception as e:
                 status = e
-            
+
             if status:
                 VSlog('UPTOBOX - ' + status)
                 return False
-            
+
         # Uptostream sans compte uptobox, il faut valider un code
         else:
             SubTitle = ""
             cookies = GestionCookie().Readcookie("uptobox")
-    
+
             s = requests.Session()
             s.headers.update({"Cookie": cookies})
             r = s.get('https://uptobox.com/api/streaming?file_code=' + filecode).json()
-            
-            if r["statusCode"] != 0: # Erreur
+
+            if r["statusCode"] != 0:  # Erreur
                 dialog().VSinfo(r["data"])
                 return False, False
-    
+
             r1 = s.get(r["data"]["user_url"]).text
             tok = re.search('token.+?;.+?;(.+?)&', r1).group(1)
-    
+
             if not xbmc.getCondVisibility('system.platform.android'):
                 # Si possible on ouvre la page automatiquement dans un navigateur internet.
                 import webbrowser
                 webbrowser.open(r['data']['user_url'])
-                with CountdownDialog("Autorisation nécessaire", "Pour voir cette vidéo, veuillez vous connecter", "Allez sur ce lien : " + r['data']['user_url'], "Et valider le pin : " + r['data']['pin'], True, r["data"]['expired_in'], 10) as cd:
+                with CountdownDialog("Autorisation nécessaire", "Pour voir cette vidéo, veuillez vous connecter",
+                                     "Allez sur ce lien : " + r['data']['user_url'],
+                                     "Et valider le pin : " + r['data']['pin'], True, r["data"]['expired_in'], 10) as cd:
                     js_result = cd.start(self.__check_auth, [r["data"]["check_url"]])["data"]
             else:
                 import pyqrcode
@@ -103,12 +105,12 @@ class cHoster(iHoster):
                 DIALOG = dialog()
                 if retArg == "N":
                     return False
-    
+
                 js_result = s.get(r["data"]["check_url"]).json()["data"]
 
-        #Deux modes de fonctionnement different.
+        # Deux modes de fonctionnement different.
         if js_result.get("streamLinks").get('src'):
-            api_call = js_result['streamLinks']['src'].replace(".m3u8",".mpd")
+            api_call = js_result['streamLinks']['src'].replace(".m3u8", ".mpd")
         else:
             sPattern = "'(.+?)': {(.+?)}"
 
@@ -117,14 +119,13 @@ class cHoster(iHoster):
 
             url = []
             qua = []
-            api_call = False
 
             for aEntry in aResult[1]:
                 QUAL = aEntry[0]
-                d = re.findall("'u*(.+?)': u*'(.+?)'",aEntry[1])
+                d = re.findall("'u*(.+?)': u*'(.+?)'", aEntry[1])
                 for aEntry1 in d:
                     url.append(aEntry1[1])
-                    qua.append(QUAL  + ' (' + aEntry1[0] + ')')
+                    qua.append(QUAL + ' (' + aEntry1[0] + ')')
 
             # Affichage du tableau
             api_call = dialog().VSselectqual(qua, url)
