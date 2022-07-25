@@ -1,9 +1,9 @@
-#coding: utf-8
+# coding: utf-8
 import re
 
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
+from resources.lib.handler.requestHandler import cRequestHandler
+
 
 class cHoster(iHoster):
 
@@ -16,10 +16,10 @@ class cHoster(iHoster):
 
         api_call = ''
 
-        sPattern =  'id="videolink">([^<>]+)<\/p>'
+        sPattern = 'id="videolink">([^<>]+)<\/p>'
         aResult = re.findall(sPattern, sHtmlContent)
 
-        if (aResult):
+        if aResult:
 
             api_call = 'https://verystream.com/gettoken/' + aResult[0] + '?mime=true'
 
