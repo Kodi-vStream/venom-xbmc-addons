@@ -1,46 +1,48 @@
 # coding: utf-8
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
-import re
-import requests
-from resources.lib.parser import cParser
+import base64
+import binascii
+import json
+import random
+import string
+
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog, VSlog
 from resources.lib.handler.requestHandler import cRequestHandler
-
-import json, string, random, binascii, base64
+from resources.lib.parser import cParser
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:100.0) Gecko/20100101 Firefox/100.0'
-
 MODE = 0
+
 
 class cHoster(iHoster):
     def __init__(self):
         iHoster.__init__(self, 'viewsb', 'Viewsb')
 
-    def __getHost(self,url):
+    def __getHost(self, url):
         parts = url.split('//', 1)
         host = parts[1].split('/', 1)[0]
         return 'https://{0}/'.format(host)
 
-    def __getId(self,url):
+    def __getId(self, url):
         url = url.split('/')[-1]
         return url.split('.')[0]
 
     def _getMediaLinkForGuest(self):
         api_call = ''
-        
+
         host = self.__getHost(self._url)
         id = self.__getId(self._url)
         url = host + 'd/' + id + '.html'
-                    
+
         oRequest = cRequestHandler(url)
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Referer', host)
         sHtmlContent = oRequest.request()
 
-        if MODE == 1: #Non terminé encore
-            sPattern =  'download_video([^"]+)[^\d]+\d+x(\d+)'
+        if MODE == 1:  # Non terminé encore
+            sPattern = 'download_video([^"]+)[^\d]+\d+x(\d+)'
             oParser = cParser()
             aResult = oParser.parse(sHtmlContent, sPattern)
             if aResult[0] is True:
@@ -56,10 +58,9 @@ class cHoster(iHoster):
                     hash = list_data[2]
                     dl_url = host + 'dl?op=download_orig&id=' + code + '&mode=' + mode + '&hash=' + hash
                     VSlog(dl_url)
-                    
+
                     oRequest = cRequestHandler(dl_url)
                     sHtmlContent = oRequest.request()
-                    
                     domain = base64.b64encode((host[:-1] + ':443').encode('utf-8')).decode('utf-8').replace('=', '')
         else:
             eurl = get_embedurl(host, id)
@@ -69,11 +70,11 @@ class cHoster(iHoster):
             oRequest.addHeaderEntry('Referer', host)
             oRequest.addHeaderEntry('watchsb', 'streamsb')
             sHtmlContent = oRequest.request()
-            
-            #fh = open('c:\\test.txt', "w")
-            #fh.write(sHtmlContent)
-            #fh.close
-            
+
+            # fh = open('c:\\test.txt', "w")
+            # fh.write(sHtmlContent)
+            # fh.close
+
             page = json.loads(sHtmlContent)
             data = page['stream_data']
             if 'file' in data:
@@ -82,9 +83,10 @@ class cHoster(iHoster):
                 api_call = data['backup']
 
         if api_call:
-            return True, api_call + '|User-Agent=' + UA  + '&Referer=' + host + '&Accept-Language=fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3'
+            return True, api_call + '|User-Agent=' + UA + '&Referer=' + host + '&Accept-Language=fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3'
 
         return False, False
+
 
 def get_embedurl(host, media_id):
     # Copyright (c) 2019 vb6rocod
