@@ -1,11 +1,12 @@
-#-*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
+
 
 class cHoster(iHoster):
 
@@ -33,7 +34,7 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(sUrl)
         oRequest.addHeaderEntry('User-Agent', UA)
-        oRequest.addHeaderEntry('Referer','https://streamax.club/public/dist/index.html?id=' + urlId)
+        oRequest.addHeaderEntry('Referer', 'https://streamax.club/public/dist/index.html?id=' + urlId)
         sHtmlContent = oRequest.request()
 
         sPattern = 'RESOLUTION=(\d+x\d+)(.+?.m3u8)'
@@ -43,7 +44,7 @@ class cHoster(iHoster):
                 url.append('https://streamax.club' + aEntry[1])
                 qua.append(aEntry[0])
 
-            if (url):
+            if url:
                 api_call = dialog().VSselectqual(qua, url)
 
         if api_call:
