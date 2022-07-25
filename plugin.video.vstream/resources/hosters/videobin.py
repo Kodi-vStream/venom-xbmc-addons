@@ -16,7 +16,7 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
 
-        #accelère le traitement
+        # accelère le traitement
         sHtmlContent = oParser.abParse(sHtmlContent, 'var player', 'vvplay')
         # Traitement pour les liens m3u8
         sHtmlContent = sHtmlContent.replace(',', '').replace('master.m3u8', 'index-v1-a1.m3u8')
@@ -27,8 +27,8 @@ class cHoster(iHoster):
             api_call = ''
 
             # initialisation des tableaux
-            url=[]
-            qua=[]
+            url = []
+            qua = []
             n = 1
 
             # Remplissage des tableaux
