@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-#
+
 try:  # Python 2
     import urllib2
     from urllib2 import URLError as UrlError
@@ -23,7 +23,7 @@ class cHoster(iHoster):
     def __getIdFromUrl(self, sUrl):
         sPattern = 'http:..playreplay.net\/framevideo\/(.+?)\?'
         aResult = re.findall(sPattern, sUrl)
-        if (aResult):
+        if aResult:
             return aResult[0]
 
         return ''
@@ -32,8 +32,8 @@ class cHoster(iHoster):
         vUrl = False
         sId = self.__getIdFromUrl(self._url)
 
-        query_args = {'r': '["tVL0gjqo5",["preview/flv_image",{"uid":"' + sId + '"}],' + \
-            '["preview/flv_link",{"uid":"' + sId + '"}]]'}
+        query_args = {'r': '["tVL0gjqo5",["preview/flv_image",{"uid":"' + sId + '"}],' +
+                           '["preview/flv_link",{"uid":"' + sId + '"}]]'}
 
         data = urlEncode(query_args)
         headers = {'User-Agent': 'Mozilla 5.10'}
@@ -56,7 +56,7 @@ class cHoster(iHoster):
 
         # print(vUrl)
 
-        if (vUrl):
+        if vUrl:
             api_call = vUrl
             return True, api_call
 
