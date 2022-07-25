@@ -593,7 +593,7 @@ class addonManager:
 
     # Vérifie la présence d'un addon
     def isAddonExists(self, addon_id):
-        return xbmc.getCondVisibility('System.HasAddon(%s)' % addon_id) == 0
+        return not xbmc.getCondVisibility('System.HasAddon(%s)' % addon_id) == 0
 
     # Active/desactive un addon
     def enableAddon(self, addon_id, enable='True'):
