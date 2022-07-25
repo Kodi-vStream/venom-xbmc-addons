@@ -1,11 +1,12 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-from resources.lib.handler.requestHandler import cRequestHandler #requete url
-from resources.lib.parser import cParser #recherche de code
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
 from resources.lib.packer import cPacker
+
 
 class cHoster(iHoster):
 
@@ -27,13 +28,13 @@ class cHoster(iHoster):
             aResult = oParser.parse(sHtmlContent, sPattern)
 
         if aResult[0] is True:
-            url=[]
-            qua=[]
+            url = []
+            qua = []
             for i in aResult[1]:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
 
-            #Affichage du tableau
+            # Affichage du tableau
             api_call = dialog().VSselectqual(qua, url)
 
         if api_call:
