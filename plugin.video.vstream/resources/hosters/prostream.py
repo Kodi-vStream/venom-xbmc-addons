@@ -1,9 +1,10 @@
-#coding: utf-8
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# coding: utf-8
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
+
 
 class cHoster(iHoster):
 
@@ -17,7 +18,7 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
 
-        sPattern =  '<script type=\'text/javascript\'>(.+?)<\/script>'
+        sPattern = '<script type=\'text/javascript\'>(.+?)<\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if aResult[0] is True:
