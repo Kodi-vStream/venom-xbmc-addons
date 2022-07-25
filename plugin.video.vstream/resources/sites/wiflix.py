@@ -230,7 +230,7 @@ def showSeries(sSearch=''):
     if sSearch:
         sUrl = sSearch.replace(' ', '+')
 
-        pdata = 'do=search&subaction=search&story=' + sUrl + '&titleonly=3&all_word_seach=1&catlist[]=31'
+        pdata = 'do=search&subaction=search&story=' + sUrl + '&titleonly=3&all_word_seach=1&catlist[]=31&catlist[]=35'
 
         oRequest = cRequestHandler(URL_SEARCH[0])
         # oRequest.setRequestType(1)
