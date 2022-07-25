@@ -2,6 +2,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -11,7 +12,7 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
 
-        sPattern =  'var token="([^"]+)".+?var crsf="([^"]+)"'
+        sPattern = 'var token="([^"]+)".+?var crsf="([^"]+)"'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0] is True:
