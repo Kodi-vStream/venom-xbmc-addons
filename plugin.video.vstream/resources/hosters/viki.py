@@ -3,15 +3,16 @@
 # ==>vikki
 import re
 import xbmcgui
+
 from resources.hosters.hoster import iHoster
-from resources.lib.parser import cParser
+
 
 class cHoster(iHoster):
 
     def __init__(self):
         iHoster.__init__(self, 'viki', 'Viki')
 
-    def _getMediaLinkForGuest(self, api_call = None):
+    def _getMediaLinkForGuest(self, api_call=None):
         # lesite ne fournit plus que du Mdp plus de format ['480p','360p','240p',
         # srtsubs_path = xbmc.translatePath('special://temp/vikir.English.srt')
         # Methode 1 on recoit une liste url=[ urlstream,sub,q1,q2...urlq1,urlq2
