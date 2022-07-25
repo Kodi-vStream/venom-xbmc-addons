@@ -38,15 +38,15 @@ class cHoster(iHoster):
         self._url = 'http://www.onevideo.to/embed.php?id=' + str(self._url)
 
     def _getMediaLinkForGuest(self):
-        #api_call = ('http://www.nowvideo.sx/api/player.api.php?key=%s&file=%s') %
-        #   (self.__getKey(), self.__getIdFromUrl())
-        api_call = ('http://www.onevideo.to/api/player.api.php?user=undefined&codes=1&file=%s' + \
-            '&pass=undefined&key=%s') % (self.__getIdFromUrl(), self.__getKey())
+        # api_call = ('http://www.nowvideo.sx/api/player.api.php?key=%s&file=%s') %
+        #    (self.__getKey(), self.__getIdFromUrl())
+        api_call = ('http://www.onevideo.to/api/player.api.php?user=undefined&codes=1&file=%s' +
+                    '&pass=undefined&key=%s') % (self.__getIdFromUrl(), self.__getKey())
 
         oRequest = cRequestHandler(api_call)
         sHtmlContent = oRequest.request()
 
-        sPattern =  'url=(.+?)&title'
+        sPattern = 'url=(.+?)&title'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0] is True:
