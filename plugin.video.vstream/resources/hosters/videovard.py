@@ -5,14 +5,10 @@
 # pour récuperer le token : https://github.com/addon-lab/addon-lab_resolver_Project adapté pour evoload
 # mais meme principe
 
-import re
-import requests
-from resources.lib.parser import cParser
-from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, VSlog
-from resources.lib.handler.requestHandler import cRequestHandler
-
 import json
+
+from resources.hosters.hoster import iHoster
+from resources.lib.handler.requestHandler import cRequestHandler
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
 
@@ -21,32 +17,30 @@ class cHoster(iHoster):
     def __init__(self):
         iHoster.__init__(self, 'videovard', 'Videovard')
 
-    def __getHost(self,url):
+    def __getHost(self, url):
         parts = url.split('//', 1)
         host = parts[1].split('/', 1)[0]
         return host
 
-    def __getId(self,url):
+    def __getId(self, url):
         return url.split('/')[-1]
 
     def _getMediaLinkForGuest(self):
-        api_call = ''
         host = self.__getHost(self._url)
         id = self.__getId(self._url)
-        
+
         url1 = "https://" + host + "/api/make/hash/" + id
-        
 
         oRequest = cRequestHandler(url1)
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Referer', "https://" + host)
         sHtmlContent = oRequest.request()
-        
+
         page = json.loads(sHtmlContent)
         hash = page['hash']
-        
-        url2 = "https://"+ host + "/api/player/setup"
-            
+
+        url2 = "https://" + host + "/api/player/setup"
+
         oRequest = cRequestHandler(url2)
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
@@ -56,11 +50,11 @@ class cHoster(iHoster):
         oRequest.addParameters("file_code", id)
         oRequest.addParameters("hash", hash)
         sHtmlContent = oRequest.request()
-        
+
         page = json.loads(sHtmlContent)
         src = page['src']
         seed = page['seed']
-        
+
         api_call = tear_decode(src, seed)
 
         if api_call:
@@ -69,7 +63,8 @@ class cHoster(iHoster):
 
         return False, False
 
-#---------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
+
 
 def tear_decode(data_file, data_seed):
     from ctypes import c_int32 as i32
