@@ -81,9 +81,17 @@ class cRechercheHandler:
         elif sCat == '3':
             sSearch = 'URL_SEARCH_ANIMS'
         elif sCat == '4':
-            sSearch = 'URL_SEARCH_DRAMAS'
+            sSearch = 'URL_SEARCH_SERIES'
         elif sCat == '5':
             sSearch = 'URL_SEARCH_MISC'
+        elif sCat == '6':
+            sSearch = 'URL_SEARCH'
+        elif sCat == '7':
+            sSearch = 'URL_SEARCH_MOVIES'
+        elif sCat == '8':
+            sSearch = 'URL_SEARCH_SERIES'
+        elif sCat == '9':
+            sSearch = 'URL_SEARCH_DRAMAS'
         else:
             sSearch = 'URL_SEARCH'
 

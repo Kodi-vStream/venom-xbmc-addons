@@ -134,7 +134,7 @@ def showAlpha():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if '/dramas/' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showSerieEpisodes', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addDrama(SITE_IDENTIFIER, 'showSerieEpisodes', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
@@ -234,7 +234,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if '/dramas/' in sUrl2:
-                oGui.addTV(SITE_IDENTIFIER, 'showSerieEpisodes', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addDrama(SITE_IDENTIFIER, 'showSerieEpisodes', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 

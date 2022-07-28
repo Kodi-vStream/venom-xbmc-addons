@@ -112,6 +112,7 @@ class cGui:
     #    IPTV (Officiel) 0             6        files
     #    Saga            3             7        movies
     #    Episodes        6             8        episodes
+    #    Drama           2             9        tvshows
     #    Person          7             /        artists
     #    Network         8             /        files
 
@@ -138,6 +139,15 @@ class cGui:
             oOutputParameterHandler.addParameter('nextSaisonFunc', sFunction)
 
         return self.addNewDir('tvshows', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 4, 3)
+
+    def addDrama(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
+        # Pour gérer l'enchainement des épisodes
+        saisonUrl = oOutputParameterHandler.getValue('siteUrl')
+        if saisonUrl:
+            oOutputParameterHandler.addParameter('saisonUrl', QuotePlus(saisonUrl))
+            oOutputParameterHandler.addParameter('nextSaisonFunc', sFunction)
+
+        return self.addNewDir('tvshows', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 2, 9)
 
     def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
         if sThumbnail or sDesc:
@@ -304,12 +314,12 @@ class cGui:
                 if not oListItem.getProperty('isBookmark'):
                     self.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
 
-                if sCat in (1, 2, 3, 4, 8):
+                if sCat in (1, 2, 3, 4, 8, 9):
                     if self.ADDON.getSetting('bstoken') != '':
                         self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
                     if self.ADDON.getSetting('tmdb_account') != '':
                         self.createContexMenuTMDB(oGuiElement, oOutputParameterHandler)
-                if sCat in (1, 2, 3):
+                if sCat in (1, 2, 3, 4, 9):
                     self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
                 if sCat != 6:
                     self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)

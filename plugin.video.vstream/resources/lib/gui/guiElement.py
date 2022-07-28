@@ -677,7 +677,7 @@ class cGuiElement:
         # Used only if there is data in db, overwrite getMetadonne()
         sCat = str(self.getCat())
         try:
-            if sCat and int(sCat) in (1, 2, 3, 4, 5, 8):  # Vérifier seulement si de type média
+            if sCat and int(sCat) in (1, 2, 3, 4, 5, 8, 9):  # Vérifier seulement si de type média
                 if self.getWatched():
                     self.addItemValues('playcount', 1)
         except:
@@ -698,7 +698,7 @@ class cGuiElement:
         if sCat:
             self.addItemProperties('sCat', sCat)
             mediatypes = {'1': 'movie', '2': 'tvshow', '3': 'tvshow', '4': 'season', '5': 'video',
-                          '6': 'video', '7': 'season', '8': 'episode'}
+                          '6': 'video', '7': 'season', '8': 'episode', '9': 'tvshow'}
             if sCat in mediatypes.keys():
                 mediatype = mediatypes.get(sCat)
                 self.addItemValues('mediatype', mediatype)  # video, movie, tvshow, season, episode, musicvideo

@@ -49,6 +49,7 @@ DRAMA_BEST = (URL_API + 'series.json?sort=views&page=1&per_page=50&app=' + _APP 
 URL_SEARCH = (URL_API + 'search.json?page=1&per_page=50&app=' + _APP + '&term=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH_DRAMAS = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 
 se = 'true'
 
@@ -196,7 +197,7 @@ def showMovies(sSearch=''):
             if jsonrsp['response'][movie]['type'] == "movie":
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addDrama(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 

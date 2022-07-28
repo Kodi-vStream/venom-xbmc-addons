@@ -249,7 +249,7 @@ def showNoAlpha():
             if 't=1' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaison', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             elif 't=5' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showSaison', sTitle, 'dramas.png', sThumb, '', oOutputParameterHandler)
+                oGui.addDrama(SITE_IDENTIFIER, 'showSaison', sTitle, 'dramas.png', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addAnime(SITE_IDENTIFIER, 'showSaison', sTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
 
@@ -293,7 +293,7 @@ def showSeries(sSearch=''):
             if 't=1' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaison', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             elif 't=5' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showSaison', sTitle, 'dramas.png', sThumb, '', oOutputParameterHandler)
+                oGui.addDrama(SITE_IDENTIFIER, 'showSaison', sTitle, 'dramas.png', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addAnime(SITE_IDENTIFIER, 'showSaison', sTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
 
