@@ -174,12 +174,13 @@ class cDb(object):
             self.db.commit()
             VSlog('SQL INSERT history Successfully')
         except Exception as e:
-            if 'UNIQUE constraint failed' in e.message:
+            if 'UNIQUE constraint failed' in str(e):
                 ex = "UPDATE history set title = '%s', disp = '%s', icone= '%s' WHERE title = '%s'" % (title, disp, icon, title)
                 self.dbcur.execute(ex)
                 self.db.commit()
                 VSlog('SQL UPDATE history Successfully')
-            VSlog('SQL ERROR INSERT, title = %s, %s' % (title, e))
+            else:
+                VSlog('SQL ERROR INSERT, title = %s, %s' % (title, e))
             pass
 
     def get_history(self):
@@ -376,7 +377,7 @@ class cDb(object):
             dialog().VSinfo(addon().VSlang(30042), meta['title'])
             VSlog('SQL INSERT favorite Successfully')
         except Exception as e:
-            if 'UNIQUE constraint failed' in e.message:
+            if 'UNIQUE constraint failed' in str(e):
                 dialog().VSinfo(addon().VSlang(30043), meta['title'])
             VSlog('SQL ERROR INSERT : %s' % e)
             pass
