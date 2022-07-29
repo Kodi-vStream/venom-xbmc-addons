@@ -621,18 +621,28 @@ def showHosters():  # affiche les videos disponible du live
 
             if aResult:
                 video_id = aResult[0]
-                # url1 = url.replace('/embed/', '/watch?v=').replace('?autoplay=1', '')
-                url2 = 'https://youtube.com/get_video_info?video_id=' + video_id + '&sts=17488&hl=fr'
-
+                url2 = url.replace('/embed/', '/watch?v=').replace('?autoplay=1', '')
                 oRequestHandler = cRequestHandler(url2)
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
-                sHtmlContent3 = Unquote(oRequestHandler.request())
+                sHtmlContent3 = Unquote(str(oRequestHandler.request()))
 
                 sPattern3 = 'hlsManifestUrl":"(.+?)"'
                 aResult = re.findall(sPattern3, sHtmlContent3)
 
                 if aResult:
                     sHosterUrl = aResult[0] + '|User-Agent=' + UA + '&Host=manifest.googlevideo.com'
+                else:
+                    url2 = 'https://youtube.com/get_video_info?video_id=' + video_id + '&sts=17488&hl=fr'
+    
+                    oRequestHandler = cRequestHandler(url2)
+                    oRequestHandler.addHeaderEntry('User-Agent', UA)
+                    sHtmlContent3 = Unquote(str(oRequestHandler.request()))
+    
+                    sPattern3 = 'hlsManifestUrl":"(.+?)"'
+                    aResult = re.findall(sPattern3, sHtmlContent3)
+    
+                    if aResult:
+                        sHosterUrl = aResult[0] + '|User-Agent=' + UA + '&Host=manifest.googlevideo.com'
 
         if 'streamup.me' in url:  # Terminé
             oRequestHandler = cRequestHandler(url)
@@ -1244,7 +1254,7 @@ def getHosterVar16(url, referer):
 def getHosterIframe(url, referer):
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('Referer', referer)
-    sHtmlContent = oRequestHandler.request()
+    sHtmlContent = str(oRequestHandler.request())
 
     sPattern = '[^/]source.+?["\'](https.+?)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
