@@ -137,6 +137,7 @@ class cUtil:
 
         # vire tag
         name = re.sub('[\(\[].+?[\)\]]', '', name)
+        name = name.replace('[', '').replace(']', '') # crochet orphelin
 
         # enlève les accents, si nécessaire
         n2 = re.sub('[^a-zA-Z0-9 ]', '', name)
