@@ -717,8 +717,8 @@ msgid "Library"
 msgstr "Librairie"
 
 msgctxt "#30325"
-msgid "UpToBox"
-msgstr "UpToBox"
+msgid "Add to UpToBox"
+msgstr "Ajouter sur Uptobox"
 
 msgctxt "#30326"
 msgid "Download and Play"

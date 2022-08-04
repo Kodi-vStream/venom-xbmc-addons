@@ -14,7 +14,7 @@ except ImportError:  # Python 3
     from urllib.error import URLError as UrlError
     from urllib.parse import urlencode
 
-from resources.lib.comaddon import progress, dialog, addon, isMatrix, siteManager
+from resources.lib.comaddon import progress, VSlog, dialog, addon, isMatrix, siteManager
 from resources.lib.config import GestionCookie
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
@@ -637,10 +637,13 @@ def showEpisodes(oGui, sMovieTitle, content, sSiteUrl, sSeason):
 # Recherche saisons et episodes
 def searchEpisode(sTitle):
     sa = ep =''
-    m = re.search('(|S|saison)(\s?|\.)(\d+)(\s?|\.)(E|Ep|x|\wpisode)(\s?|\.)(\d+)', sTitle.upper(), re.UNICODE | re.IGNORECASE)
+    m = re.search('(|S|saison)(\s?|\.)(\d+)(\s?|\.| - )(E|Ep|x|\wpisode)(\s?|\.)(\d+)', sTitle.upper(), re.UNICODE | re.IGNORECASE)
     if m:
         sa = m.group(3)
-        ep = m.group(7)
+        if int(sa) <100:
+            ep = m.group(7)
+        else:
+            sa = ''
     else:  # Juste l'épisode
         m = re.search('(^|\s|\.)(E|Ep|\wpisode)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
         if m:
@@ -649,6 +652,8 @@ def searchEpisode(sTitle):
             m = re.search('( S|.S|saison)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
             if m:
                 sa = m.group(3)
+                if int(sa) > 100:
+                    sa = ''
 
     return sa, ep
 
@@ -760,18 +765,21 @@ def AddmyAccount():
 def upToMyAccount():
     addons = addon()
 
+    # on n'utilise pas le token car il se prete, il faut fournir les identifiants pour ajouter à son compte
     if (addons.getSetting('hoster_uptobox_username') == '') and (addons.getSetting('hoster_uptobox_password') == ''):
         return
+
     oInputParameterHandler = cInputParameterHandler()
     sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sTitle')
 
     oPremiumHandler = cPremiumHandler('uptobox')
-
     sHtmlContent = oPremiumHandler.GetHtml(URL_MAIN)
     cookies = GestionCookie().Readcookie('uptobox')
 
     aResult = re.search('<form id="fileupload" action="([^"]+)"', sHtmlContent, re.DOTALL)
     if aResult:
+        
         upUrl = aResult.group(1).replace('upload?', 'remote?')
 
         if upUrl.startswith('//'):
@@ -790,40 +798,28 @@ def upToMyAccount():
 
         # pénible ce dialog auth
         xbmc.executebuiltin('Dialog.Close(all,true)')
-        xbmcgui.Dialog().notification('Requête envoyée', 'vous pouvez faire autre chose', xbmcgui.NOTIFICATION_INFO, 4000, False)
 
         try:
             rep = urllib2.urlopen(req)
-        except UrlError:
+            xbmcgui.Dialog().notification('Demande envoyée', 'Vous pouvez faire autre chose.', xbmcgui.NOTIFICATION_INFO, 3000, False)
+        except UrlError as e:
+            xbmcgui.Dialog().notification('Demande rejetée', 'Essayez de nouveau.', xbmcgui.NOTIFICATION_INFO, 3000, False)
+            VSlog(str(e))
             return ''
 
         sHtmlContent = rep.read()
         rep.close()
 
         sPattern = '{"id":.+?,(?:"size":|"progress":)([0-9]+)'
-        oParser = cParser()
-        aResult = oParser.parse(sHtmlContent, sPattern)
+        aResult = cParser().parse(sHtmlContent, sPattern)
         if aResult[0] is True:
-            total = aResult[1][0]
-            del aResult[1][0]
-
-            dialog = xbmcgui.DialogProgressBG()
-            dialog.create(SITE_NAME, 'Transfert de fichiers sur votre compte Uptobox')
-
-            for aEntry in aResult[1]:
-                if isMatrix():
-                    dialog.update(int(aEntry) * 100 // int(total), 'Upload en cours...')
-                else:
-                    dialog.update(int(aEntry) * 100 / int(total), 'Upload en cours...')
-
-                xbmc.sleep(500)
-            dialog.close()
-
+            xbmcgui.Dialog().notification('Uptobox', 'Fichier ajouté - %s' % sMovieTitle, xbmcgui.NOTIFICATION_INFO, 2000, False)
         else:
             # pénible ce dialog auth
             xbmc.executebuiltin('Dialog.Close(all,true)')
-            xbmcgui.Dialog().notification('Info upload', 'Fichier introuvable', xbmcgui.NOTIFICATION_INFO, 2000, False)
+            xbmcgui.Dialog().notification('Uptobox', 'Fichier introuvable', xbmcgui.NOTIFICATION_INFO, 2000, False)
     else:
         # pénible ce dialog auth
         xbmc.executebuiltin('Dialog.Close(all,true)')
-        xbmcgui.Dialog().notification('Info upload', 'Erreur pattern', xbmcgui.NOTIFICATION_ERROR, 2000, False)
+        xbmcgui.Dialog().notification('Uptobox', "Impossible d'ajouter le fichier", xbmcgui.NOTIFICATION_ERROR, 2000, False)
+
