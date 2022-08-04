@@ -15,7 +15,9 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 
-_DEVICE_ID = '86085977d'  # used for android api
+#_DEVICE_ID = '86085977d'  # used for android api
+# inspiré de github.com / yt-dlp / yt-dlp / blob / master / yt_dlp / extractor / viki.py
+_DEVICE_ID = '112395910d'
 _APP = '100005a'
 _APP_VERSION = '6.11.3'
 _APP_SECRET = 'd96704b180208dbb2efa30fe44c48bd8690441af9f567ba8fd710a72badc85198f7472'
@@ -180,7 +182,7 @@ def showMovies(sSearch=''):
                     sThumb = jsonrsp['response'][movie]['images']['poster']['url']
 
             try:
-                sDesc = jsonrsp['response'][movie]['descriptions']['fr']
+                sDesc = str(jsonrsp['response'][movie]['descriptions']['fr'])
             except:
                 sDesc = ''
 
@@ -341,9 +343,12 @@ def showPays(genre):
 # Signature des demandes au nom de Flash player
 def SIGN(pth, version=4):
     timestamp = int(time.time())
-    rawtxt = f'/v{version}/{pth}?drms=dt1,dt2&device_id={_DEVICE_ID}&app={_APP}'
-    sig = hmac.new(
-        _APP_SECRET.encode('ascii'), f'{rawtxt}&t={timestamp}'.encode('ascii'), hashlib.sha1).hexdigest()
+    rawtxt = '/v%d/%s?drms=dt3&device_id=%s&app=%s' % (version, pth, _DEVICE_ID, _APP)
+    sig = hmac.new(_APP_SECRET.encode('ascii'), ('%s&t=%d' % (rawtxt, timestamp)).encode('ascii'), hashlib.sha1).hexdigest()
+    
+    # syntaxe reservée au Python 3
+    # rawtxt = f'/v{version}/{pth}?drms=dt3&device_id={_DEVICE_ID}&app={_APP}'
+    # sig = hmac.new(_APP_SECRET.encode('ascii'), f'{rawtxt}&t={timestamp}'.encode('ascii'), hashlib.sha1).hexdigest()
     return Base_API % rawtxt, timestamp, sig
 
 
@@ -391,6 +396,9 @@ def showLinks():
     dataList = []
 
     streamList2 = GET_URLS_STREAM(sUrl)
+
+    if not streamList2:
+        return
 
     for item in streamList2:
         dataList.append(item)
