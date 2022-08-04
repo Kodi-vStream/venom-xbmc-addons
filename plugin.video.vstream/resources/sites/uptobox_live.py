@@ -105,6 +105,8 @@ def showMovies(sSearch=''):
     oUtil = cUtil()
     sUrl = sSearch.replace(' ', '%20').replace('-', '\-')
 
+    searchGlobal = cInputParameterHandler().getValue('sMovieTitle') == False
+
     sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
     sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
     sSearchText = oUtil.CleanName(sSearchText)
@@ -162,12 +164,14 @@ def showMovies(sSearch=''):
         oOutputParameterHandler.addParameter('sYear', sYear)
         oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', '', '', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory()
+    if not searchGlobal:
+        oGui.setEndOfDirectory()
 
 
 def showSeries(sSearch = ''):
 
     oGui = cGui()
+    searchGlobal = cInputParameterHandler().getValue('sMovieTitle') == False
     if sSearch:
         sUrl = sSearch.replace(' ', '%20')
     else:
@@ -219,7 +223,8 @@ def showSeries(sSearch = ''):
             oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', '', '', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory()
+    if not searchGlobal:
+        oGui.setEndOfDirectory()
 
 
 def showSaisons():
