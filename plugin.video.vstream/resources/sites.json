@@ -404,6 +404,11 @@
             "active": "True",
             "url": "https://topreplay.cc/"
         },
+        "uptobox_live": {
+            "label": "Uptobox Live",
+            "active": "True",
+            "url": "https://uptobox.live/"
+        },
         "vf_film": {
             "label": "VF Film",
             "active": "True",
