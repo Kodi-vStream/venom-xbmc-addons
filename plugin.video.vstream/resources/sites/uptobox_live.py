@@ -131,10 +131,12 @@ def showMovies(sSearch=''):
         sYear, pos = getYear(sTitle, pos)
         sRes, pos = getReso(sTitle, pos)
         sLang, pos = getLang(sTitle, pos)
+        sa, ep = getSaisonEpisode(sTitle)
 
         # enlever les séries
-        sTitle = sTitle[:pos]
-        sa, ep = getSaisonEpisode(sTitle)
+        if not sa or not ep:
+            sTitle = sTitle[:pos]
+            sa, ep = getSaisonEpisode(sTitle)
         if sa or ep:
             continue
     
@@ -200,11 +202,13 @@ def showSeries(sSearch = ''):
         sYear, pos = getYear(sTitle, pos)
         sRes, pos = getReso(sTitle, pos)
         sLang, pos = getLang(sTitle, pos)
+        saison, episode, pos = getSaisonEpisode(sTitle, pos)
 
         # Recherche des noms de séries
-        sTitle = sTitle[:pos]
-        pos = len(sTitle)
-        saison, episode, pos = getSaisonEpisode(sTitle, pos)
+        if not saison or not episode:
+            sTitle = sTitle[:pos]
+            pos = len(sTitle)
+            saison, episode, pos = getSaisonEpisode(sTitle, pos)
 
         if saison:
             if int(saison) > 100:
@@ -255,11 +259,13 @@ def showSaisons():
         sYear, pos = getYear(sTitle, pos)
         sRes, pos = getReso(sTitle, pos)
         sLang, pos = getLang(sTitle, pos)
+        saison, episode, pos = getSaisonEpisode(sTitle, pos)
 
         # Recherche des noms de séries
-        sTitle = sTitle[:pos]
-        pos = len(sTitle)
-        saison, episode, pos = getSaisonEpisode(sTitle, pos)
+        if not saison or not episode:
+            sTitle = sTitle[:pos]
+            pos = len(sTitle)
+            saison, episode, pos = getSaisonEpisode(sTitle, pos)
 
         if saison:
             sTitle = sTitle[:pos]
@@ -314,11 +320,13 @@ def showEpisodes():
         sLang, pos = getLang(sTitle, pos)
         sRes, pos = getReso(sTitle, pos)
         sYear, pos = getYear(sTitle, pos)
+        saison, episode, pos = getSaisonEpisode(sTitle, pos)
 
         # Recherche des noms de séries
-        sTitle = sTitle[:pos]
-        pos = len(sTitle)
-        saison, episode, pos = getSaisonEpisode(sTitle, pos)
+        if not saison or not episode:
+            sTitle = sTitle[:pos]
+            pos = len(sTitle)
+            saison, episode, pos = getSaisonEpisode(sTitle, pos)
         if not saison or saison != sSearchSaison:
             continue
 
@@ -383,11 +391,13 @@ def showHosters():
         sLang, pos = getLang(sTitle, pos)
         sRes, pos = getReso(sTitle, pos)
         sYear, pos = getYear(sTitle, pos)
+        saison, episode, pos = getSaisonEpisode(sTitle, pos)
 
         # identifier une série
-        sTitle = sTitle[:pos]
-        pos = len(sTitle)
-        saison, episode, pos = getSaisonEpisode(sTitle, pos)
+        if not saison or not episode:
+            sTitle = sTitle[:pos]
+            pos = len(sTitle)
+            saison, episode, pos = getSaisonEpisode(sTitle, pos)
 
         if sSearchSaison:   # recherche de série
             if not saison or saison != sSearchSaison:
@@ -428,7 +438,7 @@ def showHosters():
 # Recherche saisons et episodes
 def getSaisonEpisode(sTitle, pos = 0):
     sa = ep = terme = ''
-    m = re.search('(|S|saison)(\s?|\.)(\d+)(\s?|\.| - )(E|Ep|x|\wpisode)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
+    m = re.search('(|S|saison)(\s?|\.)(\d+)( - |\s?|\.)(E|Ep|x|\wpisode|Épisode)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
     if m:
         sa = m.group(3)
         if int(sa) <100:
