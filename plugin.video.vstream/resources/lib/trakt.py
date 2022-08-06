@@ -536,8 +536,10 @@ class cTrakt:
 
                         sTitle = self.decode(sTitle)
                         searchtext = ('%s') % (sTitle)
-                        sFile = ('%s - (%s)') % (sTitle, sYear)
-                        sTitle = ('%s (S%02dE%02d)') % (self.decode(sTitle,  Unicode=True), sSaison, sEpisode)
+                        sFile = sTitle
+                        if sYear:
+                            sFile += ' - (%s)' % sYear
+                        sTitle = ('%s S%02dE%02d') % (self.decode(sTitle,  Unicode=True), sSaison, sEpisode)
 
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
