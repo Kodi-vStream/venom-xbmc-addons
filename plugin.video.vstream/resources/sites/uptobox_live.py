@@ -417,17 +417,6 @@ def showHosters():
         sRes, pos = getReso(sTitle, pos)
         sYear, pos = getYear(sTitle, pos)
 
-        # vérifier l'année pour les homonymes
-        if sSearchYear:
-            if sYear:
-                if sSearchYear != sYear:
-                    continue
-            else:
-                continue
-        elif sYear:
-            continue
-            
-
         # identifier une série
         saison, episode, pos = getSaisonEpisode(sTitle, pos)
         if not saison or not episode:
@@ -442,6 +431,16 @@ def showHosters():
                 continue
         else: # recherche de film
             if saison or episode:
+                continue
+
+            # vérifier l'année pour les homonymes, seulement pour les films
+            if sSearchYear:
+                if sYear:
+                    if sSearchYear != sYear:
+                        continue
+                else:
+                    continue
+            elif sYear:
                 continue
 
         sTitle = sTitle[:pos]
