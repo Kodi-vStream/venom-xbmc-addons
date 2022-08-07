@@ -151,6 +151,8 @@ class empty:
     def VSclose(self, dialog):
         pass
 
+    def getProgress(self):
+        return 100  # simuler la fin de la progression
 
 # Basé sur UrlResolver
 class CountdownDialog(object):
