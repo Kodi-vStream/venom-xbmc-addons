@@ -514,7 +514,7 @@ def getLang(sMovieTitle, pos):
 
 
 def getReso(sMovieTitle, pos):
-    sPattern = ['HDCAM', 'HDLIGHT', '\d{3,4}P', '4K', 'UHD', 'BDRIP', 'BRRIP', 'DVDRIP', 'DVDSCR', 'TVRIP', 'HDTV', 'BLURAY', '[^\w](R5)[^\w]', '[^\w](CAM)[^\w]', 'WEB-DL', 'WEBRIP', '[^\w](WEB)[^\w]']
+    sPattern = ['HDCAM', '[^\w](CAM)[^\w]', '[^\w](R5)[^\w]', 'DVDSCR', 'TVRIP', 'HDLIGHT', '\d{3,4}P', '4K', 'UHD', 'BDRIP', 'BRRIP', 'DVDRIP', 'HDTV', 'BLURAY', 'WEB-DL', 'WEBRIP', '[^\w](WEB)[^\w]']
     sRes, pos = _getTag(sMovieTitle, sPattern, pos)
     if sRes:
         sRes = sRes.replace('2160P', '4K')
