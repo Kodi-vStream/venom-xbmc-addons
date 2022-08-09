@@ -515,11 +515,13 @@ class cGui:
     # Information
     def createContexMenuinfo(self, oGuiElement, oOutputParameterHandler=''):
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
+        oOutputParameterHandler.addParameter('sTitle', oGuiElement.getCleanTitle())
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
         oOutputParameterHandler.addParameter('sYear', oGuiElement.getYear())
+        oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
+        oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
 
         self.createSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewInfo', self.ADDON.VSlang(30208))
 
@@ -676,11 +678,15 @@ class cGui:
             from resources.lib.config import WindowsBoxes
 
             oInputParameterHandler = cInputParameterHandler()
-            sCleanTitle = oInputParameterHandler.getValue('sFileName') if oInputParameterHandler.exist('sFileName') else xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
+            sCleanTitle = oInputParameterHandler.getValue('sTitle') if oInputParameterHandler.exist('sTitle') else xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
             sMeta = oInputParameterHandler.getValue('sMeta') if oInputParameterHandler.exist('sMeta') else xbmc.getInfoLabel('ListItem.Property(sMeta)')
             sYear = oInputParameterHandler.getValue('sYear') if oInputParameterHandler.exist('sYear') else xbmc.getInfoLabel('ListItem.Year')
+            sUrl = oInputParameterHandler.getValue('siteUrl') if oInputParameterHandler.exist('siteUrl') else xbmc.getInfoLabel('ListItem.Property(siteUrl)')
+            sSite = oInputParameterHandler.getValue('sId') if oInputParameterHandler.exist('sId') else None
+            sFav = oInputParameterHandler.getValue('sFav') if oInputParameterHandler.exist('sFav') else None
+            sCat = oInputParameterHandler.getValue('sCat') if oInputParameterHandler.exist('sCat') else None
 
-            WindowsBoxes(sCleanTitle, sCleanTitle, sMeta, sYear)
+            WindowsBoxes(sCleanTitle, sUrl, sMeta, sYear, sSite, sFav, sCat)
         else:
             # On appel la fonction integrer a Kodi pour charger les infos.
             xbmc.executebuiltin('Action(Info)')

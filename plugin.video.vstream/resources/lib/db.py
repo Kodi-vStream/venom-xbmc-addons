@@ -155,7 +155,7 @@ class cDb(object):
         else:
             data = data.encode().decode()
 
-        return data
+        return data.strip()
 
     # ***********************************
     #   History fonctions
