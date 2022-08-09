@@ -568,7 +568,7 @@ class siteManager:
             self.defaultData = json.load(open(self.defaultPath))
 
         # Retrouver la prop par défaut
-        sourceData = self.defaultData[self.SITES].get(sourceName) if self.SITES in self.defaultData else None
+        sourceData = self.defaultData[self.SITES].get(sourceName) if self.defaultData and self.SITES in self.defaultData else None
         
         # pas de valeurs par défaut, on en crée à la volée
         if not sourceData:

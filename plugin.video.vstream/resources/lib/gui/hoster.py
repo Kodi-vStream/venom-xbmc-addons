@@ -332,7 +332,7 @@ class cHosterGui:
             oHoster.setUrl(sMediaUrl)
             aLink = oHoster.getMediaLink()
 
-            if aLink[0] or aLink[1]:  # Le hoster ne sait pas résoudre mais a retourné une autre url
+            if aLink and (aLink[0] or aLink[1]):  # Le hoster ne sait pas résoudre mais a retourné une autre url
                 if not aLink[0]:  # Voir exemple avec allDebrid qui : return False, URL
                     oHoster = self.checkHoster(aLink[1], debrid=False)
                     if oHoster:
