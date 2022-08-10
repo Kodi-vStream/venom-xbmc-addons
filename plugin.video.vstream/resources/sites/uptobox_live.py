@@ -155,10 +155,10 @@ def showMovies(sSearch='', searchLocal = False):
             startWith = 'number'
         siteUrl += '&start\-with=' + startWith
 
-        if sYear:
-            sMovieTitle += ' (%s)' % sYear
-
         sSearchTitle = oUtil.CleanName(sMovieTitle)
+        if sYear:
+            sSearchTitle += ' (%s)' % sYear
+
         if sSearchTitle in movies:
             continue                # film déjà proposé
         
