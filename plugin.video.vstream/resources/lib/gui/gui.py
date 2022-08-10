@@ -572,10 +572,13 @@ class cGui:
                 oOutputParameterHandler = oContextItem.getOutputParameterHandler()
                 sParams = oOutputParameterHandler.getParameterAsUri()
                 sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-                aContextMenus += [(oContextItem.getTitle(), 'RunPlugin(%s)' % sTest)]
+                sDecoColor = self.ADDON.getSetting('deco_color')
+                titleMenu = '[COLOR %s]%s[/COLOR]' % (sDecoColor, oContextItem.getTitle())
+                aContextMenus += [(titleMenu, 'RunPlugin(%s)' % sTest)]
 
             oListItem.addContextMenuItems(aContextMenus)
         oListItem.setProperty('nbcontextmenu', str(nbContextMenu))
+        
         return oListItem
 
     def __createItemUrl(self, oGuiElement, oOutputParameterHandler=''):
@@ -682,9 +685,9 @@ class cGui:
             sMeta = oInputParameterHandler.getValue('sMeta') if oInputParameterHandler.exist('sMeta') else xbmc.getInfoLabel('ListItem.Property(sMeta)')
             sYear = oInputParameterHandler.getValue('sYear') if oInputParameterHandler.exist('sYear') else xbmc.getInfoLabel('ListItem.Year')
             sUrl = oInputParameterHandler.getValue('siteUrl') if oInputParameterHandler.exist('siteUrl') else xbmc.getInfoLabel('ListItem.Property(siteUrl)')
-            sSite = oInputParameterHandler.getValue('sId') if oInputParameterHandler.exist('sId') else None
-            sFav = oInputParameterHandler.getValue('sFav') if oInputParameterHandler.exist('sFav') else None
-            sCat = oInputParameterHandler.getValue('sCat') if oInputParameterHandler.exist('sCat') else None
+            sSite = oInputParameterHandler.getValue('sId') if oInputParameterHandler.exist('sId') else xbmc.getInfoLabel('ListItem.Property(sId)')
+            sFav = oInputParameterHandler.getValue('sFav') if oInputParameterHandler.exist('sFav') else xbmc.getInfoLabel('ListItem.Property(sFav)')
+            sCat = oInputParameterHandler.getValue('sCat') if oInputParameterHandler.exist('sCat') else xbmc.getInfoLabel('ListItem.Property(sCat)')
 
             WindowsBoxes(sCleanTitle, sUrl, sMeta, sYear, sSite, sFav, sCat)
         else:
