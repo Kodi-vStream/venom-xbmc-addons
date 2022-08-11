@@ -57,6 +57,9 @@ class cViewing:
     def getViewing(self):
         oGui = cGui()
 
+        oInputParameterHandler = cInputParameterHandler()
+        catFilter = oInputParameterHandler.getValue('catFilter')
+
         with cDb() as DB:
             row = DB.get_viewing()
             if not row:
@@ -88,6 +91,9 @@ class cViewing:
                     cat = data['cat']
                     sSeason = data['season']
                     sTmdbId = data['tmdb_id'] if data['tmdb_id'] != '0' else None
+
+                    if catFilter is not False and cat != catFilter:
+                        continue
 
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', siteurl)
