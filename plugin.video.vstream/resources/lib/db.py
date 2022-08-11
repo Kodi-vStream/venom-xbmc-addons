@@ -500,14 +500,14 @@ class cDb(object):
     def del_viewing(self, meta):
         sTitleWatched = meta['titleWatched'] if 'titleWatched' in meta else None
 
-        sql_deleteCat = ""
-        if not sTitleWatched:       # delete all
+        if not sTitleWatched:       # delete a category or all
             sql_delete = "DELETE FROM viewing"
-        else:
-            sql_deleteTitle = "DELETE FROM viewing WHERE title_id = '%s'" % sTitleWatched
             if 'cat' in meta:
-                sql_deleteCat = " and cat = '%s'" % meta['cat']
-            sql_delete = sql_deleteTitle + sql_deleteCat
+                sql_delete += " where cat = '%s'" % meta['cat']
+        else:
+            sql_delete= "DELETE FROM viewing WHERE title_id = '%s'" % sTitleWatched
+            if 'cat' in meta:
+                sql_delete += " and cat = '%s'" % meta['cat']
 
         update = 0
         try:
@@ -516,7 +516,7 @@ class cDb(object):
             update = self.db.total_changes
 
             # si pas trouvé, on essaie sans la cat, juste le titre
-            if not update and sql_deleteCat:
+            if not update and sTitleWatched and 'cat' in meta:
                 del meta['cat']
                 return self.del_viewing(meta)
 

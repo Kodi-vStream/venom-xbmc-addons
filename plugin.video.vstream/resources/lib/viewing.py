@@ -29,7 +29,8 @@ class cViewing:
 
         meta = {}
         meta['titleWatched'] = sTitleWatched
-        meta['cat'] = sCat
+        if sCat:
+            meta['cat'] = sCat
 
         with cDb() as db:
             if db.del_viewing(meta):
@@ -54,11 +55,30 @@ class cViewing:
 
             return True
 
+    def showMenu(self):
+        oGui = cGui()
+        addons = addon()
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oGui.addDir(SITE_IDENTIFIER, 'getViewing', addons.VSlang(30126), 'replay.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sCat', '1')       # films
+        oGui.addDir(SITE_IDENTIFIER, 'getViewing', addons.VSlang(30120), 'films.png', oOutputParameterHandler)
+
+        oOutputParameterHandler.addParameter('sCat', '4')       # saisons
+        oGui.addDir(SITE_IDENTIFIER, 'getViewing', '%s/%s' % (self.ADDON.VSlang(30121), self.ADDON.VSlang(30122)), 'series.png', oOutputParameterHandler)
+
+        oOutputParameterHandler.addParameter('sCat', '5')       # Divers
+        oGui.addDir(SITE_IDENTIFIER, 'getViewing', self.ADDON.VSlang(30410), 'buzz.png', oOutputParameterHandler)
+
+        oGui.setEndOfDirectory()
+
     def getViewing(self):
         oGui = cGui()
 
         oInputParameterHandler = cInputParameterHandler()
-        catFilter = oInputParameterHandler.getValue('catFilter')
+        catFilter = oInputParameterHandler.getValue('sCat')
 
         with cDb() as DB:
             row = DB.get_viewing()
@@ -113,10 +133,10 @@ class cViewing:
 
                     if cat == '1':
                         oListItem = oGui.addMovie(site, function, title, 'films.png', '', title, oOutputParameterHandler)
-                    elif cat == '5':
-                        oListItem = oGui.addMisc(site, function, title, 'films.png', '', title, oOutputParameterHandler)
                     elif cat == '4':
                         oListItem = oGui.addSeason(site, function, title, 'series.png', '', title, oOutputParameterHandler)
+                    elif cat == '5':
+                        oListItem = oGui.addMisc(site, function, title, 'buzz.png', '', title, oOutputParameterHandler)
                     else:
                         oListItem = oGui.addTV(site, function, title, 'series.png', '', title, oOutputParameterHandler)
 
@@ -130,6 +150,7 @@ class cViewing:
         # Vider toute la catégorie n'est pas accessible lors de l'utilisation en Widget
         if not xbmc.getCondVisibility('Window.IsActive(home)'):
             oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('sCat', catFilter)
             oGui.addDir(SITE_IDENTIFIER, 'delViewing', self.ADDON.VSlang(30211), 'trash.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()

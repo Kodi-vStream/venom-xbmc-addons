@@ -17,6 +17,9 @@ Historique des modifications
 - TMDB : Noter film/série, ajouter aux favoris, à la liste de suivi, à des listes personnelles
 - Uptobox : Affichage des métadonnées des vidéos de son compte
 - Trakt : suivi des episodes enchainés automatiquement
+- En cours de visionnage : classé par catégories
+- Marque-page : ajout possible depuis les informations
+- Menu contextuel en couleur
 
 *** 1.9.0***
 - Bandes annonces depuis Youtube

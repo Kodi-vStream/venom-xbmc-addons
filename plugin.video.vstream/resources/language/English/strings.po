@@ -508,6 +508,10 @@ msgctxt "#30125"
 msgid "Continue watching"
 msgstr ""
 
+msgctxt "#30126"
+msgid "All categories"
+msgstr ""
+
 msgctxt "#30127"
 msgid "Tools"
 msgstr ""
