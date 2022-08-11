@@ -142,7 +142,7 @@ def showMovies(sSearch='', searchLocal = False):
             continue
     
         sMovieTitle = sTitle[:pos]
-        sMovieTitle = oUtil.unescape(sMovieTitle)
+        sMovieTitle = oUtil.unescape(sMovieTitle).strip()
         sMovieTitle = sMovieTitle.replace('.', ' ')
         
         if not oUtil.CheckOccurence(sSearchText, sMovieTitle):
@@ -219,23 +219,25 @@ def showSeries(sSearch = '', searchLocal = False, isAnime = False):
                 continue
             sTitle = sTitle[:pos]
             sMovieTitle = oUtil.unescape(sTitle).strip()
-            sMovieTitle = oUtil.CleanName(sMovieTitle)
-
+            sMovieTitle = sMovieTitle.replace('.', ' ')
             if not oUtil.CheckOccurence(sSearchTitle, sMovieTitle):
                 continue    # Filtre de recherche
             
-            series.add(sMovieTitle)
+            sSearchTitle = oUtil.CleanName(sMovieTitle)
+            if sYear:
+                sSearchTitle += ' (%s)' % sYear
+            if sSearchTitle in series:
+                continue
+            series.add(sSearchTitle)
 
-    if len(series) > 0:
-        oOutputParameterHandler = cOutputParameterHandler()
-        for sTitle in series:
+            oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sSearchTitle)
             oOutputParameterHandler.addParameter('sYear', sYear)
             if isAnime:
-                oGui.addAnime(SITE_IDENTIFIER, 'showSaisons', sTitle, '', '', '', oOutputParameterHandler)
+                oGui.addAnime(SITE_IDENTIFIER, 'showSaisons', sMovieTitle, '', '', '', oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', '', '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sMovieTitle, '', '', '', oOutputParameterHandler)
 
     if searchLocal:
         oGui.setEndOfDirectory()
@@ -250,6 +252,9 @@ def showSaisons():
     oInputParameterHandler = cInputParameterHandler()
     # sUrl = oInputParameterHandler.getValue('siteUrl')
     sSearchTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sSearchYear, pos = getYear(sSearchTitle, len(sSearchTitle))
+    if sSearchYear:
+        sSearchTitle = sSearchTitle[:pos].strip()
 
     # recherche depuis le titre sélectionné, pas depuis les mots clefs recherchés
     sUrl = URL_SEARCH_SERIES[0] + sSearchTitle.replace('-', '\-')
@@ -282,7 +287,17 @@ def showSaisons():
             sRes, pos = getReso(sTitle, pos)
             sLang, pos = getLang(sTitle, pos)
             saison, episode, pos = getSaisonEpisode(sTitle, pos)
-    
+
+            # vérifier l'année pour les homonymes
+            if sSearchYear:
+                if sYear:
+                    if sSearchYear != sYear:
+                        continue
+                else:
+                    continue
+            elif sYear:
+                continue
+
             # Recherche des noms de séries
             if not saison or not episode:
                 sTitle = sTitle[:pos]
@@ -302,6 +317,9 @@ def showSaisons():
         siteUrl = '%s|%s' % (sUrl, saison)
         oOutputParameterHandler.addParameter('siteUrl', siteUrl)
         sSaisonTitle = '%s S%s' % (sSearchTitle, saison)
+        if sSearchYear:
+            sSaisonTitle = '%s (%s)' % (sSaisonTitle, sSearchYear)
+            oOutputParameterHandler.addParameter('sYear', sSearchYear)
         oOutputParameterHandler.addParameter('sMovieTitle', sSaisonTitle)
         oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', '', '', oOutputParameterHandler)
 
@@ -317,6 +335,12 @@ def showEpisodes():
     sUrl, sSearchSaison  = oInputParameterHandler.getValue('siteUrl').split('|')
     sSearchTitle = oInputParameterHandler.getValue('sMovieTitle')
     sSearchTitle = sSearchTitle.replace(' S%s' % sSearchSaison, '')
+
+    sSearchYear, pos = getYear(sSearchTitle, len(sSearchTitle))
+    if sSearchYear:
+        sSearchTitle = sSearchTitle[:pos].strip()
+    else:
+        sSearchYear = oInputParameterHandler.getValue('sYear')
 
     content = getContent(sUrl)
 
@@ -340,12 +364,22 @@ def showEpisodes():
         sYear, pos = getYear(sTitle, pos)
         saison, episode, pos = getSaisonEpisode(sTitle, pos)
 
-        # Recherche des noms de séries
+        # Vérifier la saison
         if not saison or not episode:
             sTitle = sTitle[:pos]
             pos = len(sTitle)
             saison, episode, pos = getSaisonEpisode(sTitle, pos)
         if not saison or saison != sSearchSaison:
+            continue
+
+        # Vérifier l'année
+        if sSearchYear:
+            if sYear:
+                if sSearchYear != sYear:
+                    continue
+            else:
+                continue
+        elif sYear:
             continue
 
         sMovieTitle = sTitle[:pos]
@@ -365,6 +399,7 @@ def showEpisodes():
         oOutputParameterHandler.addParameter('siteUrl', siteUrl)
         sEpTitle = '%s S%sE%s' % (sSearchTitle, sSearchSaison, episode)
         oOutputParameterHandler.addParameter('sMovieTitle', sEpTitle)
+        oOutputParameterHandler.addParameter('sYear', sSearchYear)
         oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -431,7 +466,7 @@ def showHosters():
             if saison or episode:
                 continue
 
-            # vérifier l'année pour les homonymes, seulement pour les films
+            # vérifier l'année pour les homonymes
             if sSearchYear:
                 if sYear:
                     if sSearchYear != sYear:
