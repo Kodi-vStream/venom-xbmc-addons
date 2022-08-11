@@ -411,7 +411,7 @@ class cTMDb:
     # Search for TV shows by title.
     def search_tvshow_name(self, name, year='', page=1, genre=''):
         if year:
-            term = QuotePlus(name) + '&year=' + year
+            term = QuotePlus(name) + '&first_air_date_year=' + year
         else:
             term = QuotePlus(name)
 
@@ -446,8 +446,8 @@ class cTMDb:
 
                                 # controle supplémentaire sur l'année meme si déjà dans la requete
                                 if year:
-                                    if 'release_date' in searchMovie and searchMovie['release_date']:
-                                        release_date = searchMovie['release_date']
+                                    if 'first_air_date' in searchMovie and searchMovie['first_air_date']:
+                                        release_date = searchMovie['first_air_date']
                                         yy = release_date[:4]
                                         if int(year)-int(yy) > 1:
                                             continue    # plus de deux ans d'écart, c'est pas bon
@@ -789,7 +789,9 @@ class cTMDb:
                 sql_select = sql_select + ' WHERE tvshow.tmdb_id = \'%s\'' % tmdb_id
             else:
                 sql_select = sql_select + ' WHERE tvshow.title = \'%s\'' % name
-
+                if year:
+                    sql_select = sql_select + ' AND tvshow.year = %s' % year
+            
             sql_select = sql_select + ' AND season.season = \'%s\'' % season
 
         elif media_type == 'episode':
@@ -801,6 +803,8 @@ class cTMDb:
                 sql_select += ' WHERE tvshow.tmdb_id = \'%s\'' % tmdb_id
             else:
                 sql_select += ' WHERE tvshow.title = \'%s\'' % name
+                if year:
+                    sql_select = sql_select + ' AND tvshow.year = %s' % year
             sql_select += ' AND episode.season = \'%s\' AND episode.episode = \'%s\'' % (season, episode)
         else:
             return None
@@ -1141,7 +1145,7 @@ class cTMDb:
         req.add_header('Content-Type', 'application/json')
         data = json.dumps(post)
         data = data.encode()
-        r = request.urlopen(req, data=data)			
+        r = request.urlopen(req, data=data)
         response = r.read()
         r.close()
         data = json.loads(response)
