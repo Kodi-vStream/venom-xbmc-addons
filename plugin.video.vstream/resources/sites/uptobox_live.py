@@ -424,6 +424,7 @@ def showHosters():
     if '|' in sUrl:
         sUrl, sSearchSaison, sSearchEpisode = sUrl.split('|')
         sSearchTitle = sSearchTitle.replace(' S%sE%s' % (sSearchSaison, sSearchEpisode), '')
+    sSearchTitle = oUtil.CleanName(sSearchTitle)
     
     content = getContent(sUrl)
     oHoster = oHosterGui.getHoster('uptobox')
@@ -491,10 +492,11 @@ def showHosters():
             sDisplayTitle += ' (%s)' % sLang
         if sYear:
             sDisplayTitle += ' (%s)' % sYear
+            sMovieTitle += ' (%s)' % sYear
         sHosterUrl = file['link']
 
         oHoster.setDisplayName(sDisplayTitle)
-        oHoster.setFileName(sDisplayTitle)
+        oHoster.setFileName(sMovieTitle)
         oHosterGui.showHoster(oGui, oHoster, sHosterUrl, '')
 
 
