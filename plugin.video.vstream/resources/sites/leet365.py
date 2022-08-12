@@ -245,10 +245,15 @@ def showLink():
 # alternative    sHoster = 'https://1rowsports.com/player/%d/%s'
 
     oOutputParameterHandler = cOutputParameterHandler()
-    for i in range(1, 4):
+    
+    # jusqu'à 6 hosters, mais on vStream ne sait décoder que le 1 et le 5.
+    hosters = [1, 5]
+#    for numHost in range(1, 7):
+    i=0
+    for numHost in hosters:
+        i += 1
         sDisplayTitle = '%s [Lien %d]' % (sMovieTitle, i)
-
-        sHosterUrl = sHoster % (i, sUrl)
+        sHosterUrl = sHoster % (numHost, sUrl)
         oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
         oOutputParameterHandler.addParameter('sThumb', sThumb)
