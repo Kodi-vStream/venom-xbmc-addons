@@ -151,7 +151,7 @@ def showMovies(sSearch='', searchLocal = False):
         # lien de recherche spécifique à chaque film
         siteUrl = URL_SEARCH_MOVIES[0] + sMovieTitle.replace('-', '\-')
         startWith = sMovieTitle[0].upper()
-        if startWith.isnumeric():
+        if startWith.isdigit():
             startWith = 'number'
         siteUrl += '&start\-with=' + startWith
 
@@ -259,7 +259,7 @@ def showSaisons():
     # recherche depuis le titre sélectionné, pas depuis les mots clefs recherchés
     sUrl = URL_SEARCH_SERIES[0] + sSearchTitle.replace('-', '\-')
     startWith = sSearchTitle[0].upper()
-    if startWith.isnumeric():
+    if startWith.isdigit():
         startWith = 'number'
     sUrl += '&start\-with=' + startWith
 
