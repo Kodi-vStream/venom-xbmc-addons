@@ -14,7 +14,7 @@ from resources.lib.util import cUtil, Unquote
 
 
 SITE_IDENTIFIER = 'uptobox_live'
-SITE_NAME = '[COLOR violet]UpToBox Live[/COLOR]'
+SITE_NAME = '[COLOR violet]Uptobox Live[/COLOR]'
 SITE_DESC = 'Bibliothèque de liens Uptobox'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
@@ -255,6 +255,8 @@ def showSaisons():
     sSearchYear, pos = getYear(sSearchTitle, len(sSearchTitle))
     if sSearchYear:
         sSearchTitle = sSearchTitle[:pos].strip()
+    else:
+        sSearchYear = oInputParameterHandler.getValue('sYear')
 
     # recherche depuis le titre sélectionné, pas depuis les mots clefs recherchés
     sUrl = URL_SEARCH_SERIES[0] + sSearchTitle.replace('-', '\-')
@@ -418,6 +420,8 @@ def showHosters():
     sSearchYear, pos = getYear(sSearchTitle, len(sSearchTitle))
     if sSearchYear:
         sSearchTitle = sSearchTitle[:pos].strip()
+    else:
+        sSearchYear = oInputParameterHandler.getValue('sYear')
     
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sSearchSaison = ''
@@ -467,15 +471,15 @@ def showHosters():
             if saison or episode:
                 continue
 
-            # vérifier l'année pour les homonymes
-            if sSearchYear:
-                if sYear:
-                    if sSearchYear != sYear:
-                        continue
-                else:
+        # vérifier l'année pour les homonymes
+        if sSearchYear:
+            if sYear:
+                if sSearchYear != sYear:
                     continue
-            elif sYear:
+            else:
                 continue
+        elif sYear:
+            continue
 
         sTitle = sTitle[:pos]
         sMovieTitle = oUtil.unescape(sTitle).strip()
