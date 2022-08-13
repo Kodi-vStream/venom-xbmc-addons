@@ -53,11 +53,11 @@ class cHosterGui:
 
         oGuiElement.setFileName(oHoster.getFileName())
         oGuiElement.getInfoLabel()
+        oGuiElement.setIcon('host.png')
         if sThumbnail:
             oGuiElement.setThumbnail(sThumbnail)
-
-        oGuiElement.setIcon('host.png')
-
+            oGuiElement.setPoster(sThumbnail)
+            
         title = oGuiElement.getCleanTitle()
 
         oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
