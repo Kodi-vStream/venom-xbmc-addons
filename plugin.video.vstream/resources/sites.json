@@ -146,7 +146,7 @@
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
-            "active": "False",
+            "active": "True",
             "url": "https://french-stream.re/"
         },
         "frenchanimes": {
