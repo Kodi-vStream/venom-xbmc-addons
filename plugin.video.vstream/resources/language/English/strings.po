@@ -449,7 +449,7 @@ msgid "Database to delete"
 msgstr ""
 
 msgctxt "#30111"
-msgid "List"
+msgid "Alpha"
 msgstr ""
 
 msgctxt "#30112"

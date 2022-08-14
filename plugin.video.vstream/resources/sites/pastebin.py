@@ -33,8 +33,26 @@ UNCLASSIFIED_GENRE = '_NON CLASSÉ_'
 UNCLASSIFIED = 'Indéterminé'
 
 MOVIE_MOVIE = (True, 'showMenuFilms')
+MOVIE_NEWS = (URL_MAIN + '&sMedia=film&sYear=2022', 'showMovies')
+MOVIE_GENRES = (URL_MAIN + '&sMedia=film', 'showGenres')
+MOVIE_ANNEES = (URL_MAIN + '&sMedia=film', 'showYears')
+MOVIE_LIST = (URL_MAIN + '&sMedia=film', 'alphaList')
+MOVIE_VIEWS = ('movie/popular', 'showTMDB')
+MOVIE_NOTES = ('movie/top_rated', 'showTMDB')
+
 SERIE_SERIES = (True, 'showMenuTvShows')
+SERIE_NEWS = (URL_MAIN + '&sMedia=serie&sYear=2022', 'showMovies')
+SERIE_GENRES = (URL_MAIN + '&sMedia=serie', 'showGenres')
+SERIE_ANNEES = (URL_MAIN + '&sMedia=serie', 'showYears')
+SERIE_LIST = (URL_MAIN + '&sMedia=serie', 'alphaList')
+
 ANIM_ANIMS = (True, 'showMenuMangas')
+ANIM_NEWS = (URL_MAIN + '&sMedia=anime&sYear=2022', 'showMovies')
+ANIM_ANNEES = (URL_MAIN + '&sMedia=anime', 'showYears')
+ANIM_VFS = (URL_MAIN + '&sMedia=anime&bNews=True', 'showMovies')
+ANIM_GENRES = (URL_MAIN + '&sMedia=anime', 'showGroupes')
+ANIM_LIST = (URL_MAIN + '&sMedia=serie', 'alphaList')
+
 
 URL_SEARCH_MOVIES = (URL_MAIN + '&sMedia=film&sSearch=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + '&sMedia=serie&sSearch=', 'showMovies')

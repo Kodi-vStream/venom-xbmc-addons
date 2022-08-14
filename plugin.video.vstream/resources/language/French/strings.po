@@ -410,11 +410,11 @@ msgstr "Import/Export de la Base de Données, Erreur"
 
 msgctxt "#30101"
 msgid "News"
-msgstr "Derniers ajouts"
+msgstr "Nouveautés"
 
 msgctxt "#30102"
 msgid "Most seeing"
-msgstr "Les plus vus"
+msgstr "Populaires"
 
 msgctxt "#30103"
 msgid "Most commented"
@@ -449,8 +449,8 @@ msgid "Database to delete"
 msgstr "Base de données à supprimer"
 
 msgctxt "#30111"
-msgid "List"
-msgstr "Liste"
+msgid "Alpha"
+msgstr "Alphabétique"
 
 msgctxt "#30112"
 msgid "Documentary"
