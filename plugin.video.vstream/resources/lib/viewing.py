@@ -60,7 +60,7 @@ class cViewing:
         addons = addon()
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oGui.addDir(SITE_IDENTIFIER, 'getViewing', addons.VSlang(30126), 'replay.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'getViewing', addons.VSlang(30126), 'genres.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '1')       # films

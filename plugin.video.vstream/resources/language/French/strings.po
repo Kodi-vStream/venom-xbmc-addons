@@ -18,11 +18,11 @@ msgstr "Activation auto des sous-titres"
 
 msgctxt "#30003"
 msgid "Downloads Completed"
-msgstr "Téléchargements Terminé"
+msgstr "Téléchargements terminés"
 
 msgctxt "#30004"
 msgid "Downloads Stopped"
-msgstr "Téléchargements Arrêté"
+msgstr "Téléchargements arrêtés"
 
 msgctxt "#30005"
 msgid "Media informations"
@@ -106,7 +106,7 @@ msgstr "Téléchargement impossible"
 
 msgctxt "#30025"
 msgid "Stop Downloads"
-msgstr "Arrêter les Téléchargements"
+msgstr "Arrêter les téléchargements"
 
 msgctxt "#30026"
 msgid "IPTV and TV Guid"
@@ -162,7 +162,7 @@ msgstr "Mise en Marque-page impossible pour ce lien"
 
 msgctxt "#30039"
 msgid "Download List"
-msgstr "Liste de Téléchargement"
+msgstr "Liste des téléchargements"
 
 msgctxt "#30040"
 msgid "Clean the list (Finished files)"
@@ -310,7 +310,7 @@ msgstr "Démarrage de la liste complète"
 
 msgctxt "#30076"
 msgid "Search"
-msgstr "Recherche"
+msgstr "Rechercher"
 
 msgctxt "#30077"
 msgid "[COLOR gold]Select your search for: %s[/COLOR]"
@@ -318,15 +318,15 @@ msgstr "[COLOR gold]Sélectionnez votre recherche pour : %s[/COLOR]"
 
 msgctxt "#30078"
 msgid "Search (Movie)"
-msgstr "Recherche (Films)"
+msgstr "Rechercher (Films)"
 
 msgctxt "#30079"
 msgid "Search (Tvshow)"
-msgstr "Recherche (Séries)"
+msgstr "Rechercher (Séries)"
 
 msgctxt "#30080"
 msgid "Search (Other category)"
-msgstr "Recherche (Autre catégories)"
+msgstr "Rechercher (Autre catégorie)"
 
 msgctxt "#30081"
 msgid "[COLOR gold]Results for: %s[/COLOR]"
@@ -350,7 +350,7 @@ msgstr "Echec du téléchargement"
 
 msgctxt "#30086"
 msgid "Download Started"
-msgstr "Téléchargement Démarré"
+msgstr "Téléchargement démarré"
 
 msgctxt "#30087"
 msgid "Clear Cache vStream, Error"
@@ -358,7 +358,7 @@ msgstr "Nettoyage du cache vStream, Erreur"
 
 msgctxt "#30088"
 msgid "Visual search"
-msgstr "Recherche visuelle"
+msgstr "Recherche thématique"
 
 msgctxt "#30089"
 msgid "Clear vStream Cache, Successful"
@@ -465,8 +465,8 @@ msgid "Web video"
 msgstr "Vidéos du net"
 
 msgctxt "#30115"
-msgid "Television/Music"
-msgstr "Télévision/Musique"
+msgid "Television"
+msgstr "Télévision"
 
 msgctxt "#30116"
 msgid "All the sources"
@@ -478,7 +478,7 @@ msgstr "TV replay"
 
 msgctxt "#30118"
 msgid "Search (Anim)"
-msgstr "Recherche (Animés)"
+msgstr "Rechercher (Japanimes)"
 
 msgctxt "#30119"
 msgid "Live"
@@ -494,11 +494,11 @@ msgstr "Séries"
 
 msgctxt "#30122"
 msgid "Animes"
-msgstr "Animés"
+msgstr "Japanimes"
 
 msgctxt "#30123"
 msgid "Search (Dramas)"
-msgstr "Recherche (Dramas)"
+msgstr "Rechercher (Dramas)"
 
 msgctxt "#30124"
 msgid "Dramas"
@@ -524,6 +524,22 @@ msgctxt "#30129"
 msgid "Clear Cache Kodi"
 msgstr "Vider le Cache de Kodi"
 
+msgctxt "#30130"
+msgid "My videos"
+msgstr "Mes contenus"
+
+msgctxt "#30131"
+msgid "Streaming"
+msgstr "Vidéos à la demande"
+
+msgctxt "#30132"
+msgid "Live"
+msgstr "En direct"
+
+msgctxt "#30137"
+msgid "Music"
+msgstr "Musique"
+
 msgctxt "#30138"
 msgid "Sources"
 msgstr "Sources"
@@ -538,7 +554,7 @@ msgstr "Chargement des informations"
 
 msgctxt "#30145"
 msgid "Download folder"
-msgstr "Dossier de Téléchargement"
+msgstr "Dossier de téléchargement"
 
 msgctxt "#30160"
 msgid "Quality HD"
@@ -640,9 +656,25 @@ msgctxt "#30223"
 msgid "Rename"
 msgstr "Renommer"
 
+msgctxt "#30224"
+msgid "Downloads"
+msgstr "Téléchargements"
+
+msgctxt "#30225"
+msgid "Records"
+msgstr "Enregistrements"
+
+msgctxt "#30226"
+msgid "Records"
+msgstr "Enregistrement du direct"
+
+msgctxt "#30227"
+msgid "Open settings"
+msgstr "Ouvrir les paramètres"
+
 msgctxt "#30300"
 msgid "Library"
-msgstr "Librairie"
+msgstr "Médiathèque"
 
 msgctxt "#30301"
 msgid "To configure in kodi if you want them to be imported"
@@ -651,6 +683,10 @@ msgstr "A configurer dans kodi si vous voulez qu'ils soient importés"
 msgctxt "#30302"
 msgid "Auto update"
 msgstr "Mise à jour à chaque ajout"
+
+msgctxt "#30303"
+msgid "Media folders"
+msgstr "Dossiers médias"
 
 msgctxt "#30304"
 msgid "Go to [COLOR teal]%s[/COLOR] Enter the code [COLOR teal]%s[/COLOR]"
@@ -717,8 +753,8 @@ msgid "You have successfully logged out"
 msgstr "Vous avez été déconnecté avec succès"
 
 msgctxt "#30324"
-msgid "Library"
-msgstr "Librairie"
+msgid "Add to media"
+msgstr "Ajouter aux médias"
 
 msgctxt "#30325"
 msgid "Add to UpToBox"
@@ -1045,8 +1081,8 @@ msgid "Select a quality"
 msgstr "Sélectionner une qualité"
 
 msgctxt "#30449"
-msgid "Sources"
-msgstr "Sources"
+msgid "All Sources"
+msgstr "Toutes les sources"
 
 msgctxt "#30450"
 msgid "Search (Actor, Actress)"

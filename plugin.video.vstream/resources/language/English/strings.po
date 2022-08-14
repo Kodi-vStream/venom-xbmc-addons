@@ -465,7 +465,7 @@ msgid "Web video"
 msgstr ""
 
 msgctxt "#30115"
-msgid "Television/Music"
+msgid "Television"
 msgstr ""
 
 msgctxt "#30116"
@@ -522,6 +522,22 @@ msgstr ""
 
 msgctxt "#30129"
 msgid "Clear Cache Kodi"
+msgstr ""
+
+msgctxt "#30130"
+msgid "My videos"
+msgstr ""
+
+msgctxt "#30131"
+msgid "Streaming"
+msgstr ""
+
+msgctxt "#30132"
+msgid "Live"
+msgstr ""
+
+msgctxt "#30137"
+msgid "Music"
 msgstr ""
 
 msgctxt "#30138"
@@ -640,6 +656,22 @@ msgctxt "#30223"
 msgid "Rename"
 msgstr "Renommer"
 
+msgctxt "#30224"
+msgid "Downloads"
+msgstr ""
+
+msgctxt "#30225"
+msgid "Records"
+msgstr ""
+
+msgctxt "#30226"
+msgid "Records"
+msgstr ""
+
+msgctxt "#30227"
+msgid "Open settings"
+msgstr ""
+
 msgctxt "#30300"
 msgid "Library"
 msgstr ""
@@ -650,6 +682,10 @@ msgstr ""
 
 msgctxt "#30302"
 msgid "Auto update"
+msgstr ""
+
+msgctxt "#30303"
+msgid "Media folders"
 msgstr ""
 
 msgctxt "#30304"
@@ -717,7 +753,7 @@ msgid "You have successfully logged out"
 msgstr ""
 
 msgctxt "#30324"
-msgid "Library"
+msgid "Add to media"
 msgstr ""
 
 msgctxt "#30325"
@@ -1045,7 +1081,7 @@ msgid "Select a quality"
 msgstr ""
 
 msgctxt "#30449"
-msgid "Sources"
+msgid "All Sources"
 msgstr ""
 
 msgctxt "#30450"

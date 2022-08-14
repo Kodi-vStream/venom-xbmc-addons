@@ -46,12 +46,33 @@ def load():
     addons = addon()
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuTV', addons.VSlang(30115), 'tv.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_IPTVSITE)
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuMusic', addons.VSlang(30137), 'music.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showMenuTV():
+    oGui = cGui()
+    addons = addon()
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_WEB)
     oGui.addDir(SITE_IDENTIFIER, 'showWeb', addons.VSlang(30332), 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_IPTVSITE)
     oGui.addDir(SITE_IDENTIFIER, 'showIptvSite', 'TV (Sources)', 'tv.png', oOutputParameterHandler)
 
+    oGui.setEndOfDirectory()
+
+
+def showMenuMusic():
+    oGui = cGui()
+    addons = addon()
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
     oGui.addDir('radio', 'showWeb', addons.VSlang(30203), 'music.png', oOutputParameterHandler)
 
