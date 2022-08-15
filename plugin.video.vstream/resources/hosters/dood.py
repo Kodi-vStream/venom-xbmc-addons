@@ -57,7 +57,12 @@ class cHoster(iHoster):
         fin_url = ''.join(random.choice(possible) for _ in range(10))
 
         sPattern = 'return a\+"(\?token=[^"]+)"'
-        d = oParser.parse(sHtmlContent, sPattern)[1][0]
+        aResult = oParser.parse(sHtmlContent, sPattern)
+
+        if not aResult[0]:
+            return False, False
+
+        d = aResult[1][0]
 
         fin_url = fin_url + d + str(int(1000*time.time()))
 
