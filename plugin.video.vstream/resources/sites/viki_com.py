@@ -44,8 +44,8 @@ MOVIE_BEST = (URL_API + 'movies.json?sort=views&page=1&per_page=50&app=' + _APP 
 DRAMA_GENRES = (True, 'showSerieGenre')
 DRAMA_PAYS = (True, 'showSeriePays')
 DRAMA_NEWS = (URL_API + 'series.json?sort=newest_video&page=1&per_page=50&app=' + _APP + '&t=', 'showMovies')
+DRAMA_VIEWS = (URL_API + 'series.json?sort=trending&page=1&per_page=50&app=' + _APP + '&t=', 'showMovies')
 DRAMA_RECENT = (URL_API + 'series.json?sort=views_recent&page=1&per_page=50&app=' + _APP + '&t=', 'showMovies')
-DRAMA_POPULAR = (URL_API + 'series.json?sort=trending&page=1&per_page=50&app=' + _APP + '&t=', 'showMovies')
 DRAMA_BEST = (URL_API + 'series.json?sort=views&page=1&per_page=50&app=' + _APP + '&t=', 'showMovies')
 
 URL_SEARCH = (URL_API + 'search.json?page=1&per_page=50&app=' + _APP + '&term=', 'showMovies')
@@ -77,14 +77,13 @@ def showMenuMovies():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (News)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Nouveautés)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_POPULAR[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_POPULAR[1], 'Films (Populaires)', 'views.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_PAYS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_PAYS[1], 'Films (Pays)', 'lang.png', oOutputParameterHandler)
-
-    # 8 results
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_POPULAR[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_POPULAR[1], 'Films (Populaires)', 'views.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -93,20 +92,20 @@ def showMenuSeries():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_NEWS[1], 'Séries (Nouveautés)', 'dramas.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_RECENT[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_RECENT[1], 'Séries (Récentes)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_VIEWS[1], 'Séries (Populaires)', 'comments.png', oOutputParameterHandler)
+
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, DRAMA_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_PAYS[0])
     oGui.addDir(SITE_IDENTIFIER, DRAMA_PAYS[1], 'Séries (Pays)', 'lang.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', DRAMA_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, DRAMA_NEWS[1], 'Séries (News)', 'dramas.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', DRAMA_RECENT[0])
-    oGui.addDir(SITE_IDENTIFIER, DRAMA_RECENT[1], 'Séries (Récentes)', 'news.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', DRAMA_POPULAR[0])
-    oGui.addDir(SITE_IDENTIFIER, DRAMA_POPULAR[1], 'Séries (Populaires)', 'comments.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_BEST[0])
     oGui.addDir(SITE_IDENTIFIER, DRAMA_BEST[1], 'Séries (Best)', 'notes.png', oOutputParameterHandler)

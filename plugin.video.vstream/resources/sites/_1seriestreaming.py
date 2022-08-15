@@ -22,7 +22,7 @@ URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 SERIE_SERIES = ('http://', 'load')
 SERIE_NEWS = (URL_MAIN + 'series-streaming', 'showSeries')
-SERIE_COMMENT = (URL_MAIN + 'series-populaires', 'showSeries')
+SERIE_VIEWS = (URL_MAIN + 'series-populaires', 'showSeries')
 SERIE_LIST = (URL_MAIN, 'showAlpha')
 SERIE_GENRES = (True, 'showGenres')
 SERIE_ANNEES = (True, 'showSerieYears')
@@ -42,8 +42,8 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_COMMENT[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENT[1], 'Séries (Populaires)', 'comments.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Populaires)', 'comments.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste)', 'listes.png', oOutputParameterHandler)
