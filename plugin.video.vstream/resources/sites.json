@@ -221,7 +221,7 @@
         },
         "les_debiles": {
             "label": "Les D\u00e9biles",
-            "active": "True",
+            "active": "False",
             "url": "http://www.lesdebiles.com/"
         },
         "les_docus": {
