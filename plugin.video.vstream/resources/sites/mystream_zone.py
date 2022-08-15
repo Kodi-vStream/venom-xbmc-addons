@@ -71,6 +71,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films & Séries (Par Genres)', 'genres.png', oOutputParameterHandler)
 
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_FEATURED[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_FEATURED[1], 'Films & Séries (En vedette)', 'star.png', oOutputParameterHandler)
+
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TENDANCE[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_TENDANCE[1], 'Films & Séries (Populaires)', 'views.png', oOutputParameterHandler)
 
@@ -89,9 +92,6 @@ def showMenuMovies():
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], ' Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_FEATURED[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_FEATURED[1], 'Films (En vedette)', 'star.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP_IMD[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP_IMD[1], 'Films (Top IMDb)', 'tmdb.png', oOutputParameterHandler)
@@ -340,7 +340,7 @@ def showMovies(sSearch=''):
                     sYear = re.search('(\d{4})', sYear).group(1)
                 sDisplayTitle = sTitle + ' (' + sYear + ')'
 
-            elif sUrl is URL_MAIN:  # thumb; title; url; year
+            elif sUrl == URL_MAIN:  # thumb; title; url; year
                 sThumb = aEntry[0]
                 sTitle = aEntry[1].replace(' mystream', '')
                 sUrl2 = aEntry[2]
