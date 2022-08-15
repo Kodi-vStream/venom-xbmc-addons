@@ -196,7 +196,7 @@
         },
         "kaydo_ws": {
             "label": "kaydo",
-            "active": "True",
+            "active": "False",
             "url": "https://hdss.nu/"
         },
         "kepliz_com": {
