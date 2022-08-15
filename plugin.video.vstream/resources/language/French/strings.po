@@ -325,8 +325,8 @@ msgid "Search (Tvshow)"
 msgstr "Rechercher (Séries)"
 
 msgctxt "#30080"
-msgid "Search (Other category)"
-msgstr "Rechercher (Autre catégorie)"
+msgid "Search (Documentary)"
+msgstr "Rechercher (Documentaires)"
 
 msgctxt "#30081"
 msgid "[COLOR gold]Results for: %s[/COLOR]"

@@ -167,6 +167,9 @@ class cHome:
         oGui = cGui()
 
         oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sCat', '1')
+        oGui.addDir(SITE_IDENTIFIER, 'showSearchText', self.addons.VSlang(30078), 'films.png', oOutputParameterHandler)
+
         oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_NEWS')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30120), self.addons.VSlang(30101)), 'news.png', oOutputParameterHandler)
 
@@ -209,8 +212,14 @@ class cHome:
         oGui = cGui()
 
         oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sCat', '2')
+        oGui.addDir(SITE_IDENTIFIER, 'showSearchText', self.addons.VSlang(30079), 'series.png', oOutputParameterHandler)
+
         oOutputParameterHandler.addParameter('siteUrl', 'SERIE_NEWS')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30121), self.addons.VSlang(30101)), 'news.png', oOutputParameterHandler)
+
+        oOutputParameterHandler.addParameter('siteUrl', 'SERIE_VIEWS')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30121), self.addons.VSlang(30102)), 'views.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', 'SERIE_GENRES')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30121), self.addons.VSlang(30105)), 'genres.png', oOutputParameterHandler)
@@ -236,8 +245,14 @@ class cHome:
         oGui = cGui()
 
         oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sCat', '3')
+        oGui.addDir(SITE_IDENTIFIER, 'showSearchText', self.addons.VSlang(30118), 'animes.png', oOutputParameterHandler)
+
         oOutputParameterHandler.addParameter('siteUrl', 'ANIM_NEWS')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30122), self.addons.VSlang(30101)), 'news.png', oOutputParameterHandler)
+
+        oOutputParameterHandler.addParameter('siteUrl', 'ANIM_VIEWS')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30122), self.addons.VSlang(30102)), 'views.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', 'ANIM_GENRES')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30122), self.addons.VSlang(30105)), 'genres.png', oOutputParameterHandler)
@@ -261,8 +276,14 @@ class cHome:
 
         # Affiche les Nouveautés Dramas
         oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sCat', '9')
+        oGui.addDir(SITE_IDENTIFIER, 'showSearchText', self.addons.VSlang(30123), 'dramas.png', oOutputParameterHandler)
+
         oOutputParameterHandler.addParameter('siteUrl', 'DRAMA_NEWS')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30124), self.addons.VSlang(30101)), 'news.png', oOutputParameterHandler)
+
+        oOutputParameterHandler.addParameter('siteUrl', 'DRAMA_VIEWS')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30124), self.addons.VSlang(30102)), 'views.png', oOutputParameterHandler)
 
         # Affiche les Genres Dramas
         oOutputParameterHandler.addParameter('siteUrl', 'DRAMA_GENRES')
@@ -285,6 +306,9 @@ class cHome:
 
         # Affiche les Nouveautés Documentaires
         oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sCat', '5')
+        oGui.addDir(SITE_IDENTIFIER, 'showSearchText', self.addons.VSlang(30080), 'buzz.png', oOutputParameterHandler)
+
         oOutputParameterHandler.addParameter('siteUrl', 'DOC_NEWS')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30112), self.addons.VSlang(30101)), 'news.png', oOutputParameterHandler)
 
