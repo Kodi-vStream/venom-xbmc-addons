@@ -134,20 +134,6 @@ def WindowsBoxes(sTitle, siteUrl, metaType, year, sSite, sFav, sCat):
     ADDON = addon()
     DIALOG = dialog()
 
-    # Presence de l'addon ExtendedInfo?
-    try:
-        if (addon('script.extendedinfo') and ADDON.getSetting('extendedinfo-view') == 'true'):
-            if metaType == '2':
-                DIALOG.VSinfo('Lancement de ExtendInfo')
-                xbmc.executebuiltin('RunScript(script.extendedinfo, info=extendedtvinfo, name=%s)' % sTitle)
-                return
-            elif metaType == '1':
-                DIALOG.VSinfo('Lancement de ExtendInfo')
-                xbmc.executebuiltin('RunScript(script.extendedinfo, info=extendedinfo, name=%s)' % sTitle)
-                return
-    except:
-        pass
-
     # Sinon on gere par vStream via la lib TMDB
     sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'collection').replace('4', 'anime')\
                          .replace('5', 'season').replace('6', 'episode')
