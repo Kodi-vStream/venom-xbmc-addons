@@ -129,6 +129,11 @@ def showMovies(sSearch='', searchLocal = False):
 
         # recherche des métadonnées
         pos = len(sTitle)
+        sTmdbId, pos = getIdTMDB(sTitle, pos)
+        if sTmdbId:
+            sTitle = sTitle.replace('.TM%sTM.' % sTmdbId, '') 
+            pos = len(sTitle)
+        
         sYear, pos = getYear(sTitle, pos)
         sRes, pos = getReso(sTitle, pos)
         sLang, pos = getLang(sTitle, pos)
@@ -167,6 +172,7 @@ def showMovies(sSearch='', searchLocal = False):
         oOutputParameterHandler.addParameter('siteUrl', siteUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sSearchTitle)
         oOutputParameterHandler.addParameter('sYear', sYear)
+        oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
         oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sMovieTitle, 'films.png', '', '', oOutputParameterHandler)
 
     if searchLocal:
@@ -203,6 +209,10 @@ def showSeries(sSearch = '', searchLocal = False, isAnime = False):
 
         # recherche des métadonnées
         pos = len(sTitle)
+        sTmdbId, pos = getIdTMDB(sTitle, pos)
+        if sTmdbId:
+            sTitle = sTitle.replace('.TM%sTM.' % sTmdbId, '') 
+            pos = len(sTitle)
         sYear, pos = getYear(sTitle, pos)
         sRes, pos = getReso(sTitle, pos)
         sLang, pos = getLang(sTitle, pos)
@@ -234,6 +244,7 @@ def showSeries(sSearch = '', searchLocal = False, isAnime = False):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sSearchTitle)
             oOutputParameterHandler.addParameter('sYear', sYear)
+            oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)  # Utilisé par TMDB
             if isAnime:
                 oGui.addAnime(SITE_IDENTIFIER, 'showSaisons', sMovieTitle, '', '', '', oOutputParameterHandler)
             else:
@@ -285,6 +296,10 @@ def showSaisons():
     
             # recherche des métadonnées
             pos = len(sTitle)
+            sTmdbId, pos = getIdTMDB(sTitle, pos)
+            if sTmdbId:
+                sTitle = sTitle.replace('.TM%sTM.' % sTmdbId, '') 
+                pos = len(sTitle)
             sYear, pos = getYear(sTitle, pos)
             sRes, pos = getReso(sTitle, pos)
             sLang, pos = getLang(sTitle, pos)
@@ -416,6 +431,7 @@ def showHosters():
     oUtil = cUtil()
 
     oInputParameterHandler = cInputParameterHandler()
+    sSearchTmdbId = oInputParameterHandler.getValue('sTmdbId')
     sSearchTitle = oInputParameterHandler.getValue('sMovieTitle')
     sSearchYear, pos = getYear(sSearchTitle, len(sSearchTitle))
     if sSearchYear:
@@ -451,6 +467,17 @@ def showHosters():
 
         # Recherche des metadonnées
         pos = len(sTitle)
+        sTmdbId, pos = getIdTMDB(sTitle, pos)
+        if sTmdbId:
+            if not sSearchTmdbId:
+                continue
+            if sSearchTmdbId and sSearchTmdbId != sTmdbId:
+                continue
+            sTitle = sTitle.replace('.TM%sTM.' % sTmdbId, '') 
+            pos = len(sTitle)
+        elif sSearchTmdbId:
+            continue
+
         sLang, pos = getLang(sTitle, pos)
         sRes, pos = getReso(sTitle, pos)
         sYear, pos = getYear(sTitle, pos)
@@ -483,7 +510,7 @@ def showHosters():
 
         sTitle = sTitle[:pos]
         sMovieTitle = oUtil.unescape(sTitle).strip()
-        sMovieTitle = sMovieTitle.replace('.', ' ')
+        sMovieTitle = sMovieTitle.replace('.', ' ').lower()
         if oUtil.CleanName(sMovieTitle) != sSearchTitle:
             continue
 
@@ -561,6 +588,9 @@ def getReso(sMovieTitle, pos):
         sRes = sRes.replace('2160P', '4K')
     return sRes, pos
 
+def getIdTMDB(sMovieTitle, pos):
+    sPattern = ['.TM(\d+)TM.']
+    return _getTag(sMovieTitle, sPattern, pos)
 
 def _getTag(sMovieTitle, tags, pos):
     for t in tags:
