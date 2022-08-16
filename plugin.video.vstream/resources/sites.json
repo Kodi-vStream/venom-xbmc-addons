@@ -241,7 +241,7 @@
         },
         "lsdb": {
             "label": "Liveset Database",
-            "active": "True",
+            "active": "False",
             "url": "https://lsdb.eu"
         },
         "mamcin": {
@@ -412,7 +412,7 @@
         "vf_film": {
             "label": "VF Film",
             "active": "True",
-            "url": "https://vf-film.co/"
+            "url": "https://vf-film.top/"
         },
         "vf_serie": {
             "label": "VF S\u00e9rie",
