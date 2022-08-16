@@ -426,7 +426,7 @@
         },
         "videobuzzy_com": {
             "label": "Videobuzzy",
-            "active": "True",
+            "active": "False",
             "url": "https://www.videobuzzy.com/"
         },
         "viki_com": {
