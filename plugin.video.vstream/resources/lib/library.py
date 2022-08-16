@@ -110,12 +110,12 @@ class cLibrary:
         oOutputParameterHandler = cOutputParameterHandler()
 
         folder = self.ADDON.getSetting('Library_folder_Movies')
-        oOutputParameterHandler.addParameter('filePath', folder)
-        oGui.addDir(SITE_IDENTIFIER, 'openLibrary', self.ADDON.VSlang(30120), 'download.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('siteUrl', folder)
+        oGui.addDir(SITE_IDENTIFIER, 'openLibrary', self.ADDON.VSlang(30120), 'films.png', oOutputParameterHandler)
 
         folder = self.ADDON.getSetting('Library_folder_TVs')
-        oOutputParameterHandler.addParameter('filePath', folder)
-        oGui.addDir(SITE_IDENTIFIER, 'openLibrary', self.ADDON.VSlang(30121), 'download.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('siteUrl', folder)
+        oGui.addDir(SITE_IDENTIFIER, 'openLibrary', self.ADDON.VSlang(30121), 'series.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -127,7 +127,7 @@ class cLibrary:
         if not folder:
             folder = 'special://userdata/addon_data/plugin.video.vstream/Enregistrement"/>'
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('filePath', folder)
+        oOutputParameterHandler.addParameter('siteUrl', folder)
         oGui.addDir(SITE_IDENTIFIER, 'openLibrary', self.ADDON.VSlang(30225), 'download.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
@@ -135,7 +135,7 @@ class cLibrary:
     def openLibrary(self):
         oGui = cGui()
         oInputParameterHandler = cInputParameterHandler()
-        sFile = oInputParameterHandler.getValue('filePath')
+        sFile = oInputParameterHandler.getValue('siteUrl')
 
         listDir = xbmcvfs.listdir(sFile)
 
@@ -158,8 +158,8 @@ class cLibrary:
 
             else:
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('filePath', sFile + '/' + i)
-                oGui.addDir(SITE_IDENTIFIER, 'openLibrary', sTitle, 'annees.png', oOutputParameterHandler)
+                oOutputParameterHandler.addParameter('siteUrl', sFile + '/' + i)
+                oGui.addDir(SITE_IDENTIFIER, 'openLibrary', sTitle, 'films.png', oOutputParameterHandler)
 
         if addon_handle:
             xbmcplugin.endOfDirectory(addon_handle)

@@ -536,6 +536,10 @@ msgctxt "#30132"
 msgid "Live"
 msgstr ""
 
+msgctxt "#30133"
+msgid "Movies"
+msgstr ""
+
 msgctxt "#30137"
 msgid "Music"
 msgstr ""
@@ -977,11 +981,11 @@ msgid "Enable log records"
 msgstr ""
 
 msgctxt "#30423"
-msgid "Search a Movie"
+msgid "Search (Movies)"
 msgstr ""
 
 msgctxt "#30424"
-msgid "Search a TV Show"
+msgid "Search (TV Shows)"
 msgstr ""
 
 msgctxt "#30425"
@@ -1149,7 +1153,7 @@ msgid "Minute"
 msgstr ""
 
 msgctxt "#30469"
-msgid "Hoster Direct"
+msgid "Direct link"
 msgstr ""
 
 msgctxt "#30470"

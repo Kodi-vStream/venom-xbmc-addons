@@ -536,6 +536,10 @@ msgctxt "#30132"
 msgid "Live"
 msgstr "En direct"
 
+msgctxt "#30133"
+msgid "Movies"
+msgstr "Cinéma"
+
 msgctxt "#30137"
 msgid "Music"
 msgstr "Musique"
@@ -786,7 +790,7 @@ msgstr "Calendrier des sorties VO"
 
 msgctxt "#30332"
 msgid "TV (Official)"
-msgstr "TV (Officiel)"
+msgstr "Chaines (TNT)"
 
 msgctxt "#30333"
 msgid "Activate Premium"
@@ -838,7 +842,7 @@ msgstr "Afficher les films les plus vus du mois"
 
 msgctxt "#30350"
 msgid "Replays"
-msgstr "Rédiffusions"
+msgstr "Rédiffusions TV"
 
 msgctxt "#30351"
 msgid "TV Shows"
@@ -977,12 +981,12 @@ msgid "Enable log records"
 msgstr "Activer les enregistrements de log"
 
 msgctxt "#30423"
-msgid "Search a Movie"
-msgstr "Rechercher un Film"
+msgid "Search (Movies)"
+msgstr "Rechercher (Films)"
 
 msgctxt "#30424"
-msgid "Search a TV Show"
-msgstr "Rechercher une Série"
+msgid "Search (TV Shows)"
+msgstr "Rechercher (Séries)"
 
 msgctxt "#30425"
 msgid "Movies (Popular)"
@@ -1006,7 +1010,7 @@ msgstr "Séries (Populaires)"
 
 msgctxt "#30430"
 msgid "TV Shows (On air)"
-msgstr "Séries (En cours)"
+msgstr "Séries (Nouveautés)"
 
 msgctxt "#30431"
 msgid "TV Shows (Top Rated)"
@@ -1086,7 +1090,7 @@ msgstr "Toutes les sources"
 
 msgctxt "#30450"
 msgid "Search (Actor, Actress)"
-msgstr "Recherche (Acteur, Actrice)"
+msgstr "Rechercher (Acteur, Actrice)"
 
 msgctxt "#30451"
 msgid "Default mode"
@@ -1149,8 +1153,8 @@ msgid "Minute"
 msgstr "Minute"
 
 msgctxt "#30469"
-msgid "Hoster Direct"
-msgstr "Hoster Direct"
+msgid "Direct link"
+msgstr "Lien Direct"
 
 msgctxt "#30470"
 msgid "Addon dnspython missing"

@@ -43,8 +43,9 @@ SITE_DESC = 'Site pour regarder du sport en direct'
 URL_MAIN = GetUrlMain()
 
 SPORT_SPORTS = ('/', 'load')
+TV_TV = ('/', 'load')
 SPORT_TV = ('31-site-pour-regarder-les-chaines-de-sport.html', 'showMovies')
-CHAINE_TV = ('2370162-chaines-tv-streaming-tf1-france-2-canal-plus.html', 'showMovies')
+CHAINE_CINE = ('2370162-chaines-tv-streaming-tf1-france-2-canal-plus.html', 'showMovies')
 SPORT_LIVE = ('/', 'showMovies')
 SPORT_GENRES = ('/', 'showGenres')
 
@@ -63,8 +64,8 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines TV Sports', 'sport.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', CHAINE_TV[0])
-    oGui.addDir(SITE_IDENTIFIER, CHAINE_TV[1], 'Chaines TV Ciné', 'tv.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', CHAINE_CINE[0])
+    oGui.addDir(SITE_IDENTIFIER, CHAINE_CINE[1], 'Chaines TV Ciné', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -114,7 +115,7 @@ def showMovies(sSearch=''):
             sDesc1 = aEntry[4]
 
             # bChaine = False
-            if sUrl != CHAINE_TV[0] and sUrl != SPORT_TV[0]:
+            if sUrl != CHAINE_CINE[0] and sUrl != SPORT_TV[0]:
                 sDisplayTitle = sTitle
                 if sDesc1 and 'chaîne' not in sDesc1 and 'chaine' not in sDesc1:
                     sDisplayTitle += ' (' + sDesc1.replace(' · ', '') + ')'

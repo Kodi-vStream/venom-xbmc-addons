@@ -51,7 +51,7 @@ ANIM_NEWS = (URL_MAIN + '&sMedia=anime&sYear=2022', 'showMovies')
 ANIM_ANNEES = (URL_MAIN + '&sMedia=anime', 'showYears')
 ANIM_VFS = (URL_MAIN + '&sMedia=anime&bNews=True', 'showMovies')
 ANIM_GENRES = (URL_MAIN + '&sMedia=anime', 'showGroupes')
-ANIM_LIST = (URL_MAIN + '&sMedia=serie', 'alphaList')
+ANIM_LIST = (URL_MAIN + '&sMedia=anime', 'alphaList')
 
 
 URL_SEARCH_MOVIES = (URL_MAIN + '&sMedia=film&sSearch=', 'showMovies')
