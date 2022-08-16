@@ -151,7 +151,7 @@ def showSeries(sSearch=''):
                 if not oUtil.CheckOccurence(sSearchText, sTitle):
                     continue
             
-            if'/lettre/' in sUrl:
+            if '/lettre/' in sUrl:
                 sDesc = ''
             else:
                 sDesc = aEntry[3]

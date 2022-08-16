@@ -22,9 +22,9 @@ URL_SEARCH = (URL_MAIN + '?s=', FUNCTION_SEARCH)
 URL_SEARCH_MOVIES = (URL_SEARCH[0], FUNCTION_SEARCH)
 
 MOVIE_MOVIE = (True, 'load')
-MOVIE_NEWS = (URL_MAIN + 'voir-film-en-streaming/', 'showMovies')
-MOVIE_NOTES = (URL_MAIN + 'les-films-les-mieux-notee/', 'showMovies')
-MOVIE_VIEWS = (URL_MAIN + 'films-les-plus-vues/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'tous-les-films/', 'showMovies')
+MOVIE_VIEWS = (URL_MAIN + 'les-meilleurs-films-en-streaming/', 'showMovies')
+MOVIE_NOTES = (URL_MAIN + 'films-les-plus-populaires-en-streaming/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_LIST = (True, 'showAlpha')
 
@@ -39,11 +39,11 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Populaires)', 'views.png', oOutputParameterHandler)
+
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'notes.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'views.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
@@ -67,18 +67,21 @@ def showSearch():
 def showGenres():
     oGui = cGui()
     oParser = cParser()
+    oUtil = cUtil()
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<li class="cat-item cat-item.+?"><a href="([^<]+)">([^<]+)</a>([^<]+)</li>'
+    sPattern = 'option class="level-0" value="\d+">(.+?)</option>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-
-            sTitle = aEntry[1] + aEntry[2]
-            sUrl = aEntry[0]
+            sTitle = aEntry
+            if 'Uncategorized' in sTitle:
+                continue
+            
+            sUrl = URL_MAIN + 'genre/' + oUtil.CleanName(sTitle).replace(' ', '-')
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
@@ -117,7 +120,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    if'/lettre/' in sUrl:
+    if '/lettre/' in sUrl:
         sPattern = '</span></td>.+?href="([^"]+).+?src="([^"]+).+?strong>([^<]+).+?<td>([^<]+)'
     else:
         sPattern = 'TPost C.+?href="([^"]+).+?src="([^"]+).+?Title">([^<]+).+?Description"><p>([^<]+)'
@@ -140,7 +143,7 @@ def showMovies(sSearch=''):
             sUrl2 = aEntry[0]
             sThumb = re.sub('/w\d+/', '/w342/', 'https:' + aEntry[1])
             sTitle = aEntry[2]
-            if'/lettre/' in sUrl:
+            if '/lettre/' in sUrl:
                 sDesc = ''
                 sYear = aEntry[3]
             else:
@@ -208,12 +211,11 @@ def showHoster():
             aResult = oParser.parse(sHtmlContent, sPattern)
 
             if aResult[0] is True:
-                for aEntry1 in aResult[1]:
-                    sHosterUrl = aEntry1
-                    oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    if oHoster != False:
-                        oHoster.setDisplayName(sMovieTitle)
-                        oHoster.setFileName(sMovieTitle)
-                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                sHosterUrl = aResult[1][0]
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if oHoster != False:
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
