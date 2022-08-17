@@ -17,8 +17,8 @@ msgid "Auto-activate subtitles"
 msgstr "Activation auto des sous-titres"
 
 msgctxt "#30003"
-msgid "Downloads Completed"
-msgstr "Téléchargements terminés"
+msgid "Download completed"
+msgstr "Téléchargement terminé"
 
 msgctxt "#30004"
 msgid "Downloads Stopped"
@@ -570,7 +570,7 @@ msgstr "Chaines"
 
 msgctxt "#30201"
 msgid "Playlist"
-msgstr "Playlist"
+msgstr "Ajouter à la liste de lecture"
 
 msgctxt "#30202"
 msgid "Download"
@@ -675,6 +675,10 @@ msgstr "Enregistrement du direct"
 msgctxt "#30227"
 msgid "Open settings"
 msgstr "Ouvrir les paramètres"
+
+msgctxt "#30228"
+msgid "Request registered"
+msgstr "Demande enregistrée"
 
 msgctxt "#30300"
 msgid "Library"
@@ -1154,7 +1158,7 @@ msgstr "Minute"
 
 msgctxt "#30469"
 msgid "Direct link"
-msgstr "Lien Direct"
+msgstr "Lien direct"
 
 msgctxt "#30470"
 msgid "Addon dnspython missing"

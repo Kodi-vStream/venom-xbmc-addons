@@ -17,11 +17,11 @@ msgid "Auto-activate subtitles"
 msgstr ""
 
 msgctxt "#30003"
-msgid "Downloads Completed"
+msgid "Download completed"
 msgstr ""
 
 msgctxt "#30004"
-msgid "Downloads Stopped"
+msgid "Download Stopped"
 msgstr ""
 
 msgctxt "#30005"
@@ -674,6 +674,10 @@ msgstr ""
 
 msgctxt "#30227"
 msgid "Open settings"
+msgstr ""
+
+msgctxt "#30228"
+msgid "Request registered"
 msgstr ""
 
 msgctxt "#30300"

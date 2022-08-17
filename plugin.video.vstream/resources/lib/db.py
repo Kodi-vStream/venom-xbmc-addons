@@ -542,7 +542,6 @@ class cDb(object):
             self.dbcur.execute(ex, (title, url, sPath, meta['cat'], sIcon, '', '', 0))
             self.db.commit()
             VSlog('SQL INSERT download Successfully')
-            dialog().VSinfo(addon().VSlang(30042), meta['title'])
         except Exception as e:
             VSlog('SQL ERROR INSERT into download')
             pass

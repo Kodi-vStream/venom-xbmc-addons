@@ -67,13 +67,13 @@ class cFav:
         total = compt[2] + compt[3] + compt[4] + compt[8] + compt[9]
         oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s/%s (%s)') % (self.ADDON.VSlang(30121), self.ADDON.VSlang(30122), str(total)), 'mark.png', oOutputParameterHandler)
 
-        oOutputParameterHandler.addParameter('sCat', '6')
-        total = compt[6]
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30332), str(total)), 'mark.png', oOutputParameterHandler)
-
         oOutputParameterHandler.addParameter('sCat', '5')
         total = compt[5]
         oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30410), str(total)), 'mark.png', oOutputParameterHandler)
+
+        oOutputParameterHandler.addParameter('sCat', '6')
+        total = compt[6]
+        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30332), str(total)), 'mark.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('sAll', 'true')
         oGui.addDir(SITE_IDENTIFIER, 'delBookmark', self.ADDON.VSlang(30209), 'trash.png', oOutputParameterHandler)

@@ -82,15 +82,6 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('movieUrl', movieUrl)
         oOutputParameterHandler.addParameter('movieFunc', movieFunc)
 
-        # context playlist menu
-        oContext = cContextElement()
-        oContext.setFile('cHosterGui')
-        oContext.setSiteName(self.SITE_NAME)
-        oContext.setFunction('addToPlaylist')
-        oContext.setTitle(self.ADDON.VSlang(30201))
-        oContext.setOutputParameterHandler(oOutputParameterHandler)
-        oGuiElement.addContextItem(oContext)
-
         # Download menu
         if oHoster.isDownloadable():
             oContext = cContextElement()
@@ -101,7 +92,6 @@ class cHosterGui:
             oContext.setOutputParameterHandler(oOutputParameterHandler)
             oGuiElement.addContextItem(oContext)
 
-        if oHoster.isDownloadable():
             # Beta context download and view menu
             oContext = cContextElement()
             oContext.setFile('cDownload')
@@ -110,6 +100,18 @@ class cHosterGui:
             oContext.setTitle(self.ADDON.VSlang(30326))
             oContext.setOutputParameterHandler(oOutputParameterHandler)
             oGuiElement.addContextItem(oContext)
+
+        # Liste de lecture
+        oContext = cContextElement()
+        oContext.setFile('cHosterGui')
+        oContext.setSiteName(self.SITE_NAME)
+        oContext.setFunction('addToPlaylist')
+        oContext.setTitle(self.ADDON.VSlang(30201))
+        oContext.setOutputParameterHandler(oOutputParameterHandler)
+        oGuiElement.addContextItem(oContext)
+
+        # Dossier Media
+        oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, 'cLibrary', 'cLibrary', 'setLibrary', self.ADDON.VSlang(30324))
 
         # Upload menu uptobox
         if cInputParameterHandler().getValue('site') != 'siteuptobox' and self.ADDON.getSetting('hoster_uptobox_premium') == 'true':
@@ -125,9 +127,6 @@ class cHosterGui:
             accept = '1fichier'  # les autres ne fonctionnent pas
             if host == accept:
                 oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, 'siteonefichier', 'siteonefichier', 'upToMyAccount', '1fichier')
-
-        # context Library menu
-        oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, 'cLibrary', 'cLibrary', 'setLibrary', self.ADDON.VSlang(30324))
 
         oGui.addFolder(oGuiElement, oOutputParameterHandler, False)
 
@@ -147,17 +146,6 @@ class cHosterGui:
             sHostName = sHosterUrl
 
         if debrid:
-            # L'user a active l'url resolver ?
-            if self.ADDON.getSetting('UserUrlResolver') == 'true':
-                import urlresolver
-                hmf = urlresolver.HostedMediaFile(url=sHosterUrl)
-                if hmf.valid_url():
-                    tmp = self.getHoster('resolver')
-                    RH = sHosterUrl.split('/')[2]
-                    RH = RH.replace('www.', '')
-                    tmp.setRealHost(RH.split('.')[0].upper())
-                    return tmp
-
             # L'user a activé alldebrid ?
             if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
                 return self.getHoster('alldebrid')
@@ -400,7 +388,7 @@ class cHosterGui:
             from resources.lib.player import cPlayer
             oPlayer = cPlayer()
             oPlayer.addItemToPlaylist(oGuiElement)
-            dialog().VSinfo(str(oHoster.getFileName()), 'Playlist')
+            dialog().VSinfo(str(oHoster.getFileName()), 'Liste de lecture')
             return
 
         oGui.setEndOfDirectory()

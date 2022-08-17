@@ -80,13 +80,12 @@ class cHoster(iHoster):
             if statusCode == 16:  # Waiting needed
                 status = "Pas de compte Premium"  # dict_liens["data"]["waiting"]
             elif statusCode == 7:  # Invalid parameter
-                status = dict_liens["data"]["message"]
-                status += ' - ' + dict_liens["data"]["data"]
+                status = dict_liens["message"] + ' : ' + dict_liens["data"]
             else:
-                status = "Erreur inconnue : " + str(statusCode)
+                status = 'Erreur inconnue : %s, message = %s : %s' % (str(statusCode), dict_liens["message"], str(dict_liens["data"]))
         except Exception as e:
             status = e
 
-        VSlog('UPTOBOX - ' + status)
+        VSlog('UPTOBOX - ' + str(status))
 
         return False

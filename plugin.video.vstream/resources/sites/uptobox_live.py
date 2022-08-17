@@ -22,6 +22,9 @@ URL_SEARCH_MOVIES = (URL_MAIN + 'search?sort=size&order=desc&q=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'search?sort=id&order=asc&q=', 'showSeries')
 URL_SEARCH_ANIMS = (URL_MAIN + 'search?sort=id&order=asc&q=', 'showAnims')
 
+MOVIE_MOVIE = ('films', 'load')
+SERIE_SERIES = ('series', 'load')
+
 
 def load():
     oGui = cGui()
@@ -35,13 +38,18 @@ def load():
         oGui.setEndOfDirectory()
         return
 
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MOVIES[0])
-    oOutputParameterHandler.addParameter('sMovieTitle', 'movie')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Films)', 'search.png', oOutputParameterHandler)
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
-    oOutputParameterHandler.addParameter('sMovieTitle', 'tv')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Séries)', 'search.png', oOutputParameterHandler)
+    if not 'series' in sUrl:
+        oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MOVIES[0])
+        oOutputParameterHandler.addParameter('sMovieTitle', 'movie')
+        oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Films)', 'search.png', oOutputParameterHandler)
+
+    if not 'films' in sUrl:
+        oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
+        oOutputParameterHandler.addParameter('sMovieTitle', 'tv')
+        oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Séries)', 'search.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
