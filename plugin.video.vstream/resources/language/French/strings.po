@@ -21,8 +21,8 @@ msgid "Download completed"
 msgstr "Téléchargement terminé"
 
 msgctxt "#30004"
-msgid "Downloads Stopped"
-msgstr "Téléchargements arrêtés"
+msgid "Download stopped"
+msgstr "Téléchargement arrêté"
 
 msgctxt "#30005"
 msgid "Media informations"

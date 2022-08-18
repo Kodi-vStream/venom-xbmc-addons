@@ -32,7 +32,7 @@ SETTING_PASTE_LABEL = SITE_IDENTIFIER + '_label_'
 UNCLASSIFIED_GENRE = '_NON CLASSÉ_'
 UNCLASSIFIED = 'Indéterminé'
 
-MOVIE_MOVIE = (True, 'showMenuFilms')
+MOVIE_MOVIE = (URL_MAIN + '&sMedia=film', 'showMenuFilms')
 MOVIE_NEWS = (URL_MAIN + '&sMedia=film&sYear=2022', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + '&sMedia=film', 'showGenres')
 MOVIE_ANNEES = (URL_MAIN + '&sMedia=film', 'showYears')
@@ -40,13 +40,13 @@ MOVIE_LIST = (URL_MAIN + '&sMedia=film', 'alphaList')
 MOVIE_VIEWS = ('movie/popular', 'showTMDB')
 MOVIE_NOTES = ('movie/top_rated', 'showTMDB')
 
-SERIE_SERIES = (True, 'showMenuTvShows')
+SERIE_SERIES = (URL_MAIN + '&sMedia=serie', 'showMenuTvShows')
 SERIE_NEWS = (URL_MAIN + '&sMedia=serie&sYear=2022', 'showMovies')
 SERIE_GENRES = (URL_MAIN + '&sMedia=serie', 'showGenres')
 SERIE_ANNEES = (URL_MAIN + '&sMedia=serie', 'showYears')
 SERIE_LIST = (URL_MAIN + '&sMedia=serie', 'alphaList')
 
-ANIM_ANIMS = (True, 'showMenuMangas')
+ANIM_ANIMS = (URL_MAIN + '&sMedia=anime', 'showMenuMangas')
 ANIM_NEWS = (URL_MAIN + '&sMedia=anime&sYear=2022', 'showMovies')
 ANIM_ANNEES = (URL_MAIN + '&sMedia=anime', 'showYears')
 ANIM_VFS = (URL_MAIN + '&sMedia=anime&bNews=True', 'showMovies')
@@ -912,18 +912,18 @@ def showMenuFilms():
 def showMenuTvShows():
     oGui = cGui()
     addons = addon()
-    sUrl = URL_MAIN + '&numPage=1'
+    sUrl = URL_MAIN + '&sMedia=serie&numPage=1'
 
     oOutputParameterHandler = cOutputParameterHandler()
 
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Séries)', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&bNews=True')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&bNews=True')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&sYear=2022')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Nouveautés)', 'news.png', oOutputParameterHandler)
+    # oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sYear=2022')
+    # oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Nouveautés)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'trending/tv/day')#tv/on_the_air')
     oGui.addDir(SITE_IDENTIFIER, 'showTMDB', addons.VSlang(30430), 'series.png', oOutputParameterHandler)
@@ -931,28 +931,28 @@ def showMenuTvShows():
     oOutputParameterHandler.addParameter('siteUrl', 'tv/popular')
     oGui.addDir(SITE_IDENTIFIER, 'showTMDB', addons.VSlang(30429), 'comments.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Séries (Listes)', 'listes.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'genre/tv/list')
     oGui.addDir(SITE_IDENTIFIER, 'showGenreTV', addons.VSlang(30432), 'genres.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie')
+    # oOutputParameterHandler.addParameter('siteUrl', sUrl)
     # oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oGui.addDir(SITE_IDENTIFIER, 'showNetwork', 'Séries (Par diffuseurs)', 'host.png', oOutputParameterHandler)
 
     # oOutputParameterHandler.addParameter('siteUrl', 'tv/top_rated')
     # oGui.addDir(SITE_IDENTIFIER, 'showTMDB', addons.VSlang(30431), 'star.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Séries (Par années)', 'annees.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oGui.addDir(SITE_IDENTIFIER, 'alphaList', 'Séries (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&bRandom=True')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&bRandom=True')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Aléatoires)', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -960,32 +960,32 @@ def showMenuTvShows():
 
 def showMenuMangas():
     oGui = cGui()
-    sUrl = URL_MAIN + '&numPage=1'
+    sUrl = URL_MAIN + '&sMedia=anime&numPage=1'
 
     oOutputParameterHandler = cOutputParameterHandler()
 
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Animes)', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime&bNews=True')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&bNews=True')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Animes (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime&sYear=2022')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sYear=2022')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Animes (Nouveautés)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Animes (Listes)', 'listes.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oGui.addDir(SITE_IDENTIFIER, 'showNetwork', 'Animes (Par diffuseurs)', 'host.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Animes (Par années)', 'annees.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oGui.addDir(SITE_IDENTIFIER, 'alphaList', 'Animes (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=anime&bRandom=True')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&bRandom=True')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Animes (Aléatoires)', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -993,23 +993,23 @@ def showMenuMangas():
 
 def showMenuMisc():
     oGui = cGui()
-    sUrl = URL_MAIN + '&numPage=1'
+    sUrl = URL_MAIN + '&sMedia=divers&numPage=1'
 
     oOutputParameterHandler = cOutputParameterHandler()
 
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_MISC[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche (Divers)', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=divers')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Divers (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=divers')
+    # oOutputParameterHandler.addParameter('siteUrl', sUrl)
     # oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Divers (Catégories)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=divers')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Divers (Listes)', 'listes.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=divers')
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oGui.addDir(SITE_IDENTIFIER, 'alphaList', 'Divers (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
