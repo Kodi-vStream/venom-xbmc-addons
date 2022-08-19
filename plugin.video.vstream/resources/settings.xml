@@ -50,8 +50,6 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
     <category label="30138" id="9999">
 
         <setting label="30116" type="lsep"/>
-<!--        <setting type="sep"/>
- n'est plus utile		<setting subsetting="true" label="30070" type="lsep"/> -->
         <setting label="30420" type="action"  action="RunScript(plugin.video.vstream, search, ?site=globalRun&amp;function=search)"/>
         <setting label="31104" type="action"  action="RunScript(plugin.video.vstream, enableSources, ?site=globalRun&amp;function=enableSources)"/>
         <setting label="31105" type="action"  action="RunScript(plugin.video.vstream, disableSources, ?site=globalRun&amp;function=disableSources)"/>
@@ -82,7 +80,7 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
         <setting id="update_auto" type="bool" label="30302" default="true"/>
     </category>
 
-    <!-- Enregistrement -->
+    <!-- Enregistrement 
     <category label="30225">
         <setting label="30226" type="lsep"/>
         <setting id="enregistrement_activer" type="bool" label="30051" default="false"/>
@@ -92,6 +90,7 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
         <setting id="marge_auto" type="number" label="30052" default="0"/>
         <setting id="heure_verification" type="number" label="30053" default="1"/>
     </category>
+-->
 
     <!-- Integration trakt -->
     <category label="30340">

@@ -20,37 +20,47 @@ class cEnregistremement:
         currentPath = ADDON.getSetting('path_enregistrement').replace('\\', '/')
         ffmpeg = ADDON.getSetting('path_ffmpeg').replace('\\', '/')
 
-        heureFichier = oGui.showKeyBoard(heading = "Heure du début d'enregistrement au format Date-Heure-Minute")
+        heureFichier = oGui.showKeyBoard(heading = "Début d'enregistrement au format Jour-Heure-Minute, vide pour maintenant")
         heureFin = oGui.showKeyBoard(heading = "Heure de fin d'enregistrement au format Heure-Minute")
+        if not heureFin:   # pas de fin, on annule
+            return
         titre = oGui.showKeyBoard(heading = "Titre de l'enregistrement").replace("'", "\\'")
+        if not titre:
+            return
+
+
+        # début non précisé -> enregistrement maintenant
+        if not heureFichier:
+            d = datetime.now()
+            heureFichier = d.strftime('%d-%H-%M')
 
         heureDebut = GetTimeObject(heureFichier, '%d-%H-%M')
         heureFin = GetTimeObject(heureFin, '%H-%M')
-        durer = heureFin - heureDebut
+        duree = heureFin - heureDebut
 
         marge = ADDON.getSetting('marge_auto')
         timedelta = datetime.timedelta(minutes = int(marge))
-        durer = durer + timedelta
+        duree += timedelta
 
         realPath = VSPath(pathEnregistrement + '/' + str(heureFichier) + '.py').replace('\\', '\\\\')
 
         f = xbmcvfs.File(realPath, 'w')
         read = f.write('''#-*- coding: utf-8 -*-
 import os,subprocess
-command = '"''' + ffmpeg + '''" ''' + header + ''' -t ''' + str(durer) + ''' "''' + currentPath + titre + '''.mkv"'
+command = '"''' + ffmpeg + '''" ''' + header + ''' -t ''' + str(duree) + ''' "''' + currentPath + '/' + titre + '''.mkv"'
 proc = subprocess.Popen(command, stdout=subprocess.PIPE)
 p_status = proc.wait()
 f = open("'''+currentPath+'''/test.txt",'w')
-f.write('Finit avec code erreur ' + str(p_status))
+f.write('Fini avec code erreur ' + str(p_status))
 f.close()''')
         f.close()
         oDialog = dialog().VSinfo('Redémarrer Kodi pour prendre en compte la planification', 'Vstream', 10)
         oGui.setEndOfDirectory()
 
-def GetTimeObject(durer, formats):
+def GetTimeObject(duree, formats):
     try:
-        res = datetime.datetime.strptime(durer, formats).time()
+        res = datetime.datetime.strptime(duree, formats).time()
     except TypeError:
-        res = datetime.datetime(*time.strptime(durer, formats)[0:6]).time()
+        res = datetime.datetime(*time.strptime(duree, formats)[0:6]).time()
     tmp_datetime = datetime.datetime.combine(datetime.date.today(), res)
     return tmp_datetime
