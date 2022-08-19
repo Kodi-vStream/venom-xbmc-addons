@@ -78,8 +78,9 @@ class cDownloadProgressBar(threading.Thread):
         iTotalSize = -1
         if 'content-length' in headers:
             iTotalSize = int(headers['Content-Length'])
-
-        chunk = 256 * 1024
+            
+        
+        chunk = 512 * 1024
         TotDown = 0
 
         # mise a jour pour info taille
@@ -102,7 +103,7 @@ class cDownloadProgressBar(threading.Thread):
 
             # petite pause, ca ralentit le download mais evite de bouffer 100/100 ressources
             if not self.__bFastMode:
-                xbmc.sleep(300)
+                xbmc.sleep(250)
 
         self.oUrlHandler.close()
         self.file.close()
@@ -186,7 +187,7 @@ class cDownloadProgressBar(threading.Thread):
 
             # Rajout du user-agent si absent
             if not ('User-Agent' in headers):
-                headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
+                headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36'
 
             req = urllib2.Request(url, None, headers)
 
@@ -302,6 +303,8 @@ class cDownload:
                 sTitle = sTitle[:-len(extension)]
             else:
                 extension = None
+        else:
+            extension = None
 
         sTitle = cUtil().CleanName(sTitle)
         sTitle = cUtil().FormatSerie(sTitle)

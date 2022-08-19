@@ -185,8 +185,8 @@ msgid "Bookmark deleted"
 msgstr "Marque-page supprimé"
 
 msgctxt "#30045"
-msgid "Type the link you want to search"
-msgstr "Tapez le lien que vous souhaitez rechercher"
+msgid "Type the link you want to read"
+msgstr "Saisir le lien que vous souhaitez ouvrir"
 
 msgctxt "#30046"
 msgid "Here is your link: "
@@ -283,10 +283,6 @@ msgstr "ATTENTION: vStream ne gère pas cette partie,[CR] pensez à le désactiv
 msgctxt "#30069"
 msgid "Unless you have a premium link generator,[CR] checking this box will bring you more problems than advantages."
 msgstr "A moins d'avoir un débrideur,[CR] cocher cette case vous apportera plus de problèmes que d'avantages."
-
-msgctxt "#30070"
-msgid "Choose your sources click OK[CR]- To validate the modifications click again on OK"
-msgstr "Choisissez vos sources et valider avec OK[CR]Confirmer les modifications en validant ici sur OK"
 
 msgctxt "#30071"
 msgid "Updated list"
@@ -666,7 +662,7 @@ msgstr "Téléchargements"
 
 msgctxt "#30225"
 msgid "Records"
-msgstr "Enregistrements"
+msgstr "Enregistrements TV"
 
 msgctxt "#30226"
 msgid "Records"
@@ -1158,7 +1154,7 @@ msgstr "Minute"
 
 msgctxt "#30469"
 msgid "Direct link"
-msgstr "Lien direct"
+msgstr "Ouvrir un lien"
 
 msgctxt "#30470"
 msgid "Addon dnspython missing"

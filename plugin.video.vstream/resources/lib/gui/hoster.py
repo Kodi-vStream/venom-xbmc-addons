@@ -135,6 +135,10 @@ class cHosterGui:
         if not sHosterUrl:
             return False
 
+        
+        if any(sHosterUrl.endswith(x) for x in ['.mp4', '.avi', '.flv', '.m3u8', '.webm', '.mkv', '.mpd']):
+            return self.getHoster('lien_direct')
+
         # Petit nettoyage
         sHosterUrl = sHosterUrl.split('|')[0]
         sHosterUrl = sHosterUrl.lower()
@@ -275,8 +279,6 @@ class cHosterGui:
         if ('myfiles.alldebrid.com' in sHostName):
             return self.getHoster('lien_direct')
 
-        if any(x in sHosterUrl for x in ['mp4', 'avi', 'flv', 'm3u8', 'webm', 'mkv', 'mpd']):
-            return self.getHoster('lien_direct')
         return False
 
     def getHoster(self, sHosterFileName):

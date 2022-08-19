@@ -21,7 +21,7 @@ msgid "Download completed"
 msgstr ""
 
 msgctxt "#30004"
-msgid "Download Stopped"
+msgid "Download stopped"
 msgstr ""
 
 msgctxt "#30005"
@@ -185,7 +185,7 @@ msgid "Bookmark deleted"
 msgstr ""
 
 msgctxt "#30045"
-msgid "Type the link you want to search"
+msgid "Type the link you want to read"
 msgstr ""
 
 msgctxt "#30046"
@@ -282,10 +282,6 @@ msgstr ""
 
 msgctxt "#30069"
 msgid "Unless you have a premium link generator,[CR] checking this box will bring you more problems than advantages."
-msgstr ""
-
-msgctxt "#30070"
-msgid "Choose your sources click OK[CR]- To validate the modifications click again on OK"
 msgstr ""
 
 msgctxt "#30071"

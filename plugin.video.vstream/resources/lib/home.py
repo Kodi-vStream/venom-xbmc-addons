@@ -83,11 +83,12 @@ class cHome:
 
         oGui.addDir('cDownload', 'getDownloadList', self.addons.VSlang(30224), 'download.png', oOutputParameterHandler)
 
-        folder = self.addons.getSetting('path_enregistrement')
-        if not folder:
-            folder = 'special://userdata/addon_data/plugin.video.vstream/Enregistrement"/>'
-        oOutputParameterHandler.addParameter('siteUrl', folder)
-        oGui.addDir('cLibrary', 'openLibrary', self.addons.VSlang(30225), 'download.png', oOutputParameterHandler)
+        # les enregistrements de chaines TV ne sont plus opérationnelles
+        # folder = self.addons.getSetting('path_enregistrement')
+        # if not folder:
+        #     folder = 'special://userdata/addon_data/plugin.video.vstream/Enregistrement"/>'
+        # oOutputParameterHandler.addParameter('siteUrl', folder)
+        # oGui.addDir('cLibrary', 'openLibrary', self.addons.VSlang(30225), 'download.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir(SITE_IDENTIFIER, 'showUsers', self.addons.VSlang(30455), 'user.png', oOutputParameterHandler)
