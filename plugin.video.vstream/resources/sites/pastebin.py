@@ -2226,7 +2226,7 @@ def showMovies(sSearch=''):
     if not bSilent:
         progress_.VSclose(progress_)
 
-    if not sSearchTitle:
+    if not sSearch:
         oGui.setEndOfDirectory()
 
 

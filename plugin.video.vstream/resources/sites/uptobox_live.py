@@ -18,9 +18,9 @@ SITE_NAME = '[COLOR violet]Uptobox Live[/COLOR]'
 SITE_DESC = 'Bibliothèque de liens Uptobox'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
-URL_SEARCH_MOVIES = (URL_MAIN + 'search?sort=size&order=desc&q=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + 'search?sort=id&order=asc&q=', 'showSeries')
-URL_SEARCH_ANIMS = (URL_MAIN + 'search?sort=id&order=asc&q=', 'showAnims')
+URL_SEARCH_MOVIES = ('search?sort=size&order=desc&q=', 'showMovies')
+URL_SEARCH_SERIES = ('search?sort=id&order=asc&q=', 'showSeries')
+URL_SEARCH_ANIMS = ('search?sort=id&order=asc&q=', 'showAnims')
 
 MOVIE_MOVIE = ('films', 'load')
 SERIE_SERIES = ('series', 'load')
@@ -87,12 +87,12 @@ def getAuthorizedID():
     return False
 
 
-def getContent(sSearch):
+def getContent(sUrl):
     
-    sUrl = sSearch.replace(' ', '%20')
+    sUrl = sUrl.replace(' ', '%20')
     id = getAuthorizedID()
     
-    oRequest = cRequestHandler(sUrl)
+    oRequest = cRequestHandler(URL_MAIN + sUrl)
     oRequest.addHeaderEntry('Referer', URL_MAIN)
     oRequest.addHeaderEntry('Authorization', id)
     sHtmlContent = oRequest.request()
@@ -110,11 +110,15 @@ def showMovies(sSearch='', searchLocal = False):
     oGui = cGui()
     oUtil = cUtil()
 
+    if not sSearch:
+        searchLocal = True
+        oInputParameterHandler = cInputParameterHandler()
+        sSearch = oInputParameterHandler.getValue('siteUrl')
     sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
     sSearchText = Unquote(sSearchText)
     sSearchText = oUtil.CleanName(sSearchText)
 
-    sUrl = sSearch.replace(' ', '%20').replace('-', '\-')
+    sUrl = sSearch.replace('-', '\-')
     content = getContent(sUrl)
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -241,16 +245,16 @@ def showSeries(sSearch = '', searchLocal = False, isAnime = False):
             if not oUtil.CheckOccurence(sSearchTitle, sMovieTitle):
                 continue    # Filtre de recherche
             
-            sSearchTitle = oUtil.CleanName(sMovieTitle)
+            sDisplayTitle = oUtil.CleanName(sMovieTitle)
             if sYear:
-                sSearchTitle += ' (%s)' % sYear
-            if sSearchTitle in series:
+                sDisplayTitle += ' (%s)' % sYear
+            if sDisplayTitle in series:
                 continue
-            series.add(sSearchTitle)
+            series.add(sDisplayTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sSearchTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
             oOutputParameterHandler.addParameter('sYear', sYear)
             oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)  # Utilisé par TMDB
             if isAnime:
@@ -439,7 +443,7 @@ def showHosters():
     oUtil = cUtil()
 
     oInputParameterHandler = cInputParameterHandler()
-    sSearchTmdbId = oInputParameterHandler.getValue('sTmdbId')
+    # sSearchTmdbId = oInputParameterHandler.getValue('sTmdbId')
     sSearchTitle = oInputParameterHandler.getValue('sMovieTitle')
     sSearchYear, pos = getYear(sSearchTitle, len(sSearchTitle))
     if sSearchYear:
@@ -476,15 +480,17 @@ def showHosters():
         # Recherche des metadonnées
         pos = len(sTitle)
         sTmdbId, pos = getIdTMDB(sTitle, pos)
-        if sTmdbId:
-            if not sSearchTmdbId:
-                continue
-            if sSearchTmdbId and sSearchTmdbId != sTmdbId:
-                continue
-            sTitle = sTitle.replace('.TM%sTM.' % sTmdbId, '') 
-            pos = len(sTitle)
-        elif sSearchTmdbId:
-            continue
+        
+        # non, car les recherchs tmdb renvois l'ide alos qu'ils ne sont pas sur le lien
+        # if sTmdbId:
+        #     if not sSearchTmdbId:
+        #         continue
+        #     if sSearchTmdbId and sSearchTmdbId != sTmdbId:
+        #         continue
+        #     sTitle = sTitle.replace('.TM%sTM.' % sTmdbId, '') 
+        #     pos = len(sTitle)
+        # elif sSearchTmdbId:
+        #     continue
 
         sLang, pos = getLang(sTitle, pos)
         sRes, pos = getReso(sTitle, pos)
@@ -546,7 +552,7 @@ def showHosters():
 def getSaisonEpisode(sTitle, pos = 0):
     sTitle = sTitle.replace('x264', '').replace('x265', '').strip()
     sa = ep = terme = ''
-    m = re.search('( S|\.S|saison)(\s?|\.)(\d+)( - |\s?|\.)(E|Ep|x|\wpisode|Épisode)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
+    m = re.search('( S|\.S|\[S|saison)(\s?|\.)(\d+)( - |\s?|\.)(E|Ep|x|\wpisode|Épisode)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
     if m:
         sa = m.group(3)
         if int(sa) <100:
@@ -561,7 +567,7 @@ def getSaisonEpisode(sTitle, pos = 0):
             sa = '01' # si la saison n'est pas précisée, c'est qu'il n'y a sans doute qu'une saison
             terme = m.group(0)
         else:  # juste la saison
-            m = re.search('( S|\.S|saison)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
+            m = re.search('( S|\.S|\[S|saison)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
             if m:
                 sa = m.group(3)
                 if int(sa) > 100:
@@ -590,7 +596,7 @@ def getLang(sMovieTitle, pos):
 
 
 def getReso(sMovieTitle, pos):
-    sPattern = ['HDCAM', '[^\w](CAM)[^\w]', '[^\w](R5)[^\w]', 'DVDSCR', 'TVRIP', 'HDLIGHT', '\d{3,4}P', '4K', 'UHD', 'BDRIP', 'BRRIP', 'DVDRIP', 'HDTV', 'BLURAY', 'WEB-DL', 'WEBRIP', '[^\w](WEB)[^\w]']
+    sPattern = ['HDCAM', '[^\w](CAM)[^\w]', '[^\w](R5)[^\w]', '.(3D)', '.(DVDSCR)', '.(TVRIP)', '.(HDLIGHT)', '\d{3,4}P', '.(4K)', '.(UHD)', '.(BDRIP)', '.(BRRIP)', '.(DVDRIP)', '.(HDTV)', '.(BLURAY)', '.(WEB-DL)', '.(WEBRIP)', '[^\w](WEB)[^\w]', '.(DVDRIP)']
     sRes, pos = _getTag(sMovieTitle, sPattern, pos)
     if sRes:
         sRes = sRes.replace('2160P', '4K')
