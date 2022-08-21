@@ -136,12 +136,14 @@ class cHosterGui:
             return False
 
         
-        if any(sHosterUrl.endswith(x) for x in ['.mp4', '.avi', '.flv', '.m3u8', '.webm', '.mkv', '.mpd']):
-            return self.getHoster('lien_direct')
-
         # Petit nettoyage
         sHosterUrl = sHosterUrl.split('|')[0]
+        sHosterUrl = sHosterUrl.split('?')[0]
         sHosterUrl = sHosterUrl.lower()
+
+        # lien direct ?
+        if any(sHosterUrl.endswith(x) for x in ['.mp4', '.avi', '.flv', '.m3u8', '.webm', '.mkv', '.mpd']):
+            return self.getHoster('lien_direct')
 
         # Recuperation du host
         try:
@@ -219,7 +221,7 @@ class cHosterGui:
         if ('mystream' in sHostName) or ('mstream' in sHostName):
             return self.getHoster('mystream')
 
-        if ('streamingentiercom/videophp?type=speed' in sHosterUrl) or ('speedvideo' in sHostName):
+        if ('streamingentiercom/videophp' in sHosterUrl) or ('speedvideo' in sHostName):
             return self.getHoster('speedvideo')
 
         if ('googlevideo' in sHostName) or ('picasaweb' in sHostName) or ('googleusercontent' in sHostName):
