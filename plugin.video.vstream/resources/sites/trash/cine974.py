@@ -42,43 +42,44 @@ def showMovies():
     sPattern = 'src="([^"]+)" alt="([^"]+)" class="sc.+?synop">([^<]*).+?href="([^"]+)">Regarder'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
-
-    if aResult[0] is True:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-        oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
-            sThumb = aEntry[0]
-            if sThumb.startswith('/'):
-                sThumb = URL_MAIN[:-1] + sThumb
-            sTitle = aEntry[1]
-            sDesc = aEntry[2]
-            sUrl2 = aEntry[3]
-            if sUrl2.startswith('/'):
-                sUrl2 = URL_MAIN[:-1] + sUrl2
-
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sDesc', sDesc)
-
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
-
-        sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if sNextPage != False:
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
-
         oGui.setEndOfDirectory()
+        return
+
+    total = len(aResult[1])
+    progress_ = progress().VScreate(SITE_NAME)
+    oOutputParameterHandler = cOutputParameterHandler()
+    for aEntry in aResult[1]:
+        progress_.VSupdate(progress_, total)
+        if progress_.iscanceled():
+            break
+
+        sThumb = aEntry[0]
+        if sThumb.startswith('/'):
+            sThumb = URL_MAIN[:-1] + sThumb
+        sTitle = aEntry[1]
+        sDesc = aEntry[2]
+        sUrl2 = aEntry[3]
+        if sUrl2.startswith('/'):
+            sUrl2 = URL_MAIN[:-1] + sUrl2
+
+        oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+        oOutputParameterHandler.addParameter('sThumb', sThumb)
+        oOutputParameterHandler.addParameter('sDesc', sDesc)
+
+        oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+
+    progress_.VSclose(progress_)
+
+    sNextPage, sPaging = __checkForNextPage(sHtmlContent)
+    if sNextPage != False:
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+        oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):

@@ -16,6 +16,9 @@ class cHoster(iHoster):
     def _getMediaLinkForGuest(self):
         api_call = False
 
+        if self._url.startswith('/'):
+            self._url = 'https:' + self._url
+        
         oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
         sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
@@ -34,7 +37,7 @@ class cHoster(iHoster):
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
 
-            # Affichage du tableau
+            # Choix des qualités
             api_call = dialog().VSselectqual(qua, url)
 
         if api_call:

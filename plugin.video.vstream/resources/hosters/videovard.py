@@ -285,7 +285,7 @@ def tear_decode(data_file, data_seed):
             a95 = i32(a95 | 0).value
         return [a95, a96]
 
-    if data_seed is None or data_file is None:
+    if not data_seed or not data_file:
         return ''
 
     data_seed = re.sub('[012567]', replacer, data_seed)

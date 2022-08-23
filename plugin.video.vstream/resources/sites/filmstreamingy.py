@@ -62,15 +62,15 @@ def showGenres():
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<li class="menu-item.+?href="([^"]+)">([^<]+)'
+    sPattern = 'menu-item-object-category menu-item-\d+"><a href="([^\"]+)">(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
-    triAlpha = []
-    if (aResult[0] == True):
+    else:
+        triAlpha = []
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            if aEntry[1] in ('Liste De Films De Noël', 'Top Films Streaming', 'Prochainement', 'Uncategorized', 'Genres', 'Tendance'):
+            if aEntry[1] in ('Liste De Films De Noël', 'Films De Noël', 'Top Films Streaming', 'Top Films', 'Prochainement', 'Uncategorized', 'Genres', 'Tendance'):
                 continue
 
             sUrl = aEntry[0]
@@ -83,7 +83,7 @@ def showGenres():
         for sTitle, sUrl in triAlpha:
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-        oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory()
 
 
 def showMovies(sSearch=''):
@@ -92,30 +92,26 @@ def showMovies(sSearch=''):
         oUtil = cUtil()
         sSearchText = oUtil.CleanName(sSearch.replace(URL_SEARCH_MOVIES[0], ''))
         sUrl = URL_SEARCH_MOVIES[0] + sSearchText.replace(' ', '+')
-        sPattern = '<img class=.+?data-src="(.+?)" alt="(.+?)".+?span class=".+?">(.+?)<.+?href="(.+?)">'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sPattern = 'img class=.+?data-src="(.+?)" alt="(.+?)".+?quality">(.+?)<.+?href="(.+?)"'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
+    sPattern = 'class="ml-item"> <a href="([^"]+)".+?img src="([^"]+)".+?alt="([^"]+)".+?"jtip-quality">(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
-        total = len(aResult[1])
-
+    else:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            sThumb = aEntry[0]
-            sTitle = aEntry[1].replace('en streaming', '')
-            sQual = aEntry[2] if not sSearch else ''
-            sUrl2 = aEntry[3]
+            sUrl2 = aEntry[0]
+            sThumb = aEntry[1]
+            sTitle = aEntry[2].replace('en streaming', '')
+            sQual = aEntry[3] if not sSearch else ''
             sYear = ''  #aEntry[5]
             sDesc = ''
 
@@ -167,14 +163,13 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sHtmlContent = sHtmlContent.replace('https://www.youtube.com/embed/', '')
 
-    sPattern = "<li id='player-option-[0-9]+' class='dooplay_player_option' data-type='([^']+)' data-post='([^']+)' data-nume='([^']+)'>"
+    sPattern = 'id="tab\d".+?data-(|litespeed-)src="([^\"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
-            sHosterUrl = geturl(aEntry)
+            sHosterUrl = aEntry[1]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
@@ -182,21 +177,3 @@ def showHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
-
-def geturl(aEntry):
-    sType = aEntry[0]
-    sPost = aEntry[1]
-    sNume = aEntry[2]
-    
-    pdata = 'action=doo_player_ajax&post='+ sPost + '&nume=' + sNume + '&type=' + sType
-    
-    sUrl = URL_MAIN + 'wp-admin/admin-ajax.php'
-    oRequest = cRequestHandler(sUrl)
-    oRequest.setRequestType(1)
-    oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0')
-    oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
-    oRequest.addParametersLine(pdata)
-
-    sHtmlContent = json.loads(oRequest.request())
-
-    return sHtmlContent['embed_url'] if 'embed_url' in sHtmlContent else ''

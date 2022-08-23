@@ -19,6 +19,10 @@ class cHoster(iHoster):
     def _getMediaLinkForGuest(self):
         oRequest = cRequestHandler(self._url)
         sHtmlContent = oRequest.request()
+        
+        if 'File was deleted' in sHtmlContent:
+            return False, False
+        
         sPattern = 'src: *"([^"]+)".+?label:"([^"]+)"'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
