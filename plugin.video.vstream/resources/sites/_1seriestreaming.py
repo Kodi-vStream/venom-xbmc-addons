@@ -9,7 +9,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, siteManager
+from resources.lib.comaddon import siteManager
 from resources.lib.util import cUtil
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:70.0) Gecko/20100101 Firefox/70.0'
@@ -155,14 +155,8 @@ def showSeries(sSearch=''):
         oGui.addText(SITE_IDENTIFIER)
 
     if aResult[0] is True:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sThumb = re.sub('/w\d+/', '/w342/', aEntry[0])
             sUrl2 = aEntry[1]
             if sUrl2.startswith('/'):
@@ -176,8 +170,6 @@ def showSeries(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if sNextPage is not False:
@@ -298,6 +290,9 @@ def showLinks():
 
             sHost = aEntry[1].replace('www.', '')
             sHost = re.sub('\..+', '', sHost).capitalize()
+            if (cHosterGui().checkHoster(sHost) == False):
+                continue
+            
             sLang = aEntry[2].replace('default', '').upper()
             sUrl = URL_MAIN + 'll/captcha?hash=' + aEntry[0]
             sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
