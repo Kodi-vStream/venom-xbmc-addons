@@ -34,7 +34,9 @@ UNCLASSIFIED = 'Indéterminé'
 
 MOVIE_MOVIE = (URL_MAIN + '&sMedia=film', 'showMenuFilms')
 MOVIE_NEWS = (URL_MAIN + '&sMedia=film&sYear=2022', 'showMovies')
-MOVIE_GENRES = (URL_MAIN + '&sMedia=film', 'showGenres')
+# MOVIE_GENRES = (URL_MAIN + '&sMedia=film', 'showGenres')
+MOVIE_GENRES = ('genre/movie/list', 'showGenreMovieTMDB')
+
 MOVIE_ANNEES = (URL_MAIN + '&sMedia=film', 'showYears')
 MOVIE_LIST = (URL_MAIN + '&sMedia=film', 'alphaList')
 MOVIE_VIEWS = ('movie/popular', 'showTMDB')
