@@ -44,7 +44,7 @@ MOVIE_NOTES = ('movie/top_rated', 'showTMDB')
 
 SERIE_SERIES = (URL_MAIN + '&sMedia=serie', 'showMenuTvShows')
 SERIE_NEWS = (URL_MAIN + '&sMedia=serie&sYear=2022', 'showMovies')
-SERIE_GENRES = (URL_MAIN + '&sMedia=serie', 'showGenres')
+SERIE_GENRES = ('genre/tv/list', 'showGenreTV')
 SERIE_ANNEES = (URL_MAIN + '&sMedia=serie', 'showYears')
 SERIE_LIST = (URL_MAIN + '&sMedia=serie', 'alphaList')
 
