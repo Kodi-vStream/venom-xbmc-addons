@@ -11,7 +11,7 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, isMatrix, siteManager
 SITE_IDENTIFIER = 'adkami_com'
 SITE_NAME = 'ADKami'
-SITE_DESC = 'Bienvenue sur ADKami un site Animés, Mangas & Séries en streaming.'
+SITE_DESC = 'Animés & Dramas en streaming.'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
@@ -20,19 +20,12 @@ ANIM_NEWS = (URL_MAIN + 'anime', 'showSeries')
 ANIM_LIST = (URL_MAIN + 'video?search=&n=&g=&s=&v=&t=0&p=&order=&d1=&d2=&e=&m=&q=&l=', 'showAZ')
 ANIM_VIEWS = (URL_MAIN + 'video?search=&t=0&order=3', 'showSeries')
 
-SERIE_SERIES = (True, 'showSerieMenu')
-SERIE_NEWS = (URL_MAIN + 'serie', 'showSeries')
-SERIE_LIST = (URL_MAIN + 'video?search=&n=&g=&s=&v=&t=1&p=&order=&d1=&d2=&e=&m=&q=&l=', 'showAZ')
-SERIE_VIEWS = (URL_MAIN + 'video?search=&t=1&order=3', 'showSeries')
-
 DRAMA_DRAMAS = (True, 'showDramaMenu')
-DRAMA_NEWS = (URL_MAIN + 'drama', 'showSeries')
 DRAMA_LIST = (URL_MAIN + 'video?search=&n=&g=&s=&v=&t=5&p=&order=&d1=&d2=&e=&m=&q=&l=', 'showAZ')
 DRAMA_VIEWS = (URL_MAIN + 'video?search=&t=5&order=3', 'showSeries')
 
 URL_SEARCH = (URL_MAIN + 'video?search=', 'showSeries')
 URL_SEARCH_ANIMS = (URL_MAIN + 'video?t=0&order=0&search=', 'showSeries')
-URL_SEARCH_SERIES = (URL_MAIN + 'video?t=1&order=0&search=', 'showSeries')
 URL_SEARCH_DRAMAS = (URL_MAIN + 'video?t=5&order=0&search=', 'showSeries')
 FUNCTION_SEARCH = 'showSeries'
 
@@ -46,9 +39,6 @@ def load():
 
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_DRAMAS[0])
     oGui.addDir(SITE_IDENTIFIER, DRAMA_DRAMAS[1], 'Dramas', 'dramas.png', oOutputParameterHandler)
@@ -67,23 +57,7 @@ def showAnimMenu():
     oGui.addDir(SITE_IDENTIFIER, ANIM_LIST[1], 'Animés (Liste alphabétique)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VIEWS[1], 'Animés (Les plus vus)', 'views.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
-
-def showSerieMenu():
-    oGui = cGui()
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchSerie', 'Recherche', 'search.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste alphabétique)', 'az.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Les plus vues)', 'views.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VIEWS[1], 'Animés (Populaire)', 'views.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -95,14 +69,11 @@ def showDramaMenu():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearchDrama', 'Recherche', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', DRAMA_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, DRAMA_NEWS[1], 'Dramas (Liste)', 'listes.png', oOutputParameterHandler)
-
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_LIST[0])
     oGui.addDir(SITE_IDENTIFIER, DRAMA_LIST[1], 'Dramas (Liste alphabétique)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, DRAMA_VIEWS[1], 'Dramas (Les plus vues)', 'views.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_VIEWS[1], 'Dramas (Populaire)', 'views.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
