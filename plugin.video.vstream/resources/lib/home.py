@@ -270,9 +270,6 @@ class cHome:
         oOutputParameterHandler.addParameter('siteUrl', 'DRAMA_LIST')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30124), self.addons.VSlang(30111)), 'listes.png', oOutputParameterHandler)
 
-        oOutputParameterHandler.addParameter('siteUrl', 'DRAMA_VOSTFRS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30124), self.addons.VSlang(30108)), 'vf.png', oOutputParameterHandler)
-
         # Affiche les Sources Dramas
         oOutputParameterHandler.addParameter('siteUrl', 'DRAMA_DRAMAS')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30138), self.addons.VSlang(30124)), 'host.png', oOutputParameterHandler)
