@@ -11,7 +11,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, siteManager
+from resources.lib.comaddon import siteManager
 from resources.lib.util import cUtil
 
 # Detecte si c'est Kodi 19 ou plus
@@ -334,14 +334,8 @@ def showMovies(sSearch=''):
     if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
     else:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sUrl2 = URL_MAIN[:-1] + aEntry[0]
             sThumb = aEntry[1]
             if sThumb.startswith('/'):
@@ -372,8 +366,6 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sYear', sYear)
 
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
@@ -406,14 +398,8 @@ def showSeries(sSearch=''):
     if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
     else:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sUrl2 = URL_MAIN[:-1] + aEntry[0]
             sThumb = aEntry[1]
             if sThumb.startswith('/'):
@@ -443,8 +429,6 @@ def showSeries(sSearch=''):
                 oGui.addAnime(SITE_IDENTIFIER, 'mangaHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if sNextPage != False:
@@ -539,10 +523,10 @@ def showEpisode():
 
             if aEntry[0]:
                 sLang = aEntry[0]
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
             else:
                 # sId = aEntry[1]
                 sTitle = sMovieTitle + ' ' + aEntry[2]
+                sDisplayTitle = '%s [%s]' % (sTitle, sLang)
                 sData = aEntry[3]
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -552,7 +536,7 @@ def showEpisode():
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oOutputParameterHandler.addParameter('sLang', sLang)
 
-                oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addEpisode(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -593,7 +577,7 @@ def showSeriesHosters():
                 except:
                     pass
 
-                if '/embed' in url or 'opsktp' in url or 'iframe' in url or 'jetload' in url:
+                if '/embed' in url or 'opsktp' in url or 'videovard' in url or 'iframe' in url or 'jetload' in url:
                     sHosterUrl = url
                 else:
                     url2 = decode_url_Serie(url, aEntry[0], tmp)
