@@ -377,10 +377,9 @@ def showHosters():
                 dataName = aEntry[0]
                 dataHash = aEntry[1]
                 dataEp = aEntry[2]
-                #pdata = 'mod=xfield_ajaxs&name=' + dataName + '&hash=' + dataHash + '&episode=' + dataEp
-                pdata = {'mod': 'xfield_ajax', 'hash': dataHash, 'episode': dataEp, 'name' :  dataName}
+                pdata = 'mod=xfield_ajaxs&name=' + dataName + '&hash=' + dataHash + '&episode=' + dataEp
+                # pdata = {'mod': 'xfield_ajax', 'hash': dataHash, 'episode': dataEp, 'name' :  dataName}
                 pdata = str(pdata)
-
             else:
                 dataId = aEntry[0]
                 dataName = aEntry[1]
@@ -419,8 +418,8 @@ def hostersLink():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    import ast
-    pdata = ast.literal_eval(pdata)
+    VSlog(sUrl)
+    VSlog(pdata)
 
     oRequest = cRequestHandler(sUrl)
     oRequest.setRequestType(1)
@@ -428,10 +427,24 @@ def hostersLink():
     oRequest.addHeaderEntry('Referer', referer)
     oRequest.addHeaderEntry('Accept', '*/*')
     oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    oRequest.addMultipartFiled(pdata)
+    
+    # Ne marche pas pareil pour film et serie, je sais pas pourquoi
+    if 'episode' in pdata:
+        oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+        oRequest.addParametersLine(pdata)
+    else:
+       import ast
+       pdata = ast.literal_eval(pdata)
+       oRequest.addMultipartFiled(pdata)
+
     sHtmlContent = oRequest.request()
+        
     sPattern = '(http[^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    VSlog(sHtmlContent)
+    
+    VSlog(aResult)
 
     if aResult[0] is True:
         for aEntry in aResult[1]:
