@@ -7,8 +7,10 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, siteManager
+from resources.lib.comaddon import progress, siteManager, VSlog
 from resources.lib.util import cUtil
+
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101 Firefox/104.0"
 
 SITE_IDENTIFIER = '_33seriestreaming'
 SITE_NAME = '33 Séries'
@@ -352,8 +354,14 @@ def showHosters():
 
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept', '*/*')
+    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
     sHtmlContent = oRequestHandler.request()
 
+    VSlog(sUrl)
+    
     if isSerie:  # episode d'une série
         sPattern = 'class="ser_pl" data-name="([^"]+)" data-hash="([^"]+)" data-episode="(\d+)".+?">([^<]+).+?"><img src="([^\.]+)'
     else:        # Film
@@ -375,8 +383,10 @@ def showHosters():
                 dataId = aEntry[0]
                 dataName = aEntry[1]
                 dataHash = aEntry[2]
-                pdata = 'mod=xfield_ajax&id=' + dataId + '&name=' + dataName + '&hash=' + dataHash
+                # pdata = 'mod=xfield_ajax&id=' + dataId + '&name=' + dataName + '&hash=' + dataHash
                 # pdata = 'mod=xfield_ajax&hash=' + dataHash + '&id=' + dataId + '&name=' + dataName
+                pdata = {'mod': 'xfield_ajax', 'hash': dataHash, 'id': dataId, 'name' :  dataName}
+                pdata = str(pdata)
 
             sHost = aEntry[3].strip()
             sLang = aEntry[4]
@@ -408,7 +418,12 @@ def hostersLink():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0"
+    import ast
+    pdata = ast.literal_eval(pdata)
+    
+    VSlog(sUrl)
+    VSlog(pdata)
+
     oRequest = cRequestHandler(sUrl)
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('User-Agent', UA)
@@ -416,10 +431,15 @@ def hostersLink():
     oRequest.addHeaderEntry('Accept', '*/*')
     oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
     oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-    oRequest.addParametersLine(pdata)
+    #oRequest.addParametersLine(pdata)
+    oRequest.addMultipartFiled(pdata)
     sHtmlContent = oRequest.request()
     sPattern = '(http[^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    VSlog(sHtmlContent)
+    
+    VSlog(aResult)
 
     if aResult[0] is True:
         for aEntry in aResult[1]:
