@@ -176,7 +176,7 @@
         },
         "hds_stream": {
             "label": "Hds-stream",
-            "active": "True",
+            "active": "False",
             "url": "https://hds.club/"
         },
         "ianime": {
