@@ -290,7 +290,7 @@ def seriesHosters():
                     sHosterUrl = urlBase.replace('"+player_content+"', aEntry1)
 
                 if "toonanime" in sHosterUrl:
-                    oHoster = cHosterGui().checkHoster("mp4")
+                    oHoster = cHosterGui().checkHoster(".mp4")
                 else:
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
 
