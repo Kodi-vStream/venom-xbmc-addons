@@ -864,6 +864,8 @@ class cTrakt:
         # entrer imdb ? venant d'ou?
         sImdb = oInputParameterHandler.getValue('sImdbId')
         sTMDB = oInputParameterHandler.getValue('sTmdbId')
+        sSeason = False
+        sEpisode = False
 
         # Film, serie, anime, saison, episode
         if sType not in ('1', '2', '3', '4', '8'):
@@ -891,8 +893,6 @@ class cTrakt:
                 if self.ADDON.getSetting('trakt_movies_activate_scrobbling') == 'false':
                     return
                 sTitle = sFileName
-                sSeason = False
-                sEpisode = False
 
             sAction = URL_API + 'sync/history'
 
