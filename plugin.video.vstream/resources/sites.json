@@ -211,7 +211,7 @@
         },
         "kstreamingserie": {
             "label": "K streaming S\u00e9rie",
-            "active": "True",
+            "active": "False",
             "url": "https://www.kstreamingserie.com/"
         },
         "leet365": {
