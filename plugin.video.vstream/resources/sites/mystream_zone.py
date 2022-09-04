@@ -8,7 +8,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, siteManager
+from resources.lib.comaddon import siteManager
 import re
 import string
 
@@ -52,7 +52,6 @@ SERIE_NOTES = (URL_MAIN + 'imdb/' + imdseries, 'showMovies')
 SERIE_ALPHA = (True, 'showAlphaSeries')
 SERIE_TOP_IMD = (URL_MAIN + 'imdb/' + imdseries, 'showMovies')
 SERIE_NEWS_SAISONS = (URL_MAIN + 'seasons/', 'showMovies')
-SERIE_NEWS_EPISODES = (URL_MAIN + 'episodes/', 'showMovies')
 
 
 def load():
@@ -114,9 +113,6 @@ def showMenuTvShows():
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS_SAISONS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS_SAISONS[1], 'Séries (Saisons récentes)', 'news.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS_EPISODES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS_EPISODES[1], 'Séries (Episodes récents)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_TOP_IMD[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_TOP_IMD[1], 'Séries (Top IMDd)', 'tmdb.png', oOutputParameterHandler)
@@ -280,8 +276,8 @@ def showMovies(sSearch=''):
         oGui.setEndOfDirectory()
         return
 
-    if '/tendance/' in sUrl:  # thumb; title; url; year #regex ok
-        sPattern = 'asyncsrc="([^"]*)" alt="([^"]*).+?ahref="([^"]*).+?<span>([^<]*)'
+    if '/tendance/' in sUrl:  # title; thumb; url; year #regex ok
+        sPattern = 'class="item (?:movies|tvshows)".+?alt="([^"]+).+?src="([^"]+).+?href="([^"]+).+?span>([^<]+)'
 
     elif sUrl == URL_MAIN:  # thumb; title; url; year #regex ok
         sPattern = 'post-featured.+?src="(h[^"]+).+?alt="([^"]+).+?href="([^"]+).+?<span>([^<]*)'
@@ -292,11 +288,11 @@ def showMovies(sSearch=''):
     elif '/episodes/' in sUrl:  # thumb; url; 'S* E*'; title; #regex ok
         sPattern = 'se episodes".+?src="(h[^"]*).+?href="([^"]+).+?<span>([^/]+).+?">([^<]+)'
 
-    elif '?s=' in sUrl:  # thumb; url; title; year; desc #regex ok
-        sPattern = 'asyncsrc="(h[^"]+).+?ref="([^"]*)">([^<]*).+?year">([^<]*).*?contenido.><p>([^<]*)'
+    elif '?s=' in sUrl:  # url; title; thumb; year; desc #regex ok
+        sPattern = 'animation-2".+?href="([^"]+).+?alt="([^"]+).+?src="([^"]+)" .+?(?:|year">([^<]*)<.+?)<p>(.*?)<'
 
     elif '/genre/' in sUrl or '/release/' in sUrl:  # thumb; url; title; year; desc #regex ok
-        sPattern = 'asyncsrc="(h[^"]*).+?href="([^"]+)">([^<]+).+?span>.+?,.([^<]*).+?texto">([^<]*)'
+        sPattern = 'class="item (?:movies|tvshows)".+?alt="([^"]+).+?src="([^"]+).+?href="([^"]+).+?span>(\d+)<.+?texto">(.+?)<'
 
     elif '/imdb/' in sUrl:  # url; thumb; title; rate #regex ok
         sPattern = "poster'.+?ref='([^']*).+?src='(h[^']*).+?alt='([^']*).+?rating'>([^<]*)"
@@ -321,19 +317,13 @@ def showMovies(sSearch=''):
         oGui.addText(SITE_IDENTIFIER)
 
     if aResult[0] is True:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
         sDesc = ''
         sYear = ''
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             if '/tendance/' in sUrl:  # thumb; title; url; year
-                sThumb = aEntry[0]
-                sTitle = aEntry[1].replace(' mystream', '')
+                sTitle = aEntry[0].replace(' mystream', '')
+                sThumb = aEntry[1]
                 sUrl2 = aEntry[2]
                 sYear = aEntry[3]
                 if sYear != '':
@@ -361,17 +351,17 @@ def showMovies(sSearch=''):
                 sDisplayTitle = sTitle + '(' + sYear + ')'
 
             elif '?s=' in sUrl:  # thumb; url; title; year; desc
-                sThumb = aEntry[0]
-                sUrl2 = aEntry[1]
-                sTitle = aEntry[2].replace(' mystream', '')
+                sUrl2 = aEntry[0]
+                sTitle = aEntry[1].replace(' mystream', '')
+                sThumb = aEntry[2]
                 sYear = aEntry[3]
                 sDesc = aEntry[4]
                 sDisplayTitle = sTitle + ' (' + sYear + ')'
 
             elif '/genre/' in sUrl or '/release/' in sUrl:  # thumb; url; title; year; desc
-                sThumb = aEntry[0]
-                sUrl2 = aEntry[1]
-                sTitle = aEntry[2].replace(' mystream', '')
+                sThumb = aEntry[1]
+                sUrl2 = aEntry[2]
+                sTitle = aEntry[0].replace(' mystream', '')
                 sYear = aEntry[3]
                 sDesc = aEntry[4]
                 sDisplayTitle = sTitle + ' (' + sYear + ')'
@@ -430,8 +420,6 @@ def showMovies(sSearch=''):
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
