@@ -143,7 +143,7 @@ def showHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     # add sendvid sources
-    sPattern = '<(?:source|iframe) src="(.+?)" width'
+    sPattern = '<(?:source|iframe).+?src="(.+?)" width'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0] is True:
         for aEntry in aResult[1]:

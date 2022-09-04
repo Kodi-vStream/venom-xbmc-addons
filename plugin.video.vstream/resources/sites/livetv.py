@@ -440,13 +440,14 @@ def showHosters():  # affiche les videos disponible du live
             if aResult:
                 url = aResult[0]  # redirection vers un autre site ci-dessous
 
-        if 'footballreal.xyz' in url:
+        if 'footballreal.xyz' in url or 'cdnz.one' in url:# or 'sports247' in url:
             oRequestHandler = cRequestHandler(url)
             sHtmlContent2 = oRequestHandler.request()
-            sPattern1 = '<iframe src="(.+?)"'
+            sPattern1 = '<iframe src=["\'](.+?)["\']'
             aResult = re.findall(sPattern1, sHtmlContent2)
             if aResult:
-                url = aResult[0]  # redirection vers un autre site ci-dessous
+                Referer = url
+                url = aResult[0]  # redirection vers un autre site
 
         if 'dailydeports.pw' in url:
             oRequestHandler = cRequestHandler(url)
@@ -485,15 +486,6 @@ def showHosters():  # affiche les videos disponible du live
                 aResult = re.findall(sPattern2, sHtmlContent2)
                 if aResult:
                     sHosterUrl = aResult[0] + '|User-Agent=' + UA + '&referer=' + Referer
-
-        if 'cdnz.one' in url:
-            oRequestHandler = cRequestHandler(url)
-            sHtmlContent2 = oRequestHandler.request()
-            sPattern1 = '<iframe src=["\'](.+?)["\']'
-            aResult = re.findall(sPattern1, sHtmlContent2)
-            if aResult:
-                Referer = url
-                url = aResult[0]  # redirection vers un autre site
 
         if 'sport7.pw' in url or 'vip7stream' in url:  # Terminé
             oRequestHandler = cRequestHandler(url)
@@ -1223,7 +1215,7 @@ def showHosters():  # affiche les videos disponible du live
             sHosterUrl = getHosterIframe(url, url)
 
         if sHosterUrl:
-            oHoster = cHosterGui().checkHoster("m3u8")
+            oHoster = cHosterGui().checkHoster(".m3u8")
             if oHoster != False:
                 oHoster.setDisplayName(sMovieTitle2)  # nom affiche
                 oHoster.setFileName(sMovieTitle2)  # idem
@@ -1255,6 +1247,16 @@ def getHosterIframe(url, referer):
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('Referer', referer)
     sHtmlContent = str(oRequestHandler.request())
+    if not sHtmlContent:
+        return False
+
+    sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        sstr = aResult[0]
+        if not sstr.endswith(';'):
+            sstr = sstr + ';'
+        sHtmlContent = cPacker().unpack(sstr)
 
     sPattern = '[^/]source.+?["\'](https.+?)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
@@ -1265,25 +1267,14 @@ def getHosterIframe(url, referer):
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         referer = url
-        url = aResult[0]
-        if not url.startswith("http"):
-            if not url.startswith("//"):
-                url = '//'+referer.split('/')[2] + url  # ajout du nom de domaine
-            url = "https:" + url
-        return getHosterIframe(url, referer)
-
-    sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
-    aResult = re.findall(sPattern, sHtmlContent)
-
-    if aResult:
-        sstr = aResult[0]
-        if not sstr.endswith(';'):
-            sstr = sstr + ';'
-        sUnpack = cPacker().unpack(sstr)
-        sPattern = 'src="(.+?)"'
-        aResult = re.findall(sPattern, sUnpack)
-        if aResult:
-            return aResult[0] + '|Referer=' + url
+        for url in aResult:
+            if not url.startswith("http"):
+                if not url.startswith("//"):
+                    url = '//'+referer.split('/')[2] + url  # ajout du nom de domaine
+                url = "https:" + url
+            url = getHosterIframe(url, referer)
+            if url:
+                return url
 
     sPattern = '.atob\("(.+?)"'
     aResult = re.findall(sPattern, sHtmlContent)
@@ -1295,9 +1286,10 @@ def getHosterIframe(url, referer):
                 code = base64.b64decode(code).decode('ascii')
             else:
                 code = base64.b64decode(code)
-            return True, code + '|Referer=' + url
+            return code + '|Referer=' + url
         except Exception as e:
             pass
-
+    
+    return False
 
 
