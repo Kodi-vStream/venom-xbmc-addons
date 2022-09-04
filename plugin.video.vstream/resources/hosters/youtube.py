@@ -55,6 +55,7 @@ class cHoster(iHoster):
             id = id.replace('www.youtube.com', '')
             id = id.replace('www.youtube-nocookie.com', '')
             id = id.replace('/embed/', '')
+            id = id.replace('?feature=oembed', '')
             id = id.replace('/watch?v=', '')
             id = str(id)
         else:
