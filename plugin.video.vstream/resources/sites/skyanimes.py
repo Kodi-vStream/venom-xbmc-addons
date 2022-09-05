@@ -284,7 +284,7 @@ def showHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
     if sThumb:
         sThumb = sThumb.replace(' ', '%20')
-    oHoster = cHosterGui().checkHoster('m3u8')
+    oHoster = cHosterGui().checkHoster('.m3u8')
 
     if oHoster != False:
         oHoster.setDisplayName(sMovieTitle)

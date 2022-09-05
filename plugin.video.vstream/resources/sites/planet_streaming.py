@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-return False  # 01/10/21 WAAW en hoster
 
 import re
 

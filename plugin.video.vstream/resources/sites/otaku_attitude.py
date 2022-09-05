@@ -308,7 +308,7 @@ def showMp3():
 #     if 'mp3' in mp3Url:
 #         sHosterUrl = mp3Url
 
-    oHoster = cHosterGui().checkHoster('m3u8')
+    oHoster = cHosterGui().checkHoster('.m3u8')
     if oHoster != False:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
@@ -332,7 +332,7 @@ def showHosters():
     elif 'fiche-drama' in sUrl:
         sHosterUrl = URL_MAIN + 'launch-download-2-' + serieID + '-ddl-' + idEpisode + '.html'
 
-    oHoster = cHosterGui().checkHoster('m3u8')
+    oHoster = cHosterGui().checkHoster('.m3u8')
     if oHoster != False:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
