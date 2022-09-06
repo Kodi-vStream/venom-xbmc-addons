@@ -311,6 +311,10 @@ def showMovies(sSearch=''):
     # pour les sThumb
     # sHtmlContent = re.sub('https:..ml2o99dkuow5.i.optimole.+?/https', 'https', sHtmlContent)
 
+    if sSearch and 'no-result animation-2' in sHtmlContent:
+        oGui.addText(SITE_IDENTIFIER)
+        return
+
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0] is False:
