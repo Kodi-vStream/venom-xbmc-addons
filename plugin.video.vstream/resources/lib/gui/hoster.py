@@ -174,7 +174,7 @@ class cHosterGui:
                             'pdj', 'rapidstream', 'archive', 'jetload', 'dustreaming', 'viki', 'flix555', 'onlystream',
                             'upstream', 'pstream', 'vudeo', 'dood', 'vidia', 'streamtape', 'vidbem', 'uptobox', 'uplea',
                             'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow',
-                            'myvi', '33player', 'videovard', 'viewsb', 'yourvid']
+                            'myvi', '33player', 'videovard', 'viewsb', 'yourvid', 'vf-manga']
 
         val = next((x for x in supported_player if x in sHostName), None)
         if val:
@@ -331,7 +331,7 @@ class cHosterGui:
                         oHoster.setFileName(sFileName)
                         sHosterName = oHoster.getDisplayName()
                         oDialog.VSinfo(sHosterName, 'Resolve')
-                        oHoster.setUrl(sMediaUrl)
+                        oHoster.setUrl(aLink[1])
                         aLink = oHoster.getMediaLink()
 
                 if aLink[0]:
