@@ -101,7 +101,9 @@ class cRechercheHandler:
             pluginData['name'] = plugin.SITE_NAME
             pluginData['search'] = getattr(plugin, sSearch)
             return pluginData
-        except:
+        except Exception as e:
+            if ("has no attribute '%s'" % sSearch) not in str(e):
+                VSlog(str(e))
             return False
 
     def getAvailablePlugins(self):
@@ -119,7 +121,8 @@ class cRechercheHandler:
                 meta = {'title': sText, 'disp': sCat}
                 with cDb() as db:
                     db.insert_history(meta)
-        except:
+        except Exception as e:
+            VSlog(str(e))
             pass
 
         sFolder = "special://home/addons/plugin.video.vstream/resources/sites"

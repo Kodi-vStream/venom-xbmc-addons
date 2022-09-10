@@ -2,13 +2,13 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
 
-from resources.lib.gui.hoster import cHosterGui
+from resources.lib.comaddon import siteManager
 from resources.lib.gui.gui import cGui
+from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, siteManager
 from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'vf_film'
@@ -26,7 +26,6 @@ MOVIE_NEWS = (URL_MAIN + 'tous-les-films/', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'les-meilleurs-films-en-streaming/', 'showMovies')
 MOVIE_NOTES = (URL_MAIN + 'films-les-plus-populaires-en-streaming/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
-MOVIE_LIST = (True, 'showAlpha')
 
 
 def load():
@@ -47,9 +46,6 @@ def load():
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Par ordre alphabétique)', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -89,22 +85,6 @@ def showGenres():
     oGui.setEndOfDirectory()
 
 
-def showAlpha():
-    oGui = cGui()
-
-    liste = [['0-9', '0-9'], ['A', 'a'], ['B', 'b'], ['C', 'c'], ['D', 'd'], ['E', 'e'], ['F', 'f'], ['G', 'g'],
-             ['H', 'h'], ['I', 'i'], ['J', 'j'], ['K', 'k'], ['L', 'l'], ['M', 'm'], ['N', 'n'], ['O', 'o'],
-             ['P', 'p'], ['Q', 'q'], ['R', 'r'], ['S', 's'], ['T', 't'], ['U', 'u'], ['V', 'v'], ['W', 'w'],
-             ['X', 'x'], ['Y', 'y'], ['Z', 'z']]
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    for sTitle, sUrl in liste:
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'lettre/' + sUrl + '/')
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'listes.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
-
 def showMovies(sSearch=''):
     oGui = cGui()
 
@@ -132,14 +112,8 @@ def showMovies(sSearch=''):
         oGui.addText(SITE_IDENTIFIER)
 
     if aResult[0] is True:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sUrl2 = aEntry[0]
             sThumb = re.sub('/w\d+/', '/w342/', 'https:' + aEntry[1])
             sTitle = aEntry[2]
@@ -162,7 +136,6 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addMovie(SITE_IDENTIFIER, 'showHoster', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
-        progress_.VSclose(progress_)
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
@@ -176,7 +149,7 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '>([^<]+)</a><a class="next page-numbers" href="([^"]+)">Next'
+    sPattern = '>([^<]+)</a> <a class="next page-numbers" href="([^"]+)">Suivant'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0] is True:
         sNumberMax = aResult[1][0][0]
@@ -199,23 +172,35 @@ def showHoster():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = 'class="TPlayerTb.+?src="([^"]+)"'
-
+    
+    # hoster
+    sPattern = 'tplayernv.+?<span>([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0] is True:
-        for aEntry in aResult[1]:
-
-            oRequestHandler = cRequestHandler(aEntry)
-            sHtmlContent = oRequestHandler.request()
-            sPattern = '<iframe.+?src="([^"]+)'
-            aResult = oParser.parse(sHtmlContent, sPattern)
-
-            if aResult[0] is True:
-                sHosterUrl = aResult[1][0]
-                oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if oHoster != False:
-                    oHoster.setDisplayName(sMovieTitle)
-                    oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+        hosters = aResult[1]
+        numHoster = 0
+        # url        
+        sPattern = 'class="TPlayerTb.+?src=(?:"|&quot;)(.+?)(?:"|&quot;)'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0] is True:
+            for aEntry in aResult[1]:
+                
+                oHoster = cHosterGui().checkHoster(hosters[numHoster])
+                numHoster += 1
+                if not oHoster:
+                    continue
+                
+                oRequestHandler = cRequestHandler(aEntry)
+                sHtmlContent = oRequestHandler.request()
+                sPattern = '<iframe.+?src="([^"]+)'
+                aResult = oParser.parse(sHtmlContent, sPattern)
+    
+                if aResult[0] is True:
+                    sHosterUrl = aResult[1][0]
+                    oHoster = cHosterGui().checkHoster(sHosterUrl)
+                    if oHoster != False:
+                        oHoster.setDisplayName(sMovieTitle)
+                        oHoster.setFileName(sMovieTitle)
+                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()

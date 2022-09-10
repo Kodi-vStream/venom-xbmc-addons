@@ -372,11 +372,11 @@
         "streamonsport": {
             "label": "Streamonsport",
             "active": "True",
-            "url": "https://www.streamonsport.top/"
+            "url": "https://www.streamonsport8.buzz/"
         },
         "streampourvous": {
             "label": "Streampourvous",
-            "active": "True",
+            "active": "False",
             "url": "https://ww1.streampourvous.ws/"
         },
         "telecharger_streaming": {
@@ -391,7 +391,7 @@
         },
         "toonanime": {
             "label": "Toonanime",
-            "active": "True",
+            "active": "False",
             "url": "https://vvww.toonanime.cc/"
         },
         "topimdb": {
@@ -401,7 +401,7 @@
         },
         "topreplay": {
             "label": "TopReplay",
-            "active": "True",
+            "active": "False",
             "url": "https://topreplay.cc/"
         },
         "uptobox_live": {
@@ -422,7 +422,7 @@
         "vfilms": {
             "label": "VFilms",
             "active": "True",
-            "url": "https://www.vfilms.live/"
+            "url": "https://wwvv.vfilms.live/"
         },
         "videobuzzy_com": {
             "label": "Videobuzzy",
@@ -441,7 +441,7 @@
         },
         "voirfilms_org": {
             "label": "VoirFilms",
-            "active": "True",
+            "active": "False",
             "url": "https://www.voir-films.info/"
         },
         "voirseries_best": {

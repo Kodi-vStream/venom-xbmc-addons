@@ -66,30 +66,21 @@ def showGenres():
 
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
-    sStart = 'Categories</h4>'
-    sEnd = 'ÉMISSIONS TV'
+    sStart = 'main-menu'
+    sEnd = '/ul'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
 
-    sPattern = 'href="([^"]+)"><span class="category-text">([^<]+)'
+    sPattern = 'href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0] is True:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sUrl = aEntry[0]
             sTitle = aEntry[1]
-            if 'Contactez' in sTitle:
-                continue
+            if 'Accueil' in sTitle: continue
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'replay.png', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -138,32 +129,31 @@ def showMovies(sSearch=''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'meta-image".+?href="([^"]+)" title="([^"]+).+?src="([^"]+)'
+
+    sPattern = '<article.+?href="([^"]+)">([^<]+).+?img.+?src="([^"]+).+?<div class="entry"><p>(.+?)Vous pouvez toujours regarder'#&hellip'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
-        oGui.addText(SITE_IDENTIFIER)
-
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sTitle = aEntry[1]
             sThumb = aEntry[2]
-            if 'Générateur compte' in sTitle:
-                continue
+            sDesc = aEntry[3]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMisc(SITE_IDENTIFIER, 'showLinks', sTitle, 'replay.png', sThumb, '', oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showLinks', sTitle, 'replay.png', sThumb, sDesc, oOutputParameterHandler)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
+    else:
+        oGui.addText(SITE_IDENTIFIER)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -203,7 +193,7 @@ def showLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'href="([^<]+)" target="_blank"'
+    sPattern = '<a class="myButton" href="([^<]+)" target="_blank"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0] is False:
@@ -211,9 +201,7 @@ def showLinks():
 
     if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in aResult[1]:
-            sHosterUrl = aEntry[0]
-
+        for sHosterUrl in aResult[1]:
             oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)

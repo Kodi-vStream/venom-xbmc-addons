@@ -10,7 +10,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import Quote
+from resources.lib.util import cUtil, Quote
 
 try:
     xrange
@@ -80,7 +80,7 @@ def showMovieYears():
     now = datetime.datetime.now()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    for i in reversed(xrange(1903, int(now.year))):
+    for i in reversed(xrange(1903, int(now.year)+1)):
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'search/title?year=' + str(i) + ',' + str(i) + '&title_type=feature&explore=languages')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', str(i), 'annees.png', oOutputParameterHandler)
 
@@ -164,26 +164,10 @@ def showTitle(sMovieTitle, sUrl):
         sExtraTitle = sUrl.split('|')[1]
         sMovieTitle = sUrl.split('|')[0]
 
-    try:
-        # ancien décodage
-        sMovieTitle = unicode(sMovieTitle, 'utf-8')  # converti en unicode pour aider aux conversions
-        sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'ignore').decode("unicode_escape")  # vire accent et '\'
-        sMovieTitle = sMovieTitle.encode("utf-8").lower()  # on repasse en utf-8
-    except:
-        sMovieTitle = sMovieTitle.lower()
+    sMovieTitle = cUtil().CleanName(sMovieTitle)
 
-    sMovieTitle = Quote(sMovieTitle)
-    sMovieTitle = re.sub('\(.+?\)', ' ', sMovieTitle)  # vire les tags entre parentheses
-
-    # modif venom si le titre comporte un - il doit le chercher
-    sMovieTitle = re.sub(r'[^a-z -]', ' ', sMovieTitle)  # vire les caracteres a la con qui peuvent trainer
-    # sMovieTitle = re.sub('( |^)(le|la|les|du|au|a|l)( |$)', ' ', sMovieTitle)  # vire les articles
-
-    # vire les espaces multiples et on laisse les espaces sans modifs car certains codent avec %20 d'autres avec +
-    sMovieTitle = re.sub(' +', ' ', sMovieTitle)
     # modif ici
     if sExtraTitle:
-        sMovieTitle = sMovieTitle.replace('%C3%A9', 'e').replace('%C3%A0', 'a')
         sMovieTitle = sMovieTitle + sExtraTitle
     else:
         sMovieTitle = sMovieTitle

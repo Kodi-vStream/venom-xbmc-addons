@@ -2,13 +2,14 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # source 08 update 14/01/2021
 # return False
+from resources.lib.comaddon import siteManager
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import siteManager
+from resources.lib.util import cUtil
 import re
 import string
 
@@ -234,6 +235,8 @@ def showMovies(sSearch=''):
             sUrl = str(sUrl).replace(key_search_series, '')
             bSearchSerie = True
 
+        oUtil = cUtil()
+        sSearchText = oUtil.CleanName(sUrl.split(URL_SEARCH[0])[1])
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -311,7 +314,7 @@ def showMovies(sSearch=''):
     # pour les sThumb
     # sHtmlContent = re.sub('https:..ml2o99dkuow5.i.optimole.+?/https', 'https', sHtmlContent)
 
-    if sSearch and 'no-result animation-2' in sHtmlContent:
+    if sSearch and 'no-result animation-2' in sHtmlContent: # Pas de résultats
         oGui.addText(SITE_IDENTIFIER)
         return
 
@@ -412,6 +415,10 @@ def showMovies(sSearch=''):
                 else:
                     sDisplayTitle = sTitle
 
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre les résultats
+            
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
