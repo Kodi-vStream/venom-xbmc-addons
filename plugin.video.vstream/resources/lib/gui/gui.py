@@ -73,12 +73,13 @@ class cGui:
             oGuiElement.setMeta(sMeta)
 
         # Si pas d'id TMDB pour un episode, on recupère le précédent qui vient de la série
-        # if Type == 'episodes':
-        if not oOutputParameterHandler.getValue('sTmdbId'):
+        if sCat and not oOutputParameterHandler.getValue('sTmdbId'):
             oInputParameterHandler = cInputParameterHandler()
-            sTmdbID = oInputParameterHandler.getValue('sTmdbId')
-            if sTmdbID:
-                oOutputParameterHandler.addParameter('sTmdbId', sTmdbID)
+            sPreviousMeta = int(oInputParameterHandler.getValue('sMeta'))
+            if sPreviousMeta > 0 and sPreviousMeta < 7:
+                sTmdbID = oInputParameterHandler.getValue('sTmdbId')
+                if sTmdbID:
+                    oOutputParameterHandler.addParameter('sTmdbId', sTmdbID)
 
         oOutputParameterHandler.addParameter('sFav', sFunction)
 
