@@ -10,6 +10,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'enstream_series'
 SITE_NAME = 'Enstream (Séries)'
@@ -109,6 +110,9 @@ def showSeries(sSearch=''):
     oGui = cGui()
 
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -129,6 +133,10 @@ def showSeries(sSearch=''):
             sUrl = aEntry[0]
             sTitle = aEntry[1]
             sThumb = aEntry[2]
+
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)

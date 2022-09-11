@@ -22,6 +22,8 @@ class cSearch:
                 sSearchText = oInputParameterHandler.getValue('searchtext')
                 sCat = oInputParameterHandler.getValue('sCat')
 
+            sSearchText = sSearchText.replace(':', ' ')
+
             listPlugins = self._initSearch(sSearchText, sCat)
 
             if len(listPlugins) == 0:

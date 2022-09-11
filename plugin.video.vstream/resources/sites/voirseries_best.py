@@ -9,6 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import siteManager
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'voirseries_best'
 SITE_NAME = 'VoirSeries'
@@ -177,6 +178,9 @@ def showSeries(sSearch=''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch.replace(' ', '+').replace('%20', '+') + '&submit='
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -187,15 +191,16 @@ def showSeries(sSearch=''):
     sPattern = 'class=shortstory>.+?href=([^ ]+).+?data-src=([^ ]+).+?>([^<]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
-        oGui.addText(SITE_IDENTIFIER)
-
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sThumb = aEntry[1]
             sTitle = aEntry[2]
+            
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -204,6 +209,8 @@ def showSeries(sSearch=''):
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)
+    else:
+        oGui.addText(SITE_IDENTIFIER)
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)

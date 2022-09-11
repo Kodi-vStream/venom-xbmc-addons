@@ -9,6 +9,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'serie_streaming'
 SITE_NAME = 'Série Streaming'
@@ -83,6 +84,9 @@ def showSeries(sSearch=''):
     oGui = cGui()
 
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch.replace(' ', '+')
         reqType = cRequestHandler.REQUEST_TYPE_POST
         sPattern = 'href="([^"]+).+?image: url\((.+?)"title">([^<]+)'
@@ -104,21 +108,23 @@ def showSeries(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
-        oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[idxUrl]
             sTitle = aEntry[idxTitle].strip()
             sThumb = 'https:' + aEntry[idxThumb].replace('posters//tv', 'posters/tv')
 
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)
-
+    else:
+        oGui.addText(SITE_IDENTIFIER)
+        
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):

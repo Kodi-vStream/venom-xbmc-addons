@@ -10,6 +10,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import siteManager
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = '_4kstreamz'
 SITE_NAME = '4kstreamz'
@@ -144,6 +145,10 @@ def showMovies(sSearch=''):
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch.replace(' ', '-').replace('%20', '-') + '.html'
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -154,10 +159,7 @@ def showMovies(sSearch=''):
         sPattern = '<a class="movie_single.+?href="([^"]+).+?img src="([^"]+).+?class="nop">([^<]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is False:
-        oGui.addText(SITE_IDENTIFIER)
-
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
@@ -169,6 +171,10 @@ def showMovies(sSearch=''):
                 sThumb = URL_MAIN[:-1] + sThumb
 
             sTitle = aEntry[2].strip()
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
+
             sQual = ''
             sDesc = ''
             if 'list-films.html' in sUrl or '/films/page' in sUrl:
@@ -187,7 +193,9 @@ def showMovies(sSearch=''):
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
+    else:
+        oGui.addText(SITE_IDENTIFIER)
+        
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if sNextPage is not False:

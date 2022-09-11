@@ -145,10 +145,7 @@ def showMovies(sSearch=''):
     sPattern += 'ml-desc"> (?:([0-9]+)| )</div.+?Synopsis:.+?ml-desc">(.*?)</div'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
-        oGui.addText(SITE_IDENTIFIER)
-
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
 
         for aEntry in aResult[1]:
@@ -202,6 +199,8 @@ def showMovies(sSearch=''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
+    else:
+        oGui.addText(SITE_IDENTIFIER)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -226,6 +225,8 @@ def showSeries(sSearch=''):
     oParser = cParser()
 
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = oUtil.CleanName(sSearch.replace('%20', ' '))
         sUrl = sSearch.replace(' ', '+')
 
         pdata = 'do=search&subaction=search&story=' + sUrl + '&titleonly=3&all_word_seach=1&catlist[]=31&catlist[]=35'
@@ -258,6 +259,11 @@ def showSeries(sSearch=''):
                 sThumb = URL_MAIN[:-1] + aEntry[0]
 
             sTitle = aEntry[1].replace('- Saison', 'saison').replace(' wiflix', '')
+            
+            # Filtre de recherche
+            if sSearch and not oUtil.CheckOccurence(sSearchText, sTitle):
+                continue
+            
             # sLang = re.sub('Saison \d+', '', aEntry[3]).replace(' ', '')
             sDisplayTitle = sTitle
             sUrl = aEntry[2]
