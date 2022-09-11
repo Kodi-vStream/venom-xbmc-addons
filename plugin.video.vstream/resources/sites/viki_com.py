@@ -14,6 +14,7 @@ from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.util import cUtil
 
 #_DEVICE_ID = '86085977d'  # used for android api
 # inspiré de github.com / yt-dlp / yt-dlp / blob / master / yt_dlp / extractor / viki.py
@@ -129,7 +130,10 @@ def showMovies(sSearch=''):
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     if sSearch:
+        oUtil = cUtil()
         sUrl = sSearch
+        sSearchText = sSearch.replace(URL_SEARCH[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
 
     url = sUrl
     timestamp = str(int(time.time()))
@@ -186,6 +190,11 @@ def showMovies(sSearch=''):
                 sDesc = ''
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+
+            # Filtre de recherche
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue
 
             if not isMatrix():
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle.encode('utf-8', 'ignore'))

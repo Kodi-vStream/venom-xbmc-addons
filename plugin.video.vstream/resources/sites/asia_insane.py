@@ -2,14 +2,15 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
 
+from resources.lib.comaddon import progress, siteManager
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, siteManager
 from resources.lib.multihost import cMultiup
+from resources.lib.util import cUtil
+from resources.lib.parser import cParser
 
 SITE_IDENTIFIER = 'asia_insane'
 SITE_NAME = 'Asia Insane'
@@ -159,6 +160,9 @@ def showMovies(sSearch=''):
         if URL_SEARCH[0] in sSearch:
             sSearch = sSearch.replace(URL_SEARCH[0], '')
 
+        oUtil = cUtil()
+        sSearchText = oUtil.CleanName(sSearch)
+
         sPattern = '<a class=\'asp_res_image_url\' href=\'([^>]+)\'.+?url\("([^"]+)"\).+?\'>([^.]+)d{2}.+?<span.+?class="asp_res_text">([^<]+)'
 
         oRequestHandler = cRequestHandler(URL_SEARCH[0])
@@ -228,6 +232,11 @@ def showMovies(sSearch=''):
                 sYear = aEntry[5]
 
                 sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sYear)
+
+            # Filtre de recherche
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)

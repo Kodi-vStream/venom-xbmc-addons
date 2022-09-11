@@ -100,14 +100,15 @@ def showMovies(sSearch=''):
             sThumb = aEntry[2]
             sTitle = aEntry[1]
 
-            if not oUtil.CheckOccurence(sSearch, sTitle):
-                continue
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearch, sTitle):
+                    continue
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, '', oOutputParameterHandler)
 
     if not sSearch:  # une seule page par recherche
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)

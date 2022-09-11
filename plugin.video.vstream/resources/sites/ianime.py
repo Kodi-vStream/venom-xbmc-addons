@@ -340,9 +340,15 @@ def showMovies(sSearch=''):
     oParser = cParser()
 
     if sSearch:
+        oUtil = cUtil()
         typeSearch, sSearch = sSearch.split('=')
         sSearch = Unquote(sSearch)
-        sSearch = cUtil().CleanName(sSearch)
+        sSearch = oUtil.CleanName(sSearch)
+
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_ANIMS[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+
         sSearch = QuotePlus(sSearch).upper()  # remplace espace par + et passe en majuscule
 
         sUrl = URL_SEARCH[0] + sSearch + '.html'
@@ -423,7 +429,12 @@ def showMovies(sSearch=''):
                 sTitle = sTitle.replace(' -', '')
 
             if not isPython3:
-                sTitle = cUtil().CleanName(sTitle)
+                sTitle = oUtil.CleanName(sTitle)
+
+            # Filtre de recherche
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue
 
             sDisplayTitle = sTitle
 

@@ -3,13 +3,14 @@
 # Makoto et Arias800 02/06/2019
 import re
 
+from resources.lib.comaddon import addon, isMatrix, siteManager
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import addon, isMatrix, siteManager
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'animeultime'
 SITE_NAME = 'Anime Ultime'
@@ -229,6 +230,10 @@ def showSearch():
 def showSeries(sSearch=''):
     oGui = cGui()
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_DRAMAS[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_ANIMS[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch.replace(' ', '+').replace('%20', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -261,7 +266,7 @@ def showSeries(sSearch=''):
                 # Enleve le contenu pour adultes.
                 if 'Public Averti' in sTitle or 'Interdit' in sTitle:
                     if adulteContent == "false":
-                        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Contenu pour adultes désactiver dans les paramètres[/COLOR]')
+                        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Contenu pour adultes désactivé[/COLOR]')
                         return
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -300,6 +305,11 @@ def showSeries(sSearch=''):
             if adulteContent == "false":
                 # Enleve le contenu pour adulte.
                 if 'Public Averti' in sTitle or 'Interdit' in sTitle:
+                    continue
+
+            # Filtre de recherche
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
                     continue
 
             sType = aEntry[3].strip()

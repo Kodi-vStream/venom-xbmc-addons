@@ -2,13 +2,16 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
 
+from resources.lib.comaddon import progress, isMatrix, siteManager
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, isMatrix, siteManager
+from resources.lib.util import cUtil
+
+
 SITE_IDENTIFIER = 'adkami_com'
 SITE_NAME = 'ADKami'
 SITE_DESC = 'Animés & Dramas en streaming.'
@@ -230,6 +233,10 @@ def showNoAlpha():
 def showSeries(sSearch=''):
     oGui = cGui()
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_ANIMS[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_DRAMAS[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -256,6 +263,11 @@ def showSeries(sSearch=''):
             sThumb = aEntry[0]
             sUrl2 = aEntry[1]
             sTitle = aEntry[2]
+
+            # Filtre de recherche
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)

@@ -56,7 +56,7 @@
         },
         "cinemay_cc": {
             "label": "Cinemay_cc",
-            "active": "True",
+            "active": "False",
             "url": "https://cinemay.cc/"
         },
         "cinemay_com": {
@@ -116,7 +116,7 @@
         },
         "filmstoon_pro": {
             "label": "Films Toon",
-            "active": "True",
+            "active": "False",
             "url": "https://filmstoon.in/"
         },
         "filmstreamingy": {
@@ -126,7 +126,7 @@
         },
         "filmstreamvk_com": {
             "label": "Filmstream vk",
-            "active": "True",
+            "active": "False",
             "url": "https://filmstreamvk.bz/"
         },
         "free_telechargement_org": {
@@ -147,7 +147,7 @@
         "french_stream_lol": {
             "label": "French-stream-lol",
             "active": "True",
-            "url": "https://french-stream.re/"
+            "url": "https://wwv.french-stream.re/"
         },
         "frenchanimes": {
             "label": "French Animes",
@@ -193,11 +193,6 @@
             "label": "K_Streaming",
             "active": "True",
             "url": "https://streaming-films.net/"
-        },
-        "kaydo_ws": {
-            "label": "kaydo",
-            "active": "False",
-            "url": "https://hdss.nu/"
         },
         "kepliz_com": {
             "label": "Kepliz",
@@ -344,16 +339,6 @@
             "active": "True",
             "url": "https://ww.streamcomplet.click/"
         },
-        "streamcomplet3": {
-            "label": "Streamcomplet3",
-            "active": "False",
-            "url": "https://streamcomplet3.cc/"
-        },
-        "streamdivx": {
-            "label": "StreamDivx",
-            "active": "False",
-            "url": "https://wvvw.streamdivx.net/"
-        },
         "streaming_series": {
             "label": "Streaming-Series",
             "active": "True",
@@ -373,11 +358,6 @@
             "label": "Streamonsport",
             "active": "True",
             "url": "https://www.streamonsport8.buzz/"
-        },
-        "streampourvous": {
-            "label": "Streampourvous",
-            "active": "False",
-            "url": "https://ww1.streampourvous.ws/"
         },
         "telecharger_streaming": {
             "label": "T\u00e9l\u00e9charger-streaming",
@@ -424,11 +404,6 @@
             "active": "True",
             "url": "https://wwvv.vfilms.live/"
         },
-        "videobuzzy_com": {
-            "label": "Videobuzzy",
-            "active": "False",
-            "url": "https://www.videobuzzy.com/"
-        },
         "viki_com": {
             "label": "Viki",
             "active": "True",
@@ -439,11 +414,6 @@
             "active": "True",
             "url": "https://voiranime.com/"
         },
-        "voirfilms_org": {
-            "label": "VoirFilms",
-            "active": "False",
-            "url": "https://www.voir-films.info/"
-        },
         "voirseries_best": {
             "label": "VoirSeries",
             "active": "True",
@@ -452,11 +422,11 @@
         "vostfree": {
             "label": "Vostfree",
             "active": "True",
-            "url": "https://vostfree.tv/"
+            "url": "https://vostfree.cx/"
         },
         "watchvf": {
             "label": "WatchVF",
-            "active": "True",
+            "active": "False",
             "url": "https://watchvf.com/"
         },
         "wawacity": {
@@ -479,10 +449,5 @@
             "active": "True",
             "url": "http://www.zone-streaming.fr/"
         },
-        "zustream": {
-            "label": "ZuStream",
-            "active": "True",
-            "url": "https://www.zustream.info/"
-        }
     }
 }
