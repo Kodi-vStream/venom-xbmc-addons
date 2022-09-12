@@ -19,7 +19,7 @@ from resources.lib.util import QuotePlus
 class cGui:
 
     SITE_NAME = 'cGui'
-    CONTENT = 'files'
+    CONTENT = ''
     listing = []
     thread_listing = []
     episodeListing = []  # Pour gérer l'enchainement des episodes
@@ -30,8 +30,8 @@ class cGui:
     searchResults = {}
     searchResultsSemaphore = threading.Semaphore()
 
-    if isKrypton():
-        CONTENT = 'addons'
+    # if isKrypton():
+    #     CONTENT = 'addons'
 
     def getEpisodeListing(self):
         return self.episodeListing
