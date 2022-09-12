@@ -81,7 +81,7 @@ class cHome:
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir('cFav', 'getBookmarks', self.addons.VSlang(30207), 'mark.png', oOutputParameterHandler)
 
-        oGui.addDir('cDownload', 'getDownloadList', self.addons.VSlang(30224), 'download.png', oOutputParameterHandler)
+        oGui.addDir('cDownload', 'getDownloadList', self.addons.VSlang(30229), 'download.png', oOutputParameterHandler)
 
         # les enregistrements de chaines TV ne sont plus opérationnelles
         # folder = self.addons.getSetting('path_enregistrement')
@@ -92,6 +92,9 @@ class cHome:
 
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir(SITE_IDENTIFIER, 'showUsers', self.addons.VSlang(30455), 'user.png', oOutputParameterHandler)
+
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir('globalSources', 'activeSources', self.addons.VSlang(30362), 'host.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 

@@ -502,7 +502,7 @@ msgstr "Dramas"
 
 msgctxt "#30125"
 msgid "Continue watching"
-msgstr "En cours de visionnage"
+msgstr "Mes visionnages en cours"
 
 msgctxt "#30126"
 msgid "All categories"
@@ -589,8 +589,8 @@ msgid "Mark view/Not view"
 msgstr "Marquer vu/Non vu"
 
 msgctxt "#30207"
-msgid "Bookmarks"
-msgstr "Marque-pages"
+msgid "My bookmarks"
+msgstr "Mes marque-pages"
 
 msgctxt "#30208"
 msgid "Information"
@@ -675,6 +675,10 @@ msgstr "Ouvrir les paramètres"
 msgctxt "#30228"
 msgid "Request registered"
 msgstr "Demande enregistrée"
+
+msgctxt "#30229"
+msgid "My downloads"
+msgstr "Mes téléchargements"
 
 msgctxt "#30300"
 msgid "Library"
@@ -842,7 +846,7 @@ msgstr "Afficher les films les plus vus du mois"
 
 msgctxt "#30350"
 msgid "Replays"
-msgstr "Rédiffusions TV"
+msgstr "Rediffusions TV"
 
 msgctxt "#30351"
 msgid "TV Shows"
@@ -887,6 +891,10 @@ msgstr "Listes personnelles Trakt"
 msgctxt "#30361"
 msgid "Activate scrobbling"
 msgstr "Activer le suivi de lecture"
+
+msgctxt "#30362"
+msgid "My sources"
+msgstr "Mes sources actives"
 
 msgctxt "#30400"
 msgid "Premium/Login"

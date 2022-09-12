@@ -589,7 +589,7 @@ msgid "Mark view/Not view"
 msgstr ""
 
 msgctxt "#30207"
-msgid "Bookmarks"
+msgid "My bookmarks"
 msgstr ""
 
 msgctxt "#30208"
@@ -674,6 +674,10 @@ msgstr ""
 
 msgctxt "#30228"
 msgid "Request registered"
+msgstr ""
+
+msgctxt "#30229"
+msgid "My downloads"
 msgstr ""
 
 msgctxt "#30300"
@@ -886,6 +890,10 @@ msgstr ""
 
 msgctxt "#30361"
 msgid "Activate scrobbling"
+msgstr ""
+
+msgctxt "#30362"
+msgid "My sources"
 msgstr ""
 
 msgctxt "#30400"
