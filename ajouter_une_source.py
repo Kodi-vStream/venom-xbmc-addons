@@ -75,11 +75,8 @@ DOC_DOCS = ('http://', 'load')  # Documentaire Load
 DOC_GENRES = (True, 'showGenres')  # Documentaires Genres
 
 SPORT_SPORTS = (URL_MAIN + 'url', 'showMovies')  # sport
-
-NETS_NETS = ('http://', 'load')  # video du net load
-NETS_NEWS = (URL_MAIN + 'top-video.php', 'showMovies')  # video du net (derniers ajouts = trie par date)
-NETS_VIEWS = (URL_MAIN + 'url', 'showMovies')  # videos (les plus vus = populaire)
-NETS_GENRES = (True, 'showGenres')  # video du net (genre)
+SPORT_LIVE = (URL_MAIN + 'live', 'showMovies')  # lien vers la page des directs
+SPORT_GENRES = (URL_MAIN + 'genres', 'showGenres')  # lien vers la page des genres
 
 REPLAYTV_REPLAYTV = ('http://', 'load')  # Replay load
 REPLAYTV_NEWS = (URL_MAIN, 'showMovies')  # Replay trie par date
@@ -154,6 +151,14 @@ def load():  # fonction chargée automatiquement par l'addon, acceuil de la sour
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
+    # Menu SPORTS si disponible
+    oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
+    oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Les sports (En direct)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Les sports (Genres)', 'sport.png', oOutputParameterHandler)
+
+    # fin des menus
     oGui.setEndOfDirectory()  # ferme l'affichage
 
 
