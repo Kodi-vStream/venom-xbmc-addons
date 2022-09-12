@@ -11,6 +11,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import siteManager
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'animecomplet'
 SITE_NAME = 'Animecomplet'
@@ -93,6 +94,10 @@ def showAnims(sSearch=''):
 
     bSearchGlobal = False
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_ANIMS[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch.replace(' ', '+').replace('%20', '+')
         if tag_global in sSearch:
             sUrl = sUrl.replace(tag_global, '')
@@ -128,14 +133,15 @@ def showAnims(sSearch=''):
                 sTitle = sTitle.decode('ascii', errors='ignore')
             except:
                 pass
+            sTitle = sTitle.replace(' - Episode', ' Episode').replace(' VOSTFR', '').replace(' VF', '')
+            if sSearch and not oUtil.CheckOccurence(sSearchText, sTitle):
+                continue    # Filtre de recherche
 
             sLang = ''
             if ' VOSTFR' in sTitle:
                 sLang = 'VOSTFR'
             if ' VF' in sTitle:
                 sLang = 'VF'
-            sTitle = sTitle.replace(' - Episode', ' Episode').replace(' VOSTFR', '').replace(' VF', '')
-
             if 'http' not in sThumb:
                 sThumb = URL_MAIN + sThumb
 
