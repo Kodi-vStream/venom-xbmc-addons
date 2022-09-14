@@ -91,7 +91,7 @@ def showMovies():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, sThumb, sDisplayTitle, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, sDisplayTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

@@ -110,7 +110,7 @@ def showMovies(sSearch=''):
         for aEntry in aResult[1]:
             sThumb = aEntry[0]
             sUrl2 = aEntry[1]
-            sTitle = aEntry[2].replace(' streaming gratuit', '').replace(' foot', '')
+            sTitle = aEntry[2].replace(' streaming gratuit', '').replace(' foot', '').replace('🆚', '/')
             sDate = aEntry[3]
             sDesc1 = aEntry[4]
 
@@ -142,7 +142,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addMisc(SITE_IDENTIFIER, 'showLive', sDisplayTitle, 'tv.png', sThumb, sDisplayTitle, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showLive', sDisplayTitle, sThumb, sDisplayTitle, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
