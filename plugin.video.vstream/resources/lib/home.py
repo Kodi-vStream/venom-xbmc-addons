@@ -467,7 +467,7 @@ class cHome:
 
         if row:
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(SITE_IDENTIFIER, 'delSearch', self.addons.VSlang(30413), 'search.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'delSearch', self.addons.VSlang(30413), 'trash.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
