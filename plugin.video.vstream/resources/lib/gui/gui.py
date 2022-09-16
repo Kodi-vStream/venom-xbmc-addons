@@ -48,7 +48,6 @@ class cGui:
 
         if sThumbnail == '':
             oGuiElement.setThumbnail(oGuiElement.getIcon())
-
         else:
             oGuiElement.setThumbnail(sThumbnail)
             oGuiElement.setPoster(sThumbnail)
@@ -214,7 +213,7 @@ class cGui:
     def addNetwork(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler=''):
         sThumbnail = ''
         sDesc = ''
-        return self.addNewDir('files', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 8, None)
+        return self.addNewDir('', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 8, None)
 
     def addNext(self, sId, sFunction, sLabel, oOutputParameterHandler):
         oGuiElement = cGuiElement()
