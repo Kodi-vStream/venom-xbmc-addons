@@ -1,6 +1,7 @@
-#-*- coding: utf-8 -*-
-#https://upvid.co/embed-xxx.html
-#https://upvid.co/xxx.html
+# -*- coding: utf-8 -*-
+# https://upvid.co/embed-xxx.html
+# https://upvid.co/xxx.html
+
 import base64
 import re
 
@@ -13,6 +14,7 @@ from resources.lib.comaddon import isMatrix
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 sPattern1 = '<iframe id="iframe" src="([^"]+)"'
 
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -20,8 +22,8 @@ class cHoster(iHoster):
 
     def setUrl(self, url):
         self._url = str(url)
-        #lien embed obligatoire
-        if not 'embed-' in self._url:
+        # lien embed obligatoire
+        if 'embed-' not in self._url:
             self._url = self._url.rsplit('/', 1)[0] + '/embed-' + self._url.rsplit('/', 1)[1]
 
     def _getMediaLinkForGuest(self):
@@ -52,15 +54,15 @@ class cHoster(iHoster):
                 sHtmlContent = sHtmlContent.replace('\n', '')
 
                 aResult = re.search('id="code".+?value="(.+?)"', sHtmlContent, re.DOTALL)
-                if (aResult):
+                if aResult:
                     sFunc = base64.b64decode(aResult.group(1))
 
                 aResult = re.search('(ﾟωﾟ.+?\(\'_\'\);)', sHtmlContent, re.DOTALL | re.UNICODE)
-                if (aResult):
+                if aResult:
                     sHtmlContent = AADecoder(aResult.group(1)).decode()
                     if sHtmlContent:
                         aResult = re.search("func.innerHTML.+?\('(.+?)',", sHtmlContent, re.DOTALL)
-                        if (aResult):
+                        if aResult:
                             chars = aResult.group(1)
                             final = sDecode(chars, sFunc)
                             sPattern = "source\.setAttribute\('src', '([^']+)'\)"
@@ -72,6 +74,7 @@ class cHoster(iHoster):
             return True, api_call
 
         return False, False
+
 
 def sDecode(r, o):
     t = []
@@ -92,7 +95,7 @@ def sDecode(r, o):
     for h in range(len(o)):
         f = f + 1
         n = (n + e[f % 256]) % 256
-        if not f in e:
+        if f not in e:
             f = 0
         t = e[f]
         e[f] = e[n]

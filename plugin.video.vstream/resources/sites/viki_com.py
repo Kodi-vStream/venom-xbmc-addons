@@ -14,8 +14,11 @@ from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.util import cUtil
 
-_DEVICE_ID = '86085977d'  # used for android api
+#_DEVICE_ID = '86085977d'  # used for android api
+# inspiré de github.com / yt-dlp / yt-dlp / blob / master / yt_dlp / extractor / viki.py
+_DEVICE_ID = '112395910d'
 _APP = '100005a'
 _APP_VERSION = '6.11.3'
 _APP_SECRET = 'd96704b180208dbb2efa30fe44c48bd8690441af9f567ba8fd710a72badc85198f7472'
@@ -42,13 +45,14 @@ MOVIE_BEST = (URL_API + 'movies.json?sort=views&page=1&per_page=50&app=' + _APP 
 DRAMA_GENRES = (True, 'showSerieGenre')
 DRAMA_PAYS = (True, 'showSeriePays')
 DRAMA_NEWS = (URL_API + 'series.json?sort=newest_video&page=1&per_page=50&app=' + _APP + '&t=', 'showMovies')
+DRAMA_VIEWS = (URL_API + 'series.json?sort=trending&page=1&per_page=50&app=' + _APP + '&t=', 'showMovies')
 DRAMA_RECENT = (URL_API + 'series.json?sort=views_recent&page=1&per_page=50&app=' + _APP + '&t=', 'showMovies')
-DRAMA_POPULAR = (URL_API + 'series.json?sort=trending&page=1&per_page=50&app=' + _APP + '&t=', 'showMovies')
 DRAMA_BEST = (URL_API + 'series.json?sort=views&page=1&per_page=50&app=' + _APP + '&t=', 'showMovies')
 
 URL_SEARCH = (URL_API + 'search.json?page=1&per_page=50&app=' + _APP + '&term=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 URL_SEARCH_DRAMAS = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 
 se = 'true'
 
@@ -74,14 +78,13 @@ def showMenuMovies():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (News)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Nouveautés)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_POPULAR[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_POPULAR[1], 'Films (Populaires)', 'views.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_PAYS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_PAYS[1], 'Films (Pays)', 'lang.png', oOutputParameterHandler)
-
-    # 8 results
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_POPULAR[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_POPULAR[1], 'Films (Populaires)', 'views.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -90,20 +93,20 @@ def showMenuSeries():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_NEWS[1], 'Séries (Nouveautés)', 'dramas.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_RECENT[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_RECENT[1], 'Séries (Récentes)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', DRAMA_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, DRAMA_VIEWS[1], 'Séries (Populaires)', 'comments.png', oOutputParameterHandler)
+
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, DRAMA_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_PAYS[0])
     oGui.addDir(SITE_IDENTIFIER, DRAMA_PAYS[1], 'Séries (Pays)', 'lang.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', DRAMA_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, DRAMA_NEWS[1], 'Séries (News)', 'dramas.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', DRAMA_RECENT[0])
-    oGui.addDir(SITE_IDENTIFIER, DRAMA_RECENT[1], 'Séries (Récentes)', 'news.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', DRAMA_POPULAR[0])
-    oGui.addDir(SITE_IDENTIFIER, DRAMA_POPULAR[1], 'Séries (Populaires)', 'comments.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_BEST[0])
     oGui.addDir(SITE_IDENTIFIER, DRAMA_BEST[1], 'Séries (Best)', 'notes.png', oOutputParameterHandler)
@@ -127,7 +130,10 @@ def showMovies(sSearch=''):
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     if sSearch:
+        oUtil = cUtil()
         sUrl = sSearch
+        sSearchText = sSearch.replace(URL_SEARCH[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
 
     url = sUrl
     timestamp = str(int(time.time()))
@@ -179,11 +185,16 @@ def showMovies(sSearch=''):
                     sThumb = jsonrsp['response'][movie]['images']['poster']['url']
 
             try:
-                sDesc = jsonrsp['response'][movie]['descriptions']['fr']
+                sDesc = str(jsonrsp['response'][movie]['descriptions']['fr'])
             except:
                 sDesc = ''
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+
+            # Filtre de recherche
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue
 
             if not isMatrix():
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle.encode('utf-8', 'ignore'))
@@ -196,7 +207,7 @@ def showMovies(sSearch=''):
             if jsonrsp['response'][movie]['type'] == "movie":
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addDrama(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -340,9 +351,12 @@ def showPays(genre):
 # Signature des demandes au nom de Flash player
 def SIGN(pth, version=4):
     timestamp = int(time.time())
-    rawtxt = f'/v{version}/{pth}?drms=dt1,dt2&device_id={_DEVICE_ID}&app={_APP}'
-    sig = hmac.new(
-        _APP_SECRET.encode('ascii'), f'{rawtxt}&t={timestamp}'.encode('ascii'), hashlib.sha1).hexdigest()
+    rawtxt = '/v%d/%s?drms=dt3&device_id=%s&app=%s' % (version, pth, _DEVICE_ID, _APP)
+    sig = hmac.new(_APP_SECRET.encode('ascii'), ('%s&t=%d' % (rawtxt, timestamp)).encode('ascii'), hashlib.sha1).hexdigest()
+    
+    # syntaxe reservée au Python 3
+    # rawtxt = f'/v{version}/{pth}?drms=dt3&device_id={_DEVICE_ID}&app={_APP}'
+    # sig = hmac.new(_APP_SECRET.encode('ascii'), f'{rawtxt}&t={timestamp}'.encode('ascii'), hashlib.sha1).hexdigest()
     return Base_API % rawtxt, timestamp, sig
 
 
@@ -390,6 +404,9 @@ def showLinks():
     dataList = []
 
     streamList2 = GET_URLS_STREAM(sUrl)
+
+    if not streamList2:
+        return
 
     for item in streamList2:
         dataList.append(item)

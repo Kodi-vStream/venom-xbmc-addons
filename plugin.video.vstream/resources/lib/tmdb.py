@@ -411,7 +411,7 @@ class cTMDb:
     # Search for TV shows by title.
     def search_tvshow_name(self, name, year='', page=1, genre=''):
         if year:
-            term = QuotePlus(name) + '&year=' + year
+            term = QuotePlus(name) + '&first_air_date_year=' + year
         else:
             term = QuotePlus(name)
 
@@ -446,8 +446,8 @@ class cTMDb:
 
                                 # controle supplémentaire sur l'année meme si déjà dans la requete
                                 if year:
-                                    if 'release_date' in searchMovie and searchMovie['release_date']:
-                                        release_date = searchMovie['release_date']
+                                    if 'first_air_date' in searchMovie and searchMovie['first_air_date']:
+                                        release_date = searchMovie['first_air_date']
                                         yy = release_date[:4]
                                         if int(year)-int(yy) > 1:
                                             continue    # plus de deux ans d'écart, c'est pas bon
@@ -789,7 +789,9 @@ class cTMDb:
                 sql_select = sql_select + ' WHERE tvshow.tmdb_id = \'%s\'' % tmdb_id
             else:
                 sql_select = sql_select + ' WHERE tvshow.title = \'%s\'' % name
-
+                if year:
+                    sql_select = sql_select + ' AND tvshow.year = %s' % year
+            
             sql_select = sql_select + ' AND season.season = \'%s\'' % season
 
         elif media_type == 'episode':
@@ -801,6 +803,8 @@ class cTMDb:
                 sql_select += ' WHERE tvshow.tmdb_id = \'%s\'' % tmdb_id
             else:
                 sql_select += ' WHERE tvshow.title = \'%s\'' % name
+                if year:
+                    sql_select = sql_select + ' AND tvshow.year = %s' % year
             sql_select += ' AND episode.season = \'%s\' AND episode.episode = \'%s\'' % (season, episode)
         else:
             return None
@@ -1037,6 +1041,8 @@ class cTMDb:
                     name = re.sub('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))(?:([^"]+)|)', '', name)
 
             cleanTitle = self._clean_title(name)
+            if not cleanTitle:
+                return {}
             meta = self._cache_search(media_type, cleanTitle, tmdb_id, year, season, episode)
 
             if meta:
@@ -1062,8 +1068,12 @@ class cTMDb:
                 if 'tmdb_id' in meta and meta['tmdb_id']:
                     return self.get_meta('season', name, tmdb_id=meta['tmdb_id'], year=year, season=season)
         elif media_type == 'episode':
-            if tmdb_id: # pas de recherche par nom si pas de tmdb_id, car il y aurait déjà un tmdb_id si on connaissait la série
+            if tmdb_id:
                 meta = self.search_episode_id(tmdb_id, season, episode)
+            else:  # on retrouve l'id en cherchant la série qui peut être en cache
+                meta = self.get_meta('tvshow', name, year=year)
+                if 'tmdb_id' in meta and meta['tmdb_id']:
+                    meta = self.search_episode_id(meta['tmdb_id'], season, episode)
         elif media_type == 'anime':
             if tmdb_id:
                 meta = self.search_tvshow_id(tmdb_id)
@@ -1108,6 +1118,38 @@ class cTMDb:
         except:
             return False
         return result
+    
+    def getPostUrl(self, url, post):
+        # Execute une requete POST vers l'API
+        # Utile pour :
+        #       - Noter film
+        #       - Ajouter/Retirer le film des favoris
+        #       - Ajouter/Retirer le film de la watchlist
+        # Appelé depuis le menu contextuel TMDB
+        #
+        # Paramètres :
+        #   url : le complément de l'url de l'api
+        #           ex : 'movie/64408/rating' pour noter un film
+        #           ou : '' pour ajouter aux favoris
+        #   post : json qui sera envoyé Request Body
+        #           ex :   {
+        #                   "value": 8.5
+        #                  }
+
+        from urllib import request
+        session_id = self.ADDON.getSetting('tmdb_session')
+
+        urlapi = self.URL + url +'?api_key='+self.ADDON.getSetting('api_tmdb')+'&session_id='+ session_id
+        
+        req = request.Request(urlapi, method="POST")
+        req.add_header('Content-Type', 'application/json')
+        data = json.dumps(post)
+        data = data.encode()
+        r = request.urlopen(req, data=data)
+        response = r.read()
+        r.close()
+        data = json.loads(response)
+        return data    
 
     def _call(self, action, append_to_response=''):
         from resources.lib.handler.requestHandler import cRequestHandler

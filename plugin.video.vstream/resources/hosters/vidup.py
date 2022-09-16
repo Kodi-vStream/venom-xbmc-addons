@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Meme code que thevideo
 # https://vidup.me/embed-xxx-703x405.html
 # https://vidup.me/embed/xxx-703x405.html
@@ -57,7 +57,7 @@ class cHoster(iHoster):
 
         response.close()
 
-        if (aResult):
+        if aResult:
             url = []
             qua = []
 

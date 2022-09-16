@@ -96,15 +96,15 @@ class cUtil:
         return re.sub('&#?\w+;', fixup, text)
 
     def titleWatched(self, title):
-        if not isMatrix():
-            if isinstance(title, str):
-                # Must be encoded in UTF-8
-                try:
-                    title = title.decode('utf8')
-                except AttributeError:
-                    pass
-
-            title = unicodedata.normalize('NFKD', title).encode('ascii', 'ignore')
+        # enlève les accents, si nécessaire
+        n2 = re.sub('[^a-zA-Z0-9 ]', '', title)
+        if n2 != title:
+            try:
+                title = unicodedata.normalize('NFD', title).encode('ascii', 'ignore')
+                if isMatrix():
+                    title = title.decode('utf8', 'ignore')
+            except Exception as e:
+                pass
 
         # cherche la saison et episode puis les balises [color]titre[/color]
         # title, saison = self.getSaisonTitre(title)
@@ -137,6 +137,7 @@ class cUtil:
 
         # vire tag
         name = re.sub('[\(\[].+?[\)\]]', '', name)
+        name = name.replace('[', '').replace(']', '') # crochet orphelin
 
         # enlève les accents, si nécessaire
         n2 = re.sub('[^a-zA-Z0-9 ]', '', name)

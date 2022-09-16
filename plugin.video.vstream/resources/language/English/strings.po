@@ -17,11 +17,11 @@ msgid "Auto-activate subtitles"
 msgstr ""
 
 msgctxt "#30003"
-msgid "Downloads Completed"
+msgid "Download completed"
 msgstr ""
 
 msgctxt "#30004"
-msgid "Downloads Stopped"
+msgid "Download stopped"
 msgstr ""
 
 msgctxt "#30005"
@@ -185,7 +185,7 @@ msgid "Bookmark deleted"
 msgstr ""
 
 msgctxt "#30045"
-msgid "Type the link you want to search"
+msgid "Type the link you want to read"
 msgstr ""
 
 msgctxt "#30046"
@@ -284,10 +284,6 @@ msgctxt "#30069"
 msgid "Unless you have a premium link generator,[CR] checking this box will bring you more problems than advantages."
 msgstr ""
 
-msgctxt "#30070"
-msgid "Choose your sources click OK[CR]- To validate the modifications click again on OK"
-msgstr ""
-
 msgctxt "#30071"
 msgid "Updated list"
 msgstr ""
@@ -325,7 +321,7 @@ msgid "Search (Tvshow)"
 msgstr ""
 
 msgctxt "#30080"
-msgid "Search (Other category)"
+msgid "Search (Documentary)"
 msgstr ""
 
 msgctxt "#30081"
@@ -449,7 +445,7 @@ msgid "Database to delete"
 msgstr ""
 
 msgctxt "#30111"
-msgid "List"
+msgid "Alpha"
 msgstr ""
 
 msgctxt "#30112"
@@ -465,7 +461,7 @@ msgid "Web video"
 msgstr ""
 
 msgctxt "#30115"
-msgid "Television/Music"
+msgid "Television"
 msgstr ""
 
 msgctxt "#30116"
@@ -508,6 +504,10 @@ msgctxt "#30125"
 msgid "Continue watching"
 msgstr ""
 
+msgctxt "#30126"
+msgid "All categories"
+msgstr ""
+
 msgctxt "#30127"
 msgid "Tools"
 msgstr ""
@@ -518,6 +518,26 @@ msgstr ""
 
 msgctxt "#30129"
 msgid "Clear Cache Kodi"
+msgstr ""
+
+msgctxt "#30130"
+msgid "My videos"
+msgstr ""
+
+msgctxt "#30131"
+msgid "Streaming"
+msgstr ""
+
+msgctxt "#30132"
+msgid "Live"
+msgstr ""
+
+msgctxt "#30133"
+msgid "Movies"
+msgstr ""
+
+msgctxt "#30137"
+msgid "Music"
 msgstr ""
 
 msgctxt "#30138"
@@ -538,6 +558,10 @@ msgstr ""
 
 msgctxt "#30160"
 msgid "Quality HD"
+msgstr ""
+
+msgctxt "#30200"
+msgid "Channels"
 msgstr ""
 
 msgctxt "#30201"
@@ -565,7 +589,7 @@ msgid "Mark view/Not view"
 msgstr ""
 
 msgctxt "#30207"
-msgid "Bookmarks"
+msgid "My bookmarks"
 msgstr ""
 
 msgctxt "#30208"
@@ -632,6 +656,30 @@ msgctxt "#30223"
 msgid "Rename"
 msgstr "Renommer"
 
+msgctxt "#30224"
+msgid "Downloads"
+msgstr ""
+
+msgctxt "#30225"
+msgid "Records"
+msgstr ""
+
+msgctxt "#30226"
+msgid "Records"
+msgstr ""
+
+msgctxt "#30227"
+msgid "Open settings"
+msgstr ""
+
+msgctxt "#30228"
+msgid "Request registered"
+msgstr ""
+
+msgctxt "#30229"
+msgid "My downloads"
+msgstr ""
+
 msgctxt "#30300"
 msgid "Library"
 msgstr ""
@@ -642,6 +690,10 @@ msgstr ""
 
 msgctxt "#30302"
 msgid "Auto update"
+msgstr ""
+
+msgctxt "#30303"
+msgid "Media folders"
 msgstr ""
 
 msgctxt "#30304"
@@ -709,11 +761,11 @@ msgid "You have successfully logged out"
 msgstr ""
 
 msgctxt "#30324"
-msgid "Library"
+msgid "Add to media"
 msgstr ""
 
 msgctxt "#30325"
-msgid "UpToBox"
+msgid "Add to UpToBox"
 msgstr ""
 
 msgctxt "#30326"
@@ -836,6 +888,14 @@ msgctxt "#30360"
 msgid "My personnal Trakt lists"
 msgstr ""
 
+msgctxt "#30361"
+msgid "Activate scrobbling"
+msgstr ""
+
+msgctxt "#30362"
+msgid "My sources"
+msgstr ""
+
 msgctxt "#30400"
 msgid "Premium/Login"
 msgstr ""
@@ -929,11 +989,11 @@ msgid "Enable log records"
 msgstr ""
 
 msgctxt "#30423"
-msgid "Search a Movie"
+msgid "Search (Movies)"
 msgstr ""
 
 msgctxt "#30424"
-msgid "Search a TV Show"
+msgid "Search (TV Shows)"
 msgstr ""
 
 msgctxt "#30425"
@@ -1033,7 +1093,7 @@ msgid "Select a quality"
 msgstr ""
 
 msgctxt "#30449"
-msgid "Sources"
+msgid "All Sources"
 msgstr ""
 
 msgctxt "#30450"
@@ -1101,7 +1161,7 @@ msgid "Minute"
 msgstr ""
 
 msgctxt "#30469"
-msgid "Hoster Direct"
+msgid "Direct link"
 msgstr ""
 
 msgctxt "#30470"
@@ -1181,3 +1241,15 @@ msgstr ""
 msgctxt "#31209"
 msgid "Results: %s"
 msgstr "Results: [COLOR deepskyblue]%s[/COLOR]"
+
+msgctxt "#31210"
+msgid "Add to new list"
+msgstr "Add to new list"
+
+msgctxt "#31211"
+msgid "Add to existing list"
+msgstr "Add to existing list"
+
+msgctxt "#31212"
+msgid "Select a list"
+msgstr "Select a list"

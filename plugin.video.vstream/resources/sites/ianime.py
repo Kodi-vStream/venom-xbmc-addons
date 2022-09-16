@@ -4,7 +4,7 @@ import random
 import re
 import unicodedata
 
-from resources.lib.comaddon import progress, VSlog, isMatrix, siteManager
+from resources.lib.comaddon import VSlog, isMatrix, siteManager
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -340,9 +340,15 @@ def showMovies(sSearch=''):
     oParser = cParser()
 
     if sSearch:
+        oUtil = cUtil()
         typeSearch, sSearch = sSearch.split('=')
         sSearch = Unquote(sSearch)
-        sSearch = cUtil().CleanName(sSearch)
+        sSearch = oUtil.CleanName(sSearch)
+
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_ANIMS[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+
         sSearch = QuotePlus(sSearch).upper()  # remplace espace par + et passe en majuscule
 
         sUrl = URL_SEARCH[0] + sSearch + '.html'
@@ -382,17 +388,10 @@ def showMovies(sSearch=''):
         oGui.addText(SITE_IDENTIFIER)
 
     if aResult[0] is True:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
         isPython3 = isMatrix()
 
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sThumb = aEntry[0]
             if not sThumb.startswith('http'):
                 sThumb = URL_MAIN + sThumb
@@ -411,8 +410,12 @@ def showMovies(sSearch=''):
             sLang = ''
             if 'VF' in sTitle:
                 sLang = 'VF'
+                sTitle = sTitle.replace(sLang, '')
             elif 'VOSTFR' in sTitle:
                 sLang = 'VOSTFR'
+                sTitle = sTitle.replace(sLang, '')
+
+            sTitle = sTitle.replace('()', '').strip()
 
             # affichage de la qualité -> NON, qualité fausse
             # sQual = ''
@@ -426,28 +429,30 @@ def showMovies(sSearch=''):
                 sTitle = sTitle.replace(' -', '')
 
             if not isPython3:
-                sTitle = cUtil().CleanName(sTitle).capitalize()
-            else:
-                sTitle.capitalize()
+                sTitle = oUtil.CleanName(sTitle)
 
-            sDisplayTitle = ('%s (%s)') % (sTitle, sLang)
+            # Filtre de recherche
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue
+
+            sDisplayTitle = sTitle
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sLang', sLang)
 
             if 'drama.php' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSaison', sDisplayTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
+            elif (sSearch and typeSearch == 'tvshow') or '?serie=' in sUrl2:
+                oGui.addTV(SITE_IDENTIFIER, 'showSaison', sDisplayTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             elif '?manga=' in sUrl2:
-                oGui.addAnime(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
-            elif '?serie=' in sUrl2:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'series.png', sThumb, '', oOutputParameterHandler)
+                oGui.addAnime(SITE_IDENTIFIER, 'showSaison', sDisplayTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
             elif '?film=' in sUrl2:
                 oGui.addMovie(SITE_IDENTIFIER, 'showMovies', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
     if not sSearch:  # une seule page par recherche
         sNextPage = __checkForNextPage(sHtmlContent)
@@ -475,11 +480,51 @@ def __checkForNextPage(sHtmlContent):
     return False
 
 
-def showEpisode():
+def showSaison():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Referer', RandomReferer())
+    sHtmlContent = oRequestHandler.request()
+
+    try:
+        sDesc = oParser.parse(sHtmlContent, '</headline15>.+?<font style=.+?>([^"]+)</font')[1][0]
+    except:
+        sDesc = ""
+
+    if 'HTML/JavaScript Encoder' in sHtmlContent:
+        sHtmlContent = ICDecode(sHtmlContent)
+
+    sPattern = '<headline11>(.+?)</headline11>'#</a>|href="*([^"]+)"* title="([^"]+)"[^>]+style="*text-decoration:none;"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if aResult[0] is True:
+        isPython3 = isMatrix()
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        for aEntry in aResult[1]:
+            sSeason = aEntry.replace('00', '0')
+            siteUrl = sUrl + '&season=' + sSeason
+            sDisplayTitle = sMovieTitle + ' ' + sSeason
+            oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addSeason(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+def showEpisode():
+    oGui = cGui()
+    oParser = cParser()
+    oInputParameterHandler = cInputParameterHandler()
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sUrl, sSearchSeason = oInputParameterHandler.getValue('siteUrl').split('&season=')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -499,11 +544,18 @@ def showEpisode():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0] is True:
+        sSeason = ''
         isPython3 = isMatrix()
 
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
+            if aEntry[0]:
+                sSeason = aEntry[0].replace('00', '0')
+                continue
 
+            if sSeason != sSearchSeason:
+                continue
+            
             if not isPython3:
                 sTitle = unicode(aEntry[2], 'iso-8859-1')
                 sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')
@@ -512,20 +564,29 @@ def showEpisode():
                 sTitle = aEntry[2]
 
             sTitle = cUtil().unescape(sTitle)
+            sLang = ''
+            if 'VF' in sTitle:
+                sLang = 'VF'
+                sTitle = sTitle.replace(sLang, '')
+            elif 'VOSTFR' in sTitle:
+                sLang = 'VOSTFR'
+                sTitle = sTitle.replace(sLang, '')
 
             sUrl2 = cUtil().unescape(aEntry[1])
             if not sUrl2.startswith('http'):
                 sUrl2 = URL_MAIN + sUrl2
 
-            if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
-
-            else:
-                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oOutputParameterHandler.addParameter('sDesc', sDesc)
-                oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                
+            idx = sTitle.find('Episode')
+            if idx > 0:
+                sTitle = sTitle.replace(sSeason, '')
+                sTitle = '%s %s %s' % (sTitle[:idx], sSeason, sTitle[idx:]) 
+            
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sLang', sLang)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -828,7 +889,7 @@ def getTinyUrl(url):
 
 def cutSearch(sHtmlContent, typeSearch):
     types = {'movies': 'Films et Animations',
-             'tvshow': 'S&eacute;ries et Drama',
+             'tvshow': 'Séries et Drama',
              'anime': 'Animes et Mangas'}
     sPattern = types.get(typeSearch) + '<.+?alt="separateur"(.+?)alt="separateur"'
 

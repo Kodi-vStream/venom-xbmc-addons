@@ -1,5 +1,5 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import json
 
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -31,7 +31,7 @@ class cHoster(iHoster):
                 url.append(x['file'])
                 qua.append(x['label'])
 
-            if (url):
+            if url:
                 api_call = dialog().VSselectqual(qua, url)
 
         if api_call:

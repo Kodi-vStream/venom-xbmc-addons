@@ -33,7 +33,7 @@ class cHoster(iHoster):
                 oRequestHandler = cRequestHandler(url2)
                 sHtmlContent2 = oRequestHandler.request()
 
-                # prend tous les formats  (peu créer problemes CODECS avc1)
+                # prend tous les formats (peu créer problèmes CODECS avc1)
                 # sPattern = 'RESOLUTION=(\w+).+?(https.+?m3u8)'
 
                 # limite les formats
@@ -41,7 +41,7 @@ class cHoster(iHoster):
                 aResult = oParser.parse(sHtmlContent2, sPattern)
                 for aEntry in aResult[1]:
                     list_q.append(aEntry[0])
-                    list_url.append(aEntry[1])  # parfois lien de meme qualité avec url diffrentes
+                    list_url.append(aEntry[1])  # parfois lien de meme qualité avec url différentes
 
             if list_url:
                 api_call = dialog().VSselectqual(list_q, list_url)
@@ -60,7 +60,7 @@ class cHoster(iHoster):
                 resultId = aResult[1][0][0]
                 resultHash = aResult[1][0][1]
                 url = 'https://aparat.cam/dl?op=download_orig&id=' + resultId + \
-                    '&mode=0&hash=' + resultHash  # + '&embed=1&adb=0'
+                      '&mode=0&hash=' + resultHash  # + '&embed=1&adb=0'
                 data = 'op=download_orig&id=' + resultId + '&mode=n&hash=' + resultHash
                 oRequestHandler = cRequestHandler(url)
                 oRequestHandler.setRequestType(1)

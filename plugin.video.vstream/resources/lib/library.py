@@ -66,7 +66,7 @@ class cLibrary:
 
         if sCat == '1':  # film
             #sTitle = cUtil().CleanName(sTitle)
-            sTitle = self.showKeyBoard(sTitle, 'Nom du dossier et du fichier')
+            sTitle = self.showKeyBoard(sTitle, 'Nom du fichier')
 
             try:
                 sPath = '/'.join([self.__sMovieFolder, sTitle])
@@ -80,7 +80,7 @@ class cLibrary:
 
         elif sCat == '2':  # serie
             #sTitle = cUtil().CleanName(sTitle)
-            sFTitle = self.showKeyBoard(sTitle, 'Recommandé Nomdeserie/Saison00')
+            sFTitle = self.showKeyBoard(sTitle, 'Saison : Recommandé NomDeSerie/Saison01')
 
             try:
 
@@ -89,7 +89,7 @@ class cLibrary:
                 if not xbmcvfs.exists(sPath):
                     xbmcvfs.mkdir(sPath)
 
-                sTitle = self.showKeyBoard(sTitle, 'Recommandé NomdeserieS00E00')
+                sTitle = self.showKeyBoard(sTitle, 'Épisode : Recommandé NomDeSerie S01E01')
 
                 self.MakeFile(sPath, sTitle, sLink)
             except:
@@ -106,24 +106,36 @@ class cLibrary:
             dialog().VSinfo('Rajout impossible')
 
     def getLibrary(self):
-        # xbmc.executebuiltin("Container.Update(special://userdata/addon_data/plugin.video.vstream/)", True)
-        # xbmc.executebuiltin('ActivateWindow(Videos,"special://userdata/addon_data/plugin.video.vstream/")', True)
         oGui = cGui()
-        path = 'special://userdata/addon_data/plugin.video.vstream/'
-        listDir = xbmcvfs.listdir(path)
-        for i in listDir[0]:
-            Year = os.path.basename(i)
+        oOutputParameterHandler = cOutputParameterHandler()
 
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('filePath', path+i)
-            oGui.addDir(SITE_IDENTIFIER, 'openLibrary', Year, 'annees.png', oOutputParameterHandler)
+        folder = self.ADDON.getSetting('Library_folder_Movies')
+        oOutputParameterHandler.addParameter('siteUrl', folder)
+        oGui.addDir(SITE_IDENTIFIER, 'openLibrary', self.ADDON.VSlang(30120), 'films.png', oOutputParameterHandler)
+
+        folder = self.ADDON.getSetting('Library_folder_TVs')
+        oOutputParameterHandler.addParameter('siteUrl', folder)
+        oGui.addDir(SITE_IDENTIFIER, 'openLibrary', self.ADDON.VSlang(30121), 'series.png', oOutputParameterHandler)
+
+        oGui.setEndOfDirectory()
+
+
+    def getRecords(self):
+        oGui = cGui()
+
+        folder = self.ADDON.getSetting('path_enregistrement')
+        if not folder:
+            folder = 'special://userdata/addon_data/plugin.video.vstream/Enregistrement"/>'
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', folder)
+        oGui.addDir(SITE_IDENTIFIER, 'openLibrary', self.ADDON.VSlang(30225), 'download.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
     def openLibrary(self):
         oGui = cGui()
         oInputParameterHandler = cInputParameterHandler()
-        sFile = oInputParameterHandler.getValue('filePath')
+        sFile = oInputParameterHandler.getValue('siteUrl')
 
         listDir = xbmcvfs.listdir(sFile)
 
@@ -146,8 +158,8 @@ class cLibrary:
 
             else:
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('filePath', sFile + '/' + i)
-                oGui.addDir(SITE_IDENTIFIER, 'openLibrary', sTitle, 'annees.png', oOutputParameterHandler)
+                oOutputParameterHandler.addParameter('siteUrl', sFile + '/' + i)
+                oGui.addDir(SITE_IDENTIFIER, 'openLibrary', sTitle, 'films.png', oOutputParameterHandler)
 
         if addon_handle:
             xbmcplugin.endOfDirectory(addon_handle)

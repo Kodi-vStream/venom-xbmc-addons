@@ -55,10 +55,9 @@ class cHoster(iHoster):
                 qua.append(x['name'])
 
             # Si au moins 1 url
-            if (url):
+            if url:
                 # dialogue qualité
                 api_call = dialog().VSselectqual(qua, url)
-
 
         if api_call:
             api_call = api_call + '|Referer=' + self._url

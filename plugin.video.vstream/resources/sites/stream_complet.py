@@ -35,9 +35,6 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Films & Séries', 'search.png', oOutputParameterHandler)
-
     oOutputParameterHandler.addParameter('siteUrl', 'siteUrl')
     oGui.addDir(SITE_IDENTIFIER, 'showSearchMovie', 'Recherche Films ', 'search.png', oOutputParameterHandler)
 
@@ -209,7 +206,7 @@ def showSaison():
 
     if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in aResult[1]:
+        for aEntry in aResult[1][::-1]:
             sNumSaison = aEntry[0]
             sSaison = 'Saison ' + aEntry[0]
             sUrlSaison = sUrl + "?sNumSaison=" + sNumSaison
@@ -312,12 +309,9 @@ def showLinks():
 
             sUrl2 = aEntry[0]
             sLang = aEntry[1]
-            sHostname = aEntry[2].lower()
-            # ou à revoir : on ne prend que 1 Fichier et Uptobox
-            if not ('uptobox' in sHostname or 'fichier' in sHostname):
-                continue
-            sHostname = sHostname.capitalize()
 
+            sHostname = aEntry[2].lower()
+            sHostname = sHostname.capitalize()
             sDisplayTitle = '%s (%s) [COLOR coral]%s[/COLOR]' % (sTitle, sLang, sHostname)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -333,6 +327,7 @@ def showLinks():
 
 def showHosters():
     oGui = cGui()
+    oHosterGui = cHosterGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -353,11 +348,11 @@ def showHosters():
 
         if aResult[0] is True:
             sHosterUrl = aResult[1][0]
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            oHoster = oHosterGui.checkHoster(sHosterUrl)
             if oHoster != False:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
     else:
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('Referer', siteReferer)
@@ -370,11 +365,11 @@ def showHosters():
         if aResult[0] is True:
             for aEntry in aResult[1]:
                 sHosterUrl = aEntry
-                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                oHoster = oHosterGui.checkHoster(sHosterUrl)
                 if oHoster != False:
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                    oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 

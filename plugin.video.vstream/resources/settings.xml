@@ -28,7 +28,6 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
         <setting id="api_tmdb" type="text" label="API TMDB"  default="b7cf9324cbeb6f4fb811144aa9397093"/>
         <setting id="poster_tmdb" type="select" label="30007" values="w92|w154|w185|w342|w500|w780|original" default="w342"/>
         <setting id="backdrop_tmdb" type="select" label="30008" values="w300|w780|w1280|original" default="w1280"/>
-        <setting id="extendedinfo-view" type="bool" label="30009" default="false"/>
         <setting id="information-view" type="bool" label="31102" default="false"/>
         <setting id="display_season_title" type="bool" label="31204" default="true"/>        
 
@@ -48,14 +47,13 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
     </category>
 
     <!-- Sources -->
-    <category label="30449">
+    <category label="30138" id="9999">
 
         <setting label="30116" type="lsep"/>
-<!--        <setting type="sep"/>
- n'est plus utile		<setting subsetting="true" label="30070" type="lsep"/> -->
         <setting label="30420" type="action"  action="RunScript(plugin.video.vstream, search, ?site=globalRun&amp;function=search)"/>
         <setting label="31104" type="action"  action="RunScript(plugin.video.vstream, enableSources, ?site=globalRun&amp;function=enableSources)"/>
         <setting label="31105" type="action"  action="RunScript(plugin.video.vstream, disableSources, ?site=globalRun&amp;function=disableSources)"/>
+        <setting type="sep"/>
         <setting id="contenu_adulte" type="bool" label="31103" default="false"/>
         <setting id="history-view" type="bool" label="30016" default="true"/>
         <setting type="sep"/>
@@ -69,54 +67,12 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
         <setting id="PlutoTV_sid" type="text" label="" default="" visible="false"/>
     </category>
 
-    <!-- Enregistrement -->
-    <category label="Enregistrement">
-        <setting label="Enregistrement" type="lsep"/>
-        <setting id="path_ffmpeg" label="30049" type="file" default=""/>
-        <setting id="path_enregistrement" type="folder" label="30050" default=""/>
-        <setting id="path_enregistrement_programmation" type="text" label="" default="" visible="false"/>
-        <setting id="enregistrement_activer" type="bool" label="30051" default="false"/>
-        <setting id="marge_auto" type="number" label="30052" default="0"/>
-        <setting id="heure_verification" type="number" label="30053" default="1"/>
-    </category>
-
-    <!-- Outils -->
-    <category label="30127">
-        <setting label="30033" type="lsep"/>
-
-        <setting type="sep"/>
-        <setting id="debug" type="bool" label="30422" default="true"/>
-        <setting label="Upload kodi.log" type="action" action="RunScript(plugin.video.vstream, uplog, ?site=globalRun&amp;function=uplog)"/>
-        <setting id="service_log" type="text" label="30054" default="" enable="false"/>
-
-        <setting subsetting="true" label="30055" type="lsep"/>
-        <setting label="Import/Export" type="action" action="RunScript(plugin.video.vstream, sauv, ?site=globalRun&amp;function=sauv)"/>
-
-        <setting subsetting="true" label="30056" type="lsep"/>
-        <setting label="30057" type="action" action="RunScript(plugin.video.vstream, clean, ?site=globalRun&amp;function=clear)"/>
-
-        <setting subsetting="true" label="30058" type="lsep"/>
-        <setting label="30128" type="action" action="RunScript(plugin.video.vstream, addon, ?site=globalRun&amp;function=addon)"/>
-
-        <setting subsetting="true" label="30059" type="lsep"/>
-        <setting label="30129" type="action" action="RunScript(plugin.video.vstream, xbmc, ?site=globalRun&amp;function=xbmc)"/>
-
-        <setting subsetting="true" label="30060" type="lsep"/>
-        <setting label="30061" type="action" action="RunScript(plugin.video.vstream, fi, ?site=globalRun&amp;function=fi)"/>
-
-        <setting subsetting="true" label="30062" type="lsep"/>
-        <setting label="30063" type="action" action="RunScript(plugin.video.vstream, thumb, ?site=globalRun&amp;function=thumb)"/>
-
-        <setting type="sep"/>
-        <setting label="30064" type="action" action="ReloadSkin()"/>
-    </category>
-
-    <!-- Librairie -->
+    <!-- Médiathèque -->
     <category label="30300">
         <setting label="30145" type="lsep"/>
         <setting type="sep"/>
         <setting id="download_folder" type="folder" label="30145" default=""/>
-        <setting label="30300" type="lsep"/>
+        <setting label="30303" type="lsep"/>
         <setting type="sep"/>
         <setting id="Library_folder_Movies" enable="True" type="folder" label="30120" default="special://userdata/addon_data/plugin.video.vstream/Films"/>
         <setting id="Library_folder_TVs" enable="True" type="folder" label="30121" default="special://userdata/addon_data/plugin.video.vstream/Series"/>
@@ -125,6 +81,18 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
         <setting id="update_auto" type="bool" label="30302" default="true"/>
     </category>
 
+    <!-- Enregistrement 
+    <category label="30225">
+        <setting label="30226" type="lsep"/>
+        <setting id="enregistrement_activer" type="bool" label="30051" default="false"/>
+        <setting id="path_ffmpeg" label="30049" type="file" default=""/>
+        <setting id="path_enregistrement" type="folder" label="30050" default="special://userdata/addon_data/plugin.video.vstream/Enregistrement"/>
+        <setting id="path_enregistrement_programmation" type="text" label="" default="" visible="false"/>
+        <setting id="marge_auto" type="number" label="30052" default="0"/>
+        <setting id="heure_verification" type="number" label="30053" default="1"/>
+    </category>
+-->
+
     <!-- Integration trakt -->
     <category label="30340">
         <setting id="bstoken" type="text" label="" default="" visible="false"/>
@@ -132,6 +100,7 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
         <setting id="trakt_show_lists" type="bool" label="30341" default="true"/>
 
         <setting type="lsep" label="30342"/>
+        <setting id="trakt_movies_activate_scrobbling" type="bool" label="30361" default="true"/>
         <setting id="trakt_movies_show_watchlist" type="bool" label="30343" default="true"/>
         <setting id="trakt_movies_show_watched" type="bool" label="30344" default="true"/>
         <setting id="trakt_movies_show_recommended" type="bool" label="30345" default="true"/>
@@ -141,6 +110,7 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
         <setting id="trakt_movies_show_most_monthly" type="bool" label="30349" default="true"/>
 
         <setting type="lsep" label="30351"/>
+        <setting id="trakt_tvshows_activate_scrobbling" type="bool" label="30361" default="true"/>
         <setting id="trakt_tvshows_show_watchlist" type="bool" label="30352" default="true"/>
         <setting id="trakt_tvshows_show_watchlist_seasons" type="bool" label="30353" default="true"/>
         <setting id="trakt_tvshows_show_watchlist_episodes" type="bool" label="30354" default="true"/>
@@ -196,6 +166,7 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
         <setting id="hoster_realdebrid_premium" type="bool" label="30403" default="false"/>
         <setting id="hoster_realdebrid_token" type="text" label="30328" default=""/>
 
+<!-- 
         <setting label="UrlResolver" type="lsep"/>
         <setting type="sep"/>
         <setting type="text" label="30068" default=""/>
@@ -205,5 +176,38 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
         <setting type="sep"/>
         <setting id="UserUrlResolver" type="bool" label="30066" default="false"/>
         <setting label="30067" type="action" option="close" action="RunScript(plugin.video.vstream, urlresolver, ?site=globalRun&amp;function=urlresolver)"/>
+-->
     </category>
+
+    <!-- Outils -->
+    <category label="30127">
+        <setting label="30033" type="lsep"/>
+
+        <setting type="sep"/>
+        <setting id="debug" type="bool" label="30422" default="true"/>
+        <setting label="Upload kodi.log" type="action" action="RunScript(plugin.video.vstream, uplog, ?site=globalRun&amp;function=uplog)"/>
+        <setting id="service_log" type="text" label="30054" default="" enable="false"/>
+
+        <setting subsetting="true" label="30055" type="lsep"/>
+        <setting label="Import/Export" type="action" action="RunScript(plugin.video.vstream, sauv, ?site=globalRun&amp;function=sauv)"/>
+
+        <setting subsetting="true" label="30056" type="lsep"/>
+        <setting label="30057" type="action" action="RunScript(plugin.video.vstream, clean, ?site=globalRun&amp;function=clear)"/>
+
+        <setting subsetting="true" label="30058" type="lsep"/>
+        <setting label="30128" type="action" action="RunScript(plugin.video.vstream, addon, ?site=globalRun&amp;function=addon)"/>
+
+        <setting subsetting="true" label="30059" type="lsep"/>
+        <setting label="30129" type="action" action="RunScript(plugin.video.vstream, xbmc, ?site=globalRun&amp;function=xbmc)"/>
+
+        <setting subsetting="true" label="30060" type="lsep"/>
+        <setting label="30061" type="action" action="RunScript(plugin.video.vstream, fi, ?site=globalRun&amp;function=fi)"/>
+
+        <setting subsetting="true" label="30062" type="lsep"/>
+        <setting label="30063" type="action" action="RunScript(plugin.video.vstream, thumb, ?site=globalRun&amp;function=thumb)"/>
+
+        <setting type="sep"/>
+        <setting label="30064" type="action" action="ReloadSkin()"/>
+    </category>
+
 </settings>

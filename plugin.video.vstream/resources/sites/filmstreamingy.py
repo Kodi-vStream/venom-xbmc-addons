@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-return False
-import re
+import json
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -9,22 +8,21 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import siteManager
 from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'filmstreamingy'
 SITE_NAME = 'FilmStreamingY'
 SITE_DESC = 'stream HD, streaming Sans pub, streaming vf'
 
-URL_MAIN = "https://wwv.le-streamingk.com/"
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_MOVIE = (True, 'load')
-MOVIE_NEWS = (URL_MAIN + 'film/film-en-streaming', 'showMovies')
-MOVIE_NOTES = (URL_MAIN + 'vf/top-films-streaming', 'showMovies')
-MOVIE_IMDB = (URL_MAIN + 'vf/top-imdb-films', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'dernier', 'showMovies')
+MOVIE_TOP = (URL_MAIN + 'dernier/genres/top-films-streaming', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
 
@@ -38,11 +36,8 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'notes.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_IMDB[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_IMDB[1], 'Films (Top IMDB)', 'star.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP[1], 'Films (Populaires)', 'star.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
@@ -67,15 +62,15 @@ def showGenres():
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'category menu-item.+?href="([^"]+)">([^<]+)'
+    sPattern = 'menu-item-object-category menu-item-\d+"><a href="([^\"]+)">(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
-    triAlpha = []
-    if (aResult[0] == True):
+    else:
+        triAlpha = []
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            if aEntry[1] in ('Liste De Films De Noël', 'Top Films Streaming', 'Prochainement'):
+            if aEntry[1] in ('Liste De Films De Noël', 'Films De Noël', 'Top Films Streaming', 'Top Films', 'Prochainement', 'Uncategorized', 'Genres', 'Tendance'):
                 continue
 
             sUrl = aEntry[0]
@@ -88,7 +83,7 @@ def showGenres():
         for sTitle, sUrl in triAlpha:
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-        oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory()
 
 
 def showMovies(sSearch=''):
@@ -104,31 +99,21 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #Regex surement un peu trop leger, freeze
-    sPattern = 'item">.+?href="([^"]+).+?(?:|quality">([^<]*)).+?src="([^"]+).+?alt="([^"]+).+?(?:|tag">([^<]+)).+?p>([^<]+)'
     oParser = cParser()
+    sPattern = 'class="ml-item"> <a href="([^"]+)".+?img src="([^"]+)".+?alt="([^"]+)".+?"jtip-quality">(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
+    else:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sUrl2 = aEntry[0]
-            sQual = aEntry[1]
-            sThumb = re.sub('/w\d+/', '/w342/', aEntry[2])
-            sTitle = aEntry[3].replace(' en streaming', '').replace(' en Streaming', '').replace(' Streaming', '')\
-                              .replace(' streaming', '').replace(' Straming', '').replace('Version Francais', 'VF')
-            sYear = aEntry[4]
-            sDesc = aEntry[5].replace('<p>', '')
+            sThumb = aEntry[1]
+            sTitle = aEntry[2].replace('en streaming', '')
+            sQual = aEntry[3] if not sSearch else ''
+            sYear = ''  #aEntry[5]
+            sDesc = ''
 
             # Filtre de recherche
             if sSearch:
@@ -145,7 +130,6 @@ def showMovies(sSearch=''):
 
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        progress_.VSclose(progress_)
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
@@ -159,24 +143,13 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = "<a class=''>.+?href='([^']+).+?/(\d+)'>Last"
+    sPattern = '<link rel="next" href="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        sNextPage = aResult[1][0][0]
-        sNumberMax = aResult[1][0][1]
-        sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
-        sPaging = sNumberNext + '/' + sNumberMax
-        return sNextPage, sPaging
-
-    sPattern = "<a class=''>.+?href='([^']+).+?>(\d+)</a></li>"
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        sNextPage = aResult[1][0][0]
-        sNumberMax = aResult[1][0][1]
-        sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
-        sPaging = sNumberNext + '/' + sNumberMax
-        return sNextPage, sPaging
-
+        sNextPage = aResult[1][0]
+        sNumberNext = sNextPage.split('/')[-1]
+        return sNextPage, str(sNumberNext)
+    
     return False, 'none'
 
 
@@ -191,13 +164,12 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'iframe src="([^"]+)'
+    sPattern = 'id="tab\d".+?data-(|litespeed-)src="([^\"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
-
-            sHosterUrl = aEntry
+            sHosterUrl = aEntry[1]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)

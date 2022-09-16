@@ -10,6 +10,8 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, siteManager
 from resources.lib.util import cUtil
 
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101 Firefox/104.0"
+
 SITE_IDENTIFIER = '_33seriestreaming'
 SITE_NAME = '33 Séries'
 SITE_DESC = 'Films et Séries en streaming VF et VOSTFR'
@@ -32,8 +34,8 @@ SERIE_GENRES = (URL_MAIN, 'showSeriesGenres')
 SERIE_ANNEES = (True, 'showSerieYears')
 
 URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&story=', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&titleonly=3&catlist%5B%5D=1&story=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&titleonly=3&catlist%5B%5D=2&story=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&titleonly=3&catlist[]=1&story=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&titleonly=3&catlist[]=2&story=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 
@@ -101,7 +103,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if sSearchText is not False:
-        sUrl = sUrl + sSearchText
+        sUrl += sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -194,7 +196,7 @@ def showMovies(sSearch=''):
         sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
         sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch.replace(' ', '+').replace('%20 ', '+')
-    sPattern = 'class=".+?grid-item.+?href="([^"]+).+?src="([^"]+).+?alt="([^"]+)'
+    sPattern = 'class=".+?grid-item.+?href="([^"]+).+?-src="([^"]+).+?alt="([^"]+)'
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -275,7 +277,7 @@ def showSaisons():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'grid-item" href="([^"]+).+?src="([^"]*).+?(saison \d+)'
+    sPattern = 'grid-item" href="([^"]+).+?-src="([^"]*).+?(saison \d+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0] is True:
@@ -352,6 +354,10 @@ def showHosters():
 
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept', '*/*')
+    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
     sHtmlContent = oRequestHandler.request()
 
     if isSerie:  # episode d'une série
@@ -370,15 +376,20 @@ def showHosters():
                 dataHash = aEntry[1]
                 dataEp = aEntry[2]
                 pdata = 'mod=xfield_ajaxs&name=' + dataName + '&hash=' + dataHash + '&episode=' + dataEp
-                # pdata = 'mod=xfield_ajaxs&hash=' + dataHash + '&episode=' + dataEp + '&name=' + dataName
+                # pdata = {'mod': 'xfield_ajax', 'hash': dataHash, 'episode': dataEp, 'name' :  dataName}
+                pdata = str(pdata)
             else:
                 dataId = aEntry[0]
                 dataName = aEntry[1]
                 dataHash = aEntry[2]
-                pdata = 'mod=xfield_ajax&id=' + dataId + '&name=' + dataName + '&hash=' + dataHash
                 # pdata = 'mod=xfield_ajax&hash=' + dataHash + '&id=' + dataId + '&name=' + dataName
+                pdata = {'mod': 'xfield_ajax', 'hash': dataHash, 'id': dataId, 'name' :  dataName}
+                pdata = str(pdata)
 
             sHost = aEntry[3].strip()
+            if not cHosterGui().checkHoster(sHost):
+                continue
+
             sLang = aEntry[4]
             if sLang:
                 sLang = sLang.split('/')[-1:][0]
@@ -408,16 +419,27 @@ def hostersLink():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0"
     oRequest = cRequestHandler(sUrl)
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('User-Agent', UA)
     oRequest.addHeaderEntry('Referer', referer)
     oRequest.addHeaderEntry('Accept', '*/*')
     oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-    oRequest.addParametersLine(pdata)
+    
+    # Fonctionnement différent entre film et serie
+    if 'episode' in pdata:
+        oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+        oRequest.addParametersLine(pdata)
+    else:
+        # import string
+        # boundary = ''.join(random.sample(string.ascii_letters + string.digits, 16))
+        # oRequest.addHeaderEntry('Content-Type', 'multipart/form-data; boundary=----WebKitFormBoundary%s' % boundary)
+       import ast
+       pdata = ast.literal_eval(pdata)
+       oRequest.addMultipartFiled(pdata)
+
     sHtmlContent = oRequest.request()
+        
     sPattern = '(http[^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 

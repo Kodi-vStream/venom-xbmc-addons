@@ -28,8 +28,9 @@ SITE_DESC = 'Tous les sports'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 SPORT_SPORTS = (True, 'load')
+TV_TV = (True, 'load')
 SPORT_TV = ('sport', 'showTV')
-CHAINE_TV = ('cinema', 'showTV')
+CHAINE_CINE = ('cinema', 'showTV')
 SPORT_LIVE = ('/', 'showMovies')
 SPORT_GENRES = ('/', 'showGenres')
 
@@ -91,8 +92,8 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines TV Sports', 'sport.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', CHAINE_TV[0])
-    oGui.addDir(SITE_IDENTIFIER, CHAINE_TV[1], 'Chaines TV Ciné', 'tv.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', CHAINE_CINE[0])
+    oGui.addDir(SITE_IDENTIFIER, CHAINE_CINE[1], 'Chaines TV Ciné', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -245,10 +246,15 @@ def showLink():
 # alternative    sHoster = 'https://1rowsports.com/player/%d/%s'
 
     oOutputParameterHandler = cOutputParameterHandler()
-    for i in range(1, 4):
+    
+    # jusqu'à 6 hosters, mais on vStream ne sait décoder que le 1 et le 5.
+    hosters = [1, 5]
+#    for numHost in range(1, 7):
+    i=0
+    for numHost in hosters:
+        i += 1
         sDisplayTitle = '%s [Lien %d]' % (sMovieTitle, i)
-
-        sHosterUrl = sHoster % (i, sUrl)
+        sHosterUrl = sHoster % (numHost, sUrl)
         oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
         oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -267,10 +273,7 @@ def showHoster():
     if not sThumb:
         sThumb = ''
 
-    if "leet365.cc" in sUrl:
-        bvalid, shosterurl = Hoster_Leet365(sUrl, sUrl)
-        if bvalid:
-            sHosterUrl = shosterurl
+    bvalid, sHosterUrl = Hoster_Leet365(sUrl, sUrl)
 
     if sHosterUrl:
         sHosterUrl = sHosterUrl.strip()
@@ -296,6 +299,8 @@ def Hoster_Leet365(url, referer):
         hostUrl = aResult[1][0]
         if 'dailymotion' in hostUrl:
             return True, hostUrl
+        if 'fclecteur.com' in hostUrl:
+            return Hoster_Laylow(hostUrl, url)
         return Hoster_Wigistream(hostUrl, url)
 
     sPattern = '<script>fid="(.+?)".+?src="\/\/fclecteur\.com\/footy\.js">'
@@ -309,6 +314,9 @@ def Hoster_Leet365(url, referer):
 
 
 def Hoster_Wigistream(url, referer):
+    
+    if not url.startswith('http'):
+        url = 'https:' + url
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     oRequestHandler.addHeaderEntry('Referer', referer)

@@ -9,7 +9,8 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, siteManager
+from resources.lib.comaddon import siteManager
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = '_4kstreamz'
 SITE_NAME = '4kstreamz'
@@ -144,6 +145,10 @@ def showMovies(sSearch=''):
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_MOVIES[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch.replace(' ', '-').replace('%20', '-') + '.html'
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -154,18 +159,9 @@ def showMovies(sSearch=''):
         sPattern = '<a class="movie_single.+?href="([^"]+).+?img src="([^"]+).+?class="nop">([^<]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is False:
-        oGui.addText(SITE_IDENTIFIER)
-
-    if aResult[0] is True:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sUrl2 = aEntry[0]
             if 'http' not in sUrl2:
                 sUrl2 = URL_MAIN[:-1] + sUrl2
@@ -175,6 +171,10 @@ def showMovies(sSearch=''):
                 sThumb = URL_MAIN[:-1] + sThumb
 
             sTitle = aEntry[2].strip()
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
+
             sQual = ''
             sDesc = ''
             if 'list-films.html' in sUrl or '/films/page' in sUrl:
@@ -193,9 +193,9 @@ def showMovies(sSearch=''):
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
-
+    else:
+        oGui.addText(SITE_IDENTIFIER)
+        
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if sNextPage is not False:
@@ -330,6 +330,7 @@ def ShowEpisodes():
 
 def showLinks():
     oGui = cGui()
+    oHosterGui = cHosterGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -359,7 +360,7 @@ def showLinks():
                 dataUrl = aEntry[1]
                 dataCode = aEntry[2]
                 sHost = aEntry[3].capitalize()
-                if isBlackHost(sHost):
+                if not oHosterGui.checkHoster(sHost):
                     continue
 
                 sUrl2 = URL_MAIN + 'Players.php?PPl=' + dataUrl + '&CData=' + dataCode
@@ -387,6 +388,8 @@ def showLinks():
                 dataUrl = aEntry[1]
                 dataCode = aEntry[2]
                 sHost = aEntry[3].capitalize()
+                if not oHosterGui.checkHoster(sHost):
+                    continue
 
                 sUrl2 = URL_MAIN + 'Players.php?PPl=' + dataUrl + 'CData=' + dataCode
 
@@ -405,6 +408,7 @@ def showLinks():
 
 def showHosters():
     oGui = cGui()
+    oHosterGui = cHosterGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -426,27 +430,18 @@ def showHosters():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0] is True:
             sHosterUrl = aResult[1][0]
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            oHoster = oHosterGui.checkHoster(sHosterUrl)
             if oHoster is not False:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     else:
         sHosterUrl = urlReal
-        oHoster = cHosterGui().checkHoster(sHosterUrl)
+        oHoster = oHosterGui.checkHoster(sHosterUrl)
         if oHoster is not False:
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+            oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
-
-
-def isBlackHost(url):
-    black_host = ['4k player', 'streamango', 'openload', 'verystream']
-    urlLower = url.lower()
-    for host in black_host:
-        if host.lower() in urlLower:
-            return True
-    return False

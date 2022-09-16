@@ -23,17 +23,29 @@ try:  # Python 2
 except ImportError:  # Python 3
     from urllib.parse import urlparse
 
+
+def GetUrlMain():
+    oRequestHandler = cRequestHandler(siteManager().getUrlMain(SITE_IDENTIFIER))
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = '<a href="(.+?)"'
+    oParser = cParser()
+    urlMain = oParser.parse(sHtmlContent, sPattern)[1][0]
+    return urlMain
+
+
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
 SITE_IDENTIFIER = 'streamonsport'
 SITE_NAME = 'Streamonsport'
 SITE_DESC = 'Site pour regarder du sport en direct'
 
-URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
+URL_MAIN = GetUrlMain()
 
 SPORT_SPORTS = ('/', 'load')
+TV_TV = ('/', 'load')
 SPORT_TV = ('31-site-pour-regarder-les-chaines-de-sport.html', 'showMovies')
-CHAINE_TV = ('2370162-chaines-tv-streaming-tf1-france-2-canal-plus.html', 'showMovies')
+#CHAINE_CINE = ('2370162-chaines-tv-streaming-tf1-france-2-canal-plus.html', 'showMovies')
 SPORT_LIVE = ('/', 'showMovies')
 SPORT_GENRES = ('/', 'showGenres')
 
@@ -46,14 +58,14 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Sports (En direct)', 'replay.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Sports (Genres)', 'genres.png', oOutputParameterHandler)
-
+    # oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
+    # oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Sports (Genres)', 'genres.png', oOutputParameterHandler)
+    #
     oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines TV Sports', 'sport.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', CHAINE_TV[0])
-    oGui.addDir(SITE_IDENTIFIER, CHAINE_TV[1], 'Chaines TV Ciné', 'tv.png', oOutputParameterHandler)
+    # oOutputParameterHandler.addParameter('siteUrl', CHAINE_CINE[0])
+    # oGui.addDir(SITE_IDENTIFIER, CHAINE_CINE[1], 'Chaines TV Ciné', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -61,30 +73,16 @@ def load():
 def showGenres():
     oGui = cGui()
 
-    oRequestHandler = cRequestHandler(URL_MAIN)
-    sHtmlContent = oRequestHandler.request()
-
-    sPattern = '<a href="(.+?)"><img alt="(.+?)".+?src="(.+?)">'
-    oParser = cParser()
-    sHtmlContent = oParser.abParse(sHtmlContent, '<div class="teams"', '</div></div>')
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if aResult[0] is False:
-        oGui.addText(SITE_IDENTIFIER)
-
-    if aResult[0] is True:
-        oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in aResult[1]:
-            title = aEntry[1].replace('streaming', '').strip()
-            sThumb = aEntry[2].replace(',', '%2C').replace('?v=so', '')
-            if 'http' not in sThumb:
-                sThumb = URL_MAIN[:-1] + sThumb
-
-            oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
-            oOutputParameterHandler.addParameter('sMovieTitle', title)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMisc(SITE_IDENTIFIER, 'showMovies', title, 'genres.png', sThumb, title, oOutputParameterHandler)
-
+    genreURL = '-basketball-streaming-regarder-le-basket-en-streaming.html'
+    genres = [('Basket', '3'), ('Football', '1'), ('Rugby', '2'), ('Tennis', '5')]
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    for title, url in genres:
+        sUrl = URL_MAIN + url + genreURL
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('sMovieTitle', title)
+        oGui.addMisc(SITE_IDENTIFIER, 'showMovies', title, 'genres.png', '', title, oOutputParameterHandler)
+        
     oGui.setEndOfDirectory()
 
 
@@ -112,12 +110,13 @@ def showMovies(sSearch=''):
         for aEntry in aResult[1]:
             sThumb = aEntry[0]
             sUrl2 = aEntry[1]
-            sTitle = aEntry[2].replace(' streaming gratuit', '').replace(' foot', '')
+            sTitle = aEntry[2].replace(' streaming gratuit', '').replace(' foot', '').replace('🆚', '/')
             sDate = aEntry[3]
             sDesc1 = aEntry[4]
 
             # bChaine = False
-            if sUrl != CHAINE_TV[0] and sUrl != SPORT_TV[0]:
+            #if sUrl != CHAINE_CINE[0] and sUrl != SPORT_TV[0]:
+            if sUrl != SPORT_TV[0]:
                 sDisplayTitle = sTitle
                 if sDesc1 and 'chaîne' not in sDesc1 and 'chaine' not in sDesc1:
                     sDisplayTitle += ' (' + sDesc1.replace(' · ', '') + ')'
@@ -125,7 +124,7 @@ def showMovies(sSearch=''):
                     try:
                         d = datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S+02:00')[0:6]))
                         sDate = d.strftime("%d/%m/%y %H:%M")
-                    except Exception as e:
+                    except Exception:
                         pass
                     sDisplayTitle = sDate + ' - ' + sDisplayTitle
             else:
@@ -144,7 +143,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addMisc(SITE_IDENTIFIER, 'showLive', sDisplayTitle, 'tv.png', sThumb, sDisplayTitle, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showLive', sDisplayTitle, sThumb, sDisplayTitle, oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -163,7 +162,7 @@ def showLive():
     oParser = cParser()
 
     # liens visibles
-    sPattern = "btn btn-(success|warning) *btn-sm.+?src='([^\']*).+?img src=\".+?lang\/([^\"]*)\.gif.+?this\.src='.+?lang\/([^\']*)\.gif"
+    sPattern = r"btn btn-(success|warning) *btn-sm.+?src='([^\']*).+?img src=\".+?lang\/([^\"]*)\.gif.+?this\.src='.+?lang\/([^\']*)\.gif"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     i = 0
@@ -275,7 +274,7 @@ def showLink():
     if sHosterUrl:
         sHosterUrl = sHosterUrl.strip()
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if oHoster != False:
+        if oHoster is not False:
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -290,7 +289,7 @@ def Hoster_Pkcast(url, referer):
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = 'play\(\).+?return\((.+?)\.join'
+    sPattern = r'play\(\).+?return\((.+?)\.join'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult:
@@ -308,7 +307,7 @@ def Hoster_Telerium(url, referer):
     urlrederict = oRequestHandler.getRealUrl()
     urlmain = 'https://' + urlrederict.split('/')[2]  # ex https://telerium.club
 
-    sPattern = 'var\s+cid[^\'"]+[\'"]{1}([0-9]+)'
+    sPattern = r'var\s+cid[^\'"]+[\'"]{1}([0-9]+)'
     aResult = re.findall(sPattern, sHtmlContent)
 
     if aResult:
@@ -322,7 +321,7 @@ def Hoster_Telerium(url, referer):
         realtoken = getRealTokenJson(nxturl, urlrederict)[10][::-1]
         try:
             m3url = m3url.decode("utf-8")
-        except:
+        except Exception:
             pass
 
         sHosterUrl = 'https:' + m3url + realtoken
@@ -348,7 +347,7 @@ def Hoster_Leet365(url, referer):
             return True, hostUrl
         return Hoster_Wigistream(hostUrl, url)
 
-    sPattern = '<script>fid="(.+?)".+?src="\/\/fclecteur\.com\/footy\.js">'
+    sPattern = r'<script>fid="(.+?)".+?src="\/\/fclecteur\.com\/footy\.js">'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         referer = url
@@ -364,7 +363,7 @@ def Hoster_Andrhino(url, referer):
     oRequestHandler.addHeaderEntry('Referer', referer)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = "atob\('([^']+)"
+    sPattern = r"atob\('([^']+)"
     aResult = re.findall(sPattern, sHtmlContent)
 
     if aResult:
@@ -372,7 +371,7 @@ def Hoster_Andrhino(url, referer):
         return True, url2.strip() + '|User-Agent=' + UA + '&Referer=' + Quote(url)
 
     # fichier vu mais ne sait plus dans quel cas
-    sPattern = "source:\s'(https.+?m3u8)"
+    sPattern = r"source:\s'(https.+?m3u8)"
     aResult = re.findall(sPattern, sHtmlContent)
 
     if aResult:
@@ -387,7 +386,7 @@ def Hoster_Wigistream(url, referer):
     oRequestHandler.addHeaderEntry('Referer', referer)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
+    sPattern = r'(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
     aResult = re.findall(sPattern, sHtmlContent)
 
     if aResult:
@@ -436,7 +435,7 @@ def getRealTokenJson(link, referer):
 
     try:
         realResp = oRequestHandler.request()
-    except:
+    except Exception:
         pass
 
     if not realResp:

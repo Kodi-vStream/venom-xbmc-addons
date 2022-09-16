@@ -19,6 +19,7 @@ STREAM = 'index.php?file=Media&nuked_nude=index&op=do_dl&dl_id='
 
 INDEX = 'index.php?file=Search&op=mod_search&searchtype=matchand&autor=&module=Download&limit=100&main='
 URL_SEARCH_ANIMS = (URL_MAIN + INDEX, 'showEpisode')
+#URL_SEARCH_DRAMAS = (URL_MAIN + INDEX, 'showEpisode')
 FUNCTION_SEARCH = 'showEpisode'
 
 ANIM_ANIMS = (True, 'showMenuAnims')
@@ -34,9 +35,6 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
 
@@ -50,6 +48,9 @@ def showMenuAnims():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMS[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (Films)', 'films.png', oOutputParameterHandler)
 
@@ -71,6 +72,9 @@ def showMenuDramas():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH_ANIMS[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, DRAMA_GENRES[1], 'Dramas (Genres)', 'genres.png', oOutputParameterHandler)
 
@@ -203,7 +207,7 @@ def showSeries():
             if '-animes-' in sUrl:
                 oGui.addAnime(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addDrama(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -280,7 +284,7 @@ def showHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
     if sThumb:
         sThumb = sThumb.replace(' ', '%20')
-    oHoster = cHosterGui().checkHoster('m3u8')
+    oHoster = cHosterGui().checkHoster('.m3u8')
 
     if oHoster != False:
         oHoster.setDisplayName(sMovieTitle)

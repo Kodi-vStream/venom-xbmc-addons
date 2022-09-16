@@ -15,11 +15,14 @@ class cSearch:
     def __init__(self):
         self.addons = addon()
 
-    def searchGlobal(self):
+    def searchGlobal(self, sSearchText = '', sCat = ''):
         try:
-            oInputParameterHandler = cInputParameterHandler()
-            sSearchText = oInputParameterHandler.getValue('searchtext')
-            sCat = oInputParameterHandler.getValue('sCat')
+            if not sSearchText:
+                oInputParameterHandler = cInputParameterHandler()
+                sSearchText = oInputParameterHandler.getValue('searchtext')
+                sCat = oInputParameterHandler.getValue('sCat')
+
+            sSearchText = sSearchText.replace(':', ' ')
 
             listPlugins = self._initSearch(sSearchText, sCat)
 
@@ -133,7 +136,7 @@ class cSearch:
         listThread = []
         window(10101).setProperty('search', 'true')
         for plugin in listPlugins:
-            thread = threading.Thread(target = targetFunction, args = tuple([plugin] + argsList))
+            thread = threading.Thread(target = targetFunction, name = plugin['name'], args = tuple([plugin] + argsList))
             thread.start()
             listThread.append(thread)
 

@@ -7,8 +7,8 @@
         },
         "_33seriestreaming": {
             "label": "33 S\u00e9ries",
-            "active": "True",
-            "url": "https://33seriestreaming.rip/"
+            "active": "False",
+            "url": "https://wwv.33seriestreaming.info/"
         },
         "_4kstreamz": {
             "label": "4kstreamz",
@@ -27,7 +27,7 @@
         "animecomplet": {
             "label": "AnimeComplet",
             "active": "True",
-            "url": "https://animecomplet.me/"
+            "url": "https://ianime-fr.com/"
         },
         "animeultime": {
             "label": "Anime Ultime",
@@ -51,12 +51,12 @@
         },
         "cine974": {
             "label": "cine974",
-            "active": "True",
+            "active": "False",
             "url": "https://www.cine974.com/"
         },
         "cinemay_cc": {
             "label": "Cinemay_cc",
-            "active": "True",
+            "active": "False",
             "url": "https://cinemay.cc/"
         },
         "cinemay_com": {
@@ -66,7 +66,7 @@
         },
         "dbanimes": {
             "label": "DBanimes",
-            "active": "True",
+            "active": "False",
             "url": "https://dbanimes.co/"
         },
         "debrid_link": {
@@ -80,13 +80,13 @@
             "url": "https://documentaire.io/"
         },
         "dpstream": {
-            "label": "Dpstream",
-            "active": "True",
+            "label": "DpStream",
+            "active": "False",
             "url": "https://dpstream.io/"
         },
         "dpstreamhd": {
             "label": "DpStream HD",
-            "active": "True",
+            "active": "False",
             "url": "https://serie.dpstreamhd.com/"
         },
         "ducine": {
@@ -97,12 +97,12 @@
         "enstream_series": {
             "label": "Enstream (S\u00e9ries)",
             "active": "True",
-            "url": "https://www.enstream.cam/"
+            "url": "https://wvw.enstream.cam/"
         },
         "extreme_down": {
             "label": "ExtremeDown",
             "active": "True",
-            "url": "https://www.extreme-down.plus/"
+            "url": "https://www.extreme-down.io/"
         },
         "filmoflix": {
             "label": "Filmoflix",
@@ -116,23 +116,23 @@
         },
         "filmstoon_pro": {
             "label": "Films Toon",
-            "active": "True",
+            "active": "False",
             "url": "https://filmstoon.in/"
         },
         "filmstreamingy": {
             "label": "FilmstreamingY",
             "active": "True",
-            "url": "https://wwv.le-streamingk.com/"
+            "url": "https://www.film-streamingk.biz/"
         },
         "filmstreamvk_com": {
             "label": "Filmstream vk",
-            "active": "True",
+            "active": "False",
             "url": "https://filmstreamvk.bz/"
         },
         "free_telechargement_org": {
             "label": "Free Telechargement",
             "active": "True",
-            "url": "https://www.free-telecharger.net/"
+            "url": "https://www.free-telecharger.top/"
         },
         "freebox": {
             "label": "Freebox",
@@ -147,7 +147,7 @@
         "french_stream_lol": {
             "label": "French-stream-lol",
             "active": "True",
-            "url": "https://french-stream.re/"
+            "url": "https://wwv.french-stream.re/"
         },
         "frenchanimes": {
             "label": "French Animes",
@@ -161,7 +161,7 @@
         },
         "funeralforamanga": {
             "label": "Funeral for a manga",
-            "active": "True",
+            "active": "False",
             "url": "https://funeralforamanga.fr/"
         },
         "gum_gum_streaming_com": {
@@ -176,7 +176,7 @@
         },
         "hds_stream": {
             "label": "Hds-stream",
-            "active": "True",
+            "active": "False",
             "url": "https://hds.club/"
         },
         "ianime": {
@@ -194,11 +194,6 @@
             "active": "True",
             "url": "https://streaming-films.net/"
         },
-        "kaydo_ws": {
-            "label": "kaydo",
-            "active": "True",
-            "url": "https://hdss.nu/"
-        },
         "kepliz_com": {
             "label": "Kepliz",
             "active": "True",
@@ -211,7 +206,7 @@
         },
         "kstreamingserie": {
             "label": "K streaming S\u00e9rie",
-            "active": "True",
+            "active": "False",
             "url": "https://www.kstreamingserie.com/"
         },
         "leet365": {
@@ -221,7 +216,7 @@
         },
         "les_debiles": {
             "label": "Les D\u00e9biles",
-            "active": "True",
+            "active": "False",
             "url": "http://www.lesdebiles.com/"
         },
         "les_docus": {
@@ -231,7 +226,7 @@
         },
         "libertyland_tv": {
             "label": "Libertyland",
-            "active": "True",
+            "active": "False",
             "url": "https://www.libertyvf.one/"
         },
         "livetv": {
@@ -241,7 +236,7 @@
         },
         "lsdb": {
             "label": "Liveset Database",
-            "active": "True",
+            "active": "False",
             "url": "https://lsdb.eu"
         },
         "mamcin": {
@@ -252,7 +247,7 @@
         "mesfilms": {
             "label": "Mes Films",
             "active": "True",
-            "url": "https://mesfilms.net/"
+            "url": "https://mesfilms.lol/"
         },
         "mystream_zone": {
             "label": "MyStream",
@@ -272,7 +267,7 @@
         "o1streaming": {
             "label": "O1 streaming",
             "active": "True",
-            "url": "https://01streaming.tv/"
+            "url": "https://www.01streaming.tv/"
         },
         "otaku_attitude": {
             "label": "Otaku-Attitude",
@@ -342,17 +337,7 @@
         "stream_complet": {
             "label": "Stream Complet",
             "active": "True",
-            "url": "https://w3.stream-complet.biz/"
-        },
-        "streamcomplet3": {
-            "label": "Streamcomplet3",
-            "active": "True",
-            "url": "https://streamcomplet3.cc/"
-        },
-        "streamdivx": {
-            "label": "StreamDivx",
-            "active": "True",
-            "url": "https://wvvw.streamdivx.net/"
+            "url": "https://ww.streamcomplet.click/"
         },
         "streaming_series": {
             "label": "Streaming-Series",
@@ -367,17 +352,12 @@
         "streaminz": {
             "label": "Streaminz",
             "active": "True",
-            "url": "https://www.streaminz.biz/"
+            "url": "https://www.streaminz.us/"
         },
         "streamonsport": {
             "label": "Streamonsport",
             "active": "True",
-            "url": "https://streamonsport11.xyz/"
-        },
-        "streampourvous": {
-            "label": "Streampourvous",
-            "active": "True",
-            "url": "https://ww1.streampourvous.ws/"
+            "url": "https://www.streamonsport.net/"
         },
         "telecharger_streaming": {
             "label": "T\u00e9l\u00e9charger-streaming",
@@ -389,14 +369,9 @@
             "active": "True",
             "url": "https://www.themoviedb.org/"
         },
-        "tirexo": {
-            "label": "Tirexo",
-            "active": "True",
-            "url": "https://www2.tirexo.art/"
-        },
         "toonanime": {
             "label": "Toonanime",
-            "active": "True",
+            "active": "False",
             "url": "https://vvww.toonanime.cc/"
         },
         "topimdb": {
@@ -406,13 +381,18 @@
         },
         "topreplay": {
             "label": "TopReplay",
+            "active": "False",
+            "url": "https://vww.topreplay.cc/"
+        },
+        "uptobox_live": {
+            "label": "Uptobox Live",
             "active": "True",
-            "url": "https://wvw.topreplay.cc/"
+            "url": "https://uptobox.live/"
         },
         "vf_film": {
             "label": "VF Film",
             "active": "True",
-            "url": "https://vf-film.co/"
+            "url": "https://vf-film.top/"
         },
         "vf_serie": {
             "label": "VF S\u00e9rie",
@@ -422,12 +402,7 @@
         "vfilms": {
             "label": "VFilms",
             "active": "True",
-            "url": "https://www.vfilms.club/"
-        },
-        "videobuzzy_com": {
-            "label": "Videobuzzy",
-            "active": "True",
-            "url": "https://www.videobuzzy.com/"
+            "url": "https://wwvv.vfilms.live/"
         },
         "viki_com": {
             "label": "Viki",
@@ -439,11 +414,6 @@
             "active": "True",
             "url": "https://voiranime.com/"
         },
-        "voirfilms_org": {
-            "label": "VoirFilms",
-            "active": "True",
-            "url": "https://www.voir-films.info/"
-        },
         "voirseries_best": {
             "label": "VoirSeries",
             "active": "True",
@@ -452,22 +422,22 @@
         "vostfree": {
             "label": "Vostfree",
             "active": "True",
-            "url": "https://vostfree.tv/"
+            "url": "https://vostfree.cx/"
         },
         "watchvf": {
             "label": "WatchVF",
-            "active": "True",
+            "active": "False",
             "url": "https://watchvf.com/"
         },
         "wawacity": {
             "label": "Wawacity",
             "active": "True",
-            "url": "https://www.wawacity.blue/"
+            "url": "https://www.wawacity.red/"
         },
         "wiflix": {
             "label": "WiFlix",
             "active": "True",
-            "url": "https://wiflix.city/"
+            "url": "https://www.wiflix.zone/"
         },
         "youtitou_com": {
             "label": "YouTitou (Anim\u00e9s)",
@@ -478,16 +448,6 @@
             "label": "Zone Streaming",
             "active": "True",
             "url": "http://www.zone-streaming.fr/"
-        },
-        "zone_telechargement_ws": {
-            "label": "Zone T\u00e9l\u00e9chargement.ws",
-            "active": "True",
-            "url": "https://www.zone-telechargement.cam/"
-        },
-        "zustream": {
-            "label": "ZuStream",
-            "active": "True",
-            "url": "https://www.zustream.info/"
         }
     }
 }

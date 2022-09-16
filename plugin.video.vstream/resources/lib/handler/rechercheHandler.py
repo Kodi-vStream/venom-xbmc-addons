@@ -81,9 +81,17 @@ class cRechercheHandler:
         elif sCat == '3':
             sSearch = 'URL_SEARCH_ANIMS'
         elif sCat == '4':
-            sSearch = 'URL_SEARCH_DRAMAS'
+            sSearch = 'URL_SEARCH_SERIES'
         elif sCat == '5':
             sSearch = 'URL_SEARCH_MISC'
+        elif sCat == '6':
+            sSearch = 'URL_SEARCH'
+        elif sCat == '7':
+            sSearch = 'URL_SEARCH_MOVIES'
+        elif sCat == '8':
+            sSearch = 'URL_SEARCH_SERIES'
+        elif sCat == '9':
+            sSearch = 'URL_SEARCH_DRAMAS'
         else:
             sSearch = 'URL_SEARCH'
 
@@ -93,7 +101,9 @@ class cRechercheHandler:
             pluginData['name'] = plugin.SITE_NAME
             pluginData['search'] = getattr(plugin, sSearch)
             return pluginData
-        except:
+        except Exception as e:
+            if ("has no attribute '%s'" % sSearch) not in str(e):
+                VSlog(str(e))
             return False
 
     def getAvailablePlugins(self):
@@ -111,7 +121,8 @@ class cRechercheHandler:
                 meta = {'title': sText, 'disp': sCat}
                 with cDb() as db:
                     db.insert_history(meta)
-        except:
+        except Exception as e:
+            VSlog(str(e))
             pass
 
         sFolder = "special://home/addons/plugin.video.vstream/resources/sites"
@@ -123,10 +134,11 @@ class cRechercheHandler:
         aPlugins = []
         aFileNames = self.__getFileNamesFromFolder(sFolder)
         for sFileName in aFileNames:
-            if sitesManager.isActive(sFileName):
-                aPlugin = self.importPlugin(sFileName, sCat)
-                if aPlugin:
-                    aPlugins.append(aPlugin)
+            if sitesManager.isEnable(sFileName):
+                if sitesManager.isActive(sFileName):
+                    aPlugin = self.importPlugin(sFileName, sCat)
+                    if aPlugin:
+                        aPlugins.append(aPlugin)
 
         return aPlugins
 

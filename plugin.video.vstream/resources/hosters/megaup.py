@@ -2,14 +2,12 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
 import time
-import requests
 
 from resources.hosters.hoster import iHoster
-from resources.lib.parser import cParser
-from resources.lib.comaddon import dialog, VSlog
 from resources.lib.handler.requestHandler import cRequestHandler
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0'
+
 
 class cHoster(iHoster):
 
@@ -22,8 +20,8 @@ class cHoster(iHoster):
         sHtmlContent = oRequestHandler.request()
         cookies = oRequestHandler.GetCookies() + ";"
 
-        data = re.search('Mhoa_URL\((.+?)\);',sHtmlContent).group(1)
-        data = re.findall("'(.+?)'",data)
+        data = re.search('Mhoa_URL\((.+?)\);', sHtmlContent).group(1)
+        data = re.findall("'(.+?)'", data)
 
         part1 = data[0]
         part2 = data[1]
@@ -40,22 +38,22 @@ class cHoster(iHoster):
 
         time.sleep(6)
 
-        oRequestHandler = cRequestHandler("https://download.megaup.net/?idurl=" + cidken + "&idfilename=" + file + \
-            "&idfilesize=" + size)
+        oRequestHandler = cRequestHandler("https://download.megaup.net/?idurl=" + cidken + "&idfilename=" + file +
+                                          "&idfilesize=" + size)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         sHtmlContent = oRequestHandler.request()
 
-        la = re.search('window\.location\.replace\("(.+?)"',sHtmlContent).group(1)
+        la = re.search('window\.location\.replace\("(.+?)"', sHtmlContent).group(1)
 
         oRequestHandler = cRequestHandler(la)
         oRequestHandler.disableRedirect()
         oRequestHandler.addHeaderEntry('User-Agent', UA)
         oRequestHandler.addHeaderEntry("Referer", "https://download.megaup.net/")
         oRequestHandler.addHeaderEntry("Cookie", cookies)
-        sHtmlContent = oRequestHandler.request()
+        oRequestHandler.request()
         api_call = oRequestHandler.getResponseHeader()['Location']
 
         if api_call:
-            return True,  api_call + "|User-Agent="+UA
+            return True, api_call + "|User-Agent=" + UA
 
         return False, False

@@ -10,7 +10,8 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, siteManager
+from resources.lib.comaddon import siteManager
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'animecomplet'
 SITE_NAME = 'Animecomplet'
@@ -18,12 +19,9 @@ SITE_DESC = 'Series Anime'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
-tag_alpha = 'tagaplha'
 ANIM_ANIMS = (True, 'load')
-ANIM_NEWS = (URL_MAIN, 'showAnims')
-ANIM_LIST = (URL_MAIN + 'liste-manga-vostfr-et-manga-vf/', 'showAnims')
-ANIM_ALPHA = (tag_alpha, 'showAlpha')
-ANIM_VOSTFRS = (URL_MAIN, 'showAnims')
+# ANIM_NEWS = (URL_MAIN, 'showAnims')
+# ANIM_ALPHA = (URL_MAIN, 'showAlpha')
 
 tag_global = '#global'
 URL_SEARCH_ANIMS = (URL_MAIN + tag_global + '?s=', 'showAnims')
@@ -37,11 +35,8 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers  épisodes récents)', 'series.png', oOutputParameterHandler)
-
-    # oOutputParameterHandler.addParameter('siteUrl', ANIM_LIST[0])
-    # oGui.addDir(SITE_IDENTIFIER, ANIM_LIST[1], 'Animés (Liste complète)', 'listes.png', oOutputParameterHandler)
+    # oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
+    # oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers  épisodes récents)', 'series.png', oOutputParameterHandler)
 
     # oOutputParameterHandler.addParameter('siteUrl', ANIM_ALPHA[0])
     # oGui.addDir(SITE_IDENTIFIER, ANIM_ALPHA[1], 'Animés (Liste alphabétique)', 'az.png', oOutputParameterHandler)
@@ -54,7 +49,6 @@ def showAlpha():
     sAlpha = string.ascii_lowercase
     listAlpha = list(sAlpha)
     liste = []
-    url1 = tag_alpha + ';'
 
     req = ANIM_LIST[0]
     oRequestHandler = cRequestHandler(req)
@@ -100,32 +94,24 @@ def showAnims(sSearch=''):
 
     bSearchGlobal = False
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_ANIMS[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch.replace(' ', '+').replace('%20', '+')
         if tag_global in sSearch:
             sUrl = sUrl.replace(tag_global, '')
             bSearchGlobal = True
-
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
     # pour la liste alpha on peu aussi faire sUrl = alpha (plus rapide)
     # sPattern = '<a href="([^"]+)">..' + alpha + '([^<]+).+?style="width'
-    bAlpha = False
-    sAlpha = ''
-    if tag_alpha in sUrl:
-        letag, sAlpha = sUrl.split(';')
-        sUrl = ANIM_LIST[0]
-        bAlpha = True
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    if sUrl == ANIM_LIST[0]:
-        sPattern = '<a href="([^"]+)">.([^<]+).+?style="width'
-    else:
-        sPattern = '<center><p><img.*?src=.([^">]+).*?category"><a href="([^"]+).+?title="([^"]+).+?meta-date">([^<]+)'
-
+    sPattern = '<article id=".+?img src="([^\"]+)".+?<a href="([^\"]+)"><.+?>(.+?)<'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -134,50 +120,28 @@ def showAnims(sSearch=''):
 
     if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
-
-    if aResult[0] is True:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
+    else:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
             iCurrent = iCurrent + 1
             sThumb = ''
             sDesc = ''
-            if sUrl == ANIM_LIST[0]:
-                sUrl2 = aEntry[0]
-                sTitle = aEntry[1]
-                try:  # décodage fait avant comparaison
-                    sTitle = sTitle.decode('ascii', errors='ignore')
-                except:
-                    pass
-                if '(0)' in sTitle or 'EPISODES' in sTitle:  # EPISODES 1 element pattern a revoir pattern
-                    continue
-
-                if bAlpha:
-                    sTitle2 = sTitle.strip().lower()
-                    if not sTitle2.startswith(sAlpha):
-                        continue
-
-            else:
-                sThumb = aEntry[0]
-                sUrl2 = aEntry[1]
-                sTitle = aEntry[2]
-                sDesc = 'Mise à jour : ' + aEntry[3]
-                try:
-                    sTitle = sTitle.decode('ascii', errors='ignore')
-                except:
-                    pass
+            sThumb = aEntry[0]
+            sUrl2 = aEntry[1]
+            sTitle = aEntry[2]
+            try:
+                sTitle = sTitle.decode('ascii', errors='ignore')
+            except:
+                pass
+            sTitle = sTitle.replace(' - Episode', ' Episode').replace(' VOSTFR', '').replace(' VF', '')
+            if sSearch and not oUtil.CheckOccurence(sSearchText, sTitle):
+                continue    # Filtre de recherche
 
             sLang = ''
             if ' VOSTFR' in sTitle:
                 sLang = 'VOSTFR'
-                sTitle = sTitle.replace(' - Episode', ' Episode').replace(' VOSTFR', '')
-
+            if ' VF' in sTitle:
+                sLang = 'VF'
             if 'http' not in sThumb:
                 sThumb = URL_MAIN + sThumb
 
@@ -194,12 +158,11 @@ def showAnims(sSearch=''):
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            # oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addAnime(SITE_IDENTIFIER, 'showEpisodes', sDisplayTtitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sLang', sLang)
+            oGui.addAnime(SITE_IDENTIFIER, 'seriesHosters', sDisplayTtitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        progress_.VSclose(progress_)
-
-    if not sSearch:
+    if not bSearchGlobal:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if sNextPage is not False:
             oOutputParameterHandler = cOutputParameterHandler()
@@ -211,12 +174,12 @@ def showAnims(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '>([^<]+)</a><a class="next page.+?href="([^"]+).+?Next'
+    sPattern = '>([^<]+)</a><a class="next page.+?href="([^"]+).+?Suivant'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0] is True:
         sNumberMax = aResult[1][0][0]
-        sNextPage = aResult[1][0][1]
-        sNumberNext = re.search('page/([0-9]+)', aResult[1][0][1]).group(1)
+        sNextPage = URL_MAIN + aResult[1][0][1]
+        sNumberNext = re.search('paged=([0-9]+)', sNextPage).group(1)
         sPaging = sNumberNext + '/' + sNumberMax
         return sNextPage, sPaging
 
@@ -329,7 +292,7 @@ def seriesHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'iframe loading.+?src="([^"]+)'
+    sPattern = 'iframe.+?src="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -343,14 +306,9 @@ def seriesHosters():
 
             # sHost = ''
             oHoster = cHosterGui().checkHoster(sUrl2)
-            if oHoster is not False:
-                sHost = '[COLOR coral]' + oHoster.getDisplayName() + '[/COLOR]'
-            else:
-                sHost = '[COLOR pink]' + getHostName(sUrl2) + '[/COLOR]'
-
-            # juste pour dire que c'est le lien le plus fiable en generale
-            if 'SendVid' in sHost:
-                sHost = sHost + ' #'
+            if not oHoster:
+                continue
+            sHost = '[COLOR coral]' + oHoster.getDisplayName() + '[/COLOR]'
 
             sDisplayTitle = sMovieTitle + ' ' + sHost
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)

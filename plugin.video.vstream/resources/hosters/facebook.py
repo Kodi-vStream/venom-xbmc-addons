@@ -1,9 +1,10 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
+
 
 class cHoster(iHoster):
 
@@ -12,7 +13,7 @@ class cHoster(iHoster):
 
     def _getMediaLinkForGuest(self):
 
-        qua =[]
+        qua = []
         url = []
         api_call = ''
 
@@ -27,7 +28,7 @@ class cHoster(iHoster):
                 qua.append(str(aEntry[0]))
                 url.append(str(aEntry[1]))
 
-            #dialogue qualité
+            # dialogue qualité
             api_call = dialog().VSselectqual(qua, url)
 
         if api_call:

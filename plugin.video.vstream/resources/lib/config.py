@@ -129,24 +129,10 @@ class cConfig:
         return False
 
 
-def WindowsBoxes(sTitle, sFileName, metaType, year=''):
+def WindowsBoxes(sTitle, siteUrl, metaType, year, sSite, sFav, sCat):
 
     ADDON = addon()
     DIALOG = dialog()
-
-    # Presence de l'addon ExtendedInfo?
-    try:
-        if (addon('script.extendedinfo') and ADDON.getSetting('extendedinfo-view') == 'true'):
-            if metaType == '2':
-                DIALOG.VSinfo('Lancement de ExtendInfo')
-                xbmc.executebuiltin('RunScript(script.extendedinfo, info=extendedtvinfo, name=%s)' % sFileName)
-                return
-            elif metaType == '1':
-                DIALOG.VSinfo('Lancement de ExtendInfo')
-                xbmc.executebuiltin('RunScript(script.extendedinfo, info=extendedinfo, name=%s)' % sFileName)
-                return
-    except:
-        pass
 
     # Sinon on gere par vStream via la lib TMDB
     sType = str(metaType).replace('1', 'movie').replace('2', 'tvshow').replace('3', 'collection').replace('4', 'anime')\
@@ -160,7 +146,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
             sType = 'season'
         if sType == 'season' and not season:
             sType = 'tvshow'
-        meta = cTMDb().get_meta(sType, sFileName, tmdb_id=tmdb_id, year=year, season=season, episode=episode)
+        meta = cTMDb().get_meta(sType, sTitle, tmdb_id=tmdb_id, year=year, season=season, episode=episode)
     except:
         DIALOG.VSok("Veuillez vider le cache des métadonnées Paramètre - outils - 'vider le cache de vStream'")
         pass
@@ -201,11 +187,10 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
     class XMLDialog(xbmcgui.WindowXMLDialog):
 
         ADDON = addon()
-        """
-        Dialog class that asks user about rating of movie.
-        """
+
         def __init__(self, *args, **kwargs):
             xbmcgui.WindowXMLDialog.__init__(self)
+            self.meta = kwargs['meta']
             pass
 
         # def message(self, message):
@@ -336,7 +321,6 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                     else:
                         sThumbnail = self.none_poster % sTitle
 
-                    # sId = i['id']
 
                     listitem_ = listitem(label=sTitle)
                     try:
@@ -345,10 +329,11 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                         listitem_.setInfo('video', {'rating': str(i['vote_average'])})
 
                     listitem_.setArt({'icon': sThumbnail})
+                    # listitem_.setProperty('TmdbId', str(i['id']))
                     listitems.append(listitem_)
                 self.getControl(control).addItems(listitems)
 
-            except:
+            except Exception as e:
                 pass
 
             # self.getControl(52100).setVisible(False)
@@ -360,7 +345,7 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
             if controlId == 11:
                 from resources.lib.ba import cShowBA
                 cBA = cShowBA()
-                cBA.SetSearch(sFileName)
+                cBA.SetSearch(sTitle)
                 cBA.SetYear(year)
                 cBA.SetMetaType(metaType)
                 cBA.SetTrailerUrl(self.getProperty('trailer'))
@@ -434,19 +419,30 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
                 except:
                     return
 
+            # click sur marque-page
+            elif controlId == 10:
+                metaBM = {}
+                metaBM['siteurl'] = siteUrl
+                metaBM['title'] = self.meta['title']
+                metaBM['site'] = sSite
+                metaBM['fav'] = sFav
+                metaBM['cat'] = sCat
+                metaBM['icon'] = self.meta['poster_path']
+                metaBM['fanart'] = self.meta['backdrop_path']
+                try:
+                    from resources.lib.db import cDb
+                    with cDb() as db:
+                        db.insert_bookmark(metaBM)
+                except:
+                    pass
+
             # click pour recherche
             elif controlId == 5215 or controlId == 5205 or controlId == 5210:
 
                 import sys
                 from resources.lib.util import cUtil
                 item = self.getControl(controlId).getSelectedItem()
-                sTitle = item.getLabel()
-
-                try:
-                    sTitle = sTitle.encode('utf-8')
-                    sTitle = cUtil().CleanName(sTitle)
-                except:
-                    return
+                sTitle = cUtil().CleanName(item.getLabel())
 
                 self.close()
 
@@ -491,6 +487,12 @@ def WindowsBoxes(sTitle, sFileName, metaType, year=''):
 
     path = 'special://home/addons/plugin.video.vstream'
     # self.__oPath.decode('utf-8')
-    wd = XMLDialog('DialogInfo4.xml', path, 'default', '720p')
+    args = ('DialogInfo4.xml', path, 'default', '720p')
+    kwargs = {}
+    kwargs['meta'] = meta
+
+    wd = XMLDialog(*args, **kwargs)
+
+    # wd = XMLDialog('DialogInfo4.xml', path, 'default', '720p', siteUrl)
     wd.doModal()
     del wd

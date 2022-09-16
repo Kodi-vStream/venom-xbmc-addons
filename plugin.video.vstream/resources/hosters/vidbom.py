@@ -1,11 +1,11 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-#
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
-#from resources.lib.comaddon import VSlog
+
 
 class cHoster(iHoster):
 
@@ -29,7 +29,7 @@ class cHoster(iHoster):
             if aResult[0] is True:
                 sHtmlContent = cPacker().unpack(aResult[1][0])
                 sPattern = '{file:"([^"]+.mp4)"'
-                aResult = oParser.parse(sHtmlContent,sPattern)
+                aResult = oParser.parse(sHtmlContent, sPattern)
                 if aResult[0] is True:
                     api_call = aResult[1][0]
 

@@ -16,14 +16,16 @@ from resources.lib.parser import cParser
 from resources.lib.util import Unquote
 
 SITE_IDENTIFIER = 'freebox'
-SITE_NAME = '[COLOR orange]Télévision Direct/Stream[/COLOR]'
+SITE_NAME = 'Free Télévision/Radio'
 SITE_DESC = 'Regarder la télévision'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 URL_WEB = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/Beta/repo/resources/webtv2.m3u'
 URL_RADIO = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/repo/resources/radio.m3u'
 
-MOVIE_IPTVSITE = (True, 'showIptvSite')
+TV_TV = (True, 'showMenuTV')
+CHAINE_TV = (URL_WEB, 'showWeb')
+
 
 UA = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
 
@@ -46,44 +48,43 @@ def load():
     addons = addon()
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuTV', addons.VSlang(30115), 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuMusic', addons.VSlang(30137), 'music.png', oOutputParameterHandler)
+    oGui.setEndOfDirectory()
+
+
+def showMenuTV():
+    oGui = cGui()
+    addons = addon()
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_WEB)
     oGui.addDir(SITE_IDENTIFIER, 'showWeb', addons.VSlang(30332), 'tv.png', oOutputParameterHandler)
+    oGui.setEndOfDirectory()
 
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_IPTVSITE)
-    oGui.addDir(SITE_IDENTIFIER, 'showIptvSite', 'TV (Sources)', 'tv.png', oOutputParameterHandler)
 
+def showMenuMusic():
+    oGui = cGui()
+    addons = addon()
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
     oGui.addDir('radio', 'showWeb', addons.VSlang(30203), 'music.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    oGui.addDir('radio', 'showGenres', addons.VSlang(30203) + ' (Genres)', 'music.png', oOutputParameterHandler)
+    oGui.addDir('radio', 'showGenres', addons.VSlang(30203) + ' (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
-    oGui.addDir('radio', 'showAZ', addons.VSlang(30203) + ' (A-Z)', 'music.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    oGui.addDir('lsdb', 'load', 'Liveset Database', 'music.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
-
-def showIptvSite():
-    oGui = cGui()
-
-    liste = [['leet365', 'leet365'], ['ChannelStream', 'channelstream'], ['Streamonsport', 'streamonsport']]
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    for sTitle, fName in liste:
-        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(fName, 'load', sTitle, 'tv.png', oOutputParameterHandler)
+    oGui.addDir('radio', 'showAZ', addons.VSlang(30203) + ' (Alphabétique)', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
 def parseM3U(sUrl=None):  # Traite les m3u local
-    # oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    
+    if not sUrl:
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -115,11 +116,15 @@ def parseM3U(sUrl=None):  # Traite les m3u local
     return playlist
 
 
-def showWeb(infile=None):  # Code qui s'occupe de liens TV du Web
+def showWeb():  # Code qui s'occupe de liens TV du Web
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
 
+    oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    if sUrl == 'TV':
+        sUrl = URL_WEB
+    elif sUrl == 'RADIO':
+        sUrl = URL_RADIO
 
     playlist = parseM3U(sUrl=sUrl)
 
@@ -170,6 +175,7 @@ def showWeb(infile=None):  # Code qui s'occupe de liens TV du Web
             oGuiElement.setDescription(sDesc)
             oGuiElement.setTitle(track.title)
             oGuiElement.setFileName(track.title)
+            
             oGuiElement.setIcon('tv.png')
             oGuiElement.setMeta(0)
             oGuiElement.setThumbnail(thumb)
@@ -178,7 +184,7 @@ def showWeb(infile=None):  # Code qui s'occupe de liens TV du Web
 
             oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
             oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
-            oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'enregistrement', 'Enregistrement')
+            # oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'enregistrement', 'Enregistrement')
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -202,7 +208,7 @@ def soir_epg():  # Code qui gerent l'epg
     cePg().view_epg(sTitle, 'soir')
 
 
-def enregistrement():  # Code qui gerent l'epg
+def enregistrement():  # Code qui gerent l'enregistrement
     # oGuiElement = cGuiElement()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl').replace('P_L_U_S', '+')
@@ -306,7 +312,7 @@ def showTV():
 
             oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
             oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
-            oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'enregistrement', 'Enregistrement')
+            # oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'enregistrement', 'Enregistrement')
             oGui.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 

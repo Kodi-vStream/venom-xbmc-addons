@@ -564,6 +564,7 @@ def showSeriesLinks():
     # VSlog(aResult)
 
     sQual = ''
+    sTitle = sMovieTitle 
     if aResult[0]:
         sQual = aResult[1][0][0].replace('"', '')
         if 'Saison' in sQual:  # N° de saison dans la qualite

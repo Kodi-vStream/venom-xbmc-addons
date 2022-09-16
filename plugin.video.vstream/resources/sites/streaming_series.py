@@ -11,7 +11,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress, dialog, siteManager
+from resources.lib.comaddon import dialog, siteManager
 
 
 SITE_IDENTIFIER = 'streaming_series'
@@ -94,20 +94,13 @@ def showMovies(sSearch=''):
     if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
     else:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sUrl = aEntry[0]
             sThumb = aEntry[2]
             sTitle = aEntry[1]
 
-            # Si recherche et trop de résultat, on nettoie
-            if sSearch and total > 2:
+            if sSearch:
                 if not oUtil.CheckOccurence(sSearch, sTitle):
                     continue
 
@@ -115,9 +108,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+            oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, '', oOutputParameterHandler)
 
     if not sSearch:  # une seule page par recherche
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
@@ -173,13 +164,9 @@ def showEpisodes():
     sPattern = '<a href="([^"]+)".+?<span>([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
-        oGui.addText(SITE_IDENTIFIER)
-
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-
             sUrl = aEntry[0]
             sTitle = sMovieTitle + ' Episode ' + aEntry[1] 
 
@@ -187,8 +174,9 @@ def showEpisodes():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-
             oGui.addEpisode(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+    else:
+        oGui.addText(SITE_IDENTIFIER)
 
     oGui.setEndOfDirectory()
 
@@ -230,6 +218,9 @@ def showLinks():
                 oOutputParameterHandler.addParameter('sHost', sHost)
 
                 oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
+
+    else:
+        oGui.addText(SITE_IDENTIFIER)
 
     oGui.setEndOfDirectory()
 

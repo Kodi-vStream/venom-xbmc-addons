@@ -9,6 +9,7 @@ from resources.lib.comaddon import dialog
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
 # meme code frenchvid etc.. fvsio
 
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -38,7 +39,7 @@ class cHoster(iHoster):
                 url.append(x['file'])
                 qua.append(x['label'])
 
-            if (url):
+            if url:
                 api_call = dialog().VSselectqual(qua, url)
 
         if api_call:

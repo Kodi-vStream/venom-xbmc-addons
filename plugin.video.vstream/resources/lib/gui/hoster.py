@@ -53,11 +53,11 @@ class cHosterGui:
 
         oGuiElement.setFileName(oHoster.getFileName())
         oGuiElement.getInfoLabel()
+        oGuiElement.setIcon('host.png')
         if sThumbnail:
             oGuiElement.setThumbnail(sThumbnail)
-
-        oGuiElement.setIcon('host.png')
-
+            oGuiElement.setPoster(sThumbnail)
+            
         title = oGuiElement.getCleanTitle()
 
         oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
@@ -82,15 +82,6 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('movieUrl', movieUrl)
         oOutputParameterHandler.addParameter('movieFunc', movieFunc)
 
-        # context playlist menu
-        oContext = cContextElement()
-        oContext.setFile('cHosterGui')
-        oContext.setSiteName(self.SITE_NAME)
-        oContext.setFunction('addToPlaylist')
-        oContext.setTitle(self.ADDON.VSlang(30201))
-        oContext.setOutputParameterHandler(oOutputParameterHandler)
-        oGuiElement.addContextItem(oContext)
-
         # Download menu
         if oHoster.isDownloadable():
             oContext = cContextElement()
@@ -101,7 +92,6 @@ class cHosterGui:
             oContext.setOutputParameterHandler(oOutputParameterHandler)
             oGuiElement.addContextItem(oContext)
 
-        if oHoster.isDownloadable():
             # Beta context download and view menu
             oContext = cContextElement()
             oContext.setFile('cDownload')
@@ -110,6 +100,18 @@ class cHosterGui:
             oContext.setTitle(self.ADDON.VSlang(30326))
             oContext.setOutputParameterHandler(oOutputParameterHandler)
             oGuiElement.addContextItem(oContext)
+
+        # Liste de lecture
+        oContext = cContextElement()
+        oContext.setFile('cHosterGui')
+        oContext.setSiteName(self.SITE_NAME)
+        oContext.setFunction('addToPlaylist')
+        oContext.setTitle(self.ADDON.VSlang(30201))
+        oContext.setOutputParameterHandler(oOutputParameterHandler)
+        oGuiElement.addContextItem(oContext)
+
+        # Dossier Media
+        oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, 'cLibrary', 'cLibrary', 'setLibrary', self.ADDON.VSlang(30324))
 
         # Upload menu uptobox
         if cInputParameterHandler().getValue('site') != 'siteuptobox' and self.ADDON.getSetting('hoster_uptobox_premium') == 'true':
@@ -126,9 +128,6 @@ class cHosterGui:
             if host == accept:
                 oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, 'siteonefichier', 'siteonefichier', 'upToMyAccount', '1fichier')
 
-        # context Library menu
-        oGui.createSimpleMenu(oGuiElement, oOutputParameterHandler, 'cLibrary', 'cLibrary', 'setLibrary', self.ADDON.VSlang(30324))
-
         oGui.addFolder(oGuiElement, oOutputParameterHandler, False)
 
     def checkHoster(self, sHosterUrl, debrid=True):
@@ -136,9 +135,15 @@ class cHosterGui:
         if not sHosterUrl:
             return False
 
+        
         # Petit nettoyage
         sHosterUrl = sHosterUrl.split('|')[0]
+        sHosterUrl = sHosterUrl.split('?')[0]
         sHosterUrl = sHosterUrl.lower()
+
+        # lien direct ?
+        if any(sHosterUrl.endswith(x) for x in ['.mp4', '.avi', '.flv', '.m3u8', '.webm', '.mkv', '.mpd']):
+            return self.getHoster('lien_direct')
 
         # Recuperation du host
         try:
@@ -147,17 +152,6 @@ class cHosterGui:
             sHostName = sHosterUrl
 
         if debrid:
-            # L'user a active l'url resolver ?
-            if self.ADDON.getSetting('UserUrlResolver') == 'true':
-                import urlresolver
-                hmf = urlresolver.HostedMediaFile(url=sHosterUrl)
-                if hmf.valid_url():
-                    tmp = self.getHoster('resolver')
-                    RH = sHosterUrl.split('/')[2]
-                    RH = RH.replace('www.', '')
-                    tmp.setRealHost(RH.split('.')[0].upper())
-                    return tmp
-
             # L'user a activé alldebrid ?
             if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
                 return self.getHoster('alldebrid')
@@ -180,7 +174,7 @@ class cHosterGui:
                             'pdj', 'rapidstream', 'archive', 'jetload', 'dustreaming', 'viki', 'flix555', 'onlystream',
                             'upstream', 'pstream', 'vudeo', 'dood', 'vidia', 'streamtape', 'vidbem', 'uptobox', 'uplea',
                             'sibnet', 'vidplayer', 'userload', 'aparat', 'evoload', 'vidshar', 'abcvideo', 'plynow',
-                            'myvi', '33player']
+                            'myvi', '33player', 'videovard', 'viewsb', 'yourvid', 'vf-manga']
 
         val = next((x for x in supported_player if x in sHostName), None)
         if val:
@@ -227,7 +221,7 @@ class cHosterGui:
         if ('mystream' in sHostName) or ('mstream' in sHostName):
             return self.getHoster('mystream')
 
-        if ('streamingentiercom/videophp?type=speed' in sHosterUrl) or ('speedvideo' in sHostName):
+        if ('streamingentiercom/videophp' in sHosterUrl) or ('speedvideo' in sHostName):
             return self.getHoster('speedvideo')
 
         if ('googlevideo' in sHostName) or ('picasaweb' in sHostName) or ('googleusercontent' in sHostName):
@@ -287,8 +281,6 @@ class cHosterGui:
         if ('myfiles.alldebrid.com' in sHostName):
             return self.getHoster('lien_direct')
 
-        if any(x in sHosterUrl for x in ['mp4', 'avi', 'flv', 'm3u8', 'webm', 'mkv', 'mpd']):
-            return self.getHoster('lien_direct')
         return False
 
     def getHoster(self, sHosterFileName):
@@ -332,14 +324,14 @@ class cHosterGui:
             oHoster.setUrl(sMediaUrl)
             aLink = oHoster.getMediaLink()
 
-            if aLink[0] or aLink[1]:  # Le hoster ne sait pas résoudre mais a retourné une autre url
+            if aLink and (aLink[0] or aLink[1]):  # Le hoster ne sait pas résoudre mais a retourné une autre url
                 if not aLink[0]:  # Voir exemple avec allDebrid qui : return False, URL
                     oHoster = self.checkHoster(aLink[1], debrid=False)
                     if oHoster:
                         oHoster.setFileName(sFileName)
                         sHosterName = oHoster.getDisplayName()
                         oDialog.VSinfo(sHosterName, 'Resolve')
-                        oHoster.setUrl(sMediaUrl)
+                        oHoster.setUrl(aLink[1])
                         aLink = oHoster.getMediaLink()
 
                 if aLink[0]:
@@ -400,7 +392,7 @@ class cHosterGui:
             from resources.lib.player import cPlayer
             oPlayer = cPlayer()
             oPlayer.addItemToPlaylist(oGuiElement)
-            dialog().VSinfo(str(oHoster.getFileName()), 'Playlist')
+            dialog().VSinfo(str(oHoster.getFileName()), 'Liste de lecture')
             return
 
         oGui.setEndOfDirectory()

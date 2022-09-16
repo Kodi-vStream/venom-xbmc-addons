@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
+from resources.lib.comaddon import siteManager
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, siteManager
+from resources.lib.util import cUtil
 
 import re
 
@@ -118,9 +119,10 @@ def showMovies(sSearch=''):
     oParser = cParser()
 
     if sSearch:
-        sUrl = sSearch.replace(' ', '+')
+        oUtil = cUtil()
+        sSearchText = oUtil.CleanName(sSearch.replace('%20', ' '))
 
-        pdata = 'do=search&subaction=search&story=' + sUrl + '&titleonly=3&all_word_seach=1&catlist[]=1'
+        pdata = 'do=search&subaction=search&story=' + sSearchText.replace(' ', '+') + '&titleonly=3&all_word_seach=1&catlist[]=1'
 
         oRequest = cRequestHandler(URL_SEARCH[0])
         # oRequest.setRequestType(1)
@@ -143,19 +145,10 @@ def showMovies(sSearch=''):
     sPattern += 'ml-desc"> (?:([0-9]+)| )</div.+?Synopsis:.+?ml-desc">(.*?)</div'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
-        oGui.addText(SITE_IDENTIFIER)
-
-    if aResult[0] is True:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
 
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sThumb = aEntry[0]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + aEntry[0]
@@ -166,6 +159,10 @@ def showMovies(sSearch=''):
             sYear = aEntry[5]
             if sYear in sTitle:  # double affichage de l'année
                 sTitle = re.sub('\(' + sYear + '\)', '', sTitle)
+
+            # Filtre de recherche
+            if sSearch and not oUtil.CheckOccurence(sSearchText, sTitle):
+                continue
 
             # Nettoyage du synopsis
             sDesc = str(aEntry[6])
@@ -197,13 +194,13 @@ def showMovies(sSearch=''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        progress_.VSclose(progress_)
-
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
+    else:
+        oGui.addText(SITE_IDENTIFIER)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -228,9 +225,11 @@ def showSeries(sSearch=''):
     oParser = cParser()
 
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = oUtil.CleanName(sSearch.replace('%20', ' '))
         sUrl = sSearch.replace(' ', '+')
 
-        pdata = 'do=search&subaction=search&story=' + sUrl + '&titleonly=3&all_word_seach=1&catlist[]=31'
+        pdata = 'do=search&subaction=search&story=' + sUrl + '&titleonly=3&all_word_seach=1&catlist[]=31&catlist[]=35'
 
         oRequest = cRequestHandler(URL_SEARCH[0])
         # oRequest.setRequestType(1)
@@ -252,32 +251,28 @@ def showSeries(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0] is True:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
 
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sThumb = aEntry[0]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + aEntry[0]
 
             sTitle = aEntry[1].replace('- Saison', 'saison').replace(' wiflix', '')
-            sLang = re.sub('Saison \d+', '', aEntry[3]).replace(' ', '')
-            sDisplayTitle = ('%s (%s)') % (sTitle, sLang)
+            
+            # Filtre de recherche
+            if sSearch and not oUtil.CheckOccurence(sSearchText, sTitle):
+                continue
+            
+            # sLang = re.sub('Saison \d+', '', aEntry[3]).replace(' ', '')
+            sDisplayTitle = sTitle
             sUrl = aEntry[2]
             sDesc = aEntry[4]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sLang', sLang)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if sNextPage != False:

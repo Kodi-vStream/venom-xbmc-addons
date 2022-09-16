@@ -1,5 +1,5 @@
 #EXTM3U
-#EXTINF:-1 tvg-logo="tf1.png,TF1
+#EXTINF:-1 tvg-logo="tf1.png",TF1
 [REGEX]"delivery".+?"url":"([^"]+)"[URL]https://mediainfo.tf1.fr/mediainfocombo/L_TF1?context=MYTF1&pver=4008002&platform=web&os=windows&osVersion=unknown&topDomain=www.tf1.fr&format=hls
 
 #EXTINF:-1 tvg-logo="tmc.png",TMC
@@ -59,7 +59,7 @@ https://www.dailymotion.com/player/metadata/video/xgepjr
 #EXTINF:-1 tvg-logo="bfm.png" ,BFM TV
 [BRIGHTCOVEKEY]https://www.bfmtv.com/en-direct/
 
-#EXTINF:-1 tvg-logo="bfmbus.png" ,BFM Buisness
+#EXTINF:-1 tvg-logo="bfmbus.png" ,BFM Business
 [BRIGHTCOVEKEY]https://www.bfmtv.com/economie/en-direct/
 
 #EXTINF:-1 tvg-logo="rmcstory.png" ,RMC Story

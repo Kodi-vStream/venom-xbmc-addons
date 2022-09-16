@@ -165,14 +165,13 @@ def showEpisodes():
     if sThumbResult[0]:
         sThumb = sThumbResult[1][0]
 
-    sPattern = '<h2 style="color: #.+?">([^<]+)|href="([^"]+)">([^<]+)</a>'
+    sPattern = '<h2 style="color: #.+?">([^<]+)|href="http([^"]+)".+?>([^<]+)<\/a>'
     aResult = oParser.parse(sUsentContent, sPattern)
 
     if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
-
-    sSaison = ''
-    if aResult[0] is True:
+    else:
+        sSaison = ''
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -188,18 +187,18 @@ def showEpisodes():
                     sSaison = sSaison[:sSaison.index(':')]
                 sSaison = sSaison.capitalize().strip()
             else:
-                aUrl = aEntry[1]
+                aUrl = 'http' + aEntry[1]
                 sDisplayTitle = aEntry[2].replace('•', '').strip()
-                if sSaison:
-                    sDisplayTitle += ' ' + sSaison
+                if sDisplayTitle.endswith(':'):
+                    sDisplayTitle = sDisplayTitle[:-1]
                 
-                sTitle = sSerieTitle + ' | ' + sDisplayTitle 
+                sTitle = sSerieTitle + ' ' + sDisplayTitle 
 
                 oOutputParameterHandler.addParameter('siteUrl', aUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -272,7 +271,7 @@ def showHosters():
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<div class="container"><a href="([^"]+)'
+    sPattern = '<div class="video-container"> ?<iframe.+?data-lazy-src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sTexte = "[COLOR red]Animés dispo gratuitement et légalement sur :[/COLOR]"

@@ -12,7 +12,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil, Quote
 from resources.lib.config import GestionCookie
-from resources.lib.comaddon import progress, dialog, siteManager
+from resources.lib.comaddon import progress, dialog, isMatrix, siteManager
 
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
@@ -415,8 +415,11 @@ def showMovies():
 
             sUrl2 = URL_MAIN + aEntry[0]
             sTitle = aEntry[1].replace(' - Saison', ' Saison').replace(' - saison', ' Saison')
+
             sDesc = aEntry[2]
-            sDesc = sDesc.decode("unicode_escape").encode("latin-1")
+            if not isMatrix():
+                sDesc = sDesc.decode("unicode_escape").encode("latin-1")
+
             sThumb = aEntry[3]
 
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)

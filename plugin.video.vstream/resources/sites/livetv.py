@@ -288,15 +288,17 @@ def showHosters():  # affiche les videos disponible du live
                 urlChannel = url2.replace('html', 'json')
                 oRequestHandler = cRequestHandler(urlChannel)
                 sHtmlContent = oRequestHandler.request()
-                result = json.loads(sHtmlContent)
-                if 'id' in result:
-                    idChannel = result['id']
-                    oRequestHandler = cRequestHandler(url2)
-                    sHtmlContent2 = oRequestHandler.request()
-                    sPattern = '<iframe.+?src="([^\']+)'
-                    aResult = re.findall(sPattern, sHtmlContent2)
-                    if aResult:
-                        url = aResult[0] + idChannel
+                
+                if not sHtmlContent.startswith('<!'):   # ce n'est pas du json
+                    result = json.loads(sHtmlContent)
+                    if 'id' in result:
+                        idChannel = result['id']
+                        oRequestHandler = cRequestHandler(url2)
+                        sHtmlContent2 = oRequestHandler.request()
+                        sPattern = '<iframe.+?src="([^\']+)'
+                        aResult = re.findall(sPattern, sHtmlContent2)
+                        if aResult:
+                            url = aResult[0] + idChannel
 
         if 'sportlevel' in url:
             oRequestHandler = cRequestHandler(url)
@@ -440,13 +442,14 @@ def showHosters():  # affiche les videos disponible du live
             if aResult:
                 url = aResult[0]  # redirection vers un autre site ci-dessous
 
-        if 'footballreal.xyz' in url:
+        if 'footballreal.xyz' in url or 'cdnz.one' in url:# or 'sports247' in url:
             oRequestHandler = cRequestHandler(url)
             sHtmlContent2 = oRequestHandler.request()
-            sPattern1 = '<iframe src="(.+?)"'
+            sPattern1 = '<iframe src=["\'](.+?)["\']'
             aResult = re.findall(sPattern1, sHtmlContent2)
             if aResult:
-                url = aResult[0]  # redirection vers un autre site ci-dessous
+                Referer = url
+                url = aResult[0]  # redirection vers un autre site
 
         if 'dailydeports.pw' in url:
             oRequestHandler = cRequestHandler(url)
@@ -477,6 +480,7 @@ def showHosters():  # affiche les videos disponible du live
             oRequestHandler.addHeaderEntry('User-Agent', UA)
             sHtmlContent2 = oRequestHandler.request()
             sPattern2 = 'source: *\'(.+?)\''
+            
             aResult = re.findall(sPattern2, sHtmlContent2)
             if aResult:
                 sHosterUrl = aResult[0] + '|User-Agent=' + UA + '&referer=' + Referer
@@ -485,15 +489,6 @@ def showHosters():  # affiche les videos disponible du live
                 aResult = re.findall(sPattern2, sHtmlContent2)
                 if aResult:
                     sHosterUrl = aResult[0] + '|User-Agent=' + UA + '&referer=' + Referer
-
-        if 'cdnz.one' in url:
-            oRequestHandler = cRequestHandler(url)
-            sHtmlContent2 = oRequestHandler.request()
-            sPattern1 = '<iframe src=["\'](.+?)["\']'
-            aResult = re.findall(sPattern1, sHtmlContent2)
-            if aResult:
-                Referer = url
-                url = aResult[0]  # redirection vers un autre site
 
         if 'sport7.pw' in url or 'vip7stream' in url:  # Terminé
             oRequestHandler = cRequestHandler(url)
@@ -621,18 +616,28 @@ def showHosters():  # affiche les videos disponible du live
 
             if aResult:
                 video_id = aResult[0]
-                # url1 = url.replace('/embed/', '/watch?v=').replace('?autoplay=1', '')
-                url2 = 'https://youtube.com/get_video_info?video_id=' + video_id + '&sts=17488&hl=fr'
-
+                url2 = url.replace('/embed/', '/watch?v=').replace('?autoplay=1', '')
                 oRequestHandler = cRequestHandler(url2)
                 oRequestHandler.addHeaderEntry('User-Agent', UA)
-                sHtmlContent3 = Unquote(oRequestHandler.request())
+                sHtmlContent3 = Unquote(str(oRequestHandler.request()))
 
                 sPattern3 = 'hlsManifestUrl":"(.+?)"'
                 aResult = re.findall(sPattern3, sHtmlContent3)
 
                 if aResult:
                     sHosterUrl = aResult[0] + '|User-Agent=' + UA + '&Host=manifest.googlevideo.com'
+                else:
+                    url2 = 'https://youtube.com/get_video_info?video_id=' + video_id + '&sts=17488&hl=fr'
+    
+                    oRequestHandler = cRequestHandler(url2)
+                    oRequestHandler.addHeaderEntry('User-Agent', UA)
+                    sHtmlContent3 = Unquote(str(oRequestHandler.request()))
+    
+                    sPattern3 = 'hlsManifestUrl":"(.+?)"'
+                    aResult = re.findall(sPattern3, sHtmlContent3)
+    
+                    if aResult:
+                        sHosterUrl = aResult[0] + '|User-Agent=' + UA + '&Host=manifest.googlevideo.com'
 
         if 'streamup.me' in url:  # Terminé
             oRequestHandler = cRequestHandler(url)
@@ -693,6 +698,39 @@ def showHosters():  # affiche les videos disponible du live
                 oRequestHandler.addHeaderEntry('Referer', Referer)
                 sHtmlContent3 = oRequestHandler.request()
 
+        if 'lato.sx' in url:  # Pas terminer
+            oRequestHandler = cRequestHandler(url)
+            sHtmlContent2 = oRequestHandler.request()
+            sPattern2 = '<script>fid=["\'](.+?)["\']'
+            aResult = re.findall(sPattern2, sHtmlContent2)
+            if aResult:
+                fid = aResult[0]
+                url2 = 'https://yourjustajoo.com/embedred.php?player=desktop&live=' + fid
+                Referer = url
+                oRequestHandler = cRequestHandler(url2)
+                oRequestHandler.addHeaderEntry('User-Agent', UA)
+                oRequestHandler.addHeaderEntry('Referer', Referer)
+                sHtmlContent3 = oRequestHandler.request()
+
+                sPattern2 = 'player.load\({source: (.+?)\('
+                aResult = re.findall(sPattern2, sHtmlContent3)
+                if aResult:
+                    func = aResult[0]
+                 
+                    sPattern2 = 'function %s\(\) +{ +return\(\[(.+?)\]' % func
+                    sPattern2 = 'function %s\(\) +{ +return\(\[([^\[]+)\]' % func
+                    sPattern2 = 'function %s\(\) +{\n + return\(\[([^\]]+)' % func
+                    aResult = re.findall(sPattern2, sHtmlContent3)
+                    
+                    import xbmcvfs
+                    f = xbmcvfs.File('special://userdata/addon_data/plugin.video.vstream/test.txt','w')
+                    f.write(sHtmlContent3)
+                    f.close()
+                
+                    
+                    if aResult:
+                        sHosterUrl = aResult[0].replace('"', '').replace(',', '')
+    
         if 'thesports4u.net' in url or 'soccerstreams' in url or 'all.ive' in url:  # Fini
             if 'all.ive' in url:
                 oRequestHandler = cRequestHandler(url)
@@ -1213,7 +1251,10 @@ def showHosters():  # affiche les videos disponible du live
             sHosterUrl = getHosterIframe(url, url)
 
         if sHosterUrl:
-            oHoster = cHosterGui().checkHoster("m3u8")
+            if sHosterUrl.startswith('//'):
+                sHosterUrl = 'http:' + sHosterUrl
+
+            oHoster = cHosterGui().checkHoster(".m3u8")
             if oHoster != False:
                 oHoster.setDisplayName(sMovieTitle2)  # nom affiche
                 oHoster.setFileName(sMovieTitle2)  # idem
@@ -1244,7 +1285,17 @@ def getHosterVar16(url, referer):
 def getHosterIframe(url, referer):
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('Referer', referer)
-    sHtmlContent = oRequestHandler.request()
+    sHtmlContent = str(oRequestHandler.request())
+    if not sHtmlContent:
+        return False
+
+    sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        sstr = aResult[0]
+        if not sstr.endswith(';'):
+            sstr = sstr + ';'
+        sHtmlContent = cPacker().unpack(sstr)
 
     sPattern = '[^/]source.+?["\'](https.+?)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
@@ -1255,25 +1306,23 @@ def getHosterIframe(url, referer):
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         referer = url
-        url = aResult[0]
-        if not url.startswith("http"):
-            if not url.startswith("//"):
-                url = '//'+referer.split('/')[2] + url  # ajout du nom de domaine
-            url = "https:" + url
-        return getHosterIframe(url, referer)
+        for url in aResult:
+            if url.startswith("./"):
+                url = url[1:]
+            if not url.startswith("http"):
+                if not url.startswith("//"):
+                    url = '//'+referer.split('/')[2] + url  # ajout du nom de domaine
+                url = "https:" + url
+            url = getHosterIframe(url, referer)
+            if url:
+                return url
 
-    sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
+    sPattern = ';var.+?src=["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
-
     if aResult:
-        sstr = aResult[0]
-        if not sstr.endswith(';'):
-            sstr = sstr + ';'
-        sUnpack = cPacker().unpack(sstr)
-        sPattern = 'src="(.+?)"'
-        aResult = re.findall(sPattern, sUnpack)
-        if aResult:
-            return aResult[0] + '|Referer=' + url
+        url = aResult[0]
+        if '.m3u8' in url:
+            return url
 
     sPattern = '.atob\("(.+?)"'
     aResult = re.findall(sPattern, sHtmlContent)
@@ -1285,9 +1334,10 @@ def getHosterIframe(url, referer):
                 code = base64.b64decode(code).decode('ascii')
             else:
                 code = base64.b64decode(code)
-            return True, code + '|Referer=' + url
+            return code + '|Referer=' + url
         except Exception as e:
             pass
-
+    
+    return False
 
 

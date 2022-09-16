@@ -7,12 +7,12 @@
 # https://youtu.be/etc...
 
 import time
+import xbmcaddon
 
 from resources.hosters.hoster import iHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.comaddon import VSlog
 
-import xbmcaddon
 
 class cHoster(iHoster):
 
@@ -34,7 +34,7 @@ class cHoster(iHoster):
         if MODE == 0:
             api_call = self._getMediaLinkForGuest0(self._url)
         elif MODE == 1:
-            if 'plugin'  in self._url:
+            if 'plugin' in self._url:
                 api_call = self._url
             else:
                 videoID = self.__getIdFromUrl(self._url)
@@ -46,7 +46,7 @@ class cHoster(iHoster):
             return False, False
 
     def __getIdFromUrl(self, sUrl):
-        id = ''
+
         if 'plugin' not in sUrl:
             id = sUrl
             id = id.replace('http:', '')
@@ -55,6 +55,7 @@ class cHoster(iHoster):
             id = id.replace('www.youtube.com', '')
             id = id.replace('www.youtube-nocookie.com', '')
             id = id.replace('/embed/', '')
+            id = id.replace('?feature=oembed', '')
             id = id.replace('/watch?v=', '')
             id = str(id)
         else:
@@ -63,9 +64,6 @@ class cHoster(iHoster):
         return id
 
     def _getMediaLinkForGuest0(self, sUrl):
-
-        api_call = ''
-
         UA = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) ' + \
             'Chrome/53.0.2785.143 Safari/537.36'
 

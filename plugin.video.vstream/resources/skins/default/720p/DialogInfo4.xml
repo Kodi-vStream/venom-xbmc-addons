@@ -1452,6 +1452,25 @@
 					<visible>!Player.HasMedia</visible>
 				</control>
 
+				<control type="button" id="10">
+					<description>Bookmark</description>
+					<textoffsetx>20</textoffsetx>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<height>40</height>
+					<width>auto</width>
+					<label>$ADDON[plugin.video.vstream 30210]</label>
+					<textcolor>FFFFFFFF</textcolor>
+					<focusedcolor>FFFFFFFF</focusedcolor>
+					<texturenofocus border="10" diffuse="box.png" colordiffuse="D0FFFFFF">focus.png</texturenofocus>
+					<texturefocus border="10" diffuse="box.png" colordiffuse=$INFO[Window.Property(color)]>focus.png</texturefocus>
+					<animation reversible="false" center="auto" easing="inout" effect="zoom" end="100" start="90" time="400" tween="back">Focus</animation>					
+					<!--<onclick>SetProperty(vstream_menu,Bookmark)</onclick>-->
+					<visible>!Player.HasMedia</visible>
+					<!--<onclick>SetFocus(5205)</onclick>-->
+				</control>
+
 				<control type="button" id="13">
 					<animation reversible="false" center="auto" easing="inout" effect="zoom" end="100" start="90" time="400" tween="back">Focus</animation>
 					<description>stop</description>

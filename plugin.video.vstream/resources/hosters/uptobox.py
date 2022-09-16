@@ -7,8 +7,6 @@ from resources.hosters.uptostream import cHoster as uptostreamHoster
 from resources.lib.comaddon import dialog, VSlog, addon
 from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
-from resources.lib.util import QuoteSafe
 
 
 class cHoster(iHoster):
@@ -26,10 +24,9 @@ class cHoster(iHoster):
     def checkUrl(self, sUrl):
         return True
 
-
     def getMediaLink(self):
         self.oPremiumHandler = cPremiumHandler(self.getPluginIdentifier())
-        if (self.oPremiumHandler.isPremiumModeAvailable()):
+        if self.oPremiumHandler.isPremiumModeAvailable():
             ADDON = addon()
 
             try:
@@ -39,7 +36,7 @@ class cHoster(iHoster):
 
             if mDefault == 0:
                 ret = dialog().VSselect(['Passer en Streaming (via Uptostream)', 'Rester en direct (via Uptobox)'],
-                    'Choissisez votre mode de fonctionnement')
+                                        'Choissisez votre mode de fonctionnement')
             else:
                 # 0 is ask me, so 1 is uptostream and so on...
                 ret = mDefault - 1
@@ -79,17 +76,16 @@ class cHoster(iHoster):
             statusCode = dict_liens["statusCode"]
             if statusCode == 0:  # success
                 return True, dict_liens["data"]["dlLink"]
-    
+
             if statusCode == 16:  # Waiting needed
-                status = "Pas de compte Premium" #dict_liens["data"]["waiting"]
-            elif statusCode == 7:  # Invalid parameter 
-                status = dict_liens["data"]["message"]
-                status += ' - ' + dict_liens["data"]["data"]
+                status = "Pas de compte Premium"  # dict_liens["data"]["waiting"]
+            elif statusCode == 7:  # Invalid parameter
+                status = dict_liens["message"] + ' : ' + dict_liens["data"]
             else:
-                status = "Erreur inconnue : " + str(statusCode)
+                status = 'Erreur inconnue : %s, message = %s : %s' % (str(statusCode), dict_liens["message"], str(dict_liens["data"]))
         except Exception as e:
             status = e
-            
-        VSlog('UPTOBOX - ' + status)
+
+        VSlog('UPTOBOX - ' + str(status))
 
         return False

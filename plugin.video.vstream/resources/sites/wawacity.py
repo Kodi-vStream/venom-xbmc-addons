@@ -44,7 +44,7 @@ MOVIE_VOSTFR = (URL_MAIN + '?p=films&s=film-vostfr', 'showMovies')
 MOVIE_VO = (URL_MAIN + '?p=films&s=_film-vo', 'showMovies')
 VIEUX_FILM = (URL_MAIN + '?p=films&s=vieux-films', 'showMovies')
 MOVIE_MALENTENDANTS = (URL_MAIN + '?p=films&s=film-sourds-et-malentendants', 'showMovies')
-MOVIE_LIST = (URL_MAIN + '?p=films', 'showMovies')
+MOVIE_LISTS = (URL_MAIN + '?p=films', 'showMovies')
 MOVIE_GENRES = (True, 'showGenresMovies')
 
 ANIM_ANIMS = ('http://', 'showMenuMangas')
@@ -130,8 +130,8 @@ def showMenuMovies():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MALENTENDANTS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_MALENTENDANTS[1], 'Films sourds et malentendants', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Liste des films', 'listes.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_LISTS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_LISTS[1], 'Liste des films', 'listes.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)

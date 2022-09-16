@@ -19,12 +19,10 @@ URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 MOVIE_NEWS = (URL_MAIN + 'xfsearch/qualit/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
-MOVIE_VOSTFR = (URL_MAIN + 'film/vostfr/', 'showMovies')
+MOVIE_VOSTFR = (URL_MAIN + 'film/film-sous-titre/', 'showMovies')
 MOVIE_VF_FRENCH = (URL_MAIN + 'xfsearch/version-film/French/', 'showMovies')
 MOVIE_VF_TRUEFRENCH = (URL_MAIN + 'xfsearch/version-film/TrueFrench/', 'showMovies')
 MOVIE_HDLIGHT = (URL_MAIN + 'xfsearch/qualit/HDLight/', 'showMovies')
-MOVIE_DVD = (URL_MAIN + 'xfsearch/qualit/DVDSCR/', 'showMovies')
-MOVIE_CAM = (URL_MAIN + 'xfsearch/qualit/CAM/', 'showMovies')
 MOVIE_NETFLIX = (URL_MAIN + 'film/film-netflix/', 'showMovies')
 
 SERIE_NEWS = (URL_MAIN + 'xfsearch/version-serie/', 'showMovies')
@@ -54,6 +52,19 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Films & Séries', 'search.png', oOutputParameterHandler)
 
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showMenuMovies():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_MOVIES[0])
     oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_MOVIES[1], 'Recherche Films', 'search.png', oOutputParameterHandler)
 
@@ -78,12 +89,11 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HDLIGHT[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_HDLIGHT[1], 'Films (HD Light)', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_DVD[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_DVD[1], 'Films (DVD)', 'films.png', oOutputParameterHandler)
+    oGui.setEndOfDirectory()
 
-    # Aucun intérêt
-    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_CAM[0])
-    # oGui.addDir(SITE_IDENTIFIER, MOVIE_CAM[1], 'Films (CAM)', 'films.png', oOutputParameterHandler)
+
+def showMenuTvShows():
+    oGui = cGui()
 
     oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_SERIES[1], 'Recherche Séries ', 'search.png', oOutputParameterHandler)
@@ -99,41 +109,6 @@ def load():
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
-
-def showMenuMovies():
-    oGui = cGui()
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MY_SEARCH_MOVIES[0])
-    oGui.addDir(SITE_IDENTIFIER, MY_SEARCH_MOVIES[1], 'Recherche Films', 'search.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VF_FRENCH[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VF_FRENCH[1], 'Films (VF)', 'vf.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VF_TRUEFRENCH[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VF_TRUEFRENCH[1], 'Films (True French)', 'films.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VOSTFR[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VOSTFR[1], 'Films (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_HDLIGHT[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_HDLIGHT[1], 'Films (HD Light)', 'films.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_DVD[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_DVD[1], 'Films (DVD)', 'films.png', oOutputParameterHandler)
-
-    # Aucun intérêt
-    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_CAM[0])
-    # oGui.addDir(SITE_IDENTIFIER, MOVIE_CAM[1], 'Films (CAM)', 'films.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -472,42 +447,31 @@ def showMovieLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
-    sPattern = '<li>\s*<a.*?href="([^"]+).+?hidden="true'
+    sPattern = '<li>\s*<a.*?href="([^"]+).+?<\/i>([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    valide_host = []
+    sHosterName = ''
 
     if aResult[0] is True:
         for aEntry in aResult[1]:
 
-            sHosterUrl = aEntry
-            if isBlackHost(sHosterUrl):
+            if 'FRENCH' not in aEntry[1] and 'VOSTFR' not in aEntry[1]:
+                sHosterName = aEntry[1].strip()
                 continue
-
+            sLang = aEntry[1].strip()
+            sDisplayTitle = '%s [%s] (%s)' %(sMovieTitle, sLang, sHosterName)
+            
+            sHosterUrl = aEntry[0]
             if 'http' not in sHosterUrl:  # liens nazes du site url
                 continue
-            if sHosterUrl not in valide_host:  # à cause de l'url par défaut
-                valide_host.append(sHosterUrl)
-            else:
-                continue
-
+            
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if oHoster != False:
-                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
-
-
-def isBlackHost(url):
-    black_host = ['playzer.xyz', 'hqq.tv']  # à rajouter
-    urlLower = url.lower()
-    for host in black_host:
-        if host.lower() in urlLower:
-            return True
-    return False
-
 
 def cleanDesc(sDesc):
     oParser = cParser()

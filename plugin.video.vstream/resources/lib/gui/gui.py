@@ -19,7 +19,7 @@ from resources.lib.util import QuotePlus
 class cGui:
 
     SITE_NAME = 'cGui'
-    CONTENT = 'files'
+    CONTENT = ''
     listing = []
     thread_listing = []
     episodeListing = []  # Pour gérer l'enchainement des episodes
@@ -30,8 +30,8 @@ class cGui:
     searchResults = {}
     searchResultsSemaphore = threading.Semaphore()
 
-    if isKrypton():
-        CONTENT = 'addons'
+    # if isKrypton():
+    #     CONTENT = 'addons'
 
     def getEpisodeListing(self):
         return self.episodeListing
@@ -48,7 +48,6 @@ class cGui:
 
         if sThumbnail == '':
             oGuiElement.setThumbnail(oGuiElement.getIcon())
-
         else:
             oGuiElement.setThumbnail(sThumbnail)
             oGuiElement.setPoster(sThumbnail)
@@ -73,12 +72,13 @@ class cGui:
             oGuiElement.setMeta(sMeta)
 
         # Si pas d'id TMDB pour un episode, on recupère le précédent qui vient de la série
-        # if Type == 'episodes':
-        if not oOutputParameterHandler.getValue('sTmdbId'):
+        if sCat and not oOutputParameterHandler.getValue('sTmdbId'):
             oInputParameterHandler = cInputParameterHandler()
-            sTmdbID = oInputParameterHandler.getValue('sTmdbId')
-            if sTmdbID:
-                oOutputParameterHandler.addParameter('sTmdbId', sTmdbID)
+            sPreviousMeta = int(oInputParameterHandler.getValue('sMeta'))
+            if sPreviousMeta > 0 and sPreviousMeta < 7:
+                sTmdbID = oInputParameterHandler.getValue('sTmdbId')
+                if sTmdbID:
+                    oOutputParameterHandler.addParameter('sTmdbId', sTmdbID)
 
         oOutputParameterHandler.addParameter('sFav', sFunction)
 
@@ -112,6 +112,7 @@ class cGui:
     #    IPTV (Officiel) 0             6        files
     #    Saga            3             7        movies
     #    Episodes        6             8        episodes
+    #    Drama           2             9        tvshows
     #    Person          7             /        artists
     #    Network         8             /        files
 
@@ -138,6 +139,15 @@ class cGui:
             oOutputParameterHandler.addParameter('nextSaisonFunc', sFunction)
 
         return self.addNewDir('tvshows', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 4, 3)
+
+    def addDrama(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
+        # Pour gérer l'enchainement des épisodes
+        saisonUrl = oOutputParameterHandler.getValue('siteUrl')
+        if saisonUrl:
+            oOutputParameterHandler.addParameter('saisonUrl', QuotePlus(saisonUrl))
+            oOutputParameterHandler.addParameter('nextSaisonFunc', sFunction)
+
+        return self.addNewDir('tvshows', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 2, 9)
 
     def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler=''):
         if sThumbnail or sDesc:
@@ -203,7 +213,7 @@ class cGui:
     def addNetwork(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler=''):
         sThumbnail = ''
         sDesc = ''
-        return self.addNewDir('files', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 8, None)
+        return self.addNewDir('', sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler, 8, None)
 
     def addNext(self, sId, sFunction, sLabel, oOutputParameterHandler):
         oGuiElement = cGuiElement()
@@ -254,15 +264,16 @@ class cGui:
         # Des infos a rajouter ?
         params = {'siteUrl': oGuiElement.setSiteUrl,
                   'sTmdbId': oGuiElement.setTmdbId,
-                  'sYear': oGuiElement.setYear}
+                  'sYear': oGuiElement.setYear,
+                  'sRes': oGuiElement.setRes}
 
-        try:
+        try:  # Py2
             for sParam, callback in params.iteritems():
                 value = oOutputParameterHandler.getValue(sParam)
                 if value:
                     callback(value)
 
-        except AttributeError:
+        except AttributeError:  # py3
             for sParam, callback in params.items():
                 value = oOutputParameterHandler.getValue(sParam)
                 if value:
@@ -270,6 +281,19 @@ class cGui:
 
         oListItem = self.createListItem(oGuiElement)
 
+ #affiche tag HD
+        # https://alwinesch.github.io/group__python__xbmcgui__listitem.html#ga99c7bf16729b18b6378ea7069ee5b138
+        sRes = oGuiElement.getRes()
+        if sRes:
+            if '2160' in sRes:
+                oListItem.addStreamInfo('video', { 'width':3840, 'height' : 2160 })
+            elif '1080' in sRes:
+                oListItem.addStreamInfo('video', { 'width':1920, 'height' : 1080 })
+            elif '720' in sRes:
+                oListItem.addStreamInfo('video', { 'width':1280, 'height' : 720 })
+            elif '480' in sRes:
+                oListItem.addStreamInfo('video', { 'width':720, 'height' : 576 })
+        
         sCat = oGuiElement.getCat()
         if sCat:
             cGui.sCat = sCat
@@ -290,12 +314,12 @@ class cGui:
                 if not oListItem.getProperty('isBookmark'):
                     self.createContexMenuBookmark(oGuiElement, oOutputParameterHandler)
 
-                if sCat in (1, 2, 3, 4, 8):
+                if sCat in (1, 2, 3, 4, 8, 9):
                     if self.ADDON.getSetting('bstoken') != '':
                         self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
                     if self.ADDON.getSetting('tmdb_account') != '':
                         self.createContexMenuTMDB(oGuiElement, oOutputParameterHandler)
-                if sCat in (1, 2, 3):
+                if sCat in (1, 2, 3, 4, 9):
                     self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
                 if sCat != 6:
                     self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
@@ -325,7 +349,7 @@ class cGui:
     def createListItemThread(self, oGuiElement):
         itemTitle = oGuiElement.getTitle()
         oListItem = listitem(itemTitle)
-        t = threading.Thread(target = self._createListItem, args=(oGuiElement,oListItem))
+        t = threading.Thread(target = self._createListItem, name = itemTitle, args=(oGuiElement,oListItem))
         self.thread_listing.append(t)
         t.start()
         return oListItem
@@ -350,9 +374,11 @@ class cGui:
                 if 'tvshowtitle' in data:
                     host = itemTitle.split(data['tvshowtitle'])[1]
                 if self.displaySeason == "true":
-                    itemTitle = str(data['season']) + "x" + str(data['episode']) + ". " + episodeTitle + " " + host
+                    itemTitle = str(data['season']) + "x" + str(data['episode']) + ". " + episodeTitle
                 else:
-                    itemTitle = episodeTitle + " " + host
+                    itemTitle = episodeTitle
+                if len(host) > 3:
+                    itemTitle += " " + host
                 data['title'] = itemTitle
             except:
                 data['title'] = itemTitle
@@ -384,8 +410,9 @@ class cGui:
         else:
             videoInfoTag = oListItem.getVideoInfoTag()
 
+            # https://alwinesch.github.io/class_x_b_m_c_addon_1_1xbmc_1_1_info_tag_video.html
             # gestion des valeurs par defaut si non renseignées
-            videoInfoTag.setMediaType(data.get('mediatype', ""))
+            videoInfoTag.setMediaType(data.get('mediatype', ''))
             videoInfoTag.setTitle(data.get('title', ""))
             videoInfoTag.setTvShowTitle(data.get('tvshowtitle', ''))
             videoInfoTag.setOriginalTitle(data.get('originaltitle', ""))
@@ -488,11 +515,13 @@ class cGui:
     # Information
     def createContexMenuinfo(self, oGuiElement, oOutputParameterHandler=''):
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
+        oOutputParameterHandler.addParameter('sTitle', oGuiElement.getCleanTitle())
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
         oOutputParameterHandler.addParameter('sYear', oGuiElement.getYear())
+        oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
+        oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
 
         self.createSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewInfo', self.ADDON.VSlang(30208))
 
@@ -543,10 +572,13 @@ class cGui:
                 oOutputParameterHandler = oContextItem.getOutputParameterHandler()
                 sParams = oOutputParameterHandler.getParameterAsUri()
                 sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-                aContextMenus += [(oContextItem.getTitle(), 'RunPlugin(%s)' % sTest)]
+                sDecoColor = self.ADDON.getSetting('deco_color')
+                titleMenu = '[COLOR %s]%s[/COLOR]' % (sDecoColor, oContextItem.getTitle())
+                aContextMenus += [(titleMenu, 'RunPlugin(%s)' % sTest)]
 
             oListItem.addContextMenuItems(aContextMenus)
         oListItem.setProperty('nbcontextmenu', str(nbContextMenu))
+        
         return oListItem
 
     def __createItemUrl(self, oGuiElement, oOutputParameterHandler=''):
@@ -649,11 +681,15 @@ class cGui:
             from resources.lib.config import WindowsBoxes
 
             oInputParameterHandler = cInputParameterHandler()
-            sCleanTitle = oInputParameterHandler.getValue('sFileName') if oInputParameterHandler.exist('sFileName') else xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
+            sCleanTitle = oInputParameterHandler.getValue('sTitle') if oInputParameterHandler.exist('sTitle') else xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
             sMeta = oInputParameterHandler.getValue('sMeta') if oInputParameterHandler.exist('sMeta') else xbmc.getInfoLabel('ListItem.Property(sMeta)')
             sYear = oInputParameterHandler.getValue('sYear') if oInputParameterHandler.exist('sYear') else xbmc.getInfoLabel('ListItem.Year')
+            sUrl = oInputParameterHandler.getValue('siteUrl') if oInputParameterHandler.exist('siteUrl') else xbmc.getInfoLabel('ListItem.Property(siteUrl)')
+            sSite = oInputParameterHandler.getValue('sId') if oInputParameterHandler.exist('sId') else xbmc.getInfoLabel('ListItem.Property(sId)')
+            sFav = oInputParameterHandler.getValue('sFav') if oInputParameterHandler.exist('sFav') else xbmc.getInfoLabel('ListItem.Property(sFav)')
+            sCat = oInputParameterHandler.getValue('sCat') if oInputParameterHandler.exist('sCat') else xbmc.getInfoLabel('ListItem.Property(sCat)')
 
-            WindowsBoxes(sCleanTitle, sCleanTitle, sMeta, sYear)
+            WindowsBoxes(sCleanTitle, sUrl, sMeta, sYear, sSite, sFav, sCat)
         else:
             # On appel la fonction integrer a Kodi pour charger les infos.
             xbmc.executebuiltin('Action(Info)')

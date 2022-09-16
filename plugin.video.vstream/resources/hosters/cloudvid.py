@@ -53,7 +53,7 @@ class cHoster(iHoster):
                 sPattern = 'src:"([^"]+)"'
                 aResult = oParser.parse(sHtmlContent2, sPattern)
                 if aResult[0]:
-                    api_call = aResult[1][0].replace(',','').replace('.urlset','')
+                    api_call = aResult[1][0].replace(',', '').replace('.urlset', '')
 
         if not api_call:
             sPattern = 'sources: *\[{src: "([^"]+)", *type: "video/mp4"'

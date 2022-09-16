@@ -3,13 +3,14 @@
 # Makoto et Arias800 02/06/2019
 import re
 
+from resources.lib.comaddon import addon, isMatrix, siteManager
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import addon, progress, isMatrix, siteManager
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'animeultime'
 SITE_NAME = 'Anime Ultime'
@@ -26,13 +27,11 @@ ANIM_ANIMS = (True, 'showMenuAnimes')
 ANIM_ANNEES = (True, 'ShowYearsAnimes')
 ANIM_GENRES = (True, 'ShowGenreAnimes')
 ANIM_ALPHA = (True, 'ShowAlphaAnimes')
-ANIM_VOSTFRS = (URL_MAIN + 'series-0-1/anime/0---', 'showSeries')
 
 DRAMA_DRAMAS = (True, 'showMenuDramas')
 DRAMA_ANNEES = (True, 'ShowYearsDramas')
 DRAMA_GENRES = (True, 'ShowGenreDramas')
 DRAMA_ALPHA = (True, 'ShowAlphaDramas')
-DRAMA_VOSTFRS = (URL_MAIN + 'series-0-1/drama/0---', 'showSeries')
 
 TOKUSATSU_TOKUSATSUS = (True, 'showMenuTokusatsu')
 TOKUSATSU = (URL_MAIN + 'series-0-1/tokusatsu/0---', 'showSeries')
@@ -64,9 +63,6 @@ def showMenuAnimes():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés', 'animes.png', oOutputParameterHandler)
-
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ALPHA[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ALPHA[1], 'Animés  (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
@@ -83,9 +79,6 @@ def showMenuDramas():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', DRAMA_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, DRAMA_VOSTFRS[1], 'Dramas', 'dramas.png', oOutputParameterHandler)
-
     oOutputParameterHandler.addParameter('siteUrl', DRAMA_ALPHA[0])
     oGui.addDir(SITE_IDENTIFIER, DRAMA_ALPHA[1], 'Dramas (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
@@ -237,6 +230,10 @@ def showSearch():
 def showSeries(sSearch=''):
     oGui = cGui()
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_DRAMAS[0], '')
+        sSearchText = sSearchText.replace(URL_SEARCH_ANIMS[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch.replace(' ', '+').replace('%20', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -247,9 +244,9 @@ def showSeries(sSearch=''):
 
     oParser = cParser()
     if sSearch:
-        sPattern = '<td class=".+?<a href="([^"]+)".+?<img src=.+?img=([^>]+)/>.+?onMouseOut.+?>(.+?)</a>'
+        sPattern = '<td class=".+?<a href="([^"]+)".+?<img src=.+?img=([^>]+)\/>.+?onMouseOut.+?>(.+?)<\/a>.+?<td class="" align="center">([^<]+)<'
     else:
-        sPattern = '<td class=".+?<a href="([^"]+)".+?<img src=([^>]+)\/>.+?alt="([^"]+).+?<td class'
+        sPattern = '<td class=".+?<a href="([^"]+)".+?<img src=([^>]+)\/>.+?alt="([^"]+).+?align="center">([^<]+)<'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -269,7 +266,7 @@ def showSeries(sSearch=''):
                 # Enleve le contenu pour adultes.
                 if 'Public Averti' in sTitle or 'Interdit' in sTitle:
                     if adulteContent == "false":
-                        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Contenu pour adultes désactiver dans les paramètres[/COLOR]')
+                        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Contenu pour adultes désactivé[/COLOR]')
                         return
 
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -279,7 +276,7 @@ def showSeries(sSearch=''):
                 if '/anime/' in sUrl:
                     oGui.addAnime(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
                 else:
-                    oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
+                    oGui.addDrama(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
 
             else:
                 oGui.addText(SITE_IDENTIFIER)
@@ -287,54 +284,47 @@ def showSeries(sSearch=''):
             oGui.addText(SITE_IDENTIFIER)
 
     if aResult[0] is True:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME, large=True)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
+            sTitle = aEntry[2]
             if sSearch:
                 # Enleve les balise.
                 try:
-                    sTitle = re.sub('<.*?>', '', aEntry[2])
-                except:
-                    sTitle = aEntry[2]
-
-                # Le décodage n'est pas utile sous Python 3
-                try:
-                    sTitle = sTitle.decode('iso-8859-1').encode('utf8')
+                    sTitle = re.sub('<.*?>', '', sTitle)
                 except:
                     pass
 
-                sUrl2 = URL_MAIN + aEntry[0]
-                sThumb = URL_MAIN + aEntry[1]
-            else:
-                sTitle = aEntry[2]
-                try:
-                    sTitle = sTitle.decode('iso-8859-1').encode('utf8')
-                except:
-                    pass
+            try:
+                sTitle = sTitle.decode('iso-8859-1').encode('utf8')
+            except:
+                pass
 
-                sUrl2 = URL_MAIN + aEntry[0]
-                sThumb = aEntry[1]
+            sUrl2 = URL_MAIN + aEntry[0]
+            sThumb = aEntry[1]
 
-                if adulteContent == "false":
-                    # Enleve le contenu pour adulte.
-                    if 'Public Averti' in sTitle or 'Interdit' in sTitle:
-                        continue
+            if adulteContent == "false":
+                # Enleve le contenu pour adulte.
+                if 'Public Averti' in sTitle or 'Interdit' in sTitle:
+                    continue
+
+            # Filtre de recherche
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue
+
+            sType = aEntry[3].strip()
+            sTitle += ' [%s]' % sType
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if '/anime/' in sUrl:
+            if sType != 'Episode':
+                oGui.addMovie(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
+            elif '/anime/' in sUrl:
                 oGui.addAnime(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+                oGui.addDrama(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -345,6 +335,7 @@ def showEpisode():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -372,29 +363,33 @@ def showEpisode():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0] is True:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
-
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
-            sTitle = aEntry[0].replace('FHD', '').replace('vostfr', '').replace('HD', '').replace('HQ', '')
+            sTitle = aEntry[0]
             try:
                 sTitle = sTitle.decode('iso-8859-1').encode('utf8')
             except:
                 pass
 
+            sLang = ''
+            if ' vostfr' in sTitle:
+                sLang = 'VOSTFR'
+            if ' vf' in sTitle:
+                sLang = 'VF'
+            sTitle = aEntry[0].replace('[', '').replace(']', '').replace('FHD', '').replace('vostfr', '').replace('vf', '').replace('HD', '').replace('HQ', '').strip()
+            if '(saison' in sTitle: 
+                sTitle = sTitle.replace('(', '').replace(')', '')
+            sEpisode = sTitle.split(' ')[-1]
+            sTitle = sTitle.replace(sEpisode, ' Episode ' + sEpisode).strip()
+            sDisplayTtitle = sTitle + ' [' + sLang + ']'
+                
             sUrl2 = URL_MAIN + aEntry[1]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
+            oOutputParameterHandler.addParameter('sLang', sLang)
+            oGui.addEpisode(SITE_IDENTIFIER, 'showHosters', sDisplayTtitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -407,23 +402,24 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    ids = sUrl.split('/')[4]
-    oRequestHandler = cRequestHandler('https://v5.anime-ultime.net/VideoPlayer.html')
-    oRequestHandler.setRequestType(1)
-    oRequestHandler.addHeaderEntry('User-Agent', UA)
-    oRequestHandler.addParameters('idfile', ids)
+    oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '"([0-9p]+)".+?url":"(.+?)"'
+    sPattern = 'id="stream">Streaming <span itemprop="name">([^<]+)<.+?thumbnailUrl" content="([^\"]+)".+?contentURL" content="([^\"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0] is True:
         for aEntry in aResult[1]:
-
-            sTitle = ('%s [%s]') % (sMovieTitle, aEntry[0])
-            sHosterUrl = aEntry[1].replace('\\/', '/')
-            oHoster = cHosterGui().checkHoster('mp4')
-
+            sTitle = aEntry[0].strip()
+            if ' vostfr' in sTitle:
+                sLang = 'VOSTFR'
+            if ' vf' in sTitle:
+                sLang = 'VF'
+            sTitle = ('%s - [%s]') % (sMovieTitle, sLang)
+            
+            sThumb = aEntry[1]
+            sHosterUrl = aEntry[2]
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
             if oHoster != False:
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)

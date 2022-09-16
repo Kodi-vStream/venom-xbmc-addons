@@ -126,7 +126,7 @@ class cTrakt:
             oOutputParameterHandler.addParameter('type', 'show')
             oGui.addDir(SITE_IDENTIFIER, 'getLists', self.ADDON.VSlang(30121), 'series.png', oOutputParameterHandler)
 
-            if self.ADDON.getSetting('trakt_show_lists'):
+            if self.ADDON.getSetting('trakt_show_lists') == 'true':
                 oOutputParameterHandler.addParameter('type', 'custom-lists')
                 oGui.addDir(SITE_IDENTIFIER, 'menuList', "Listes", 'trakt.png', oOutputParameterHandler)
 
@@ -536,8 +536,10 @@ class cTrakt:
 
                         sTitle = self.decode(sTitle)
                         searchtext = ('%s') % (sTitle)
-                        sFile = ('%s - (%s)') % (sTitle, sYear)
-                        sTitle = ('%s (S%02dE%02d)') % (self.decode(sTitle,  Unicode=True), sSaison, sEpisode)
+                        sFile = sTitle
+                        if sYear:
+                            sFile += ' - (%s)' % sYear
+                        sTitle = ('%s S%02dE%02d') % (self.decode(sTitle,  Unicode=True), sSaison, sEpisode)
 
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
@@ -841,7 +843,7 @@ class cTrakt:
             self.__sType = disp[ret]
         return self.__sType
 
-    def getAction(self, Action=''):
+    def getAction(self, Action='', sEpisode = ''):
 
         if self.ADDON.getSetting('bstoken') == '':
             self.DIALOG.VSinfo('Vous devez être connecté')
@@ -862,8 +864,8 @@ class cTrakt:
         # entrer imdb ? venant d'ou?
         sImdb = oInputParameterHandler.getValue('sImdbId')
         sTMDB = oInputParameterHandler.getValue('sTmdbId')
-        sSeason = oInputParameterHandler.getValue('sSeason')
-        sEpisode = oInputParameterHandler.getValue('sEpisode')
+        sSeason = False
+        sEpisode = False
 
         # Film, serie, anime, saison, episode
         if sType not in ('1', '2', '3', '4', '8'):
@@ -873,19 +875,29 @@ class cTrakt:
 
         # Mettre en vu automatiquement.
         if Action == "SetWatched":
-            sTitle = oInputParameterHandler.getValue('sFileName')
+            sFileName = oInputParameterHandler.getValue('sFileName')
 
             if sType == "shows":
+                if self.ADDON.getSetting('trakt_tvshows_activate_scrobbling') == 'false':
+                    return
+                
+                sTitle = oInputParameterHandler.getValue('tvshowtitle')
+                sSeason = oInputParameterHandler.getValue('sSeason')
                 if not sSeason:
                     sSeason = re.search('(?i)( s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle).group(2)
                 if not sEpisode:
-                    sEpisode = re.search('(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', sTitle).group(2)
+                    sEpisode = oInputParameterHandler.getValue('sEpisode')
+                if not sEpisode:
+                    sEpisode = re.search('(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', sFileName).group(2)
             else:
-                sSeason = False
-                sEpisode = False
+                if self.ADDON.getSetting('trakt_movies_activate_scrobbling') == 'false':
+                    return
+                sTitle = sFileName
 
             sAction = URL_API + 'sync/history'
 
+            if not sTitle:
+                sTitle = oInputParameterHandler.getValue('sMovieTitle')
         else:
             sTitle = oInputParameterHandler.getValue('sMovieTitle')
 
@@ -893,6 +905,8 @@ class cTrakt:
             if not sTMDB:
                 sTMDB = int(self.getTmdbID(sTitle, sType))
 
+            if not sTMDB:
+                return
             sPost = {sType: [{'ids': {'tmdb': sTMDB}}]}
             if sSeason:
                 sPost = {sType: [{'ids': {'tmdb': sTMDB}, 'seasons': [{'number': int(sSeason)}]}]}
@@ -936,7 +950,7 @@ class cTrakt:
             pass
 
         try:
-            self.DIALOG.VSinfo(sText)
+            self.DIALOG.VSinfo(sText, 'trakt')
         except UnboundLocalError:
             self.DIALOG.VSinfo("Erreur")
 
@@ -1048,6 +1062,6 @@ class cTrakt:
             year = str(r.group(0))
             sTitle = sTitle.replace(year, '')
 
-        meta = grab.get_idbyname(oInputParameterHandler.getValue('sFileName'), year, sType)
+        meta = grab.get_idbyname(sTitle, year, sType)
 
         return int(meta)

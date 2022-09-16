@@ -82,7 +82,7 @@ class cPacker():
     def _filterargs(self, source):
         """Juice from a source file the four args needed by decoder."""
 
-        source = source.replace(',[],',',0,')
+        source = source.replace(',[],',',0,').replace("\\'", "'")
 
         juicer = (r"}\s*\(\s*(.*?)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\((.*?)\).split\((.*?)\)")
         args = re.search(juicer, source, re.DOTALL)
@@ -94,6 +94,7 @@ class cPacker():
                 raise UnpackingError('Corrupted p.a.c.k.e.r. data.')
 
         juicer = (r"}\('(.*)', *(\d+), *(\d+), *'(.*)'\.split\('(.*?)'\)")
+#        juicer = (r"}\(\\'(.*)', *(\d+), *(\d+), *\\'(.*)'\.split\(\\'(.*?)\\'\)")
         args = re.search(juicer, source, re.DOTALL)
         if args:
             a = args.groups()

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.video.vstream" name="vStream" version="1.9.3" provider-name="venom-xbmc-addons">
+<addon id="plugin.video.vstream" name="vStream" version="2.0.0" provider-name="venom-xbmc-addons">
     <requires>
 
         <trycatch>
@@ -28,15 +28,15 @@
     <extension point="kodi.context.item">
         <menu id="kodi.core.main">
             <item library="resources/lib/gui/menuInformation.py">
-		        <label>$ADDON[plugin.video.vstream 30208]</label>
+		        <label>[COLOR lightcoral]$ADDON[plugin.video.vstream 30208][/COLOR]</label>
 				<visible>Window.IsVisible(home) + ListItem.Property(sMeta)</visible>
             </item>
             <item library="resources/lib/gui/menuAddBookmark.py">
-		        <label>$ADDON[plugin.video.vstream 30210]</label>
+		        <label>[COLOR lightcoral]$ADDON[plugin.video.vstream 30210][/COLOR]</label>
 				<visible>Window.IsVisible(home) + !ListItem.Property(isBookmark) + ListItem.Property(sMeta)</visible>
             </item>
             <item library="resources/lib/gui/menuSimil.py">
-		        <label>$ADDON[plugin.video.vstream 30213]</label>
+		        <label>[COLOR lightcoral]$ADDON[plugin.video.vstream 30213][/COLOR]</label>
 				<visible>Window.IsVisible(home) + ListItem.Property(sMeta)</visible>
             </item>
             <item library="resources/lib/gui/menuDelBookmark.py">
@@ -83,23 +83,13 @@
 
 <addon id="repository.vstream"
        name="vStream Repository"
-        version="0.0.5"
+        version="0.0.6"
         provider-name="Venom">
     <extension point="xbmc.addon.repository" name="vStream XBMC Addon Repository">
     <dir>
         <info compressed="false">https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/addons.xml</info>
         <checksum>https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/addons.xml.md5</checksum>
         <datadir zip="true">https://github.com/Kodi-vStream/venom-xbmc-addons/raw/master/repo</datadir>
-    </dir>
-    <dir>
-        <info compressed="false">https://raw.githubusercontent.com/Ovni-crea/seleniumzip/master/addons.xml</info>
-        <checksum>https://raw.githubusercontent.com/Ovni-crea/seleniumzip/master/addons.xml.md5</checksum>
-        <datadir zip="true">https://raw.githubusercontent.com/Ovni-crea/seleniumzip/master</datadir>
-    </dir>
-    <dir>
-        <info compressed="false">https://raw.githubusercontent.com/Arias800/Fichier-divers/master/addon.xml</info>
-        <checksum>https://raw.githubusercontent.com/Arias800/Fichier-divers/master/addons.xml.md5</checksum>
-        <datadir zip="true">https://raw.githubusercontent.com/Arias800/script.module.dnspython/master</datadir>
     </dir>
    </extension>
 

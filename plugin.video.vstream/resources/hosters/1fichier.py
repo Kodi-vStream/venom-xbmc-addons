@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-#
+
 import sys
 import random
 import re
@@ -35,8 +35,8 @@ class cHoster(iHoster):
         print(self.oPremiumHandler.isPremiumModeAvailable())
 
         if ('site=cDownload&function' not in sys.argv[2]) and not (self.oPremiumHandler.isPremiumModeAvailable()):
-            oDialog = dialog().VSok("Pas de streaming sans premium.\n" + \
-                    "Pour voir le film passer par l'option 'Télécharger et Lire' du menu contextuel.")
+            oDialog = dialog().VSok("Pas de streaming sans premium.\n" +
+                                    "Pour voir le film passer par l'option 'Télécharger et Lire' du menu contextuel.")
             return False, False
 
         if self.oPremiumHandler.isPremiumModeAvailable():
@@ -87,7 +87,7 @@ class cHoster(iHoster):
             return False
 
         sPattern = '<a href="([^<>"]+?)"  style="float:none;margin:auto;font-weight:bold;padding: 10px;margin: ' + \
-            '10px;font-size:\+1\.6em;border:2px solid red" class="ok btn-general btn-orange">'
+                   '10px;font-size:\+1\.6em;border:2px solid red" class="ok btn-general btn-orange">'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if aResult[0] is True:
@@ -118,7 +118,7 @@ class cHoster(iHoster):
             # L'option est désactivée : la réponse sera de type "text/plain; charset=utf-8", exemple :
             # https://serveur-2b.1fichier.com/lelienactif;Film.de.Jacquie.et.Michel.a.la.montagne.mkv;1234567890;0
             m = re.search('^(.*);.*;.*;.*$', sHtmlContent)
-            if (m):
+            if m:
                 url = m.group(1)
             # L'option est activée : pour récupérer le lien direct il faut POSTer le formulaire demandant le download
             else:

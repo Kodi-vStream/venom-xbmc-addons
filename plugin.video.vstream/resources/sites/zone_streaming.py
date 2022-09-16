@@ -26,6 +26,7 @@ SERIE_SERIES = (URL_MAIN + 'category/seriesweb/', 'showMovies')
 WEB_SERIES = (URL_MAIN + 'category/webseries/', 'showMovies')
 SERIE_GENRES = (True, 'showSeriesGenres')
 
+REPLAYTV_REPLAYTV = (True, 'load')
 REPLAYTV_NEWS = (URL_MAIN + 'category/emissions/', 'showMovies')
 REPLAYTV_GENRES = (True, 'showReplayGenres')
 SHOW_SHOWS = (URL_MAIN + 'category/spectaclesweb/', 'showMovies')

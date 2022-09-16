@@ -510,7 +510,7 @@ def showLiveHosters():
             # live ok avec UA ipad sauf si geoIP usa
             sHosterUrl = sHosterUrl + '|User-Agent=Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B367 Safari/531.21.1'
 
-            oHoster = cHosterGui().checkHoster('m3u8')
+            oHoster = cHosterGui().checkHoster('.m3u8')
             oHoster.setDisplayName(sTitle)
             oHoster.setFileName(sTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

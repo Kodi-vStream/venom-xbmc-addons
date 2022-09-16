@@ -2,6 +2,9 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
+from resources.lib.parser import cParser
+from resources.lib.comaddon import dialog
+
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ' + \
     'Chrome/83.0.4103.116 Safari/537.36'
 
@@ -13,16 +16,25 @@ class cHoster(iHoster):
     def _getMediaLinkForGuest(self):
         api_call = False
 
-        oRequestHandler = cRequestHandler("https://streamlare.com/api/video/get")
+        oRequestHandler = cRequestHandler("https://sltube.org/api/video/stream/get")
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('Referer', self._url)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
-        oRequestHandler.addHeaderEntry('X-Requested-With', 'XMLHttpRequest')
-        oRequestHandler.addHeaderEntry('Origin', 'https://{0}'.format(self._url.split('/')[2]))
-        oRequestHandler.addJSONEntry('id', self._url.split('/')[4])
-        sHtmlContent = oRequestHandler.request(jsonDecode=True)
+        oRequestHandler.addParameters('id', self._url.split('/')[4])
+        sHtmlContent = oRequestHandler.request()
+        
+        oParser = cParser()
+        sPattern = 'label":"([^"]+).*?file":"([^"]+)'
+        aResult = oParser.parse(sHtmlContent, sPattern)
 
-        api_call = sHtmlContent['result']['Original']['src']
+        if aResult[0] is True:
+            url=[]
+            qua=[] 
+            for aEntry in aResult[1]:
+                qua.append(aEntry[0])
+                url.append(aEntry[1])
+
+            api_call = dialog().VSselectqual(qua, url)
 
         if api_call:
             return True, api_call + '|User-Agent=' + UA + '&Referer=' + self._url

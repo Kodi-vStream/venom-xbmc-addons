@@ -9,7 +9,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import addon, progress, siteManager
+from resources.lib.comaddon import addon, siteManager
 from resources.lib.util import cUtil
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
@@ -68,7 +68,7 @@ def showGenres():
              ['Comédie', 'comedie'], ['Comédie-dramatique', 'comedie-dramatique'],
              ['Comédie-musicale', 'comedie-musicale'], ['Documentaire', 'documentaire'], ['Drame', 'drame'],
              ['Epouvante Horreur', 'epouvante-horreur'], ['Famille', 'famille'], ['Fantastique', 'fantastique'],
-             ['Guerre', 'guerre'], ['Opera', 'opera'], ['Policier', 'policier'], ['Romance', 'romance'],
+             ['Guerre', 'guerre'], ['Policier', 'policier'], ['Romance', 'romance'],
              ['Science-fiction', 'science-fiction'], ['Thriller', 'thriller']]
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -100,14 +100,8 @@ def showMovies(sSearch=''):
     if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
     else:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sUrl = aEntry[0]
             if sUrl.startswith('/'):
                 sUrl = URL_MAIN[:-1] + sUrl
@@ -140,8 +134,6 @@ def showMovies(sSearch=''):
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
     if not sSearch:  # une seule page par recherche
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)

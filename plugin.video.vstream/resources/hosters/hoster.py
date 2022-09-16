@@ -1,9 +1,10 @@
-#-*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+
 
 class iHoster:
 
-    def __init__(self, pluginIdentifier, displayName, color = 'skyblue'):
+    def __init__(self, pluginIdentifier, displayName, color='skyblue'):
         self._defaultDisplayName = displayName
         self._displayName = self._defaultDisplayName
         self._fileName = displayName

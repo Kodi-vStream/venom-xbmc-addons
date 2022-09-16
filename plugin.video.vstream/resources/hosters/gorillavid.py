@@ -1,10 +1,11 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
 
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
+
 
 class cHoster(iHoster):
 
@@ -29,7 +30,7 @@ class cHoster(iHoster):
         url = 'http://gorillavid.in/' + sId
         oRequest = cRequestHandler(url)
         sHtmlContent = oRequest.request()
-        sPattern =  '<input type="hidden" name="([^"]+)" value="([^"]+)"'
+        sPattern = '<input type="hidden" name="([^"]+)" value="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if aResult[0] is True:
@@ -39,7 +40,7 @@ class cHoster(iHoster):
             oRequest.addParameters('referer', url)
             sHtmlContent = oRequest.request()
             r2 = re.search('file: "([^"]+)",', sHtmlContent)
-            if (r2):
+            if r2:
                 api_call = r2.group(1)
 
         if api_call:

@@ -1,6 +1,6 @@
-#-*- coding: utf-8 -*-
-# https://github.com/Kodi-vStream/venom-xbmc-addons
-#stream elite
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+# stream elite
 import re
 
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -11,6 +11,7 @@ from resources.lib.gui.hoster import cHosterGui
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
 
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -20,15 +21,13 @@ class cHoster(iHoster):
         return False
 
     def setUrl(self, url):
-        #http://iframe-secured.com/embed/evovinec
-        #http://iframe-secured.com/embed/iframe.php?u=evovinec
+        # http://iframe-secured.com/embed/evovinec
+        # http://iframe-secured.com/embed/iframe.php?u=evovinec
         self._url = url.replace('http://iframe-secured.com/embed/', '')
         self._url = self._url.replace('//iframe-secured.com/embed/', '')
         self._url = 'http://iframe-secured.com/embed/iframe.php?u=%s' % self._url
 
     def _getMediaLinkForGuest(self):
-        api_call = ''
-
         oParser = cParser()
         oRequest = cRequestHandler(self._url)
         oRequest.addHeaderEntry('User-Agent', UA)
@@ -53,10 +52,10 @@ class cHoster(iHoster):
             sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
             aResult = re.findall(sPattern, sHtmlContent)
 
-            if (aResult):
+            if aResult:
                 sUnpacked = cPacker().unpack(aResult[0])
                 sHtmlContent = sUnpacked
-                if (sHtmlContent):
+                if sHtmlContent:
                     sPattern = "replace\(.*'(.+?)'"
                     aResult = oParser.parse(sHtmlContent, sPattern)
 

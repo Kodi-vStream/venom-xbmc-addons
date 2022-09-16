@@ -59,6 +59,8 @@ class cGuiElement:
         self.__ImdbId = ''
         self.__Year = ''
 
+        self.__sRes = '' # resolution
+
         self.__aItemValues = {}
         self.__aProperties = {}
         self.__aContextElements = []
@@ -98,7 +100,7 @@ class cGuiElement:
         return self.__sTrailer
 
     def setTmdbId(self, data):
-        self.__TmdbId = data
+        self.__TmdbId = data if data != '0' else ''
 
     def getTmdbId(self):
         return self.__TmdbId
@@ -114,6 +116,19 @@ class cGuiElement:
 
     def getYear(self):
         return self.__Year
+
+    def setRes(self, data):
+        if data.upper() in ('1080P', 'FHD', 'FULLHD'): 
+            data = '1080p'
+        elif data.upper() in ('720P', 'DVDRIP', 'DVDSCR', 'HD', 'HDLIGHT', 'HDRIP', 'BDRIP', 'BRRIP'): 
+            data = '720p'
+        elif data.upper() in ('4K', 'UHD', '2160P'): 
+            data = '2160p'
+        
+        self.__sRes = data
+
+    def getRes(self):
+        return self.__sRes
 
     def setGenre(self, genre):
         self.__sGenre = genre
@@ -164,10 +179,7 @@ class cGuiElement:
         return self.__sSiteName
 
     def setFileName(self, sFileName):
-        if isMatrix():
-            self.__sFileName = sFileName
-        else:
-            self.__sFileName = cUtil().titleWatched(sFileName)
+        self.__sFileName = cUtil().titleWatched(sFileName)
 
     def getFileName(self):
         return self.__sFileName
@@ -209,10 +221,10 @@ class cGuiElement:
         """ Fin Nettoyage du titre """
 
         # recherche l'année, uniquement si entre caractere special a cause de 2001 odysse de l'espace ou k2000
-        string = re.search('([^\w ][0-9]{4}[^\w ])', sTitle)
+        string = re.search('[^\w ]([0-9]{4})[^\w ]', sTitle)
         if string:
             sTitle = sTitle.replace(string.group(0), '')
-            self.__Year = str(string.group(0)[1:5])
+            self.__Year = str(string.group(1))
             self.addItemValues('year', self.__Year)
 
         # recherche une date
@@ -243,6 +255,10 @@ class cGuiElement:
                 if m:
                     sTitle = sTitle.replace(m.group(0), '')
                     sa = m.group(3)
+
+        # enleve les crochets et les parentheses si elles sont vides
+        if sa or ep:
+            sTitle = sTitle.replace('()', '').replace('[]', '').replace('- -', '-')
 
         if sa:
             self.__Season = sa
@@ -283,6 +299,8 @@ class cGuiElement:
         self.__sCleanTitle = re.sub('\[.*\]|\(.*\)', '', sTitle)
         if not self.__sCleanTitle:
             self.__sCleanTitle = re.sub('\[.+?\]|\(.+?\)', '', sTitle)
+            if not self.__sCleanTitle:
+                self.__sCleanTitle = sTitle.replace('[', '').replace(']', '').replace('(', '').replace(')', '')
 
         if isMatrix():
             # Python 3 decode sTitle
@@ -663,7 +681,7 @@ class cGuiElement:
         # Used only if there is data in db, overwrite getMetadonne()
         sCat = str(self.getCat())
         try:
-            if sCat and int(sCat) in (1, 2, 3, 4, 5, 8):  # Vérifier seulement si de type média
+            if sCat and int(sCat) in (1, 2, 3, 4, 5, 8, 9):  # Vérifier seulement si de type média
                 if self.getWatched():
                     self.addItemValues('playcount', 1)
         except:
@@ -684,7 +702,7 @@ class cGuiElement:
         if sCat:
             self.addItemProperties('sCat', sCat)
             mediatypes = {'1': 'movie', '2': 'tvshow', '3': 'tvshow', '4': 'season', '5': 'video',
-                          '6': 'video', '7': 'season', '8': 'episode'}
+                          '6': 'video', '7': 'season', '8': 'episode', '9': 'tvshow'}
             if sCat in mediatypes.keys():
                 mediatype = mediatypes.get(sCat)
                 self.addItemValues('mediatype', mediatype)  # video, movie, tvshow, season, episode, musicvideo

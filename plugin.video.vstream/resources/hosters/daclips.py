@@ -21,7 +21,7 @@ class cHoster(iHoster):
             return aResult[1][0]
         return ''
 
-    def _getMediaLinkForGuest(self, api_call = None):
+    def _getMediaLinkForGuest(self, api_call=None):
         oParser = cParser()
 
         sId = self.__getIdFromUrl()

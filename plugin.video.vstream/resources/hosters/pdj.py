@@ -17,10 +17,10 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  '<span class="download">.+?href="(.+?)" ambatitle="Download podcast">'
+        sPattern = '<span class="download">.+?href="(.+?)" ambatitle="Download podcast">'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0]):
+        if aResult[0]:
             api_call = aResult[1][0]
 
         if api_call:

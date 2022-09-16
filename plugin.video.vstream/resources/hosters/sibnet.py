@@ -1,15 +1,13 @@
-#-*- coding: utf-8 -*-
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#https://video.sibnet.ru/shell.php?videoid=xxxxxx
+# -*- coding: utf-8 -*-
+# vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+# https://video.sibnet.ru/shell.php?videoid=xxxxxx
 
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 
-#from resources.lib.comaddon import #,VSlog
-
-
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:72.0) Gecko/20100101 Firefox/72.0'
+
 
 class cHoster(iHoster):
 
@@ -23,6 +21,8 @@ class cHoster(iHoster):
         api_call = False
         urlmain = 'https://video.sibnet.ru'
         oRequestHandler = cRequestHandler(self._url)
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Referer', urlmain + '/')
         sHtmlContent = oRequestHandler.request()
 
         oParser = cParser()
@@ -30,8 +30,7 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if aResult[0] is True:
-            api_call= urlmain + aResult[1][0] + '|Referer=' + self._url
-
+            api_call = urlmain + aResult[1][0] + '|Referer=' + self._url
 
         if api_call:
             return True, api_call

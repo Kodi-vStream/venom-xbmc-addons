@@ -55,7 +55,7 @@ class cDownloadProgressBar(threading.Thread):
             self.__sUrl = kwargs['url']
             self.__fPath = kwargs['Dpath']
             if 'FastMode' in kwargs:
-                print('Téléchargement en mode Turbo')
+                VSlog('Téléchargement en mode Turbo')
                 self.__bFastMode = True
 
         threading.Thread.__init__(self)
@@ -78,18 +78,19 @@ class cDownloadProgressBar(threading.Thread):
         iTotalSize = -1
         if 'content-length' in headers:
             iTotalSize = int(headers['Content-Length'])
-
-        chunk = 16 * 1024
+            
+        
+        chunk = 512 * 1024
         TotDown = 0
 
         # mise a jour pour info taille
         self.__updatedb(TotDown, iTotalSize)
-        self.DIALOG.VSinfo(self.ADDON.VSlang(30086))
+        self.DIALOG.VSinfo(self.ADDON.VSlang(30086), self.ADDON.VSlang(30224), 5)
 
         while not (self.processIsCanceled or diag.isFinished()):
             data = self.oUrlHandler.read(chunk)
             if not data:
-                print('DL err')
+                VSlog('DL err')
                 break
 
             self.file.write(data)
@@ -102,7 +103,7 @@ class cDownloadProgressBar(threading.Thread):
 
             # petite pause, ca ralentit le download mais evite de bouffer 100/100 ressources
             if not self.__bFastMode:
-                xbmc.sleep(300)
+                xbmc.sleep(250)
 
         self.oUrlHandler.close()
         self.file.close()
@@ -122,7 +123,7 @@ class cDownloadProgressBar(threading.Thread):
             try:
                 with cDb() as db:
                     db.update_download(meta)
-                self.DIALOG.VSinfo(self.ADDON.VSlang(30003), self.__sTitle)
+                self.DIALOG.VSinfo(self.__sTitle, self.ADDON.VSlang(30003), 5)
                 self.RefreshDownloadList()
             except:
                 pass
@@ -131,7 +132,7 @@ class cDownloadProgressBar(threading.Thread):
             try:
                 with cDb() as db:
                     db.update_download(meta)
-                self.DIALOG.VSinfo(self.ADDON.VSlang(30004), self.__sTitle)
+                self.DIALOG.VSinfo(self.__sTitle, self.ADDON.VSlang(30004), 5)
                 self.RefreshDownloadList()
             except:
                 pass
@@ -139,7 +140,7 @@ class cDownloadProgressBar(threading.Thread):
 
         # ok tout est bon on continu ou pas?
         if xbmcgui.Window(10101).getProperty('SimpleDownloaderQueue') == '1':
-            print('Download suivant')
+            VSlog('Download suivant')
             tmp = cDownload()
             data = tmp.GetNextFile()
             tmp.StartDownload(data)
@@ -165,6 +166,7 @@ class cDownloadProgressBar(threading.Thread):
         if self.__oDialog.isFinished():
             self.createProcessDialog()
 
+        # barre de préchargement
         iPercent = int(float(iDownsize * 100) / iTotalSize)
         self.__oDialog.update(iPercent, self.__sTitle, self.__formatFileSize(float(iDownsize)) + '/' + self.__formatFileSize(iTotalSize))
 
@@ -185,7 +187,7 @@ class cDownloadProgressBar(threading.Thread):
 
             # Rajout du user-agent si absent
             if not ('User-Agent' in headers):
-                headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
+                headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36'
 
             req = urllib2.Request(url, None, headers)
 
@@ -193,21 +195,17 @@ class cDownloadProgressBar(threading.Thread):
             self.file = xbmcvfs.File(self.__fPath, 'w')
         except:
             VSlog('download error ' + self.__sUrl)
-            self.DIALOG.VSinfo('Download error', self.ADDON.VSlang(30011))
-            return
-
-        if xbmc.getCondVisibility('Window.IsVisible(10151)'):
-            self.DIALOG.VSinfo('Erreur', self.ADDON.VSlang(30012))
+            self.DIALOG.VSinfo(self.ADDON.VSlang(30011), 'Download error', 5)
             return
 
         self._StartDownload()
 
     def __formatFileSize(self, iBytes):
         iBytes = int(iBytes)
-        if (iBytes == 0):
-            return '%.*f %s' % (2, 0, 'MB')
+        if iBytes == 0:
+            return '0 MB'
 
-        return '%.*f %s' % (2, iBytes/(1024*1024.0), 'MB')
+        return "{:,.{}f} MB".format( iBytes/(1024*1024.0), 0 ).replace(',', ' ')
 
     def StopAll(self):
         self.processIsCanceled = True
@@ -237,17 +235,16 @@ class cDownload:
         valid_chars = '-_.() abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
         filename = ''.join(c for c in sTitle if c in valid_chars)
         filename = filename.replace(' .', '.')
-        if filename.startswith(' '):
-            filename = filename[1:]
+        filename = filename.strip()
         return filename
 
     def __formatFileSize(self, iBytes):
         iBytes = int(iBytes)
         if iBytes == 0:
-            return '%.*f %s' % (2, 0, 'MB')
+            return '0 MB'
 
-        return '%.*f %s' % (2, iBytes/(1024*1024.0), 'MB')
-
+        return "{:,.{}f} MB".format( iBytes/(1024*1024.0), 0 ).replace(',', ' ')
+    
     def isDownloading(self):
         if not xbmc.getCondVisibility('Window.IsVisible(10151)'):
             return False
@@ -255,7 +252,7 @@ class cDownload:
 
     def download(self, sDBUrl, sTitle, sDownloadPath, FastMode=False):
         if self.isDownloading():
-            self.DIALOG.VSinfo('Erreur', self.ADDON.VSlang(30012))
+            self.DIALOG.VSinfo(self.ADDON.VSlang(30012), 'Erreur', 5)
             return False
 
         self.__sTitle = sTitle
@@ -266,15 +263,15 @@ class cDownload:
         oHoster.setUrl(sDBUrl)
         aLink = oHoster.getMediaLink()
 
-        if aLink[0]:
+        if aLink and aLink[0]:
             sUrl = aLink[1]
         else:
-            print('Lien non resolvable')
-            self.DIALOG.VSinfo(self.ADDON.VSlang(30022), sTitle)
+            VSlog('Lien non resolvable ou protégé')
+            self.DIALOG.VSinfo(sTitle, self.ADDON.VSlang(30022), 5)
             return False
 
         if (not sUrl.startswith('http')) or sUrl.split('|')[0].endswith('.m3u8'):
-            self.DIALOG.VSinfo(self.ADDON.VSlang(30022), sTitle)
+            self.DIALOG.VSinfo(sTitle, self.ADDON.VSlang(30022), 5)
             return False
 
         try:
@@ -289,23 +286,34 @@ class cDownload:
             VSlog('Download Ok ' + sDownloadPath)
 
         except:
-            self.DIALOG.VSinfo(self.ADDON.VSlang(30024), sTitle)
+            self.DIALOG.VSinfo(sTitle, self.ADDON.VSlang(30024), 5)
             VSlog('Unable to download')
             return False
 
         return True
 
     def __createTitle(self, sUrl, sTitle):
+
+        extension = sTitle.rsplit('.')
+        # Si deja extension
+        if (len(extension) > 1):
+            extension = extension[-1]
+            m = re.search('(flv|avi|mp4|mpg|mpeg|mkv)', extension)
+            if m:
+                sTitle = sTitle[:-len(extension)]
+            else:
+                extension = None
+        else:
+            extension = None
+
         sTitle = cUtil().CleanName(sTitle)
         sTitle = cUtil().FormatSerie(sTitle)
 
         if type(sTitle) is bytes:
             sTitle = sTitle.decode('utf-8')
 
-        aTitle = sTitle.rsplit('.')
-        # Si deja extension
-        if (len(aTitle) > 1):
-            return sTitle
+        if extension:
+            return sTitle + '.' +extension
 
         # recherche d'une extension
         sUrl = sUrl.lower()
@@ -319,31 +327,26 @@ class cDownload:
         return sTitle
 
     def getDownload(self):
-        oGui = cGui()
+
         sPluginHandle = cPluginHandler().getPluginHandle()
         sPluginPath = cPluginHandler().getPluginPath()
         sItemUrl = '%s?site=%s&function=%s&title=%s' % (sPluginPath, SITE_IDENTIFIER, 'StartDownloadList', 'title')
         item = xbmcgui.ListItem('Démarrer la liste')
         item.setArt({'icon':'special://home/addons/plugin.video.vstream/resources/art/download.png'})
-
         xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, item, isFolder=False)
 
+        oGui = cGui()
         oOutputParameterHandler = cOutputParameterHandler()
-        oGui.addDir(SITE_IDENTIFIER, 'StopDownloadList', self.ADDON.VSlang(30025), 'download.png', oOutputParameterHandler)
-
-        oOutputParameterHandler = cOutputParameterHandler()
+        oGui.addDir(SITE_IDENTIFIER, 'StopDownloadList', self.ADDON.VSlang(30025), 'none.png', oOutputParameterHandler)
         oGui.addDir(SITE_IDENTIFIER, 'getDownloadList', self.ADDON.VSlang(30039), 'listes.png', oOutputParameterHandler)
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oGui.addDir(SITE_IDENTIFIER, 'CleanDownloadList', self.ADDON.VSlang(30040), 'download.png', oOutputParameterHandler)
-
+        oGui.addDir(SITE_IDENTIFIER, 'CleanDownloadList', self.ADDON.VSlang(30040), 'trash.png', oOutputParameterHandler)
         oGui.setEndOfDirectory()
 
     def CleanDownloadList(self):
         try:
             with cDb() as db:
                 db.clean_download()
-            self.DIALOG.VSinfo(self.ADDON.VSlang(30071))
+            self.DIALOG.VSinfo(self.ADDON.VSlang(30071), self.ADDON.VSlang(30224), 5)
         except:
             pass
 
@@ -359,7 +362,7 @@ class cDownload:
             meta = self.GetOnefile()
 
         xbmcgui.Window(10101).setProperty('SimpleDownloaderQueue', '0')
-        self.StartDownload(meta)
+        return self.StartDownload(meta)
 
     def ResetDownload(self):
         oInputParameterHandler = cInputParameterHandler()
@@ -370,7 +373,7 @@ class cDownload:
         try:
             with cDb() as db:
                 db.reset_download(meta)
-            self.DIALOG.VSinfo(self.ADDON.VSlang(30071))
+            self.DIALOG.VSinfo(self.ADDON.VSlang(30071), self.ADDON.VSlang(30224), 5)
             VSupdate()
         except:
             pass
@@ -407,10 +410,10 @@ class cDownload:
                     db.del_download(meta)
 
                 xbmcvfs.delete(path)
-                self.DIALOG.VSinfo(self.ADDON.VSlang(30072))
+                self.DIALOG.VSinfo(self.ADDON.VSlang(30072), self.ADDON.VSlang(30224), 5)
                 VSupdate()
             except:
-                self.DIALOG.VSinfo(self.ADDON.VSlang(30073))
+                self.DIALOG.VSinfo(self.ADDON.VSlang(30073), self.ADDON.VSlang(30224), 5)
 
     def GetNextFile(self):
         with cDb() as db:
@@ -441,20 +444,20 @@ class cDownload:
 
     def StartDownload(self, data):
         if not data:
-            return
+            return False
 
         title = data[1]
         url = UnquotePlus(data[2])
         path = data[3]
 
-        self.download(url, title, path)
+        return self.download(url, title, path)
 
     def StartDownloadList(self):
-        self.DIALOG.VSinfo(self.ADDON.VSlang(30075))
+        self.DIALOG.VSinfo(self.ADDON.VSlang(30075), self.ADDON.VSlang(30224), 5)
 
         xbmcgui.Window(10101).setProperty('SimpleDownloaderQueue', '1')
         data = self.GetNextFile()
-        self.StartDownload(data)
+        return self.StartDownload(data)
 
     def StopDownloadList(self):
         # thread actif
@@ -553,7 +556,7 @@ class cDownload:
         try:
             with cDb() as db:
                 db.del_download(meta)
-            self.DIALOG.VSinfo(self.ADDON.VSlang(30071))
+            self.DIALOG.VSinfo(self.ADDON.VSlang(30071), self.ADDON.VSlang(30224), 5)
             VSupdate()
         except:
             pass
@@ -564,31 +567,41 @@ class cDownload:
         sTitle = meta['title']
         sUrl = meta['url']
 
+        # resolve url ?
+        from resources.lib.gui.hoster import cHosterGui
+        oHoster = cHosterGui().checkHoster(sUrl)
+        oHoster.setUrl(sUrl)
+        aLink = oHoster.getMediaLink()
+        if not aLink or not aLink[0]:
+            VSlog('Lien non resolvable ou protégé')
+            self.DIALOG.VSinfo(sTitle, self.ADDON.VSlang(30024), 5)
+            return False
+
         # titre fichier
         sTitle = self.__createTitle(sUrl, sTitle)
         sTitle = self.__createDownloadFilename(sTitle)
         sTitle = cGui().showKeyBoard(sTitle)
 
-        if (sTitle != False and len(sTitle) > 0):
+        if sTitle:
 
             # chemin de sauvegarde
-            sPath2 = VSPath(self.ADDON.getSetting('download_folder'))
+            sPath = VSPath(self.ADDON.getSetting('download_folder'))
 
-            dialog = xbmcgui.Dialog()
-            sPath = dialog.browse(3, 'Downloadfolder', 'files', '', False, False, sPath2)
-
-            if (sPath != ''):
+            if sPath == '':
+                dialog = xbmcgui.Dialog()
+                sPath = dialog.browse(3, 'Dossier de sauvegarde', 'files', '', False, False)
                 self.ADDON.setSetting('download_folder', sPath)
+            if sPath != '':
                 sDownloadPath = VSPath(sPath + '%s' % sTitle)
 
                 if xbmcvfs.exists(sDownloadPath):
-                    self.DIALOG.VSinfo(self.ADDON.VSlang(30082), sTitle)
+                    self.DIALOG.VSinfo(sTitle, self.ADDON.VSlang(30082), 5)
                     return self.AddDownload(meta)
                 else:
                     xbmcvfs.File(sDownloadPath, 'w')
 
                 try:
-                    VSlog(self.ADDON.VSlang(30083) + ' ' + str(sUrl))
+                    VSlog(self.ADDON.VSlang(30083) + ' : ' + str(sDownloadPath))
                     meta['title'] = sTitle
                     meta['path'] = sDownloadPath
 
@@ -597,7 +610,7 @@ class cDownload:
                     return True
 
                 except:
-                    self.DIALOG.VSinfo(self.ADDON.VSlang(30084), sTitle)
+                    self.DIALOG.VSinfo(sTitle, self.ADDON.VSlang(30084), 5)
                     VSlog('Unable to download')
 
         return False
@@ -606,8 +619,6 @@ class cDownload:
         oInputParameterHandler = cInputParameterHandler()
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
         sFileName = oInputParameterHandler.getValue('sFileName')
-
-        VSlog('Download ' + sMediaUrl)
 
         meta = {}
         meta['url'] = sMediaUrl
@@ -623,14 +634,15 @@ class cDownload:
                 if row:
                     self.StartDownloadOneFile(row[0])
 
+            else:
+                # notifier que la demande est prise en compte
+                self.DIALOG.VSinfo(self.ADDON.VSlang(30228), self.ADDON.VSlang(30083), 5)
         return
 
     def AddtoDownloadListandview(self):
         oInputParameterHandler = cInputParameterHandler()
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
         sFileName = oInputParameterHandler.getValue('sFileName')
-
-        VSlog('Download ' + sMediaUrl)
 
         meta = {}
         meta['url'] = sMediaUrl
@@ -649,11 +661,11 @@ class cDownload:
                     title = row[0][1]
                     url = UnquotePlus(row[0][2])
                     path = row[0][3]
-                    if (self.download(url, title, path, True) == True):  # Download in fastmode
+                    if self.download(url, title, path, True):  # Download in fastmode
 
                         # ok on attend un peu, et on lance le stream
                         tempo = 100
-                        progress_ = progress().VScreate('Bufferisation')
+                        progress_ = progress().VScreate('Préchargement ...')
 
                         while (tempo > 0):
                             # if canceled do nothing
@@ -676,5 +688,9 @@ class cDownload:
                         oPlayer.startPlayer()
 
                     else:
-                        self.DIALOG.VSinfo('Erreur', self.ADDON.VSlang(30085))
+                        self.DIALOG.VSinfo(self.ADDON.VSlang(30085), 'Erreur', 5)
+            else:
+                # notifier que la demande est prise en compte
+                self.DIALOG.VSinfo(self.ADDON.VSlang(30228), self.ADDON.VSlang(30083), 5)
+                
         return

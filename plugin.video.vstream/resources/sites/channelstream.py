@@ -91,7 +91,7 @@ def showMovies():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, sThumb, sDisplayTitle, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHoster', sTitle, sThumb, sDisplayTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -166,26 +166,31 @@ def showHoster():
         sPattern = '<iframe.+?src="([^"]+)'
         aResult2 = oParser.parse(sHtmlContent, sPattern)
 
-        iframeURL1 = aResult2[1][0]
-
-        if 'cloudstream' in iframeURL1:
-            sHosterUrl = getHosterWigistream(iframeURL1, sUrl)
-
-        if not sHosterUrl:
-            oRequestHandler = cRequestHandler(iframeURL1)
-            oRequestHandler.addHeaderEntry('User-Agent', UA)
-            sHtmlContent = oRequestHandler.request()
-
-            oParser = cParser()
-            sPattern = '<iframe.+?src="([^"]+)'
+        if not aResult2[0]:
+            sPattern = "playStream\('iframe','([^']+)'\)"
             aResult2 = oParser.parse(sHtmlContent, sPattern)
 
-            if aResult2[1]:
-                urlHoster = aResult2[1][0]
-                if 'primetubsub' in urlHoster:
-                    sHosterUrl = getHosterPrimetubsub(urlHoster, iframeURL1)
-                else:
-                    sHosterUrl = getHosterWigistream(urlHoster, iframeURL1)
+        if aResult2[0]:
+            iframeURL1 = aResult2[1][0]
+    
+            if 'cloudstream' in iframeURL1:
+                sHosterUrl = getHosterWigistream(iframeURL1, sUrl)
+    
+            if not sHosterUrl:
+                oRequestHandler = cRequestHandler(iframeURL1)
+                oRequestHandler.addHeaderEntry('User-Agent', UA)
+                sHtmlContent = oRequestHandler.request()
+    
+                oParser = cParser()
+                sPattern = '<iframe.+?src="([^"]+)'
+                aResult2 = oParser.parse(sHtmlContent, sPattern)
+    
+                if aResult2[0]:
+                    urlHoster = aResult2[1][0]
+                    if 'primetubsub' in urlHoster or 'sportcast' in urlHoster:
+                        sHosterUrl = getHosterPrimetubsub(urlHoster, iframeURL1)
+                    else:
+                        sHosterUrl = getHosterWigistream(urlHoster, iframeURL1)
 
         if sHosterUrl:
             oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)

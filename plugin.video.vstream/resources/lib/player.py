@@ -42,6 +42,7 @@ class cPlayer(xbmc.Player):
             self.sTitle = Unquote(self.sTitle)
         self.sCat  = oInputParameterHandler.getValue('sCat')
         self.sSaison = oInputParameterHandler.getValue('sSeason')
+        self.sEpisode = oInputParameterHandler.getValue('sEpisode')
         
         self.sSite = oInputParameterHandler.getValue('siteUrl')
         self.sSource = oInputParameterHandler.getValue('sourceName')
@@ -86,16 +87,22 @@ class cPlayer(xbmc.Player):
         # Lancement d'une vidéo sans avoir arreté la précedente
         self.tvShowTitle = oGuiElement.getItemValue('tvshowtitle')
         if self.isPlaying():
-            self.multi = True
-            self._setWatched() # la vidéo en cours doit être marquée comme VUE
-            
+            sEpisode = str(oGuiElement.getEpisode())
+            if sEpisode:
+                # la vidéo précédente doit être marquée comme VUE
+                numEpisode = int(sEpisode)
+                prevEpisode = numEpisode - 1
+                sPrevEpisode = '%02d' % prevEpisode
+                self._setWatched(sPrevEpisode)
+            else:
+                self._setWatched()
         self.totalTime = 0
         self.currentTime = 0
 
         sPluginHandle = cPluginHandler().getPluginHandle()
 
         oGui = cGui()
-        item = oGui.createListItem(oGuiElement)
+        item = oGui._createListItem(oGuiElement)
         item.setPath(oGuiElement.getMediaUrl())
 
         #Sous titres
@@ -147,7 +154,7 @@ class cPlayer(xbmc.Player):
                 self.showSubtitles(True)
             else:
                 self.showSubtitles(False)
-                dialog().VSinfo('Des sous-titres sont disponibles', 'Sous-Titres', 4)
+                dialog().VSinfo('Des sous-titres sont disponibles', 'Sous-titres', 4)
 
         waitingNext = 0
         
@@ -194,13 +201,14 @@ class cPlayer(xbmc.Player):
             return
         self.playBackStoppedEventReceived = True
 
-        self._setWatched()
+        self._setWatched(self.sEpisode)
 
 
     # MARQUER VU
     # utilise les informations de la vidéo qui vient d'etre lue
     # qui n'est pas celle qui a été lancée si plusieurs vidéos se sont enchainées
-    def _setWatched(self):
+    # sEpisode = l'épisode précédent en cas d'enchainement d'épisode
+    def _setWatched(self, sEpisode = ''):
 
         try:
             with cDb() as db:
@@ -239,15 +247,7 @@ class cPlayer(xbmc.Player):
                                 saisonViewing = True
                         
                         # Marquer VU dans les comptes perso
-                        # NE FONCTIONNE PAS SI PLUSIEURS VIDEOS SE SONT ENCHAINEES (cas des épisodes)
-                        if not self.multi:
-                            tmdb_session = self.ADDON.getSetting('tmdb_session')
-                            if tmdb_session:
-                                self.__getWatchlist('tmdb')
-        
-                            bstoken = self.ADDON.getSetting('bstoken')
-                            if bstoken:
-                                self.__getWatchlist('trakt')
+                        self.__setWatchlist(sEpisode)
 
                     # Sauvegarde du point de lecture pour une reprise
                     elif self.currentTime > 180.0:
@@ -340,17 +340,11 @@ class cPlayer(xbmc.Player):
                             db.del_resume(meta)
 
 
-    def __getWatchlist(self, sAction):
-
-        if sAction == 'tmdb':
-            plugins = __import__('resources.sites.themoviedb_org', fromlist=['themoviedb_org'])
-            function = getattr(plugins, 'getWatchlist')
-            function()
-        elif sAction == 'trakt':
-            plugins = __import__('resources.lib.trakt', fromlist=['trakt']).cTrakt()
-            function = getattr(plugins, 'getAction')
-            function(Action="SetWatched")
-
+    def __setWatchlist(self, sEpisode=''):
+        # Suivi de lecture dans Trakt
+        plugins = __import__('resources.lib.trakt', fromlist=['trakt']).cTrakt()
+        function = getattr(plugins, 'getAction')
+        function(Action = "SetWatched", sEpisode = sEpisode)
         return
 
     def __getPlayerType(self):

@@ -2,13 +2,14 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
 
-from resources.lib.comaddon import progress, siteManager
+from resources.lib.comaddon import siteManager
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'serie_streaming'
 SITE_NAME = 'Série Streaming'
@@ -16,7 +17,7 @@ SITE_DESC = 'Serie Streaming - voir votre series streaming Gratuit'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
-URL_SEARCH = (URL_MAIN + 'search', 'showSeries')
+URL_SEARCH = (URL_MAIN + 'search.php?q=', 'showSeries')
 URL_SEARCH_SERIES = (URL_SEARCH[0], 'showSeries')
 FUNCTION_SEARCH = 'showSeries'
 
@@ -83,40 +84,47 @@ def showSeries(sSearch=''):
     oGui = cGui()
 
     if sSearch:
+        oUtil = cUtil()
+        sSearchText = sSearch.replace(URL_SEARCH_SERIES[0], '')
+        sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch.replace(' ', '+')
+        reqType = cRequestHandler.REQUEST_TYPE_POST
+        sPattern = 'href="([^"]+).+?image: url\((.+?)"title">([^<]+)'
+        idxUrl = 0
+        idxThumb = 1
+        idxTitle = 2
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
+        reqType = cRequestHandler.REQUEST_TYPE_GET
+        sPattern = 'item">.+?href="([^"]+)" title="([^"]+).+?-src="([^"]+)'
+        idxUrl = 0
+        idxTitle = 1
+        idxThumb = 2
 
     oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.setRequestType(reqType)
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'item">.+?href="([^"]+)" title="([^"]+).+?-src="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
-        oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
+            sUrl = aEntry[idxUrl]
+            sTitle = aEntry[idxTitle].strip()
+            sThumb = 'https:' + aEntry[idxThumb].replace('posters//tv', 'posters/tv')
 
-            sUrl = aEntry[0]
-            sTitle = aEntry[1]
-            sThumb = 'https:' + aEntry[2].replace('posters//tv', 'posters/tv')
-
+            if sSearch:
+                if not oUtil.CheckOccurence(sSearchText, sTitle):
+                    continue    # Filtre de recherche
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
-
+    else:
+        oGui.addText(SITE_IDENTIFIER)
+        
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -181,7 +189,7 @@ def showSaisons():
 
     if (aResult[0] == True):
         oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in aResult[1]:
+        for aEntry in aResult[1][::-1]:
 
             sUrl = aEntry[0]
             sTitle = aEntry[1]

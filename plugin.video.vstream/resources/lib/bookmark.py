@@ -54,7 +54,7 @@ class cFav:
         with cDb() as db:
             row = db.get_bookmark()
 
-        compt = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        compt = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         for i in row:
             compt[int(i[5])] = compt[int(i[5])] + 1
 
@@ -63,22 +63,18 @@ class cFav:
         total = compt[1] + compt[7]
         oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30120), str(total)), 'mark.png', oOutputParameterHandler)
 
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '2')
-        total = compt[2] + compt[3] + compt[4] + compt[8]
+        total = compt[2] + compt[3] + compt[4] + compt[8] + compt[9]
         oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s/%s (%s)') % (self.ADDON.VSlang(30121), self.ADDON.VSlang(30122), str(total)), 'mark.png', oOutputParameterHandler)
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sCat', '6')
-        total = compt[6]
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30332), str(total)), 'mark.png', oOutputParameterHandler)
-
-        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '5')
         total = compt[5]
         oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30410), str(total)), 'mark.png', oOutputParameterHandler)
 
-        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sCat', '6')
+        total = compt[6]
+        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30332), str(total)), 'mark.png', oOutputParameterHandler)
+
         oOutputParameterHandler.addParameter('sAll', 'true')
         oGui.addDir(SITE_IDENTIFIER, 'delBookmark', self.ADDON.VSlang(30209), 'trash.png', oOutputParameterHandler)
 
@@ -95,8 +91,8 @@ class cFav:
         if (oInputParameterHandler.exist('sCat')):
             sCat = oInputParameterHandler.getValue('sCat')
 
-            # Série, Animes, Saison et Episodes sont visibles dans les marques-page "Séries"
-            catList = ('2', '3', '4', '8')
+            # Série, Animes, Saison, Episodes et Dramas sont visibles dans les marques-page "Séries"
+            catList = ('2', '3', '4', '8', '9')
             if sCat in catList:
                 sCat = 2
                 cGui.CONTENT = 'tvshows'
@@ -186,6 +182,9 @@ class cFav:
                 elif (cat == '8'):          # Episodes
                     oGuiElement.setMeta(6)
                     oGuiElement.setCat(8)
+                elif (cat == '9'):          # Drama
+                    oGuiElement.setMeta(2)
+                    oGuiElement.setCat(9)
                 else:
                     oGuiElement.setMeta(0)
                     oGuiElement.setCat(cat)
@@ -221,7 +220,7 @@ class cFav:
         iCat = 0
         if sCat:
             iCat = int(sCat)
-        if iCat < 1 or iCat > 8:
+        if iCat < 1 or iCat > 9:
             self.DIALOG.VSinfo('Error', self.ADDON.VSlang(30038))
             return
 
