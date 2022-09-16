@@ -16,7 +16,7 @@ from resources.lib.parser import cParser
 from resources.lib.util import Unquote
 
 SITE_IDENTIFIER = 'freebox'
-SITE_NAME = 'Télévision Direct/Stream'
+SITE_NAME = 'Free Télévision/Radio'
 SITE_DESC = 'Regarder la télévision'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
@@ -75,7 +75,7 @@ def showMenuMusic():
     oGui.addDir('radio', 'showGenres', addons.VSlang(30203) + ' (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
-    oGui.addDir('radio', 'showAZ', addons.VSlang(30203) + ' (Alphabétique)', 'listes.png', oOutputParameterHandler)
+    oGui.addDir('radio', 'showAZ', addons.VSlang(30203) + ' (Alphabétique)', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -175,6 +175,7 @@ def showWeb():  # Code qui s'occupe de liens TV du Web
             oGuiElement.setDescription(sDesc)
             oGuiElement.setTitle(track.title)
             oGuiElement.setFileName(track.title)
+            
             oGuiElement.setIcon('tv.png')
             oGuiElement.setMeta(0)
             oGuiElement.setThumbnail(thumb)

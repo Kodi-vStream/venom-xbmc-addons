@@ -43,13 +43,13 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenres', addons.VSlang(30203) + ' (Genres)', 'music.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    oGui.addDir(SITE_IDENTIFIER, 'showAZ', addons.VSlang(30203) + ' (A-Z)', 'music.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', 'http://')
     oGui.addDir(SITE_IDENTIFIER, 'showWeb', addons.VSlang(30203), 'music.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', 'http://')
+    oGui.addDir(SITE_IDENTIFIER, 'showGenres', addons.VSlang(30203) + ' (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', 'http://')
+    oGui.addDir(SITE_IDENTIFIER, 'showAZ', addons.VSlang(30203) + ' (Alphabétique)', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -57,9 +57,9 @@ def load():
 def showGenres():
     oGui = cGui()
 
-    liste = [['70', '70'], ['80', '80'], ['90', '90'], ['Classic', 'Classic'], ['Clubbing', 'Clubbing'],
-             ['Dance', 'Dance'], ['Electronic', 'Electronic'], ['Funk', 'Funk'], ['Hip-Hop', 'Hip-Hop'],
-             ['Hits', 'Hits'], ['Jazz', 'Jazz'], ['Lounge', 'Lounge'], ['Love', 'Love'], ['Metal', 'Metal'],
+    liste = [['70', '70'], ['80', '80'], ['90', '90'], ['Clubbing', 'Clubbing'],
+             ['Dance', 'Dance'], ['Electronic', 'Electronic'], ['Funk', 'Funk'], ['Hip-Hop', 'Hip-hop'],
+             ['Hits', 'Hits'], ['Jazz', 'Jazz'], ['Lounge', 'Lounge'], ['Metal', 'Metal'],
              ['News', 'News'], ['Pop', 'Pop'], ['Rock', 'Rock'], ['Slow', 'Slow'], ['Trance', 'Trance']]
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -121,7 +121,7 @@ def showWeb():  # Code qui s'occupe de liens TV du Web
         for track in playlist:
             sThumb = track.image
             if not sThumb:
-                sThumb = 'tv.png'
+                sThumb = 'music.png'
 
             oOutputParameterHandler.addParameter('siteUrl', track.location)
             oOutputParameterHandler.addParameter('sMovieTitle', track.title)
@@ -132,7 +132,7 @@ def showWeb():  # Code qui s'occupe de liens TV du Web
             oGuiElement.setFunction('play__')
             oGuiElement.setTitle(track.title)
             oGuiElement.setFileName(track.title)
-            oGuiElement.setIcon('tv.png')
+            oGuiElement.setIcon('music.png')
             oGuiElement.setMeta(0)
             oGuiElement.setThumbnail(sThumb)
             oGuiElement.setDirectTvFanart()

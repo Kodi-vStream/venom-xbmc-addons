@@ -23,8 +23,8 @@ URL_SEARCH_SERIES = (URL_SEARCH[0], FUNCTION_SEARCH)
 
 SERIE_SERIES = (True, 'load')
 SERIE_NEWS = (URL_MAIN + 'series-en-streaming-gratuit/', 'showSeries')
-SERIE_NOTES = (URL_MAIN + 'les-meilleurs-series-tv/', 'showSeries')
-SERIE_VIEWS = (URL_MAIN + 'series-tv-les-plus-populaires/', 'showSeries')
+SERIE_VIEWS = (URL_MAIN + 'les-meilleurs-series-tv/', 'showSeries')
+SERIE_NOTES = (URL_MAIN + 'series-tv-les-plus-populaires/', 'showSeries')
 SERIE_GENRES = (True, 'showGenres')
 SERIE_LIST = (True, 'showAlpha')
 
@@ -39,11 +39,11 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_NOTES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NOTES[1], 'Séries (Les mieux notées)', 'notes.png', oOutputParameterHandler)
-
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Les plus vues)', 'views.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Populaires)', 'views.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NOTES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NOTES[1], 'Séries (Les mieux notés)', 'notes.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)

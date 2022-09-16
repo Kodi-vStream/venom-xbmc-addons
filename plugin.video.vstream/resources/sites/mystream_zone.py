@@ -42,7 +42,7 @@ MOVIE_NEWS = (URL_MAIN + 'movies/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
 MOVIE_NOTES = (URL_MAIN + 'imdb/' + imdmovies, 'showMovies')
-MOVIE_ALPHA = (True, 'showAlphaMovies')
+MOVIE_LIST = (True, 'showAlphaMovies')
 MOVIE_TENDANCE = (URL_MAIN + 'tendance/', 'showMovies')
 MOVIE_FEATURED = (URL_MAIN, 'showMovies')
 MOVIE_TOP_IMD = (URL_MAIN + 'imdb/' + imdmovies, 'showMovies')  # = globale MOVIE_NOTES
@@ -96,8 +96,8 @@ def showMenuMovies():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP_IMD[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP_IMD[1], 'Films (Top IMDb)', 'tmdb.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ALPHA[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ALPHA[1], 'Films (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

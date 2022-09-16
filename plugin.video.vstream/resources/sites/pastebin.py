@@ -688,7 +688,7 @@ def showDetailMenu(pasteID, contenu):
             oGui.addDir(SITE_IDENTIFIER, 'showCast', 'Films (Par acteurs)', 'actor.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=film&bRandom=True&pasteID=' + pasteID)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Aléatoires)', 'listes.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Aléatoires)', 'films.png', oOutputParameterHandler)
 
     if 'containSeries' in contenu:
         searchUrl = URL_MAIN + '&pasteID=' + pasteID + '&sMedia=serie&sSearch='
@@ -721,7 +721,7 @@ def showDetailMenu(pasteID, contenu):
         oGui.addDir(SITE_IDENTIFIER, 'alphaList', 'Séries (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&sMedia=serie&bRandom=True&pasteID=' + pasteID)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Aléatoires)', 'listes.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Aléatoires)', 'series.png', oOutputParameterHandler)
 
     if 'containAnimes' in contenu:
         searchUrl = URL_MAIN + '&pasteID=' + pasteID + '&sMedia=anime&sSearch='
@@ -867,7 +867,7 @@ def showMenuFilms():
         # oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Nouveautés)', 'news.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', 'movie/popular')
-        oGui.addDir(SITE_IDENTIFIER, 'showTMDB', addons.VSlang(30425), 'comments.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showTMDB', addons.VSlang(30425), 'views.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Films (Listes)', 'listes.png', oOutputParameterHandler)
@@ -908,7 +908,7 @@ def showMenuFilms():
         oGui.addDir(SITE_IDENTIFIER, 'showCast', 'Films (Par acteurs)', 'actor.png', oOutputParameterHandler)
 
         oOutputParameterHandler.addParameter('siteUrl', sUrl + '&bRandom=True')
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Aléatoires)', 'listes.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Aléatoires)', 'films.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -930,10 +930,10 @@ def showMenuTvShows():
     # oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Nouveautés)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'trending/tv/day')#tv/on_the_air')
-    oGui.addDir(SITE_IDENTIFIER, 'showTMDB', addons.VSlang(30430), 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showTMDB', addons.VSlang(30430), 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', 'tv/popular')
-    oGui.addDir(SITE_IDENTIFIER, 'showTMDB', addons.VSlang(30429), 'comments.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showTMDB', addons.VSlang(30429), 'views.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oGui.addDir(SITE_IDENTIFIER, 'showGroupes', 'Séries (Listes)', 'listes.png', oOutputParameterHandler)
@@ -957,7 +957,7 @@ def showMenuTvShows():
     oGui.addDir(SITE_IDENTIFIER, 'alphaList', 'Séries (Ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', sUrl + '&bRandom=True')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Aléatoires)', 'listes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Aléatoires)', 'series.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
