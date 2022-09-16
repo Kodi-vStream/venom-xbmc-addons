@@ -59,7 +59,7 @@ https://www.dailymotion.com/player/metadata/video/xgepjr
 #EXTINF:-1 tvg-logo="bfm.png" ,BFM TV
 [BRIGHTCOVEKEY]https://www.bfmtv.com/en-direct/
 
-#EXTINF:-1 tvg-logo="bfmbus.png" ,BFM Buisness
+#EXTINF:-1 tvg-logo="bfmbus.png" ,BFM Business
 [BRIGHTCOVEKEY]https://www.bfmtv.com/economie/en-direct/
 
 #EXTINF:-1 tvg-logo="rmcstory.png" ,RMC Story
