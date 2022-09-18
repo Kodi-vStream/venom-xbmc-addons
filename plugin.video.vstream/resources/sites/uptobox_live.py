@@ -204,64 +204,67 @@ def showSeries(sSearch = '', searchLocal = False, isAnime = False):
     sSearchTitle = oUtil.CleanName(sSearchTitle)
     
     sUrl = sSearch.replace('-', '\-')
-    content = getContent(sUrl)
 
-    # Recherche des saisons
     series = set()
-    for file in content:
-        sTitle = file['title']
-        if not isMatrix():
-            sTitle = sTitle.encode('utf-8')
-            
-        if sTitle[-4] == '.':
-            if sTitle[-4:].lower() not in '.mkv.avi.mp4.m4v.iso':
-                continue
-            # enlever l'extension
-            sTitle = sTitle[:-4]
 
-        # recherche des métadonnées
-        pos = len(sTitle)
-        sTmdbId, pos = getIdTMDB(sTitle, pos)
-        if sTmdbId:
-            sTitle = sTitle.replace('.TM%sTM.' % sTmdbId, '') 
+    # deux url pour plus de résultats
+    urls = [sUrl, sUrl.replace('order=asc', 'order=desc')]
+    for sUrl in urls:
+        content = getContent(sUrl)
+        for file in content:
+            sTitle = file['title']
+            if not isMatrix():
+                sTitle = sTitle.encode('utf-8')
+                
+            if sTitle[-4] == '.':
+                if sTitle[-4:].lower() not in '.mkv.avi.mp4.m4v.iso':
+                    continue
+                # enlever l'extension
+                sTitle = sTitle[:-4]
+    
+            # recherche des métadonnées
             pos = len(sTitle)
-        sYear, pos = getYear(sTitle, pos)
-        sRes, pos = getReso(sTitle, pos)
-        sLang, pos = getLang(sTitle, pos)
-        saison, episode, pos = getSaisonEpisode(sTitle, pos)
-
-        # Recherche des noms de séries
-        if not saison or not episode:
-            sTitle = sTitle[:pos]
-            pos = len(sTitle)
+            sTmdbId, pos = getIdTMDB(sTitle, pos)
+            if sTmdbId:
+                sTitle = sTitle.replace('.TM%sTM.' % sTmdbId, '') 
+                pos = len(sTitle)
+            sYear, pos = getYear(sTitle, pos)
+            sRes, pos = getReso(sTitle, pos)
+            sLang, pos = getLang(sTitle, pos)
             saison, episode, pos = getSaisonEpisode(sTitle, pos)
-
-        if saison:
-            if int(saison) > 100:
-                continue
-            sTitle = sTitle[:pos]
-            sMovieTitle = oUtil.unescape(sTitle).strip()
-            sMovieTitle = sMovieTitle.replace('.', ' ')
-            if not oUtil.CheckOccurence(sSearchTitle, sMovieTitle):
-                continue    # Filtre de recherche
-            
-            sDisplayTitle = oUtil.CleanName(sMovieTitle)
-            if sYear:
-                sDisplayTitle += ' (%s)' % sYear
-            if sDisplayTitle in series:
-                continue
-            series.add(sDisplayTitle)
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
-            oOutputParameterHandler.addParameter('sYear', sYear)
-            oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)  # Utilisé par TMDB
-            if isAnime:
-                oGui.addAnime(SITE_IDENTIFIER, 'showSaisons', sMovieTitle, '', '', '', oOutputParameterHandler)
-            else:
-                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sMovieTitle, '', '', '', oOutputParameterHandler)
-
+    
+            # Recherche des noms de séries
+            if not saison or not episode:
+                sTitle = sTitle[:pos]
+                pos = len(sTitle)
+                saison, episode, pos = getSaisonEpisode(sTitle, pos)
+    
+            if saison:
+                if int(saison) > 100:
+                    continue
+                sTitle = sTitle[:pos]
+                sMovieTitle = oUtil.unescape(sTitle).strip()
+                sMovieTitle = sMovieTitle.replace('.', ' ')
+                if not oUtil.CheckOccurence(sSearchTitle, sMovieTitle):
+                    continue    # Filtre de recherche
+                
+                sDisplayTitle = oUtil.CleanName(sMovieTitle)
+                if sYear:
+                    sDisplayTitle += ' (%s)' % sYear
+                if sDisplayTitle in series:
+                    continue
+                series.add(sDisplayTitle)
+    
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
+                oOutputParameterHandler.addParameter('sYear', sYear)
+                oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)  # Utilisé par TMDB
+                if isAnime:
+                    oGui.addAnime(SITE_IDENTIFIER, 'showSaisons', sMovieTitle, '', '', '', oOutputParameterHandler)
+                else:
+                    oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sMovieTitle, '', '', '', oOutputParameterHandler)
+    
     if searchLocal:
         oGui.setEndOfDirectory()
 
