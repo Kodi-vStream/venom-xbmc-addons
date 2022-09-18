@@ -330,8 +330,7 @@ https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#ga0b7116686
 
 
 class listitem(xbmcgui.ListItem):
-    def __init__(self, label=''):
-#        xbmcgui.ListItem.__init__(self, label, offscreen = True)
+    def __init__(self, label='', label2=''):
         pass
 
     # Permet l'ajout d'un menu après la création d'un item
