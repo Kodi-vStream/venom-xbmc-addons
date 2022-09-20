@@ -422,9 +422,6 @@ def showSerieLinks():
             for aEntry in aResultUrl[1]:
                 sHosterUrl = aEntry
 
-                if isBlackHost(sHosterUrl):
-                    continue
-
                 if 'http' not in sHosterUrl:  # liens naze du site url
                     continue
 
