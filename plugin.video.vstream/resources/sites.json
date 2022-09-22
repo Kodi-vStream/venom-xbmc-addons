@@ -371,7 +371,7 @@
         },
         "toonanime": {
             "label": "Toonanime",
-            "active": "False",
+            "active": "True",
             "url": "https://vvww.toonanime.cc/"
         },
         "topimdb": {
