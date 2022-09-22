@@ -341,11 +341,12 @@ class cPlayer(xbmc.Player):
 
 
     def __setWatchlist(self, sEpisode=''):
-        # Suivi de lecture dans Trakt
+        # Suivi de lecture dans Trakt si compte
+        if self.ADDON.getSetting('bstoken') == '':
+            return
         plugins = __import__('resources.lib.trakt', fromlist=['trakt']).cTrakt()
         function = getattr(plugins, 'getAction')
         function(Action = "SetWatched", sEpisode = sEpisode)
-        return
 
     def __getPlayerType(self):
         sPlayerType = self.ADDON.getSetting('playerType')
