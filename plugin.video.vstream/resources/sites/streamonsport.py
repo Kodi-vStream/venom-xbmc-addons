@@ -24,14 +24,19 @@ except ImportError:  # Python 3
     from urllib.parse import urlparse
 
 
+URL_MAIN = ''
 def GetUrlMain():
+    global URL_MAIN
+    if URL_MAIN != '':
+        return URL_MAIN
+    
     oRequestHandler = cRequestHandler(siteManager().getUrlMain(SITE_IDENTIFIER))
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '<a href="(.+?)"'
     oParser = cParser()
-    urlMain = oParser.parse(sHtmlContent, sPattern)[1][0]
-    return urlMain
+    URL_MAIN = oParser.parse(sHtmlContent, sPattern)[1][0]
+    return URL_MAIN
 
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
@@ -40,7 +45,6 @@ SITE_IDENTIFIER = 'streamonsport'
 SITE_NAME = 'Streamonsport'
 SITE_DESC = 'Site pour regarder du sport en direct'
 
-URL_MAIN = GetUrlMain()
 
 SPORT_SPORTS = ('/', 'load')
 TV_TV = ('/', 'load')
@@ -72,13 +76,14 @@ def load():
 
 def showGenres():
     oGui = cGui()
+    urlMain = GetUrlMain()
 
     genreURL = '-basketball-streaming-regarder-le-basket-en-streaming.html'
     genres = [('Basket', '3'), ('Football', '1'), ('Rugby', '2'), ('Tennis', '5')]
     
     oOutputParameterHandler = cOutputParameterHandler()
     for title, url in genres:
-        sUrl = URL_MAIN + url + genreURL
+        sUrl = urlMain + url + genreURL
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', title)
         oGui.addMisc(SITE_IDENTIFIER, 'showMovies', title, 'genres.png', '', title, oOutputParameterHandler)
@@ -90,8 +95,9 @@ def showMovies(sSearch=''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    urlMain = GetUrlMain()
     if 'http' not in sUrl:
-        sUrl = URL_MAIN + sUrl
+        sUrl = urlMain + sUrl
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -133,10 +139,10 @@ def showMovies(sSearch=''):
                 sDisplayTitle = sTitle
 
             if 'http' not in sUrl2:
-                sUrl2 = URL_MAIN[:-1] + sUrl2
+                sUrl2 = urlMain[:-1] + sUrl2
 
             if 'http' not in sThumb:
-                sThumb = URL_MAIN[:-1] + sThumb
+                sThumb = urlMain[:-1] + sThumb
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -219,7 +225,8 @@ def showLink():
     sHosterUrl = ''
 
     if 'yahoo' in sUrl:  # redirection
-        sUrl = URL_MAIN + sUrl
+        urlMain = GetUrlMain()
+        sUrl = urlMain + sUrl
 
     if 'allfoot' in sUrl or 'streamonsport' in sUrl:
         oRequestHandler = cRequestHandler(sUrl)
