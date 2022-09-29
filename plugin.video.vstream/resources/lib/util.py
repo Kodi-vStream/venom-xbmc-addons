@@ -132,7 +132,7 @@ class cUtil:
             name = name.replace(annee, '')
 
         # Suppression des ponctuations
-        name = re.sub("[\’\'\-\–\:\+\.]", ' ', name)
+        name = re.sub("[\’\'\-\–\:\+\._]", ' ', name)
         name = re.sub("[\,\&\?\!]", '', name)
 
         # vire tag

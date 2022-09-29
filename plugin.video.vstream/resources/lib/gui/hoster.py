@@ -156,6 +156,10 @@ class cHosterGui:
             if self.ADDON.getSetting('hoster_alldebrid_premium') == 'true':
                 return self.getHoster('alldebrid')
 
+            # L'user a activé realbrid ?
+            if self.ADDON.getSetting('hoster_realdebrid_premium') == 'true':
+                return self.getHoster('realdebrid')
+
             # L'user a activé debrid_link ?
             if self.ADDON.getSetting('hoster_debridlink_premium') == 'true':
                 if "debrid.link" not in sHosterUrl:
