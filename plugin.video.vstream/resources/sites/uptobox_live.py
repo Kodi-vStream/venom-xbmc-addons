@@ -28,15 +28,7 @@ SERIE_SERIES = ('series', 'load')
 
 def load():
     oGui = cGui()
-    sToken = cPremiumHandler('uptobox').getToken()
     oOutputParameterHandler = cOutputParameterHandler()
-
-    if not sToken:
-        oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + 'Nécessite un Compte Uptobox Premium ou Gratuit' + '[/COLOR]')
-        oOutputParameterHandler.addParameter('siteUrl', '//')
-        oGui.addDir(SITE_IDENTIFIER, 'opensetting', addon().VSlang(30023), 'none.png', oOutputParameterHandler)
-        oGui.setEndOfDirectory()
-        return
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -118,7 +110,7 @@ def showMovies(sSearch='', searchLocal = False):
     sSearchText = Unquote(sSearchText)
     sSearchText = oUtil.CleanName(sSearchText)
 
-    sUrl = sSearch.replace('-', '\-')
+    sUrl = sSearch.replace('-', '\-').replace('.', '%20')
     content = getContent(sUrl)
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -180,7 +172,8 @@ def showMovies(sSearch='', searchLocal = False):
             continue                # film déjà proposé
 
         movies.add(sSearchTitle)
-
+        
+        oOutputParameterHandler.clearParameter()
         oOutputParameterHandler.addParameter('siteUrl', siteUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sSearchTitle)
         oOutputParameterHandler.addParameter('sYear', sYear)
@@ -206,7 +199,8 @@ def showSeries(sSearch = '', searchLocal = False, isAnime = False):
     sUrl = sSearch.replace('-', '\-')
 
     series = set()
-
+    oOutputParameterHandler = cOutputParameterHandler()
+    
     # deux url pour plus de résultats
     urls = [sUrl, sUrl.replace('order=asc', 'order=desc')]
     for sUrl in urls:
@@ -244,18 +238,17 @@ def showSeries(sSearch = '', searchLocal = False, isAnime = False):
                     continue
                 sTitle = sTitle[:pos]
                 sMovieTitle = oUtil.unescape(sTitle).strip()
-                sMovieTitle = sMovieTitle.replace('.', ' ')
                 if not oUtil.CheckOccurence(sSearchTitle, sMovieTitle):
                     continue    # Filtre de recherche
-
-                sDisplayTitle = oUtil.CleanName(sMovieTitle)
+                
+                sMovieTitle = sDisplayTitle = oUtil.CleanName(sMovieTitle)
                 if sYear:
                     sDisplayTitle += ' (%s)' % sYear
                 if sDisplayTitle in series:
                     continue
                 series.add(sDisplayTitle)
-
-                oOutputParameterHandler = cOutputParameterHandler()
+    
+                oOutputParameterHandler.clearParameter()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
                 oOutputParameterHandler.addParameter('sYear', sYear)
@@ -462,9 +455,9 @@ def showHosters():
     sSearchTitle = oUtil.CleanName(sSearchTitle)
 
     content = getContent(sUrl)
-    oHoster = oHosterGui.getHoster('uptobox')
+    oHoster = oHosterGui.checkHoster('uptobox') # retourne le bon débrideur en fonction de son compte premmium
 
-    # Recherche des saisons
+    # Recherche les liens
     for file in content:
         sTitle = file['title']
         if not isMatrix():
@@ -483,18 +476,6 @@ def showHosters():
         # Recherche des metadonnées
         pos = len(sTitle)
         sTmdbId, pos = getIdTMDB(sTitle, pos)
-
-        # non, car les recherchs tmdb renvois l'ide alos qu'ils ne sont pas sur le lien
-        # if sTmdbId:
-        #     if not sSearchTmdbId:
-        #         continue
-        #     if sSearchTmdbId and sSearchTmdbId != sTmdbId:
-        #         continue
-        #     sTitle = sTitle.replace('.TM%sTM.' % sTmdbId, '')
-        #     pos = len(sTitle)
-        # elif sSearchTmdbId:
-        #     continue
-
         sLang, pos = getLang(sTitle, pos)
         sRes, pos = getReso(sTitle, pos)
         sYear, pos = getYear(sTitle, pos)
@@ -555,7 +536,7 @@ def showHosters():
 def getSaisonEpisode(sTitle, pos = 0):
     sTitle = sTitle.replace('x264', '').replace('x265', '').strip()
     sa = ep = terme = ''
-    m = re.search('( S|\.S|\[S|saison)(\s?|\.)(\d+)( - |\s?|\.)(E|Ep|x|\wpisode|Épisode)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
+    m = re.search('( S|\.S|\[S|saison|\s+|\.)(\s?|\.)(\d+)( *- *|\s?|\.)(E|Ep|x|\wpisode|Épisode)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
     if m:
         sa = m.group(3)
         if int(sa) <100:
@@ -594,12 +575,12 @@ def getYear(sTitle, pos):
 
 
 def getLang(sMovieTitle, pos):
-    sPattern = ['VFI', 'VFF', 'VFQ', 'SUBFRENCH', 'TRUEFRENCH', 'FRENCH', 'VF', 'VOSTFR', '[^\w](VOST)[^\w]', '[^\w](VO)[^\w]', 'QC', '[^\w](MULTI)[^\w]']
+    sPattern = ['VFI', 'VFF', 'VFQ', 'SUBFRENCH', 'TRUEFRENCH', 'FRENCH', 'VF', 'VOSTFR', '[^\w](VOST)[^\w]', '[^\w](VO)[^\w]', 'QC', '[^\w](MULTI)[^\w]', 'FASTSUB']
     return _getTag(sMovieTitle, sPattern, pos)
 
 
 def getReso(sMovieTitle, pos):
-    sPattern = ['HDCAM', '[^\w](CAM)[^\w]', '[^\w](R5)[^\w]', '.(3D)', '.(DVDSCR)', '.(TVRIP)', '.(HDLIGHT)', '\d{3,4}P', '.(4K)', '.(UHD)', '.(BDRIP)', '.(BRRIP)', '.(DVDRIP)', '.(HDTV)', '.(BLURAY)', '.(WEB-DL)', '.(WEBRIP)', '[^\w](WEB)[^\w]', '.(DVDRIP)']
+    sPattern = ['HDCAM', '[^\w](CAM)[^\w]', '[^\w](R5)[^\w]', '.(3D)', '.(DVDSCR)', '.(TVRIP)', '.(FHD)', '.(HDLIGHT)', '\d{3,4}P', '.(4K)', '.(UHD)', '.(BDRIP)', '.(BRRIP)', '.(DVDRIP)', '.(HDTV)', '.(BLURAY)', '.(WEB-DL)', '.(WEBRIP)', '[^\w](WEB)[^\w]', '.(DVDRIP)']
     sRes, pos = _getTag(sMovieTitle, sPattern, pos)
     if sRes:
         sRes = sRes.replace('2160P', '4K')
