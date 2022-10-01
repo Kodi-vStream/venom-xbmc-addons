@@ -267,6 +267,10 @@ class cGuiElement:
             self.__Episode = ep
             self.addItemValues('Episode', self.__Episode)
 
+        # on repasse en utf-8
+        if not isMatrix():
+            sTitle = sTitle.encode('utf-8')
+
         # on reformate SXXEXX Titre [tag] (Annee)
         sTitle2 = ''
         if self.__Season:
@@ -289,9 +293,6 @@ class cGuiElement:
         if self.__Year:
             sTitle2 = '%s [COLOR %s](%s)[/COLOR]' % (sTitle2, sDecoColor, self.__Year)
 
-        # on repasse en utf-8
-        if not isMatrix():
-            return sTitle2.encode('utf-8')
         return sTitle2
 
     def setTitle(self, sTitle):

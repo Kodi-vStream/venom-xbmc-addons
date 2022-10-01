@@ -100,6 +100,8 @@ class cUtil:
         n2 = re.sub('[^a-zA-Z0-9 ]', '', title)
         if n2 != title:
             try:
+                if not isMatrix():
+                    title = title.decode('utf8', 'ignore')    # converti en unicode pour aider aux convertions
                 title = unicodedata.normalize('NFD', title).encode('ascii', 'ignore')
                 if isMatrix():
                     title = title.decode('utf8', 'ignore')
@@ -122,6 +124,7 @@ class cUtil:
 
     def CleanName(self, name):
 
+        name = Unquote(name)
         name = name.replace('%20', ' ')
 
         # on cherche l'annee
