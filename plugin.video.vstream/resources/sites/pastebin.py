@@ -93,7 +93,7 @@ PASTE_PAR_GROUPE = 100   # jusqu'à 100 liens pastebin par dossier
 def getCacheDuration():
     cacheDuration = addon().getSetting(SITE_IDENTIFIER + '_cacheDuration')
     if not cacheDuration:
-        cacheDuration = "12"  # en heure
+        cacheDuration = "72"  # en heure
         addon().setSetting(SITE_IDENTIFIER + '_cacheDuration', cacheDuration)
     return int(cacheDuration)
 
