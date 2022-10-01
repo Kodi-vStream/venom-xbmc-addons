@@ -146,8 +146,8 @@
         },
         "french_stream_lol": {
             "label": "French-stream-lol",
-            "active": "False",
-            "url": "https://wwv.french-stream.re/"
+            "active": "True",
+            "url": "https://re.french-stream.cx/"
         },
         "frenchanimes": {
             "label": "French Animes",
