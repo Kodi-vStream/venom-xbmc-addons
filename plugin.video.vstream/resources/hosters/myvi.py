@@ -18,7 +18,7 @@ class cHoster(iHoster):
         oParser = cParser()
 
         oRequest = cRequestHandler(self._url)
-        sHtmlContent = oRequest.request().replace('u0026', '&')
+        sHtmlContent = oRequest.request().replace('\\u0026', '&')
         sPattern = 'CreatePlayer.+?v=(.+?)&tp'
 
         aResult = oParser.parse(sHtmlContent, sPattern)
