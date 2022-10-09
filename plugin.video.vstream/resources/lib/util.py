@@ -167,48 +167,6 @@ class cUtil:
 
         return name
 
-    def FormatSerie(self, string):
-        # vire doubles espaces
-        string = re.sub(' +', ' ', string)
-
-        # vire espace a la fin
-        if string.endswith(' '):
-            string = string[:-1]
-
-        # vire espace au debut
-        if string.startswith(' '):
-            string = string[1:]
-
-        SXEX = ''
-        m = re.search('(?i)(\wpisode ([0-9\.\-\_]+))', string, re.UNICODE)
-        if m:
-            # ok y a des episodes
-            string = string.replace(m.group(1), '')
-            # SXEX + '%02d' % int(m.group(2))
-            SXEX = m.group(2)
-            if len(SXEX) < 2:
-                SXEX = '0' + SXEX
-            SXEX = 'E' + SXEX
-
-            # pr les saisons
-            m = re.search('(?i)(s(?:aison )*([0-9]+))', string)
-            if m:
-                string = string.replace(m.group(1), '')
-                SXEX = 'S' + '%02d' % int(m.group(2)) + SXEX
-            string = string + ' ' + SXEX
-
-        else:
-            # pas d'episode mais y a t il des saisons ?
-            m = re.search('(?i)(s(?:aison )*([0-9]+))(?:$| )', string)
-            if m:
-                string = string.replace(m.group(1), '')
-                SXEX = 'S' + '%02d' % int(m.group(2))
-
-                string = string + ' ' + SXEX
-
-        # reconvertion utf-8
-        return string.encode('utf-8')
-
     def getSerieTitre(self, sTitle):
         serieTitle = re.sub(r'\[.*\]|\(.*\)', r'', sTitle)
         serieTitle = re.sub('[- –]+$', '', serieTitle)
@@ -216,9 +174,6 @@ class cUtil:
         if '|' in serieTitle:
             serieTitle = serieTitle[:serieTitle.index('|')]
 
-        # on repasse en utf-8
-        if not isMatrix():
-            return serieTitle.encode('utf-8')
         return serieTitle
 
     def getEpisodeTitre(self, sTitle):
