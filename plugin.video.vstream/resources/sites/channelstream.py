@@ -101,7 +101,9 @@ def showHoster():
     oParser = cParser()
 
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = URL_MAIN + oInputParameterHandler.getValue('siteUrl')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    if not sUrl.startswith ('http'):
+        sUrl = URL_MAIN + sUrl
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sDesc = oInputParameterHandler.getValue('sDesc')
     sThumb = oInputParameterHandler.getValue('sThumb')
