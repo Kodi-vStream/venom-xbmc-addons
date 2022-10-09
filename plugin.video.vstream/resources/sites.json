@@ -7,8 +7,8 @@
         },
         "_33seriestreaming": {
             "label": "33 S\u00e9ries",
-            "active": "False",
-            "url": "https://wwv.33seriestreaming.info/"
+            "active": "True",
+            "url": "https://wwv.33seriestreaming.cc/"
         },
         "_4kstreamz": {
             "label": "4kstreamz",
@@ -56,7 +56,7 @@
         },
         "cinemay_cc": {
             "label": "Cinemay_cc",
-            "active": "False",
+            "active": "True",
             "url": "https://cinemay.cc/"
         },
         "cinemay_com": {
