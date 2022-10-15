@@ -289,17 +289,22 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = 'data-playerlink="([^"]+)'
+    sPattern = 'data-playerlink="([^"]+).+?<span class="serv">([^<]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0] is True:
         for aEntry in aResult[1]:
 
-            sHosterUrl = aEntry
+            sHosterUrl = aEntry[0]
+            sHost = aEntry[1]
+            if "VO" in sHost :
+                sDisplayTitle = ('%s (%s)') % (sMovieTitle, sHost)
+            else :
+                sDisplayTitle = sMovieTitle           
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if oHoster != False:
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
+                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setFileName(sDisplayTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
