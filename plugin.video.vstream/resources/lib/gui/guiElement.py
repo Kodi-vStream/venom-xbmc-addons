@@ -212,11 +212,10 @@ class cGuiElement:
         # enleve les crochets et les parentheses si elles sont vides
         sTitle = sTitle.replace('()', '').replace('[]', '').replace('- -', '-')
 
-        # vire espace et - a la fin (/!\ il y a 2 tirets differents meme si invisible a l'oeil nu et un est en unicode)
-        sTitle = re.sub('[- –]+$', '', sTitle)
+        # vire espace et - a la fin
+        sTitle = re.sub('[- –_\.]+$', '', sTitle)
         # et au debut
-        if sTitle.startswith(' '):
-            sTitle = sTitle[1:]
+        sTitle = re.sub('^[- –_\.]+', '', sTitle)
 
         """ Fin Nettoyage du titre """
 

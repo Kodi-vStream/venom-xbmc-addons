@@ -120,12 +120,11 @@ def showMovies(sSearch='', searchLocal = False):
         if not isMatrix():
             sTitle = sTitle.encode('utf-8')
 
-        # seulement les formats vidéo (ou sans extensions)
-        if sTitle[-4] == '.':
-            if sTitle[-4:].lower() not in '.mkv.avi.mp4.m4v.iso':
-                continue
-            # enlever l'extension
-            sTitle = sTitle[:-4]
+        # seulement les formats vidéo
+        if sTitle[-4:].lower() not in '.mkv.avi.mp4.m4v.iso':
+            continue
+        # enlever l'extension
+        sTitle = sTitle[:-4]
 
         sTitle = sTitle.replace('CUSTOM', '')
         if '1XBET' in sTitle:  # or 'HDCAM'
@@ -141,12 +140,12 @@ def showMovies(sSearch='', searchLocal = False):
         sYear, pos = getYear(sTitle, pos)
         sRes, pos = getReso(sTitle, pos)
         sLang, pos = getLang(sTitle, pos)
-        sa, ep = getSaisonEpisode(sTitle)
+        sTitle, sa, ep = getSaisonEpisode(sTitle)
 
         # enlever les séries
         if not sa or not ep:
             sTitle = sTitle[:pos]
-            sa, ep = getSaisonEpisode(sTitle)
+            sTitle, sa, ep = getSaisonEpisode(sTitle)
         if sa or ep:
             continue
 
@@ -210,11 +209,10 @@ def showSeries(sSearch = '', searchLocal = False, isAnime = False):
             if not isMatrix():
                 sTitle = sTitle.encode('utf-8')
 
-            if sTitle[-4] == '.':
-                if sTitle[-4:].lower() not in '.mkv.avi.mp4.m4v.iso':
-                    continue
-                # enlever l'extension
-                sTitle = sTitle[:-4]
+            if sTitle[-4:].lower() not in '.mkv.avi.mp4.m4v.iso':
+                continue
+            # enlever l'extension
+            sTitle = sTitle[:-4]
 
             # recherche des métadonnées
             pos = len(sTitle)
@@ -225,38 +223,40 @@ def showSeries(sSearch = '', searchLocal = False, isAnime = False):
             sYear, pos = getYear(sTitle, pos)
             sRes, pos = getReso(sTitle, pos)
             sLang, pos = getLang(sTitle, pos)
-            saison, episode, pos = getSaisonEpisode(sTitle, pos)
+            sTitle, saison, episode, pos = getSaisonEpisode(sTitle, pos)
 
             # Recherche des noms de séries
             if not saison or not episode:
                 sTitle = sTitle[:pos]
                 pos = len(sTitle)
-                saison, episode, pos = getSaisonEpisode(sTitle, pos)
+                sTitle, saison, episode, pos = getSaisonEpisode(sTitle, pos)
 
             if saison:
                 if int(saison) > 100:
                     continue
                 sTitle = sTitle[:pos]
-                sMovieTitle = oUtil.unescape(sTitle).strip()
-                if not oUtil.CheckOccurence(sSearchTitle, sMovieTitle):
+                sDisplayTitle = oUtil.unescape(sTitle).strip()
+                sDisplayTitle = sDisplayTitle.replace('.', ' ')
+                
+                if not oUtil.CheckOccurence(sSearchTitle, sDisplayTitle):
                     continue    # Filtre de recherche
                 
-                sMovieTitle = sDisplayTitle = oUtil.CleanName(sMovieTitle)
+                sMovieTitle = oUtil.CleanName(sDisplayTitle)
                 if sYear:
-                    sDisplayTitle += ' (%s)' % sYear
-                if sDisplayTitle in series:
+                    sMovieTitle += ' (%s)' % sYear
+                if sMovieTitle in series:
                     continue
-                series.add(sDisplayTitle)
+                series.add(sMovieTitle)
     
                 oOutputParameterHandler.clearParameter()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sYear', sYear)
                 oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)  # Utilisé par TMDB
                 if isAnime:
-                    oGui.addAnime(SITE_IDENTIFIER, 'showSaisons', sMovieTitle, '', '', '', oOutputParameterHandler)
+                    oGui.addAnime(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', '', '', oOutputParameterHandler)
                 else:
-                    oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sMovieTitle, '', '', '', oOutputParameterHandler)
+                    oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', '', '', oOutputParameterHandler)
 
     if searchLocal:
         oGui.setEndOfDirectory()
@@ -311,7 +311,7 @@ def showSaisons():
             sYear, pos = getYear(sTitle, pos)
             sRes, pos = getReso(sTitle, pos)
             sLang, pos = getLang(sTitle, pos)
-            saison, episode, pos = getSaisonEpisode(sTitle, pos)
+            sTitle, saison, episode, pos = getSaisonEpisode(sTitle, pos)
 
             # vérifier l'année pour les homonymes
             if sSearchYear:
@@ -327,7 +327,7 @@ def showSaisons():
             if not saison or not episode:
                 sTitle = sTitle[:pos]
                 pos = len(sTitle)
-                saison, episode, pos = getSaisonEpisode(sTitle, pos)
+                sTitle, saison, episode, pos = getSaisonEpisode(sTitle, pos)
 
             if saison:
                 sTitle = sTitle[:pos]
@@ -387,13 +387,13 @@ def showEpisodes():
         sLang, pos = getLang(sTitle, pos)
         sRes, pos = getReso(sTitle, pos)
         sYear, pos = getYear(sTitle, pos)
-        saison, episode, pos = getSaisonEpisode(sTitle, pos)
+        sTitle, saison, episode, pos = getSaisonEpisode(sTitle, pos)
 
         # Vérifier la saison
         if not saison or not episode:
             sTitle = sTitle[:pos]
             pos = len(sTitle)
-            saison, episode, pos = getSaisonEpisode(sTitle, pos)
+            sTitle, saison, episode, pos = getSaisonEpisode(sTitle, pos)
         if not saison or saison != sSearchSaison:
             continue
 
@@ -481,11 +481,11 @@ def showHosters():
         sYear, pos = getYear(sTitle, pos)
 
         # identifier une série
-        saison, episode, pos = getSaisonEpisode(sTitle, pos)
+        sTitle, saison, episode, pos = getSaisonEpisode(sTitle, pos)
         if not saison or not episode:
             sTitle = sTitle[:pos]
             pos = len(sTitle)
-            saison, episode, pos = getSaisonEpisode(sTitle, pos)
+            sTitle, saison, episode, pos = getSaisonEpisode(sTitle, pos)
 
         if sSearchSaison:   # recherche de série
             if not saison or saison != sSearchSaison:
@@ -536,7 +536,7 @@ def showHosters():
 def getSaisonEpisode(sTitle, pos = 0):
     sTitle = sTitle.replace('x264', '').replace('x265', '').strip()
     sa = ep = terme = ''
-    m = re.search('( S|\.S|\[S|saison|\s+|\.)(\s?|\.)(\d+)( *- *|\s?|\.)(E|Ep|x|\wpisode|Épisode)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
+    m = re.search('(^S| S|\.S|\[S|saison|\s+|\.)(\s?|\.)(\d+)( *- *|\s?|\.)(E|Ep|x|\wpisode|Épisode)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
     if m:
         sa = m.group(3)
         if int(sa) <100:
@@ -561,12 +561,20 @@ def getSaisonEpisode(sTitle, pos = 0):
 
     if terme:
         p = sTitle.index(terme)
-        if pos > p > 5: # au début, on retire directement l'élement recherché
+        
+        if p<5:             # au début, on retire directement l'élement recherché
+            sTitle = sTitle.replace(terme, '')
+            if pos:
+                pos -= len(terme)
+            if sTitle.startswith(']'):
+                sTitle = sTitle[1:]
+                pos -= 1
+        elif p < pos:
             pos = p
 
     if pos == 0:
         return sa, ep
-    return sa, ep, pos
+    return sTitle, sa, ep, pos
 
 
 def getYear(sTitle, pos):
