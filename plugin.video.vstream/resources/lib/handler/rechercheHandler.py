@@ -85,7 +85,7 @@ class cRechercheHandler:
         elif sCat == '5':
             sSearch = 'URL_SEARCH_MISC'
         elif sCat == '6':
-            sSearch = 'URL_SEARCH'
+            sSearch = 'URL_SEARCH_REPLAY'
         elif sCat == '7':
             sSearch = 'URL_SEARCH_MOVIES'
         elif sCat == '8':

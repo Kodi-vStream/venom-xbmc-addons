@@ -14,14 +14,15 @@ from resources.lib.comaddon import progress, siteManager
 
 SITE_IDENTIFIER = 'mamcin'
 SITE_NAME = 'Mamcin'
-SITE_DESC = 'plus belle la vie, streaming, séries, récent'
+SITE_DESC = 'Plus belle la vie'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
-# URL_MAIN = dans sites.json
+
+REPLAYTV_REPLAYTV = (True, 'load')
+REPLAYTV_NEWS = (URL_MAIN, 'showMovies')
 
 SERIE_NEWS = (URL_MAIN, 'showMovies')
 SERIE_SERIES = (URL_MAIN, 'showMovies')
-# SERIE_GENRES = (True, 'showGenres')
 
 
 # loader function

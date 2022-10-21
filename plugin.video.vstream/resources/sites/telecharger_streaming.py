@@ -20,6 +20,7 @@ URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_MISC = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_REPLAY = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 REPLAYTV_REPLAYTV = ('http://', 'load')

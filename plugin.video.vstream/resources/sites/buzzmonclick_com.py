@@ -32,6 +32,7 @@ DOC_NEWS = (URL_MAIN + 'documentaires/', 'showMovies')
 
 URL_SEARCH = ('https://buzzmonclick.net/?s=', 'showMovies')
 URL_SEARCH_MISC = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_REPLAY = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 
