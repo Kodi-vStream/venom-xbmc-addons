@@ -82,11 +82,11 @@ def getAuthorizedID():
 def getContent(sUrl):
 
     sUrl = sUrl.replace(' ', '%20')
-    id = getAuthorizedID()
+    videoId = getAuthorizedID()
 
     oRequest = cRequestHandler(URL_MAIN + sUrl)
     oRequest.addHeaderEntry('Referer', URL_MAIN)
-    oRequest.addHeaderEntry('Authorization', id)
+    oRequest.addHeaderEntry('Authorization', videoId)
     sHtmlContent = oRequest.request()
 
     content = json.loads(sHtmlContent)

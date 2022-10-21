@@ -486,8 +486,8 @@ def __checkForNextPage(sHtmlContent):
         if 'recherche.php' in aResult[1][0]:
             return URL_MAIN + aResult[1][0]
         else:
-            id = getIdFromUrl(sUrl)
-            return URL_MAIN + id + aResult[1][0]
+            videoId = getIdFromUrl(sUrl)
+            return URL_MAIN + videoId + aResult[1][0]
 
     return False
 
