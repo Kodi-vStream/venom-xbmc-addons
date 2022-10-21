@@ -334,8 +334,8 @@ def showHosters():  # affiche les videos disponible du live
             sPattern = '\/(\d+)'
             aResult = re.findall(sPattern, url)
             if aResult:
-                id = aResult[0]
-                url2 = 'https://tv.rushandball.ru/api/v2/content/' + id + '/access'
+                videoId = aResult[0]
+                url2 = 'https://tv.rushandball.ru/api/v2/content/' + videoId + '/access'
 
                 oRequestHandler = cRequestHandler(url2)
                 oRequestHandler.setRequestType(1)
@@ -430,8 +430,8 @@ def showHosters():  # affiche les videos disponible du live
             sPattern = 'ch(\d+).php'
             aResult = re.findall(sPattern, url)
             if aResult:
-                id = aResult[0]
-                url2 = 'http://allsports.icu/stream/ch' + id + '.html'
+                videoId = aResult[0]
+                url2 = 'http://allsports.icu/stream/ch' + videoId + '.html'
                 sHosterUrl = getHosterIframe(url2, url2)
 
         # old host

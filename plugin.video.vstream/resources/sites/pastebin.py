@@ -2949,15 +2949,15 @@ def getNbMedia():
     for pasteBin in listeIDs:
         moviesBin = pbContent.getLines(pasteBin)
         for movie in moviesBin:
-            id = movie[pbContent.TMDB] if movie[pbContent.TMDB] else movie[pbContent.TITLE]
+            videoId = movie[pbContent.TMDB] if movie[pbContent.TMDB] else movie[pbContent.TITLE]
             if 'film' in movie[pbContent.CAT]:
-                idFilms.add(id)
+                idFilms.add(videoId)
             elif 'serie' in movie[pbContent.CAT]:
-                idSeries.add(id)
+                idSeries.add(videoId)
             elif 'anime' in movie[pbContent.CAT]:
-                idAnimes.add(id)
+                idAnimes.add(videoId)
             else:
-                idDivers.add(id)
+                idDivers.add(videoId)
                 
     oGui.addText(SITE_IDENTIFIER, 'Films[COLOR coral] (%d) [/COLOR]' % len(idFilms), 'films.png')
     oGui.addText(SITE_IDENTIFIER, 'Séries[COLOR coral] (%d) [/COLOR]' % len(idSeries), 'tv.png')

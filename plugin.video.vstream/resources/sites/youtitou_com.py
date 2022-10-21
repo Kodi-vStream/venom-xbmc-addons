@@ -100,8 +100,8 @@ def showEpisode():
 
             sTitle = aEntry[0]
             sUrl = aEntry[1]
-            id = sUrl.split('=')[-1]
-            sThumb = 'https://i.ytimg.com/vi/%s/mqdefault.jpg' % id
+            videoId = sUrl.split('=')[-1]
+            sThumb = 'https://i.ytimg.com/vi/%s/mqdefault.jpg' % videoId
 
             oHoster = oHosterGui.checkHoster(sUrl)
             if oHoster != False:

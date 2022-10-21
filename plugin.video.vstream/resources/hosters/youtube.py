@@ -48,20 +48,20 @@ class cHoster(iHoster):
     def __getIdFromUrl(self, sUrl):
 
         if 'plugin' not in sUrl:
-            id = sUrl
-            id = id.replace('http:', '')
-            id = id.replace('https:', '')
-            id = id.replace('//', '')
-            id = id.replace('www.youtube.com', '')
-            id = id.replace('www.youtube-nocookie.com', '')
-            id = id.replace('/embed/', '')
-            id = id.replace('?feature=oembed', '')
-            id = id.replace('/watch?v=', '')
-            id = str(id)
+            videoId = sUrl
+            videoId = videoId.replace('http:', '')
+            videoId = videoId.replace('https:', '')
+            videoId = videoId.replace('//', '')
+            videoId = videoId.replace('www.youtube.com', '')
+            videoId = videoId.replace('www.youtube-nocookie.com', '')
+            videoId = videoId.replace('/embed/', '')
+            videoId = videoId.replace('?feature=oembed', '')
+            videoId = videoId.replace('/watch?v=', '')
+            videoId = str(videoId)
         else:
-            id = sUrl
+            videoId = sUrl
  
-        return id
+        return videoId
 
     def _getMediaLinkForGuest0(self, sUrl):
         UA = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) ' + \
