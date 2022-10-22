@@ -18,6 +18,8 @@ from resources.lib.packer import cPacker
 from resources.lib.parser import cParser
 from resources.lib.util import Quote
 
+#import web_pdb;
+
 try:  # Python 2
     from urlparse import urlparse
 except ImportError:  # Python 3
@@ -107,7 +109,7 @@ def showMovies(sSearch=''):
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
+    #web_pdb.set_trace()
     if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
     else:
@@ -166,6 +168,7 @@ def showLive():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
+    #web_pdb.set_trace()
 
     # liens visibles
     sPattern = r"btn btn-(success|warning) *btn-sm.+?src='([^\']*).+?img src=\".+?lang\/([^\"]*)\.gif.+?this\.src='.+?lang\/([^\']*)\.gif"
@@ -267,7 +270,7 @@ def showLink():
         if bvalid:
             sHosterUrl = shosterurl
 
-    if 'wigistream' in sUrl or 'cloudstream' in sUrl:
+    if 'wigistream' in sUrl or 'cloudstream' in sUrl or 'mysportfeeds' in sUrl:
         bvalid, shosterurl = Hoster_Wigistream(sUrl, siterefer)
         if bvalid:
             sHosterUrl = shosterurl
