@@ -22,8 +22,9 @@ class cHoster(iHoster):
         r = requests.post('https://api.real-debrid.com/rest/1.0/unrestrict/link', data=data, headers=headers)
         dictData = r.json()
         if 'error' in dictData.keys():
-            api_call= None
             dialog().VSinfo(dictData['error'].upper().replace('_', ' '), self.getPluginIdentifier())
+            # si realdebrid ne prend pas en charge ce type de lien, on retourne le lien pour utiliser un autre hoster
+            return False, self._url
         else:
             api_call= dictData['download'] 
 
@@ -34,7 +35,5 @@ class cHoster(iHoster):
             except:
                 VSlog('Hoster RealDebrid - play : ' + HostURL)
 
-        if api_call:
-            return True, api_call
+        return True, api_call
 
-        return False, False
