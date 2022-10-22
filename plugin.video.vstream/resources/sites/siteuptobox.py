@@ -42,9 +42,10 @@ headers = {'User-Agent': UA}
 
 def load():
     oGui = cGui()
-    sToken = cPremiumHandler('uptobox').getToken()
+    addons = addon()
 
-    if not sToken:
+    # Même avec un token, on verifies les identifiants
+    if (addons.getSetting('hoster_uptobox_username') == '') or (addons.getSetting('hoster_uptobox_password') == '') or not cPremiumHandler('uptobox').getToken():
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + 'Nécessite un Compte Uptobox Premium ou Gratuit' + '[/COLOR]')
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', '//')
