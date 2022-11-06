@@ -231,34 +231,6 @@ class cClear:
                     self.DIALOG.VSerror(self.ADDON.VSlang(30096))
             return
 
-        elif (env == 'uplog'):
-            if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
-                path = "special://logpath/kodi.log"
-                UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
-                # headers = {'User-Agent': UA}
-                if xbmcvfs.exists(path):
-                    # post_data = {}
-                    cUrl = 'http://slexy.org/index.php/submit'
-                    logop = xbmcvfs.File(path, 'rb')
-                    result = logop.read()
-                    logop.close()
-
-                    oRequestHandler = cRequestHandler(cUrl)
-                    oRequestHandler.setRequestType(1)
-                    oRequestHandler.addHeaderEntry('User-Agent', UA)
-                    oRequestHandler.addParameters('raw_paste', result)
-                    oRequestHandler.addParameters('author', "kodi.log")
-                    oRequestHandler.addParameters('language', "text")
-                    oRequestHandler.addParameters('permissions', 1)  # private
-                    oRequestHandler.addParameters('expire', 259200)  # 3j
-                    oRequestHandler.addParameters('submit', 'Submit+Paste')
-                    oRequestHandler.request()
-                    code = oRequestHandler.getRealUrl().replace('http://slexy.org/view/', '')
-
-                    self.ADDON.setSetting('service_log', code)
-                    self.DIALOG.VSok(self.ADDON.VSlang(30097) + '  ' + code)
-            return
-
         # activer toutes les sources
         elif (env == 'enableSources'):
             if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):

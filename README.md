@@ -14,14 +14,16 @@ vStream est un addon pour Kodi qui vous permet de visionner en streaming un gran
 
 ## Installer !
 
-Installez d'abord le repository pour installer l'extension et avoir les mises à jour automatique.
+Ajouter cette adresse dans le gestionnaire de fichiers de KODI : "Gestionnaire de fichier" / "Ajouter une source"<br>
+Chemin : https://kodi-vstream.github.io/repo/<br>
+Nom : "vStream repo"<br>
+<br>
+Puis dans kodi "Extensions" / "installer depuis un fichier zip", installer le repository.vstream-x.x.x.zip depuis cette nouvelle source "vStream repo".<br>
+<br>
+Pour enfin installer vStream, il faut passer par le menu Kodi : "Extensions" / "Installer depuis un dépôt" et se rendre dans le dépôt installé juste avant.<br>
 
-Ajouter cette adresse dans le gestionnaire de fichiers de KODI :
-https://kodi-vstream.github.io/repo/
 
-Puis "installer depuis un fichier zip" le repository depuis cette nouvelle source.
-
-Cette méthode en détail : https://kodi-vstream.github.io/docs/installation2/
+Cette méthode en détail : https://kodi-vstream.github.io/docs/installation/
 
 
 Ou télécharger le ZIP du repository :
@@ -31,12 +33,7 @@ Ou télécharger le ZIP du repository :
 [![images](https://img.shields.io/badge/T%C3%A9l%C3%A9charger-QRcode-blue.svg?style=for-the-badge)](https://user-images.githubusercontent.com/47307622/154670423-a0265564-4e40-419d-b3d2-5237d4cd0b85.png)
 
 
-
-
 Installer ensuite l'addon vStream EXCLUSIVEMENT depuis le repository.
-
-Cette méthode en détail : https://kodi-vstream.github.io/docs/installation/
-
 
 
 

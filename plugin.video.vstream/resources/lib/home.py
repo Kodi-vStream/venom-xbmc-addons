@@ -356,6 +356,9 @@ class cHome:
         oGui = cGui()
 
         oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sCat', '6')
+        oGui.addDir(SITE_IDENTIFIER, 'showSearchText', self.addons.VSlang(30134), 'search.png', oOutputParameterHandler)
+
         oOutputParameterHandler.addParameter('siteUrl', 'REPLAYTV_NEWS')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (self.addons.VSlang(30117), self.addons.VSlang(30101)), 'news.png', oOutputParameterHandler)
 

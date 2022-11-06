@@ -13,6 +13,11 @@ Historique des modifications
 ==================================================================================
 
 
+*** 2.1.0***
+- RealDebrid : Utilisation par token, sans besoin de UrlResolver
+- Bande annonce : Compatibilité avec l'extension Invidious 
+
+
 *** 2.0.0***
 - TMDB : Noter film/série, ajouter aux favoris, à la liste de suivi, à des listes personnelles
 - Uptobox : Affichage des métadonnées des vidéos de son compte

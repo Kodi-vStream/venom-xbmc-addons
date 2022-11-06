@@ -101,7 +101,7 @@ def showMovies(sSearch=''):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    if 'release/' in sUrl:
+    if 'release/' in sUrl or sSearch:
         sPattern = 'center-icons".+?src="([^"]+)" alt="([^"]+).+?href="([^"]+).+?movie-release">([^<]*)'
     else:
         sPattern = 'center-icons".+?src="([^"]+)" alt="([^"]+).+?href="([^"]+).+?movie-release">([^<]*).+?story\'>([^<]+).+?movie-cast'

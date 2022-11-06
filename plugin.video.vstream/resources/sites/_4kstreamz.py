@@ -359,6 +359,8 @@ def showLinks():
             if aEntry[1]:
                 dataUrl = aEntry[1]
                 dataCode = aEntry[2]
+                if "/thumbnail/" in dataCode :
+                    continue
                 sHost = aEntry[3].capitalize()
                 if not oHosterGui.checkHoster(sHost):
                     continue

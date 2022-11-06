@@ -334,8 +334,8 @@ def showHosters():  # affiche les videos disponible du live
             sPattern = '\/(\d+)'
             aResult = re.findall(sPattern, url)
             if aResult:
-                id = aResult[0]
-                url2 = 'https://tv.rushandball.ru/api/v2/content/' + id + '/access'
+                videoId = aResult[0]
+                url2 = 'https://tv.rushandball.ru/api/v2/content/' + videoId + '/access'
 
                 oRequestHandler = cRequestHandler(url2)
                 oRequestHandler.setRequestType(1)
@@ -430,8 +430,8 @@ def showHosters():  # affiche les videos disponible du live
             sPattern = 'ch(\d+).php'
             aResult = re.findall(sPattern, url)
             if aResult:
-                id = aResult[0]
-                url2 = 'http://allsports.icu/stream/ch' + id + '.html'
+                videoId = aResult[0]
+                url2 = 'http://allsports.icu/stream/ch' + videoId + '.html'
                 sHosterUrl = getHosterIframe(url2, url2)
 
         # old host
@@ -475,6 +475,8 @@ def showHosters():  # affiche les videos disponible du live
                             break
 
         if 'emb.apl' in url:  # Terminé - Supporte emb.aplayer et emb.apl3
+            if url.startswith('//'):
+                url = 'http:' + url
             Referer = url
             oRequestHandler = cRequestHandler(url)
             oRequestHandler.addHeaderEntry('User-Agent', UA)
@@ -717,17 +719,16 @@ def showHosters():  # affiche les videos disponible du live
                 if aResult:
                     func = aResult[0]
                  
-                    sPattern2 = 'function %s\(\) +{ +return\(\[(.+?)\]' % func
-                    sPattern2 = 'function %s\(\) +{ +return\(\[([^\[]+)\]' % func
+                    # sPattern2 = 'function %s\(\) +{ +return\(\[(.+?)\]' % func
+                    # sPattern2 = 'function %s\(\) +{ +return\(\[([^\[]+)\]' % func
                     sPattern2 = 'function %s\(\) +{\n + return\(\[([^\]]+)' % func
                     aResult = re.findall(sPattern2, sHtmlContent3)
                     
-                    import xbmcvfs
-                    f = xbmcvfs.File('special://userdata/addon_data/plugin.video.vstream/test.txt','w')
-                    f.write(sHtmlContent3)
-                    f.close()
+                    # import xbmcvfs
+                    # f = xbmcvfs.File('special://userdata/addon_data/plugin.video.vstream/test.txt','w')
+                    # f.write(sHtmlContent3)
+                    # f.close()
                 
-                    
                     if aResult:
                         sHosterUrl = aResult[0].replace('"', '').replace(',', '')
     
@@ -1289,6 +1290,14 @@ def getHosterIframe(url, referer):
     if not sHtmlContent:
         return False
 
+    referer = url
+    
+    # import xbmcvfs
+    # f = xbmcvfs.File('special://userdata/addon_data/plugin.video.vstream/test.txt','w')
+    # f.write(sHtmlContent)
+    # f.close()
+
+
     sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
@@ -1297,15 +1306,24 @@ def getHosterIframe(url, referer):
             sstr = sstr + ';'
         sHtmlContent = cPacker().unpack(sstr)
 
-    sPattern = '[^/]source.+?["\'](https.+?)["\']'
+    sPattern = '.atob\("(.+?)"'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
-        return aResult[0] + '|referer=' + url
-
+        import base64
+        code = aResult[0]
+        try:
+            if isMatrix():
+                code = base64.b64decode(code).decode('ascii')
+            else:
+                code = base64.b64decode(code)
+#            return code + '|User-Agent=' + UA + '&Referer=' + Quote(referer)
+            return code + '|Referer=' + referer
+        except Exception as e:
+            pass
+    
     sPattern = '<iframe.+?src=["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
-        referer = url
         for url in aResult:
             if url.startswith("./"):
                 url = url[1:]
@@ -1324,20 +1342,11 @@ def getHosterIframe(url, referer):
         if '.m3u8' in url:
             return url
 
-    sPattern = '.atob\("(.+?)"'
+    sPattern = '[^/]source.+?["\'](https.+?)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
-        import base64
-        code = aResult[0]
-        try:
-            if isMatrix():
-                code = base64.b64decode(code).decode('ascii')
-            else:
-                code = base64.b64decode(code)
-            return code + '|Referer=' + url
-        except Exception as e:
-            pass
-    
+        return aResult[0] + '|referer=' + referer
+
     return False
 
 

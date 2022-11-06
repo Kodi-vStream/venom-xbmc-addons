@@ -307,7 +307,7 @@ class cDownload:
             extension = None
 
         sTitle = cUtil().CleanName(sTitle)
-        sTitle = cUtil().FormatSerie(sTitle)
+        # sTitle = cUtil().FormatSerie(sTitle)
 
         if type(sTitle) is bytes:
             sTitle = sTitle.decode('utf-8')

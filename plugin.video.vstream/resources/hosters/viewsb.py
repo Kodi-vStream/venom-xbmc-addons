@@ -33,8 +33,8 @@ class cHoster(iHoster):
         api_call = ''
 
         host = self.__getHost(self._url)
-        id = self.__getId(self._url)
-        url = host + 'd/' + id + '.html'
+        videoId = self.__getId(self._url)
+        url = host + 'd/' + videoId + '.html'
 
         oRequest = cRequestHandler(url)
         oRequest.addHeaderEntry('User-Agent', UA)
@@ -63,7 +63,7 @@ class cHoster(iHoster):
                     sHtmlContent = oRequest.request()
                     domain = base64.b64encode((host[:-1] + ':443').encode('utf-8')).decode('utf-8').replace('=', '')
         else:
-            eurl = get_embedurl(host, id)
+            eurl = get_embedurl(host, videoId)
 
             oRequest = cRequestHandler(eurl)
             oRequest.addHeaderEntry('User-Agent', UA)

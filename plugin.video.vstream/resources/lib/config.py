@@ -343,6 +343,8 @@ def WindowsBoxes(sTitle, siteUrl, metaType, year, sSite, sFav, sCat):
 
         def onClick(self, controlId):
             if controlId == 11:
+                sTitle = self.meta['title']
+                year = self.meta['year']
                 from resources.lib.ba import cShowBA
                 cBA = cShowBA()
                 cBA.SetSearch(sTitle)

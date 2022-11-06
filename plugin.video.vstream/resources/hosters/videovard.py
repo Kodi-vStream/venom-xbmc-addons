@@ -27,9 +27,9 @@ class cHoster(iHoster):
 
     def _getMediaLinkForGuest(self):
         host = self.__getHost(self._url)
-        id = self.__getId(self._url)
+        videoId = self.__getId(self._url)
 
-        url1 = "https://" + host + "/api/make/hash/" + id
+        url1 = "https://" + host + "/api/make/hash/" + videoId
 
         oRequest = cRequestHandler(url1)
         oRequest.addHeaderEntry('User-Agent', UA)
@@ -47,7 +47,7 @@ class cHoster(iHoster):
         oRequest.addHeaderEntry('Referer', "https://" + host)
         oRequest.addHeaderEntry('Origin', host)
         oRequest.addParameters("cmd", 'get_stream')
-        oRequest.addParameters("file_code", id)
+        oRequest.addParameters("file_code", videoId)
         oRequest.addParameters("hash", hash)
         sHtmlContent = oRequest.request()
 

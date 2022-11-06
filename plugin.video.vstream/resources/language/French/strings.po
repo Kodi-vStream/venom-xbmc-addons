@@ -536,6 +536,10 @@ msgctxt "#30133"
 msgid "Movies"
 msgstr "Cinéma"
 
+msgctxt "#30134"
+msgid "Search (TV replay)"
+msgstr "Rechercher (TV replay)"
+
 msgctxt "#30137"
 msgid "Music"
 msgstr "Musique"

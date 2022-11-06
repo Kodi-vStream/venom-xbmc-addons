@@ -54,10 +54,10 @@ def unescape(text):
 
 def _DecryptProtectStream(url):
 
-    id = re.findall('protect-stream\.com\/PS_DL_([A-Za-z0-9\\-_]+)',url )
-    #print id[0]
+    videoId = re.findall('protect-stream\.com\/PS_DL_([A-Za-z0-9\\-_]+)',url )
+    #print(videoId[0])
     
-    oRequestHandler = cRequestHandler("http://www.protect-stream.com/w.php?u=" + id[0])
+    oRequestHandler = cRequestHandler("http://www.protect-stream.com/w.php?u=" + videoId[0])
     sHtmlContent = oRequestHandler.request();
     
     cheap = re.findall('var k=\"([^<>\"]*?)\";' , sHtmlContent)

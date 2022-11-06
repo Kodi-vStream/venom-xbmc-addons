@@ -212,11 +212,10 @@ class cGuiElement:
         # enleve les crochets et les parentheses si elles sont vides
         sTitle = sTitle.replace('()', '').replace('[]', '').replace('- -', '-')
 
-        # vire espace et - a la fin (/!\ il y a 2 tirets differents meme si invisible a l'oeil nu et un est en unicode)
-        sTitle = re.sub('[- –]+$', '', sTitle)
+        # vire espace et - a la fin
+        sTitle = re.sub('[- –_\.]+$', '', sTitle)
         # et au debut
-        if sTitle.startswith(' '):
-            sTitle = sTitle[1:]
+        sTitle = re.sub('^[- –_\.]+', '', sTitle)
 
         """ Fin Nettoyage du titre """
 
@@ -267,6 +266,10 @@ class cGuiElement:
             self.__Episode = ep
             self.addItemValues('Episode', self.__Episode)
 
+        # on repasse en utf-8
+        if not isMatrix():
+            sTitle = sTitle.encode('utf-8')
+
         # on reformate SXXEXX Titre [tag] (Annee)
         sTitle2 = ''
         if self.__Season:
@@ -289,9 +292,6 @@ class cGuiElement:
         if self.__Year:
             sTitle2 = '%s [COLOR %s](%s)[/COLOR]' % (sTitle2, sDecoColor, self.__Year)
 
-        # on repasse en utf-8
-        if not isMatrix():
-            return sTitle2.encode('utf-8')
         return sTitle2
 
     def setTitle(self, sTitle):

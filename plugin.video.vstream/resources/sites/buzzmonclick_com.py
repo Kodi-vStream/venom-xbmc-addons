@@ -32,6 +32,7 @@ DOC_NEWS = (URL_MAIN + 'documentaires/', 'showMovies')
 
 URL_SEARCH = ('https://buzzmonclick.net/?s=', 'showMovies')
 URL_SEARCH_MISC = (URL_SEARCH[0], 'showMovies')
+URL_SEARCH_REPLAY = (URL_SEARCH[0], 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 
@@ -161,8 +162,8 @@ def showLinks():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '(?:href=|src=)"([^"]+)".+?>(?:([^<]+)|)'
-    aResult = oParser.parse(cutLink(sHtmlContent), sPattern)
+    sPattern = 'wp-block-button.+?(?:href=|src=)"([^"]+)".+?>(?:([^<]+)|)'
+    aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -240,10 +241,3 @@ def showHosters():
     oGui.setEndOfDirectory()
 
 
-def cutLink(sHtmlContent):
-    oParser = cParser()
-    sPattern = '">Lecteurs Disponibles :</span></h3>(.+?)<div id="extras">'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if aResult[0] is True:
-        return aResult[1][0]

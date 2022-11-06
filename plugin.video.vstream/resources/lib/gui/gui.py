@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-import xbmcplugin
-import xbmc
+import copy
 import json
 import threading
-import copy
+import xbmc
+import xbmcplugin
+import sys
 
 from resources.lib.comaddon import listitem, addon, dialog, window, isKrypton, isNexus, progress, VSlog
 from resources.lib.gui.contextElement import cContextElement
@@ -681,7 +682,7 @@ class cGui:
             from resources.lib.config import WindowsBoxes
 
             oInputParameterHandler = cInputParameterHandler()
-            sCleanTitle = oInputParameterHandler.getValue('sTitle') if oInputParameterHandler.exist('sTitle') else xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
+            sCleanTitle = oInputParameterHandler.getValue('sTitle') if oInputParameterHandler.exist('sTitle') else xbmc.getInfoLabel('ListItem.Title')
             sMeta = oInputParameterHandler.getValue('sMeta') if oInputParameterHandler.exist('sMeta') else xbmc.getInfoLabel('ListItem.Property(sMeta)')
             sYear = oInputParameterHandler.getValue('sYear') if oInputParameterHandler.exist('sYear') else xbmc.getInfoLabel('ListItem.Year')
             sUrl = oInputParameterHandler.getValue('siteUrl') if oInputParameterHandler.exist('siteUrl') else xbmc.getInfoLabel('ListItem.Property(siteUrl)')
@@ -691,31 +692,31 @@ class cGui:
 
             WindowsBoxes(sCleanTitle, sUrl, sMeta, sYear, sSite, sFav, sCat)
         else:
-            # On appel la fonction integrer a Kodi pour charger les infos.
+            # On appel la fonction integrée a Kodi pour charger les infos.
             xbmc.executebuiltin('Action(Info)')
 
     def viewSimil(self):
         sPluginPath = cPluginHandler().getPluginPath()
 
         oInputParameterHandler = cInputParameterHandler()
-        sCleanTitle = oInputParameterHandler.getValue('sFileName') if oInputParameterHandler.exist('sFileName') else xbmc.getInfoLabel('ListItem.Property(sCleanTitle)')
+        sCleanTitle = oInputParameterHandler.getValue('sTitle') if oInputParameterHandler.exist('sTitle') else xbmc.getInfoLabel('ListItem.Title')
         sCat = oInputParameterHandler.getValue('sCat') if oInputParameterHandler.exist('sCat') else xbmc.getInfoLabel('ListItem.Property(sCat)')
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('searchtext', sCleanTitle)
         oOutputParameterHandler.addParameter('sCat', sCat)
-        oOutputParameterHandler.addParameter('readdb', 'False')
 
         sParams = oOutputParameterHandler.getParameterAsUri()
-        sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, 'globalSearch', 'globalSearch', sParams)
-
+        sTest = '?site=%s&function=%s&%s' % ('globalSearch', 'globalSearch', sParams)
+        sys.argv[2] = sTest
+        sTest = sPluginPath + sTest
+ 
         # Si lancé depuis la page Home de Kodi, il faut d'abord en sortir pour lancer la recherche
         if xbmc.getCondVisibility('Window.IsVisible(home)'):
-            xbmc.executebuiltin('ActivateWindow(%d)' % 10028)
+            xbmc.executebuiltin('ActivateWindow(%d)' % 10025)
 
         xbmc.executebuiltin('Container.Update(%s)' % sTest)
-
-        return False
+        return True
 
     def selectPage(self):
         sPluginPath = cPluginHandler().getPluginPath()

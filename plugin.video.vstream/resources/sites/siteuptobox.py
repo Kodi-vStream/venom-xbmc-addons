@@ -42,9 +42,10 @@ headers = {'User-Agent': UA}
 
 def load():
     oGui = cGui()
-    sToken = cPremiumHandler('uptobox').getToken()
+    addons = addon()
 
-    if not sToken:
+    # Même avec un token, on verifies les identifiants
+    if (addons.getSetting('hoster_uptobox_username') == '') or (addons.getSetting('hoster_uptobox_password') == '') or not cPremiumHandler('uptobox').getToken():
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + 'Nécessite un Compte Uptobox Premium ou Gratuit' + '[/COLOR]')
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', '//')
@@ -639,7 +640,7 @@ def showEpisodes(oGui, sMovieTitle, content, sSiteUrl, sSeason):
 # Recherche saisons et episodes
 def searchEpisode(sTitle):
     sa = ep =''
-    m = re.search('( S|\.S|\[S|saison)(\s?|\.)(\d+)( - |\s?|\.)(E|Ep|x|\wpisode|Épisode)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
+    m = re.search('( S|\.S|\[S|saison|\s+|\.)(\s?|\.)(\d+)( *- *|\s?|\.)(E|Ep|x|\wpisode|Épisode)(\s?|\.)(\d+)', sTitle, re.UNICODE | re.IGNORECASE)
     if m:
         sa = m.group(3)
         if int(sa) <100:
@@ -721,12 +722,12 @@ def getYear(sMovieTitle, pos):
 
 
 def getLang(sMovieTitle, pos):
-    sPattern = ['VFI', 'VFF', 'VFQ', 'SUBFRENCH', 'TRUEFRENCH', 'FRENCH', 'VF', 'VOSTFR', '[^\w](VOST)[^\w]', '[^\w](VO)[^\w]', 'QC', '[^\w](MULTI)[^\w]']
+    sPattern = ['VFI', 'VFF', 'VFQ', 'SUBFRENCH', 'TRUEFRENCH', 'FRENCH', 'VF', 'VOSTFR', '[^\w](VOST)[^\w]', '[^\w](VO)[^\w]', 'QC', '[^\w](MULTI)[^\w]', 'FASTSUB']
     return _getTag(sMovieTitle, sPattern, pos)
 
 
 def getReso(sMovieTitle, pos):
-    sPattern = ['HDCAM', '[^\w](CAM)[^\w]', '[^\w](R5)[^\w]', '.(3D)', '.(DVDSCR)', '.(TVRIP)', '.(HDLIGHT)', '\d{3,4}P', '.(4K)', '.(UHD)', '.(BDRIP)', '.(BRRIP)', '.(DVDRIP)', '.(HDTV)', '.(BLURAY)', '.(WEB-DL)', '.(WEBRIP)', '[^\w](WEB)[^\w]', '.(DVDRIP)']
+    sPattern = ['HDCAM', '[^\w](CAM)[^\w]', '[^\w](R5)[^\w]', '.(3D)', '.(DVDSCR)', '.(TVRIP)', '.(FHD)', '.(HDLIGHT)', '\d{3,4}P', '.(4K)', '.(UHD)', '.(BDRIP)', '.(BRRIP)', '.(DVDRIP)', '.(HDTV)', '.(BLURAY)', '.(WEB-DL)', '.(WEBRIP)', '[^\w](WEB)[^\w]', '.(DVDRIP)']
     sRes, pos = _getTag(sMovieTitle, sPattern, pos)
     if sRes:
         sRes = sRes.replace('2160P', '4K')

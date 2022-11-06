@@ -387,11 +387,11 @@ def showSerieLinks():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
-            id = aEntry[0]
+            videoId = aEntry[0]
             xfield = aEntry[1]
             hosterName = xfield.replace('_', ' ').capitalize().replace('vf', '(VF)').replace('vostfr', '(VOSTFR)')
 
-            postdata = 'id=' + id + '&xfield=' + xfield + '&action=playEpisode'
+            postdata = 'id=' + videoId + '&xfield=' + xfield + '&action=playEpisode'
             sUrl2 = URL_MAIN + 'engine/inc/serial/app/ajax/Season.php'
 
             sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, hosterName)
@@ -468,14 +468,14 @@ def showMovieLinks():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
-            id = aEntry[0]
+            videoId = aEntry[0]
             xfield = aEntry[1]
             token = aEntry[2]
             # images :aEntry[3] (VF).png
             sQual = aEntry[4]
             hosterName = xfield.replace('_', ' ').capitalize().replace('vf', '(VF)').replace('vostfr', '(VOSTFR)')
 
-            sUrl2 = URL_MAIN + 'engine/ajax/getxfield.php?id=' + id + '&xfield=' + xfield + '&token=' + token
+            sUrl2 = URL_MAIN + 'engine/ajax/getxfield.php?id=' + videoId + '&xfield=' + xfield + '&token=' + token
 
             sDisplayTitle = ('%s [%s] [COLOR coral]%s[/COLOR]') % (sTitle, sQual, hosterName)
 

@@ -8,7 +8,7 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.comaddon import progress, VSlog, addon, window
+from resources.lib.comaddon import progress, VSlog, addon, window, siteManager
 from resources.lib.search import cSearch
 # http://kodi.wiki/view/InfoLabels
 # http://kodi.wiki/view/List_of_boolean_conditions
@@ -130,6 +130,8 @@ class main:
             if sSiteName == 'globalSources':
                 oGui = cGui()
                 aPlugins = oPluginHandler.getAvailablePlugins(force = (sFunction == 'globalSources'))
+                
+                sitesManager = siteManager()
 
                 if len(aPlugins) == 0:
                     addons = addon()
@@ -137,10 +139,15 @@ class main:
                     oGui.updateDirectory()
                 else:
                     for aPlugin in aPlugins:
+                        
+                        sitename = aPlugin[0]
+                        if not sitesManager.isActive(aPlugin[1]):
+                            sitename = '[COLOR red][OFF] ' + sitename + '[/COLOR]'
+                        
                         oOutputParameterHandler = cOutputParameterHandler()
                         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
                         icon = 'sites/%s.png' % (aPlugin[1])
-                        oGui.addDir(aPlugin[1], 'load', aPlugin[0], icon, oOutputParameterHandler)
+                        oGui.addDir(aPlugin[1], 'load', sitename, icon, oOutputParameterHandler)
 
                 oGui.setEndOfDirectory()
                 return
