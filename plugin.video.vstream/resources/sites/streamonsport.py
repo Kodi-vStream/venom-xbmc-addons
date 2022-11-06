@@ -128,7 +128,7 @@ def showMovies(sSearch=''):
                     sDisplayTitle += ' (' + sDesc1.replace(' · ', '') + ')'
                 if sDate:
                     try:
-                        d = datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S+02:00')[0:6]))
+                        d = datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S+01:00')[0:6]))
                         sDate = d.strftime("%d/%m/%y %H:%M")
                     except Exception:
                         pass
@@ -492,11 +492,20 @@ def getHosterIframe(url, referer):
             sstr = sstr + ';'
         sHtmlContent = cPacker().unpack(sstr)
 
-    sPattern = '[^/]source.+?["\'](https.+?)["\']'
+    sPattern = '.atob\("(.+?)"'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
-        return True, aResult[0] + '|referer=' + url
-
+        import base64
+        code = aResult[0]
+        try:
+            if isMatrix():
+                code = base64.b64decode(code).decode('ascii')
+            else:
+                code = base64.b64decode(code)
+            return True, code + '|Referer=' + url
+        except Exception as e:
+            pass
+    
     sPattern = '<iframe.+?src=["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
@@ -519,20 +528,11 @@ def getHosterIframe(url, referer):
         if '.m3u8' in url:
             return True, url # + '|User-Agent=' + UA + '&Referer=' + referer
 
-    sPattern = '.atob\("(.+?)"'
+    sPattern = '[^/]source.+?["\'](https.+?)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
-        import base64
-        code = aResult[0]
-        try:
-            if isMatrix():
-                code = base64.b64decode(code).decode('ascii')
-            else:
-                code = base64.b64decode(code)
-            return True, code + '|Referer=' + url
-        except Exception as e:
-            pass
-    
+        return True, aResult[0] + '|referer=' + url
+
     return False, False
 
 
