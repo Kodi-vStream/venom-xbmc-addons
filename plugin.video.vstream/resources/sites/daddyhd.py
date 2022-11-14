@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
-
-import base64
-import json
 import re
-import time
-from datetime import datetime, timedelta
 
 from resources.lib.comaddon import siteManager
 from resources.lib.gui.gui import cGui
@@ -14,34 +9,30 @@ from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.packer import cPacker
 from resources.lib.parser import cParser
-from resources.lib.util import Quote
 
-try:  # Python 2
-    from urlparse import urlparse
-except ImportError:  # Python 3
-    from urllib.parse import urlparse
-
-
-URL_MAIN = 'https://daddyhd.com/'
-def GetUrlMain():
-    return URL_MAIN
-
-
-UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
 SITE_IDENTIFIER = 'daddyhd'
 SITE_NAME = 'DaddyHD'
 SITE_DESC = 'Chaines de Sport et de Divertissement'
-
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 SPORT_SPORTS = ('/', 'load')
-# TV_TV = ('/', 'load')
-# SPORT_TV = ('31-site-pour-regarder-les-chaines-de-sport.html', 'showMovies')
-#CHAINE_CINE = ('2370162-chaines-tv-streaming-tf1-france-2-canal-plus.html', 'showMovies')
-# SPORT_LIVE = ('/', 'showMovies')
 SPORT_GENRES = ('/', 'showGenres')
+
+TV_TV = ('/', 'load')
+SPORT_TV = ('31-site-pour-regarder-les-chaines-de-sport.html', 'showTV')
+
+# chaines
+channels = {
+    116: ['bein Sports 1', 'https://images.beinsports.com/n43EXNeoR62GvZlWW2SXKuQi0GA=/788708-HD1.png'],
+    117: ['bein Sports 2', 'https://images.beinsports.com/dZ2ESOsGlqynphSgs7MAGLwFAcg=/788711-HD2.png'],
+    118: ['bein Sports 3', 'https://images.beinsports.com/G4M9yQ3f4vbFINuKGIoeJQ6kF_I=/788712-HD3.png'],
+    119: ['RMC Sport 1', 'https://i0.wp.com/www.planetecsat.com/wp-content/uploads/2018/07/RMC_SPORT1_PNG_500x500px.png?w=500&ssl=1'],
+    120: ['RMC Sport 2', 'https://i0.wp.com/www.planetecsat.com/wp-content/uploads/2018/07/RMC_SPORT2_PNG_500x500px.png?fit=500%2C500&ssl=1'],
+    121: ['Canal+', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_301.PNG'],
+    122: ['Canal+ sport', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_177.PNG']
+    }
 
 
 def load():
@@ -49,25 +40,39 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
 
-    # oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
-    # oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Sports (En direct)', 'replay.png', oOutputParameterHandler)
-
     oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Sports (Genres)', 'genres.png', oOutputParameterHandler)
     
-    # oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
-    # oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines TV Sports', 'sport.png', oOutputParameterHandler)
-
-    # oOutputParameterHandler.addParameter('siteUrl', CHAINE_CINE[0])
-    # oGui.addDir(SITE_IDENTIFIER, CHAINE_CINE[1], 'Chaines TV Ciné', 'tv.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
+    oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines TV Sports', 'sport.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
+
+def showTV():
+    oGui = cGui()
+
+    sUrl = URL_MAIN + '/cast/stream-%d.php'
+    chaines = [116, 117, 118, 119, 120, 121, 122]
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    for iChannel in chaines:
+        channel = channels.get(iChannel)
+        sDisplayTitle = channel[0]
+        sThumb = channel[1]
+        oOutputParameterHandler.addParameter('siteUrl', sUrl % iChannel)
+        oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
+        oOutputParameterHandler.addParameter('sThumb', sThumb)
+        oGui.addLink(SITE_IDENTIFIER, 'showLink', sDisplayTitle, sThumb, sDisplayTitle, oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
 
 
 def showGenres():
     oGui = cGui()
 
-    sUrl = GetUrlMain()
+    sUrl = URL_MAIN
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -114,7 +119,7 @@ def showGenres():
 def showMovies():
     oGui = cGui()
     oParser = cParser()
-    sUrl = GetUrlMain()
+    sUrl = URL_MAIN
 
     oInputParameterHandler = cInputParameterHandler()
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -124,27 +129,18 @@ def showMovies():
     sPattern = '<h2 style="background-color:cyan">%s</h2>' % sTitle
     sHtmlContent = oParser.abParse(sHtmlContent, sPattern, '</p>')
 
-
-# <hr>16:00 Romania Liga 1 : CFR 1933 Timisoara vs. CS United Galati <span style="color: #ff0000;"><a style="color: #ff0000;" href="/stream/stream-401.php" target="_blank" rel="noopener">Digi Sport 2 Romania (CH-401)</a></span><br />
-# <hr>21:00 Portugal 1a Divisao : Sporting CP vs. SC Braga/Aaum <span style="color: #ff0000;"><a style="color: #ff0000;" href="/stream/stream-21.php" target="_blank" rel="noopener">Canal 11 Portugal (CH-21)</a></span></p>
-
     sPattern = '<hr>(\d+:\d+) (.+?)<'#span.+?href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
     else:
-        # total = len(aResult[1])
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sDate = aEntry[0]
             sTitle = aEntry[1]
-#            sUrl2 = aEntry[2].replace('/stream/', '/embed/')
             sDisplayTitle = sDate + ' - ' + sTitle.strip()
             sTitle = sDate + ' ' + sTitle
-
-            # if 'http' not in sUrl2:
-            #     sUrl2 = urlMain[:-1] + sUrl2
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -158,7 +154,7 @@ def showMovies():
 def showHoster():
     oGui = cGui()
     oParser = cParser()
-    urlMain = GetUrlMain()
+    urlMain = URL_MAIN
 
     oInputParameterHandler = cInputParameterHandler()
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -224,7 +220,7 @@ def showLink():
 def getHosterIframe(url, referer):
     
     if not url.startswith('http'):
-        url = GetUrlMain( )+ url
+        url = URL_MAIN + url
     
     oRequestHandler = cRequestHandler(url)
     if referer:
@@ -233,14 +229,10 @@ def getHosterIframe(url, referer):
     if not sHtmlContent:
         return False, False
 
-    # import xbmcvfs
-    # f = xbmcvfs.File('special://userdata/addon_data/plugin.video.vstream/test.txt','w')
-    # f.write(sHtmlContent)
-    # f.close()
-
     sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
+        from resources.lib.packer import cPacker
         sstr = aResult[0]
         if not sstr.endswith(';'):
             sstr = sstr + ';'
@@ -280,7 +272,7 @@ def getHosterIframe(url, referer):
     if aResult:
         url = aResult[0]
         if '.m3u8' in url:
-            return True, url # + '|User-Agent=' + UA + '&Referer=' + referer
+            return True, url
 
     sPattern = '[^/]source.+?["\'](https.+?)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
