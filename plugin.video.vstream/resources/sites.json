@@ -64,6 +64,11 @@
             "active": "True",
             "url": "https://cinemay.li/"
         },
+        "daddyhd": {
+            "label": "DaddyHD",
+            "active": "True",
+            "url": "https://daddyhd.com/"
+        },
         "dbanimes": {
             "label": "DBanimes",
             "active": "False",
@@ -432,7 +437,7 @@
         "wawacity": {
             "label": "Wawacity",
             "active": "True",
-            "url": "https://www.wawacity.red/"
+            "url": "https://www.wawacity.moe/"
         },
         "wiflix": {
             "label": "WiFlix",
