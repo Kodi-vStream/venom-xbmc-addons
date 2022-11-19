@@ -46,7 +46,7 @@ class cHoster(iHoster):
         self.oPremiumHandler = cPremiumHandler('uptobox')
         premium = self.oPremiumHandler.isPremiumModeAvailable()
         if not premium:
-            dialog().VSok('Ce hoster demande un login, meme gratuit.')
+            dialog().VSok('Ce hoster necessite un compte, meme gratuit.')
             return False, False
 
         api_call = False

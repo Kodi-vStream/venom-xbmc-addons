@@ -28,12 +28,18 @@ class cHoster(iHoster):
 
         api_call = ''
 
-        if MODE == 0 and not xbmcaddon.Addon('plugin.video.invidious'):
+        try:
+            xbmcaddon.Addon('plugin.video.invidious')
+        except:
             VSlog('Plugin Invidious non installe')
             MODE = 1
-        
-        if MODE == 1 and not xbmcaddon.Addon('plugin.video.youtube'):
-            VSlog('Plugin Youtube non installe')
+
+        try:
+            if (MODE == 1):
+                xbmcaddon.Addon('plugin.video.youtube')
+        except:
+            VSlog('Plugin YouTube non installe')
+            return False, False
 
         if 'plugin'  in self._url:
             api_call = self._url

@@ -573,7 +573,7 @@ def getSaisonEpisode(sTitle, pos = 0):
             pos = p
 
     if pos == 0:
-        return sa, ep
+        return sTitle, sa, ep
     return sTitle, sa, ep, pos
 
 
