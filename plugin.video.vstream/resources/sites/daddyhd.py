@@ -84,7 +84,7 @@ def showGenres():
         oGui.addText(SITE_IDENTIFIER)
     else:
         
-        sportGenre = []
+        sportGenre = {}
         
         oOutputParameterHandler = cOutputParameterHandler()
         for sTitle in aResult[1]:
@@ -93,11 +93,7 @@ def showGenres():
             if 'Tv Show' in sTitle:
                 continue
             
-            sportGenre.append(sTitle)
-
-        for sTitle in sorted(sportGenre):
-            sDisplayTitle = sTitle
-            sDisplayTitle = sDisplayTitle.replace('Soccer', 'Football')
+            sDisplayTitle = sTitle.replace('Soccer', 'Football')
             sDisplayTitle = sDisplayTitle.replace('Darts', 'Flechettes')
             sDisplayTitle = sDisplayTitle.replace('Boxing', 'Boxe')
             sDisplayTitle = sDisplayTitle.replace('Cycling', 'Cyclisme')
@@ -105,7 +101,9 @@ def showGenres():
             sDisplayTitle = sDisplayTitle.replace('Ice Hockey', 'Hockey sur glace')
             sDisplayTitle = sDisplayTitle.replace('Rugby Union', 'Rugby à XV')
             sDisplayTitle = sDisplayTitle.replace('Sailing / Boating', 'Voile')
-            
+            sportGenre[sDisplayTitle] = sTitle
+
+        for sDisplayTitle, sTitle in sorted(sportGenre.items()):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
@@ -129,7 +127,7 @@ def showMovies():
     sPattern = '<h2 style="background-color:cyan">%s</h2>' % sTitle
     sHtmlContent = oParser.abParse(sHtmlContent, sPattern, '</p>')
 
-    sPattern = '<hr>(\d+:\d+) (.+?)<'#span.+?href="([^"]+)'
+    sPattern = '<hr>(<strong>|)(\d+:\d+) (.+?)<'#span.+?href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0] is False:
@@ -137,8 +135,8 @@ def showMovies():
     else:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            sDate = aEntry[0]
-            sTitle = aEntry[1]
+            sDate = aEntry[1]
+            sTitle = aEntry[2]
             sDisplayTitle = sDate + ' - ' + sTitle.strip()
             sTitle = sDate + ' ' + sTitle
 
@@ -162,7 +160,12 @@ def showHoster():
     oRequestHandler = cRequestHandler(urlMain)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<hr>%s<' % sTitle
+    # enlève les accents qui gènent
+    sTitle2 = re.sub('[^a-zA-Z0-9:. ]', '#', sTitle)
+    if sTitle2 != sTitle:
+        sTitle2 = sTitle[:sTitle2.index('#')]
+    sPattern = '>%s' % sTitle2
+    
     sHtmlContent = oParser.abParse(sHtmlContent, sPattern, '<br')
 
     sPattern = 'href="([^"]+).+?rel=".+?>([^\(]+)'
