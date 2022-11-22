@@ -108,7 +108,7 @@ def showGenres():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
 
-            oGui.addLink(SITE_IDENTIFIER, 'showMovies', sDisplayTitle, 'genres.png', sDisplayTitle, oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showMovies', sDisplayTitle, 'sport.png', '', sDisplayTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -144,7 +144,7 @@ def showMovies():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
 
-            oGui.addLink(SITE_IDENTIFIER, 'showHoster', sDisplayTitle, 'sport.png', sDisplayTitle, oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHoster', sDisplayTitle, 'sport.png', '', sDisplayTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -188,7 +188,7 @@ def showHoster():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
 
-            oGui.addLink(SITE_IDENTIFIER, 'showLink', sDisplayTitle, 'sport.png', sDisplayTitle, oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showLink', sDisplayTitle, 'sport.png', '', sDisplayTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -198,7 +198,6 @@ def showLink():
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     siterefer = oInputParameterHandler.getValue('siterefer')
     sHosterUrl = ''
@@ -214,7 +213,7 @@ def showLink():
         if oHoster is not False:
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
 
     oGui.setEndOfDirectory()
 
