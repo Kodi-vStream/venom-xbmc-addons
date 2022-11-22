@@ -115,9 +115,10 @@ def showMovies(sSearch='', searchLocal = False):
 
     oOutputParameterHandler = cOutputParameterHandler()
     movies = set()
+    bMatrix = isMatrix()
     for movie in content:
         sTitle = movie['title']
-        if not isMatrix():
+        if not bMatrix:
             sTitle = sTitle.encode('utf-8')
 
         # seulement les formats vidéo
@@ -202,11 +203,12 @@ def showSeries(sSearch = '', searchLocal = False, isAnime = False):
     
     # deux url pour plus de résultats
     urls = [sUrl, sUrl.replace('order=asc', 'order=desc')]
+    bMatrix = isMatrix()
     for sUrl in urls:
         content = getContent(sUrl)
         for file in content:
             sTitle = file['title']
-            if not isMatrix():
+            if not bMatrix:
                 sTitle = sTitle.encode('utf-8')
 
             if sTitle[-4:].lower() not in '.mkv.avi.mp4.m4v.iso':
@@ -287,13 +289,14 @@ def showSaisons():
     # deux url pour plus de résultats
     urls = [sUrl, sUrl.replace('order=asc', 'order=desc')]
 
+    bMatrix = isMatrix()
     for sUrl in urls:
         content = getContent(sUrl)
 
         # Recherche des saisons
         for file in content:
             sTitle = file['title']
-            if not isMatrix():
+            if not bMatrix:
                 sTitle = sTitle.encode('utf-8')
 
             if sTitle[-4] == '.':
@@ -370,10 +373,11 @@ def showEpisodes():
     content = getContent(sUrl)
 
     # Recherche des épisodes
+    bMatrix = isMatrix()
     episodes = set()
     for file in content:
         sTitle = file['title']
-        if not isMatrix():
+        if not bMatrix:
             sTitle = sTitle.encode('utf-8')
 
         if sTitle[-4] == '.':
@@ -458,9 +462,10 @@ def showHosters():
     oHoster = oHosterGui.checkHoster('uptobox') # retourne le bon débrideur en fonction de son compte premmium
 
     # Recherche les liens
+    bMatrix = isMatrix()
     for file in content:
         sTitle = file['title']
-        if not isMatrix():
+        if not bMatrix:
             sTitle = sTitle.encode('utf-8')
 
         if sTitle[-4] == '.':
