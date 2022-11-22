@@ -86,7 +86,7 @@ def showGenres():
         sUrl = urlMain + url + genreURL
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', title)
-        oGui.addMisc(SITE_IDENTIFIER, 'showMovies', title, 'sport.png', '', title, oOutputParameterHandler)
+        oGui.addMisc(SITE_IDENTIFIER, 'showMovies', title, 'genres.png', '', title, oOutputParameterHandler)
         
     oGui.setEndOfDirectory()
 

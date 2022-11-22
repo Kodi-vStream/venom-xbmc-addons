@@ -108,7 +108,7 @@ def showGenres():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
 
-            oGui.addMisc(SITE_IDENTIFIER, 'showMovies', sDisplayTitle, 'sport.png', '', sDisplayTitle, oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showMovies', sDisplayTitle, 'genres.png', '', sDisplayTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
