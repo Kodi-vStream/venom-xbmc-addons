@@ -269,6 +269,11 @@
             "active": "True",
             "url": "https://9docu.org/"
         },
+		"novaflix": {
+            "label": "Novaflix",
+            "active": "True",
+            "url": "https://wvw.novaflix.io/"
+        },
         "o1streaming": {
             "label": "O1 streaming",
             "active": "True",
