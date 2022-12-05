@@ -107,7 +107,7 @@
         "extreme_down": {
             "label": "ExtremeDown",
             "active": "True",
-            "url": "https://www.extreme-down.lol/"
+            "url": "https://www.extreme-down.app/"
         },
         "filmoflix": {
             "label": "Filmoflix",
@@ -442,7 +442,7 @@
         "wawacity": {
             "label": "Wawacity",
             "active": "True",
-            "url": "https://www.wawacity.moe/"
+            "url": "https://www.wawacity.bond/"
         },
         "wiflix": {
             "label": "WiFlix",
