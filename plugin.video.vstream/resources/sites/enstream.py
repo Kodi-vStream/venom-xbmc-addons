@@ -12,8 +12,8 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
-SITE_IDENTIFIER = 'enstream_series'
-SITE_NAME = 'Enstream (Séries)'
+SITE_IDENTIFIER = 'enstream'
+SITE_NAME = 'EnStream'
 SITE_DESC = 'EnStream.Cc est le coin des séries en français par excellence'
 
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
