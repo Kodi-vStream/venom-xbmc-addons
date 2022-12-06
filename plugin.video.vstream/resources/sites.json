@@ -80,7 +80,7 @@
             "url": "https://www.ducine.site/"
         },
         "enstream": {
-            "label": "Enstream",
+            "label": "EnStream",
             "active": "True",
             "url": "https://wvw.enstream.cam/"
         },
@@ -122,7 +122,7 @@
         "french_stream_lol": {
             "label": "French-stream-lol",
             "active": "True",
-            "url": "https://french-stream.cool/"
+            "url": "https://french-stream.day/"
         },
         "frenchanimes": {
             "label": "French Animes",
