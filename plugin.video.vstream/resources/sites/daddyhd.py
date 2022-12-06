@@ -3,7 +3,7 @@
 
 import re
 
-from resources.lib.comaddon import siteManager
+from resources.lib.comaddon import siteManager, isMatrix
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -42,7 +42,7 @@ def load():
 
     oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Sports (Genres)', 'genres.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler.addParameter('siteUrl', SPORT_TV[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_TV[1], 'Chaines TV Sports', 'sport.png', oOutputParameterHandler)
 
@@ -68,7 +68,6 @@ def showTV():
     oGui.setEndOfDirectory()
 
 
-
 def showGenres():
     oGui = cGui()
 
@@ -83,16 +82,14 @@ def showGenres():
     if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
     else:
-        
         sportGenre = {}
-        
         oOutputParameterHandler = cOutputParameterHandler()
         for sTitle in aResult[1]:
             if 'Schedule' in sTitle:
                 break
             if 'Tv Show' in sTitle:
                 continue
-            
+
             sDisplayTitle = sTitle.replace('Soccer', 'Football')
             sDisplayTitle = sDisplayTitle.replace('Darts', 'Flechettes')
             sDisplayTitle = sDisplayTitle.replace('Boxing', 'Boxe')
@@ -111,7 +108,6 @@ def showGenres():
             oGui.addMisc(SITE_IDENTIFIER, 'showMovies', sDisplayTitle, 'genres.png', '', sDisplayTitle, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 
 def showMovies():
@@ -165,7 +161,7 @@ def showHoster():
     if sTitle2 != sTitle:
         sTitle2 = sTitle[:sTitle2.index('#')]
     sPattern = '>%s' % sTitle2
-    
+
     sHtmlContent = oParser.abParse(sHtmlContent, sPattern, '<br')
 
     sPattern = 'href="([^"]+).+?rel=".+?>([^\(]+)'
@@ -205,7 +201,7 @@ def showLink():
     bvalid, shosterurl = getHosterIframe(sUrl, siterefer)
     if bvalid:
         sHosterUrl = shosterurl
-        
+
 
     if sHosterUrl:
         sHosterUrl = sHosterUrl.strip()
@@ -220,10 +216,10 @@ def showLink():
 
 # Traitement générique
 def getHosterIframe(url, referer):
-    
+
     if not url.startswith('http'):
         url = URL_MAIN + url
-    
+
     oRequestHandler = cRequestHandler(url)
     if referer:
         oRequestHandler.addHeaderEntry('Referer', referer)
@@ -253,7 +249,7 @@ def getHosterIframe(url, referer):
             return True, code + '|Referer=' + url
         except Exception as e:
             pass
-    
+
     sPattern = '<iframe src=["\']([^"\']+)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
@@ -263,7 +259,7 @@ def getHosterIframe(url, referer):
                 url = url[1:]
             if not url.startswith("http"):
                 if not url.startswith("//"):
-                    url = '//'+referer.split('/')[2] + url  # ajout du nom de domaine
+                    url = '//' + referer.split('/')[2] + url  # ajout du nom de domaine
                 url = "https:" + url
             b, url = getHosterIframe(url, referer)
             if b:
