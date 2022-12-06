@@ -5,7 +5,7 @@ DEBUG = False
 if DEBUG:
 
     import sys  # pydevd module need to be copied in Kodi\system\python\Lib\pysrc
-    #sys.path.append('H:\Program Files\Kodi\system\Python\Lib\pysrc')
+    # sys.path.append('H:\Program Files\Kodi\system\Python\Lib\pysrc')
 
     try:
         import pydevd  # with the addon script.module.pydevd, only use `import pydevd`
@@ -38,7 +38,7 @@ SERIE_SERIES = (True, 'showMenuTvShows')
 MOVIE_NEWS = (URL_MAIN + 'films-streaming', 'showMovies')
 MOVIE_GENRES = (URL_MAIN, 'showGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
-#MOVIE_LIST = (URL_MAIN, 'showAlpha')
+# MOVIE_LIST = (URL_MAIN, 'showAlpha')
 
 SERIE_NEWS = (URL_MAIN + 'series-en-streaming/', 'showMovies')
 SERIE_GENRES = (URL_MAIN, 'showSeriesGenres')
@@ -52,7 +52,7 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    
+
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Rechercher Films & Séries', 'search.png', oOutputParameterHandler)
 
@@ -101,8 +101,6 @@ def showMenuTvShows():
 
 def showSearch():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
     if sSearchText is not False:
@@ -112,13 +110,11 @@ def showSearch():
         return
 
 
-
 def showGenres():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -149,7 +145,6 @@ def showSeriesGenres():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -182,7 +177,7 @@ def showMovieYears():
     oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(range(1930, int(datetime.datetime.now().year) + 1)):
         sYear = str(i)
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + sYear )
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + sYear)
         oOutputParameterHandler.addParameter('sYear', sYear)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
 
@@ -192,14 +187,11 @@ def showMovieYears():
 def showSerieYears():
     import datetime
     oGui = cGui()
-    oParser = cParser()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oOutputParameterHandler = cOutputParameterHandler()
     for i in reversed(range(1930, int(datetime.datetime.now().year) + 1)):
         sYear = str(i)
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + sYear )
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + sYear)
         oOutputParameterHandler.addParameter('sYear', sYear)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)
 
@@ -243,13 +235,13 @@ def showMovies(sSearch=''):
                 sThumb = URL_MAIN[:-1] + sThumb
             sTitle = aEntry[1]
             sQual = aEntry[3]
-            sLang =  aEntry[4]
+            sLang = aEntry[4]
 
             if sSearch:
                 if not oUtil.CheckOccurence(sSearchText, sTitle):
-                    continue    # Filtre de recherche
+                    continue  # Filtre de recherche
 
-            sDisplayTitle =('%s [%s] (%s)') % (sTitle , sQual , sLang)
+            sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
             sDesc = ''
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -385,9 +377,9 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     if isSerie:  # episode d'une série
-        sPattern = 'class="ser_pl" data-id="([^"]+)" data-name="([^"]+)"'
+        sPattern = 'class="ser_pl" data-id="([^"]+)" data-name="([^"]+)'
     else:        # Film
-        sPattern = 'class="nopl" data-id="(\d+)" data-name="([^"]+)"'
+        sPattern = 'class="nopl" data-id="(\d+)" data-name="([^"]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -399,18 +391,17 @@ def showHosters():
                 sUrl2 = URL_MAIN + 'engine/ajax/Season.php'
                 dataId = aEntry[0]
                 dataName = aEntry[1]
-                pdata = 'mod=xfield_ajax&id=' +  dataId + '&name=' + dataName
+                pdata = 'mod=xfield_ajax&id=' + dataId + '&name=' + dataName
                 pdata = str(pdata)
             else:
                 dataId = aEntry[0]
                 dataName = aEntry[1]
-                pdata = 'mod=xfield_ajax&id=' +  dataId + '&name=' + dataName
+                pdata = 'mod=xfield_ajax&id=' + dataId + '&name=' + dataName
                 pdata = str(pdata)
 
             sHost = aEntry[1].strip()
             if not cHosterGui().checkHoster(sHost):
                 continue
-
 
             sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle,  sHost.capitalize())
 
@@ -442,16 +433,16 @@ def hostersLink():
     oRequest.addHeaderEntry('Referer', referer)
     oRequest.addHeaderEntry('Accept', '*/*')
     oRequest.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7')
-    
+
     if 'episode' in pdata:
         oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
         oRequest.addParametersLine(pdata)
     else:
-       oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
-       oRequest.addParametersLine(pdata)
+        oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+        oRequest.addParametersLine(pdata)
 
     sHtmlContent = oRequest.request()
-        
+
     sPattern = '(http[^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
