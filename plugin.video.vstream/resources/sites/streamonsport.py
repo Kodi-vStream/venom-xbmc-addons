@@ -130,7 +130,7 @@ def showMovies(sSearch=''):
                     sDisplayTitle += ' (' + sDesc1.replace(' · ', '') + ')'
                 if sDate:
                     try:
-                        d = datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S+02:00')[0:6]))
+                        d = datetime(*(time.strptime(sDate, '%Y-%m-%dT%H:%M:%S+01:00')[0:6]))
                         sDate = d.strftime("%d/%m/%y %H:%M")
                     except Exception:
                         pass
@@ -191,28 +191,18 @@ def showLive():
                 oOutputParameterHandler.addParameter('siterefer', sUrl)
                 oGui.addLink(SITE_IDENTIFIER, 'showLink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
-    # 1 seul liens tv telerium
-    sPattern = 'iframe id="video".src.+?id=([^"]+)'
-
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
-        url2 = aResult[1][0]
-        oRequestHandler = cRequestHandler(url2)
-        sHtmlContent = oRequestHandler.request()
-
-        sPattern = '<iframe.+?src="([^"]+)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0] is True:
-
-            sUrl2 = aResult[1][0]  # https://telerium.tv/embed/35001.html
-            sDisplayTitle = sMovieTitle
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('siterefer', sUrl)
-            oGui.addLink(SITE_IDENTIFIER, 'showLink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+    # # 1 seul liens tv telerium
+    # sPattern = 'iframe id="video" src.+?id=([^"]+)'
+    # aResult = oParser.parse(sHtmlContent, sPattern)
+    # if aResult[0] is True:
+    #     sUrl2 = GetUrlMain() + 'go/' + aResult[1][0]
+    #     sDisplayTitle = sMovieTitle
+    #     oOutputParameterHandler = cOutputParameterHandler()
+    #     oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+    #     oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+    #     oOutputParameterHandler.addParameter('sThumb', sThumb)
+    #     oOutputParameterHandler.addParameter('siterefer', sUrl)
+    #     oGui.addLink(SITE_IDENTIFIER, 'showLink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -250,6 +240,10 @@ def showLink():
                 sUrl = aResult[1][0]
 
     shosterurl = ''
+    if 'hola.php' in sUrl:
+        urlMain = GetUrlMain()
+        sUrl = urlMain + sUrl
+
     if 'pkcast123' in sUrl:
         bvalid, shosterurl = Hoster_Pkcast(sUrl, siterefer)
         if bvalid:
@@ -280,6 +274,12 @@ def showLink():
         bvalid, shosterurl = Hoster_Laylow(sUrl, siterefer)
         if bvalid:
             sHosterUrl = shosterurl
+
+    if not sHosterUrl:
+        bvalid, shosterurl = getHosterIframe(sUrl, siterefer)
+        if bvalid:
+            sHosterUrl = shosterurl
+        
 
     if sHosterUrl:
         sHosterUrl = sHosterUrl.strip()
@@ -467,3 +467,75 @@ def getTimer():
     datenow = datenow + timedelta(days=1)
     epoch = datetime(1970, 1, 1)
     return (datenow - epoch).total_seconds() // 1
+
+
+
+# Traitement générique
+def getHosterIframe(url, referer):
+    
+    if not url.startswith('http'):
+        url = GetUrlMain( )+ url
+    
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.addHeaderEntry('Referer', referer)
+    sHtmlContent = str(oRequestHandler.request())
+    if not sHtmlContent:
+        return False, False
+
+    import xbmcvfs
+    f = xbmcvfs.File('special://userdata/addon_data/plugin.video.vstream/test.txt','w')
+    f.write(sHtmlContent)
+    f.close()
+
+    sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        sstr = aResult[0]
+        if not sstr.endswith(';'):
+            sstr = sstr + ';'
+        sHtmlContent = cPacker().unpack(sstr)
+
+    sPattern = '.atob\("(.+?)"'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        import base64
+        code = aResult[0]
+        try:
+            if isMatrix():
+                code = base64.b64decode(code).decode('ascii')
+            else:
+                code = base64.b64decode(code)
+            return True, code + '|Referer=' + url
+        except Exception as e:
+            pass
+    
+    sPattern = '<iframe.+?src=["\']([^"\']+)["\']'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        referer = url
+        for url in aResult:
+            if url.startswith("./"):
+                url = url[1:]
+            if not url.startswith("http"):
+                if not url.startswith("//"):
+                    url = '//'+referer.split('/')[2] + url  # ajout du nom de domaine
+                url = "https:" + url
+            b, url = getHosterIframe(url, referer)
+            if b:
+                return True, url
+
+    sPattern = ';var.+?src=["\']([^"\']+)["\']'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        url = aResult[0]
+        if '.m3u8' in url:
+            return True, url # + '|User-Agent=' + UA + '&Referer=' + referer
+
+    sPattern = '[^/]source.+?["\'](https.+?)["\']'
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        return True, aResult[0] + '|referer=' + url
+
+    return False, False
+
+

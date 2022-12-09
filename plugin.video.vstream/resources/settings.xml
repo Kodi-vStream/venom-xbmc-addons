@@ -24,7 +24,7 @@ c'est le changelog de la beta !        <setting label="30036" type="action" acti
     <category label="31205">
 
         <setting label="30005" type="lsep"/>
-        <setting id="meta-view" type="bool" label="30006" default="false"/>
+        <setting id="meta-view" type="bool" label="30006" default="true"/>
         <setting id="api_tmdb" type="text" label="API TMDB"  default="b7cf9324cbeb6f4fb811144aa9397093"/>
         <setting id="poster_tmdb" type="select" label="30007" values="w92|w154|w185|w342|w500|w780|original" default="w342"/>
         <setting id="backdrop_tmdb" type="select" label="30008" values="w300|w780|w1280|original" default="w1280"/>

@@ -29,8 +29,8 @@ msgid "Media informations"
 msgstr "Informations détaillées des médias"
 
 msgctxt "#30006"
-msgid "Search Metadata (slowed vStream)"
-msgstr "Rechercher les métadonnées (ralenti vStream)"
+msgid "Search Metadata"
+msgstr "Rechercher les métadonnées"
 
 msgctxt "#30007"
 msgid "Posters Size"

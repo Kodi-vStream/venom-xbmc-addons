@@ -29,7 +29,7 @@ msgid "Media informations"
 msgstr ""
 
 msgctxt "#30006"
-msgid "Search Metadata (slowed vStream)"
+msgid "Search Metadata"
 msgstr ""
 
 msgctxt "#30007"
