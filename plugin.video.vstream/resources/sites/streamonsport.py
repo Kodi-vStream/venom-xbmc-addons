@@ -243,6 +243,16 @@ def showLink():
     if 'hola.php' in sUrl:
         urlMain = GetUrlMain()
         sUrl = urlMain + sUrl
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        # oRequestHandler.addHeaderEntry('Referer', siterefer) # a verifier
+        sHtmlContent = oRequestHandler.request()
+        sPattern = '<iframe.+?src="([^"]+)'
+        oParser = cParser()
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        #web_pdb.set_trace();
+        if aResult[0]:
+            sUrl = aResult[1][0]
 
     if 'pkcast123' in sUrl:
         bvalid, shosterurl = Hoster_Pkcast(sUrl, siterefer)
@@ -264,7 +274,7 @@ def showLink():
         if bvalid:
             sHosterUrl = shosterurl
 
-    if 'wigistream' in sUrl or 'cloudstream' in sUrl or 'mysportfeeds' in sUrl:
+    if 'wigistream' in sUrl or 'cloudstream' in sUrl or 'go' in sUrl or 'mysportfeeds' in sUrl:
         bvalid, shosterurl = Hoster_Wigistream(sUrl, siterefer)
         if bvalid:
             sHosterUrl = shosterurl
