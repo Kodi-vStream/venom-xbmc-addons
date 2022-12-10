@@ -581,8 +581,8 @@ msgid "Radio"
 msgstr "Radio"
 
 msgctxt "#30204"
-msgid "[COLOR red]No information[/COLOR]"
-msgstr "[COLOR red]Aucune information[/COLOR]"
+msgid "[COLOR red]No item[/COLOR]"
+msgstr "[COLOR red]Aucun élément[/COLOR]"
 
 msgctxt "#30205"
 msgid "Connection Failed"
