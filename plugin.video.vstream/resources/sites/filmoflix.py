@@ -311,7 +311,7 @@ def showSaisons():
             sThumb = aEntry[1]
             if 'http' not in sThumb:
                 sThumb = URL_MAIN[:-1] + sThumb
-            sSaison = aEntry[2].capitalize()  # SAISON 2
+            sSaison = aEntry[2]  # SAISON 2
 
             sTitle = ("%s %s") % (sMovieTitle, sSaison)
 
