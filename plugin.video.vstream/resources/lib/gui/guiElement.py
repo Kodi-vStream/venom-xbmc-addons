@@ -257,8 +257,8 @@ class cGuiElement:
                     sa = m.group(3)
 
         # enleve les crochets et les parentheses si elles sont vides
-        # if sa or ep:  # déjà fait plus haut
-            # sTitle = sTitle.replace('()', '').replace('[]', '').replace('- -', '-')
+        if sa or ep:  # déjà fait plus haut
+            sTitle = sTitle.replace('()', '').replace('[]', '').replace('- -', '-')
 
         if sa:
             self.__Season = sa
