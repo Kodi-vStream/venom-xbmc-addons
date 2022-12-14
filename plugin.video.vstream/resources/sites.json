@@ -86,7 +86,7 @@
         },
         "extreme_down": {
             "label": "ExtremeDown",
-            "active": "True",
+            "active": "False",
             "url": "https://www.extreme-down.app/"
         },
         "filmoflix": {
