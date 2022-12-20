@@ -130,12 +130,12 @@ def showGenres():
         oGui.addText(SITE_IDENTIFIER)
     else:
         oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in aResult[1][::-1]:
+        for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
             sTitle = aEntry[1]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showMovies', sTitle, '', '', '', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -160,12 +160,12 @@ def showSeriesGenres():
         oGui.addText(SITE_IDENTIFIER)
     else:
         oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in aResult[1][::-1]:
+        for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
             sTitle = aEntry[1]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oGui.addEpisode(SITE_IDENTIFIER, 'showMovies', sTitle, '', '', '', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -292,13 +292,14 @@ def showSaisons():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    sHtmlContent = oParser.abParse(sHtmlContent, 'Saisons de la serie', '/section')
 
-    sPattern = 'grid-item".+?src="([^"]+).+?season"([^<]+).+?href="([^"]+)'
+    sPattern = 'grid-item".+?src="([^"]+).+?season">([^<]+).+?href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler()
-        for aEntry in aResult[1]:
+        for aEntry in aResult[1][::-1]:
             sUrl2 = aEntry[2]
             sThumb = aEntry[0]
             if sThumb.startswith('/'):
@@ -384,26 +385,33 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0] is True:
+        sLang = None
         sUrl2 = URL_MAIN + 'engine/ajax/getxfield.php'
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if isSerie:  # episode d'une série
                 sUrl2 = URL_MAIN + 'engine/ajax/Season.php'
                 dataId = aEntry[0]
-                dataName = aEntry[1]
+                sHost = dataName = aEntry[1].strip()
                 pdata = 'mod=xfield_ajax&id=' + dataId + '&name=' + dataName
                 pdata = str(pdata)
+                sLang = 'VF' # tag la langue pour l'enchainement
+                if '-' in sHost:
+                    sHost, sLang = sHost.split('-')
             else:
                 dataId = aEntry[0]
-                dataName = aEntry[1]
+                sHost = dataName = aEntry[1].strip()
                 pdata = 'mod=xfield_ajax&id=' + dataId + '&name=' + dataName
                 pdata = str(pdata)
-
-            sHost = aEntry[1].strip()
+            
             if not cHosterGui().checkHoster(sHost):
                 continue
 
-            sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle,  sHost.capitalize())
+            sDisplayTitle = sMovieTitle
+            if sLang:
+                sDisplayTitle += '[%s] ' % sLang.upper()
+            
+            sDisplayTitle += ' [COLOR coral]%s[/COLOR]' % sHost.capitalize()
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('referer', sUrl)
@@ -411,6 +419,7 @@ def showHosters():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sYear', sYear)
             oOutputParameterHandler.addParameter('sHost', sHost)
+            oOutputParameterHandler.addParameter('sLang', sLang)
             oOutputParameterHandler.addParameter('pdata', pdata)
             oGui.addLink(SITE_IDENTIFIER, 'hostersLink', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
