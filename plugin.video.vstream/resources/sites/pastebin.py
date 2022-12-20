@@ -7,7 +7,7 @@ import time
 import xbmc
 import xbmcvfs
 
-from resources.lib.comaddon import progress, addon, dialog, VSlog, VSPath, isMatrix, siteManager
+from resources.lib.comaddon import progress, addon, dialog, VSlog, VSPath, isMatrix, isNexus, siteManager
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.util import cUtil, Unquote
@@ -65,12 +65,15 @@ URL_SEARCH_MISC = (URL_MAIN + '&sMedia=divers&sSearch=', 'showMovies')
 
 CACHE = 'special://home/userdata/addon_data/plugin.video.vstream/%s_cache.db' % SITE_IDENTIFIER
 
-if not isMatrix():
-    REALCACHE = VSPath(CACHE).decode('utf-8')
-    PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt2.pyc'
-else:
+if isNexus():
+    REALCACHE = VSPath(CACHE)
+    PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt311.pyc'
+elif isMatrix():
     REALCACHE = VSPath(CACHE)
     PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt3.pyc'
+else:
+    REALCACHE = VSPath(CACHE).decode('utf-8')
+    PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt2.pyc'
 
 # Pour le multithreading
 lock = threading.Semaphore()
@@ -2936,9 +2939,6 @@ def adminNbElement():
 
 # Retourne la décompte de média par type
 def getNbMedia():
-    oGui = cGui()
-    addons = addon()
-
     idFilms = set()
     idSeries = set()
     idAnimes = set()
@@ -2959,6 +2959,7 @@ def getNbMedia():
             else:
                 idDivers.add(videoId)
                 
+    oGui = cGui()
     oGui.addText(SITE_IDENTIFIER, 'Films[COLOR coral] (%d) [/COLOR]' % len(idFilms), 'films.png')
     oGui.addText(SITE_IDENTIFIER, 'Séries[COLOR coral] (%d) [/COLOR]' % len(idSeries), 'tv.png')
     oGui.addText(SITE_IDENTIFIER, 'Animés[COLOR coral] (%d) [/COLOR]' % len(idAnimes), 'animes.png')

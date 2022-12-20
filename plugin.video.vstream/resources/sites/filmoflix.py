@@ -180,9 +180,7 @@ def showMovies(sSearch=''):
     bSearchSerie = False
 
     if sSearch:
-        # sUrl = URL_SEARCH[0] # sert a rien
         sSearch = sSearch.replace(' ', '+').replace('%20', '+')
-
         if key_search_movies in sSearch:
             sSearch = sSearch.replace(key_search_movies, '')
             bSearchMovie = True
@@ -297,7 +295,7 @@ def showSaisons():
     aResult = oParser.parse(sHtmlContent, sPattern)
     sDesc = 'FilmoFlix'
     if aResult[0] is True:
-        sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
+        sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', aResult[1][0])
 
     sPattern = 'th-item">.+?href="([^"]*).+?src="([^"]*).+?title.+?>([^<]*)'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -323,7 +321,7 @@ def showSaisons():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sSaison', sSaison)
 
-            oGui.addEpisode(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -459,7 +457,7 @@ def showMovieLinks():
     aResult = oParser.parse(sHtmlContent, sPattern)
     sDesc = 'FilmoFlix'
     if aResult[0] is True:
-        sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
+        sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', aResult[1][0])
 
     sPattern = "lien fx-row.+?\"getxfield.+?(\d+).+?\'([^\']*).+?'([^\']*).+?images.([^\.]+).+?pl-5\">([^<]+)"
     aResult = oParser.parse(sHtmlContent, sPattern)

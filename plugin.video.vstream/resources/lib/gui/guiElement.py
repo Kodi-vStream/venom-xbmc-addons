@@ -59,7 +59,7 @@ class cGuiElement:
         self.__ImdbId = ''
         self.__Year = ''
 
-        self.__sRes = '' # resolution
+        self.__sRes = ''  # resolution
 
         self.__aItemValues = {}
         self.__aProperties = {}
@@ -118,13 +118,13 @@ class cGuiElement:
         return self.__Year
 
     def setRes(self, data):
-        if data.upper() in ('1080P', 'FHD', 'FULLHD'): 
+        if data.upper() in ('1080P', 'FHD', 'FULLHD'):
             data = '1080p'
-        elif data.upper() in ('720P', 'DVDRIP', 'DVDSCR', 'HD', 'HDLIGHT', 'HDRIP', 'BDRIP', 'BRRIP'): 
+        elif data.upper() in ('720P', 'DVDRIP', 'DVDSCR', 'HD', 'HDLIGHT', 'HDRIP', 'BDRIP', 'BRRIP'):
             data = '720p'
-        elif data.upper() in ('4K', 'UHD', '2160P'): 
+        elif data.upper() in ('4K', 'UHD', '2160P'):
             data = '2160p'
-        
+
         self.__sRes = data
 
     def getRes(self):
@@ -195,7 +195,8 @@ class cGuiElement:
         # convertion unicode ne fonctionne pas avec les accents
         try:
             # traitement du titre pour retirer le - quand c'est une Saison. Tiret, tiret moyen et cadratin
-            sTitle = sTitle.replace('Season', 'saison').replace('season', 'saison').replace('Saison', 'saison')
+            sTitle = sTitle.replace('Season', 'saison').replace('season', 'saison').replace('SEASON', 'saison')\
+                           .replace('Saison', 'saison').replace('SAISON', 'saison')
             sTitle = sTitle.replace(' - saison', ' saison').replace(' – saison', ' saison')\
                            .replace(' — saison', ' saison')
 
@@ -204,7 +205,7 @@ class cGuiElement:
         except:
             pass
 
-        """ Début Nettoyage du titre """
+        """ Début du nettoyage du titre """
         # vire doubles espaces et double points
         sTitle = re.sub(' +', ' ', sTitle)
         sTitle = re.sub('\.+', '.', sTitle)
@@ -217,7 +218,7 @@ class cGuiElement:
         # et au debut
         sTitle = re.sub('^[- –_\.]+', '', sTitle)
 
-        """ Fin Nettoyage du titre """
+        """ Fin du nettoyage du titre """
 
         # recherche l'année, uniquement si entre caractere special a cause de 2001 odysse de l'espace ou k2000
         string = re.search('[^\w ]([0-9]{4})[^\w ]', sTitle)

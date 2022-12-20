@@ -49,11 +49,6 @@
             "active": "True",
             "url": "https://channelstream.es"
         },
-        "cine974": {
-            "label": "cine974",
-            "active": "False",
-            "url": "https://www.cine974.com/"
-        },
         "cinemay_cc": {
             "label": "Cinemay_cc",
             "active": "True",
@@ -69,11 +64,6 @@
             "active": "True",
             "url": "https://daddyhd.com/"
         },
-        "dbanimes": {
-            "label": "DBanimes",
-            "active": "False",
-            "url": "https://dbanimes.co/"
-        },
         "debrid_link": {
             "label": "Debrid Link",
             "active": "True",
@@ -84,30 +74,20 @@
             "active": "True",
             "url": "https://documentaire.io/"
         },
-        "dpstream": {
-            "label": "DpStream",
-            "active": "False",
-            "url": "https://dpstream.io/"
-        },
-        "dpstreamhd": {
-            "label": "DpStream HD",
-            "active": "False",
-            "url": "https://serie.dpstreamhd.com/"
-        },
         "ducine": {
             "label": "Du Cin\u00e9",
             "active": "True",
             "url": "https://www.ducine.site/"
         },
-        "enstream_series": {
-            "label": "Enstream (S\u00e9ries)",
+        "enstream": {
+            "label": "EnStream",
             "active": "True",
             "url": "https://wvw.enstream.cam/"
         },
         "extreme_down": {
             "label": "ExtremeDown",
-            "active": "True",
-            "url": "https://www.extreme-down.lol/"
+            "active": "False",
+            "url": "https://www.extreme-down.app/"
         },
         "filmoflix": {
             "label": "Filmoflix",
@@ -119,20 +99,10 @@
             "active": "True",
             "url": "https://films-pour-enfants.com/"
         },
-        "filmstoon_pro": {
-            "label": "Films Toon",
-            "active": "False",
-            "url": "https://filmstoon.in/"
-        },
         "filmstreamingy": {
             "label": "FilmstreamingY",
             "active": "True",
             "url": "https://www.film-streamingk.biz/"
-        },
-        "filmstreamvk_com": {
-            "label": "Filmstream vk",
-            "active": "False",
-            "url": "https://filmstreamvk.bz/"
         },
         "free_telechargement_org": {
             "label": "Free Telechargement",
@@ -152,7 +122,7 @@
         "french_stream_lol": {
             "label": "French-stream-lol",
             "active": "True",
-            "url": "https://french-stream.cool/"
+            "url": "https://french-stream.day/"
         },
         "frenchanimes": {
             "label": "French Animes",
@@ -164,11 +134,6 @@
             "active": "True",
             "url": "https://fullmatchtv.com/"
         },
-        "funeralforamanga": {
-            "label": "Funeral for a manga",
-            "active": "False",
-            "url": "https://funeralforamanga.fr/"
-        },
         "gum_gum_streaming_com": {
             "label": "Gum-Gum-Streaming",
             "active": "True",
@@ -178,11 +143,6 @@
             "label": "Hds-fm",
             "active": "True",
             "url": "https://www1.hds.fm/"
-        },
-        "hds_stream": {
-            "label": "Hds-stream",
-            "active": "False",
-            "url": "https://hds.club/"
         },
         "ianime": {
             "label": "Ianime",
@@ -209,30 +169,15 @@
             "active": "True",
             "url": "https://kstreamingfilm.com/"
         },
-        "kstreamingserie": {
-            "label": "K streaming S\u00e9rie",
-            "active": "False",
-            "url": "https://www.kstreamingserie.com/"
-        },
         "leet365": {
             "label": "leet365",
-            "active": "True",
-            "url": "https://leet365.cc/vip2.php?d"
-        },
-        "les_debiles": {
-            "label": "Les D\u00e9biles",
             "active": "False",
-            "url": "http://www.lesdebiles.com/"
+            "url": "https://leet365.cc/vip2.php?d"
         },
         "les_docus": {
             "label": "Les docus",
             "active": "True",
             "url": "https://www.les-docus.com/"
-        },
-        "libertyland_tv": {
-            "label": "Libertyland",
-            "active": "False",
-            "url": "https://www.libertyvf.one/"
         },
         "livetv": {
             "label": "Live TV",
@@ -269,6 +214,11 @@
             "active": "True",
             "url": "https://9docu.org/"
         },
+        "novaflix": {
+            "label": "Novaflix",
+            "active": "True",
+            "url": "https://wvw.novaflix.io/"
+        },
         "o1streaming": {
             "label": "O1 streaming",
             "active": "True",
@@ -298,11 +248,6 @@
             "label": "Pluto TV",
             "active": "True",
             "url": "https://api.pluto.tv"
-        },
-        "psyplay": {
-            "label": "Psy Play",
-            "active": "True",
-            "url": "https://www.filmenstreaming.live/"
         },
         "radio": {
             "label": "Radio",
@@ -429,15 +374,10 @@
             "active": "True",
             "url": "https://vostfree.cx/"
         },
-        "watchvf": {
-            "label": "WatchVF",
-            "active": "False",
-            "url": "https://watchvf.com/"
-        },
         "wawacity": {
             "label": "Wawacity",
             "active": "True",
-            "url": "https://www.wawacity.moe/"
+            "url": "https://www.wawacity.bond/"
         },
         "wiflix": {
             "label": "WiFlix",
