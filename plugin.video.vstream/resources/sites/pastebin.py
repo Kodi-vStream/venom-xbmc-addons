@@ -65,12 +65,14 @@ URL_SEARCH_MISC = (URL_MAIN + '&sMedia=divers&sSearch=', 'showMovies')
 
 CACHE = 'special://home/userdata/addon_data/plugin.video.vstream/%s_cache.db' % SITE_IDENTIFIER
 
-if isNexus():
-    REALCACHE = VSPath(CACHE)
-    PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt311.pyc'
-elif xbmc.getCondVisibility('system.platform.linux'):
+if xbmc.getCondVisibility('system.platform.linux'):
     REALCACHE = VSPath(CACHE)
     PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt3.pyc'
+
+elif isNexus():
+    REALCACHE = VSPath(CACHE)
+    PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt311.pyc'
+
 elif isMatrix():
     REALCACHE = VSPath(CACHE)
     PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt3.pyc'
