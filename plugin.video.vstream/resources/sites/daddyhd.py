@@ -121,7 +121,7 @@ def showMovies():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sPattern = '<h2 style="background-color:cyan">%s</h2>' % sTitle
-    sHtmlContent = oParser.abParse(sHtmlContent, sPattern, '</p>')
+    sHtmlContent = oParser.abParse(sHtmlContent, sPattern, '<h2 style="background-color:cyan">')
 
     sPattern = '<hr>(<strong>|)(\d+:\d+) (.+?)<'#span.+?href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -276,6 +276,10 @@ def getHosterIframe(url, referer):
     sPattern = '[^/]source.+?["\'](https.+?)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
-        return True, aResult[0] + '|referer=' + url
+        oRequestHandler = cRequestHandler(aResult[0])
+        oRequestHandler.request()
+        sHosterUrl = oRequestHandler.getRealUrl()
+        sHosterUrl = sHosterUrl.replace('index', 'mono')
+        return True, sHosterUrl + '|referer=' + url
 
     return False, False

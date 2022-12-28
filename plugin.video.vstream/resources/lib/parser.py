@@ -76,11 +76,11 @@ class cParser:
         # ex youtube.py
 
         startIdx = sHtmlContent.find(start)
-        if startIdx == -1:  # rien trouvé, retourner le texte complet
-            return sHtmlContent
+        if startIdx == -1:  # rien trouvé, on prend depuis le début
+            startIdx = 0
 
         if end:
-            endIdx = sHtmlContent[startoffset + startIdx:].find(end)
+            endIdx = sHtmlContent[startoffset + startIdx + len(start):].find(end)
             if endIdx > 0:
-                return sHtmlContent[startoffset + startIdx: startoffset + startIdx + endIdx]
+                return sHtmlContent[startoffset + startIdx: startoffset + startIdx + endIdx + len(start)]
         return sHtmlContent[startoffset + startIdx:]
