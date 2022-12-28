@@ -77,7 +77,7 @@ class cPremiumHandler:
         post_data = {}
 
         if 'uptobox' in self.__sHosterIdentifier:
-            url = 'https://uptobox.com/login?referer=register'
+            url = 'https://uptobox.com/login'
             post_data['login'] = self.getUsername()
             post_data['password'] = self.getPassword()
 
@@ -221,7 +221,7 @@ class cPremiumHandler:
             # on retrouve le token et on le sauvegarde
             if self.isLogin:
                 sHtmlContent = self.GetHtml('https://uptobox.com/my_account')
-                sPattern = 'Token:.+?<span class=\'none\'>(.+?)</span>'
+                sPattern = 'data-clipboard-text="(.+?)" data-tippy-content="Token'
                 aResult = cParser().parse(sHtmlContent, sPattern, 1)
                 if aResult[0]:
                     sToken = aResult[1][0]

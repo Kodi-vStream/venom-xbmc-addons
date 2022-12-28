@@ -55,8 +55,9 @@ class cHoster(iHoster):
 
         # Uptostream avec un compte uptobox, pas besoin du QRcode
         token = self.oPremiumHandler.getToken()
-        r = requests.get('https://uptobox.com/api/user/me?token=' + token).json()
-        if r["data"]["premium"]:
+        if token:
+            r = requests.get('https://uptobox.com/api/user/me?token=' + token).json()
+        if token and r["data"]["premium"]:
             status = ''
             url1 = "https://uptobox.com/api/streaming?token=%s&file_code=%s" % (token, filecode)
             try:
