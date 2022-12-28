@@ -276,6 +276,10 @@ def getHosterIframe(url, referer):
     sPattern = '[^/]source.+?["\'](https.+?)["\']'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
-        return True, aResult[0] + '|referer=' + url
+        oRequestHandler = cRequestHandler(aResult[0])
+        oRequestHandler.request()
+        sHosterUrl = oRequestHandler.getRealUrl()
+        sHosterUrl = sHosterUrl.replace('index', 'mono')
+        return True, sHosterUrl + '|referer=' + url
 
     return False, False

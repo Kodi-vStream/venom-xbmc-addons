@@ -61,7 +61,7 @@
         },
         "daddyhd": {
             "label": "DaddyHD",
-            "active": "False",
+            "active": "True",
             "url": "https://daddyhd.com/"
         },
         "debrid_link": {
