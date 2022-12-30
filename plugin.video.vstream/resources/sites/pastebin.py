@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import imp
+import platform
 import random
 import threading
 import time
 import xbmc
 import xbmcvfs
 
-from resources.lib.comaddon import progress, addon, dialog, VSlog, VSPath, isMatrix, isNexus, siteManager
+from resources.lib.comaddon import progress, addon, dialog, VSlog, VSPath, isMatrix, siteManager
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.util import cUtil, Unquote
@@ -65,15 +66,20 @@ URL_SEARCH_MISC = (URL_MAIN + '&sMedia=divers&sSearch=', 'showMovies')
 
 CACHE = 'special://home/userdata/addon_data/plugin.video.vstream/%s_cache.db' % SITE_IDENTIFIER
 
-if isNexus():
+
+
+# Dépend de la version de python
+PYVERSION = platform.python_version()
+if '3.1' in PYVERSION:
     REALCACHE = VSPath(CACHE)
     PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt311.pyc'
-elif isMatrix():
-    REALCACHE = VSPath(CACHE)
-    PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt3.pyc'
-else:
+if '2.' in PYVERSION:
     REALCACHE = VSPath(CACHE).decode('utf-8')
     PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt2.pyc'
+else:  # Version 3
+    REALCACHE = VSPath(CACHE)
+    PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt3.pyc'
+
 
 # Pour le multithreading
 lock = threading.Semaphore()
@@ -484,6 +490,7 @@ class PasteContent:
                 if lines:
                     hasMovies = True
             except Exception as e:
+                VSlog('Exception \'%s\', ID=%s, e=%s' % (SITE_IDENTIFIER, pasteBin, e))
                 pass
 
         if not hasMovies:
