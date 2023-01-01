@@ -24,6 +24,11 @@
             "label": "AllDebrid",
             "active": "True"
         },
+        "alloflix": {
+            "label": "Alloflix",
+            "active": "True",
+            "url": "https://vf.alloflix.com/"
+        },
         "animecomplet": {
             "label": "AnimeComplet",
             "active": "True",
