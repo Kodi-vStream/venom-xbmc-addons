@@ -1873,7 +1873,7 @@ def showResolution():
     oInputParameterHandler = cInputParameterHandler()
     siteUrl = oInputParameterHandler.getValue('siteUrl')
     oOutputParameterHandler = cOutputParameterHandler()
-    resolutions = [('4K', '4K [2160p]'), ('1080P', 'fullHD [1080p]'), ('720P', 'HD [720p]'), ('SD', 'SD'), ('3D', '3D')]
+    resolutions = [('DOLBY VISION', 'DOLBY VISION'), ('4K', '4K [2160p]'), ('1080P', 'fullHD [1080p]'), ('720P', 'HD [720p]'), ('SD', 'SD'), ('3D', '3D')]
     for sRes, sDisplayRes in resolutions:
         sUrl = siteUrl + '&sRes=' + sRes
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -1931,7 +1931,7 @@ def showMovies(sSearch=''):
     if 'sYear' in aParams:
         sYear = aParams['sYear']
     if 'sRes' in aParams:
-        sRes = aParams['sRes']
+        sRes = aParams['sRes'].upper()
     if 'sAlpha' in aParams:
         sAlpha = aParams['sAlpha']
     if 'sNetwork' in aParams:
@@ -2443,7 +2443,7 @@ def getHosterList(siteUrl):
     aParams = dict(param.split('=') for param in params.split('&'))
     sMedia = aParams['sMedia'] if 'sMedia' in aParams else 'film'
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
-    sRes = aParams['sRes'] if 'sRes' in aParams else None
+    sRes = aParams['sRes'].upper() if 'sRes' in aParams else None
     searchYear = aParams['sYear'] if 'sYear' in aParams else None
     searchSaison = aParams['sSaison'] if 'sSaison' in aParams else None
     searchEpisode = aParams['sEpisode'] if 'sEpisode' in aParams else None
@@ -2528,7 +2528,7 @@ def getHosterList(siteUrl):
             if len(listLinks) > 0:
                 listResMovie = []
                 idxResMovie = 0
-                res = movie[pbContent.RES].strip()
+                res = movie[pbContent.RES].strip().upper()
                 if '[' in res:
                     listResMovie.extend(eval(res))
                 else:
@@ -2536,7 +2536,7 @@ def getHosterList(siteUrl):
 
                 for link in listLinks:
                     if idxResMovie < len(listResMovie):
-                        resMovie = listResMovie[idxResMovie]
+                        resMovie = listResMovie[idxResMovie].upper()
                         if resMovie and resMovie in '540P576P480P360P':
                             resMovie = 'SD'
                     else:
