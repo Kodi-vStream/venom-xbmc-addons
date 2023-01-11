@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
-import xbmc
+#import xbmc
 
 # from resources.lib.statistic import cStatistic
 from resources.lib.home import cHome
