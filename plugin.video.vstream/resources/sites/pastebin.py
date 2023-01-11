@@ -2162,7 +2162,7 @@ def showMovies(sSearch=''):
 
         if 'film' in sMedia:
             if pbContent.RES >= 0:
-                res = movie[pbContent.RES].strip()
+                res = movie[pbContent.RES].strip().upper()
                 listRes = []
                 if '[' in res:
                     listRes.extend(eval(res))
