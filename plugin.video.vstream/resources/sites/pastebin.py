@@ -66,10 +66,9 @@ URL_SEARCH_MISC = (URL_MAIN + '&sMedia=divers&sSearch=', 'showMovies')
 
 CACHE = 'special://home/userdata/addon_data/plugin.video.vstream/%s_cache.db' % SITE_IDENTIFIER
 
-
-
 # Dépend de la version de python
 PYVERSION = platform.python_version()
+VSlog('Pastebin - Python version : ' + PYVERSION)
 if '3.1' in PYVERSION:
     REALCACHE = VSPath(CACHE)
     PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt311.pyc'
