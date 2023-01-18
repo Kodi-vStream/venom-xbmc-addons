@@ -24,6 +24,11 @@
             "label": "AllDebrid",
             "active": "True"
         },
+        "alloflix": {
+            "label": "Alloflix",
+            "active": "True",
+            "url": "https://vf.alloflix.com/"
+        },
         "animecomplet": {
             "label": "AnimeComplet",
             "active": "True",
@@ -213,6 +218,11 @@
             "label": "9Docu",
             "active": "True",
             "url": "https://9docu.org/"
+        },
+        "neymartv": {
+            "label": "NeymarTV",
+            "active": "True",
+            "url": "https://www.neymartv.net/"
         },
         "novaflix": {
             "label": "Novaflix",

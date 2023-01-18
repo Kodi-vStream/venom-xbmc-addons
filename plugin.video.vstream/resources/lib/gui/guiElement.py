@@ -269,7 +269,10 @@ class cGuiElement:
 
         # on repasse en utf-8
         if not isMatrix():
-            sTitle = sTitle.encode('utf-8')
+            try:
+                sTitle = sTitle.encode('utf-8')
+            except:
+                pass
 
         # on reformate SXXEXX Titre [tag] (Annee)
         sTitle2 = ''

@@ -111,7 +111,7 @@ class cHoster(iHoster):
 
         # Deux modes de fonctionnement different.
         if js_result.get("streamLinks").get('src'):
-            api_call = js_result['streamLinks']['src'].replace(".m3u8", ".mpd")
+            api_call = js_result['streamLinks']['src']#.replace(".m3u8", ".mpd")
         else:
             sPattern = "'(.+?)': {(.+?)}"
 

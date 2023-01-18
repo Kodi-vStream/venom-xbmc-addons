@@ -37,7 +37,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
 
     oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Les sports (Genres)', 'sport.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Les sports (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Les sports (En direct)', 'news.png', oOutputParameterHandler)
@@ -233,8 +233,8 @@ def showMovies3():  # affiche les videos disponible du live
 
             sLang = aEntry[0]
             sLang = cUtil().unescape(sLang)
-            sLang = sLang .encode("utf-8", 'ignore')
             try:
+                sLang = sLang.encode("utf-8", 'ignore')
                 sLang = str(sLang, encoding="utf-8", errors='ignore')
             except:
                 pass

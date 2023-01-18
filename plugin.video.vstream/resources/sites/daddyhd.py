@@ -96,6 +96,7 @@ def showGenres():
             sDisplayTitle = sDisplayTitle.replace('Cycling', 'Cyclisme')
             sDisplayTitle = sDisplayTitle.replace('Horse Racing', 'Course de chevaux')
             sDisplayTitle = sDisplayTitle.replace('Ice Hockey', 'Hockey sur glace')
+            sDisplayTitle = sDisplayTitle.replace('Alpine Ski', 'Ski')
             sDisplayTitle = sDisplayTitle.replace('Rugby Union', 'Rugby à XV')
             sDisplayTitle = sDisplayTitle.replace('Sailing / Boating', 'Voile')
             sportGenre[sDisplayTitle] = sTitle
@@ -105,7 +106,7 @@ def showGenres():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
 
-            oGui.addLink(SITE_IDENTIFIER, 'showMovies', sDisplayTitle, 'genres.png', sDisplayTitle, oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sDisplayTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -140,7 +141,7 @@ def showMovies():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
 
-            oGui.addLink(SITE_IDENTIFIER, 'showHoster', sDisplayTitle, 'sport.png', sDisplayTitle, oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showHoster', sDisplayTitle, 'sport.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -184,7 +185,7 @@ def showHoster():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
 
-            oGui.addLink(SITE_IDENTIFIER, 'showLink', sDisplayTitle, 'sport.png', sDisplayTitle, oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showLink', sDisplayTitle, 'sport.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
