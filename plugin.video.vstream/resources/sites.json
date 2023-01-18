@@ -219,6 +219,11 @@
             "active": "True",
             "url": "https://9docu.org/"
         },
+        "neymartv": {
+            "label": "NeymarTV",
+            "active": "True",
+            "url": "https://www.neymartv.net/"
+        },
         "novaflix": {
             "label": "Novaflix",
             "active": "True",
