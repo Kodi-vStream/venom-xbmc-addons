@@ -72,7 +72,7 @@ VSlog('Pastebin - Python version : ' + PYVERSION)
 if '3.1' in PYVERSION:
     REALCACHE = VSPath(CACHE)
     PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt311.pyc'
-if '2.' in PYVERSION:
+elif '2.' in PYVERSION:
     REALCACHE = VSPath(CACHE).decode('utf-8')
     PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt2.pyc'
 else:  # Version 3
