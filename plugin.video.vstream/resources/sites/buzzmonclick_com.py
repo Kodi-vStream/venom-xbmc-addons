@@ -27,9 +27,6 @@ REPLAYTV_NEWS = (URL_MAIN, 'showMovies')
 REPLAYTV_REPLAYTV = ('http://', 'load')
 REPLAYTV_GENRES = (True, 'showGenres')
 
-DOC_DOCS = ('http://', 'load')
-DOC_NEWS = (URL_MAIN + 'documentaires/', 'showMovies')
-
 URL_SEARCH = ('https://buzzmonclick.net/?s=', 'showMovies')
 URL_SEARCH_MISC = (URL_SEARCH[0], 'showMovies')
 URL_SEARCH_REPLAY = (URL_SEARCH[0], 'showMovies')
@@ -43,17 +40,11 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMoviesSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
-
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Replay TV', 'replay.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'divertissement/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Divertissement', 'doc.png', oOutputParameterHandler)
-
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'infos-magazine/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Infos/Magazines', 'doc.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'tele-realite/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Télé-Réalité', 'tv.png', oOutputParameterHandler)
@@ -225,7 +216,23 @@ def showHosters():
             aResult = oParser.parse(sHtmlContent, sPattern)
             if aResult[0] is True:
                 sHosterUrl = aResult[1][0]
-                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                oHoster = False
+                
+                if 'replay.forum-tv.org' in sHosterUrl: 
+                    oRequestHandler = cRequestHandler(sHosterUrl)
+                    sHtmlContent = oRequestHandler.request()
+                    sPattern = 'iframe.+?src="([^"]+)'
+                    oParser = cParser()
+                    aResult = oParser.parse(sHtmlContent, sPattern)
+                    if aResult[0]:
+                        sHosterUrl = aResult[1][0]
+                    oHoster = cHosterGui().checkHoster(sHosterUrl)
+
+                elif 'dood.forum-tv.org' in sHosterUrl:
+                    showDoodHosters(sMovieTitle, sHosterUrl)
+                else:
+                    oHoster = cHosterGui().checkHoster(sHosterUrl)
+
                 if oHoster != False:
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
@@ -239,5 +246,26 @@ def showHosters():
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+    
 
+def showDoodHosters(sMovieTitle, sUrl):
+    oGui = cGui()
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    sPattern = '<a href="([^"]+)".+?value=\'([^\']+)'
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0]:
+        oOutputParameterHandler = cOutputParameterHandler()
+        for aEntry in aResult[1]:
+            sUrl = aEntry[0]
+            sHost = aEntry[1]
 
+            sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
+
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, '', sMovieTitle, oOutputParameterHandler)
+
+    
