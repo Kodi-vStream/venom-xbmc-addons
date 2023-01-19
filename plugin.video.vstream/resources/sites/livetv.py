@@ -724,11 +724,6 @@ def showHosters():  # affiche les videos disponible du live
                     sPattern2 = 'function %s\(\) +{\n + return\(\[([^\]]+)' % func
                     aResult = re.findall(sPattern2, sHtmlContent3)
                     
-                    # import xbmcvfs
-                    # f = xbmcvfs.File('special://userdata/addon_data/plugin.video.vstream/test.txt','w')
-                    # f.write(sHtmlContent3)
-                    # f.close()
-                
                     if aResult:
                         sHosterUrl = aResult[0].replace('"', '').replace(',', '')
     

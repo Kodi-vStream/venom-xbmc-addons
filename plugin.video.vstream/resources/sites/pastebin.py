@@ -69,13 +69,16 @@ CACHE = 'special://home/userdata/addon_data/plugin.video.vstream/%s_cache.db' % 
 # Dépend de la version de python
 PYVERSION = platform.python_version()
 VSlog('Pastebin - Python version : ' + PYVERSION)
-if '3.1' in PYVERSION:
+if '3.10' in PYVERSION:
+    REALCACHE = VSPath(CACHE)
+    PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt310.pyc'
+elif '3.11' in PYVERSION:
     REALCACHE = VSPath(CACHE)
     PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt311.pyc'
 elif '2.' in PYVERSION:
     REALCACHE = VSPath(CACHE).decode('utf-8')
     PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt2.pyc'
-else:  # Version 3
+else:  # autre Versions 3.0x
     REALCACHE = VSPath(CACHE)
     PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt3.pyc'
 
