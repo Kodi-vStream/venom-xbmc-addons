@@ -295,11 +295,6 @@ def getHosterIframe(url, referer):
     if not sHtmlContent or sHtmlContent == 'False':
         return False, False
 
-    import xbmcvfs
-    f = xbmcvfs.File('special://userdata/addon_data/plugin.video.vstream/test.txt','w')
-    f.write(sHtmlContent)
-    f.close()
-
     sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
