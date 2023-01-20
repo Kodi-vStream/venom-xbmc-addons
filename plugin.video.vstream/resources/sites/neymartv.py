@@ -220,8 +220,8 @@ def showHoster():
         oGui.addText(SITE_IDENTIFIER)
     else:
         numLien = 0
-        blackList = ('.tutele.sx', 'leet365', 'casadelfutbol.net', 'yrsport.top', 'cdn.sportcast.life', 'yrsport.top',
-                     'sportzonline.to', 'sportkart1.xyz', 'olasports.xyz', 'cricplay2.xyz', '.ustreamix.su')
+        blackList = ('.tutele.sx', 'leet365', 'casadelfutbol.net', 'yrsport.top', 'cdn.sportcast.life', '.ustreamix.su',
+                     'sportzonline.to', 'sportkart1.xyz', 'olasports.xyz', 'cricplay2.xyz')
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
