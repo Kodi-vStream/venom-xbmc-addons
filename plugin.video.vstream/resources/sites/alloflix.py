@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+import re
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -244,15 +245,12 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<a class=page-link href=([^>]+)>(\d+).+?extend.+?href.+?>(\d+)'
+    sPattern = '>([0-9]+)</a><a href=([^>]+)>SUIVANT'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
-        nextPage = aResult[1][0]
-        sNextPage = nextPage[0]
-        sNumberNext = nextPage[1]
-        sNumberMax = nextPage[2]
-        if not sNumberMax:
-            sNumberMax = sNumberNext
+        sNumberMax = aResult[1][0][0]
+        sNextPage = aResult[1][0][1]
+        sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
         sPaging = sNumberNext + '/' + sNumberMax
         return sNextPage, sPaging
     return False, 'none'
