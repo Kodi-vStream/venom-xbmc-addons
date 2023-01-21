@@ -83,7 +83,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if sSearchText is not False:
+    if sSearchText:
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -100,7 +100,7 @@ def showYears():
     sPattern = 'class="btn sm" href=([^>]+)>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -126,7 +126,7 @@ def showGenres():
     sPattern = 'class="cat-item.+?href=([^>]+)>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -152,7 +152,7 @@ def showSeriesGenres():
     sPattern = 'class="cat-item.+?href=([^>]+)>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -187,7 +187,7 @@ def showMovies(sSearch=''):
     sHtmlContent = oParser.abParse(oRequestHandler.request(), sStart, sEnd)
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
     else:
@@ -235,7 +235,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if sNextPage is not False:
+        if sNextPage:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -311,7 +311,7 @@ def showEpisodes():
     sPattern = '<span class=num-epi>\dx(\d+).+?href=(\S+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -373,11 +373,6 @@ def showHosters():
             if ' -' in sHost:
                 sHost, sLang = sHost.split(' -')
 
-            # host dispo Ok et non ok.ru comme écrit dans checkHoster
-            # donc on ne filtre pas sinon on perd ce host et peut etre d'autres
-            # if not cHosterGui().checkHoster(sHost):
-                # continue
-
             sDisplayTitle = sMovieTitle
             if sLang:
                 sLang = sLang.replace(' ', '')
@@ -424,7 +419,7 @@ def hostersLink():
                 sHosterUrl = sHosterUrl + "|Referer=" + URL_MAIN
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if oHoster is not False:
+            if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
