@@ -117,7 +117,7 @@ def showGenres():
     sPattern = 'menu-item-object-genres.+?<a href="([^"]+)".*?>(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         genres = set(aResult[1])
         genres = sorted(genres, key=lambda genre: genre[1])
         oOutputParameterHandler = cOutputParameterHandler()
@@ -142,7 +142,7 @@ def showMovieYears():
     sPattern = '<li><a href="([^"]+)">([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -177,7 +177,7 @@ def showMovies(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
     else:
@@ -239,7 +239,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '>Page \d+ de (\d+)</span>.*?<span class="current.+?href=["\']([^"\']+/page/\d+)/["\'] class="inactive'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page/([0-9]+)', sNextPage).group(1)
@@ -264,7 +264,7 @@ def showSxE():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sSaison = ''
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
@@ -300,7 +300,7 @@ def showHosters():
 
     sPattern = "class='dooplay_player_option' data-type='([^']+)' data-post='([^']+)' data-nume='([^']+)'"
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         url_main = GET_REAL_URLMAIN(sUrl)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
@@ -337,7 +337,7 @@ def showSeriesHosters():
 
     sPattern = "id='player-option-.+?data-type='([^']+).+?data-post='([^']+).+?data-nume='([^']+).+?'server'>([^.|^<]+)"
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         url_main = GET_REAL_URLMAIN(sUrl)
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
@@ -388,7 +388,7 @@ def showLink():
     sPattern = '(http[^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)

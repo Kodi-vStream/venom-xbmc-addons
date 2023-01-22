@@ -168,10 +168,10 @@ def showAnimes(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -223,7 +223,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<a class="nextpostslink".+?href="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         return aResult[1][0]
 
     return False
@@ -248,10 +248,10 @@ def showEpisodes():
     sPattern = '<li class="wp-manga-chapter.+?="([^"]+)".+?([^<]+)'  # Recup lien + titre
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
 
         # Dernier épisode
@@ -311,7 +311,7 @@ def showLinks():
 
     aResult = oParser.parse(sData, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -394,7 +394,7 @@ def getHost():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
 
         for aEntry in aResult[1]:
             sHosterUrl = aEntry.replace('\\', '').replace('\\/', '/')

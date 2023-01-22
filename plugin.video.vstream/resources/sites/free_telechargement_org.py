@@ -397,7 +397,7 @@ def showMovies():
     sPattern = '<table style="float:left;padding-left:8px"> *<td> *<div align="left"> *<a href="([^"]+)" onmouseover="Tip\(\'<b>([^"]+?)</b>.+?Description :</b> <i>([^<]+?)<.+?<img src="([^"]+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -455,7 +455,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<span class="courante">[^<]+</span> <a href="(.+?)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         return URL_MAIN + aResult[1][0]
 
     return False
@@ -520,7 +520,7 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
     # VSlog(aResult)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -598,7 +598,7 @@ def showSeriesHosters():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         oGui.addText(SITE_IDENTIFIER, sMovieTitle + aResult1[1][0])
 

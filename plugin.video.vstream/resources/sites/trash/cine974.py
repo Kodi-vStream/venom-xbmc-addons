@@ -86,7 +86,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '>(\d+)</a></li><li><a href="([^"]+)"><i class="fa fa-angle-right'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = URL_MAIN[:-1] + aResult[1][0][1]
         sNumberNext = re.search('p=([0-9]+)', aResult[1][0][1]).group(1)
@@ -110,7 +110,7 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             link = re.sub('.+?embed/', '', aEntry)

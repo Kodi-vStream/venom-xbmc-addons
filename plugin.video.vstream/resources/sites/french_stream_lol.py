@@ -248,7 +248,7 @@ def showMovies(sSearch=''):
     sPattern = 'with-mask" href="([^"]+).+?src="([^"]*).+?title">([^<]*)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
     else:
@@ -307,7 +307,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '(\d+)</a>\s*</span><span class="pnext"><a href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('([0-9]+)', sNextPage).group(1)
@@ -330,13 +330,13 @@ def showEpisodes():
     if 'saison' not in sMovieTitle.lower():
         sPattern = 'saison-(\d+)'
         aResult = oParser.parse(sUrl, sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             sMovieTitle = sMovieTitle + ' Saison ' + aResult[1][0]
 
     sPattern = 'id="s-desc">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sDesc = 'french stream lol'
-    if aResult[0] is True:
+    if aResult[0]:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', cleanDesc(aResult[1][0]))
 
     sPattern = 'fa-play-circle-o">.+?(VOSTFR|VF)|id="(?:honey|yoyo)(?:\d+)"\s*href="([^"]+).+?data-rel="([^"]+).+?</i>([^<]+)'
@@ -345,7 +345,7 @@ def showEpisodes():
     sLang = ''
     bFind = ''
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
@@ -403,7 +403,7 @@ def showSerieLinks():
     sPattern = '<div id="' + sRel_Episode + '" class="fullsfeature".*?<li><a (id="singh.*?<div style="height)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         # dans cas ou il n'y a qu'un seul lien il n'y a pas de reference  dans <div id="episodexx" class="fullsfeature">
         # le pattern devient alors normalement hs
         if sFirst_Url:
@@ -414,7 +414,7 @@ def showSerieLinks():
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
-    if aResult[0] is True:
+    if aResult[0]:
         html = aResult[1][0]
         sPattern = 'href="([^"]+).*?aria-hidden'
         aResultUrl = oParser.parse(html, sPattern)
@@ -449,7 +449,7 @@ def showMovieLinks():
 
     sHosterName = ''
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             if 'FRENCH' not in aEntry[1] and 'VOSTFR' not in aEntry[1]:
@@ -475,7 +475,7 @@ def cleanDesc(sDesc):
     sPattern = '(Résumé.+?streaming Complet)'
     aResult = oParser.parse(sDesc, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         sDesc = sDesc.replace(aResult[1][0], '')
 
     list_comment = [':', 'en streaming', 'Voir Serie ']

@@ -102,7 +102,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if sSearchText is not False:
+    if sSearchText:
         sUrl += sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -202,7 +202,7 @@ def showMovies(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
     else:
@@ -280,7 +280,7 @@ def showSaisons():
     sPattern = 'grid-item" href="([^"]+).+?-src="([^"]*).+?(saison \d+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1][::-1]:
             sUrl2 = aEntry[0]
@@ -321,7 +321,7 @@ def showEpisodes():
     sPattern = 'href="([^"]+).+?(épisode \d+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -367,7 +367,7 @@ def showHosters():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         sUrl2 = URL_MAIN + 'engine/ajax/controller.php'
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
@@ -443,7 +443,7 @@ def hostersLink():
     sPattern = '(http[^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             sHosterUrl = aEntry
             if 'userload' in sHosterUrl:

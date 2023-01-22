@@ -95,10 +95,10 @@ def showGenres():
     sPattern = '<a href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     TriAlpha = []
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             sUrl = URL_MAIN + aEntry[0]
             sTitle = aEntry[1].capitalize()
@@ -210,7 +210,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '>([^<]+)</a> *</span>.*?<span class="pnext"><a href="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -250,7 +250,7 @@ def showSeries(sSearch=''):
     sPattern = 'mov clearfix.+?src="([^"]+)" *alt="([^"]+).+?data-link="([^"]+).+?block-sai">([^<]+).+?ml-desc">(.+?)</div>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
 
         for aEntry in aResult[1]:
@@ -302,7 +302,7 @@ def showEpisodes():
     ep = 0
     sLang = ''
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             if aEntry[0]:
 
@@ -346,7 +346,7 @@ def showHosters():
     sPattern = '<a href="\/vd.php\?u=([^"]+)"[^<>]+target="x_player_wfx"><span>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry[0]  # .replace('/wiflix.cc/', '')

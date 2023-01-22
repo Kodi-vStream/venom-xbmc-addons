@@ -438,7 +438,7 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
     else:
@@ -507,7 +507,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = ">([^<]+)</a></li><li ><a href='([^']+)' rel='next'>"
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = URL_MAIN + aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -564,7 +564,7 @@ def showMoviesLinks():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -699,7 +699,7 @@ def showHosters():
     sPattern = '<a rel="external nofollow" href="([^"]+)" target="_blank" class="link">\s*<.+?a>\s*</td>\s*.+?>(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -735,7 +735,7 @@ def showSeriesHosters():
     sPattern = '<p>.+?</i> - (.+?)<span class="pull-right">|<a rel="external nofollow" href="([^"]+).+?text-center.+?>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         epNumber = 0
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
@@ -815,7 +815,7 @@ def recapchaByPass():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
 
         for aEntry in aResult[1]:
             sHosterUrl = aEntry

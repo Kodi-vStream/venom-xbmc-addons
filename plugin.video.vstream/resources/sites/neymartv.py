@@ -105,7 +105,7 @@ def showGenres():
     sPattern = '<h3> (.+?) <\/h3>.+?&#9989;'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         sportGenre = {}
@@ -151,7 +151,7 @@ def showMovies():
     sPattern = '(\d+:\d+) (.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -186,7 +186,7 @@ def showMoviesLinks():
     sPattern = 'href="(.+?)" target="_blank" rel="noopener">(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -216,7 +216,7 @@ def showHoster():
     sPattern = '<li movieurl=["\']([^"]+)["\']><a>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         numLien = 0

@@ -91,10 +91,10 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -134,7 +134,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = 'class="nextpostslink" rel="next" href="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         return aResult[1][0]
 
     return False
@@ -156,7 +156,7 @@ def showLinks():
     sPattern = 'wp-block-button.+?(?:href=|src=)"([^"]+)".+?>(?:([^<]+)|)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -195,7 +195,7 @@ def showHosters():
         sPattern = '<input type="hidden".+?value="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if aResult[0] is True:
+        if aResult[0]:
             data = "_method=" + aResult[1][0] + "&_csrfToken=" + aResult[1][1] + "&ad_form_data=" + Quote(aResult[1][2])
             data += "&_Token%5Bfields%5D=" + Quote(aResult[1][3]) + "&_Token%5Bunlocked%5D=" + Quote(aResult[1][4])
             # Obligatoire pour validé les cookies.
@@ -214,7 +214,7 @@ def showHosters():
 
             sPattern = 'url":"([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if aResult[0] is True:
+            if aResult[0]:
                 sHosterUrl = aResult[1][0]
                 oHoster = False
                 

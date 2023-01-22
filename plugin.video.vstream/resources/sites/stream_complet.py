@@ -122,7 +122,7 @@ def showMovies(sSearch=''):
     sPattern = '<div class="moviefilm">.+?href="([^"]+).+? src="([^"]+).+?alt="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
     else:
@@ -173,7 +173,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = 'class="nextpostslink.+?href="([^"]+).+?class="last.+?href=.*?page.([0-9]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][1]
         sNextPage = aResult[1][0][0]
         sNumberNext = re.search('/page/([0-9]+)', sNextPage).group(1)
@@ -204,7 +204,7 @@ def showSaison():
     aResult = oParser.parse(sHtmlContent, sPattern)
     sSaison = ''
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1][::-1]:
             sNumSaison = aEntry[0]
@@ -242,7 +242,7 @@ def showSXE():
     sPattern = 'href="([^"]+)">épisode (\d+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -280,10 +280,10 @@ def showLinks():
     sPattern = 'class="player link" data-player="([^"]+).+?langue-s">([^<]+).+?<span class="p-name">([^"]+)</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
@@ -303,7 +303,7 @@ def showLinks():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -346,7 +346,7 @@ def showHosters():
         sPattern = 'url":"([^"]+)'  # tjrs doodstream
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if aResult[0] is True:
+        if aResult[0]:
             sHosterUrl = aResult[1][0]
             oHoster = oHosterGui.checkHoster(sHosterUrl)
             if oHoster != False:
@@ -362,7 +362,7 @@ def showHosters():
         sPattern = 'url=([^"]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if aResult[0] is True:
+        if aResult[0]:
             for aEntry in aResult[1]:
                 sHosterUrl = aEntry
                 oHoster = oHosterGui.checkHoster(sHosterUrl)

@@ -208,10 +208,10 @@ def showMovies(sSearch=''):
     sPattern = 'class="th-item".+?.+?ref="([^"]*).+?src="([^"]*).+?alt="([^"]*).+?Date.+?<.span>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -271,7 +271,7 @@ def __checkForNextPage(sHtmlContent):
 
     sPattern = 'navigation.+?<span>\d+</span> <a href="([^"]+).+?>([^<]+)</a></div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNextPage = aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('page/([0-9]+)', sNextPage).group(1)
@@ -294,16 +294,16 @@ def showSaisons():
     sPattern = 'property="og:description".+?content="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sDesc = 'FilmoFlix'
-    if aResult[0] is True:
+    if aResult[0]:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', aResult[1][0])
 
     sPattern = 'th-item">.+?href="([^"]*).+?src="([^"]*).+?title.+?>([^<]*)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in reversed(aResult[1]):
 
@@ -341,10 +341,10 @@ def showEpisodes():
     sPattern = '(?:class="saisontab">.+?|<.a>)<a\shref="([^"]*).+?fsa-ep">([^<]*)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
@@ -381,7 +381,7 @@ def showSerieLinks():
     sPattern = "class=\"lien.+?playEpisode.+?\'([^\']*).+?'([^\']*)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -428,7 +428,7 @@ def showSerieHosters():
     oParser = cParser()
     sPattern = '<iframe.+?src="([^"]+)"'
     aResult = oParser.parse(shtml, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sHosterUrl = aResult[1][0]
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if oHoster != False:
@@ -456,13 +456,13 @@ def showMovieLinks():
     sPattern = 'text clearfix">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sDesc = 'FilmoFlix'
-    if aResult[0] is True:
+    if aResult[0]:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', aResult[1][0])
 
     sPattern = "lien fx-row.+?\"getxfield.+?(\d+).+?\'([^\']*).+?'([^\']*).+?images.([^\.]+).+?pl-5\">([^<]+)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -508,7 +508,7 @@ def showMovieHosters():
     sPattern = '<iframe.+?src="([^"]+)"'
     aResult = oParser.parse(shtml, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         sHosterUrl = aResult[1][0]
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if oHoster != False:

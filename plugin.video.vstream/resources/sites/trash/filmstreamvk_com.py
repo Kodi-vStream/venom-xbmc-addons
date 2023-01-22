@@ -154,7 +154,7 @@ def showMovies(sSearch=''):
         sHtmlContent = oParser.abParse(sHtmlContent, 'class="archive_post">', '')
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
     else:

@@ -49,7 +49,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if sSearchText is not False:
+    if sSearchText:
         showMovies(sSearchText)
         oGui.setEndOfDirectory()
         return

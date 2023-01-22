@@ -119,7 +119,7 @@ def loadTypelist(typemovie, typelist):
 
     list_typelist = {}
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             if aEntry[0]:
                 if aEntry[0] == typelist:
@@ -251,7 +251,7 @@ def showSeries(sSearch=''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     # Si il y a qu'un seule resultat alors le site fait une redirection.
-    if aResult[0] is False:
+    if not aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         if sSearch and "sultats anime" not in sHtmlContent:
             sTitle = ''
@@ -283,7 +283,7 @@ def showSeries(sSearch=''):
         else:
             oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sTitle = aEntry[2]
@@ -362,7 +362,7 @@ def showEpisode():
     sPattern = '<tr.+?align="left">.+?align="left">([^"]+)</td>.+?nowrap>+?<.+?</td>.+?<.+?/td>.+?<.+?<a href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sTitle = aEntry[0]
@@ -408,7 +408,7 @@ def showHosters():
     sPattern = 'id="stream">Streaming <span itemprop="name">([^<]+)<.+?thumbnailUrl" content="([^\"]+)".+?contentURL" content="([^\"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             sTitle = aEntry[0].strip()
             if ' vostfr' in sTitle:

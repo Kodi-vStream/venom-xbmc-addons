@@ -105,10 +105,10 @@ def showGenres():
     sPattern = 'taxonomy.+?href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     triAlpha = []
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sTitle = aEntry[1].capitalize()
@@ -172,10 +172,10 @@ def showYears():
     aResult = oParser.parse(sHtmlContent, sPattern)
     aResult[1].insert(2, (URL_MAIN + 'release-year/2020/', '2020'))
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -200,10 +200,10 @@ def showSeriesYears():
     sPattern = 'href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     aResult[1].insert(2, (URL_MAIN + 'release-year/2020/', '2020'))
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -252,10 +252,10 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -301,7 +301,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<li class=\'active\'>.+?href=\'([^\']+).+?/(\d+)/\'>Dernière'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNextPage = aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
@@ -311,7 +311,7 @@ def __checkForNextPage(sHtmlContent):
     # for the tvshows and the last page of movies
     sPattern = "class=''>\d+</a></li><li><a rel='nofollow' class='page larger' href='([^']+).+?>(\d+)</a></li></ul"
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNextPage = aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('page/([0-9]+)', sNextPage).group(1)
@@ -339,7 +339,7 @@ def showSaisons():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sSaison = ''
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for sSaison in aResult[1]:
             sTitle = sMovieTitle + ' ' + sSaison
@@ -372,7 +372,7 @@ def showEpisodes():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sSaison = ''
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
@@ -409,7 +409,7 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
 
         tab = aResult[1]
         n = len(tab)//3

@@ -65,7 +65,7 @@ def showNews():
     sPattern = 'Dernier (VF|VOSTFR|OAV|Film)\s*: (<a|<a title="([^"]+)") href="([^"]+)" data-wpel-link="internal">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if '' == aEntry[2]:  # titre absent donc on le recup dans l'url
@@ -109,7 +109,7 @@ def showAnimes():
     sPattern = 'Synopsis:([^"]+)" href="([^"]+).+?">([^<]+).+?data-lazy-src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME, large=True)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -168,7 +168,7 @@ def showEpisodes():
     sPattern = '<h2 style="color: #.+?">([^<]+)|href="http([^"]+)".+?>([^<]+)<\/a>'
     aResult = oParser.parse(sUsentContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         sSaison = ''
@@ -214,7 +214,7 @@ def showMovies():
     sPattern = 'style="width: 280px;"><h2><a title="Synopsis: (.+?)" href="([^"]+).+?>([^<]+).+?data-lazy-src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME, large=True)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -250,7 +250,7 @@ def showMovieList():
     sPattern = '<a title=".+?" href="([^"]+)">(.+?)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -282,7 +282,7 @@ def showHosters():
     elif 'wakanim.tv' in str(aResult[1]):
         oGui.addText(SITE_IDENTIFIER, sTexte + "[COLOR coral] wakanim[/COLOR]")
     else:
-        if aResult[0] is True:
+        if aResult[0]:
             for aEntry in aResult[1]:
                 sHosterUrl = aEntry
                 if not sHosterUrl.startswith('http'):

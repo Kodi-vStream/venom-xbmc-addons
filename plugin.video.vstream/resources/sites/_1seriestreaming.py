@@ -356,7 +356,7 @@ def getTokens():
     sPattern = 'name=_token value="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         return False, 'none', 'none'
 
     if aResult[0]:
@@ -365,7 +365,7 @@ def getTokens():
     sPattern = 'XSRF-TOKEN=([^;]+).+?.+?1seriestreaming_session=([^;]+)'
     aResult = oParser.parse(sHeader, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         return False, 'none', 'none'
 
     if aResult[0]:

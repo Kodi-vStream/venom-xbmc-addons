@@ -290,7 +290,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if sSearchText is not False:
+    if sSearchText:
         sUrl = sUrl + sSearchText  # + '&search_start=0'
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -348,7 +348,7 @@ def showMovies(sSearch=''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     titles = list()
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -409,7 +409,7 @@ def showMovies(sSearch=''):
             if 'index' in sUrl:
                 sPattern = '<a name="nextlink".+?javascript:list_submit\((.+?)\)'
                 aResult = oParser.parse(sHtmlContent, sPattern)
-                if aResult[0] is True:
+                if aResult[0]:
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', re.sub('search_start=(\d+)', 'search_start=' + str(aResult[1][0]), sUrl))
                     number = re.search('([0-9]+)', aResult[1][0]).group(1)
@@ -429,7 +429,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '>(\d+)</a></li><li><a href="([^"]+)"><span class="fa fa-arrow-right">'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('([0-9]+)', sNextPage).group(1)
@@ -455,7 +455,7 @@ def showCollec():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     titles = set()
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -524,12 +524,12 @@ def showMoviesLinks():
     sPattern = "domain=(.+?)'(.+?)/tbody"
     aResult = oParser.parse(sHtmlContent, sPattern)
     oOutputParameterHandler = cOutputParameterHandler()
-    if aResult[0] is True:
+    if aResult[0]:
         sPattern = "target='_blank' data-id='.+?' href='([^']+)"
         for aEntry in aResult[1]:
             sHost = aEntry[0]
             aResult = oParser.parse(aEntry[1], sPattern)
-            if aResult[0] is True:
+            if aResult[0]:
                 for aEntry in aResult[1]:  # Plusieurs liens pour le même host
                     sUrl2 = URL_MAIN[:-1] + aEntry
                     sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
@@ -543,7 +543,7 @@ def showMoviesLinks():
     # lien STREAMING
     sPattern = 'rel=.nofollow. class=.download. href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:  # Plusieurs liens pour le même host
             sUrl2 = URL_MAIN[:-1] + aEntry
             sDisplayTitle = ('%s [Streaming]') % sMovieTitle
@@ -558,7 +558,7 @@ def showMoviesLinks():
     # on regarde si dispo dans d'autres qualités
     sPattern = "value='([^']+)'.+?<b>([^<]+)<\/b>.+?<b> \(([^\)]+)\)"
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         # Affichage du texte
         oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Autres qualités disponibles :[/COLOR]')
         oOutputParameterHandler = cOutputParameterHandler()
@@ -692,7 +692,7 @@ def showHosters():
     sPattern = "domain=(.+?)\.|'download' target='_blank' data-id='.+?' href='([^']+).+?(\d+,\d+\s[kKmMgG][oO])"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
 
         for aEntry in aResult[1]:
             if aEntry[0]:
@@ -729,7 +729,7 @@ def showHostersLink():
     sPattern = '<iframe.+?src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         if not aResult[1][0].startswith('http'):
             sHosterUrl = "https:" + aResult[1][0]
         else:
@@ -761,7 +761,7 @@ def showSeriesHosters():
     sPattern = "\?domain=(.+?)\.|'download' target='_blank' data-id='.+?' href='([^']+).+?(Episode.+?\d+).+?(\d+,\d+\s[kKmMgG][oO])"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
 
         for aEntry in aResult[1]:
             if aEntry[0]:
