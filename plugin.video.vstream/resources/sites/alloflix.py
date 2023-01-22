@@ -8,7 +8,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, siteManager
+from resources.lib.comaddon import siteManager
 from resources.lib.util import cUtil
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101 Firefox/104.0"
@@ -170,7 +170,6 @@ def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
-
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     if sSearch:
@@ -191,15 +190,9 @@ def showMovies(sSearch=''):
         oGui.addText(SITE_IDENTIFIER)
 
     else:
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
 
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
-
             sTitle = aEntry[0]
             sThumb = aEntry[1]
             if sThumb.startswith('/'):
@@ -230,8 +223,6 @@ def showMovies(sSearch=''):
                 # oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-
-        progress_.VSclose(progress_)
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
@@ -322,7 +313,6 @@ def showEpisodes():
             sTitle = sMovieTitle + ' ' + sEp
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            # oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sYear', sYear)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -338,7 +328,6 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    # sDesc = oInputParameterHandler.getValue('sDesc')
     sYear = oInputParameterHandler.getValue('sYear')
 
     oParser = cParser()
@@ -351,12 +340,13 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     # récupération du Synopsis
-    sDesc = ''
-    sPattern = 'class=description><p>([^<]+)'
+    sDesc = ""
+    sPattern = 'class=description>(.+?)<\/'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
-
+        sDesc = sDesc.replace('<p>', '') 
+     
     sPattern = '(iframe src|iframe data-src)="([^"]+)|href=#options-(\d).+?server>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
