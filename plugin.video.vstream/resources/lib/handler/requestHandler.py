@@ -259,7 +259,7 @@ class cRequestHandler:
                     # Ont fait une requete.
                     json_response = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, json={
                         'cmd': 'request.%s' % method.lower(),
-                        'url': self.__sUrl
+                        'url': self.__sUrl,
                         'postData': '%s' % urlEncode(sParameters) if (method.lower() == 'post') else ''
                     })
 
