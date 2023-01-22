@@ -208,9 +208,6 @@ def showMovies(sSearch=''):
     sPattern = 'class="th-item".+?.+?ref="([^"]*).+?src="([^"]*).+?alt="([^"]*).+?Date.+?<.span>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if not aResult[0]:
-        oGui.addText(SITE_IDENTIFIER)
-
     if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
@@ -222,6 +219,8 @@ def showMovies(sSearch=''):
 
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
+            if 'http' not in sThumb:
+                sThumb = URL_MAIN[:-1] + sThumb
             sTitle = aEntry[2]
             sYear = aEntry[3].strip()
 
@@ -235,13 +234,11 @@ def showMovies(sSearch=''):
             sDisplayTitle = sTitle
             if sSearch and not bSearchMovie and not bSearchSerie:
                 if '/serie' in sUrl2:
-                    sDisplayTitle = sDisplayTitle + ' [serie]'
+                    sDisplayTitle = sDisplayTitle + ' {Série}'
                 else:
-                    sDisplayTitle = sDisplayTitle + ' [film]'
+                    sDisplayTitle = sDisplayTitle + ' {Film}'
 
             sDisplayTitle = sDisplayTitle + ' (' + sYear + ')'
-            if 'http' not in sThumb:
-                sThumb = URL_MAIN[:-1] + sThumb
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -255,6 +252,9 @@ def showMovies(sSearch=''):
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
+
+    else:
+        oGui.addText(SITE_IDENTIFIER)
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
@@ -300,9 +300,6 @@ def showSaisons():
     sPattern = 'th-item">.+?href="([^"]*).+?src="([^"]*).+?title.+?>([^<]*)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if not aResult[0]:
-        oGui.addText(SITE_IDENTIFIER)
-
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in reversed(aResult[1]):
@@ -323,6 +320,9 @@ def showSaisons():
 
             oGui.addSeason(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
+    else:
+        oGui.addText(SITE_IDENTIFIER)
+
     oGui.setEndOfDirectory()
 
 
@@ -341,9 +341,6 @@ def showEpisodes():
     sPattern = '(?:class="saisontab">.+?|<.a>)<a\shref="([^"]*).+?fsa-ep">([^<]*)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if not aResult[0]:
-        oGui.addText(SITE_IDENTIFIER)
-
     if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
@@ -360,6 +357,9 @@ def showEpisodes():
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
             oGui.addEpisode(SITE_IDENTIFIER, 'showSerieLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+
+    else:
+        oGui.addText(SITE_IDENTIFIER)
 
     oGui.setEndOfDirectory()
 
@@ -423,11 +423,11 @@ def showSerieHosters():
     oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
     # oRequest.addHeaderEntry('Cookie', cook) # pas besoin ici mais besoin pour les films
     oRequest.addParametersLine(postdata)
-    shtml = oRequest.request()
+    sHtmlContent = oRequest.request()
 
     oParser = cParser()
     sPattern = '<iframe.+?src="([^"]+)"'
-    aResult = oParser.parse(shtml, sPattern)
+    aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         sHosterUrl = aResult[1][0]
         oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -502,11 +502,11 @@ def showMovieHosters():
     oRequest.addHeaderEntry('Referer', referer)
     if cook:
         oRequest.addHeaderEntry('Cookie', cook)
-    shtml = oRequest.request()
+    sHtmlContent = oRequest.request()
 
     oParser = cParser()
     sPattern = '<iframe.+?src="([^"]+)"'
-    aResult = oParser.parse(shtml, sPattern)
+    aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
         sHosterUrl = aResult[1][0]
