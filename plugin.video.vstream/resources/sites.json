@@ -31,7 +31,7 @@
         },
         "animecomplet": {
             "label": "AnimeComplet",
-            "active": "True",
+            "active": "False",
             "url": "https://ianime-fr.com/"
         },
         "animeultime": {
@@ -56,7 +56,7 @@
         },
         "cinemay_cc": {
             "label": "Cinemay_cc",
-            "active": "True",
+            "active": "False",
             "url": "https://cinemay.cc/"
         },
         "cinemay_com": {
@@ -111,7 +111,7 @@
         },
         "free_telechargement_org": {
             "label": "Free Telechargement",
-            "active": "True",
+            "active": "False",
             "url": "https://www.free-telecharger.top/"
         },
         "freebox": {
@@ -206,7 +206,7 @@
         },
         "mystream_zone": {
             "label": "MyStream",
-            "active": "True",
+            "active": "False",
             "url": "https://www3.mystream.zone/"
         },
         "neko_sama": {
@@ -252,7 +252,7 @@
         "planet_streaming": {
             "label": "Planet Streaming",
             "active": "True",
-            "url": "https://planet-streaming2.com/"
+            "url": "https://wvw.planet-streaming2.com/"
         },
         "pluto_tv": {
             "label": "Pluto TV",
@@ -266,7 +266,7 @@
         },
         "serie_streaming": {
             "label": "S\u00e9rie Streaming",
-            "active": "True",
+            "active": "False",
             "url": "https://serie-streaming.plus/"
         },
         "series_en_streaming": {
@@ -276,7 +276,7 @@
         },
         "series_stream": {
             "label": "Series Stream",
-            "active": "True",
+            "active": "False",
             "url": "https://wwv.series-stream.cc/"
         },
         "siteonefichier": {
@@ -351,12 +351,12 @@
         },
         "vf_film": {
             "label": "VF Film",
-            "active": "True",
+            "active": "False",
             "url": "https://vf-film.top/"
         },
         "vf_serie": {
             "label": "VF S\u00e9rie",
-            "active": "True",
+            "active": "False",
             "url": "https://vf-serie.site/"
         },
         "vfilms": {
