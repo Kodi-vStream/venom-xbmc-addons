@@ -56,7 +56,7 @@
         },
         "cinemay_cc": {
             "label": "Cinemay_cc",
-            "active": "False",
+            "active": "True",
             "url": "https://cinemay.cc/"
         },
         "cinemay_com": {
@@ -111,8 +111,8 @@
         },
         "free_telechargement_org": {
             "label": "Free Telechargement",
-            "active": "False",
-            "url": "https://www.free-telecharger.top/"
+            "active": "True",
+            "url": "https://www.free-telecharger.live/"
         },
         "freebox": {
             "label": "Freebox",
