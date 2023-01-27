@@ -433,7 +433,7 @@ def showHosters():
         if aResult[0]:
             sHosterUrl = aResult[1][0]
             oHoster = oHosterGui.checkHoster(sHosterUrl)
-            if oHoster is not False:
+            if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -441,7 +441,7 @@ def showHosters():
     else:
         sHosterUrl = urlReal
         oHoster = oHosterGui.checkHoster(sHosterUrl)
-        if oHoster is not False:
+        if oHoster:
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
