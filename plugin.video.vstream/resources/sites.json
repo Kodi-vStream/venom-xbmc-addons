@@ -44,6 +44,11 @@
             "active": "True",
             "url": "https://www.asia-insane.biz/"
         },
+        "bd_streams": {
+            "label": "BD STREAMS",
+            "active": "True",
+            "url": "https://www.bd-streams.tk/"
+        },
         "buzzmonclick_com": {
             "label": "BuzzMonClick",
             "active": "True",
