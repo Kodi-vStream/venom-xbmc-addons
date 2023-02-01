@@ -277,7 +277,7 @@ def showTV():
     sPattern = '<title>(.+?)</title><link>(.+?)</link>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         progress_ = progress().VScreate(SITE_NAME)
 
         # affiche par

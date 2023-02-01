@@ -147,10 +147,10 @@ def showMovies(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -179,7 +179,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '>([^<]+)</a> *<a *class="next page-numbers" href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -207,7 +207,7 @@ def showHosters():
     if not (aResult[0] is True):
         sPattern = 'data-video_id="(.+?)"'
         aResult = oParser.parse(sHtmlContent1, sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             sHosterUrl = 'https://www.youtube.com/embed/' + aResult[1][0]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if oHoster != False:
@@ -217,7 +217,7 @@ def showHosters():
         else:
             sPattern = '<iframe.+?data-src="([^"]+)'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if aResult[0] is True:
+            if aResult[0]:
                 sHosterUrl = aResult[1][0]
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if oHoster != False:

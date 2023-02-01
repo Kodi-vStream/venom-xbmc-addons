@@ -92,10 +92,10 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -136,10 +136,10 @@ def showLink():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         sPattern = '<iframe.+?src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             for aEntry in aResult[1]:
 
                 sHosterUrl = aEntry
@@ -153,9 +153,9 @@ def showLink():
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     else:
-        if aResult[0] is False:
+        if not aResult[0]:
             oGui.addText(SITE_IDENTIFIER)
-        if aResult[0] is True:
+        if aResult[0]:
             total = len(aResult[1])
             progress_ = progress().VScreate(SITE_NAME)
             for aEntry in aResult[1]:

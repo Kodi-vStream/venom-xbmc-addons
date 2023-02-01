@@ -248,7 +248,7 @@ def showGenres():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     genres = []
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             sTitle = aEntry[1]
             sTitle = str(cUtil().unescape(sTitle))
@@ -294,7 +294,7 @@ def showAlpha2():
     sPattern = '<a href=.(listing_(?:vf|vostfr)\.php\?affichage=[^<>"]+?). class=.button black pastel light. alt="Voir la liste des animes en ' + sType + '"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         showAlpha(URL_MAIN + aResult[1][0])
 
 
@@ -323,7 +323,7 @@ def showAlpha(url=None):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = URL_MAIN + aEntry[0]
@@ -384,10 +384,10 @@ def showMovies(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         isPython3 = isMatrix()
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -470,11 +470,11 @@ def __checkForNextPage(sHtmlContent):
     sPattern = 'class=.button red light. title=.Voir la page.+?<a href=.(.+?)(?:\'|") class=.button light.'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         sPattern = "<.table><center><center><a href='(.+?)' class='button light' title='Voir la page 1'>"
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         return URL_MAIN + aResult[1][0]
 
     return False
@@ -504,7 +504,7 @@ def showSaison():
     sPattern = '<headline11>(.+?)</headline11>'#</a>|href="*([^"]+)"* title="([^"]+)"[^>]+style="*text-decoration:none;"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         isPython3 = isMatrix()
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -543,7 +543,7 @@ def showEpisode():
     sPattern = '<headline11>(.+?)</headline11></a>|href="*([^"]+)"* title="([^"]+)"[^>]+style="*text-decoration:none;"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         sSeason = ''
         isPython3 = isMatrix()
 
@@ -619,7 +619,7 @@ def extractLink(html):
 
     sPattern = "'file': '(.+?)',"
     aResult = oParser.parse(html, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         if fake1 not in aResult[1][0] and fake2 not in aResult[1][0]:
             final = aResult[1][0]
 
@@ -669,7 +669,7 @@ def showHosters():
         sPattern = '<div class="box"><iframe.+?src=[\'|"](.+?)[\'|"]'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if aResult[0] is True:
+        if aResult[0]:
             for aEntry in aResult[1]:
                 if re.match(".+?&#[0-9]+;", aEntry):  # directe mais codé html
                     sHosterUrl = cUtil().unescape(aEntry)
@@ -686,7 +686,7 @@ def showHosters():
         # 2 eme methode
         sPattern = '<script>eval\(unescape\((.+?)\); eval\(unescape\((.+?)\);</script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             for aEntry in aResult[1]:
                 # si url cryptee mangacity algo
                 sHosterUrl = DecryptMangacity(aEntry[1])
@@ -696,7 +696,7 @@ def showHosters():
         # 3 eme methode
         sPattern = 'document\.write\(unescape\("(%3c%.+?)"\)\);'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             for aEntry in aResult[1]:
                 tmp = Unquote(aEntry)
 

@@ -6,7 +6,7 @@ from resources.lib.parser import cParser  # recherche de code
 from resources.hosters.hoster import iHoster
 # from resources.lib.util import cUtil #Autres fonctions utiles
 # et comaddon, exemple
-# from resources.lib.comaddon import addon, dialog, VSlog, xbmcgui, xbmc
+# from resources.lib.comaddon import addon, dialog, VSlog
 
 # AAdecoder
 # from resources.lib.aadecode import AADecoder
@@ -26,7 +26,7 @@ import urllib2
 class cHoster(iHoster):
 
     def __init__(self):
-        # Permet de créé le hoster, vous devez passer les informations suivantes:
+        # Permet de créer le hoster, vous devez passer les informations suivantes:
         # <nom fichier> = nom exact du fichier sans le .py
         # <nom affiché> = nom qui sera affiché à l'utilisateur (exemple: "Nouvel hebergeur")
         # [couleur] = argument facultatif (n'oubliez pas de supprimé la virgule avant 
@@ -51,13 +51,13 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern =  'file: *"([^<>"]+?mp4)"'
+        sPattern = 'file: *"([^<>"]+?mp4)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0]):
+        if aResult[0]:
             api_call = aResult[1][0]
 
-        if (api_call):
+        if api_call:
             # Rajout d'un header ?
             # api_call = api_call + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
             return True, api_call
@@ -66,10 +66,10 @@ class cHoster(iHoster):
 
 
 # Attention : Pour fonctionner le nouvel hebergeur doit être rajouté dans le corps de vStream, fichier Hosters.py.
-#----------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------
 #
 # Code pour selection de plusieurs liens
-#--------------------------------------
+# --------------------------------------
 #
 #            from resources.lib.comaddon import dialog
 #
@@ -84,7 +84,7 @@ class cHoster(iHoster):
 #            # Affichage du tableau
 #            api_call = dialog().VSselectqual(qua, url)
 #
-#             if (api_call):
+#             if api_call:
 #                  return True, api_call
 
 #             return False, False

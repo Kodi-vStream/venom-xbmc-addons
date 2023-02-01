@@ -143,7 +143,7 @@ def showMovies(sSearch=''):
     sPattern = '<span style="list-style-type:none;".+? href="\/[0-9a-zA-Z]+\/([^"]+)">(.+?)\((.+?)\).+?>(<i>(.+?)</i>|)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
     else:
@@ -179,7 +179,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = 'href="([^"]+)"><img style="position:relative;" +src="data:image'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         return aResult[1][0]
 
     return False
@@ -205,14 +205,14 @@ def showHosters():
     sPattern = '<img src="([^"]+)".+?<p.+?>([^<]+)</p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         sThumb = aResult[1][0][0]
         sDesc = aResult[1][0][1]
 
     sPattern = '<iframe.+?src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         sLink = aResult[1][0]
         if sLink.startswith('/'):
             sLink = URL_HOST[:-1] + sLink
@@ -223,7 +223,7 @@ def showHosters():
         sPattern = 'file: "(.+?)"'
         aResult = oParser.parse(data, sPattern)
 
-        if aResult[0] is True:
+        if aResult[0]:
             for aEntry in aResult[1]:
 
                 sLink2 = aEntry

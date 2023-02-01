@@ -3,7 +3,7 @@
 
 import re
 
-from resources.lib.comaddon import siteManager
+from resources.lib.comaddon import siteManager, isMatrix
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -26,7 +26,7 @@ SPORT_TV = ('31-site-pour-regarder-les-chaines-de-sport.html', 'showTV')
 
 # chaines
 channels = {
-    
+
     'bein Sports 1': ['2022/03/bein-sports-1-full-hd-france.html', 'https://images.beinsports.com/n43EXNeoR62GvZlWW2SXKuQi0GA=/788708-HD1.png'],
 
     'Canal+': ['2022/03/canal-france-full-hd.html', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_301.PNG'],
@@ -60,13 +60,12 @@ channels = {
     'RMC SPORT LIVE 8': ['2022/03/rmc-sport-live-8-full-hd.html', 'https://www.planetecsat.com/wp-content/uploads/2022/09/Entete-RMC-Sport.png'],
     'RMC SPORT LIVE 9': ['2022/03/rmc-sport-live-9-full-hd.html', 'https://www.planetecsat.com/wp-content/uploads/2022/09/Entete-RMC-Sport.png'],
     'RMC SPORT LIVE 10': ['2022/03/rmc-sport-live-10-full-hd.html', 'https://www.planetecsat.com/wp-content/uploads/2022/09/Entete-RMC-Sport.png'],
-    
+
     }
 
 
 def load():
     oGui = cGui()
-
     oOutputParameterHandler = cOutputParameterHandler()
 
     oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
@@ -81,6 +80,7 @@ def load():
 def showTV():
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
+
     for sDisplayTitle in channels:
         value = channels.get(sDisplayTitle)
         sUrl = value[0]
@@ -105,7 +105,7 @@ def showGenres():
     sPattern = '<h3> (.+?) <\/h3>.+?&#9989;'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         sportGenre = {}
@@ -151,7 +151,7 @@ def showMovies():
     sPattern = '(\d+:\d+) (.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -186,7 +186,7 @@ def showMoviesLinks():
     sPattern = 'href="(.+?)" target="_blank" rel="noopener">(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -216,24 +216,24 @@ def showHoster():
     sPattern = '<li movieurl=["\']([^"]+)["\']><a>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         numLien = 0
-        blackList = ('.tutele.sx', 'leet365', 'casadelfutbol.net', 'yrsport.top', 'cdn.sportcast.life', 'sportzonline.to',
-                     'sportkart1.xyz', 'olasports.xyz', 'cricplay2.xyz', '.ustreamix.su', 'yrsport.top')
+        blackList = ('.tutele.sx', 'leet365', 'casadelfutbol.net', 'yrsport.top', 'cdn.sportcast.life', '.ustreamix.su',
+                     'sportzonline.to', 'sportkart1.xyz', 'olasports.xyz', 'cricplay2.xyz')
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             hoster = aEntry[1]
             for out in blackList:
                 if out in sUrl:
-                   sUrl = None
-                   break
-                   
+                    sUrl = None
+                    break
+
             if not sUrl:
                 continue
-             
+
             sDisplayTitle = sTitle + ' (' + hoster.strip() + ')'
 
             if 'http' not in sUrl:
@@ -244,7 +244,7 @@ def showHoster():
             oOutputParameterHandler.addParameter('sDesc', sDisplayTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addLink(SITE_IDENTIFIER, 'showLink', sDisplayTitle, sThumb, sDisplayTitle, oOutputParameterHandler)
-        
+
     oGui.setEndOfDirectory()
 
 
@@ -266,11 +266,10 @@ def showLink():
     if bvalid:
         sHosterUrl = shosterurl
 
-
     if sHosterUrl:
         sHosterUrl = sHosterUrl.strip()
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if oHoster is not False:
+        if oHoster:
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -290,8 +289,7 @@ def getHosterIframe(url, referer):
 #    oRequestHandler.disableSSL()
     sHtmlContent = str(oRequestHandler.request())
 #    cook = oRequestHandler.GetCookies()
-    
-    
+
     if not sHtmlContent or sHtmlContent == 'False':
         return False, False
 
@@ -348,6 +346,6 @@ def getHosterIframe(url, referer):
         sHosterUrl = oRequestHandler.getRealUrl()
         oRequestHandler = cRequestHandler(sHosterUrl)
         h = oRequestHandler.request()
-        return True, sHosterUrl  + '|referer=' + url
+        return True, sHosterUrl + '|referer=' + url
     return False, False
 

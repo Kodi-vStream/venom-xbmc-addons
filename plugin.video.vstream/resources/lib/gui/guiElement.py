@@ -329,8 +329,8 @@ class cGuiElement:
     def getCleanTitle(self):
         return self.__sCleanTitle
 
-#    def setTitleWatched(self, sTitleWatched):
-#        self.__sTitleWatched = sTitleWatched
+   # def setTitleWatched(self, sTitleWatched):
+       # self.__sTitleWatched = sTitleWatched
 
     def getTitleWatched(self):
         return self.__sTitleWatched

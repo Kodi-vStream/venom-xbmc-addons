@@ -60,7 +60,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if sSearchText is not False:
+    if sSearchText:
         sUrl = URL_SEARCH[0] + sSearchText
         showSeries(sUrl)
         oGui.setEndOfDirectory()
@@ -151,10 +151,10 @@ def showSeries(sSearch=''):
 
     sPattern = 'link"><img src=([^ ]+).+?href="([^"]+).+?>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sThumb = re.sub('/w\d+/', '/w342/', aEntry[0])
@@ -172,7 +172,7 @@ def showSeries(sSearch=''):
             oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if sNextPage is not False:
+        if sNextPage:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showSeries', 'Page ' + sPaging, oOutputParameterHandler)
@@ -185,7 +185,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '> \d+ </span><a href="([^"]+).+?>([^<]+)</a></div></div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNextPage = aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('page=([0-9]+)', sNextPage).group(1)
@@ -218,7 +218,7 @@ def showSaisons():
     sPattern = 'link"><img src=([^ ]+).+?href="([^"]+).+?>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -253,7 +253,7 @@ def showEpisodes():
     sPattern = 'LI2"><a href="([^"]+)"><span>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -284,7 +284,7 @@ def showLinks():
     sPattern = 'code="([^"]+).+?</i>([^<]+).+?flag/([^ ]+).png'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -292,7 +292,7 @@ def showLinks():
             sHost = re.sub('\..+', '', sHost).capitalize()
             if (cHosterGui().checkHoster(sHost) == False):
                 continue
-            
+
             sLang = aEntry[2].replace('default', '').upper()
             sUrl = URL_MAIN + 'll/captcha?hash=' + aEntry[0]
             sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
@@ -324,7 +324,7 @@ def showHosters():
 
     if 'captcha' not in sHosterUrl:
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if oHoster is not False:
+        if oHoster:
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -332,10 +332,10 @@ def showHosters():
         oParser = cParser()
         sPattern = 'src=([^ ]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             sHosterUrl = aResult[1][0]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if oHoster is not False:
+            if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -356,21 +356,18 @@ def getTokens():
     sPattern = 'name=_token value="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         return False, 'none', 'none'
 
-    if aResult[0] is True:
-        token = aResult[1][0]
-
+    token = aResult[1][0]
     sPattern = 'XSRF-TOKEN=([^;]+).+?.+?1seriestreaming_session=([^;]+)'
     aResult = oParser.parse(sHeader, sPattern)
 
-    if aResult[0] is False:
-        return False, 'none', 'none'
-
-    if aResult[0] is True:
+    if aResult[0]:
         XSRF_TOKEN = aResult[1][0][0]
         site_session = aResult[1][0][1]
+    else:
+        return False, 'none', 'none'
 
     cook = 'XSRF-TOKEN=' + XSRF_TOKEN + '; 1seriestreaming_session=' + site_session + ';'
     return True, token, cook

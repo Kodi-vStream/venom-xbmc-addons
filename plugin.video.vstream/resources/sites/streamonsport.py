@@ -108,7 +108,7 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         # total = len(aResult[1])
@@ -172,7 +172,7 @@ def showLive():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     i = 0
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         if aResult[1]:
             for aEntry in aResult[1]:
@@ -281,7 +281,7 @@ def showLink():
     if sHosterUrl:
         sHosterUrl = sHosterUrl.strip()
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if oHoster is not False:
+        if oHoster:
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

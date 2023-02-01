@@ -274,7 +274,7 @@ def showMovies(sSearch=''):
 
     titles = set()
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -345,7 +345,7 @@ def showMovies(sSearch=''):
         if 'controller.php' in sUrl:
             sPattern = '<a href="#" class="nav" data-cstart="([^"]+)">Suivant</a></div>'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if aResult[0] is True:
+            if aResult[0]:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', re.sub('cstart=(\d+)', 'cstart=' + str(aResult[1][0]), sUrl))
                 number = re.search('([0-9]+)', aResult[1][0]).group(1)
@@ -365,7 +365,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '>([^<]+)</a> *<a href="([^"]+)">Suivant</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         if not sNextPage.startswith('https'):
@@ -429,7 +429,7 @@ def showMoviesLinks():
     sPattern = '<a href="([^"]+)"><span class="otherquality"><span style="color:#.{6}"><b>([^<]+)</b></span><span style="color:#.{6}"><b>([^<]+)</b></span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = URL_MAIN[:-1] + aEntry[0]
@@ -585,7 +585,7 @@ def showHosters():
     sPattern = '<div style="font-weight:bold;color:.+?</span>(.+?)</div>|<a class="btnToLink".+?href="(.+?)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
@@ -634,7 +634,7 @@ def showSeriesHosters():
     sPattern = '<div style="font-weight.+?>([^<]+)</div>|<a class="btnToLink".+?href="([^"]+)".+?Episode ([0-9]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:

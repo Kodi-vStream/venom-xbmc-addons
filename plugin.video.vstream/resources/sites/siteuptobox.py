@@ -815,7 +815,7 @@ def upToMyAccount():
 
         sPattern = '{"id":.+?,(?:"size":|"progress":)([0-9]+)'
         aResult = cParser().parse(sHtmlContent, sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             xbmcgui.Dialog().notification('Uptobox', 'Fichier ajouté - %s' % sMovieTitle, xbmcgui.NOTIFICATION_INFO, 2000, False)
         else:
             # pénible ce dialog auth

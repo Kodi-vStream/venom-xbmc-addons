@@ -86,7 +86,7 @@ def showMovies(sSearch=''):
     sPattern = 'poster"><a href="([^"]+).+?src="([^"]+).+?title">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         total = len(aResult[1])
@@ -127,7 +127,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '>(\d+)</a></li>\s*<li><a class="next page-numbers" href="([^"]+)">Next Page'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNextPage = aResult[1][0][1]
         sNumberMax = aResult[1][0][0]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -151,10 +151,10 @@ def showHosters():
     sPattern = '<iframe.+?src=["\'](.+?)["\']'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry

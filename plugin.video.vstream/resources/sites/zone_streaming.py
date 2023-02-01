@@ -229,7 +229,7 @@ def showMovies(sSearch=''):
     sPattern = 'post-thumbnail".+?href="([^"]+).+?src="(http[^"]+).+?bookmark">([^<]+).+?<p>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         total = len(aResult[1])
@@ -273,7 +273,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = 'pages\'>Page.+?sur ([^<]+?)<.+?href="([^"]+?)">>><'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -299,7 +299,7 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             watchUrl = 'https://www.youtube.com/watch?v='
 

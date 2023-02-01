@@ -8,7 +8,7 @@
         "_33seriestreaming": {
             "label": "33 S\u00e9ries",
             "active": "True",
-            "url": "https://wwv.33seriestreaming.cc/"
+            "url": "https://wvv.33seriestreaming.cc/"
         },
         "_4kstreamz": {
             "label": "4kstreamz",
@@ -31,7 +31,7 @@
         },
         "animecomplet": {
             "label": "AnimeComplet",
-            "active": "True",
+            "active": "False",
             "url": "https://ianime-fr.com/"
         },
         "animeultime": {
@@ -43,6 +43,11 @@
             "label": "Asia Insane",
             "active": "True",
             "url": "https://www.asia-insane.biz/"
+        },
+        "bd_streams": {
+            "label": "BD STREAMS",
+            "active": "True",
+            "url": "https://www.bd-streams.tk/"
         },
         "buzzmonclick_com": {
             "label": "BuzzMonClick",
@@ -112,7 +117,7 @@
         "free_telechargement_org": {
             "label": "Free Telechargement",
             "active": "True",
-            "url": "https://www.free-telecharger.top/"
+            "url": "https://www.free-telecharger.live/"
         },
         "freebox": {
             "label": "Freebox",
@@ -127,7 +132,7 @@
         "french_stream_lol": {
             "label": "French-stream-lol",
             "active": "True",
-            "url": "https://french-stream.day/"
+            "url": "https://french-stream.gg/"
         },
         "frenchanimes": {
             "label": "French Animes",
@@ -167,7 +172,7 @@
         "kepliz_com": {
             "label": "Kepliz",
             "active": "True",
-            "url": "http://www.poblom.com/"
+            "url": "https://www.poblom.com/"
         },
         "kstreamingfilm": {
             "label": "K streaming Film",
@@ -206,7 +211,7 @@
         },
         "mystream_zone": {
             "label": "MyStream",
-            "active": "True",
+            "active": "False",
             "url": "https://www3.mystream.zone/"
         },
         "neko_sama": {
@@ -232,7 +237,7 @@
         "o1streaming": {
             "label": "O1 streaming",
             "active": "True",
-            "url": "https://ww.01streaming.tv/"
+            "url": "https://voir.01streaming.tv/"
         },
         "otaku_attitude": {
             "label": "Otaku-Attitude",
@@ -252,7 +257,7 @@
         "planet_streaming": {
             "label": "Planet Streaming",
             "active": "True",
-            "url": "https://planet-streaming2.com/"
+            "url": "https://wvw.planet-streaming2.com/"
         },
         "pluto_tv": {
             "label": "Pluto TV",
@@ -266,7 +271,7 @@
         },
         "serie_streaming": {
             "label": "S\u00e9rie Streaming",
-            "active": "True",
+            "active": "False",
             "url": "https://serie-streaming.plus/"
         },
         "series_en_streaming": {
@@ -276,7 +281,7 @@
         },
         "series_stream": {
             "label": "Series Stream",
-            "active": "True",
+            "active": "False",
             "url": "https://wwv.series-stream.cc/"
         },
         "siteonefichier": {
@@ -312,7 +317,7 @@
         "streaminz": {
             "label": "Streaminz",
             "active": "True",
-            "url": "https://www.streaminz.us/"
+            "url": "https://www.streaminz.ink/"
         },
         "streamonsport": {
             "label": "Streamonsport",
@@ -332,7 +337,7 @@
         "toonanime": {
             "label": "Toonanime",
             "active": "True",
-            "url": "https://vvww.toonanime.cc/"
+            "url": "https://wvvw.toonanime.cc/"
         },
         "topimdb": {
             "label": "Top IMDB",
@@ -351,12 +356,12 @@
         },
         "vf_film": {
             "label": "VF Film",
-            "active": "True",
+            "active": "False",
             "url": "https://vf-film.top/"
         },
         "vf_serie": {
             "label": "VF S\u00e9rie",
-            "active": "True",
+            "active": "False",
             "url": "https://vf-serie.site/"
         },
         "vfilms": {
@@ -376,18 +381,18 @@
         },
         "voirseries_best": {
             "label": "VoirSeries",
-            "active": "True",
+            "active": "False",
             "url": "https://voirseries.io/"
         },
         "vostfree": {
             "label": "Vostfree",
             "active": "True",
-            "url": "https://vostfree.cx/"
+            "url": "https://vostfree.ws/"
         },
         "wawacity": {
             "label": "Wawacity",
             "active": "True",
-            "url": "https://www.wawacity.bond/"
+            "url": "https://www.wawacity.tech/"
         },
         "wiflix": {
             "label": "WiFlix",
@@ -402,7 +407,7 @@
         "zone_streaming": {
             "label": "Zone Streaming",
             "active": "True",
-            "url": "http://www.zone-streaming.fr/"
+            "url": "https://www.zone-streaming.fr/"
         }
     }
 }

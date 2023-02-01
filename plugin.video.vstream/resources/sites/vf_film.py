@@ -108,7 +108,7 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
@@ -150,7 +150,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '>([^<]+)</a> <a class="next page-numbers" href="([^"]+)">Suivant'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page/([0-9]+)', sNextPage).group(1)
@@ -175,13 +175,13 @@ def showHoster():
     # hoster
     sPattern = 'tplayernv.+?<span>([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         hosters = aResult[1]
         numHoster = 0
         # url        
         sPattern = 'class="TPlayerTb.+?src=(?:"|&quot;)(.+?)(?:"|&quot;)'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             for aEntry in aResult[1]:
                 
                 oHoster = cHosterGui().checkHoster(hosters[numHoster])
@@ -194,7 +194,7 @@ def showHoster():
                 sPattern = '<iframe.+?src="([^"]+)'
                 aResult = oParser.parse(sHtmlContent, sPattern)
     
-                if aResult[0] is True:
+                if aResult[0]:
                     sHosterUrl = aResult[1][0]
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
                     if oHoster != False:
