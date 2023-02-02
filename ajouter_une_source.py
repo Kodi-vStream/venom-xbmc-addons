@@ -334,13 +334,14 @@ def showMovies(sSearch=''):
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    # le plus simple et de faire un VSlog(str(aResult))
+    
+    # Le plus simple est de faire un VSlog(str(aResult)),
     # dans le fichier log de Kodi vous pourrez voir un array de ce que recupere le script
     # et modifier sPattern si besoin
     VSlog(str(aResult))  # Commenter ou supprimer cette ligne une fois fini
 
     # affiche une information si aucun resulat
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
     if aResult[0]:
