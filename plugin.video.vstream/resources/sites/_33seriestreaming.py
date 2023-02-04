@@ -223,7 +223,7 @@ def showMovies(sSearch=''):
 
             if sSearch:
                 if not oUtil.CheckOccurence(sSearchText, sTitle):
-                    continue    # Filtre de recherche
+                    continue  # Filtre de recherche
 
             sDisplayTitle = sTitle
             sDesc = ''
@@ -232,7 +232,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sYear', sYear)
 
-            if '/series' in sUrl2:
+            if '/series' in sUrl2 or '/series' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
@@ -425,7 +425,7 @@ def hostersLink():
     oRequest.addHeaderEntry('Referer', referer)
     oRequest.addHeaderEntry('Accept', '*/*')
     oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    
+
     # Fonctionnement différent entre film et serie
     if 'episode' in pdata:
         oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
@@ -439,7 +439,7 @@ def hostersLink():
        oRequest.addMultipartFiled(pdata)
 
     sHtmlContent = oRequest.request()
-        
+
     sPattern = '(http[^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
