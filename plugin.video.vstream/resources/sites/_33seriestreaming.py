@@ -361,9 +361,9 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     if isSerie:  # episode d'une série
-        sPattern = 'class="ser_pl" data-name="([^"]+)" data-hash="([^"]+)" data-episode="(\d+)".+?">([^<]+).+?"><img src="([^\.]+)'
+        sPattern = 'class="ser_pl" data-name="([^"]+)" data-hash="([^"]+)" data-episode="(\d+)".+?">([^<]+).+?img src="([^\.]+)'
     else:        # Film
-        sPattern = 'class="nopl" data-id="(\d+)" data-name="([^"]+)" data-hash="([^"]+)".+?">([^<]+).+?"><img src="([^\.]+)'
+        sPattern = 'class="nopl" data-id="(\d+)" data-name="([^"]+)" data-hash="([^"]+).+?">([^<]+).+?img src="([^\.]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -434,9 +434,9 @@ def hostersLink():
         # import string
         # boundary = ''.join(random.sample(string.ascii_letters + string.digits, 16))
         # oRequest.addHeaderEntry('Content-Type', 'multipart/form-data; boundary=----WebKitFormBoundary%s' % boundary)
-       import ast
-       pdata = ast.literal_eval(pdata)
-       oRequest.addMultipartFiled(pdata)
+        import ast
+        pdata = ast.literal_eval(pdata)
+        oRequest.addMultipartFiled(pdata)
 
     sHtmlContent = oRequest.request()
 
