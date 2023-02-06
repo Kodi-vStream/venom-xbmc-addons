@@ -3,7 +3,7 @@
 #
 from requests import post, Session, Request, RequestException, ConnectionError
 from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isMatrix
-from resources.lib.util import urlEncode, urlHostName
+from resources.lib.util import urlHostName
 
 import requests.packages.urllib3.util.connection as urllib3_cn
 import socket
@@ -256,19 +256,23 @@ class cRequestHandler:
                     # Default
                     CLOUDPROXY_ENDPOINT = 'http://' + addon().getSetting('ipaddress') + ':8191/v1'
 
-                    # Ont fait une requete.
-                    json_response = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, json={
-                        'cmd': 'request.%s' % method.lower(),
-                        'url': self.__sUrl
-                    })
+                    json_response = False
+                    try:
+                        # On fait une requete.
+                        json_response = post(CLOUDPROXY_ENDPOINT, headers=self.__aHeaderEntries, json={
+                            'cmd': 'request.%s' % method.lower(),
+                            'url': self.__sUrl
+                        })
+                    except:
+                        dialog().VSerror("%s (%s)" % ("Page protegee par Cloudflare, essayez FlareSolverr", urlHostName(self.__sUrl)))
 
-                    http_code = json_response.status_code
-                    response = json_response.json()
-                    if 'solution' in response:
-                        if self.__sUrl != response['solution']['url']:
-                            self.__sRealUrl = response['solution']['url']
-
-                        sContent = response['solution']['response']
+                    if json_response:
+                        response = json_response.json()
+                        if 'solution' in response:
+                            if self.__sUrl != response['solution']['url']:
+                                self.__sRealUrl = response['solution']['url']
+    
+                            sContent = response['solution']['response']
 
             if self.oResponse and not sContent:
                 # Ignorer ces deux codes erreurs.
