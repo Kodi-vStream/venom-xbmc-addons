@@ -13,6 +13,9 @@ Historique des modifications
 ==================================================================================
 
 
+*** 2.4.3***
+- CloudFlare : Compatibilité avec FlareSolverr 3
+
 *** 2.4.0***
 - Kodi 20 : Compatibilité avec différents OS
 - uptobox : compatibilité nouvelle version du site
