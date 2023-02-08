@@ -362,7 +362,7 @@ def showMovies(sSearch=''):
 
     titles = set()
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         total = len(aResult[1])
@@ -433,7 +433,7 @@ def showMovies(sSearch=''):
         if sSearch:
             sPattern = 'name="nextlink" id="nextlink" onclick="javascript:list_submit\(([0-9]+)\); return\(false\)" href="#">Suivant'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if aResult[0] is True:
+            if aResult[0]:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', siteUrl)
                 oOutputParameterHandler.addParameter('misc', sMisc)
@@ -462,7 +462,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<a href="([^"]+)">Suivant &.+?</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         return aResult[1][0]
 
     return False
@@ -512,7 +512,7 @@ def showMoviesLinks():
     sPattern = '<a class="btn-other" href="([^<]+)">([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -666,7 +666,7 @@ def showLinks():
     if (aResult[0] is False) and float(size) > 4.85:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         if 'saison' in sUrl:
             aResult[1].insert(0, ('Episode 1', '', ''))
 
@@ -771,7 +771,7 @@ def getHost():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
 
         for aEntry in aResult[1]:
             sHosterUrl = aEntry

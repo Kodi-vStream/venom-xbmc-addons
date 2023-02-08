@@ -81,7 +81,7 @@ def showGenres():
     sPattern = '<li><a href="([^>]+)">([^<]+)</a></li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -113,10 +113,10 @@ def showMovies(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -151,7 +151,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<a href="([^"]+)">suivante</a></li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         return aResult[1][0]
 
     return False
@@ -173,11 +173,11 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     # lien dailymotion
-    if aResult[0] is False:
+    if not aResult[0]:
         sPattern = 'src="([^"]+)\?.+?" allowfullscreen></iframe>'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
@@ -196,7 +196,7 @@ def showHosters():
         if vidpremium != -1:
             sPattern = "window.location.href = '([^']+)';"
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if aResult[0] is True:
+            if aResult[0]:
                 sHosterUrl = aResult[1][0].replace('download-', '').replace('.html', '')
 
                 sHosterUrl = 'http://videos.lesdebiles.com/' + sHosterUrl + '.mp4'

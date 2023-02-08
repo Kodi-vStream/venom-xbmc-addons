@@ -108,10 +108,10 @@ def showGenresA():
     sPattern = '<a href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = URL_MAIN + aEntry[0]
@@ -139,10 +139,10 @@ def showGenresD():
     sPattern = '<a href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = URL_MAIN + aEntry[0]
@@ -182,10 +182,10 @@ def showSeries():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME, large=(total>50))
         oOutputParameterHandler = cOutputParameterHandler()
@@ -237,10 +237,10 @@ def showEpisode(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()

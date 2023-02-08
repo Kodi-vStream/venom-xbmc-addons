@@ -102,7 +102,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if sSearchText is not False:
+    if sSearchText:
         sUrl += sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -202,7 +202,7 @@ def showMovies(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
     else:
@@ -223,7 +223,7 @@ def showMovies(sSearch=''):
 
             if sSearch:
                 if not oUtil.CheckOccurence(sSearchText, sTitle):
-                    continue    # Filtre de recherche
+                    continue  # Filtre de recherche
 
             sDisplayTitle = sTitle
             sDesc = ''
@@ -232,7 +232,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sYear', sYear)
 
-            if '/series' in sUrl2:
+            if '/series' in sUrl2 or '/series' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
@@ -280,7 +280,7 @@ def showSaisons():
     sPattern = 'grid-item" href="([^"]+).+?-src="([^"]*).+?(saison \d+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1][::-1]:
             sUrl2 = aEntry[0]
@@ -321,7 +321,7 @@ def showEpisodes():
     sPattern = 'href="([^"]+).+?(épisode \d+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -361,13 +361,13 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     if isSerie:  # episode d'une série
-        sPattern = 'class="ser_pl" data-name="([^"]+)" data-hash="([^"]+)" data-episode="(\d+)".+?">([^<]+).+?"><img src="([^\.]+)'
+        sPattern = 'class="ser_pl" data-name="([^"]+)" data-hash="([^"]+)" data-episode="(\d+)".+?">([^<]+).+?img src="([^\.]+)'
     else:        # Film
-        sPattern = 'class="nopl" data-id="(\d+)" data-name="([^"]+)" data-hash="([^"]+)".+?">([^<]+).+?"><img src="([^\.]+)'
+        sPattern = 'class="nopl" data-id="(\d+)" data-name="([^"]+)" data-hash="([^"]+).+?">([^<]+).+?img src="([^\.]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         sUrl2 = URL_MAIN + 'engine/ajax/controller.php'
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
@@ -425,7 +425,7 @@ def hostersLink():
     oRequest.addHeaderEntry('Referer', referer)
     oRequest.addHeaderEntry('Accept', '*/*')
     oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    
+
     # Fonctionnement différent entre film et serie
     if 'episode' in pdata:
         oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
@@ -434,23 +434,23 @@ def hostersLink():
         # import string
         # boundary = ''.join(random.sample(string.ascii_letters + string.digits, 16))
         # oRequest.addHeaderEntry('Content-Type', 'multipart/form-data; boundary=----WebKitFormBoundary%s' % boundary)
-       import ast
-       pdata = ast.literal_eval(pdata)
-       oRequest.addMultipartFiled(pdata)
+        import ast
+        pdata = ast.literal_eval(pdata)
+        oRequest.addMultipartFiled(pdata)
 
     sHtmlContent = oRequest.request()
-        
+
     sPattern = '(http[^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             sHosterUrl = aEntry
             if 'userload' in sHosterUrl:
                 sHosterUrl = sHosterUrl + "|Referer=" + URL_MAIN
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if oHoster is not False:
+            if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

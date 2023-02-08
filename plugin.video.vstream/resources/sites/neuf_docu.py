@@ -138,10 +138,10 @@ def showMovies(sSearch=''):
     sPattern = 'class="attachment-medium.+?" data-src="([^"]+)".+?<a href="([^"<]+)"[^<>]+>([^<>]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -176,7 +176,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = 'role=\'navigation\'.+?class=\'pages\'>Page.+?sur ([^<]+).+?rel="next" href="([^"]+)">»'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         VSlog(sNextPage)
@@ -201,7 +201,7 @@ def showHosters():
     sPattern = '<a href="([^"]+)" title=".+?".+?</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             if "clictune" in aEntry:

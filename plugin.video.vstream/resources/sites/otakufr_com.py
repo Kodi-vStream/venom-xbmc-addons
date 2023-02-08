@@ -81,10 +81,10 @@ def showMovies(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -131,7 +131,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '>([^<]+)</a></li><li class="page-item"> <a class="next page-link" href="([^"]+)">Next'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -174,7 +174,7 @@ def showAlpha():
     sPattern = '<a href="([^<]+)">([A-Z#])</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -200,7 +200,7 @@ def showAZ():
     sPattern = 'has-large-font-size.+?<strong>([^<]+)|<li><a href="([^"]+).+?>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     bValid = False
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
@@ -230,19 +230,19 @@ def showEpisodes():
     sDesc = ''
     sPattern = 'Synopsis:(.*?)(?:<ul|class="|Autre Nom)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sDesc = aResult[1][0]
         sDesc = cleanDesc(sDesc)
 
     sThumb = ''
     sPattern = 'ImageObject.*?primaryimage.+?"(https.*?jpg)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sThumb = aResult[1][0]
 
     sPattern = '(?:right">|<\\/a>)\\s*<a href="(https.+?\\/episode\\/.+?)".+?list-group-item.+?item-action">([^<]+)(?:Vostfr|Vf)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in reversed(aResult[1]):
             sUrl = aEntry[0]
@@ -273,7 +273,7 @@ def showLinks():
     list_hostname = []
     sPattern = 'aria-selected="true">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             list_hostname.append(aEntry)
 
@@ -281,7 +281,7 @@ def showLinks():
     sPattern = 'iframe.+?src="([^"]*).+?id="([^"]*)' # normalement on devrait correler le valeur de l'id avec list_hostname
     aResult = oParser.parse(sHtmlContent, sPattern)
     i = 0
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -325,7 +325,7 @@ def showHosters():
 
         sPattern = "data-url='([^']+)'"
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             sHosterUrl = aResult[1][0]
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -382,7 +382,7 @@ def cleanDesc(sDesc):
     oParser = cParser()
     sPattern = '(<.+?>)'
     aResult = oParser.parse(sDesc, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             sDesc = sDesc.replace(aEntry, '')
     return sDesc

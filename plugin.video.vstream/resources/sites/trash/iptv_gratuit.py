@@ -143,7 +143,7 @@ def showDailyList():
     sPattern = '<h2 class="entry-title"><a href="(.+?)" rel="bookmark">(.+?)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -178,7 +178,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = 'class="next page-numbers" href="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         return aResult[1][0]
 
     return False
@@ -196,7 +196,7 @@ def showAllPlaylist():  # On recupere les differentes playlist si il y en a
     sPattern = '<a class="more-link" title="(.+?)".+?href="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         sTitleTest = ''
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)

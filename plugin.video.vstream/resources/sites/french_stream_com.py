@@ -331,7 +331,7 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -395,7 +395,7 @@ def showSeries(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -444,7 +444,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = 'href="([^"]+)">>></a>.+?>(\d+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNextPage = URL_MAIN[:-1] + aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
@@ -453,7 +453,7 @@ def __checkForNextPage(sHtmlContent):
 
     sPattern = '>([^<]+)</a>\s*<a href="([^"]+)">>>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = URL_MAIN[:-1] + aResult[1][0][1]
         sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
@@ -476,7 +476,7 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
@@ -513,7 +513,7 @@ def showEpisode():
 
     sPattern = '</i> *(VF|VOSTFR) *</div>|<a id="([^"]+)".+?target="seriePlayer".+?"([^"]+)" data-rel="([^"]+)"'
     aResult = re.findall(sPattern, sHtmlContent)
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
     sLang = ''
@@ -558,7 +558,7 @@ def showSeriesHosters():
     sPattern = '<div id="' + sData + '" class="fullsfeature"(.+?)<div style='
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         block = aResult[1][0]
     else:
         return
@@ -566,7 +566,7 @@ def showSeriesHosters():
     sPattern = '<a (?:id="([^"]+)"|onclick=".+?") *surl="([^"]+)"'
     aResult = oParser.parse(block, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             if aEntry[0]:
@@ -611,7 +611,7 @@ def mangaHosters():
     sPattern = '</i> *(VF|VOSTFR) *</div>|<a style="padding:5px 0;" id=".+?" *cid="([^"]+)".+?</i>([^<]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             if aEntry[0]:
@@ -627,7 +627,7 @@ def mangaHosters():
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     # redirection en cas d'absence de résultat
-    if aResult[0] is False:
+    if not aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)

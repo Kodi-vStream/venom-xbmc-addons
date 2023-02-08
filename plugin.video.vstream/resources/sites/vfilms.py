@@ -112,7 +112,7 @@ def showGenres():
     sPattern = '<li><a href="([^<]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -155,7 +155,7 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -192,7 +192,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<span>[\d]+</span> <a href="([^"]+).+?">(\d+)</a></div'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNextPage = aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('page/([0-9]+)', sNextPage).group(1)
@@ -226,7 +226,7 @@ def showSaisons():
     sPattern = '<a href="([^"]+)"><div class="thumb"><div class="th-in"><div class="th-img img-resp-v"><img class=" ls-is-cached lazyloaded" src="([^"]+)" alt="\d+ Season"><figcaption>(Saison \d+)<\/figcaption>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -260,10 +260,10 @@ def showEpisodes():
     sPattern = 'href="([^"]+)"><div class="fsa-ep">.+?</span>([^<]+)</'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -292,7 +292,7 @@ def showHosters():
     sPattern = 'data-playerlink="([^"]+).+?<span class="serv">([^<]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry[0]

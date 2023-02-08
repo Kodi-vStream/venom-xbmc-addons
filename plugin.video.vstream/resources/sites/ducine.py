@@ -197,7 +197,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<span>[\d+]</span><a href="([^"]+).+?>(\d+)</a>\s*</div'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNextPage = aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('([0-9]+).html', sNextPage).group(1)
@@ -231,7 +231,7 @@ def showSaisons():
     sPattern = '([^"]+)" title="[^"]+" class="part13">Tous les épisodes.+?part12">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -263,10 +263,10 @@ def showEpisodes():
     sPattern = 'href="([^"]+)"><div class="fsa-ep">.+?</span>([^<]+)</'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -296,7 +296,7 @@ def showHosters():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry[0]

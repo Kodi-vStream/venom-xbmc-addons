@@ -72,7 +72,7 @@ def showGenres():
 
     sPattern = 'href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -97,7 +97,7 @@ def showTvShows():
 
     sPattern = 'href="([^"]+)">([^<]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -163,7 +163,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = 'title>TopReplay - Page [\d+] sur (\d+).+?href="([^"]+)"\s*>Chargez plus'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('/page/([0-9]+)', sNextPage).group(1)
@@ -173,7 +173,7 @@ def __checkForNextPage(sHtmlContent):
     # premiere page
     sPattern = 'href="([^"]+)"\s*>Chargez plus'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNextPage = aResult[1][0]
         sNumberNext = re.search('/page/([0-9]+)', sNextPage).group(1)
         sPaging = sNumberNext
@@ -196,10 +196,10 @@ def showLinks():
     sPattern = '<a class="myButton" href="([^<]+)" target="_blank"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for sHosterUrl in aResult[1]:
             oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
@@ -238,7 +238,7 @@ def showHosters():
             debug=False
         )
 
-        if aResult[0] is True:
+        if aResult[0]:
             data = "_method=" + aResult[1][0] + "&_csrfToken=" + aResult[1][1] + "&ref=&f_n=" + aResult[1][2]\
                               + "&g-recaptcha-response=" + test + "&_Token%5Bfields%5D=" + Quote(aResult[1][3])\
                               + "&_Token%5Bunlocked%5D=" + Quote(aResult[1][4])
@@ -257,7 +257,7 @@ def showHosters():
         sPattern = '<input type="hidden".+?value="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if aResult[0] is True:
+        if aResult[0]:
             data = "_method=" + aResult[1][0] + "&_csrfToken=" + aResult[1][1] + "&ad_form_data="\
                               + Quote(aResult[1][2]) + "&_Token%5Bfields%5D=" + Quote(aResult[1][3])\
                               + "&_Token%5Bunlocked%5D=" + Quote(aResult[1][4])
@@ -277,7 +277,7 @@ def showHosters():
 
             sPattern = 'url":"([^"]+)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            if aResult[0] is True:
+            if aResult[0]:
                 sHosterUrl = aResult[1][0]
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if oHoster != False:

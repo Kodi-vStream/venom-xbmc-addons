@@ -137,7 +137,7 @@ def showSeries(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         total = len(aResult[1])
@@ -183,7 +183,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '>([^<]+)</a></div><div class="naviright"><a href="([^"]+?)" >Suivant'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -205,7 +205,7 @@ def showSaisons():
     sPattern = 'movie-poster.+?href="([^"]+)".+?src="([^"]+)" alt="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in reversed(aResult[1]):
             sUrl = aEntry[0]
@@ -235,7 +235,7 @@ def showEpisodes():
     try:
         sPattern = 'line-clamp line-hide">(.+?)</div>'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             sDesc = aResult[1][0].replace('<br />', '').replace('</div>', '')
     except:
         pass
@@ -245,7 +245,7 @@ def showEpisodes():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     ListeUrl = []
-    if aResult[0] is True:
+    if aResult[0]:
         ListeUrl = [(sUrl, aResult[1][0])]
 
     # Recuperation des suivants
@@ -253,7 +253,7 @@ def showEpisodes():
     aResult = oParser.parse(sHtmlContent, sPattern)
     ListeUrl = ListeUrl + aResult[1]
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in ListeUrl:
             sUrl = aEntry[0]
@@ -292,7 +292,7 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             # langue

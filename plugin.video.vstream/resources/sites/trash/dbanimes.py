@@ -91,7 +91,7 @@ def showAlpha():
     sPattern = 'class=liste><a href=(\S+).+?mb-2">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
@@ -148,10 +148,10 @@ def showAnimes(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -204,7 +204,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '>(\d+)</a></li><li><a class="next page-numbers" href="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -228,19 +228,19 @@ def showEpisodes():
     sDesc = ''
     sPattern = 'Synopsis\s*:(.*?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', cleanDesc(aResult[1][0]))
 
     sYear = ''
     sPattern = 'Année de Production.+?(\d{4}).+?/div'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sYear = aResult[1][0]
 
     sPattern = 'href="([^"]+)" class="btn btn-default mb-2" title=.+?>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME, large=total > 50)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -280,7 +280,7 @@ def showHosters():
     sPattern = '<iframe.+?src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     # i = 0
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             sHosterUrl = aEntry.strip()
             if sHosterUrl.startswith('//'):
@@ -317,7 +317,7 @@ def cleanDesc(sDesc):
     oParser = cParser()
     sPattern = '(<.+?>)'
     aResult = oParser.parse(sDesc, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             sDesc = sDesc.replace(aEntry, '')
     return sDesc

@@ -320,10 +320,10 @@ def showMovies(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         sDesc = ''
         sYear = ''
@@ -446,7 +446,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = 'pagination"><span>Page \d+ de (\d+)</span>.+?current">\d+</span><ahref=.([^"|\']+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -487,7 +487,7 @@ def showSaisons():
     sPattern = "class='numerando'>(\d+) - (\d+)<.+?href='([^']*)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             iSaison = aEntry[0]
@@ -523,16 +523,16 @@ def showListEpisodes():  # plus utilisé
     oParser = cParser()
 
     aResult = oParser.parse(listeUrlEpisode, sPattern)
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             listeUrlEpisode2.append(aEntry)
 
     aResult = oParser.parse(listeStitle, sPattern)
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             listeStitle2.append(aEntry)
     i = 0
@@ -577,10 +577,10 @@ def showEpisodes():
     sPattern = "class='numerando'>([^<]*).+?href='([^']*)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             iSaison = re.search('([0-9]+)', aEntry[0]).group(1)
@@ -624,7 +624,7 @@ def showHosters():
     sPattern = "data-type='([^']*).*?post='([^']*).*?nume='([^']*).*?title'>([^<]*)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             datatype = aEntry[0]

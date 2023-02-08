@@ -91,7 +91,7 @@ def showMovies(sSearch=''):
     sPattern = 'class="post-thumbnail">.+?href="([^"]+)" *title="([^"]+).+?src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -124,7 +124,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '>([^<]+)</a></li><li class="pg-item"><a class="next page-numbers" href="([^"]+)">Suivant'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('/page/([0-9]+)', sNextPage).group(1)
@@ -197,7 +197,7 @@ def showLinks():
     aResult = oParser.parse(sHtmlContent, sPattern)
     sLang = ''
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -255,7 +255,7 @@ def protectStreamByPass(url):
     sPattern = 'var k=\"([^<>\"]*?)\";'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         postdata = 'k=' + aResult[1][0]
 
         dialog().VSinfo('Décodage en cours', 'Patientez', 5)
@@ -282,13 +282,13 @@ def protectStreamByPass(url):
         # recherche du lien embed
         sPattern = '<iframe src=["\']([^<>"\']+?)["\']'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             return aResult[1][0]
 
         # recherche d'un lien redirige
         sPattern = '<a class=.button. href=["\']([^<>"\']+?)["\'] target=._blank.>'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             return aResult[1][0]
 
     return ''

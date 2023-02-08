@@ -90,7 +90,7 @@ def showSearch():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sSearchText = oGui.showKeyBoard()
-    if sSearchText is not False:
+    if sSearchText:
         sUrl = sUrl + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -120,10 +120,10 @@ def showGenres():
     sPattern = 'a href="([^"]+)" class="an">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     triAlpha = []
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -216,7 +216,7 @@ def __checkForNextPage(sHtmlContent):
         sPattern = "</a><span>.+?<a href='([^']+).+?</span>.+?>([^<]+)</a></div></div>\s*</div>\s*</div>"
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         if 'suivanthds' in sHtmlContent:  # genre
             sNumberMax = aResult[1][0][0]
             sNextPage = aResult[1][0][1]
@@ -252,7 +252,7 @@ def showSaisons():
 
     sPattern = 'itemprop="description">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
 
     start = sHtmlContent.find('<div class="contentomovies">')
@@ -260,10 +260,10 @@ def showSaisons():
     sPattern = '<a href="([^"]+).+?class="nop">Saison([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in reversed(aResult[1]):
             sUrl2 = aEntry[0]
@@ -294,7 +294,7 @@ def ShowEpisodes():
     iSaison = ''
     sPattern = 'saison.(.+?)'
     aResult = oParser.parse(sUrl, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         iSaison = ' Saison ' + aResult[1][0].replace(' ', '')
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -305,10 +305,10 @@ def ShowEpisodes():
     sPattern = '<a href="([^"]+).+?class="titverle">.+?class="nop">.+?pisode([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
@@ -342,14 +342,14 @@ def showLinks():
     sHtmlContent = oRequestHandler.request()
     sPattern = 'itemprop="description">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
 
     sPattern = '<img src=".(vf|vostfr).png|data-url="([^"]+).+?data-code="([^"]+).+?<span>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sLang = ''
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -379,7 +379,7 @@ def showLinks():
     sPattern = "<img src=\".(vf|vostfr).png|class=.Playersbelba.+?PPl=(.+?)CData=([^']+).+?<.span>.+?<span>([^<]+)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -430,10 +430,10 @@ def showHosters():
         oParser = cParser()
         sPattern = 'class="DownloadSection.+?href="([^"]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             sHosterUrl = aResult[1][0]
             oHoster = oHosterGui.checkHoster(sHosterUrl)
-            if oHoster is not False:
+            if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -441,7 +441,7 @@ def showHosters():
     else:
         sHosterUrl = urlReal
         oHoster = oHosterGui.checkHoster(sHosterUrl)
-        if oHoster is not False:
+        if oHoster:
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             oHosterGui.showHoster(oGui, oHoster, sHosterUrl, sThumb)

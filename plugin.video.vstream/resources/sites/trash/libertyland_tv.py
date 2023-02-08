@@ -190,10 +190,10 @@ def showMovies(sSearch=''):
     sHtmlContent = oRequestHandler.request()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -297,7 +297,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<li><a href="([^"]+)" class="next">Suivant'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         return URL_MAIN[:-1] + aResult[1][0]
 
     return False
@@ -336,10 +336,10 @@ def showSaisonsEpisodes():
     sPattern = '(?:<h2 class="heading-small">(Saison .+?)<)|(?:<li><a title=".+? \| (.+?)" class="num_episode" href="([^"]+)")'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
@@ -388,7 +388,7 @@ def showLinks():
     sPattern = '<div title="([^"]+)".+?streaming="([^"]+)" heberger="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -445,7 +445,7 @@ def showHosters():
     sPattern = '<iframe.+?src="([^"]+)".+?"qualite":"([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry[0]
@@ -465,7 +465,7 @@ def showHosters():
         # au cas où pas de qualité
         sPattern = '<iframe.+?src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             for aEntry in aResult[1]:
                 sHosterUrl = aEntry
                 if sHosterUrl.startswith('//'):

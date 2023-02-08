@@ -388,7 +388,7 @@ def showSearchMovie():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if sSearchText is not False:
+    if sSearchText:
         showMovies(sSearchText.replace(' ', '+'))
         # oGui.setEndOfDirectory()
         return
@@ -398,7 +398,7 @@ def showSearchSerie():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if sSearchText is not False:
+    if sSearchText:
         showSeries(sSearchText.replace(' ', '+'))
         # oGui.setEndOfDirectory()
         return
@@ -408,7 +408,7 @@ def showSearchActor():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if sSearchText is not False:
+    if sSearchText:
         showActors(sSearchText.replace(' ', '+'))
         # oGui.setEndOfDirectory()
         return

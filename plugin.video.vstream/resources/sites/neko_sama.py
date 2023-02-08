@@ -134,10 +134,10 @@ def showLastEp():
     sPattern = '"episode":"([^"]+)".+?","title":"([^"]+)".+?"lang":"([^"]+)".+?"anime_url":"([^"]+)".+?"url_bg":"([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = URL_MAIN[:-1] + aEntry[3]
@@ -168,10 +168,10 @@ def showMovies():
     sPattern = '<a href="([^"]+)">.+?src="([^"]+)" alt="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = URL_MAIN[:-1] + aEntry[0]
@@ -197,7 +197,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '>([^<]+)</a><a href="([^"]+)" class=""><svg'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = URL_MAIN[:-1] + aResult[1][0][1]
         sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
@@ -240,10 +240,10 @@ def showSaisonEpisodes():
     sPattern = '"episode":"([^"]+)".+?"url":"([^"]+)","url_image":"([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sTitle = sMovieTitle + ' ' + aEntry[0].replace('Ep. ', 'E')
@@ -272,7 +272,7 @@ def showSeriesHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry

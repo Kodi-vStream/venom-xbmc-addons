@@ -78,10 +78,10 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if sSearch:
@@ -118,7 +118,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = 'class="next" href="([^"]+)".+?<\/a><a class="last" href="https.+?page\/(\d+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         sNextPage = aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('/page/([0-9]+)', sNextPage).group(1)
@@ -143,10 +143,10 @@ def showHosters():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')

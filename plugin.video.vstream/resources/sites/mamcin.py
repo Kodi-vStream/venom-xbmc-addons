@@ -68,10 +68,10 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -109,7 +109,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<li class="previous"><a href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         return aResult[1][0]
 
     return False
@@ -131,7 +131,7 @@ def showHosters():
     # add dailymotion sources
     sPattern = '<iframe.+?src="(.+?)?logo=0&info=0"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             if not aEntry.startswith('http'):
                 sHosterUrl = 'https:' + aEntry
@@ -146,7 +146,7 @@ def showHosters():
     # add sendvid sources
     sPattern = '<(?:source|iframe).+?src="(.+?)" width'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             sHosterUrl = aEntry
             if not sHosterUrl.startswith('http'):

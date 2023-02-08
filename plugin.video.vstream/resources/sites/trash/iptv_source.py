@@ -40,7 +40,7 @@ def showPays():
     sPattern = '<li class="cat-item cat-item-.+?"><a href="([^"]+).+?>([^<]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -71,7 +71,7 @@ def showDailyList():
     sPattern = '<h3 class="entry-title td-module-title"><a href="([^"]+)" rel="bookmark" title="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -103,7 +103,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = ' class="last".+?href="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         return aResult[1][0]
 
     return False
@@ -119,7 +119,7 @@ def showAllPlaylist():
     sPattern = '<a href="([^"]+)">Download ([^<]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()

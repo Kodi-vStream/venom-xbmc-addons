@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 import imp
+import platform
 import random
 import threading
 import time
@@ -65,12 +66,22 @@ URL_SEARCH_MISC = (URL_MAIN + '&sMedia=divers&sSearch=', 'showMovies')
 
 CACHE = 'special://home/userdata/addon_data/plugin.video.vstream/%s_cache.db' % SITE_IDENTIFIER
 
-if not isMatrix():
+# Dépend de la version de python
+PYVERSION = platform.python_version()
+VSlog('Pastebin - Python version : ' + PYVERSION)
+if '3.10' in PYVERSION:
+    REALCACHE = VSPath(CACHE)
+    PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt310.pyc'
+elif '3.11' in PYVERSION:
+    REALCACHE = VSPath(CACHE)
+    PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt311.pyc'
+elif '2.' in PYVERSION:
     REALCACHE = VSPath(CACHE).decode('utf-8')
     PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt2.pyc'
-else:
+else:  # autre Versions 3.0x
     REALCACHE = VSPath(CACHE)
     PATH = 'special://home/addons/plugin.video.vstream/resources/lib/pasteCrypt3.pyc'
+
 
 # Pour le multithreading
 lock = threading.Semaphore()
@@ -481,6 +492,7 @@ class PasteContent:
                 if lines:
                     hasMovies = True
             except Exception as e:
+                VSlog('Exception \'%s\', ID=%s, e=%s' % (SITE_IDENTIFIER, pasteBin, e))
                 pass
 
         if not hasMovies:
@@ -1863,7 +1875,7 @@ def showResolution():
     oInputParameterHandler = cInputParameterHandler()
     siteUrl = oInputParameterHandler.getValue('siteUrl')
     oOutputParameterHandler = cOutputParameterHandler()
-    resolutions = [('4K', '4K [2160p]'), ('1080P', 'fullHD [1080p]'), ('720P', 'HD [720p]'), ('SD', 'SD'), ('3D', '3D')]
+    resolutions = [('DOLBY VISION', 'DOLBY VISION'), ('4K', '4K [2160p]'), ('1080P', 'fullHD [1080p]'), ('720P', 'HD [720p]'), ('SD', 'SD'), ('3D', '3D')]
     for sRes, sDisplayRes in resolutions:
         sUrl = siteUrl + '&sRes=' + sRes
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -1921,7 +1933,7 @@ def showMovies(sSearch=''):
     if 'sYear' in aParams:
         sYear = aParams['sYear']
     if 'sRes' in aParams:
-        sRes = aParams['sRes']
+        sRes = aParams['sRes'].upper()
     if 'sAlpha' in aParams:
         sAlpha = aParams['sAlpha']
     if 'sNetwork' in aParams:
@@ -2152,7 +2164,7 @@ def showMovies(sSearch=''):
 
         if 'film' in sMedia:
             if pbContent.RES >= 0:
-                res = movie[pbContent.RES].strip()
+                res = movie[pbContent.RES].strip().upper()
                 listRes = []
                 if '[' in res:
                     listRes.extend(eval(res))
@@ -2433,7 +2445,7 @@ def getHosterList(siteUrl):
     aParams = dict(param.split('=') for param in params.split('&'))
     sMedia = aParams['sMedia'] if 'sMedia' in aParams else 'film'
     pasteID = aParams['pasteID'] if 'pasteID' in aParams else None
-    sRes = aParams['sRes'] if 'sRes' in aParams else None
+    sRes = aParams['sRes'].upper() if 'sRes' in aParams else None
     searchYear = aParams['sYear'] if 'sYear' in aParams else None
     searchSaison = aParams['sSaison'] if 'sSaison' in aParams else None
     searchEpisode = aParams['sEpisode'] if 'sEpisode' in aParams else None
@@ -2518,7 +2530,7 @@ def getHosterList(siteUrl):
             if len(listLinks) > 0:
                 listResMovie = []
                 idxResMovie = 0
-                res = movie[pbContent.RES].strip()
+                res = movie[pbContent.RES].strip().upper()
                 if '[' in res:
                     listResMovie.extend(eval(res))
                 else:
@@ -2526,7 +2538,7 @@ def getHosterList(siteUrl):
 
                 for link in listLinks:
                     if idxResMovie < len(listResMovie):
-                        resMovie = listResMovie[idxResMovie]
+                        resMovie = listResMovie[idxResMovie].upper()
                         if resMovie and resMovie in '540P576P480P360P':
                             resMovie = 'SD'
                     else:
@@ -2936,9 +2948,6 @@ def adminNbElement():
 
 # Retourne la décompte de média par type
 def getNbMedia():
-    oGui = cGui()
-    addons = addon()
-
     idFilms = set()
     idSeries = set()
     idAnimes = set()
@@ -2959,6 +2968,7 @@ def getNbMedia():
             else:
                 idDivers.add(videoId)
                 
+    oGui = cGui()
     oGui.addText(SITE_IDENTIFIER, 'Films[COLOR coral] (%d) [/COLOR]' % len(idFilms), 'films.png')
     oGui.addText(SITE_IDENTIFIER, 'Séries[COLOR coral] (%d) [/COLOR]' % len(idSeries), 'tv.png')
     oGui.addText(SITE_IDENTIFIER, 'Animés[COLOR coral] (%d) [/COLOR]' % len(idAnimes), 'animes.png')

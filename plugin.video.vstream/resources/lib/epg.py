@@ -27,7 +27,9 @@ class cePg:
     def getEpg(self, sTitle, sTime, noTextBox=False):
         #Si noTextBox == True, ca veux dire que l'appel viens d'une source.
         #Dans ce cas la, on normalise les noms pour faciliter la detection.
-        sUrl = "https://xmltv.ch/xmltv/xmltv-complet_1jour.xml"
+        
+        #sUrl = "https://xmltv.ch/xmltv/xmltv-complet.xml"
+        sUrl = "https://xmltv.ch/xmltv/xmltv-tnt.xml"
 
         # dialog().VSinfo("Chargement du guide TV")
 

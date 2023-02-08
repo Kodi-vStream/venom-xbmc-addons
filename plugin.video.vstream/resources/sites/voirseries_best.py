@@ -117,10 +117,10 @@ def showSerieYears():
     sPattern = 'href=([^ ]+) rel=nofollow><i class=material-icons>date_range</i><br>([0-9]{4})'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1][::-1]:
             sUrl = aEntry[0]
@@ -149,7 +149,7 @@ def showSaisonsEpisodesNews():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sThumb = ''
@@ -225,7 +225,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '>(\d+)</a> <a class="next page-numbers" href=([^ ]+) >Suivant'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page.([0-9]+)', sNextPage).group(1)
@@ -247,13 +247,13 @@ def showSaisons():
     sDesc = ''
     sPattern = 'fsynopsis>\s*<p>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', aResult[1][0])
 
     sPattern = 'class="shortstory">.+?href="([^"]+).+?data-src="([^"]+).+?<figcaption>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -284,22 +284,22 @@ def showEpisodes():
     if not sThumb:
         sPattern = 'fstory-poster.+?data-src=([^ ]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             sThumb = aResult[1][0]
 
     if not sDesc:
         sPattern = 'fsynopsis>\s*<p>([^<]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', aResult[1][0])
 
     sPattern = 'class=saision_LI2>\s*<a href=([^ ]+).+?span>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -329,19 +329,19 @@ def showLinks():
     if 'storage/icon/' in sThumb:
         sPattern = 'poster image">\s*<img src="([^"]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             sThumb = aResult[1][0]
 
     if not sDesc:
         sPattern = 'fsynopsis>\s*<p>([^<]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', aResult[1][0])
 
     sPattern = '<div data-url=([^ ]+).+?id=player_v_DIV_5.*?(?:class="download-server"|)>([^<]+).+?langue ([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
@@ -380,7 +380,7 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry[0]

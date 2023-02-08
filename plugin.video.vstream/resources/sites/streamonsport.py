@@ -109,7 +109,7 @@ def showMovies(sSearch=''):
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #web_pdb.set_trace()
+
     if aResult[0] is False:
         oGui.addText(SITE_IDENTIFIER)
     else:
@@ -175,7 +175,7 @@ def showLive():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     i = 0
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         if aResult[1]:
             for aEntry in aResult[1]:
@@ -294,7 +294,7 @@ def showLink():
     if sHosterUrl:
         sHosterUrl = sHosterUrl.strip()
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if oHoster is not False:
+        if oHoster:
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -496,11 +496,6 @@ def getHosterIframe(url, referer):
     sHtmlContent = str(oRequestHandler.request())
     if not sHtmlContent:
         return False, False
-
-    import xbmcvfs
-    f = xbmcvfs.File('special://userdata/addon_data/plugin.video.vstream/test.txt','w')
-    f.write(sHtmlContent)
-    f.close()
 
     sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
     aResult = re.findall(sPattern, sHtmlContent)

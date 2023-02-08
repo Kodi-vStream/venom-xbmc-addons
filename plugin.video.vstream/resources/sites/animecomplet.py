@@ -63,7 +63,7 @@ def showAlpha():
     sPattern = 'href="#gti_(\d+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             liste.append([str(aEntry), url1 + str(aEntry)])
 
@@ -82,7 +82,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if sSearchText is not False:
+    if sSearchText:
         sUrl = URL_SEARCH[0] + sSearchText
         showAnims(sUrl)
         oGui.setEndOfDirectory()
@@ -118,7 +118,7 @@ def showAnims(sSearch=''):
     iCurrent = 0
     list_simlilar = []
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -176,7 +176,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '>([^<]+)</a><a class="next page.+?href="([^"]+).+?Suivant'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = URL_MAIN + aResult[1][0][1]
         sNumberNext = re.search('paged=([0-9]+)', sNextPage).group(1)
@@ -200,7 +200,7 @@ def showSaisons():
     sPattern = 'colo_cont">.+?>([^<]*)</p>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sDesc = aResult[1][0]
         sDesc = ('[I][COLOR coral]%s[/COLOR][/I] %s') % (' SYNOPSIS : \r\n\r\n', sDesc)
     else:
@@ -210,7 +210,7 @@ def showSaisons():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
@@ -239,7 +239,7 @@ def showEpisodes():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sDesc = ('[I][COLOR grey]%s[/COLOR][/I]') % ('Anime Complet')
-    if aResult[0] is True:
+    if aResult[0]:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
 
     # inutile (pour l'instant)
@@ -249,10 +249,10 @@ def showEpisodes():
     sPattern = '<h2><a href="([^"]+).+?title="([^"]+).+?src=.([^">]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -296,7 +296,7 @@ def seriesHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl2 = aEntry
@@ -353,7 +353,7 @@ def hostersLink():
         sHosterUrl = sHosterUrl + "|Referer=" + URL_MAIN
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if oHoster is not False:
+    if oHoster:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

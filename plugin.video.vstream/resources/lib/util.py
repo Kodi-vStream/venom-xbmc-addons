@@ -67,32 +67,33 @@ class cUtil:
         return str(iMinutes) + ':' + str(iSeconds)
 
     def unescape(self, text):
+
+        # determine si conversion en unicode nécessaire        
+        isStr = isinstance(text, str)
+
         def fixup(m):
             text = m.group(0)
             if text[:2] == '&#':
                 # character reference
-                try:
-                    if text[:3] == '&#x':
-                        return unichr(int(text[3:-1], 16))
-                    else:
-                        return unichr(int(text[2:-1]))
-                except ValueError:
-                    pass
-                except NameError:
+                if isStr:
                     if text[:3] == '&#x':
                         return chr(int(text[3:-1], 16))
                     else:
                         return chr(int(text[2:-1]))
+                else:
+                    if text[:3] == '&#x':
+                        return unichr(int(text[3:-1], 16))
+                    else:
+                        return unichr(int(text[2:-1]))
             else:
                 # named entity
-                try:
-                    text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
-                except KeyError:
-                    pass
-                except NameError:
+                if isStr:
                     text = chr(htmlentitydefs.name2codepoint[text[1:-1]])
+                else:
+                    text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
 
             return text  # leave as is
+
         return re.sub('&#?\w+;', fixup, text)
 
     def titleWatched(self, title):

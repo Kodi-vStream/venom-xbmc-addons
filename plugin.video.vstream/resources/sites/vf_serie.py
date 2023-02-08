@@ -128,10 +128,10 @@ def showSeries(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -178,7 +178,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '>([^<]+)</a><a class="next page-numbers" href="([^"]+)">Next'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = aResult[1][0][1]
         sNumberNext = re.search('page/([0-9]+)', sNextPage).group(1)
@@ -203,7 +203,7 @@ def showSaisons():
     try:
         sPattern = 'Description"><p>([^<]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             sDesc = aResult[1][0]
     except:
         pass
@@ -212,7 +212,7 @@ def showSaisons():
     aResult = oParser.parse(sHtmlContent, sPattern)
     sSaison = ''
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -247,7 +247,7 @@ def showSxE():
     try:
         sPattern = 'Description"><p>([^<]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             sDesc = aResult[1][0]
     except:
         pass
@@ -256,7 +256,7 @@ def showSxE():
     aResult = oParser.parse(sHtmlContent, sPattern)
     sSaison = ''
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -296,7 +296,7 @@ def showHoster():
     sPattern = 'class="TPlayerTb.+?src="([^"]+)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             oRequestHandler = cRequestHandler(aEntry)
@@ -304,7 +304,7 @@ def showHoster():
             sPattern = '<iframe.+?src="([^"]+)'
             aResult = oParser.parse(sHtmlContent, sPattern)
 
-            if aResult[0] is True:
+            if aResult[0]:
                 sHosterUrl = aResult[1][0]
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if oHoster != False:

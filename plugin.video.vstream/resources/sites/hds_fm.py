@@ -244,10 +244,10 @@ def showMovies(sSearch=''):
 
     # itemss = 0
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -328,12 +328,12 @@ def __checkForNextPage(sHtmlContent):
         sPattern = '(\d+)<.a>\s*<a\sclass="next"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0]
 
     sPattern = 'class="next.+?href="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNextPage = aResult[1][0]  # minimum requis
         if 'htpp' not in sNextPage:
             sNextPage = URL_MAIN[:-1] + sNextPage
@@ -369,13 +369,13 @@ def showEpisodes():
     if 'saison' not in sMovieTitle.lower():
         sPattern = 'saison-(\d+)'
         aResult = oParser.parse(sUrl, sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             sMovieTitle = sMovieTitle + ' Saison ' + aResult[1][0]
 
     sPattern = '<div class="Description">.*?>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sDesc = 'Hds Film'
-    if aResult[0] is True:
+    if aResult[0]:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', cleanDesc(aResult[1][0]))
 
     sPattern = 'fa-play-circle-o">.+?(VOSTFR|VF)|id="(?:honey|yoyo)(?:\d+)"\s*href="([^"]+).+?title="([^"]+).+?data-rel="([^"]+)'
@@ -385,7 +385,7 @@ def showEpisodes():
     validEntry = ''
     sLang = ''
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
@@ -433,7 +433,7 @@ def showSeriesHosters():
     sPattern = '<div id="' + sRel_Episode + '" class="fullsfeature".*?<a (id="singh.*?<div style="height)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         # cas ou il n'y a qu'un seul lien  pas de référence  dans <div id="episodexx" class="fullsfeature">
         # le pattern est normalement hs
         if sFirst_Url:
@@ -448,7 +448,7 @@ def showSeriesHosters():
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
-    if aResult[0] is True:
+    if aResult[0]:
         html = aResult[1][0]
         sPattern = 'href="([^"]+).*?aria-hidden'
         aResultUrl = oParser.parse(html, sPattern)
@@ -496,7 +496,7 @@ def showHosters():
     sPattern = '<a style=".+?cid="([^"]+).+?fa-play.+?i>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
             sUrl2 = aEntry[0]
             sHost = aEntry[1].strip().capitalize()
@@ -556,7 +556,7 @@ def cleanDesc(sDesc):
     sPattern = '(Résumé.+?streaming Complet)'
     aResult = oParser.parse(sDesc, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         sDesc = sDesc.replace(aResult[1][0], '')
 
     list_comment = [':', 'en streaming', 'Voir Serie ']

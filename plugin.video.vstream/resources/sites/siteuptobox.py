@@ -33,7 +33,7 @@ SITE_DESC = 'Fichiers sur compte UpToBox'
 URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 NB_FILES = 100
 BURL = URL_MAIN + '?op=my_files'
-API_URL = 'https://uptobox.com/api/user/files?token=none&orderBy=file_created&dir=desc'
+API_URL = 'https://uptobox.com/api/user/files?token=none&orderBy=file_date_inserted&dir=desc'
 URL_MOVIE = ('&path=//', 'showMedias')
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
@@ -722,7 +722,7 @@ def getYear(sMovieTitle, pos):
 
 
 def getLang(sMovieTitle, pos):
-    sPattern = ['VFI', 'VFF', 'VFQ', 'SUBFRENCH', 'TRUEFRENCH', 'FRENCH', 'VF', 'VOSTFR', '[^\w](VOST)[^\w]', '[^\w](VO)[^\w]', 'QC', '[^\w](MULTI)[^\w]', 'FASTSUB']
+    sPattern = ['VFI', 'VFF', 'VFQ', 'SUBFRENCH', 'TRUEFRENCH', '.(FRENCH)', 'VF', 'VOSTFR', '[^\w](VOST)[^\w]', '[^\w](VO)[^\w]', 'QC', '[^\w](MULTI)[^\w]', 'FASTSUB']
     return _getTag(sMovieTitle, sPattern, pos)
 
 
@@ -815,7 +815,7 @@ def upToMyAccount():
 
         sPattern = '{"id":.+?,(?:"size":|"progress":)([0-9]+)'
         aResult = cParser().parse(sHtmlContent, sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             xbmcgui.Dialog().notification('Uptobox', 'Fichier ajouté - %s' % sMovieTitle, xbmcgui.NOTIFICATION_INFO, 2000, False)
         else:
             # pénible ce dialog auth

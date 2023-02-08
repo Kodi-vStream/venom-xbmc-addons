@@ -37,7 +37,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
 
     oOutputParameterHandler.addParameter('siteUrl', SPORT_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Les sports (Genres)', 'sport.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SPORT_GENRES[1], 'Les sports (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', SPORT_LIVE[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_LIVE[1], 'Les sports (En direct)', 'news.png', oOutputParameterHandler)
@@ -57,10 +57,10 @@ def showLive():
     sPattern = '<a class="live" href="([^"]+)">([^<]+)<.a>\s*<br>\s*<a\s*class="live.+?span class="evdesc">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -104,7 +104,7 @@ def showMovies():  # affiche les catégories qui ont des lives'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -144,7 +144,7 @@ def showMovies2():  # affiche les matchs en direct depuis la section showMovie
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         mois = ['filler', 'janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'décembre']
@@ -219,10 +219,10 @@ def showMovies3():  # affiche les videos disponible du live
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -233,8 +233,8 @@ def showMovies3():  # affiche les videos disponible du live
 
             sLang = aEntry[0]
             sLang = cUtil().unescape(sLang)
-            sLang = sLang .encode("utf-8", 'ignore')
             try:
+                sLang = sLang.encode("utf-8", 'ignore')
                 sLang = str(sLang, encoding="utf-8", errors='ignore')
             except:
                 pass
@@ -310,7 +310,7 @@ def showHosters():  # affiche les videos disponible du live
             else:
                 sPattern2 = '(http:\/\/embedded.+?)"'
                 aResult = oParser.parse(sHtmlContent2, sPattern2)
-                if aResult[0] is True:
+                if aResult[0]:
                     url2 = aResult[1][0]
                     oRequestHandler = cRequestHandler(url2)
                     sHtmlContent3 = oRequestHandler.request()
@@ -343,7 +343,7 @@ def showHosters():  # affiche les videos disponible du live
                 sHtmlContent = oRequestHandler.request()
                 sPattern = 'stream.+?"(https.+?)"'
                 aResult = oParser.parse(sHtmlContent, sPattern)
-                if aResult[0] is True:
+                if aResult[0]:
                     sHosterUrl = aResult[1][0]
 
         if 'seenow.tv' in url:
@@ -724,11 +724,6 @@ def showHosters():  # affiche les videos disponible du live
                     sPattern2 = 'function %s\(\) +{\n + return\(\[([^\]]+)' % func
                     aResult = re.findall(sPattern2, sHtmlContent3)
                     
-                    # import xbmcvfs
-                    # f = xbmcvfs.File('special://userdata/addon_data/plugin.video.vstream/test.txt','w')
-                    # f.write(sHtmlContent3)
-                    # f.close()
-                
                     if aResult:
                         sHosterUrl = aResult[0].replace('"', '').replace(',', '')
     

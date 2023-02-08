@@ -68,7 +68,7 @@ def showMovies():
     sPattern = 'style="background-image: url\((.+?)\);".+?href="([^"]+)"'
     aResult = oParser.parse(sHtml, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sThumb = aEntry[0]
@@ -94,7 +94,7 @@ def showEpisode():
     sPattern = '<h5 class=.+?>([^<]+)<.+?data-settings=".+?url":"(.+?)(&|")'
     aResult = oParser.parse(sHtml, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 

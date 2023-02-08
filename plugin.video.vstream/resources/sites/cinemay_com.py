@@ -101,7 +101,7 @@ def showMovies(sSearch=''):
     sPattern = '<a href="([^"]+)" data-url=".+?" class=".+?" title="([^"]+)"><img.+?src="([^"]*)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
         total = len(aResult[1])
@@ -146,7 +146,7 @@ def __checkForNextPage(sHtmlContent):
     # jusqu'au 5 dernières pages on utilise cette regex
     sPattern = 'href="([^"]+)">>><.+?">(\d+)</a></div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNextPage = URL_MAIN[:-1] + aResult[1][0][0]
         sNumberMax = aResult[1][0][1]
         sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
@@ -156,7 +156,7 @@ def __checkForNextPage(sHtmlContent):
     # à partir des 5 dernières pages on change de regex
     sPattern = '>([^<]+)</a> <a class="inactive" style="margin-bottom:5px;" href="([^"]+)">>>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         sNumberMax = aResult[1][0][0]
         sNextPage = URL_MAIN[:-1] + aResult[1][0][1]
         sNumberNext = re.search('/([0-9]+)', sNextPage).group(1)
@@ -177,7 +177,7 @@ def showSeriesNews():
     sPattern = '<div class="titleE".+?<a href="([^"]+)">([^<]+)</a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0] is True:
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -246,10 +246,10 @@ def showSeries():
     sPattern = 'class="episodios" style="([^"]+)">|class="numerando" style="margin: 0">([^<]+)<.+?data-target="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is False:
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if aResult[0] is True:
+    if aResult[0]:
         sLang = ''
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
@@ -294,7 +294,7 @@ def showLinks():
     sPattern = 'var movie.+?id.+?"(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         movieUrl = URL_MAIN + 'playery/?id=' + aResult[1][0]
 
         oRequestHandler = cRequestHandler(movieUrl)
@@ -346,7 +346,7 @@ def showHosters():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
@@ -379,7 +379,7 @@ def showSeriesHosters():
     sPattern = 'id="videov" value="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if aResult[0] is True:
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
@@ -399,7 +399,7 @@ def getCookie(head):
         oParser = cParser()
         sPattern = '(?:^|,) *([^;,]+?)=([^;,\/]+?);'
         aResult = oParser.parse(str(head['Set-Cookie']), sPattern)
-        if aResult[0] is True:
+        if aResult[0]:
             for cook in aResult[1]:
                 cookies = cookies + cook[0] + '=' + cook[1] + ';'
             return cookies
