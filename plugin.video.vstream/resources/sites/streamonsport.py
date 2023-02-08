@@ -274,7 +274,7 @@ def showLink():
         if bvalid:
             sHosterUrl = shosterurl
 
-    if 'wigistream' in sUrl or 'cloudstream' in sUrl or 'go' in sUrl or 'mysportfeeds' in sUrl:
+    if 'wigistream' in sUrl or 'cloudstream' in sUrl or 'go' in sUrl or 'mysportfeeds' in sUrl or 'vecdn' in sUrl:
         bvalid, shosterurl = Hoster_Wigistream(sUrl, siterefer)
         if bvalid:
             sHosterUrl = shosterurl
@@ -423,6 +423,11 @@ def Hoster_Wigistream(url, referer):
     aResult = re.findall(sPattern, sHtmlContent)
     if aResult:
         return Hoster_Wigistream(aResult[0], url)
+    
+    sPattern = "<iframe.+?src='([^']+)"  # iframe imbriqué
+    aResult = re.findall(sPattern, sHtmlContent)
+    if aResult:
+        return Hoster_Wigistream(("https:" + aResult[0]), url)
 
     return False, False
 
