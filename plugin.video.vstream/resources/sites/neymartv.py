@@ -27,23 +27,23 @@ SPORT_TV = ('31-site-pour-regarder-les-chaines-de-sport.html', 'showTV')
 # chaines
 channels = {
 
-    'bein Sports 1': ['2022/03/bein-sports-1-full-hd-france.html', 'https://images.beinsports.com/n43EXNeoR62GvZlWW2SXKuQi0GA=/788708-HD1.png'],
+    'bein Sports 1': ['2023/01/bein-sports-1-full-hd-france.html', 'https://images.beinsports.com/n43EXNeoR62GvZlWW2SXKuQi0GA=/788708-HD1.png'],
 
-    'Canal+': ['2022/03/canal-france-full-hd.html', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_301.PNG'],
-    'Canal+ sport': ['2022/03/canal-sport-full-hd.html', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_177.PNG'],
+    'Canal+': ['2023/01/canal-france-full-hd.html', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_301.PNG'],
+#    'Canal+ sport': ['2022/03/canal-sport-full-hd.html', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_177.PNG'],
     'Foot+': ['2022/03/foot-full-hd.html', 'https://matchpint-cdn.matchpint.cloud/shared/imagenes/channels/284_logo_1599851988.png'],
 #    'GOLF+': ['2022/06/golf-full-hd.html', 'https://thumb.canalplus.pro/http/unsafe/epg.canal-plus.com/mycanal/img/CHN43FN/PNG/213X160/CHN43FB_301.PNG'],
 
-    'RMC Sport 1': ['2022/03/rmc-sport-1-full-hd.html', 'https://i0.wp.com/www.planetecsat.com/wp-content/uploads/2018/07/RMC_SPORT1_PNG_500x500px.png?w=500&ssl=1'],
-    'RMC Sport 2': ['2022/03/rmc-sport-2-full-hd.html', 'https://i0.wp.com/www.planetecsat.com/wp-content/uploads/2018/07/RMC_SPORT2_PNG_500x500px.png?fit=500%2C500&ssl=1'],
+    'RMC Sport 1': ['2023/01/rmc-sport-1-full-hd.html', 'https://i0.wp.com/www.planetecsat.com/wp-content/uploads/2018/07/RMC_SPORT1_PNG_500x500px.png?w=500&ssl=1'],
+    'RMC Sport 2': ['2023/01/rmc-sport-2-full-hd.html', 'https://i0.wp.com/www.planetecsat.com/wp-content/uploads/2018/07/RMC_SPORT2_PNG_500x500px.png?fit=500%2C500&ssl=1'],
 
     'eurosport 1': ['2022/03/eurosport-1-full-hd-france.html', 'https://2.bp.blogspot.com/-qEkUoydNN-E/WvMoKma36fI/AAAAAAAAG_0/ov-d571uhZ443Nai7gdU9sSIV2IBOkquQCLcBGAs/s1600/europsort-1-HD.jpg'],
     'eurosport 2': ['2022/03/eurosport-2-full-hd-france.html', 'https://4.bp.blogspot.com/-1bHZ8b5ZnW0/VzDh6KfzayI/AAAAAAAABsI/lKDWcPmyBSk7etoAj2DVr7nvQ5SsMPwzgCLcB/s1600/fhuxmcp92wg1w4y9pd2v4zjz3xs1vmjm.jpg'],
 
     'L\'equipe TV': ['2022/05/lequipe-tv-full-hd.html', 'https://www.cse.fr/wp-content/uploads/2016/02/LEquipe_logo-300x200-300x150.png'],
 
-    'bein Sports 2': ['2022/03/bein-sports-2-full-hd-france.html', 'https://images.beinsports.com/dZ2ESOsGlqynphSgs7MAGLwFAcg=/788711-HD2.png'],
-    'bein Sports 3': ['2022/03/bein-sports-3-full-hd-france.html', 'https://images.beinsports.com/G4M9yQ3f4vbFINuKGIoeJQ6kF_I=/788712-HD3.png'],
+    'bein Sports 2': ['2023/01/bein-sports-2-full-hd-france.html', 'https://images.beinsports.com/dZ2ESOsGlqynphSgs7MAGLwFAcg=/788711-HD2.png'],
+    'bein Sports 3': ['2023/01/bein-sports-3-full-hd-france.html', 'https://images.beinsports.com/G4M9yQ3f4vbFINuKGIoeJQ6kF_I=/788712-HD3.png'],
     'bein Sports MAX 4': ['2022/03/bein-sports-max-4-full-hd-france.html', 'https://images.beinsports.com/owLVmBRH9cHk6K9JSocpTw0Oc4E=/788713-4MAX.png'],
     'bein Sports MAX 5': ['2022/03/bein-sports-max-5-full-hd-france.html', 'https://images.beinsports.com/FE2dOGMxn1waqAFYxqsGxXKkvCo=/788714-5MAX.png'],
     'bein Sports MAX 6': ['2022/03/bein-sports-max-6-full-hd-france.html', 'https://images.beinsports.com/beNacZewwA5WqFglPAwOaD4n5QA=/788715-6MAX.png'],
@@ -219,7 +219,6 @@ def showHoster():
     if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
     else:
-        numLien = 0
         blackList = ('.tutele.sx', 'leet365', 'casadelfutbol.net', 'yrsport.top', 'cdn.sportcast.life', '.ustreamix.su',
                      'sportzonline.to', 'sportkart1.xyz', 'olasports.xyz', 'cricplay2.xyz')
         oOutputParameterHandler = cOutputParameterHandler()
