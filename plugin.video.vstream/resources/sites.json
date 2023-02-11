@@ -209,6 +209,11 @@
             "active": "True",
             "url": "https://mesfilms.lol/"
         },
+        "mysteriam": {
+            "label": "MySteriam",
+            "active": "True",
+            "url": "https://www.inmysteriam.fr/"
+        },
         "mystream_zone": {
             "label": "MyStream",
             "active": "False",
