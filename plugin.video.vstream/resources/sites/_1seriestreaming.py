@@ -290,7 +290,7 @@ def showLinks():
 
             sHost = aEntry[1].replace('www.', '')
             sHost = re.sub('\..+', '', sHost).capitalize()
-            if (cHosterGui().checkHoster(sHost) == False):
+            if not cHosterGui().checkHoster(sHost):
                 continue
 
             sLang = aEntry[2].replace('default', '').upper()
