@@ -292,7 +292,7 @@ def showHosters():
                     sHosterUrl = GetTinyUrl(sHosterUrl)
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster):
+                if oHoster:
                     oHoster.setDisplayName(sTitle)
                     oHoster.setFileName(sTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
