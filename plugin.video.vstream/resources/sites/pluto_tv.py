@@ -214,7 +214,7 @@ def showHosters():
     sHosterUrl += sHtmlContent["startingChannel"]["id"] + "/master.m3u8?" + sHtmlContent["stitcherParams"]
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if oHoster != False:
+    if oHoster:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -237,7 +237,7 @@ def seriesHosters():
     sHosterUrl += "&includeExtendedEvents=false&marketingRegion=FR&sid=" + sid + "&serverSideAds=true"
 
     oHoster = cHosterGui().checkHoster(sUrl)
-    if oHoster != False:
+    if oHoster:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

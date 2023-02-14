@@ -239,7 +239,7 @@ def __checkForNextPage(sHtmlContent):  # Affiche les page suivant si il y en a
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         if 'myfree-tivi' in sUrl:
             return 'https://www.myfree-tivi.com' + aResult[1][0]
         else:
@@ -255,7 +255,7 @@ def showHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oHoster = cHosterGui().checkHoster(sUrl)
-    if (oHoster != False):
+    if (oHoster):
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sUrl, sThumb)
@@ -316,7 +316,7 @@ def showAllPlaylist():  # On recupere les differentes playlist si il y en a
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -719,7 +719,7 @@ def showTV():
     sPattern = '<title>(.+?)</title><link>(.+?)</link>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         progress_ = progress().VScreate(SITE_NAME)
 
         # affiche par

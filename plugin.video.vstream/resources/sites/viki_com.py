@@ -117,7 +117,7 @@ def showMenuSeries():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -415,7 +415,7 @@ def showLinks():
     dataList = ','.join(dataList)
 
     oHoster = cHosterGui().checkHoster('viki')
-    if oHoster != False:
+    if oHoster:
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, dataList, sThumb)

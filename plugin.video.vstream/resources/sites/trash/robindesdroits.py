@@ -84,7 +84,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -146,7 +146,7 @@ def showCat():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sTitle = aEntry[1]
@@ -181,10 +181,10 @@ def showMovies(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
 
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -199,7 +199,7 @@ def showMovies(sSearch=''):
             oGui.addMisc(SITE_IDENTIFIER, 'showLink', sTitle, 'sport.png', sThumb, '', oOutputParameterHandler)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.search('/page/([0-9]+)', sNextPage).group(1)
@@ -213,7 +213,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<a class="next page-numbers" href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         return aResult[1][0]
 
     return False
@@ -240,7 +240,7 @@ def showLinkGenres():
     sPattern = '<span style="font-family: Arial, Helvetica,.+?font-size:.+?pt;">([^<>]+)<\/span>|<li ><a href="([^"]+)" title=".+?">([^<>]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
             if aEntry[0]:
                 title = aEntry[0]
@@ -275,7 +275,7 @@ def showLink():
     sPattern = 'a href="([^"]+)">(?:<span.+?|)<b>([^<]+)</b><'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sHost = cUtil().removeHtmlTags(aEntry[1])
@@ -300,7 +300,7 @@ def AdflyDecoder(url):
     sPattern = "var ysmm = '([^']+)'"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
 
         from base64 import b64decode
 
@@ -370,7 +370,7 @@ def showHosters():
             if 'motheregarded' in sUrl:
                 sPattern = 'href=(.+?)&dp_lp'
                 aResult = oParser.parse(sUrl, sPattern)
-                if (aResult[0] == True):
+                if aResult[0]:
                     sUrl = Unquote(''.join(aResult[1])).decode('utf8')
     
             oRequestHandler = cRequestHandler(sUrl)
@@ -390,7 +390,7 @@ def showHosters():
 
         sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
+        if aResult[0]:
             sHtmlContent = cPacker().unpack(aResult[1][0])
 
             sPattern = '{sources:\["([^"]+)"'
@@ -402,7 +402,7 @@ def showHosters():
             if aResult[0]:
                 sHosterUrl = aResult[1][0]
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -414,7 +414,7 @@ def showHosters():
                 sHosterUrl = aEntry
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -427,7 +427,7 @@ def showHosters():
                 sHosterUrl = aEntry
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -435,7 +435,7 @@ def showHosters():
     else:
         sHosterUrl = sUrl
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
+        if (oHoster):
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

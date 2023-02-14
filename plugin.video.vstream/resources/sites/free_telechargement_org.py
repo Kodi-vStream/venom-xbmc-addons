@@ -222,7 +222,7 @@ def showMenuEmissionsTV():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sSearchText = Quote(sSearchText)
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -308,7 +308,7 @@ def showSearchResult(sSearch=''):
             aResult = aResult + aResult1[1]
 
             sNextPage = __checkForNextPage(sHtmlContent)
-            if sNextPage != False:
+            if sNextPage:
                 n = ' >>>'
                 if sSearch:
                     n = ' SD >>>'
@@ -441,7 +441,7 @@ def showMovies():
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if sNextPage != False:
+        if sNextPage:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             sNumPage = re.search('/([0-9]+)/', sNextPage).group(1)
@@ -657,7 +657,7 @@ def Display_protected_link():
             sTitle = sMovieTitle
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if oHoster != False:
+            if oHoster:
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

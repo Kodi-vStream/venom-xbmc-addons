@@ -107,7 +107,7 @@ def showAlpha():
 def showSearchMovie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sUrl = URL_INTERNALSEARCH_MOVIES[0] + sSearchText
         showAnimes(sUrl)
         oGui.setEndOfDirectory()
@@ -117,7 +117,7 @@ def showSearchMovie():
 def showSearchSerie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sUrl = URL_INTERNALSEARCH_SERIES[0] + sSearchText
         showAnimes(sUrl)
         oGui.setEndOfDirectory()
@@ -127,7 +127,7 @@ def showSearchSerie():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sUrl = URL_SEARCH[0] + sSearchText
         showAnimes(sUrl)
         oGui.setEndOfDirectory()
@@ -192,7 +192,7 @@ def showAnimes(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if sNextPage != False:
+        if sNextPage:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showAnimes', 'Page ' + sPaging, oOutputParameterHandler)
@@ -291,7 +291,7 @@ def showHosters():
             # sDisplayTitle = '%s [COLOR coral]%s[/COLOR]' % (sMovieTitle, sHost)
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if oHoster != False:
+            if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -301,7 +301,7 @@ def showHosters():
 
 def getHostName(url):
     oHoster = cHosterGui().checkHoster(url)
-    if oHoster != False:
+    if oHoster:
         return oHoster.getDisplayName()
     try:
         if 'www' not in url:

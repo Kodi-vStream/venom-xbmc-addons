@@ -209,7 +209,7 @@ def showAllGenre(sfilter=''):
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -219,7 +219,7 @@ def showSearch():
 def showSearchMovie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_INTERNALSEARCH_MOVIES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -229,7 +229,7 @@ def showSearchMovie():
 def showSearchSerie():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_INTERNALSEARCH_SERIES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -253,10 +253,10 @@ def showMovies(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -279,7 +279,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent, sUrl)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -291,12 +291,12 @@ def __checkForNextPage(sHtmlContent, sUrl):
     sPattern = '"text-muted">page.+?sur\s*(\d+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         sNumberMax = aResult[1][0]
 
     sPattern = '&p=(\d+)'
     aResult = oParser.parse(sUrl, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         sNumberCurrent = aResult[1][0]
         iNumberCurrent = int(sNumberCurrent)
         iNumberNext = iNumberCurrent + 1
@@ -324,7 +324,7 @@ def showEpisodesxMovies():
     sDesc = ''
     sPattern = '<h4>Intrigue<.h4>(.+?)</p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis : ', cleanDesc(aResult[1][0]))
 
     if 'aucune vidéo disponible' in sHtmlContent:
@@ -339,7 +339,7 @@ def showEpisodesxMovies():
     aResult = oParser.parse(sHtmlContent1, sPattern)
 
     sLang = ''
-    if (aResult[0] == True):
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             if aEntry[0]:
@@ -375,7 +375,7 @@ def showLinks():
     sPattern = '<div class="subsection">.+?label-default">\D*(\d+)([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sId = aEntry[0]
@@ -418,13 +418,13 @@ def showHosters():
     sPattern = 'frame.+?src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         sHosterUrl = aResult[1][0]
         if 'https:' not in sHosterUrl:
             sHosterUrl = 'https:' + sHosterUrl
         # VSlog(sHosterUrl)
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
+        if (oHoster):
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -436,7 +436,7 @@ def cleanDesc(sDesc):
     oParser = cParser()
     sPattern = '(<.+?>)'
     aResult = oParser.parse(sDesc, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
             sDesc = sDesc.replace(aEntry, '')
     return sDesc

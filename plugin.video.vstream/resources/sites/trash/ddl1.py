@@ -207,7 +207,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = sUrl + sSearchText + '&search_start=1'
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -279,7 +279,7 @@ def showMovies(sSearch=''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     titles = set()
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -330,7 +330,7 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sUrl, sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oOutputParameterHandler.addParameter('misc', sMisc)
@@ -355,7 +355,7 @@ def __checkForNextPage(sUrl, sHtmlContent):
         sPattern = '<a href="([^"]+)">' + str(pageNext) + '</a>'
         aResult = oParser.parse(extractPageList, sPattern)
 
-        if (aResult[0] == True):
+        if aResult[0]:
             nextPage = aResult[1][0]
             if not nextPage.startswith('https'):
                 nextPage = URL_MAIN[:-1] + nextPage
@@ -416,7 +416,7 @@ def showMoviesLinks():
     sPattern = '<a href="([^"]+)"><span class="ffas js-guest icon-left" title="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -452,7 +452,7 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     # Le site dipose de plusieurs paterne.
-    if (aResult[0] == False):
+    if not aResult[0]:
         sPattern = '<a href="([^"]+)".+?rel="noopener external noreferrer">(?!Partie)([^<]+)</a>'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -469,7 +469,7 @@ def showHosters():
             oOutputParameterHandler.addParameter('sYear', sYear)
             oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
-    elif (aResult[0] == True):
+    elif aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sHoster = aEntry[0]
@@ -478,7 +478,7 @@ def showHosters():
 
             if "protect" not in sUrl2:
                 oHoster = cHosterGui().checkHoster(sUrl2)
-                if (oHoster != False):
+                if (oHoster):
                     oHoster.setDisplayName(sTitle)
                     oHoster.setFileName(sTitle)
                     cHosterGui().showHoster(oGui, oHoster, sUrl2, sThumb)
@@ -513,7 +513,7 @@ def showSeriesHosters():
     sPattern = 'download-alt" style="margin-right: 10px;"></i>([^<]+)|href="([^"]+)".+?external noreferrer">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         oGui = cGui()
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
@@ -528,7 +528,7 @@ def showSeriesHosters():
 
                 if 'protect' not in sUrl2:
                     oHoster = cHosterGui().checkHoster(sUrl2)
-                    if (oHoster != False):
+                    if (oHoster):
                         oHoster.setDisplayName(sTitle)
                         oHoster.setFileName(sTitle)
                         cHosterGui().showHoster(oGui, oHoster, sUrl2, sThumb)
@@ -575,7 +575,7 @@ def Display_protected_link():
         pass
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if (oHoster != False):
+    if (oHoster):
         oHoster.setDisplayName(sTitle)
         oHoster.setFileName(sTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

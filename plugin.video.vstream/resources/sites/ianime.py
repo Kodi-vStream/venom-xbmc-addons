@@ -191,7 +191,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         showMovies(sUrl + sSearchText)
         oGui.setEndOfDirectory()
         return
@@ -456,7 +456,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:  # une seule page par recherche
         sNextPage = __checkForNextPage(sHtmlContent)
-        if sNextPage != False:
+        if sNextPage:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Suivant', oOutputParameterHandler)
@@ -831,7 +831,7 @@ def showHosters():
                 VSlog(sHosterUrl)
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if oHoster != False:
+                if oHoster:
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

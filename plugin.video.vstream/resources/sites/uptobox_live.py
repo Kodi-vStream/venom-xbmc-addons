@@ -58,7 +58,7 @@ def showSearch(path = '//'):
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sUrlSearch = sUrl + sSearchText
 
         if sTitle == 'movie':

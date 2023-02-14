@@ -69,7 +69,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sText= sSearchText
         showMovies(sText)
         oGui.setEndOfDirectory()
@@ -161,10 +161,10 @@ def showMovies(sSearch=''):
     sPattern = '<div class="image">.+?<a href="([^"]+)".+?<img src="([^"]+)".+?title="([^"]+)">.+?<span class="([^"]+)"></span><span class="qalite">([^<]+)</span>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -197,7 +197,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
@@ -209,7 +209,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<span class="active">\d+</span>.+?<a href="([^"]+)" data-ci'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         return aResult[1][0]
 
     return False
@@ -228,10 +228,10 @@ def showSeries():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -253,7 +253,7 @@ def showSeries():
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
@@ -280,7 +280,7 @@ def showSaisons():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
@@ -315,7 +315,7 @@ def showLink():
     sPattern2 = "<button *class=\"players(?:(vf|vo|vostfr))\" *onclick=\"getIframe\('([^']+)'\).+?<\/span> *([^<]+)<"
     aResult = oParser.parse(sHtmlContent, sPattern2)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             sLang = aEntry[0].upper()
@@ -368,13 +368,13 @@ def showHosters():
 
     sPattern = '<iframe.+?src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
 
         sHosterUrl = aResult[1][0]
 
         oHoster = cHosterGui().checkHoster(sHosterUrl)
 
-        if (oHoster != False):
+        if (oHoster):
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

@@ -56,7 +56,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         showSearchResult(sSearchText)
         oGui.setEndOfDirectory()
         return
@@ -185,7 +185,7 @@ def showMovies():
             oGui.addAnime(SITE_IDENTIFIER, 'showSaisonEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if sNextPage != False:
+        if sNextPage:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -282,7 +282,7 @@ def showSeriesHosters():
                 continue
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if oHoster != False:
+            if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

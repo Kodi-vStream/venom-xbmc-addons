@@ -58,7 +58,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -122,10 +122,10 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
             sPoster = aEntry[1]
@@ -152,7 +152,7 @@ def showMovies(sSearch=''):
                     oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', sPoster, '', oOutputParameterHandler)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.search('/page/([0-9]+)', sNextPage).group(1)
@@ -166,7 +166,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<div class="nav-previous"><a href="([^"<>]+/[0-9]/?[^"]+)" class="nq_previous">'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         return aResult[1][0]
 
     return False
@@ -191,11 +191,11 @@ def showHosters():
     sPattern = '<iframe.+?src="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         sPattern = '<div class="video_tabs"><a href="([^"]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
@@ -204,7 +204,7 @@ def showHosters():
                 sHosterUrl = 'http:' + sHosterUrl
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

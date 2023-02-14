@@ -75,7 +75,7 @@ def showSearch(path = '//'):
     sType = oInputParameterHandler.getValue('sMovieTitle')
 
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sUrlSearch = ''
         if sType:
             sUrlSearch += '&type=' + sType
@@ -709,7 +709,7 @@ def showHosters():
     sHosterUrl = oInputParameterHandler.getValue('siteUrl')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if oHoster != False:
+    if oHoster:
         oHoster.setDisplayName(sTitle)
         oHoster.setFileName(sTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')

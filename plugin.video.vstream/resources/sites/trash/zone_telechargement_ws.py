@@ -227,7 +227,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sSearchText = Quote(sSearchText)
         sUrl = URL_SEARCH[0] + sSearchText + '&note=0&art=0&AiffchageMode=0&inputTirePar=0&cstart=0'
         showMovies(sUrl)
@@ -353,7 +353,7 @@ def showMovies(sSearch=''):
 
         else:
             sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-            if sNextPage != False:
+            if sNextPage:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -704,7 +704,7 @@ def Display_protected_link():
             episode += 1
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if oHoster != False:
+            if oHoster:
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

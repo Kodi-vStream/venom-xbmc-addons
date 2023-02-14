@@ -55,7 +55,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sSearchText = sSearchText.replace(' ', '+')
 
         sUrl = URL_SEARCH[0] + sSearchText
@@ -105,10 +105,10 @@ def showMovies(sSearch=''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -136,7 +136,7 @@ def showMovies(sSearch=''):
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Suivant >>>[/COLOR]', oOutputParameterHandler)
@@ -149,7 +149,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<span class="pnext"><a href="([^"]+)">SUIVANT<\/a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         return aResult[1][0]
 
     return False
@@ -181,7 +181,7 @@ def showHosters():
 
     sTest = ''
 
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             sPage = aEntry[1]
@@ -196,7 +196,7 @@ def showHosters():
                 sTest = sTitle
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -204,12 +204,12 @@ def showHosters():
         sPattern = '<div class="playe.+?" data-show_player="video"><iframe.+?src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):
+        if aResult[0]:
             sHosterUrl = aResult[1][0]
             sHosterUrl = cUtil().unescape(sHosterUrl)
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

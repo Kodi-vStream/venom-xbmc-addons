@@ -1268,7 +1268,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sUrl += Quote(sSearchText)
 
         showMovies(sUrl)

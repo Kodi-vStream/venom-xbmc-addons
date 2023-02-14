@@ -74,7 +74,7 @@ def showSearch():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl += sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -143,10 +143,10 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -218,7 +218,7 @@ def __checkForNextPage(shtml, surl):
     sPattern = 'page/(\d+)/'
     oParser = cParser()
     aResult = oParser.parse(shtml, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
             sCurrentMax = aEntry
             iCurrentMax = int(sCurrentMax)
@@ -229,7 +229,7 @@ def __checkForNextPage(shtml, surl):
     sPattern = 'page.(\d+)'
     oParser = cParser()
     aResult = oParser.parse(surl, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         sCurrent = aResult[1][0]
         iCurrent = int(sCurrent)
         iNext = iCurrent + 1
@@ -271,7 +271,7 @@ def showSaison():
     aResult = oParser.parse(sHtmlContent, sPattern)
     sSaison = ''
 
-    if (aResult[0] == True):
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -314,7 +314,7 @@ def showSXE():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
@@ -351,7 +351,7 @@ def showHosters():
 
     sPattern = '<div class="movieplay"><iframe src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         if 'embedo' in aResult[1][0]:
 
             # url1 https://embedo.to/e/QW9RSEhEeEZFUTJXVXo0dzBhdzhVZz09
@@ -366,12 +366,12 @@ def showHosters():
             sPattern = 'window.park = "([^"]+)'
             aResult = oParser.parse(sHtmlContent, sPattern)
 
-            if (aResult[0] == True):
+            if aResult[0]:
                 redirect = base64.b64decode(aResult[1][0])
                 sPattern = '"page_url":"([^"]+)'
                 aResult = oParser.parse(redirect, sPattern)
     
-                if (aResult[0] == True):
+                if aResult[0]:
     
                     url2 = aResult[1][0]
                     url3 = url2.replace('\\', '').replace('/s/', '/r/')
@@ -386,7 +386,7 @@ def showHosters():
                         sHosterUrl = getReal
                         oHoster = cHosterGui().checkHoster(sHosterUrl)
                         sDisplayTitle = sMovieTitle
-                        if (oHoster != False):
+                        if (oHoster):
                             oHoster.setDisplayName(sDisplayTitle)
                             oHoster.setFileName(sMovieTitle)
                             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

@@ -217,7 +217,7 @@ def showMenuDivers():
 def showSearchMovies():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sUrl = URL_SEARCH[0] + tagmovies + sSearchText  # + '&p=films'
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -227,7 +227,7 @@ def showSearchMovies():
 def showSearchSeries():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sUrl = URL_SEARCH[0] + tagseries + sSearchText  # + '&p=series'
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -237,7 +237,7 @@ def showSearchSeries():
 def showSearchMangas():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sUrl = URL_SEARCH[0] + tagmangas + sSearchText  # + '&p=mangas'
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -247,7 +247,7 @@ def showSearchMangas():
 def showSearchDivers():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         sUrl = URL_SEARCH[0] + sSearchText + '&p=autres-videos'
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -495,7 +495,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage, sPaging = __checkForNextPage(sHtmlContent)
-        if sNextPage != False:
+        if sNextPage:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', 'Page ' + sPaging, oOutputParameterHandler)
@@ -820,7 +820,7 @@ def recapchaByPass():
         for aEntry in aResult[1]:
             sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if oHoster != False:
+            if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

@@ -115,7 +115,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         showMovies(str(sSearchText))
         oGui.setEndOfDirectory()
         return  
@@ -156,7 +156,7 @@ def showAlpha(sLettre = ''):
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         
-        if (aResult[0] == True):
+        if aResult[0]:
             total = len(aResult[1])
             dialog = cConfig().createDialog(SITE_NAME)
         
@@ -239,7 +239,7 @@ def showMovies(sSearch = ''):
 
     print aResult
     
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         
@@ -283,7 +283,7 @@ def showMovies(sSearch = ''):
         cConfig().finishDialog(dialog)
            
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             #print sNextPage
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(URL_MAIN) + sNextPage)
@@ -296,7 +296,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<td width="124" class="page_tab"><a href="(.+?)" class="b">Page Suivante<.a><.td>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         return aResult[1][0]
 
     return False
@@ -349,13 +349,13 @@ def showEpisode():
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     #si pas trouvé par episode
-    if (aResult[0] == False):
+    if not aResult[0]:
         sPattern = '(ABXY)*<a (class)="e" href="(.+?episode.+?html)">(.+?)<\/a>'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
     #print aResult
     
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
@@ -412,7 +412,7 @@ def showListHosters():
 
     print aResult
     
-    if (aResult[0] == True):
+    if aResult[0]:
         #on bride car trop de resultat
         aResultMax = aResult[1]
         if len(aResultMax) > 100:
@@ -461,7 +461,7 @@ def showHosters():
         sHosterUrl = str(aResult)
 
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
+        if (oHoster):
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 

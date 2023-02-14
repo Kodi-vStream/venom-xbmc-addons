@@ -323,7 +323,7 @@ def showHosters():  # affiche les videos disponible du live
                             sDisplayTitle = sMovieTitle2 + ' [' + q + '] '
 
                             oHoster = cHosterGui().checkHoster(sHosterUrl)
-                            if oHoster != False:
+                            if oHoster:
                                 oHoster.setDisplayName(sDisplayTitle)
                                 oHoster.setFileName(sMovieTitle2)
                                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -387,7 +387,7 @@ def showHosters():  # affiche les videos disponible du live
                             sDisplayTitle = sMovieTitle2 + ' [' + q + '] '
 
                             oHoster = cHosterGui().checkHoster(sHosterUrl)
-                            if oHoster != False:
+                            if oHoster:
                                 oHoster.setDisplayName(sDisplayTitle)
                                 oHoster.setFileName(sMovieTitle2)
                                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -1251,7 +1251,7 @@ def showHosters():  # affiche les videos disponible du live
                 sHosterUrl = 'http:' + sHosterUrl
 
             oHoster = cHosterGui().checkHoster(".m3u8")
-            if oHoster != False:
+            if oHoster:
                 oHoster.setDisplayName(sMovieTitle2)  # nom affiche
                 oHoster.setFileName(sMovieTitle2)  # idem
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

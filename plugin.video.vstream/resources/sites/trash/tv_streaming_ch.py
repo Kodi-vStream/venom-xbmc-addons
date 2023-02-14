@@ -107,7 +107,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sUrl = URL_SEARCH[0] + urllib.quote(sSearchText)
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -184,10 +184,10 @@ def showMovies(sSearch = ''):
     sPattern = '<div.*?class="moviefilm">.+?href="([^<]+)".*?img src="([^<]+)" alt="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
@@ -218,7 +218,7 @@ def showMovies(sSearch = ''):
 
     if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
@@ -230,7 +230,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<a class="nextpostslink" rel="next" href="(.+?)">(?:»|&raquo;)<\/a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         return aResult[1][0]
 
     return False
@@ -254,11 +254,11 @@ def showSeries(sLoop = False):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     #astuce en cas d'episode unique
-    if (aResult[0] == False) and (sLoop == False):
+    if not aResult[0] and (sLoop == False):
         showHosters(True)
         return
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
@@ -299,7 +299,7 @@ def showHosters(sLoop = False):
     sPattern = '<iframe.+?src="(http[^<>]+?)" [^<>]+?><\/iframe>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
@@ -312,7 +312,7 @@ def showHosters(sLoop = False):
 
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

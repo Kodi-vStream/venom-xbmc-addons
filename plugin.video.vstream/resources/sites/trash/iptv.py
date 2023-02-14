@@ -41,7 +41,7 @@ def showPays():
     sPattern = '<li class="cat-item cat-item-.+?"><a href="([^"]+)"(?:>([^<]+)</a>|([^<]+)includes)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -102,7 +102,7 @@ def showDailyList():
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             sNumPage = re.search('/page/([0-9]+)', sNextPage).group(1)

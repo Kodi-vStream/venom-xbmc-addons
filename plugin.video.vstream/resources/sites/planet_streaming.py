@@ -56,7 +56,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if sSearchText != False:
+    if sSearchText:
         showMovies(sSearchText)
         oGui.setEndOfDirectory()
         return
@@ -186,7 +186,7 @@ def showMovies(sSearch=''):
 
         else:
             sNextPage = __checkForNextPage(sHtmlContent)
-            if sNextPage != False:
+            if sNextPage:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
                 number = re.search('/page/([0-9]+)', sNextPage).group(1)
@@ -239,7 +239,7 @@ def showHosters():
                 continue
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if oHoster != False:
+            if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

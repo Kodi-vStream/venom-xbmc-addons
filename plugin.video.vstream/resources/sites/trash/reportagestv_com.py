@@ -42,7 +42,7 @@ def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
             sUrl = URL_SEARCH[0] + sSearchText.replace(' ', '+')
             showMovies(sUrl)
             oGui.setEndOfDirectory()
@@ -91,10 +91,10 @@ def showMovies(sSearch = ''):
     sPattern = 'class="mh-loop-thumb".+?src="([^"]+)" class="attachment.+?href="([^"]+)" rel="bookmark">([^<]+)</a>.+?<div class="mh-excerpt"><p>(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
 
             sThumb = aEntry[0]
@@ -109,7 +109,7 @@ def showMovies(sSearch = ''):
             oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', sThumb, sDesc, oOutputParameterHandler)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
@@ -121,7 +121,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<a class="next page-numbers" href="([^"]+)">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         return aResult[1][0]
 
     return False
@@ -130,7 +130,7 @@ def __checkForRealUrl(sHtmlContent):
     sPattern = '<a href="([^"]+)" target="_blank".+?class="btns btn-lancement">Lancer La Video</a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         return aResult[1][0]
 
     return False
@@ -147,7 +147,7 @@ def showHosters():
 
     sRealUrl = __checkForRealUrl(sHtmlContent)
 
-    if (sRealUrl != False):
+    if (sRealUrl):
         oRequestHandler = cRequestHandler(sRealUrl)
         sHtmlContent = oRequestHandler.request()
 
@@ -155,14 +155,14 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
             sHosterUrl = str(aEntry)
             if sHosterUrl.startswith('//'):
                 sHosterUrl = 'https:' + sHosterUrl
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

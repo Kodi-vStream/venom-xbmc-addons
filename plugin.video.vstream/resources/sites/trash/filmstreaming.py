@@ -60,7 +60,7 @@ def load():
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         sSearch = URL_SEARCH[0] + sSearchText.replace(' ', '+')
         showMovies(sSearch)
         oGui.setEndOfDirectory()
@@ -70,7 +70,7 @@ def showSearch():
 def showSearchOld():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText):
         showSearchMovies(sSearchText)
         oGui.setEndOfDirectory()
         return
@@ -95,7 +95,7 @@ def showSearchMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -135,7 +135,7 @@ def showGenres():
     sPattern = '<li class="cat-item cat-item-.+?"><a href=([^>]+)>([^<]+)</a>([^<]+)</li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sTitle = aEntry[1] + aEntry[2]
@@ -176,10 +176,10 @@ def showList():
     sPattern = 'class=Num>.+?href=(.+?) class=MvTbImg.+?src=([^ ]+).+?<strong>([^<]+)</strong> </a></td><td>([^<]*)<.+?class=Qlty>([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
 
@@ -211,7 +211,7 @@ def showList():
         if aResult:
             sPattern = 'page/(\d+)/'
             aResult = oParser.parse(sUrl, sPattern)
-            if (aResult[0] == True):
+            if aResult[0]:
                 number = int(aResult[1][0]) + 1
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', re.sub('page/(\d+)/', 'page/' + str(number) + '/', sUrl))
@@ -236,7 +236,7 @@ def showMovies(sSearch=''):
     sPattern = 'class=Image>.+?src=([^ ]+) .+?class=Qlty>([^<]+).+?href=([^>]+)><div class=Title>([^<]+).+?Description><p>(.+?)</p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
+    if aResult[0]:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -272,7 +272,7 @@ def showMovies(sSearch=''):
 
     if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if (sNextPage):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             number = re.search('page/([0-9]+)', sNextPage).group(1)
@@ -285,7 +285,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = 'href="*([^">]+)"*>Next'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+    if aResult[0]:
         return aResult[1][0]
 
     return False
@@ -332,7 +332,7 @@ def showHosters():
                 sHosterUrl = sUrl.group(1)
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if (oHoster):
                 oHoster.setDisplayName(sMovieTitle + ' [' + aEntry[1] + ')')
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
