@@ -363,11 +363,10 @@ def showEpisodes():
 
 
 def showSerieLinks():
-
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
 
@@ -390,10 +389,10 @@ def showSerieLinks():
             postdata = 'id=' + videoId + '&xfield=' + xfield + '&action=playEpisode'
             sUrl2 = URL_MAIN + 'engine/inc/serial/app/ajax/Season.php'
 
-            sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, hosterName)
+            sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, hosterName)
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('referer', sUrl)
@@ -424,7 +423,7 @@ def showSerieHosters():
     sHtmlContent = oRequest.request()
 
     oParser = cParser()
-    sPattern = '<iframe.+?src="([^"]+)"'
+    sPattern = '<iframe.+?src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         sHosterUrl = aResult[1][0]
@@ -503,7 +502,7 @@ def showMovieHosters():
     sHtmlContent = oRequest.request()
 
     oParser = cParser()
-    sPattern = '<iframe.+?src="([^"]+)"'
+    sPattern = '<iframe.+?src="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
