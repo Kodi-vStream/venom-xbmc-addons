@@ -335,7 +335,11 @@ def showEpisodes():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '(?:class="saisontab">.+?|<.a>)<a\shref="([^"]*).+?fsa-ep">([^<]*)'
+    sStart = 'class="saisontab'
+    sEnd = 'class="clearfix'
+    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
+
+    sPattern = 'href="([^"]+).+?fsa-ep">([^<]*)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if aResult[0]:
@@ -345,7 +349,6 @@ def showEpisodes():
             sEpisode = aEntry[1].replace('é', 'e').strip()  # épisode 2
             if 'http' not in sUrl2:
                 sUrl2 = URL_MAIN[:-1] + sUrl2
-
             sTitle = sMovieTitle + ' ' + sEpisode
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
