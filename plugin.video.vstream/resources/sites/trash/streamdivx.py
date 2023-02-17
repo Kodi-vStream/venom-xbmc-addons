@@ -95,7 +95,7 @@ def showMovieYears():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    for i in reversed(range(1985, 2022)):
+    for i in reversed(range(1985, 2023)):
         Year = str(i)
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'tags/' + Year + '/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)

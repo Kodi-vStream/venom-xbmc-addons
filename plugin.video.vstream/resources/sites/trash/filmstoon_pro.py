@@ -106,7 +106,7 @@ def showYears():
     oGui = cGui()
     # https://filmstoon.in/release-year/2020/
     oOutputParameterHandler = cOutputParameterHandler()
-    for i in reversed(range(1935, 2022)):
+    for i in reversed(range(1935, 2023)):
         sYear = str(i)
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'release-year/' + sYear + '/page/1/')
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sYear, 'annees.png', oOutputParameterHandler)

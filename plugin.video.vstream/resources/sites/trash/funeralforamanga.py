@@ -172,7 +172,7 @@ def showAllYears(sfilter=''):
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    for i in reversed(range(1983, 2022)):
+    for i in reversed(range(1983, 2023)):
         sYear = str(i)
         url1 = 'videos?sk=c&filter=' + sfilter + '&unlicenced=1&aired-min=' + sYear + '&aired-max=' + sYear + '&p=1'
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + url1)

@@ -81,7 +81,7 @@ def showGenres():
 def showYears():
     oGui = cGui()
     oOutputParameterHandler = cOutputParameterHandler()
-    for i in reversed(range(1997, 2022)):
+    for i in reversed(range(1997, 2023)):
         Year = str(i)
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/annee/' + Year + '.html')
         oGui.addDir(SITE_IDENTIFIER, 'showSeries', Year, 'annees.png', oOutputParameterHandler)
