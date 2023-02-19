@@ -2,7 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
 import re
-from resources.lib.comaddon import siteManager
+from resources.lib.comaddon import siteManager, VSlog
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -330,8 +330,8 @@ def showSaison():
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
 
-            sNumSaison = aEntry[0]
-            sSaison = 'Saison ' + aEntry[0]
+            sNumSaison = aEntry
+            sSaison = 'Saison ' + sNumSaison
             sUrlSaison = sUrl + "?sNumSaison=" + sNumSaison
             sDisplayTitle = sMovieTitle + ' ' + sSaison
             sTitle = sMovieTitle
@@ -407,6 +407,7 @@ def showLink():
     oParser = cParser()
     sPattern = 'class="description">.*?<br>([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
     if aResult[0]:
         sDesc = ('[I][COLOR grey]%s[/COLOR][/I] %s') % ('Synopsis :', aResult[1][0])
 
@@ -425,6 +426,7 @@ def showLink():
 
     sPattern = 'data-url="([^"]+).+?server.+?alt="([^"]+).+?alt="([^"]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
     if not aResult[0]:
         oGui.addText(SITE_IDENTIFIER)
 
