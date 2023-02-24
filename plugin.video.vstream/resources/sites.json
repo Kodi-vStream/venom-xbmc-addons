@@ -413,6 +413,11 @@
             "label": "Zone Streaming",
             "active": "True",
             "url": "https://www.zone-streaming.fr/"
+        },
+        "platinsport": {
+            "label": "Platinsport",
+            "active": "True",
+            "url": "https://www.platinsport.com/"
         }
     }
 }
