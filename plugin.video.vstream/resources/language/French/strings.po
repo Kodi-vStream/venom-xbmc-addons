@@ -1258,3 +1258,8 @@ msgstr "Ajouter à une liste existante"
 msgctxt "#31212"
 msgid "Select a list"
 msgstr "Choisissez une liste"
+
+# for Platinsport
+msgctxt "#350000"
+msgid "(requires Plexus addon)"
+msgstr "(necessite l addon Plexus)"
