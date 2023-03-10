@@ -284,6 +284,10 @@ msgctxt "#30069"
 msgid "Unless you have a premium link generator,[CR] checking this box will bring you more problems than advantages."
 msgstr "A moins d'avoir un débrideur,[CR] cocher cette case vous apportera plus de problèmes que d'avantages."
 
+msgctxt "#30070"
+msgid "Language"
+msgstr "Langues des informations"
+
 msgctxt "#30071"
 msgid "Updated list"
 msgstr "Liste mise à jour"
