@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 
-import re
-
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -22,13 +20,10 @@ DOC_NEWS = (URL_MAIN + 'documents-videos.html', 'showMovies')
 DOC_GENRES = (URL_MAIN + 'videos-documentaires/categories-videos.html', 'showGenres')
 
 
-
-
 def load():
     oGui = cGui()
-
     oOutputParameterHandler = cOutputParameterHandler()
-    
+
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Derniers ajouts', 'news.png', oOutputParameterHandler)
 
@@ -38,18 +33,15 @@ def load():
     oGui.setEndOfDirectory()
 
 
-
-
 def showGenres():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    
+
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    #sHtmlContent = oParser.Parse(sHtmlContent)
-    sPattern = 'class="item-title hasTooltip" title="([^"]+)".+?href="([^"]+)"'
+    sPattern = 'class="item-title hasTooltip" title="([^"]+).+?href="([^"]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -57,16 +49,14 @@ def showGenres():
         oGui.addText(SITE_IDENTIFIER)
 
     if aResult[0]:
-        
         oOutputParameterHandler = cOutputParameterHandler()
         for aEntry in aResult[1]:
-            
+
             sUrl2 = URL_MAIN + aEntry[1]
             sTitle = aEntry[0]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            #oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addMisc(SITE_IDENTIFIER, 'showMovies', sTitle, 'doc.png', '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -76,12 +66,12 @@ def showMovies(sSearch=''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    
+
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = oParser.abParse(sHtmlContent, '', 'Derniers Docus')
-    sPattern = ' <!-- Thumbnail Image -->.+?title="([^"]+)".+?src="([^"]+)".+?href="([^"]+)".+?src="([^"]+)".+?media-info-description">([^<]+)'
+    sPattern = 'Thumbnail Image -->.+?title="([^"]+).+?src="([^"]+).+?href="([^"]+).+?src="([^"]+).+?info-description">([^<]+)'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -98,11 +88,11 @@ def showMovies(sSearch=''):
                 break
 
             sMedia = aEntry[1]
-            if 'video.png' not in sMedia :
+            if 'video.png' not in sMedia:
                 continue
-            sUrl2 = URL_MAIN + aEntry[2]
             sTitle = aEntry[0]
-            sThumb = URL_MAIN + aEntry[3]
+            sUrl2 = URL_MAIN[:-1] + aEntry[2]
+            sThumb = URL_MAIN[:-1] + aEntry[3]
             sDesc = aEntry[4]
 
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -123,20 +113,19 @@ def showMovies(sSearch=''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<div class="pagination">.+?<\/span>.+?title="(\d+).+?href="([^"]+).+?"pagination-end".+?limitstart=(\d+)'
+    sPattern = 'pagenav">[0-9]+</span></li><li><a title="(\d+)" href="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
-        sNumberMax = aResult[1][0][2]
-        sNextPage = URL_MAIN + aResult[1][0][1]
-        sNumberNext = aResult[1][0][0]#re.search('page/([0-9]+)', sNextPage).group(1)
-        sPaging = sNumberNext + '/' + sNumberMax
+        sNumberNext = aResult[1][0][0]
+        sNextPage = URL_MAIN[:-1] + aResult[1][0][1]
+        sPaging = sNumberNext
         return sNextPage, sPaging
 
     return False, 'none'
 
 
-def showHosters():  
+def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -146,7 +135,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<iframe.+?src="([^"]+)"'
+    sPattern = '<iframe.+?src="([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -155,7 +144,7 @@ def showHosters():
             sHosterUrl = str(aEntry).replace('?&rel=0', '')
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if oHoster :
+            if oHoster:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
