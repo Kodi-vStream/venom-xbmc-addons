@@ -31,13 +31,8 @@ def GetUrlMain():
     global URL_MAIN
     if URL_MAIN != '':
         return URL_MAIN
-    
-    oRequestHandler = cRequestHandler(siteManager().getUrlMain(SITE_IDENTIFIER))
-    sHtmlContent = oRequestHandler.request()
-
-    sPattern = '<a href="(.+?)"'
-    oParser = cParser()
-    URL_MAIN = oParser.parse(sHtmlContent, sPattern)[1][0]
+  
+    URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
     return URL_MAIN
 
 
