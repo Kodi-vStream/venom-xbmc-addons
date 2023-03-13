@@ -817,11 +817,10 @@ def showHosters():
                         oRequestHandler.addParameters('submit.x', xx)
                         oRequestHandler.addParameters('submit.y', yy)
 
-                        # No more used ?
-                        ## look for hidden params
-                        #p1 = re.search(r'name="valeur" value="([^"]+)"', sHtmlContent)
-                        #if p1:
-                        #    oRequestHandler.addParameters('valeur', p1.group(1))
+                        # look for hidden params
+                        p1 = re.search(r'name="valeur" value="([^"]+)"', sHtmlContent)
+                        if p1:
+                            oRequestHandler.addParameters('valeur', p1.group(1))
 
                         # Set headers
                         oRequestHandler.addHeaderEntry('Referer', sUrl)
