@@ -139,6 +139,12 @@ def ICDecode(html):
 
     return str(r)
 
+    
+def GetHost(_url):
+    parts = _url.split('//', 1)
+    host = parts[0] + '//' + parts[1].split('/', 1)[0]
+    return host
+
 # ------------------------------------------------------------------------------------
 
 
@@ -793,14 +799,17 @@ def showHosters():
                     oRequestHandler.addHeaderEntry('User-Agent', UA)
 
                     sHtmlContent = oRequestHandler.request()
-
                     sHtmlContent = ICDecode(sHtmlContent)
-
-                    sHosterUrl2 = extractLink(sHtmlContent)
+                    sHosterUrl2 = extractLink(sHtmlContent)         
 
                     if 'intern_player.png' in sHosterUrl2 or 'intern_player2.png' in sHosterUrl2:
                         xx = str(random.randint(300, 350))  # 347
                         yy = str(random.randint(200, 255))  # 216
+
+                        #Remove old hoster
+                        sHosterUrl = sHosterUrl.replace(GetHost(sHosterUrl),"")
+                        #Add new one
+                        sHosterUrl = GetHost(sHosterUrl2) + sHosterUrl
 
                         oRequestHandler = cRequestHandler(sHosterUrl)
                         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
@@ -808,10 +817,11 @@ def showHosters():
                         oRequestHandler.addParameters('submit.x', xx)
                         oRequestHandler.addParameters('submit.y', yy)
 
-                        # look for hidden params
-                        p1 = re.search(r'name="valeur" value="([^"]+)"', sHtmlContent)
-                        if p1:
-                            oRequestHandler.addParameters('valeur', p1.group(1))
+                        # No more used ?
+                        ## look for hidden params
+                        #p1 = re.search(r'name="valeur" value="([^"]+)"', sHtmlContent)
+                        #if p1:
+                        #    oRequestHandler.addParameters('valeur', p1.group(1))
 
                         # Set headers
                         oRequestHandler.addHeaderEntry('Referer', sUrl)
