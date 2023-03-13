@@ -97,7 +97,7 @@ def showYears():
     oRequestHandler = cRequestHandler(URL_MAIN + 'accueil/')
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'class="btn sm" href=([^>]+)>([^<]+)'
+    sPattern = 'class="btn sm" href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if not aResult[0]:
@@ -123,7 +123,7 @@ def showGenres():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'class="cat-item.+?href=([^>]+)>([^<]+)'
+    sPattern = 'class="cat-item.+?href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if not aResult[0]:
@@ -149,7 +149,7 @@ def showSeriesGenres():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'class="cat-item.+?href=([^>]+)>([^<]+)'
+    sPattern = 'class="cat-item.+?href="([^"]+)">([^<]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if not aResult[0]:
@@ -178,7 +178,7 @@ def showMovies(sSearch=''):
         sSearchText = oUtil.CleanName(sSearchText)
         sUrl = sSearch.replace(' ', '+').replace('%20 ', '+')
 
-    sPattern = 'class="entry-title">([^<]+).+?data-src=(.+?jpg).+?year>([^<]*).+?href=(\S+) class'
+    sPattern = 'class="entry-title">([^<]+).+?data-src="([^"]+).+?year">([^<]*).+?href="([^"]+)'
     oRequestHandler = cRequestHandler(sUrl)
     # on ne prend pas les populaires qui sinon sont présent à chaque fois
     sStart = '<!doctype html>'
@@ -236,7 +236,7 @@ def showMovies(sSearch=''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '>([0-9]+)</a><a href=([^>]+)>SUIVANT'
+    sPattern = '>([0-9]+)</a><a href="([^"]+)">SUIVANT'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         sNumberMax = aResult[1][0][0]
