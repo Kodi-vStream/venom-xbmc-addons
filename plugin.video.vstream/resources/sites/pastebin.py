@@ -94,10 +94,17 @@ def getNbItemParPage():
         addon().setSetting(SITE_IDENTIFIER + '_nbItemParPage', nbItem)
     return int(nbItem)
 
+def getResolutionBlacklist():
+    nResolutions = addon().getSetting(SITE_IDENTIFIER + '_nResolutions')
+    if not nResolutions:
+        nResolutions = ""
+        addon().setSetting(SITE_IDENTIFIER + '_nResolutions', nResolutions)
+    return nResolutions
 
-ITEM_PAR_PAGE = getNbItemParPage()
-GROUPE_MAX = 50          # jusqu'à 50 dossiers, limitation du skin
-PASTE_PAR_GROUPE = 100   # jusqu'à 100 liens pastebin par dossier
+ITEM_PAR_PAGE           = getNbItemParPage()
+RESOLUTIONS_BACKLIST    = getResolutionBlacklist()
+GROUPE_MAX              = 50    # jusqu'à 50 dossiers, limitation du skin
+PASTE_PAR_GROUPE        = 100   # jusqu'à 100 liens pastebin par dossier
 
 
 # Durée du cache, en Heures
@@ -1268,7 +1275,7 @@ def showSearch():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
-    if sSearchText:
+    if sSearchText != False:
         sUrl += Quote(sSearchText)
 
         showMovies(sUrl)
@@ -1871,18 +1878,24 @@ def trie_res(key):
 
 
 def showResolution():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    siteUrl = oInputParameterHandler.getValue('siteUrl')
+    oGui                    = cGui()
+    oInputParameterHandler  = cInputParameterHandler()
+    siteUrl                 = oInputParameterHandler.getValue('siteUrl')
     oOutputParameterHandler = cOutputParameterHandler()
-    resolutions = [('DOLBY VISION', 'DOLBY VISION'), ('4K', '4K [2160p]'), ('1080P', 'fullHD [1080p]'), ('720P', 'HD [720p]'), ('SD', 'SD'), ('3D', '3D')]
+    resolutions             = [('DOLBY VISION', 'DOLBY VISION'), ('4K', '4K [2160p]'), ('1080P', 'fullHD [1080p]'), ('720P', 'HD [720p]'), ('SD', 'SD'), ('3D', '3D')]
+
+    # Create BLACKLIST APPLIED folder if RESOLUTIONS_BACKLIST is not empty
+    if RESOLUTIONS_BACKLIST != "":
+      sUrl = siteUrl + '&sRes=' + 'BLACKLIST APPLIED'
+      oOutputParameterHandler.addParameter('siteUrl', sUrl)
+      oGui.addDir(SITE_IDENTIFIER, 'showMenuFilms', 'BLACKLIST APPLIED', 'hd.png', oOutputParameterHandler)
+        
     for sRes, sDisplayRes in resolutions:
         sUrl = siteUrl + '&sRes=' + sRes
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMenuFilms', sDisplayRes, 'hd.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def alphaList():
     oGui = cGui()
@@ -2177,12 +2190,24 @@ def showMovies(sSearch=''):
                     listRes.append('')
 
             if sRes:
+                if sRes == 'BLACKLIST APPLIED':
+                    # Extract the resolution that are blacklisted from listRes
+                    oldListRes = listRes
+                    listRes = []
+                    for res in oldListRes:
+                        if res not in RESOLUTIONS_BACKLIST.strip().split(','):
+                            listRes.append(res)
                 if sRes == UNCLASSIFIED:
                     if '' not in listRes:
                         continue
 
                 bValid = False
+
                 for res in listRes:
+                    # Set bValid = True if sRest = BLACKLIST APPLIED because it is like we got each sRes in res
+                    if sRes == "BLACKLIST APPLIED":
+                        bValid = True
+                        break
                     if sRes in res:
                         bValid = True
                         break
@@ -2221,7 +2246,6 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sYear', movieYear)  # Utilisé par TMDB
         if listRes:
             oOutputParameterHandler.addParameter('listRes', listRes)
-
         if sMedia == 'serie':
             oGui.addTV(SITE_IDENTIFIER, 'showSerieSaisons', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
         elif sMedia == 'anime':
@@ -2552,7 +2576,8 @@ def getHosterList(siteUrl):
                     idxResMovie += 1
 
                     # On vérifie la résolution attendue si pas uptostream
-                    if sRes and sRes not in resMovie:
+                    # And different than BLACKLIST APPLIED
+                    if sRes and sRes not in resMovie and sRes != "BLACKLIST APPLIED":
                         if pbContent.getUptoStream() == 2:
                             continue
 
@@ -2576,11 +2601,16 @@ def getHosterList(siteUrl):
 
                         linkToAdd = False
                         if sRes:    # Recherche d'une résolution en particulier
-                            if res and res != 'ori':
+                            # if sRes = BLACKLIST APPLIED check that res are not in RESOLUTIONS_BACKLIST
+                            if sRes == "BLACKLIST APPLIED":
+                                if res not in RESOLUTIONS_BACKLIST.strip().split(','):
+                                    linkToAdd = True
+                            elif res and res != 'ori':
                                 if sRes in res:
                                     linkToAdd = True
                             elif sRes in resMovie:
                                 linkToAdd = True
+                                
                         else:
                             linkToAdd = True
 
@@ -2933,6 +2963,9 @@ def adminContenu():
     # Menu pour rafraichir le cache
     oGui.addDir(SITE_IDENTIFIER, 'adminNbElement', "[COLOR %s]Nombre d'éléments affichés[/COLOR]" % sDecoColor, 'listes.png', oOutputParameterHandler)
 
+    # Menu pour définir les résolutions à NE PAS utiliser
+    oGui.addDir(SITE_IDENTIFIER, 'adminBlacklistResolution', "[COLOR %s]Résolutions à ne pas afficher[/COLOR]" % sDecoColor, 'listes.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
 
 
@@ -2951,6 +2984,14 @@ def adminNbElement():
     if nElement:
         addon().setSetting(SITE_IDENTIFIER + '_nbItemParPage', nElement)
 
+# Définir les résolutions a NE PAS utiliser
+def adminBlacklistResolution():
+    oGui = cGui()
+    nResolutions = oGui.showKeyBoard(str(RESOLUTIONS_BACKLIST), "Résolutions a ne pas utiliser séparé par une virgule par exemple (4K,SD)")
+    if nResolutions:
+        addon().setSetting(SITE_IDENTIFIER + '_nResolutions', nResolutions)
+    else:
+        addon().setSetting(SITE_IDENTIFIER + '_nResolutions', "")
 
 # Retourne la décompte de média par type
 def getNbMedia():
